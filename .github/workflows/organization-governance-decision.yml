@@ -96,12 +96,13 @@ jobs:
         if: ${{ inputs.decision_authority_source != '' && inputs.decision_authority_receipt != '' }}
         run: |
           set -eu
-          source="$DECISION_AUTHORITY_SOURCE"
+          # An absolute path: a bare name would let pip resolve an unrelated package from an index.
+          source="$(realpath -e -- "$DECISION_AUTHORITY_SOURCE")"
           python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" \
             authority-requirements --source "$source" --out "$RUNNER_TEMP/stegcore-requirements.txt"
           python -m pip install -r "$RUNNER_TEMP/stegcore-requirements.txt"
           python -m pip install --no-deps "$source"
-          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" evaluator --installed
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" evaluator --installed --source "$source"
 
       - name: Record that the decision authority (StegCore) was not installed
         if: ${{ inputs.decision_authority_source == '' || inputs.decision_authority_receipt == '' }}

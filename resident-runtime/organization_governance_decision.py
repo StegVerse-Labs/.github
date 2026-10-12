@@ -523,6 +523,11 @@ def authority_requirements(source: Path, pin: dict[str, Any]) -> list[str]:
         raise Refusal("DECISION_AUTHORITY_SOURCE_NOT_PINNED",
                       "head:" + (head.stdout.strip() or "unreadable") + "!=" + pin["commit"],
                       "check out " + pin["repository"] + " at the commit " + DECISION_AUTHORITY_PIN + " pins")
+    # The pinned commit, not a working tree changed after it was checked out, is what is installed.
+    dirty = subprocess.run(["git", "-C", str(source), "status", "--porcelain"], capture_output=True, text=True)
+    if dirty.returncode != 0 or dirty.stdout.strip():
+        raise Refusal("DECISION_AUTHORITY_SOURCE_NOT_PINNED", "working_tree_not_clean_at:" + pin["commit"],
+                      "install " + pin["repository"] + " from an unmodified checkout of the pinned commit")
     project = tomllib.loads((source / "pyproject.toml").read_text(encoding="utf-8")).get("project") or {}
     declared = sorted(_requirement_name(spec) for spec in project.get("dependencies") or [])
     pinned = sorted(_requirement_name(spec) for spec in pin["requirements"])
@@ -566,8 +571,13 @@ def authority_materialization(receipt_path: Path, pin: dict[str, Any]) -> dict[s
             "authority_effect": "NONE_VERIFICATION_ONLY"}
 
 
-def evaluator_record(pin: dict[str, Any], *, installed: bool) -> dict[str, Any]:
-    """Which evaluator this run's decisions were made by."""
+def evaluator_record(pin: dict[str, Any], *, installed: bool, source: Path | None = None) -> dict[str, Any]:
+    """Which evaluator this run's decisions were made by.
+
+    An installed evaluator counts only when the installed distribution came from
+    the verified checkout at `source`: an unrelated `stegcore` on a package index
+    shares the name, so an install resolved from an index is refused.
+    """
     if not installed:
         credential = pin["read_credential"]
         return {"installed": False, "reason": EVALUATOR_NOT_PROVIDED_REASON,
@@ -578,9 +588,16 @@ def evaluator_record(pin: dict[str, Any], *, installed: bool) -> dict[str, Any]:
     try:
         importlib.import_module(pin["decision_authority"].rsplit(".", 1)[0])
         version = metadata.version(pin["package"])
-    except (ImportError, metadata.PackageNotFoundError) as exc:
+        origin = json.loads(metadata.distribution(pin["package"]).read_text("direct_url.json") or "{}")
+    except (ImportError, metadata.PackageNotFoundError, ValueError) as exc:
         raise Refusal("DECISION_AUTHORITY_INSTALL_UNVERIFIED", pin["package"] + ":" + type(exc).__name__,
                       "the installed " + pin["repository"] + " must import and report its version") from exc
+    expected = Path(source).resolve().as_uri() if source is not None else None
+    if expected is None or origin.get("url") != expected:
+        raise Refusal("DECISION_AUTHORITY_INSTALL_UNVERIFIED",
+                      pin["package"] + ":installed_from:" + str(origin.get("url"))[:200] + "!=" + str(expected)[:200],
+                      "install " + pin["package"] + " only from the verified checkout of " + pin["repository"]
+                      + " (pass it as --source); never by name from a package index")
     return {"installed": True, "commit": pin["commit"], "version": version}
 
 
@@ -739,6 +756,7 @@ def main(argv: list[str] | None = None) -> int:
     a.add_argument("--receipt", type=Path, required=True)
     e = sub.add_parser("evaluator")
     e.add_argument("--installed", action="store_true")
+    e.add_argument("--source", type=Path)
     args = parser.parse_args(argv)
     evidence = args.evidence
     try:
@@ -751,7 +769,7 @@ def main(argv: list[str] | None = None) -> int:
             document = authority_materialization(args.receipt, decision_authority_pin())
             name = "authority_materialization.json"
         elif args.command == "evaluator":
-            document = evaluator_record(decision_authority_pin(), installed=args.installed)
+            document = evaluator_record(decision_authority_pin(), installed=args.installed, source=args.source)
             name = "evaluator.json"
         elif args.command == "materialize":
             bound = _read(evidence / "binding.json")
