@@ -1,0 +1,25 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "explanation-hil-surfaces-docs-20261012",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "CLAIMED",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_DOCUMENTATION",
+  "branch": "claude/3106-explanation-hil-surfaces-docs",
+  "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
+  "originating_goal": "Phase 6 canonical documentation: list the HIL submission and retry surfaces (Site#1573) among the explanation-contract adopters and record the participant-facing change as a preregistration amendment with zero trials affected, as #3106 comment 6117639185 required. Documentation and data only.",
+  "claimed_paths": [
+    "docs/USER_FACING_EXPLANATION_CONTRACT_MIRROR_HANDOFF.md",
+    "data/hil-explanation-experiment/preregistration.json",
+    "docs/HIL_SCALED_EXPLANATION_EXPERIMENT_PROTOCOL.md",
+    "data/session-work-claims.d/explanation-hil-surfaces-docs-20261012.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "No Site change: hil-decision-reasons.js stays in the HIL-receiver claim's lane",
+    "No change to conditions, stimuli, scoring or results"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}
