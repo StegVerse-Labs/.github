@@ -825,3 +825,17 @@ class HypothesisEvaluation(unittest.TestCase):
                 self.assertEqual(H.main(["evaluate", "--trials", d]), 0)
             out = json.loads(buf.getvalue())
             self.assertEqual((out["evidence_state"], out["hypotheses"]["H2"]["verdict"]), ("MEASURED_SYNTHETIC", "NOT_MEASURED"))
+
+
+
+class AnalysisOwnerConfirmed(unittest.TestCase):
+    """Owner decision 2026-10-12: minimum 10 trials per cell, descriptive direction only."""
+
+    def test_preregistered_analysis_matches_source_and_is_confirmed(self):
+        pre = json.loads((ROOT / "data/hil-explanation-experiment/preregistration.json").read_text(encoding="utf-8"))
+        analysis = pre["analysis"]
+        self.assertEqual(analysis["min_trials_per_cell"], H.MIN_TRIALS_PER_CELL)
+        self.assertEqual(analysis["min_trials_per_cell_status"], "OWNER_CONFIRMED_2026-10-12")
+        self.assertTrue(analysis["inference_status"].startswith("OWNER_CONFIRMED_2026-10-12"))
+        self.assertEqual(H.evaluate_hypotheses([])["inference"], "DESCRIPTIVE_DIRECTION_ONLY_NO_SIGNIFICANCE_TEST")
+        self.assertTrue(all(a["trials_affected"] == 0 for a in pre["amendments"]))

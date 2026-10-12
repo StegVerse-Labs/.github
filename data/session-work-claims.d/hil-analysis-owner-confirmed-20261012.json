@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "hil-analysis-owner-confirmed-20261012",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "ACTIVE_IMPLEMENTATION",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_EXPERIMENT_TOOLING",
+  "branch": "claude/hil-analysis-owner-confirmed",
+  "session_worker_id": "claude:site-1509-workspace-20261010",
+  "originating_goal": "Record the owner's 2026-10-12 confirmation of HIL min_trials_per_cell (10) and the descriptive-only analysis in the preregistration (amendment 6) and protocol; add a test pinning the confirmed values. No trial, no measurement.",
+  "claimed_paths": [
+    "data/hil-explanation-experiment/preregistration.json",
+    "docs/HIL_SCALED_EXPLANATION_EXPERIMENT_PROTOCOL.md",
+    "tests/test_hil_explanation_experiment.py",
+    "data/session-work-claims.d/hil-analysis-owner-confirmed-20261012.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "No task admission, no COSV mutation, no trial execution"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}

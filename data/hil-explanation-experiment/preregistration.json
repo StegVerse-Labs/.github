@@ -60,7 +60,8 @@
     "tool": "scripts/hil_explanation_experiment.py evaluate (evaluate_hypotheses)",
     "inference": "DESCRIPTIVE_DIRECTION_ONLY_NO_SIGNIFICANCE_TEST: each preregistered metric is compared between condition C and A as a direction; no p-value, effect size claim or 'supported' verdict is produced",
     "min_trials_per_cell": 10,
-    "min_trials_per_cell_status": "PROPOSED_BY_CLAUDE_OWNER_MAY_AMEND_BEFORE_FIRST_TRIAL",
+    "min_trials_per_cell_status": "OWNER_CONFIRMED_2026-10-12",
+    "inference_status": "OWNER_CONFIRMED_2026-10-12: descriptive direction only, no significance test",
     "H1_metrics": "HIL-1 interpretation_accuracy, remediation_validity, human_effectiveness higher in C; resolution_time_seconds, attempt_count, unauthorized_action_attempted lower in C",
     "H2_metrics": "HIL-2 interpretation_accuracy, governance_fidelity higher in C; cross_model_variance lower in C",
     "H3_rule": "same-session concept recognition above 0.5 and no holdout recognition in fresh unexposed sessions is DIRECTIONALLY_CONSISTENT; any fresh unexposed holdout recognition is UNDETERMINED",
@@ -72,7 +73,8 @@
     {"date": "2026-10-11", "field": "submission", "change": "ticketed issue/intake/withdraw operator with recorded opt-in or provider-use permission", "source": "StegVerse-Labs/.github#3106 comment 6113477648", "trials_affected": 0},
     {"date": "2026-10-11", "field": "submission.single_actual_path", "change": "ACTUAL_OBSERVATION only through ticketed intake; record --spec and record_trial are SYNTHETIC_TEST-only with synthetic:// locators; validate_trial and the trial schema bind the locator to the evidence class and the response digest", "source": "StegVerse-Labs/.github#3106 comments 6113728583 and 6113736702", "trials_affected": 0},
     {"date": "2026-10-11", "field": "scoring.cross_model_variance and summary integrity", "change": "summarize computes cross_model_variance; refuses mixed SYNTHETIC_TEST and ACTUAL_OBSERVATION sets, repeated trial ids, and actual records not bound by digest to their RECORDED ticket", "source": "Claude cycle 43 review of summarize on StegVerse-Labs/.github#3106", "trials_affected": 0},
-    {"date": "2026-10-11", "field": "analysis", "change": "descriptive H1-H3 evaluation plan and tool (C vs A per preregistered metric, direction only, minimum trials per cell proposed at 10)", "source": "Claude cycle 48 on StegVerse-Labs/.github#3106", "trials_affected": 0}
+    {"date": "2026-10-11", "field": "analysis", "change": "descriptive H1-H3 evaluation plan and tool (C vs A per preregistered metric, direction only, minimum trials per cell proposed at 10)", "source": "Claude cycle 48 on StegVerse-Labs/.github#3106", "trials_affected": 0},
+    {"date": "2026-10-12", "field": "analysis.min_trials_per_cell and analysis.inference", "change": "owner confirmed the minimum of 10 trials per cell and the descriptive-only analysis (no change to values)", "source": "owner decision to Claude, recorded on StegVerse-Labs/.github#3106", "trials_affected": 0}
   ],
   "measured_results": "data/hil-explanation-experiment/results.json"
 }
