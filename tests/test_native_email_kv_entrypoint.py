@@ -94,6 +94,7 @@ class NativeEmailKVEntrypointTests(unittest.TestCase):
         self.assertTrue(wrapper.reusable_slot_satisfied({
             "state": "ATTEMPT_RECORDED",
             "runtime_execution_attempted": True,
+            "kv_persistence_satisfied": True,
             "retry_allowed": True,
             "pending_reason": None,
         }))

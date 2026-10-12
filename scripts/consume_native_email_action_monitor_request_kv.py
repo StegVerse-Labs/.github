@@ -178,6 +178,8 @@ def reusable_slot_satisfied(result: Mapping[str, Any]) -> bool:
     """
     if result.get("runtime_execution_attempted") is not True:
         return False
+    if result.get("kv_persistence_satisfied") is not True:
+        return False
     if result.get("pending_reason") == "KV_PERSISTENCE_PROOF_REQUIRED":
         return False
     return result.get("state") in {"ATTEMPT_RECORDED", "COMPLETED"}
