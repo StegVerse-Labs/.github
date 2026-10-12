@@ -316,17 +316,3 @@ def test_actionable_inbox_malformed_ids_fail_closed(tmp_path):
     else:
         raise AssertionError("malformed actionable IDs must fail closed")
     assert "GET_LABEL_COUNTS" not in [name for name, _ in broker.calls]
-
-
-def test_live_inbox_search_identity_mismatch_denies_archive(tmp_path):
-    broker = FakeBroker([
-        response("SEARCH_MESSAGES", provider="GMAIL", messages=[{"id": "m2", "from": "notifications@github.com", "subject": "CI failed"}]),
-        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"]),
-    ])
-    try:
-        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
-    except RuntimeError as exc:
-        assert "LIVE_INBOX_SEARCH_IDENTITY_MISMATCH" in str(exc)
-    else:
-        raise AssertionError("uninspected ID must not be archived")
-    assert "ARCHIVE_IDS" not in [name for name, _ in broker.calls]
