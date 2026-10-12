@@ -4,9 +4,9 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "ACTIVE_IMPLEMENTATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT_TOOLING",
-  "branch": "claude/explanation-reason-catalog-standard",
+  "branch": "claude/release-explanation-reason-catalog-claim",
   "session_worker_id": "claude:site-1509-workspace-20261010",
   "originating_goal": "Universal explanation contract: canonical reason-catalog requirement (compatibility requirements 7-9), check_reason_catalog in the reference builder, adopting-surfaces table; tests. No authority, no runtime change.",
   "claimed_paths": [
@@ -22,5 +22,9 @@
     "No change to the explanation schema or artifact shape"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3148",
+  "merged_commit": "dc46b10b49852402fbc79647a2c7775cd5a4fb2b",
+  "claim_released_at": "2026-10-12T00:28:41Z",
+  "claim_released_at_basis": "merge time of the implementation PR #3148"
 }
