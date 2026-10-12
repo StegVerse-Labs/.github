@@ -214,3 +214,32 @@ def test_archived_replay_nonempty_page_with_same_cursor_fails_closed(tmp_path):
         assert "ARCHIVED_REPLAY_CURSOR_NOT_ADVANCING" in str(exc)
     else:
         raise AssertionError("nonempty replay page with same cursor must fail closed")
+
+
+def test_duplicate_archive_result_ids_fail_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"]),
+        response("ARCHIVE_IDS", provider="GMAIL", archived_ids=["m1", "m1"], failed_ids=[]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    except RuntimeError as exc:
+        assert "archive result duplicate identity" in str(exc)
+    else:
+        raise AssertionError("duplicate provider archive result must fail closed")
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS", "ARCHIVE_IDS"]
+
+
+def test_malformed_archive_result_identity_fails_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"]),
+        response("ARCHIVE_IDS", provider="GMAIL", archived_ids=["m1", None], failed_ids=[]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    except RuntimeError as exc:
+        assert "archive result identity invalid" in str(exc)
+    else:
+        raise AssertionError("malformed provider archive identity must fail closed")
