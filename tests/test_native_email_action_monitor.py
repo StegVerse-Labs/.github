@@ -37,7 +37,7 @@ def write_continuation(tmp_path, proposed):
     return path
 
 
-def test_exact_ids_are_resolved_before_archive_and_backlog_is_lower_bound(tmp_path):
+def test_incomplete_first_page_never_archives_even_authorized_ids(tmp_path):
     messages = [{
         "id": "m1", "from": "notifications@github.com", "subject": "CI failed",
         "repository": "StegVerse-Labs/Site", "workflow": "Site Task Runner", "snippet": "failed abcdef1"
@@ -46,18 +46,13 @@ def test_exact_ids_are_resolved_before_archive_and_backlog_is_lower_bound(tmp_pa
     broker = FakeBroker([
         response("SEARCH_MESSAGES", provider="GMAIL", messages=messages, next_page_token="page"),
         response("SEARCH_IDS", provider="GMAIL", message_ids=ids, next_page_token="page"),
-        response("ARCHIVE_IDS", provider="GMAIL", archived_ids=ids, failed_ids=[]),
-        response("SEARCH_IDS", provider="GMAIL", message_ids=[f"a{i}" for i in range(100)], next_page_token="more"),
-        response("GET_LABEL_COUNTS", provider="GMAIL", labels={"INBOX": {"messagesTotal": 123, "messagesUnread": 120}}),
     ])
     receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ids))
-    assert [name for name, _ in broker.calls][:3] == ["SEARCH_MESSAGES", "SEARCH_IDS", "ARCHIVE_IDS"]
-    assert broker.calls[2][1]["message_ids"] == ids
-    assert receipt["processed_exact_count"] == 100
-    assert receipt["archived_count"] == 100
-    assert receipt["retained_unverified_count"] == 0
-    assert receipt["actionable_more_than_returned"] is True
-    assert receipt["actionable_minimum"] == 101
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
+    assert receipt["state"] == "PAGINATION_INCOMPLETE_FAIL_CLOSED"
+    assert receipt["processed_exact_count"] == 0
+    assert receipt["archived_count"] == 0
+    assert receipt["retained_unverified_count"] == 100
     assert receipt["email_observation_is_runtime_evidence"] is False
     assert receipt["incident_proposals_require_canonical_task_ingress"] is True
 
