@@ -1,0 +1,40 @@
+{
+  "authority_effect": "NONE",
+  "evidence": {
+    "boundary_role": "INTERNAL_ENDPOINT",
+    "destination": {
+      "org": "StegVerse-Labs",
+      "service": "stegverse-labs.governance"
+    },
+    "disposition": "ALLOW",
+    "frame_name": "e648d184164c37a346b0f3ab80d916200b8825c95576635f37cb160cfb94fcfd.json",
+    "frame_sha256": "sha256:9cbbd9fa60b78951d1de1ef5405760de703bdd5f4daf7fa32a03b30b56c8f89e",
+    "message_class": "ecosystem.work.request",
+    "origin": {
+      "org": "StegVerse-org",
+      "service": "stegverse-org.governance"
+    },
+    "packet_id": "pkt-c64077b3c2b188aabf176050",
+    "processing_selection": "MANIFEST_DECLARED",
+    "service_id": "stegverse-labs.governance",
+    "terminal_receipt_id": "egress_emitted-854f2b6c9259e58f3db6b2ed"
+  },
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 422950375,
+    "frequency_hz": 100,
+    "generation": 422950375,
+    "heartbeat_id": "HB:422950375",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "predecessor_state_sha256": "sha256:0e30a4dd1966851397c0991b787358f4844e56d7a47186dab0cea7503cb18103",
+  "previous_receipt_sha256": "sha256:9dfe1b0aa2c579dbdaf898c4fcaf2022a3d77139a73da1d47575f9442b8bfe41",
+  "receipt_sha256": "sha256:6e674edd310c882fbb435d203e9d91b7f3ae3eba9f5b2c951978ec7f5a45a661",
+  "repository": "StegVerse-Labs/.github",
+  "schema": "stegverse.repo-transition-receipt/v1",
+  "successor_state_sha256": "sha256:7858fe515c01c757e2bad946b3f36a2de52362921c29b6304db1d356aca83671",
+  "transition_class": "ORGANIZATION_FEDERATION_CROSSING_CONSUMED",
+  "transition_id": "ORGANIZATION-FEDERATION-CROSSING-1b3a9be0ad709f48"
+}
