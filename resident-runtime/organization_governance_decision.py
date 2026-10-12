@@ -59,13 +59,8 @@ FRAME_PATH = re.compile(r"^frames\.d/[0-9a-f]{64}\.json$")
 LEDGER_PERSISTENCE = "PUBLISHED_DESIGNATED_ORGANIZATION_LEDGER_REF"
 REPORT_SCHEMA = "stegverse.organization-governance-decision-run/v1"
 DECISION_AUTHORITY_PIN = "org-runtime/decision-authority.json"
-EVALUATOR_NOT_PROVIDED_REASON = "STEGCORE_TVC_MATERIALIZATION_NOT_PROVIDED"
-# What TV/TVC (StegVerse-Labs/TVC scripts/private_source_read.py) records for an
-# executed read; every credential and authority boundary must be false.
-TVC_RESULT_SCHEMA = "stegverse.tvc-private-source-read-result/v1"
-TVC_BOUNDARIES_FALSE = ("credential_value_exposed", "credential_persisted", "credential_in_process_arguments",
-                        "non_tv_tvc_credential_used", "github_generated_token_substituted", "write_authority",
-                        "release_authority", "publication_authority", "runtime_authority", "production_authority")
+EVALUATOR_NOT_PROVIDED_REASON = "STEGCORE_NOT_INSTALLED"
+AUTHORITY_FETCH_SCHEMA = "stegverse.organization-decision-authority-fetch/v1"
 
 
 def _module(name: str, relative: str):
@@ -539,36 +534,37 @@ def authority_requirements(source: Path, pin: dict[str, Any]) -> list[str]:
     return list(pin["requirements"])
 
 
-def authority_materialization(receipt_path: Path, pin: dict[str, Any]) -> dict[str, Any]:
-    """The TV/TVC private-source-read receipt for the pinned decision authority, verified.
+def authority_fetch(dest: Path, pin: dict[str, Any], *, url: str | None = None) -> dict[str, Any]:
+    """The pinned decision authority, fetched anonymously into `dest` and checked out detached.
 
-    The decision authority is read only through TV/TVC (org-runtime/decision-authority.json
-    read_credential): no repository secret and no GitHub-generated token. This checks the
-    secret-free receipt TV/TVC wrote for the materialization; it reads no credential.
+    StegCore is public (owner decision relayed on StegVerse-org/StegVerse-SDK#465), so
+    the pinned commit is read with no credential: every credential helper is cleared
+    and nothing is prompted for. Only that exact commit is fetched; the checkout's
+    HEAD must be it.
     """
-    credential = pin["read_credential"]
-    try:
-        receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
-    except (OSError, ValueError) as exc:
-        raise Refusal("DECISION_AUTHORITY_MATERIALIZATION_RECEIPT_ABSENT", type(exc).__name__,
-                      "supply the TV/TVC private-source-read receipt for " + credential["request"]) from exc
-    expected = {"schema": TVC_RESULT_SCHEMA, "capability_id": credential["capability_id"],
-                "credential_authority": credential["authority"], "caller_repository": credential["caller_repository"],
-                "source_repository": pin["repository"], "consumer_task": credential["consumer_task"],
-                "reference_mode": "IMMUTABLE_COMMIT", "exact_ref": "commit:" + pin["commit"],
-                "authorized_exact_sha": pin["commit"], "observed_exact_sha": pin["commit"],
-                "operation": "PRIVATE_REPOSITORY_READ_ONLY", "materialization_state": "COMPLETE",
-                "result": "AUTHORIZED_EXECUTED_READ_ONLY"}
-    expected.update({name: False for name in TVC_BOUNDARIES_FALSE})
-    mismatched = sorted(key for key, value in expected.items() if receipt.get(key) != value)
-    if mismatched:
-        raise Refusal("DECISION_AUTHORITY_MATERIALIZATION_NOT_VERIFIED", "receipt_mismatch:" + ",".join(mismatched)[:400],
-                      "materialize " + pin["repository"] + " at the pinned commit through TV/TVC ("
-                      + credential["request"] + ") and supply its receipt")
-    return {"schema": "stegverse.organization-decision-authority-materialization/v1", "verified": True,
-            "capability_id": credential["capability_id"], "commit": pin["commit"],
-            "request": credential["request"], "completed_at": receipt.get("completed_at"),
-            "authority_effect": "NONE_VERIFICATION_ONLY"}
+    url = url or "https://github.com/" + pin["repository"]
+    dest = Path(dest)
+    if dest.exists():
+        raise Refusal("DECISION_AUTHORITY_FETCH_DESTINATION_EXISTS", "exists:" + str(dest),
+                      "fetch " + pin["repository"] + " into a new directory")
+    dest.mkdir(parents=True)
+    git_dir = dest / ".git"
+    steps = [("init", "-q", str(dest)),
+             ("fetch", "-q", "--no-tags", "--depth=1", url, pin["commit"])]
+    for args in steps:
+        completed = binding.anonymous_git(*args, git_dir=git_dir if args[0] != "init" else None)
+        if completed.returncode != 0:
+            raise Refusal("DECISION_AUTHORITY_NOT_ANONYMOUSLY_FETCHABLE",
+                          args[0] + "_failed:" + (completed.stderr or "").strip()[-300:],
+                          "make " + pin["repository"] + " at " + pin["commit"] + " readable without credentials")
+    subprocess.run(["git", "-C", str(dest), "checkout", "-q", "--detach", "FETCH_HEAD"], check=True,
+                   capture_output=True, text=True)
+    head = subprocess.run(["git", "-C", str(dest), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    if head != pin["commit"]:
+        raise Refusal("DECISION_AUTHORITY_SOURCE_NOT_PINNED", "head:" + (head or "unreadable") + "!=" + pin["commit"],
+                      "fetch " + pin["repository"] + " at the commit " + DECISION_AUTHORITY_PIN + " pins")
+    return {"schema": AUTHORITY_FETCH_SCHEMA, "repository": pin["repository"], "url": url, "commit": head,
+            "source": str(dest.resolve()), "credential": "NONE_ANONYMOUS", "authority_effect": "NONE_READ_ONLY"}
 
 
 def evaluator_record(pin: dict[str, Any], *, installed: bool, source: Path | None = None) -> dict[str, Any]:
@@ -579,11 +575,9 @@ def evaluator_record(pin: dict[str, Any], *, installed: bool, source: Path | Non
     shares the name, so an install resolved from an index is refused.
     """
     if not installed:
-        credential = pin["read_credential"]
         return {"installed": False, "reason": EVALUATOR_NOT_PROVIDED_REASON,
-                "dependency": ("BLOCKED_DEPENDENCY: a " + credential["authority"] + " " + credential["capability_id"]
-                               + " materialization of " + pin["repository"] + " at the pinned commit ("
-                               + credential["request"] + ")")}
+                "dependency": ("BLOCKED_DEPENDENCY: " + pin["repository"] + " at the pinned commit, fetched"
+                               " anonymously and installed (authority-fetch, authority-requirements)")}
     from importlib import metadata
     try:
         importlib.import_module(pin["decision_authority"].rsplit(".", 1)[0])
@@ -752,8 +746,8 @@ def main(argv: list[str] | None = None) -> int:
     q = sub.add_parser("authority-requirements")
     q.add_argument("--source", type=Path, required=True)
     q.add_argument("--out", type=Path, required=True)
-    a = sub.add_parser("authority-materialization")
-    a.add_argument("--receipt", type=Path, required=True)
+    a = sub.add_parser("authority-fetch")
+    a.add_argument("--dest", type=Path, required=True)
     e = sub.add_parser("evaluator")
     e.add_argument("--installed", action="store_true")
     e.add_argument("--source", type=Path)
@@ -765,9 +759,9 @@ def main(argv: list[str] | None = None) -> int:
             args.out.write_text("\n".join(requirements) + "\n", encoding="utf-8")
             print("\n".join(requirements))
             return 0
-        if args.command == "authority-materialization":
-            document = authority_materialization(args.receipt, decision_authority_pin())
-            name = "authority_materialization.json"
+        if args.command == "authority-fetch":
+            document = authority_fetch(args.dest, decision_authority_pin())
+            name = "authority_fetch.json"
         elif args.command == "evaluator":
             document = evaluator_record(decision_authority_pin(), installed=args.installed, source=args.source)
             name = "evaluator.json"
