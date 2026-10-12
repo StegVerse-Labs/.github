@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "explanation-hil-accepted-docs-20261012",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "CLAIMED",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_DOCUMENTATION",
+  "branch": "claude/3106-explanation-hil-accepted-docs",
+  "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
+  "originating_goal": "Phase 6 canonical documentation: record Site#1577 (hil-accepted surface, 7th HIL predicate HIL_STORED_PACKET_NOT_VERIFIED) in the explanation-contract adopters table. Documentation only.",
+  "claimed_paths": [
+    "docs/USER_FACING_EXPLANATION_CONTRACT_MIRROR_HANDOFF.md",
+    "data/session-work-claims.d/explanation-hil-accepted-docs-20261012.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "Documentation only"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}
