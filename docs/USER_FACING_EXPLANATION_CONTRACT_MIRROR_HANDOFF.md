@@ -82,8 +82,9 @@ Dimensions: HIL-1 human effectiveness; HIL-2 ecosystem interpretability across i
 | WorkSpace page: intent drafts, KV ingress, capability statuses, device continuity DR1-DR5, integration conformance | StegVerse-Labs/Site `assets/workspace.js` and the WorkSpace contract modules | page 3, KV bridge 1, capabilities 28, node binding 12, device continuity 10, assistant continuity 15 |
 | WorkSpace session authentication and MyKV assistant binding (producer, mirrored in Site) | StegVerse-Labs/continuity-vault-kit `runtime/workspace_decision_reasons.py` | session 12, binding 17 |
 | CryptoBot WorkSpace portfolio projection refusals | StegVerse-Labs/crypto-bot `scripts/project_portfolio_snapshot_for_workspace.py` | 19 |
+| StegSocials post preparation (`stegsocials-prepare.html`): draft refusal, ERL drafting, My KV save and exact readback, evidence export | StegVerse-Labs/Site `assets/stegsocials-decision-reasons.js` (Site#1546) | 6 |
 
-Not yet adopted: the MyKV app (lane owned elsewhere; no disposition record exposed on that surface) and StegTalk (no governed-outcome surface identified in this lane's repositories).
+Not yet adopted: the MyKV app (lane owned elsewhere; no disposition record exposed on that surface) StegTalk (no governed-outcome surface identified in this lane's repositories) and the HIL participant submission path (Site `assets/hil-direct-upload-v1.js`, `api/hil/upload.js`; shows raw codes today; adoption needs an owner-admitted Site claim and a preregistration amendment, .github#3106 comment 6117639185).
 
 ## Owner work not executable from this lane
 
