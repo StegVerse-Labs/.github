@@ -243,3 +243,17 @@ def test_malformed_archive_result_identity_fails_closed(tmp_path):
         assert "archive result identity invalid" in str(exc)
     else:
         raise AssertionError("malformed provider archive identity must fail closed")
+
+
+def test_duplicate_inbox_message_ids_refused_before_archive(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", "m1"]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    except RuntimeError as exc:
+        assert "LIVE_INBOX_DUPLICATE_MESSAGE_IDS" in str(exc)
+    else:
+        raise AssertionError("duplicate inbox identities must fail closed")
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
