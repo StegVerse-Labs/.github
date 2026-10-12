@@ -1,7 +1,7 @@
 """The decision authority (StegCore) install of organization-governance-decision.yml.
 
-Offline only. StegCore is private and is not installed here, so nothing in this
-file claims a StegCore decision: the installed record is exercised with the
+Offline only. StegCore is not fetched or installed here (the fetch is exercised
+against a local fixture repository), so nothing in this file claims a StegCore decision: the installed record is exercised with the
 import and the version lookup replaced, and every other assertion is about the
 workflow text, the single pin, and the refusals that guard the install.
 """
@@ -19,11 +19,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github/workflows/organization-governance-decision.yml"
 PIN = ROOT / "org-runtime/decision-authority.json"
-INSTALL_STEP = "Install the decision authority (StegCore) when this run may read it"
-VERIFY_STEP = "Verify the TV/TVC materialization of the decision authority (StegCore)"
-RECORD_ABSENT_STEP = "Record that the decision authority (StegCore) was not installed"
-PRESENT = "${{ inputs.decision_authority_source != '' && inputs.decision_authority_receipt != '' }}"
-ABSENT = "${{ inputs.decision_authority_source == '' || inputs.decision_authority_receipt == '' }}"
+INSTALL_STEP = "Fetch and install the decision authority (StegCore) at the pin"
 
 
 def _load(name: str, relative: str):
@@ -82,10 +78,9 @@ def test_pin_is_one_full_commit_with_exact_requirements():
     assert sorted(decision._requirement_name(s) for s in pin["requirements"]) == \
         sorted(decision._requirement_name(s) for s in DECLARED)
     credential = pin["read_credential"]
-    assert (credential["authority"], credential["capability_id"]) == ("TV/TVC", "tvc.private-source-read.v1")
+    assert (credential["authority"], credential["repository_visibility"], credential["fetch"]) == \
+        ("NONE", "PUBLIC", "ANONYMOUS_PINNED_COMMIT")
     assert credential["repository_secret_allowed"] is False and credential["github_generated_token_allowed"] is False
-    assert credential["caller_repository"] == "StegVerse-Labs/.github"
-    assert credential["request"].endswith(".json") and pin["commit"][:8] in credential["materialization_id"]
 
 
 def test_workflow_takes_the_commit_from_the_pin_and_never_restates_it():
@@ -97,27 +92,24 @@ def test_workflow_takes_the_commit_from_the_pin_and_never_restates_it():
         assert pin["commit"] not in (ROOT / path).read_text(encoding="utf-8")
 
 
-def test_install_runs_only_from_a_verified_tv_tvc_materialization_and_absence_is_recorded():
+def test_every_run_fetches_and_installs_the_decision_authority_before_the_cycle():
     steps = _steps()
-    verify = steps[VERIFY_STEP]
-    assert f"if: {PRESENT}" in verify
-    assert 'authority-materialization --receipt "$DECISION_AUTHORITY_RECEIPT"' in verify
-    assert f"if: {PRESENT}" in steps[INSTALL_STEP]
-    absent = steps[RECORD_ABSENT_STEP]
-    assert f"if: {ABSENT}" in absent
-    assert absent.rstrip().endswith("evaluator")
-    assert "pip" not in absent
+    install = steps[INSTALL_STEP]
+    assert "if:" not in install
+    assert "inputs.decision_authority" not in WORKFLOW.read_text(encoding="utf-8")
+    assert install.index("set -eu") < install.index("authority-fetch") < install.index("authority-requirements") \
+        < install.index("pip install")
+    assert 'source="$RUNNER_TEMP/stegcore"' in install
     order = list(steps)
-    assert order.index(VERIFY_STEP) < order.index(INSTALL_STEP) < order.index("Run the cycle")
-    assert order.index(RECORD_ABSENT_STEP) < order.index("Run the cycle")
+    assert order.index("Materialize the durable queue") < order.index(INSTALL_STEP) < order.index("Run the cycle")
 
 
 def test_no_repository_secret_or_github_token_reaches_the_decision_authority():
-    # TV policy tv.private-source-read.v1: TV/TVC is the only credential authority.
+    # StegCore is public: it is read with no credential at all.
     text = WORKFLOW.read_text(encoding="utf-8")
     assert "secrets." not in text
     assert "STEGCORE_READ_TOKEN" not in text
-    assert "token:" not in "\n".join(_steps()[name] for name in (VERIFY_STEP, INSTALL_STEP))
+    assert "token:" not in _steps()[INSTALL_STEP]
 
 
 def test_install_never_installs_an_unpinned_ref():
@@ -125,7 +117,6 @@ def test_install_never_installs_an_unpinned_ref():
     pip_lines = [line.strip() for line in install.splitlines() if "pip install" in line]
     assert pip_lines == ['python -m pip install -r "$RUNNER_TEMP/stegcore-requirements.txt"',
                          'python -m pip install --no-deps "$source"']
-    assert 'source="$(realpath -e -- "$DECISION_AUTHORITY_SOURCE")"' in install
     assert install.index("authority-requirements") < install.index("pip install")
     assert "git+" not in install and "@main" not in install
     assert install.rstrip().endswith('evaluator --installed --source "$source"')
@@ -147,11 +138,47 @@ def test_requirements_refuse_a_pinned_checkout_changed_after_checkout(tmp_path):
     assert "working_tree_not_clean" in refused.value.document["failed_predicate"]
 
 
-def test_a_bare_package_name_would_resolve_from_an_index():
-    # Why the install step resolves the source to an absolute path first: pip
-    # reads a bare name as a requirement, and an unrelated "stegcore" is on PyPI.
+def test_the_installed_source_is_an_absolute_path_never_a_bare_name():
+    # pip reads a bare name as a requirement, and an unrelated "stegcore" is on PyPI.
     install = _steps()[INSTALL_STEP]
-    assert install.index("realpath -e") < install.index("authority-requirements") < install.index("pip install")
+    assert 'source="$RUNNER_TEMP/' in install
+    assert 'pip install --no-deps "$source"' in install
+
+
+def test_authority_fetch_checks_out_exactly_the_pinned_commit(tmp_path):
+    origin, head = _source(tmp_path, DECLARED)
+    pin = {**_pin(), "commit": head}
+    fetched = decision.authority_fetch(tmp_path / "fetched", pin, url=origin.as_uri())
+    assert (fetched["commit"], fetched["credential"]) == (head, "NONE_ANONYMOUS")
+    assert fetched["source"] == str((tmp_path / "fetched").resolve())
+    assert _git("rev-parse", "HEAD", cwd=tmp_path / "fetched") == head
+    assert _git("status", "--porcelain", cwd=tmp_path / "fetched") == ""
+    assert decision.authority_requirements(tmp_path / "fetched", pin) == pin["requirements"]
+
+
+def test_authority_fetch_refuses_a_commit_the_repository_does_not_have(tmp_path):
+    origin, _ = _source(tmp_path, DECLARED)
+    with pytest.raises(decision.Refusal) as refused:
+        decision.authority_fetch(tmp_path / "fetched", {**_pin(), "commit": "0" * 40}, url=origin.as_uri())
+    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_NOT_ANONYMOUSLY_FETCHABLE"
+
+
+def test_authority_fetch_refuses_an_existing_destination(tmp_path):
+    origin, head = _source(tmp_path, DECLARED)
+    (tmp_path / "fetched").mkdir()
+    with pytest.raises(decision.Refusal) as refused:
+        decision.authority_fetch(tmp_path / "fetched", {**_pin(), "commit": head}, url=origin.as_uri())
+    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_FETCH_DESTINATION_EXISTS"
+
+
+def test_authority_fetch_cli_records_its_evidence(tmp_path, monkeypatch):
+    origin, head = _source(tmp_path, DECLARED)
+    monkeypatch.setattr(decision, "decision_authority_pin", lambda path=None: {**_pin(), "commit": head})
+    real = decision.authority_fetch
+    monkeypatch.setattr(decision, "authority_fetch", lambda dest, pin: real(dest, pin, url=origin.as_uri()))
+    evidence = tmp_path / "evidence"
+    assert decision.main(["--evidence", str(evidence), "authority-fetch", "--dest", str(tmp_path / "fetched")]) == 0
+    assert json.loads((evidence / "authority_fetch.json").read_text())["commit"] == head
 
 
 def test_requirements_are_exactly_the_declared_dependencies(tmp_path):
@@ -175,57 +202,11 @@ def test_requirements_refuse_any_unpinned_or_undeclared_dependency(tmp_path, dec
     assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_REQUIREMENTS_NOT_PINNED"
 
 
-def test_evaluator_record_without_a_tv_tvc_materialization():
+def test_evaluator_record_when_not_installed():
     pin = _pin()
     record = decision.evaluator_record(pin, installed=False)
-    assert (record["installed"], record["reason"]) == (False, "STEGCORE_TVC_MATERIALIZATION_NOT_PROVIDED")
-    assert record["dependency"].startswith("BLOCKED_DEPENDENCY: a TV/TVC tvc.private-source-read.v1")
-    assert pin["read_credential"]["request"] in record["dependency"]
-
-
-def _receipt(pin: dict, **overrides) -> dict:
-    credential = pin["read_credential"]
-    receipt = {"schema": "stegverse.tvc-private-source-read-result/v1", "capability_id": credential["capability_id"],
-               "credential_authority": "TV/TVC", "caller_repository": credential["caller_repository"],
-               "source_repository": pin["repository"], "consumer_task": credential["consumer_task"],
-               "reference_mode": "IMMUTABLE_COMMIT", "exact_ref": "commit:" + pin["commit"],
-               "authorized_exact_sha": pin["commit"], "observed_exact_sha": pin["commit"],
-               "operation": "PRIVATE_REPOSITORY_READ_ONLY", "credential_available": True,
-               "materialization_state": "COMPLETE", "result": "AUTHORIZED_EXECUTED_READ_ONLY",
-               "completed_at": "2026-10-11T00:00:00Z"}
-    receipt.update({name: False for name in decision.TVC_BOUNDARIES_FALSE})
-    receipt.update(overrides)
-    return receipt
-
-
-def test_a_tv_tvc_receipt_for_the_pinned_commit_is_verified(tmp_path):
-    pin = _pin()
-    path = tmp_path / "receipt.json"
-    path.write_text(json.dumps(_receipt(pin)))
-    verified = decision.authority_materialization(path, pin)
-    assert (verified["verified"], verified["commit"]) == (True, pin["commit"])
-
-
-@pytest.mark.parametrize("overrides", [
-    {"observed_exact_sha": "0" * 40}, {"authorized_exact_sha": "0" * 40}, {"credential_value_exposed": True},
-    {"github_generated_token_substituted": True}, {"non_tv_tvc_credential_used": True}, {"write_authority": True},
-    {"caller_repository": "StegVerse-Labs/elsewhere"}, {"source_repository": "StegVerse-Labs/Other"},
-    {"materialization_state": "PARTIAL"}, {"result": "BLOCKED_DEPENDENCY"}, {"credential_authority": "GitHub"},
-])
-def test_a_tv_tvc_receipt_that_does_not_match_the_pin_is_refused(tmp_path, overrides):
-    pin = _pin()
-    path = tmp_path / "receipt.json"
-    path.write_text(json.dumps(_receipt(pin, **overrides)))
-    with pytest.raises(decision.Refusal) as refused:
-        decision.authority_materialization(path, pin)
-    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_MATERIALIZATION_NOT_VERIFIED"
-    assert sorted(overrides)[0] in refused.value.document["failed_predicate"]
-
-
-def test_a_missing_tv_tvc_receipt_is_refused(tmp_path):
-    with pytest.raises(decision.Refusal) as refused:
-        decision.authority_materialization(tmp_path / "absent.json", _pin())
-    assert refused.value.document["failure_code"] == "DECISION_AUTHORITY_MATERIALIZATION_RECEIPT_ABSENT"
+    assert (record["installed"], record["reason"]) == (False, "STEGCORE_NOT_INSTALLED")
+    assert record["dependency"].startswith("BLOCKED_DEPENDENCY: " + pin["repository"])
 
 
 class _Installed:
@@ -329,7 +310,7 @@ def test_report_names_which_evaluator_decided(tmp_path):
     report, _ = decision.build_report(evidence, mesh_root="git+https://github.com/StegVerse-org/.github#refs/x")
     assert report["decision_authority_installed"] is False
     assert report["decision_authority_commit"] is None
-    assert report["evaluator"]["reason"] == "STEGCORE_TVC_MATERIALIZATION_NOT_PROVIDED"
+    assert report["evaluator"]["reason"] == "STEGCORE_NOT_INSTALLED"
     installed = {"installed": True, "commit": _pin()["commit"], "version": "0.0.0-under-test"}
     (evidence / "evaluator.json").write_text(json.dumps(installed))
     report, _ = decision.build_report(evidence, mesh_root="git+https://github.com/StegVerse-org/.github#refs/x")

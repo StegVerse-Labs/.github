@@ -18,32 +18,19 @@ name: Organization governance decision
 # organization ledger as source receipts. A FAIL_CLOSED governance decision is a
 # decision and is answered; only a FAIL_CLOSED of this run itself fails the job.
 #
-# The decision authority is StegCore (private), pinned in exactly one place,
-# org-runtime/decision-authority.json. It is read only through TV/TVC
-# (tvc.private-source-read.v1, policy StegVerse-Labs/TV tv.private-source-read.v1):
-# no repository secret and no GitHub-generated token. Where the run executes with a
-# TV/TVC materialization of the pinned commit, its path and the secret-free TV/TVC
-# receipt are passed in; the receipt is verified against the pin before anything
-# is installed. Without them nothing is installed, the evidence records
-# STEGCORE_TVC_MATERIALIZATION_NOT_PROVIDED (BLOCKED_DEPENDENCY on the TV/TVC
-# request), and governance_endpoint decides every request FAIL_CLOSED
-# GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE, unchanged.
+# The decision authority is StegCore, pinned in exactly one place,
+# org-runtime/decision-authority.json. StegCore is public (owner decision relayed
+# on StegVerse-org/StegVerse-SDK#465): every run fetches the pinned commit
+# anonymously, with no repository secret and no GitHub-generated token, checks
+# that the checkout is that commit, and installs it from that checkout only. A
+# run that cannot fetch or install it fails before the cycle, so no request is
+# ever answered without StegCore.
 on:
   workflow_dispatch:
     inputs:
       mesh_root:
         description: Emitting organization's mesh locator, git+https://github.com/<org>/<repo>#refs/<name>
         required: true
-        type: string
-      decision_authority_source:
-        description: Path of the TV/TVC materialization of the pinned decision authority, where present
-        required: false
-        default: ''
-        type: string
-      decision_authority_receipt:
-        description: Path of the secret-free TV/TVC private-source-read receipt for that materialization
-        required: false
-        default: ''
         type: string
 
 concurrency:
@@ -63,8 +50,6 @@ jobs:
       GIT_AUTHOR_EMAIL: 210078727+StegVerse@users.noreply.github.com
       GIT_COMMITTER_NAME: StegVerse
       GIT_COMMITTER_EMAIL: 210078727+StegVerse@users.noreply.github.com
-      DECISION_AUTHORITY_SOURCE: ${{ inputs.decision_authority_source }}
-      DECISION_AUTHORITY_RECEIPT: ${{ inputs.decision_authority_receipt }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -84,29 +69,19 @@ jobs:
           python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
           materialize --work "$RUNNER_TEMP/work" --mesh "$RUNNER_TEMP/mesh" --own-url "$OWN_URL"
 
-      - name: Verify the TV/TVC materialization of the decision authority (StegCore)
-        if: ${{ inputs.decision_authority_source != '' && inputs.decision_authority_receipt != '' }}
-        run: >-
-          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
-          authority-materialization --receipt "$DECISION_AUTHORITY_RECEIPT"
-
-      # Only the verified pinned commit is installed, with --no-deps; its
-      # declared dependencies come from the pin, each ==, and nothing else.
-      - name: Install the decision authority (StegCore) when this run may read it
-        if: ${{ inputs.decision_authority_source != '' && inputs.decision_authority_receipt != '' }}
+      # Only the pinned commit is installed, from its own checkout, with --no-deps;
+      # its declared dependencies come from the pin, each ==, and nothing else.
+      - name: Fetch and install the decision authority (StegCore) at the pin
         run: |
           set -eu
-          # An absolute path: a bare name would let pip resolve an unrelated package from an index.
-          source="$(realpath -e -- "$DECISION_AUTHORITY_SOURCE")"
+          source="$RUNNER_TEMP/stegcore"
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" \
+            authority-fetch --dest "$source"
           python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" \
             authority-requirements --source "$source" --out "$RUNNER_TEMP/stegcore-requirements.txt"
           python -m pip install -r "$RUNNER_TEMP/stegcore-requirements.txt"
           python -m pip install --no-deps "$source"
           python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" evaluator --installed --source "$source"
-
-      - name: Record that the decision authority (StegCore) was not installed
-        if: ${{ inputs.decision_authority_source == '' || inputs.decision_authority_receipt == '' }}
-        run: python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" evaluator
 
       - name: Run the cycle
         env:

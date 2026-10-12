@@ -2158,12 +2158,12 @@ StegVerse-Labs decided the request FAIL_CLOSED
 `GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE`, and StegVerse-org returned and closed
 it (closure receipt `sha256:ccefb8f8…`, ledger tip `3e16f5a8`). The owner has
 decided both predicates that blocked END_TO_END (relayed on
-StegVerse-org/StegVerse-SDK#465): StegCore is read only through TV/TVC
-(`tvc.private-source-read.v1`; the request for the pinned commit is staged in
-StegVerse-Labs/TVC#506, and no repository secret is used), and the Labs
-organization ledger is published on `refs/stegverse/organization-ledger` in this
-repository, in StegVerse-org's location structure. What remains is runtime
-evidence: the TV/TVC materialization of StegCore, an actual decision of `-004`
+StegVerse-org/StegVerse-SDK#465): StegCore is public, so every decision run
+fetches the pinned commit anonymously and installs it from that checkout (no
+repository secret, no token; this supersedes the TV/TVC private-source-read
+route staged in StegVerse-Labs/TVC#506), and the Labs organization ledger is
+published on `refs/stegverse/organization-ledger` in this repository, in
+StegVerse-org's location structure. What remains is runtime evidence: an actual decision of `-004`
 (`GOVERNANCE_DECISION_IS_A_DECISION`) and its receipt read back from the
 published ledger (`DECIDING_ORGANIZATION_RECEIPT_READ_BACK`). END_TO_END is not claimed, and Master Records
 never gates. See
