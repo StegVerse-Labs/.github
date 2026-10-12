@@ -140,3 +140,15 @@ def test_broker_rejects_credential_export(monkeypatch):
         assert "exported credential material" in str(exc)
     else:
         raise AssertionError("credential export must fail closed")
+
+
+def test_live_inbox_multi_page_refuses_archive_until_complete(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[{"id": "m1", "from": "notifications@github.com", "subject": "CI failed"}], next_page_token="page-2"),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"], next_page_token="page-2"),
+    ])
+    receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    assert receipt["state"] == "PAGINATION_INCOMPLETE_FAIL_CLOSED"
+    assert receipt["failed_predicate"] == "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED"
+    assert receipt["archived_count"] == 0
+    assert [operation for operation, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
