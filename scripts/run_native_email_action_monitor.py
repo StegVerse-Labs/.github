@@ -220,6 +220,18 @@ def archived_replay_page(broker: Broker, checkpoint_path: Path) -> dict[str, Any
     require(next_token is None or isinstance(next_token, str), "archived replay next_page_token invalid")
     incidents = cluster_incidents(messages)
 
+    if not messages and next_token:
+        # A provider may return an empty page with a continuation cursor.
+        # Never declare replay complete while the cursor remains live.
+        checkpoint["current_page_token"] = next_token
+        checkpoint["next_page_token"] = None
+        checkpoint["page_index"] = int(checkpoint.get("page_index") or 0) + 1
+        checkpoint["state"] = "PENDING"
+        write_json(checkpoint_path, checkpoint)
+        return {"state": "PENDING", "complete": False, "incidents": [],
+                "checkpoint_ref": str(checkpoint_path), "next_page_token_present": True,
+                "mailbox_mutation_performed": False, "archive_operation_performed": False}
+
     if not messages:
         checkpoint["state"] = "COMPLETE"
         checkpoint["complete"] = True
