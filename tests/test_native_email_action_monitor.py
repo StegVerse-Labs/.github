@@ -37,6 +37,13 @@ def write_continuation(tmp_path, proposed):
     return path
 
 
+def test_operational_queries_never_select_archived_messages():
+    assert "in:inbox" in M.INBOX_QUERY.split()
+    assert "in:inbox" in M.ACTIONABLE_QUERY.split()
+    assert "in:inbox" not in M.ARCHIVED_REPLAY_QUERY.split()
+    assert "-in:inbox" in M.ARCHIVED_REPLAY_QUERY.split()
+
+
 def test_incomplete_first_page_never_archives_even_authorized_ids(tmp_path):
     messages = [{
         "id": "m1", "from": "notifications@github.com", "subject": "CI failed",
