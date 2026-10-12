@@ -28,11 +28,11 @@ if str(SCRIPT_DIR) not in sys.path:
 from normalize_github_failure_email_events import incident_id, signature  # noqa: E402
 
 INBOX_QUERY = (
-    '-in:spam -in:trash (from:notifications@github.com OR from:noreply@github.com '
+    'in:inbox -in:spam -in:trash (from:notifications@github.com OR from:noreply@github.com '
     'OR subject:"[Task Update]")'
 )
 ACTIONABLE_QUERY = (
-    '-in:spam -in:trash (subject:"[Task Update]" OR from:notifications@github.com OR from:noreply@github.com) '
+    'in:inbox -in:spam -in:trash (subject:"[Task Update]" OR from:notifications@github.com OR from:noreply@github.com) '
     '(failed OR failure OR "requires handoff" OR "requires reconciliation" OR '
     '"not evidence promotable" OR "needs attention" OR blocker OR blocked)'
 )
