@@ -166,9 +166,9 @@ def test_archived_replay_empty_page_with_cursor_remains_pending(tmp_path):
 
 def test_archived_replay_nonadvancing_empty_cursor_fails_closed(tmp_path):
     checkpoint = tmp_path / "replay.json"
-    checkpoint.write_text(json.dumps({"schema": M.REPLAY_CHECKPOINT_SCHEMA,
-                                      "current_page_token": "same-page",
-                                      "complete": False}), encoding="utf-8")
+    state = M.replay_checkpoint(checkpoint)
+    state["current_page_token"] = "same-page"
+    M.write_json(checkpoint, state)
     broker = FakeBroker([
         response("SEARCH_MESSAGES", provider="GMAIL", messages=[], next_page_token="same-page"),
     ])
