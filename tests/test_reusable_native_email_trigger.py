@@ -23,6 +23,19 @@ spec.loader.exec_module(subject)
 
 
 class ReusableNativeEmailTriggerTests(unittest.TestCase):
+    def test_hour_slot_requires_verified_kv_persistence(self) -> None:
+        wrapper = ROOT / "scripts" / "consume_native_email_action_monitor_request_kv.py"
+        spec = importlib.util.spec_from_file_location("native_email_kv_wrapper", wrapper)
+        assert spec and spec.loader
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        base = {"runtime_execution_attempted": True, "state": "ATTEMPT_RECORDED"}
+        self.assertFalse(module.reusable_slot_satisfied(base))
+        self.assertFalse(module.reusable_slot_satisfied({**base, "kv_persistence_satisfied": False}))
+        self.assertTrue(module.reusable_slot_satisfied({**base, "kv_persistence_satisfied": True}))
+        self.assertFalse(module.reusable_slot_satisfied({**base, "kv_persistence_satisfied": True, "pending_reason": "KV_PERSISTENCE_PROOF_REQUIRED"}))
+
+
     def test_native_email_runner_receives_source_and_runtime_roots_through_kv_wrapper(self) -> None:
         declared_runner = ROOT / "scripts" / "consume_native_email_action_monitor_request.py"
         command = subject.build_runner_command(
