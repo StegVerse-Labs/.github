@@ -1,0 +1,256 @@
+{
+  "authority_effect": "NONE",
+  "evidence": {
+    "decision": {
+      "authority_effect": "NONE_DECISION_ONLY",
+      "deciding_organization": "StegVerse-Labs",
+      "decision_authority": "stegcore.steggate.evaluate_admissibility",
+      "decision_authority_repository": "StegVerse-Labs/StegCore",
+      "disposition": "DENY",
+      "evaluation": {
+        "artifact_type": "stegcore.steggate_admissibility_evaluation",
+        "candidate_hash": "dd699620fce12f6a1dad0b10b556e9222137ef216458b91f83973f3106fb7367",
+        "canonical_three_layer_decision": "DENY",
+        "canonical_three_layer_reason": "signal.inputs_incomplete",
+        "canonical_three_layer_receipt_hash": "a484b5e4cf9b0d13775e233b1584d51d5253e73ae34b03f595441adb81daf456",
+        "canonical_three_layer_request_hash": "8de243861cf00439620988ea62e2e2a1cc81528de9f77d1771466a6776b73273",
+        "continuity_receipt_minted": false,
+        "decision_state_hash": "11588bb639e46becf6e1e42fc3c9f41145d400c8f73e2e23c56dcea544478122",
+        "disposition": "DENY",
+        "evaluated_at": "2026-10-12T02:31:49.528830+00:00",
+        "external_execution_performed": false,
+        "matrix": [
+          {
+            "authority_surface": "three_layer",
+            "observed": true,
+            "predicate": "judgment.refusal_available",
+            "reason": "predicate_satisfied",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "available",
+            "predicate": "judgment.operator_recoverability",
+            "reason": "operator_recoverability_current",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "supported",
+            "predicate": "judgment.workload_state",
+            "reason": "workload_supported",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "normal",
+            "predicate": "judgment.time_pressure",
+            "reason": "time_pressure_supported",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": 1,
+            "predicate": "signal.admitted_signal_refs",
+            "reason": "signals_admitted",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": [
+              "authenticated_current_grant"
+            ],
+            "predicate": "signal.missing_inputs",
+            "reason": "material_inputs_missing",
+            "state": "FAIL"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "bounded",
+            "predicate": "signal.uncertainty_state",
+            "reason": "uncertainty_bounded",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": true,
+            "predicate": "signal.reconstruction_available",
+            "reason": "predicate_satisfied",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": true,
+            "predicate": "signal.transformation_provenance_complete",
+            "reason": "predicate_satisfied",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "23e0280b65956afb30463f55f69a27d4b47f57f3a64a010d8e5ae415960a5efe",
+            "predicate": "signal.reference_state_hash_present",
+            "reason": "reference_state_present",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "23e0280b65956afb30463f55f69a27d4b47f57f3a64a010d8e5ae415960a5efe",
+            "predicate": "signal.expected_reference_state_hash_present",
+            "reason": "expected_reference_state_present",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": {
+              "current": "23e0280b65956afb30463f55f69a27d4b47f57f3a64a010d8e5ae415960a5efe",
+              "expected": "23e0280b65956afb30463f55f69a27d4b47f57f3a64a010d8e5ae415960a5efe"
+            },
+            "predicate": "signal.reference_state_match",
+            "reason": "reference_state_matches",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": false,
+            "predicate": "execution.actor_authority_current",
+            "reason": "actor_authority_stale",
+            "state": "FAIL"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": true,
+            "predicate": "execution.policy_current",
+            "reason": "predicate_satisfied",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": false,
+            "predicate": "execution.delegation_current",
+            "reason": "delegation_stale",
+            "state": "FAIL"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": true,
+            "predicate": "execution.evidence_current",
+            "reason": "predicate_satisfied",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": true,
+            "predicate": "execution.affected_entity_conditions_represented",
+            "reason": "predicate_satisfied",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "recoverable",
+            "predicate": "execution.recoverability_profile",
+            "reason": "recoverability_declared",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": true,
+            "predicate": "execution.validity_window_open",
+            "reason": "predicate_satisfied",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "StegVerse-Labs/.github@62b9f0600492b5b2d96f24b72f948f1287bd3748:data/canonical-task-registry.json#generation-309",
+            "predicate": "execution.policy_ref_present",
+            "reason": "policy_ref_present",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "three_layer",
+            "observed": "none:no-runtime-authenticated-delegation",
+            "predicate": "execution.delegation_ref_present",
+            "reason": "delegation_ref_present",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "runtime_adapter",
+            "observed": true,
+            "predicate": "capability.allowed",
+            "reason": "predicate_satisfied",
+            "state": "PASS"
+          },
+          {
+            "authority_surface": "runtime",
+            "observed": null,
+            "predicate": "continuity.previous_receipt_verified",
+            "reason": "required_evidence_unavailable",
+            "state": "UNKNOWN"
+          },
+          {
+            "authority_surface": "runtime_adapter",
+            "observed": null,
+            "predicate": "continuity.previous_receipt_hash_present",
+            "reason": "continuity_pointer_missing",
+            "state": "UNKNOWN"
+          },
+          {
+            "authority_surface": "steggate_review",
+            "observed": null,
+            "predicate": "approval.valid",
+            "reason": "required_human_approval_missing",
+            "state": "REVIEW"
+          },
+          {
+            "authority_surface": "steggate_review",
+            "observed": null,
+            "predicate": "approval.candidate_hash_binding",
+            "reason": "approval_candidate_hash_missing",
+            "state": "REVIEW"
+          },
+          {
+            "authority_surface": "permission_admissibility_contract",
+            "observed": false,
+            "predicate": "permission.present",
+            "reason": "permission_recorded_independently_of_admissibility",
+            "state": "PASS"
+          }
+        ],
+        "permission_is_not_admissibility": true,
+        "permission_present": false,
+        "reasons": [
+          "signal.inputs_incomplete"
+        ],
+        "schema_version": "2.0"
+      },
+      "external_side_effect": false,
+      "governance_request_sha256": "2162124c9deec108c5a21337442ef9693be93918c0dcabbb818a4dbb9d73d3d2",
+      "origin_organization": "StegVerse-org",
+      "reason": "signal.inputs_incomplete",
+      "request_packet_id": "pkt-c64077b3c2b188aabf176050",
+      "schema": "stegverse.org-governance-decision/v1",
+      "sdk_request_sha256": "99b7ca201afd7888d2cac511308e4b730969bfb6f6bcfcc739eccdba263f9a0b",
+      "service_id": "stegverse-labs.governance"
+    },
+    "origin_organization": "StegVerse-org",
+    "request_packet_id": "pkt-c64077b3c2b188aabf176050"
+  },
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": true,
+    "epoch": 426070989,
+    "frequency_hz": 100,
+    "generation": 426070989,
+    "heartbeat_id": "HB:426070989",
+    "phase_offset_ns": 4222080,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "sampled_unix_ns": 1791772309574222080
+  },
+  "predecessor_state_sha256": "sha256:2162124c9deec108c5a21337442ef9693be93918c0dcabbb818a4dbb9d73d3d2",
+  "previous_receipt_sha256": "sha256:a543a3cc4f1cac0a14fe18d9d8fa9f9db202bbdf692c2e4e5afaae010aebe843",
+  "receipt_sha256": "sha256:9dfe1b0aa2c579dbdaf898c4fcaf2022a3d77139a73da1d47575f9442b8bfe41",
+  "repository": "StegVerse-Labs/.github",
+  "schema": "stegverse.repo-transition-receipt/v1",
+  "successor_state_sha256": "sha256:fd53f285195159a5a466470454d2307d7051bfb5a92464a3884d597feab56f8c",
+  "transition_class": "ORGANIZATION_GOVERNANCE_DECISION",
+  "transition_id": "ORGANIZATION_GOVERNANCE_DECISION:0a3e1848d98d7ce2823c1112"
+}
