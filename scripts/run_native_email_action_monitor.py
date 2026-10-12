@@ -236,8 +236,10 @@ def archived_replay_page(broker: Broker, checkpoint_path: Path) -> dict[str, Any
     require(next_token is None or isinstance(next_token, str), "archived replay next_page_token invalid")
     incidents = cluster_incidents(messages)
 
-    if not messages and next_token:
+    if next_token:
         require(next_token != token, "ARCHIVED_REPLAY_CURSOR_NOT_ADVANCING")
+
+    if not messages and next_token:
         # A provider may return an empty page with a continuation cursor.
         # Never declare replay complete while the cursor remains live.
         checkpoint["current_page_token"] = next_token
