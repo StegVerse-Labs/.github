@@ -21,6 +21,7 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -127,6 +128,29 @@ def _reject_secrets(value: Any, path: str = "") -> None:
         raise ExplanationError("secret_material_present:" + (path or "<root>"))
 
 
+# Characters that make text display as something other than what it is: format characters (bidi
+# overrides and isolates, zero-width), lone surrogates, line/paragraph separators and control characters
+# other than tab, newline and carriage return. The prose and the portable JSON are read by people and
+# pasted into third-party LLMs, so such text is refused rather than passed through.
+_HIDDEN_CATEGORIES = {"Cf", "Cs", "Zl", "Zp"}
+_ALLOWED_CONTROLS = {"\t", "\n", "\r"}
+
+
+def _reject_hidden_text(value: Any, path: str = "") -> None:
+    if isinstance(value, dict):
+        for key, inner in value.items():
+            _reject_hidden_text(str(key), (path + "." if path else "") + "<key>")
+            _reject_hidden_text(inner, (path + "." if path else "") + str(key))
+    elif isinstance(value, list):
+        for index, inner in enumerate(value):
+            _reject_hidden_text(inner, path + "[" + str(index) + "]")
+    elif isinstance(value, str):
+        for ch in value:
+            category = unicodedata.category(ch)
+            if category in _HIDDEN_CATEGORIES or (category == "Cc" and ch not in _ALLOWED_CONTROLS):
+                raise ExplanationError("text_not_displayable:" + (path or "<root>"))
+
+
 def _require(condition: bool, code: str) -> None:
     if not condition:
         raise ExplanationError(code)
@@ -228,6 +252,8 @@ def build_explanation(record: dict[str, Any], *, surface: dict[str, Any], termin
     _require(isinstance(surface, dict), "surface_invalid")
     _reject_secrets(record)
     _reject_secrets(surface)
+    _reject_hidden_text(record)
+    _reject_hidden_text(surface)
     disposition = record.get("disposition")
     _require(disposition in DISPOSITIONS, "disposition_invalid")
     predicate = _predicate(record.get("predicate"), "predicate_invalid")
@@ -367,6 +393,7 @@ def validate_explanation(artifact: dict[str, Any], schema_path: Path = SCHEMA_PA
     schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
     schema_check(artifact, schema)
     _reject_secrets(artifact)
+    _reject_hidden_text(artifact)
     # Invariants the schema cannot express structurally.
     _require(artifact["outcome"]["predicate"] in artifact["outcome"]["predicates"], "predicate_not_in_predicates")
     _require(artifact["remediation_draft"] is None or artifact["remediation_draft"]["draft"].get("submitted") is False, "remediation_draft_submitted")

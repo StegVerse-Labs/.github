@@ -125,6 +125,28 @@ class Refusals(unittest.TestCase):
         self.refuse(dict(base, evidence=[{"kind": "RECEIPT_REF", "ref": None, "description": "d"}]), "evidence_ref_required_for_kind")
         self.refuse(base, "secret_material_present", surface={"repository": "r", "surface_id": "s", "session_cookie": "x"})
 
+    def test_text_that_displays_as_something_else_is_refused(self):
+        # Right-to-left override, isolate, zero-width, NUL, line separator and a lone surrogate, in each
+        # free-text place a producer controls; the builder and the validator both refuse them.
+        base = fixture("03-fail-closed")["outcome"]
+        hidden = ["\u202e", "\u2066", "\u200b", "\u0000", "\u2028", "\ud800"]
+        for ch in hidden:
+            self.refuse(dict(base, requested_action="Act" + ch + "ion"), "text_not_displayable:requested_action")
+            self.refuse(dict(base, why="ok " + ch + "hidden"), "text_not_displayable:why")
+            self.refuse(dict(base, evidence=[{"kind": "SOURCE_REF", "ref": "kv:" + ch + "x", "description": "d"}]), "text_not_displayable:evidence[0].ref")
+            self.refuse(dict(base, evidence=[{"kind": "SOURCE_REF", "ref": "kv:x", "description": "d" + ch}]), "text_not_displayable:evidence[0].description")
+            self.refuse(base, "text_not_displayable:surface_id", surface={"repository": "r", "surface_id": "s" + ch})
+            artifact = build("01-success-verified")
+            artifact["evidence"][0]["description"] = "Receipt" + ch
+            with self.assertRaises(U.ExplanationError) as ctx:
+                U.validate_explanation(artifact)
+            self.assertTrue(str(ctx.exception).startswith("text_not_displayable:evidence[0].description"), str(ctx.exception))
+
+    def test_layout_whitespace_and_non_latin_text_are_not_refused(self):
+        base = fixture("03-fail-closed")["outcome"]
+        for text in ("line one\nline two", "tab\tseparated", "crlf\r\nend", "Grüße — café", "日本語の説明", "عربي"):
+            U.validate_explanation(U.build_explanation(dict(base, why=text), surface={"repository": "r", "surface_id": "s"}))
+
     def test_ordinary_words_near_secret_prefixes_are_not_refused(self):
         a = build("01-success-verified")
         for text in ("No Bearer credentials are shown here.", "task-runner ask-flow risk-score",
