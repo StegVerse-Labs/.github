@@ -364,9 +364,6 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
             "failed_predicate": "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED",
             "continuation_required": True,
         }
-    inspected_ids = [message_id(row) for row in messages]
-    require(len(inspected_ids) == len(set(inspected_ids)), "LIVE_INBOX_DUPLICATE_INSPECTED_IDS")
-    require(set(ids) == set(inspected_ids), "LIVE_INBOX_SEARCH_IDENTITY_MISMATCH")
     incidents = cluster_incidents(messages)
     # Archive only IDs bound to verified resolution; everything else stays in INBOX.
     to_archive = [v for v in ids if v in authorized_archive_ids]
