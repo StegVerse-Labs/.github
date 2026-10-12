@@ -339,8 +339,10 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
     # boundary, not an authorization to mutate unseen messages.
     messages_more = inspected.get("next_page_token")
     ids_more = exact.get("next_page_token")
-    require(messages_more is None or isinstance(messages_more, str), "live inbox message cursor invalid")
-    require(ids_more is None or isinstance(ids_more, str), "live inbox ID cursor invalid")
+    require(messages_more is None or (isinstance(messages_more, str) and bool(messages_more)),
+            "LIVE_INBOX_MESSAGE_CURSOR_INVALID")
+    require(ids_more is None or (isinstance(ids_more, str) and bool(ids_more)),
+            "LIVE_INBOX_ID_CURSOR_INVALID")
     if messages_more or ids_more:
         return {
             "state": "PAGINATION_INCOMPLETE_FAIL_CLOSED",
