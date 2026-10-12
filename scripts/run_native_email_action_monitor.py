@@ -373,6 +373,8 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
         failed = archive.get("failed_ids", [])
         require(isinstance(archived, list), "broker archived_ids invalid")
         require(isinstance(failed, list), "broker failed_ids invalid")
+        require(all(isinstance(v, str) and v for v in archived + failed), "archive result identity invalid")
+        require(len(archived) == len(set(archived)) and len(failed) == len(set(failed)), "archive result duplicate identity")
         require(set(archived).isdisjoint(set(failed)), "archive result overlap")
         require(set(archived) | set(failed) == set(to_archive), "archive result does not cover exact authorized batch")
     actionable = broker.call("SEARCH_IDS", query=ACTIONABLE_QUERY, label_ids=["INBOX"], max_results=BATCH_LIMIT)
