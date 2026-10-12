@@ -4,7 +4,7 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "CLAIMED",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT_TOOLING",
   "branch": "claude/3106-explanation-sanitizer-embedded-tokens",
   "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
@@ -20,5 +20,12 @@
     "SECRET_VALUE_RE only; existing refusals unchanged"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3152",
+  "merged_commit": "0dcd0f816aaba39aaab7797a3224a081fb4c4bb5",
+  "claim_released_at_basis": "merge of the implementation PR #3152 at its exact head 3626bec7",
+  "site_parity_pr": {
+    "pr": "StegVerse-Labs/Site#1544",
+    "merged_commit": "34e484ecfcea5be06d0e14cc7dc1b54a16566d07"
+  }
 }
