@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "explanation-adopter-counts-20261012",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "ACTIVE_IMPLEMENTATION",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT_DOCUMENTATION",
+  "branch": "claude/explanation-adopter-counts",
+  "session_worker_id": "claude:site-1509-workspace-20261010",
+  "originating_goal": "Universal explanation contract: refresh the adopting-surfaces predicate counts recounted from source (crypto-bot 24 after #32-#36; continuity-vault-kit binding 18). Documentation only; no authority, no runtime change.",
+  "claimed_paths": [
+    "docs/USER_FACING_EXPLANATION_CONTRACT_MIRROR_HANDOFF.md",
+    "data/session-work-claims.d/explanation-adopter-counts-20261012.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "Edit limited to the adopting-surfaces table",
+    "No change to the explanation schema or artifact shape"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}

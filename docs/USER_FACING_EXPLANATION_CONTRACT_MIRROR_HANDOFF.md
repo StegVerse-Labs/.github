@@ -77,14 +77,16 @@ Dimensions: HIL-1 human effectiveness; HIL-2 ecosystem interpretability across i
 
 ### Surfaces that have adopted the contract (2026-10-12)
 
+Counts are the predicates in each surface's exported reason catalog, recounted from source on 2026-10-12 (crypto-bot `2408e87`+ after #32-#36; continuity-vault-kit `6694e3a`).
+
 | Surface | Repository and module | Catalogued predicates |
 | --- | --- | --- |
 | WorkSpace page: intent drafts, KV ingress, capability statuses, device continuity DR1-DR5, integration conformance | StegVerse-Labs/Site `assets/workspace.js` and the WorkSpace contract modules | page 3, KV bridge 1, capabilities 28, node binding 12, device continuity 10, assistant continuity 15 |
-| WorkSpace session authentication and MyKV assistant binding (producer, mirrored in Site) | StegVerse-Labs/continuity-vault-kit `runtime/workspace_decision_reasons.py` | session 12, binding 17 |
-| CryptoBot WorkSpace portfolio projection refusals | StegVerse-Labs/crypto-bot `scripts/project_portfolio_snapshot_for_workspace.py` | 19 |
+| WorkSpace session authentication and MyKV assistant binding (producer, mirrored in Site) | StegVerse-Labs/continuity-vault-kit `runtime/workspace_decision_reasons.py` | session 12, binding 18 |
+| CryptoBot WorkSpace portfolio projection refusals | StegVerse-Labs/crypto-bot `scripts/project_portfolio_snapshot_for_workspace.py` | 24 |
 | StegSocials post preparation (`stegsocials-prepare.html`): draft refusal, ERL drafting, My KV save and exact readback, evidence export | StegVerse-Labs/Site `assets/stegsocials-decision-reasons.js` (Site#1546) | 6 |
 
-Not yet adopted: the MyKV app (lane owned elsewhere; no disposition record exposed on that surface) StegTalk (no governed-outcome surface identified in this lane's repositories) and the HIL participant submission path (Site `assets/hil-direct-upload-v1.js`, `api/hil/upload.js`; shows raw codes today; adoption needs an owner-admitted Site claim and a preregistration amendment, .github#3106 comment 6117639185).
+Not yet adopted: the MyKV app (lane owned elsewhere; no disposition record exposed on that surface), StegTalk (no governed-outcome surface identified in this lane's repositories) and the HIL participant submission path (Site `assets/hil-direct-upload-v1.js`, `api/hil/upload.js`; shows raw codes today; adoption needs an owner-admitted Site claim and a preregistration amendment, .github#3106 comment 6117639185).
 
 ## Owner work not executable from this lane
 
