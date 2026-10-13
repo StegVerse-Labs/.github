@@ -10,7 +10,7 @@ M=importlib.util.module_from_spec(S); assert S.loader; S.loader.exec_module(M)
 
 def make_roots(base:Path):
     specs={
-      "llm":("llm","scripts/stegdeploy_bootstrap.py"),
+      "llm":("llm","scripts/stegdeploy_native_gateway.py"),
       "stegos":("StegOS","stegos/intr_backbone.py"),
       "kv":("continuity-vault-kit","runtime/kv_interlock_endpoint.py"),
       "healer":("StegVerse-Healer","app/dispatch_orchestrators.py"),

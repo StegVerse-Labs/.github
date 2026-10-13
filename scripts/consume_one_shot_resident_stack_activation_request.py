@@ -43,7 +43,7 @@ REPO_KEYS={
   "stegindex":"StegVerse-Labs/StegIndex",
 }
 REQUIRED_FILES={
-  "llm":"scripts/stegdeploy_bootstrap.py",
+  "llm":"scripts/stegdeploy_native_gateway.py",
   "stegos":"stegos/intr_backbone.py",
   "kv":"runtime/kv_interlock_endpoint.py",
   "healer":"app/dispatch_orchestrators.py",

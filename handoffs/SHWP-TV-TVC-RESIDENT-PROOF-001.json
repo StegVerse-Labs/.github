@@ -60,7 +60,7 @@
       "scripts/refresh_sovereign_worker_runtime_source.py",
       "scripts/install_sovereign_worker_source_refresh_service.py",
       "scripts/package_sovereign_control_plane_bundle.py",
-      "StegVerse-org/LLM-adapter:scripts/stegdeploy_bootstrap.py"
+      "StegVerse-org/LLM-adapter:scripts/stegdeploy_native_gateway.py"
     ],
     "dependencies": [],
     "source_state_vector_ref": "StegVerse-Labs/TVC/tasks/TVC-TV-CREDENTIAL-MIGRATION-089.json#machine_readable_state.cosv",
