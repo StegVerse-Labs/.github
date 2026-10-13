@@ -492,3 +492,53 @@ def test_report_refuses_a_decision_whose_receipt_is_not_on_the_published_ledger(
         assert status == 1
         assert report["fail_closed"]["failure_code"] == "ORGANIZATION_LEDGER_READBACK_NOT_VERIFIED"
         assert REQUEST_PACKET_ID in report["fail_closed"]["failed_predicate"]
+
+
+# Every ACTION is by manifest: a committed decision request supplies the emitting
+# organization's mesh, and the push that lands it starts the run; no dispatch is
+# required and none is awaited.
+def _decision_request(tmp_path, monkeypatch, **overrides):
+    document = {"schema": binding.DECISION_REQUEST_SCHEMA, "owning_existing_goal": "SDK-MR-A-VALIDATION-CUSTODY-001",
+                "mesh_root": "git+https://github.com/StegVerse-org/.github#refs/stegverse/federation-mesh"}
+    document.update(overrides)
+    relative = binding.DECISION_REQUEST_DIR + "R1.json"
+    (tmp_path / binding.DECISION_REQUEST_DIR).mkdir(parents=True, exist_ok=True)
+    (tmp_path / relative).write_text(json.dumps(document), encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    return relative
+
+
+def test_a_committed_decision_request_supplies_the_mesh_without_a_dispatch(tmp_path, monkeypatch):
+    result = binding.resolve_mesh_root("", [_decision_request(tmp_path, monkeypatch)])
+    assert result["disposition"] == "ALLOW"
+    assert result["mesh_root"] == "git+https://github.com/StegVerse-org/.github#refs/stegverse/federation-mesh"
+    assert result["source"].startswith("COMMITTED_DECISION_REQUEST:")
+
+
+def test_a_dispatched_mesh_is_used_unchanged():
+    result = binding.resolve_mesh_root("git+https://github.com/StegVerse-org/.github#refs/x", [])
+    assert (result["disposition"], result["source"]) == ("ALLOW", "WORKFLOW_DISPATCH")
+
+
+@pytest.mark.parametrize("overrides", [{"schema": "other"}, {"mesh_root": ""}, {"mesh_root": "git+x#refs/a\nX=1"},
+                                       {"owning_existing_goal": ""}])
+def test_an_invalid_decision_request_fails_closed_with_six_fields(tmp_path, monkeypatch, overrides):
+    result = binding.resolve_mesh_root("", [_decision_request(tmp_path, monkeypatch, **overrides)])
+    assert result["disposition"] == "FAIL_CLOSED"
+    for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                  "owning_existing_goal", "next_attempt"):
+        assert result[field]
+
+
+def test_a_run_resolves_exactly_one_committed_decision_request():
+    assert binding.resolve_mesh_root("", [])["failure_code"] == "DECISION_REQUEST_NOT_SINGULAR"
+    two = [binding.DECISION_REQUEST_DIR + "a.json", binding.DECISION_REQUEST_DIR + "b.json"]
+    assert binding.resolve_mesh_root("", two)["failure_code"] == "DECISION_REQUEST_NOT_SINGULAR"
+
+
+def test_the_workflow_starts_on_a_committed_decision_request_and_resolves_before_binding():
+    text = (ROOT / ".github/workflows/organization-governance-decision.yml").read_text(encoding="utf-8")
+    trigger = text.split("on:", 1)[1].split("concurrency:", 1)[0]
+    assert ".stegverse/governance-decision-requests/**" in trigger
+    assert "      MESH_ROOT: ${{ inputs.mesh_root }}" not in text  # no job-level dispatch-only binding
+    assert text.index("--resolve-changed") < text.index("- name: Bind the source")

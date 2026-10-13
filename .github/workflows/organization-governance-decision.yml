@@ -3,8 +3,12 @@ name: Organization governance decision
 # Decide the governance requests an emitting organization queued on its own
 # federation mesh, and publish this organization's answers on its own
 # refs/stegverse/federation-mesh. The emitting organization's mesh locator is
-# supplied by the materializer as git+https://github.com/<org>/<repo>#refs/<name>;
-# nothing about the source is inferred. The source is read anonymously. The only
+# supplied as git+https://github.com/<org>/<repo>#refs/<name>; nothing about the
+# source is inferred. Action is by manifest: a decision request committed under
+# .stegverse/governance-decision-requests/ (schema
+# stegverse.organization-governance-decision-request/v1) declares mesh_root, and
+# the push that lands it starts this run. A dispatch is still accepted, not
+# required (resident-runtime/mesh_source_binding.py resolve_mesh_root). The source is read anonymously. The only
 # ref this workflow writes is this repository's own refs/stegverse/federation-mesh,
 # fast-forward only.
 #
@@ -26,6 +30,10 @@ name: Organization governance decision
 # run that cannot fetch or install it fails before the cycle, so no request is
 # ever answered without StegCore.
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.stegverse/governance-decision-requests/**'
   workflow_dispatch:
     inputs:
       mesh_root:
@@ -44,7 +52,6 @@ jobs:
   decide:
     runs-on: ubuntu-latest
     env:
-      MESH_ROOT: ${{ inputs.mesh_root }}
       OWN_URL: https://github.com/${{ github.repository }}
       GIT_AUTHOR_NAME: StegVerse
       GIT_AUTHOR_EMAIL: 210078727+StegVerse@users.noreply.github.com
@@ -52,6 +59,8 @@ jobs:
       GIT_COMMITTER_EMAIL: 210078727+StegVerse@users.noreply.github.com
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -60,6 +69,23 @@ jobs:
       # directory is exported once here for every later step.
       - name: Locate the evidence directory
         run: echo "EVIDENCE=$RUNNER_TEMP/evidence" >> "$GITHUB_ENV"
+
+      - name: Resolve the emitting organization's mesh from the committed decision request or the dispatch
+        env:
+          DISPATCH_MESH_ROOT: ${{ inputs.mesh_root }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          : > "$RUNNER_TEMP/changed.txt"
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            git diff --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- '.stegverse/governance-decision-requests/*.json' > "$RUNNER_TEMP/changed.txt"
+          fi
+          if ! resolved=$(python resident-runtime/mesh_source_binding.py --mesh-root "$DISPATCH_MESH_ROOT" \
+              --resolve-changed "$RUNNER_TEMP/changed.txt"); then
+            echo "$resolved"; exit 1
+          fi
+          echo "$resolved"
+          python -c 'import json,sys; print("MESH_ROOT=" + json.loads(sys.argv[1])["mesh_root"])' "$resolved" >> "$GITHUB_ENV"
 
       - name: Bind the source
         run: python resident-runtime/mesh_source_binding.py --mesh-root "$MESH_ROOT" --out "$EVIDENCE/binding.json"

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Bind an emitting organization's mesh locator to a fetchable, anonymous source.
 
-The materializer supplies the locator; nothing about the source is inferred.
-The only accepted form is
+The locator is supplied, never inferred. Action is by manifest: a decision
+request committed under `.stegverse/governance-decision-requests/` declares it,
+and the push that lands that request starts the run (`resolve_mesh_root`). A
+dispatched locator is still accepted unchanged. The only accepted form is
 
     git+https://github.com/<owner>/<repo>#refs/<name>
 
@@ -148,12 +150,59 @@ def bind(locator: str, *, probe: bool = True,
     return binding
 
 
+DECISION_REQUEST_DIR = ".stegverse/governance-decision-requests/"
+DECISION_REQUEST_SCHEMA = "stegverse.organization-governance-decision-request/v1"
+
+
+def resolve_mesh_root(dispatch_mesh_root: str, changed_paths: list[str]) -> dict[str, Any]:
+    """The emitting organization's locator for one run: dispatched, or declared by one committed request.
+
+    Only resolution: the locator still goes through `bind`. A refusal is six-field.
+    """
+    entrypoint = RETRY_ENTRYPOINT + " (push: " + DECISION_REQUEST_DIR + "*.json)"
+    if dispatch_mesh_root:
+        locator, source = dispatch_mesh_root, "WORKFLOW_DISPATCH"
+    else:
+        requests = [p for p in changed_paths if p.startswith(DECISION_REQUEST_DIR) and p.endswith(".json")]
+        if len(requests) != 1:
+            return {**fail_closed("DECISION_REQUEST_NOT_SINGULAR", "ONE_COMMITTED_DECISION_REQUEST_PER_RUN",
+                                  "commit exactly one governance decision request per push",
+                                  retry_entrypoint=entrypoint, next_attempt="commit each decision request on its own"),
+                    "requests": requests}
+        try:
+            request = json.loads(Path(requests[0]).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            request = None
+        if (not isinstance(request, dict) or request.get("schema") != DECISION_REQUEST_SCHEMA
+                or not request.get("owning_existing_goal")):
+            return fail_closed("DECISION_REQUEST_SCHEMA_INVALID", "COMMITTED_DECISION_REQUEST_SCHEMA",
+                               "declare schema " + DECISION_REQUEST_SCHEMA + ", owning_existing_goal and mesh_root",
+                               retry_entrypoint=entrypoint, next_attempt="commit a corrected successor request")
+        locator, source = request.get("mesh_root"), "COMMITTED_DECISION_REQUEST:" + requests[0]
+    # The value is written to GITHUB_ENV; one printable line only.
+    if not isinstance(locator, str) or not locator or not all(32 <= ord(c) <= 126 for c in locator):
+        return fail_closed("DECISION_MESH_ROOT_INVALID", "DECLARED_MESH_ROOT_IS_A_PRINTABLE_LOCATOR",
+                           "declare mesh_root as " + LOCATOR_FORM, retry_entrypoint=entrypoint,
+                           next_attempt="commit a corrected successor request")
+    return {"disposition": "ALLOW", "mesh_root": locator, "source": source,
+            "authority_effect": "NONE_INPUT_RESOLUTION_ONLY"}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--mesh-root", required=True)
+    parser.add_argument("--mesh-root", default="")
+    parser.add_argument("--resolve-changed", type=Path,
+                        help="resolve the locator from the committed decision request this push changed")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--no-probe", action="store_true")
     args = parser.parse_args(argv)
+    if args.resolve_changed is not None:
+        changed = [line for line in args.resolve_changed.read_text(encoding="utf-8").splitlines() if line]
+        document = resolve_mesh_root(args.mesh_root, changed)
+        sys.stdout.write(json.dumps(document, sort_keys=True) + "\n")
+        return 0 if document["disposition"] == "ALLOW" else 1
+    if not args.mesh_root:
+        parser.error("--mesh-root is required")
     try:
         document = bind(args.mesh_root, probe=not args.no_probe)
         status = 0
