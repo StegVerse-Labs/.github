@@ -190,7 +190,7 @@ def _actionable(record: dict[str, Any], predicates: list[str]) -> dict[str, str]
         _require(isinstance(value, str) and value.strip() != "", "non_allow_requires_" + key)
         out[key] = value
     _require(PREDICATE_RE.match(out["failure_code"]) is not None, "failure_code_invalid")
-    _require(out["failed_predicate"] in predicates, "failed_predicate_not_in_predicates")
+    _require(PREDICATE_RE.match(out["failed_predicate"]) is not None, "failed_predicate_invalid")
     return out
 
 
@@ -288,6 +288,9 @@ def build_explanation(record: dict[str, Any], *, surface: dict[str, Any], termin
         _require(observation == "OBSERVED", "allow_requires_receipt")
         _require(any(e["kind"] in ("RECEIPT_REF", "PROVENANCE_REF", "DIGEST") for e in evidence), "allow_requires_receipt")
     actionable = None if disposition == "ALLOW" else _actionable(record, predicates)
+    if actionable and actionable["failed_predicate"] not in predicates:
+        # The failed condition may be named separately from the outcome predicate; it is listed with the predicates.
+        predicates = predicates + [actionable["failed_predicate"]]
     outcome_class = OUTCOME_CLASSES[(disposition, observation if disposition == "ALLOW" else None)]
     authorized = disposition == "ALLOW"
     executed = disposition == "ALLOW" and observation == "OBSERVED"

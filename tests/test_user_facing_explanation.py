@@ -142,7 +142,11 @@ class Refusals(unittest.TestCase):
         for key in U.ACTIONABLE_FIELDS:
             self.refuse({k: v for k, v in base.items() if k != key}, "non_allow_requires_" + key)
             self.refuse(dict(base, **{key: "  "}), "non_allow_requires_" + key)
-        self.refuse(dict(base, failed_predicate="NOT_THIS_OUTCOMES_PREDICATE"), "failed_predicate_not_in_predicates")
+        self.refuse(dict(base, failed_predicate="not a predicate"), "failed_predicate_invalid")
+        # A failed condition named apart from the outcome predicate is listed with the predicates.
+        named = U.validate_explanation(U.build_explanation(dict(base, failed_predicate="PREREQUISITE_ESTABLISHED"), surface=fixture("03-fail-closed")["surface"]))
+        self.assertIn("PREREQUISITE_ESTABLISHED", named["outcome"]["predicates"])
+        self.assertEqual(named["outcome"]["actionable_disposition"]["failed_predicate"], "PREREQUISITE_ESTABLISHED")
 
     def test_text_that_displays_as_something_else_is_refused(self):
         # Right-to-left override, isolate, zero-width, NUL, line separator and a lone surrogate, in each
