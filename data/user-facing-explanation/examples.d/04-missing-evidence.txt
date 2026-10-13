@@ -5,7 +5,7 @@ What was authorized: The action 'Persist the CryptoBot portfolio projection into
 What was executed: Nothing is known to have been executed: no receipt from the performing component has been observed. Authorization is not execution.
 What evidence exists: Evidence is referenced by locator: The producer whose output would be persisted (StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py).
 What you can safely do next:
-  - Wait for the component that performs the action to produce its receipt; until then treat the action as not yet done.
+  - Treat the action as not yet done until the receipt of the component that performs it exists; nothing waits on that receipt.
   - Do not repeat the request to force a result; a duplicate request is a separate governed decision.
 Limitations:
   - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
