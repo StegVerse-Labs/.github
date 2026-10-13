@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "SDK-484-CANONICAL-OWNER-ALLOCATION-REQUEST-20261013",
+  "state": "REQUESTED_NOT_ALLOCATED",
+  "issue": "StegVerse-org/StegVerse-SDK#484",
+  "proposed_task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "cosv_task_vector": null,
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 313,
+  "observed_registry_tasks": 115,
+  "owning_task_found": false,
+  "non_owner_collision": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001 / COSV 71000000100126 has different manifest route scope; not reusable",
+  "scope": "SDK-native structural JSON Schema validator consolidation; StegDB discovery; source migration compatibility; authenticated TV/TVC provenance and governed migrations",
+  "requested_action": "Canonical Task Registry owner/authorized allocator reconciles proposed ID and assigns task.v1 COSV, persists registry and task vector under expected-head protection, and supplies authenticated governance evidence",
+  "required_evidence": [
+    "canonical registry new goal entry",
+    "control/task-vectors/<allocated-id>.json",
+    "owner-authorized allocation evidence",
+    "exact-head checks",
+    "sovereign Organization ledger readback for governed transitions"
+  ],
+  "prohibited_shortcuts": [
+    "no reuse of existing unrelated COSV",
+    "no fabricated allocation",
+    "no runtime ALLOW from GitHub source or CI"
+  ],
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "disposition": "FAIL_CLOSED",
+  "failed_predicate": "CANONICAL_OWNER_GOAL_TASK_ID_AND_COSV_REGISTERED"
+}
