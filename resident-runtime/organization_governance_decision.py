@@ -748,6 +748,9 @@ def main(argv: list[str] | None = None) -> int:
     q.add_argument("--out", type=Path, required=True)
     a = sub.add_parser("authority-fetch")
     a.add_argument("--dest", type=Path, required=True)
+    # StegHealer's classifier for remediation lanes (stegverse-labs.remediation),
+    # fetched the same way: anonymously, at the commit its pin names.
+    sub.add_parser("classifier-fetch")
     e = sub.add_parser("evaluator")
     e.add_argument("--installed", action="store_true")
     e.add_argument("--source", type=Path)
@@ -762,6 +765,10 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "authority-fetch":
             document = authority_fetch(args.dest, decision_authority_pin())
             name = "authority_fetch.json"
+        elif args.command == "classifier-fetch":
+            pin = json.loads((ROOT / "org-runtime/remediation-classifier.json").read_text(encoding="utf-8"))
+            document = authority_fetch(ROOT / pin["materialized_path"], pin)
+            name = "classifier_fetch.json"
         elif args.command == "evaluator":
             document = evaluator_record(decision_authority_pin(), installed=args.installed, source=args.source)
             name = "evaluator.json"

@@ -28,3 +28,7 @@ _site/
 # The decision authority checkout of organization-governance-decision.yml,
 # fetched into the workspace at run time and never tracked.
 .decision-authority/
+
+# The remediation classifier (StegVerse-Healer) fetched anonymously at the commit
+# org-runtime/remediation-classifier.json pins; materialized per run, never tracked.
+.stegverse/remediation-classifier/

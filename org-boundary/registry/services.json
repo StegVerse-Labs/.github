@@ -57,6 +57,26 @@
       "decision_authority": "StegVerse-Labs/StegCore:stegcore.steggate.evaluate_admissibility"
     },
     {
+      "service_id": "stegverse-labs.remediation",
+      "repository": "StegVerse-Labs/.github",
+      "boundary_role": "INTERNAL_ENDPOINT",
+      "profile_status": "ACTIVE",
+      "accepts": [
+        "ecosystem.work.request"
+      ],
+      "runtime_required_for_consumption": true,
+      "endpoint_adapter": "resident-runtime/remediation_endpoint.py",
+      "endpoint_adapter_disposition": "ALLOW_DECLARED_ADAPTER",
+      "endpoint_adapter_effect": "PURE",
+      "admits_processing": [
+        {
+          "capability": "remediation",
+          "route_id": "stegverse.route.governed-remediation.v1"
+        }
+      ],
+      "classification_authority": "StegVerse-Labs/StegVerse-Healer:app/manifest_remediation_intake.py::classify_sdk_deny"
+    },
+    {
       "service_id": "stegverse-labs.organization-role-conformance",
       "repository": "StegVerse-Labs/.github",
       "boundary_role": "INTERNAL_ENDPOINT",
