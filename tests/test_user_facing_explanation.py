@@ -125,6 +125,36 @@ class Refusals(unittest.TestCase):
         self.refuse(dict(base, evidence=[{"kind": "RECEIPT_REF", "ref": None, "description": "d"}]), "evidence_ref_required_for_kind")
         self.refuse(base, "secret_material_present", surface={"repository": "r", "surface_id": "s", "session_cookie": "x"})
 
+    def test_text_that_displays_as_something_else_is_refused(self):
+        # Right-to-left override, isolate, zero-width, NUL, line separator and a lone surrogate, in each
+        # free-text place a producer controls; the builder and the validator both refuse them.
+        base = fixture("03-fail-closed")["outcome"]
+        hidden = ["\u202e", "\u2066", "\u200b", "\u0000", "\u2028", "\ud800"]
+        for ch in hidden:
+            self.refuse(dict(base, requested_action="Act" + ch + "ion"), "text_not_displayable:requested_action")
+            self.refuse(dict(base, why="ok " + ch + "hidden"), "text_not_displayable:why")
+            self.refuse(dict(base, evidence=[{"kind": "SOURCE_REF", "ref": "kv:" + ch + "x", "description": "d"}]), "text_not_displayable:evidence[0].ref")
+            self.refuse(dict(base, evidence=[{"kind": "SOURCE_REF", "ref": "kv:x", "description": "d" + ch}]), "text_not_displayable:evidence[0].description")
+            self.refuse(base, "text_not_displayable:surface_id", surface={"repository": "r", "surface_id": "s" + ch})
+            artifact = build("01-success-verified")
+            artifact["evidence"][0]["description"] = "Receipt" + ch
+            with self.assertRaises(U.ExplanationError) as ctx:
+                U.validate_explanation(artifact)
+            self.assertTrue(str(ctx.exception).startswith("text_not_displayable:evidence[0].description"), str(ctx.exception))
+
+    def test_layout_whitespace_and_non_latin_text_are_not_refused(self):
+        base = fixture("03-fail-closed")["outcome"]
+        for text in ("line one\nline two", "tab\tseparated", "crlf\r\nend", "Grüße — café", "日本語の説明", "عربي"):
+            U.validate_explanation(U.build_explanation(dict(base, why=text), surface={"repository": "r", "surface_id": "s"}))
+
+    def test_ordinary_words_near_secret_prefixes_are_not_refused(self):
+        a = build("01-success-verified")
+        for text in ("No Bearer credentials are shown here.", "task-runner ask-flow risk-score",
+                     "The ghost_ ledger and akia notes", "xox is not a token"):
+            b = json.loads(json.dumps(a))
+            b["evidence"][0]["description"] = text
+            U.validate_explanation(b)
+
     def test_validate_rejects_mutated_artifacts(self):
         a = build("01-success-verified")
         for mutate, code in (
@@ -134,6 +164,12 @@ class Refusals(unittest.TestCase):
             (lambda x: x["outcome"].__setitem__("disposition", "DENY"), "schema:const:$.authorization.authorized"),
             (lambda x: x["execution"].__setitem__("executed", True) or x["execution"].__setitem__("consequence_observation", "UNKNOWN"), "schema:const:$.execution.consequence_observation"),
             (lambda x: x["evidence"].append({"kind": "RECEIPT_REF", "ref": "ghp_" + "a" * 30, "description": "d", "sanitized": True}), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "see token ghp_" + "a" * 36), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "Authorization: Bearer " + "b" * 32), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("ref", "https://example.test/?t=github_pat_" + "c" * 40), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "key AKIA" + "D" * 16 + " in log"), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "slack xoxb-" + "1" * 24), "secret_material_present"),
+            (lambda x: x["evidence"][0].__setitem__("description", "openai sk-" + "e" * 24), "secret_material_present"),
         ):
             b = json.loads(json.dumps(a))
             mutate(b)
@@ -245,3 +281,28 @@ class SchemaOnlyConsumers(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+class ReasonCatalogStandard(unittest.TestCase):
+    """Compatibility requirement 7: one plain-language reason per returnable predicate."""
+
+    GOOD = {"SNAPSHOT_SOURCE_NOT_AUTHENTICATED": "the snapshot was not observed through an authenticated session, the only accepted source"}
+
+    def test_conforming_catalog_and_prefix_predicates(self):
+        self.assertEqual(U.check_reason_catalog(self.GOOD, {"SNAPSHOT_SOURCE_NOT_AUTHENTICATED"}), [])
+        self.assertEqual(U.check_reason_catalog({"field_missing": "a required field is missing from the record"}, ["field_missing:value_usd", "field_missing:asset"]), [])
+        self.assertEqual(U.reason_key("CHECKPOINT_MALFORMED:digest"), "CHECKPOINT_MALFORMED")
+
+    def test_violations_are_named(self):
+        bad = {"A_B": "Because the SNAPSHOT_STATE check failed.", "ORPHAN": "short", "lower_case": "the reason mentions snapshot_digest_mismatch inside it"}
+        out = U.check_reason_catalog(bad, {"A_B", "MISSING_ONE", "lower_case"})
+        for code in ("predicate_without_reason:MISSING_ONE", "reason_without_returnable_predicate:ORPHAN", "reason_too_short_or_untrimmed:ORPHAN", "reason_must_start_lower_case:A_B", "reason_must_not_end_with_full_stop:A_B", "reason_restates_a_predicate:A_B", "reason_restates_a_predicate:lower_case"):
+            self.assertIn(code, out)
+        self.assertEqual(U.check_reason_catalog([], set()), ["reasons_not_a_mapping"])
+
+    def test_reason_renders_as_the_why_of_a_conforming_artifact(self):
+        reason = self.GOOD["SNAPSHOT_SOURCE_NOT_AUTHENTICATED"]
+        record = {"disposition": "FAIL_CLOSED", "predicate": "SNAPSHOT_SOURCE_NOT_AUTHENTICATED", "requested_action": "Project the snapshot", "authority_source": "NONE", "why": reason}
+        artifact = U.validate_explanation(U.build_explanation(record, surface={"repository": "StegVerse-Labs/example", "surface_id": "example"}))
+        self.assertEqual(artifact["prose"]["why"], "Because " + reason + ".")

@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "explanation-hidden-text-20261012",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "RELEASED_AFTER_MERGE",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT_TOOLING",
+  "branch": "claude/3106-explanation-hidden-text",
+  "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
+  "originating_goal": "Universal explanation contract: the human prose and the portable JSON must not carry text that displays as something other than what it is. Refuse control, format (bidi override/isolate, zero-width), surrogate and line/paragraph-separator characters in builder input and in validated artifacts. No authority, no runtime change, no schema or artifact-shape change.",
+  "claimed_paths": [
+    "scripts/user_facing_explanation.py",
+    "tests/test_user_facing_explanation.py",
+    "data/session-work-claims.d/explanation-hidden-text-20261012.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "No change to the explanation schema or artifact shape",
+    "Existing refusals unchanged; tab, newline and carriage return remain allowed"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3162",
+  "merged_commit": "222015b5cbf26d4a5ea4a84e41e22003d52b5777",
+  "claim_released_at_basis": "merge of the implementation PR #3162 at its exact head f399d01d",
+  "site_parity_pr": {
+    "pr": "StegVerse-Labs/Site#1569",
+    "merged_commit": "578f6e5663446874e7b45f67e2d4c6f168be4765"
+  }
+}

@@ -21,6 +21,7 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -39,7 +40,18 @@ PREDICATE_RE = re.compile(r"^[A-Za-z0-9_:.-]{1,160}$")  # canonical predicates a
 SECRET_KEY_RE = re.compile(r"(token|secret|credential|password|passwd|private[_-]?key|api[_-]?key|bearer|cookie|client[_-]?secret)", re.I)
 # Boolean flags that *describe* sanitization are not secret material.
 FLAG_KEYS = frozenset({"secrets_present", "credential_material_present"})
-SECRET_VALUE_RE = re.compile(r"(^Bearer\s+\S+|-----BEGIN [A-Z ]*PRIVATE KEY-----|^ghp_[A-Za-z0-9]{20,}|^sk-[A-Za-z0-9]{16,})")
+# Matched anywhere in a value: the artifact is meant to be copied into third-party
+# LLMs, so a credential embedded in prose or a locator must be refused too.
+SECRET_VALUE_RE = re.compile(
+    r"(^Bearer\s+\S+"
+    r"|\bBearer\s+[A-Za-z0-9._~+/-]{16,}=*"
+    r"|-----BEGIN [A-Z ]*PRIVATE KEY-----"
+    r"|\bgh[pousr]_[A-Za-z0-9]{20,}"
+    r"|\bgithub_pat_[A-Za-z0-9_]{20,}"
+    r"|\bsk-[A-Za-z0-9_-]{16,}"
+    r"|\bAKIA[0-9A-Z]{16}\b"
+    r"|\bxox[abposr]-[A-Za-z0-9-]{10,})"
+)
 
 OUTCOME_CLASSES = {
     ("ALLOW", "OBSERVED"): "SUCCESS_VERIFIED",
@@ -114,6 +126,29 @@ def _reject_secrets(value: Any, path: str = "") -> None:
             _reject_secrets(inner, path + "[" + str(index) + "]")
     elif isinstance(value, str) and SECRET_VALUE_RE.search(value):
         raise ExplanationError("secret_material_present:" + (path or "<root>"))
+
+
+# Characters that make text display as something other than what it is: format characters (bidi
+# overrides and isolates, zero-width), lone surrogates, line/paragraph separators and control characters
+# other than tab, newline and carriage return. The prose and the portable JSON are read by people and
+# pasted into third-party LLMs, so such text is refused rather than passed through.
+_HIDDEN_CATEGORIES = {"Cf", "Cs", "Zl", "Zp"}
+_ALLOWED_CONTROLS = {"\t", "\n", "\r"}
+
+
+def _reject_hidden_text(value: Any, path: str = "") -> None:
+    if isinstance(value, dict):
+        for key, inner in value.items():
+            _reject_hidden_text(str(key), (path + "." if path else "") + "<key>")
+            _reject_hidden_text(inner, (path + "." if path else "") + str(key))
+    elif isinstance(value, list):
+        for index, inner in enumerate(value):
+            _reject_hidden_text(inner, path + "[" + str(index) + "]")
+    elif isinstance(value, str):
+        for ch in value:
+            category = unicodedata.category(ch)
+            if category in _HIDDEN_CATEGORIES or (category == "Cc" and ch not in _ALLOWED_CONTROLS):
+                raise ExplanationError("text_not_displayable:" + (path or "<root>"))
 
 
 def _require(condition: bool, code: str) -> None:
@@ -217,6 +252,8 @@ def build_explanation(record: dict[str, Any], *, surface: dict[str, Any], termin
     _require(isinstance(surface, dict), "surface_invalid")
     _reject_secrets(record)
     _reject_secrets(surface)
+    _reject_hidden_text(record)
+    _reject_hidden_text(surface)
     disposition = record.get("disposition")
     _require(disposition in DISPOSITIONS, "disposition_invalid")
     predicate = _predicate(record.get("predicate"), "predicate_invalid")
@@ -356,6 +393,7 @@ def validate_explanation(artifact: dict[str, Any], schema_path: Path = SCHEMA_PA
     schema = json.loads(Path(schema_path).read_text(encoding="utf-8"))
     schema_check(artifact, schema)
     _reject_secrets(artifact)
+    _reject_hidden_text(artifact)
     # Invariants the schema cannot express structurally.
     _require(artifact["outcome"]["predicate"] in artifact["outcome"]["predicates"], "predicate_not_in_predicates")
     _require(artifact["remediation_draft"] is None or artifact["remediation_draft"]["draft"].get("submitted") is False, "remediation_draft_submitted")
@@ -363,6 +401,42 @@ def validate_explanation(artifact: dict[str, Any], schema_path: Path = SCHEMA_PA
         _require(e["kind"] == "NONE" or (isinstance(e["ref"], str) and e["ref"].strip() != ""), "evidence_ref_missing")
     return artifact
 
+
+
+# Reason catalogs (surface compatibility requirement 7): a producer that refuses or decides gives each
+# predicate it can return a plain-language reason, so the "Why" a person reads is never only a restated
+# predicate. A "PREFIX:detail" predicate uses its prefix's reason.
+_PREDICATE_TOKEN_RE = re.compile(r"\b(?:[A-Z]{2,}(?:_[A-Z0-9]+)+|[a-z]+(?:_[a-z0-9]+)+)\b")
+
+
+def reason_key(predicate: str) -> str:
+    return predicate.split(":", 1)[0]
+
+
+def check_reason_catalog(reasons: dict[str, str], predicates: set[str] | list[str]) -> list[str]:
+    """Return the violations of a surface's reason catalog against the predicates its source can return
+    (empty list = conforms). Checks: every predicate (by prefix) has a reason, every reason names a
+    returnable predicate, and every reason is plain language: non-empty, starts lower-case so it reads
+    after "Because", carries no trailing full stop, and restates no predicate-shaped token."""
+    violations: list[str] = []
+    keys = {reason_key(p) for p in predicates}
+    if not isinstance(reasons, dict):
+        return ["reasons_not_a_mapping"]
+    for key in sorted(keys - set(reasons)):
+        violations.append("predicate_without_reason:" + key)
+    for key in sorted(set(reasons) - keys):
+        violations.append("reason_without_returnable_predicate:" + key)
+    for key, text in sorted(reasons.items()):
+        if not isinstance(text, str) or len(text.strip()) < 20 or text != text.strip():
+            violations.append("reason_too_short_or_untrimmed:" + str(key))
+            continue
+        if not text[0].islower():
+            violations.append("reason_must_start_lower_case:" + key)
+        if text.endswith("."):
+            violations.append("reason_must_not_end_with_full_stop:" + key)
+        if _PREDICATE_TOKEN_RE.search(text):
+            violations.append("reason_restates_a_predicate:" + key)
+    return violations
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])

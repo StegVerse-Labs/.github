@@ -1214,7 +1214,7 @@
       "repository": "StegVerse-org/StegVerse-SDK",
       "registry_ref": "data/canonical-task-registry.json",
       "source_state_vector_ref": "control/task-vectors/SDK-MR-A-VALIDATION-CUSTODY-001.json",
-      "vector": "60000000102010",
+      "vector": "71000000100110",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     }
