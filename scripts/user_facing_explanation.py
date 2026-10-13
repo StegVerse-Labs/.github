@@ -28,7 +28,7 @@ from typing import Any
 SCHEMA = "stegverse.user-facing-explanation/v1"
 SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schemas" / "user-facing-explanation.v1.schema.json"
 ECOSYSTEM_IDENTIFIER = "STEGVERSE"
-EXPLANATION_VERSION = "1.1.0"
+EXPLANATION_VERSION = "1.2.0"
 RECOGNITION_PROBE_LITERAL = "STEGVERSE_ECOSYSTEM_KNOWLEDGE_PROBE_V1"
 RECOGNITION_PROBE_STATUS = "CANDIDATE_NOT_CANONICAL"
 
@@ -177,6 +177,23 @@ def _evidence(items: Any) -> list[dict[str, Any]]:
     return out
 
 
+ACTIONABLE_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt")
+
+
+def _actionable(record: dict[str, Any], predicates: list[str]) -> dict[str, str]:
+    """Organization Role conformance standard (docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md, item 5): a
+    non-ALLOW result carries failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint,
+    owning_existing_goal and next_attempt. A bare DENY, FAIL_CLOSED or UNKNOWN is not a finding, so it is not explained."""
+    out: dict[str, str] = {}
+    for key in ACTIONABLE_FIELDS:
+        value = record.get(key)
+        _require(isinstance(value, str) and value.strip() != "", "non_allow_requires_" + key)
+        out[key] = value
+    _require(PREDICATE_RE.match(out["failure_code"]) is not None, "failure_code_invalid")
+    _require(out["failed_predicate"] in predicates, "failed_predicate_not_in_predicates")
+    return out
+
+
 def _remediation(draft: Any) -> dict[str, Any] | None:
     if draft is None:
         return None
@@ -188,7 +205,7 @@ def _remediation(draft: Any) -> dict[str, Any] | None:
     return {"submitted": False, "manifest_admitted": False, "authority_effect": "NONE_REQUEST_ONLY", "non_authorizing": True, "draft": dict(draft)}
 
 
-def _prose(outcome_class: str, action: str, predicate: str, authority_source: str, why: str | None, evidence: list[dict[str, Any]], next_steps: list[str] | None, draft_present: bool) -> dict[str, Any]:
+def _prose(outcome_class: str, action: str, predicate: str, authority_source: str, why: str | None, evidence: list[dict[str, Any]], next_steps: list[str] | None, draft_present: bool, actionable: dict[str, str] | None = None) -> dict[str, Any]:
     ev = ("Evidence is referenced by locator: " + "; ".join(e["description"] + (" (" + e["ref"] + ")" if e["ref"] else "") for e in evidence) + ".") if evidence else "No evidence record is referenced for this outcome; nothing has been produced by a component that performs or refuses this action."
     default_reason = {
         "SUCCESS_VERIFIED": "the condition " + predicate + " was satisfied and the performing component reported its receipt",
@@ -218,6 +235,9 @@ def _prose(outcome_class: str, action: str, predicate: str, authority_source: st
         authorized = "This surface holds no receipt showing an authorization. The reported condition is " + predicate + "."
         executed = "This surface holds no receipt showing an execution. Every transition has a receipt; if none exists, no action occurred."
     steps = list(next_steps) if next_steps else list(SAFE_NEXT_DEFAULT[outcome_class])
+    if actionable:
+        steps.append("What resolves this: " + actionable["required_evidence_or_repair"].rstrip(".") + ".")
+        steps.append("Next attempt: " + actionable["next_attempt"].rstrip(".") + " (entry point: " + actionable["retry_entrypoint"] + "; owning goal: " + actionable["owning_existing_goal"] + ").")
     if draft_present:
         steps.append("An unsubmitted remediation draft is attached; it proposes nothing until you submit it through the governed path, where it receives its own decision.")
     return {
@@ -267,6 +287,7 @@ def build_explanation(record: dict[str, Any], *, surface: dict[str, Any], termin
         # exist, so there is no "authorized but not yet executed" outcome to explain.
         _require(observation == "OBSERVED", "allow_requires_receipt")
         _require(any(e["kind"] in ("RECEIPT_REF", "PROVENANCE_REF", "DIGEST") for e in evidence), "allow_requires_receipt")
+    actionable = None if disposition == "ALLOW" else _actionable(record, predicates)
     outcome_class = OUTCOME_CLASSES[(disposition, observation if disposition == "ALLOW" else None)]
     authorized = disposition == "ALLOW"
     executed = disposition == "ALLOW" and observation == "OBSERVED"
@@ -285,10 +306,10 @@ def build_explanation(record: dict[str, Any], *, surface: dict[str, Any], termin
         "explanation_type": "OUTCOME_EXPLANATION",
         "explanation_version": EXPLANATION_VERSION,
         "surface": {k: surface[k] for k in ("repository", "surface_id", "surface_version") if k in surface},
-        "outcome": {"disposition": disposition, "observation_state": observation if disposition == "ALLOW" else ("UNKNOWN" if disposition == "UNKNOWN" else "NOT_AUTHENTICALLY_OBSERVED"), "outcome_class": outcome_class, "predicate": predicate, "predicates": predicates, "canonical_record_ref": canonical_ref},
+        "outcome": {"disposition": disposition, "observation_state": observation if disposition == "ALLOW" else ("UNKNOWN" if disposition == "UNKNOWN" else "NOT_AUTHENTICALLY_OBSERVED"), "outcome_class": outcome_class, "predicate": predicate, "predicates": predicates, "canonical_record_ref": canonical_ref, "actionable_disposition": actionable},
         "authorization": {"authorized": authorized, "requested_action": action, "authority_source": authority_source},
         "execution": {"executed": executed, "execution_state": execution_state, "consequence_observation": observation if disposition == "ALLOW" else ("UNKNOWN" if disposition == "UNKNOWN" else "NOT_AUTHENTICALLY_OBSERVED")},
-        "prose": _prose(outcome_class, action, predicate, authority_source, why, evidence, next_steps, draft is not None),
+        "prose": _prose(outcome_class, action, predicate, authority_source, why, evidence, next_steps, draft is not None, actionable),
         "terminology": [{"term": t, "definition": d} for t, d in terms],
         "evidence": evidence,
         "remediation_draft": draft,

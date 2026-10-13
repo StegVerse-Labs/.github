@@ -25,7 +25,7 @@
     "execution_state": "NOT_EXECUTED"
   },
   "explanation_type": "OUTCOME_EXPLANATION",
-  "explanation_version": "1.1.0",
+  "explanation_version": "1.2.0",
   "llm_interpretation": {
     "instructions": [
       "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
@@ -46,6 +46,14 @@
     "self_contained": true
   },
   "outcome": {
+    "actionable_disposition": {
+      "failed_predicate": "WORKSPACE_QUERY_SCOPE_INVALID",
+      "failure_code": "WORKSPACE_QUERY_SCOPE_INVALID",
+      "next_attempt": "submit the corrected query; the governed path decides it again",
+      "owning_existing_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "required_evidence_or_repair": "a query whose requested scope is the scope bound to the WORKSPACE_TASKS_PROJECTION record class (tasks, commitments, timeline)",
+      "retry_entrypoint": "StegVerse-Labs/.github:scripts/workspace_device_kv_query_extension.py#validate_workspace_query (submit the attached draft through the governed path)"
+    },
     "canonical_record_ref": null,
     "disposition": "DENY",
     "observation_state": "NOT_AUTHENTICALLY_OBSERVED",
@@ -69,6 +77,8 @@
     "what_you_can_safely_do_next": [
       "Read the failing predicate: it names the exact condition that was not met.",
       "If a remediation draft is offered, you may submit it through the governed path; submission is a separate decision and may itself be denied.",
+      "What resolves this: a query whose requested scope is the scope bound to the WORKSPACE_TASKS_PROJECTION record class (tasks, commitments, timeline).",
+      "Next attempt: submit the corrected query; the governed path decides it again (entry point: StegVerse-Labs/.github:scripts/workspace_device_kv_query_extension.py#validate_workspace_query (submit the attached draft through the governed path); owning goal: STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001).",
       "An unsubmitted remediation draft is attached; it proposes nothing until you submit it through the governed path, where it receives its own decision."
     ],
     "why": "Because the requested scope does not match the scope bound to that record class, and a query may only ask for the scope its class admits."

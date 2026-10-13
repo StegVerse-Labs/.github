@@ -25,6 +25,19 @@ def build(stem: str) -> dict:
 
 
 class FixturesBuildAndValidate(unittest.TestCase):
+    def test_non_allow_outcomes_carry_the_actionable_disposition(self):
+        for p in FIXTURES:
+            a = build(p.stem)
+            ad = a["outcome"]["actionable_disposition"]
+            if a["outcome"]["disposition"] == "ALLOW":
+                self.assertIsNone(ad)
+            else:
+                self.assertEqual(set(ad), set(U.ACTIONABLE_FIELDS))
+                self.assertIn(ad["failed_predicate"], a["outcome"]["predicates"])
+                text = U.render_prose(a)
+                self.assertIn("What resolves this:", text)
+                self.assertIn("Next attempt:", text)
+
     def test_outcome_classes_present(self):
         # Task Registry invariant: every transition, ALLOW or not, has a receipt. There is no authorized-but-pending
         # class; the missing-evidence fixture is a step that did not take place (FAILED_CLOSED).
@@ -60,7 +73,7 @@ class FixturesBuildAndValidate(unittest.TestCase):
 
     def test_lower_case_producer_predicates_are_copied_verbatim(self):
         f = fixture("03-fail-closed")
-        a = U.validate_explanation(U.build_explanation(dict(f["outcome"], predicate="snapshot_position_field_missing:value_usd", predicates=None), surface=f["surface"]))
+        a = U.validate_explanation(U.build_explanation(dict(f["outcome"], predicate="snapshot_position_field_missing:value_usd", predicates=None, failed_predicate="snapshot_position_field_missing:value_usd"), surface=f["surface"]))
         self.assertEqual(a["outcome"]["predicate"], "snapshot_position_field_missing:value_usd")
         self.assertIn("snapshot_position_field_missing:value_usd", a["prose"]["what_was_authorized"])
 
@@ -125,6 +138,11 @@ class Refusals(unittest.TestCase):
         self.refuse(dict(base, authority_source="GITHUB"), "authority_source_invalid")
         self.refuse(dict(base, evidence=[{"kind": "RECEIPT_REF", "ref": None, "description": "d"}]), "evidence_ref_required_for_kind")
         self.refuse(base, "secret_material_present", surface={"repository": "r", "surface_id": "s", "session_cookie": "x"})
+        # Organization Role conformance item 5: a non-ALLOW record without its six actionable fields is not a finding.
+        for key in U.ACTIONABLE_FIELDS:
+            self.refuse({k: v for k, v in base.items() if k != key}, "non_allow_requires_" + key)
+            self.refuse(dict(base, **{key: "  "}), "non_allow_requires_" + key)
+        self.refuse(dict(base, failed_predicate="NOT_THIS_OUTCOMES_PREDICATE"), "failed_predicate_not_in_predicates")
 
     def test_text_that_displays_as_something_else_is_refused(self):
         # Right-to-left override, isolate, zero-width, NUL, line separator and a lone surrogate, in each
@@ -258,6 +276,9 @@ class SchemaOnlyConsumers(unittest.TestCase):
             "allow_not_executed_success_class": m(suc, lambda x: (x["execution"].__setitem__("executed", False), x["execution"].__setitem__("execution_state", "NOT_VERIFIED"), x["execution"].__setitem__("consequence_observation", "UNKNOWN"), x["outcome"].__setitem__("observation_state", "UNKNOWN"))),
             "allow_without_execution": m(suc, lambda x: (x["execution"].__setitem__("executed", False), x["execution"].__setitem__("execution_state", "NOT_EXECUTED"), x["execution"].__setitem__("consequence_observation", "NOT_AUTHENTICALLY_OBSERVED"), x["outcome"].__setitem__("observation_state", "NOT_AUTHENTICALLY_OBSERVED"))),
             "observation_state_mismatch": m(fc, lambda x: x["outcome"].__setitem__("observation_state", "UNKNOWN")),
+            "non_allow_without_actionable": m(fc, lambda x: x["outcome"].__setitem__("actionable_disposition", None)),
+            "non_allow_actionable_missing_field": m(den, lambda x: x["outcome"]["actionable_disposition"].pop("next_attempt")),
+            "allow_with_actionable": m(suc, lambda x: x["outcome"].__setitem__("actionable_disposition", dict(fc["outcome"]["actionable_disposition"]))),
         }
 
     def test_schema_check_rejects_contradictory_artifacts(self):
@@ -305,6 +326,8 @@ class ReasonCatalogStandard(unittest.TestCase):
 
     def test_reason_renders_as_the_why_of_a_conforming_artifact(self):
         reason = self.GOOD["SNAPSHOT_SOURCE_NOT_AUTHENTICATED"]
-        record = {"disposition": "FAIL_CLOSED", "predicate": "SNAPSHOT_SOURCE_NOT_AUTHENTICATED", "requested_action": "Project the snapshot", "authority_source": "NONE", "why": reason}
+        record = {"disposition": "FAIL_CLOSED", "predicate": "SNAPSHOT_SOURCE_NOT_AUTHENTICATED", "requested_action": "Project the snapshot", "authority_source": "NONE", "why": reason,
+                  "failure_code": "SNAPSHOT_SOURCE_NOT_AUTHENTICATED", "failed_predicate": "SNAPSHOT_SOURCE_NOT_AUTHENTICATED", "required_evidence_or_repair": "an authenticated snapshot source",
+                  "retry_entrypoint": "the projection producer", "owning_existing_goal": "EXAMPLE-GOAL-001", "next_attempt": "project again from an authenticated source"}
         artifact = U.validate_explanation(U.build_explanation(record, surface={"repository": "StegVerse-Labs/example", "surface_id": "example"}))
         self.assertEqual(artifact["prose"]["why"], "Because " + reason + ".")

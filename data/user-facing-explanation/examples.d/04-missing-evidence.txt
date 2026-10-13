@@ -8,6 +8,8 @@ What you can safely do next:
   - Nothing happened; your data and state are unchanged.
   - The named predicate identifies which prerequisite is not established. Its owner, not this surface, establishes it.
   - You may retry after the prerequisite is established; retrying now returns the same outcome.
+  - What resolves this: a manifest-bound KV write of the projection by the existing authorized writer, which records its receipt.
+  - Next attempt: submit the persistence as a manifest-bound transition; it resolves ALLOW or non-ALLOW with its receipt (entry point: StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py (persist through the authorized KV writer); owning goal: STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001).
 Limitations:
   - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
   - Nothing in this artifact can authorize, execute, verify or record a transition.
