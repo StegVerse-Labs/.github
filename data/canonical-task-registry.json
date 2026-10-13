@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 313,
+  "generation": 314,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -22068,6 +22068,107 @@
           ],
           "superseded_by": "docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md#2026-10-12-verified-decision-return"
         }
+      ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+      "correlation_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+      "root_correlation_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+      "parent_task_id": null,
+      "goal": "Consolidate structural JSON Schema validation into the SDK-native, stdlib-only, non-authorizing validator with StegDB-backed discovery, then complete authenticated TV/TVC source provenance and manifest-bound governed migrations through Interlock/InTr with Organization ledger readback.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "UNCLAIMED",
+      "cosv_task_vector": "60200000013002",
+      "cosv_exact_metrics": {
+        "lifecycle": "BLOCKED",
+        "archive_ready": false,
+        "unassigned_work": 2,
+        "chat_owned_implementation": 0,
+        "chat_owned_validation": 0,
+        "chat_owned_integration": 0,
+        "chat_owned_observation": 0,
+        "chat_owned_credentials": 0,
+        "canonical_owner_installed": false,
+        "thread_required": true,
+        "blocker_count": 3,
+        "evidence_complete": false,
+        "activated": false,
+        "propagated": null
+      },
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "issue_ref": "StegVerse-org/StegVerse-SDK#484",
+      "handoff_projection_refs": [
+        "StegVerse-Labs/.github:docs/SDK_STRUCTURAL_VALIDATOR_CONSOLIDATION_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-org",
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-org/StegVerse-SDK",
+          "StegVerse-Labs/StegDB",
+          "StegVerse-Labs/StegCore",
+          "StegVerse-org/LLM-adapter"
+        ],
+        "components": [
+          "structural-validator",
+          "validator-inventory",
+          "schema-migration"
+        ]
+      },
+      "adjacent_task_refs": [
+        "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001"
+      ],
+      "source_state": {
+        "sdk_main": "e1b57741c15eb3bf2e577d57b1415ce5373ec510",
+        "sdk_main_note": "StegVerse-org/StegVerse-SDK PR #519 merged after this observed main",
+        "validator_contract_version": "1.6",
+        "ecosystem_fit": "89/106",
+        "source_disposition": "SOURCE_MERGED",
+        "source_merge_proves_runtime": false
+      },
+      "remaining_predicates": [
+        "AUTHENTICATED_TV_TVC_PROVENANCE_FOR_FINAL_SDK_SOURCE_IDENTITY",
+        "MANIFEST_BOUND_INTR_ADMISSION_TERMINAL_DISPOSITION_RETAINED",
+        "ORGANIZATION_LEDGER_READBACK_FOR_GOVERNED_MIGRATION",
+        "APPLICABLE_MASTER_RECORDS_RECONSTRUCTION_EVIDENCE_RETAINED"
+      ],
+      "allocation_request_ref": "control/goal-task-allocation-requests/sdk-484-structural-validator-2026-10-13.json",
+      "worker_claim": {
+        "authority": "NONE_TASK_REGISTRY_PROJECTION_ONLY",
+        "claim_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "runtime_observed": false
+      },
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "credential_authority": "TV/TVC",
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "heartbeat_execution_authority": false,
+        "github_runtime_authority": "NONE",
+        "hosted_execution_fallback": false,
+        "second_user_operated_device_required": false
+      },
+      "source_refs": [
+        "https://github.com/StegVerse-org/StegVerse-SDK/issues/484",
+        "control/goal-task-allocation-requests/sdk-484-structural-validator-2026-10-13.json",
+        "https://github.com/StegVerse-Labs/.github/pull/3178",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/480",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/505",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/516",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/518",
+        "https://github.com/StegVerse-org/StegVerse-SDK/pull/519",
+        "StegVerse-org/StegVerse-SDK@e1b57741c15eb3bf2e577d57b1415ce5373ec510",
+        "https://github.com/StegVerse-Labs/StegDB/pull/56",
+        "https://github.com/StegVerse-Labs/StegCore/pull/254"
       ]
     }
   ],

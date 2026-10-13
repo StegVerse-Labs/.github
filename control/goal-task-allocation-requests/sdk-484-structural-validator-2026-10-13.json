@@ -1,11 +1,11 @@
 {
   "schema": "stegverse.goal-task-allocation-request/v0.1",
   "request_id": "SDK-484-CANONICAL-OWNER-ALLOCATION-REQUEST-20261013",
-  "state": "OWNER_APPROVED_ALLOCATION_PENDING",
+  "state": "REGISTERED",
   "issue": "StegVerse-org/StegVerse-SDK#484",
   "proposed_task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
   "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
-  "cosv_task_vector": null,
+  "cosv_task_vector": "60200000013002",
   "canonical_registry_ref": "data/canonical-task-registry.json",
   "observed_registry_generation": 313,
   "observed_registry_tasks": 115,
@@ -33,5 +33,18 @@
     "scope": "Register SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 as canonical Goal Task for SDK #484; COSV must be assigned and validated by existing canonical rules",
     "date": "2026-10-13",
     "authority_limit": "OWNER_INTENT_ONLY_NOT_ALLOCATOR_OUTPUT_OR_RUNTIME_ADMISSION"
+  },
+  "registration": {
+    "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+    "canonical_task_record_ref": "data/canonical-task-records/SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001.json",
+    "cosv_task_vector_ref": "control/task-vectors/SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001.json",
+    "cosv_task_vector_index_ref": "control/task-vector-index.json",
+    "canonical_registry_ref": "data/canonical-task-registry.json",
+    "registry_generation": 314,
+    "cosv_encoder_ref": "scripts/cosv.py encode_task",
+    "vector": "60200000013002",
+    "handoff_ref": "docs/SDK_STRUCTURAL_VALIDATOR_CONSOLIDATION_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+    "date": "2026-10-13",
+    "authority_effect": "NONE_REGISTRATION_ONLY"
   }
 }

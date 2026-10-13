@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.cosv-task-vector/v0.1",
+  "identity": "StegVerse-Labs/.github:task:SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "60200000013002",
+  "exact_metrics": {
+    "lifecycle": "BLOCKED",
+    "archive_ready": false,
+    "unassigned_work": 2,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": false,
+    "thread_required": true,
+    "blocker_count": 3,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": null
+  },
+  "evidence_refs": [
+    "https://github.com/StegVerse-org/StegVerse-SDK/issues/484",
+    "control/goal-task-allocation-requests/sdk-484-structural-validator-2026-10-13.json",
+    "https://github.com/StegVerse-Labs/.github/pull/3178",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/480",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/505",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/516",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/518",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/519",
+    "StegVerse-org/StegVerse-SDK@e1b57741c15eb3bf2e577d57b1415ce5373ec510",
+    "https://github.com/StegVerse-Labs/StegDB/pull/56",
+    "https://github.com/StegVerse-Labs/StegCore/pull/254"
+  ],
+  "observed_at": "2026-10-13",
+  "authority_effect": "NONE",
+  "canonical_encoder_ref": "scripts/cosv.py"
+}

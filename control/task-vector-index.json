@@ -1217,11 +1217,20 @@
       "vector": "71000000100110",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001.json",
+      "vector": "60200000013002",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 125,
-    "local_cosv_record_tasks": 125,
+    "indexed_vectorized_tasks": 126,
+    "local_cosv_record_tasks": 126,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
