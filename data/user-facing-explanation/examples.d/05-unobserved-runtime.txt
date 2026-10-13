@@ -1,12 +1,12 @@
-What happened: The outcome of the request 'Confirm that your MyKV assistant's continuity checkpoint is anchored' is unknown: no authentic observation of a decision or an execution exists.
-Why: Because no authentic observation reached this surface; the reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND.
-Outcome: Unknown; not success, not failure.
-What was authorized: No authorization is known. The reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND.
-What was executed: No execution is known. Treat the action as not done until a receipt is observed.
+What happened: The outcome of the request 'Confirm that your MyKV assistant's continuity checkpoint is anchored' is unknown to this surface: it does not hold the receipt.
+Why: Because this surface does not hold the receipt for this outcome; the reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND.
+Outcome: Unknown to this surface; not success, not failure.
+What was authorized: This surface holds no receipt showing an authorization. The reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND.
+What was executed: This surface holds no receipt showing an execution. Every transition has a receipt; if none exists, no action occurred.
 What evidence exists: No evidence record is referenced for this outcome; nothing has been produced by a component that performs or refuses this action.
 What you can safely do next:
-  - Treat the outcome as unknown, not as success and not as failure.
-  - Look for the canonical receipt by its locator when one is listed; if none is listed, no component has reported.
+  - Treat the outcome as unknown to this surface, not as success and not as failure.
+  - Look up the receipt by its locator when one is listed; every transition, ALLOW or not, has a receipt, and if none exists no action occurred.
 Limitations:
   - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
   - Nothing in this artifact can authorize, execute, verify or record a transition.

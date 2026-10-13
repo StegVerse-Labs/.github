@@ -18,7 +18,7 @@
     "execution_state": "NOT_EXECUTED"
   },
   "explanation_type": "OUTCOME_EXPLANATION",
-  "explanation_version": "1.0.0",
+  "explanation_version": "1.1.0",
   "llm_interpretation": {
     "instructions": [
       "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
@@ -54,16 +54,16 @@
       "Nothing in this artifact can authorize, execute, verify or record a transition.",
       "Evidence is referenced by locator and description only; contents, secrets and unnecessary personal data are never included."
     ],
-    "outcome_summary": "Unknown; not success, not failure.",
+    "outcome_summary": "Unknown to this surface; not success, not failure.",
     "what_evidence_exists": "No evidence record is referenced for this outcome; nothing has been produced by a component that performs or refuses this action.",
-    "what_happened": "The outcome of the request 'Confirm that your MyKV assistant's continuity checkpoint is anchored' is unknown: no authentic observation of a decision or an execution exists.",
-    "what_was_authorized": "No authorization is known. The reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND.",
-    "what_was_executed": "No execution is known. Treat the action as not done until a receipt is observed.",
+    "what_happened": "The outcome of the request 'Confirm that your MyKV assistant's continuity checkpoint is anchored' is unknown to this surface: it does not hold the receipt.",
+    "what_was_authorized": "This surface holds no receipt showing an authorization. The reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND.",
+    "what_was_executed": "This surface holds no receipt showing an execution. Every transition has a receipt; if none exists, no action occurred.",
     "what_you_can_safely_do_next": [
-      "Treat the outcome as unknown, not as success and not as failure.",
-      "Look for the canonical receipt by its locator when one is listed; if none is listed, no component has reported."
+      "Treat the outcome as unknown to this surface, not as success and not as failure.",
+      "Look up the receipt by its locator when one is listed; every transition, ALLOW or not, has a receipt, and if none exists no action occurred."
     ],
-    "why": "Because no authentic observation reached this surface; the reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND."
+    "why": "Because this surface does not hold the receipt for this outcome; the reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND."
   },
   "recognition_probe": {
     "literal": "STEGVERSE_ECOSYSTEM_KNOWLEDGE_PROBE_V1",
@@ -84,7 +84,7 @@
   },
   "terminology": [
     {
-      "definition": "The governed decision admitted the requested action. ALLOW is an authorization, not proof that the action ran or that its consequence happened.",
+      "definition": "The manifest-bound state transition was admitted and took place. Every transition, ALLOW or not, is resolved at Interlock/InTr ingress and egress and recorded by a receipt; the receipt is the record that it happened.",
       "term": "ALLOW"
     },
     {
@@ -96,7 +96,7 @@
       "term": "FAIL_CLOSED"
     },
     {
-      "definition": "No authentic runtime observation exists for this outcome. The surface reports what it could not see rather than guessing.",
+      "definition": "This surface does not hold the receipt for the outcome. It reports what it does not hold rather than guessing. The outcome itself is not pending: every transition has a receipt, and if no receipt exists, no action occurred.",
       "term": "UNKNOWN / NOT_AUTHENTICALLY_OBSERVED"
     },
     {

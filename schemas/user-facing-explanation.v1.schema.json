@@ -35,7 +35,7 @@
       ]
     },
     "explanation_version": {
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "produced_at": {
       "type": "string",
@@ -92,7 +92,6 @@
         "outcome_class": {
           "enum": [
             "SUCCESS_VERIFIED",
-            "AUTHORIZED_NOT_VERIFIED",
             "DENIED",
             "FAILED_CLOSED",
             "UNOBSERVED"
@@ -164,8 +163,7 @@
         "execution_state": {
           "enum": [
             "VERIFIED",
-            "NOT_EXECUTED",
-            "NOT_VERIFIED"
+            "NOT_EXECUTED"
           ]
         },
         "consequence_observation": {
@@ -449,6 +447,30 @@
           "outcome": {
             "properties": {
               "disposition": {
+                "const": "ALLOW"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "executed": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
                 "enum": [
                   "DENY",
                   "FAIL_CLOSED",
@@ -598,7 +620,6 @@
               },
               "outcome_class": {
                 "enum": [
-                  "AUTHORIZED_NOT_VERIFIED",
                   "DENIED",
                   "FAILED_CLOSED",
                   "UNOBSERVED"
@@ -610,8 +631,7 @@
             "properties": {
               "execution_state": {
                 "enum": [
-                  "NOT_EXECUTED",
-                  "NOT_VERIFIED"
+                  "NOT_EXECUTED"
                 ]
               },
               "consequence_observation": {
@@ -619,44 +639,6 @@
                   "NOT_AUTHENTICALLY_OBSERVED",
                   "UNKNOWN"
                 ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "outcome": {
-            "properties": {
-              "disposition": {
-                "const": "ALLOW"
-              }
-            }
-          },
-          "execution": {
-            "properties": {
-              "executed": {
-                "const": false
-              }
-            }
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "outcome": {
-            "properties": {
-              "outcome_class": {
-                "const": "AUTHORIZED_NOT_VERIFIED"
-              }
-            }
-          },
-          "execution": {
-            "properties": {
-              "execution_state": {
-                "const": "NOT_VERIFIED"
               }
             }
           }
@@ -975,37 +957,6 @@
             "properties": {
               "disposition": {
                 "const": "UNKNOWN"
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "outcome": {
-            "properties": {
-              "outcome_class": {
-                "const": "AUTHORIZED_NOT_VERIFIED"
-              }
-            }
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "outcome": {
-            "properties": {
-              "disposition": {
-                "const": "ALLOW"
-              }
-            }
-          },
-          "execution": {
-            "properties": {
-              "executed": {
-                "const": false
               }
             }
           }

@@ -26,8 +26,13 @@ One versioned artifact across WorkSpace, MyKV, StegTalk, CryptoBot, Developer su
 
 Every artifact carries:
 
-- `outcome`: `disposition` (ALLOW | DENY | FAIL_CLOSED | UNKNOWN), `observation_state`, `outcome_class` (SUCCESS_VERIFIED | AUTHORIZED_NOT_VERIFIED | DENIED | FAILED_CLOSED | UNOBSERVED), the exact canonical `predicate` and `predicates`, and the canonical record locator.
-- `authorization` and `execution` as separate facts: `authorized`, `requested_action`, `authority_source`; `executed`, `execution_state` (VERIFIED | NOT_EXECUTED | NOT_VERIFIED), `consequence_observation`. ALLOW never implies execution; execution is VERIFIED only with receipt-class evidence and an OBSERVED consequence.
+- `outcome`: `disposition` (ALLOW | DENY | FAIL_CLOSED | UNKNOWN), `observation_state`, `outcome_class` (SUCCESS_VERIFIED | DENIED | FAILED_CLOSED | UNOBSERVED), the exact canonical `predicate` and `predicates`, and the canonical record locator.
+- `authorization` and `execution` as separate facts: `authorized`, `requested_action`, `authority_source`; `executed`, `execution_state` (VERIFIED | NOT_EXECUTED), `consequence_observation`.
+- **Receipt invariant (Task Registry `semantics.actions_by_manifest`).** Every transition, ALLOW or not, is resolved at Interlock/InTr ingress and egress and recorded by a receipt; no receipt means no action. An explanation is therefore built only from a receipt-backed outcome:
+  - ALLOW requires an OBSERVED consequence and receipt-class evidence (RECEIPT_REF, PROVENANCE_REF or DIGEST), and is always `executed: true`. The builder refuses anything else with `allow_requires_receipt`.
+  - A step with no receipt did not take place: FAIL_CLOSED (or DENY), `NOT_EXECUTED`.
+  - UNKNOWN means only that this surface does not hold the receipt; it never means an outcome is pending, and nothing waits for one.
+  - There is no authorized-but-unverified state. `AUTHORIZED_NOT_VERIFIED` and `NOT_VERIFIED` were removed in `explanation_version` 1.1.0 because they modelled ALLOW without a receipt, which the invariants prohibit.
 - `prose` (displayed by default): what happened, why, outcome summary, what was authorized, what was executed, what evidence exists, what the person can safely do next, limitations. Prose never shows raw JSON, unexplained variables or predicates as the primary experience.
 - `terminology`: every technical term with a definition (ALLOW, DENY, FAIL_CLOSED, UNKNOWN / NOT_AUTHENTICALLY_OBSERVED, predicate, manifest / ACTION BY MANIFEST, KV projection, receipt, Task Registry / COSV, Interlock / InTr, authorization versus execution) plus surface-supplied terms.
 - `evidence`: sanitized locators with descriptions only (RECEIPT_REF | PROVENANCE_REF | SOURCE_REF | PUBLIC_URL | DIGEST | NONE); never contents, never invented.
@@ -39,7 +44,7 @@ Every artifact carries:
 
 ## Cross-field rules a schema-only consumer must enforce
 
-Repair for the #3106 independent review finding `EXPLANATION_SCHEMA_CROSS_FIELD_CONSISTENCY` (comment 6111785063): the schema's `allOf` now makes the governance fields mutually constrained, so an artifact validated only against the JSON Schema cannot contradict itself. ALLOW ⇔ `authorized`; a non-ALLOW outcome has `executed: false`, `execution_state: NOT_EXECUTED` and no observed consequence; `executed: true` requires ALLOW, `SUCCESS_VERIFIED`, `VERIFIED`, `OBSERVED` observation states and receipt-class evidence (RECEIPT_REF, PROVENANCE_REF or DIGEST), and each of those markers in turn requires `executed: true`; ALLOW without execution is `AUTHORIZED_NOT_VERIFIED` / `NOT_VERIFIED`; DENY, FAIL_CLOSED and UNKNOWN map to DENIED, FAILED_CLOSED and UNOBSERVED with their observation states; `outcome.observation_state` mirrors `execution.consequence_observation`. `tests/test_user_facing_explanation.py::SchemaOnlyConsumers` holds the negative cases, checked with the dependency-free `schema_check` and with `jsonschema` when installed. The Site mirror exposes the same rules as `conforms()` and withholds a non-conforming artifact.
+Repair for the #3106 independent review finding `EXPLANATION_SCHEMA_CROSS_FIELD_CONSISTENCY` (comment 6111785063): the schema's `allOf` now makes the governance fields mutually constrained, so an artifact validated only against the JSON Schema cannot contradict itself. ALLOW ⇔ `authorized`; a non-ALLOW outcome has `executed: false`, `execution_state: NOT_EXECUTED` and no observed consequence; `executed: true` requires ALLOW, `SUCCESS_VERIFIED`, `VERIFIED`, `OBSERVED` observation states and receipt-class evidence (RECEIPT_REF, PROVENANCE_REF or DIGEST), and each of those markers in turn requires `executed: true`; ALLOW is always `executed: true` with `SUCCESS_VERIFIED`; DENY, FAIL_CLOSED and UNKNOWN map to DENIED, FAILED_CLOSED and UNOBSERVED with their observation states; `outcome.observation_state` mirrors `execution.consequence_observation`. `tests/test_user_facing_explanation.py::SchemaOnlyConsumers` holds the negative cases, checked with the dependency-free `schema_check` and with `jsonschema` when installed. The Site mirror exposes the same rules as `conforms()` and withholds a non-conforming artifact.
 
 ## Five distinctions every surface must keep
 
@@ -55,7 +60,7 @@ No layer above may stand in for a layer below it. An explanation that claims an 
 
 ## Fixtures and published examples
 
-`data/user-facing-explanation/fixtures.d/` holds five SYNTHETIC_TEST outcome records (success verified, denied with draft, fail-closed, authorized-not-verified / missing evidence, unobserved runtime). `data/user-facing-explanation/examples.d/` holds the generated artifact and prose for each; `scripts/render_user_facing_explanation_examples.py --check` proves they have not drifted. Tests: `tests/test_user_facing_explanation.py`.
+`data/user-facing-explanation/fixtures.d/` holds five SYNTHETIC_TEST outcome records (success verified, denied with draft, fail-closed, missing evidence (a step with no receipt, which did not take place), unobserved runtime (receipt not held by the surface)). `data/user-facing-explanation/examples.d/` holds the generated artifact and prose for each; `scripts/render_user_facing_explanation_examples.py --check` proves they have not drifted. Tests: `tests/test_user_facing_explanation.py`.
 
 ## Scaled-up HIL experiment
 
@@ -70,7 +75,7 @@ Dimensions: HIL-1 human effectiveness; HIL-2 ecosystem interpretability across i
 3. Pass the artifact through `validate_explanation` (or the Site mirror's equivalent) before display; refuse to display an artifact that fails.
 4. Keep the canonical disposition visible alongside the explanation; the explanation never replaces it.
 5. Never submit, execute or record from the explanation surface; a remediation draft is a proposal the person carries into the governed path.
-6. Version: `explanation_version` 1.0.0; additive changes bump the minor version and keep every required key; a removed or renamed key is a new major schema id.
+6. Version: `explanation_version` 1.1.0 (1.0.0 carried the removed authorized-but-unverified state); additive changes bump the minor version and keep every required key; a removed or renamed key is a new major schema id.
 7. Give every predicate the surface can return a plain-language reason (a reason catalog), so the prose "Why" is never only a restated predicate. A reason reads after "Because", starts lower-case, has no trailing full stop and names no predicate-shaped token; a `PREFIX:detail` predicate uses its prefix's reason. Check the catalog with `check_reason_catalog(reasons, predicates)` in `scripts/user_facing_explanation.py` (empty list = conforms), and derive `predicates` from the surface's own source in a test, so a new predicate without a reason fails CI.
 8. A producer that refuses or decides attaches an `explanation_record` to the decision itself: disposition and predicate copied from it, the requested action, `authority_source`, `consequence_observation` (`NOT_AUTHENTICALLY_OBSERVED` unless a performing component reported a receipt) and the `why` from the catalog. The record is input to the builder; it never changes the decision.
 9. Keep the technical detail: when a surface also has a technical message, show the reason first and the message after it, rather than replacing either.

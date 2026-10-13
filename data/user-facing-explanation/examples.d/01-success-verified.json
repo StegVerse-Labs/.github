@@ -31,7 +31,7 @@
     "execution_state": "VERIFIED"
   },
   "explanation_type": "OUTCOME_EXPLANATION",
-  "explanation_version": "1.0.0",
+  "explanation_version": "1.1.0",
   "llm_interpretation": {
     "instructions": [
       "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
@@ -70,7 +70,7 @@
     ],
     "outcome_summary": "Succeeded and verified.",
     "what_evidence_exists": "Evidence is referenced by locator: Projection metadata provenance stamped by the reader (kv-workspace-projection-source:sha256:fixture0000000000000000000000000000000000000000000000000000000); Synthetic delivery receipt for the admitted query (fixture://receipts/device-kv/workspace-personal-projection.json).",
-    "what_happened": "The request 'Read your Personal KV Workspace projection' was authorized and its execution was observed.",
+    "what_happened": "The request 'Read your Personal KV Workspace projection' was admitted and the transition took place; its receipt is listed.",
     "what_was_authorized": "The action 'Read your Personal KV Workspace projection' was authorized by INTERLOCK_INTR under the condition PERSONAL_KV_PROJECTION_ADMITTED.",
     "what_was_executed": "The action was executed and its consequence was observed by the component that performed it.",
     "what_you_can_safely_do_next": [
@@ -98,7 +98,7 @@
   },
   "terminology": [
     {
-      "definition": "The governed decision admitted the requested action. ALLOW is an authorization, not proof that the action ran or that its consequence happened.",
+      "definition": "The manifest-bound state transition was admitted and took place. Every transition, ALLOW or not, is resolved at Interlock/InTr ingress and egress and recorded by a receipt; the receipt is the record that it happened.",
       "term": "ALLOW"
     },
     {
@@ -110,7 +110,7 @@
       "term": "FAIL_CLOSED"
     },
     {
-      "definition": "No authentic runtime observation exists for this outcome. The surface reports what it could not see rather than guessing.",
+      "definition": "This surface does not hold the receipt for the outcome. It reports what it does not hold rather than guessing. The outcome itself is not pending: every transition has a receipt, and if no receipt exists, no action occurred.",
       "term": "UNKNOWN / NOT_AUTHENTICALLY_OBSERVED"
     },
     {

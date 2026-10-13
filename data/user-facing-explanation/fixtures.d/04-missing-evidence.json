@@ -1,18 +1,18 @@
 {
   "schema": "stegverse.user-facing-explanation-fixture/v1",
-  "fixture_id": "UFE-FIXTURE-AUTHORIZED-NOT-VERIFIED-001",
+  "fixture_id": "UFE-FIXTURE-MISSING-EVIDENCE-002",
   "evidence_class": "SYNTHETIC_TEST",
-  "note": "Synthetic fixture: authorized, but the performing component has produced no receipt. Authorization is not execution.",
+  "note": "Synthetic fixture: the persistence step has no receipt, so it did not take place. Every transition, ALLOW or not, is recorded by a receipt; there is no authorized-but-pending state (replaces UFE-FIXTURE-AUTHORIZED-NOT-VERIFIED-001, which modelled a state the Task Registry invariants prohibit).",
   "surface": {"repository": "StegVerse-Labs/crypto-bot", "surface_id": "workspace-portfolio-projection", "surface_version": "fixture"},
   "outcome": {
-    "disposition": "ALLOW",
-    "predicate": "PORTFOLIO_PROJECTION_PRODUCED",
+    "disposition": "FAIL_CLOSED",
+    "predicate": "KV_PERSISTENCE_RECEIPT_ABSENT",
     "requested_action": "Persist the CryptoBot portfolio projection into your Personal KV",
     "authority_source": "MANIFEST",
     "consequence_observation": "NOT_AUTHENTICALLY_OBSERVED",
-    "why": "the projection producer ran and its manifest was admitted, but the authorized KV writer that persists projections has not reported a readback receipt",
+    "why": "there is no receipt for persisting the projection into your Personal KV, so that write did not take place; a write that had taken place would carry its receipt",
     "evidence": [
-      {"kind": "SOURCE_REF", "ref": "StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py", "description": "The producer whose output would be persisted"}
+      {"kind": "SOURCE_REF", "ref": "StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py", "description": "The producer whose output was not persisted"}
     ]
   }
 }

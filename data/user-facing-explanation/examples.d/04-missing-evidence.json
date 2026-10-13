@@ -7,13 +7,13 @@
   },
   "authorization": {
     "authority_source": "MANIFEST",
-    "authorized": true,
+    "authorized": false,
     "requested_action": "Persist the CryptoBot portfolio projection into your Personal KV"
   },
   "ecosystem_identifier": "STEGVERSE",
   "evidence": [
     {
-      "description": "The producer whose output would be persisted",
+      "description": "The producer whose output was not persisted",
       "kind": "SOURCE_REF",
       "ref": "StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py",
       "sanitized": true
@@ -22,10 +22,10 @@
   "execution": {
     "consequence_observation": "NOT_AUTHENTICALLY_OBSERVED",
     "executed": false,
-    "execution_state": "NOT_VERIFIED"
+    "execution_state": "NOT_EXECUTED"
   },
   "explanation_type": "OUTCOME_EXPLANATION",
-  "explanation_version": "1.0.0",
+  "explanation_version": "1.1.0",
   "llm_interpretation": {
     "instructions": [
       "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
@@ -47,12 +47,12 @@
   },
   "outcome": {
     "canonical_record_ref": null,
-    "disposition": "ALLOW",
+    "disposition": "FAIL_CLOSED",
     "observation_state": "NOT_AUTHENTICALLY_OBSERVED",
-    "outcome_class": "AUTHORIZED_NOT_VERIFIED",
-    "predicate": "PORTFOLIO_PROJECTION_PRODUCED",
+    "outcome_class": "FAILED_CLOSED",
+    "predicate": "KV_PERSISTENCE_RECEIPT_ABSENT",
     "predicates": [
-      "PORTFOLIO_PROJECTION_PRODUCED"
+      "KV_PERSISTENCE_RECEIPT_ABSENT"
     ]
   },
   "prose": {
@@ -61,16 +61,17 @@
       "Nothing in this artifact can authorize, execute, verify or record a transition.",
       "Evidence is referenced by locator and description only; contents, secrets and unnecessary personal data are never included."
     ],
-    "outcome_summary": "Authorized; execution not verified.",
-    "what_evidence_exists": "Evidence is referenced by locator: The producer whose output would be persisted (StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py).",
-    "what_happened": "The request 'Persist the CryptoBot portfolio projection into your Personal KV' was authorized, but no authentic observation of its execution exists yet.",
-    "what_was_authorized": "The action 'Persist the CryptoBot portfolio projection into your Personal KV' was authorized by MANIFEST under the condition PORTFOLIO_PROJECTION_PRODUCED.",
-    "what_was_executed": "Nothing is known to have been executed: no receipt from the performing component has been observed. Authorization is not execution.",
+    "outcome_summary": "Failed closed; nothing was executed.",
+    "what_evidence_exists": "Evidence is referenced by locator: The producer whose output was not persisted (StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py).",
+    "what_happened": "The request 'Persist the CryptoBot portfolio projection into your Personal KV' could not be evaluated because a required prerequisite is not established, so the system refused to act.",
+    "what_was_authorized": "Nothing was authorized. The governance path returned FAIL_CLOSED on KV_PERSISTENCE_RECEIPT_ABSENT, which names the missing prerequisite.",
+    "what_was_executed": "Nothing was executed and no state changed. Failing closed is the designed behaviour when a prerequisite is missing, not a fault in the request.",
     "what_you_can_safely_do_next": [
-      "Treat the action as not yet done until the receipt of the component that performs it exists; nothing waits on that receipt.",
-      "Do not repeat the request to force a result; a duplicate request is a separate governed decision."
+      "Nothing happened; your data and state are unchanged.",
+      "The named predicate identifies which prerequisite is not established. Its owner, not this surface, establishes it.",
+      "You may retry after the prerequisite is established; retrying now returns the same outcome."
     ],
-    "why": "Because the projection producer ran and its manifest was admitted, but the authorized KV writer that persists projections has not reported a readback receipt."
+    "why": "Because there is no receipt for persisting the projection into your Personal KV, so that write did not take place; a write that had taken place would carry its receipt."
   },
   "recognition_probe": {
     "literal": "STEGVERSE_ECOSYSTEM_KNOWLEDGE_PROBE_V1",
@@ -91,7 +92,7 @@
   },
   "terminology": [
     {
-      "definition": "The governed decision admitted the requested action. ALLOW is an authorization, not proof that the action ran or that its consequence happened.",
+      "definition": "The manifest-bound state transition was admitted and took place. Every transition, ALLOW or not, is resolved at Interlock/InTr ingress and egress and recorded by a receipt; the receipt is the record that it happened.",
       "term": "ALLOW"
     },
     {
@@ -103,7 +104,7 @@
       "term": "FAIL_CLOSED"
     },
     {
-      "definition": "No authentic runtime observation exists for this outcome. The surface reports what it could not see rather than guessing.",
+      "definition": "This surface does not hold the receipt for the outcome. It reports what it does not hold rather than guessing. The outcome itself is not pending: every transition has a receipt, and if no receipt exists, no action occurred.",
       "term": "UNKNOWN / NOT_AUTHENTICALLY_OBSERVED"
     },
     {
