@@ -109,6 +109,16 @@ jobs:
           python -m pip install --no-deps "$source"
           python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE" evaluator --installed --source "$source"
 
+      - name: Fetch the pinned remediation classifier (StegVerse-Healer)
+        # StegHealer's classifier for remediation lanes addressed to
+        # stegverse-labs.remediation, fetched anonymously at the commit
+        # org-runtime/remediation-classifier.json pins (public repository; no
+        # credential). It is stdlib-only and loaded from that checkout; nothing
+        # is installed. A run that cannot fetch it fails before the cycle.
+        run: >-
+          python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
+          classifier-fetch
+
       - name: Run the cycle
         env:
           STEGVERSE_REPO_LEDGER_ROOT: ${{ runner.temp }}/repo-ledger

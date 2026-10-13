@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.organization-remediation-classifier-pin/v1",
+  "organization": "StegVerse-Labs",
+  "service_id": "stegverse-labs.remediation",
+  "classifier": "app/manifest_remediation_intake.py::classify_sdk_deny",
+  "repository": "StegVerse-Labs/StegVerse-Healer",
+  "commit": "fb1649e11a0b4150fd41e024121296961d698dcd",
+  "materialized_path": ".stegverse/remediation-classifier/StegVerse-Healer",
+  "classification_grants_authority": false,
+  "classification_receipt_class": "REMEDIATION_CLASSIFIED",
+  "read_credential": {
+    "authority": "NONE",
+    "repository_visibility": "PUBLIC",
+    "fetch": "ANONYMOUS_PINNED_COMMIT",
+    "repository_secret_allowed": false,
+    "github_generated_token_allowed": false
+  },
+  "nonclaims": [
+    "the pin is not a classification",
+    "a run without the pinned checkout records FAIL_CLOSED for every remediation lane it receives; nothing is guessed",
+    "StegHealer classifies only: it never alters, changes or creates a manifest, and its classification grants no authority"
+  ]
+}
