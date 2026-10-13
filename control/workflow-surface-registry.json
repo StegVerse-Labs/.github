@@ -108,7 +108,7 @@
       "path": ".github/workflows/organization-governance-decision.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SDK-MR-A-VALIDATION-CUSTODY-001 / StegVerse-Labs/.github#3099",
-      "reason": "workflow_dispatch-only materialization of this organization's governance endpoint for a mesh locator the materializer supplies: reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
+      "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
     }
   ],
   "removed_in_hygiene_batch_1": [
