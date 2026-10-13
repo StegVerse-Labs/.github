@@ -54,3 +54,11 @@ The Task Registry mints no execution authority. Worker claims belong to WorkerCo
 ## Human action
 
 None.
+
+## 2026-10-13 T5 orchestrator evidence reconciliation (non-authorizing)
+
+- TVC PR #516 merged at `5920219b8ca889cb535a5a16f88baf9aa1a0dec8`; workflow run [38445583415](https://github.com/StegVerse-Labs/TVC/actions/runs/38445583415) completed with `orchestrate=success` and artifact `tv-tvc-service-bundle` (artifact ID 11837998718, ZIP digest `sha256:ea3a1b8965d98ca48de6ccea00e908eb5d2816f8cdc306fc9acb238d3f17b5a7`).
+- The downloaded bundle's `service_receipt.execution_result.status` is `SERVICE_CONTRACT_ACCEPTED`, while `authority_evidence.final_authority=false`, `service_receipt.authority_final=false`, `master_record_authorized=false`, and `admissibility_result.decision=PENDING_CGE`. Thus schema normalization and contract processing succeeded; authenticated source attestation was NOT established. The previous `BLOCKED_DEPENDENCY` receipt is not superseded by an authenticated ALLOW.
+- Owner reports StegCore DENY (Labs receipt prefix `103ce892`) and pending federation return to the StegVerse-org ledger. This pass did not independently locate the complete DENY receipt or verify final return readback; preserve as REPORTED_NOT_INDEPENDENTLY_VERIFIED pending authentic ledger lookup.
+- The canonical record still says `ACTIVE / UNCLAIMED` and `worker_claim.claim_ref=null`; a WorkerCoordinator grant is not evidenced. Candidate hash prefix `8148ea44` has a reported REVIEW requirement; no bound owner approval verified.
+- Remediation order: (1) verify exact StegCore DENY predicates and both ledger readbacks; (2) obtain manifest-bound WorkerCoordinator actor/delegation evidence; (3) bind explicit human approval to the complete candidate digest; (4) have TV/TVC credential authority resolve private catalog/credential activation through an authorized resident custody interface, without imposing an external machine; (5) retry only under the resulting authorized manifest and reconcile Master Records. Do not reinterpret `SERVICE_CONTRACT_ACCEPTED` as provenance attestation or fabricate an ALLOW.
