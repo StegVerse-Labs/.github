@@ -25,9 +25,11 @@ def build(stem: str) -> dict:
 
 
 class FixturesBuildAndValidate(unittest.TestCase):
-    def test_five_outcome_classes_present(self):
+    def test_outcome_classes_present(self):
+        # Task Registry invariant: every transition, ALLOW or not, has a receipt. There is no authorized-but-pending
+        # class; the missing-evidence fixture is a step that did not take place (FAILED_CLOSED).
         classes = {build(p.stem)["outcome"]["outcome_class"] for p in FIXTURES}
-        self.assertEqual(classes, {"SUCCESS_VERIFIED", "AUTHORIZED_NOT_VERIFIED", "DENIED", "FAILED_CLOSED", "UNOBSERVED"})
+        self.assertEqual(classes, {"SUCCESS_VERIFIED", "DENIED", "FAILED_CLOSED", "UNOBSERVED"})
 
     def test_artifact_keys_match_schema_exactly(self):
         for p in FIXTURES:
@@ -40,12 +42,7 @@ class FixturesBuildAndValidate(unittest.TestCase):
         s = build("01-success-verified")
         self.assertTrue(s["authorization"]["authorized"] and s["execution"]["executed"])
         self.assertEqual(s["execution"]["execution_state"], "VERIFIED")
-        m = build("04-missing-evidence")
-        self.assertTrue(m["authorization"]["authorized"])
-        self.assertFalse(m["execution"]["executed"])
-        self.assertEqual(m["execution"]["execution_state"], "NOT_VERIFIED")
-        self.assertEqual(m["outcome"]["outcome_class"], "AUTHORIZED_NOT_VERIFIED")
-        for stem in ("02-denied", "03-fail-closed", "05-unobserved-runtime"):
+        for stem in ("02-denied", "03-fail-closed", "04-missing-evidence", "05-unobserved-runtime"):
             a = build(stem)
             self.assertFalse(a["authorization"]["authorized"])
             self.assertFalse(a["execution"]["executed"])
@@ -58,7 +55,7 @@ class FixturesBuildAndValidate(unittest.TestCase):
                 self.assertIn(heading, text)
             self.assertNotIn("{", text)
         self.assertIn("Failing closed is the designed behaviour", U.render_prose(build("03-fail-closed")))
-        self.assertIn("Authorization is not execution", U.render_prose(build("04-missing-evidence")))
+        self.assertIn("did not take place", U.render_prose(build("04-missing-evidence")))
         self.assertIn("not success, not failure", U.render_prose(build("05-unobserved-runtime")).lower())
 
     def test_lower_case_producer_predicates_are_copied_verbatim(self):
@@ -112,7 +109,11 @@ class Refusals(unittest.TestCase):
         base = fixture("03-fail-closed")["outcome"]
         self.refuse(dict(base, api_token="x"), "secret_material_present:api_token")
         self.refuse(dict(base, evidence=[{"kind": "SOURCE_REF", "ref": "Bearer abcdef", "description": "d"}]), "secret_material_present")
-        self.refuse(dict(base, disposition="ALLOW", consequence_observation="OBSERVED"), "observed_execution_requires_receipt_evidence")
+        self.refuse(dict(base, disposition="ALLOW", consequence_observation="OBSERVED"), "allow_requires_receipt")
+        # ALLOW without its receipt does not exist: no observation, or no receipt-class evidence, is refused.
+        receipt = [{"kind": "RECEIPT_REF", "ref": "receipt:1", "description": "d"}]
+        self.refuse(dict(base, disposition="ALLOW", consequence_observation="NOT_AUTHENTICALLY_OBSERVED", evidence=receipt), "allow_requires_receipt")
+        self.refuse(dict(base, disposition="ALLOW", consequence_observation="UNKNOWN", evidence=receipt), "allow_requires_receipt")
         self.refuse(dict(base, consequence_observation="OBSERVED"), "non_allow_cannot_observe_consequence")
         self.refuse(dict(base, remediation_draft={"submitted": True}), "remediation_draft_must_be_unsubmitted")
         self.refuse(dict(base, remediation_draft={"submitted": False, "manifest_admitted": True}), "remediation_draft_must_not_be_admitted")
@@ -248,14 +249,15 @@ class SchemaOnlyConsumers(unittest.TestCase):
             "deny_observation_observed": m(den, lambda x: x["outcome"].__setitem__("observation_state", "OBSERVED")),
             "deny_authorized_true": m(den, lambda x: x["authorization"].__setitem__("authorized", True)),
             "deny_execution_not_verified": m(den, lambda x: x["execution"].__setitem__("execution_state", "NOT_VERIFIED")),
+            "authorized_not_verified_class": m(den, lambda x: x["outcome"].__setitem__("outcome_class", "AUTHORIZED_NOT_VERIFIED")),
             "deny_class_failed_closed": m(den, lambda x: x["outcome"].__setitem__("outcome_class", "FAILED_CLOSED")),
             "fail_closed_observation_unknown": m(fc, lambda x: x["outcome"].__setitem__("observation_state", "UNKNOWN")),
             "unknown_class_denied": m(unk, lambda x: x["outcome"].__setitem__("outcome_class", "DENIED")),
             "success_without_receipt_evidence": m(suc, lambda x: x.__setitem__("evidence", [{"kind": "SOURCE_REF", "ref": "x", "description": "d", "sanitized": True}])),
             "success_executed_false": m(suc, lambda x: x["execution"].__setitem__("executed", False)),
             "allow_not_executed_success_class": m(suc, lambda x: (x["execution"].__setitem__("executed", False), x["execution"].__setitem__("execution_state", "NOT_VERIFIED"), x["execution"].__setitem__("consequence_observation", "UNKNOWN"), x["outcome"].__setitem__("observation_state", "UNKNOWN"))),
-            "allow_not_executed_state_not_executed": m(build("04-missing-evidence"), lambda x: x["execution"].__setitem__("execution_state", "NOT_EXECUTED")),
-            "observation_state_mismatch": m(build("04-missing-evidence"), lambda x: x["outcome"].__setitem__("observation_state", "UNKNOWN")),
+            "allow_without_execution": m(suc, lambda x: (x["execution"].__setitem__("executed", False), x["execution"].__setitem__("execution_state", "NOT_EXECUTED"), x["execution"].__setitem__("consequence_observation", "NOT_AUTHENTICALLY_OBSERVED"), x["outcome"].__setitem__("observation_state", "NOT_AUTHENTICALLY_OBSERVED"))),
+            "observation_state_mismatch": m(fc, lambda x: x["outcome"].__setitem__("observation_state", "UNKNOWN")),
         }
 
     def test_schema_check_rejects_contradictory_artifacts(self):

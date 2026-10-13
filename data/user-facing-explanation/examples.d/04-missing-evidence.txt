@@ -1,12 +1,13 @@
-What happened: The request 'Persist the CryptoBot portfolio projection into your Personal KV' was authorized, but no authentic observation of its execution exists yet.
-Why: Because the projection producer ran and its manifest was admitted, but the authorized KV writer that persists projections has not reported a readback receipt.
-Outcome: Authorized; execution not verified.
-What was authorized: The action 'Persist the CryptoBot portfolio projection into your Personal KV' was authorized by MANIFEST under the condition PORTFOLIO_PROJECTION_PRODUCED.
-What was executed: Nothing is known to have been executed: no receipt from the performing component has been observed. Authorization is not execution.
-What evidence exists: Evidence is referenced by locator: The producer whose output would be persisted (StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py).
+What happened: The request 'Persist the CryptoBot portfolio projection into your Personal KV' could not be evaluated because a required prerequisite is not established, so the system refused to act.
+Why: Because there is no receipt for persisting the projection into your Personal KV, so that write did not take place; a write that had taken place would carry its receipt.
+Outcome: Failed closed; nothing was executed.
+What was authorized: Nothing was authorized. The governance path returned FAIL_CLOSED on KV_PERSISTENCE_RECEIPT_ABSENT, which names the missing prerequisite.
+What was executed: Nothing was executed and no state changed. Failing closed is the designed behaviour when a prerequisite is missing, not a fault in the request.
+What evidence exists: Evidence is referenced by locator: The producer whose output was not persisted (StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py).
 What you can safely do next:
-  - Treat the action as not yet done until the receipt of the component that performs it exists; nothing waits on that receipt.
-  - Do not repeat the request to force a result; a duplicate request is a separate governed decision.
+  - Nothing happened; your data and state are unchanged.
+  - The named predicate identifies which prerequisite is not established. Its owner, not this surface, establishes it.
+  - You may retry after the prerequisite is established; retrying now returns the same outcome.
 Limitations:
   - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
   - Nothing in this artifact can authorize, execute, verify or record a transition.

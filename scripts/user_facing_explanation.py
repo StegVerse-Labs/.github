@@ -28,7 +28,7 @@ from typing import Any
 SCHEMA = "stegverse.user-facing-explanation/v1"
 SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schemas" / "user-facing-explanation.v1.schema.json"
 ECOSYSTEM_IDENTIFIER = "STEGVERSE"
-EXPLANATION_VERSION = "1.0.0"
+EXPLANATION_VERSION = "1.1.0"
 RECOGNITION_PROBE_LITERAL = "STEGVERSE_ECOSYSTEM_KNOWLEDGE_PROBE_V1"
 RECOGNITION_PROBE_STATUS = "CANDIDATE_NOT_CANONICAL"
 
@@ -55,18 +55,16 @@ SECRET_VALUE_RE = re.compile(
 
 OUTCOME_CLASSES = {
     ("ALLOW", "OBSERVED"): "SUCCESS_VERIFIED",
-    ("ALLOW", "NOT_AUTHENTICALLY_OBSERVED"): "AUTHORIZED_NOT_VERIFIED",
-    ("ALLOW", "UNKNOWN"): "AUTHORIZED_NOT_VERIFIED",
     ("DENY", None): "DENIED",
     ("FAIL_CLOSED", None): "FAILED_CLOSED",
     ("UNKNOWN", None): "UNOBSERVED",
 }
 
 BASE_TERMINOLOGY = [
-    ("ALLOW", "The governed decision admitted the requested action. ALLOW is an authorization, not proof that the action ran or that its consequence happened."),
+    ("ALLOW", "The manifest-bound state transition was admitted and took place. Every transition, ALLOW or not, is resolved at Interlock/InTr ingress and egress and recorded by a receipt; the receipt is the record that it happened."),
     ("DENY", "The governed decision refused the requested action because a stated condition (predicate) failed. Nothing was executed."),
     ("FAIL_CLOSED", "The system could not establish a required condition and therefore refused to act. Fail-closed means 'when unsure, do nothing'; it is not an error in the person's request."),
-    ("UNKNOWN / NOT_AUTHENTICALLY_OBSERVED", "No authentic runtime observation exists for this outcome. The surface reports what it could not see rather than guessing."),
+    ("UNKNOWN / NOT_AUTHENTICALLY_OBSERVED", "This surface does not hold the receipt for the outcome. It reports what it does not hold rather than guessing. The outcome itself is not pending: every transition has a receipt, and if no receipt exists, no action occurred."),
     ("predicate", "A named condition the governance path evaluated, written in UPPER_SNAKE_CASE. The failing predicate names exactly which condition was not met."),
     ("manifest / ACTION BY MANIFEST", "Every StegVerse action is requested through a manifest that is evaluated by governance before anything runs. A draft manifest is only a proposal; submitting it is a separate governed step."),
     ("KV projection", "A read-only, authenticated view of the person's own sovereign KnowledgeVault (KV) state. Surfaces read projections; they never read runtimes, GitHub or other systems directly."),
@@ -102,10 +100,9 @@ LIMITATIONS = [
 
 SAFE_NEXT_DEFAULT = {
     "SUCCESS_VERIFIED": ["Review the evidence locators listed; they identify the receipt that shows the action was performed.", "No further action is required for this outcome."],
-    "AUTHORIZED_NOT_VERIFIED": ["Treat the action as not yet done until the receipt of the component that performs it exists; nothing waits on that receipt.", "Do not repeat the request to force a result; a duplicate request is a separate governed decision."],
     "DENIED": ["Read the failing predicate: it names the exact condition that was not met.", "If a remediation draft is offered, you may submit it through the governed path; submission is a separate decision and may itself be denied."],
     "FAILED_CLOSED": ["Nothing happened; your data and state are unchanged.", "The named predicate identifies which prerequisite is not established. Its owner, not this surface, establishes it.", "You may retry after the prerequisite is established; retrying now returns the same outcome."],
-    "UNOBSERVED": ["Treat the outcome as unknown, not as success and not as failure.", "Look for the canonical receipt by its locator when one is listed; if none is listed, no component has reported."],
+    "UNOBSERVED": ["Treat the outcome as unknown to this surface, not as success and not as failure.", "Look up the receipt by its locator when one is listed; every transition, ALLOW or not, has a receipt, and if none exists no action occurred."],
 }
 
 
@@ -195,22 +192,16 @@ def _prose(outcome_class: str, action: str, predicate: str, authority_source: st
     ev = ("Evidence is referenced by locator: " + "; ".join(e["description"] + (" (" + e["ref"] + ")" if e["ref"] else "") for e in evidence) + ".") if evidence else "No evidence record is referenced for this outcome; nothing has been produced by a component that performs or refuses this action."
     default_reason = {
         "SUCCESS_VERIFIED": "the condition " + predicate + " was satisfied and the performing component reported its receipt",
-        "AUTHORIZED_NOT_VERIFIED": "the condition " + predicate + " was satisfied, but no receipt from the performing component has been observed",
         "DENIED": "the condition " + predicate + " failed",
         "FAILED_CLOSED": "the prerequisite named by " + predicate + " is not established, and the system never acts on an unestablished prerequisite",
-        "UNOBSERVED": "no authentic observation reached this surface; the reported condition is " + predicate,
+        "UNOBSERVED": "this surface does not hold the receipt for this outcome; the reported condition is " + predicate,
     }[outcome_class]
     reason = why or default_reason
     if outcome_class == "SUCCESS_VERIFIED":
-        what = "The request '" + action + "' was authorized and its execution was observed."
+        what = "The request '" + action + "' was admitted and the transition took place; its receipt is listed."
         summary = "Succeeded and verified."
         authorized = "The action '" + action + "' was authorized by " + authority_source + " under the condition " + predicate + "."
         executed = "The action was executed and its consequence was observed by the component that performed it."
-    elif outcome_class == "AUTHORIZED_NOT_VERIFIED":
-        what = "The request '" + action + "' was authorized, but no authentic observation of its execution exists yet."
-        summary = "Authorized; execution not verified."
-        authorized = "The action '" + action + "' was authorized by " + authority_source + " under the condition " + predicate + "."
-        executed = "Nothing is known to have been executed: no receipt from the performing component has been observed. Authorization is not execution."
     elif outcome_class == "DENIED":
         what = "The request '" + action + "' was refused."
         summary = "Denied; nothing was executed."
@@ -222,10 +213,10 @@ def _prose(outcome_class: str, action: str, predicate: str, authority_source: st
         authorized = "Nothing was authorized. The governance path returned FAIL_CLOSED on " + predicate + ", which names the missing prerequisite."
         executed = "Nothing was executed and no state changed. Failing closed is the designed behaviour when a prerequisite is missing, not a fault in the request."
     else:
-        what = "The outcome of the request '" + action + "' is unknown: no authentic observation of a decision or an execution exists."
-        summary = "Unknown; not success, not failure."
-        authorized = "No authorization is known. The reported condition is " + predicate + "."
-        executed = "No execution is known. Treat the action as not done until a receipt is observed."
+        what = "The outcome of the request '" + action + "' is unknown to this surface: it does not hold the receipt."
+        summary = "Unknown to this surface; not success, not failure."
+        authorized = "This surface holds no receipt showing an authorization. The reported condition is " + predicate + "."
+        executed = "This surface holds no receipt showing an execution. Every transition has a receipt; if none exists, no action occurred."
     steps = list(next_steps) if next_steps else list(SAFE_NEXT_DEFAULT[outcome_class])
     if draft_present:
         steps.append("An unsubmitted remediation draft is attached; it proposes nothing until you submit it through the governed path, where it receives its own decision.")
@@ -270,12 +261,16 @@ def build_explanation(record: dict[str, Any], *, surface: dict[str, Any], termin
     if disposition != "ALLOW":
         _require(observation != "OBSERVED", "non_allow_cannot_observe_consequence")
     evidence = _evidence(record.get("evidence"))
-    if disposition == "ALLOW" and observation == "OBSERVED":
-        _require(any(e["kind"] in ("RECEIPT_REF", "PROVENANCE_REF", "DIGEST") for e in evidence), "observed_execution_requires_receipt_evidence")
+    if disposition == "ALLOW":
+        # Task Registry invariant (semantics.actions_by_manifest): a transition resolves to ALLOW or non-ALLOW at
+        # Interlock/InTr ingress and egress, and the receipt is that resolution. ALLOW without its receipt does not
+        # exist, so there is no "authorized but not yet executed" outcome to explain.
+        _require(observation == "OBSERVED", "allow_requires_receipt")
+        _require(any(e["kind"] in ("RECEIPT_REF", "PROVENANCE_REF", "DIGEST") for e in evidence), "allow_requires_receipt")
     outcome_class = OUTCOME_CLASSES[(disposition, observation if disposition == "ALLOW" else None)]
     authorized = disposition == "ALLOW"
     executed = disposition == "ALLOW" and observation == "OBSERVED"
-    execution_state = "VERIFIED" if executed else ("NOT_VERIFIED" if authorized else "NOT_EXECUTED")
+    execution_state = "VERIFIED" if executed else "NOT_EXECUTED"
     why = record.get("why")
     _require(why is None or (isinstance(why, str) and why.strip() != ""), "why_invalid")
     next_steps = record.get("safe_next_steps")

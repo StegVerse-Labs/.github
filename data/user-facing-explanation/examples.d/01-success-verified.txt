@@ -1,4 +1,4 @@
-What happened: The request 'Read your Personal KV Workspace projection' was authorized and its execution was observed.
+What happened: The request 'Read your Personal KV Workspace projection' was admitted and the transition took place; its receipt is listed.
 Why: Because the DEVICE_KV query was admitted through the sovereign InTr ingress and the projection reader returned its provenance-stamped result.
 Outcome: Succeeded and verified.
 What was authorized: The action 'Read your Personal KV Workspace projection' was authorized by INTERLOCK_INTR under the condition PERSONAL_KV_PROJECTION_ADMITTED.
