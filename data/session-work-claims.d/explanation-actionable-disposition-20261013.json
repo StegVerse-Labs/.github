@@ -4,7 +4,7 @@
   "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/.github#3106",
-  "state": "CLAIMED",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT_TOOLING",
   "branch": "claude/3106-explanation-actionable-disposition",
   "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
@@ -25,5 +25,13 @@
     "Site mirror and producers updated in paired PRs"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3179",
+  "merged_commit": "e9fe46bc7f6fe4449739e47846ae951de4251400",
+  "claim_released_at_basis": "merge of #3179 at its exact head ca45dff3",
+  "paired_prs": {
+    "StegVerse-Labs/Site#1589": "90c5db7a6ee9d68b5e587f12a39a2532ba32c286",
+    "StegVerse-Labs/continuity-vault-kit#253": "b3b5dae109e28cbb553added902a2039b1f1be01",
+    "StegVerse-Labs/crypto-bot#48": "a51b552f918e77987d95bf9679a1f079093f8f2d"
+  }
 }
