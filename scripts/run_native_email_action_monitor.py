@@ -28,11 +28,11 @@ if str(SCRIPT_DIR) not in sys.path:
 from normalize_github_failure_email_events import incident_id, signature  # noqa: E402
 
 INBOX_QUERY = (
-    '-in:spam -in:trash (from:notifications@github.com OR from:noreply@github.com '
+    'in:inbox -in:spam -in:trash (from:notifications@github.com OR from:noreply@github.com '
     'OR subject:"[Task Update]")'
 )
 ACTIONABLE_QUERY = (
-    '-in:spam -in:trash (subject:"[Task Update]" OR from:notifications@github.com OR from:noreply@github.com) '
+    'in:inbox -in:spam -in:trash (subject:"[Task Update]" OR from:notifications@github.com OR from:noreply@github.com) '
     '(failed OR failure OR "requires handoff" OR "requires reconciliation" OR '
     '"not evidence promotable" OR "needs attention" OR blocker OR blocked)'
 )
@@ -206,6 +206,22 @@ def archived_replay_page(broker: Broker, checkpoint_path: Path) -> dict[str, Any
                 }
             write_json(checkpoint_path, checkpoint)
 
+    if checkpoint.get("awaiting_ack") is True:
+        # An unacknowledged StegHealth page must never be fetched again or
+        # replaced by a newer provider page. Keep the persisted batch hash
+        # until the exact acknowledgement is durably observed.
+        return {
+            "state": "AWAITING_STEGHEALTH_ACK",
+            "complete": False,
+            "incidents": [],
+            "checkpoint_ref": str(checkpoint_path),
+            "ack_ref": str(ack_path),
+            "batch_hash": checkpoint.get("pending_batch_hash"),
+            "ack_required": True,
+            "mailbox_mutation_performed": False,
+            "archive_operation_performed": False,
+        }
+
     token = checkpoint.get("current_page_token")
     payload: dict[str, Any] = {
         "query": ARCHIVED_REPLAY_QUERY,
@@ -219,6 +235,21 @@ def archived_replay_page(broker: Broker, checkpoint_path: Path) -> dict[str, Any
     next_token = inspected.get("next_page_token")
     require(next_token is None or isinstance(next_token, str), "archived replay next_page_token invalid")
     incidents = cluster_incidents(messages)
+
+    if next_token:
+        require(next_token != token, "ARCHIVED_REPLAY_CURSOR_NOT_ADVANCING")
+
+    if not messages and next_token:
+        # A provider may return an empty page with a continuation cursor.
+        # Never declare replay complete while the cursor remains live.
+        checkpoint["current_page_token"] = next_token
+        checkpoint["next_page_token"] = None
+        checkpoint["page_index"] = int(checkpoint.get("page_index") or 0) + 1
+        checkpoint["state"] = "PENDING"
+        write_json(checkpoint_path, checkpoint)
+        return {"state": "PENDING", "complete": False, "incidents": [],
+                "checkpoint_ref": str(checkpoint_path), "next_page_token_present": True,
+                "mailbox_mutation_performed": False, "archive_operation_performed": False}
 
     if not messages:
         checkpoint["state"] = "COMPLETE"
@@ -303,6 +334,36 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
     ids = exact.get("message_ids")
     require(isinstance(ids, list) and all(isinstance(v, str) and v for v in ids), "broker message_ids invalid")
     require(len(ids) <= batch_limit, "broker exceeded bounded batch")
+    require(len(ids) == len(set(ids)), "LIVE_INBOX_DUPLICATE_MESSAGE_IDS")
+    # Never archive a partial live-inbox page. Page tokens are an observation
+    # boundary, not an authorization to mutate unseen messages.
+    messages_more = inspected.get("next_page_token")
+    ids_more = exact.get("next_page_token")
+    require(messages_more is None or (isinstance(messages_more, str) and bool(messages_more)),
+            "LIVE_INBOX_MESSAGE_CURSOR_INVALID")
+    require(ids_more is None or (isinstance(ids_more, str) and bool(ids_more)),
+            "LIVE_INBOX_ID_CURSOR_INVALID")
+    if messages_more or ids_more:
+        return {
+            "state": "PAGINATION_INCOMPLETE_FAIL_CLOSED",
+            "provider": inspected.get("provider"),
+            "bounded_batch_limit": batch_limit,
+            "operational_query": INBOX_QUERY,
+            "inspected_visible_count": len(messages),
+            "processed_exact_count": 0,
+            "archived_count": 0,
+            "archive_failed_count": 0,
+            "archive_failed_ids": [],
+            "retained_unverified_count": len(ids),
+            "archive_authorization": "DENIED_UNTIL_COMPLETE_PAGINATION",
+            "incidents": cluster_incidents(messages),
+            "actionable_returned_count": 0,
+            "actionable_more_than_returned": True,
+            "actionable_minimum": 0,
+            "inbox": {"messagesTotal": None, "messagesUnread": None},
+            "failed_predicate": "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED",
+            "continuation_required": True,
+        }
     incidents = cluster_incidents(messages)
     # Archive only IDs bound to verified resolution; everything else stays in INBOX.
     to_archive = [v for v in ids if v in authorized_archive_ids]
@@ -315,12 +376,20 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
         failed = archive.get("failed_ids", [])
         require(isinstance(archived, list), "broker archived_ids invalid")
         require(isinstance(failed, list), "broker failed_ids invalid")
+        require(all(isinstance(v, str) and v for v in archived + failed), "archive result identity invalid")
+        require(len(archived) == len(set(archived)) and len(failed) == len(set(failed)), "archive result duplicate identity")
         require(set(archived).isdisjoint(set(failed)), "archive result overlap")
         require(set(archived) | set(failed) == set(to_archive), "archive result does not cover exact authorized batch")
     actionable = broker.call("SEARCH_IDS", query=ACTIONABLE_QUERY, label_ids=["INBOX"], max_results=BATCH_LIMIT)
     actionable_ids = actionable.get("message_ids")
-    require(isinstance(actionable_ids, list), "actionable message_ids invalid")
-    actionable_more = bool(actionable.get("next_page_token"))
+    require(isinstance(actionable_ids, list) and all(isinstance(v, str) and v for v in actionable_ids),
+            "ACTIONABLE_INBOX_MESSAGE_IDS_INVALID")
+    require(len(actionable_ids) <= BATCH_LIMIT, "ACTIONABLE_INBOX_BATCH_LIMIT_EXCEEDED")
+    require(len(actionable_ids) == len(set(actionable_ids)), "ACTIONABLE_INBOX_DUPLICATE_MESSAGE_IDS")
+    actionable_cursor = actionable.get("next_page_token")
+    require(actionable_cursor is None or (isinstance(actionable_cursor, str) and actionable_cursor),
+            "ACTIONABLE_INBOX_CURSOR_INVALID")
+    actionable_more = actionable_cursor is not None
     counts = broker.call("GET_LABEL_COUNTS", label_names=["INBOX"])
     labels = counts.get("labels")
     require(isinstance(labels, dict) and isinstance(labels.get("INBOX"), dict), "INBOX counts missing")

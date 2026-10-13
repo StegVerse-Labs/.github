@@ -37,7 +37,14 @@ def write_continuation(tmp_path, proposed):
     return path
 
 
-def test_exact_ids_are_resolved_before_archive_and_backlog_is_lower_bound(tmp_path):
+def test_operational_queries_never_select_archived_messages():
+    assert "in:inbox" in M.INBOX_QUERY.split()
+    assert "in:inbox" in M.ACTIONABLE_QUERY.split()
+    assert "in:inbox" not in M.ARCHIVED_REPLAY_QUERY.split()
+    assert "-in:inbox" in M.ARCHIVED_REPLAY_QUERY.split()
+
+
+def test_incomplete_first_page_never_archives_even_authorized_ids(tmp_path):
     messages = [{
         "id": "m1", "from": "notifications@github.com", "subject": "CI failed",
         "repository": "StegVerse-Labs/Site", "workflow": "Site Task Runner", "snippet": "failed abcdef1"
@@ -46,18 +53,13 @@ def test_exact_ids_are_resolved_before_archive_and_backlog_is_lower_bound(tmp_pa
     broker = FakeBroker([
         response("SEARCH_MESSAGES", provider="GMAIL", messages=messages, next_page_token="page"),
         response("SEARCH_IDS", provider="GMAIL", message_ids=ids, next_page_token="page"),
-        response("ARCHIVE_IDS", provider="GMAIL", archived_ids=ids, failed_ids=[]),
-        response("SEARCH_IDS", provider="GMAIL", message_ids=[f"a{i}" for i in range(100)], next_page_token="more"),
-        response("GET_LABEL_COUNTS", provider="GMAIL", labels={"INBOX": {"messagesTotal": 123, "messagesUnread": 120}}),
     ])
     receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ids))
-    assert [name for name, _ in broker.calls][:3] == ["SEARCH_MESSAGES", "SEARCH_IDS", "ARCHIVE_IDS"]
-    assert broker.calls[2][1]["message_ids"] == ids
-    assert receipt["processed_exact_count"] == 100
-    assert receipt["archived_count"] == 100
-    assert receipt["retained_unverified_count"] == 0
-    assert receipt["actionable_more_than_returned"] is True
-    assert receipt["actionable_minimum"] == 101
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
+    assert receipt["state"] == "PAGINATION_INCOMPLETE_FAIL_CLOSED"
+    assert receipt["processed_exact_count"] == 0
+    assert receipt["archived_count"] == 0
+    assert receipt["retained_unverified_count"] == 100
     assert receipt["email_observation_is_runtime_evidence"] is False
     assert receipt["incident_proposals_require_canonical_task_ingress"] is True
 
@@ -140,3 +142,184 @@ def test_broker_rejects_credential_export(monkeypatch):
         assert "exported credential material" in str(exc)
     else:
         raise AssertionError("credential export must fail closed")
+
+
+def test_live_inbox_multi_page_refuses_archive_until_complete(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[{"id": "m1", "from": "notifications@github.com", "subject": "CI failed"}], next_page_token="page-2"),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"], next_page_token="page-2"),
+    ])
+    receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    assert receipt["state"] == "PAGINATION_INCOMPLETE_FAIL_CLOSED"
+    assert receipt["failed_predicate"] == "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED"
+    assert receipt["archived_count"] == 0
+    assert [operation for operation, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
+
+
+def test_archived_replay_empty_page_with_cursor_remains_pending(tmp_path):
+    checkpoint = tmp_path / "replay.json"
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[], next_page_token="next-page"),
+    ])
+    receipt = M.archived_replay_page(broker, checkpoint)
+    saved = json.loads(checkpoint.read_text(encoding="utf-8"))
+    assert receipt["state"] == "PENDING"
+    assert receipt["complete"] is False
+    assert saved["complete"] is False
+    assert saved["current_page_token"] == "next-page"
+    assert saved["page_index"] == 1
+    assert [op for op, _ in broker.calls] == ["SEARCH_MESSAGES"]
+
+
+def test_archived_replay_nonadvancing_empty_cursor_fails_closed(tmp_path):
+    checkpoint = tmp_path / "replay.json"
+    state = M.replay_checkpoint(checkpoint)
+    state["current_page_token"] = "same-page"
+    M.write_json(checkpoint, state)
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[], next_page_token="same-page"),
+    ])
+    try:
+        M.archived_replay_page(broker, checkpoint)
+    except RuntimeError as exc:
+        assert "ARCHIVED_REPLAY_CURSOR_NOT_ADVANCING" in str(exc)
+    else:
+        raise AssertionError("nonadvancing archived replay cursor must fail closed")
+
+
+def test_archived_replay_pending_ack_never_refetches_or_overwrites_batch(tmp_path):
+    checkpoint = tmp_path / "replay.json"
+    state = M.replay_checkpoint(checkpoint)
+    state.update({"state": "AWAITING_STEGHEALTH_ACK",
+                  "awaiting_ack": True, "pending_batch_hash": "sha256-existing",
+                  "pending_message_count": 2, "next_page_token": "page-2"})
+    M.write_json(checkpoint, state)
+    broker = FakeBroker([])
+    receipt = M.archived_replay_page(broker, checkpoint)
+    assert receipt["state"] == "AWAITING_STEGHEALTH_ACK"
+    assert receipt["ack_required"] is True
+    assert receipt["batch_hash"] == "sha256-existing"
+    assert receipt["archive_operation_performed"] is False
+    assert broker.calls == []
+    persisted = json.loads(checkpoint.read_text(encoding="utf-8"))
+    assert persisted["pending_batch_hash"] == "sha256-existing"
+    assert persisted["next_page_token"] == "page-2"
+
+
+def test_archived_replay_nonempty_page_with_same_cursor_fails_closed(tmp_path):
+    checkpoint = tmp_path / "replay.json"
+    state = M.replay_checkpoint(checkpoint)
+    state["current_page_token"] = "same-page"
+    M.write_json(checkpoint, state)
+    broker = FakeBroker([response("SEARCH_MESSAGES", provider="GMAIL",
+                                  messages=[{"id": "m1", "from": "notifications@github.com",
+                                             "subject": "CI failed"}],
+                                  next_page_token="same-page")])
+    try:
+        M.archived_replay_page(broker, checkpoint)
+    except RuntimeError as exc:
+        assert "ARCHIVED_REPLAY_CURSOR_NOT_ADVANCING" in str(exc)
+    else:
+        raise AssertionError("nonempty replay page with same cursor must fail closed")
+
+
+def test_duplicate_archive_result_ids_fail_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"]),
+        response("ARCHIVE_IDS", provider="GMAIL", archived_ids=["m1", "m1"], failed_ids=[]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    except RuntimeError as exc:
+        assert "archive result duplicate identity" in str(exc)
+    else:
+        raise AssertionError("duplicate provider archive result must fail closed")
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS", "ARCHIVE_IDS"]
+
+
+def test_malformed_archive_result_identity_fails_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"]),
+        response("ARCHIVE_IDS", provider="GMAIL", archived_ids=["m1", None], failed_ids=[]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    except RuntimeError as exc:
+        assert "archive result identity invalid" in str(exc)
+    else:
+        raise AssertionError("malformed provider archive identity must fail closed")
+
+
+def test_duplicate_inbox_message_ids_refused_before_archive(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", "m1"]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    except RuntimeError as exc:
+        assert "LIVE_INBOX_DUPLICATE_MESSAGE_IDS" in str(exc)
+    else:
+        raise AssertionError("duplicate inbox identities must fail closed")
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
+
+
+def test_invalid_actionable_cursor_fails_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[], next_page_token={"forged": True}),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, []))
+    except RuntimeError as exc:
+        assert "ACTIONABLE_INBOX_CURSOR_INVALID" in str(exc)
+    else:
+        raise AssertionError("invalid actionable cursor must fail closed")
+    assert "GET_LABEL_COUNTS" not in [name for name, _ in broker.calls]
+
+
+def test_empty_live_inbox_cursors_fail_closed(tmp_path):
+    for index, field in enumerate(("SEARCH_MESSAGES", "SEARCH_IDS")):
+        responses = [response("SEARCH_MESSAGES", provider="GMAIL", messages=[], next_page_token="" if index == 0 else None),
+                     response("SEARCH_IDS", provider="GMAIL", message_ids=[], next_page_token="" if index == 1 else None)]
+        broker = FakeBroker(responses)
+        try:
+            M.run(broker, continuation_path=write_continuation(tmp_path, []))
+        except RuntimeError as exc:
+            assert ("LIVE_INBOX_MESSAGE_CURSOR_INVALID" if index == 0 else "LIVE_INBOX_ID_CURSOR_INVALID") in str(exc)
+        else:
+            raise AssertionError(f"empty {field} cursor must fail closed")
+        assert "ARCHIVE_IDS" not in [name for name, _ in broker.calls]
+
+
+def test_actionable_inbox_duplicate_ids_fail_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", "m1"]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, []))
+    except RuntimeError as exc:
+        assert "ACTIONABLE_INBOX_DUPLICATE_MESSAGE_IDS" in str(exc)
+    else:
+        raise AssertionError("duplicate actionable IDs must fail closed")
+    assert "GET_LABEL_COUNTS" not in [name for name, _ in broker.calls]
+
+
+def test_actionable_inbox_malformed_ids_fail_closed(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=[]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m1", None]),
+    ])
+    try:
+        M.run(broker, continuation_path=write_continuation(tmp_path, []))
+    except RuntimeError as exc:
+        assert "ACTIONABLE_INBOX_MESSAGE_IDS_INVALID" in str(exc)
+    else:
+        raise AssertionError("malformed actionable IDs must fail closed")
+    assert "GET_LABEL_COUNTS" not in [name for name, _ in broker.calls]
