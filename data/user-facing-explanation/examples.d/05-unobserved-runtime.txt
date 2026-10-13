@@ -7,6 +7,8 @@ What evidence exists: No evidence record is referenced for this outcome; nothing
 What you can safely do next:
   - Treat the outcome as unknown to this surface, not as success and not as failure.
   - Look up the receipt by its locator when one is listed; every transition, ALLOW or not, has a receipt, and if none exists no action occurred.
+  - What resolves this: the receipt that anchors the assistant continuity checkpoint, located through the bound TV/TVC checkpoint verifier.
+  - Next attempt: look the receipt up by its locator once the verifier is bound; this surface does not hold it (entry point: StegVerse-Labs/continuity-vault-kit:runtime/workspace_continuity_checkpoint.py; owning goal: STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001).
 Limitations:
   - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
   - Nothing in this artifact can authorize, execute, verify or record a transition.

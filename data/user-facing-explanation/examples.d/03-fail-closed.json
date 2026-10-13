@@ -25,7 +25,7 @@
     "execution_state": "NOT_EXECUTED"
   },
   "explanation_type": "OUTCOME_EXPLANATION",
-  "explanation_version": "1.1.0",
+  "explanation_version": "1.2.0",
   "llm_interpretation": {
     "instructions": [
       "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
@@ -46,6 +46,14 @@
     "self_contained": true
   },
   "outcome": {
+    "actionable_disposition": {
+      "failed_predicate": "AUTHORIZED_DEVICE_INDEPENDENT_KV_INGRESS_NOT_BOUND_TO_WORKSPACE",
+      "failure_code": "AUTHORIZED_DEVICE_INDEPENDENT_KV_INGRESS_NOT_BOUND_TO_WORKSPACE",
+      "next_attempt": "the next WorkSpace load reads the projected ingress; the request is held in the node outbox and nothing waits",
+      "owning_existing_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "required_evidence_or_repair": "the StegOS node owner projects the existing sovereign InTr ingress and result locators for DEVICE_KV queries to the WorkSpace",
+      "retry_entrypoint": "StegVerse-Labs/Site:assets/workspace-kv-bridge.js loadPersonalWorkspace"
+    },
     "canonical_record_ref": null,
     "disposition": "FAIL_CLOSED",
     "observation_state": "NOT_AUTHENTICALLY_OBSERVED",
@@ -70,7 +78,9 @@
     "what_you_can_safely_do_next": [
       "Nothing happened; your data and state are unchanged.",
       "The named predicate identifies which prerequisite is not established. Its owner, not this surface, establishes it.",
-      "You may retry after the prerequisite is established; retrying now returns the same outcome."
+      "You may retry after the prerequisite is established; retrying now returns the same outcome.",
+      "What resolves this: the StegOS node owner projects the existing sovereign InTr ingress and result locators for DEVICE_KV queries to the WorkSpace.",
+      "Next attempt: the next WorkSpace load reads the projected ingress; the request is held in the node outbox and nothing waits (entry point: StegVerse-Labs/Site:assets/workspace-kv-bridge.js loadPersonalWorkspace; owning goal: STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001)."
     ],
     "why": "Because the sovereign InTr ingress that carries DEVICE_KV queries is not yet bound to the WorkSpace, so no authenticated path to your KV exists from any device; no KV installation on this device is required."
   },

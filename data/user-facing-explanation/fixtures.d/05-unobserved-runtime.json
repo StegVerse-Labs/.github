@@ -3,13 +3,23 @@
   "fixture_id": "UFE-FIXTURE-UNOBSERVED-001",
   "evidence_class": "SYNTHETIC_TEST",
   "note": "Synthetic fixture: no authentic runtime observation exists at all.",
-  "surface": {"repository": "StegVerse-Labs/Site", "surface_id": "workspace-assistant", "surface_version": "fixture"},
+  "surface": {
+    "repository": "StegVerse-Labs/Site",
+    "surface_id": "workspace-assistant",
+    "surface_version": "fixture"
+  },
   "outcome": {
     "disposition": "UNKNOWN",
     "predicate": "CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND",
     "requested_action": "Confirm that your MyKV assistant's continuity checkpoint is anchored",
     "authority_source": "TV_TVC",
     "consequence_observation": "UNKNOWN",
-    "evidence": []
+    "evidence": [],
+    "failure_code": "CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND",
+    "failed_predicate": "CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND",
+    "required_evidence_or_repair": "the receipt that anchors the assistant continuity checkpoint, located through the bound TV/TVC checkpoint verifier",
+    "retry_entrypoint": "StegVerse-Labs/continuity-vault-kit:runtime/workspace_continuity_checkpoint.py",
+    "owning_existing_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+    "next_attempt": "look the receipt up by its locator once the verifier is bound; this surface does not hold it"
   }
 }

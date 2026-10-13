@@ -8,6 +8,8 @@ What you can safely do next:
   - Nothing happened; your data and state are unchanged.
   - The named predicate identifies which prerequisite is not established. Its owner, not this surface, establishes it.
   - You may retry after the prerequisite is established; retrying now returns the same outcome.
+  - What resolves this: the StegOS node owner projects the existing sovereign InTr ingress and result locators for DEVICE_KV queries to the WorkSpace.
+  - Next attempt: the next WorkSpace load reads the projected ingress; the request is held in the node outbox and nothing waits (entry point: StegVerse-Labs/Site:assets/workspace-kv-bridge.js loadPersonalWorkspace; owning goal: STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001).
 Limitations:
   - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
   - Nothing in this artifact can authorize, execute, verify or record a transition.

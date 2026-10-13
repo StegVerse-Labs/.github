@@ -18,7 +18,7 @@
     "execution_state": "NOT_EXECUTED"
   },
   "explanation_type": "OUTCOME_EXPLANATION",
-  "explanation_version": "1.1.0",
+  "explanation_version": "1.2.0",
   "llm_interpretation": {
     "instructions": [
       "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
@@ -39,6 +39,14 @@
     "self_contained": true
   },
   "outcome": {
+    "actionable_disposition": {
+      "failed_predicate": "CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND",
+      "failure_code": "CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND",
+      "next_attempt": "look the receipt up by its locator once the verifier is bound; this surface does not hold it",
+      "owning_existing_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "required_evidence_or_repair": "the receipt that anchors the assistant continuity checkpoint, located through the bound TV/TVC checkpoint verifier",
+      "retry_entrypoint": "StegVerse-Labs/continuity-vault-kit:runtime/workspace_continuity_checkpoint.py"
+    },
     "canonical_record_ref": null,
     "disposition": "UNKNOWN",
     "observation_state": "UNKNOWN",
@@ -61,7 +69,9 @@
     "what_was_executed": "This surface holds no receipt showing an execution. Every transition has a receipt; if none exists, no action occurred.",
     "what_you_can_safely_do_next": [
       "Treat the outcome as unknown to this surface, not as success and not as failure.",
-      "Look up the receipt by its locator when one is listed; every transition, ALLOW or not, has a receipt, and if none exists no action occurred."
+      "Look up the receipt by its locator when one is listed; every transition, ALLOW or not, has a receipt, and if none exists no action occurred.",
+      "What resolves this: the receipt that anchors the assistant continuity checkpoint, located through the bound TV/TVC checkpoint verifier.",
+      "Next attempt: look the receipt up by its locator once the verifier is bound; this surface does not hold it (entry point: StegVerse-Labs/continuity-vault-kit:runtime/workspace_continuity_checkpoint.py; owning goal: STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001)."
     ],
     "why": "Because this surface does not hold the receipt for this outcome; the reported condition is CHECKPOINT_ANCHOR_VERIFIER_NOT_BOUND."
   },

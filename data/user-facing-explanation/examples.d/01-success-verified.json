@@ -31,7 +31,7 @@
     "execution_state": "VERIFIED"
   },
   "explanation_type": "OUTCOME_EXPLANATION",
-  "explanation_version": "1.1.0",
+  "explanation_version": "1.2.0",
   "llm_interpretation": {
     "instructions": [
       "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
@@ -52,6 +52,7 @@
     "self_contained": true
   },
   "outcome": {
+    "actionable_disposition": null,
     "canonical_record_ref": "fixture://receipts/device-kv/workspace-personal-projection.json",
     "disposition": "ALLOW",
     "observation_state": "OBSERVED",

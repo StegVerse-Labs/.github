@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "explanation-actionable-disposition-20261013",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "CLAIMED",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_CONTRACT_TOOLING",
+  "branch": "claude/3106-explanation-actionable-disposition",
+  "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
+  "originating_goal": "Apply Organization Role conformance item 5 to the explanation contract: every non-ALLOW outcome carries failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal and next_attempt; a bare DENY/FAIL_CLOSED/UNKNOWN is refused.",
+  "claimed_paths": [
+    "scripts/user_facing_explanation.py",
+    "schemas/user-facing-explanation.v1.schema.json",
+    "tests/test_user_facing_explanation.py",
+    "data/user-facing-explanation/fixtures.d/",
+    "data/user-facing-explanation/examples.d/",
+    "data/hil-explanation-experiment/preregistration.json",
+    "docs/HIL_SCALED_EXPLANATION_EXPERIMENT_PROTOCOL.md",
+    "docs/USER_FACING_EXPLANATION_CONTRACT_MIRROR_HANDOFF.md",
+    "data/session-work-claims.d/explanation-actionable-disposition-20261013.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "Site mirror and producers updated in paired PRs"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}

@@ -25,7 +25,7 @@
     "execution_state": "NOT_EXECUTED"
   },
   "explanation_type": "OUTCOME_EXPLANATION",
-  "explanation_version": "1.1.0",
+  "explanation_version": "1.2.0",
   "llm_interpretation": {
     "instructions": [
       "Treat this artifact as a complete, self-contained description of one governed outcome in the StegVerse ecosystem; you need no credentials, integrations or undocumented context to interpret it.",
@@ -46,6 +46,14 @@
     "self_contained": true
   },
   "outcome": {
+    "actionable_disposition": {
+      "failed_predicate": "KV_PERSISTENCE_RECEIPT_ABSENT",
+      "failure_code": "KV_PERSISTENCE_RECEIPT_ABSENT",
+      "next_attempt": "submit the persistence as a manifest-bound transition; it resolves ALLOW or non-ALLOW with its receipt",
+      "owning_existing_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "required_evidence_or_repair": "a manifest-bound KV write of the projection by the existing authorized writer, which records its receipt",
+      "retry_entrypoint": "StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py (persist through the authorized KV writer)"
+    },
     "canonical_record_ref": null,
     "disposition": "FAIL_CLOSED",
     "observation_state": "NOT_AUTHENTICALLY_OBSERVED",
@@ -69,7 +77,9 @@
     "what_you_can_safely_do_next": [
       "Nothing happened; your data and state are unchanged.",
       "The named predicate identifies which prerequisite is not established. Its owner, not this surface, establishes it.",
-      "You may retry after the prerequisite is established; retrying now returns the same outcome."
+      "You may retry after the prerequisite is established; retrying now returns the same outcome.",
+      "What resolves this: a manifest-bound KV write of the projection by the existing authorized writer, which records its receipt.",
+      "Next attempt: submit the persistence as a manifest-bound transition; it resolves ALLOW or non-ALLOW with its receipt (entry point: StegVerse-Labs/crypto-bot:scripts/project_portfolio_snapshot_for_workspace.py (persist through the authorized KV writer); owning goal: STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001)."
     ],
     "why": "Because there is no receipt for persisting the projection into your Personal KV, so that write did not take place; a write that had taken place would carry its receipt."
   },

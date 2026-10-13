@@ -35,7 +35,7 @@
       ]
     },
     "explanation_version": {
-      "const": "1.1.0"
+      "const": "1.2.0"
     },
     "produced_at": {
       "type": "string",
@@ -71,7 +71,8 @@
         "observation_state",
         "predicate",
         "predicates",
-        "outcome_class"
+        "outcome_class",
+        "actionable_disposition"
       ],
       "properties": {
         "disposition": {
@@ -116,6 +117,46 @@
             "null"
           ],
           "description": "Locator of the canonical receipt/record this explains (never its contents)."
+        },
+        "actionable_disposition": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "Organization Role conformance item 5: every non-ALLOW result carries these six fields; ALLOW carries null.",
+          "additionalProperties": false,
+          "properties": {
+            "failure_code": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "failed_predicate": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "required_evidence_or_repair": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "retry_entrypoint": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "owning_existing_goal": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "next_attempt": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
         }
       }
     },
@@ -957,6 +998,66 @@
             "properties": {
               "disposition": {
                 "const": "UNKNOWN"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "const": "ALLOW"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "actionable_disposition": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "disposition": {
+                "enum": [
+                  "DENY",
+                  "FAIL_CLOSED",
+                  "UNKNOWN"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "actionable_disposition": {
+                "type": "object",
+                "required": [
+                  "failure_code",
+                  "failed_predicate",
+                  "required_evidence_or_repair",
+                  "retry_entrypoint",
+                  "owning_existing_goal",
+                  "next_attempt"
+                ]
               }
             }
           }

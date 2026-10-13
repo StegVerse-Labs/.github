@@ -7,6 +7,8 @@ What evidence exists: Evidence is referenced by locator: The validator that refu
 What you can safely do next:
   - Read the failing predicate: it names the exact condition that was not met.
   - If a remediation draft is offered, you may submit it through the governed path; submission is a separate decision and may itself be denied.
+  - What resolves this: a query whose requested scope is the scope bound to the WORKSPACE_TASKS_PROJECTION record class (tasks, commitments, timeline).
+  - Next attempt: submit the corrected query; the governed path decides it again (entry point: StegVerse-Labs/.github:scripts/workspace_device_kv_query_extension.py#validate_workspace_query (submit the attached draft through the governed path); owning goal: STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001).
   - An unsubmitted remediation draft is attached; it proposes nothing until you submit it through the governed path, where it receives its own decision.
 Limitations:
   - This explanation is a projection of a canonical record; the canonical record, its predicate and its evidence locators are authoritative, not this text.
