@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "hil-runtime-observation-superseded-20261014",
+  "goal_task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "issue": "StegVerse-Labs/.github#3106",
+  "state": "CLAIMED_FOR_IMPLEMENTATION",
+  "role": "SOURCE_ONLY_NON_AUTHORIZING_DOCUMENTATION",
+  "branch": "claude/3106-hil-runtime-observation-superseded",
+  "session_worker_id": "claude:site-1509-workspace-20261010",
+  "originating_goal": "Owner direction 2026-10-13 on .github#3106: no external machine awaits anything; record that the resident-dispatcher continuation in the 2026-09-07 HIL runtime observation handoff is not a prerequisite for the observed participant path (handoff item 1 of .github#3106 comment 6136035902).",
+  "claimed_paths": [
+    "docs/HIL_RUNTIME_OBSERVATION_20260907_MIRROR_HANDOFF.md",
+    "data/session-work-claims.d/hil-runtime-observation-superseded-20261014.json"
+  ],
+  "collision_boundaries": [
+    "Do not modify .github#3012 lane files",
+    "Do not mark any resident, ESRL, TVC or Master Records predicate as satisfied"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}
