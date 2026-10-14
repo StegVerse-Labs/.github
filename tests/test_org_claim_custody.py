@@ -213,7 +213,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(list(plain), ["selected", "queued", "blocked_missing_dependency_declaration", "state",
                                        "authority_effect"])
         self.assertEqual(plain["selected"], "TASK-2026-0007")
-        self.assertEqual(plain["queued"][-1], "TASK-2026-0013")
+        self.assertEqual(plain["queued"][-2:], ["TASK-2026-0013", "TASK-2026-0014"])
         claims = json.loads((roots[0] / "control/claims-active.json").read_text(encoding="utf-8"))
         self.assertEqual(claims["generation"], 3)
         # Targeting the task the ranking picked writes byte-identical state.
@@ -463,6 +463,31 @@ class OrgClaimCustodyTests(unittest.TestCase):
         for request in task["requirements"]["mandatory"]:
             self.assertEqual(request["scope"]["dependency_surfaces"],
                              ["stegverse-org:manifest-route-transition-disposition"])
+
+    def test_sdk_structural_validator_t6_claim_request_targets_its_projection(self):
+        rel = Path("control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json")
+        request = json.loads((ROOT / rel).read_text(encoding="utf-8"))
+        consumer.validate_request(request)
+        self.assertIn(rel, consumer.REQUEST_RELS)
+        self.assertIn(rel, bootstrap.REQUIRED_SOURCE_FILES)
+        self.assertEqual(request["target_task_id"], "TASK-2026-0014")
+        floor = consumer.validate_source_catalog_floor(ROOT, request)
+        self.assertEqual(floor["state"], "SOURCE_CATALOG_FLOOR_SATISFIED")
+        self.assertEqual(floor["task_status_observed"], "queued")
+        record = json.loads((ROOT / "data/canonical-task-records/"
+                             "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001.json").read_text(encoding="utf-8"))
+        task = json.loads((ROOT / "tasks/TASK-2026-0014.json").read_text(encoding="utf-8"))
+        self.assertEqual(record["allocator_projection"]["task_id"], "TASK-2026-0014")
+        self.assertEqual(record["allocator_projection"]["resident_request_ref"], rel.as_posix())
+        self.assertEqual(record["checkout_state"], "UNCLAIMED")
+        self.assertIsNone(record["worker_claim"]["claim_ref"])
+        self.assertEqual(task["canonical_task_record"],
+                         "data/canonical-task-records/SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001.json")
+        self.assertEqual(consumer.task_cosv(ROOT, task), "60200000013002")
+        manifest = json.loads((ROOT / "tasks/TASK-2026-0013.json").read_text(encoding="utf-8"))
+        for request_claim in task["requirements"]["mandatory"]:
+            for held in manifest["requirements"]["mandatory"]:
+                self.assertFalse(allocator.conflicts(request_claim, held))
 
     def test_claim_receipt_binds_exact_task_cosv_scope_and_org_head(self):
         env = Env(self.base, generation=9)

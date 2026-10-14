@@ -41,6 +41,7 @@ REQUEST_REL = Path("control/resident-execution-request.d/org-claim-allocator-001
 REQUEST_RELS = (
     REQUEST_REL,
     Path("control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json"),
+    Path("control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json"),
 )
 # Projection only: the write-once records under CONSUMPTION_DIR are the evidence.
 RECEIPT_REL = Path("receipts/sovereign-host/org-claim-allocator-request-consumption.latest.json")
