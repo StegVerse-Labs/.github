@@ -295,20 +295,6 @@
       "authority_effect": "NONE_REGISTER_ONLY"
     },
     {
-      "surface": "StegVerse-Labs/.github:workers/va_conversational_runtime_bridge.py (gateway readiness poll)",
-      "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
-      "failure_code": "RECEIVER_LIVENESS_PREDICATE_NO_IN_PROCESS_ADMISSION",
-      "failed_predicate": "VA_RUNTIME_GATED_ON_GATEWAY_READINESS_POLL",
-      "why_manifest_bound_state_transition_is_not_yet_possible": "The bridge polls the local VA gateway readiness endpoint up to 100 times (2 second timeout each) and fails VA_RUNTIME_GATEWAY_NOT_READY otherwise. No write-once admit function exists for the VA gateway profile. Source review only (SOURCE_IMPLEMENTED, StegVerse-Labs/.github ECO-08 audit for #3012 RESPONSE-018); no runtime attempt was made or is claimed.",
-      "required_evidence_or_repair": "Admit the VA request through an existing write-once ingress, or record gateway start as its own manifest-bound transition rather than a poll inside the request transition.",
-      "retry_entrypoint": "StegVerse-Labs/.github:workers/va_conversational_runtime_bridge.py",
-      "next_attempt": "ECO-08 follow-up (#3012 RESPONSE-018 comment 6072275317): replace the probe with the existing write-once admission for this profile once one exists, or retire the surface with caller and manifest-route equivalence evidence.",
-      "expires_or_review_on": "2026-11-08",
-      "current_disposition": "FAIL_CLOSED",
-      "consequence_committed": false,
-      "authority_effect": "NONE_REGISTER_ONLY"
-    },
-    {
       "surface": "StegVerse-Labs/.github:workers/vacc_profiled_resident_execution.py (VA runtime /chat)",
       "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
       "failure_code": "RECEIVER_LIVENESS_PREDICATE_NO_IN_PROCESS_ADMISSION",
