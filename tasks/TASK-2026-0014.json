@@ -1,0 +1,57 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0014",
+  "organization": "StegVerse-Labs",
+  "goal": "Allocator projection of canonical task SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (COSV 60200000013002) for the T6 corrected attempt (SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-T6-002): migrate the StegVerse-org/StegVerse-SDK universal entry envelope verification to the SDK-native structural validator. Requested as the admissible machine repair for the stale execution.actor_authority_current and execution.delegation_current predicates of the T6-001 StegCore DENY (packet pkt-bcea6417afe0d8f6fcf0244c). Not a second goal.",
+  "status": "queued",
+  "requested_at": "2026-10-14T12:00:00Z",
+  "priority_class": "normal",
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-org",
+          "name": "StegVerse-SDK",
+          "full_name": "StegVerse-org/StegVerse-SDK",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "scripts/verify_universal_entry_envelope.py",
+            "stegverse/structural_validator_candidate.py",
+            "schemas/universal-entry-envelope.schema.v0.1.json",
+            "tests/test_t6_universal_entry_validator.py"
+          ],
+          "contracts": [],
+          "release_surfaces": [],
+          "capabilities": [
+            "universal-entry-envelope-structural-validation"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "stegverse-org:sdk-structural-validator-envelope-migration"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "claim/sdk-structural-validator-t6-envelope-migration-r1",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "canonical_task_record": "data/canonical-task-records/SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001.json",
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "runtime_execution_inferred": false
+  }
+}

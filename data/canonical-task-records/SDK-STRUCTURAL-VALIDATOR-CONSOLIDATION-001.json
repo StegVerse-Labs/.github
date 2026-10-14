@@ -64,6 +64,14 @@
     "APPLICABLE_MASTER_RECORDS_RECONSTRUCTION_EVIDENCE_RETAINED"
   ],
   "allocation_request_ref": "control/goal-task-allocation-requests/sdk-484-structural-validator-2026-10-13.json",
+  "allocator_projection": {
+    "task_ref": "tasks/TASK-2026-0014.json",
+    "task_id": "TASK-2026-0014",
+    "role": "ALLOCATOR_PROJECTION_ONLY_NOT_A_SECOND_GOAL",
+    "purpose": "T6 corrected attempt (SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-T6-002): SDK universal entry envelope migration to the SDK-native structural validator",
+    "resident_request_ref": "control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json",
+    "registry_home_is_claim_target": false
+  },
   "worker_claim": {
     "authority": "NONE_TASK_REGISTRY_PROJECTION_ONLY",
     "claim_ref": null,
