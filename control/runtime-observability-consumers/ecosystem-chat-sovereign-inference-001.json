@@ -103,7 +103,7 @@
       "observed": false
     },
     "conversational_runtime_ready": {
-      "source_class": "persistent_conversational_runtime_ready=true after reconstruction",
+      "source_class": "persistent_conversational_runtime_ready=true after reconstruction: the VA gateway start transition is receipted (state STARTED); gateway readiness is a non-gating observation",
       "observed": false
     }
   },

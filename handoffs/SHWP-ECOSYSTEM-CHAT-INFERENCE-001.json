@@ -191,7 +191,7 @@
       },
       "post_terminal_projection": {
         "state": "MERGED_VALIDATED_RUNTIME_NOT_OBSERVED",
-        "predicate": "terminal parent PASS + same_execution=true + persistent_conversational_runtime_ready=true",
+        "predicate": "terminal parent PASS + same_execution=true + persistent_conversational_runtime_ready=true (VA gateway start transition receipted; gateway readiness is observed, never awaited)",
         "llm_adapter_root_locator": "STEGVERSE_LLM_ADAPTER_ROOT",
         "projector": "scripts/project_independent_parent_activation.py",
         "output": "receipts/ecosystem-chat-sovereign-activation.verified.json",

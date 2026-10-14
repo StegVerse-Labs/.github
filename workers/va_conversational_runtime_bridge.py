@@ -84,27 +84,44 @@ def _child_env(adapter_root: Path, proof_path: Path, route_path: Path) -> dict[s
     return env
 
 
+RECONCILIATION_ENTRYPOINT = "GET <endpoint>/api/va-claims/v1/readiness"
+STARTED_STATES = ("STARTED", "LIVE_VERIFIED")
+
+
+def observe_readiness(endpoint: str) -> dict[str, Any]:
+    """One readiness observation of the VA gateway. Never a predicate, never awaited."""
+    ready = _readiness(endpoint)
+    if isinstance(ready, dict):
+        return {"observation": "OBSERVED", "body": ready, "gates_transition": False}
+    return {
+        "consequence_observation": "NOT_AUTHENTICALLY_OBSERVED",
+        "reason": "va_gateway_readiness_is_observed_after_start_not_awaited",
+        "reconciliation_entrypoint": RECONCILIATION_ENTRYPOINT.replace("<endpoint>", endpoint),
+        "gates_transition": False,
+    }
+
+
 def runtime_state_verified(state: dict[str, Any] | None, *, proof_path: Path, route_path: Path) -> bool:
+    """True when a started gateway process is bound to the same proof and route.
+
+    The started process and its bindings are the predicate; gateway readiness is
+    not (destination liveness is never a transition predicate).
+    """
     if not isinstance(state, dict):
         return False
     pid = state.get("pid")
     endpoint = state.get("endpoint")
     if not isinstance(pid, int) or not isinstance(endpoint, str) or not _pid_alive(pid):
         return False
-    ready = _readiness(endpoint)
     return (
         state.get("schema") == "stegverse.va-conversational-runtime-process/v1"
-        and state.get("state") == "LIVE_VERIFIED"
+        and state.get("state") in STARTED_STATES
         and state.get("proof_path") == str(proof_path)
         and state.get("route_path") == str(route_path)
         and state.get("credential_authority") == CREDENTIAL_AUTHORITY
         and state.get("credential_requirement") == "NONE"
         and state.get("github_token_required") is False
         and state.get("public_authority_effect") is False
-        and isinstance(ready, dict)
-        and ready.get("state") == "READY"
-        and ready.get("credential_requirement") == "NONE"
-        and ready.get("github_token_required") is False
     )
 
 
@@ -120,8 +137,9 @@ def ensure_runtime_gateway(
         return {
             "attempted": False,
             "state": "COMPLETE",
-            "reason": "REUSED_LIVE_VERIFIED_VA_RUNTIME",
+            "reason": "REUSED_STARTED_VA_RUNTIME",
             "runtime_state": existing,
+            "readiness": observe_readiness(existing["endpoint"]),
             "github_token_required": False,
         }
 
@@ -151,29 +169,13 @@ def ensure_runtime_gateway(
         env={**env, "HOST": "127.0.0.1", "PORT": str(port)},
     )
 
-    ready: dict[str, Any] | None = None
-    for _ in range(100):
-        if process.poll() is not None:
-            break
-        ready = _readiness(endpoint)
-        if ready and ready.get("state") == "READY":
-            break
-        time.sleep(0.05)
-
-    if not ready or ready.get("state") != "READY":
-        _terminate(process.pid)
-        return {
-            "attempted": True,
-            "state": "FAILED",
-            "reason": "VA_RUNTIME_GATEWAY_NOT_READY",
-            "pid": process.pid,
-            "endpoint": endpoint,
-            "github_token_required": False,
-        }
-
+    # The start transition closes on the spawned gateway process. Readiness is
+    # observed once afterwards and never awaited; a gateway is never terminated
+    # for not being READY yet.
+    readiness = observe_readiness(endpoint)
     state = {
         "schema": "stegverse.va-conversational-runtime-process/v1",
-        "state": "LIVE_VERIFIED",
+        "state": "STARTED",
         "heartbeat_owned": True,
         "pid": process.pid,
         "endpoint": endpoint,
@@ -193,18 +195,20 @@ def ensure_runtime_gateway(
         "activation_effect": False,
         "private_document_upload_active": False,
         "filing_active": False,
-        "release_condition": "retain while the admitted model proof and TVC route remain current; retire on stale authority, failed health, or explicit governed shutdown",
+        "readiness": readiness,
+        "destination_liveness_is_transition_predicate": False,
+        "release_condition": "retain while the admitted model proof and TVC route remain current; retire on stale authority or explicit governed shutdown",
     }
     state_path.parent.mkdir(parents=True, exist_ok=True)
     state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return {
         "attempted": True,
         "state": "COMPLETE",
-        "reason": "VA_RUNTIME_GATEWAY_LIVE_VERIFIED",
+        "reason": "VA_RUNTIME_GATEWAY_STARTED",
         "runtime_state": state,
-        "readiness": ready,
+        "readiness": readiness,
         "github_token_required": False,
     }
 
 
-__all__ = ["CREDENTIAL_AUTHORITY", "ensure_runtime_gateway", "load_state", "runtime_state_verified"]
+__all__ = ["CREDENTIAL_AUTHORITY", "ensure_runtime_gateway", "load_state", "observe_readiness", "runtime_state_verified"]

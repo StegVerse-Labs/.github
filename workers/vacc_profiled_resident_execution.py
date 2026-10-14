@@ -58,7 +58,7 @@ def find_live_runtime(runtime: Path) -> tuple[Path, dict[str, Any]] | None:
             continue
         if (
             state.get("schema") == "stegverse.va-conversational-runtime-process/v1"
-            and state.get("state") == "LIVE_VERIFIED"
+            and state.get("state") in ("STARTED", "LIVE_VERIFIED")
             and state.get("credential_authority") == "TV/TVC"
             and state.get("credential_requirement") == "NONE"
             and state.get("github_token_required") is False
