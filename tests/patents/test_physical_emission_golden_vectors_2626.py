@@ -23,7 +23,7 @@ def canonical(value):
 def digest(domain, value):
     if domain not in DOMAINS:
         raise ValueError("unsupported domain")
-    return hashlib.sha256(("PEP/0.1/" + domain).encode() + b"\\x00" + canonical(value)).hexdigest()
+    return hashlib.sha256(("PEP/0.1/" + domain).encode() + bytes([0]) + canonical(value)).hexdigest()
 
 def parse_unique(data):
     def pairs(items):
