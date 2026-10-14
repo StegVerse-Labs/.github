@@ -1,0 +1,28 @@
+{
+  "schema": "pep-golden-digests/0.1",
+  "synthetic": true,
+  "domain_separator_hex": "00",
+  "observation_digests": [
+    "786c18ae7e34576e83601118858bcf547a7e28d77f0de1472a6705ac7a254554",
+    "51194de79ae1bfc8caf251de3c9d02d095a5d646989cd66ca591f11d10310b44",
+    "eecb0abc1c78b4cdd9b1ff1aa543cfd9bff2334d784a9c0954b81815d31b178e"
+  ],
+  "edge_digests": [
+    "0d58913820b5a8461fb00ad1b14dcd633be0651d7a7f9f389c448a3450826088",
+    "62f837beb25651c84c62cd0eff2738e5d1ecddc125e04c2f0433455c08d5ae93"
+  ],
+  "capture_digest": "46927d673891e3ab0c68a9f279c73305adcd0a083f882b4537b0d62ea3f57328",
+  "domain_separation": {
+    "OBS": "d357505694244bc4bc10f4b0da11ef7d963e5ce9bd52d1e097766a21c3094f73",
+    "EDGE": "864293454c7a41f9bfe52c3fe61fab1bd162d25bb4bf1b65db353d8bb9ed464c"
+  },
+  "replay_digests": [
+    "d3b0522646dd1698725f84c2e581511fb6a4a06b756ef72cefb4cd8df440f209",
+    "5517cc6be69927d3a477402efaae18b3141d8547a1f108bcaac30d058af3eb23"
+  ],
+  "comparison_digests": [
+    "617a3203d8cb2a27fe982b7360364145bbf6b5c1f898df00ded136a8eb5c6df8",
+    "77c50eb1bedea1f1fc37070ddae468ae5c901051d2e23f30dde05a7360c66d9f",
+    "9169f1a8ace3a94e60642a0e2eaf4c5ce1ec71fc5215c0c7047d323f3664ca8e"
+  ]
+}
