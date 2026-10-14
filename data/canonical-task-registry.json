@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 314,
+  "generation": 315,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -22169,6 +22169,146 @@
         "StegVerse-org/StegVerse-SDK@e1b57741c15eb3bf2e577d57b1415ce5373ec510",
         "https://github.com/StegVerse-Labs/StegDB/pull/56",
         "https://github.com/StegVerse-Labs/StegCore/pull/254"
+      ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
+      "correlation_id": "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
+      "root_correlation_id": "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
+      "parent_task_id": null,
+      "goal": "Register the ERL research acquisition lane in which Trumpality's erl-active-research workflow produces trajectory-scoped, context-only lead candidates and ERL's trumpality-research-intake workflow ingests them append-only with readback; Trumpality supplies discovery candidates only and ERL keeps evaluation authority.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "UNCLAIMED",
+      "cosv_task_vector": "60200000112012",
+      "cosv_exact_metrics": {
+        "lifecycle": "BLOCKED",
+        "archive_ready": false,
+        "unassigned_work": 2,
+        "chat_owned_implementation": 0,
+        "chat_owned_validation": 0,
+        "chat_owned_integration": 0,
+        "chat_owned_observation": 0,
+        "chat_owned_credentials": 0,
+        "canonical_owner_installed": true,
+        "thread_required": true,
+        "blocker_count": 2,
+        "evidence_complete": false,
+        "activated": true,
+        "propagated": null
+      },
+      "repository": "StegVerse-Labs/Executive_Rhetoric_Ledger",
+      "issue_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#223",
+      "handoff_projection_refs": [
+        "StegVerse-Labs/.github:docs/ERL_RC_TRUMP_FAMILY_CRYPTO_MARKET_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger",
+          "StegVerse-Labs/Trumpality"
+        ],
+        "components": [
+          "research-acquisition-producer",
+          "research-acquisition-intake",
+          "research-acquisition-readback"
+        ]
+      },
+      "lane": {
+        "lane_id": "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
+        "producer": "StegVerse-Labs/Trumpality:.github/workflows/erl-active-research.yml",
+        "consumer": "StegVerse-Labs/Executive_Rhetoric_Ledger:.github/workflows/trumpality-research-intake.yml",
+        "artifacts": "StegVerse-Labs/Executive_Rhetoric_Ledger:research-data/trumpality-acquisition/ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026/",
+        "owning_goals": [
+          "StegVerse-Labs/Trumpality#8",
+          "StegVerse-Labs/Executive_Rhetoric_Ledger#60",
+          "StegVerse-Labs/Executive_Rhetoric_Ledger#223"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [
+        {
+          "blocker_id": "ERL-223-ITEM-2-MYKV-CUSTODY",
+          "disposition": "FAIL_CLOSED",
+          "failure_code": "PROVIDER_WRITE_ATTEMPT_NOT_ADMITTED",
+          "failed_predicate": "MYKV_CUSTODY_WRITE_AND_HASH_READBACK",
+          "required_evidence_or_repair": "write the SHA-256 hashes of readback.json and transition-dispositions.jsonl to the MyKV folder, read them back and confirm the hashes match",
+          "retry_entrypoint": "Drive create/update on the MyKV folder",
+          "owning_existing_goal": "StegVerse-Labs/Executive_Rhetoric_Ledger#223",
+          "next_attempt": "a session that admits Drive writes",
+          "evidence_refs": [
+            "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223#issuecomment-6167651255"
+          ]
+        },
+        {
+          "blocker_id": "ERL-223-ITEM-3-MELANIA-COVERAGE",
+          "disposition": "DENY",
+          "failure_code": "NO_ON_SUBJECT_LEADS",
+          "failed_predicate": "MELANIA_TOKEN_PREANNOUNCEMENT_WALLETS_ON_SUBJECT_LEAD",
+          "required_evidence_or_repair": "a source that publishes on-chain or wallet analysis of MELANIA, or an ERL decision to add launch/lawsuit evidence to the trajectory's required_evidence",
+          "retry_entrypoint": "StegVerse-Labs/Trumpality:.github/workflows/erl-active-research.yml six-hourly cycle",
+          "owning_existing_goal": "StegVerse-Labs/Executive_Rhetoric_Ledger#223",
+          "next_attempt": "the next six-hourly cycle after such a source or decision lands",
+          "evidence_refs": [
+            "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223#issuecomment-6138794881"
+          ]
+        }
+      ],
+      "adjacent_task_refs": [],
+      "source_state": {
+        "erl_main": "1cf3a235f1c2550330f33ebb79e6fd802c2d7a94",
+        "trumpality_main": "0452964499e96df3ec09f4a3fbb0438390d5ea6a",
+        "lane_disposition": "PRODUCER_AND_INTAKE_CYCLES_ALLOW_ON_MAIN",
+        "source_merge_proves_runtime": false
+      },
+      "expected_evidence_predicates": [
+        "MYKV_CUSTODY_WRITE_AND_HASH_READBACK",
+        "MELANIA_TOKEN_PREANNOUNCEMENT_WALLETS_ON_SUBJECT_LEAD"
+      ],
+      "remaining_predicates": [
+        "MYKV_CUSTODY_WRITE_AND_HASH_READBACK",
+        "MELANIA_TOKEN_PREANNOUNCEMENT_WALLETS_ON_SUBJECT_LEAD"
+      ],
+      "allowed_next_transitions": [
+        "RESOLVE_ERL_223_ITEM_2_MYKV_CUSTODY",
+        "RESOLVE_ERL_223_ITEM_3_MELANIA_COVERAGE"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "runtime_observed": false
+      },
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "credential_authority": "TV/TVC",
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true,
+        "heartbeat_execution_authority": false,
+        "github_runtime_authority": "NONE",
+        "hosted_execution_fallback": false,
+        "second_user_operated_device_required": false,
+        "producer_evaluation_authority": false,
+        "erl_evaluation_authority": true
+      },
+      "source_refs": [
+        "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223",
+        "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223#issuecomment-6147803065",
+        "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/60",
+        "https://github.com/StegVerse-Labs/Trumpality/issues/8",
+        "StegVerse-Labs/Trumpality:.github/workflows/erl-active-research.yml",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger:.github/workflows/trumpality-research-intake.yml",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger:research-data/trumpality-acquisition/ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026/",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger@1cf3a235f1c2550330f33ebb79e6fd802c2d7a94",
+        "StegVerse-Labs/Trumpality@0452964499e96df3ec09f4a3fbb0438390d5ea6a"
       ]
     }
   ],
