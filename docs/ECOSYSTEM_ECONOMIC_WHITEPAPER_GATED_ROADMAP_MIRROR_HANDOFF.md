@@ -199,3 +199,25 @@ The opening COSV was `10100000105000` (2026-09-22); the historical Site claim ci
 
 
 - **WP-04 parallel source repairs:** LLM-adapter PR #384 merged at `c169fd6a518b39793be6c2139c451ebd72ac1db8` to retain measured provider usage where actually observed; StegBrowser PR #51 merged at `37df56043f7bc432c6ed59d83817b8c39a705638` to distinguish declared provider labels from attested identity and unobserved usage. Neither source repair establishes a real S1 provider result, lease, governed ingress/egress or terminal destruction.
+
+## 2026-10-14 WP-02 governed publication: the path is by manifest, not an execution surface
+
+This section supersedes the "execution surface" framing in the 2026-09-28 sections above. That framing covered the exposed TV/TVC relay, the Universal InTr ingress and the "authenticated existing ingress".
+
+Under `TASK_REGISTRY_CANONICAL_INVARIANTS.md`, the Organization holds runtime/observed reality and every ACTION is by manifest. No external machine, connector or surface is awaited. The frozen economic manifest `ba615d6e487f11853173154317782fad1ed83dec32ab0c18650703e063fcc9e3` declares `processing_capability=governance` and route `stegverse.route.canonical-governed.v1`. That is the kind of manifest the organization's existing governance route decides by committed request; the same route decided SDK-MR-A (#3099).
+
+Source repairs (merged):
+- **StegVerse-org/.github#168.** A committed transition request can carry the exact, already-built manifest plus `expected_canonical_manifest_sha256`. It is submitted unchanged, and only when it reproduces that digest exactly. The frozen manifest is reproducible with StegVerse-SDK `scripts/build_private_state_economy_publication_manifest.py` from the immutable Publisher source.
+- **StegVerse-org/.github#158.** The governance return and its readback name the decided manifest (`wire_manifest_sha256`, `request_sha256`).
+- **StegVerse-org/LLM-adapter#406.** `build_publication_state_receipt_from_organization_decision` builds the publication receipt on that read-back decision, with origin `organization_governance_return`. No local governance run, posture resolver or external InTr response is required.
+- **StegVerse-org/.github#156, StegVerse-SDK#522.** Refusals on these runs name a committed request as their retry path, never a dispatch.
+
+The next transition is one committed request in StegVerse-org/.github `.stegverse/transition-requests/`, carrying:
+- the exact frozen manifest;
+- its `expected_canonical_manifest_sha256`;
+- `standing`;
+- the `mesh_root` the governance route leaves on.
+
+StegCore (StegVerse-Labs) then decides it, the decision returns through InTr, and both organization ledgers record it and read it back. The manifest declares `actor_authority_current=false` and no delegation, so a DENY is a possible governed outcome; it would be recorded as such.
+
+That transition has not been attempted: `ORGANIZATION_GOVERNANCE_PUBLICATION_DECISION = UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`. Registry/COSV and the sixteen `NOT_VERIFIED` benchmarks are unchanged by this section.
