@@ -25,6 +25,9 @@ jobs:
       - name: Explicitly run physical emission provenance fixtures PE-01..PE-08
         run: python -m unittest -v tests/patents/test_physical_emission_2626.py
 
+      - name: Verify physical-emission canonical golden vectors GV-A1 through GV-C3
+        run: python -m unittest -v tests/patents/test_physical_emission_golden_vectors_2626.py
+
       - name: No pull request may add a test failure the baseline does not hold
         run: python scripts/check_test_suite_ratchet.py
 
