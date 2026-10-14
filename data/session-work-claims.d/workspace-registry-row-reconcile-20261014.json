@@ -5,9 +5,9 @@
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/Site#1509",
   "parent_issue": "StegVerse-Labs/.github#3183",
-  "state": "CLAIMED",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "REGISTRY_PROJECTION_RECONCILIATION_NON_AUTHORIZING",
-  "branch": "claude/3183-workspace-registry-row-reconcile",
+  "branch": "claude/3183-release-workspace-registry-row-reconcile",
   "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
   "originating_goal": "Reconcile the aggregate data/canonical-task-registry.json row for STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 to its canonical record (COSV 10500000114000 -> 10500000110000, owner decisions .github#2796 comment 6094254732), closing the shard_aggregate_drift finding of scripts/audit_canonical_task_projections.py (Site#1509 Q-B1).",
   "claimed_paths": [
@@ -23,5 +23,8 @@
     "Do not modify .github#3012 lane files"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3193",
+  "merged_commit": "ee32d7c87169c6eb4d560a50c28d4b212d6ff188",
+  "claim_released_at_basis": "merge of #3193 at its exact head 19e3b2d0"
 }
