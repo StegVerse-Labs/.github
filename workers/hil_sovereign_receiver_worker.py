@@ -7,7 +7,6 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
-import time
 from typing import Any
 
 from workers.hil_sovereign_receiver_bridge import (
@@ -23,6 +22,8 @@ RECEIPT = ROOT / "receipts" / "hil-sovereign-receiver" / f"{TASK_ID}.json"
 DEFAULT_PORT = 8765
 TVC_WATCHER_REL = Path("scripts/watch_hil_tvc_lifecycle_outbox.py")
 TVC_WATCH_PID_REL = Path("receipts/hil-sovereign-receiver/tvc-lifecycle-watch.pid")
+RECEIVER_PID_REL = Path("receipts/hil-sovereign-receiver/receiver.pid")
+RECONCILIATION_ENTRYPOINT = "python workers/hil_sovereign_receiver_worker.py"
 
 
 def atomic_write(path: Path, value: dict[str, Any]) -> None:
@@ -172,16 +173,28 @@ def launch_tvc_lifecycle_watch(runtime_root: Path) -> int | None:
     return process.pid
 
 
-def observe_ready(base_url: str, attempts: int = 20, delay_seconds: float = 0.5) -> dict[str, Any] | None:
-    for _ in range(attempts):
-        try:
-            observed = verify_receiver(base_url)
-        except Exception:
-            observed = None
-        if isinstance(observed, dict) and observed.get("state") == "READY":
-            return observed
-        time.sleep(delay_seconds)
+def observe_ready(base_url: str) -> dict[str, Any] | None:
+    """One readiness observation of the local receiver. Never a predicate, never awaited.
+
+    Destination liveness is not a transition predicate and no machine is awaited
+    (Task Registry global invariants), so this makes a single attempt and
+    returns the exact READY profile proof or None.
+    """
+    try:
+        observed = verify_receiver(base_url)
+    except Exception:
+        return None
+    if isinstance(observed, dict) and observed.get("state") == "READY":
+        return observed
     return None
+
+
+def live_receiver_pid(runtime_root: Path) -> int | None:
+    try:
+        pid = int((runtime_root / RECEIVER_PID_REL).read_text(encoding="utf-8").strip())
+    except (OSError, ValueError):
+        return None
+    return pid if _pid_live(pid) else None
 
 
 def main() -> int:
@@ -268,52 +281,59 @@ def main() -> int:
     durable_root = state_root()
     port = receiver_port()
     base_url = f"http://127.0.0.1:{port}"
-    observation = observe_ready(base_url, attempts=2, delay_seconds=0.15)
-    process: subprocess.Popen[bytes] | None = None
+    observation = observe_ready(base_url)
+    receiver_pid = live_receiver_pid(ROOT)
     if observation is None:
-        try:
-            process = launch_detached(adapter_root, durable_root, port)
-        except Exception as exc:
-            blocker = solution_required(
-                f"The sovereign carrier could not launch the merged HIL receiver: {type(exc).__name__}.",
-                "Repair the local carrier launch condition or move this same admitted workload to another StegVerse sovereign carrier without changing authority boundaries.",
-                "a detached local receiver process starts and exact profile/readiness verification returns READY",
-            )
-            receipt = dict(base_receipt)
-            receipt.update({
-                "state": "ACTIVE",
-                "transition_id": "HIL_RECEIVER_LOCAL_LAUNCH_REPAIR_REQUIRED",
-                "receiver_ready": False,
-                "adapter_root": str(adapter_root),
-                "durable_state_root": str(durable_root),
-                "blocker": blocker,
-            })
-            atomic_write(RECEIPT, receipt)
-            json.dump(worker_response(state="ACTIVE", transition=receipt["transition_id"], sequence=2, epoch=epoch, next_transition="HIL_RECEIVER_LOCAL_READY", blocker=blocker), sys.stdout)
-            print()
-            return 0
-        observation = observe_ready(base_url)
-
-    if observation is None:
-        if process is not None and process.poll() is None:
-            process.terminate()
-        blocker = solution_required(
-            "The local sovereign HIL receiver process started but exact profile/readiness proof did not reach READY.",
-            "Inspect the bounded local receiver state and repair configuration until exact HIL v1.1 profile/readiness verification succeeds.",
-            "verify_receiver returns READY with exact Primary/prompt hashes and all authority/dependency flags fail-closed",
-        )
+        # The launch transition closes on the spawned receiver process. Its
+        # readiness is observed by the next invocation, never awaited here, and
+        # a receiver not yet READY is never terminated for it.
+        reused = receiver_pid is not None
+        if not reused:
+            try:
+                process = launch_detached(adapter_root, durable_root, port)
+            except Exception as exc:
+                blocker = solution_required(
+                    f"The sovereign carrier could not launch the merged HIL receiver: {type(exc).__name__}.",
+                    "Repair the local carrier launch condition or move this same admitted workload to another StegVerse sovereign carrier without changing authority boundaries.",
+                    "a detached local receiver process starts",
+                )
+                receipt = dict(base_receipt)
+                receipt.update({
+                    "state": "ACTIVE",
+                    "transition_id": "HIL_RECEIVER_LOCAL_LAUNCH_REPAIR_REQUIRED",
+                    "receiver_ready": False,
+                    "adapter_root": str(adapter_root),
+                    "durable_state_root": str(durable_root),
+                    "blocker": blocker,
+                })
+                atomic_write(RECEIPT, receipt)
+                json.dump(worker_response(state="ACTIVE", transition=receipt["transition_id"], sequence=2, epoch=epoch, next_transition="HIL_RECEIVER_LOCAL_READY", blocker=blocker), sys.stdout)
+                print()
+                return 0
+            receiver_pid = process.pid
+            pid_path = ROOT / RECEIVER_PID_REL
+            pid_path.parent.mkdir(parents=True, exist_ok=True)
+            pid_path.write_text(str(receiver_pid) + "\n", encoding="utf-8")
         receipt = dict(base_receipt)
         receipt.update({
             "state": "ACTIVE",
-            "transition_id": "HIL_RECEIVER_READINESS_REPAIR_REQUIRED",
+            "transition_id": "HIL_RECEIVER_LOCAL_LAUNCHED",
             "receiver_ready": False,
             "adapter_root": str(adapter_root),
             "durable_state_root": str(durable_root),
             "base_url": base_url,
-            "blocker": blocker,
+            "receiver_pid": receiver_pid,
+            "receiver_launch_reused_live_process": reused,
+            "readiness": {
+                "consequence_observation": "NOT_AUTHENTICALLY_OBSERVED",
+                "reason": "receiver_readiness_is_observed_after_launch_not_awaited",
+                "reconciliation_entrypoint": RECONCILIATION_ENTRYPOINT,
+                "gates_transition": False,
+            },
+            "destination_liveness_is_transition_predicate": False,
         })
         atomic_write(RECEIPT, receipt)
-        json.dump(worker_response(state="ACTIVE", transition=receipt["transition_id"], sequence=3, epoch=epoch, next_transition="HIL_RECEIVER_LOCAL_READY", blocker=blocker), sys.stdout)
+        json.dump(worker_response(state="ACTIVE", transition=receipt["transition_id"], sequence=3, epoch=epoch, next_transition="HIL_RECEIVER_LOCAL_READY"), sys.stdout)
         print()
         return 0
 
@@ -331,7 +351,7 @@ def main() -> int:
         "adapter_root": str(adapter_root),
         "durable_state_root": str(durable_root),
         "base_url": base_url,
-        "receiver_pid": process.pid if process is not None and process.poll() is None else None,
+        "receiver_pid": receiver_pid,
         "observation": observation,
         "public_https_rendezvous_proven": False,
         "browser_submission_proven": False,
