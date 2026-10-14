@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.cosv-task-vector/v0.1",
+  "identity": "StegVerse-Labs/.github:task:ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "60200000112012",
+  "exact_metrics": {
+    "lifecycle": "BLOCKED",
+    "archive_ready": false,
+    "unassigned_work": 2,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": true,
+    "propagated": null
+  },
+  "evidence_refs": [
+    "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223",
+    "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223#issuecomment-6147803065",
+    "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/60",
+    "https://github.com/StegVerse-Labs/Trumpality/issues/8",
+    "StegVerse-Labs/Trumpality:.github/workflows/erl-active-research.yml",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger:.github/workflows/trumpality-research-intake.yml",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger:research-data/trumpality-acquisition/ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026/",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@1cf3a235f1c2550330f33ebb79e6fd802c2d7a94",
+    "StegVerse-Labs/Trumpality@0452964499e96df3ec09f4a3fbb0438390d5ea6a"
+  ],
+  "observed_at": "2026-10-14",
+  "authority_effect": "NONE",
+  "canonical_encoder_ref": "scripts/cosv.py"
+}
