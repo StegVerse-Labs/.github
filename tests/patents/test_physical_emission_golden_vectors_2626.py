@@ -144,5 +144,23 @@ class GoldenVectors(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_unique('{"v":1.5}')
 
+
+    def test_frozen_golden_digests(self):
+        from pathlib import Path
+        fixture = json.loads(Path(__file__).with_name("physical_emission_golden_digests_2626.json").read_text())
+        self.assertEqual([digest("OBS", x) for x in self.obs], fixture["observation_digests"])
+        self.assertEqual([x["digest"] for x in self.original["edges"]], fixture["edge_digests"])
+        self.assertEqual(self.original["manifest_digest"], fixture["capture_digest"])
+        self.assertEqual(digest("OBS", {"v": "1"}), fixture["domain_separation"]["OBS"])
+        self.assertEqual(digest("EDGE", {"v": "1"}), fixture["domain_separation"]["EDGE"])
+        self.assertEqual([replay(self.original, [], None)["digest"],
+                          replay(self.original, [1], "interpolation-v1")["digest"]], fixture["replay_digests"])
+        a = {"id": "A", "origin": "original-1", "ancestors": ["original-1"]}
+        shared = {"id": "B", "origin": "original-1", "ancestors": ["original-1"]}
+        distinct = {"id": "B", "origin": "original-2", "ancestors": ["original-2"]}
+        self.assertEqual([compare(a, shared, True, True)["digest"],
+                          compare(a, distinct, True, False)["digest"],
+                          compare(a, distinct, True, True)["digest"]], fixture["comparison_digests"])
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
