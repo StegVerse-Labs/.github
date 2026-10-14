@@ -9,6 +9,7 @@
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
   "cosv_task_vector": "10500000110000",
+  "source_state_vector_ref": "control/task-vectors/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json",
   "authority_model": {
     "work_intent_and_coordination": "TASK_REGISTRY",
     "execution_claim_and_fence": "WORKERCOORDINATOR",

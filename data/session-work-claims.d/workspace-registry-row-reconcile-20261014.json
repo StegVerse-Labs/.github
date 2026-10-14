@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "workspace-registry-row-reconcile-20261014",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/Site#1509",
+  "parent_issue": "StegVerse-Labs/.github#3183",
+  "state": "CLAIMED",
+  "role": "REGISTRY_PROJECTION_RECONCILIATION_NON_AUTHORIZING",
+  "branch": "claude/3183-workspace-registry-row-reconcile",
+  "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
+  "originating_goal": "Reconcile the aggregate data/canonical-task-registry.json row for STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 to its canonical record (COSV 10500000114000 -> 10500000110000, owner decisions .github#2796 comment 6094254732), closing the shard_aggregate_drift finding of scripts/audit_canonical_task_projections.py (Site#1509 Q-B1).",
+  "claimed_paths": [
+    "data/canonical-task-registry.json",
+    "tests/test_workspace_registry_row_reconciliation.py",
+    "data/session-work-claims.d/workspace-registry-row-reconcile-20261014.json",
+    "data/canonical-task-records/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json",
+    "control/task-vector-index.json"
+  ],
+  "collision_boundaries": [
+    "Only the STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 row, record source_state_vector_ref binding, its vector-index registry_ref, and the generation counter change",
+    "No admission, coordination_state, checkout_state, claim or fence change",
+    "Do not modify .github#3012 lane files"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}
