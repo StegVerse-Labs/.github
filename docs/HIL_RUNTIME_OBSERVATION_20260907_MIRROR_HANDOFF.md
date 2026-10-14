@@ -1,6 +1,6 @@
 # HIL Runtime Observation Mirror Handoff
 
-Updated: 2026-09-07
+Updated: 2026-10-14
 Repository: `StegVerse-Labs/.github`
 Primary task: `SHWP-HIL-SOVEREIGN-RECEIVER-001`
 COSV ID: `50000000105000`
@@ -30,6 +30,15 @@ release_tag_authority: false
 ```
 
 Issue #889 is resolved. Routine HIL activation no longer requires the remote shared Service Gateway to be READY before ESRL `LEASE_OPEN`. Local verified same-device runtime identity/readiness is sufficient for the source-level lease path; public observation remains downstream and optional for local lease opening.
+
+## Superseded for the participant path (2026-10-14)
+
+Owner direction on `StegVerse-Labs/.github#3106` (2026-10-13): no external machine is or will be awaiting anything, and every action is bound to a state transition. The continuation below (a same-device resident dispatcher consuming `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002`, ESRL `LEASE_OPEN`, WorkerCoordinator claim/fence) is therefore **not** a prerequisite for a HIL participant submission, and nothing waits on it:
+
+- **Observed path.** The participant path is observed working without it. A participant submits from `stegverse.org` to the Cloudflare Worker receiver (`StegVerse-Labs/Site` `src/worker.js`, D1 `HIL_REGISTRY`, backend `portable-sqlite-chunks-v1`). The Site HIL Participant Readiness Gate (run 38324642386) and an owner packet both verified end to end.
+- **Canonical state.** `StegVerse-Labs/Site` `docs/HIL_SITE_MIRROR_HANDOFF.md` records the current state, in its 2026-10-13 and 2026-10-14 sections.
+- **Unsent packets.** An unsent packet is a held outbox state on the participant's device (`HIL_SUBMISSION_HELD_IN_OUTBOX`). Delivery happens on the participant's next action, never on receiver liveness (Site#1590).
+- **Recorded, not passed.** The predicates below remain recorded as they were. This note marks none of them as satisfied and claims no runtime, custody, TVC or Master Records evidence.
 
 ## Highest-priority continuation
 
