@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Task registration discovery: docs/TASK_REGISTRATION_GUIDE.md
+# This entrypoint does not register a Goal Task or mint admission authority.
 """Select and optionally advance one canonical machine-owned task from the Task Registry.
 
 The Task Registry is the work-discovery starting point. This script does not create
