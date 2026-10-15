@@ -167,3 +167,7 @@ user/manual action required: NONE
 ## Archive continuity
 
 WORKER-TASK-ADMISSION-PACKET-016 is complete and validated. All unique implementation, validation, failure/repair history, authority boundaries, and continuation semantics are captured here. Conversation history is not required for this goal.
+
+## Registering a Goal Task
+
+Start at [Task Registration Guide](../docs/TASK_REGISTRATION_GUIDE.md). This worker-admission packet reviews an existing registered HANDOFF_READY task; it cannot create a canonical Goal Task, COSV, claim/fence, or execution authorization.
