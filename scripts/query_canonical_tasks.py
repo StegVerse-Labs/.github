@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Task registration discovery: docs/TASK_REGISTRATION_GUIDE.md
+# This entrypoint does not register a Goal Task or mint admission authority.
 """Query the canonical task registry by topic without inventing new task state."""
 
 from __future__ import annotations
