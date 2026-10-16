@@ -173,8 +173,8 @@ def outbound_entries(root: Path | None = None) -> list[dict[str, Any]]:
 
     One capability may be declared more than once when the legs are one-way
     and independent. `governance` stays bound to StegVerse-Labs.
-    `governance-to-org` and `remediation-to-org` send those capabilities to
-    StegVerse-org. Neither binding grants authority.
+    `governance-to-org` sends that capability to StegVerse-org. The binding
+    grants no authority. StegVerse-org is not a remediation destination.
     """
     boundary = json.loads((Path(root or ROOT) / BOUNDARY_RELATIVE).read_text())
     declared = (boundary.get("egress") or {}).get(DESTINATION_BINDINGS_FIELD) or []

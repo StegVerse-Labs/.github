@@ -1,17 +1,21 @@
-"""Reverse one-way InTr: StegVerse-Labs emits governance and remediation to StegVerse-org.
+"""Reverse one-way InTr: StegVerse-Labs emits governance to StegVerse-org.
 
 The forward route (StegVerse-org → StegVerse-Labs) is validated in
-StegVerse-org/.github `tests/test_governance_inter_org_route.py`. These legs
-are independent of that route. They use the bindings declared in
+StegVerse-org/.github `tests/test_governance_inter_org_route.py`. This leg
+is independent of that route. It uses the binding declared in
 `org-runtime/interlock-intr.json`:
 
 - `governance-to-org` → StegVerse-org / `stegverse-org.governance`
-- `remediation-to-org` → StegVerse-org / `stegverse-org.remediation`
 
-Both are `NONE_BINDING_ONLY`. Emission is `organization_egress_boundary.emit`
+StegVerse-org does not request or receive remediation. There is no
+`remediation-to-org` binding and no destination `stegverse-org.remediation`.
+StegHealer pulls NON-ALLOW receipts from the org ledgers and decides on
+remediation itself. This module does not perform that pull.
+
+The binding is `NONE_BINDING_ONLY`. Emission is `organization_egress_boundary.emit`
 and closure is `organization_egress_boundary.close`, on the kernel mesh.
 The far side is played by the kernel functions every boundary runs —
-`receipt` and `build_control_response` — because the peer adapters live in
+`receipt` and `build_control_response` — because the peer adapter lives in
 StegVerse-org/.github. A passing test is not a production demonstration and
 is not an authentic receipt.
 
@@ -48,8 +52,6 @@ egress = _load("organization_egress_boundary_reverse_intr",
                "resident-runtime/organization_egress_boundary.py")
 governance_endpoint = _load("governance_endpoint_schema",
                             "resident-runtime/governance_endpoint.py")
-remediation_endpoint = _load("remediation_endpoint_schema",
-                             "resident-runtime/remediation_endpoint.py")
 kernel = egress.kernel
 
 
@@ -129,9 +131,8 @@ class ReverseIntrRouteCase(unittest.TestCase):
 
 
 class BindingDeclarationTests(ReverseIntrRouteCase):
-    def test_both_reverse_bindings_name_stegverse_org_and_grant_nothing(self):
+    def test_governance_to_org_names_stegverse_org_and_grants_nothing(self):
         governance = _binding("governance-to-org")
-        remediation = _binding("remediation-to-org")
         self.assertEqual(governance["destination_organization"], PEER)
         self.assertEqual(governance["destination_service"], "stegverse-org.governance")
         self.assertEqual(governance["capability"], "governance")
@@ -139,33 +140,28 @@ class BindingDeclarationTests(ReverseIntrRouteCase):
         self.assertEqual(governance["authority_effect"], "NONE_BINDING_ONLY")
         self.assertIs(governance["evaluator_imported_in_this_organization"], False)
         self.assertIs(governance["awaits_the_decision"], False)
-        self.assertEqual(remediation["destination_organization"], PEER)
-        self.assertEqual(remediation["destination_service"], "stegverse-org.remediation")
-        self.assertEqual(remediation["capability"], "remediation")
-        self.assertEqual(remediation["request_schema"], remediation_endpoint.REQUEST_SCHEMA)
-        self.assertEqual(remediation["authority_effect"], "NONE_BINDING_ONLY")
-        self.assertIs(remediation["classifier_imported_in_this_organization"], False)
-        self.assertIs(remediation["awaits_the_classification"], False)
-        self.assertIs(remediation["classification_grants_authority"], False)
+
+    def test_remediation_is_not_bound_toward_stegverse_org(self):
+        entries = BOUNDARY["egress"]["capability_destination_bindings"]
+        self.assertNotIn("remediation-to-org", [entry.get("profile_id") for entry in entries])
+        self.assertNotIn("stegverse-org.remediation",
+                         [entry.get("destination_service") for entry in entries])
+        with self.assertRaises(egress.EgressRefused) as raised:
+            egress.resolve_destination(PEER, capability="remediation")
+        self.assertEqual(raised.exception.failed_predicate,
+                         "CAPABILITY_IS_DECLARED_IN_THIS_ORGANIZATIONS_OVERLAY")
 
     def test_governance_to_labs_stays_bound_and_the_reverse_leg_is_selected_by_destination(self):
         labs = egress.resolve_destination("StegVerse-Labs", capability="governance")
         org = egress.resolve_destination(PEER, capability="governance")
-        remediation = egress.resolve_destination(PEER, capability="remediation")
         self.assertEqual(labs["destination_service"], "stegverse-labs.governance")
         self.assertEqual(labs["destination_capability_profile_id"], "governance")
         self.assertEqual(org["destination_service"], "stegverse-org.governance")
         self.assertEqual(org["destination_capability_profile_id"], "governance-to-org")
         self.assertEqual(org["destination_binding_authority_effect"], "NONE_BINDING_ONLY")
-        self.assertEqual(remediation["destination_service"], "stegverse-org.remediation")
-        self.assertEqual(remediation["destination_capability_profile_id"], "remediation-to-org")
         with self.assertRaises(egress.EgressRefused) as raised:
             egress.resolve_destination("StegGhost", capability="governance")
         self.assertEqual(raised.exception.failed_predicate,
-                         "CAPABILITY_IS_SENT_TO_THE_ORGANIZATION_THAT_OWNS_IT")
-        with self.assertRaises(egress.EgressRefused) as remediation_raised:
-            egress.resolve_destination("StegVerse-Labs", capability="remediation")
-        self.assertEqual(remediation_raised.exception.failed_predicate,
                          "CAPABILITY_IS_SENT_TO_THE_ORGANIZATION_THAT_OWNS_IT")
 
 
@@ -310,131 +306,6 @@ class GovernanceReverseLegTests(ReverseIntrRouteCase):
 def packet_body_sdk(case):
     packet = kernel.recover_packet(case.frames_to(PEER)[0])
     return packet["payload"]["body"]["sdk_request_sha256"]
-
-
-class RemediationReverseLegTests(ReverseIntrRouteCase):
-    def payload(self):
-        binding = _binding("remediation-to-org")
-        lane = {"non_allow": {"disposition": "DENY", "failed_predicate": "EXAMPLE_PREDICATE"},
-                "original_request": {"request_sha256": "c" * 64}}
-        route_sha = "e" * 64
-        return {
-            "communication_id": "remediation:" + "a" * 64,
-            "message_class": "ecosystem.work.request",
-            "processing": {"capability": binding["capability"], "route_id": binding["route_id"]},
-            "subject": "remediation.classification",
-            "requested_action": "CLASSIFY_NON_ALLOW_FOR_GOVERNED_REMEDIATION",
-            "audience": "TARGET",
-            "target_organization": binding["destination_organization"],
-            "target_count": 1,
-            "body": {
-                "schema": remediation_endpoint.REQUEST_SCHEMA,
-                "origin_organization": "StegVerse-Labs",
-                "sdk_request_sha256": "a" * 64,
-                "canonical_manifest_sha256": "b" * 64,
-                "ingress_transition_id": "ORGANIZATION-SDK-MANIFEST-INGRESS-reverse-remediation",
-                "remediation_request": lane,
-                "remediation_request_sha256": _digest(lane),
-                "remediation_route_sha256": route_sha,
-            },
-        }
-
-    def test_the_classification_request_is_emitted_allow_to_stegverse_org_remediation(self):
-        emitted = self.emit_on_mesh(self.payload(), capability="remediation")
-        self.assertEqual(emitted["disposition"], "ALLOW", emitted.get("detail"))
-        self.assertEqual(emitted["destination_organization"], PEER)
-        self.assertEqual(emitted["destination_service"], "stegverse-org.remediation")
-        self.assertEqual(emitted["destination_capability_profile_id"], "remediation-to-org")
-        self.assertEqual(emitted["authority_effect"], "NONE_EGRESS_RECORD_ONLY")
-        self.assertEqual(emitted["emission_transition_class"], "ORGANIZATION_EGRESS_EMITTED")
-        frames = self.frames_to(PEER)
-        self.assertEqual(len(frames), 1)
-        packet = kernel.recover_packet(frames[0])
-        self.assertEqual(packet["origin"], {"org": "StegVerse-Labs",
-                                             "service": "stegverse-labs.remediation"})
-        self.assertEqual(packet["destination"], {"org": PEER, "service": "stegverse-org.remediation"})
-        self.assertEqual(packet["payload"]["message_class"], "ecosystem.work.request")
-        self.assertEqual(packet["payload"]["body"]["schema"], remediation_endpoint.REQUEST_SCHEMA)
-        self.assertEqual(packet["transition"]["authority_effect"], "NONE")
-        self.assertIs(_binding("remediation-to-org")["classification_grants_authority"], False)
-
-    def test_an_unbound_organization_is_denied_and_publishes_nothing(self):
-        refused = self.emit_on_mesh(self.payload(), capability="remediation", destination="StegGhost")
-        self.assertEqual(refused["disposition"], "DENY")
-        self.assertEqual(refused["failed_predicate"],
-                         "CAPABILITY_IS_SENT_TO_THE_ORGANIZATION_THAT_OWNS_IT")
-        self.assertEqual(refused["emission_transition_class"], "ORGANIZATION_EGRESS_REFUSED")
-        self.assertEqual(self.frames_to("StegGhost"), [])
-
-    def test_a_node_without_a_mesh_records_the_refused_emission(self):
-        refused = egress.emit(PEER, self.payload(), standing=GENESIS, capability="remediation",
-                              mesh_root=None, hb_epoch=40)
-        self.assertEqual(refused["disposition"], "DENY")
-        self.assertIn("mesh_location_required_from_materializer", refused["detail"])
-        self.assertEqual(refused["emission_transition_class"], "ORGANIZATION_EGRESS_REFUSED")
-
-    def test_no_answer_is_pending_and_records_no_closure(self):
-        emitted = self.emit_on_mesh(self.payload(), capability="remediation")
-        pending = self.close(emitted)
-        self.assertEqual(pending["disposition"], "PENDING")
-        self.assertIs(pending["absence_is_not_a_transition"], True)
-        self.assertIs(pending["closure_recorded"], False)
-
-    def test_an_allow_classification_closes_and_grants_no_authority(self):
-        emitted = self.emit_on_mesh(self.payload(), capability="remediation")
-        packet = kernel.recover_packet(self.frames_to(PEER)[0])
-        body = packet["payload"]["body"]
-        self.answer(
-            schema="stegverse.org-remediation-classification/v1",
-            service_id="stegverse-org.remediation",
-            result_overrides={
-                "classifying_organization": PEER,
-                "remediation_request_sha256": body["remediation_request_sha256"],
-                "classification_grants_authority": False,
-                "disposition": "ALLOW",
-                "state": "REMEDIATION_CLASSIFIED",
-                "authority_effect": "NONE_CLASSIFICATION_ONLY",
-            })
-        closed = self.close(emitted)
-        self.assertEqual(closed["disposition"], "ALLOW", closed.get("closure_findings"))
-        self.assertEqual(closed["closure_transition_class"], "ORGANIZATION_EGRESS_CLOSED")
-        carried = closed["far_side_application_result"]
-        self.assertEqual(carried["disposition"], "ALLOW")
-        self.assertIs(carried["classification_grants_authority"], False)
-        self.assertEqual(carried["authority_effect"], "NONE_CLASSIFICATION_ONLY")
-        self.assertEqual(closed["authority_effect"], "NONE_CLOSURE_RECORD_ONLY")
-
-    def test_a_fail_closed_classification_is_carried_and_grants_nothing(self):
-        emitted = self.emit_on_mesh(self.payload(), capability="remediation")
-        self.answer(
-            schema="stegverse.org-remediation-classification/v1",
-            service_id="stegverse-org.remediation",
-            result_overrides={"disposition": "FAIL_CLOSED",
-                              "reason": "REMEDIATION_CLASSIFIER_NOT_MATERIALIZED",
-                              "classification_grants_authority": False,
-                              "classification": None,
-                              "authority_effect": "NONE_CLASSIFICATION_ONLY"})
-        closed = self.close(emitted)
-        self.assertEqual(closed["disposition"], "ALLOW", closed.get("closure_findings"))
-        carried = closed["far_side_application_result"]
-        self.assertEqual(carried["disposition"], "FAIL_CLOSED")
-        self.assertIs(carried["classification_grants_authority"], False)
-        self.assertEqual(closed["authority_effect"], "NONE_CLOSURE_RECORD_ONLY")
-
-    def test_an_answer_whose_chain_does_not_recompute_is_denied_and_recorded(self):
-        emitted = self.emit_on_mesh(self.payload(), capability="remediation")
-        self.answer(schema="stegverse.org-remediation-classification/v1",
-                    service_id="stegverse-org.remediation",
-                    result_overrides={"disposition": "DENY",
-                                      "classification_grants_authority": False,
-                                      "authority_effect": "NONE_CLASSIFICATION_ONLY"},
-                    terminal="egress_emitted-" + "0" * 24)
-        closed = self.close(emitted)
-        self.assertEqual(closed["disposition"], "DENY")
-        self.assertIs(closed["closed"], False)
-        self.assertEqual(closed["closure_transition_class"], "ORGANIZATION_EGRESS_CLOSURE_REFUSED")
-        self.assertTrue(any(item.startswith("FAR_SIDE_TERMINAL_RECEIPT_DOES_NOT_RECOMPUTE:")
-                            for item in closed["closure_findings"]))
 
 
 class SurfaceTests(ReverseIntrRouteCase):
