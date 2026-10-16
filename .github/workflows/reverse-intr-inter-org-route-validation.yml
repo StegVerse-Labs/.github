@@ -1,10 +1,12 @@
 name: Validate Reverse InTr Inter-Organization Route
 
-# Labs → StegVerse-org governance and remediation, the reverse of
+# Labs → StegVerse-org governance, the reverse of
 # StegVerse-org/.github governance-inter-org-route-validation.yml.
 # Unittests only. Both ledger roots and the mesh are redirected by the tests.
 # No step appends into an operator runtime. A green run is not a production
 # demonstration and is not an authentic receipt.
+# StegVerse-org does not request or receive remediation, so this workflow
+# does not validate a remediation-to-org leg.
 
 on:
   pull_request:
@@ -13,7 +15,6 @@ on:
       - 'resident-runtime/organization_egress_boundary.py'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'resident-runtime/governance_endpoint.py'
-      - 'resident-runtime/remediation_endpoint.py'
       - 'resident-runtime/aggregate_repo_transition.py'
       - 'resident-runtime/federation_cycle.py'
       - '.stegverse/transition-ledger/emit.py'
@@ -30,7 +31,6 @@ on:
       - 'resident-runtime/organization_egress_boundary.py'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'resident-runtime/governance_endpoint.py'
-      - 'resident-runtime/remediation_endpoint.py'
       - 'resident-runtime/aggregate_repo_transition.py'
       - 'resident-runtime/federation_cycle.py'
       - '.stegverse/transition-ledger/emit.py'
@@ -57,9 +57,9 @@ jobs:
 
       # Both ledgers and the mesh are redirected by the tests themselves, so no
       # step appends into an operator's runtime reality. No SDK checkout: the
-      # requests are the existing governance and remediation schemas, and the
-      # far side is the kernel's receipt and build_control_response.
-      - name: Governance and remediation requests leave for StegVerse-org over InTr and close on organization records
+      # request is the existing governance schema, and the far side is the
+      # kernel's receipt and build_control_response.
+      - name: Governance requests leave for StegVerse-org over InTr and close on organization records
         env:
           STEGVERSE_REPO_LEDGER_ROOT: ${{ runner.temp }}/repo-ledger
           STEGVERSE_ORG_LEDGER_ROOT: ${{ runner.temp }}/org-ledger
