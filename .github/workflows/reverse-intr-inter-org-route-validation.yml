@@ -1,0 +1,66 @@
+name: Validate Reverse InTr Inter-Organization Route
+
+# Labs → StegVerse-org governance and remediation, the reverse of
+# StegVerse-org/.github governance-inter-org-route-validation.yml.
+# Unittests only. Both ledger roots and the mesh are redirected by the tests.
+# No step appends into an operator runtime. A green run is not a production
+# demonstration and is not an authentic receipt.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'resident-runtime/organization_egress_boundary.py'
+      - 'resident-runtime/organization_manifest_ingress.py'
+      - 'resident-runtime/governance_endpoint.py'
+      - 'resident-runtime/remediation_endpoint.py'
+      - 'resident-runtime/aggregate_repo_transition.py'
+      - 'resident-runtime/federation_cycle.py'
+      - '.stegverse/transition-ledger/emit.py'
+      - 'org-kernel/kernel.py'
+      - 'org-runtime/interlock-intr.json'
+      - 'org-boundary/registry/services.json'
+      - 'org-boundary/registry/federation.json'
+      - 'tests/test_reverse_intr_inter_org_route.py'
+      - 'docs/REVERSE_INTR_GOVERNANCE_REMEDIATION_ROUTE_MIRROR_HANDOFF.md'
+      - '.github/workflows/reverse-intr-inter-org-route-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'resident-runtime/organization_egress_boundary.py'
+      - 'resident-runtime/organization_manifest_ingress.py'
+      - 'resident-runtime/governance_endpoint.py'
+      - 'resident-runtime/remediation_endpoint.py'
+      - 'resident-runtime/aggregate_repo_transition.py'
+      - 'resident-runtime/federation_cycle.py'
+      - '.stegverse/transition-ledger/emit.py'
+      - 'org-kernel/kernel.py'
+      - 'org-runtime/interlock-intr.json'
+      - 'org-boundary/registry/services.json'
+      - 'org-boundary/registry/federation.json'
+      - 'tests/test_reverse_intr_inter_org_route.py'
+      - 'docs/REVERSE_INTR_GOVERNANCE_REMEDIATION_ROUTE_MIRROR_HANDOFF.md'
+      - '.github/workflows/reverse-intr-inter-org-route-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-reverse-intr-route:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout organization boundary
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Both ledgers and the mesh are redirected by the tests themselves, so no
+      # step appends into an operator's runtime reality. No SDK checkout: the
+      # requests are the existing governance and remediation schemas, and the
+      # far side is the kernel's receipt and build_control_response.
+      - name: Governance and remediation requests leave for StegVerse-org over InTr and close on organization records
+        env:
+          STEGVERSE_REPO_LEDGER_ROOT: ${{ runner.temp }}/repo-ledger
+          STEGVERSE_ORG_LEDGER_ROOT: ${{ runner.temp }}/org-ledger
+        run: python -m unittest tests.test_reverse_intr_inter_org_route -v
