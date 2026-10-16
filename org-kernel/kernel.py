@@ -146,6 +146,29 @@ def manifest_selection(root:Path):
     module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     return module
 
+#: The boundary role whose dispatch resolves a bound capability's address.
+#:
+#: The role vocabulary is this kernel's, as `BOUNDARY_LOCAL_DIAGNOSTIC` and
+#: `BOUNDARY_LOCAL_CONTROL` already are. `capability_ingress.ROLE` is that
+#: module's assertion of which role it serves. A resolver serving a role the
+#: kernel never dispatches would be unreachable.
+CAPABILITY_INGRESS_ROLE="BOUNDARY_LOCAL_CAPABILITY_INGRESS"
+
+def capability_ingress(root:Path):
+    """Load the organization's capability-ingress module from its boundary runtime.
+
+    A registered capability is bound to a receiving operation in the
+    organization's own overlay. This resolves the address to that operation,
+    from the dispatch root for the same reason as `manifest_selection`. A root
+    without it fails closed when a capability address is dispatched: an address
+    that cannot resolve which capability it serves must not run anything.
+    """
+    path=root/"org-boundary/runtime/capability_ingress.py"
+    if not path.is_file(): raise ValueError("org_boundary_capability_ingress_missing")
+    spec=importlib.util.spec_from_file_location("capability_ingress",path)
+    module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module
+
 def carried_standing(request_packet:dict[str,Any])->dict[str,Any]:
     """Carry a request's standing onto its response, unchanged and marked as carried.
 
@@ -201,7 +224,7 @@ def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
     if not isinstance(result,dict): raise ValueError("endpoint_adapter_result_invalid")
     return result
 
-def dispatch(root:Path, packet:dict[str,Any], *, node_state:Any|None=None)->dict[str,Any]:
+def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None)->dict[str,Any]:
     """Dispatch a recovered packet. `node_state` is this node's supplied state store.
 
     `root` is the organization's materialized source: it is read, never written.
@@ -222,7 +245,7 @@ def dispatch(root:Path, packet:dict[str,Any], *, node_state:Any|None=None)->dict
         raise ValueError("node_standing_refused:"+str(refused)) from None
     role=service.get("boundary_role")
     endpoint=role=="INTERNAL_ENDPOINT" and bool(service.get("endpoint_adapter"))
-    if not endpoint and role not in {"BOUNDARY_LOCAL_DIAGNOSTIC","BOUNDARY_LOCAL_CONTROL"}:
+    if not endpoint and role not in {"BOUNDARY_LOCAL_DIAGNOSTIC","BOUNDARY_LOCAL_CONTROL",CAPABILITY_INGRESS_ROLE}:
         raise ValueError("endpoint_adapter_not_installed")
     # Resolved before any receipt is minted: a dispatch that cannot state how
     # processing was selected must not leave a chain implying it was consumed.
@@ -249,6 +272,18 @@ def dispatch(root:Path, packet:dict[str,Any], *, node_state:Any|None=None)->dict
         application_result=run_endpoint_adapter(root,adapter,packet,service=service,node_state=node_state)
     elif role=="BOUNDARY_LOCAL_CONTROL":
         application_result=handle_control_message(root,packet,registry,node_state=node_state)
+    elif role==CAPABILITY_INGRESS_ROLE:
+        # The address resolves to the receiving operation the overlay binds,
+        # which records its own dispositions at both ledger levels. Its refusal
+        # is surfaced as this boundary's refusal rather than becoming a consumed
+        # crossing with a refusal buried in its application result. Loaded only
+        # for this role: a root that never serves a capability address is not
+        # defective for having no capability resolver.
+        try:
+            application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
+                                                                mesh_root=mesh_root)
+        except SystemExit as refused:
+            raise ValueError("capability_ingress_refused:"+str(refused)) from None
     else:
         application_result={"echo":packet["payload"]}
     return {"schema_version":SCHEMA,"organization":registry["organization"],"packet_id":packet["packet_id"],
@@ -267,18 +302,19 @@ def persist_outbox(root:Path, frame:dict[str,Any], *, store:Any|None=None)->Path
         raise ValueError("write_once_collision")
     return Path(target.locator(key))
 
-def ingest_frame(root:Path, frame:dict[str,Any], *, node_state:Any|None=None)->dict[str,Any]:
+def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None)->dict[str,Any]:
     packet=recover_packet(frame)
     registry=load_registry(root)
     if frame["destination_org"]!=registry["organization"]:
         return {"status":"IGNORED_NOT_ADDRESSED","packet_id":frame["packet_id"]}
-    result=dispatch(root,packet,node_state=node_state)
+    result=dispatch(root,packet,mesh_root=mesh_root,node_state=node_state)
     return {"status":"CONSUMED","packet":packet,"execution_result":result}
 
 __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame","recover_packet","dispatch",
          "persist_outbox","ingest_frame","mesh_store","node_state_store","node_state_provenance",
          "resolve_federation_root","resolve_node_state_root","addressed_node_state_store",
-         "record_federation_cycle","federation_cycles","manifest_selection","crossing_custody",
+         "record_federation_cycle","federation_cycles","manifest_selection","capability_ingress",
+         "CAPABILITY_INGRESS_ROLE","crossing_custody",
          "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS"]
 
 
@@ -393,7 +429,8 @@ def consume_addressed_frames(repo_root:Path, *, mesh_root:Path|None=None, seen:s
     results=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=seen):
         epoch=(item["frame"].get("heartbeat_reference") or {}).get("epoch")
-        result,recorded=ingest_recorded(repo_root,item,custody,registry,node_state=node_state,epoch=epoch)
+        result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
+                                        node_state=node_state,epoch=epoch)
         results.append({"path":item["path"],"result":result,"organization_record":recorded})
     return results
 
@@ -688,8 +725,14 @@ def _record_both(custody:dict[str,Any], name:str, transition_class:str, predeces
 
 def record_crossing(custody:dict[str,Any], item:dict[str,Any], result:dict[str,Any], *,
                     service:dict[str,Any]|None, epoch:int|None)->dict[str,Any]|None:
-    """Append the repository and organization receipts for one consumed crossing."""
+    """Append the repository and organization receipts for one consumed crossing.
+
+    A crossing to a capability address is not recorded here: the receiving
+    operation it resolves to records both levels itself.
+    """
     if result.get("status")!="CONSUMED":
+        return None
+    if (service or {}).get("boundary_role")==CAPABILITY_INGRESS_ROLE:
         return None
     packet=result["packet"]; execution=result["execution_result"]; frame=item["frame"]
     name=node_store_module.frame_name(str(item["path"]))
@@ -734,22 +777,22 @@ def record_refusal(custody:dict[str,Any], item:dict[str,Any], reason:str, dispos
     return {**recorded,"disposition":disposition}
 
 def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], registry:dict[str,Any], *,
-                    node_state:Any|None, epoch:int|None)->tuple[dict[str,Any],dict[str,Any]|None]:
+                    mesh_root:Path|None=None, node_state:Any|None, epoch:int|None)->tuple[dict[str,Any],dict[str,Any]|None]:
     """Ingest one frame and record its disposition, admitted or refused.
 
     A refusal used to leave the consuming pass by exception, recorded nowhere
     and stopping every frame behind it. A refusal of custody itself still
-    raises: without it nothing can be recorded. This kernel dispatches no
-    capability address, so a crossing to one is refused here and recorded
-    like any other refusal.
+    raises: without it nothing can be recorded. A capability-address crossing
+    still raises: its receiving operation records its own refusal at both levels.
     """
     destination=((recover_packet(item["frame"]).get("destination") or {}).get("service"))
     service=next((svc for svc in registry["services"] if svc.get("service_id")==destination),None)
     try:
-        result=ingest_frame(repo_root,item["frame"],node_state=node_state)
+        result=ingest_frame(repo_root,item["frame"],mesh_root=mesh_root,node_state=node_state)
     except ValueError as exc:
         reason=str(exc)
-        if any(marker in reason for marker in CUSTODY_REFUSALS):
+        if (any(marker in reason for marker in CUSTODY_REFUSALS)
+                or (service or {}).get("boundary_role")==CAPABILITY_INGRESS_ROLE):
             raise
         disposition=refusal_disposition(reason)
         recorded=record_refusal(custody,item,reason,disposition,service=service,epoch=epoch)
@@ -796,7 +839,8 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
         # no consumption marker written for a crossing the organization has not
         # recorded. A failed append leaves the frame unmarked, so the next pass
         # offers it again and the idempotent append completes it.
-        result,recorded=ingest_recorded(repo_root,item,custody,registry,node_state=node_state,epoch=epoch)
+        result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
+                                        node_state=node_state,epoch=epoch)
         if result.get("status")=="REFUSED" and result["disposition"]!="DENY":
             # FAIL_CLOSED: recorded, not marked, offered again on the next pass.
             out.append({"path":item["path"],"result":result,"response_publication":None,

@@ -9,7 +9,7 @@ def test_labs_owns_sole_org_boundary():
  assert b["communication_policy"]=="ALL_ORGANIZATION_INGRESS_EGRESS_GENERATED_AT_ORG_DOT_GITHUB_BOUNDARY"
 def test_manifest_ingress_is_repo_owned_not_http_or_environment():
  b=load("org-runtime/interlock-intr.json")
- x=b["ingress"]["capability_endpoint_bindings"][0]["receiving_operation"]
+ x=next(entry["receiving_operation"] for entry in b["ingress"]["capability_endpoint_bindings"] if entry["profile_id"]=="sdk-manifest-ingress")
  assert x["owner_repository"]=="StegVerse-Labs/.github"
  assert x["operation_id"]=="ORGANIZATION_SDK_MANIFEST_INGRESS"
  assert x["operation"]=="resident-runtime/organization_manifest_ingress.py"
