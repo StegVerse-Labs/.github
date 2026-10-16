@@ -168,17 +168,64 @@ def declared_capabilities(root: Path | None = None) -> dict[str, dict[str, Any]]
             if isinstance(entry, dict) and entry.get("profile_id")}
 
 
-def destination_bindings(root: Path | None = None) -> dict[str, dict[str, Any]]:
-    """Capabilities this organization sends out, each bound to the organization that owns it.
+def outbound_entries(root: Path | None = None) -> list[dict[str, Any]]:
+    """Egress capability bindings, in declaration order.
 
-    Declared on the egress side of the overlay, because they are not received
-    here: governance is decided by StegVerse-Labs, which owns StegCore, and this
-    organization only emits the request to it.
+    One capability may be declared more than once when the legs are one-way
+    and independent. `governance` stays bound to StegVerse-Labs.
+    `governance-to-org` and `remediation-to-org` send those capabilities to
+    StegVerse-org. Neither binding grants authority.
     """
     boundary = json.loads((Path(root or ROOT) / BOUNDARY_RELATIVE).read_text())
     declared = (boundary.get("egress") or {}).get(DESTINATION_BINDINGS_FIELD) or []
-    return {entry["profile_id"]: entry for entry in declared
-            if isinstance(entry, dict) and entry.get("profile_id")}
+    return [entry for entry in declared
+            if isinstance(entry, dict) and entry.get("profile_id")]
+
+
+def destination_bindings(root: Path | None = None) -> dict[str, dict[str, Any]]:
+    """Egress bindings keyed by profile id.
+
+    A profile id is unique. The capability name is not: `governance` is both
+    the profile that stays at StegVerse-Labs and the capability
+    `governance-to-org` sends to StegVerse-org. Callers that address a peer
+    use `select_outbound_binding`.
+    """
+    return {entry["profile_id"]: entry for entry in outbound_entries(root)}
+
+
+def select_outbound_binding(capability: str, organization: str, *,
+                            root: Path | None = None) -> dict[str, Any] | None:
+    """The binding that sends `capability` to `organization`, or None.
+
+    Selection is the declared destination, not the first profile that shares
+    the capability name. An organization no binding names is refused. A
+    capability declared only as an ingress profile, with no egress binding,
+    returns None so the address stays the derived capability service. Nothing
+    here grants authority.
+    """
+    matches = [entry for entry in outbound_entries(root)
+               if entry.get("profile_id") == capability or entry.get("capability") == capability]
+    if not matches:
+        if capability not in declared_capabilities(root):
+            raise EgressRefused(
+                "CAPABILITY_IS_DECLARED_IN_THIS_ORGANIZATIONS_OVERLAY",
+                "no capability_endpoint_binding or capability_destination_binding declares "
+                + str(capability))
+        return None
+    addressed = [entry for entry in matches
+                 if entry.get("destination_organization") == organization]
+    if len(addressed) > 1:
+        raise EgressRefused(
+            "CAPABILITY_DESTINATION_BINDING_IS_UNAMBIGUOUS",
+            "capability " + str(capability) + " has more than one binding to "
+            + str(organization))
+    if not addressed:
+        owners = ", ".join(sorted({str(entry.get("destination_organization")) for entry in matches}))
+        raise EgressRefused(
+            "CAPABILITY_IS_SENT_TO_THE_ORGANIZATION_THAT_OWNS_IT",
+            "capability " + str(capability) + " is bound to " + owners
+            + ", not " + str(organization))
+    return addressed[0]
 
 
 def peer_capability_service(organization: str, capability: str) -> str:
@@ -221,20 +268,8 @@ def resolve_destination(organization: str, *, capability: str | None = None,
     closes and `close` records the refusal.
     """
     directory = kernel.load_federation_directory(root or ROOT)
-    outbound = destination_bindings(root) if capability is not None else {}
-    if (capability is not None and capability not in outbound
-            and capability not in declared_capabilities(root)):
-        raise EgressRefused(
-            "CAPABILITY_IS_DECLARED_IN_THIS_ORGANIZATIONS_OVERLAY",
-            "no capability_endpoint_binding declares profile_id " + str(capability))
-    bound_to = (outbound.get(capability) or {}).get("destination_organization")
-    if bound_to is not None and bound_to != organization:
-        # The overlay names the organization that owns this capability. Sending
-        # it anywhere else would have another organization answer for it.
-        raise EgressRefused(
-            "CAPABILITY_IS_SENT_TO_THE_ORGANIZATION_THAT_OWNS_IT",
-            "capability " + str(capability) + " is bound to " + str(bound_to)
-            + ", not " + str(organization))
+    binding = (select_outbound_binding(capability, organization, root=root)
+               if capability is not None else None)
     for row in directory.get("organizations", []):
         if row.get("organization") != organization:
             continue
@@ -253,7 +288,16 @@ def resolve_destination(organization: str, *, capability: str | None = None,
         # is the error `peer_declares_its_capability_services_in_the_peer_
         # directory: false` already refuses in the other direction.
         addressed = row.get(ADDRESSED_SERVICE_FIELD) or control
-        service = addressed if capability is None else peer_capability_service(organization, capability)
+        # The binding names the service the peer answers at. Deriving it from
+        # the profile id would address `stegverse-org.governance-to-org`
+        # instead of the declared `stegverse-org.governance`.
+        address_capability = (binding or {}).get("capability") or capability
+        declared_service = (binding or {}).get("destination_service")
+        if isinstance(declared_service, str) and declared_service.strip():
+            service = declared_service
+        else:
+            service = addressed if capability is None else peer_capability_service(
+                organization, address_capability)
         if not service:
             raise EgressRefused(
                 "DESTINATION_DECLARES_A_SERVICE_THIS_DIRECTORY_CAN_ADDRESS",
@@ -270,8 +314,10 @@ def resolve_destination(organization: str, *, capability: str | None = None,
             "transport_profile": profile,
             "destination_resolution_source": "ORGANIZATION_FEDERATION_DIRECTORY",
             "destination_resolved_from_caller_argument": False,
-            "destination_capability_profile_id": capability,
+            "destination_capability_profile_id": (binding or {}).get("profile_id") or capability,
+            "addressed_capability": address_capability,
             "destination_service": service,
+            "destination_binding_authority_effect": (binding or {}).get("authority_effect"),
             "destination_capability_address_form": CAPABILITY_ADDRESS_FORM,
             "destination_capability_declared_by_the_peer_directory": False,
             "peer_serves_this_capability_is_proven_here": False,
@@ -495,14 +541,20 @@ def _record(transition_id: str, transition_class: str, predecessor: str, success
         transition_id, transition_class, predecessor, successor,
         dict(record), "NONE", hb_epoch=hb_epoch,
         idempotent_on=("frame_sha256", "payload_sha256") if idempotent else None)
-    organization_receipt = organization_ledger.append(
-        repository_receipt, "REPO_STATE_PROPAGATION", predecessor, successor,
-        {"operation": OPERATION_ID,
-         "intended_action": record["intended_action"],
-         "disposition": record["disposition"],
-         "crossed_an_organization_boundary": record["crossed_an_organization_boundary"]},
-        "NONE", hb_epoch=repository_receipt["hb_reference"]["epoch"] if idempotent else hb_epoch,
-        idempotent=idempotent)
+    # The organization append owner is aggregate_transition. `append` is the
+    # peer organization's positional writer and is not this ledger's.
+    organization_receipt = organization_ledger.aggregate_transition(
+        receipt=repository_receipt,
+        org_transition_class="REPO_STATE_PROPAGATION",
+        predecessor_org_state_sha256=predecessor,
+        successor_org_state_sha256=successor,
+        boundary_evidence={"operation": OPERATION_ID,
+                           "intended_action": record["intended_action"],
+                           "disposition": record["disposition"],
+                           "crossed_an_organization_boundary":
+                               record["crossed_an_organization_boundary"]},
+        authority_effect="NONE",
+        hb_epoch=repository_receipt["hb_reference"]["epoch"] if idempotent else hb_epoch)
     return {"repository_receipt": repository_receipt,
             "organization_receipt": organization_receipt}
 
@@ -538,9 +590,10 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
             raise EgressRefused(*unclosable)
         resolved = resolve_destination(destination_organization, capability=capability,
                                        root=root)
+        addressed_capability = resolved.get("addressed_capability") or capability
         packet = kernel.build_packet(
             origin_org=origin,
-            origin_service=peer_capability_service(origin, capability) if capability
+            origin_service=peer_capability_service(origin, addressed_capability) if capability
                            else kernel.organization_slug(origin) + ".org-control",
             destination_org=resolved["destination_organization"],
             destination_service=resolved["destination_service"],
