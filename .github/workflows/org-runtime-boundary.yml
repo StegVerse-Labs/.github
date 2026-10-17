@@ -6,6 +6,17 @@ on:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
       - 'resident-runtime/organization_manifest_ingress.py'
+      - 'resident-runtime/sdk_manifest_crossing.py'
+      - 'resident-runtime/organization_egress_boundary.py'
+      - 'resident-runtime/intr_destination_ingress.py'
+      - 'org-kernel/kernel.py'
+      - 'org-boundary/runtime/capability_ingress.py'
+      - 'tests/test_sdk_manifest_crossing_six_fields.py'
+      - 'tests/test_manifest_ingress_d7_fail_closed.py'
+      - 'tests/test_p1_supplied_epoch_and_ledger_paths.py'
+      - 'tests/fixtures/d6-far-side-non-allow.json'
+      - 'tests/fixtures/d6_far_side_registry.py'
+      - 'tests/fixtures/d6-labs-purpose-bound-worker-manifest.json'
       - 'resident-runtime/organization_role_conformance.py'
       - 'org-boundary/registry/services.json'
       - 'tests/test_organization_role_conformance_ingress.py'
@@ -64,6 +75,17 @@ on:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
       - 'resident-runtime/organization_manifest_ingress.py'
+      - 'resident-runtime/sdk_manifest_crossing.py'
+      - 'resident-runtime/organization_egress_boundary.py'
+      - 'resident-runtime/intr_destination_ingress.py'
+      - 'org-kernel/kernel.py'
+      - 'org-boundary/runtime/capability_ingress.py'
+      - 'tests/test_sdk_manifest_crossing_six_fields.py'
+      - 'tests/test_manifest_ingress_d7_fail_closed.py'
+      - 'tests/test_p1_supplied_epoch_and_ledger_paths.py'
+      - 'tests/fixtures/d6-far-side-non-allow.json'
+      - 'tests/fixtures/d6_far_side_registry.py'
+      - 'tests/fixtures/d6-labs-purpose-bound-worker-manifest.json'
       - 'resident-runtime/organization_role_conformance.py'
       - 'org-boundary/registry/services.json'
       - 'tests/test_organization_role_conformance_ingress.py'
@@ -153,6 +175,50 @@ jobs:
       # replay returns the recorded receipts, against temporary ledgers only.
       - name: Validate manifest ingress is idempotent per transition
         run: python -m unittest -v tests/test_manifest_ingress_idempotent.py
+
+      # D6: every non-ALLOW out of the crossing carries the six fields; the
+      # far-side branch is driven live by the D6 fixture (an admitted pair on
+      # a copy of the registry; the committed registry is never edited).
+      - name: Validate six-field crossing refusals and the far-side branch (D6)
+        run: |
+          set -eu
+          python -m unittest -v tests/test_sdk_manifest_crossing_six_fields.py
+          printf '{"mode":"ESTABLISH_GENESIS","node_ref":"ci","predecessor":null}' > "$RUNNER_TEMP/d6-standing.json"
+          for case in receiver-unavailable installed-adapter-refuses; do
+            python tests/fixtures/d6_far_side_registry.py --case "$case" --out "$RUNNER_TEMP/d6-$case-registry.json"
+            python resident-runtime/sdk_manifest_crossing.py \
+              --manifest tests/fixtures/d6-labs-purpose-bound-worker-manifest.json \
+              --registry "$RUNNER_TEMP/d6-$case-registry.json" \
+              --standing "$RUNNER_TEMP/d6-standing.json" \
+              --packet-id "ci-d6-$case" --out "$RUNNER_TEMP/d6-$case.json" || true
+            CASE="$case" python - <<'PY'
+          import json, os
+          case = os.environ["CASE"]
+          spec = json.load(open("tests/fixtures/d6-far-side-non-allow.json"))["cases"][case]
+          x = json.load(open(os.environ["RUNNER_TEMP"] + "/d6-" + case + ".json"))
+          six = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                 "retry_entrypoint", "owning_existing_goal", "next_attempt")
+          assert x["crossing_completed"] is False, (case, x)
+          assert x["disposition"] == "FAIL_CLOSED", (case, x)
+          assert x["failure_code"] == spec["expected_failure_code"], (case, x)
+          assert all(isinstance(x.get(f), str) and x[f].strip() for f in six), (case, x)
+          print("D6_FAR_SIDE_SIX_FIELDS=PASS", case, x["failure_code"])
+          PY
+          done
+
+      # D7 and the refusal disposition table, keyed on (failure_code,
+      # failed_predicate) and returned as stored. Temporary ledgers only.
+      - name: Validate D7 fail-closed ingress and the refusal disposition table
+        env:
+          STEGVERSE_SDK_REQUIRED: '1'
+        run: python -m unittest -v tests/test_manifest_ingress_d7_fail_closed.py
+
+      # P1 (StegVerse-org/.github#163): the supplied epoch reaches every ledger
+      # append, and the ledger writers' location is an optional input.
+      - name: Validate supplied epoch and ledger-component / consumer-root paths (P1)
+        env:
+          STEGVERSE_SDK_REQUIRED: '1'
+        run: python -m unittest -v tests/test_p1_supplied_epoch_and_ledger_paths.py
       - name: Validate the repository chain fails closed on a break and an exact retry matches in full
         run: python -m unittest -v tests/test_repo_ledger_exact_retry.py
 

@@ -376,10 +376,18 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
         # for this role: a root that never serves a capability address is not
         # defective for having no capability resolver.
         try:
-            application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
-                                                                mesh_root=mesh_root)
+            # The epoch of the carrier frame that delivered the packet goes with
+            # it, so the operation's appends are at the supplied epoch; without
+            # one the resolver refuses HB_EPOCH_NOT_SUPPLIED with six fields and
+            # nothing is appended.
+            application_result=capability_ingress(root).receive(
+                root,service,packet,registry=registry,mesh_root=mesh_root,
+                hb_epoch=(heartbeat_reference or {}).get("epoch"))
         except SystemExit as refused:
-            raise ValueError("capability_ingress_refused:"+str(refused)) from None
+            error=ValueError("capability_ingress_refused:"+str(refused))
+            # A six-field refusal (the epoch rule) keeps its fields on the error.
+            error.refusal=getattr(refused,"refusal",None)
+            raise error from None
     else:
         application_result={"echo":packet["payload"]}
     return {"schema_version":SCHEMA,"organization":registry["organization"],"packet_id":packet["packet_id"],
