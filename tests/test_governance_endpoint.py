@@ -54,6 +54,11 @@ def _kernel():
 
 
 K = _kernel()
+#: The carrier frame's heartbeat reference, supplied as a frame carries it. The
+#: governance row takes the carrier epoch (H34b), so a direct dispatch hands it
+#: the reference a delivering frame would.
+CARRIER_EPOCH = 1000
+CARRIER = K.hb_reference(epoch=CARRIER_EPOCH)
 
 
 def canon(value):
@@ -136,7 +141,7 @@ class GovernanceEndpointTests(unittest.TestCase):
 
     def test_a_crossed_request_is_decided_here_with_stegcore(self):
         self.with_stegcore()
-        result = K.dispatch(ROOT, packet(work_request({"signal": {}})))
+        result = K.dispatch(ROOT, packet(work_request({"signal": {}})), heartbeat_reference=CARRIER)
         decision = result["application_result"]
         self.assertIs(result["consumed"], True)
         self.assertEqual(result["reconstruction"]["status"], "RECONSTRUCTED")
@@ -148,7 +153,7 @@ class GovernanceEndpointTests(unittest.TestCase):
 
     def test_the_decision_is_recorded_at_both_ledger_levels_here(self):
         self.with_stegcore()
-        decision = K.dispatch(ROOT, packet(work_request({"signal": {}})))["application_result"]
+        decision = K.dispatch(ROOT, packet(work_request({"signal": {}})), heartbeat_reference=CARRIER)["application_result"]
         repository = self.ledger("STEGVERSE_REPO_LEDGER_ROOT")
         organization = self.ledger("STEGVERSE_ORG_LEDGER_ROOT")
         self.assertEqual([r["transition_class"] for r in repository], ["ORGANIZATION_GOVERNANCE_DECISION"])
@@ -160,14 +165,14 @@ class GovernanceEndpointTests(unittest.TestCase):
 
     def test_without_stegcore_the_request_is_decided_fail_closed_not_guessed(self):
         self.without_stegcore()
-        decision = K.dispatch(ROOT, packet(work_request({"signal": {}})))["application_result"]
+        decision = K.dispatch(ROOT, packet(work_request({"signal": {}})), heartbeat_reference=CARRIER)["application_result"]
         self.assertEqual(decision["disposition"], "FAIL_CLOSED")
         self.assertEqual(decision["reason"], "GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE")
         self.assertEqual(len(self.ledger("STEGVERSE_REPO_LEDGER_ROOT")), 1)
 
     def test_a_request_that_does_not_recompute_is_decided_fail_closed(self):
         self.with_stegcore()
-        decision = K.dispatch(ROOT, packet(work_request({"signal": {}}, digest="0" * 64)))["application_result"]
+        decision = K.dispatch(ROOT, packet(work_request({"signal": {}}, digest="0" * 64)), heartbeat_reference=CARRIER)["application_result"]
         self.assertEqual(decision["disposition"], "FAIL_CLOSED")
         self.assertEqual(decision["reason"], "GOVERNANCE_REQUEST_DIGEST_MISMATCH")
 
@@ -192,7 +197,7 @@ class GovernanceEndpointTests(unittest.TestCase):
         self.with_stegcore()
         mesh = self.work / "mesh"
         sent = packet(work_request({"signal": {}}))
-        K.publish_packet(sent, root=mesh)
+        K.publish_packet(sent, root=mesh, epoch=CARRIER_EPOCH)
         # Node state and both ledgers are supplied, so the checkout is only read.
         consumed = K.consume_and_respond(ROOT, mesh_root=mesh,
                                          node_state_root=self.work / "node-state", seen=set(),
