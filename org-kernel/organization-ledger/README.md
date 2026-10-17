@@ -47,7 +47,7 @@ Commit these two things:
 
 Then call the reusable workflow with:
 - `component_ref` pinned to this repository's commit;
-- `intr_interface_ref` defaults to `e0e132d7420afc276fe92f20aa76c63c63072efd`, the head of StegVerse-org/.github#185 (C7/C8 signatures: #163 issuecomment-6235428412). The workflow stages these writers, digest-verified, into the layout `--ledger-component` binds, and passes `--consumer-root "$GITHUB_WORKSPACE"`. P1-FC-6 is resolved pending the #185 merge.
+- `intr_interface_ref` defaults to `0f9481af324fc0cf8e46c2446ad69de07f9a8a9d`, the StegVerse-org/.github main merge commit of #185 (PR head `78ae1f8e`, identical tree; C7/C8 signatures: #163 issuecomment-6235428412). The workflow passes the digest-verified component directory itself as the flat `--ledger-component` (no staging), `--consumer-root "$GITHUB_WORKSPACE"`, and on `--verify-self-closure` also `--repository-namespace` and `--org-contract`, so the interface reads back with the component's readback and the consumer's org contract. P1-FC-6 is resolved locally at this pin, pending publication (FC-1).
 - `hb_epoch` must be ASCII digits only and >= 32, the same rule as TVC#517 `require_hb_epoch`. Every CLI takes `--hb-epoch` as a string and `ledger_common.require_supplied_epoch` validates it, so `+33`, ` 33` and `3_3` are refused with `HB_EPOCH_INVALID`.
 
 A fresh org opens its chain through the InTr self-closure (`genesis_mode: SELF_CLOSURE_OPENS_CHAIN`). The `communication_id` default is `intr-selfclose-<org>-HB<hb_epoch>`. The 7 existing closures keep `intr-selfclose-<Org>-20261017`, and both forms read back.
