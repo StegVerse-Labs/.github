@@ -127,6 +127,38 @@ class GovernanceSixFieldTests(unittest.TestCase):
         repository = self.ledger("STEGVERSE_REPO_LEDGER_ROOT")
         self.assertIs(repository[0]["hb_reference"]["derived_from_clock"], True)
 
+    def run_adapter_raw(self, epoch):
+        envelope = self.work / "packet.json"
+        envelope.write_text(json.dumps(base.packet(base.work_request({"signal": {}}))))
+        out = self.work / "out.json"
+        completed = subprocess.run([sys.executable, str(base.ROOT / "resident-runtime/governance_endpoint.py"),
+                                    "--packet", str(envelope), "--out", str(out), "--hb-epoch=" + epoch],
+                                   cwd=base.ROOT, capture_output=True, text=True, check=False)
+        return completed, out
+
+    def test_the_cli_refuses_coerced_epochs_from_the_raw_text(self):
+        # --hb-epoch is type=str: the shared validator sees '+33', ' 33', '3_3' as typed.
+        self.use_stub(MATRIX_STUB)
+        for epoch in ("+33", " 33", "3_3"):
+            with self.subTest(epoch=epoch):
+                completed, out = self.run_adapter_raw(epoch)
+                self.assertEqual(completed.returncode, 1, completed.stdout + completed.stderr)
+                printed = json.loads(completed.stdout.strip().splitlines()[-1])
+                self.assertEqual(printed["disposition"], "FAIL_CLOSED")
+                self.assertEqual(printed["failure_code"], "HB_EPOCH_INVALID")
+                self.assertEqual(printed["failed_predicate"], "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
+                self.assert_six(printed)
+                self.assertFalse(out.exists(), "a refused run wrote --out")
+                self.assertEqual(self.ledger("STEGVERSE_REPO_LEDGER_ROOT"), [])
+                self.assertEqual(self.ledger("STEGVERSE_ORG_LEDGER_ROOT"), [])
+
+    def test_the_cli_accepts_a_leading_zero_epoch_as_its_value(self):
+        self.use_stub(MATRIX_STUB)
+        completed, out = self.run_adapter_raw("0033")
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertEqual(self.ledger("STEGVERSE_REPO_LEDGER_ROOT")[0]["hb_reference"]["epoch"], 33)
+        self.assertEqual(self.ledger("STEGVERSE_ORG_LEDGER_ROOT")[0]["hb_reference"]["epoch"], 33)
+
 
 if __name__ == "__main__":
     unittest.main()

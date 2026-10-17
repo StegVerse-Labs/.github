@@ -192,16 +192,51 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
             "organization_receipt_sha256": organization_receipt["receipt_sha256"]}
 
 
+def cli_hb_epoch(text: str | None) -> tuple[int | None, dict[str, Any] | None]:
+    """--hb-epoch as typed, checked by the shared rule: (epoch, None) or (None, refusal).
+
+    argparse hands over the raw text (type=str), so the shared validator (the
+    kernel's supplied_epoch_failure) sees it uncoerced: '+33', ' 33' and '3_3'
+    are HB_EPOCH_INVALID, and '0033' is 33. An absent --hb-epoch stays None,
+    as before.
+    """
+    if text is None:
+        return None, None
+    kernel = _module("org_kernel_cli_epoch", "org-kernel/kernel.py")
+    failure = kernel.supplied_epoch_failure(text)
+    if failure is None:
+        return int(text), None  # admitted as ASCII digits
+    code, detail = failure
+    return None, {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": kernel.HB_EPOCH_PREDICATE,
+        "detail": detail,
+        "required_evidence_or_repair": ("pass --hb-epoch as the carrier supplied it: ASCII digits "
+                                        "with value >= 32"),
+        "retry_entrypoint": "resident-runtime/governance_endpoint.py (--hb-epoch)",
+        "owning_existing_goal": kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+        "next_attempt": "run again with the supplied epoch; nothing was decided or appended",
+        "authority_effect": "NONE_REFUSAL_ONLY",
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--packet", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--hb-epoch", type=int, default=None,
-                        help="carrier heartbeat epoch, supplied by the caller; never sampled here")
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier heartbeat epoch, supplied by the caller as ASCII digits; "
+                             "never sampled here")
     args = parser.parse_args()
+    hb_epoch, epoch_refused = cli_hb_epoch(args.hb_epoch)
+    if epoch_refused is not None:
+        # Nothing is decided, appended or written (no --out); the exit is 1.
+        print(json.dumps(epoch_refused, sort_keys=True))
+        return 1
     packet = json.loads(args.packet.read_text(encoding="utf-8"))
     decision = decide(packet)
-    receipts = record(packet, decision, hb_epoch=args.hb_epoch)
+    receipts = record(packet, decision, hb_epoch=hb_epoch)
     result = {**decision, **receipts, "records_authority": "ORGANIZATION_RECORDS_ONLY"}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
