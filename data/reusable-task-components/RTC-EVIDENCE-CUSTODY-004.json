@@ -1,0 +1,150 @@
+{
+  "schema": "stegverse.reusable-task-component/v1",
+  "component_id": "RTC-EVIDENCE-CUSTODY-004",
+  "name": "Evidence Custody and Reconstruction",
+  "status": "DRAFT_EXTENSION_ROW_NOT_ADMITTED",
+  "family": "custody_reconstruction",
+  "capability_provided": [
+    "evidence_capture",
+    "custody",
+    "readback",
+    "reconstruction"
+  ],
+  "canonical_owner": "Organization",
+  "authority_owner": "Organization",
+  "downstream_recorder": "Master Records (non-gating; propagation_gates_organization_runtime_reality false)",
+  "transport_phase": "POST_TRANSPORT",
+  "transport_success_authority": false,
+  "profiles": [
+    {
+      "profile_id": "organization-ledger.contract-pair",
+      "implementation": "org-kernel/organization-ledger/generate_ledger_contracts.py"
+    },
+    {
+      "profile_id": "organization-ledger.genesis-and-ref-binding",
+      "implementation": ".github/workflows/organization-ledger-transition-reusable.yml (Bind step)"
+    },
+    {
+      "profile_id": "organization-ledger.repository-receipt-emitter",
+      "implementation": "org-kernel/organization-ledger/emit.py"
+    },
+    {
+      "profile_id": "organization-ledger.organization-aggregator",
+      "implementation": "org-kernel/organization-ledger/aggregate_repo_transition.py"
+    },
+    {
+      "profile_id": "organization-ledger.git-ref-store",
+      "implementation": "org-kernel/organization-ledger/ledger_store.py"
+    },
+    {
+      "profile_id": "organization-ledger.readback-verifier",
+      "implementation": "org-kernel/organization-ledger/organization_ledger_readback.py"
+    },
+    {
+      "profile_id": "organization-ledger.transition-request-schema",
+      "implementation": "org-kernel/organization-ledger/schemas/stegverse.organization-transition-request.v1.schema.json"
+    },
+    {
+      "profile_id": "organization-ledger.reusable-workflow",
+      "implementation": ".github/workflows/organization-ledger-transition-reusable.yml"
+    },
+    {
+      "profile_id": "organization-ledger.repository-receipt-propagation",
+      "implementation": "org-kernel/organization-ledger/propagate_repository_receipts.py"
+    }
+  ],
+  "consumes_interfaces": [
+    {
+      "profile_id": "intr.organization-manifest-ingress",
+      "owner": "InTr & Mesh",
+      "reuse": [
+        "RT-INTR-BOUNDARY-ADMISSION-001",
+        "RTC-MANIFEST-001",
+        "RTC-GOVERNED-PROCESSING-002"
+      ]
+    },
+    {
+      "profile_id": "intr.destination-self-closure",
+      "owner": "InTr & Mesh",
+      "reuse": [
+        "RT-INTR-BOUNDARY-ADMISSION-001",
+        "RTC-INTERLOCK-INTR-TRANSPORT-008"
+      ]
+    }
+  ],
+  "inputs": [
+    "parameter file stegverse.organization-ledger-parameters/v1",
+    "manifest-directed transition (committed request or InTr self-closure)",
+    "supplied hb_epoch"
+  ],
+  "outputs": [
+    "refs/stegverse/organization-ledger receipts",
+    "fresh-fetch readback"
+  ],
+  "preconditions": [
+    "ledger location supplied by the materializer",
+    "hb_epoch supplied",
+    "component consumed by commit SHA"
+  ],
+  "authority_effect": "NONE_EVIDENCE_RECORDING_ONLY",
+  "canonical_authority_dependencies": {
+    "observed_reality_custody": "Organization (organization ledger, refs/stegverse/organization-ledger)",
+    "transition_admission": "Interlock/InTr (consumed interface, InTr & Mesh lane)",
+    "organization_records_and_reconstruction": "Master Records - downstream non-gating recorder only",
+    "credential_provider_release": "TV/TVC",
+    "work_intent_and_coordination": "Task Registry - COORDINATION_ONLY; ledger writers are not subordinate to it",
+    "heartbeat": "TIMING_FRESHNESS_CORRELATION_CARRIAGE_ONLY; epoch supplied, never sampled"
+  },
+  "expected_evidence": [
+    "self-verifying receipts",
+    "previous linkage",
+    "fresh-fetch readback"
+  ],
+  "failure_classes": "union of profile failure_classes; every non-ALLOW carries the six fields",
+  "retry_or_reentry_semantics": "per profile",
+  "version_or_schema_binding": [
+    "stegverse.repo-transition-receipt/v1",
+    "stegverse.organization-transition-receipt/v1",
+    "stegverse.organization-ledger-readback/v1"
+  ],
+  "validation_evidence": {
+    "local_only": true,
+    "component_tests": "17/17 OK (local build, Labs kernel 1.3.2)",
+    "readback_replay": "8/8 federation ledgers identical to 10d14104 readback (retry_entrypoint relocated only)",
+    "remint": "StegVerse-org 22/22 org receipts and 13/13 supplied-epoch repo receipts re-minted byte-identical; 7 clock-derived repo receipts not reproducible by construction",
+    "note": "not CI evidence; no runtime ALLOW is inferred from these"
+  },
+  "anti_invariants": [
+    "must_not_read_a_clock_for_hb_reference",
+    "must_not_append_without_a_manifest_directed_transition",
+    "must_not_make_master_records_a_gate",
+    "must_not_be_subordinate_to_task_registry_coordination",
+    "must_not_infer_runtime_allow_from_registration_or_ci",
+    "must_not_add_a_dependency",
+    "must_not_wait_on_or_poll_an_external_machine",
+    "must_not_fork_per_organization_beyond_the_parameter_file"
+  ],
+  "admission_blocker": "CONF-1 (canonical_owner currently 'Master Records' in data/reusable-transport-component-contract.json L33)",
+  "canonical_implementation": "org-kernel/organization-ledger/",
+  "component_manifest": "org-kernel/organization-ledger/component-manifest.json",
+  "reusable_workflow": ".github/workflows/organization-ledger-transition-reusable.yml",
+  "pinning": "callers pin component_ref and intr_interface_ref as 40-hex commit SHAs; component-manifest.json git blob digests are verified before any append",
+  "epoch_rule": {
+    "supplied_epoch_required": true,
+    "format": "digits only, >= 32 (HB32 anchor)",
+    "carried_in": [
+      "committed transition request hb_epoch",
+      "workflow dispatch hb_epoch"
+    ],
+    "absent": "FAIL_CLOSED HB_EPOCH_NOT_SUPPLIED (six fields)",
+    "malformed": "FAIL_CLOSED HB_EPOCH_INVALID (six fields)",
+    "retry": "re-dispatch with hb_epoch",
+    "clock_read": false,
+    "test": "org-kernel/organization-ledger/tests/test_organization_ledger_component.py::SuppliedEpochRule::test_repo_receipt_refuses_without_supplied_epoch",
+    "matched_by": "InTr TVC validate_warrant (TVC#488 draft, H35 fix 1)"
+  },
+  "communication_id_forms_accepted": [
+    "intr-selfclose-<Org>-20261017 (legacy; the 7 existing self-closures)",
+    "intr-selfclose-<org>-HB<hb_epoch> (new-org default)"
+  ]
+}
