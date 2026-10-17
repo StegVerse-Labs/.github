@@ -69,3 +69,22 @@ A ledger can declare the receipts it wrote before source retention began in `org
 - `declaration_sha256`
 
 The readback still self-hashes and chain-links every receipt, and it verifies every receipt after the segment in full. It waives only source retention, and only for the declared contiguous prefix from genesis. The whole-ledger result is still `FAIL_CLOSED` `DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED`, never ALLOW, with one six-field finding per declared receipt. Nothing is re-minted. Undeclared failures, declarations that waive integrity checks, segments that are not a prefix, segments that overlap retention, and edited declarations are each refused six-field. Component consumers put the declaration in the parameter file. The generator carries it into `org-contract.json` and validates it.
+
+## Propagation after each append (item 5, INDEX H51)
+
+Right after each C7 ingress and each C8 self-close, the reusable workflow does two things:
+
+1. Materializes the repository subtree of the appended ref with `git archive`.
+2. Runs `propagate_after_append.py`.
+
+That module is wiring only. It calls the existing `propagate_repository_receipts.propagate()` in-process; that script is digest-pinned in `component-manifest.json` like every other module.
+
+- **Epoch:** the run's `--hb-epoch` text goes through `ledger_common.require_supplied_epoch` before propagation is loaded, so `+33` is refused there. The validated int is handed over and never re-coerced.
+- **Refusals:**
+  - A `LedgerRefusal` is printed as `json.dumps(exc.refusal)`, unchanged.
+  - A plain `SystemExit(str)` or `LedgerLocationRequired` gets the six fields (`REPOSITORY_RECEIPTS_PROPAGATE_AFTER_THE_APPEND`).
+- **No rollback, no block:** this follows the existing contract. Each organization append is its own committed receipt under the ledger lock, and a refused propagation writes nothing.
+  - The appended receipt is published and read back as usual.
+  - The final step "Fail on a recorded propagation refusal" then fails the run on any `propagation.json` that is FAIL_CLOSED.
+- **Normal result:** after a normal append the repository receipt is already carried, so propagation is a no-op (`skipped`). It appends `REPO_STATE_PROPAGATION` receipts only for repository receipts the organization chain does not yet carry. A rerun skips them.
+

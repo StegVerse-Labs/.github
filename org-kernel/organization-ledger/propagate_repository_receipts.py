@@ -117,16 +117,16 @@ def repository_chain(root: Path) -> list[dict[str, Any]]:
     seen: set[str] = set()
     while cursor:
         if cursor in seen:
-            raise common.LedgerRefusal("REPOSITORY_LEDGER_CHAIN_CYCLE:" + cursor)
+            raise common.LedgerRefusal("REPOSITORY_LEDGER_CHAIN_CYCLE:" + cursor, retry_entrypoint=RETRY)
         seen.add(cursor)
         receipt = store.get(RECEIPT_PREFIX + cursor.split(":", 1)[1] + ".json")
         if receipt is None:
-            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_MISSING:" + cursor)
+            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_MISSING:" + cursor, retry_entrypoint=RETRY)
         if receipt.get("schema") != REPOSITORY_RECEIPT_SCHEMA:
-            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_SCHEMA_MISMATCH:" + cursor)
+            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_SCHEMA_MISMATCH:" + cursor, retry_entrypoint=RETRY)
         body = {key: value for key, value in receipt.items() if key != "receipt_sha256"}
         if receipt.get("receipt_sha256") != organization_ledger.sha(body):
-            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_HASH_MISMATCH:" + cursor)
+            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_HASH_MISMATCH:" + cursor, retry_entrypoint=RETRY)
         chain.append(receipt)
         cursor = receipt.get("previous_receipt_sha256")
     chain.reverse()
@@ -258,7 +258,7 @@ def _main(args) -> int:
                            hb_epoch=args.hb_epoch)
     else:
         if args.repository_ledger_root is not None:
-            raise common.LedgerRefusal("--repository-ledger-root names one repository's ledger; pass --repository")
+            raise common.LedgerRefusal("--repository-ledger-root names one repository's ledger; pass --repository", retry_entrypoint=RETRY)
         result = propagate_all(hb_epoch=args.hb_epoch)
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.out:
