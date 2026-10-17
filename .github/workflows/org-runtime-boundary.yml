@@ -216,6 +216,8 @@ jobs:
       # P1 (StegVerse-org/.github#163): the supplied epoch reaches every ledger
       # append, and the ledger writers' location is an optional input.
       - name: Validate supplied epoch and ledger-component / consumer-root paths (P1)
+        env:
+          STEGVERSE_SDK_REQUIRED: '1'
         run: python -m unittest -v tests/test_p1_supplied_epoch_and_ledger_paths.py
       - name: Validate the repository chain fails closed on a break and an exact retry matches in full
         run: python -m unittest -v tests/test_repo_ledger_exact_retry.py

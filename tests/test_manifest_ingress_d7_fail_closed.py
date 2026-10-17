@@ -27,7 +27,16 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from stegverse import route_resolution
+try:
+    from stegverse import route_resolution
+except ImportError:  # pragma: no cover - the SDK-less suite run
+    # D7 is a property of the real SDK's route resolution, so a stub cannot
+    # stand in for it. org-runtime-boundary.yml runs this module against the
+    # pinned SDK with STEGVERSE_SDK_REQUIRED=1, where a missing SDK is an
+    # error; any other run without the SDK skips it rather than erroring.
+    if os.environ.get("STEGVERSE_SDK_REQUIRED") == "1":
+        raise
+    raise unittest.SkipTest("stegverse SDK not installed; D7 runs in org-runtime-boundary.yml")
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = json.loads((ROOT / "org-boundary/registry/services.json").read_text(encoding="utf-8"))

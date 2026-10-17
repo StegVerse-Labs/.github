@@ -33,6 +33,14 @@ MANIFEST = ROOT / "tests/fixtures/d6-labs-purpose-bound-worker-manifest.json"
 GENESIS = {"mode": "ESTABLISH_GENESIS", "node_ref": "p1-labs", "predecessor": None}
 PEER = "StegVerse-org"
 ADDRESS = "stegverse-labs.sdk-manifest-ingress"
+#: The cases that load the manifest ingress need the real SDK it imports. The
+#: suite-wide run has no SDK, so they skip there; org-runtime-boundary.yml runs
+#: this module against the pinned SDK with STEGVERSE_SDK_REQUIRED=1, where they
+#: always run and a missing SDK fails them.
+requires_sdk = unittest.skipUnless(
+    importlib.util.find_spec("stegverse") is not None
+    or os.environ.get("STEGVERSE_SDK_REQUIRED") == "1",
+    "stegverse SDK not installed; runs in org-runtime-boundary.yml")
 
 
 def _load(name, relative):
@@ -140,6 +148,7 @@ class CapabilityIngressEpochTests(TemporaryLedgers):
         self.assert_six_fields(refused.exception.refusal, "HB_EPOCH_NOT_SUPPLIED")
         self.assertEqual(self.written(), [])
 
+    @requires_sdk
     def test_dispatch_passes_the_frame_epoch_through_to_the_receiving_operation(self):
         result = kernel.dispatch(ROOT, self.packet(), mesh_root=self.mesh, epoch=44)
         operation = result["application_result"]["receiving_operation_result"]
@@ -176,6 +185,7 @@ class LedgerPathTests(TemporaryLedgers):
     MODULES = (("resident-runtime/organization_manifest_ingress.py", "org_ingress_p1_paths"),
                ("resident-runtime/intr_destination_ingress.py", "intr_destination_p1_paths"))
 
+    @requires_sdk
     def test_absent_paths_keep_this_checkout(self):
         for relative, name in self.MODULES:
             with self.subTest(module=relative):
@@ -187,6 +197,7 @@ class LedgerPathTests(TemporaryLedgers):
                 self.assertIs(bound["consumer_root_is_this_checkout"], True)
                 self.assertEqual(Path(module.organization_ledger.ROOT), ROOT)
 
+    @requires_sdk
     def test_an_invalid_path_fails_closed_and_leaves_the_bound_writers(self):
         empty = self.work / "empty"
         empty.mkdir()
@@ -202,6 +213,7 @@ class LedgerPathTests(TemporaryLedgers):
                     self.assert_six_fields(refused.exception.refusal, code)
                     self.assertEqual((module.repository_ledger, module.organization_ledger), before)
 
+    @requires_sdk
     def test_a_given_component_and_consumer_root_are_where_the_writers_load_and_resolve(self):
         component = _copy_component(self.work / "component")
         consumer = self.work / "consumer"
@@ -227,6 +239,7 @@ class LedgerPathTests(TemporaryLedgers):
         return subprocess.run([sys.executable, str(ROOT / relative), *args], cwd=ROOT, env=env,
                               capture_output=True, text=True, check=False)
 
+    @requires_sdk
     def test_the_ingress_cli_refuses_an_invalid_path_and_receives_with_valid_ones(self):
         standing = self.work / "standing.json"
         standing.write_text(json.dumps(GENESIS), encoding="utf-8")
