@@ -19,6 +19,7 @@ Stdlib only; the governance harness of tests/test_governance_endpoint.py is reus
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import inspect
 import json
 import shutil
@@ -111,13 +112,15 @@ class CarrierEpochForwardingTests(unittest.TestCase):
                 self.assertNotIn("--hb-epoch", argv)
 
     def test_a_missing_epoch_fails_closed_not_supplied(self):
-        for reference in (None, {}, dict(supplied(1000), epoch=None), dict(supplied(1000), epoch="")):
+        for reference in (None, {}, dict(supplied(1000), epoch=None)):
             with self.subTest(reference=reference):
                 self.assertEqual(self.refused(reference)["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
 
     def test_a_malformed_epoch_fails_closed_invalid(self):
-        for epoch in (31, 0, -40, "-40", "+40", " 40", "40 ", "4e2", "40.0", 40.0, True,
-                      "\uff14\uff10", "0x40", [40], {"epoch": 40}):
+        # Only ASCII [0-9]+ is an epoch: nothing coerced to one is accepted.
+        for epoch in (31, 0, -40, "-40", "+40", " 40", "40 ", "4e2", "40.0", 40.0, True, False,
+                      "+33", " 33", "3_3", "33\n", "", "\uff14\uff10", "\u0663\u0663", "0x40",
+                      [40], {"epoch": 40}):
             with self.subTest(epoch=epoch):
                 self.assertEqual(self.refused(dict(supplied(1000), epoch=epoch))["failure_code"],
                                  "HB_EPOCH_INVALID")
@@ -129,8 +132,15 @@ class CarrierEpochForwardingTests(unittest.TestCase):
         record = self.refused(derived)
         self.assertEqual(record["failure_code"], "HB_EPOCH_INVALID")
         self.assertIn("clock", record["required_evidence_or_repair"])
+        # A carried derived_from_clock must be exactly false; one not carried
+        # is not a claim the epoch was derived.
+        for value in (True, None, 0, "false", "False"):
+            with self.subTest(derived_from_clock=value):
+                self.assertEqual(self.refused(dict(supplied(1000), derived_from_clock=value))["failure_code"],
+                                 "HB_EPOCH_INVALID")
         unstated = dict(supplied(1000)); unstated.pop("derived_from_clock")
-        self.assertEqual(self.refused(unstated)["failure_code"], "HB_EPOCH_INVALID")
+        argv = self.run_adapter(unstated)["argv"]
+        self.assertEqual(argv[argv.index("--hb-epoch") + 1], "1000")
 
     def test_no_clock_is_read_on_this_path(self):
         class NoClock:
@@ -141,10 +151,36 @@ class CarrierEpochForwardingTests(unittest.TestCase):
             argv = self.run_adapter(supplied(1000))["argv"]
             self.assertIn("--hb-epoch", argv)
             self.refused(None)
-        for function in (K.carrier_epoch, K.run_endpoint_adapter, K.adapter_takes_carrier_epoch):
+        for function in (K.carrier_epoch, K.supplied_epoch_failure, K.run_endpoint_adapter,
+                         K.adapter_takes_carrier_epoch):
             source = inspect.getsource(function)
             for clock in ("datetime", "time.", "now_ns", "hb_reference("):
                 self.assertNotIn(clock, source, function.__name__)
+
+
+class SharedEpochValidatorTests(unittest.TestCase):
+    """`supplied_epoch_failure` is one function, byte-identical across
+    StegVerse-org/.github#185 and StegVerse-Labs/.github#3212 / #3213."""
+
+    #: sha256 of the function's source text; the same pin is asserted in each PR.
+    SHARED_VALIDATOR_SHA256 = "7f36f0e697cadc91acd27af121eee3fc460b887ec67cfa258727bfccec0ca5f8"
+
+    def test_the_validator_text_is_the_shared_one(self):
+        source = inspect.getsource(K.supplied_epoch_failure)
+        self.assertEqual(hashlib.sha256(source.encode()).hexdigest(), self.SHARED_VALIDATOR_SHA256)
+
+    def test_the_rule(self):
+        self.assertEqual(K.supplied_epoch_failure(None)[0], "HB_EPOCH_NOT_SUPPLIED")
+        for epoch in (32, 33, "33", "0032", 10**12):
+            with self.subTest(epoch=epoch):
+                self.assertIsNone(K.supplied_epoch_failure(epoch))
+        for epoch in ("+33", " 33", "3_3", True, False, 33.0, "33.0", "", 31, "31", -33):
+            with self.subTest(epoch=epoch):
+                self.assertEqual(K.supplied_epoch_failure(epoch)[0], "HB_EPOCH_INVALID")
+        self.assertIsNone(K.supplied_epoch_failure(33, {"derived_from_clock": False}))
+        self.assertIsNone(K.supplied_epoch_failure(33, {}))
+        self.assertEqual(K.supplied_epoch_failure(33, {"derived_from_clock": True})[0], "HB_EPOCH_INVALID")
+        self.assertEqual(K.supplied_epoch_failure(33, "HB:33")[0], "HB_EPOCH_INVALID")
 
 
 class GovernanceCarrierEpochTests(unittest.TestCase):

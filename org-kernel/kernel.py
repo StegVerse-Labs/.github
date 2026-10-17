@@ -233,31 +233,53 @@ class CarrierEpochRefusal(ValueError):
 def adapter_takes_carrier_epoch(service:dict[str,Any]|None)->bool:
     return (service or {}).get("endpoint_adapter_hb_epoch")==ENDPOINT_ADAPTER_HB_EPOCH_CARRIER_SUPPLIED
 
+def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, str] | None:
+    """The shared supplied-epoch rule (SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH).
+
+    Byte-identical in StegVerse-org/.github#185 and StegVerse-Labs/.github#3212
+    and #3213. `hb_epoch` absent (None) is HB_EPOCH_NOT_SUPPLIED. Otherwise it
+    must be ASCII [0-9]+ only -- an int is read as its decimal text; a bool, a
+    float or anything coerced ('+33', ' 33', '3_3', '33.0') is refused -- with
+    integer value >= 32 (the HB32 anchor). `reference`, the carrier frame's
+    heartbeat reference when there is one, must be an object, and a
+    `derived_from_clock` it carries must be exactly false. Any failure is
+    HB_EPOCH_INVALID. Returns (failure_code, detail), or None when the epoch is
+    supplied. No clock is read.
+    """
+    if reference is not None and not isinstance(reference, dict):
+        return "HB_EPOCH_INVALID", "the carrier's heartbeat reference is not an object"
+    if hb_epoch is None:
+        return "HB_EPOCH_NOT_SUPPLIED", "no hb_epoch was supplied and no clock is read"
+    if isinstance(hb_epoch, bool):
+        text = None
+    elif isinstance(hb_epoch, int):
+        text = str(hb_epoch)
+    elif isinstance(hb_epoch, str):
+        text = hb_epoch
+    else:
+        text = None
+    if text is None or not text.isascii() or not text.isdigit():
+        return "HB_EPOCH_INVALID", "hb_epoch " + repr(hb_epoch) + " is not ASCII [0-9]+"
+    if int(text) < 32:
+        return "HB_EPOCH_INVALID", "hb_epoch " + text + " is below the HB32 anchor (32)"
+    if reference is not None and "derived_from_clock" in reference \
+            and reference["derived_from_clock"] is not False:
+        return "HB_EPOCH_INVALID", ("the carrier's derived_from_clock is not exactly false; "
+                                    "a clock-derived epoch is not a supplied one")
+    return None
+
 def carrier_epoch(heartbeat_reference:Any)->int:
     """Return the epoch the carrier supplied, or refuse FAIL_CLOSED. No clock is read."""
-    if heartbeat_reference is not None and not isinstance(heartbeat_reference,dict):
-        raise CarrierEpochRefusal(HB_EPOCH_INVALID,
-            required_evidence_or_repair="the carrier's heartbeat_reference must be an object carrying epoch",
-            next_attempt="re-publish the packet in a frame stamped with a supplied epoch")
-    epoch=(heartbeat_reference or {}).get("epoch")
-    if epoch is None or epoch=="":
-        raise CarrierEpochRefusal(HB_EPOCH_NOT_SUPPLIED,
-            required_evidence_or_repair="the carrier frame supplies heartbeat_reference.epoch; no clock is read",
-            next_attempt="re-publish the packet in a frame stamped with a supplied epoch")
-    if isinstance(epoch,bool): text=None
-    elif isinstance(epoch,int): text=str(epoch)
-    elif isinstance(epoch,str): text=epoch
-    else: text=None
-    if text is None or not text.isascii() or not text.isdigit() or int(text)<HB_ANCHOR_EPOCH:
-        raise CarrierEpochRefusal(HB_EPOCH_INVALID,
-            required_evidence_or_repair="heartbeat_reference.epoch must be ASCII digits with value >= 32 (the HB32 anchor)",
+    epoch=heartbeat_reference.get("epoch") if isinstance(heartbeat_reference,dict) else None
+    failure=supplied_epoch_failure(epoch,heartbeat_reference)
+    if failure is not None:
+        code,detail=failure
+        raise CarrierEpochRefusal(code,
+            required_evidence_or_repair=(detail+"; the carrier frame supplies heartbeat_reference.epoch as "
+                                         "ASCII digits with value >= 32 (the HB32 anchor), with any "
+                                         "derived_from_clock exactly false; no clock is read"),
             next_attempt="re-publish the packet in a frame stamped with a supplied epoch >= 32")
-    if heartbeat_reference.get("derived_from_clock") is not False:
-        raise CarrierEpochRefusal(HB_EPOCH_INVALID,
-            required_evidence_or_repair=("the carrier's epoch was derived from a host clock (derived_from_clock is not false); "
-                                         "a clock-derived epoch is not a supplied one"),
-            next_attempt="re-publish the packet in a frame stamped with a supplied epoch (derived_from_clock false)")
-    return int(text)
+    return int(str(epoch))
 
 def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
                          service:dict[str,Any]|None=None, node_state:Any|None=None,
