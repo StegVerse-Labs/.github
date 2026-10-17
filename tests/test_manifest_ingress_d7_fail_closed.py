@@ -152,7 +152,12 @@ class D7IngressTests(unittest.TestCase):
         self.assertEqual(table[("HB_EPOCH_INVALID", "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")], "FAIL_CLOSED")
         self.assertEqual(table[(generic, "ORGANIZATION_RESOLVES_ITS_OWN_INGRESS_DESTINATION")], "FAIL_CLOSED")
         self.assertEqual(table[(generic, "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST")], "DENY")
-        self.assertEqual(table[(generic, ingress.PARENT_MANIFEST_INVALID_PREDICATE)], "DENY")
+        # An invalid parent manifest is keyed on the owner's code it returns.
+        self.assertNotIn((generic, ingress.PARENT_MANIFEST_INVALID_PREDICATE), table)
+        for code in ingress.PARENT_MANIFEST_OWNER_CODES:
+            self.assertEqual(table[(code, ingress.PARENT_MANIFEST_INVALID_PREDICATE)], "DENY")
+        self.assertEqual(table[("SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT",
+                                "SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT")], "FAIL_CLOSED")
         self.assertEqual({v for (code, _), v in table.items() if code == generic}, {"DENY", "FAIL_CLOSED"})
         refusals = ingress.crossing_module.REFUSALS
         for code, (predicate, *_rest) in refusals.items():

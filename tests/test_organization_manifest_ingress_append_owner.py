@@ -11,6 +11,7 @@ from __future__ import annotations
 import copy
 import importlib
 import json
+import inspect
 import os
 from pathlib import Path
 import re
@@ -203,6 +204,9 @@ class ParentManifestApplicabilityTest(LedgerRoots):
         self.assertEqual(result["refusal_stored_disposition"], "DENY")
         self.assertEqual(result["failed_predicate"], ingress.PARENT_MANIFEST_INVALID_PREDICATE)
         self.assertEqual(result["failure_code"], code)
+        # Looked up under the owner's code the refusal returns, not the generic one.
+        self.assertEqual(ingress.refusal_disposition(code, ingress.PARENT_MANIFEST_INVALID_PREDICATE),
+                         result["disposition"])
         self.assertTrue(result["refusal_recorded"])
         cross.assert_not_called()
         # Only the refusal itself is recorded: no admission receipt at either level.
@@ -238,6 +242,30 @@ class ParentManifestApplicabilityTest(LedgerRoots):
         request = _ingress_request(organization_batch_governance_request())
         request["canonical_manifest"]["extensions"]["stegverse_canonical_task"]["cosv_task_vector"] = "1" * 14
         self._assert_refused_before_any_admission_write(request, "ORGANIZATION_BATCH_COSV_MISMATCH")
+
+    def test_every_owner_code_has_its_own_deny_row(self):
+        """The parent-manifest owner's codes and the table's rows are the same set."""
+        source = inspect.getsource(batch_custody.organization_batch_parent_manifest)
+        raised = set(re.findall(r'"(ORGANIZATION_BATCH_[A-Z_]+)"\)', source))
+        self.assertEqual(raised, set(ingress.PARENT_MANIFEST_OWNER_CODES))
+        for code in raised:
+            self.assertEqual(ingress.REFUSAL_DISPOSITIONS[(code, ingress.PARENT_MANIFEST_INVALID_PREDICATE)],
+                             "DENY", code)
+        self.assertNotIn((ingress.REFUSED_CLASS, ingress.PARENT_MANIFEST_INVALID_PREDICATE),
+                         ingress.REFUSAL_DISPOSITIONS)
+
+    def test_an_owner_code_without_a_row_is_refusal_disposition_not_declared(self):
+        request = _ingress_request(organization_batch_governance_request())
+        request["canonical_manifest"]["extensions"]["stegverse_canonical_task"]["task_id"] = "OTHER-TASK-001"
+        with mock.patch.object(ingress, "PARENT_MANIFEST_OWNER_CODES", ()), \
+             mock.patch.dict(ingress.REFUSAL_DISPOSITIONS):
+            del ingress.REFUSAL_DISPOSITIONS[("ORGANIZATION_BATCH_TASK_ID_MISMATCH",
+                                              ingress.PARENT_MANIFEST_INVALID_PREDICATE)]
+            result, _ = self.receive(request)
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["failure_code"], "REFUSAL_DISPOSITION_NOT_DECLARED")
+        self.assertEqual(result["undeclared_refusal_failure_code"], "ORGANIZATION_BATCH_TASK_ID_MISMATCH")
+        self.assertEqual(result["refusal_stored_disposition"], "FAIL_CLOSED")
 
     def test_worker_and_ingress_share_one_validator_and_its_constants(self):
         request = organization_batch_governance_request()
@@ -737,6 +765,24 @@ class PartialCommitTest(LedgerRoots):
         self.assertEqual(len(receipts), 1)
         self.assertEqual(self.repo_receipt(receipts[0]["repo_receipt_sha256"])["transition_id"],
                          result["refusal_transition_id"])
+
+
+class SdkRuntimeResultRefusalTest(LedgerRoots):
+    def test_an_sdk_refused_runtime_result_is_fail_closed_with_six_fields(self):
+        """(SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT, SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT) = FAIL_CLOSED."""
+        cross = mock.MagicMock(return_value=_crossing("sdk-refused"))
+        with mock.patch.object(ingress, "derive_execution_request", return_value=_plain_request()), \
+             mock.patch.object(ingress.crossing_module, "cross", cross), \
+             mock.patch.object(ingress, "admit_runtime_result",
+                               side_effect=ValueError("SDK_RESULT_NOT_ADMITTED_FOR_TEST")):
+            result = ingress.receive({"processing": {"capability": "records"}}, registry={}, hb_epoch=7100)
+        pair = ("SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT", "SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT")
+        self.assertEqual(ingress.REFUSAL_DISPOSITIONS[pair], "FAIL_CLOSED")
+        self.assertEqual((result["failure_code"], result["failed_predicate"]), pair, result.get("detail"))
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        for field in ingress.SIX_FIELDS:
+            self.assertTrue(result.get(field), field)
+        self.assertIn("SDK_RESULT_NOT_ADMITTED_FOR_TEST", result["required_evidence_or_repair"])
 
 
 class AppendOwnerGuardTest(unittest.TestCase):

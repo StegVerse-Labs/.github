@@ -133,6 +133,26 @@ APPEND_NOT_COMMITTED_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK"
 APPEND_OWNING_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
 UNOBSERVED = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
 PARENT_MANIFEST_INVALID_PREDICATE = "MANIFEST_DECLARED_ORGANIZATION_BATCH_PARENT_MANIFEST_IS_VALID"
+#: The owner's own failure codes for an invalid declared parent manifest
+#: (organization_batch_custody.organization_batch_parent_manifest). The refusal
+#: returns the owner's code, so the disposition is looked up under that code:
+#: each (owner code, PARENT_MANIFEST_INVALID_PREDICATE) is its own row, DENY.
+PARENT_MANIFEST_OWNER_CODES = (
+    "ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_REQUIRED",
+    "ORGANIZATION_BATCH_CANONICAL_MANIFEST_REQUIRED",
+    "ORGANIZATION_BATCH_MANIFEST_EXTENSIONS_REQUIRED",
+    "ORGANIZATION_BATCH_TASK_BINDING_REQUIRED",
+    "ORGANIZATION_BATCH_TASK_ID_MISMATCH",
+    "ORGANIZATION_BATCH_COSV_MISMATCH",
+    "ORGANIZATION_BATCH_REQUEST_REF_MISMATCH",
+    "ORGANIZATION_BATCH_TASK_BINDING_AUTHORITY_ESCALATION",
+    "ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_REQUIRED",
+    "ORGANIZATION_BATCH_COUNT_RELEASE_CONDITION_REQUIRED",
+    "ORGANIZATION_BATCH_RELEASE_COUNT_INVALID",
+    "ORGANIZATION_BATCH_SDK_TASK_BINDING_REQUIRED",
+    "ORGANIZATION_BATCH_SDK_TASK_ID_MISMATCH",
+    "ORGANIZATION_BATCH_SDK_BATCH_POLICY_MISMATCH",
+)
 
 #: The six fields a non-ALLOW carries.
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
@@ -152,6 +172,11 @@ STATE_TRANSITION_RUNTIME_BINDING = "stegverse.manifest_state_transition_runtime.
 PROCESSING_NOT_DECLARED_CODE = "PROCESSING_SERVICE_NOT_DECLARED_FOR_CONSUMER_ROUTE"
 PROCESSING_NOT_DECLARED_PREDICATE = "CONSUMER_ROUTE_RESOLVES_TO_A_DECLARED_PROCESSING_SERVICE"
 INTR_PROTOCOL_GOAL = "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+#: The SDK refused the organization's runtime result after the receipt was
+#: appended (`admit_runtime_result`). An organization-side result the SDK does
+#: not admit is FAIL_CLOSED, not a defect of the submission.
+SDK_RESULT_REFUSED_CODE = "SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT"
+SDK_RESULT_REFUSED_PREDICATE = "SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT"
 #: The refusal disposition table, keyed on the composite (failure_code,
 #: failed_predicate). Neither half is unique alone: two crossing codes share one
 #: predicate, and every refusal raised by this operation itself carries the one
@@ -168,6 +193,7 @@ REFUSAL_DISPOSITION_NOT_DECLARED = "REFUSAL_DISPOSITION_NOT_DECLARED"
 REFUSAL_DISPOSITIONS = {
     # organization-side configuration gaps
     (PROCESSING_NOT_DECLARED_CODE, PROCESSING_NOT_DECLARED_PREDICATE): "FAIL_CLOSED",
+    (SDK_RESULT_REFUSED_CODE, SDK_RESULT_REFUSED_PREDICATE): "FAIL_CLOSED",
     (REFUSED_CLASS, "ORGANIZATION_RESOLVES_ITS_OWN_INGRESS_DESTINATION"): "FAIL_CLOSED",
     (REFUSED_CLASS, "BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY"): "FAIL_CLOSED",
     ("CROSSING_REQUIRES_MATERIALIZED_CAPABILITY_MAP", "CROSSING_IS_GIVEN_A_MATERIALIZED_CAPABILITY_MAP"): "FAIL_CLOSED",
@@ -193,7 +219,8 @@ REFUSAL_DISPOSITIONS = {
     # Labs-only rows
     (APPEND_NOT_COMMITTED, APPEND_NOT_COMMITTED_PREDICATE): "FAIL_CLOSED",
     (REFUSED_CLASS, "RECORDED_DELIVERY_RECONSTRUCTS_INDEPENDENTLY"): "FAIL_CLOSED",
-    (REFUSED_CLASS, PARENT_MANIFEST_INVALID_PREDICATE): "DENY",
+    # An invalid declared parent manifest is refused under the owner's code.
+    **{(code, PARENT_MANIFEST_INVALID_PREDICATE): "DENY" for code in PARENT_MANIFEST_OWNER_CODES},
     (REFUSED_CLASS, "SDK_ADMITS_THE_ROLE_CONFORMANCE_MANIFEST_SHAPE"): "DENY",
     (REFUSED_CLASS, "SDK_RESOLVES_THE_DECLARED_ROLE_CONFORMANCE_ROUTE"): "DENY",
     (REFUSED_CLASS, "SDK_DERIVES_THE_ROLE_CONFORMANCE_REQUEST_FROM_ITS_EXTENSION"): "DENY",
@@ -285,6 +312,12 @@ LEDGER_COMPONENT_PATH_INVALID = "LEDGER_COMPONENT_PATH_INVALID"
 CONSUMER_ROOT_PATH_INVALID = "CONSUMER_ROOT_PATH_INVALID"
 LEDGER_COMPONENT_FILES = (".stegverse/transition-ledger/emit.py",
                           "resident-runtime/aggregate_repo_transition.py")
+#: The flat layout of the shared ledger component (as in
+#: org-kernel/organization-ledger/): the same two writers as siblings. Either
+#: layout is accepted for --ledger-component.
+LEDGER_COMPONENT_FLAT_FILES = ("emit.py", "aggregate_repo_transition.py")
+LEDGER_COMPONENT_LAYOUTS = (" and ".join(LEDGER_COMPONENT_FILES)
+                            + ", or as siblings " + " and ".join(LEDGER_COMPONENT_FLAT_FILES),)
 CONSUMER_ROOT_FILES = (".stegverse/transition-ledger/contract.json",
                        ".stegverse/transition-ledger/org-contract.json")
 
@@ -313,6 +346,41 @@ def _ledger_path_refusal(code: str, predicate: str, option: str, path: Any,
     })
 
 
+def ledger_refusal_fields(exc: BaseException, entrypoint: str, goal: str) -> dict[str, Any] | None:
+    """The six fields of a ledger writer's own refusal (its LedgerRefusal), or None.
+
+    The shared ledger component raises a refusal that carries its six fields
+    (for example HB_EPOCH_NOT_SUPPLIED). They are taken as carried -- from
+    `.refusal`, `.record`, `.fields`, `.as_dict()` or a mapping argument -- and
+    a LedgerRefusal that carries only its code is given the six fields here,
+    FAIL_CLOSED. Any other exception is not a ledger refusal (None).
+    """
+    candidates = [getattr(exc, name, None) for name in ("refusal", "record", "fields", "six_fields")]
+    as_dict = getattr(exc, "as_dict", None)
+    if callable(as_dict):
+        try:
+            candidates.append(as_dict())
+        except Exception:  # noqa: BLE001 -- not a usable carrier
+            pass
+    candidates.extend(exc.args)
+    for value in candidates:
+        if isinstance(value, Mapping) and all(field in value for field in SIX_FIELDS):
+            return {"disposition": value.get("disposition", "FAIL_CLOSED"), **dict(value)}
+    if type(exc).__name__ != "LedgerRefusal":
+        return None
+    code = getattr(exc, "failure_code", None) or (str(exc).split(":", 1)[0].strip() or "LEDGER_REFUSAL")
+    return {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": getattr(exc, "failed_predicate", None) or "LEDGER_WRITER_ADMITS_THE_APPEND",
+        "detail": str(exc),
+        "required_evidence_or_repair": "repair what the ledger writer refused (" + str(exc) + ") and run again",
+        "retry_entrypoint": entrypoint,
+        "owning_existing_goal": goal,
+        "next_attempt": "run again once the ledger writer's refusal is repaired; nothing was written",
+    }
+
+
 def bind_ledger_writers(ledger_component: Path | str | None = None,
                         consumer_root: Path | str | None = None) -> dict[str, Any]:
     """Load the ledger writers from `ledger_component`, their contracts from `consumer_root`.
@@ -324,9 +392,14 @@ def bind_ledger_writers(ledger_component: Path | str | None = None,
     entrypoint = "resident-runtime/organization_manifest_ingress.py (--ledger-component, --consumer-root)"
     component = Path(ledger_component).expanduser().resolve() if ledger_component is not None else None
     consumer = Path(consumer_root).expanduser().resolve() if consumer_root is not None else None
-    if component is not None and not all((component / name).is_file() for name in LEDGER_COMPONENT_FILES):
+    layout = (None if component is None
+              else LEDGER_COMPONENT_FILES if all((component / name).is_file() for name in LEDGER_COMPONENT_FILES)
+              else LEDGER_COMPONENT_FLAT_FILES
+              if all((component / name).is_file() for name in LEDGER_COMPONENT_FLAT_FILES)
+              else ())
+    if component is not None and not layout:
         raise _ledger_path_refusal(LEDGER_COMPONENT_PATH_INVALID, "LEDGER_COMPONENT_PATH_HOLDS_THE_LEDGER_WRITERS",
-                                   "--ledger-component", ledger_component, LEDGER_COMPONENT_FILES,
+                                   "--ledger-component", ledger_component, LEDGER_COMPONENT_LAYOUTS,
                                    entrypoint, INTR_PROTOCOL_GOAL)
     if consumer is not None and not all((consumer / name).is_file() for name in CONSUMER_ROOT_FILES):
         raise _ledger_path_refusal(CONSUMER_ROOT_PATH_INVALID, "CONSUMER_ROOT_PATH_HOLDS_THE_LEDGER_CONTRACTS",
@@ -340,14 +413,16 @@ def bind_ledger_writers(ledger_component: Path | str | None = None,
                                    "--consumer-root", str(consumer_root) + " (" + str(exc) + ")",
                                    CONSUMER_ROOT_FILES, entrypoint, INTR_PROTOCOL_GOAL) from None
     base = component if component is not None else ROOT
-    repository = _module_at("repo_transition_emit_bound", base / LEDGER_COMPONENT_FILES[0])
-    organization = _module_at("aggregate_repo_transition_bound", base / LEDGER_COMPONENT_FILES[1])
+    files = layout or LEDGER_COMPONENT_FILES
+    repository = _module_at("repo_transition_emit_bound", base / files[0])
+    organization = _module_at("aggregate_repo_transition_bound", base / files[1])
     if contracts is not None:
         repository.ROOT, repository.C = consumer, contracts[CONSUMER_ROOT_FILES[0]]
         organization.ROOT, organization.C = consumer, contracts[CONSUMER_ROOT_FILES[1]]
     repository_ledger, organization_ledger = repository, organization
     return {"ledger_component": str(base), "consumer_root": str(consumer if consumer is not None else ROOT),
             "ledger_component_is_this_checkout": component is None,
+            "ledger_component_layout": "FLAT" if files == LEDGER_COMPONENT_FLAT_FILES else "NESTED",
             "consumer_root_is_this_checkout": consumer is None}
 
 
@@ -794,15 +869,21 @@ def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str
     if six_fields:
         disposition, carried = declared_refusal(six_fields)
     else:
-        # No six fields yet (PR-1(ii)): looked up as (REFUSED_CLASS, predicate).
-        disposition, carried = refusal_disposition(REFUSED_CLASS, failed_predicate), {}
+        # No six fields yet (PR-1(ii)): looked up under the code the refusal
+        # actually returns -- an owner's code it carries (the parent manifest's)
+        # or REFUSED_CLASS -- with its predicate.
+        code = extra.get("failure_code") or REFUSED_CLASS
+        disposition, carried = refusal_disposition(code, failed_predicate), {}
         if disposition is None:
             disposition, carried = "FAIL_CLOSED", {
                 "failure_code": REFUSAL_DISPOSITION_NOT_DECLARED,
                 "failed_predicate": failed_predicate,
-                "undeclared_refusal_failure_code": REFUSED_CLASS,
+                "undeclared_refusal_failure_code": code,
                 "undeclared_refusal_failed_predicate": failed_predicate,
             }
+            # The returned code is REFUSAL_DISPOSITION_NOT_DECLARED; the owner's
+            # code is kept under undeclared_refusal_failure_code.
+            extra = {key: value for key, value in extra.items() if key != "failure_code"}
     record = refusal_record(failed_predicate, detail, manifest, carried or None,
                             disposition=disposition)
     appended = _record_refusal(record, hb_epoch, rule_ref, parent_manifest,
@@ -1533,13 +1614,24 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             manifest, request, runtime_result(request, closures, organization_receipt,
                            crossing.get("application_result")))
     except ValueError as exc:
+        disposition, sdk_refusal = declared_refusal({
+            "failure_code": SDK_RESULT_REFUSED_CODE,
+            "failed_predicate": SDK_RESULT_REFUSED_PREDICATE,
+            "required_evidence_or_repair": ("the SDK did not admit the organization runtime result ("
+                                            + str(exc) + "); repair the result it names and resubmit"),
+            "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive",
+            "owning_existing_goal": INTR_PROTOCOL_GOAL,
+            "next_attempt": ("resubmit the same manifest; the organization receipt already written "
+                             "stands and is returned rather than appended again"),
+        })
         return {
             "schema": RESULT_SCHEMA_ORG,
             "organization": "StegVerse-Labs",
             "receiving_operation": OPERATION_ID,
-            "disposition": "FAIL_CLOSED",
+            # (SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT, SDK_ADMITS_...) row.
+            "disposition": disposition,
             "received": True,
-            "failed_predicate": "SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT",
+            **sdk_refusal,
             "detail": str(exc),
             # The receipt was appended before the SDK was asked. The organization
             # ledger is its own runtime reality authority, so a refusal upstream
@@ -1756,16 +1848,26 @@ def main() -> int:
             standing=(json.loads(args.standing.read_text(encoding="utf-8"))
                       if args.standing else None),
             packet_id=args.packet_id, hb_epoch=args.hb_epoch, mesh_root=args.mesh_root)
-    except RuntimeError as exc:
-        # Nothing was appended: the receipt could not name its own rule.
-        print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": str(exc),
-                          "receipt_written": False}, sort_keys=True))
-        return 1
-    except ValueError as exc:
+    except Exception as exc:  # noqa: BLE001 -- the handled cases are below; anything else re-raises
+        refusal = ledger_refusal_fields(
+            exc, "resident-runtime/organization_manifest_ingress.py (--hb-epoch)", INTR_PROTOCOL_GOAL)
+        if refusal is not None:
+            # The ledger writer refused (e.g. HB_EPOCH_NOT_SUPPLIED): its six
+            # fields go to stdout, nothing is written (no --out), exit 1.
+            print(json.dumps({"schema": RESULT_SCHEMA_ORG, "receiving_operation": OPERATION_ID,
+                              "received": False, **refusal, "refusal_recorded": False,
+                              "refusal_source": "LEDGER_WRITER", "authority_effect": "NONE_REFUSAL_ONLY"},
+                             sort_keys=True))
+            return 1
+        if isinstance(exc, RuntimeError):
+            # Nothing was appended: the receipt could not name its own rule.
+            print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": str(exc),
+                              "receipt_written": False}, sort_keys=True))
+            return 1
         # Nothing was appended: a ledger location was not supplied (the
         # repository ledger raises this before its first write). Any other
-        # ValueError is a defect and still escapes as one.
-        if not str(exc).startswith(LEDGER_LOCATION_REQUIRED):
+        # error is a defect and still escapes as one.
+        if not isinstance(exc, ValueError) or not str(exc).startswith(LEDGER_LOCATION_REQUIRED):
             raise
         variable = str(exc).partition(":")[2].strip()
         print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": LEDGER_LOCATION_REQUIRED,
