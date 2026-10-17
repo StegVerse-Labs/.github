@@ -1,5 +1,37 @@
 # Optical Physical-State and Replay Research — Source Registration Handoff
 
+## 2026-10-17 conformance reconciliation (read this first)
+
+Read at `StegVerse-Labs/.github` main `5b3fc476`, Registry generation 317. Coordination: StegVerse-org/.github#165 (P3), [#3204](https://github.com/StegVerse-Labs/.github/issues/3204), [Patents #16](https://github.com/StegVerse-Labs/Patents/issues/16). Evidence class: source reading only. This section changes no record, Registry row, claim or ledger.
+
+- **Current state.** `PROPOSED / UNCLAIMED`, COSV `task.v1 / 10111110114000`, `worker_claim.claim_ref` and `fence_ref` null. The generation numbers in the dated sections below (214–255) are historical.
+- **Superseded instructions.** The standard in `docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md` (Conformance standard, items 1–5) and `data/task-registry-global-invariants.json` apply. Three things below no longer hold:
+  - the instruction to invoke `scripts/evaluate_task_registry_ai_session_checkin.py` through an "authorized AI_SESSION_GATE caller";
+  - every statement that treats a missing AI_SESSION_GATE outcome, or a missing resident session, as a blocker;
+  - the reading of a bare `NOT_OBSERVED` as a finding. Every non-ALLOW carries the six fields.
+- **Record items still to reconcile** (the Registry owner's edit, not made here):
+  - The shard's `allowed_next_transitions` still lists `AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN` and `SEPARATE_AUTHENTIC_GOVERNED_RUNTIME_PROOF`. The second must not become a post-closure observer gate (`post_closure_authentic_observer_gate_allowed: false`).
+  - Lane A drafted both options: (A) remove the token, or (B) restate it as the manifest-directed component-010 attempt. Drafts are in the KnowledgeVault coordination folder; see #3204 comment 6231018239.
+- **Retry entrypoint is non-conforming.** Blocker 1's `retry_entrypoint` is `scripts/run_task_registry_canonical_work_cycle.py`. It delegates to `scripts/install_and_run_canonical_work_event_bootstrap.py`, which is "intended for an admitted StegVerse resident execution context". As a conforming path that is FAIL_CLOSED:
+  - `failure_code`: `RESIDENT_EXECUTION_CONTEXT_PREREQUISITE`
+  - `failed_predicate`: `NO_EXTERNAL_MACHINE_OR_RESIDENT_PREREQUISITE`
+  - `required_evidence_or_repair`: route the COMPONENT_010 append through an on-request organization-ledger transition (`.github/workflows/organization-ledger-transition.yml` is the candidate) and name that route as the retry entrypoint
+  - `retry_entrypoint`: this record's blocker 1
+  - `owning_existing_goal`: `OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001`
+  - `next_attempt`: the Registry owner's edit of blocker 1 (#3204, StegVerse-org/.github#165 H9)
+- **Blockers 2–4 are bare strings.** `PAT_003_RECONSTRUCTION_OWNER_DISPOSITION_NOT_AUTHENTICATED`, `INDEPENDENT_CALIBRATED_PHYSICAL_REFERENCE_NOT_AVAILABLE` and `ADAPTIVE_PROCESSING_BENEFIT_NOT_DEMONSTRATED_WITH_REQUIRED_CONTEXT` each need the six fields in the record (conformance item 5). Their owners, already named below: the PAT-003 native owner (blocker 2); rights clearance for an independent reference, with Amezquita et al. as the current candidate (blocker 3); a frozen-original v0.12 replay (blocker 4).
+- **Patent-registry PR #5 head** is `3d4b1a4367cc6c80d33a46fb6c262de19ba2638b` (`ea6f5eef` was an earlier head). `registry-tests` passes. `validate-and-sync` fails on a pre-existing approved-source snapshot mismatch, which also fails on `main`.
+
+### Work that can run in parallel now
+
+| Work | Owner | Depends on |
+|---|---|---|
+| Shard edit: drop or restate the AI_SESSION_GATE transition; six fields on blockers 2–4; conforming retry entrypoint for blocker 1 | Registry owner (Lane A drafts ready) | nothing |
+| Approved-source snapshot refresh for patent-registry PR #5 | patent-registry owner | nothing |
+| Claim-to-implementation trace of the 10 limitation rows (Drive IDs only) | Claude, review | nothing |
+| Standards-alignment table: keep undefined operators UNDEFINED, map the conflicts | #3204 lanes | owner/inventor definitions, for the undefined rows only |
+| Independent physical-reference rights request (Amezquita et al.) | owner | nothing |
+
 ## Source identity (not authenticated session admission)
 - Canonical source-registered Task ID: `OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001`; registration merged in central PR #2631, **not an authenticated session admission**.
 - Central admission request: [StegVerse-Labs/.github #2626](https://github.com/StegVerse-Labs/.github/issues/2626).
