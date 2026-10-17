@@ -62,9 +62,32 @@ def test_authority_separation_and_no_completion_claim():
     assert authority["github_runtime_authority"] == "NONE"
     assert authority["second_user_operated_device_required"] is False
     assert "gateway_owner" not in authority
-    assert record["worker_claim"] == {
-        "authority": "NONE_TASK_REGISTRY_PROJECTION_ONLY",
+    assert record["completion"] == {"claimed": False, "validated": False, "runtime_observed": False}
+
+
+def test_worker_claim_is_workercoordinator_projection_in_record_and_row():
+    expected = {
+        "authority": "WORKERCOORDINATOR",
         "claim_ref": None,
+        "fence_ref": None,
         "projection_only": True,
     }
-    assert record["completion"] == {"claimed": False, "validated": False, "runtime_observed": False}
+    assert load(RECORD)["worker_claim"] == expected
+    rows = [r for r in load(REGISTRY)["tasks"] if r["task_id"] == TASK_ID]
+    assert len(rows) == 1 and rows[0]["worker_claim"] == expected
+
+
+def test_master_records_reconstruction_is_non_gating_downstream_evidence():
+    mr = "APPLICABLE_MASTER_RECORDS_RECONSTRUCTION_EVIDENCE_RETAINED"
+    rows = [r for r in load(REGISTRY)["tasks"] if r["task_id"] == TASK_ID]
+    for record in (load(RECORD), rows[0]):
+        assert mr not in record["remaining_predicates"]
+        assert len(record["remaining_predicates"]) == 3
+        assert record["cosv_exact_metrics"]["blocker_count"] == 3
+        evidence = [e for e in record["non_gating_downstream_evidence"] if e["evidence"] == mr]
+        assert len(evidence) == 1
+        assert evidence[0]["completion_predicate"] is False and evidence[0]["gating"] is False
+        assert record["authority_model"]["master_records_role"] == (
+            "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING"
+        )
+        assert record["authority_model"]["master_records_reality_authority"] is False
