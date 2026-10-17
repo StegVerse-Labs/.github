@@ -1,6 +1,6 @@
 # ERL Research Acquisition Lane Task Registry Registration Mirror Handoff
 
-Updated: 2026-10-14
+Updated: 2026-10-17
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026`
 Issue: `StegVerse-Labs/Executive_Rhetoric_Ledger#223` (item 1)
@@ -34,8 +34,24 @@ ERL main `1cf3a235f1c2550330f33ebb79e6fd802c2d7a94` and Trumpality main `0452964
 
 ## Remaining dispositions
 
-1. `FAIL_CLOSED` `PROVIDER_WRITE_ATTEMPT_NOT_ADMITTED`: MyKV custody write and hash readback (ERL#223 item 2).
-2. `DENY` `NO_ON_SUBJECT_LEADS`: Melania trajectory on-subject lead (ERL#223 item 3).
+None. Both dispositions recorded at registration are now ALLOW (see the 2026-10-17 reconciliation below). The prior blockers stay in the record's `reconciliation_history`.
+
+## 2026-10-17 items 2 and 3 reconciliation
+
+Each claim was verified against its cited evidence before the record changed. The registry generation went from 316 to 317, and COSV went from `60200000112012` to `10100000110012` (`scripts/cosv.py encode_task`: lifecycle UNCLAIMED, 1 unassigned work item, 0 blockers, evidence incomplete).
+
+- **Item 2, `MYKV_CUSTODY_WRITE_AND_HASH_READBACK`: ALLOW** ([ERL#223 comment 6167898582](https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223#issuecomment-6167898582)).
+  - MyKV file `1QpLg60OdmdYJ5KUvhjczlRMY4kNa4_hD` was read back with sha256 `72b267260694c89830c7158a0caa6b17c75bce1e4c623310c6e9e9ce2ae02a90` (1863 bytes).
+  - All four `files[*].sha256` values and byte counts equal `sha256(git show 1cf3a235:<path>)`.
+  - The write was a direct provider tool action, not a manifest-directed organization-ledger append. It is **not** runtime observation, and no completion evidence class is claimed for it.
+- **Item 3, `MELANIA_TOKEN_PREANNOUNCEMENT_WALLETS_ON_SUBJECT_LEAD`: ALLOW** ([ERL#223 comment 6167920230](https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223#issuecomment-6167920230)).
+  - Trumpality#19 merged as `d5b5908`.
+  - Producer cycle `777821d`: ALLOW, 25/25 sources.
+  - ERL intake `158dbee`: ALLOW, append-only verified across 10 cycles.
+  - The `melania-token-preannouncement-wallets` trajectory holds 5 on-chain MELANIA leads from `777821d`. All are lead-only and UNVERIFIED, and `finding_authorized` stays false.
+  - Evidence class: `MERGED`.
+
+The record keeps `completion = {claimed: false, validated: false, runtime_observed: false}`. Allowed next transitions are `RUNTIME_TRANSITION_WITH_ORGANIZATION_LEDGER_RECEIPT` and `REOPENED_DUE_TO_NEW_EVIDENCE`. No dependencies were added.
 
 ## Authority separation
 
@@ -43,7 +59,7 @@ The Task Registry mints no execution authority. Worker claims belong to WorkerCo
 
 ## Validation
 
-`tests/test_erl_rc_trump_family_crypto_market_registration.py` checks identity, the lane fields, that the vector equals `encode_task(exact_metrics)` and agrees across record, registry, vector file and index, and that no completion is claimed.
+`tests/test_erl_rc_trump_family_crypto_market_registration.py` checks identity, the lane fields, the items 2 and 3 resolutions (no runtime observation), that the vector equals `encode_task(exact_metrics)` and agrees across record, registry, vector file and index, and that no completion is claimed.
 
 ## Human action
 
