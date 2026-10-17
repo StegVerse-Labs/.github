@@ -405,7 +405,7 @@ def main():
     parser.add_argument("--successor-org-state-sha256", required=True)
     parser.add_argument("--boundary-evidence-json", default="{}")
     parser.add_argument("--authority-effect", default="NONE")
-    parser.add_argument("--hb-epoch", type=int, default=None,
+    parser.add_argument("--hb-epoch", type=str, default=None,
                         help="supplied heartbeat epoch (digits, >= 32); required, never derived from a clock")
     args = parser.parse_args()
     source_path = args.transition_receipt or args.repo_receipt

@@ -117,7 +117,7 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
  raise common.LedgerRefusal("REPO_LEDGER_APPEND_CONTENTION_EXHAUSTED",schema="stegverse.repo-ledger-append-refusal/v1",failed_predicate="REPO_LEDGER_APPEND_WINS_A_COMPARE_AND_SWAP",required_evidence_or_repair="128 compare-and-swap attempts lost to concurrent writers; nothing was written",retry_entrypoint=RETRY,owning_goal_default="REPO-LEDGER-DURABILITY-001")
 
 def main():
- p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=int,default=None,help="supplied heartbeat epoch (digits, >= 32); required, never derived from a clock");a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=str,default=None,help="supplied heartbeat epoch (digits, >= 32); required, never derived from a clock");a=p.parse_args()
  try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,json.loads(a.evidence_json),a.authority_effect,a.hb_epoch)
  except RepoLedgerChainBreak as exc:
   print(json.dumps(chain_break_refusal(exc),sort_keys=True));raise SystemExit(1)

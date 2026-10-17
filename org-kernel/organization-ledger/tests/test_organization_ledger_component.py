@@ -136,7 +136,7 @@ class SuppliedEpochRule(unittest.TestCase):
         self.assertEqual(self.c.written("org"), [])
 
     def test_malformed_epochs_are_refused_as_invalid(self):
-        for bad in ("31", "abc", "4.2", "-40", 31, True, 4.2, [64]):
+        for bad in ("31", "abc", "4.2", "-40", "+33", " 33", "33 ", "3_3", "\u0663\u0663", 31, True, 4.2, [64]):
             r = self.c.py('common = load("ledger_common.py")\n'
                           'print(json.dumps(refusal(lambda: common.require_supplied_epoch(%r, "x"))))' % (bad,))
             self.assertEqual(r["refused"]["failure_code"], "HB_EPOCH_INVALID", bad)
@@ -174,6 +174,74 @@ class SuppliedEpochRule(unittest.TestCase):
             self.assertNotRegex(text, r"\bimport time\b|\bfrom time\b|\btime\.time|time_ns|datetime", path.name)
             for call in re.findall(r"hb_reference\(([^)]*)\)", text):
                 self.assertIn("epoch", call, path.name + ": hb_reference without a supplied epoch")
+
+
+class CliEpochIsAsciiDigits(unittest.TestCase):
+    """TVC#517 require_hb_epoch parity: the CLIs take --hb-epoch as text, so argparse's int()
+    (which accepts '+33', ' 33', '3_3') never decides it; the shared rule does."""
+
+    REFUSED = ("+33", " 33", "3_3", "31", "33 ", "\u0663\u0663")
+    ACCEPTED = (("32", 32), ("33", 33))
+
+    def setUp(self):
+        self.c = Consumer()
+        self.addCleanup(self.c.close)
+
+    def emit(self, epoch):
+        return self.c.cli("emit.py", "--transition-id", "t-1", "--transition-class", "TEST",
+                          "--predecessor-state-sha256", A, "--successor-state-sha256", B, "--hb-epoch=" + epoch)
+
+    def aggregate(self, epoch):
+        body = {"schema": "stegverse.repo-transition-receipt/v1", "repository": "formalism-tests/.github", "transition_id": "t-1"}
+        r = self.c.py('agg = load("aggregate_repo_transition.py")\nprint(json.dumps({**%r, "receipt_sha256": agg.sha(%r)}))' % (body, body))
+        path = self.c.root / "repo-receipt.json"
+        path.write_text(json.dumps(r))
+        return self.c.cli("aggregate_repo_transition.py", "--repo-receipt", str(path),
+                          "--predecessor-org-state-sha256", "GENESIS", "--successor-org-state-sha256", B, "--hb-epoch=" + epoch)
+
+    def propagate(self, epoch):
+        return self.c.cli("propagate_repository_receipts.py", "--repository", "formalism-tests/.github",
+                          "--repository-ledger-root", str(self.c.ledgers / "repo"), "--hb-epoch=" + epoch)
+
+    def assertRefused(self, out, level, epoch):
+        self.assertNotEqual(out.returncode, 0, epoch)
+        refusal = json.loads(out.stdout.splitlines()[-1])
+        self.assertEqual(refusal["failure_code"], "HB_EPOCH_INVALID", (level, epoch))
+        for field in SIX:
+            self.assertTrue(refusal.get(field), field)
+        self.assertEqual([p for p in self.c.written(level) if "receipts/" in p], [], (level, epoch))
+
+    def test_emit_cli_refuses_non_ascii_digit_epochs(self):
+        for epoch in self.REFUSED:
+            self.assertRefused(self.emit(epoch), "repo", epoch)
+
+    def test_aggregate_cli_refuses_non_ascii_digit_epochs(self):
+        for epoch in self.REFUSED:
+            self.assertRefused(self.aggregate(epoch), "org", epoch)
+
+    def test_propagate_cli_refuses_non_ascii_digit_epochs(self):
+        self.assertEqual(self.emit("4200").returncode, 0)
+        for epoch in self.REFUSED:
+            self.assertRefused(self.propagate(epoch), "org", epoch)
+
+    def test_clis_accept_ascii_digit_epochs_at_and_after_the_anchor(self):
+        for epoch, value in self.ACCEPTED:
+            c = Consumer()
+            self.addCleanup(c.close)
+            self.c = c
+            out = self.emit(epoch)
+            self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
+            self.assertEqual(json.loads(out.stdout.splitlines()[-1])["hb_reference"]["epoch"], value)
+            out = self.propagate(epoch)
+            self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
+            org = [json.loads((c.ledgers / "org" / p).read_text()) for p in c.written("org") if p.startswith("receipts/")]
+            self.assertEqual([r["hb_reference"]["epoch"] for r in org], [value])
+        c = Consumer()
+        self.addCleanup(c.close)
+        self.c = c
+        out = self.aggregate("32")
+        self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
+        self.assertEqual(json.loads(out.stdout.splitlines()[-1])["hb_reference"]["epoch"], 32)
 
 
 class SixFieldRefusals(unittest.TestCase):

@@ -17,7 +17,7 @@ on:
       component_ref:           {type: string, required: true,  description: "40-hex commit of the component home (owner decision D1)"}
       component_repository:    {type: string, required: false, default: "StegVerse-Labs/.github"}
       intr_interface_repository: {type: string, required: false, default: "StegVerse-org/.github", description: "InTr & Mesh-owned ingress/self-closure interface (agreed home)"}
-      intr_interface_ref:      {type: string, required: true,  description: "40-hex head of InTr D6/D7 ingress PR (C7 six-field pass-through); not 10d14104"}
+      intr_interface_ref:      {type: string, required: false, default: "e0e132d7420afc276fe92f20aa76c63c63072efd", description: "40-hex InTr & Mesh interface commit: StegVerse-org/.github#185 head (D6/D7; C7/C8 signatures posted on #163 issuecomment-6235428412; Labs twin #3213 at 8f7f7ea9); not 10d14104"}
       sdk_ref:                 {type: string, required: false, default: "74d9b473aa415b06a9d550c28b2779a691b4ba32", description: "request mode only; existing pinned dependency"}
       mode:                    {type: string, required: false, default: "request", description: "request | self-closure"}
       request:                 {type: string, required: false, default: ""}
@@ -45,6 +45,8 @@ jobs:
       RETRY: ${{ github.workflow_ref }}
       COMPONENT: ${{ github.workspace }}/.ledger-component/org-kernel/organization-ledger
       INTR: ${{ github.workspace }}/.intr-interface
+      # The C7/C8 --ledger-component root (#185 LEDGER_COMPONENT_FILES): the component's writers, digest-checked, in the layout the interface binds.
+      LEDGER_WRITERS: ${{ runner.temp }}/ledger-writers
     steps:
       - name: Checkout organization boundary
         uses: actions/checkout@v4
@@ -63,7 +65,7 @@ jobs:
           fi
           # Shared epoch rule (agreed with InTr; same as TVC validate_warrant): supplied, digits, >= 32; no clock.
           [ -n "$HB_EPOCH" ] || fail HB_EPOCH_NOT_SUPPLIED HB_EPOCH_IS_SUPPLIED_BY_THE_MANIFEST_OR_DISPATCH "supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read" "re-dispatch the same transition with hb_epoch supplied; nothing was appended"
-          case "$HB_EPOCH" in *[!0-9]*) fail HB_EPOCH_INVALID HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR "supply hb_epoch as digits only, >= 32; no clock is read" "re-dispatch with a valid hb_epoch; nothing was appended";; esac
+          case "$HB_EPOCH" in *[!0123456789]*) fail HB_EPOCH_INVALID HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR "supply hb_epoch as digits only, >= 32; no clock is read" "re-dispatch with a valid hb_epoch; nothing was appended";; esac
           [ "$HB_EPOCH" -ge 32 ] || fail HB_EPOCH_INVALID HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR "hb_epoch precedes the HB32 anchor; no clock is read" "re-dispatch with hb_epoch >= 32; nothing was appended"
           # The parameter file is at a fixed path (the Python modules read the same path).
           # owning_existing_goal is read by the Python modules from the committed parameter file;
@@ -89,6 +91,35 @@ jobs:
           python3 -c 'import json,sys; p=json.load(open(sys.argv[1])); assert p["organization"]==sys.argv[2], "PARAMETER_ORGANIZATION_MISMATCH"' .stegverse/transition-ledger/organization-ledger.parameters.json "${{ inputs.organization }}"
           # Contracts are generated, never hand-edited: committed files must be byte-identical.
           python3 "$COMPONENT/generate_ledger_contracts.py" .stegverse/transition-ledger/organization-ledger.parameters.json --out-dir .stegverse/transition-ledger --check
+
+      # C7/C8 at #185 bind writers from a root holding .stegverse/transition-ledger/emit.py and
+      # resident-runtime/aggregate_repo_transition.py, and contracts from --consumer-root. This
+      # stages the pinned component's own files (byte-identical, re-verified below) in that layout;
+      # nothing is edited. The writers' import-time contracts are the consumer's, the same files
+      # the interface then binds from --consumer-root.
+      - name: Stage the component writers in the layout the InTr interface binds
+        run: |
+          set -euo pipefail
+          w="$LEDGER_WRITERS"; mkdir -p "$w/.stegverse/transition-ledger" "$w/resident-runtime" "$w/org-kernel"
+          cp "$COMPONENT/emit.py" "$w/.stegverse/transition-ledger/emit.py"
+          for m in aggregate_repo_transition ledger_store ledger_common organization_ledger_readback propagate_repository_receipts; do
+            cp "$COMPONENT/$m.py" "$w/resident-runtime/$m.py"
+          done
+          cp "$COMPONENT/../kernel.py" "$COMPONENT/../node_store.py" "$w/org-kernel/"
+          cp .stegverse/transition-ledger/contract.json .stegverse/transition-ledger/org-contract.json \
+             .stegverse/transition-ledger/organization-ledger.parameters.json "$w/.stegverse/transition-ledger/"
+          python3 - "$w" "$COMPONENT/component-manifest.json" <<'PY'
+          import hashlib, json, sys
+          from pathlib import Path
+          w, m = Path(sys.argv[1]), json.load(open(sys.argv[2]))["modules"]
+          staged = {".stegverse/transition-ledger/emit.py": "emit.py"}
+          staged.update({"resident-runtime/" + n: n for n in ("aggregate_repo_transition.py", "ledger_store.py", "ledger_common.py",
+                         "organization_ledger_readback.py", "propagate_repository_receipts.py")})
+          for rel, name in staged.items():
+              d = (w / rel).read_bytes()
+              assert hashlib.sha1(b"blob %d\0" % len(d) + d).hexdigest() == m[name], "COMPONENT_DIGEST_MISMATCH:" + rel
+          print("staged", len(staged), "component writers at their pinned digests")
+          PY
 
       - name: Bind the designated ledger ref and the repository subtree
         run: |
@@ -277,10 +308,10 @@ jobs:
                 "$recorded" "$canonical" "$out/ingress.json"
               continue
             fi
-            # C7 signature (P1-FC-6, pending InTr on #163): the ingress loads the ledger writers from
-            # --ledger-component and reads contracts/registry under --consumer-root, never from its own checkout.
+            # C7 as landed in #185 (signatures: #163 issuecomment-6235428412). --hb-epoch is always passed
+            # (validated in the first step), so the direct-call no-epoch fallback (P1-FC-8) is never reached.
             python "$INTR/resident-runtime/organization_manifest_ingress.py" \
-              --ledger-component "$COMPONENT" --consumer-root "$GITHUB_WORKSPACE" \
+              --ledger-component "$LEDGER_WRITERS" --consumer-root "$GITHUB_WORKSPACE" \
               --registry org-boundary/registry/services.json \
               --manifest "$out/manifest.json" --standing "$out/standing.json" \
               --packet-id "$name" --hb-epoch "$HB_EPOCH" ${mesh_args[@]+"${mesh_args[@]}"} --out "$out/ingress.json" || true
@@ -316,15 +347,16 @@ jobs:
           # Time is supplied with the dispatch. It is not sampled from a clock.
           # (the first step already refused an absent epoch as HB_EPOCH_NOT_SUPPLIED; this is defence in depth)
           case "$HB_EPOCH" in
-            ''|*[!0-9]*)
+            ''|*[!0123456789]*)
               python3 -c 'import json,os; print(json.dumps({"disposition":"FAIL_CLOSED","failure_code":"HB_EPOCH_INVALID","failed_predicate":"HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR","required_evidence_or_repair":"supply hb_epoch as digits only, >= 32; no clock is read","retry_entrypoint":os.environ["RETRY"],"owning_existing_goal":os.environ["GOAL"],"next_attempt":"re-dispatch with a valid hb_epoch; nothing was appended","consequence_committed":False},sort_keys=True))'
               exit 1 ;;
           esac
           # A refusal is recorded too; the publish step below carries it, and
           # the readback step fails the run on any closure that is not ALLOW.
-          # C8 signature (P1-FC-6, pending InTr on #163): same --ledger-component / --consumer-root rule.
+          # C8 as landed in #185: --self-close --communication-id --registry --packet-id --hb-epoch
+          # --ledger-component --consumer-root. --hb-epoch is always passed (P1-FC-8 never reached).
           python "$INTR/resident-runtime/intr_destination_ingress.py" \
-            --ledger-component "$COMPONENT" --consumer-root "$GITHUB_WORKSPACE" \
+            --ledger-component "$LEDGER_WRITERS" --consumer-root "$GITHUB_WORKSPACE" \
             --self-close \
             --hb-epoch "$HB_EPOCH" \
             --registry org-boundary/registry/services.json \
@@ -404,7 +436,7 @@ jobs:
           fi
           git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
           python "$INTR/resident-runtime/intr_destination_ingress.py" \
-            --ledger-component "$COMPONENT" --consumer-root "$GITHUB_WORKSPACE" \
+            --ledger-component "$LEDGER_WRITERS" --consumer-root "$GITHUB_WORKSPACE" \
             --verify-self-closure \
             --location "git+$fresh#$LEDGER_REF" \
             --repository-namespace "$REPO_LEDGER_NAMESPACE" \

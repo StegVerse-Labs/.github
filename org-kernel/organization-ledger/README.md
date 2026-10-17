@@ -47,7 +47,8 @@ Commit these two things:
 
 Then call the reusable workflow with:
 - `component_ref` pinned to this repository's commit;
-- `intr_interface_ref` pinned to the head of InTr's D6/D7 ingress PR on StegVerse-org/.github. Until InTr posts the C7/C8 signatures on #163, that ref is not yet published (P1-FC-6).
+- `intr_interface_ref` defaults to `e0e132d7420afc276fe92f20aa76c63c63072efd`, the head of StegVerse-org/.github#185 (C7/C8 signatures: #163 issuecomment-6235428412). The workflow stages these writers, digest-verified, into the layout `--ledger-component` binds, and passes `--consumer-root "$GITHUB_WORKSPACE"`. P1-FC-6 is resolved pending the #185 merge.
+- `hb_epoch` must be ASCII digits only and >= 32, the same rule as TVC#517 `require_hb_epoch`. Every CLI takes `--hb-epoch` as a string and `ledger_common.require_supplied_epoch` validates it, so `+33`, ` 33` and `3_3` are refused with `HB_EPOCH_INVALID`.
 
 A fresh org opens its chain through the InTr self-closure (`genesis_mode: SELF_CLOSURE_OPENS_CHAIN`). The `communication_id` default is `intr-selfclose-<org>-HB<hb_epoch>`. The 7 existing closures keep `intr-selfclose-<Org>-20261017`, and both forms read back.
 

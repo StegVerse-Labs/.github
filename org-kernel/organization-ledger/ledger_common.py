@@ -171,7 +171,16 @@ def require_supplied_epoch(hb_epoch: Any, retry_entrypoint: str) -> int:
             required_evidence_or_repair="supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read",
             retry_entrypoint=retry_entrypoint,
             next_attempt="re-dispatch the same transition with hb_epoch supplied; nothing was appended")
-    if isinstance(hb_epoch, str) and re.fullmatch(r"[0-9]+", hb_epoch):
+    # ASCII digits only (TVC#517 require_hb_epoch): '+33', ' 33', '3_3', '٣٣' are not accepted,
+    # although int() would accept them. CLIs therefore pass the epoch through as text.
+    if isinstance(hb_epoch, str):
+        if not re.fullmatch(r"[0-9]+", hb_epoch, flags=re.ASCII):
+            raise LedgerRefusal(
+                "HB_EPOCH_INVALID", failure_code="HB_EPOCH_INVALID",
+                failed_predicate="HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR",
+                required_evidence_or_repair="supply hb_epoch as ASCII digits only, >= 32; no clock is read",
+                retry_entrypoint=retry_entrypoint,
+                next_attempt="re-dispatch the same transition with a valid hb_epoch; nothing was appended")
         hb_epoch = int(hb_epoch)
     if isinstance(hb_epoch, bool) or not isinstance(hb_epoch, int) or hb_epoch < HB_ANCHOR_EPOCH:
         raise LedgerRefusal(

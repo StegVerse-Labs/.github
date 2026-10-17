@@ -236,7 +236,7 @@ def main() -> int:
                         help="one declared repository; omit to sweep every declared repository")
     parser.add_argument("--repository-ledger-root", type=Path, default=None,
                         help="address of that repository's ledger; derived from the ledger home when absent")
-    parser.add_argument("--hb-epoch", type=int, default=None,
+    parser.add_argument("--hb-epoch", type=str, default=None,
                         help="supplied heartbeat epoch (digits, >= 32); required, never derived from a clock")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
@@ -249,6 +249,10 @@ def main() -> int:
 
 
 def _main(args) -> int:
+    if args.hb_epoch is not None:
+        # The CLI takes the epoch as text so the shared rule, not argparse, decides it
+        # ('+33', ' 33', '3_3' are not ASCII digits and are refused as HB_EPOCH_INVALID).
+        args.hb_epoch = common.require_supplied_epoch(args.hb_epoch, RETRY)
     if args.repository:
         result = propagate(args.repository, repository_root=args.repository_ledger_root,
                            hb_epoch=args.hb_epoch)
