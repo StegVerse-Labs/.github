@@ -727,6 +727,59 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
         idempotent_on=("failed_predicate", "detail"))
 
 
+def _record_not_committed_refusal(record: Mapping[str, Any],
+                                  appended: Mapping[str, Any]) -> dict[str, Any]:
+    """Store the not-committed disposition of a refusal at the repository level.
+
+    The refusal's own record was appended to the repository ledger before the
+    organization append raised, so it holds the refusal's table disposition
+    (which may be DENY). This attempt returns FAIL_CLOSED
+    ORGANIZATION_APPEND_NOT_COMMITTED, and that disposition is stored here as
+    its own record, keyed on the refusal's transition id, so what is stored and
+    what is returned are the same. A resubmission completes the refusal's own
+    record at the organization level as before; this record stays as the
+    history of the attempt that did not commit. If even this append fails,
+    nothing is claimed stored.
+    """
+    not_committed = appended["not_committed"]
+    disposition = refusal_disposition(APPEND_NOT_COMMITTED, APPEND_NOT_COMMITTED_PREDICATE)
+    stored = {
+        "schema": REFUSAL_SCHEMA,
+        "receiving_operation": OPERATION_ID,
+        "profile_id": PROFILE_ID,
+        "operation": OPERATION,
+        "intended_action": INTENDED_ACTION,
+        "disposition": disposition,
+        "failure_code": APPEND_NOT_COMMITTED,
+        "failed_predicate": APPEND_NOT_COMMITTED_PREDICATE,
+        "required_evidence_or_repair": not_committed["required_evidence_or_repair"],
+        "retry_entrypoint": not_committed["retry_entrypoint"],
+        "owning_existing_goal": not_committed["owning_existing_goal"],
+        "next_attempt": not_committed["next_attempt"],
+        "refusal_transition_id": appended["transition_id"],
+        "refusal_failed_predicate": record["failed_predicate"],
+        "refusal_disposition": record["disposition"],
+        "submitted_manifest_sha256": record["submitted_manifest_sha256"],
+        "received": False,
+        "authority_effect": "NONE_REFUSAL_RECORD_ONLY",
+    }
+    transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-NOT-COMMITTED-" + sha(stored)[:16]
+    try:
+        receipt = repository_ledger.append(
+            transition_id, REFUSED_CLASS, "sha256:" + sha(dict(record)), "sha256:" + sha(stored),
+            stored, "NONE",
+            # The refusal's own repository receipt's epoch: one attempt, one epoch.
+            hb_epoch=appended["repository_receipt"]["hb_reference"]["epoch"],
+            idempotent_on=("refusal_transition_id", "disposition", "failure_code"))
+    except Exception:  # noqa: BLE001 -- nothing stored is claimed
+        return {"refusal_stored_disposition": UNOBSERVED, "not_committed_recorded": False,
+                "not_committed_transition_id": transition_id}
+    return {"refusal_stored_disposition": receipt["evidence"]["disposition"],
+            "not_committed_recorded": True,
+            "not_committed_transition_id": transition_id,
+            "not_committed_repository_receipt_sha256": receipt["receipt_sha256"]}
+
+
 def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str,
              hb_epoch: int | None = None, parent_manifest: Mapping[str, Any] | None = None,
              organization_evidence: Mapping[str, Any] | None = None,
@@ -756,17 +809,25 @@ def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str
                                organization_evidence)
     if appended["not_committed"] is not None:
         # The refusal reached the repository ledger and not the organization
-        # ledger. Its own predicate is kept under its own name.
+        # ledger. Its own predicate is kept under its own name. What this
+        # attempt returns -- FAIL_CLOSED APPEND_NOT_COMMITTED -- is stored as its
+        # own repository record, so the stored disposition is the returned one.
+        stored = _record_not_committed_refusal(record, appended)
         return {**appended["not_committed"],
                 "refusal_failed_predicate": failed_predicate,
                 "refusal_detail": detail,
                 "refusal_transition_class": REFUSED_CLASS,
                 "refusal_transition_id": appended["transition_id"],
                 "refusal_recorded": False,
-                "refusal_stored_disposition": record["disposition"],
+                "refusal_underlying_disposition": record["disposition"],
+                **stored,
                 **{"refusal_" + field: value for field, value in carried.items()
                    if field != "failed_predicate"},
-                **extra}
+                # An extra naming one of the six fields (the parent-manifest refusal's
+                # own failure_code) is the refusal's, so it keeps the refusal_
+                # prefix rather than overwriting this attempt's fields.
+                **{("refusal_" + key if key in SIX_FIELDS or key == "disposition" else key): value
+                   for key, value in extra.items()}}
     return {
         "schema": RESULT_SCHEMA_ORG,
         "organization": "StegVerse-Labs",

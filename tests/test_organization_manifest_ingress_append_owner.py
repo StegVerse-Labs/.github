@@ -681,6 +681,62 @@ class PartialCommitTest(LedgerRoots):
         self.assertEqual(result["refusal_failed_predicate"],
                          "ORGANIZATION_RESOLVES_ITS_OWN_INGRESS_DESTINATION")
         self.assertIs(result["refusal_recorded"], False)
+        self.assertEqual(result["refusal_stored_disposition"], result["disposition"])
+
+    def test_not_committed_refusal_stores_the_disposition_it_returns(self):
+        """A DENY refusal whose organization append raises returns FAIL_CLOSED
+        APPEND_NOT_COMMITTED, and that is the disposition stored for the attempt."""
+        request = _ingress_request(organization_batch_governance_request())
+        request["canonical_manifest"]["extensions"]["stegverse_canonical_task"]["task_id"] = "OTHER-TASK-001"
+        with mock.patch.object(organization_ledger, "aggregate_transition",
+                               side_effect=RuntimeError("injected")):
+            result, cross = self.receive(request, hb_epoch=7005)
+        cross.assert_not_called()
+        self._assert_typed(result)
+        # The refusal's own table row is DENY; this attempt did not commit it.
+        self.assertEqual(result["refusal_underlying_disposition"], "DENY")
+        self.assertEqual(result["refusal_failed_predicate"], ingress.PARENT_MANIFEST_INVALID_PREDICATE)
+        self.assertIs(result["refusal_recorded"], False)
+        # Stored == returned, read back from the repository ledger itself.
+        self.assertEqual(result["refusal_stored_disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["refusal_stored_disposition"], result["disposition"])
+        self.assertIs(result["not_committed_recorded"], True)
+        stored = self.repo_receipt(result["not_committed_repository_receipt_sha256"])
+        body = {k: v for k, v in stored.items() if k != "receipt_sha256"}
+        self.assertEqual(repository_ledger.sha(body), result["not_committed_repository_receipt_sha256"])
+        self.assertEqual(stored["transition_class"], ingress.REFUSED_CLASS)
+        self.assertEqual(stored["transition_id"], result["not_committed_transition_id"])
+        self.assertEqual(stored["hb_reference"]["epoch"], 7005)
+        evidence = stored["evidence"]
+        self.assertEqual(evidence["disposition"], result["disposition"])
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                      "retry_entrypoint", "owning_existing_goal", "next_attempt"):
+            self.assertEqual(evidence[field], result[field], field)
+        self.assertEqual(ingress.refusal_disposition(evidence["failure_code"], evidence["failed_predicate"]),
+                         evidence["disposition"])
+        self.assertEqual(evidence["refusal_transition_id"], result["refusal_transition_id"])
+        self.assertEqual(evidence["refusal_disposition"], "DENY")
+        self.assertEqual(self.org_receipts(), [])
+
+        # The same fault again returns the stored record rather than a second one.
+        with mock.patch.object(organization_ledger, "aggregate_transition",
+                               side_effect=RuntimeError("injected")):
+            again, _ = self.receive(request, hb_epoch=7005)
+        self.assertEqual(again["not_committed_repository_receipt_sha256"],
+                         result["not_committed_repository_receipt_sha256"])
+        self.assertEqual(again["refusal_stored_disposition"], again["disposition"])
+
+        # The resubmission completes the refusal's own record at both levels,
+        # DENY returned as stored; the not-committed record stays as history.
+        retried, _ = self.receive(request, hb_epoch=7006)
+        self.assertEqual(retried["disposition"], "DENY")
+        self.assertEqual(retried["refusal_stored_disposition"], "DENY")
+        self.assertIs(retried["refusal_recorded"], True)
+        self.assertEqual(retried["refusal_transition_id"], result["refusal_transition_id"])
+        receipts = self.org_receipts()
+        self.assertEqual(len(receipts), 1)
+        self.assertEqual(self.repo_receipt(receipts[0]["repo_receipt_sha256"])["transition_id"],
+                         result["refusal_transition_id"])
 
 
 class AppendOwnerGuardTest(unittest.TestCase):
