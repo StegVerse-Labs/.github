@@ -1235,11 +1235,20 @@
       "vector": "60200000112012",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "SDK-COST-DERIVED-TIER-PRICING-001",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/SDK-COST-DERIVED-TIER-PRICING-001.json",
+      "vector": "10300000011002",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 127,
-    "local_cosv_record_tasks": 127,
+    "indexed_vectorized_tasks": 128,
+    "local_cosv_record_tasks": 128,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
