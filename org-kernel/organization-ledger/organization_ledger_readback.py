@@ -303,7 +303,8 @@ def readback(location, ingress_result=None, manifest=None, org_contract=None,
         source = store.get(source_key(source_digest)) if source_digest else None
         if source is None or source.get("receipt_sha256") != source_digest or not self_verifies(source):
             if segment is None:
-                raise ReadbackRefused("SOURCE_RECEIPT_RETAINED_AND_VERIFIES", str(source_digest))
+                raise ReadbackRefused("SOURCE_RECEIPT_RETAINED_AND_VERIFIES",
+                                      _source_repair(receipt, source_digest))
             failing.append((cursor, source_digest))
         chain.append(receipt)
         cursor = receipt.get("previous_receipt_sha256")
@@ -489,14 +490,38 @@ def recorded_for(location, canonical_manifest_sha256, org_contract=None, reposit
                  if r["predecessor_org_state_sha256"] == state), None)
 
 
+def _source_repair(receipt, source_digest):
+    """What SOURCE_RECEIPT_RETAINED_AND_VERIFIES needs, naming the receipt; never 'None'."""
+    named = ("names source receipt " + source_digest) if source_digest else "names no source receipt"
+    return ("organization receipt " + str(receipt.get("receipt_sha256")) + " " + named + " that is retained "
+            "and self-verifies; retain the source receipt under source-receipts/, or have the owner declare the "
+            "pre-retention range as a legacy segment in org-contract.json (G4/H45); never re-mint")
+
+
+def _repair_of(exc):
+    """required_evidence_or_repair: the refusal's own text, never empty or 'None'."""
+    detail = getattr(exc, "detail", None)
+    text = detail if isinstance(detail, str) else str(exc)
+    if text.strip() and text.strip() != "None":
+        return text
+    return ("repair what " + getattr(exc, "failed_predicate", "the readback") + " refused and fetch the ledger ref "
+            "again; the readback writes nothing")
+
+
 def _refusal(location, exc):
+    fields = getattr(exc, "refusal", None)
+    if isinstance(fields, dict):   # a ledger_store locator refusal: its own six fields, this entrypoint
+        return {"schema": "stegverse.organization-ledger-readback/v1", "location": location,
+                "disposition": "FAIL_CLOSED", **{k: fields[k] for k in ("failure_code", "failed_predicate",
+                "required_evidence_or_repair", "owning_existing_goal", "next_attempt")},
+                "retry_entrypoint": RETRY, "authority_effect": "NONE_READBACK_ONLY"}
     return {
         "schema": "stegverse.organization-ledger-readback/v1",
         "location": location,
         "disposition": "FAIL_CLOSED",
         "failure_code": getattr(exc, "failure_code", "ORGANIZATION_LEDGER_READBACK_FAILED"),
         "failed_predicate": getattr(exc, "failed_predicate", "ORGANIZATION_LEDGER_READS_BACK"),
-        "required_evidence_or_repair": getattr(exc, "detail", str(exc)),
+        "required_evidence_or_repair": _repair_of(exc),
         "retry_entrypoint": RETRY,
         "owning_existing_goal": GOAL,
         "next_attempt": getattr(exc, "next_attempt",

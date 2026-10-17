@@ -498,7 +498,8 @@ class LegacySegmentReadback(unittest.TestCase):
     def test_without_a_declaration_the_readback_is_unchanged(self):
         g, (legacy, _) = self.ledger("legacy", "retained")
         exc = self.refused(g, None, "ORGANIZATION_LEDGER_READBACK_FAILED", "SOURCE_RECEIPT_RETAINED_AND_VERIFIES")
-        self.assertEqual(exc.detail, "None")
+        # Same disposition, code and predicate as before; the repair now names the receipt instead of 'None' (P1-FC-12).
+        self.assertTrue(exc.detail.startswith("organization receipt " + legacy + " names no source receipt"))
         self.assertEqual(rb(self.ledger("retained", "retained")[0].location)["disposition"], "ALLOW")
         g2, _ = self.ledger("retained")
         self.assertEqual(rb(g2.location, org_contract={"organization": "x"})["disposition"], "ALLOW")
@@ -781,6 +782,117 @@ class NamespaceAndEmptyLedger(unittest.TestCase):
         out = subprocess.run([sys.executable, str(COMPONENT / "organization_ledger_readback.py"), "--location", g.location,
                               "--recorded-for", "0" * 64], capture_output=True, text=True, cwd=g.tmp.name)
         self.assertEqual((out.returncode, out.stdout), (0, "\n"))
+
+
+def _load_store():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("ledger_store_fc12", COMPONENT / "ledger_store.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+REMOTE_LOCATORS = ("https://github.com/StegVerse-org/.github", "http://example.invalid/ledger",
+                   "ssh://git@github.com/StegVerse-org/.github.git", "git://github.com/StegVerse-org/.github",
+                   "file:///tmp/ledger", "git@github.com:StegVerse-org/.github.git", "github.com:StegVerse-org/.github",
+                   "git+https://github.com/StegVerse-org/.github#refs/stegverse/organization-ledger",
+                   "git+git@github.com:StegVerse-org/.github#refs/stegverse/organization-ledger",
+                   "git+ssh://github.com/StegVerse-org/.github#refs/stegverse/organization-ledger:" + NS)
+LOCATOR_GOAL = "StegVerse-org/.github#163"
+
+
+class RemoteLocatorRefused(unittest.TestCase):
+    """P1-FC-12: a remote locator is refused in six fields, never read as an empty local ledger."""
+
+    def assert_six(self, refusal, retry):
+        for field in SIX:
+            self.assertTrue(refusal.get(field), field)
+            self.assertNotEqual(str(refusal.get(field)).strip(), "None", field)
+        self.assertEqual((refusal["disposition"], refusal["failure_code"], refusal["owning_existing_goal"]),
+                         ("FAIL_CLOSED", "LEDGER_LOCATOR_INVALID", LOCATOR_GOAL))
+        self.assertEqual(refusal["retry_entrypoint"], retry)
+
+    def test_parse_locator_refuses_every_remote_form(self):
+        store = _load_store()
+        for locator in REMOTE_LOCATORS:
+            with self.assertRaises(ValueError) as caught:   # still a ValueError, so existing callers catch it
+                store.parse_locator(locator)
+            self.assertIsInstance(caught.exception, store.LedgerLocatorInvalid)
+            self.assertEqual(caught.exception.failure_code, "LEDGER_LOCATOR_INVALID")
+            self.assert_six(caught.exception.refusal, "org-kernel/organization-ledger/ledger_store.py::parse_locator")
+            with self.assertRaises(store.LedgerLocatorRefused):
+                store.open_store(locator)
+
+    def test_local_locators_are_unchanged(self):
+        store = _load_store()
+        with tempfile.TemporaryDirectory() as tmp:
+            for locator in (tmp, tmp + "/a:b", "./relative", "relative/dir"):
+                self.assertIsInstance(store.parse_locator(locator), Path)
+            loc = store.parse_locator("git+" + tmp + "#" + LEDGER_REF + ":" + NS)
+            self.assertEqual((loc.repository, loc.ref, loc.namespace), (Path(tmp).resolve(), LEDGER_REF, NS))
+            self.assertEqual(store.parse_locator("git+./rel#" + LEDGER_REF).repository, Path("rel").resolve())
+
+    def test_readback_cli_refuses_and_writes_nothing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for locator in REMOTE_LOCATORS:
+                out = subprocess.run([sys.executable, str(COMPONENT / "organization_ledger_readback.py"),
+                                      "--location", locator], capture_output=True, text=True, cwd=tmp)
+                self.assertEqual(out.returncode, 1, locator)
+                r = json.loads(out.stdout)
+                self.assert_six(r, "org-kernel/organization-ledger/organization_ledger_readback.py::main")
+                self.assertEqual(r["failed_predicate"], "LEDGER_LOCATOR_NAMES_A_STORE_ON_THIS_NODE")
+            self.assertEqual(os.listdir(tmp), [], "nothing is created for a remote locator")
+
+    def test_writers_refuse_a_remote_ledger_root_in_six_fields(self):
+        c = Consumer()
+        self.addCleanup(c.close)
+        c.env["STEGVERSE_ORG_LEDGER_ROOT"] = "https://github.com/StegVerse-org/.github"
+        c.env["STEGVERSE_REPO_LEDGER_ROOT"] = "git+https://github.com/StegVerse-org/.github#refs/stegverse/repo"
+        r = c.py(repo_receipt_snippet() + 'emit = load("emit.py")\n'
+                 'print(json.dumps({"agg": refusal(lambda: agg.append(src, "REPO_STATE_PROPAGATION", agg.GENESIS, "%s", {}, "NONE", hb_epoch=%d)), '
+                 '"emit": refusal(lambda: emit.lr())}))' % (B, EPOCH))
+        self.assert_six(r["agg"]["refused"], "org-kernel/organization-ledger/aggregate_repo_transition.py::append")
+        self.assertEqual(r["emit"]["refused"]["failure_code"], "LEDGER_LOCATOR_INVALID")
+        self.assertEqual(r["emit"]["refused"]["owning_existing_goal"], LOCATOR_GOAL)
+        self.assertEqual((c.written("org"), c.written("repo")), ([], []))
+        self.assertFalse((c.root / "https:").exists())
+
+
+class RequiredRepairIsNeverEmpty(unittest.TestCase):
+    """No refusal the component emits has required_evidence_or_repair empty or 'None'."""
+
+    def test_unretained_source_names_its_repair(self):
+        g = GitLedger()
+        self.addCleanup(g.close)
+        legacy = g.append("legacy")
+        with self.assertRaises(RB.ReadbackRefused) as caught:
+            RB.readback(g.location)
+        self.assertEqual(caught.exception.failed_predicate, "SOURCE_RECEIPT_RETAINED_AND_VERIFIES")
+        self.assertIn(legacy, caught.exception.detail)
+        out = subprocess.run([sys.executable, str(COMPONENT / "organization_ledger_readback.py"), "--location", g.location],
+                             capture_output=True, text=True, cwd=g.tmp.name)
+        r = json.loads(out.stdout)
+        self.assertEqual((out.returncode, r["disposition"]), (1, "FAIL_CLOSED"))
+        self.assertNotIn(r["required_evidence_or_repair"].strip(), ("", "None"))
+        self.assertIn("legacy segment", r["required_evidence_or_repair"])
+
+    def test_readback_refusal_never_reports_none(self):
+        for detail in (None, "", "None", "  "):
+            r = RB._refusal("loc", RB.ReadbackRefused("SOME_PREDICATE", "x"))
+            exc = RB.ReadbackRefused("SOME_PREDICATE", "x")
+            exc.detail = detail
+            r = RB._refusal("loc", exc)
+            self.assertNotIn(str(r["required_evidence_or_repair"]).strip(), ("", "None"), detail)
+            self.assertIn("SOME_PREDICATE", r["required_evidence_or_repair"])
+
+    def test_ledger_refusal_never_carries_none(self):
+        c = Consumer()
+        self.addCleanup(c.close)
+        r = c.py('common = load("ledger_common.py")\n'
+                 'print(json.dumps([common.LedgerRefusal("x", required_evidence_or_repair=v).refusal["required_evidence_or_repair"] '
+                 'for v in (None, "", "None", " None ")]))')
+        for value in r:
+            self.assertNotIn(value.strip(), ("", "None"))
 
 
 if __name__ == "__main__":

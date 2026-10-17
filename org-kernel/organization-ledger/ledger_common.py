@@ -128,6 +128,11 @@ def failure_code_of(message: str) -> str:
     return re.sub(r"[^A-Z0-9]+", "_", head.upper()).strip("_")
 
 
+def _meaningful(text: Any) -> bool:
+    """A six-field value that says something: not None, not empty, not the string 'None'."""
+    return isinstance(text, str) and bool(text.strip()) and text.strip() != "None"
+
+
 class LedgerRefusal(SystemExit):
     """A refused ledger operation. Nothing was written when this is raised.
 
@@ -143,6 +148,8 @@ class LedgerRefusal(SystemExit):
                  owning_goal_default: str = LEGACY_OWNING_GOAL):
         super().__init__(message)
         code = failure_code or failure_code_of(message)
+        if not _meaningful(required_evidence_or_repair):
+            required_evidence_or_repair = None
         self.refusal = {
             "schema": schema,
             "disposition": disposition,
@@ -160,6 +167,19 @@ class LedgerRefusal(SystemExit):
         }
         self.failure_code = code
         self.failed_predicate = self.refusal["failed_predicate"]
+
+
+def locator_refusal(exc: Any, retry_entrypoint: str) -> "LedgerRefusal":
+    """A ledger_store locator refusal (it carries `.refusal`) as this writer's LedgerRefusal."""
+    fields = exc.refusal
+    refusal = LedgerRefusal(fields["detail"], failure_code=fields["failure_code"],
+                         failed_predicate=fields["failed_predicate"],
+                         required_evidence_or_repair=fields["required_evidence_or_repair"],
+                         retry_entrypoint=retry_entrypoint, next_attempt=fields["next_attempt"],
+                         schema=fields["schema"])
+    # The component's own locator check: owned by its goal, not the consumer's parameter.
+    refusal.refusal["owning_existing_goal"] = fields["owning_existing_goal"]
+    return refusal
 
 
 def require_supplied_epoch(hb_epoch: Any, retry_entrypoint: str) -> int:

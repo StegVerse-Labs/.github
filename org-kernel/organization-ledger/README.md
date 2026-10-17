@@ -32,6 +32,8 @@ Registration and CI never stand for runtime. Runtime counts only when a manifest
 2. **Six fields.** Every non-ALLOW carries `failure_code`, `failed_predicate`, `required_evidence_or_repair`, `retry_entrypoint`, `owning_existing_goal` and `next_attempt`.
    - `owning_existing_goal` comes from the consumer's committed parameter file.
    - The SystemExit message is unchanged, so existing callers behave as before. `.refusal` is the record.
+   - `required_evidence_or_repair` is never empty or `None`. For example, an unretained source receipt names the receipt and the repair (retain it, or declare a legacy segment) instead of `None`.
+   - **Local locators only (P1-FC-12).** `ledger_store.parse_locator` refuses a remote location (a URL such as `https://`, `ssh://`, `git://`, `file://`, or scp-style `user@host:path`), bare or as the repository of `git+`. The refusal is FAIL_CLOSED `LEDGER_LOCATOR_INVALID` in six fields, owned by StegVerse-org/.github#163. Before the fix such a location read as an empty ledger. The readback reports it, and the writers re-raise it as a LedgerRefusal with their own retry entrypoint. Nothing is opened, read or written. Test classes: `RemoteLocatorRefused` and `RequiredRepairIsNeverEmpty`.
 3. **Component-relative loading.**
    - Siblings load from this directory, and the kernel is `../kernel.py`.
    - The consumer's contracts are read from the working directory, which is the consumer checkout.

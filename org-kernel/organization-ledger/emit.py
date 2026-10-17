@@ -22,7 +22,9 @@ def canon(v):return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_asci
 def sha(v):return "sha256:"+hashlib.sha256(v if isinstance(v,(bytes,bytearray)) else canon(v)).hexdigest()
 def lr():
  o=os.getenv("STEGVERSE_REPO_LEDGER_ROOT")
- if o:return ledger_store.parse_locator(o)
+ if o:
+  try:return ledger_store.parse_locator(o)
+  except ledger_store.LedgerLocatorRefused as exc:raise common.locator_refusal(exc,RETRY) from None
  # Supplied, never derived from the host: see aggregate_repo_transition.ledger_root.
  raise ValueError("ledger_location_required_from_materializer: STEGVERSE_REPO_LEDGER_ROOT")
 # A chain is only as good as the nodes it walks. A missing node used to end the

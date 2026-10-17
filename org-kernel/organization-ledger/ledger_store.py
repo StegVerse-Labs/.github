@@ -32,6 +32,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -76,6 +77,55 @@ class LedgerLocatorInvalid(ValueError):
         super().__init__("ledger_locator_invalid: " + detail + ": " + repr(locator))
         self.locator = locator
         self.detail = detail
+
+
+#: A locator naming a store that is not on this node: a URL (`https://`, `ssh://`, `git://`, `file://`, ...)
+#: or scp-style `user@host:path` / `host:path`. The readback and the writers open a store on this node
+#: only; a remote must be fetched into a local clone first (`git fetch <remote> +<ref>:<ref>`).
+_URL_SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://")
+_SCP_LIKE = re.compile(r"^(?:[^/@\s]+@)?[^/:\s]+:(?!//)")
+LOCATOR_OWNING_GOAL = "StegVerse-org/.github#163"
+
+
+class LedgerLocatorRefused(LedgerLocatorInvalid):
+    """A locator refused before anything is opened, read or written, with the six fields of a non-ALLOW.
+
+    A ValueError (as LedgerLocatorInvalid always was), so existing callers still catch it; `refusal`
+    carries the six fields, which the writers re-raise as a LedgerRefusal and the readback reports.
+    """
+
+    failure_code = "LEDGER_LOCATOR_INVALID"
+    failed_predicate = "LEDGER_LOCATOR_NAMES_A_STORE_ON_THIS_NODE"
+
+    def __init__(self, locator, detail):
+        super().__init__(locator, detail)
+        self.next_attempt = ("fetch the ledger ref into a local clone (git fetch <remote> "
+                             "+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger) and pass "
+                             "git+<local clone>#<ref>; nothing was opened, read or written")
+        self.refusal = {
+            "schema": "stegverse.organization-ledger-locator-refusal/v1",
+            "disposition": "FAIL_CLOSED",
+            "failure_code": self.failure_code,
+            "failed_predicate": self.failed_predicate,
+            "detail": detail + ": " + repr(locator),
+            "required_evidence_or_repair": ("supply a local ledger location: a POSIX path or "
+                                            "git+<local repository path>#<fully qualified ref>; "
+                                            + repr(locator) + " names a remote (" + detail + ")"),
+            "retry_entrypoint": "org-kernel/organization-ledger/ledger_store.py::parse_locator",
+            "owning_existing_goal": LOCATOR_OWNING_GOAL,
+            "next_attempt": self.next_attempt,
+            "consequence_committed": False,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }
+
+
+def _refuse_remote(part, locator):
+    """Refuse a remote (URL or scp-style) location before it can be read as an empty local store."""
+    text = str(part)
+    if _URL_SCHEME.match(text):
+        raise LedgerLocatorRefused(locator, "remote_url_locator_is_not_a_store_on_this_node")
+    if _SCP_LIKE.match(text):
+        raise LedgerLocatorRefused(locator, "remote_scp_locator_is_not_a_store_on_this_node")
 
 
 class GitLocator:
@@ -154,11 +204,13 @@ def parse_locator(value):
             repository, separator, ref = text[len(GIT_SCHEME):].rpartition("#")
             if not separator or not repository or not ref:
                 raise LedgerLocatorInvalid(text, "git_locator_requires_repository_and_ref")
+            _refuse_remote(repository, text)
             ref, has_namespace, namespace = ref.partition(":")
             if has_namespace and not namespace:
                 raise LedgerLocatorInvalid(text, "namespace_separator_without_a_namespace")
             return GitLocator(Path(repository).expanduser().resolve(), _require_ref(ref, text),
                               _require_namespace(namespace, text) if has_namespace else None)
+        _refuse_remote(text, text)
     return Path(value).expanduser().resolve()
 
 
@@ -171,6 +223,8 @@ def open_store(location):
     if not isinstance(location, PurePath) and str(location).startswith(GIT_SCHEME):
         locator = parse_locator(location)
         return GitLedgerStore(locator.repository, locator.ref, locator.namespace)
+    if not isinstance(location, (PurePath, GitLocator)):
+        _refuse_remote(location, location)
     return PosixLedgerStore(location)
 
 

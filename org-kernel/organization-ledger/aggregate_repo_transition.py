@@ -163,7 +163,12 @@ def ledger_root():
     """
     override = os.getenv("STEGVERSE_ORG_LEDGER_ROOT")
     if override:
-        return parse_locator(override)
+        try:
+            return parse_locator(override)
+        except ValueError as exc:
+            if hasattr(exc, "refusal"):
+                raise common.locator_refusal(exc, RETRY) from None
+            raise
     raise LedgerLocationRequired("STEGVERSE_ORG_LEDGER_ROOT")
 
 
