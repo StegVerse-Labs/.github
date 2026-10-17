@@ -212,7 +212,7 @@ ENDPOINT_ADAPTER_HB_EPOCH_CARRIER_SUPPLIED="CARRIER_SUPPLIED"
 HB_EPOCH_NOT_SUPPLIED="HB_EPOCH_NOT_SUPPLIED"
 HB_EPOCH_INVALID="HB_EPOCH_INVALID"
 HB_EPOCH_PREDICATE="SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
-HB_EPOCH_OWNING_EXISTING_GOAL="StegVerse-org/.github#162"
+HB_EPOCH_OWNING_EXISTING_GOAL="INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
 HB_EPOCH_RETRY_ENTRYPOINT=("org-kernel/kernel.py::consume_and_respond: the sender re-publishes the packet in a "
                            "carrier frame stamped with a supplied epoch (publish_packet(..., epoch=<digits >= 32>))")
 SIX_FIELDS=("failure_code","failed_predicate","required_evidence_or_repair",

@@ -10,7 +10,7 @@ the carrier, ASCII digits, value >= 32, and no clock is read on this path.
 - no epoch supplied                      -> FAIL_CLOSED HB_EPOCH_NOT_SUPPLIED
 - malformed, or derived_from_clock true  -> FAIL_CLOSED HB_EPOCH_INVALID
 
-Each refusal carries the six fields, names StegVerse-org/.github#162 as its
+Each refusal carries the six fields, names INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 as its
 owning goal, and is stored with the disposition it returns. An adapter that does
 not declare the epoch input is run exactly as before.
 
@@ -36,7 +36,7 @@ K = base.K
 
 SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair",
        "retry_entrypoint", "owning_existing_goal", "next_attempt")
-GOAL = "StegVerse-org/.github#162"
+GOAL = "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
 GENESIS = {"mode": "ESTABLISH_GENESIS", "node_ref": "test-node", "predecessor": None}
 ROUTE = "stegverse.route.ecosystem-diagnostic.v1"
 # Records its arguments; touches `ran` beside itself so a test can see it ran at all.

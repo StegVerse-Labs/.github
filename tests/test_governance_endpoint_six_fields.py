@@ -147,6 +147,7 @@ class GovernanceSixFieldTests(unittest.TestCase):
                 self.assertEqual(printed["disposition"], "FAIL_CLOSED")
                 self.assertEqual(printed["failure_code"], "HB_EPOCH_INVALID")
                 self.assertEqual(printed["failed_predicate"], "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
+                self.assertEqual(printed["owning_existing_goal"], "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001")
                 self.assert_six(printed)
                 self.assertFalse(out.exists(), "a refused run wrote --out")
                 self.assertEqual(self.ledger("STEGVERSE_REPO_LEDGER_ROOT"), [])
