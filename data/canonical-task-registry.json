@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 317,
+  "generation": 318,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -22170,13 +22170,23 @@
       "remaining_predicates": [
         "AUTHENTICATED_TV_TVC_PROVENANCE_FOR_FINAL_SDK_SOURCE_IDENTITY",
         "MANIFEST_BOUND_INTR_ADMISSION_TERMINAL_DISPOSITION_RETAINED",
-        "ORGANIZATION_LEDGER_READBACK_FOR_GOVERNED_MIGRATION",
-        "APPLICABLE_MASTER_RECORDS_RECONSTRUCTION_EVIDENCE_RETAINED"
+        "ORGANIZATION_LEDGER_READBACK_FOR_GOVERNED_MIGRATION"
+      ],
+      "non_gating_downstream_evidence": [
+        {
+          "evidence": "APPLICABLE_MASTER_RECORDS_RECONSTRUCTION_EVIDENCE_RETAINED",
+          "completion_predicate": false,
+          "gating": false,
+          "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING",
+          "basis": "data/task-registry-global-invariants.json master_records_may_gate_organization_runtime_reality=false",
+          "reclassified_at": "2026-10-17"
+        }
       ],
       "allocation_request_ref": "control/goal-task-allocation-requests/sdk-484-structural-validator-2026-10-13.json",
       "worker_claim": {
-        "authority": "NONE_TASK_REGISTRY_PROJECTION_ONLY",
+        "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
+        "fence_ref": null,
         "projection_only": true
       },
       "completion": {
@@ -22189,6 +22199,7 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "credential_authority": "TV/TVC",
         "master_records_reality_authority": false,
+        "master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING",
         "interlock_intr_required_for_governed_ingress_egress": true,
         "heartbeat_execution_authority": false,
         "github_runtime_authority": "NONE",
