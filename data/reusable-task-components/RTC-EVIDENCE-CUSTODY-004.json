@@ -109,7 +109,7 @@
   ],
   "validation_evidence": {
     "local_only": true,
-    "component_tests": "34/34 OK (local build, Labs kernel 1.3.2)",
+    "component_tests": "37/37 OK (local build, Labs kernel 1.3.2)",
     "readback_replay": "8/8 federation ledgers identical to 10d14104 readback (retry_entrypoint relocated only)",
     "remint": "StegVerse-org 22/22 org receipts and 13/13 supplied-epoch repo receipts re-minted byte-identical; 7 clock-derived repo receipts not reproducible by construction",
     "note": "not CI evidence; no runtime ALLOW is inferred from these"

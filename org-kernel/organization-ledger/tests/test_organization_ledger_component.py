@@ -631,5 +631,74 @@ class LegacySegmentReadback(unittest.TestCase):
         self.assertFalse((Path(c.tmp.name) / "unused").exists())
 
 
+SV011_SEGMENT_ACA5AFD = {
+    "receipts": ["sha256:3db9008d0326bdfa687796308fd61dc16e11e299e1c3762e03e577cd1f23fe51"],
+    "ledger_tip_commit": "2cc58cec07117909750a760933641725b86a204b",
+    "verified_by": "repo_receipt_sha256 names a receipt on the repository-ledger/SV-011/.github chain that verifies against its body",
+    "re_minted": False, "reported_as_source_retained": False,
+    "waived_predicate": "SOURCE_RECEIPT_RETAINED_AND_VERIFIES",
+    "six_fields": {
+        "failure_code": "SOURCE_RECEIPT_RETAINED_AND_VERIFIES",
+        "failed_predicate": "EVERY_ORGANIZATION_RECEIPT_RETAINS_AND_VERIFIES_ITS_SOURCE_RECEIPT (SV-011/.github ledger, receipt sha256:3db9008d\u2026 at tip 2cc58cec; source_transition_sha256 absent, no source-receipts/)",
+        "required_evidence_or_repair": "forward retention (each new org receipt names source_transition_sha256 and retains its repository receipt under source-receipts/), plus an explicit legacy-segment rule for 3db9008d in the shared readback component (H28 C6); never re-mint",
+        "retry_entrypoint": "SV-011/.github resident-runtime/organization_ledger_readback.py::main; StegVerse-Labs/.github data/reusable-task-components/ (readback component)",
+        "owning_existing_goal": "SV011-TT-CAPABILITY-MAP-OBSERVATION-001 (#167 lane B, #68)",
+        "next_attempt": "after the component readback carries the legacy-segment rule, read the ref back with it; receipts appended after PR #9 merges are retained"},
+    "declaration_sha256": "sha256:36c43b78e2c820d5448d7edb7f4bf7222d22faf9a91925ad18e3e50a54267375",
+}
+
+
+class DeclarationDigestCanonicalization(unittest.TestCase):
+    """The declaration digest is pinned: UTF-8, sort_keys, (',', ':'), ensure_ascii=False -- the receipt form."""
+
+    @staticmethod
+    def explicit(value, ensure_ascii=False):
+        import hashlib
+        text = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=ensure_ascii)
+        return "sha256:" + hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+    def test_pinned_form_is_declared_and_is_the_receipt_form(self):
+        self.assertEqual(RB.CANONICAL_JSON, {"encoding": "utf-8", "sort_keys": True,
+                                             "separators": [",", ":"], "ensure_ascii": False})
+        body = {"z": "\u2026", "a": {"\u00e9": [1, "\U0001f512"]}}
+        self.assertEqual(RB.sha(body), self.explicit(body))
+        agg = Consumer()
+        self.addCleanup(agg.close)
+        writer = agg.py('agg = load("aggregate_repo_transition.py")\nprint(json.dumps(agg.sha(%r)))' % (body,))
+        self.assertEqual(writer, RB.sha(body))
+        receipt = {**body, "receipt_sha256": RB.sha(body)}
+        self.assertTrue(RB.self_verifies(receipt))
+
+    def test_non_ascii_member_digest_is_ensure_ascii_false(self):
+        g = GitLedger()
+        self.addCleanup(g.close)
+        legacy = g.append("legacy")
+        g.append("retained")
+        six = dict(SEGMENT_SIX, failed_predicate="EVERY_RECEIPT_RETAINS_ITS_SOURCE (receipt " + legacy[:15] + "\u2026, caf\u00e9 \U0001f512)")
+        contract = declaration([legacy], g.commits[0], six_fields=six)
+        segment = contract["source_receipt_retention"]["legacy_pre_retention_segment"]
+        unsigned = {k: v for k, v in segment.items() if k != "declaration_sha256"}
+        self.assertEqual(segment["declaration_sha256"], self.explicit(unsigned))
+        self.assertNotEqual(self.explicit(unsigned), self.explicit(unsigned, ensure_ascii=True))
+        r = RB.readback(g.location, org_contract=contract)
+        self.assertEqual(r["failure_code"], "DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED")
+        self.assertEqual(r["legacy_segment"]["declaration_digest_canonicalization"], RB.CANONICAL_JSON)
+        self.assertEqual(r["legacy_segment"]["findings"][0]["failed_predicate"], six["failed_predicate"])
+        ascii_signed = json.loads(json.dumps(contract))
+        ascii_signed["source_receipt_retention"]["legacy_pre_retention_segment"]["declaration_sha256"] = \
+            self.explicit(unsigned, ensure_ascii=True)
+        with self.assertRaises(RB.ReadbackRefused) as caught:
+            RB.readback(g.location, org_contract=ascii_signed)
+        self.assertEqual(caught.exception.failure_code, "LEGACY_SEGMENT_DECLARATION_DIGEST_MISMATCH")
+
+    def test_sv011_aca5afd_declaration_digest_cross_checks(self):
+        segment = dict(SV011_SEGMENT_ACA5AFD)
+        self.assertEqual(RB.declaration_digest(segment), segment["declaration_sha256"])
+        self.assertIs(RB.validate_legacy_segment(segment), segment)
+        unsigned = {k: v for k, v in segment.items() if k != "declaration_sha256"}
+        self.assertEqual(self.explicit(unsigned, ensure_ascii=True),
+                         "sha256:ecf4aabe417364bb5768b0870fe8a0c61fadd8bf77a3c86b65480673c8608cec")
+
+
 if __name__ == "__main__":
     unittest.main()

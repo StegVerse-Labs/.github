@@ -20,7 +20,9 @@ manifest: its predecessor state is the canonical manifest digest.
 Legacy segments (G4/H45). A ledger may declare, in its committed
 org-contract.json under `source_receipt_retention.legacy_pre_retention_segment`,
 the receipts written before source retention began. The declaration is
-digest-bound (`declaration_sha256`) and bound to the ledger commit at which the
+digest-bound (`declaration_sha256`: sha256 over the segment without that member,
+as UTF-8 JSON with sort_keys=True, separators=(",", ":"), ensure_ascii=False; the
+same canonical form as receipt hashing) and bound to the ledger commit at which the
 segment ends (`ledger_tip_commit`). Every declared receipt must still self-hash
 and chain-link. Only SOURCE_RECEIPT_RETAINED_AND_VERIFIES is waived, and only
 for the declared receipts. The receipts after the segment are verified in full.
@@ -55,8 +57,16 @@ RETRY = common.entrypoint(__file__, "main")
 GOAL = common.owning_existing_goal("LLMA-DECLARED-PATH-CONFORMANCE-368")
 
 
+# The one canonical form, used both for receipt self-hashes and for a legacy
+# segment's declaration_sha256. It is pinned explicitly: UTF-8,
+# sort_keys=True, separators=(",", ":"), ensure_ascii=False. This is the same
+# form as aggregate_repo_transition.canon and emit.canon. ensure_ascii=True
+# would give a different digest for any non-ASCII member (for example U+2026).
+CANONICAL_JSON = {"encoding": "utf-8", "sort_keys": True, "separators": [",", ":"], "ensure_ascii": False}
+
+
 def canon(value):
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
 def sha(value):
@@ -99,6 +109,7 @@ def _declaration_refused(code, predicate, detail):
 
 
 def declaration_digest(segment):
+    """sha256 of the segment without declaration_sha256, in CANONICAL_JSON (the receipt canonical form)."""
     return sha({k: v for k, v in segment.items() if k != "declaration_sha256"})
 
 
@@ -156,7 +167,8 @@ def validate_legacy_segment(segment):
     if segment["declaration_sha256"] != declaration_digest(segment):
         raise _declaration_refused("LEGACY_SEGMENT_DECLARATION_DIGEST_MISMATCH", "LEGACY_SEGMENT_DECLARATION_IS_DIGEST_BOUND",
                                    "declaration_sha256 must be " + declaration_digest(segment)
-                                   + " (sha256 of the canonical segment without declaration_sha256)")
+                                   + " (sha256 of the segment without declaration_sha256, as UTF-8 JSON with "
+                                   "sort_keys=True, separators=(',', ':'), ensure_ascii=False)")
     return segment
 
 
@@ -214,6 +226,7 @@ def _apply_legacy_segment(location, segment, chain, failing):
                       "source_receipt_retained": False, "re_minted": False}, **six) for d in declared]
     return {
         "declaration_sha256": segment["declaration_sha256"],
+        "declaration_digest_canonicalization": dict(CANONICAL_JSON),
         "waived_predicate": WAIVABLE_PREDICATE,
         "receipts": list(declared),
         "ledger_tip_commit": segment["ledger_tip_commit"],
