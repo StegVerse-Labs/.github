@@ -224,7 +224,8 @@ def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
     if not isinstance(result,dict): raise ValueError("endpoint_adapter_result_invalid")
     return result
 
-def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None)->dict[str,Any]:
+def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None,
+             epoch:int|None=None)->dict[str,Any]:
     """Dispatch a recovered packet. `node_state` is this node's supplied state store.
 
     `root` is the organization's materialized source: it is read, never written.
@@ -280,10 +281,16 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
         # for this role: a root that never serves a capability address is not
         # defective for having no capability resolver.
         try:
+            # The frame's epoch goes with it, so the operation's appends are at
+            # the supplied epoch; without one the resolver refuses
+            # HB_EPOCH_NOT_SUPPLIED with six fields and nothing is appended.
             application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
-                                                                mesh_root=mesh_root)
+                                                                mesh_root=mesh_root,hb_epoch=epoch)
         except SystemExit as refused:
-            raise ValueError("capability_ingress_refused:"+str(refused)) from None
+            error=ValueError("capability_ingress_refused:"+str(refused))
+            # A six-field refusal (the epoch rule) keeps its fields on the error.
+            error.refusal=getattr(refused,"refusal",None)
+            raise error from None
     else:
         application_result={"echo":packet["payload"]}
     return {"schema_version":SCHEMA,"organization":registry["organization"],"packet_id":packet["packet_id"],
@@ -307,7 +314,10 @@ def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, no
     registry=load_registry(root)
     if frame["destination_org"]!=registry["organization"]:
         return {"status":"IGNORED_NOT_ADDRESSED","packet_id":frame["packet_id"]}
-    result=dispatch(root,packet,mesh_root=mesh_root,node_state=node_state)
+    # The epoch of the frame being consumed, which recovery has validated. A
+    # capability address hands it to its receiving operation's ledger appends.
+    epoch=(frame.get("heartbeat_reference") or {}).get("epoch")
+    result=dispatch(root,packet,mesh_root=mesh_root,node_state=node_state,epoch=epoch)
     return {"status":"CONSUMED","packet":packet,"execution_result":result}
 
 __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame","recover_packet","dispatch",

@@ -197,7 +197,10 @@ class ParentManifestApplicabilityTest(LedgerRoots):
 
     def _assert_refused_before_any_admission_write(self, request, code):
         result, cross = self.receive(request)
-        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        # An invalid declared parent manifest is a defect of the submission:
+        # DENY, returned as stored (REFUSAL_DISPOSITIONS).
+        self.assertEqual(result["disposition"], "DENY")
+        self.assertEqual(result["refusal_stored_disposition"], "DENY")
         self.assertEqual(result["failed_predicate"], ingress.PARENT_MANIFEST_INVALID_PREDICATE)
         self.assertEqual(result["failure_code"], code)
         self.assertTrue(result["refusal_recorded"])
