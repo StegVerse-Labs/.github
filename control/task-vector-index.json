@@ -1232,7 +1232,7 @@
       "repository": "StegVerse-Labs/Executive_Rhetoric_Ledger",
       "registry_ref": "data/canonical-task-registry.json",
       "source_state_vector_ref": "control/task-vectors/ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026.json",
-      "vector": "60200000112012",
+      "vector": "10100000110012",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     },

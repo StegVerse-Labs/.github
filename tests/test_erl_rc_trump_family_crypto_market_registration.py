@@ -7,7 +7,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from cosv import encode_task, validate_record  # noqa: E402
 
 TASK_ID = "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026"
-VECTOR = "60200000112012"
+VECTOR = "10100000110012"
 ERL = "StegVerse-Labs/Executive_Rhetoric_Ledger"
 RECORD = ROOT / "data" / "canonical-task-records" / f"{TASK_ID}.json"
 TASK_VECTOR = ROOT / "control" / "task-vectors" / f"{TASK_ID}.json"
@@ -65,7 +65,28 @@ def test_authority_separation_and_no_completion_claim():
     assert model["github_runtime_authority"] == "NONE"
     assert model["producer_evaluation_authority"] is False
     assert record["completion"] == {"claimed": False, "validated": False, "runtime_observed": False}
-    assert {b["disposition"] for b in record["blockers"]} == {"FAIL_CLOSED", "DENY"}
+
+
+def test_items_2_and_3_resolved_without_runtime_observation():
+    record = load(RECORD)
+    assert record["blockers"] == []
+    assert record["remaining_predicates"] == []
+    assert record["cosv_exact_metrics"]["blocker_count"] == 0
+    assert record["cosv_exact_metrics"]["evidence_complete"] is False
+    resolutions = {r["predicate"]: r for r in record["predicate_resolutions"]}
+    assert set(resolutions) == set(record["expected_evidence_predicates"])
+    for resolution in resolutions.values():
+        assert resolution["disposition"] == "ALLOW"
+        assert resolution["runtime_observation"] is False
+        assert resolution["authority_effect"] == "NONE"
+        assert resolution["evidence_refs"]
+    custody = resolutions["MYKV_CUSTODY_WRITE_AND_HASH_READBACK"]
+    assert custody["write_mode"] == "DIRECT_PROVIDER_TOOL_WRITE"
+    assert "evidence_class" not in custody
+    assert resolutions["MELANIA_TOKEN_PREANNOUNCEMENT_WALLETS_ON_SUBJECT_LEAD"]["evidence_class"] == "MERGED"
+    history = record["reconciliation_history"]
+    assert history[-1]["cosv_task_vector"] == "60200000112012"
+    assert {b["disposition"] for b in history[-1]["blockers"]} == {"FAIL_CLOSED", "DENY"}
 
 
 if __name__ == "__main__":
