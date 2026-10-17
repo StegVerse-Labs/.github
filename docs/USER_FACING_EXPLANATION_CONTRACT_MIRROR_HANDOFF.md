@@ -1,7 +1,7 @@
 # Universal User-Facing Explanation Contract Mirror Handoff (scaled-up HIL experiment)
 
 Status: ACTIVE (source merged; experiment preregistered, NOT_MEASURED)
-Updated: 2026-10-11
+Updated: 2026-10-13
 Repository: `StegVerse-Labs/.github`
 Issue: `StegVerse-Labs/.github#3106` (coordinates with `StegVerse-Labs/Site#1509`, `StegVerse-Labs/crypto-bot#23`)
 Contract: `stegverse.user-facing-explanation/v1` (`schemas/user-facing-explanation.v1.schema.json`)
