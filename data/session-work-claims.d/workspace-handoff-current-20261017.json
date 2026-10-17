@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "workspace-handoff-current-20261017",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/Site#1509",
+  "parent_issue": "StegVerse-Labs/.github#3183",
+  "state": "CLAIMED",
+  "role": "CANONICAL_HANDOFF_DOCUMENTATION_NON_AUTHORIZING",
+  "branch": "claude/3183-workspace-handoff-current",
+  "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
+  "originating_goal": "Bring the canonical WorkSpace goal handoff current with #3193, #3209 and the Site conformance PRs, and correct the explanation-contract handoff's Updated date.",
+  "claimed_paths": [
+    "docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md",
+    "docs/USER_FACING_EXPLANATION_CONTRACT_MIRROR_HANDOFF.md",
+    "data/session-work-claims.d/workspace-handoff-current-20261017.json"
+  ],
+  "collision_boundaries": ["Documentation only", "Do not modify .github#3012 lane files"],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}
