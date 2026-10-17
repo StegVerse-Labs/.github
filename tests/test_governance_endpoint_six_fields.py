@@ -55,7 +55,7 @@ class GovernanceSixFieldTests(unittest.TestCase):
 
     def test_a_deny_carries_the_six_fields_naming_the_failed_matrix_predicate(self):
         self.use_stub(MATRIX_STUB)
-        decision = base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {}})))["application_result"]
+        decision = base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {}})), heartbeat_reference=base.CARRIER)["application_result"]
         self.assertEqual(decision["disposition"], "DENY")
         self.assert_six(decision)
         self.assertEqual(decision["failure_code"], "signal.inputs_incomplete")
@@ -68,7 +68,7 @@ class GovernanceSixFieldTests(unittest.TestCase):
 
     def test_the_organization_receipt_carries_the_six_fields(self):
         self.use_stub(MATRIX_STUB)
-        base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {}})))
+        base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {}})), heartbeat_reference=base.CARRIER)
         organization = self.ledger("STEGVERSE_ORG_LEDGER_ROOT")
         self.assertEqual(len(organization), 1)
         self.assert_six(organization[0]["boundary_evidence"])
@@ -76,13 +76,13 @@ class GovernanceSixFieldTests(unittest.TestCase):
 
     def test_fail_closed_paths_carry_the_six_fields(self):
         self.without_stegcore()
-        decision = base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {}})))["application_result"]
+        decision = base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {}})), heartbeat_reference=base.CARRIER)["application_result"]
         self.assertEqual(decision["disposition"], "FAIL_CLOSED")
         self.assert_six(decision)
         self.assertEqual(decision["failure_code"], "GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE")
         self.assertEqual(decision["failed_predicate"], "GOVERNANCE_RUNTIME_STEGCORE_UNAVAILABLE")
         self.with_stegcore()
-        mismatch = base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {"x": 1}}, digest="0" * 64)))["application_result"]
+        mismatch = base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {"x": 1}}, digest="0" * 64)), heartbeat_reference=base.CARRIER)["application_result"]
         self.assert_six(mismatch)
         self.assertEqual(mismatch["failure_code"], "GOVERNANCE_REQUEST_DIGEST_MISMATCH")
 
@@ -90,12 +90,12 @@ class GovernanceSixFieldTests(unittest.TestCase):
         self.use_stub(MATRIX_STUB)
         payload = base.work_request({"signal": {}})
         payload["body"]["owning_existing_goal"] = "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001"
-        decision = base.K.dispatch(base.ROOT, base.packet(payload))["application_result"]
+        decision = base.K.dispatch(base.ROOT, base.packet(payload), heartbeat_reference=base.CARRIER)["application_result"]
         self.assertEqual(decision["owning_existing_goal"], "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001")
 
     def test_an_allow_carries_no_failure_fields(self):
         self.use_stub(ALLOW_STUB)
-        decision = base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {}})))["application_result"]
+        decision = base.K.dispatch(base.ROOT, base.packet(base.work_request({"signal": {}})), heartbeat_reference=base.CARRIER)["application_result"]
         self.assertEqual(decision["disposition"], "ALLOW")
         for key in SIX + ("unsatisfied_predicates",):
             self.assertNotIn(key, decision)

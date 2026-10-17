@@ -200,22 +200,87 @@ def resolve_endpoint_adapter(root:Path, service:dict[str,Any])->Path:
 #: through the write-once store at the node-state root it is handed.
 NODE_STATE_WRITE_ONCE="NODE_STATE_WRITE_ONCE"
 
+#: An endpoint adapter whose row declares `endpoint_adapter_hb_epoch` as
+#: CARRIER_SUPPLIED is handed the heartbeat epoch of the carrier frame that
+#: delivered the packet (`--hb-epoch`), so its receipts reference the crossing's
+#: own tick rather than one the adapter derives from the host clock. The shared
+#: epoch rule is the one TVC's broker applies (StegVerse-Labs/TVC#517, P1): the
+#: carrier supplies the epoch, it is ASCII digits with value >= 32 (the HB32
+#: anchor), and nothing on this path reads a clock. A reference the sender
+#: derived from its clock is not a supplied epoch. INDEX H34b.
+ENDPOINT_ADAPTER_HB_EPOCH_CARRIER_SUPPLIED="CARRIER_SUPPLIED"
+HB_EPOCH_NOT_SUPPLIED="HB_EPOCH_NOT_SUPPLIED"
+HB_EPOCH_INVALID="HB_EPOCH_INVALID"
+HB_EPOCH_PREDICATE="HB_EPOCH_IS_SUPPLIED_BY_THE_CARRIER_AS_DIGITS_GE_32"
+HB_EPOCH_OWNING_EXISTING_GOAL="StegVerse-org/.github#162"
+HB_EPOCH_RETRY_ENTRYPOINT=("org-kernel/kernel.py::consume_and_respond: the sender re-publishes the packet in a "
+                           "carrier frame stamped with a supplied epoch (publish_packet(..., epoch=<digits >= 32>))")
+SIX_FIELDS=("failure_code","failed_predicate","required_evidence_or_repair",
+            "retry_entrypoint","owning_existing_goal","next_attempt")
+
+class CarrierEpochRefusal(ValueError):
+    """FAIL_CLOSED refusal of a missing or invalid carrier epoch, carrying the six fields."""
+    def __init__(self, failure_code:str, *, required_evidence_or_repair:str, next_attempt:str)->None:
+        super().__init__(failure_code)
+        self.record={"disposition":"FAIL_CLOSED","failure_code":failure_code,
+                     "failed_predicate":HB_EPOCH_PREDICATE,
+                     "required_evidence_or_repair":required_evidence_or_repair,
+                     "retry_entrypoint":HB_EPOCH_RETRY_ENTRYPOINT,
+                     "owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+                     "next_attempt":next_attempt,"derived_from_clock":False,
+                     "consequence_committed":False}
+
+def adapter_takes_carrier_epoch(service:dict[str,Any]|None)->bool:
+    return (service or {}).get("endpoint_adapter_hb_epoch")==ENDPOINT_ADAPTER_HB_EPOCH_CARRIER_SUPPLIED
+
+def carrier_epoch(heartbeat_reference:Any)->int:
+    """Return the epoch the carrier supplied, or refuse FAIL_CLOSED. No clock is read."""
+    if heartbeat_reference is not None and not isinstance(heartbeat_reference,dict):
+        raise CarrierEpochRefusal(HB_EPOCH_INVALID,
+            required_evidence_or_repair="the carrier's heartbeat_reference must be an object carrying epoch",
+            next_attempt="re-publish the packet in a frame stamped with a supplied epoch")
+    epoch=(heartbeat_reference or {}).get("epoch")
+    if epoch is None or epoch=="":
+        raise CarrierEpochRefusal(HB_EPOCH_NOT_SUPPLIED,
+            required_evidence_or_repair="the carrier frame supplies heartbeat_reference.epoch; no clock is read",
+            next_attempt="re-publish the packet in a frame stamped with a supplied epoch")
+    if isinstance(epoch,bool): text=None
+    elif isinstance(epoch,int): text=str(epoch)
+    elif isinstance(epoch,str): text=epoch
+    else: text=None
+    if text is None or not text.isascii() or not text.isdigit() or int(text)<HB_ANCHOR_EPOCH:
+        raise CarrierEpochRefusal(HB_EPOCH_INVALID,
+            required_evidence_or_repair="heartbeat_reference.epoch must be ASCII digits with value >= 32 (the HB32 anchor)",
+            next_attempt="re-publish the packet in a frame stamped with a supplied epoch >= 32")
+    if heartbeat_reference.get("derived_from_clock") is not False:
+        raise CarrierEpochRefusal(HB_EPOCH_INVALID,
+            required_evidence_or_repair=("the carrier's epoch was derived from a host clock (derived_from_clock is not false); "
+                                         "a clock-derived epoch is not a supplied one"),
+            next_attempt="re-publish the packet in a frame stamped with a supplied epoch (derived_from_clock false)")
+    return int(text)
+
 def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
-                         service:dict[str,Any]|None=None, node_state:Any|None=None)->dict[str,Any]:
+                         service:dict[str,Any]|None=None, node_state:Any|None=None,
+                         heartbeat_reference:dict[str,Any]|None=None)->dict[str,Any]:
     """Run an admitted adapter on the packet that crossed, and return its result.
 
     The adapter runs under this interpreter, so what it can import is what this
     boundary was materialized with rather than whatever a bare `python3` on the
     host path resolves to. Only an adapter declared NODE_STATE_WRITE_ONCE is
     handed this node's supplied state location, never the checkout; a pure
-    adapter is given nothing it could write to.
+    adapter is given nothing it could write to. An adapter declared to take the
+    carrier epoch is handed the epoch of `heartbeat_reference`, the carrier
+    frame's; without a supplied one it does not run (FAIL_CLOSED, six fields).
     """
+    hb_epoch=carrier_epoch(heartbeat_reference) if adapter_takes_carrier_epoch(service) else None
     with tempfile.TemporaryDirectory() as td:
         envelope=Path(td)/"packet.json"; out=Path(td)/"endpoint-response.json"
         envelope.write_text(json.dumps(packet,indent=2,sort_keys=True)+"\n")
         command=[sys.executable,str(adapter),"--packet",str(envelope),"--out",str(out)]
         if (service or {}).get("endpoint_adapter_effect")==NODE_STATE_WRITE_ONCE and node_state is not None:
             command+=["--node-state-root",str(node_state.root)]
+        if hb_epoch is not None:
+            command+=["--hb-epoch",str(hb_epoch)]
         completed=subprocess.run(command,cwd=root,capture_output=True,text=True,check=False)
         if completed.returncode!=0 or not out.is_file():
             detail=(completed.stderr or completed.stdout or "").strip().splitlines()
@@ -224,8 +289,13 @@ def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
     if not isinstance(result,dict): raise ValueError("endpoint_adapter_result_invalid")
     return result
 
-def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None)->dict[str,Any]:
+def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None,
+             heartbeat_reference:dict[str,Any]|None=None)->dict[str,Any]:
     """Dispatch a recovered packet. `node_state` is this node's supplied state store.
+
+    `heartbeat_reference` is the reference of the carrier frame that delivered
+    the packet; an endpoint adapter declared to take the carrier epoch is handed
+    its epoch and is refused without a supplied one.
 
     `root` is the organization's materialized source: it is read, never written.
     Anything the crossing records (work intake) goes to `node_state`.
@@ -259,6 +329,9 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
     # Resolved before any receipt is minted: an adapter the registry does not
     # admit must not leave a chain implying the crossing was consumed.
     adapter=resolve_endpoint_adapter(root,service) if endpoint else None
+    # Also before any receipt: an adapter that takes the carrier epoch is not
+    # run, and no chain implies it was, without one the carrier supplied.
+    if endpoint and adapter_takes_carrier_epoch(service): carrier_epoch(heartbeat_reference)
     # Also before any receipt: a work request is recorded in node state, so a
     # node materialized without one cannot consume it.
     if (role=="BOUNDARY_LOCAL_CONTROL" and node_state is None
@@ -269,7 +342,8 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
         r=receipt(kind,packet["packet_id"],service["service_id"],prev,{"payload_hash":sha(packet["payload"])})
         receipts.append(r); prev=r["receipt_id"]
     if endpoint:
-        application_result=run_endpoint_adapter(root,adapter,packet,service=service,node_state=node_state)
+        application_result=run_endpoint_adapter(root,adapter,packet,service=service,node_state=node_state,
+                                                heartbeat_reference=heartbeat_reference)
     elif role=="BOUNDARY_LOCAL_CONTROL":
         application_result=handle_control_message(root,packet,registry,node_state=node_state)
     elif role==CAPABILITY_INGRESS_ROLE:
@@ -307,7 +381,8 @@ def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, no
     registry=load_registry(root)
     if frame["destination_org"]!=registry["organization"]:
         return {"status":"IGNORED_NOT_ADDRESSED","packet_id":frame["packet_id"]}
-    result=dispatch(root,packet,mesh_root=mesh_root,node_state=node_state)
+    result=dispatch(root,packet,mesh_root=mesh_root,node_state=node_state,
+                    heartbeat_reference=frame.get("heartbeat_reference"))
     return {"status":"CONSUMED","packet":packet,"execution_result":result}
 
 __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame","recover_packet","dispatch",
@@ -315,7 +390,8 @@ __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame"
          "resolve_federation_root","resolve_node_state_root","addressed_node_state_store",
          "record_federation_cycle","federation_cycles","manifest_selection","capability_ingress",
          "CAPABILITY_INGRESS_ROLE","crossing_custody",
-         "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS"]
+         "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS",
+         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID"]
 
 
 # --- Federation mesh v1.1 additions ---
@@ -753,7 +829,8 @@ def refusal_disposition(reason:str)->str:
     return "DENY" if any(marker in reason for marker in DETERMINISTIC_REFUSALS) else "FAIL_CLOSED"
 
 def record_refusal(custody:dict[str,Any], item:dict[str,Any], reason:str, disposition:str, *,
-                   service:dict[str,Any]|None, epoch:int|None)->dict[str,Any]:
+                   service:dict[str,Any]|None, epoch:int|None,
+                   actionable:dict[str,Any]|None=None)->dict[str,Any]:
     """Append the repository and organization receipts for a refused crossing.
 
     The crossing arrived, so its disposition is a transition of this
@@ -772,8 +849,13 @@ def record_refusal(custody:dict[str,Any], item:dict[str,Any], reason:str, dispos
               "boundary_role":(service or {}).get("boundary_role"),
               "disposition":disposition,"failed_predicate":reason,
               "retry_entrypoint":None if disposition=="DENY" else "org-kernel/kernel.py::consume_and_respond"}
-    recorded=_record_both(custody,name,CROSSING_REFUSED_CLASS,predecessor,successor,evidence,
-                          ("packet_id","disposition","failed_predicate"),epoch)
+    carried=("packet_id","disposition","failed_predicate")
+    if actionable:
+        # A refusal that states its six fields is stored with them, at both
+        # levels; its failed_predicate is the one it names, not the bare reason.
+        evidence.update({key:actionable[key] for key in SIX_FIELDS if key in actionable})
+        carried=("packet_id","disposition")+SIX_FIELDS
+    recorded=_record_both(custody,name,CROSSING_REFUSED_CLASS,predecessor,successor,evidence,carried,epoch)
     return {**recorded,"disposition":disposition}
 
 def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], registry:dict[str,Any], *,
@@ -794,10 +876,15 @@ def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], r
         if (any(marker in reason for marker in CUSTODY_REFUSALS)
                 or (service or {}).get("boundary_role")==CAPABILITY_INGRESS_ROLE):
             raise
-        disposition=refusal_disposition(reason)
-        recorded=record_refusal(custody,item,reason,disposition,service=service,epoch=epoch)
-        return {"status":"REFUSED","disposition":disposition,"failed_predicate":reason,
-                "packet_id":item["frame"].get("packet_id")},recorded
+        actionable=getattr(exc,"record",None) if isinstance(getattr(exc,"record",None),dict) else None
+        # The stored disposition is the returned one: a refusal that states its
+        # own disposition is recorded and returned as that disposition.
+        disposition=actionable["disposition"] if actionable else refusal_disposition(reason)
+        recorded=record_refusal(custody,item,reason,disposition,service=service,epoch=epoch,actionable=actionable)
+        refused={"status":"REFUSED","disposition":disposition,"failed_predicate":reason,
+                 "packet_id":item["frame"].get("packet_id")}
+        if actionable: refused.update({key:actionable[key] for key in SIX_FIELDS})
+        return refused,recorded
     return result,record_crossing(custody,item,result,service=service,epoch=epoch)
 
 def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_root:Path|None=None,
