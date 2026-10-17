@@ -301,7 +301,8 @@ jobs:
           PY
             canonical=$(cat "$out/canonical_manifest_sha256")
             recorded=$(python "$COMPONENT/organization_ledger_readback.py" \
-              --location "$STEGVERSE_ORG_LEDGER_ROOT" --recorded-for "$canonical")
+              --location "$STEGVERSE_ORG_LEDGER_ROOT" --repository-namespace "$REPO_LEDGER_NAMESPACE" \
+              --recorded-for "$canonical")
             if [ -n "$recorded" ]; then
               echo "already recorded as $recorded; one manifest is one transition, nothing appended"
               python -c 'import json,sys; json.dump({"disposition":"ALREADY_RECORDED","organization_receipt_sha256":sys.argv[1],"canonical_manifest_sha256":sys.argv[2]}, open(sys.argv[3],"w"))' \

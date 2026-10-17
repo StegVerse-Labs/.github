@@ -466,6 +466,17 @@ def declaration(_receipts, _tip, **override):
                                          "legacy_pre_retention_segment": segment}}
 
 
+NS = "repository-ledger/formalism-tests/.github"
+REPO_CONTRACT = {"repository_ledger_location": {"namespace": NS}}
+
+
+def rb(location, **kwargs):
+    """The readback as the workflow calls it: with the contract's repository namespace."""
+    kwargs.setdefault("repository_namespace", NS)
+    kwargs.setdefault("repo_contract", REPO_CONTRACT)
+    return RB.readback(location, **kwargs)
+
+
 class LegacySegmentReadback(unittest.TestCase):
     """G4/H45: a declared pre-retention prefix is named as FAIL_CLOSED, never ALLOW, never re-minted."""
 
@@ -477,7 +488,7 @@ class LegacySegmentReadback(unittest.TestCase):
 
     def refused(self, g, contract, code, predicate=None):
         with self.assertRaises(RB.ReadbackRefused) as caught:
-            RB.readback(g.location, org_contract=contract)
+            rb(g.location, org_contract=contract)
         self.assertEqual(getattr(caught.exception, "failure_code", "ORGANIZATION_LEDGER_READBACK_FAILED"), code,
                          caught.exception.detail)
         if predicate:
@@ -488,13 +499,13 @@ class LegacySegmentReadback(unittest.TestCase):
         g, (legacy, _) = self.ledger("legacy", "retained")
         exc = self.refused(g, None, "ORGANIZATION_LEDGER_READBACK_FAILED", "SOURCE_RECEIPT_RETAINED_AND_VERIFIES")
         self.assertEqual(exc.detail, "None")
-        self.assertEqual(RB.readback(self.ledger("retained", "retained")[0].location)["disposition"], "ALLOW")
+        self.assertEqual(rb(self.ledger("retained", "retained")[0].location)["disposition"], "ALLOW")
         g2, _ = self.ledger("retained")
-        self.assertEqual(RB.readback(g2.location, org_contract={"organization": "x"})["disposition"], "ALLOW")
+        self.assertEqual(rb(g2.location, org_contract={"organization": "x"})["disposition"], "ALLOW")
 
     def test_declared_prefix_is_fail_closed_naming_exactly_it_and_the_rest_is_verified(self):
         g, (legacy, retained) = self.ledger("legacy", "retained")
-        r = RB.readback(g.location, org_contract=declaration([legacy], g.commits[0]))
+        r = rb(g.location, org_contract=declaration([legacy], g.commits[0]))
         self.assertEqual(r["disposition"], "FAIL_CLOSED")
         self.assertNotIn("ALLOW", r["disposition"])
         self.assertEqual(r["failure_code"], "DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED")
@@ -522,17 +533,30 @@ class LegacySegmentReadback(unittest.TestCase):
         before = g.git("rev-parse", LEDGER_REF)
         contract = Path(g.tmp.name) / "org-contract.json"
         contract.write_text(json.dumps(declaration([legacy], g.commits[0])))
-        out = subprocess.run([sys.executable, str(COMPONENT / "organization_ledger_readback.py"), "--location", g.location,
-                              "--org-contract", str(contract)], capture_output=True, text=True, cwd=g.tmp.name)
+        tl = Path(g.tmp.name) / ".stegverse/transition-ledger"
+        tl.mkdir(parents=True)
+        (tl / "contract.json").write_text(json.dumps(REPO_CONTRACT))
+        base = [sys.executable, str(COMPONENT / "organization_ledger_readback.py"), "--location", g.location,
+                "--org-contract", str(contract)]
+        out = subprocess.run(base + ["--repository-namespace", NS], capture_output=True, text=True, cwd=g.tmp.name)
         self.assertEqual(out.returncode, 1)
         r = json.loads(out.stdout)
-        self.assertEqual(r["failure_code"], "DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED")
+        # past the namespace guard, the CLI walks the repository chain; this ledger has none, so that
+        # refuses next (the full CLI path with a repository chain is the SV-011 parity harness)
+        self.assertEqual(r["failed_predicate"], "REPOSITORY_LEDGER_HEAD_PRESENT")
+        for args in ([], ["--repository-namespace", "repository-ledger/other/.github"]):
+            out = subprocess.run(base + args, capture_output=True, text=True, cwd=g.tmp.name)
+            self.assertEqual(out.returncode, 1)
+            r = json.loads(out.stdout)
+            self.assertEqual(r["failed_predicate"], "REPOSITORY_NAMESPACE_MATCHES_THE_CONTRACT")
+            for field in SIX:
+                self.assertTrue(r.get(field), field)
         self.assertEqual(g.git("rev-parse", LEDGER_REF), before)
         self.assertEqual(g.git("status", "--porcelain"), "")
 
     def test_redelivery_lookup_uses_the_verified_chain_of_a_declared_legacy_ledger(self):
         g, (legacy, retained) = self.ledger("legacy", "retained")
-        self.assertIsNone(RB.recorded_for(g.location, "0" * 64, declaration([legacy], g.commits[0])))
+        self.assertIsNone(RB.recorded_for(g.location, "0" * 64, declaration([legacy], g.commits[0]), NS, REPO_CONTRACT))
         with self.assertRaises(RB.ReadbackRefused):
             RB.recorded_for(g.location, "0" * 64)
 
@@ -575,7 +599,7 @@ class LegacySegmentReadback(unittest.TestCase):
         g, (first, second, _) = self.ledger("legacy", "legacy", "retained")
         self.refused(g, declaration([second], g.commits[1]), "LEGACY_SEGMENT_NOT_A_CONTIGUOUS_PREFIX")
         self.refused(g, declaration([second, first], g.commits[1]), "LEGACY_SEGMENT_NOT_A_CONTIGUOUS_PREFIX")
-        r = RB.readback(g.location, org_contract=declaration([first, second], g.commits[1]))
+        r = rb(g.location, org_contract=declaration([first, second], g.commits[1]))
         self.assertEqual(r["legacy_segment"]["receipts"], [first, second])
 
     def test_a_segment_overlapping_retention_is_refused(self):
@@ -595,7 +619,7 @@ class LegacySegmentReadback(unittest.TestCase):
         posix = Path(g.tmp.name) / "posix"
         shutil.copytree(g.repo, posix, ignore=shutil.ignore_patterns(".git"))
         with self.assertRaises(RB.ReadbackRefused) as caught:
-            RB.readback(str(posix), org_contract=declaration([legacy], g.commits[0]))
+            rb(str(posix), org_contract=declaration([legacy], g.commits[0]))
         self.assertEqual(caught.exception.failure_code, "LEGACY_SEGMENT_TIP_COMMIT_UNVERIFIABLE")
 
     def test_an_incomplete_or_malformed_declaration_is_refused(self):
@@ -680,7 +704,7 @@ class DeclarationDigestCanonicalization(unittest.TestCase):
         unsigned = {k: v for k, v in segment.items() if k != "declaration_sha256"}
         self.assertEqual(segment["declaration_sha256"], self.explicit(unsigned))
         self.assertNotEqual(self.explicit(unsigned), self.explicit(unsigned, ensure_ascii=True))
-        r = RB.readback(g.location, org_contract=contract)
+        r = rb(g.location, org_contract=contract)
         self.assertEqual(r["failure_code"], "DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED")
         self.assertEqual(r["legacy_segment"]["declaration_digest_canonicalization"], RB.CANONICAL_JSON)
         self.assertEqual(r["legacy_segment"]["findings"][0]["failed_predicate"], six["failed_predicate"])
@@ -688,7 +712,7 @@ class DeclarationDigestCanonicalization(unittest.TestCase):
         ascii_signed["source_receipt_retention"]["legacy_pre_retention_segment"]["declaration_sha256"] = \
             self.explicit(unsigned, ensure_ascii=True)
         with self.assertRaises(RB.ReadbackRefused) as caught:
-            RB.readback(g.location, org_contract=ascii_signed)
+            rb(g.location, org_contract=ascii_signed)
         self.assertEqual(caught.exception.failure_code, "LEGACY_SEGMENT_DECLARATION_DIGEST_MISMATCH")
 
     def test_sv011_aca5afd_declaration_digest_cross_checks(self):
@@ -698,6 +722,65 @@ class DeclarationDigestCanonicalization(unittest.TestCase):
         unsigned = {k: v for k, v in segment.items() if k != "declaration_sha256"}
         self.assertEqual(self.explicit(unsigned, ensure_ascii=True),
                          "sha256:ecf4aabe417364bb5768b0870fe8a0c61fadd8bf77a3c86b65480673c8608cec")
+
+
+class NamespaceAndEmptyLedger(unittest.TestCase):
+    """C6 fix (parity with SV-011 @8dcf892): a declared segment needs the contract's namespace; an empty ledger is HEAD_ABSENT."""
+
+    def ledger(self, *kinds):
+        g = GitLedger()
+        self.addCleanup(g.close)
+        return g, [g.append(k) for k in kinds]
+
+    def test_a_declared_segment_requires_the_contract_namespace(self):
+        g, (legacy, _) = self.ledger("legacy", "retained")
+        contract = declaration([legacy], g.commits[0])
+        for namespace, repo_contract in ((None, REPO_CONTRACT), ("", REPO_CONTRACT),
+                                         ("repository-ledger/other/.github", REPO_CONTRACT), (NS, {}),
+                                         (NS, {"repository_ledger_location": {"namespace": "repository-ledger/x/.github"}})):
+            with self.assertRaises(RB.ReadbackRefused) as caught:
+                RB.readback(g.location, org_contract=contract, repository_namespace=namespace, repo_contract=repo_contract)
+            self.assertEqual(caught.exception.failed_predicate, "REPOSITORY_NAMESPACE_MATCHES_THE_CONTRACT")
+            self.assertEqual(getattr(caught.exception, "failure_code", "ORGANIZATION_LEDGER_READBACK_FAILED"),
+                             "ORGANIZATION_LEDGER_READBACK_FAILED")
+        r = RB.readback(g.location, org_contract=contract, repository_namespace=NS, repo_contract=REPO_CONTRACT)
+        self.assertEqual(r["failure_code"], "DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED")
+        with self.assertRaises(RB.ReadbackRefused) as caught:
+            RB.recorded_for(g.location, "0" * 64, contract)
+        self.assertEqual(caught.exception.failed_predicate, "REPOSITORY_NAMESPACE_MATCHES_THE_CONTRACT")
+
+    def test_without_a_declaration_no_namespace_is_needed(self):
+        g, _ = self.ledger("retained", "retained")
+        self.assertEqual(RB.readback(g.location)["disposition"], "ALLOW")
+        self.assertEqual(RB.readback(g.location, org_contract={"organization": "x"})["disposition"], "ALLOW")
+
+    def test_an_empty_ledger_is_head_absent_with_the_head_present_predicate(self):
+        g = GitLedger()
+        self.addCleanup(g.close)
+        (g.repo / "README").write_text("x")
+        g.git("add", "-A")
+        g.git("commit", "-q", "-m", "empty")
+        g.git("update-ref", LEDGER_REF, "HEAD")
+        posix = Path(g.tmp.name) / "posix-empty"
+        posix.mkdir()
+        for location in (g.location, str(posix)):
+            with self.assertRaises(RB.ReadbackRefused) as caught:
+                RB.readback(location)
+            self.assertEqual(caught.exception.failure_code, "ORGANIZATION_LEDGER_HEAD_ABSENT")
+            self.assertEqual(caught.exception.failed_predicate, "ORGANIZATION_LEDGER_HEAD_PRESENT")
+            # recorded_for keys on the predicate: an empty ledger has recorded nothing
+            self.assertIsNone(RB.recorded_for(location, "0" * 64))
+        out = subprocess.run([sys.executable, str(COMPONENT / "organization_ledger_readback.py"), "--location", g.location],
+                             capture_output=True, text=True, cwd=g.tmp.name)
+        self.assertEqual(out.returncode, 1)
+        r = json.loads(out.stdout)
+        self.assertEqual((r["disposition"], r["failure_code"], r["failed_predicate"]),
+                         ("FAIL_CLOSED", "ORGANIZATION_LEDGER_HEAD_ABSENT", "ORGANIZATION_LEDGER_HEAD_PRESENT"))
+        for field in SIX:
+            self.assertTrue(r.get(field), field)
+        out = subprocess.run([sys.executable, str(COMPONENT / "organization_ledger_readback.py"), "--location", g.location,
+                              "--recorded-for", "0" * 64], capture_output=True, text=True, cwd=g.tmp.name)
+        self.assertEqual((out.returncode, out.stdout), (0, "\n"))
 
 
 if __name__ == "__main__":

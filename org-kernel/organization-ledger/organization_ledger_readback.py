@@ -27,7 +27,10 @@ segment ends (`ledger_tip_commit`). Every declared receipt must still self-hash
 and chain-link. Only SOURCE_RECEIPT_RETAINED_AND_VERIFIES is waived, and only
 for the declared receipts. The receipts after the segment are verified in full.
 A ledger whose only failures are its declared legacy receipts reads back as
-FAIL_CLOSED with failure_code DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED. That
+FAIL_CLOSED with failure_code DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED. A
+declared segment is read only with --repository-namespace equal to the
+consumer's contract.json namespace (REPOSITORY_NAMESPACE_MATCHES_THE_CONTRACT),
+so each legacy receipt's named source is checked on the repository chain. That
 result names exactly those receipts, each one as a six-field finding, and it is
 never ALLOW. Nothing is re-minted. Without a declaration, the readback is
 unchanged.
@@ -244,15 +247,48 @@ def self_verifies(document):
     return document.get("receipt_sha256") == sha(body)
 
 
-def readback(location, ingress_result=None, manifest=None, org_contract=None):
+NAMESPACE_PREDICATE = "REPOSITORY_NAMESPACE_MATCHES_THE_CONTRACT"
+
+
+def _require_contract_namespace(repository_namespace, repo_contract):
+    """A declared segment is read with the repository chain the consumer's contract.json names.
+
+    The legacy receipts' named sources can be checked only on the repository
+    chain, so a declared segment requires --repository-namespace, and it must be
+    the namespace in contract.json (repository_ledger_location.namespace). The
+    predicate name is SV-011's (PR #9 @8dcf892).
+    """
+    if repo_contract is None:
+        try:
+            repo_contract = common.load_contract("contract.json", ROOT)
+        except (OSError, ValueError):
+            repo_contract = {}
+    expected = ((repo_contract or {}).get("repository_ledger_location") or {}).get("namespace")
+    if not repository_namespace or repository_namespace != expected:
+        raise ReadbackRefused(
+            NAMESPACE_PREDICATE,
+            "a declared legacy segment is read with --repository-namespace equal to contract.json "
+            "repository_ledger_location.namespace (" + str(expected) + "); got " + str(repository_namespace),
+            next_attempt="rerun the readback with --repository-namespace " + str(expected)
+                         + "; nothing is written by it")
+
+
+def readback(location, ingress_result=None, manifest=None, org_contract=None,
+             repository_namespace=None, repo_contract=None):
     segment = legacy_segment_of(org_contract)
     if segment is not None:
         validate_legacy_segment(segment)
+        _require_contract_namespace(repository_namespace, repo_contract)
     failing = []
     store = open_store(parse_locator(location))
     head = store.get(HEAD_KEY)
     if head is None:
-        raise ReadbackRefused("ORGANIZATION_LEDGER_HEAD_PRESENT", "no HEAD at " + location)
+        # failure_code names the condition; the predicate stays HEAD_PRESENT,
+        # which recorded_for keys on and the writer's GENESIS path mirrors.
+        raise ReadbackRefused("ORGANIZATION_LEDGER_HEAD_PRESENT", "no HEAD at " + location,
+                              failure_code="ORGANIZATION_LEDGER_HEAD_ABSENT",
+                              next_attempt="an empty ledger opens only through a manifest-directed GENESIS append; "
+                                           "nothing is written by the readback")
     chain, cursor, seen = [], head.get("receipt_sha256"), set()
     while cursor is not None:
         if cursor in seen:
@@ -432,7 +468,8 @@ def repository_readback(location, namespace, organization_result, ingress_result
     return result
 
 
-def recorded_for(location, canonical_manifest_sha256, org_contract=None):
+def recorded_for(location, canonical_manifest_sha256, org_contract=None, repository_namespace=None,
+                 repo_contract=None):
     """The verified receipt already binding this manifest, or None.
 
     One manifest is one transition. A request submitted again is answered from
@@ -441,7 +478,8 @@ def recorded_for(location, canonical_manifest_sha256, org_contract=None):
     readback too; it never reports that ledger as ALLOW.
     """
     try:
-        verified = readback(location, org_contract=org_contract)
+        verified = readback(location, org_contract=org_contract, repository_namespace=repository_namespace,
+                            repo_contract=repo_contract)
     except ReadbackRefused as exc:
         if exc.failed_predicate == "ORGANIZATION_LEDGER_HEAD_PRESENT":
             return None
@@ -449,6 +487,22 @@ def recorded_for(location, canonical_manifest_sha256, org_contract=None):
     state = "sha256:" + canonical_manifest_sha256
     return next((r["receipt_sha256"] for r in verified["chain"]
                  if r["predecessor_org_state_sha256"] == state), None)
+
+
+def _refusal(location, exc):
+    return {
+        "schema": "stegverse.organization-ledger-readback/v1",
+        "location": location,
+        "disposition": "FAIL_CLOSED",
+        "failure_code": getattr(exc, "failure_code", "ORGANIZATION_LEDGER_READBACK_FAILED"),
+        "failed_predicate": getattr(exc, "failed_predicate", "ORGANIZATION_LEDGER_READS_BACK"),
+        "required_evidence_or_repair": getattr(exc, "detail", str(exc)),
+        "retry_entrypoint": RETRY,
+        "owning_existing_goal": GOAL,
+        "next_attempt": getattr(exc, "next_attempt",
+                                "fetch the ledger ref again and rerun the readback; nothing is written by it"),
+        "authority_effect": "NONE_READBACK_ONLY",
+    }
 
 
 def main():
@@ -472,30 +526,22 @@ def main():
     except ValueError:
         org_contract = {"source_receipt_retention": "unreadable org-contract.json"}
     if args.recorded_for:
-        print(recorded_for(args.location, args.recorded_for, org_contract) or "")
+        try:
+            print(recorded_for(args.location, args.recorded_for, org_contract, args.repository_namespace) or "")
+        except ReadbackRefused as exc:
+            print(json.dumps(_refusal(args.location, exc), indent=2, sort_keys=True), file=sys.stderr)
+            return 1
         return 0
     ingress = json.loads(args.ingress_result.read_text()) if args.ingress_result else None
     manifest = json.loads(args.manifest.read_text()) if args.manifest else None
     try:
-        result = readback(args.location, ingress, manifest, org_contract)
+        result = readback(args.location, ingress, manifest, org_contract, args.repository_namespace)
         code = 0 if result["disposition"] == "ALLOW" else 1
         if args.repository_namespace:
             result["repository_ledger"] = repository_readback(
                 args.location, args.repository_namespace, result, ingress)
     except (ReadbackRefused, ValueError, RuntimeError, FileNotFoundError) as exc:
-        result, code = {
-            "schema": "stegverse.organization-ledger-readback/v1",
-            "location": args.location,
-            "disposition": "FAIL_CLOSED",
-            "failure_code": getattr(exc, "failure_code", "ORGANIZATION_LEDGER_READBACK_FAILED"),
-            "failed_predicate": getattr(exc, "failed_predicate", "ORGANIZATION_LEDGER_READS_BACK"),
-            "required_evidence_or_repair": getattr(exc, "detail", str(exc)),
-            "retry_entrypoint": RETRY,
-            "owning_existing_goal": GOAL,
-            "next_attempt": getattr(exc, "next_attempt",
-                                    "fetch the ledger ref again and rerun the readback; nothing is written by it"),
-            "authority_effect": "NONE_READBACK_ONLY",
-        }, 1
+        result, code = _refusal(args.location, exc), 1
     text = json.dumps(result, indent=2, sort_keys=True)
     if args.out:
         args.out.write_text(text + "\n")
