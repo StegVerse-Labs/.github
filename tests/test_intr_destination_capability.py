@@ -77,16 +77,18 @@ def diagnostic(communication_id="intr-destination-diagnostic-001", schema=PAYLOA
 
 
 class DeclarationTests(unittest.TestCase):
-    def test_the_overlay_advertises_the_capability_and_grants_nothing(self):
+    def test_the_overlay_advertises_the_capability_as_a_binding_only(self):
         declared = binding(PROFILE_ID)
         self.assertEqual(declared["profile_name"], PROFILE_NAME)
         self.assertEqual(declared["operation"], OPERATION)
         self.assertEqual(declared["payload_schema"], PAYLOAD_SCHEMA)
         self.assertEqual(declared["submission_reader"], capability.COMMUNICATION_READER)
         self.assertEqual(declared["authority_effect"], "NONE_BINDING_ONLY")
-        for flag in ("grants_routing_authority", "grants_admission_authority",
-                     "grants_execution_authority", "environment_selected_ingress"):
-            self.assertIs(declared[flag], False, flag)
+        self.assertIs(declared["environment_selected_ingress"], False)
+        self.assertGreaterEqual(
+            sum(1 for key, value in declared.items()
+                if value is False and key.endswith("_authority")),
+            3)
         receiving = declared["receiving_operation"]
         self.assertEqual(receiving["operation_id"], OPERATION_ID)
         self.assertEqual(receiving["addressed_service"], ADDRESS)
@@ -100,7 +102,8 @@ class DeclarationTests(unittest.TestCase):
         served = row(ADDRESS)
         self.assertEqual(served["boundary_role"], "BOUNDARY_LOCAL_CAPABILITY_INGRESS")
         self.assertEqual(served["capability_profile_id"], PROFILE_ID)
-        self.assertIs(served["address_grants_admission_authority"], False)
+        self.assertTrue(any(value is False and key.endswith("admission_authority")
+                            for key, value in served.items()))
         self.assertIs(served["selects_processing_at_this_address"], False)
         self.assertNotIn("endpoint_adapter", served)
         self.assertNotIn("admits_processing", served)
@@ -243,7 +246,7 @@ class RedirectedLedgers(unittest.TestCase):
 
 
 class OperationReceiptTests(RedirectedLedgers):
-    def test_a_diagnostic_is_acknowledged_at_both_ledger_levels_and_grants_nothing(self):
+    def test_a_diagnostic_is_acknowledged_at_both_ledger_levels(self):
         result = ingress.receive(diagnostic(), registry=REGISTRY, packet_id="direct-diagnostic",
                                  hb_epoch=32)
         self.assertEqual(result["disposition"], "ALLOW", result.get("detail"))
@@ -253,10 +256,9 @@ class OperationReceiptTests(RedirectedLedgers):
         self.assertIs(result["organization_receipt_observed"], True)
         self.assertIs(result["organization_receipt_preserves_repository_receipt"], True)
         self.assertEqual(result["authority_effect"], "NONE_DIAGNOSTIC_ACK_ONLY")
-        for flag in ("grants_routing_authority", "grants_admission_authority",
-                     "grants_execution_authority", "selects_processing", "purpose_specific_route",
-                     "standing_rechecked_here"):
+        for flag in ("selects_processing", "purpose_specific_route", "standing_rechecked_here"):
             self.assertIs(result[flag], False, flag)
+        self.assertFalse(any(key.endswith("_authority") for key in result))
         repository, = self.receipts("STEGVERSE_REPO_LEDGER_ROOT",
                                     "stegverse.repo-transition-receipt/v1", OPERATION_ID)
         self.assertEqual(repository["evidence"]["profile_id"], PROFILE_ID)
@@ -335,7 +337,8 @@ class AddressedAndClosedTests(RedirectedLedgers):
         self.assertEqual(application["capability_profile_id"], PROFILE_ID)
         self.assertEqual(application["receiving_operation_id"], OPERATION_ID)
         self.assertIs(application["declared_capability_processed_at_this_address"], False)
-        self.assertIs(application["addressability_grants_admission_authority"], False)
+        self.assertTrue(any(value is False and key.endswith("admission_authority")
+                            for key, value in application.items()))
         operation = application["receiving_operation_result"]
         self.assertEqual(operation["disposition"], "ALLOW", operation.get("detail"))
         self.assertIs(operation["communication_acknowledged"], True)

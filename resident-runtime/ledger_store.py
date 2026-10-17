@@ -14,8 +14,9 @@ keys onto whatever substrate it has. `PosixLedgerStore` keeps today's exact
 behaviour, so the filesystem remains a first-class implementation rather than
 a legacy path, and a key-value store is a sibling rather than a rewrite.
 
-Keys are `HEAD`, `receipts/<hex>` and `source-receipts/<hex>`. Nothing here
-grants authority.
+Keys are `HEAD`, `receipts/<hex>` and `source-receipts/<hex>`. Authority and
+Time are constraint variables carried on a receipt. A disposition is
+transition evidence.
 
 `GitLedgerStore` is the durable sibling on the canonical Git substrate: keys
 are files on one dedicated ledger ref, and an append is one commit published
@@ -38,7 +39,7 @@ import os
 import subprocess
 import tempfile
 from contextlib import contextmanager
-from pathlib import Path
+from pathlib import Path, PurePath
 
 HEAD_KEY = "HEAD.json"
 RECEIPT_PREFIX = "receipts/"
@@ -224,6 +225,108 @@ APPEND_RETRY_ENTRYPOINT = "resident-runtime/aggregate_repo_transition.py::aggreg
 PROPAGATION_RETRY_ENTRYPOINT = "resident-runtime/ledger_store.py::GitLedgerStore.propagate"
 MATERIALIZATION_RETRY_ENTRYPOINT = "resident-runtime/ledger_store.py::GitLedgerStore.materialize"
 FORK_PREDICATE = "ORGANIZATION_LEDGER_FORK_DETECTED"
+GIT_SCHEME = "git+"
+
+
+class LedgerLocatorInvalid(ValueError):
+    """A supplied ledger location that names no store. Nothing is opened or written."""
+
+    failed_predicate = "LEDGER_LOCATOR_INVALID"
+
+    def __init__(self, locator, detail):
+        super().__init__("ledger_locator_invalid: " + detail + ": " + repr(locator))
+        self.locator = locator
+        self.detail = detail
+
+
+class GitLocator:
+    """A ledger addressed as `git+<repository>#<ref>`, optionally `:<namespace>`.
+
+    The namespace is a key prefix inside that ref, not a second ref. The
+    repository chain lives in its own subtree of the designated organization
+    ledger ref, so one fast-forward push publishes both and neither history
+    is rewritten.
+    """
+
+    def __init__(self, repository, ref, namespace=None):
+        self.repository = Path(repository)
+        self.ref = ref
+        self.namespace = namespace
+
+    def __str__(self):
+        text = GIT_SCHEME + str(self.repository) + "#" + self.ref
+        return text + ":" + self.namespace if self.namespace else text
+
+
+def _require_ref(ref, locator):
+    if not isinstance(ref, str) or not ref.startswith("refs/"):
+        raise LedgerLocatorInvalid(locator, "ref_must_be_fully_qualified_under_refs")
+    checked = subprocess.run(["git", "check-ref-format", ref], capture_output=True)
+    if checked.returncode != 0:
+        raise LedgerLocatorInvalid(locator, "ref_is_not_a_valid_git_ref")
+    return ref
+
+
+# A namespace may not begin with a key the un-namespaced ledger writes, or the
+# subtree would land inside the organization chain instead of beside it.
+_TOP_LEVEL_KEYS = (
+    HEAD_KEY, RECEIPT_PREFIX.rstrip("/"), SOURCE_PREFIX.rstrip("/"),
+    "BATCH_HEAD.json", "batches",
+)
+
+
+def _require_namespace(namespace, locator):
+    """A namespace is a relative tree path that does not escape or shadow the ledger."""
+    if not isinstance(namespace, str) or not namespace:
+        raise LedgerLocatorInvalid(locator, "namespace_is_not_a_relative_normalized_tree_path")
+    segments = namespace.split("/")
+    if any(segment in ("", ".", "..") or any(c.isspace() or c in ":\\" for c in segment)
+           for segment in segments):
+        raise LedgerLocatorInvalid(locator, "namespace_is_not_a_relative_normalized_tree_path")
+    if segments[0] in _TOP_LEVEL_KEYS:
+        raise LedgerLocatorInvalid(locator, "namespace_may_not_shadow_a_ledger_key")
+    return namespace
+
+
+def parse_locator(value):
+    """The store location a supplied value names.
+
+    `git+<repository>#<ref>` names a git ref. An optional `:<namespace>` after
+    the ref names a subtree of that same ref. Anything else is a filesystem
+    path, resolved the way ledger roots have always been resolved.
+    """
+    if isinstance(value, GitLocator):
+        return value
+    if not isinstance(value, PurePath):
+        text = str(value)
+        if text.startswith(GIT_SCHEME):
+            repository, separator, ref = text[len(GIT_SCHEME):].rpartition("#")
+            if not separator or not repository or not ref:
+                raise LedgerLocatorInvalid(text, "git_locator_requires_repository_and_ref")
+            ref, has_namespace, namespace = ref.partition(":")
+            if has_namespace and not namespace:
+                raise LedgerLocatorInvalid(text, "namespace_separator_without_a_namespace")
+            return GitLocator(
+                Path(repository).expanduser().resolve(),
+                _require_ref(ref, text),
+                _require_namespace(namespace, text) if has_namespace else None,
+            )
+    return Path(value).expanduser().resolve()
+
+
+def _resolve_git_dir(repository):
+    """The git directory a checkout or a bare repository names."""
+    repository = Path(repository)
+    if (repository / "HEAD").is_file() and (repository / "objects").is_dir():
+        return repository
+    dotgit = repository / ".git"
+    if dotgit.is_dir():
+        return dotgit
+    if dotgit.is_file():
+        pointer = dotgit.read_text(encoding="utf-8").strip()
+        if pointer.startswith("gitdir:"):
+            return (repository / pointer[len("gitdir:"):].strip()).resolve()
+    raise LedgerLocatorInvalid(str(repository), "location_is_not_a_git_repository")
 
 
 class LedgerStoreRefused(ValueError):
@@ -293,7 +396,7 @@ class GitLedgerStore:
 
     kind = "GIT_REF"
 
-    def __init__(self, git_dir, ref, *, remote=None, custody=None):
+    def __init__(self, git_dir, ref, *, remote=None, custody=None, namespace=None):
         dedicated = isinstance(ref, str) and (
             ref == DESIGNATED_LEDGER_REF or (ref.startswith(LEDGER_REF_PREFIX) and ref != LEDGER_REF_PREFIX))
         if not dedicated:
@@ -307,6 +410,7 @@ class GitLedgerStore:
         self.ref = ref
         self.remote = remote or None
         self.custody = custody
+        self.namespace = _require_namespace(namespace, ref) if namespace else None
         self._held = 0
         self._pinned = None
         if self._git("check-ref-format", ref, check=False).returncode != 0:
@@ -338,9 +442,13 @@ class GitLedgerStore:
                 detail=str(self.git_dir),
             )
 
+    def _tree_key(self, key):
+        """The path in the ref's tree. A namespace is a prefix, not another ref."""
+        return self.namespace + "/" + key if self.namespace else key
+
     def locator(self, key):
         """The key on the ledger ref; never a host path or a credentialed URL."""
-        return self.ref + ":" + key
+        return self.ref + ":" + self._tree_key(key)
 
     def _tip(self):
         """The committed tip of the local ledger ref, or None before genesis."""
@@ -488,7 +596,7 @@ class GitLedgerStore:
     def _read(self, tip, key):
         if tip is None:
             return None
-        found = self._git("rev-parse", "--verify", "-q", tip + ":" + key, check=False)
+        found = self._git("rev-parse", "--verify", "-q", tip + ":" + self._tree_key(key), check=False)
         if found.returncode != 0:
             return None
         blob = found.stdout.decode().strip()
@@ -504,8 +612,17 @@ class GitLedgerStore:
         tip = self._snapshot()
         if tip is None:
             return set()
-        listed = self._git("ls-tree", "--name-only", tip, "--", prefix.rstrip("/") + "/")
-        return {name for name in listed.stdout.decode().splitlines()
+        directory = self._tree_key(prefix.rstrip("/"))
+        listed = self._git("ls-tree", "--name-only", tip, "--", directory + "/")
+        skip = len(self.namespace) + 1 if self.namespace else 0
+        names = []
+        for name in listed.stdout.decode().splitlines():
+            if skip:
+                if not name.startswith(self.namespace + "/"):
+                    continue
+                name = name[skip:]
+            names.append(name)
+        return {name for name in names
                 if name.startswith(prefix) and name.endswith(".json") and "/" not in name[len(prefix):]}
 
     @contextmanager
@@ -608,7 +725,8 @@ class GitLedgerStore:
                 self._git("read-tree", parent, env=index)
             for key, value in entries:
                 blob = self._git("hash-object", "-w", "--stdin", data=self._encode(value)).stdout.decode().strip()
-                self._git("update-index", "--add", "--cacheinfo", "100644," + blob + "," + key, env=index)
+                self._git("update-index", "--add", "--cacheinfo",
+                          "100644," + blob + "," + self._tree_key(key), env=index)
             tree = self._git("write-tree", env=index).stdout.decode().strip()
         identity = {
             "GIT_AUTHOR_NAME": "stegverse-organization-ledger",
@@ -616,7 +734,7 @@ class GitLedgerStore:
             "GIT_COMMITTER_NAME": "stegverse-organization-ledger",
             "GIT_COMMITTER_EMAIL": "organization-ledger@stegverse.invalid",
         }
-        args = ["commit-tree", tree, "-m", "organization ledger append " + subject]
+        args = ["commit-tree", tree, "-m", "organization ledger append " + self._tree_key(subject)]
         if parent is not None:
             args[2:2] = ["-p", parent]
         return self._git(*args, env=identity).stdout.decode().strip()
@@ -629,6 +747,23 @@ class GitLedgerStore:
         moved = self._git("update-ref", self.ref, commit, parent or "", check=False)
         if moved.returncode != 0:
             raise lost_race(moved.stderr.decode(errors="replace").strip())
+
+
+def open_store(location):
+    """The store at a supplied location.
+
+    A git locator opens the designated ledger ref (custody PRIVATE, the only
+    custody this ref carries). An optional namespace keeps a second chain in a
+    subtree of that same ref. Any other location is a POSIX root.
+    """
+    if isinstance(location, GitLocator) or (
+            not isinstance(location, PurePath) and str(location).startswith(GIT_SCHEME)):
+        locator = location if isinstance(location, GitLocator) else parse_locator(location)
+        return GitLedgerStore(
+            _resolve_git_dir(locator.repository), locator.ref,
+            namespace=locator.namespace, custody=PRIVATE_CUSTODY,
+        )
+    return PosixLedgerStore(Path(location).expanduser().resolve())
 
 
 class StagedLedgerTransaction:

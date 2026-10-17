@@ -20,6 +20,17 @@ def lr():
  if o:return Path(o).expanduser().resolve()
  # Supplied, never derived from the host: see aggregate_repo_transition.ledger_root.
  raise ValueError("ledger_location_required_from_materializer: STEGVERSE_REPO_LEDGER_ROOT")
+def repository_store():
+ """The repository ledger store the materializer supplied.
+
+ A filesystem path stays a POSIX root. A `git+<repository>#<ref>:<namespace>`
+ locator is the repository subtree of the designated organization ledger ref:
+ same ref, same fast-forward, no second history.
+ """
+ o=os.getenv("STEGVERSE_REPO_LEDGER_ROOT")
+ if not o: raise ValueError("ledger_location_required_from_materializer: STEGVERSE_REPO_LEDGER_ROOT")
+ if str(o).startswith(ledger_store.GIT_SCHEME): return ledger_store.open_store(o)
+ return ledger_store.PosixLedgerStore(Path(o).expanduser().resolve())
 # A chain is only as good as the nodes it walks. A missing node used to end the
 # walk as though it were genesis, so a lookup answered "never recorded" and the
 # append minted a second receipt on top of a broken chain; a node edited in
@@ -88,7 +99,7 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
  from HEAD and raises `RepoLedgerChainBreak` on a missing or corrupted node,
  so no receipt is ever minted on top of a broken chain.
  """
- target=store or ledger_store.PosixLedgerStore(lr());target.initialize()
+ target=store or repository_store();target.initialize()
  for _attempt in range(128):
   expected_head=target.get(ledger_store.HEAD_KEY)
   prev=(expected_head or {}).get("receipt_sha256")
@@ -105,7 +116,11 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
   b={"schema":"stegverse.repo-transition-receipt/v1","repository":C["repository"],"transition_id":transition_id,"transition_class":transition_class,"predecessor_state_sha256":predecessor_state_sha256,"successor_state_sha256":successor_state_sha256,"evidence":evidence if evidence is not None else {},"authority_effect":authority_effect,"hb_reference":kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference(),"previous_receipt_sha256":prev}
   dg=sha(b);r={**b,"receipt_sha256":dg};key=ledger_store.receipt_key(dg)
   new_head={"repository":C["repository"],"receipt_sha256":dg,"receipt_path":target.locator(key)}
-  if target.append_transaction(key,r,expected_head,new_head):
+  try: published=target.append_transaction(key,r,expected_head,new_head)
+  except ledger_store.LedgerStoreRefused as exc:
+   if exc.failed_predicate!=ledger_store.CAS_PREDICATE: raise
+   published=False
+  if published:
    return r
  raise SystemExit("REPO_LEDGER_APPEND_CONTENTION_EXHAUSTED")
 
