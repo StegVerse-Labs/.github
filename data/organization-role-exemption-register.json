@@ -335,6 +335,20 @@
       "current_disposition": "FAIL_CLOSED",
       "consequence_committed": false,
       "authority_effect": "NONE_REGISTER_ONLY"
+    },
+    {
+      "surface": "StegVerse-Labs/Site:assets/workspace-node-binding.js (Personal KV query node binding)",
+      "owning_existing_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "failure_code": "DEVICE_INDEPENDENT_VERIFIED_USER_QUERY_PATH_NOT_SUPPLIED",
+      "failed_predicate": "WU1_PERSONAL_PATH_DEVICE_LOCAL_REGISTRATION_PRECONDITION",
+      "why_manifest_bound_state_transition_is_not_yet_possible": "the Personal WorkSpace DEVICE_KV request carries a node-bound authority reference (stegos-node://<node_id>), so the page can bind the query only to a device-local StegOS node registration or an admitted device-continuity recovery result (StegVerse-Labs/StegOS#347). With neither, it fails closed (DEVICE_CONTINUITY_RECOVERY_RESULT_NOT_OBSERVED) instead of transitioning. Node identity is a transport binding, never a user principal, and the page never mints one. Source review only (SOURCE_IMPLEMENTED, StegVerse-Labs/Site@15f9cb0); no runtime attempt was made or is claimed.",
+      "required_evidence_or_repair": "the KV/SKAP owner (StegVerse-Labs/continuity-vault-kit) supplies a device-independent verified-user continuity query path, so the WorkSpace request binds to the KV/SKAP-verified principal through Interlock/InTr rather than to a device-local node registration (WorkSpace handoff W1); the Site binding then drops the device-local precondition.",
+      "retry_entrypoint": "StegVerse-Labs/Site:assets/workspace-node-binding.js resolve(); re-evaluated by StegVerse-Labs/Site tests/workspace-kv-binding.test.cjs and tests/workspace-device-continuity.test.cjs",
+      "next_attempt": "WU1 assignment after STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 moves PROPOSED to ACTIVE under authenticated admission and a WorkerCoordinator claim and fence (Site#1509 B2).",
+      "expires_or_review_on": "2026-11-17",
+      "current_disposition": "FAIL_CLOSED",
+      "consequence_committed": false,
+      "authority_effect": "NONE_REGISTER_ONLY"
     }
   ],
   "authority_effect": "NONE_REGISTER_ONLY"
