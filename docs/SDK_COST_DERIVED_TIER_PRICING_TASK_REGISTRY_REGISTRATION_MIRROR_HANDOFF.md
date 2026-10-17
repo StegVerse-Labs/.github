@@ -35,7 +35,16 @@ COSV inputs: the 3 unassigned work items are the cost-component registry module,
 
 ## Source state
 
-SDK main `ba5bbf42eabec6a6ae3b0efdff7c683967a79083`: `stegverse/tier_pricing.py` present (merged via #527); no cost-component registry module yet. SDK #538 state was not independently verified by this registration. Source merge does not prove runtime.
+SDK main `ba5bbf42eabec6a6ae3b0efdff7c683967a79083`: `stegverse/tier_pricing.py` present (merged via #527). There is no cost-component registry module on SDK main.
+
+2026-10-17, `REPORTED_BY_SDK_LANE` (reported by the SDK#484 parent session; this registration did not read the SDK repository): StegVerse-org/StegVerse-SDK PR #538 is open at head `00fc13aa2524051292616fe3432c0c9ce05a1765`, with 21 checks success and `deploy` and `live` skipped. It adds `stegverse/cost_registry.py` and the `C_pricing = max(C_estimated, C_authentically_observed)` rule in `stegverse/tier_pricing.py`.
+
+Predicate status:
+
+- Predicates 1–3 are source-implemented on that PR head. They are not merged and not satisfied.
+- Predicate 4 remains open.
+
+Source merge does not prove runtime.
 
 ## Adjacent tasks
 
