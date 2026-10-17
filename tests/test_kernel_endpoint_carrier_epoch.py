@@ -96,6 +96,10 @@ class CarrierEpochForwardingTests(unittest.TestCase):
         argv = self.run_adapter(supplied(1000))["argv"]
         self.assertEqual(argv[argv.index("--hb-epoch") + 1], "1000")
 
+    def test_a_leading_zero_epoch_is_forwarded_as_its_value(self):
+        argv = self.run_adapter(dict(supplied(1000), epoch="0033"))["argv"]
+        self.assertEqual(argv[argv.index("--hb-epoch") + 1], "33")
+
     def test_a_digit_string_epoch_is_forwarded_as_supplied(self):
         reference = dict(supplied(417798851), epoch="417798851")
         argv = self.run_adapter(reference)["argv"]
@@ -171,7 +175,8 @@ class SharedEpochValidatorTests(unittest.TestCase):
 
     def test_the_rule(self):
         self.assertEqual(K.supplied_epoch_failure(None)[0], "HB_EPOCH_NOT_SUPPLIED")
-        for epoch in (32, 33, "33", "0032", 10**12):
+        # As TVC#517 require_hb_epoch: [0-9]+ fullmatch, then int() >= 32.
+        for epoch in (32, 33, "33", "0032", "0033", 10**12):
             with self.subTest(epoch=epoch):
                 self.assertIsNone(K.supplied_epoch_failure(epoch))
         for epoch in ("+33", " 33", "3_3", True, False, 33.0, "33.0", "", 31, "31", -33):
