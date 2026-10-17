@@ -55,3 +55,15 @@ A fresh org opens its chain through the InTr self-closure (`genesis_mode: SELF_C
 ## Version
 
 The kernel-manifest gains a module entry. The proposed `kernel_version` bump to 1.4.0 is left to the owner, because `kernel.py` and `kernel-manifest.json` move together.
+
+## Legacy segments (G4/H45)
+A ledger can declare the receipts it wrote before source retention began in `org-contract.json`, under `source_receipt_retention.legacy_pre_retention_segment`. The declaration has these members:
+- `receipts`
+- `waived_predicate` = `SOURCE_RECEIPT_RETAINED_AND_VERIFIES`
+- `six_fields`
+- `ledger_tip_commit`
+- `re_minted: false`
+- `reported_as_source_retained: false`
+- `declaration_sha256`
+
+The readback still self-hashes and chain-links every receipt, and it verifies every receipt after the segment in full. It waives only source retention, and only for the declared contiguous prefix from genesis. The whole-ledger result is still `FAIL_CLOSED` `DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED`, never ALLOW, with one six-field finding per declared receipt. Nothing is re-minted. Undeclared failures, declarations that waive integrity checks, segments that are not a prefix, segments that overlap retention, and edited declarations are each refused six-field. Component consumers put the declaration in the parameter file. The generator carries it into `org-contract.json` and validates it.

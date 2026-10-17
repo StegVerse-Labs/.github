@@ -110,7 +110,24 @@ def contracts(p):
         orgc["organization_record_service_declared"] = bool(p["organization_record_service_declared"])
         if not p["organization_record_service_declared"]:
             orgc["propagation_submission_disposition"] = "DENY_ORGANIZATION_RECORD_SERVICE_NOT_DECLARED_FOR_THE_PROPAGATION_TARGET"
+    if "source_receipt_retention" in p:
+        # A legacy-segment declaration (G4/H45) is carried verbatim, after the
+        # readback's own static checks, so --check binds it to the parameters.
+        rb = _readback()
+        try:
+            segment = rb.legacy_segment_of({"source_receipt_retention": p["source_receipt_retention"]})
+            if segment is not None:
+                rb.validate_legacy_segment(segment)
+        except rb.ReadbackRefused as e:
+            raise Refused(e.failure_code, e.failed_predicate, e.detail)
+        orgc["source_receipt_retention"] = p["source_receipt_retention"]
     return {"contract.json": repo, "org-contract.json": orgc}
+
+def _readback():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("organization_ledger_readback_for_generator",
+                                                  Path(__file__).resolve().parent / "organization_ledger_readback.py")
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module); return module
 
 def render(doc):
     return json.dumps(doc, indent=2, ensure_ascii=False) + "\n"

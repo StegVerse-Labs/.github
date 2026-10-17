@@ -19,12 +19,12 @@
   "modules": {
     "aggregate_repo_transition.py": "82400716bf86fa02e2a7af9ea6939cbb574d7196",
     "emit.py": "31c5b58b85ca98093a5a81e475bb9954150cd222",
-    "generate_ledger_contracts.py": "889b9dacb55ffdab15566d869319e550eac3eb5a",
+    "generate_ledger_contracts.py": "5f6f0f331039074fd80626182419cc780b4faa39",
     "ledger_common.py": "f418c373720a3f3754d4588ec9843712d7a695c0",
     "ledger_store.py": "3937db5292ba36a30e220e283269523154e89f5c",
-    "organization_ledger_readback.py": "2a1034d2ee1a1511f5ca8581f987d4ac285d5c4b",
+    "organization_ledger_readback.py": "2395a015c4b649093fb471ca3d373d02b38dacc0",
     "propagate_repository_receipts.py": "d97eb05bb570db614a1e4947c81c17075b255aee",
-    "schemas/stegverse.organization-ledger-parameters.v1.schema.json": "368995d612acba2b44d1ed0ba8df11a9329b4cca",
+    "schemas/stegverse.organization-ledger-parameters.v1.schema.json": "bf3808f13f351870f9c207375db15d11e9e7e8fb",
     "schemas/stegverse.organization-transition-request.v1.schema.json": "7a3f53f8230bc0a203c3092492fbab14d8432d90",
     "verify_component_manifest.py": "a901b775104a305d09f3d229487f1470f36bfd02"
   }

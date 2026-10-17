@@ -379,5 +379,257 @@ class ReadbackAcceptsBothCommunicationIdForms(unittest.TestCase):
         self.assertTrue(r["every_receipt_verifies_against_its_body"])
 
 
+def _load_readback():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("readback_under_test", COMPONENT / "organization_ledger_readback.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+RB = _load_readback()
+LEDGER_REF = "refs/stegverse/organization-ledger"
+SEGMENT_SIX = {
+    "failure_code": "SOURCE_RECEIPT_RETAINED_AND_VERIFIES",
+    "failed_predicate": "EVERY_ORGANIZATION_RECEIPT_RETAINS_AND_VERIFIES_ITS_SOURCE_RECEIPT",
+    "required_evidence_or_repair": "forward retention; legacy receipts are never re-minted",
+    "retry_entrypoint": "org-kernel/organization-ledger/organization_ledger_readback.py::main",
+    "owning_existing_goal": GOAL,
+    "next_attempt": "receipts appended after retention began are retained and checked",
+}
+
+
+class GitLedger:
+    """A git organization ledger built receipt by receipt; one commit per append. No writer, no clock."""
+
+    def __init__(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.repo = Path(self.tmp.name) / "ledger"
+        self.repo.mkdir()
+        self.git("init", "-q")
+        self.git("checkout", "-q", "--orphan", "ledger")
+        self.head, self.commits, self.n = None, [], 0
+
+    def git(self, *args):
+        env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@invalid", GIT_COMMITTER_NAME="t",
+                   GIT_COMMITTER_EMAIL="t@invalid", GIT_AUTHOR_DATE="2026-10-17T00:00:00Z",
+                   GIT_COMMITTER_DATE="2026-10-17T00:00:00Z")
+        return subprocess.run(["git", "-C", str(self.repo), *args], check=True, capture_output=True,
+                              text=True, env=env).stdout.strip()
+
+    def _write(self, key, doc):
+        path = self.repo / key
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n")
+
+    def append(self, kind, previous="HEAD", tamper=False):
+        """kind: legacy (names repo_receipt_sha256 only), retained, or unretained (names a source it does not keep)."""
+        self.n += 1
+        source_body = {"schema": "stegverse.repo-transition-receipt/v1", "transition_id": "t-%d" % self.n}
+        source = {**source_body, "receipt_sha256": RB.sha(source_body)}
+        body = {"schema": "stegverse.organization-transition-receipt/v1", "organization": "formalism-tests",
+                "source_transition_id": "t-%d" % self.n,
+                "previous_receipt_sha256": self.head if previous == "HEAD" else previous}
+        if kind == "legacy":
+            body["repo_receipt_sha256"] = source["receipt_sha256"]
+        else:
+            body["source_transition_sha256"] = source["receipt_sha256"]
+            body["repo_receipt_sha256"] = source["receipt_sha256"]
+            if kind == "retained":
+                self._write("source-receipts/" + source["receipt_sha256"].split(":")[1] + ".json", source)
+        receipt = {**body, "receipt_sha256": RB.sha(body)}
+        if tamper:
+            receipt["source_transition_id"] = "rewritten"
+        self._write("receipts/" + receipt["receipt_sha256"].split(":")[1] + ".json", receipt)
+        self._write("HEAD.json", {"receipt_sha256": receipt["receipt_sha256"]})
+        self.git("add", "-A")
+        self.git("commit", "-q", "-m", "append %d" % self.n)
+        self.git("update-ref", LEDGER_REF, "HEAD")
+        self.head = receipt["receipt_sha256"]
+        self.commits.append(self.git("rev-parse", "HEAD"))
+        return receipt["receipt_sha256"]
+
+    @property
+    def location(self):
+        return "git+%s#%s" % (self.repo, LEDGER_REF)
+
+    def close(self):
+        self.tmp.cleanup()
+
+
+def declaration(_receipts, _tip, **override):
+    segment = {"receipts": list(_receipts), "waived_predicate": RB.WAIVABLE_PREDICATE, "six_fields": dict(SEGMENT_SIX),
+               "ledger_tip_commit": _tip, "re_minted": False, "reported_as_source_retained": False}
+    segment.update(override)
+    segment["declaration_sha256"] = RB.declaration_digest(segment)
+    return {"source_receipt_retention": {"prefix": "source-receipts/", "receipt_field": "source_transition_sha256",
+                                         "legacy_pre_retention_segment": segment}}
+
+
+class LegacySegmentReadback(unittest.TestCase):
+    """G4/H45: a declared pre-retention prefix is named as FAIL_CLOSED, never ALLOW, never re-minted."""
+
+    def ledger(self, *kinds):
+        g = GitLedger()
+        self.addCleanup(g.close)
+        digests = [g.append(k) for k in kinds]
+        return g, digests
+
+    def refused(self, g, contract, code, predicate=None):
+        with self.assertRaises(RB.ReadbackRefused) as caught:
+            RB.readback(g.location, org_contract=contract)
+        self.assertEqual(getattr(caught.exception, "failure_code", "ORGANIZATION_LEDGER_READBACK_FAILED"), code,
+                         caught.exception.detail)
+        if predicate:
+            self.assertEqual(caught.exception.failed_predicate, predicate)
+        return caught.exception
+
+    def test_without_a_declaration_the_readback_is_unchanged(self):
+        g, (legacy, _) = self.ledger("legacy", "retained")
+        exc = self.refused(g, None, "ORGANIZATION_LEDGER_READBACK_FAILED", "SOURCE_RECEIPT_RETAINED_AND_VERIFIES")
+        self.assertEqual(exc.detail, "None")
+        self.assertEqual(RB.readback(self.ledger("retained", "retained")[0].location)["disposition"], "ALLOW")
+        g2, _ = self.ledger("retained")
+        self.assertEqual(RB.readback(g2.location, org_contract={"organization": "x"})["disposition"], "ALLOW")
+
+    def test_declared_prefix_is_fail_closed_naming_exactly_it_and_the_rest_is_verified(self):
+        g, (legacy, retained) = self.ledger("legacy", "retained")
+        r = RB.readback(g.location, org_contract=declaration([legacy], g.commits[0]))
+        self.assertEqual(r["disposition"], "FAIL_CLOSED")
+        self.assertNotIn("ALLOW", r["disposition"])
+        self.assertEqual(r["failure_code"], "DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED")
+        self.assertEqual(r["failed_predicate"], "SOURCE_RECEIPT_RETAINED_AND_VERIFIES")
+        for field in SIX:
+            self.assertTrue(r.get(field), field)
+        self.assertFalse(r["every_source_receipt_retained_and_verifies"])
+        self.assertTrue(r["every_receipt_verifies_against_its_body"])
+        self.assertTrue(r["every_chain_link_verified"])
+        seg = r["legacy_segment"]
+        self.assertEqual(seg["receipts"], [legacy])
+        self.assertEqual(seg["fully_verified_receipts"], [retained])
+        self.assertEqual([f["receipt_sha256"] for f in seg["findings"]], [legacy])
+        finding = seg["findings"][0]
+        self.assertEqual(finding["disposition"], "FAIL_CLOSED")
+        for field in SIX:
+            self.assertEqual(finding[field], SEGMENT_SIX[field])
+        self.assertFalse(finding["source_receipt_retained"])
+        self.assertFalse(seg["re_minted"])
+        self.assertIn(legacy, r["required_evidence_or_repair"])
+        self.assertEqual(r["chain_length"], 2)
+
+    def test_the_cli_exits_nonzero_with_six_fields_and_writes_nothing(self):
+        g, (legacy, _) = self.ledger("legacy", "retained")
+        before = g.git("rev-parse", LEDGER_REF)
+        contract = Path(g.tmp.name) / "org-contract.json"
+        contract.write_text(json.dumps(declaration([legacy], g.commits[0])))
+        out = subprocess.run([sys.executable, str(COMPONENT / "organization_ledger_readback.py"), "--location", g.location,
+                              "--org-contract", str(contract)], capture_output=True, text=True, cwd=g.tmp.name)
+        self.assertEqual(out.returncode, 1)
+        r = json.loads(out.stdout)
+        self.assertEqual(r["failure_code"], "DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED")
+        self.assertEqual(g.git("rev-parse", LEDGER_REF), before)
+        self.assertEqual(g.git("status", "--porcelain"), "")
+
+    def test_redelivery_lookup_uses_the_verified_chain_of_a_declared_legacy_ledger(self):
+        g, (legacy, retained) = self.ledger("legacy", "retained")
+        self.assertIsNone(RB.recorded_for(g.location, "0" * 64, declaration([legacy], g.commits[0])))
+        with self.assertRaises(RB.ReadbackRefused):
+            RB.recorded_for(g.location, "0" * 64)
+
+    def test_an_undeclared_failure_after_the_segment_is_refused(self):
+        g, (legacy, _, unretained) = self.ledger("legacy", "retained", "unretained")
+        exc = self.refused(g, declaration([legacy], g.commits[0]), "UNDECLARED_SOURCE_RECEIPT_RETENTION_FAILURE",
+                           "SOURCE_RECEIPT_RETAINED_AND_VERIFIES")
+        self.assertIn(unretained, exc.detail)
+        self.assertNotIn(legacy, exc.detail)
+
+    def test_a_declared_receipt_not_in_the_chain_is_refused(self):
+        g, (legacy, _) = self.ledger("legacy", "retained")
+        self.refused(g, declaration([legacy, "sha256:" + "c" * 64], g.commits[0]),
+                     "LEGACY_SEGMENT_NAMES_A_RECEIPT_NOT_IN_THE_CHAIN")
+
+    def test_a_declaration_may_never_waive_self_hash_or_linkage(self):
+        g, (legacy, _) = self.ledger("legacy", "retained")
+        for waived in ("ORGANIZATION_RECEIPT_VERIFIES_AGAINST_ITS_BODY", "ORGANIZATION_LEDGER_CHAIN_IS_COMPLETE",
+                       ["SOURCE_RECEIPT_RETAINED_AND_VERIFIES", "CHAIN_LINKAGE"]):
+            self.refused(g, declaration([legacy], g.commits[0], waived_predicate=waived),
+                         "LEGACY_SEGMENT_WAIVES_SELF_HASH_OR_LINKAGE")
+        self.refused(g, declaration([legacy], g.commits[0], waived_predicate="RECEIPT_IS_BOUND_TO_THE_SUBMITTED_MANIFEST"),
+                     "LEGACY_SEGMENT_WAIVES_A_NON_WAIVABLE_PREDICATE")
+
+    def test_declared_receipts_must_still_self_hash_and_link(self):
+        g = GitLedger()
+        self.addCleanup(g.close)
+        legacy = g.append("legacy", tamper=True)
+        g.append("retained")
+        self.refused(g, declaration([legacy], g.commits[0]), "ORGANIZATION_LEDGER_READBACK_FAILED",
+                     "ORGANIZATION_RECEIPT_VERIFIES_AGAINST_ITS_BODY")
+        g2 = GitLedger()
+        self.addCleanup(g2.close)
+        legacy2 = g2.append("legacy")
+        g2.append("retained", previous="sha256:" + "d" * 64)
+        self.refused(g2, declaration([legacy2], g2.commits[0]), "ORGANIZATION_LEDGER_READBACK_FAILED",
+                     "ORGANIZATION_LEDGER_CHAIN_IS_COMPLETE")
+
+    def test_a_segment_that_is_not_a_contiguous_prefix_is_refused(self):
+        g, (first, second, _) = self.ledger("legacy", "legacy", "retained")
+        self.refused(g, declaration([second], g.commits[1]), "LEGACY_SEGMENT_NOT_A_CONTIGUOUS_PREFIX")
+        self.refused(g, declaration([second, first], g.commits[1]), "LEGACY_SEGMENT_NOT_A_CONTIGUOUS_PREFIX")
+        r = RB.readback(g.location, org_contract=declaration([first, second], g.commits[1]))
+        self.assertEqual(r["legacy_segment"]["receipts"], [first, second])
+
+    def test_a_segment_overlapping_retention_is_refused(self):
+        g, (legacy, retained) = self.ledger("legacy", "retained")
+        self.refused(g, declaration([legacy, retained], g.commits[1]), "LEGACY_SEGMENT_OVERLAPS_RETENTION")
+        g2, (a, b, _) = self.ledger("legacy", "legacy", "retained")
+        # ends before its own ledger commit: the second legacy receipt would be undeclared history
+        self.refused(g2, declaration([a], g2.commits[1]), "LEGACY_SEGMENT_OVERLAPS_RETENTION")
+        self.refused(g2, declaration([a, b], g2.commits[2]), "LEGACY_SEGMENT_OVERLAPS_RETENTION")
+
+    def test_the_declaration_is_digest_and_ledger_bound(self):
+        g, (legacy, _) = self.ledger("legacy", "retained")
+        edited = declaration([legacy], g.commits[0])
+        edited["source_receipt_retention"]["legacy_pre_retention_segment"]["six_fields"]["next_attempt"] = "edited"
+        self.refused(g, edited, "LEGACY_SEGMENT_DECLARATION_DIGEST_MISMATCH")
+        self.refused(g, declaration([legacy], "e" * 40), "LEGACY_SEGMENT_TIP_COMMIT_NOT_ON_THE_LEDGER_REF")
+        posix = Path(g.tmp.name) / "posix"
+        shutil.copytree(g.repo, posix, ignore=shutil.ignore_patterns(".git"))
+        with self.assertRaises(RB.ReadbackRefused) as caught:
+            RB.readback(str(posix), org_contract=declaration([legacy], g.commits[0]))
+        self.assertEqual(caught.exception.failure_code, "LEGACY_SEGMENT_TIP_COMMIT_UNVERIFIABLE")
+
+    def test_an_incomplete_or_malformed_declaration_is_refused(self):
+        g, (legacy, _) = self.ledger("legacy", "retained")
+        pr9_shape = {"source_receipt_retention": {"legacy_pre_retention_segment": {
+            "receipts": [legacy], "ledger_tip_commit": g.commits[0], "re_minted": False,
+            "reported_as_source_retained": False}}}
+        exc = self.refused(g, pr9_shape, "LEGACY_SEGMENT_DECLARATION_INCOMPLETE")
+        self.assertIn("six_fields", exc.detail)
+        for override in ({"re_minted": True}, {"reported_as_source_retained": True},
+                         {"six_fields": {k: v for k, v in SEGMENT_SIX.items() if k != "next_attempt"}},
+                         {"receipts": []}, {"receipts": [legacy, legacy]}, {"ledger_tip_commit": "HEAD"}):
+            self.refused(g, declaration([legacy], g.commits[0], **override), "LEGACY_SEGMENT_DECLARATION_INVALID")
+
+    def test_generator_carries_a_valid_declaration_and_refuses_an_invalid_one(self):
+        segment = declaration(["sha256:" + "a" * 64], "f" * 40)["source_receipt_retention"]
+        c = Consumer(dict(PILOT, source_receipt_retention=segment))
+        self.addCleanup(c.close)
+        tl = c.root / ".stegverse/transition-ledger"
+        self.assertEqual(json.loads((tl / "org-contract.json").read_text())["source_receipt_retention"], segment)
+        args = [sys.executable, str(COMPONENT / "generate_ledger_contracts.py"), str(tl / "organization-ledger.parameters.json"), "--out-dir", str(tl), "--check"]
+        self.assertEqual(subprocess.run(args, capture_output=True).returncode, 0)
+        bad = json.loads(json.dumps(segment))
+        bad["legacy_pre_retention_segment"]["waived_predicate"] = "ORGANIZATION_RECEIPT_VERIFIES_AGAINST_ITS_BODY"
+        (tl / "bad.json").write_text(json.dumps(dict(PILOT, source_receipt_retention=bad)))
+        out = subprocess.run([sys.executable, str(COMPONENT / "generate_ledger_contracts.py"), str(tl / "bad.json"),
+                              "--out-dir", str(Path(c.tmp.name) / "unused")], capture_output=True, text=True)
+        self.assertEqual(out.returncode, 1)
+        refusal = json.loads(out.stdout.splitlines()[-1])
+        self.assertEqual(refusal["failure_code"], "LEGACY_SEGMENT_WAIVES_SELF_HASH_OR_LINKAGE")
+        for field in SIX:
+            self.assertTrue(refusal.get(field), field)
+        self.assertFalse((Path(c.tmp.name) / "unused").exists())
+
+
 if __name__ == "__main__":
     unittest.main()

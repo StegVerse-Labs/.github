@@ -21,7 +21,8 @@
     "genesis_mode": {"enum": ["SELF_CLOSURE_OPENS_CHAIN", "REQUEST_GENESIS"], "description": "H29 #18. Default SELF_CLOSURE_OPENS_CHAIN."},
     "owning_existing_goal": {"type": "string", "minLength": 1, "description": "H29 #19. Carried on every six-field non-ALLOW the component emits for this organization."},
     "test_modules": {"type": "array", "items": {"type": "string"}, "description": "H29 #20. Defaults to the component suite; per-org tests are additive only."},
-    "install_step": {"const": "none", "description": "H29 #21. Stdlib only. Request mode installs only the pinned SDK (an existing dependency)."}
+    "install_step": {"const": "none", "description": "H29 #21. Stdlib only. Request mode installs only the pinned SDK (an existing dependency)."},
+    "source_receipt_retention": {"type": "object", "description": "Optional (G4/H45). Carried verbatim into org-contract.json. legacy_pre_retention_segment declares the receipts written before source retention began: receipts (a contiguous prefix from genesis, in chain order), waived_predicate (exactly SOURCE_RECEIPT_RETAINED_AND_VERIFIES), six_fields, ledger_tip_commit (40-hex ledger commit whose HEAD is the last declared receipt), re_minted=false, reported_as_source_retained=false, declaration_sha256 (sha256 of the canonical segment without that member). The readback never reports such a ledger as ALLOW."}
   },
   "x-derived-never-typed": {
     "organization_slug": "H29 #2. kernel.organization_slug(organization). Must equal the federation row's org_control_service prefix.",
@@ -32,7 +33,7 @@
     "services.json <slug>.intr-destination entry": "H29 #14. Owned by InTr & Mesh."
   },
   "x-dispatch-inputs-never-stored": {
-    "hb_epoch": "H29 #15. Digits only, >= 32 (HB_ANCHOR_EPOCH). Required on every append, on both repo and org receipts. No clock fallback.",
+    "hb_epoch": "H29 #15. ASCII digits only, >= 32 (HB_ANCHOR_EPOCH). Required on every append, on both repo and org receipts. No clock fallback.",
     "communication_id": "H29 #16. Required for self-closure. Default convention intr-selfclose-<organization>-HB<hb_epoch>.",
     "packet_id": "H29 #17. Default intr-destination-self-closure:<communication_id>, which makes redelivery idempotent."
   }

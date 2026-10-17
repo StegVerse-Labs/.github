@@ -109,7 +109,7 @@
   ],
   "validation_evidence": {
     "local_only": true,
-    "component_tests": "21/21 OK (local build, Labs kernel 1.3.2)",
+    "component_tests": "34/34 OK (local build, Labs kernel 1.3.2)",
     "readback_replay": "8/8 federation ledgers identical to 10d14104 readback (retry_entrypoint relocated only)",
     "remint": "StegVerse-org 22/22 org receipts and 13/13 supplied-epoch repo receipts re-minted byte-identical; 7 clock-derived repo receipts not reproducible by construction",
     "note": "not CI evidence; no runtime ALLOW is inferred from these"
@@ -129,6 +129,15 @@
   "component_manifest": "org-kernel/organization-ledger/component-manifest.json",
   "reusable_workflow": ".github/workflows/organization-ledger-transition-reusable.yml",
   "pinning": "callers pin component_ref and intr_interface_ref as 40-hex commit SHAs; component-manifest.json git blob digests are verified before any append",
+  "legacy_segment_rule": {
+    "declared_in": "org-contract.json source_receipt_retention.legacy_pre_retention_segment (digest-bound by declaration_sha256, ledger-bound by ledger_tip_commit)",
+    "waivable_predicate": "SOURCE_RECEIPT_RETAINED_AND_VERIFIES",
+    "never_waived": ["self-hash", "chain linkage"],
+    "segment_shape": "contiguous prefix from genesis ending at the HEAD of ledger_tip_commit",
+    "whole_ledger_disposition": "FAIL_CLOSED DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED (never ALLOW; one six-field finding per declared receipt)",
+    "re_mint": false,
+    "source": "G4 / INDEX H45 (SV-011/.github PR #9 @20186d0)"
+  },
   "epoch_rule": {
     "supplied_epoch_required": true,
     "format": "ASCII digits only, >= 32 (HB32 anchor; TVC#517 require_hb_epoch parity)",
