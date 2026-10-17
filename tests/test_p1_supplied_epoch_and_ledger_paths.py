@@ -380,10 +380,18 @@ def __getattr__(name):
     _refuse()
 '''
 
-#: An old-layout writer: a plain SystemExit(message), no .refusal.
-OLD_LAYOUT_WRITER = REFUSING_WRITER.replace(
-    "def _refuse():\n    raise LedgerRefusal(dict(REFUSAL))",
-    "def _refuse():\n    raise SystemExit(\"HB_EPOCH_NOT_SUPPLIED: no hb_epoch was supplied; no clock is read\")")
+#: An old-layout writer: this checkout's writers, whose append raises a plain
+#: SystemExit(message) with no .refusal, as an old-layout writer refuses.
+OLD_LAYOUT_APPEND = (
+    "\n\ndef append(*args, **kwargs):  # fixture: an old-layout writer's own refusal\n"
+    "    raise SystemExit(\"HB_EPOCH_NOT_SUPPLIED: no hb_epoch was supplied; no clock is read\")\n")
+
+
+def _old_layout_component(path: Path) -> Path:
+    component = _copy_component(path)
+    emit = component / ".stegverse/transition-ledger/emit.py"
+    emit.write_text(emit.read_text(encoding="utf-8") + OLD_LAYOUT_APPEND, encoding="utf-8")
+    return component
 
 
 def _flat_component(path: Path, source: str | None = None) -> Path:
@@ -481,7 +489,8 @@ class LedgerWriterRefusalTests(TemporaryLedgers):
         self.assertIn("no clock is read", printed["detail"])
 
     def ingress(self, source, name):
-        component = _flat_component(self.work / name, source)
+        component = (_old_layout_component(self.work / name) if source is None
+                     else _flat_component(self.work / name, source))
         out = self.work / (name + "-ingress-out.json")
         standing = self.work / "standing.json"
         standing.write_text(json.dumps(GENESIS), encoding="utf-8")
@@ -489,16 +498,19 @@ class LedgerWriterRefusalTests(TemporaryLedgers):
             "resident-runtime/organization_manifest_ingress.py",
             "--registry", str(ROOT / "org-boundary/registry/services.json"), "--manifest", str(MANIFEST),
             "--standing", str(standing), "--packet-id", "p1-ledger-refusal", "--hb-epoch", "32",
-            "--ledger-component", str(component), "--out", str(out)), out
+            "--ledger-component", str(component), "--consumer-root", str(ROOT),
+            "--out", str(out)), out
 
     def self_close(self, source, name):
-        component = _flat_component(self.work / name, source)
+        component = (_old_layout_component(self.work / name) if source is None
+                     else _flat_component(self.work / name, source))
         out = self.work / (name + "-self-close-out.json")
         return self.run_cli(
             "resident-runtime/intr_destination_ingress.py", "--self-close",
             "--registry", str(ROOT / "org-boundary/registry/services.json"),
             "--communication-id", "p1-ledger-refusal", "--packet-id", "p1-ledger-refusal",
-            "--hb-epoch", "32", "--ledger-component", str(component), "--out", str(out)), out
+            "--hb-epoch", "32", "--ledger-component", str(component), "--consumer-root", str(ROOT),
+            "--out", str(out)), out
 
     @requires_sdk
     def test_the_ingress_cli_prints_the_writers_refusal_as_given(self):
@@ -509,10 +521,10 @@ class LedgerWriterRefusalTests(TemporaryLedgers):
 
     @requires_sdk
     def test_the_ingress_cli_builds_six_fields_for_an_old_layout_writer(self):
-        self.assert_built(*self.ingress(OLD_LAYOUT_WRITER, "old-layout"))
+        self.assert_built(*self.ingress(None, "old-layout"))
 
     def test_the_self_close_cli_builds_six_fields_for_an_old_layout_writer(self):
-        self.assert_built(*self.self_close(OLD_LAYOUT_WRITER, "old-layout"))
+        self.assert_built(*self.self_close(None, "old-layout"))
 
     def test_the_refusal_is_read_from_the_systemexit_only(self):
         writer = self.writer()
@@ -531,14 +543,51 @@ class LedgerWriterRefusalTests(TemporaryLedgers):
                 carried, is_carried = module.ledger_writer_refusal(refusal, "entry", "goal")
                 self.assertIs(carried, refusal.refusal)
                 self.assertIs(is_carried, True)
-                built, is_carried = module.ledger_writer_refusal(
-                    SystemExit("HB_EPOCH_INVALID: hb_epoch '+33'"), "entry", "goal")
+                # Only a writer call's own plain SystemExit gets the built six fields.
+                def old_writer():
+                    raise SystemExit("HB_EPOCH_INVALID: hb_epoch '+33'")
+                with self.assertRaises(module.LedgerWriterExit) as marked:
+                    module._ledger_write(old_writer)
+                built, is_carried = module.ledger_writer_refusal(marked.exception, "entry", "goal")
                 self.assertIs(is_carried, False)
                 self.assert_six_fields(built, "HB_EPOCH_INVALID")
-                self.assertEqual(module.ledger_writer_refusal(SystemExit("no code here"), "e", "g")[0]
-                                 ["failure_code"], "LEDGER_WRITER_REFUSED")
-                for ordinary in (SystemExit(0), SystemExit(1), SystemExit()):
+                self.assertEqual(module.ledger_writer_refusal(module.LedgerWriterExit("no code here"),
+                                                              "e", "g")[0]["failure_code"],
+                                 "LEDGER_WRITER_REFUSED")
+                # A carried refusal passes _ledger_write unchanged.
+                def new_writer():
+                    raise refusal
+                with self.assertRaises(SystemExit) as passed:
+                    module._ledger_write(new_writer)
+                self.assertIs(passed.exception, refusal)
+                for ordinary in (SystemExit(0), SystemExit(1), SystemExit(),
+                                 SystemExit("governance-decision-repository-receipt-failed: x")):
                     self.assertIsNone(module.ledger_writer_refusal(ordinary, "entry", "goal"))
+
+
+    def run_main(self, module, argv):
+        previous = sys.argv
+        sys.argv = [module.__file__, *argv]
+        self.addCleanup(setattr, sys, "argv", previous)
+        return module.main()
+
+    def test_an_exit_that_is_not_a_writer_call_is_not_reported_as_a_ledger_refusal(self):
+        # e.g. governance_endpoint's repository-receipt-failed: it escapes as it is.
+        unrelated = SystemExit("governance-decision-repository-receipt-failed: boom")
+
+        def raises(*args, **kwargs):
+            raise unrelated
+        module = _load("intr_destination_p1_unrelated_exit", "resident-runtime/intr_destination_ingress.py")
+        for name in ("closure", "self_close"):
+            if hasattr(module, name):
+                setattr(module, name, raises)
+        out = self.work / "unrelated-out.json"
+        with self.assertRaises(SystemExit) as escaped:
+            self.run_main(module, ["--self-close", "--registry", str(ROOT / "org-boundary/registry/services.json"),
+                                   "--communication-id", "p1-unrelated", "--packet-id", "p1-unrelated",
+                                   "--hb-epoch", "32", "--out", str(out)])
+        self.assertIs(escaped.exception, unrelated)
+        self.assertFalse(out.exists())
 
 
 class CliRawEpochTests(TemporaryLedgers):

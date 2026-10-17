@@ -203,6 +203,8 @@ REFUSAL_DISPOSITIONS = {
     # the supplied epoch (the shared HB_EPOCH codes; raised by PR-1b, not here)
     ("HB_EPOCH_NOT_SUPPLIED", "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"): "FAIL_CLOSED",
     ("HB_EPOCH_INVALID", "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"): "FAIL_CLOSED",
+    # the ledger readback (an empty ledger has no HEAD)
+    ("ORGANIZATION_LEDGER_HEAD_ABSENT", "ORGANIZATION_LEDGER_HEAD_PRESENT"): "FAIL_CLOSED",
     # a far side that did not complete
     ("FAR_SIDE_RECEIVER_UNAVAILABLE", "RESOLVED_SERVICE_HAS_AN_INSTALLED_ENDPOINT_ADAPTER"): "FAIL_CLOSED",
     ("FAR_SIDE_REFUSED_THE_CROSSING", "ADMITTED_CROSSING_REACHES_ITS_INTERNAL_ENDPOINT"): "FAIL_CLOSED",
@@ -353,14 +355,17 @@ def ledger_writer_refusal(exc: SystemExit, entrypoint: str,
     The ledger component's LedgerRefusal (ledger_common.py, flat next to
     emit.py) subclasses SystemExit and carries its refusal as `.refusal`, a
     dict: that is returned as given, (refusal, True), and printed unchanged.
-    An old-layout writer raises a plain SystemExit(message): the message is
-    given the six fields here, FAIL_CLOSED, (fields, False). A SystemExit
-    whose code is not a message (an int or None) is an ordinary exit (None).
+    An old-layout writer raises a plain SystemExit(message): only when it
+    came out of a ledger writer call itself (`_ledger_write`, which marks it
+    LedgerWriterExit) is the message given the six fields here, FAIL_CLOSED,
+    (fields, False). Any other SystemExit -- an int or None code, or a message
+    from anything but a writer call (e.g. repository-receipt-failed) -- is not
+    a ledger refusal (None) and is re-raised by the caller.
     """
     refusal = getattr(exc, "refusal", None)
     if isinstance(refusal, dict):
         return refusal, True
-    if not isinstance(exc.code, str):
+    if not isinstance(exc, LedgerWriterExit) or not isinstance(exc.code, str):
         return None
     message = exc.code
     head = message.split(":", 1)[0].strip()
@@ -375,6 +380,25 @@ def ledger_writer_refusal(exc: SystemExit, entrypoint: str,
         "owning_existing_goal": goal,
         "next_attempt": "run again once the ledger writer's refusal is repaired; nothing was written",
     }, False
+
+
+class LedgerWriterExit(SystemExit):
+    """A plain SystemExit(message) that a ledger writer call itself raised (old layout)."""
+
+
+def _ledger_write(call: Any, *args: Any, **kwargs: Any) -> Any:
+    """Run one ledger writer call; a plain SystemExit(message) from it is marked as the writer's.
+
+    Only a plain SystemExit is marked. A LedgerRefusal (it carries
+    `.refusal`), the writer's other SystemExit subclasses (e.g.
+    OrgLedgerAppendRefused) and an exit with no message pass through unchanged.
+    """
+    try:
+        return call(*args, **kwargs)
+    except SystemExit as exc:
+        if type(exc) is not SystemExit or not isinstance(exc.code, str):
+            raise
+        raise LedgerWriterExit(exc.code) from exc
 
 
 def cli_hb_epoch(text: str | None, entrypoint: str,
@@ -760,12 +784,12 @@ def _append_both_levels(transition_id: str, transition_class: str, predecessor: 
     attempt's. If the organization append raises, the result is the typed
     partial-commit record.
     """
-    repository_receipt = repository_ledger.append(
+    repository_receipt = _ledger_write(repository_ledger.append,
         transition_id, transition_class, predecessor, successor, dict(evidence),
         "NONE", hb_epoch=hb_epoch, idempotent_on=idempotent_on)
     hb_epoch = repository_receipt["hb_reference"]["epoch"]
     try:
-        organization_receipt = organization_ledger.aggregate_transition(
+        organization_receipt = _ledger_write(organization_ledger.aggregate_transition,
             receipt=repository_receipt,
             org_transition_class="REPO_STATE_PROPAGATION",
             predecessor_org_state_sha256=predecessor,
@@ -866,7 +890,7 @@ def _record_not_committed_refusal(record: Mapping[str, Any],
     }
     transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-NOT-COMMITTED-" + sha(stored)[:16]
     try:
-        receipt = repository_ledger.append(
+        receipt = _ledger_write(repository_ledger.append,
             transition_id, REFUSED_CLASS, "sha256:" + sha(dict(record)), "sha256:" + sha(stored),
             stored, "NONE",
             # The refusal's own repository receipt's epoch: one attempt, one epoch.
@@ -1570,7 +1594,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # disposition, authority effect, successor) is still compared in full.
     evidence = transition_evidence(request, crossing, closures)
     for resolution in range(2):
-        prior = repository_ledger.recorded(
+        prior = _ledger_write(repository_ledger.recorded,
             chain, chain.get(repository_ledger.ledger_store.HEAD_KEY),
             transition_id, OPERATION_ID)
         replayed = prior is not None

@@ -150,6 +150,7 @@ class D7IngressTests(unittest.TestCase):
         self.assertEqual(table[(ingress.APPEND_NOT_COMMITTED, ingress.APPEND_NOT_COMMITTED_PREDICATE)], "FAIL_CLOSED")
         self.assertEqual(table[("HB_EPOCH_NOT_SUPPLIED", "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")], "FAIL_CLOSED")
         self.assertEqual(table[("HB_EPOCH_INVALID", "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")], "FAIL_CLOSED")
+        self.assertEqual(table[("ORGANIZATION_LEDGER_HEAD_ABSENT", "ORGANIZATION_LEDGER_HEAD_PRESENT")], "FAIL_CLOSED")
         self.assertEqual(table[(generic, "ORGANIZATION_RESOLVES_ITS_OWN_INGRESS_DESTINATION")], "FAIL_CLOSED")
         self.assertEqual(table[(generic, "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST")], "DENY")
         # An invalid parent manifest is keyed on the owner's code it returns.

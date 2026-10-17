@@ -130,14 +130,17 @@ def ledger_writer_refusal(exc: SystemExit, entrypoint: str,
     The ledger component's LedgerRefusal (ledger_common.py, flat next to
     emit.py) subclasses SystemExit and carries its refusal as `.refusal`, a
     dict: that is returned as given, (refusal, True), and printed unchanged.
-    An old-layout writer raises a plain SystemExit(message): the message is
-    given the six fields here, FAIL_CLOSED, (fields, False). A SystemExit
-    whose code is not a message (an int or None) is an ordinary exit (None).
+    An old-layout writer raises a plain SystemExit(message): only when it
+    came out of a ledger writer call itself (`_ledger_write`, which marks it
+    LedgerWriterExit) is the message given the six fields here, FAIL_CLOSED,
+    (fields, False). Any other SystemExit -- an int or None code, or a message
+    from anything but a writer call (e.g. repository-receipt-failed) -- is not
+    a ledger refusal (None) and is re-raised by the caller.
     """
     refusal = getattr(exc, "refusal", None)
     if isinstance(refusal, dict):
         return refusal, True
-    if not isinstance(exc.code, str):
+    if not isinstance(exc, LedgerWriterExit) or not isinstance(exc.code, str):
         return None
     message = exc.code
     head = message.split(":", 1)[0].strip()
@@ -152,6 +155,25 @@ def ledger_writer_refusal(exc: SystemExit, entrypoint: str,
         "owning_existing_goal": goal,
         "next_attempt": "run again once the ledger writer's refusal is repaired; nothing was written",
     }, False
+
+
+class LedgerWriterExit(SystemExit):
+    """A plain SystemExit(message) that a ledger writer call itself raised (old layout)."""
+
+
+def _ledger_write(call: Any, *args: Any, **kwargs: Any) -> Any:
+    """Run one ledger writer call; a plain SystemExit(message) from it is marked as the writer's.
+
+    Only a plain SystemExit is marked. A LedgerRefusal (it carries
+    `.refusal`), the writer's other SystemExit subclasses (e.g.
+    OrgLedgerAppendRefused) and an exit with no message pass through unchanged.
+    """
+    try:
+        return call(*args, **kwargs)
+    except SystemExit as exc:
+        if type(exc) is not SystemExit or not isinstance(exc.code, str):
+            raise
+        raise LedgerWriterExit(exc.code) from exc
 
 
 def cli_hb_epoch(text: str | None, entrypoint: str,
@@ -370,13 +392,13 @@ def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
     transition_id = transition_class + ":" + packet_id
     store = repository_ledger.repository_store()
     head = store.get(repository_ledger.ledger_store.HEAD_KEY)
-    prior = repository_ledger.recorded(store, head, transition_id, transition_class)
-    repository_receipt = repository_ledger.append(
+    prior = _ledger_write(repository_ledger.recorded, store, head, transition_id, transition_class)
+    repository_receipt = _ledger_write(repository_ledger.append,
         transition_id, transition_class, predecessor, successor, dict(evidence),
         "NONE", hb_epoch=hb_epoch,
         idempotent_on=("communication_id", "payload_sha256", "disposition"))
     epoch = repository_receipt["hb_reference"]["epoch"]
-    organization_receipt = organization_ledger.aggregate_transition(
+    organization_receipt = _ledger_write(organization_ledger.aggregate_transition,
         receipt=repository_receipt,
         org_transition_class="REPO_STATE_PROPAGATION",
         predecessor_org_state_sha256=predecessor,
