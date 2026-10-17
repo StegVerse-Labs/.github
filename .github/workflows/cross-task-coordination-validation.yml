@@ -301,7 +301,7 @@ jobs:
         # Always runs, even when an earlier step failed. A PR that changes the
         # registry must sit at the live base tip's generation + 1; the tip is
         # fetched here because github.event.pull_request.base.sha is fixed when
-        # the event fires. A push to main must advance the generation of every
+        # the event fires. A push to main must raise the generation by exactly 1 on every
         # first-parent commit that changes registry content. Anonymous fetch,
         # no token, no event ledger written. Six-field failure in the summary.
         if: ${{ !cancelled() }}
