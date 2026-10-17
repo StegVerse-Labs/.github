@@ -66,6 +66,9 @@ HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV",
     "CF_PAGES", "CLOUDFLARE_WORKERS",
 )
+ORG_CONTRACT_REL = Path(".stegverse/transition-ledger/org-contract.json")
+GIT_SCHEME = "git+"
+EVENT_EPHEMERAL_ENTRYPOINT = ".github/workflows/organization-claim-allocator-transition.yml"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -130,10 +133,38 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
     return None
 
 
-def clean_env(values: Mapping[str, str] | None = None) -> dict[str, str]:
+def event_ephemeral_materialization(source: Path, repo_ledger_root: Any, org_ledger_root: Path | None) -> bool:
+    """Whether this execution appends only to the manifest-declared non-posix Organization store.
+
+    True only when no explicit Organization root is supplied, the Organization
+    manifest declares a non-posix store with a ref, and the repository ledger
+    is a git locator on that same declared ref. Such an execution leaves no
+    chain on the host it ran on: every receipt is on the declared ref, and
+    the ref's fast-forward publication is the only egress. It is not
+    authority; the receipts it appends are the evidence.
+    """
+    if org_ledger_root is not None or repo_ledger_root is None:
+        return False
+    try:
+        locus = load_json(source / ORG_CONTRACT_REL).get("organization_ledger")
+    except Exception:
+        return False
+    if not isinstance(locus, dict) or locus.get("store") in (None, "posix") or not locus.get("ref"):
+        return False
+    text = str(repo_ledger_root)
+    if not text.startswith(GIT_SCHEME):
+        return False
+    repository, separator, ref = text[len(GIT_SCHEME):].rpartition("#")
+    return bool(separator and repository) and ref.partition(":")[0] == locus["ref"]
+
+
+def clean_env(values: Mapping[str, str] | None = None, *, event_ephemeral: bool = False) -> dict[str, str]:
+    """The allocator's environment. A hosted environment is refused unless this is an
+    event-ephemeral materialization against the declared non-posix store
+    (event_ephemeral_materialization); an explicit POSIX root stays refused there."""
     source = dict(os.environ if values is None else values)
     hosted = [name for name in HOSTED_ENV if truthy(source.get(name))]
-    if hosted:
+    if hosted and not event_ephemeral:
         raise RuntimeError("hosted environment may not execute resident organization allocator: " + ",".join(sorted(hosted)))
     env = {}
     for key in ("PATH", "HOME", "LANG", "LC_ALL"):
@@ -344,11 +375,37 @@ def organization_ledger_locus(organization: Any, org_ledger_root: Path | None) -
             getattr(exc, "repair", None) or "materialize this execution with " + exc.variable) from exc
 
 
-def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path | None) -> dict[str, Any]:
+def repository_ledger_store(emitter: Any, repo_ledger_root: Any) -> Any:
+    """The repository ledger at the supplied location: a POSIX root, or a git locator.
+
+    A `git+<repository>#<ref>:<namespace>` locator is the repository subtree of
+    the designated ledger ref (contract.json repository_ledger_location); it is
+    opened as that ref, never as a directory named after the locator.
+    """
+    text = str(repo_ledger_root)
+    if text.startswith(GIT_SCHEME):
+        return emitter.ledger_store.open_store(text)
+    return emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve())
+
+
+def shares_organization_ref(repository_store: Any, organization_store: Any) -> bool:
+    """Whether the repository chain is a subtree of the very ref the Organization store pins."""
+    return (organization_store is not None
+            and getattr(repository_store, "kind", None) == "GIT_REF"
+            and getattr(organization_store, "kind", None) == "GIT_REF"
+            and repository_store.git_dir == organization_store.git_dir
+            and repository_store.ref == organization_store.ref)
+
+
+def ledger_custody(source: Path, repo_ledger_root: Any, org_ledger_root: Path | None, *,
+                   event_ephemeral: bool = False) -> dict[str, Any]:
     """The existing emitters, at the ledger roots this execution was supplied.
 
     The Organization ledger is the supplied POSIX root only under a declared
     {store: posix}; otherwise it is the declared store (organization_ledger_locus).
+    An event-ephemeral materialization is admitted only when its repository
+    chain is the subtree of that same declared ref, so nothing it appends
+    stays on the host it ran on.
     """
     emitter = _load_module("org_claim_repository_ledger", source / ".stegverse/transition-ledger/emit.py")
     organization = _load_module("org_claim_organization_ledger", source / "resident-runtime/aggregate_repo_transition.py")
@@ -366,13 +423,21 @@ def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path |
                 sys.modules.pop("aggregate_repo_transition", None)
             else:
                 sys.modules["aggregate_repo_transition"] = previous
+    repository_store = repository_ledger_store(emitter, repo_ledger_root)
+    shared_ref = shares_organization_ref(repository_store, organization_store)
+    if event_ephemeral and not shared_ref:
+        raise OrganizationLedgerNotAdmitted(
+            "EVENT_EPHEMERAL_REPOSITORY_LEDGER_NOT_ON_DECLARED_REF",
+            "the repository ledger is not the subtree of the declared Organization ledger ref",
+            "supply --repo-ledger-root as git+<checkout>#<declared ref>:<repository_ledger_location.namespace>")
     return {
         "emitter": emitter,
         "organization_ledger": organization,
         "organization_receipt_custody": receipt_custody,
-        "repository_store": emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
+        "repository_store": repository_store,
         "organization_root": organization_root,
         "organization_store": organization_store,
+        "shared_ref": shared_ref,
     }
 
 
@@ -728,9 +793,14 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
     if prior is not None and all(
             (prior.get("evidence") or {}).get(key) == evidence.get(key) for key in identity):
         successor = prior["successor_state_sha256"]
+    pinned = adopted = None
+    if lock_held and custody.get("shared_ref"):
+        pinned = custody["organization_store"]._snapshot()
     repository_receipt = custody["emitter"].append(
         transition_id, transition_class, predecessor, successor, evidence, "NONE",
         store=custody["repository_store"], idempotent_on=identity)
+    if pinned is not None:
+        adopted = adopt_repository_append(custody, pinned, repository_receipt)
     organization_receipt = None
     if organization:
         recorded = repository_receipt.get("evidence") or {}
@@ -743,6 +813,10 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
             authority_effect="NONE")
         organization = custody["organization_ledger"]
         try:
+            if adopted is not None and not adopted:
+                raise ClaimFailClosed("ORGANIZATION_LEDGER_SNAPSHOT_MOVED",
+                                      "the shared ledger ref moved outside this transition's repository append",
+                                      "retry; the repository receipt is retained and the organization append is replayed")
             if lock_held:
                 # Already inside the existing append lock: the same locked append
                 # aggregate_transition performs, without re-taking the lock.
@@ -756,6 +830,30 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
         except Exception as exc:
             raise OrganizationAppendFailed(repository_receipt, exc) from exc
     return {"repository_receipt": repository_receipt, "organization_receipt": organization_receipt}
+
+
+def adopt_repository_append(custody: Mapping[str, Any], pinned: str | None,
+                            repository_receipt: Mapping[str, Any]) -> bool:
+    """Carry the Organization pin over this transition's own repository append on the shared ref.
+
+    The repository chain is a subtree of the ref the Organization store pinned,
+    so its append moved that ref. The pin advances only to a tip that is the
+    pinned snapshot itself (an idempotent replay) or a commit whose sole parent
+    is the pinned snapshot and whose repository HEAD is the receipt just
+    appended. Anything else is a move this critical section did not make, and
+    the Organization append is not attempted on it.
+    """
+    store = custody["organization_store"]
+    tip = store._tip()
+    if tip == pinned:
+        return True
+    parents = store._git("rev-list", "--parents", "-n", "1", tip).stdout.decode().split()[1:]
+    repository_head = custody["repository_store"]._read(tip, custody["emitter"].ledger_store.HEAD_KEY)
+    if parents != ([pinned] if pinned else []) or (repository_head or {}).get("receipt_sha256") != \
+            repository_receipt.get("receipt_sha256"):
+        return False
+    store._pinned = (tip,)
+    return True
 
 
 def retained_repository_receipt_sha256(custody: Mapping[str, Any], row: Mapping[str, Any]) -> str | None:
@@ -1190,7 +1288,7 @@ def consume(
     source_root: Path,
     runtime_root: Path,
     *,
-    repo_ledger_root: Path | None = None,
+    repo_ledger_root: Path | str | None = None,
     org_ledger_root: Path | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
@@ -1209,12 +1307,16 @@ def consume(
     if repo_ledger_root is None:
         # Supplied, never derived: nothing is materialized or allocated without it.
         return _ledger_refusal(load_json(runtime / present[0]), "ledger roots not supplied")
-    safe_env = clean_env(env)
+    # A hosted environment may run only the event-ephemeral materialization:
+    # the declared non-posix store, no explicit root, the repository chain on
+    # the same declared ref. Every other hosted execution is refused here.
+    event_ephemeral = event_ephemeral_materialization(source, repo_ledger_root, org_ledger_root)
+    safe_env = clean_env(env, event_ephemeral=event_ephemeral)
     try:
         # The Organization ledger is the supplied root only under a declared
         # {store: posix}; otherwise the declared store, and an explicit root is
         # FAIL_CLOSED before anything is read or appended (OL-3).
-        custody = ledger_custody(source, repo_ledger_root, org_ledger_root)
+        custody = ledger_custody(source, repo_ledger_root, org_ledger_root, event_ephemeral=event_ephemeral)
     except OrganizationLedgerNotAdmitted as exc:
         return _ledger_refusal(load_json(runtime / present[0]), exc.detail, predicate=exc.predicate, repair=exc.repair)
     except ClaimFailClosed as exc:
@@ -1236,13 +1338,75 @@ def consume(
     }
 
 
+def readback(source_root: Path, repo_ledger_root: str, result: Mapping[str, Any]) -> dict[str, Any]:
+    """Read every Organization receipt a consumption appended back from the supplied ledger.
+
+    Run against a fresh fetch of the published ref, through the existing
+    verifier (organization_readback), bound to each attempt's repository
+    receipt and transition id. An attempt that reports an appended receipt
+    which does not read back is FAIL_CLOSED; an attempt that appended none
+    is reported as such and is not counted as an Organization disposition.
+    """
+    source = source_root.expanduser().resolve()
+    custody = ledger_custody(source, repo_ledger_root, None,
+                             event_ephemeral=event_ephemeral_materialization(source, repo_ledger_root, None))
+    attempts = result.get("attempts") if isinstance(result.get("attempts"), list) else [result]
+    rows = []
+    for attempt in attempts:
+        digest = attempt.get("organization_receipt_sha256")
+        row = {"request_ref": attempt.get("request_ref"), "transition_class": attempt.get("transition_class"),
+               "transition_id": attempt.get("transition_id"), "disposition": attempt.get("disposition"),
+               "fencing_token": attempt.get("fencing_token"), "organization_receipt_sha256": digest}
+        if not attempt.get("organization_receipt_appended"):
+            row["organization_readback"] = "NOT_APPENDED"
+        elif not isinstance(digest, str):
+            row["organization_readback"] = "REFUSED:ORGANIZATION_RECEIPT_DIGEST_MISSING"
+        else:
+            repository = attempt.get("repository_receipt_sha256")
+            if repository is None:
+                grant = custody["organization_store"].get(
+                    custody["organization_ledger"].ledger_store.receipt_key(digest)) or {}
+                repository = retained_repository_receipt_sha256(custody, grant)
+            try:
+                row["organization_readback_custody_basis"] = organization_readback(
+                    custody, digest, repository_receipt_sha256=repository,
+                    transition_id=attempt.get("transition_id"))
+                row["organization_readback"] = "VERIFIED"
+            except OrganizationReadbackRefused as exc:
+                row["organization_readback"] = readback_state(exc.refusal)
+                row["organization_readback_refusal"] = exc.refusal
+        rows.append(row)
+    verified = all(r["organization_readback"] in ("VERIFIED", "NOT_APPENDED") for r in rows)
+    return {
+        "schema": "stegverse.organization-claim-allocator-readback/v1",
+        "disposition": "VERIFIED" if verified else "FAIL_CLOSED",
+        "attempts": rows,
+        "retry_entrypoint": None if verified else EVENT_EPHEMERAL_ENTRYPOINT,
+        "readback_grants_claim_authority": False,
+        "authority_effect": "NONE_READBACK_ONLY",
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Invoke the canonical organization claim allocator from resident dispatch.")
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--runtime-root", type=Path, required=True)
-    parser.add_argument("--repo-ledger-root", type=Path, default=None)
+    # A POSIX root, or git+<checkout>#<ref>:<namespace>; kept as given so a locator is not path-normalized.
+    parser.add_argument("--repo-ledger-root", type=str, default=None)
     parser.add_argument("--org-ledger-root", type=Path, default=None)
+    parser.add_argument("--readback-result", type=Path, default=None,
+                        help="read back the Organization receipts a prior consumption result reports")
     args = parser.parse_args()
+    if args.readback_result is not None:
+        try:
+            verdict = readback(args.source_root, args.repo_ledger_root, load_json(args.readback_result))
+        except ClaimFailClosed as exc:
+            verdict = {"schema": "stegverse.organization-claim-allocator-readback/v1", "disposition": "FAIL_CLOSED",
+                       "failed_predicate": exc.predicate, "detail": exc.detail,
+                       "required_evidence_or_repair": exc.repair, "retry_entrypoint": EVENT_EPHEMERAL_ENTRYPOINT,
+                       "authority_effect": "NONE_READBACK_ONLY"}
+        print(json.dumps(verdict, sort_keys=True))
+        return 0 if verdict["disposition"] == "VERIFIED" else 1
     try:
         receipt = consume(args.source_root, args.runtime_root,
                           repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root)

@@ -109,6 +109,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SDK-MR-A-VALIDATION-CUSTODY-001 / StegVerse-Labs/.github#3099",
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/organization-claim-allocator-transition.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "reason": "event-ephemeral materialization of the durably queued org-claim-allocator requests: runs the existing consumer and allocator against the declared Organization store, appends the typed claim disposition to refs/stegverse/organization-ledger under ORGANIZATION_LEDGER_LOCK, fast-forward only, and reads it back; replaces the resident-dispatcher liveness predicate; not claim authority"
     }
   ],
   "removed_in_hygiene_batch_1": [
