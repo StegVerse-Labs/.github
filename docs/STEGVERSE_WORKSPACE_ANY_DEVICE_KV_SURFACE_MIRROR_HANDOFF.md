@@ -1,11 +1,11 @@
 # StegVerse WorkSpace Any-Device KV Surface Mirror Handoff
 
-Updated: 2026-10-10
+Updated: 2026-10-17
 
 Goal Task ID: `STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001`  
 Handoff: `docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md`  
 Repository: `StegVerse-Labs/.github`  
-Computed COSV (task.v1, B=0; exact-head validation pending): `10500000110000`  
+COSV (task.v1, B=0): `10500000110000`. It is identical on the aggregate registry row, the canonical record, the task vector and the vector index (#3193, exact-head CI-validated).  
 Coordination state: `PROPOSED`  
 Checkout state: `UNCLAIMED`  
 Authority effect: `NONE_COORDINATION_REGISTRATION_ONLY`
@@ -31,7 +31,7 @@ This resolves `BLK1-CANONICAL-WORKSPACE-SURFACE-OWNER`.
 
 Owner-approved decisions: [Registry #2796 comment 6094254732](https://github.com/StegVerse-Labs/.github/issues/2796#issuecomment-6094254732).
 
-- **COSV:** canonical task candidate `10500000110000`; computed-vector consistency and exact-head validation remain pending. The former values `10500000113000` (B=3) and `10500000114000` (B=4) were stale state vectors; the current value has B=0. COSV is not a unique identity.
+- **COSV:** `10500000110000`. Computed-vector consistency and exact-head validation passed in #3193 (`ee32d7c8`), which reconciled the stale aggregate row to the canonical record. The former values `10500000113000` (B=3) and `10500000114000` (B=4) were stale state vectors; the current value has B=0. COSV is not a unique identity.
 - **BLK2:** retain existing governed SKAP ingress paths; WorkSpace is a unified non-authoritative UI.
 - **BLK3:** retain existing authorized KnowledgeVault writer; do not create another authoritative writer.
 - **BLK4:** distinguish StegVerse WorkSpace and Google Workspace by canonical task identity and non-overlapping write ownership.
@@ -68,13 +68,27 @@ The following remain useful source findings, but are not themselves runtime proo
 - KV/SKAP/Node endpoint receipt chains are a different axis from repository/organization/master-records ledger scope;
 - the WorkSpace goal must depend on the canonical KV/AI admission chain rather than assuming writes are already admitted.
 
+## Reconciliation and conformance (2026-10-14 to 2026-10-17)
+
+- **Registry projections (#3193, `ee32d7c8`):** the aggregate row equals the canonical record, `source_state_vector_ref` is bound, and the vector-index `registry_ref` names `data/canonical-task-registry.json`. `audit_canonical_task_projections.py` reports no drift for this task.
+- **Next transition (#3209, `3da74c74`):** every BLK2–BLK4 blocker carries a recorded owner decision. The allowed transition is now `PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE`, replacing the stale `…_DECISION_OF_REMAINING_THREE_BLOCKERS`.
+- **WU1-NO-BROWSER-LOCAL-ROOT-OF-TRUTH (#3209, Site#1604):**
+  - The Organizational path reads no browser storage (Site W2). Its locked gate carries the six actionable fields.
+  - The Personal path binds its KV query only to a device-local StegOS node registration or an admitted device-continuity recovery result. That precondition holds a registered exemption in `data/organization-role-exemption-register.json` (FAIL_CLOSED `DEVICE_INDEPENDENT_VERIFIED_USER_QUERY_PATH_NOT_SUPPLIED`, review 2026-11-17). The repair is a device-independent verified-user query path from continuity-vault-kit.
+- **WorkSpace source conformance (Site#1581, #1586, #1587, #1589, #1592, #1602, #1603, #1604):**
+  - receipt invariant: no ALLOW without a receipt;
+  - destination existence, not liveness: single KV lookups, no polling;
+  - every non-ALLOW outcome carries the six Organization Role item 5 fields.
+- **Evidence class:** `SOURCE_IMPLEMENTED`, `MERGED`, `CI_VALIDATED` only. Nothing is runtime-observed.
+
 ## Canonical next actions
 
-1. Preserve the recorded BLK2–BLK4 decisions and recompute the task.v1 vector when source metrics change.
-2. Reconcile the WorkSpace canonical record and task vector after each owner decision.
-3. Keep `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` and `SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001` as explicit adjacent/dependency references where required.
-4. After all owner decisions are resolved, obtain the canonical WorkerCoordinator claim/fence before implementation.
-5. Execute WorkSpace mutations only through admitted manifest-directed transitions and retain original organization/Master Records evidence.
+1. **Authenticated admission and the WorkerCoordinator claim and fence** move PROPOSED to ACTIVE (Site#1509 B2). Only the WorkerCoordinator issues `claim_ref` / `fence_ref`; this record is `projection_only`.
+2. **WU1–WU5 assignment** after admission. WU1's Personal path follows the continuity-vault-kit device-independent query path named in its exemption.
+3. **Keep the dependencies explicit:** `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001`, `KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001`, `SS-KV-SKAP-SOCIAL-RELEASE-001`, `MYKV-PERSONAL-DATA-BACKUP-001`, `TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001`, `SV-KV-AI-PERSISTENCE-001` and `SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001`.
+4. **Execute WorkSpace mutations** only through admitted manifest-directed transitions, and retain original organization/Master Records evidence.
+
+Open items and their owners are recorded on Site#1509 (comments 6168883346 and 6234931876) and StegVerse-Labs/.github#3183.
 
 ## Non-claims
 

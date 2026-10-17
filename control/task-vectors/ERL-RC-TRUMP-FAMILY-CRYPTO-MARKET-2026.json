@@ -3,11 +3,11 @@
   "identity": "StegVerse-Labs/.github:task:ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
   "profile": "task.v1",
   "level": "task",
-  "vector": "60200000112012",
+  "vector": "10100000110012",
   "exact_metrics": {
-    "lifecycle": "BLOCKED",
+    "lifecycle": "UNCLAIMED",
     "archive_ready": false,
-    "unassigned_work": 2,
+    "unassigned_work": 1,
     "chat_owned_implementation": 0,
     "chat_owned_validation": 0,
     "chat_owned_integration": 0,
@@ -15,7 +15,7 @@
     "chat_owned_credentials": 0,
     "canonical_owner_installed": true,
     "thread_required": true,
-    "blocker_count": 2,
+    "blocker_count": 0,
     "evidence_complete": false,
     "activated": true,
     "propagated": null
@@ -29,9 +29,19 @@
     "StegVerse-Labs/Executive_Rhetoric_Ledger:.github/workflows/trumpality-research-intake.yml",
     "StegVerse-Labs/Executive_Rhetoric_Ledger:research-data/trumpality-acquisition/ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026/",
     "StegVerse-Labs/Executive_Rhetoric_Ledger@1cf3a235f1c2550330f33ebb79e6fd802c2d7a94",
-    "StegVerse-Labs/Trumpality@0452964499e96df3ec09f4a3fbb0438390d5ea6a"
+    "StegVerse-Labs/Trumpality@0452964499e96df3ec09f4a3fbb0438390d5ea6a",
+    "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223#issuecomment-6167898582",
+    "MyKV:147zp4--w_dnf_cOJzC0nKGZrWtwB2M6n/1QpLg60OdmdYJ5KUvhjczlRMY4kNa4_hD",
+    "sha256:72b267260694c89830c7158a0caa6b17c75bce1e4c623310c6e9e9ce2ae02a90",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@1cf3a235f1c2550330f33ebb79e6fd802c2d7a94:research-data/trumpality-acquisition/ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026/",
+    "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223#issuecomment-6167920230",
+    "https://github.com/StegVerse-Labs/Trumpality/pull/19",
+    "StegVerse-Labs/Trumpality@d5b5908971b8de1ee383fe7517d9e20d3df0e9fe",
+    "StegVerse-Labs/Trumpality@777821d007100f0cc463593f206222a75e8f8bca:research/transition_dispositions.jsonl",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@158dbeec86b36b7d79df3ae8f8d353d5eb2af92d:research-data/trumpality-acquisition/ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026/transition-dispositions.jsonl",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@158dbeec86b36b7d79df3ae8f8d353d5eb2af92d:research-data/trumpality-acquisition/ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026/pending-candidates.jsonl"
   ],
-  "observed_at": "2026-10-14",
+  "observed_at": "2026-10-17",
   "authority_effect": "NONE",
   "canonical_encoder_ref": "scripts/cosv.py"
 }
