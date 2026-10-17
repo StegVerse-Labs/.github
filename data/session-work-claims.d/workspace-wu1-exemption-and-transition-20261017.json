@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "workspace-wu1-exemption-and-transition-20261017",
+  "goal_task_id": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+  "cosv_id": "10500000110000",
+  "issue": "StegVerse-Labs/Site#1509",
+  "parent_issue": "StegVerse-Labs/.github#3183",
+  "state": "CLAIMED",
+  "role": "REGISTRY_CONFORMANCE_RECONCILIATION_NON_AUTHORIZING",
+  "branch": "claude/3183-workspace-wu1-exemption-and-transition",
+  "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
+  "originating_goal": "Register the WU1 Personal-path node-binding precondition as an exemption with an actionable non-ALLOW disposition (silent non-conformance is prohibited), correct the stale WU1 current_state and the stale REMAINING_THREE_BLOCKERS transition wording (Site#1509 lane D checkpoint 6230887898).",
+  "claimed_paths": [
+    "data/organization-role-exemption-register.json",
+    "data/canonical-task-records/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json",
+    "data/canonical-task-registry.json",
+    "tests/test_workspace_registry_row_reconciliation.py",
+    "data/session-work-claims.d/workspace-wu1-exemption-and-transition-20261017.json"
+  ],
+  "collision_boundaries": [
+    "Only the STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 record/row, one appended exemption entry and the generation counter change",
+    "No admission, coordination_state, checkout_state, COSV, claim or fence change",
+    "Do not modify .github#3012 lane files"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}
