@@ -37,6 +37,14 @@ DECISION_SCHEMA = "stegverse.org-governance-decision/v1"
 DECISION_AUTHORITY = "stegcore.steggate.evaluate_admissibility"
 DECISION_AUTHORITY_REPOSITORY = "StegVerse-Labs/StegCore"
 TRANSITION_CLASS = "ORGANIZATION_GOVERNANCE_DECISION"
+#: Organization Role conformance standard, item 5 (StegVerse-org/.github
+#: docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md): a non-ALLOW record
+#: carries these six fields. INDEX H34 / GOVERNANCE_DECISION_RECORD_LACKS_SIX_FIELDS.
+SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+              "retry_entrypoint", "owning_existing_goal", "next_attempt")
+RETRY_ENTRYPOINT = (".github/workflows/organization-governance-decision.yml: a new committed request under "
+                    ".stegverse/governance-decision-requests/, or a dispatch naming the emitting mesh_root")
+NEXT_ATTEMPT = ("the re-emitted request is decided once when it crosses; nothing here waits, polls or retries")
 
 
 def canon(value: Any) -> bytes:
@@ -80,6 +88,32 @@ def evaluate(request: Mapping[str, Any]) -> dict[str, Any]:
             "evaluation": body}
 
 
+def actionable(decision: Mapping[str, Any], body: Mapping[str, Any]) -> dict[str, Any]:
+    """The six actionable fields for a non-ALLOW decision; nothing for ALLOW.
+
+    Derived only from what was decided: the StegGate matrix entry that did not
+    pass (FAIL first, then UNKNOWN/REVIEW), else the decision's own reason. The
+    owning goal is the one the request declares; a request that declares none
+    is named as such rather than given one.
+    """
+    if decision.get("disposition") == "ALLOW":
+        return {}
+    reason = str(decision.get("reason") or "GOVERNANCE_DECISION_REASON_ABSENT")
+    matrix = ((decision.get("evaluation") or {}).get("matrix") or [])
+    entries = [e for e in matrix if isinstance(e, Mapping) and e.get("state") in {"FAIL", "UNKNOWN", "REVIEW"}]
+    entries.sort(key=lambda e: {"FAIL": 0, "UNKNOWN": 1, "REVIEW": 2}[e["state"]])
+    first = entries[0] if entries else None
+    failed = str(first.get("predicate")) if first else reason
+    repair = (str(first.get("reason")) + " (authority surface: " + str(first.get("authority_surface")) + ")"
+              if first else "the requester repairs " + reason + " and re-emits the request")
+    goal = body.get("owning_existing_goal")
+    return {"failure_code": reason, "failed_predicate": failed,
+            "required_evidence_or_repair": repair, "retry_entrypoint": RETRY_ENTRYPOINT,
+            "owning_existing_goal": goal if isinstance(goal, str) and goal.strip()
+            else "UNDECLARED_BY_REQUEST", "next_attempt": NEXT_ATTEMPT,
+            "unsatisfied_predicates": [str(e.get("predicate")) for e in entries]}
+
+
 def decide(packet: Mapping[str, Any]) -> dict[str, Any]:
     """Decide the governance request a packet carries."""
     if (packet.get("destination") or {}).get("service") != SERVICE_ID:
@@ -114,11 +148,18 @@ def decide(packet: Mapping[str, Any]) -> dict[str, Any]:
                         reason="GOVERNANCE_REQUEST_DIGEST_MISMATCH")
     else:
         decision.update(evaluate(request))
+    decision.update(actionable(decision, body))
     return decision
 
 
-def record(packet: Mapping[str, Any], decision: Mapping[str, Any]) -> dict[str, str]:
-    """Append the decision at both ledger levels: repository first, organization consuming it."""
+def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
+           hb_epoch: int | None = None) -> dict[str, str]:
+    """Append the decision at both ledger levels: repository first, organization consuming it.
+
+    `hb_epoch` is the carrier's heartbeat epoch, supplied by the caller; when
+    supplied both receipts carry that exact reference, as every other boundary
+    writer does. Absent, emit.py and aggregate_transition derive it and say so.
+    """
     transition_id = TRANSITION_CLASS + ":" + hashlib.sha256(
         str(packet.get("packet_id")).encode()).hexdigest()[:24]
     predecessor = "sha256:" + str(decision.get("governance_request_sha256"))
@@ -130,7 +171,8 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any]) -> dict[str, 
         [sys.executable, str(ROOT / ".stegverse/transition-ledger/emit.py"),
          "--transition-id", transition_id, "--transition-class", TRANSITION_CLASS,
          "--predecessor-state-sha256", predecessor, "--successor-state-sha256", successor,
-         "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE"],
+         "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE"]
+        + (["--hb-epoch", str(int(hb_epoch))] if hb_epoch is not None else []),
         cwd=ROOT, capture_output=True, text=True, check=False)
     if completed.returncode != 0:
         raise SystemExit("governance-decision-repository-receipt-failed:"
@@ -143,8 +185,9 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any]) -> dict[str, 
         predecessor_org_state_sha256=predecessor, successor_org_state_sha256=successor,
         boundary_evidence={"service_id": SERVICE_ID, "transition_class": TRANSITION_CLASS,
                            "disposition": decision.get("disposition"),
-                           "request_packet_id": packet.get("packet_id")},
-        authority_effect="NONE")
+                           "request_packet_id": packet.get("packet_id"),
+                           **{k: decision[k] for k in SIX_FIELDS if k in decision}},
+        authority_effect="NONE", hb_epoch=hb_epoch)
     return {"repository_receipt_sha256": repository_receipt["receipt_sha256"],
             "organization_receipt_sha256": organization_receipt["receipt_sha256"]}
 
@@ -153,10 +196,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--packet", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--hb-epoch", type=int, default=None,
+                        help="carrier heartbeat epoch, supplied by the caller; never sampled here")
     args = parser.parse_args()
     packet = json.loads(args.packet.read_text(encoding="utf-8"))
     decision = decide(packet)
-    receipts = record(packet, decision)
+    receipts = record(packet, decision, hb_epoch=args.hb_epoch)
     result = {**decision, **receipts, "records_authority": "ORGANIZATION_RECORDS_ONLY"}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
