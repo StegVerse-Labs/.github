@@ -84,3 +84,16 @@ The Task Registry mints no execution authority. Worker claims belong to WorkerCo
 ## Human action
 
 Owner merge approval only.
+
+## Authenticated post-merge source reconciliation — 2026-10-17
+
+This section supersedes the earlier historical source-state snapshot; that snapshot is retained above as dated evidence, not current authority.
+
+- Registry registration #3214 merged at `60d90c48209fb250c12839bb29dfcd7e6d21aaad`; generation correction #3219 merged at `5a354844b7266dd9db09852b893c30bc4ca02ca3` (generation 319); generation-fence #3220 merged at `f16b9153b4d33630a0542f69d0ba8e8af9da40ae`.
+- SDK #538 merged at `07a6a90ad39c739f7b8a6d426f334a6b9649c09d`, with actual module `stegverse/cost_registry.py`; SDK #540 merged at `ae4a2a12fb3261e5d9fbee1dae1b4195bcf69fc9`, correcting `owning_existing_goal` in `stegverse/tier_pricing.py` to `SDK-COST-DERIVED-TIER-PRICING-001`. Both SDK files independently read on main.
+- This branch corrects the pricing canonical shard's source metadata and module path; it does not change task identity, COSV `10300000011002`, coordination state `ACTIVE / UNCLAIMED`, worker claim, or runtime authority.
+- Aggregate registry readback remains unverified: the GitHub connector returned a blob SHA but empty content. Any required aggregate regeneration must occur through the canonical authorized Registry mechanism and be validated against main before merge. Do not claim full aggregate/shard convergence from this branch alone.
+- KV INDEX reconciliation is pending authenticated KV read/write and deduplicated readback; no KV update is asserted here.
+- Authentic receipt-backed `C_authentically_observed` is still UNKNOWN pending `ORGANIZATION-BATCH-CUSTODY-REPLAY-001` sovereign Organization ledger evidence. `UNKNOWN != 0`; pricing is `PROVISIONAL_SCENARIO_ONLY`. Source merge and CI do not mint runtime ALLOW, entitlement, or final pricing authorization.
+
+**Disposition:** `FAIL_CLOSED / AGGREGATE_AND_KV_READBACK_UNVERIFIED_AND_AUTHENTIC_COST_UNOBSERVED`.
