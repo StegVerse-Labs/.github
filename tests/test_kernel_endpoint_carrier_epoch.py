@@ -87,7 +87,7 @@ class CarrierEpochForwardingTests(unittest.TestCase):
             self.assertTrue(record[key].strip(), key)
         self.assertEqual(record["failure_code"], str(raised.exception))
         self.assertEqual(record["owning_existing_goal"], GOAL)
-        self.assertEqual(record["failed_predicate"], "HB_EPOCH_IS_SUPPLIED_BY_THE_CARRIER_AS_DIGITS_GE_32")
+        self.assertEqual(record["failed_predicate"], "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
         self.assertIs(record["derived_from_clock"], False)
         return record
 
