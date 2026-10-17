@@ -5,9 +5,9 @@
   "cosv_id": "10500000110000",
   "issue": "StegVerse-Labs/Site#1509",
   "parent_issue": "StegVerse-Labs/.github#3183",
-  "state": "CLAIMED",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "REGISTRY_CONFORMANCE_RECONCILIATION_NON_AUTHORIZING",
-  "branch": "claude/3183-workspace-wu1-exemption-and-transition",
+  "branch": "claude/3183-release-workspace-wu1-exemption",
   "session_worker_id": "claude:session_01CoqHFrwdZemtzkUWS88RWx",
   "originating_goal": "Register the WU1 Personal-path node-binding precondition as an exemption with an actionable non-ALLOW disposition (silent non-conformance is prohibited), correct the stale WU1 current_state and the stale REMAINING_THREE_BLOCKERS transition wording (Site#1509 lane D checkpoint 6230887898).",
   "claimed_paths": [
@@ -23,5 +23,8 @@
     "Do not modify .github#3012 lane files"
   ],
   "authority_effect": "NONE",
-  "github_runtime_authority": "NONE"
+  "github_runtime_authority": "NONE",
+  "merged_pr": "StegVerse-Labs/.github#3209",
+  "merged_commit": "3da74c7471a5c7a8e2454a22868168371e573c9a",
+  "claim_released_at_basis": "merge of #3209 at its exact head 31a4876c"
 }
