@@ -43,7 +43,7 @@
     ],
     "paths": [
       "stegverse/tier_pricing.py",
-      "stegverse/cost_component_registry.py"
+      "stegverse/cost_registry.py"
     ]
   },
   "adjacent_task_refs": [
@@ -69,11 +69,13 @@
     "issues_intr_allow": false
   },
   "source_state": {
-    "sdk_main": "ba5bbf42eabec6a6ae3b0efdff7c683967a79083",
+    "sdk_main": "ae4a2a12fb3261e5d9fbee1dae1b4195bcf69fc9",
     "tier_pricing_module": "stegverse/tier_pricing.py",
-    "tier_pricing_source_disposition": "SOURCE_MERGED_VIA_SDK_527",
-    "cost_component_registry_module": "NOT_PRESENT",
-    "sdk_538_disposition": "NOT_INDEPENDENTLY_VERIFIED",
+    "tier_pricing_source_disposition": "SOURCE_MERGED_VIA_SDK_527_AND_OWNERSHIP_CORRECTED_VIA_SDK_540",
+    "cost_component_registry_module": "stegverse/cost_registry.py",
+    "sdk_538_disposition": "MERGED_SOURCE_VERIFIED",
+    "sdk_538_merge_commit": "07a6a90ad39c739f7b8a6d426f334a6b9649c09d",
+    "sdk_540_merge_commit": "ae4a2a12fb3261e5d9fbee1dae1b4195bcf69fc9",
     "source_merge_proves_runtime": false
   },
   "remaining_predicates": [
@@ -111,10 +113,12 @@
     "control/goal-task-allocation-requests/sdk-484-cost-derived-tier-pricing-2026-10-17.json",
     "https://github.com/StegVerse-org/StegVerse-SDK/pull/527",
     "https://github.com/StegVerse-org/StegVerse-SDK/pull/538",
-    "StegVerse-org/StegVerse-SDK@ba5bbf42eabec6a6ae3b0efdff7c683967a79083:stegverse/tier_pricing.py",
+    "StegVerse-org/StegVerse-SDK@ae4a2a12fb3261e5d9fbee1dae1b4195bcf69fc9:stegverse/tier_pricing.py",
     "SV-COST-FIVE-LANE-RESULTS-001",
     "SV-COST-ELEVEN-LANE-RESULTS-001",
     "data/canonical-task-records/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json",
-    "data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
+    "data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json",
+    "StegVerse-org/StegVerse-SDK@07a6a90ad39c739f7b8a6d426f334a6b9649c09d:stegverse/cost_registry.py",
+    "https://github.com/StegVerse-org/StegVerse-SDK/pull/540"
   ]
 }
