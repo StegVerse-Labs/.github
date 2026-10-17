@@ -233,14 +233,21 @@ class GovernanceReverseLegTests(ReverseIntrRouteCase):
         self.assertIn("mesh_location_required_from_materializer", refused["detail"])
         self.assertEqual(self.frames_to(PEER), [])
 
-    def test_no_answer_is_pending_and_records_no_closure(self):
+    def test_no_answer_fails_closed_and_records_no_closure(self):
         emitted = self.emit_on_mesh(self.payload(), capability="governance")
-        pending = self.close(emitted)
-        self.assertEqual(pending["disposition"], "PENDING")
-        self.assertIs(pending["closed"], False)
-        self.assertIs(pending["closure_recorded"], False)
-        self.assertIs(pending["absence_is_not_a_transition"], True)
-        self.assertEqual(pending["authority_effect"], "NONE_OBSERVATION_ONLY")
+        absent = self.close(emitted)
+        self.assertEqual(absent["disposition"], "FAIL_CLOSED")
+        self.assertEqual(absent["failure_code"], "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION")
+        self.assertEqual(absent["failed_predicate"],
+                         "EGRESS_RESPONSE_DURABLY_MATERIALIZED_BEFORE_CLOSE")
+        for field in ("required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(absent[field], field)
+        self.assertIs(absent["closed"], False)
+        self.assertIs(absent["closure_recorded"], False)
+        self.assertIs(absent["refusal_recorded"], False)
+        self.assertIs(absent["absence_is_not_a_transition"], True)
+        self.assertEqual(absent["authority_effect"], "NONE_REFUSAL_ONLY")
         self.assertEqual(self.repo_classes(), ["ORGANIZATION_EGRESS_EMITTED"])
 
     def test_a_deny_decision_closes_allow_and_grants_nothing(self):
