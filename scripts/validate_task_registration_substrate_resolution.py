@@ -188,15 +188,12 @@ def validate_resolution(record: dict) -> None:
     external_required = resolution.get("external_device_required")
     if not isinstance(external_required, bool):
         fail(f"{task_id}: external_device_required must be boolean")
+    # ACTIONS BY MANIFEST: no transition may require an external machine.
+    # Preserve legacy schema compatibility while refusing prohibited authority.
     if external_required:
-        for row in reviews[:-1]:
-            if row.get("disposition") not in {"UNSUITABLE", "NOT_APPLICABLE"}:
-                fail(f"{task_id}: external device cannot be required before all single-device substrates are exhausted")
-            if row.get("limitation_class") == "EVIDENCE_REACHABILITY":
-                fail(f"{task_id}: external device cannot be required from an evidence/reachability gap")
-        last = reviews[-1]
-        if last.get("disposition") != "SELECTED" or selected != REVIEW_ORDER[-1]:
-            fail(f"{task_id}: external_device_required requires last-resort external substrate selection")
+        fail(f"{task_id}: EXTERNAL_MACHINE_DEPENDENCY_PROHIBITED - external_device_required must be false")
+    if selected == "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT":
+        fail(f"{task_id}: EXTERNAL_MACHINE_DEPENDENCY_PROHIBITED - external-device fallback cannot be selected")
 
 
 def changed_task_records(base_ref: str) -> list[Path]:
