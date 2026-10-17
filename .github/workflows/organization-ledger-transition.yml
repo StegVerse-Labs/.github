@@ -125,7 +125,7 @@ jobs:
             git fetch --no-tags origin "+$LEDGER_REF:$LEDGER_REF"
             echo "ledger tip before append: $(git rev-parse "$LEDGER_REF")"
           else
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger already exists; this writer appends to it and does not open a replacement","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger already exists; this writer appends to it and does not open a replacement","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"re-dispatch once refs/stegverse/organization-ledger is published for this organization","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
             exit 1
           fi
           git rev-parse "$LEDGER_REF" > "$RUNNER_TEMP/ledger-before"
@@ -143,7 +143,7 @@ jobs:
           def visible(value):
               return bool(value) and all(33 <= ord(character) <= 126 for character in value)
           if not visible(communication) or not visible(packet):
-              print('{"disposition":"FAIL_CLOSED","failure_code":"SELF_CLOSURE_INPUT_INVALID","failed_predicate":"COMMUNICATION_ID_AND_PACKET_ID_ARE_SINGLE_VISIBLE_TOKENS","required_evidence_or_repair":"dispatch communication_id as one visible token","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}')
+              print('{"disposition":"FAIL_CLOSED","failure_code":"SELF_CLOSURE_INPUT_INVALID","failed_predicate":"COMMUNICATION_ID_AND_PACKET_ID_ARE_SINGLE_VISIBLE_TOKENS","required_evidence_or_repair":"dispatch communication_id and packet_id each as one visible token","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"re-dispatch with communication_id and packet_id as single visible tokens","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}')
               sys.exit(1)
           path = os.environ["RUNNER_TEMP"] + "/closure-inputs"
           open(path, "w", encoding="utf-8").write(communication + "\n" + packet + "\n")
@@ -161,7 +161,7 @@ jobs:
           # Time is supplied with the dispatch. It is not sampled from a clock.
           case "$HB_EPOCH" in
             ''|*[!0-9]*)
-              echo '{"disposition":"FAIL_CLOSED","failure_code":"DISPATCH_HB_EPOCH_INVALID","failed_predicate":"HB_EPOCH_IS_SUPPLIED_AS_A_NON_NEGATIVE_INTEGER","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false}'
+              echo '{"disposition":"FAIL_CLOSED","failure_code":"DISPATCH_HB_EPOCH_INVALID","failed_predicate":"HB_EPOCH_IS_SUPPLIED_AS_A_NON_NEGATIVE_INTEGER","required_evidence_or_repair":"dispatch hb_epoch as ASCII decimal digits (a non-negative integer); no clock is read for it","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"re-dispatch with a supplied hb_epoch","consequence_committed":false}'
               exit 1 ;;
           esac
           python resident-runtime/intr_destination_ingress.py \
@@ -182,9 +182,29 @@ jobs:
               "peer_enumerated": closure.get("peer_enumerated"),
               "federation_directory_consulted": closure.get("federation_directory_consulted"),
           }, sort_keys=True))
+          retry = ".github/workflows/organization-ledger-transition.yml"
+          goal = "StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody"
           if closure.get("disposition") != "ALLOW":
+              print(json.dumps({
+                  "disposition": closure.get("disposition") or "FAIL_CLOSED",
+                  "failure_code": "SELF_CLOSURE_NOT_ALLOW",
+                  "failed_predicate": closure.get("failed_predicate") or "SELF_CLOSURE_DISPOSITION_IS_ALLOW",
+                  "required_evidence_or_repair": "a diagnostic self-closure that satisfies the failed predicate (" + str(closure.get("detail")) + "); nothing is published",
+                  "retry_entrypoint": retry,
+                  "owning_existing_goal": goal,
+                  "next_attempt": "re-dispatch with a new communication_id once the failed predicate is repaired",
+              }, sort_keys=True))
               raise SystemExit(1)
           if closure.get("federation_directory_consulted") is not False or closure.get("peer_enumerated") is not False:
+              print(json.dumps({
+                  "disposition": "FAIL_CLOSED",
+                  "failure_code": "SELF_CLOSURE_ENUMERATED_A_PEER",
+                  "failed_predicate": "SELF_CLOSURE_READS_NO_FEDERATION_DIRECTORY_AND_NAMES_NO_PEER",
+                  "required_evidence_or_repair": "a self-closure result with federation_directory_consulted=false and peer_enumerated=false; nothing is published",
+                  "retry_entrypoint": retry,
+                  "owning_existing_goal": goal,
+                  "next_attempt": "re-dispatch once intr_destination_ingress.py --self-close reports no peer and no federation read",
+              }, sort_keys=True))
               raise SystemExit(1)
           PY
 
@@ -194,7 +214,7 @@ jobs:
           before=$(cat "$RUNNER_TEMP/ledger-before")
           after=$(git rev-parse "$LEDGER_REF")
           if ! git merge-base --is-ancestor "$before" "$after"; then
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_HISTORY_REWRITTEN","failed_predicate":"APPEND_FAST_FORWARDS_THE_EXISTING_REF","required_evidence_or_repair":"the local ref is not a descendant of the fetched tip; nothing is pushed","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_HISTORY_REWRITTEN","failed_predicate":"APPEND_FAST_FORWARDS_THE_EXISTING_REF","required_evidence_or_repair":"the local ref is not a descendant of the fetched tip; nothing is pushed","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"re-dispatch from the published tip; existing commits stay as parents","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
             exit 1
           fi
           echo "ledger tip after append: $after (ancestor $before)"
@@ -203,7 +223,7 @@ jobs:
         run: |
           set -euo pipefail
           if ! git push origin "$LEDGER_REF:$LEDGER_REF"; then
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_PUBLISH_RACE","failed_predicate":"PUBLISHED_REF_FAST_FORWARDS","required_evidence_or_repair":"another append moved the ref first; this run published nothing","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_PUBLISH_RACE","failed_predicate":"PUBLISHED_REF_FAST_FORWARDS","required_evidence_or_repair":"another append moved the ref first; this run published nothing","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"re-dispatch; the next run appends on top of the moved tip","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
             exit 1
           fi
 
@@ -214,7 +234,7 @@ jobs:
           git init -q --bare "$fresh"
           auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
           if [ -z "$auth_header" ]; then
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"re-dispatch with checkout credentials available to the fresh fetch","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
             exit 1
           fi
           git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \

@@ -9,6 +9,7 @@ import importlib.util
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -261,6 +262,79 @@ class WriterContract(unittest.TestCase):
         self.assertNotIn("federation.json", text)
         self.assertIn('group: organization-ledger', text)
         self.assertIn("merge-base --is-ancestor", text)
+
+    SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                  "retry_entrypoint", "owning_existing_goal", "next_attempt")
+    OWNING_GOAL = "StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody"
+
+    def _assert_six(self, message):
+        self.assertIn(message["disposition"], ("FAIL_CLOSED", "DENY"), message)
+        for field in self.SIX_FIELDS:
+            self.assertIsInstance(message.get(field), str, (field, message))
+            self.assertTrue(message[field].strip(), (field, message))
+        self.assertEqual(message["owning_existing_goal"], self.OWNING_GOAL)
+        self.assertEqual(message["retry_entrypoint"], ".github/workflows/organization-ledger-transition.yml")
+
+    def test_every_fail_closed_or_deny_message_in_the_workflow_carries_the_six_fields(self):
+        import re
+        text = WORKFLOW.read_text(encoding="utf-8")
+        literals = re.findall(r"""(?:echo|print\()\s*'(\{"disposition":"(?:FAIL_CLOSED|DENY)".*?\})'""", text)
+        codes = set()
+        for literal in literals:
+            message = json.loads(literal)
+            self._assert_six(message)
+            codes.add(message["failure_code"])
+        self.assertEqual(codes, {
+            "ORGANIZATION_LEDGER_REF_ABSENT", "SELF_CLOSURE_INPUT_INVALID", "DISPATCH_HB_EPOCH_INVALID",
+            "ORGANIZATION_LEDGER_HISTORY_REWRITTEN", "ORGANIZATION_LEDGER_PUBLISH_RACE",
+            "LEDGER_READBACK_CREDENTIAL_UNAVAILABLE"})
+        # No one-line refusal names a disposition without the six fields (the
+        # multi-line closure messages are executed in the next test).
+        for line in text.splitlines():
+            if re.search(r'"disposition":"(FAIL_CLOSED|DENY)"', line):
+                for field in self.SIX_FIELDS:
+                    self.assertIn('"%s"' % field, line)
+        # Every failing exit in a run step is preceded by a six-field message.
+        lines = text.splitlines()
+        for index, line in enumerate(lines):
+            if re.search(r"\bexit 1\b|sys\.exit\(1\)|SystemExit\(1\)", line):
+                window = "\n".join(lines[max(0, index - 12):index])
+                self.assertIn("owning_existing_goal", window, "line %d: %s" % (index + 1, line.strip()))
+
+    def test_the_closure_summary_resolves_a_non_allow_closure_with_the_six_fields(self):
+        import textwrap
+        text = WORKFLOW.read_text(encoding="utf-8")
+        start = text.index("closure = json.load(")
+        start = text.rindex("python - <<'PY'\n", 0, start) + len("python - <<'PY'\n")
+        end = text.index("\n          PY\n", start)
+        script = textwrap.dedent(text[start:end])
+        cases = [
+            ({"disposition": "DENY", "failed_predicate": "SUBMISSION_IS_AN_ECOSYSTEM_COMMUNICATION",
+              "detail": "payload is not an object", "federation_directory_consulted": False,
+              "peer_enumerated": False}, "DENY", "SELF_CLOSURE_NOT_ALLOW"),
+            ({"disposition": "ALLOW", "federation_directory_consulted": True, "peer_enumerated": False},
+             "FAIL_CLOSED", "SELF_CLOSURE_ENUMERATED_A_PEER"),
+        ]
+        for closure, disposition, code in cases:
+            with tempfile.TemporaryDirectory() as tmp:
+                Path(tmp, "results").mkdir()
+                Path(tmp, "results", "closure.json").write_text(json.dumps(closure), encoding="utf-8")
+                run = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True,
+                                     env=dict(os.environ, RUNNER_TEMP=tmp))
+            self.assertEqual(run.returncode, 1, run.stderr)
+            message = json.loads(run.stdout.strip().splitlines()[-1])
+            self.assertEqual(message["disposition"], disposition)
+            self.assertEqual(message["failure_code"], code)
+            self._assert_six(message)
+        with tempfile.TemporaryDirectory() as tmp:
+            Path(tmp, "results").mkdir()
+            Path(tmp, "results", "closure.json").write_text(json.dumps(
+                {"disposition": "ALLOW", "federation_directory_consulted": False, "peer_enumerated": False}),
+                encoding="utf-8")
+            run = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True,
+                                 env=dict(os.environ, RUNNER_TEMP=tmp))
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertNotIn("failure_code", run.stdout)
 
     def test_files_touched_for_the_writer_do_not_use_the_forbidden_word(self):
         token = "g" + "rant"
