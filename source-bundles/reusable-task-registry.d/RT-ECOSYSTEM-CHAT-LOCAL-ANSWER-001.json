@@ -21,7 +21,10 @@
       "source_ref": "StegVerse-org/LLM-adapter#426@578e922c5ed32f6b420add2e0b4a3d982c9e244a:llm_adapter/ecosystem_fact_index.py",
       "source_blob": "742823b2a7f496ca02c1700821552537844197bd",
       "state": "OWNER_GATED_PENDING_MERGE_FAIL_CLOSED",
-      "observed": "present at LLM-adapter#426 head, absent from main@4fbbfff40dbf920662c6a5416ea576253163c105 at 2026-10-18",
+      "observed": "present at LLM-adapter#426 @ 578e922c (blob 742823b2); #426 has since moved, blob unchanged; absent from main@4fbbfff40dbf920662c6a5416ea576253163c105 at 2026-10-18",
+      "review_refs": [
+        "StegVerse-org/LLM-adapter#426 comment 6255890731 (WU-B24): 2 defects found in the fact index before merge; the dependency stays FAIL_CLOSED until #426 merges"
+      ],
       "vendored": false,
       "failure_code": "FACT_INDEX_DEPENDENCY_NOT_ON_MAIN"
     },
