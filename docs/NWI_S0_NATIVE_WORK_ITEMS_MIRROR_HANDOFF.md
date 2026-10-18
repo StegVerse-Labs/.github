@@ -206,7 +206,7 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - The round-3 fixtures (top-level hb_epoch, `evidence` on the org receipt) were removed.
 
 ## Round 5: ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH (JD-P4-3, part-decided by invariant, orchestrator 15:09Z)
-- **Invariant (decided, partial).** For admission, hb_epoch is observed state: the epoch on the org-ledger head receipt the SV_CHANGE base is bound to (`$.hb_reference.epoch`), read and sealed by Lane C's base-state readback (Labs#3266 @641f4b03, readback blob `fbd453e531fc8d8f62261d2a72bc7a596798a445`, sha256 `c78026fd…45ed`, `stegverse.sv-change-base-state-readback/v1`: `hb_epoch` slot plus `hb_epoch_source`, sealed by `result_sha256`). The shared supplied-epoch rule (726248a5) still applies to the read value.
+- **Invariant (decided, partial).** For admission, hb_epoch is observed state: the epoch on the org-ledger head receipt the SV_CHANGE base is bound to (`$.hb_reference.epoch`), read and sealed by Lane C's base-state readback (Labs#3266 @2ba0e329, readback blob `2c730142254b78a5b9e1c05566fe6f5111b7d571`, sha256 `88d3b72b…eafe`, `stegverse.sv-change-base-state-readback/v1`: `hb_epoch` slot plus `hb_epoch_source`, sealed by `result_sha256`). The shared supplied-epoch rule (726248a5) still applies to the read value.
   - NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH is its native-record application and is no longer provisional. The two invariants cross-reference each other in `invariants.json`.
   - Still escalated, and not touched here: minting an epoch for a new ledger append.
 - **726248a5.** This is the sha256 of the source segment of `org-kernel/kernel.py::supplied_epoch_failure` (lines 236-269; file blob ffec5d648d7fa4aead1f44f76df936a2da21bb96 at fc19b532). It is not a git object.
@@ -265,7 +265,7 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - The record goes to the PR body (projection) and to Lane B.
 
 ## Round 7 (epoch part): the readback pin, and UNKNOWN is FAIL_CLOSED
-- **Readback alignment (Labs#3266 @641f4b03, readback blob fbd453e5, tests blob 234867df):**
+- **Readback alignment (Labs#3266 @2ba0e329, readback blob 2c730142, tests blob 31550f4d):**
   - `hb_epoch_source` is `{ledger_head, receipt: "receipts/<hex>.json", field}`. It is sealed with the epoch on ALLOW and on DENY HB_EPOCH_MISMATCH, and present but null on FAIL_CLOSED.
   - The reader accepts both observed dispositions and requires the receipt path; UNKNOWN is allowed only for a fixture in fixture_mode. The fixture key `receipt_sha256` is renamed `receipt`.
   - Pinned in `invariants.json` (`readback_pin`, `readback_semantics`) and `sv_work_items.BASE_STATE_READBACK_PIN`.
@@ -301,3 +301,18 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - Corpus: `ASC-NATIVE_RECORD_FIELDS_ARE_OBSERVED@transition` v1 (`owning_goal[UNKNOWN]`), appended last; no id moved.
   - Open item: external validators (Lane B / Lane C) that still emit DENY UNKNOWN_IN_NATIVE_RECORD.
 - **Caveat:** Q-P1-EPOCH-PROVENANCE is still open.
+
+## Round 8 (commit 3): the NWI-S0 gate declaration, the #3266 repin, the marker, and the contract pins
+
+- **STAGE_GATE_DECLARATION_IS_COMPLETE:** `stages/NWI-S0.json` `exit_gate_check` now declares everything Lane B (SV-LLM/.github#46) needs to emit `nwi-s0-exit-gate`. `validate_gate_declaration(manifest)` (also run by `stage_gate.gate_check` and by `check_command` for a gate id) gives FAIL_CLOSED STAGE_GATE_DECLARATION_INCOMPLETE with all six fields and a `missing` list when any part is absent, UNKNOWN, or has drifted from required-checks.json.
+  - **Evidence producers:** SV_WORK_ITEM_SCHEMAS_VALIDATE is produced by `schema-validate` (`python3 scripts/build_sv_native_fixtures.py --check`, which now really validates the migration records against the sv-issue and sv-change schemas; a failure gives FAIL_CLOSED SV_WORK_ITEM_SCHEMA_INVALID). EVERY_MIGRATION_FIXTURE_LOADS is produced by `unit-tests` (MigrationFixtureTests). The argv, command_paths and expected values are copied from the row; required-checks.json is unchanged.
+  - **Receipt form:** sv-check-receipt.v1 is unchanged. The receipt is appended to the evaluated repository's own ledger (`receipts/<org hex>.json`, `source-receipts/<repo hex>.json`) and validated by `validate_gate_receipt`.
+  - **Subject:** `stegverse.nwi-stage-evaluation-subject/v1` {repository, stage_id, manifest_blob, evaluated_commit, base_ref}. Every gate or producer receipt carries `change_digest = stage_evaluation_digest(subject)` ("sha256:" + sha256 of the change_id canonical serialization) and `head_sha = evaluated_commit`. The STAGE_GATE outcome carries the subject (`evaluate_gate(..., subject=)`). An unobserved subject gives FAIL_CLOSED STAGE_EVALUATION_SUBJECT_UNOBSERVED.
+  - **hb_epoch:** comes from the Labs#3266 readback (pinned at 2ba0e329) at subject.base_ref.ledger_head, checked with `verify_admission_hb_epoch(target_repository=subject.repository)`. When the epoch is unobserved, no receipt is emitted and the evaluation is FAIL_CLOSED.
+  - **Cadence:** one evaluation per STAGE_GATE transition request (not per head, and not a required-checks row). One failing receipt derives exactly one issue (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE).
+  - **Corpus:** no scenario was added. The admission corpus holds SV_CHANGE scenarios evaluated by `admit()`, while a gate declaration is a property of a stage manifest; the unit tests cover it instead.
+- **Repin #3266 to 2ba0e329** (readback blob 2c730142, tests blob 31550f4d), replacing 641f4b03/fbd453e5. Delta: a malformed flag now gives DENY HB_EPOCH_MISMATCH; `""`, `"null"` or the sentinel gives FAIL_CLOSED with both slots null; an omitted-flag ALLOW adds `cross_checked: false` and `hb_epoch_cross_check`. Our reader needed no change.
+- **NOT_CROSS_CHECKED_MARKER:** the canonical marker is ours: `cross_checked: false` plus `detail: "HB_EPOCH_NOT_CROSS_CHECKED"`. It is not moved into `hb_epoch_cross_check`.
+- **Facts function:** `derive_resolved_issue_facts(ledger_objects, ledger_ref, change, issues)` is pure and re-derivable. ledger_ref must be `refs/stegverse/organization-ledger@<change.base_ref.ledger_head>`, else FAIL_CLOSED RESOLVED_ISSUE_LEDGER_NOT_CHANGE_BASE. `admission_inputs(..., ledger_objects=, ledger_ref=, issue_records=)` uses it; supplying facts from both sources gives FAIL_CLOSED RESOLVED_ISSUE_FACTS_DOUBLY_SOURCED.
+- **sv-change schema (pin change):** the hb_epoch digit pattern is now `^0*(?:3[2-9]|[4-9][0-9]|[1-9][0-9]{2,})$`, matching the supplied-epoch rule. Unobserved values stay schema-invalid, and validate_change / admission give FAIL_CLOSED.
+- **CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN:** `data/sv-work-items/contract-pins.json` lists the git blob sha and sha256 of every canonical contract file and never lists itself. `build --check` flags it as stale.

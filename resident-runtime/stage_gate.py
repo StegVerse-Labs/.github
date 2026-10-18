@@ -59,8 +59,14 @@ def gate_check(stage: Mapping[str, Any]) -> dict[str, Any] | None:
         raise _refusal("STAGE_GATE_CHECK_NOT_S1_EMITTED", wi.STAGE_GATE_ISSUE_INVARIANT,
                        "declare exit_gate_check as a built-in of the NWI-S1 verifier (" + wi.S1_VERIFIER_REF + ") appended by the org writer",
                        "re-evaluate once the manifest declares the gate check", stage_id=stage.get("stage_id"))
+    try:  # FAIL_CLOSED STAGE_GATE_DECLARATION_INCOMPLETE: the verifier cannot emit an incompletely declared gate
+        wi.validate_gate_declaration(stage)
+    except wi.Refusal as r:
+        r.record["retry_entrypoint"] = ENTRY
+        raise
     return {"check_id": c["check_id"], "verifier_ref": oc["verifier_ref"], "surface": c["surface"],
-            "declared_in": wi.GATE_CHECKS[c["check_id"]]["declared_in"]}
+            "declared_in": wi.GATE_CHECKS[c["check_id"]]["declared_in"],
+            "producers": {p["predicate"]: p["check_id"] for p in c["evidence_producers"]}}
 
 
 def _refusal(code: str, predicate: str, repair: str, nxt: str, **d: Any) -> wi.Refusal:
@@ -70,10 +76,19 @@ def _refusal(code: str, predicate: str, repair: str, nxt: str, **d: Any) -> wi.R
 
 
 def evaluate_gate(current_stage: str, target_stage: str, evidence: Mapping[str, Any], *, hb_epoch: Any,
-                  stages: list[dict[str, Any]] | None = None) -> dict[str, Any]:
-    """Returns {disposition, stage_before, stage_after, entry_transition|failure six fields, record}."""
+                  stages: list[dict[str, Any]] | None = None, subject: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Returns {disposition, stage_before, stage_after, entry_transition|failure six fields, record}. With `subject` (the
+    stage-evaluation subject, sv_work_items.stage_evaluation_subject) the outcome carries it and its digest, which every
+    receipt of this evaluation binds as change_digest (the receipt shape itself is closed and cannot carry the subject)."""
     out_base = {"transition_class": "STAGE_GATE", "stage_before": current_stage, "stage_after": current_stage}
     try:
+        if subject is not None:
+            out_base["evaluation_subject_digest"] = wi.stage_evaluation_digest(subject)
+            out_base["evaluation_subject"] = json.loads(json.dumps(subject))
+            if subject.get("stage_id") != current_stage:
+                raise _refusal("STAGE_EVALUATION_SUBJECT_MISMATCH", wi.GATE_DECLARATION_PREDICATE,
+                               "the evaluation subject names the stage being evaluated", "re-evaluate with this stage's subject",
+                               subject_stage_id=subject.get("stage_id"))
         wi.epoch_check(hb_epoch, "evaluate_gate")
         stages = stages if stages is not None else load_stages()
         by = {m["stage_id"]: m for m in stages}

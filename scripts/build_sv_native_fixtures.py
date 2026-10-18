@@ -22,6 +22,7 @@ def _load(n, p):
 wi = _load("sv_work_items", "resident-runtime/sv_work_items.py")
 al = _load("admission_learning", "resident-runtime/admission_learning.py")
 mg = _load("sv_migration", "resident-runtime/sv_migration.py")
+ss = _load("schema_subset", "resident-runtime/schema_subset.py")
 
 FIXTURE_HB_EPOCH = "1024"
 SESSION = "P1 Ecosystem AI Lane (d8cbc58c)"
@@ -162,7 +163,7 @@ def signoff_receipts_for(ch: dict) -> list[dict]:
 
 def fixture_base_state_readback(base: dict = LABS_BASE, hb_epoch: str = FIXTURE_HB_EPOCH) -> dict:
     """FIXTURE ONLY: a sealed ALLOW base-state readback receipt in the shape of Lane C's RTC-SV-CHANGE-BASE-STATE-
-    READBACK-014 (Labs#3266 @641f4b03, readback blob fbd453e5: hb_epoch_source {ledger_head, receipt, field}) for the positive controls. Nothing
+    READBACK-014 (Labs#3266 @2ba0e329, readback blob 2c730142: hb_epoch_source {ledger_head, receipt, field}) for the positive controls. Nothing
     was read: fixture_only is true, the values no readback observed are UNKNOWN and listed in unobserved_fields, and
     sv_work_items.verify_admission_hb_epoch counts it only in fixture_mode."""
     return wi.seal({"schema": wi.BASE_STATE_READBACK_SCHEMA, "component_id": "RTC-SV-CHANGE-BASE-STATE-READBACK-014",
@@ -539,13 +540,66 @@ def corpus() -> tuple[list[dict], list[dict], list[dict]]:
 def _jsonl(rows): return "".join(json.dumps(r, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n" for r in rows)
 
 
+# CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN (orchestrator 16:30Z): every canonical contract file a consumer (Lane B #46,
+# Lane C TVC#519, Lane D, P4) pins, with its git blob sha and sha256. Consumers pin the manifest's own digest and re-pin a
+# file only when its entry changes. The manifest never lists itself.
+CONTRACT_PINS = ROOT / "data/sv-work-items/contract-pins.json"
+CONTRACT_FILES = sorted([
+    "schemas/admission-corpus.v1.schema.json", "schemas/canonical-task-work-items.v1.schema.json",
+    "schemas/sv-change-signoff-receipt.v0.1.schema.json", "schemas/sv-change.v1.schema.json", "schemas/sv-check-receipt.v1.schema.json",
+    "schemas/sv-issue.v1.schema.json", "schemas/sv-surface-aliases.v1.schema.json",
+    "data/sv-work-items/invariants.json", "data/sv-work-items/required-checks.json", "data/sv-work-items/lifecycle-transitions.json",
+    "data/sv-work-items/surface-aliases.json", *["data/sv-work-items/stages/NWI-S%d.json" % i for i in range(5)],
+    "data/sv-work-items/migration/sv-issues.jsonl", "data/sv-work-items/migration/sv-changes.jsonl",
+    "data/admission-scenarios/classes.jsonl", "data/admission-scenarios/corpus.jsonl", "data/admission-scenarios/seed-append-outcomes.jsonl",
+    "data/admission-scenarios/tvc-replay/replay-map.jsonl", "data/admission-scenarios/tvc-replay/sv-changes.jsonl",
+    "data/admission-scenarios/tvc-replay/signoff-receipts.jsonl",
+    "resident-runtime/sv_work_items.py", "resident-runtime/admission_learning.py", "resident-runtime/stage_gate.py",
+    "resident-runtime/sv_migration.py", "resident-runtime/schema_subset.py", "scripts/build_sv_native_fixtures.py"])
+
+
+def git_blob_sha(data: bytes) -> str:
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+
+
+def contract_pins(generated: dict[Path, str]) -> str:
+    """The manifest over the files as they will be committed: generated text for derived files, the tree for the rest."""
+    files = {}
+    for rel in CONTRACT_FILES:
+        p = ROOT / rel
+        data = generated[p].encode("utf-8") if p in generated else p.read_bytes()
+        files[rel] = {"blob": git_blob_sha(data), "sha256": "sha256:" + hashlib.sha256(data).hexdigest()}
+    body = {"schema": "stegverse.sv-contract-pins/v1", "repository": "StegVerse-Labs/.github",
+            "invariant": "data/sv-work-items/invariants.json#CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN",
+            "digest_rule": {"blob": "git blob sha1 of the file bytes (git hash-object)", "sha256": "sha256:<hex> of the file bytes"},
+            "excludes": ["data/sv-work-items/contract-pins.json (the manifest never lists itself)"],
+            "consumer_contract": "pin this manifest's own blob and sha256; re-pin a listed file only when its entry changes",
+            "generated_by": "scripts/build_sv_native_fixtures.py (--check flags a stale manifest)", "files": files}
+    return json.dumps(body, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+def schema_errors(generated: dict[Path, str]) -> list[dict]:
+    """SV_WORK_ITEM_SCHEMAS_VALIDATE (NWI-S0 exit gate, check schema-validate): every derived migration record validates
+    against its pinned schema (resident-runtime/schema_subset.py)."""
+    bad = []
+    for name, schema_file in (("sv-issues.jsonl", "schemas/sv-issue.v1.schema.json"), ("sv-changes.jsonl", "schemas/sv-change.v1.schema.json")):
+        schema = json.loads((ROOT / schema_file).read_text())
+        for n, line in enumerate(generated[MIG / name].splitlines()):
+            errs = ss.validate(json.loads(line), schema)
+            if errs:
+                bad.append({"file": "data/sv-work-items/migration/" + name, "line": n + 1, "schema": schema_file, "errors": errs[:5]})
+    return bad
+
+
 def build() -> dict[Path, str]:
     c, s, r = corpus()
     iss = issues()
-    return {MIG / "sv-issues.jsonl": _jsonl(iss), MIG / "sv-changes.jsonl": _jsonl(changes(iss)), SCN / "classes.jsonl": _jsonl(c), SCN / "corpus.jsonl": _jsonl(s),
-            SCN / "seed-append-outcomes.jsonl": _jsonl(r),
-            **dict(zip((SCN / "tvc-replay/sv-changes.jsonl", SCN / "tvc-replay/replay-map.jsonl", SCN / "tvc-replay/signoff-receipts.jsonl"),
-                       map(_jsonl, replay(s))))}
+    out = {MIG / "sv-issues.jsonl": _jsonl(iss), MIG / "sv-changes.jsonl": _jsonl(changes(iss)), SCN / "classes.jsonl": _jsonl(c), SCN / "corpus.jsonl": _jsonl(s),
+           SCN / "seed-append-outcomes.jsonl": _jsonl(r),
+           **dict(zip((SCN / "tvc-replay/sv-changes.jsonl", SCN / "tvc-replay/replay-map.jsonl", SCN / "tvc-replay/signoff-receipts.jsonl"),
+                      map(_jsonl, replay(s))))}
+    out[CONTRACT_PINS] = contract_pins(out)
+    return out
 
 
 def pin_violations(out: dict[Path, str]) -> list[dict]:
@@ -553,6 +607,8 @@ def pin_violations(out: dict[Path, str]) -> list[dict]:
     no placeholder such as WORKTREE is ever written."""
     bad = []
     for p, text in out.items():
+        if p == CONTRACT_PINS:
+            continue  # not a record file: hashes only
         for n, line in enumerate(text.splitlines()):
             if "WORKTREE" in line:
                 bad.append({"file": str(p.relative_to(ROOT)), "line": n + 1, "found": "WORKTREE"})
@@ -573,8 +629,14 @@ def main(argv=None) -> int:
     if bad:  # FAIL_CLOSED in both modes: nothing with an unpinned row is written
         print(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "REQUIRED_CHECKS_ROW_NOT_PINNED", "violations": bad}, sort_keys=True))
         return 1
+    invalid = schema_errors(out)
+    if invalid:  # FAIL_CLOSED in both modes: a record that does not validate is never written
+        print(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "SV_WORK_ITEM_SCHEMA_INVALID", "violations": invalid}, sort_keys=True))
+        return 1
     if args.check:
-        print(json.dumps({"disposition": "ALLOW" if not stale else "FAIL_CLOSED", "stale": stale}, sort_keys=True)); return 1 if stale else 0
+        print(json.dumps({"disposition": "ALLOW" if not stale else "FAIL_CLOSED", "stale": stale,
+                          "schemas_validated": ["schemas/sv-change.v1.schema.json", "schemas/sv-issue.v1.schema.json"]}, sort_keys=True))
+        return 1 if stale else 0
     for p, t in out.items():
         p.parent.mkdir(parents=True, exist_ok=True); p.write_text(t)
     print(json.dumps({"written": sorted(str(p.relative_to(ROOT)) for p in out)})); return 0

@@ -44,6 +44,7 @@
       "decided_by": "orchestrator 2026-10-18T15:47Z",
       "decides": "Q-SV-NATIVE-BOOTSTRAP (how the first NATIVE issue, e.g. the one StegVerse-Labs/.github#3264 resolves, comes to exist); replaces the earlier bootstrap self-admission candidate; there is no special exception",
       "enforced_by": "resident-runtime/sv_work_items.py::verify_resolutions (every NATIVE admission, after the writer checks and before the check receipts) over admission_inputs(..., resolved_issues=resolved_issue_facts(issues, ledger_objects)); validate_issue_set; resident-runtime/stage_gate.py::gate_check",
+      "facts_function": "sv_work_items.derive_resolved_issue_facts(ledger_objects, ledger_ref, change, issues): public, pure, re-derivable; TVC#519 re-derives with it, and admission_inputs(..., ledger_objects=, ledger_ref=, issue_records=) / transition() context ledger_objects use it",
       "gate_check": {
         "check_id": "nwi-s0-exit-gate",
         "declared_in": "data/sv-work-items/stages/NWI-S0.json#exit_gate_check (stage_gate.gate_check)",
@@ -80,30 +81,40 @@
       ],
       "mismatch": {
         "disposition": "DENY",
-        "disposition_source": "orchestrator ruling 2026-10-18 (both verifiers, 60 cases) and the contract invariant refinement 15:59Z (narrowed 16:03Z); Lane C's Labs#3266 @641f4b03 (readback blob fbd453e5) emits DENY HB_EPOCH_MISMATCH for a contradicting --hb-epoch (alignment item closed)",
+        "disposition_source": "orchestrator ruling 2026-10-18 (both verifiers, 60 cases) and the contract invariant refinement 15:59Z (narrowed 16:03Z); Lane C's Labs#3266 @2ba0e329 (readback blob 2c730142) emits DENY HB_EPOCH_MISMATCH for a contradicting --hb-epoch (alignment item closed)",
         "failure_code": "HB_EPOCH_MISMATCH",
         "why_deny": "a sealed epoch that contradicts the record is an observed contradiction, not an unobservation"
       },
       "native_record_application": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
       "readback_pin": {
-        "blob": "fbd453e531fc8d8f62261d2a72bc7a596798a445",
+        "blob": "2c730142254b78a5b9e1c05566fe6f5111b7d571",
         "file": "resident-runtime/sv_change_base_state_readback.py",
-        "head": "641f4b03e612d07047e15f2384d24780e2af86c0",
+        "head": "2ba0e329c224c94863dac15de3f8011f777cb34f",
         "pull_request": 3266,
         "repository": "StegVerse-Labs/.github",
-        "sha256": "c78026fdab4450c953f8cb475f3b20052acce818258340ad8031863ab0fb45ed",
-        "tests_blob": "234867df6cbeb68ab82d9c346761d96e80e56167",
+        "sha256": "88d3b72b3915c71b191b71a0dd7c607dfc675f0490acfe87ec92f808f17eaefe",
+        "tests_blob": "31550f4d54555df4683b37401da39067b71cee60",
         "tests_file": "tests/test_sv_change_base_state_readback_component.py"
       },
+      "readback_pin_history": [
+        {
+          "blob": "fbd453e531fc8d8f62261d2a72bc7a596798a445",
+          "head": "641f4b03e612d07047e15f2384d24780e2af86c0",
+          "replaced_by": "2ba0e329c224c94863dac15de3f8011f777cb34f (commit 3; Lane C TVC#519 @4305631e agrees 57/57 with admit())",
+          "sha256": "c78026fdab4450c953f8cb475f3b20052acce818258340ad8031863ab0fb45ed",
+          "tests_blob": "234867df6cbeb68ab82d9c346761d96e80e56167"
+        }
+      ],
       "readback_semantics": {
+        "delta_641f4b03_to_2ba0e329": "diffed git objects 641f4b03..2ba0e329 (415f5d02, 7a7af552, 5e536a89, 2ba0e329): a malformed --hb-epoch is now DENY HB_EPOCH_MISMATCH with hb_epoch/hb_epoch_source sealed (was FAIL_CLOSED BASE_STATE_NOT_OBSERVED); an explicit '', 'null' or the sentinel is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED with both slots null; an omitted --hb-epoch ALLOW additionally carries cross_checked false and hb_epoch_cross_check HB_EPOCH_NOT_CROSS_CHECKED. The reader needs no change: it takes the epoch from ALLOW or DENY HB_EPOCH_MISMATCH, treats every FAIL_CLOSED as unobserved, and verifies the seal over whatever fields the body carries",
         "fail_closed": "on every FAIL_CLOSED both are present and null; the reader treats any readback that is neither ALLOW nor DENY HB_EPOCH_MISMATCH as HB_EPOCH_SOURCE_UNOBSERVED",
         "fixture": "the seed fixture readback carries receipt UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (listed in unobserved_fields as hb_epoch_source/receipt), counted only in fixture_mode",
         "known_answer": "StegVerse-Labs/.github ledger head a5bb54d81893b392a3ce28182986fc39857807e1 -> receipts/35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d.json -> \"469411750\" (tests/test_sv_admission_hb_epoch.py::KnownAnswerTests; Lane C's ledger_head_epoch agrees)",
         "sealed": "hb_epoch and hb_epoch_source {ledger_head, receipt: 'receipts/<hex>.json' (ledger_store.receipt_key of the head receipt, relative to refs/stegverse/organization-ledger), field: '$.hb_reference.epoch'} are sealed on ALLOW and on DENY HB_EPOCH_MISMATCH (the epoch was observed; only the producer's --hb-epoch cross-check disagreed)",
-        "source": "Labs#3266 @641f4b03 (readback blob fbd453e5), as the producer declares it"
+        "source": "Labs#3266 @2ba0e329 (readback blob 2c730142), as the producer declares it"
       },
       "scope": "every admission (decision 2026-10-18 15:23Z): supplied-epoch-binder-check is on surface_kinds.all",
-      "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266 @641f4b03, readback blob fbd453e5, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
+      "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266 @2ba0e329, readback blob 2c730142, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
       "status": "DECIDED_BY_INVARIANT (JD-P4-3, partial)",
       "supplied_epoch_rule": {
         "file_blob_at_fc19b532": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
@@ -112,6 +123,7 @@
         "note": "726248a5 is the sha256 of the function's source segment, not a git object id",
         "path": "org-kernel/kernel.py",
         "precedence": "UNKNOWN precedence (contract invariant, orchestrator 2026-10-18T15:59Z, narrowed 16:03Z): before 726248a5 is applied, a supplied hb_epoch that is the epoch source (an SV_CHANGE record's hb_epoch; an absent field reads as null) and is JSON null, \"\", \"null\" or the literal UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (UNKNOWN is FAIL_CLOSED, never DENY). An optional cross-check that is left out (sv_work_items.HB_EPOCH_NOT_CROSS_CHECKED) is not a failure: the sealed epoch stands. Here the verifier deliberately diverges from kernel.py::supplied_epoch_failure, which alone would return HB_EPOCH_NOT_SUPPLIED for null and HB_EPOCH_INVALID (malformed, DENY here) for \"\", \"null\" and the sentinel. The pin is unchanged: it still describes the rule applied to every other supplied value and to the sealed slot.",
+        "record_schema": "schemas/sv-change.v1.schema.json hb_epoch (commit 3): the digit-string branch is the 726248a5 value rule ^0*(?:3[2-9]|[4-9][0-9]|[1-9][0-9]{2,})$ (>= 32, leading zeros allowed), was ^[0-9]+$, which admitted '31' and '0031' that every validator refuses; absent, null, '', 'null' and the sentinel stay schema-invalid for NATIVE: a schema error carries no disposition, and validate_change / admission assign FAIL_CLOSED to each",
         "repository": "StegVerse-Labs/.github",
         "sha256": "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
       },
@@ -212,6 +224,57 @@
         "owning_existing_goal": "StegVerse-org/.github#163",
         "required_evidence_or_repair": "authentically observe every field the NATIVE record holds as UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, or record the history as MIGRATED_HISTORICAL",
         "retry_entrypoint": "resident-runtime/sv_work_items.py::validate_change / validate_issue / evaluate_admission"
+      }
+    },
+    {
+      "absent_when": "the cross-check ran (a supplied epoch was compared)",
+      "canonical": {
+        "cross_checked": false,
+        "detail": "HB_EPOCH_NOT_CROSS_CHECKED"
+      },
+      "invariant_id": "NOT_CROSS_CHECKED_MARKER",
+      "producers_to_align": [
+        "P4 #192 (detail)",
+        "Labs#3266 @2ba0e329 (top-level cross_checked false already; marker under hb_epoch_cross_check)"
+      ],
+      "statement": "the canonical marker for an ALLOW whose optional hb_epoch cross-check was left out is P1's: top-level cross_checked false plus detail HB_EPOCH_NOT_CROSS_CHECKED (sv_work_items.verify_admission_hb_epoch(HB_EPOCH_NOT_CROSS_CHECKED, ...)). P4 (now in detail) and Labs#3266 (now in hb_epoch_cross_check) match it; it is not moved into hb_epoch_cross_check",
+      "status": "DECIDED (orchestrator 2026-10-18T16:30Z)"
+    },
+    {
+      "consumers": [
+        "Lane B SV-LLM/.github#46",
+        "Lane C TVC#519",
+        "Lane D",
+        "P4 #192"
+      ],
+      "generated_by": "scripts/build_sv_native_fixtures.py::contract_pins",
+      "invariant_id": "CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN",
+      "manifest": "data/sv-work-items/contract-pins.json",
+      "statement": "data/sv-work-items/contract-pins.json lists the git blob sha and sha256 of every canonical contract file of the native work-items path (the schemas, invariants.json, required-checks.json, lifecycle and surface-alias data, the stage manifests, the migration fixtures, the corpus and replay files, and the runtime modules). A consumer pins the manifest's own blob and sha256 and re-pins a listed file only when its entry changes; the manifest never lists itself. scripts/build_sv_native_fixtures.py generates it and --check reports it stale when any entry differs from the tree",
+      "status": "DECIDED (orchestrator 2026-10-18T16:30Z)"
+    },
+    {
+      "corpus": "none appended: the admission corpus evaluates SV_CHANGE admissions (admit()); a stage-gate declaration is a stage-manifest property evaluated by stage_gate, so no admission scenario can carry it",
+      "enforced_by": [
+        "resident-runtime/sv_work_items.py::validate_gate_declaration",
+        "stage_gate.gate_check / evaluate_gate",
+        "sv_work_items.check_command (gate check ids)"
+      ],
+      "invariant_id": "STAGE_GATE_DECLARATION_IS_COMPLETE",
+      "statement": "a stage manifest that declares exit_gate_check also declares: evidence_producers (one NWI-S1 row check per receipt predicate, with the row's offline_command, command_paths and expected), receipt_form (how the closed sv-check-receipt.v1 is filled: change_digest = the stage-evaluation subject digest, head_sha = its evaluated_commit, the target repository's own ledger), evaluation_subject ({repository, stage_id, manifest_blob, evaluated_commit, base_ref}, digested with the change_id serialization), hb_epoch (the pinned Labs#3266 readback at the subject's ledger head) and cadence (per stage evaluation, never per head, not in the required-checks row; one failing receipt derives one issue). Otherwise FAIL_CLOSED STAGE_GATE_DECLARATION_INCOMPLETE (stage_gate.gate_check, check_command)",
+      "status": "DECLARED (commit 3, for Lane B #46)",
+      "subject": {
+        "function": "sv_work_items.stage_evaluation_subject / stage_evaluation_digest",
+        "receipt_validator": "sv_work_items.validate_gate_receipt"
+      },
+      "unobserved": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "STAGE_GATE_DECLARATION_IS_COMPLETE",
+        "failure_code": "STAGE_GATE_DECLARATION_INCOMPLETE",
+        "next_attempt": "after the manifest declares every part; the verifier emits nothing for an incomplete declaration",
+        "owning_existing_goal": "StegVerse-org/.github#163",
+        "required_evidence_or_repair": "declare every part of exit_gate_check",
+        "retry_entrypoint": "resident-runtime/stage_gate.py::evaluate_gate"
       }
     }
   ],

@@ -35,8 +35,8 @@ def reseal(rb, **change):
 
 
 def lane_c_refusal(why):
-    """The FAIL_CLOSED receipt Lane C's readback emits when the head receipt's epoch is invalid (Labs#3266 @641f4b03,
-    sv_change_base_state_readback.py blob fbd453e5: _refuse(base, 'HB_EPOCH_SOURCE_UNOBSERVED', ...)): hb_epoch and
+    """The FAIL_CLOSED receipt Lane C's readback emits when the head receipt's epoch is invalid (Labs#3266 @2ba0e329,
+    sv_change_base_state_readback.py blob 2c730142: _refuse(base, 'HB_EPOCH_SOURCE_UNOBSERVED', ...)): hb_epoch and
     hb_epoch_source are both present and null on every FAIL_CLOSED."""
     rb = fx.fixture_base_state_readback()
     body = {k: v for k, v in rb.items() if k != "result_sha256"}
@@ -109,7 +109,7 @@ class PredicateTests(unittest.TestCase):
         self.assertEqual(self.verify(rb=real, fixture_mode=False)["disposition"], "ALLOW")
 
     def test_lane_c_producer_semantics(self):
-        """Labs#3266 @641f4b03: sealed on ALLOW and on DENY HB_EPOCH_MISMATCH; null on FAIL_CLOSED; receipt is a ledger path."""
+        """Labs#3266 @2ba0e329: sealed on ALLOW and on DENY HB_EPOCH_MISMATCH; null on FAIL_CLOSED; receipt is a ledger path."""
         self.assertEqual(set(self.RB["hb_epoch_source"]), {"ledger_head", "receipt", "field"})
         self.assertEqual(self.verify("1024", lane_c_mismatch("1025"))["disposition"], "ALLOW")  # the epoch was observed
         out = self.verify("1025", lane_c_mismatch("1025"))
@@ -124,7 +124,7 @@ class PredicateTests(unittest.TestCase):
         self.assertIsNone(rc["hb_epoch"])
 
     def test_readback_pin(self):
-        self.assertEqual(wi.BASE_STATE_READBACK_PIN["blob"], "fbd453e531fc8d8f62261d2a72bc7a596798a445")
+        self.assertEqual(wi.BASE_STATE_READBACK_PIN["blob"], "2c730142254b78a5b9e1c05566fe6f5111b7d571")
         entry = next(i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"] if i["invariant_id"] == INV)
         self.assertEqual(entry["readback_pin"], wi.BASE_STATE_READBACK_PIN)
 
@@ -147,7 +147,10 @@ class PredicateTests(unittest.TestCase):
             self.assertNotIn("supplied_epoch_rule", out)
         # an optional cross-check left out is not a failure: nothing to compare, the sealed epoch stands
         out = self.verify(wi.HB_EPOCH_NOT_CROSS_CHECKED)
-        self.assertEqual((out["disposition"], out["hb_epoch"], out["cross_checked"]), ("ALLOW", "1024", False))
+        self.assertEqual((out["disposition"], out["hb_epoch"], out["cross_checked"], out["detail"]),
+                         ("ALLOW", "1024", False, "HB_EPOCH_NOT_CROSS_CHECKED"))  # the canonical marker (NOT_CROSS_CHECKED_MARKER)
+        self.assertNotIn("hb_epoch_cross_check", out)
+        self.assertNotIn("cross_checked", self.verify("1024"))  # absent when the cross-check ran
         out = self.verify(wi.HB_EPOCH_NOT_CROSS_CHECKED, rb=None)  # ...but the sealed source must still be observed
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
         # the sentinel's case variants, "NULL" and whitespace are not the sentinel: malformed -> DENY
