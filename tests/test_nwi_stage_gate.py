@@ -101,7 +101,8 @@ class StageGateTests(unittest.TestCase):
 
     def test_source_has_no_clock_or_network(self):
         for rel in ("resident-runtime/stage_gate.py", "resident-runtime/sv_work_items.py", "resident-runtime/admission_learning.py",
-                    "scripts/build_sv_native_fixtures.py"):
+                    "scripts/build_sv_native_fixtures.py", "resident-runtime/sv_migration.py", "resident-runtime/schema_subset.py",
+                    "scripts/evaluate_migration_fixtures.py"):
             src = (ROOT / rel).read_text()
             for banned in ("datetime", "import time", "time.time", "urllib", "socket", "subprocess", "os.environ", "getenv", "import requests"):
                 self.assertNotIn(banned, src, rel + ": " + banned)

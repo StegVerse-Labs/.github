@@ -25,6 +25,7 @@ def _load(name, rel):
 wi = _load("sv_work_items", "resident-runtime/sv_work_items.py")
 al = _load("admission_learning", "resident-runtime/admission_learning.py")
 fx = _load("build_sv_native_fixtures", "scripts/build_sv_native_fixtures.py")
+ss = _load("schema_subset", "resident-runtime/schema_subset.py")
 EPOCH = "1024"
 SESSION = fx.SESSION
 BASE = dict(fx.LABS_BASE)
@@ -38,6 +39,27 @@ ISSUES = jsonl("data/sv-work-items/migration/sv-issues.jsonl")
 CHANGES = jsonl("data/sv-work-items/migration/sv-changes.jsonl")
 
 
+MIGRATION_KEYS = ("unknown_fields", "migration_provenance", "migration_flags")
+
+
+def nativize_issue(rec, **over):
+    """Synthetic NATIVE successor of a migrated fixture (test data: every value set explicitly here)."""
+    rec = {k: v for k, v in copy.deepcopy(rec).items() if k not in MIGRATION_KEYS}
+    rec.update(record_mode="NATIVE", hb_epoch=EPOCH, resolution_class="B", owning_goal="StegVerse-org/.github#163",
+               surface={"kind": "transition", "path": "resident-runtime/example_transition.py"},
+               source_receipt={"kind": "ORGANIZATION_LEDGER_RECEIPT", "ledger_ref": wi.LEDGER_REF, "receipt_sha256": "sha256:" + "5" * 64})
+    rec["disposition"] = {**rec["disposition"], "owning_existing_goal": "StegVerse-org/.github#163"}
+    rec.update(over)
+    return reseal_issue(rec)
+
+
+def nativize_change(rec, **over):
+    rec = {k: v for k, v in copy.deepcopy(rec).items() if k not in MIGRATION_KEYS}
+    rec.update(record_mode="NATIVE", hb_epoch=EPOCH)
+    rec.update(over)
+    return reseal_change(rec)
+
+
 def reseal_issue(rec):
     rec = {k: v for k, v in rec.items() if k != "issue_sha256"}
     rec["issue_id"] = wi.issue_identity(rec)
@@ -48,6 +70,7 @@ def reseal_change(rec):
     rec = dict(rec)
     rec["head"] = {"change_digest": wi.change_digest(rec["content"])}
     rec["touched_paths"] = [c["path"] for c in rec["content"]]
+    rec["change_id"] = wi.change_identity(rec)
     rec["request_digest"] = wi.request_digest(rec)
     return rec
 
@@ -91,16 +114,23 @@ class MigrationFixtureTests(unittest.TestCase):
             prs.add(ch["projection"]["pr"])
         self.assertEqual(prs, {3225, 3226, 3234, None})
 
-    def test_migrated_changes_verify_fail_closed_without_native_receipts(self):
+    def test_migrated_changes_are_never_verified_or_admitted(self):
         for ch in CHANGES:
+            self.assertEqual(ch["record_mode"], "MIGRATED_HISTORICAL")
             out = wi.transition("SV_CHANGE_VERIFY", ch, hb_epoch=EPOCH)
+            self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HISTORICAL_RECORD_NOT_ADMISSIBLE"))
+            # as NATIVE with the same observed content, GitHub CI is still not a receipt
+            out = wi.transition("SV_CHANGE_VERIFY", nativize_change(ch), hb_epoch=EPOCH)
             self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED"))
 
     def test_work_items_projection_is_native_keyed_without_approval_flag(self):
-        items = wi.work_items_projection(ISSUES + CHANGES)
+        rec = wi.work_items_record(ISSUES + CHANGES)
+        items = rec["work_items"]
         self.assertEqual(len(items), len(ISSUES) + len(CHANGES))
         schema = json.loads((ROOT / "schemas/canonical-task-work-items.v1.schema.json").read_text())
-        allowed = set(schema["items"]["properties"])
+        self.assertEqual(ss.validate(rec, schema), [])
+        self.assertEqual(sorted(i for ids in rec["goal_index"].values() for i in ids), sorted(w["work_item_id"] for w in items))
+        allowed = set(schema["properties"]["work_items"]["items"]["properties"])
         for w in items:
             self.assertTrue(w["work_item_id"].startswith(("svi:", "svc:")))
             self.assertLessEqual(set(w), allowed)
@@ -110,13 +140,12 @@ class MigrationFixtureTests(unittest.TestCase):
         for name, recs in (("sv-issue.v1", ISSUES), ("sv-change.v1", CHANGES)):
             schema = json.loads((ROOT / f"schemas/{name}.schema.json").read_text())
             for r in recs:
-                self.assertTrue(set(schema["required"]) <= set(r), name)
-                self.assertTrue(set(r) <= set(schema["properties"]), name)
+                self.assertEqual(ss.validate(r, schema), [], name)
 
 
 class IssueNegativeTests(unittest.TestCase):
     def mut(self, f):
-        rec = copy.deepcopy(ISSUES[0]); f(rec); return reseal_issue(rec)
+        rec = nativize_issue(ISSUES[0]); f(rec); return reseal_issue(rec)
 
     def test_negatives(self):
         cases = {
@@ -133,6 +162,7 @@ class IssueNegativeTests(unittest.TestCase):
             self.assertEqual(code(wi.validate_issue, self.mut(f)), want, want)
 
     def test_identity_and_digest(self):
+        self.assertEqual(code(wi.validate_issue, nativize_issue(ISSUES[0])), "ALLOW")
         rec = dict(ISSUES[0], issue_id="svi:" + "0" * 64)
         self.assertEqual(code(wi.validate_issue, wi.seal({k: v for k, v in rec.items() if k != "issue_sha256"}, "issue_sha256")),
                          "SV_ISSUE_IDENTITY_MISMATCH")
@@ -141,21 +171,20 @@ class IssueNegativeTests(unittest.TestCase):
     def test_epoch_negatives(self):
         for bad, want in (("+33", "HB_EPOCH_INVALID"), (" 33", "HB_EPOCH_INVALID"), ("3_3", "HB_EPOCH_INVALID"),
                           ("31", "HB_EPOCH_INVALID"), ("0", "HB_EPOCH_INVALID"), (None, "HB_EPOCH_NOT_SUPPLIED")):
-            rec = copy.deepcopy(ISSUES[0]); rec["hb_epoch"] = bad
-            self.assertEqual(code(wi.validate_issue, reseal_issue(rec)), want, repr(bad))
+            self.assertEqual(code(wi.validate_issue, nativize_issue(ISSUES[0], hb_epoch=bad)), want, repr(bad))
 
 
 class ChangeNegativeTests(unittest.TestCase):
     def mut(self, f, reseal=True):
-        rec = copy.deepcopy(CHANGES[2]); f(rec); return reseal_change(rec) if reseal else rec
+        rec = nativize_change(CHANGES[2]); f(rec); return reseal_change(rec) if reseal else rec
 
     def test_negatives(self):
         cases = {
             "AUTHOR_SESSION_NOT_DECLARED": lambda r: r.update(declared_session=""),
-            "SV_CHANGE_IDENTITY_INVALID": lambda r: r.update(change_id="3234"),
             "SV_CHANGE_RESOLVES_NOTHING": lambda r: r.update(resolves=[]),
             "SV_CHANGE_BASE_UNBOUND": lambda r: r.update(base_ref={"registry_generation": "319", "ledger_head": "x"}),
             "SV_CHANGE_CONTENT_ENTRY_INVALID": lambda r: r["content"][0].update(blob_digest="e29493af"),
+            "SV_CHANGE_RESOLVES_INVALID": lambda r: r.update(resolves=["3234"]),
             "SV_CHANGE_CONTENT_DUPLICATE_PATH": lambda r: r["content"].append(dict(r["content"][0])),
             "SV_CHANGE_STATE_INVALID": lambda r: r.update(lifecycle_state="MERGED"),
             "REQUIRED_CHECKS_ROW_ABSENT": lambda r: r.update(required_checks_ref={"file": "x"}),
@@ -164,8 +193,13 @@ class ChangeNegativeTests(unittest.TestCase):
             self.assertEqual(code(wi.validate_change, self.mut(f)), want, want)
 
     def test_digest_negatives(self):
-        self.assertEqual(code(wi.validate_change, self.mut(lambda r: r["content"][0].update(blob_digest="sha256:" + "b" * 64), reseal=False)),
-                         "SV_CHANGE_DIGEST_MISMATCH")
+        self.assertEqual(code(wi.validate_change, self.mut(lambda r: r.update(change_id="svc:" + "3" * 64), reseal=False)),
+                         "SV_CHANGE_IDENTITY_INVALID")
+        self.assertEqual(code(wi.validate_change, self.mut(lambda r: r["content"][0].update(blob_digest="sha256:" + "b" * 64), reseal=False)
+                              | {"change_id": None}), "SV_CHANGE_IDENTITY_INVALID")
+        moved = self.mut(lambda r: r["content"][0].update(blob_digest="sha256:" + "b" * 64), reseal=False)
+        moved["change_id"] = wi.change_identity(moved)
+        self.assertEqual(code(wi.validate_change, moved), "SV_CHANGE_DIGEST_MISMATCH")
         self.assertEqual(code(wi.validate_change, self.mut(lambda r: r.update(owning_goal="other"), reseal=False)), "REQUEST_DIGEST_MISMATCH")
         self.assertEqual(code(wi.validate_change, self.mut(lambda r: r.update(touched_paths=["x"]), reseal=False)),
                          "SV_CHANGE_TOUCHED_PATHS_MISMATCH")
@@ -173,7 +207,7 @@ class ChangeNegativeTests(unittest.TestCase):
 
 class LifecycleTests(unittest.TestCase):
     def test_open_claim_via_workercoordinator_propose_admit_apply_resolve(self):
-        issue = ISSUES[0]
+        issue = nativize_issue(ISSUES[0])
         self.assertEqual(wi.transition("SV_ISSUE_OPEN", issue, hb_epoch=EPOCH)["disposition"], "ALLOW")
         no_claim = wi.transition("SV_ISSUE_CLAIM", issue, hb_epoch=EPOCH, context={"observed_generation": 319, "current_base": BASE})
         self.assertEqual(no_claim["failure_code"], "WORKERCOORDINATOR_CLAIM_ABSENT")
@@ -215,9 +249,9 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(proj["record"]["projection"]["authority_effect"], "NONE")
 
     def test_foreign_writer_refused_at_propose(self):
-        issue = dict(ISSUES[0], lifecycle_state="CLAIMED", claim={"session": SESSION})
+        issue = dict(nativize_issue(ISSUES[0]), lifecycle_state="CLAIMED", claim={"session": SESSION})
         ch = al_known_good_change(issue["issue_id"])
-        ch["content"][0]["writer_session"] = "Claude (session 017WHFu1)"
+        ch["content"][0]["writer_session"] = {"session": "Claude (session 017WHFu1)", "evidence_class": "OBSERVED_COMMIT_TRAILER"}
         ch = reseal_change(ch)
         self.assertEqual(wi.transition("SV_CHANGE_PROPOSE", ch, hb_epoch=EPOCH, context={"issues": [issue]})["failure_code"], "BRANCH_HAS_FOREIGN_WRITER")
         ch["co_author_grants"] = [{"session": "Claude (session 017WHFu1)", "receipt_ref": "receipt:grant"}]
@@ -227,6 +261,7 @@ class LifecycleTests(unittest.TestCase):
     def test_undeclared_transition_and_bad_epoch(self):
         self.assertEqual(wi.transition("SV_CHANGE_MERGE", CHANGES[0], hb_epoch=EPOCH)["failure_code"], "TRANSITION_UNDECLARED")
         self.assertEqual(wi.transition("SV_ISSUE_OPEN", ISSUES[0], hb_epoch="+33")["failure_code"], "HB_EPOCH_INVALID")
+        self.assertEqual(wi.transition("SV_ISSUE_OPEN", ISSUES[0], hb_epoch=wi.UNKNOWN)["failure_code"], "HB_EPOCH_INVALID")
 
     def test_record_uses_existing_emitter_with_supplied_epoch(self):
         emit = _load("labs_emit", ".stegverse/transition-ledger/emit.py")
@@ -238,7 +273,7 @@ class LifecycleTests(unittest.TestCase):
             self.assertEqual(rc["transition_class"], "SV_ISSUE_OPEN")
             self.assertIs(rc["hb_reference"]["derived_from_clock"], False)
             self.assertEqual(rc["hb_reference"]["epoch"], 1024)
-            refused = wi.transition("SV_ISSUE_OPEN", dict(ISSUES[0], hb_epoch="3_3"), hb_epoch=EPOCH)
+            refused = wi.transition("SV_ISSUE_OPEN", nativize_issue(ISSUES[0], hb_epoch="3_3"), hb_epoch=EPOCH)
             rc2 = wi.record(refused, None, hb_epoch=EPOCH, append=lambda *a, **k: emit.append(*a, store=store, **k))
             self.assertEqual(rc2["evidence"]["failure_code"], "HB_EPOCH_INVALID")
             self.assertEqual(rc2["previous_receipt_sha256"], rc["receipt_sha256"])
@@ -248,14 +283,14 @@ class LifecycleTests(unittest.TestCase):
 
 def al_known_good_change(issue_id):
     path = "resident-runtime/example_transition.py"
-    content = [{"path": path, "blob_digest": "sha256:" + "a" * 64, "writer_session": SESSION}]
+    content = [{"path": path, "blob_digest": "sha256:" + "a" * 64, "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
     digest = wi.change_digest(content)
     checks, _ = wi.required_for([path])
-    ch = {"schema": wi.CHANGE_SCHEMA, "change_id": "svc:" + "e" * 64, "target_repository": "StegVerse-Labs/.github", "resolves": [issue_id],
+    ch = {"schema": wi.CHANGE_SCHEMA, "record_mode": "NATIVE", "target_repository": "StegVerse-Labs/.github", "resolves": [issue_id],
           "owning_goal": "StegVerse-org/.github#163", "declared_session": SESSION, "base_ref": dict(BASE), "head": {"change_digest": digest},
           "content": content, "touched_paths": [path], "lifecycle_state": "PROPOSED",
           "required_checks_ref": {"file": "data/sv-work-items/required-checks.json", "blob_sha": "WORKTREE", "row_id": "SV-CHANGE-REQUIRED-CHECKS-001"},
-          "validation_receipts": [{"check_id": c, "receipt_ref": "receipt:" + c, "disposition": "ALLOW", "change_digest": digest} for c in checks],
+          "validation_receipts": [fx.ledger_receipt(c, digest) for c in checks],
           "signoffs": [], "hb_epoch": EPOCH}
     return reseal_change(ch)
 

@@ -3,10 +3,12 @@
 
   SV_ISSUEs  <- every six-field non-ALLOW entry in data/sv-work-items/migration/sources/*.md
   corpus     <- SCENARIO_CORPUS_APPEND of each seed class (A6), in order
-SV_CHANGE fixtures (data/sv-work-items/migration/sv-changes.jsonl) are content
-digests of P1's open drafts and are read, not rebuilt, here. No clock; the
-fixture epoch is supplied (FIXTURE_HB_EPOCH). `--check` exits 1 if the committed
-files differ from a fresh derivation.
+  SV_CHANGEs <- the observed fields (target_repository, base_ref, content, projection) of the committed
+                sv-changes.jsonl; identity, digests, resolves and migration fields are re-derived
+Migration records are MIGRATED_HISTORICAL: their history carries no supplied epoch, so hb_epoch is
+UNKNOWN (never a fixture value), and resolution_class is UNKNOWN unless the source table states it.
+FIXTURE_HB_EPOCH is used only for the NATIVE known-good controls and the corpus. `--check` exits 1 if
+the committed files differ from a fresh derivation.
 """
 from __future__ import annotations
 import argparse, hashlib, importlib.util, json, re, sys
@@ -19,6 +21,7 @@ def _load(n, p):
     s = importlib.util.spec_from_file_location(n, ROOT / p); m = importlib.util.module_from_spec(s); sys.modules[n] = m; s.loader.exec_module(m); return m
 wi = _load("sv_work_items", "resident-runtime/sv_work_items.py")
 al = _load("admission_learning", "resident-runtime/admission_learning.py")
+mg = _load("sv_migration", "resident-runtime/sv_migration.py")
 
 FIXTURE_HB_EPOCH = "1024"
 SESSION = "P1 Ecosystem AI Lane (d8cbc58c)"
@@ -67,16 +70,17 @@ def parse_six(text: str) -> list[dict]:
 
 
 def resolution_class(text: str, code: str) -> str:
+    """The class the source table states for this failure code; UNKNOWN when it states none (SF-3: no default)."""
     for line in text.splitlines():
         if line.startswith("|") and code in line:
             m = re.search(r"\*\*([ABCD])\*\*", line)
             if m:
                 return m.group(1)
-    return "B"
+    return wi.UNKNOWN
 
 
 def issues() -> list[dict]:
-    recs = {}
+    recs = []
     for src in sorted((MIG / "sources").glob("*.md")):
         raw = src.read_bytes(); text = raw.decode("utf-8")
         for six in parse_six(text):
@@ -89,27 +93,59 @@ def issues() -> list[dict]:
                     "source_receipt": {"kind": "MIGRATION_EVIDENCE", "evidence_path": str(src.relative_to(ROOT)),
                                        "evidence_sha256": "sha256:" + hashlib.sha256(raw).hexdigest()},
                     "resolution_class": resolution_class(text, six["failure_code"]),
+                    "surface": mg.derive_surface(six["retry_entrypoint"]),
                     "lifecycle_state": "OPENED", "observed_base": dict(LABS_BASE),
-                    "owning_goal": six["owning_existing_goal"], "opened_by_session": SESSION, "hb_epoch": FIXTURE_HB_EPOCH}
-            body["issue_id"] = wi.issue_identity(body)
-            recs.setdefault(body["issue_id"], wi.seal(body, "issue_sha256"))
-    return sorted(recs.values(), key=lambda r: r["issue_id"])
+                    "migration_provenance": mg.provenance(LABS_BASE),
+                    "owning_goal": six["owning_existing_goal"], "opened_by_session": SESSION, "hb_epoch": wi.UNKNOWN}
+            recs.append(mg.finish_issue(body))
+    return mg.merge_issues(recs)[0]
+
+
+# which migrated issues each P1 change resolves: (failure_code, retry_entrypoint substring), as cited in the change
+CHANGE_RESOLVES = {3225: [("SHARED_LEDGER_COMPONENT_NOT_PUBLISHED", "")], 3226: [("SHARED_LEDGER_COMPONENT_NOT_PUBLISHED", "")],
+                   3234: [("ECOSYSTEM_CAPABILITY_ABSENT", "")],
+                   None: [("CLOCK_DERIVED_EPOCH_ADMITTED_BY_ORG_APPEND", "kernel.py"), ("HB_EPOCH_REFUSAL_NOT_SIX_FIELD_AT_CLI", ""),
+                          ("HB_EPOCH_CLI_COERCED", "")]}
+OBSERVED_CHANGE_FIELDS = ("schema", "target_repository", "base_ref", "content", "projection", "declared_session", "owning_goal",
+                          "lifecycle_state", "required_checks_ref", "signoffs", "validation_receipts", "admission_order_slot",
+                          "supersedes", "governance_decision_ref")
+
+
+def changes(issue_rows: list[dict]) -> list[dict]:
+    rows = [json.loads(l) for l in (MIG / "sv-changes.jsonl").read_text().splitlines() if l.strip()]
+    out = []
+    for r in rows:
+        body = {k: r[k] for k in OBSERVED_CHANGE_FIELDS if k in r}
+        body["content"] = [{**c, "writer_session": mg._writer(c["writer_session"])} for c in r["content"]]
+        body["resolves"] = sorted({i["issue_id"] for code, sub in CHANGE_RESOLVES[r["projection"]["pr"]] for i in issue_rows
+                                   if i["disposition"]["failure_code"] == code and sub in i["disposition"]["retry_entrypoint"]})
+        body["hb_epoch"] = wi.UNKNOWN
+        body["migration_provenance"] = mg.provenance(r["base_ref"])
+        out.append(mg.finish_change(body))
+    return out
 
 
 def known_good(kind_path: str) -> dict:
     """A known-good SV_CHANGE observation touching one surface kind (positive control)."""
-    content = [{"path": kind_path, "blob_digest": "sha256:" + "a" * 64, "writer_session": SESSION}]
+    content = [{"path": kind_path, "blob_digest": "sha256:" + "a" * 64, "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
     digest = wi.change_digest(content)
     checks, signoffs = wi.required_for([kind_path])
-    ch = {"schema": wi.CHANGE_SCHEMA, "change_id": "svc:known-good:" + kind_path, "resolves": ["svi:" + "0" * 64],
+    ch = {"schema": wi.CHANGE_SCHEMA, "record_mode": "NATIVE", "target_repository": "StegVerse-Labs/.github", "resolves": ["svi:" + "0" * 64],
           "owning_goal": "StegVerse-org/.github#163", "declared_session": SESSION, "base_ref": dict(LABS_BASE),
           "head": {"change_digest": digest}, "content": content, "touched_paths": [kind_path], "lifecycle_state": "VERIFIED",
           "required_checks_ref": {"file": "data/sv-work-items/required-checks.json", "blob_sha": "WORKTREE", "row_id": "SV-CHANGE-REQUIRED-CHECKS-001"},
-          "validation_receipts": [{"check_id": c, "receipt_ref": "fixture:" + c, "disposition": "ALLOW", "change_digest": digest} for c in checks],
+          "validation_receipts": [ledger_receipt(c, digest) for c in checks],
           "signoffs": [{"role": r, "session": "fixture-owner", "receipt_ref": "fixture:signoff:" + r} for r in signoffs],
           "hb_epoch": FIXTURE_HB_EPOCH}
+    ch["change_id"] = wi.change_identity(ch)
     ch["request_digest"] = wi.request_digest(ch)
-    return wi.admission_inputs(ch, LABS_BASE)
+    return wi.admission_inputs(wi.validate_change(ch), LABS_BASE)
+
+
+def ledger_receipt(check_id: str, digest: str, disposition: str = "ALLOW") -> dict:
+    """A fixture LEDGER_RECEIPT reference (positive controls only; not a real receipt)."""
+    body = {"check_id": check_id, "disposition": disposition, "change_digest": digest}
+    return {**body, "evidence_class": "LEDGER_RECEIPT", "ref": wi.LEDGER_REF + "#fixture:" + check_id, "digest": wi.sha(body)}
 
 
 SURFACE_PATH = {"transition": "resident-runtime/example_transition.py", "ledger_writer": "resident-runtime/aggregate_repo_transition.py",
@@ -153,7 +189,8 @@ def _jsonl(rows): return "".join(json.dumps(r, sort_keys=True, separators=(",", 
 
 def build() -> dict[Path, str]:
     c, s, r = corpus()
-    return {MIG / "sv-issues.jsonl": _jsonl(issues()), SCN / "classes.jsonl": _jsonl(c), SCN / "corpus.jsonl": _jsonl(s),
+    iss = issues()
+    return {MIG / "sv-issues.jsonl": _jsonl(iss), MIG / "sv-changes.jsonl": _jsonl(changes(iss)), SCN / "classes.jsonl": _jsonl(c), SCN / "corpus.jsonl": _jsonl(s),
             SCN / "seed-append-outcomes.jsonl": _jsonl(r)}
 
 

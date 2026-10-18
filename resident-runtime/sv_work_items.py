@@ -42,10 +42,25 @@ ISSUE_STATES = ("OPENED", "CLAIMED", "RESOLVED", "CLOSED_BY_INVARIANT", "SUPERSE
 CHANGE_STATES = ("PROPOSED", "VERIFIED", "ADMITTED", "DENIED", "FAIL_CLOSED", "APPLIED", "SUPERSEDED", "WITHDRAWN")
 RESOLUTION_CLASSES = ("A", "B", "C", "D")
 SOURCE_KINDS = ("ORGANIZATION_LEDGER_RECEIPT", "REPOSITORY_LEDGER_RECEIPT", "MIGRATION_EVIDENCE")
+SURFACE_KINDS = ("workflow", "transition", "schema", "ledger_writer", "registry", "doc")
+# Record mode. A MIGRATED_HISTORICAL record carries history that predates the
+# native path; it may hold UNKNOWN only at the pointers listed below (and must
+# list each one in unknown_fields), and it is never admissible. It becomes NATIVE
+# only through a superseding record whose values are observed.
+UNKNOWN = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+RECORD_MODES = ("NATIVE", "MIGRATED_HISTORICAL")
+MIGRATED_UNKNOWN_ALLOWED = {
+    "SV_ISSUE": ("/hb_epoch", "/resolution_class", "/owning_goal", "/disposition/owning_existing_goal", "/surface",
+                 "/restatements/*/owning_existing_goal"),
+    "SV_CHANGE": ("/hb_epoch", "/owning_goal"),
+}
+MIGRATION_FLAG_RESOLVES = "RESOLVES_NOT_RECORDED"
+WRITER_EVIDENCE = ("DECLARED", "OBSERVED_COMMIT_TRAILER", UNKNOWN)
+VALIDATION_EVIDENCE = ("LEDGER_RECEIPT", "OBSERVED_ARTIFACT")  # only LEDGER_RECEIPT counts toward VERIFIED
 # Fields outside the full-request digest (TVC#527 pattern: everything else,
 # including any field added later, is bound by default).
 CHANGE_NON_REQUEST_FIELDS = frozenset({"_note", "request_digest", "lifecycle_state", "validation_receipts",
-                                       "signoffs", "governance_decision_ref", "projection", "hb_epoch"})
+                                       "signoffs", "governance_decision_ref", "projection", "hb_epoch", "superseded_by"})
 DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
 GIT_SHA = re.compile(r"^[0-9a-f]{40}$")
 LEDGER_REF = "refs/stegverse/organization-ledger"
@@ -101,13 +116,88 @@ def _base_ok(base: Any) -> bool:
 
 
 # ------------------------------------------------------------------ SV_ISSUE
-def issue_identity(rec: Mapping[str, Any]) -> str:
-    """Same failure_code, failed_predicate, violated rule, goal and retry point -> same issue."""
-    d = rec.get("disposition") or {}
+def source_receipt_ref(src: Mapping[str, Any]) -> str:
+    """The receipt (or migration evidence) an issue was observed in, as one normalized reference."""
+    if src.get("kind") == "MIGRATION_EVIDENCE":
+        return "migration:%s@%s" % (src.get("evidence_path"), src.get("evidence_sha256"))
+    return "%s@%s" % (src.get("ledger_ref"), src.get("receipt_sha256"))
+
+
+def issue_identity_inputs(rec: Mapping[str, Any]) -> dict[str, Any]:
     inv = rec.get("violated_invariant") or {}
-    return "svi:" + sha({"failure_code": d.get("failure_code"), "failed_predicate": d.get("failed_predicate"),
-                         "rule_id": inv.get("rule_id"), "owning_existing_goal": d.get("owning_existing_goal"),
-                         "retry_entrypoint": d.get("retry_entrypoint")})[7:]
+    return {"violated_invariant": {k: inv.get(k) for k in ("repository", "file", "rule_id")},
+            "failed_predicate": (rec.get("disposition") or {}).get("failed_predicate"),
+            "surface": rec.get("surface"),
+            "source_receipt_ref": source_receipt_ref(rec.get("source_receipt") or {})}
+
+
+def issue_identity(rec: Mapping[str, Any]) -> str:
+    """issue_id = "svi:" + sha256(canon({violated_invariant{repository,file,rule_id}, failed_predicate, surface,
+    source_receipt_ref})). No free text: a reworded restatement of the same failure is the same issue."""
+    return "svi:" + sha(issue_identity_inputs(rec))[7:]
+
+
+def sentinel_pointers(rec: Any, path: str = "") -> list[str]:
+    """JSON pointers holding UNKNOWN (exact or embedded). /projection is a non-authority view and is not scanned;
+    writer_session.evidence_class is an enum whose value happens to be the sentinel."""
+    out: list[str] = []
+    if isinstance(rec, Mapping):
+        for k, v in rec.items():
+            p = path + "/" + str(k)
+            if p == "/projection" or (k == "evidence_class" and "/writer_session" in path):
+                continue
+            out += sentinel_pointers(v, p)
+    elif isinstance(rec, list):
+        for i, v in enumerate(rec):
+            out += sentinel_pointers(v, path + "/" + str(i))
+    elif isinstance(rec, str) and UNKNOWN in rec:
+        out.append(path or "/")
+    return out
+
+
+def _pointer_match(pointer: str, allowed: str) -> bool:
+    a, b = pointer.split("/"), allowed.split("/")
+    return len(a) == len(b) and all(y == x or (y == "*" and x.isdigit()) for x, y in zip(a, b))
+
+
+def mode_check(rec: Mapping[str, Any], kind: str, base_field: str, e: str) -> str:
+    mode = rec.get("record_mode")
+    if mode not in RECORD_MODES:
+        raise _deny("RECORD_MODE_INVALID", "RECORD_MODE_DECLARED", "record_mode NATIVE or MIGRATED_HISTORICAL", e)
+    found = sentinel_pointers(rec)
+    if mode == "NATIVE":
+        if found:
+            raise _deny("UNKNOWN_IN_NATIVE_RECORD", "NATIVE_RECORD_FIELDS_ARE_OBSERVED",
+                        "observe every field, or record the history as MIGRATED_HISTORICAL", e, unknown=found)
+        extra = [k for k in ("unknown_fields", "migration_provenance", "migration_flags") if k in rec]
+        if extra:
+            raise _deny("MIGRATION_FIELDS_ON_NATIVE_RECORD", "NATIVE_RECORD_FIELDS_ARE_OBSERVED",
+                        "a NATIVE record carries no migration fields", e, fields=extra)
+        return mode
+    listed = rec.get("unknown_fields")
+    if not isinstance(listed, list) or sorted(set(listed)) != sorted(found) or len(listed) != len(found):
+        raise _deny("UNKNOWN_FIELDS_NOT_DECLARED", "MIGRATED_UNKNOWN_ONLY_WHERE_LISTED",
+                    "unknown_fields lists exactly the pointers that hold " + UNKNOWN, e, found=sorted(found), listed=listed)
+    bad = sorted(p for p in found if not any(_pointer_match(p, allowed) for allowed in MIGRATED_UNKNOWN_ALLOWED[kind]))
+    if bad:
+        raise _deny("UNKNOWN_FIELD_NOT_PERMITTED", "MIGRATED_UNKNOWN_ONLY_WHERE_LISTED",
+                    "observe these fields; UNKNOWN is permitted only at " + ", ".join(MIGRATED_UNKNOWN_ALLOWED[kind]), e, fields=bad)
+    mp = rec.get("migration_provenance")
+    if not isinstance(mp, Mapping) or set(mp) != {"original_base_observed", "original_base_ref", "migrated_at_base"} \
+            or not isinstance(mp["original_base_observed"], bool) or not _base_ok(mp["migrated_at_base"]) \
+            or mp["migrated_at_base"] != rec.get(base_field) \
+            or (mp["original_base_observed"] and not _base_ok(mp["original_base_ref"])) \
+            or (not mp["original_base_observed"] and mp["original_base_ref"] is not None):
+        raise _deny("MIGRATION_PROVENANCE_INVALID", "MIGRATED_RECORD_NAMES_ITS_BASES",
+                    "migration_provenance{original_base_observed bool, original_base_ref base|null (null iff not observed), "
+                    "migrated_at_base == " + base_field + "}", e)
+    return mode
+
+
+def _epoch_or_unknown(rec: Mapping[str, Any], e: str) -> None:
+    if rec.get("hb_epoch") == UNKNOWN and rec.get("record_mode") == "MIGRATED_HISTORICAL":
+        return  # listed and permitted by mode_check; such a record is never admissible
+    epoch_check(rec.get("hb_epoch"), e)
 
 
 def validate_issue(rec: Any) -> dict[str, Any]:
@@ -134,8 +224,17 @@ def validate_issue(rec: Any) -> dict[str, Any]:
                         "migration evidence names its path and sha256; the OPEN receipt becomes its ledger receipt", e)
     elif not isinstance(src.get("receipt_sha256"), str) or not DIGEST.match(src["receipt_sha256"]) or not str(src.get("ledger_ref", "")).startswith("refs/"):
         raise _deny("SV_ISSUE_SOURCE_RECEIPT_ABSENT", "ISSUE_NAMES_SOURCE_RECEIPT", "a ledger source names ledger_ref and receipt_sha256", e)
-    if rec.get("resolution_class") not in RESOLUTION_CLASSES:
+    mode_check(rec, "SV_ISSUE", "observed_base", e)
+    if rec.get("resolution_class") not in RESOLUTION_CLASSES + (UNKNOWN,):
         raise _deny("SV_ISSUE_CLASS_INVALID", "ISSUE_RESOLUTION_CLASS_IS_A_B_C_OR_D", "classify the issue A, B, C or D", e)
+    sf = rec.get("surface")
+    if sf != UNKNOWN and not (isinstance(sf, Mapping) and set(sf) == {"kind", "path"} and sf.get("kind") in SURFACE_KINDS and _str(sf.get("path"))):
+        raise _deny("SV_ISSUE_SURFACE_INVALID", "ISSUE_NAMES_SURFACE", "surface{kind in " + "/".join(SURFACE_KINDS) + ", path}", e)
+    if not _str(rec.get("owning_goal")):
+        raise _deny("SV_ISSUE_GOAL_ABSENT", "ISSUE_NAMES_OWNING_GOAL", "name the owning goal", e)
+    for r in rec.get("restatements") or []:
+        if not isinstance(r, Mapping) or any(not _str(r.get(f)) for f in SIX_FIELDS):
+            raise _deny("SV_ISSUE_RESTATEMENT_INVALID", "ISSUE_BODY_IS_SIX_FIELD_NON_ALLOW", "each restatement is a six-field body", e)
     if rec.get("lifecycle_state") not in ISSUE_STATES:
         raise _deny("SV_ISSUE_STATE_INVALID", "LIFECYCLE_STATE_DECLARED", "one of " + ", ".join(ISSUE_STATES), e)
     if not _base_ok(rec.get("observed_base")):
@@ -146,7 +245,7 @@ def validate_issue(rec: Any) -> dict[str, Any]:
     if rec.get("issue_id") != issue_identity(rec):
         raise _deny("SV_ISSUE_IDENTITY_MISMATCH", "ISSUE_IDENTITY_IS_CONTENT_ADDRESSED", "issue_id = issue_identity(record)", e,
                     expected=issue_identity(rec))
-    epoch_check(rec.get("hb_epoch"), e)
+    _epoch_or_unknown(rec, e)
     if rec.get("issue_sha256") != sha({k: v for k, v in rec.items() if k != "issue_sha256"}):
         raise _fail("SV_ISSUE_DIGEST_MISMATCH", "RECORD_DIGEST_VERIFIES", "reseal the record (issue_sha256)", e)
     return dict(rec)
@@ -155,6 +254,14 @@ def validate_issue(rec: Any) -> dict[str, Any]:
 # ------------------------------------------------------------------ SV_CHANGE
 def change_digest(content: Iterable[Mapping[str, Any]]) -> str:
     return sha(sorted(({"path": c["path"], "blob_digest": c["blob_digest"]} for c in content), key=lambda c: c["path"]))
+
+
+def change_identity(rec: Mapping[str, Any]) -> str:
+    """change_id = "svc:" + sha256(canon({target_repository, base_ref, content: sorted by path of
+    {path, blob_digest, deleted}})). Writer evidence is not identity: the same content on the same base is one change."""
+    content = sorted(({"path": c.get("path"), "blob_digest": c.get("blob_digest"), "deleted": bool(c.get("deleted", False))}
+                      for c in rec.get("content") or [] if isinstance(c, Mapping)), key=lambda c: str(c["path"]))
+    return "svc:" + sha({"target_repository": rec.get("target_repository"), "base_ref": rec.get("base_ref"), "content": content})[7:]
 
 
 def request_digest(rec: Mapping[str, Any]) -> str:
@@ -167,11 +274,19 @@ def validate_change(rec: Any) -> dict[str, Any]:
         raise _deny("SV_CHANGE_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + CHANGE_SCHEMA, "supply a stegverse.sv_change.v1 record", e)
     if not _str(rec.get("declared_session")):
         raise _fail("AUTHOR_SESSION_NOT_DECLARED", "PR_AUTHOR_SESSION_DECLARED", "declared_session names the authoring session", e)
-    if not (isinstance(rec.get("change_id"), str) and re.match(r"^svc:[0-9a-f]{64}$", rec["change_id"])) or not _str(rec.get("target_repository")):
-        raise _deny("SV_CHANGE_IDENTITY_INVALID", "CHANGE_IDENTITY_IS_CONTENT_ADDRESSED", "change_id svc:<64 hex> and target_repository", e)
+    mode = mode_check(rec, "SV_CHANGE", "base_ref", e)
+    if not _str(rec.get("target_repository")) or rec.get("change_id") != change_identity(rec):
+        raise _deny("SV_CHANGE_IDENTITY_INVALID", "CHANGE_IDENTITY_IS_CONTENT_ADDRESSED",
+                    "change_id = change_identity(record) over {target_repository, base_ref, content}", e, expected=change_identity(rec))
     res = rec.get("resolves")
-    if not isinstance(res, list) or not res or any(not (isinstance(i, str) and i.startswith("svi:")) for i in res):
+    if not isinstance(res, list) or any(not (isinstance(i, str) and re.match(r"^svi:[0-9a-f]{64}$", i)) for i in res):
+        raise _deny("SV_CHANGE_RESOLVES_INVALID", "CHANGE_RESOLVES_CLAIMED_SV_ISSUES", "resolves lists svi: ids", e)
+    if not res and mode == "NATIVE":
         raise _deny("SV_CHANGE_RESOLVES_NOTHING", "CHANGE_RESOLVES_CLAIMED_SV_ISSUES", "resolves lists at least one svi: id", e)
+    flags = rec.get("migration_flags") or []
+    if mode == "MIGRATED_HISTORICAL" and (MIGRATION_FLAG_RESOLVES in flags) != (not res):
+        raise _deny("MIGRATION_FLAG_MISMATCH", "MIGRATED_GAPS_ARE_FLAGGED",
+                    "migration_flags carries " + MIGRATION_FLAG_RESOLVES + " exactly when resolves is empty", e)
     if not _str(rec.get("owning_goal")):
         raise _deny("SV_CHANGE_GOAL_ABSENT", "CHANGE_NAMES_OWNING_GOAL", "name the owning goal", e)
     if not _base_ok(rec.get("base_ref")):
@@ -182,8 +297,9 @@ def validate_change(rec: Any) -> dict[str, Any]:
         raise _deny("SV_CHANGE_CONTENT_EMPTY", "CHANGE_DIGEST_COVERS_CONTENT", "content lists every changed path", e)
     for c in content:
         if not isinstance(c, Mapping) or not _str(c.get("path")) or not (isinstance(c.get("blob_digest"), str) and DIGEST.match(c["blob_digest"])) \
-                or not _str(c.get("writer_session")):
-            raise _deny("SV_CHANGE_CONTENT_ENTRY_INVALID", "CHANGE_DIGEST_COVERS_CONTENT", "each entry has path, sha256 blob_digest, writer_session", e)
+                or not _writer_ok(c.get("writer_session")):
+            raise _deny("SV_CHANGE_CONTENT_ENTRY_INVALID", "CHANGE_DIGEST_COVERS_CONTENT",
+                        "each entry has path, sha256 blob_digest, writer_session{session|null, evidence_class}", e)
     if len({c["path"] for c in content}) != len(content):
         raise _deny("SV_CHANGE_CONTENT_DUPLICATE_PATH", "CHANGE_DIGEST_COVERS_CONTENT", "one entry per path", e)
     if (rec.get("head") or {}).get("change_digest") != change_digest(content):
@@ -197,13 +313,23 @@ def validate_change(rec: Any) -> dict[str, Any]:
     if not isinstance(ref, Mapping) or not all(_str(ref.get(k)) for k in ("file", "blob_sha", "row_id")):
         raise _fail("REQUIRED_CHECKS_ROW_ABSENT", "REQUIRED_CHECKS_ROW_RESOLVES", "required_checks_ref{file, blob_sha, row_id}", e)
     for v in rec.get("validation_receipts") or []:
-        if not isinstance(v, Mapping) or v.get("disposition") not in DISPOSITIONS or not _str(v.get("check_id")):
-            raise _deny("VALIDATION_RECEIPT_INVALID", "VALIDATION_RECEIPT_IS_DISPOSITION", "{check_id, receipt_ref, disposition, change_digest}", e)
+        if not isinstance(v, Mapping) or v.get("disposition") not in DISPOSITIONS or not _str(v.get("check_id")) \
+                or v.get("evidence_class") not in VALIDATION_EVIDENCE or not _str(v.get("ref")) \
+                or not (isinstance(v.get("digest"), str) and DIGEST.match(v["digest"])) \
+                or (v["evidence_class"] == "LEDGER_RECEIPT" and not v["ref"].startswith("refs/")):
+            raise _deny("VALIDATION_RECEIPT_INVALID", "VALIDATION_RECEIPT_IS_DISPOSITION",
+                        "{check_id, disposition, change_digest, evidence_class LEDGER_RECEIPT (ref refs/...) | OBSERVED_ARTIFACT, ref, digest sha256}", e)
     if rec.get("request_digest") != request_digest(rec):
         raise _fail("REQUEST_DIGEST_MISMATCH", "AUTHORIZATION_BINDS_FULL_REQUEST", "request_digest = request_digest(record)", e,
                     expected=request_digest(rec))
-    epoch_check(rec.get("hb_epoch"), e)
+    _epoch_or_unknown(rec, e)
     return dict(rec)
+
+
+def _writer_ok(w: Any) -> bool:
+    if not isinstance(w, Mapping) or set(w) != {"session", "evidence_class"} or w.get("evidence_class") not in WRITER_EVIDENCE:
+        return False
+    return w["session"] is None if w["evidence_class"] == UNKNOWN else _str(w["session"])
 
 
 # ------------------------------------------------------------------ surfaces and admission inputs
@@ -240,16 +366,20 @@ def required_for(paths: Iterable[str], row: Mapping[str, Any] = REQUIRED_CHECKS)
 def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any]) -> dict[str, Any]:
     """The observed inputs the admission predicate and the scenario corpus bind to (registry/ledger, not GitHub)."""
     checks, signoffs = required_for(change["touched_paths"])
-    writers = sorted({c["writer_session"] for c in change["content"]})
+    ws = [c["writer_session"] for c in change["content"]]
+    writers = sorted({w["session"] for w in ws if w["evidence_class"] != UNKNOWN})
+    unobserved = sorted(c["path"] for c in change["content"] if c["writer_session"]["evidence_class"] == UNKNOWN)
     grants = sorted(g["session"] for g in change.get("co_author_grants") or [] if _str((g or {}).get("receipt_ref")))
     return {
+        "record_mode": change.get("record_mode"),
+        "writer_unobserved_paths": unobserved,
         "declared_session": change.get("declared_session"),
         "base_ref": dict(change["base_ref"]),
         "current_base": dict(current_base),
         "head_change_digest": change["head"]["change_digest"],
         "writer_sessions": writers,
         "co_author_grants": grants,
-        "declared_session_matches_writers": all(w == change.get("declared_session") or w in grants for w in writers),
+        "declared_session_matches_writers": not unobserved and all(w == change.get("declared_session") or w in grants for w in writers),
         "required_check_ids": checks,
         "validation_receipts": [dict(v) for v in change.get("validation_receipts") or []],
         "required_signoff_roles": signoffs,
@@ -267,6 +397,8 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     implementation (#164) replaces this by injection; the corpus tests run
     against whichever evaluator is supplied."""
     e = "evaluate_admission"
+    if obs.get("record_mode") != "NATIVE":
+        raise historical_refusal(e)
     if not _str(obs.get("declared_session")):
         raise _fail("AUTHOR_SESSION_NOT_DECLARED", "PR_AUTHOR_SESSION_DECLARED", "declare the authoring session", e)
     if obs.get("base_ref") != obs.get("current_base"):
@@ -275,6 +407,10 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     if obs.get("bound_request_digest") != obs.get("recomputed_request_digest"):
         raise _fail("REQUEST_DIGEST_MISMATCH", "AUTHORIZATION_BINDS_FULL_REQUEST",
                     "a successor decision bound to the full request digest", e)
+    if obs.get("writer_unobserved_paths"):
+        raise _fail("BRANCH_WRITER_UNOBSERVED", "BRANCH_WRITER_IS_BRANCH_OWNER",
+                    "an observed writer (DECLARED or OBSERVED_COMMIT_TRAILER) for every path; UNKNOWN never passes (JDQ Q-WRITER-IDENTITY)",
+                    e, paths=obs["writer_unobserved_paths"])
     if not obs.get("declared_session_matches_writers") or any(
             w != obs.get("declared_session") and w not in (obs.get("co_author_grants") or []) for w in obs.get("writer_sessions") or []):
         raise _fail("BRANCH_HAS_FOREIGN_WRITER", "BRANCH_WRITER_IS_BRANCH_OWNER",
@@ -282,11 +418,14 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     required = list(obs.get("required_check_ids") or [])
     if not required:
         raise _fail("REQUIRED_CHECKS_ROW_ABSENT", "REQUIRED_CHECKS_ROW_RESOLVES", "resolve the required-checks row", e)
-    by_id = {v.get("check_id"): v for v in obs.get("validation_receipts") or []}
-    unobserved = sorted(c for c in required if not _str((by_id.get(c) or {}).get("receipt_ref")))
+    by_id = {v.get("check_id"): v for v in obs.get("validation_receipts") or []
+             if v.get("evidence_class") == "LEDGER_RECEIPT" and str(v.get("ref") or "").startswith("refs/")}
+    unobserved = sorted(c for c in required if c not in by_id)
     if unobserved:
+        artifact_only = sorted(c for c in unobserved if any(v.get("check_id") == c for v in obs.get("validation_receipts") or []))
         raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED",
-                    "a receipted ALLOW for every required check at the exact head", e, unobserved=unobserved)
+                    "a ledger-receipted ALLOW for every required check at the exact head (OBSERVED_ARTIFACT does not count)",
+                    e, unobserved=unobserved, artifact_only=artifact_only)
     stale = sorted(c for c in required if by_id[c].get("change_digest") != obs.get("head_change_digest"))
     if stale:
         raise _fail("VALIDATION_NOT_AT_EXACT_HEAD", "VALIDATION_RECEIPT_BINDS_EXACT_HEAD", "re-run the checks at head.change_digest", e, stale=stale)
@@ -304,6 +443,12 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
             raise _fail("NO_SCENARIO_COVERAGE_FOR_SURFACE", "SCENARIO_COVERAGE_FOR_EVERY_TOUCHED_SURFACE",
                         "derive the scenario class for the surface first (SCENARIO_CORPUS_APPEND)", e, uncovered=gap)
     return {"disposition": "ALLOW", "failed_predicate": None}
+
+
+def historical_refusal(entry: str) -> Refusal:
+    return _fail("HISTORICAL_RECORD_NOT_ADMISSIBLE", "ADMITTED_RECORDS_ARE_NATIVE",
+                 "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+                 entry, "propose the NATIVE successor; this record stays history and is never admitted")
 
 
 def admit(obs: Mapping[str, Any], evaluator: Callable[..., dict] = evaluate_admission, **kw: Any) -> dict[str, Any]:
@@ -342,11 +487,25 @@ def work_items_projection(records: Iterable[Mapping[str, Any]]) -> list[dict[str
         kind = "SV_ISSUE" if r.get("schema") == ISSUE_SCHEMA else "SV_CHANGE"
         pj = r.get("projection") or {}
         out.append({"work_item_id": r.get("issue_id") or r.get("change_id"), "kind": kind,
+                    "owning_goal": r.get("owning_goal"), "record_mode": r.get("record_mode"),
                     "record_sha256": r.get("issue_sha256") or r.get("request_digest"),
                     "lifecycle_state": r.get("lifecycle_state"),
                     "canonical_coordination_state": LIFECYCLE["canonical_coordination_state"][kind][r.get("lifecycle_state")],
                     "projection": {k: pj.get(k) for k in ("repo", "pr", "issue", "head_sha", "github_state")} if pj else None})
     return sorted(out, key=lambda w: w["work_item_id"])
+
+
+COORDINATION_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+
+
+def work_items_record(records: Iterable[Mapping[str, Any]], coordination_task_id: str = COORDINATION_TASK_ID) -> dict[str, Any]:
+    """SF-9: one work-items record per coordination task; goal_index is the multi-goal index (UNKNOWN goals included)."""
+    items = work_items_projection(records)
+    index: dict[str, list[str]] = {}
+    for w in items:
+        index.setdefault(w["owning_goal"], []).append(w["work_item_id"])
+    return {"schema": "stegverse.canonical-task-work-items.v1", "coordination_task_id": coordination_task_id,
+            "goal_index": {g: sorted(ids) for g, ids in sorted(index.items())}, "work_items": items}
 
 
 def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_epoch: Any,
@@ -401,6 +560,10 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
                 raise _fail("RESOLVED_ISSUE_NOT_CLAIMED_BY_AUTHOR", "CHANGE_RESOLVES_CLAIMED_SV_ISSUES",
                             "claim each resolved SV_ISSUE with the declared session first (SV_ISSUE_CLAIM)", e, unclaimed=bad)
             obs = admission_inputs(record, record["base_ref"])
+            if obs["writer_unobserved_paths"]:
+                raise _fail("BRANCH_WRITER_UNOBSERVED", "BRANCH_WRITER_IS_BRANCH_OWNER",
+                            "an observed writer for every path; UNKNOWN never passes (JDQ Q-WRITER-IDENTITY)", e,
+                            paths=obs["writer_unobserved_paths"])
             if not obs["declared_session_matches_writers"]:
                 raise _fail("BRANCH_HAS_FOREIGN_WRITER", "BRANCH_WRITER_IS_BRANCH_OWNER",
                             "a superseding SV_CHANGE by the owner that carries the foreign content openly", e)
@@ -416,6 +579,11 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
             if not (_str(ctx.get("predicate_digest")) and _str(ctx.get("corpus_head"))):
                 raise _fail("ADMISSION_PROVENANCE_ABSENT", "MERGE_PROVENANCE_DECLARED",
                             "the admit receipt names the predicate digest and the corpus head", e)
+            if record.get("record_mode") != "NATIVE":
+                out = dict(historical_refusal(e).record)
+                new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]
+                return {**out, "predicate_digest": ctx["predicate_digest"], "corpus_head": ctx["corpus_head"],
+                        "actor_session": ctx.get("actor_session"), "transition_class": transition_class, "record": new}
             obs = admission_inputs(record, ctx.get("current_base") or {})
             out = admit(obs, ctx.get("evaluator") or evaluate_admission, covered_kinds=ctx.get("covered_kinds"))
             new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]
@@ -426,6 +594,17 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
             if record.get("base_ref") != ctx.get("current_base"):
                 raise _deny("BASE_STALE", "BASE_IS_CURRENT", "re-propose on the current base", e)
             new["applied"] = {"registry_generation": record["base_ref"]["registry_generation"] + 1}
+        if transition_class in ("SV_ISSUE_SUPERSEDE", "SV_CHANGE_SUPERSEDE"):
+            issue = transition_class == "SV_ISSUE_SUPERSEDE"
+            succ, seal_field = ctx.get("successor"), ("issue_sha256" if issue else "request_digest")
+            if not isinstance(succ, Mapping):
+                raise _fail("SUCCESSOR_NOT_RECORDED", "SUCCESSOR_ISSUE_IS_RECORDED" if issue else "SUCCESSOR_CHANGE_IS_PROPOSED",
+                            "supply the successor record", e)
+            (validate_issue if issue else validate_change)(succ)
+            if succ.get("supersedes") != record.get(seal_field):
+                raise _fail("SUCCESSOR_DOES_NOT_NAME_PREDECESSOR", "SUCCESSOR_ISSUE_IS_RECORDED" if issue else "SUCCESSOR_CHANGE_IS_PROPOSED",
+                            "successor.supersedes = predecessor " + seal_field, e)
+            new["superseded_by"] = succ.get(seal_field)
         if transition_class == "SV_CHANGE_PROJECT_GITHUB":
             new["projection"] = {**(record.get("projection") or {}), **(ctx.get("projection") or {}), "authority_effect": "NONE"}
         new["lifecycle_state"] = t["to_state"]

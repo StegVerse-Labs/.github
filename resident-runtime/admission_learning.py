@@ -64,7 +64,8 @@ def _foreign(o):
 def _stale_gen(o): o["current_base"] = {**o["current_base"], "registry_generation": o["current_base"]["registry_generation"] + 1}
 def _stale_head(o): o["current_base"] = {**o["current_base"], "ledger_head": "f" * 40}
 def _drop_first_check(o): o["validation_receipts"] = [v for v in o["validation_receipts"] if v["check_id"] != o["required_check_ids"][0]]
-def _unreceipt(o): o["validation_receipts"] = [{**v, "receipt_ref": ""} for v in o["validation_receipts"]]
+def _unreceipt(o): o["validation_receipts"] = [{**v, "ref": ""} for v in o["validation_receipts"]]
+def _artifact_only(o): o["validation_receipts"] = [{**v, "evidence_class": "OBSERVED_ARTIFACT"} for v in o["validation_receipts"]]
 def _off_head(o): o["validation_receipts"] = [{**v, "change_digest": "sha256:" + "0" * 64} for v in o["validation_receipts"]]
 def _req_digest(o): o["bound_request_digest"] = "sha256:" + "1" * 64
 def _no_session(o): o["declared_session"] = ""
@@ -81,7 +82,8 @@ PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
         ("current_base.ledger_head", "organization-ledger head moved after proposal", _stale_head)]),
     "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED": ("CHECK_SKIPPED_OR_UNOBSERVED", [
         ("validation_receipts[required_check_ids[0]]", "a required check has no receipt (skipped)", _drop_first_check),
-        ("validation_receipts[*].receipt_ref", "checks reported but unreceipted", _unreceipt)]),
+        ("validation_receipts[*].ref", "checks reported but unreceipted", _unreceipt),
+        ("validation_receipts[*].evidence_class", "checks evidenced by an observed artifact, not a ledger receipt", _artifact_only)]),
     "VALIDATION_RECEIPT_BINDS_EXACT_HEAD": ("VALIDATION_NOT_AT_EXACT_HEAD", [
         ("validation_receipts[*].change_digest", "receipts from another head", _off_head)]),
     "AUTHORIZATION_BINDS_FULL_REQUEST": ("REQUEST_DIGEST_MISMATCH", [

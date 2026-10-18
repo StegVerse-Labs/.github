@@ -1,84 +1,131 @@
 {
   "$id": "stegverse.canonical-task-work-items.v1",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "items": {
-    "additionalProperties": false,
-    "properties": {
-      "canonical_coordination_state": {
-        "minLength": 1,
-        "type": "string"
+  "additionalProperties": false,
+  "properties": {
+    "coordination_task_id": {
+      "description": "the canonical coordination task this record belongs to (e.g. STEGVERSE-CANONICAL-WORK-COORDINATION-001)",
+      "minLength": 1,
+      "type": "string"
+    },
+    "goal_index": {
+      "additionalProperties": {
+        "items": {
+          "pattern": "^sv[ic]:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "minItems": 1,
+        "type": "array",
+        "uniqueItems": true
       },
-      "kind": {
-        "enum": [
-          "SV_ISSUE",
-          "SV_CHANGE"
-        ]
-      },
-      "lifecycle_state": {
-        "minLength": 1,
-        "type": "string"
-      },
-      "projection": {
+      "description": "owning_goal -> sorted work_item_ids; derived from work_items (sv_work_items.work_items_record)",
+      "type": "object"
+    },
+    "schema": {
+      "const": "stegverse.canonical-task-work-items.v1"
+    },
+    "work_items": {
+      "items": {
         "additionalProperties": false,
         "properties": {
-          "github_state": {
+          "canonical_coordination_state": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "kind": {
             "enum": [
-              "DRAFT",
-              "HELD",
-              "MERGED",
-              "OPEN",
-              "CLOSED",
-              null
+              "SV_ISSUE",
+              "SV_CHANGE"
             ]
           },
-          "head_sha": {
+          "lifecycle_state": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "owning_goal": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "projection": {
+            "additionalProperties": false,
+            "properties": {
+              "github_state": {
+                "enum": [
+                  "DRAFT",
+                  "HELD",
+                  "MERGED",
+                  "OPEN",
+                  "CLOSED",
+                  null
+                ]
+              },
+              "head_sha": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "issue": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "pr": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "repo": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
             "type": [
-              "string",
+              "object",
               "null"
             ]
           },
-          "issue": {
-            "type": [
-              "integer",
-              "null"
+          "record_mode": {
+            "enum": [
+              "NATIVE",
+              "MIGRATED_HISTORICAL"
             ]
           },
-          "pr": {
-            "type": [
-              "integer",
-              "null"
-            ]
+          "record_sha256": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "type": "string"
           },
-          "repo": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "work_item_id": {
+            "description": "the native id: issue_id (svi:) or change_id (svc:), each derived as published in its schema's x-derivation",
+            "pattern": "^sv[ic]:[0-9a-f]{64}$",
+            "type": "string"
           }
         },
-        "type": [
-          "object",
-          "null"
-        ]
+        "required": [
+          "canonical_coordination_state",
+          "kind",
+          "lifecycle_state",
+          "owning_goal",
+          "record_mode",
+          "record_sha256",
+          "work_item_id"
+        ],
+        "type": "object"
       },
-      "record_sha256": {
-        "pattern": "^sha256:[0-9a-f]{64}$",
-        "type": "string"
-      },
-      "work_item_id": {
-        "pattern": "^sv[ic]:[0-9a-f]{64}$",
-        "type": "string"
-      }
-    },
-    "required": [
-      "work_item_id",
-      "kind",
-      "record_sha256",
-      "lifecycle_state",
-      "canonical_coordination_state"
-    ],
-    "type": "object"
+      "type": "array"
+    }
   },
-  "title": "work_items[] on a canonical task record (merges #160 6249905378; native id primary; no owner-approval flag)",
-  "type": "array"
+  "required": [
+    "schema",
+    "coordination_task_id",
+    "goal_index",
+    "work_items"
+  ],
+  "title": "Work-items record: one per canonical coordination task (merges #160 6249905378; native id primary; no owner-approval flag)",
+  "type": "object",
+  "x-carrier": "SF-9. Exactly one record per canonical coordination task, at data/canonical-task-records/<coordination_task_id>.work-items.json when admitted (repo-standards task-registry schema change with org#150). Items for several goals live on the record of the coordination task that carries them; goal_index is the multi-goal index (owning_goal -> work_item_ids). Items whose owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (MIGRATED_HISTORICAL only) are indexed under that key on the same record; no other record carries them."
 }

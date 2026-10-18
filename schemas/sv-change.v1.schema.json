@@ -2,6 +2,111 @@
   "$id": "stegverse.sv_change.v1",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "record_mode": {
+            "const": "NATIVE"
+          }
+        },
+        "required": [
+          "record_mode"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "unknown_fields"
+                  ]
+                },
+                {
+                  "required": [
+                    "migration_provenance"
+                  ]
+                },
+                {
+                  "required": [
+                    "migration_flags"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "properties": {
+              "hb_epoch": {
+                "pattern": "^[0-9]+$",
+                "type": "string"
+              },
+              "owning_goal": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              },
+              "resolves": {
+                "minItems": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_mode": {
+            "const": "MIGRATED_HISTORICAL"
+          }
+        },
+        "required": [
+          "record_mode"
+        ]
+      },
+      "then": {
+        "required": [
+          "unknown_fields",
+          "migration_provenance"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_mode": {
+            "const": "MIGRATED_HISTORICAL"
+          },
+          "resolves": {
+            "not": {
+              "minItems": 1
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "record_mode",
+          "resolves"
+        ]
+      },
+      "then": {
+        "properties": {
+          "migration_flags": {
+            "items": {
+              "const": "RESOLVES_NOT_RECORDED"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "migration_flags"
+        ]
+      }
+    }
+  ],
   "properties": {
     "admission_order_slot": {
       "type": [
@@ -36,7 +141,8 @@
     },
     "change_id": {
       "pattern": "^svc:[0-9a-f]{64}$",
-      "type": "string"
+      "type": "string",
+      "x-derivation": "svc: + sha256(canonical JSON {target_repository, base_ref, content: [{path, blob_digest, deleted: bool (default false)}] sorted by path}). writer_session is evidence, not identity. Canonical JSON = sorted keys, separators (',',':'), UTF-8. Helper: sv_work_items.change_identity (SF-2)."
     },
     "co_author_grants": {
       "items": {
@@ -63,8 +169,66 @@
             "type": "string"
           },
           "writer_session": {
-            "minLength": 1,
-            "type": "string"
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "evidence_class": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "session": {
+                      "type": "null"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "evidence_class": {
+                      "enum": [
+                        "DECLARED",
+                        "OBSERVED_COMMIT_TRAILER"
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "session": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ],
+            "description": "SF-6. UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (session null) fails BRANCH_WRITER_IS_BRANCH_OWNER (BRANCH_WRITER_UNOBSERVED). DECLARED is the declaring session's statement; neither class is an authenticated identity (JDQ Q-WRITER-IDENTITY).",
+            "properties": {
+              "evidence_class": {
+                "enum": [
+                  "DECLARED",
+                  "OBSERVED_COMMIT_TRAILER",
+                  "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                ]
+              },
+              "session": {
+                "minLength": 1,
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "session",
+              "evidence_class"
+            ],
+            "type": "object"
           }
         },
         "required": [
@@ -88,9 +252,16 @@
       ]
     },
     "hb_epoch": {
-      "description": "supplied; value >= 32 (org-kernel/kernel.py::supplied_epoch_failure); never from a clock",
-      "pattern": "^[0-9]+$",
-      "type": "string"
+      "anyOf": [
+        {
+          "pattern": "^[0-9]+$",
+          "type": "string"
+        },
+        {
+          "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+        }
+      ],
+      "description": "supplied; SF-1: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL"
     },
     "head": {
       "properties": {
@@ -116,7 +287,118 @@
         "WITHDRAWN"
       ]
     },
+    "migration_flags": {
+      "description": "SF-4: RESOLVES_NOT_RECORDED exactly when resolves is empty",
+      "items": {
+        "enum": [
+          "RESOLVES_NOT_RECORDED"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "migration_provenance": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "original_base_observed": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "original_base_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "original_base_observed": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "original_base_ref": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ],
+      "description": "SF-10. migrated_at_base equals base_ref (the base the migration was observed at); original_base_ref is null iff original_base_observed is false.",
+      "properties": {
+        "migrated_at_base": {
+          "additionalProperties": false,
+          "properties": {
+            "ledger_head": {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            },
+            "registry_generation": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "tree_sha": {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "registry_generation",
+            "ledger_head"
+          ],
+          "type": "object"
+        },
+        "original_base_observed": {
+          "type": "boolean"
+        },
+        "original_base_ref": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "ledger_head": {
+                  "pattern": "^[0-9a-f]{40}$",
+                  "type": "string"
+                },
+                "registry_generation": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "tree_sha": {
+                  "pattern": "^[0-9a-f]{40}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "registry_generation",
+                "ledger_head"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "original_base_observed",
+        "original_base_ref",
+        "migrated_at_base"
+      ],
+      "type": "object"
+    },
     "owning_goal": {
+      "description": "SF-8: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL",
       "minLength": 1,
       "type": "string"
     },
@@ -125,6 +407,13 @@
       "type": [
         "object",
         "null"
+      ]
+    },
+    "record_mode": {
+      "description": "NATIVE: every field observed; no unknown_fields/migration_provenance/migration_flags. MIGRATED_HISTORICAL: history recorded before the native path; UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is permitted only at the pointers in x-migrated-unknown-allowed and each one must be listed in unknown_fields (enforced by sv_work_items.mode_check); never admissible (ADMIT -> FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE); it becomes NATIVE only through a superseding NATIVE record (SV_*_SUPERSEDE) with observed values.",
+      "enum": [
+        "NATIVE",
+        "MIGRATED_HISTORICAL"
       ]
     },
     "request_digest": {
@@ -154,11 +443,11 @@
       "type": "object"
     },
     "resolves": {
+      "description": "SF-4: minItems 1 for NATIVE; MIGRATED_HISTORICAL may be empty and is then flagged RESOLVES_NOT_RECORDED",
       "items": {
         "pattern": "^svi:[0-9a-f]{64}$",
         "type": "string"
       },
-      "minItems": 1,
       "type": "array"
     },
     "schema": {
@@ -175,7 +464,12 @@
       },
       "type": "array"
     },
+    "superseded_by": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
     "supersedes": {
+      "description": "predecessor request_digest",
       "type": [
         "string",
         "null"
@@ -192,8 +486,36 @@
       },
       "type": "array"
     },
+    "unknown_fields": {
+      "items": {
+        "pattern": "^(/hb_epoch|/owning_goal)$",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
     "validation_receipts": {
       "items": {
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "evidence_class": {
+                  "const": "LEDGER_RECEIPT"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "ref": {
+                  "pattern": "^refs/"
+                }
+              }
+            }
+          }
+        ],
+        "description": "SF-5. Only LEDGER_RECEIPT (ref under refs/) counts toward VERIFIED; OBSERVED_ARTIFACT is cited evidence and leaves the check unobserved.",
         "properties": {
           "change_digest": {
             "pattern": "^sha256:[0-9a-f]{64}$",
@@ -203,6 +525,10 @@
             "minLength": 1,
             "type": "string"
           },
+          "digest": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "type": "string"
+          },
           "disposition": {
             "enum": [
               "ALLOW",
@@ -210,15 +536,24 @@
               "FAIL_CLOSED"
             ]
           },
-          "receipt_ref": {
+          "evidence_class": {
+            "enum": [
+              "LEDGER_RECEIPT",
+              "OBSERVED_ARTIFACT"
+            ]
+          },
+          "ref": {
+            "minLength": 1,
             "type": "string"
           }
         },
         "required": [
           "check_id",
-          "receipt_ref",
           "disposition",
-          "change_digest"
+          "change_digest",
+          "evidence_class",
+          "ref",
+          "digest"
         ],
         "type": "object"
       },
@@ -226,23 +561,28 @@
     }
   },
   "required": [
-    "schema",
-    "change_id",
-    "target_repository",
-    "resolves",
-    "owning_goal",
-    "declared_session",
     "base_ref",
-    "head",
+    "change_id",
     "content",
-    "touched_paths",
+    "declared_session",
+    "hb_epoch",
+    "head",
     "lifecycle_state",
-    "validation_receipts",
-    "required_checks_ref",
-    "signoffs",
+    "owning_goal",
+    "record_mode",
     "request_digest",
-    "hb_epoch"
+    "required_checks_ref",
+    "resolves",
+    "schema",
+    "signoffs",
+    "target_repository",
+    "touched_paths",
+    "validation_receipts"
   ],
   "title": "SV_CHANGE (Lane C consumer schema + B1-B7)",
-  "type": "object"
+  "type": "object",
+  "x-migrated-unknown-allowed": [
+    "/hb_epoch",
+    "/owning_goal"
+  ]
 }
