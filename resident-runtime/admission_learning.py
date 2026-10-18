@@ -72,6 +72,9 @@ def _no_session(o): o["declared_session"] = ""
 def _drop_signoff(o): o["signoffs"] = []
 def _unreceipt_signoff(o): o["signoffs"] = [{**s, "receipt_ref": ""} for s in o["signoffs"]]
 def _fail_check(o): o["validation_receipts"] = [{**v, "disposition": "DENY"} if i == 0 else v for i, v in enumerate(o["validation_receipts"])]
+def _writer_evidence_lost(o):  # every content writer_session -> {session: null, evidence_class: UNKNOWN}, as admission_inputs reads it
+    o["writer_unobserved_paths"] = sorted(o["touched_paths"]); o["writer_sessions"] = []; o["declared_session_matches_writers"] = False
+def _fail_closed_check(o): o["validation_receipts"] = [{**v, "disposition": "FAIL_CLOSED"} if i == 0 else v for i, v in enumerate(o["validation_receipts"])]
 
 
 PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
@@ -93,10 +96,30 @@ PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
     "REQUIRED_SIGNOFF_RECORDED": ("SIGNOFF_RECEIPT_ABSENT", [
         ("signoffs", "required role sign-off absent", _drop_signoff),
         ("signoffs[*].receipt_ref", "sign-off claimed without receipt", _unreceipt_signoff)]),
-    "CHECK_PASSES": ("CHECK_NOT_PASSING", [
-        ("validation_receipts[0].disposition", "a required check refused", _fail_check)]),
+    "CHECK_PASSES": ("REQUIRED_CHECK_DENIED", [
+        ("validation_receipts[0].disposition", "a required check refused (DENY)", _fail_check)]),
+    "CHECK_RECEIPT_DISPOSITION_IS_ALLOW": ("CHECK_SKIPPED_OR_UNOBSERVED", [
+        ("validation_receipts[0].disposition", "a required check failed closed", _fail_closed_check)]),
 }
-PREDICATE_ALIASES = {"CHECK_NOT_PASSING": "CHECK_PASSES"}
+PREDICATE_ALIASES: dict[str, str] = {}
+# Axes a predicate binds under a second failure code. generalize adds them (each axis names its own expected code)
+# only when a harvested candidate carries that code; a seed generalized from the predicate alone does not get them.
+SECONDARY_AXES: dict[tuple[str, str], list[tuple[str, str, Callable]]] = {
+    ("BRANCH_WRITER_IS_BRANCH_OWNER", "BRANCH_WRITER_UNOBSERVED"): [
+        ("content[*].writer_session.evidence_class", "writer evidence lost: every writer_session UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+         _writer_evidence_lost)]}
+# A harvested class name that the class rule (failed predicate + surface kind) maps onto an existing class id is
+# recorded as an alias of that class, never as a duplicate class.
+CLASS_ALIASES: dict[str, str] = {
+    "WRITER_EVIDENCE_LOST_BY_SNAPSHOT_RESTORE": "ASC-BRANCH_WRITER_IS_BRANCH_OWNER@transition"}
+
+
+def _axis_mutator(pred: str, field: str) -> Callable:
+    for (p, _), axes in [((pred, None), PREDICATE_BINDINGS[pred][1])] + [(k, v) for k, v in SECONDARY_AXES.items() if k[0] == pred]:
+        for f, _, fn in axes:
+            if f == field:
+                return fn
+    raise _fail("PREDICATE_BINDING_UNDECLARED", "FAILED_PREDICATE_HAS_DECLARED_BINDINGS", "declare the axis", "generate", axis=field)
 # A failure code shared by two predicates (TVC#519: CHECK_SKIPPED_OR_UNOBSERVED under MERGE_READY_... and
 # RECEIPT_CHANGE_DIGEST_EQUALS_HEAD) names no single predicate, so it is not a fallback key: such a candidate must
 # carry its failed_predicate, else PREDICATE_BINDING_UNDECLARED.
@@ -120,6 +143,8 @@ def harvest(records: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
             if ev.get("disposition") in (None, "ALLOW"):
                 continue
             d, origin, ref = ev, "HARVESTED", {"receipt_sha256": r.get("receipt_sha256")}
+            if r.get("source_receipt_ref") is not None:  # a report locator, not a ledger receipt: carried with its flags
+                ref.update({k: r[k] for k in ("source_receipt_ref", "unobserved_fields", "observed_case", "class_name") if k in r})
         if d.get("disposition") == "ALLOW":
             continue
         out.append({"failure_code": d.get("failure_code"), "failed_predicate": d.get("failed_predicate"),
@@ -134,7 +159,10 @@ def class_id_for(predicate: str, surface: str) -> str:
 
 def generalize(candidate: Mapping[str, Any], *, surface: str, origin_scenarios: list[str], rule_refs: list[dict],
                declared_by_session: str, harvest_receipt_ref: str | None, hb_epoch: Any,
-               class_version: int = 1, supersedes: str | None = None) -> dict[str, Any]:
+               class_version: int = 1, supersedes: str | None = None, prior: Mapping[str, Any] | None = None,
+               provenance_unobserved: list[str] | None = None) -> dict[str, Any]:
+    """Class rule: failed predicate + surface kind. A candidate whose code is a declared secondary code of the predicate
+    adds that code's axes; with `prior` (the current version) the axes and provenance are carried forward."""
     pred = candidate.get("failed_predicate")
     pred = PREDICATE_ALIASES.get(candidate.get("failure_code"), pred)
     if pred not in PREDICATE_BINDINGS:
@@ -144,30 +172,44 @@ def generalize(candidate: Mapping[str, Any], *, surface: str, origin_scenarios: 
                     "declare the predicate's bound fields in PREDICATE_BINDINGS (or answer via JDQ Q-SCENARIO-GENERALIZATION)",
                     "generalize", failed_predicate=pred)
     code, axes = PREDICATE_BINDINGS[pred]
+    mutation_axes = [{"field": f, "bound_value_source": "positive_control", "mutation": m} for f, m, _ in axes]
+    for a in (prior or {}).get("mutation_axes") or []:
+        if a["field"] not in {x["field"] for x in mutation_axes}:
+            mutation_axes.append(dict(a))
+    code2 = candidate.get("failure_code")
+    for f, m, _ in SECONDARY_AXES.get((pred, code2), []) if code2 != code else []:
+        if f not in {x["field"] for x in mutation_axes}:
+            mutation_axes.append({"field": f, "bound_value_source": "positive_control", "mutation": m, "expected_failure_code": code2})
+    prov_prior = (prior or {}).get("provenance") or {}
+    origin_scenarios = sorted(set(origin_scenarios) | set(prov_prior.get("origin_scenarios") or []))
+    aliases = sorted(set(prov_prior.get("class_aliases") or []) | {n for n, c in CLASS_ALIASES.items()
+                                                                     if c == class_id_for(pred, surface) and n == candidate.get("class_name")})
     body = {"schema": CLASS_SCHEMA, "class_id": class_id_for(pred, surface), "class_version": class_version,
             "supersedes": supersedes, "predicate": pred, "expected_failure_code": code,
-            "expected_disposition": "DENY" if code in ("BASE_STALE", "CHECK_NOT_PASSING") else "FAIL_CLOSED",
+            "expected_disposition": "DENY" if code in ("BASE_STALE", "REQUIRED_CHECK_DENIED") else "FAIL_CLOSED",
             "surfaces": [{"kind": surface}],
-            "mutation_axes": [{"field": f, "bound_value_source": "positive_control", "mutation": m} for f, m, _ in axes],
+            "mutation_axes": mutation_axes,
             "positive_controls": ["PC-" + surface],
-            "provenance": {"origin_scenarios": sorted(origin_scenarios), "harvest_receipt_ref": harvest_receipt_ref,
-                           "rule_refs": rule_refs, "declared_by_session": declared_by_session},
+            "provenance": {"origin_scenarios": origin_scenarios, "harvest_receipt_ref": harvest_receipt_ref,
+                           "rule_refs": rule_refs, "declared_by_session": declared_by_session, **({"class_aliases": aliases} if aliases else {}),
+                           **({"unobserved_fields": sorted(provenance_unobserved)} if provenance_unobserved else {})},
             "hb_epoch": str(hb_epoch)}
     return wi.seal(body, "class_sha256")
 
 
 def generate(cls: Mapping[str, Any], known_good: Mapping[str, Any], *, hb_epoch: Any) -> list[dict[str, Any]]:
     """One mutation-negative per bound field plus the positive control."""
-    _, axes = PREDICATE_BINDINGS[cls["predicate"]]
     base = {"schema": SCENARIO_SCHEMA, "scenario_class": cls["class_id"], "origin": "SEED",
             "source": {"class_sha256": cls["class_sha256"]}, "hb_epoch": str(hb_epoch)}
     out = [wi.seal({**base, "scenario_id": cls["positive_controls"][0] + "/" + cls["class_id"], "observed_inputs": copy.deepcopy(dict(known_good)),
                     "expected_disposition": "ALLOW", "expected_failure_code": None,
                     "generated_from": {"class_id": cls["class_id"], "axis": None}}, "scenario_sha256")]
-    for field, _, mutate in axes:
-        obs = copy.deepcopy(dict(known_good)); mutate(obs)
+    for axis in cls["mutation_axes"]:
+        field = axis["field"]
+        obs = copy.deepcopy(dict(known_good)); _axis_mutator(cls["predicate"], field)(obs)
         out.append(wi.seal({**base, "scenario_id": cls["class_id"] + "/" + field, "observed_inputs": obs,
-                            "expected_disposition": cls["expected_disposition"], "expected_failure_code": cls["expected_failure_code"],
+                            "expected_disposition": cls["expected_disposition"],
+                            "expected_failure_code": axis.get("expected_failure_code", cls["expected_failure_code"]),
                             "generated_from": {"class_id": cls["class_id"], "axis": field}}, "scenario_sha256"))
     return out
 
@@ -203,8 +245,10 @@ def covered_kinds(classes: Mapping[str, Mapping]) -> list[str]:
 
 def corpus_append(class_lines: list[dict], corpus_lines: list[dict], new_class: Mapping[str, Any], scenarios: list[dict],
                   *, hb_epoch: Any, known_good: Iterable[Mapping[str, Any]] = (),
-                  evaluator: Callable[..., dict] = wi.evaluate_admission) -> dict[str, Any]:
-    """SCENARIO_CORPUS_APPEND. ALLOW returns the lines to append and the six-field-ready outcome."""
+                  evaluator: Callable[..., dict] | None = None) -> dict[str, Any]:
+    """SCENARIO_CORPUS_APPEND. ALLOW returns the lines to append and the six-field-ready outcome. The corpus is a
+    fixture context (positive controls carry fixture receipts), so the default evaluator runs in fixture_mode."""
+    evaluator = evaluator or (lambda obs, **kw: wi.evaluate_admission(obs, fixture_mode=True, **kw))
     entry = "corpus_append"
     try:
         wi.epoch_check(hb_epoch, entry)
@@ -230,7 +274,9 @@ def corpus_append(class_lines: list[dict], corpus_lines: list[dict], new_class: 
         dup = sorted(s["scenario_id"] for s in scenarios if s["scenario_id"] in ids and not s.get("supersedes"))
         if dup:
             raise _deny("SCENARIO_ID_EXISTS", "CORPUS_IS_APPEND_ONLY", "a changed scenario names what it supersedes", entry, duplicates=dup)
-        mine = [s for s in scenarios if s["scenario_class"] == new_class["class_id"]]
+        # a superseding version is covered by the class's lines already in the corpus plus the appended ones; every
+        # one of them is re-evaluated against the new version below
+        mine = [s for s in (corpus_lines if prev is not None else []) + scenarios if s["scenario_class"] == new_class["class_id"]]
         axes = {a["field"] for a in new_class["mutation_axes"]}
         if {(s.get("generated_from") or {}).get("axis") for s in mine if s["expected_disposition"] != "ALLOW"} != axes:
             raise _deny("CLASS_AXIS_WITHOUT_NEGATIVE", "ONE_MUTATION_NEGATIVE_PER_BOUND_FIELD", "generate one negative per axis", entry)

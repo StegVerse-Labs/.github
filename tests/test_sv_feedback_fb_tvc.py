@@ -17,6 +17,11 @@ SIX = wi.SIX_FIELDS
 GOAL163 = "StegVerse-org/.github#163"
 
 
+def fx_admit(obs, **kw):
+    """Fixture context: fixture validation refs and fixture_only sign-off receipts count (never on the real path)."""
+    return wi.admit(obs, fixture_mode=True, **kw)
+
+
 def refusal(fn, *a, **k):
     try:
         fn(*a, **k)
@@ -198,7 +203,7 @@ class TVCCodeTests(unittest.TestCase):
 
     def test_signoff_code(self):
         kg = fx.known_good(fx.SURFACE_PATH["ledger_writer"])
-        out = wi.admit({**kg, "signoffs": []})
+        out = fx_admit({**kg, "signoffs": []})
         self.assertEqual((out["failure_code"], out["failed_predicate"]), ("SIGNOFF_RECEIPT_ABSENT", "REQUIRED_SIGNOFF_RECORDED"))
 
     def test_code_only_candidate_with_shared_code_fails_closed(self):
@@ -224,7 +229,8 @@ class CheckReceiptInvariantTests(unittest.TestCase):
         ids = sorted({c for v in self.ROW["surface_kinds"].values() for c in v["checks"]})
         self.assertEqual(sorted(self.ROW["checks"]), ids)
         for e in self.ROW["checks"].values():
-            self.assertEqual(e, {"minter": "NWI-S1-verifier (SV-LLM/.github#46)", "appender": "org-ledger-writer (Labs#3255)"})
+            self.assertEqual({k: e[k] for k in ("minter", "appender")},
+                             {"minter": "NWI-S1-verifier (SV-LLM/.github#46)", "appender": "org-ledger-writer (Labs#3255)"})
         self.assertIn("REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIER_OUTPUTS_APPENDED_BY_ORG_WRITER",
                       (ROOT / "docs/NWI_S0_NATIVE_WORK_ITEMS_MIRROR_HANDOFF.md").read_text())
         self.assertEqual(SCHEMAS["sv-check-receipt.v1"]["properties"]["check_id"]["enum"], ids)
@@ -251,7 +257,7 @@ class CheckReceiptInvariantTests(unittest.TestCase):
         self.assertTrue(errs); self.assertEqual(c, "CHECK_ID_UNDECLARED")
         obs = wi.admission_inputs(ch, ch["base_ref"])
         obs["validation_receipts"].append(fx.ledger_receipt("ci-green", ch["head"]["change_digest"]))
-        out = wi.admit(obs)
+        out = fx_admit(obs)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "CHECK_ID_UNDECLARED"))
         self.assertTrue(six_complete(out))
         r, _ = receipt(check_id="ci-green")
@@ -297,8 +303,9 @@ class TVCReplayTests(unittest.TestCase):
             ch = self.CH[m["sv_change_id"]]
             self.assertEqual(m["expected_failure_code"], sc["expected_failure_code"])
             if m["mutation"] is None:
-                self.assertEqual(wi.admission_inputs(ch, m["current_base"]), sc["observed_inputs"])
-                self.assertEqual(wi.admit(sc["observed_inputs"])["disposition"], "ALLOW")
+                rcpts = {r["receipt_sha256"]: r for r in base.jsonl("data/admission-scenarios/tvc-replay/signoff-receipts.jsonl")}
+                self.assertEqual(wi.admission_inputs(ch, m["current_base"], [rcpts[k] for k in m["signoff_receipts"]]), sc["observed_inputs"])
+                self.assertEqual(fx_admit(sc["observed_inputs"])["disposition"], "ALLOW")
             else:
                 self.assertEqual(m["mutation"]["axis"], sc["generated_from"]["axis"])
                 self.assertIn(m["mutation"]["applies_to"], ("SV_CHANGE", "REPLAY_INPUT"))

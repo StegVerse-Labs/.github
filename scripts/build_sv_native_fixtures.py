@@ -27,6 +27,9 @@ FIXTURE_HB_EPOCH = "1024"
 SESSION = "P1 Ecosystem AI Lane (d8cbc58c)"
 LABS_BASE = {"registry_generation": 319, "ledger_head": "a5bb54d81893b392a3ce28182986fc39857807e1"}
 MIG = ROOT / "data/sv-work-items/migration"
+REQUIRED_CHECKS_FILE = "data/sv-work-items/required-checks.json"
+REQUIRED_CHECKS_BLOB = mg.git_blob((ROOT / REQUIRED_CHECKS_FILE).read_bytes())  # the row file's git blob as committed
+FIXTURE_SIGNOFF_SESSION = "fixture-owner"
 SCN = ROOT / "data/admission-scenarios"
 INVARIANT_FILES = {  # rule_id -> (repository, file, blob_sha); others stay invariant_declared false
     "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH": ("StegVerse-Labs/.github", "org-kernel/kernel.py#supplied_epoch_failure", "ffec5d648d7fa4aead1f44f76df936a2da21bb96"),
@@ -130,26 +133,42 @@ def known_good_change(kind_path: str) -> dict:
     content = [{"path": kind_path, "blob_digest": "sha256:" + "a" * 64, "deleted": False, "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
     digest = wi.change_digest({"target_repository": "StegVerse-Labs/.github", "base_ref": dict(LABS_BASE), "content": content})
     checks, signoffs = wi.required_for([kind_path])
+    change_id = wi.change_identity({"target_repository": "StegVerse-Labs/.github", "base_ref": dict(LABS_BASE), "content": content})
     ch = {"schema": wi.CHANGE_SCHEMA, "record_mode": "NATIVE", "target_repository": "StegVerse-Labs/.github", "resolves": ["svi:" + "0" * 64],
           "owning_goal": "StegVerse-org/.github#163", "declared_session": SESSION, "base_ref": dict(LABS_BASE),
           "head": {"change_digest": digest}, "content": content, "touched_paths": [kind_path], "lifecycle_state": "VERIFIED",
-          "required_checks_ref": {"file": "data/sv-work-items/required-checks.json", "blob_sha": "WORKTREE", "row_id": "SV-CHANGE-REQUIRED-CHECKS-001"},
+          "required_checks_ref": {"file": REQUIRED_CHECKS_FILE, "blob_sha": REQUIRED_CHECKS_BLOB, "row_id": "SV-CHANGE-REQUIRED-CHECKS-001"},
           "validation_receipts": [ledger_receipt(c, digest) for c in checks],
-          "signoffs": [{"role": r, "session": "fixture-owner", "receipt_ref": "fixture:signoff:" + r} for r in signoffs],
+          "signoffs": [{"role": r, "session": FIXTURE_SIGNOFF_SESSION, "receipt_ref": fixture_signoff_receipt(r, change_id, digest)["receipt_sha256"]}
+                       for r in signoffs],
           "hb_epoch": FIXTURE_HB_EPOCH}
     ch["change_id"] = wi.change_identity(ch)
     ch["request_digest"] = wi.request_digest(ch)
     return wi.validate_change(ch)
 
 
+def fixture_signoff_receipt(role: str, change_id: str, change_digest: str) -> dict:
+    """FIXTURE ONLY (TVC#519 seed convention): a sealed sign-off receipt for a positive control. No owner signed
+    anything: session and disposition are fixture pins listed in unobserved_fields, fixture_only is true, and
+    sv_work_items.signoff_resolves counts it only in fixture_mode, never on the real admission path."""
+    return wi.seal({"schema": wi.SIGNOFF_RECEIPT_SCHEMA, "role": role, "session": FIXTURE_SIGNOFF_SESSION, "change_id": change_id,
+                    "change_digest": change_digest, "disposition": "ALLOW", "fixture_only": True,
+                    "unobserved_fields": ["session", "disposition"]}, "receipt_sha256")
+
+
+def signoff_receipts_for(ch: dict) -> list[dict]:
+    return [fixture_signoff_receipt(s["role"], ch["change_id"], ch["head"]["change_digest"]) for s in ch.get("signoffs") or []]
+
+
 def known_good(kind_path: str) -> dict:
     """A known-good SV_CHANGE observation touching one surface kind (positive control)."""
-    return wi.admission_inputs(known_good_change(kind_path), LABS_BASE)
+    ch = known_good_change(kind_path)
+    return wi.admission_inputs(ch, LABS_BASE, signoff_receipts_for(ch))
 
 
 # (d) TVC#519 replay: which SV_CHANGE field (or replay input) each mutation axis changes
 AXIS_TARGET = {
-    "writer_sessions": ("SV_CHANGE", "/content/*/writer_session/session", "a content entry written by a session other than declared_session"),
+    "writer_sessions": ("SV_CHANGE", "/content/0/writer_session", "the content entry's writer is a session other than declared_session"),
     "current_base.registry_generation": ("REPLAY_INPUT", "/current_base/registry_generation", "current base moved; the SV_CHANGE is unchanged"),
     "current_base.ledger_head": ("REPLAY_INPUT", "/current_base/ledger_head", "current base moved; the SV_CHANGE is unchanged"),
     "validation_receipts[required_check_ids[0]]": ("SV_CHANGE", "/validation_receipts", "drop the receipt of the first required check id"),
@@ -160,11 +179,58 @@ AXIS_TARGET = {
     "declared_session": ("SV_CHANGE", "/declared_session", "empty the declared session"),
     "signoffs": ("SV_CHANGE", "/signoffs", "drop every sign-off"),
     "signoffs[*].receipt_ref": ("SV_CHANGE", "/signoffs/*/receipt_ref", "set every sign-off receipt_ref to the empty string"),
-    "validation_receipts[0].disposition": ("SV_CHANGE", "/validation_receipts/0/disposition", "the first receipt refuses (DENY)"),
+    "validation_receipts[0].disposition": ("SV_CHANGE", "/validation_receipts/0/disposition", "the first receipt is not ALLOW"),
+    "content[*].writer_session.evidence_class": ("SV_CHANGE", "/content/*/writer_session",
+                                                 "every writer_session -> {session: null, evidence_class: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED}"),
 }
+FOREIGN_SESSION = "FOREIGN-SESSION"  # fixture: the session admission_learning._foreign adds
 
 
-def replay(scenarios: list[dict]) -> tuple[list[dict], list[dict]]:
+def axis_value(axis: str, expected_code: str | None):
+    """The concrete value each replay mutation writes (the same values admission_learning's mutations use)."""
+    return {"writer_sessions": {"session": FOREIGN_SESSION, "evidence_class": "DECLARED"},
+            "validation_receipts[*].ref": "", "validation_receipts[*].evidence_class": "OBSERVED_ARTIFACT",
+            "validation_receipts[*].change_digest": "sha256:" + "0" * 64, "bound_request_digest": "sha256:" + "1" * 64,
+            "declared_session": "", "signoffs": [], "signoffs[*].receipt_ref": "",
+            "content[*].writer_session.evidence_class": {"session": None, "evidence_class": wi.UNKNOWN},
+            "validation_receipts[0].disposition": "DENY" if expected_code == "REQUIRED_CHECK_DENIED" else "FAIL_CLOSED"}.get(axis)
+
+
+def apply_replay_mutation(ch: dict, m: dict | None) -> dict:
+    """Apply one replay-map mutation to a full SV_CHANGE. Unless the mutation targets request_digest itself, the
+    request digest is re-bound afterwards (rebind_request_digest), so the scenario fires its own predicate."""
+    ch = json.loads(json.dumps(ch))
+    if m is None or m["applies_to"] == "REPLAY_INPUT":
+        return ch
+    axis, v = m["axis"], m["value"]
+    if axis == "writer_sessions":
+        ch["content"][0]["writer_session"] = dict(v)
+    elif axis == "content[*].writer_session.evidence_class":
+        ch["content"] = [{**c, "writer_session": dict(v)} for c in ch["content"]]
+    elif axis == "validation_receipts[required_check_ids[0]]":
+        first = wi.required_for(ch["touched_paths"])[0][0]
+        ch["validation_receipts"] = [r for r in ch["validation_receipts"] if r["check_id"] != first]
+    elif axis.startswith("validation_receipts[*]."):
+        f = axis.split(".", 1)[1]
+        ch["validation_receipts"] = [{**r, f: v} for r in ch["validation_receipts"]]
+    elif axis == "validation_receipts[0].disposition":
+        ch["validation_receipts"][0] = {**ch["validation_receipts"][0], "disposition": v}
+    elif axis == "bound_request_digest":
+        ch["request_digest"] = v
+    elif axis == "declared_session":
+        ch["declared_session"] = v
+    elif axis == "signoffs":
+        ch["signoffs"] = list(v)
+    elif axis == "signoffs[*].receipt_ref":
+        ch["signoffs"] = [{**s, "receipt_ref": v} for s in ch["signoffs"]]
+    else:
+        raise SystemExit(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "REPLAY_AXIS_UNDECLARED", "axis": axis}))
+    if m["rebind_request_digest"]:
+        ch["request_digest"] = wi.request_digest(ch)
+    return ch
+
+
+def replay(scenarios: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
     """Each corpus scenario references the full known-good SV_CHANGE of its class's surface plus the one mutation
     (an SV_CHANGE pointer or a replay input) its axis applies; positive controls apply none."""
     changes, rows = {}, []
@@ -173,11 +239,15 @@ def replay(scenarios: list[dict]) -> tuple[list[dict], list[dict]]:
         ch = changes.setdefault(path, known_good_change(path))
         axis = sc["generated_from"]["axis"]
         tgt = AXIS_TARGET[axis] if axis is not None else None
+        mut = None if tgt is None else {"axis": axis, "applies_to": tgt[0], "pointer": tgt[1], "operation": tgt[2],
+                                        "value": None if tgt[0] == "REPLAY_INPUT" else axis_value(axis, sc["expected_failure_code"]),
+                                        "rebind_request_digest": tgt[0] == "SV_CHANGE" and tgt[1] != "/request_digest"}
         rows.append({"scenario_id": sc["scenario_id"], "scenario_sha256": sc["scenario_sha256"], "sv_change_id": ch["change_id"],
                      "current_base": sc["observed_inputs"]["current_base"] if tgt and tgt[0] == "REPLAY_INPUT" else dict(LABS_BASE),
-                     "mutation": None if tgt is None else {"axis": axis, "applies_to": tgt[0], "pointer": tgt[1], "operation": tgt[2]},
-                     "expected_disposition": sc["expected_disposition"], "expected_failure_code": sc["expected_failure_code"]})
-    return sorted(changes.values(), key=lambda c: c["change_id"]), rows
+                     "signoff_receipts": [r["receipt_sha256"] for r in signoff_receipts_for(ch)],
+                     "mutation": mut, "expected_disposition": sc["expected_disposition"], "expected_failure_code": sc["expected_failure_code"]})
+    signoffs = {r["receipt_sha256"]: r for ch in changes.values() for r in signoff_receipts_for(ch)}
+    return sorted(changes.values(), key=lambda c: c["change_id"]), rows, [signoffs[k] for k in sorted(signoffs)]
 
 
 def ledger_receipt(check_id: str, digest: str, disposition: str = "ALLOW") -> dict:
@@ -205,6 +275,63 @@ SEEDS = [
 ]
 
 
+# Harvested through SCENARIO_CORPUS_APPEND (not hand-edited). Observed locally: the commit was re-fetched by sha and
+# its tree verified (commit, parent, tree, touched paths below). The push time, the restore time and the lost reflog
+# entry come from the orchestrator's report, for which no ledger receipt is held: flagged in unobserved_fields.
+HARVEST_LOCATOR = "orchestrator:2026-10-18T14:31Z:org#192@f108ed0a"
+HARVESTED = [{
+    "disposition": "FAIL_CLOSED", "failure_code": "BRANCH_WRITER_UNOBSERVED", "failed_predicate": "BRANCH_WRITER_IS_BRANCH_OWNER",
+    "required_evidence_or_repair": "a durable push-time writer receipt (sv-push-receipt, being built by Lane C) for the push of "
+                                   "f108ed0a to StegVerse-org/.github#192; a re-fetched, tree-verified commit is not writer evidence "
+                                   "and no reflog is reconstructed",
+    "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+    "owning_existing_goal": "StegVerse-org/.github#163",
+    "next_attempt": "after Lane C's sv-push-receipt exists and a push-time writer receipt for the org#192 push is on the ledger; "
+                    "until then the writer stays UNKNOWN_NOT_AUTHENTICALLY_OBSERVED and the range base never overrides it",
+    "touched_surface_kinds": ["transition"], "class_name": "WRITER_EVIDENCE_LOST_BY_SNAPSHOT_RESTORE",
+    "source_receipt_ref": HARVEST_LOCATOR,
+    "observed_case": {"repository": "StegVerse-org/.github", "pull_request": "StegVerse-org/.github#192",
+                      "commit": "f108ed0a7b85b80ca91af5664011115bcb7d34f1", "parent": "af556c9dfecf0a68edf3547e84586af0f7d23bfe",
+                      "tree": "32a4e47ace8726706c7d30017e18476faf4f79fd",
+                      "touched_paths": ["resident-runtime/admission_predicate.py", "tests/test_admission_predicate.py"],
+                      "commit_refetched_by_sha_and_tree_verified": True, "reflog_reconstructed": False,
+                      "push_time": "2026-10-18T13:54:46Z", "snapshot_restore_time": "about 2026-10-18T13:55Z",
+                      "writer_session": {"session": None, "evidence_class": wi.UNKNOWN}},
+    "unobserved_fields": ["source_receipt_ref", "observed_case/push_time", "observed_case/snapshot_restore_time",
+                          "observed_case/writer_session"],
+}]
+
+
+def harvest_append(classes: list[dict], scenarios: list[dict]) -> list[dict]:
+    """harvest -> generalize (class rule) -> generate -> corpus_append for each HARVESTED outcome."""
+    receipts = []
+    for cand in al.harvest(HARVESTED):
+        surface = cand["surfaces"][0]
+        cid = al.class_id_for(cand["failed_predicate"], surface)
+        prior = al.latest_classes(classes).get(cid)
+        name = cand["source"]["class_name"]
+        cls = al.generalize({**cand, "class_name": name}, surface=surface,
+                            origin_scenarios=["%s %s (%s)" % (cand["source"]["observed_case"]["pull_request"], name, HARVEST_LOCATOR)],
+                            rule_refs=[REFS["MERGE_AUTHORITY"], REFS["ST019"]], declared_by_session=SESSION,
+                            harvest_receipt_ref=HARVEST_LOCATOR, hb_epoch=FIXTURE_HB_EPOCH, prior=prior,
+                            class_version=(prior or {}).get("class_version", 0) + 1,
+                            supersedes=(prior or {}).get("class_sha256"), provenance_unobserved=["harvest_receipt_ref"])
+        have = {s["scenario_id"] for s in scenarios}
+        gen = [s for s in al.generate(cls, known_good(SURFACE_PATH[surface]), hb_epoch=FIXTURE_HB_EPOCH) if s["scenario_id"] not in have]
+        axis = next(a["field"] for a in cls["mutation_axes"] if a.get("expected_failure_code") == cand["failure_code"])
+        neg = next(s for s in gen if s["generated_from"]["axis"] == axis)
+        body = {k: v for k, v in neg.items() if k != "scenario_sha256"}
+        gen.append(wi.seal({**body, "scenario_id": "%s/harvested/%s@%s@%s" % (cid, name, cand["source"]["observed_case"]["pull_request"],
+                                                                            cand["source"]["observed_case"]["commit"][:8]),
+                            "origin": "HARVESTED", "source": {**cand["source"], "class_sha256": cls["class_sha256"]}}, "scenario_sha256"))
+        out = al.corpus_append(classes, scenarios, cls, gen, hb_epoch=FIXTURE_HB_EPOCH)
+        if out["disposition"] != "ALLOW":
+            raise SystemExit(json.dumps(out, sort_keys=True))
+        classes += out["append_classes"]; scenarios += out["append_scenarios"]
+        receipts.append({k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cid})
+    return receipts
+
+
 def corpus() -> tuple[list[dict], list[dict], list[dict]]:
     classes, scenarios, receipts = [], [], []
     for pred, surface, origins in SEEDS:
@@ -219,6 +346,7 @@ def corpus() -> tuple[list[dict], list[dict], list[dict]]:
             raise SystemExit(json.dumps(out, sort_keys=True))
         classes += out["append_classes"]; scenarios += out["append_scenarios"]
         receipts.append({k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]})
+    receipts += harvest_append(classes, scenarios)
     return classes, scenarios, receipts
 
 
@@ -229,13 +357,36 @@ def build() -> dict[Path, str]:
     c, s, r = corpus()
     iss = issues()
     return {MIG / "sv-issues.jsonl": _jsonl(iss), MIG / "sv-changes.jsonl": _jsonl(changes(iss)), SCN / "classes.jsonl": _jsonl(c), SCN / "corpus.jsonl": _jsonl(s),
-            SCN / "seed-append-outcomes.jsonl": _jsonl(r), **dict(zip((SCN / "tvc-replay/sv-changes.jsonl", SCN / "tvc-replay/replay-map.jsonl"),
-                                                                       map(_jsonl, replay(s))))}
+            SCN / "seed-append-outcomes.jsonl": _jsonl(r),
+            **dict(zip((SCN / "tvc-replay/sv-changes.jsonl", SCN / "tvc-replay/replay-map.jsonl", SCN / "tvc-replay/signoff-receipts.jsonl"),
+                       map(_jsonl, replay(s))))}
+
+
+def pin_violations(out: dict[Path, str]) -> list[dict]:
+    """Every emitted required_checks_ref.blob_sha is a 40-hex git blob (UNKNOWN only in a MIGRATED_HISTORICAL record);
+    no placeholder such as WORKTREE is ever written."""
+    bad = []
+    for p, text in out.items():
+        for n, line in enumerate(text.splitlines()):
+            if "WORKTREE" in line:
+                bad.append({"file": str(p.relative_to(ROOT)), "line": n + 1, "found": "WORKTREE"})
+            rec = json.loads(line)
+            ref = rec.get("required_checks_ref") if isinstance(rec, dict) else None
+            if isinstance(ref, dict):
+                b = ref.get("blob_sha")
+                ok = isinstance(b, str) and re.fullmatch(r"[0-9a-f]{40}", b) is not None
+                if not ok and not (b == wi.UNKNOWN and rec.get("record_mode") == "MIGRATED_HISTORICAL"):
+                    bad.append({"file": str(p.relative_to(ROOT)), "line": n + 1, "blob_sha": b})
+    return bad
 
 
 def main(argv=None) -> int:
     a = argparse.ArgumentParser(); a.add_argument("--check", action="store_true"); args = a.parse_args(argv)
     out = build(); stale = [str(p.relative_to(ROOT)) for p, t in out.items() if not p.exists() or p.read_text() != t]
+    bad = pin_violations(out)
+    if bad:  # FAIL_CLOSED in both modes: nothing with an unpinned row is written
+        print(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "REQUIRED_CHECKS_ROW_NOT_PINNED", "violations": bad}, sort_keys=True))
+        return 1
     if args.check:
         print(json.dumps({"disposition": "ALLOW" if not stale else "FAIL_CLOSED", "stale": stale}, sort_keys=True)); return 1 if stale else 0
     for p, t in out.items():

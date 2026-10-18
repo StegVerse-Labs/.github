@@ -18,6 +18,11 @@ ITEMS_SCHEMA = json.loads((ROOT / "schemas/canonical-task-work-items.v1.schema.j
 code = base.code
 
 
+def fx_admit(obs, **kw):
+    """Fixture context: fixture validation refs and fixture_only sign-off receipts count (never on the real path)."""
+    return wi.admit(obs, fixture_mode=True, **kw)
+
+
 def migrated_issue(**over):
     rec = {k: v for k, v in copy.deepcopy(base.ISSUES[0]).items() if k not in ("issue_id", "issue_sha256")}
     rec.update(over)
@@ -79,7 +84,7 @@ class RecordModeTests(unittest.TestCase):
         for f in wi.SIX_FIELDS:
             self.assertTrue(out[f], f)
         self.assertEqual(out["record"]["lifecycle_state"], "FAIL_CLOSED")
-        self.assertEqual(wi.admit(wi.admission_inputs(ch, ch["base_ref"]))["failure_code"], "HISTORICAL_RECORD_NOT_ADMISSIBLE")
+        self.assertEqual(fx_admit(wi.admission_inputs(ch, ch["base_ref"]))["failure_code"], "HISTORICAL_RECORD_NOT_ADMISSIBLE")
 
     def test_no_in_place_promotion_to_native(self):
         flipped = dict(base.ISSUES[0], record_mode="NATIVE")
@@ -88,6 +93,8 @@ class RecordModeTests(unittest.TestCase):
         self.assertIn(code(wi.validate_change, ch), ("UNKNOWN_IN_NATIVE_RECORD", "MIGRATION_FIELDS_ON_NATIVE_RECORD"))
         clean = {k: v for k, v in ch.items() if k not in base.MIGRATION_KEYS}
         clean["hb_epoch"] = EPOCH
+        self.assertEqual(code(wi.validate_change, clean), "UNKNOWN_IN_NATIVE_RECORD")  # the unobserved row blob stays UNKNOWN
+        clean["required_checks_ref"] = {**clean["required_checks_ref"], "blob_sha": base.fx.REQUIRED_CHECKS_BLOB}
         self.assertEqual(code(wi.validate_change, clean), "REQUEST_DIGEST_MISMATCH")
 
     def test_native_only_through_superseding_record(self):
@@ -158,11 +165,11 @@ class SchemaFixTests(unittest.TestCase):
     def test_sf5_only_ledger_receipts_count(self):
         ch = base.al_known_good_change("svi:" + "1" * 64)
         obs = wi.admission_inputs(ch, ch["base_ref"])
-        self.assertEqual(wi.admit({**obs, "required_signoff_roles": []})["disposition"], "ALLOW")
+        self.assertEqual(fx_admit({**obs, "required_signoff_roles": []})["disposition"], "ALLOW")
         art = base.reseal_change(dict(ch, validation_receipts=[
             {**v, "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/lane-file.md#L57"} for v in ch["validation_receipts"]]))
         self.assertEqual(both(art, CHANGE_SCHEMA, wi.validate_change), ([], "ALLOW"))
-        out = wi.admit(wi.admission_inputs(art, art["base_ref"]))
+        out = fx_admit(wi.admission_inputs(art, art["base_ref"]))
         self.assertEqual((out["failure_code"], out["artifact_only"]), ("CHECK_SKIPPED_OR_UNOBSERVED", sorted(c for c in out["unobserved"])))
         bad = base.reseal_change(dict(ch, validation_receipts=[{**ch["validation_receipts"][0], "ref": "receipt:x"}]))
         errs, c = both(bad, CHANGE_SCHEMA, wi.validate_change)
@@ -177,7 +184,7 @@ class SchemaFixTests(unittest.TestCase):
         self.assertEqual(both(ch, CHANGE_SCHEMA, wi.validate_change), ([], "ALLOW"))
         out = wi.transition("SV_CHANGE_PROPOSE", ch, hb_epoch=EPOCH, context={"issues": [issue]})
         self.assertEqual((out["failure_code"], out["failed_predicate"]), ("BRANCH_WRITER_UNOBSERVED", "BRANCH_WRITER_IS_BRANCH_OWNER"))
-        self.assertEqual(wi.admit(wi.admission_inputs(ch, ch["base_ref"]))["failure_code"], "BRANCH_WRITER_UNOBSERVED")
+        self.assertEqual(fx_admit(wi.admission_inputs(ch, ch["base_ref"]))["failure_code"], "BRANCH_WRITER_UNOBSERVED")
         for w in ({"session": None, "evidence_class": "DECLARED"}, {"session": "x", "evidence_class": U}, "P1"):
             bad = copy.deepcopy(ch); bad["content"][0]["writer_session"] = w
             errs, c = both(base.reseal_change(bad), CHANGE_SCHEMA, wi.validate_change)
@@ -249,7 +256,7 @@ class LiftTests(unittest.TestCase):
     def test_lift_v0_change_validates_without_inventing(self):
         out = mg.lift_v0_change(self.v0_change(), {})
         self.assertEqual(both(out, CHANGE_SCHEMA, wi.validate_change), ([], "ALLOW"))
-        self.assertEqual(out["unknown_fields"], ["/hb_epoch", "/owning_goal"])
+        self.assertEqual(out["unknown_fields"], ["/hb_epoch", "/owning_goal", "/required_checks_ref/blob_sha"])  # WORKTREE is not a blob
         self.assertTrue(all(c["writer_session"] == {"session": None, "evidence_class": U} for c in out["content"]))
         self.assertEqual(out["migration_flags"], [wi.MIGRATION_FLAG_RESOLVES])
 
@@ -334,18 +341,18 @@ class ChangeIdCanonicalTests(unittest.TestCase):
         art = base.reseal_change(dict(ch, validation_receipts=[
             {**v, "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/evidence.md"} if v["check_id"] == first else v
             for v in ch["validation_receipts"]]))
-        out = wi.transition("SV_CHANGE_VERIFY", art, hb_epoch=EPOCH)
+        out = wi.transition("SV_CHANGE_VERIFY", art, hb_epoch=EPOCH, context={"fixture_mode": True})
         self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
                          ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED", "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED"))
         self.assertEqual(out["record"]["lifecycle_state"], art["lifecycle_state"])
-        res = wi.admit(wi.admission_inputs(art, art["base_ref"]))
+        res = fx_admit(wi.admission_inputs(art, art["base_ref"]))
         self.assertEqual((res["unobserved"], res["artifact_only"]), ([first], [first]))
         # an artifact never upgrades or overrides: alongside a ledger DENY it does not hide the refusal
         mixed = base.reseal_change(dict(ch, validation_receipts=[
             {**v, "disposition": "DENY"} if v["check_id"] == first else v for v in ch["validation_receipts"]] +
             [{**ch["validation_receipts"][0], "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/evidence.md"}]))
-        self.assertEqual(wi.admit({**wi.admission_inputs(mixed, mixed["base_ref"]), "required_signoff_roles": []})["failure_code"],
-                         "CHECK_NOT_PASSING")
+        self.assertEqual(fx_admit({**wi.admission_inputs(mixed, mixed["base_ref"]), "required_signoff_roles": []})["failure_code"],
+                         "REQUIRED_CHECK_DENIED")
 
 
 class RemainingFeedbackTests(unittest.TestCase):
@@ -483,7 +490,7 @@ class ChangeDigestTests(unittest.TestCase):
         bad = dict(ch, head={"change_digest": legacy})
         self.assertEqual(code(wi.validate_change, bad), "SV_CHANGE_DIGEST_MISMATCH")
         stale = base.reseal_change(dict(ch, validation_receipts=[dict(v, change_digest=legacy) for v in ch["validation_receipts"]]))
-        out = wi.admit({**wi.admission_inputs(stale, stale["base_ref"]), "required_signoff_roles": []})
+        out = fx_admit({**wi.admission_inputs(stale, stale["base_ref"]), "required_signoff_roles": []})
         self.assertEqual((out["failure_code"], out["failed_predicate"]), ("CHECK_SKIPPED_OR_UNOBSERVED", "RECEIPT_CHANGE_DIGEST_EQUALS_HEAD"))
 
     def test_lift_reexpresses_only_receipts_bound_to_same_content(self):
