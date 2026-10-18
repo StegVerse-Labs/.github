@@ -122,5 +122,99 @@ class ApplyTaskRecordDataTests(unittest.TestCase):
         self.assertEqual(json.loads(done.stdout)["failure_code"], "RECORD_DATA_SCHEMA_MISMATCH")
 
 
+OPTICAL = "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001"
+INTERLOCK = "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+GATE = "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN"
+NEXT = "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION"
+
+
+def edit(**overrides):
+    value = {"task_id": OPTICAL, "path": ["allowed_next_transitions", 1], "before": GATE, "after": NEXT}
+    value.update(overrides)
+    return value
+
+
+class RowFieldsAndRegistrationTests(unittest.TestCase):
+    def setUp(self):
+        self.dir = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.dir)
+        self.registry = self.dir / "canonical-task-registry.json"
+        shutil.copy2(REGISTRY, self.registry)
+        self.shards = self.dir / "records"
+        self.shards.mkdir()
+        for task_id in (OPTICAL, INTERLOCK):
+            shutil.copy2(SHARDS / f"{task_id}.json", self.shards / f"{task_id}.json")
+        self.tip = json.loads(self.registry.read_text(encoding="utf-8"))["generation"]
+
+    def run_apply(self, payload, tip=None):
+        return atr.apply(payload, registry_path=self.registry, task_shards=self.shards,
+                         tip_generation=self.tip if tip is None else tip, write=True, root=self.dir, validators=())
+
+    def row(self, task_id):
+        return next(t for t in json.loads(self.registry.read_text(encoding="utf-8"))["tasks"] if t["task_id"] == task_id)
+
+    def record(self, task_id):
+        return json.loads((self.shards / f"{task_id}.json").read_text(encoding="utf-8"))
+
+    def test_row_field_edit_applies_to_row_and_record_and_is_idempotent(self):
+        payload = {"schema": atr.DATA_SCHEMA, "row_fields": [edit()]}
+        report = self.run_apply(payload)
+        self.assertEqual((report["disposition"], report["generation"], report["records_changed"]),
+                         ("ALLOW", self.tip + 1, [f"{OPTICAL}.json"]))
+        self.assertEqual(self.row(OPTICAL)["allowed_next_transitions"][1], NEXT)
+        self.assertEqual(self.record(OPTICAL)["allowed_next_transitions"][1], NEXT)
+        again = self.run_apply(payload, tip=self.tip + 1)
+        self.assertEqual((again["disposition"], again["files_changed"]), ("NO_CHANGE", False))
+
+    def test_row_field_before_mismatch_is_refused_and_nothing_changes(self):
+        registry, record = self.registry.read_text(encoding="utf-8"), (self.shards / f"{OPTICAL}.json").read_text(encoding="utf-8")
+        with self.assertRaises(atr.Refused) as raised:
+            self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [edit(before="SOMETHING_ELSE")]})
+        self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH")
+        self.assertEqual((self.registry.read_text(encoding="utf-8"), (self.shards / f"{OPTICAL}.json").read_text(encoding="utf-8")),
+                         (registry, record))
+
+    def test_identity_fields_and_bad_paths_are_not_editable(self):
+        for bad in (edit(path=["task_id"]), edit(path=["schema"]), edit(path=[]), edit(path=["a", "b"]), edit(path=["a", True])):
+            with self.subTest(path=bad["path"]):
+                with self.assertRaises(atr.Refused) as raised:
+                    self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [bad]})
+                self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_SCHEMA_MISMATCH")
+
+    def test_register_from_record_appends_the_record_unchanged_and_is_idempotent(self):
+        payload = {"schema": atr.DATA_SCHEMA, "register_from_record": [INTERLOCK]}
+        report = self.run_apply(payload)
+        self.assertEqual((report["disposition"], report["generation"]), ("ALLOW", self.tip + 1))
+        self.assertEqual(self.row(INTERLOCK), self.record(INTERLOCK))
+        self.assertEqual(self.run_apply(payload, tip=self.tip + 1)["disposition"], "NO_CHANGE")
+
+    def test_register_refuses_absent_record_and_differing_existing_row(self):
+        with self.assertRaises(atr.Refused) as raised:
+            self.run_apply({"schema": atr.DATA_SCHEMA, "register_from_record": ["NO-SUCH-TASK-001"]})
+        self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_RECORD_ABSENT")
+        # OPTICAL is already an aggregate row; its record differs from the row, so re-registration is refused.
+        if self.row(OPTICAL) != self.record(OPTICAL):
+            with self.assertRaises(atr.Refused) as raised:
+                self.run_apply({"schema": atr.DATA_SCHEMA, "register_from_record": [OPTICAL]})
+            self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_ALREADY_REGISTERED")
+
+    def test_newly_registered_task_can_take_work_items_in_the_same_apply(self):
+        payload = {"schema": atr.DATA_SCHEMA, "register_from_record": [INTERLOCK], "work_items": {INTERLOCK: [
+            {"kind": "ISSUE", "repo": "StegVerse-org/.github", "number": 162, "state": "OPEN", "owner_approved": False}]}}
+        self.assertEqual(self.run_apply(payload)["disposition"], "ALLOW")
+        self.assertEqual(self.row(INTERLOCK)["work_items"][0]["number"], 162)
+
+    def test_failed_validator_restores_registry_and_records(self):
+        (self.dir / "scripts").mkdir()
+        (self.dir / "scripts" / "fail.py").write_text("raise SystemExit(1)\n", encoding="utf-8")
+        before = (self.registry.read_text(encoding="utf-8"), (self.shards / f"{OPTICAL}.json").read_text(encoding="utf-8"))
+        with self.assertRaises(atr.Refused):
+            atr.apply({"schema": atr.DATA_SCHEMA, "row_fields": [edit()], "register_from_record": [INTERLOCK]},
+                      registry_path=self.registry, task_shards=self.shards, tip_generation=self.tip, write=True,
+                      root=self.dir, validators=("scripts/fail.py",))
+        self.assertEqual((self.registry.read_text(encoding="utf-8"), (self.shards / f"{OPTICAL}.json").read_text(encoding="utf-8")),
+                         before)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -9,7 +9,17 @@ schema ``stegverse.registry-record-data-proposal/v1``:
   handoff projection's own ``project_work_items`` (no item may be rejected);
 * ``human_actions``: owner questions merged by ``id`` into the top-level list, each
   with ``question``, ``default_until_answered``, ``source_ref``, ``state`` and a
-  ``task_id`` that is null or resolves in the Registry.
+  ``task_id`` that is null or resolves in the Registry;
+* ``register_from_record``: task ids whose standalone record
+  (data/canonical-task-records/<id>.json) is projected unchanged into a new aggregate
+  row; a task already registered with different content is refused;
+* ``row_fields``: exact ``before`` -> ``after`` edits of a field path
+  (``["field"]`` or ``["field", index]``) on a Registry row and, when it exists, the same
+  path in the task's standalone record; refused unless the current value equals
+  ``before`` (a value already equal to ``after`` is a no-op).
+
+A record-derived row is admissible only if the seven validators accept it after the
+write; otherwise every file is restored and the refusal names the validator.
 
 Task identity resolves through ``find_source`` of
 apply_admitted_canonical_work_projection.py; a task that exists only as a shard is
@@ -48,6 +58,8 @@ VALIDATORS = (
     "scripts/validate_task_registry_global_invariants.py",
 )
 QUESTION_FIELDS = ("id", "question", "default_until_answered", "source_ref", "state")
+PROTECTED_FIELDS = {"task_id", "schema", "correlation_id", "root_correlation_id"}
+_MISSING = object()
 
 
 def _module(name: str, root: Path = ROOT):
@@ -81,8 +93,22 @@ def validate_data(data: Any) -> tuple[dict[str, list[dict[str, Any]]], list[dict
         raise _schema(f"data schema == {DATA_SCHEMA}", "supply a record-data file of the declared schema")
     work_items = data.get("work_items", {})
     actions = data.get("human_actions", [])
-    if not isinstance(work_items, dict) or not isinstance(actions, list):
-        raise _schema("work_items is an object and human_actions a list", "fix the container types")
+    register = data.get("register_from_record", [])
+    row_fields = data.get("row_fields", [])
+    if (not isinstance(work_items, dict) or not isinstance(actions, list) or not isinstance(register, list)
+            or not isinstance(row_fields, list)):
+        raise _schema("work_items is an object; human_actions, register_from_record and row_fields are lists",
+                      "fix the container types")
+    for task_id in register:
+        if not isinstance(task_id, str) or not projection._SAFE_TASK_ID.match(task_id):
+            raise _schema("register_from_record lists task ids", "list safe task ids", value=task_id)
+    for edit in row_fields:
+        path = edit.get("path") if isinstance(edit, dict) else None
+        if (not isinstance(edit, dict) or not isinstance(edit.get("task_id"), str) or "before" not in edit or "after" not in edit
+                or not isinstance(path, list) or not 1 <= len(path) <= 2 or not isinstance(path[0], str)
+                or path[0] in PROTECTED_FIELDS or (len(path) == 2 and (isinstance(path[1], bool) or not isinstance(path[1], int)))):
+            raise _schema("every row_fields edit has task_id, path ([field] or [field, index]), before and after; "
+                          "task_id and identity fields are not editable", "fix the row_fields edit", edit=edit)
     clean_items: dict[str, list[dict[str, Any]]] = {}
     for task_id, items in work_items.items():
         kept, rejected = projection.project_work_items(items)
@@ -100,7 +126,7 @@ def validate_data(data: Any) -> tuple[dict[str, list[dict[str, Any]]], list[dict
         seen.add(action["id"])
         if action.get("task_id") is not None and not isinstance(action["task_id"], str):
             raise _schema("human action task_id is null or a task id", "fix task_id", id=action["id"])
-    return clean_items, actions
+    return clean_items, actions, register, row_fields
 
 
 def _resolve_in_registry(registry: dict[str, Any], task_id: str, task_shards: Path) -> None:
@@ -117,35 +143,88 @@ def _resolve_in_registry(registry: dict[str, Any], task_id: str, task_shards: Pa
                       "after the task is in the aggregate Registry", task_id=task_id)
 
 
-def merge(registry: dict[str, Any], data: Any, task_shards: Path) -> dict[str, Any]:
-    """Return the registry with the data applied; generation untouched."""
-    work_items, actions = validate_data(data)
+def _get(container: Any, path: list[Any]) -> Any:
+    value = container.get(path[0], _MISSING) if isinstance(container, dict) else _MISSING
+    if len(path) == 2:
+        value = value[path[1]] if isinstance(value, list) and 0 <= path[1] < len(value) else _MISSING
+    return value
+
+
+def _set(container: dict[str, Any], path: list[Any], value: Any) -> None:
+    if len(path) == 1:
+        container[path[0]] = copy.deepcopy(value)
+    else:
+        container[path[0]][path[1]] = copy.deepcopy(value)
+
+
+def _edit(target: dict[str, Any], edit: dict[str, Any], where: str) -> bool:
+    """Apply one exact before -> after edit; True when it changed something."""
+    current = _get(target, edit["path"])
+    if current == edit["after"]:
+        return False
+    if current is _MISSING or current != edit["before"]:
+        raise Refused("RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH",
+                      f"{where} {edit['task_id']}{edit['path']} == the declared before value",
+                      "re-read the current value and restate the edit against it", "after the edit is restated",
+                      task_id=edit["task_id"], path=edit["path"], current=None if current is _MISSING else current)
+    _set(target, edit["path"], edit["after"])
+    return True
+
+
+def merge(registry: dict[str, Any], data: Any, task_shards: Path) -> tuple[dict[str, Any], dict[Path, dict[str, Any]]]:
+    """Return the registry and the standalone records with the data applied; generation untouched."""
+    work_items, actions, register, row_fields = validate_data(data)
+    merged = copy.deepcopy(registry)
+    records: dict[Path, dict[str, Any]] = {}
+    for task_id in register:
+        path = task_shards / f"{task_id}.json"
+        if not path.is_file():
+            raise Refused("RECORD_DATA_RECORD_ABSENT", f"{path.name} exists in the canonical task records",
+                          "write the standalone canonical record first", "after the record exists", task_id=task_id)
+        record = json.loads(path.read_text(encoding="utf-8"))
+        if record.get("task_id") != task_id:
+            raise Refused("RECORD_DATA_RECORD_IDENTITY", f"{path.name} carries task_id {task_id}",
+                          "correct the record identity", "after the record is corrected", task_id=task_id)
+        existing = [row for row in merged.get("tasks", []) if row.get("task_id") == task_id]
+        if existing and existing[0] != record:
+            raise Refused("RECORD_DATA_ALREADY_REGISTERED", f"{task_id} is not yet a different aggregate row",
+                          "edit the existing row with row_fields instead of re-registering it", "after the data is restated",
+                          task_id=task_id)
+        if not existing:
+            merged.setdefault("tasks", []).append(copy.deepcopy(record))
     for task_id in sorted(work_items):
-        _resolve_in_registry(registry, task_id, task_shards)
+        _resolve_in_registry(merged, task_id, task_shards)
     for action in actions:
         if action.get("task_id") is not None:
-            _resolve_in_registry(registry, action["task_id"], task_shards)
-    merged = copy.deepcopy(registry)
+            _resolve_in_registry(merged, action["task_id"], task_shards)
     rows = {row.get("task_id"): row for row in merged.get("tasks", [])}
     for task_id, items in work_items.items():
         rows[task_id]["work_items"] = items
-    existing = merged.get("human_actions")
-    if not isinstance(existing, list):
+    existing_actions = merged.get("human_actions")
+    if not isinstance(existing_actions, list):
         raise _schema("registry human_actions is a list", "restore the Registry human_actions list")
-    by_id = {a.get("id"): i for i, a in enumerate(existing) if isinstance(a, dict) and a.get("id")}
+    by_id = {a.get("id"): i for i, a in enumerate(existing_actions) if isinstance(a, dict) and a.get("id")}
     for action in actions:
         if action["id"] in by_id:
-            existing[by_id[action["id"]]] = action
+            existing_actions[by_id[action["id"]]] = action
         else:
-            by_id[action["id"]] = len(existing)
-            existing.append(action)
-    return merged
+            by_id[action["id"]] = len(existing_actions)
+            existing_actions.append(action)
+    for edit in row_fields:
+        _resolve_in_registry(merged, edit["task_id"], task_shards)
+        _edit(rows[edit["task_id"]], edit, "registry row")
+        record_path = task_shards / f"{edit['task_id']}.json"
+        if record_path.is_file():
+            record = records.get(record_path) or json.loads(record_path.read_text(encoding="utf-8"))
+            if _edit(record, edit, "standalone record") or record_path in records:
+                records[record_path] = record
+    return merged, records
 
 
 def plan(registry: dict[str, Any], data: Any, tip_generation: int, task_shards: Path) -> dict[str, Any]:
-    merged = merge(registry, data, task_shards)
-    if merged == registry:
-        return {"disposition": "NO_CHANGE", "generation": registry.get("generation"), "registry": registry}
+    merged, records = merge(registry, data, task_shards)
+    if merged == registry and not records:
+        return {"disposition": "NO_CHANGE", "generation": registry.get("generation"), "registry": registry, "records": {}}
     current = fence.parse_generation(json.dumps(registry), "working tree")
     merged["generation"] = current + 1
     gate = fence.evaluate_pull_request(merged["generation"], tip_generation)
@@ -154,7 +233,7 @@ def plan(registry: dict[str, Any], data: Any, tip_generation: int, task_shards: 
                       gate.get("required_evidence_or_repair", ""), gate.get("next_attempt", ""),
                       head_generation=merged["generation"], tip_generation=tip_generation)
     return {"disposition": "ALLOW", "generation": merged["generation"], "tip_generation": tip_generation,
-            "registry": merged}
+            "registry": merged, "records": records}
 
 
 def render(registry: dict[str, Any]) -> str:
@@ -182,15 +261,20 @@ def apply(data: Any, *, registry_path: Path, task_shards: Path, tip_generation: 
           root: Path = ROOT, validators: tuple[str, ...] = VALIDATORS) -> dict[str, Any]:
     original = registry_path.read_text(encoding="utf-8")
     result = plan(json.loads(original), data, tip_generation, task_shards)
-    report = {k: v for k, v in result.items() if k != "registry"}
+    report = {k: v for k, v in result.items() if k not in ("registry", "records")}
+    report["records_changed"] = sorted(path.name for path in result["records"])
     if result["disposition"] == "NO_CHANGE" or not write:
         report["files_changed"] = False
         return report
-    registry_path.write_text(render(result["registry"]), encoding="utf-8")
+    originals = {registry_path: original, **{path: path.read_text(encoding="utf-8") for path in result["records"]}}
     try:
+        registry_path.write_text(render(result["registry"]), encoding="utf-8")
+        for path, record in result["records"].items():
+            path.write_text(render(record), encoding="utf-8")
         verify(root, registry_path, validators)
     except BaseException:
-        registry_path.write_text(original, encoding="utf-8")
+        for path, text in originals.items():
+            path.write_text(text, encoding="utf-8")
         raise
     report["files_changed"] = True
     return report
