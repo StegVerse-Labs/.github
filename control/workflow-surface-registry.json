@@ -45,6 +45,12 @@
       "reason": "dedicated non-authorizing source validator for the released cross-task coordination handoff projection; coordination truth is not runtime truth and this registration grants no execution, transition, credential, claim/fence, custody, receiving, or publication authority"
     },
     {
+      "path": ".github/workflows/task-registry-collision-checkin.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001 / coordination item H48 / StegVerse-Labs/.github#3183",
+      "reason": "DRAFT non-authorizing pull_request gate that runs the existing collision check-in evaluator for each canonical task row or shard a PR changes, PR merge ref versus live base tip; permissions remain empty, no GitHub token, no event ledger append, never a transition predicate; making it a required check is owner-only"
+    },
+    {
       "path": ".github/workflows/validate-deepseek-resident.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SHWP-DEEPSEEK-INTR-RUNTIME-001 / .github#1122",
