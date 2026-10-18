@@ -253,7 +253,7 @@ The owning organization states the same rule in `StegVerse-org/.github` `docs/OR
 | Native authority/lease producer, resident Universal InTr ingress | Not predicates of this goal's runtime observation. No resident host, listener or second device is awaited. |
 | Any external machine | Prohibited as a predicate (line 120 above). |
 
-**Current state — no receipt is claimed.** Evidence class for this goal remains `SOURCE_IMPLEMENTED` / documentary. The organization-ledger receipt **does not exist yet**: #198 is an open draft awaiting the owner's merge, which waits on owner decision OQ-C12. Until it is appended and read back, the runtime-observation predicate for this goal is a non-ALLOW:
+**Current state — no receipt is claimed.** This goal's task vector remains `SOURCE_ONLY_ACTIVE` (documentary/source active). The organization-ledger receipt **does not exist yet**: #198 is an open draft awaiting the owner's merge, which waits on owner decision OQ-C12. Until it is appended and read back, the runtime-observation predicate for this goal is a non-ALLOW:
 
 - `failure_code`: `ORGANIZATION_LEDGER_RECEIPT_NOT_YET_APPENDED`
 - `failed_predicate`: organization receipt for `MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003-001` present on `StegVerse-org/.github` `refs/stegverse/organization-ledger` and read back from a fresh fetch
