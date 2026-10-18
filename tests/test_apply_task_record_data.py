@@ -174,8 +174,25 @@ class RowFieldsAndRegistrationTests(unittest.TestCase):
         self.assertEqual((self.registry.read_text(encoding="utf-8"), (self.shards / f"{OPTICAL}.json").read_text(encoding="utf-8")),
                          (registry, record))
 
+    def test_absent_before_adds_a_new_field_once_and_only_while_absent(self):
+        added = edit(path=["component_010_manifest_declaration"], before=atr.ABSENT, after={"declared": "SYNTHETIC"})
+        payload = {"schema": atr.DATA_SCHEMA, "row_fields": [added]}
+        self.assertEqual(self.run_apply(payload)["disposition"], "ALLOW")
+        self.assertEqual(self.row(OPTICAL)["component_010_manifest_declaration"], {"declared": "SYNTHETIC"})
+        self.assertEqual(self.record(OPTICAL)["component_010_manifest_declaration"], {"declared": "SYNTHETIC"})
+        self.assertEqual(self.run_apply(payload, tip=self.tip + 1)["disposition"], "NO_CHANGE")
+        with self.assertRaises(atr.Refused) as raised:  # present now with another value: not absent any more
+            self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [dict(added, after={"declared": "OTHER"})]},
+                           tip=self.tip + 1)
+        self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH")
+        with self.assertRaises(atr.Refused) as raised:  # an existing field is never treated as absent
+            self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [edit(path=["goal"], before=atr.ABSENT, after="x")]},
+                           tip=self.tip + 1)
+        self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH")
+
     def test_identity_fields_and_bad_paths_are_not_editable(self):
-        for bad in (edit(path=["task_id"]), edit(path=["schema"]), edit(path=[]), edit(path=["a", "b"]), edit(path=["a", True])):
+        for bad in (edit(path=["task_id"]), edit(path=["schema"]), edit(path=[]), edit(path=["a", "b"]), edit(path=["a", True]),
+                    edit(before=atr.ABSENT), edit(path=["goal"], after=atr.ABSENT)):
             with self.subTest(path=bad["path"]):
                 with self.assertRaises(atr.Refused) as raised:
                     self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [bad]})

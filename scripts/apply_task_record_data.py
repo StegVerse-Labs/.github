@@ -16,7 +16,8 @@ schema ``stegverse.registry-record-data-proposal/v1``:
 * ``row_fields``: exact ``before`` -> ``after`` edits of a field path
   (``["field"]`` or ``["field", index]``) on a Registry row and, when it exists, the same
   path in the task's standalone record; refused unless the current value equals
-  ``before`` (a value already equal to ``after`` is a no-op).
+  ``before`` (a value already equal to ``after`` is a no-op). ``before: {"$absent": true}``
+  adds a top-level field and is accepted only while that field is absent;
 
 A record-derived row is admissible only if the seven validators accept it after the
 write; otherwise every file is restored and the refusal names the validator.
@@ -60,6 +61,7 @@ VALIDATORS = (
 QUESTION_FIELDS = ("id", "question", "default_until_answered", "source_ref", "state")
 PROTECTED_FIELDS = {"task_id", "schema", "correlation_id", "root_correlation_id"}
 _MISSING = object()
+ABSENT = {"$absent": True}
 
 
 def _module(name: str, root: Path = ROOT):
@@ -106,9 +108,11 @@ def validate_data(data: Any) -> tuple[dict[str, list[dict[str, Any]]], list[dict
         path = edit.get("path") if isinstance(edit, dict) else None
         if (not isinstance(edit, dict) or not isinstance(edit.get("task_id"), str) or "before" not in edit or "after" not in edit
                 or not isinstance(path, list) or not 1 <= len(path) <= 2 or not isinstance(path[0], str)
-                or path[0] in PROTECTED_FIELDS or (len(path) == 2 and (isinstance(path[1], bool) or not isinstance(path[1], int)))):
+                or path[0] in PROTECTED_FIELDS or (len(path) == 2 and (isinstance(path[1], bool) or not isinstance(path[1], int)))
+                or edit["after"] == ABSENT or (edit["before"] == ABSENT and len(path) != 1)):
             raise _schema("every row_fields edit has task_id, path ([field] or [field, index]), before and after; "
-                          "task_id and identity fields are not editable", "fix the row_fields edit", edit=edit)
+                          "task_id and identity fields are not editable; an absent before adds a top-level field only, "
+                          "and after is never absent", "fix the row_fields edit", edit=edit)
     clean_items: dict[str, list[dict[str, Any]]] = {}
     for task_id, items in work_items.items():
         kept, rejected = projection.project_work_items(items)
@@ -162,6 +166,9 @@ def _edit(target: dict[str, Any], edit: dict[str, Any], where: str) -> bool:
     current = _get(target, edit["path"])
     if current == edit["after"]:
         return False
+    if edit["before"] == ABSENT and current is _MISSING:
+        _set(target, edit["path"], edit["after"])
+        return True
     if current is _MISSING or current != edit["before"]:
         raise Refused("RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH",
                       f"{where} {edit['task_id']}{edit['path']} == the declared before value",
