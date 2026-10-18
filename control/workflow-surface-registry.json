@@ -109,6 +109,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SDK-MR-A-VALIDATION-CUSTODY-001 / StegVerse-Labs/.github#3099",
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/universal-intr-route-installation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162 (Lane B, Fix 4)",
+      "reason": "Byte-identical per-organization caller of the SDK-hosted reusable universal-intr-route-installation.yml, pinned to StegVerse-SDK c138cad4 (uses: ref and sdk_ref are the same commit), evaluating the committed control/universal-intr-route-installation-request.json (Q-B-F4 default (a)). It must be a workflow_call caller at this organization's own root, so it cannot ride the validation-only dispatchers. Evaluation only: contents: read, no secret, no push, no dispatch; the reusable workflow runs with permissions: {} and reads both trees as anonymous public archives. Registration is classification evidence and grants no authority."
     }
   ],
   "removed_in_hygiene_batch_1": [

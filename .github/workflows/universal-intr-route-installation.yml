@@ -1,0 +1,35 @@
+name: Universal InTr route installation
+
+# Caller of the SDK-hosted universal InTr route installer (Fix 4,
+# StegVerse-org/.github#162; Q-B-F4 default (a)). This file is byte-identical
+# in every organization that adopts the installer: it names no organization,
+# consumer or router. The organization's own installation request is the
+# committed file control/universal-intr-route-installation-request.json.
+#
+# Evaluation only. The reusable workflow prints ALLOW / DENY / FAIL_CLOSED with
+# the six fields; it writes no source, binds no socket, carries no credential,
+# appends no ledger entry and reads no clock. This caller grants contents: read
+# and passes no secret. sdk_ref and the pinned `uses:` ref are the same commit.
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/universal-intr-route-installation.yml'
+      - 'control/universal-intr-route-installation-request.json'
+      - 'workers/universal_intr_profiled_ingress.py'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/universal-intr-route-installation.yml'
+      - 'control/universal-intr-route-installation-request.json'
+      - 'workers/universal_intr_profiled_ingress.py'
+
+permissions:
+  contents: read
+
+jobs:
+  evaluate:
+    uses: StegVerse-org/StegVerse-SDK/.github/workflows/universal-intr-route-installation.yml@c138cad4c37db0bb675bc2c66515b5558cc5fa7b
+    with:
+      request_path: control/universal-intr-route-installation-request.json
+      sdk_ref: c138cad4c37db0bb675bc2c66515b5558cc5fa7b
