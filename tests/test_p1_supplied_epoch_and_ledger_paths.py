@@ -592,7 +592,10 @@ class LedgerWriterRefusalTests(TemporaryLedgers):
 
 class CliRawEpochTests(TemporaryLedgers):
     """Every --hb-epoch is type=str: the shared validator sees the raw text."""
-    INVALID = ("+33", " 33", "3_3")
+    #: The P1-FC-10 set (HB_EPOCH_INVALID_COERCED) is included: int() turns
+    #: ' 32', '+32', '3_2' and '\u0663\u0662' into 32, which type=int handed on
+    #: as an epoch; '31' is below the HB32 anchor.
+    INVALID = ("+33", " 33", "3_3", " 32", "+32", "3_2", "\u0663\u0662", "31")
 
     def run_cli(self, relative, *args):
         return subprocess.run([sys.executable, str(ROOT / relative), *args], cwd=ROOT,
@@ -664,6 +667,18 @@ class CliRawEpochTests(TemporaryLedgers):
             with self.subTest(epoch=epoch):
                 self.assert_invalid(self.self_close(epoch, self.work / "close-out.json"),
                                     self.work / "close-out.json")
+
+    def test_the_self_close_cli_accepts_the_hb32_anchor(self):
+        completed = self.self_close("32", self.work / "close-out.json")
+        self.assertEqual(completed.returncode, 0, completed.stdout[-2000:] + completed.stderr[-2000:])
+        self.assertEqual(self.epochs(), {32})
+
+    def test_the_egress_cli_accepts_the_hb32_anchor(self):
+        completed = self.egress("32", self.work / "egress-out.json")
+        printed = json.loads(completed.stdout)
+        self.assertNotIn(printed.get("failure_code"), ("HB_EPOCH_INVALID", "HB_EPOCH_NOT_SUPPLIED"),
+                         completed.stdout[-2000:] + completed.stderr[-2000:])
+        self.assertEqual(self.epochs(), {32})
 
     def test_the_self_close_cli_accepts_a_leading_zero_epoch(self):
         completed = self.self_close("0033", self.work / "close-out.json")
