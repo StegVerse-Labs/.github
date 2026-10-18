@@ -1,5 +1,7 @@
 """Source composition only; fixtures never establish live provider evidence."""
+import argparse
 import copy
+import json
 import unittest
 
 from scripts.compose_ecosystem_chat_task import compose, FIRST, SECOND
@@ -101,6 +103,43 @@ class ChatCompositionTests(unittest.TestCase):
         spec["sources"][1]["source_id"] = spec["sources"][0]["source_id"]
         with self.assertRaisesRegex(ValueError, "unique"):
             compose(spec)
+
+
+class LocalAnswerDefinitionTests(unittest.TestCase):
+    ID = "RT-ECOSYSTEM-CHAT-LOCAL-ANSWER-001"
+
+    def definition(self):
+        return constructor.resolve_reusable_task(constructor.load_registry(), self.ID)
+
+    def test_local_answer_is_answer_only_without_runner_or_llm(self):
+        d = self.definition()
+        self.assertEqual(d["authority_effect"], "NONE_ANSWER_ONLY")
+        self.assertEqual(d["runner_templates"], [])
+        self.assertIn("NO_LLM_ROUNDTRIP_OR_MODEL_OUTPUT", d["completion_predicates"])
+        self.assertIn("UNANSWERABLE_QUESTION_FAIL_CLOSED_SIX_FIELDS_NO_LLM_FALLBACK", d["failure_semantics"])
+        self.assertEqual(d["non_allow_record_fields"], ["failure_code", "failed_predicate", "required_evidence_or_repair",
+                                                        "retry_entrypoint", "owning_existing_goal", "next_attempt"])
+        llm = {"RT-EPHEMERAL-LLM-ROUNDTRIP-001", "RT-STEGBROWSER-LLM-LEASE-001", "RT-ECOSYSTEM-CHAT-ANSWER-001"}
+        self.assertFalse(llm & set(d["composes"]))
+
+    def test_unresolved_dependencies_stay_out_of_composes_and_fail_closed(self):
+        d = self.definition()
+        ids = {t["reusable_task_id"] for t in constructor.load_registry()["tasks"]}
+        self.assertTrue(set(d["composes"]) <= ids)
+        for dep in d["dependency_refs"]:
+            self.assertNotIn(dep.get("reusable_task_id"), ids)
+            self.assertTrue(dep["failure_code"])
+            self.assertIn(dep["state"], {"NOT_FOUND_FAIL_CLOSED", "OWNER_GATED_PENDING_LABS_PORT"})
+        evaluator = next(x for x in d["dependency_refs"] if x["role"] == "INVARIANT_EVALUATOR")
+        self.assertFalse(evaluator["vendored"])
+
+    def test_local_answer_manifest_materializes_without_runner(self):
+        manifest = constructor.build_manifest(argparse.Namespace(
+            reusable_task_id=self.ID, invocation_id="offline-local-answer-fixture", task_id=None,
+            cosv_task_vector=None, parameters_json=json.dumps({"request_hash": "b" * 64})))
+        self.assertEqual(manifest["runner_plan"]["materialization_refs"], [])
+        self.assertEqual(manifest["construct"]["gtg"]["authority_effect_from_reusable_definition"], "NONE_ANSWER_ONLY")
+        self.assertFalse(manifest["construct"]["rtg"]["allow_authority"])
 
 
 if __name__ == "__main__":

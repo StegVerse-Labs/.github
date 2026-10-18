@@ -1,0 +1,73 @@
+{
+  "reusable_task_id": "RT-ECOSYSTEM-CHAT-LOCAL-ANSWER-001",
+  "name": "Ecosystem Chat local answer",
+  "purpose": "Answer one Ecosystem Chat question from manifest-selected local registries only, by composing a local fact index lookup with the canonical invariant evaluator, with no LLM round trip and no model output.",
+  "trigger": "an existing canonical task selects this reusable scenario in its invocation manifest for a question that local registries may answer",
+  "scope": "one manifest-bound question under existing ownership, evaluated against pinned local registry sources",
+  "parameter_keys": [
+    "request_hash",
+    "question",
+    "registry_source_bindings",
+    "fact_index_ref",
+    "invariant_evaluator_ref",
+    "custody_mode"
+  ],
+  "composes": [],
+  "dependency_refs": [
+    {
+      "role": "FACT_INDEX",
+      "work_unit": "WU-R15",
+      "owner_repository": "StegVerse-org/LLM-adapter",
+      "source_ref": null,
+      "state": "NOT_FOUND_FAIL_CLOSED",
+      "observed": "absent from LLM-adapter main@4fbbfff40dbf920662c6a5416ea576253163c105, every branch and every refs/pull/*/head at 2026-10-18",
+      "failure_code": "FACT_INDEX_DEPENDENCY_NOT_FOUND"
+    },
+    {
+      "role": "INVARIANT_EVALUATOR",
+      "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+      "owner_repository": "SV-LLM/sandbox",
+      "source_ref": "SV-LLM/sandbox#38@0a3e69df773a34f9496f1e5829e3be45ac051c52:runtime/invariant_evaluation.py",
+      "source_blob": "25190ff8fe163c3c3005f94d7417d1d2768201fb",
+      "labs_port": "OQ-C13",
+      "state": "OWNER_GATED_PENDING_LABS_PORT",
+      "vendored": false,
+      "failure_code": "INVARIANT_EVALUATOR_LABS_PORT_OWNER_GATED"
+    }
+  ],
+  "runner_templates": [],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "EXACT_USER_REQUEST_RESULT_BINDING",
+    "EVERY_DEPENDENCY_RESOLVED_IN_REGISTRY",
+    "ANSWER_DERIVED_ONLY_FROM_PINNED_LOCAL_REGISTRY_SOURCES",
+    "EVERY_ANSWER_FACT_CITES_SOURCE_PATH_AND_HEAD",
+    "INVARIANT_EVALUATION_ALLOW_RETAINED",
+    "NO_LLM_ROUNDTRIP_OR_MODEL_OUTPUT"
+  ],
+  "failure_semantics": [
+    "UNANSWERABLE_QUESTION_FAIL_CLOSED_SIX_FIELDS_NO_LLM_FALLBACK",
+    "EVALUATOR_DENY_OR_UNDECIDABLE_IS_NON_ALLOW_SIX_FIELDS",
+    "UNRESOLVED_DEPENDENCY_FAIL_CLOSED_SIX_FIELDS",
+    "SOURCE_OR_CI_STATE_IS_NOT_RUNTIME_OBSERVATION",
+    "NO_IMPLICIT_AUTHORITY_TRANSFER"
+  ],
+  "non_allow_record_fields": [
+    "failure_code",
+    "failed_predicate",
+    "required_evidence_or_repair",
+    "retry_entrypoint",
+    "owning_existing_goal",
+    "next_attempt"
+  ],
+  "authority_effect": "NONE_ANSWER_ONLY",
+  "reuse_instructions": "Materialize with the existing reusable-task constructor (scripts/materialize_reusable_task_construct.py). This is a definition, not an executable runner or admission. An answer is ALLOW only when the invariant evaluator returns ALLOW over facts the fact index resolved from pinned local registry sources. A DENY, UNDECIDABLE, missing fact or unresolved dependency returns a non-ALLOW record carrying the six non_allow_record_fields and stops; it never falls back to RT-ECOSYSTEM-CHAT-ANSWER-001 or any other LLM round trip. Dependencies stay out of composes until each resolves as a registry entry: the fact index (WU-R15) is FAIL_CLOSED until its LLM-adapter source exists, and the invariant evaluator is referenced from SV-LLM/sandbox#38 without vendoring until the owner-gated Labs port (OQ-C13) registers RT-INVARIANT-EVALUATION-001. Until then the trigger stops at NO_EXECUTABLE_RUNNER_DECLARED. No second runtime, evaluator or synthetic receipt.",
+  "existing_owner_refs": [
+    "StegVerse-Labs/.github#3183"
+  ]
+}
