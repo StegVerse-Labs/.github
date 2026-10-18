@@ -57,3 +57,7 @@ date,lane,unit_id,e_minutes,l_minutes,source
 2026-10-18,B,WU-B21,0,0.5,estimate (stacked; record only)
 2026-10-18,B,WU-B22,6.5,26.0,run 39152717370 (Labs#3275 exact-head CI) + estimate (child 011jDTMb incl. placeholder fix)
 2026-10-18,B,WU-B23,1.0,18.0,estimate (coordinator builder/apply probes in discarded worktrees + poster 01JFr93t)
+2026-10-18,relay,WU-RL2,0,8,"relay session_014tMsdq row remapped to this table's meaning: l_minutes = its active working time (8); e_minutes 0, no CI or validator run cited; org#160 6253061760 / #162 6253063075; already fixed by 09a7a11 (org#185); no PR"
+2026-10-18,relay,WU-RL3,0,3,"relay session_014tMsdq row remapped: l_minutes = active working time (3); e_minutes 0, no run cited; org#160 6253061760; no stale echo found; no commit"
+2026-10-18,relay,WU-RL4,0,5,"relay session_014tMsdq row remapped: l_minutes = active working time (5); e_minutes 0, no run cited; org#162 6253111350; read-only check of org#183 vs main 40a5d23"
+2026-10-18,relay,ORG-199-HANDOFF-DOCS,0,35,"relay session_014tMsdq row remapped: l_minutes = active working time (~35, reported as approximate); e_minutes 0, no CI run cited for org#199 head a619bfba; ~25 min review (3 read-only subagents) + 7 min edits"
