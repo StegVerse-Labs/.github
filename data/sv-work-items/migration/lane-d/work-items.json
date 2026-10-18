@@ -1,0 +1,715 @@
+{
+  "coordination_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "goal_index": {
+    "SHWP-ORG-CLAIM-ALLOCATOR-001": [
+      "svi:02c0f24698d2be26378e70eb90cd10e73dddbec9a2fe1f1e7fea0e13396b3b86",
+      "svi:a8ab58dd007c79d831b1e0f10a07a4d7f353e2b078b971375f5bd0da87f60269",
+      "svi:b67fe3109ac7618046c0a3bcb5e161f34fe2c86f363350cb419dc1803a64e120",
+      "svi:b746fdcbe9a42535318affc1b7a4e6c82016d3234452becf1f1aae964fd23083",
+      "svi:d8c80cbe13968939172772b3cb0f1b0d6d4f275b91b6596c8e35a5dd1f4bbbd0",
+      "svi:fb7345e28725d78bc328305f8a20c4a052ecc0886d5142f4bc2c67516a051cc4"
+    ],
+    "STEGOPS-CAMPAIGN-CRM-PROJECTION-001": [
+      "svi:3157b2bfb120a246fe10dc27df65e33b555a2ccd8ccc3c2020d09e828066fe72",
+      "svi:4b6e1a1cc4c7fc271f56573c6f9583d7477d9e5ba3e3f4b3d9a97245e8e9d414",
+      "svi:8414688dff53e1ef501063a6c75ce14417ef65892e7a13b4ac38844bae555411"
+    ],
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001": [
+      "svi:e932853405cb62e1976ecd73c397635142dcabc40f5ddc6d4eb2970c67323139"
+    ],
+    "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001": [
+      "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204",
+      "svc:c5fb62fb06c54cbc82084b8ace645395ca8a27b43795af9feca3834787cb8d35",
+      "svc:d6df893a9982e89ccbf2bc4140923fce767a3ba76defc070164a9e338faff953",
+      "svi:15e9f2abb13b26d89161148e80cea9059d0ee16eb003373729625e5c36995c8c",
+      "svi:21bfd213161e5f3c1ade3ffb192fcf318bbed4c66ec603148ee4e2524f4716ac",
+      "svi:30f1533fb1a5c147d76a3a50020da540e2f720d77c6f505a4492fa0fcee80606",
+      "svi:404bdde69740761824346668d1e57f26b61db11c7a13b50274ceeb06e58d6f20",
+      "svi:41141ee79dce571a8f14dad755ba96a7ff8a3af8c7b7581a3b3f9dddfc99fce4",
+      "svi:4a250e2ae51d9137e2e5c57a6a25c438381a30d8132f2671d793d927a7fa1c62",
+      "svi:538361b19a72da034f3f43f7a9a44dd08aadda3a12acf5b01733c10641e269f0",
+      "svi:60f81c39d6583f34c95b5398e0ffd08ebbb977cb93a9d5301b0b505ba9a7c00e",
+      "svi:67e919e583998893b4768a708a108f85a6eaa46060b0ae3f76693ef2722e002c",
+      "svi:7983165c9f9b6686f921af0c046ec8421bc8f4c2dbf68b7c0d7c26aece06e166",
+      "svi:93944159fa701528596611847d37a0f14cd4072aab8cfc92ede36033fcbc883b",
+      "svi:9af400dcbe2606ad23d6ff90485f15ff4ab8621506f8cf07f7c7a87e9df414cb",
+      "svi:9c4446c1c98b56114d198fd8dbb31d51d9759ca4a3680771b0716ad9aa7ef897",
+      "svi:b8b82c836790bc9332b9ead25d086f87e299e84cac40ebacd625d0b9abba7c52",
+      "svi:c109f0f3fe840461a35559ebc54cf5876a338a478ff3ee71c44b359c9ef490a7",
+      "svi:cad2f701e9ba8578152fc7736bb591ed085fae07be4d78d3bd5c65dc218b20b1",
+      "svi:cfa15bd988ac7152e93d62ab4050a015889ced0e5a70bf6512c4c20a2321d6fe",
+      "svi:d7a51932d6c593c4c4f2ddb6b82b9cb4851442d5eaffa34295e8fdeb0ac92a90",
+      "svi:effb925d1bb6976f9120ca435897b85e825aa72079cc3cc39b365a864536d24f"
+    ],
+    "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED": [
+      "svc:2aebce74ad7103b4995b79ccda20c5985c03fb03205cbacd75c5c70a64157835",
+      "svc:47a3143779a10ecb5ec05932448854282e9837193b7f53d136b0fc205dd03af3",
+      "svc:5530c50768bf3112045a3ee6c08f80b6600df1082c5903bf9e8087ade7207658",
+      "svc:77ba7e8cb6befca5923be8122d9dfefb34a8733cb289237a5a9d6f23d95fe5bd",
+      "svc:8aa8412b7b76e4d96ac50157f17e8e73748c12ad482d6c24c1f850a337e13e87",
+      "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375",
+      "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da",
+      "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69",
+      "svi:2b555fbc83a5d2c7855d84c613588f38fe3aee2d8599fec448998583da6b4690"
+    ]
+  },
+  "schema": "stegverse.canonical-task-work-items.v1",
+  "work_items": [
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "9bbb3eae573d0f57f56a513c7dae797734b68868",
+        "issue": null,
+        "pr": 3243,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:124efd1302883144a45b7555c2f975c4740129b1e31992980d0db980892c4239",
+      "work_item_id": "svc:2aebce74ad7103b4995b79ccda20c5985c03fb03205cbacd75c5c70a64157835"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "0721e170eed3dabce4144bd5cdef6b5eb1bd176a",
+        "issue": null,
+        "pr": 3251,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:3b624f92e27f7132d58afdf71f74bb491881118836c321051fc39e26c7419522",
+      "work_item_id": "svc:47a3143779a10ecb5ec05932448854282e9837193b7f53d136b0fc205dd03af3"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "de8e3eb992d81582a48e300e1702d91dec0f77df",
+        "issue": null,
+        "pr": 3261,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:fa02ee4fb513f3b8bd0ee4cfe25ca503d39022091a2f77f8f688734959de8efb",
+      "work_item_id": "svc:5530c50768bf3112045a3ee6c08f80b6600df1082c5903bf9e8087ade7207658"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "abdc51f2ff51a751ba5f4b77e93b8bae106ada95",
+        "issue": null,
+        "pr": 3232,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:71004c9f8de5e3fc40e74231f416e946a3818d8fb3a9ea91b2abf8ff2ee3a2a2",
+      "work_item_id": "svc:77ba7e8cb6befca5923be8122d9dfefb34a8733cb289237a5a9d6f23d95fe5bd"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "361f35bfb31b6fd72f420cec3eb106962f275e9f",
+        "issue": null,
+        "pr": 3258,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:e7e841aef12b8510bfc5b7e2a17194ac5bb02053131423a56bf4b717a0db4f4e",
+      "work_item_id": "svc:8aa8412b7b76e4d96ac50157f17e8e73748c12ad482d6c24c1f850a337e13e87"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "75fc4dddffe57e3ad05d87e55a1d6ddffcdec4a0",
+        "issue": null,
+        "pr": 3255,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:76f461ef42be04788705a47702bd05766304775ebfacf49f55aa66de7afd6ceb",
+      "work_item_id": "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375"
+    },
+    {
+      "canonical_coordination_state": "IN_PROGRESS",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "FAIL_CLOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "6d974c92682a0771ad7f4f07abbfc80bd9465a27",
+        "issue": null,
+        "pr": 3245,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:78ad6f9f759256b77faa585f4030cdc1ae6901b57656afb860d410e88dbc4a48",
+      "work_item_id": "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "9671ee7a4ef0d86fe816cc18b2f40d2a71d7cd9f",
+        "issue": null,
+        "pr": 3231,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:c3db0eb95fb8a50d5efc6c03e6985babe6af82aaa7d4ffc833eb0a7952a74817",
+      "work_item_id": "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "e5ba67b26403bef2207638161fcc9cc28e7d8036",
+        "issue": null,
+        "pr": 3241,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:9d6d54551cca46c634fa987bab0ab50351222d5aac4455eee1fb95678a7fe189",
+      "work_item_id": "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "5052569970dc05f3932ad640f9ea296b555d038a",
+        "issue": null,
+        "pr": 3235,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:7cd1d51db3f1be8ace147601e5f46ded184c1f71b0cb225c4ab94c7c364807c9",
+      "work_item_id": "svc:c5fb62fb06c54cbc82084b8ace645395ca8a27b43795af9feca3834787cb8d35"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "c9703e3ee176019c96ea5a08131bb625f6caa60b",
+        "issue": null,
+        "pr": 3253,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:06d11cd8413d3f56d87d55182313a8277310e8a5d2248c8eccb770c2585ae405",
+      "work_item_id": "svc:d6df893a9982e89ccbf2bc4140923fce767a3ba76defc070164a9e338faff953"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:2fb401d70fccd5806525f00db32cebaff222b96ac86c9334d5863100937fd5da",
+      "work_item_id": "svi:02c0f24698d2be26378e70eb90cd10e73dddbec9a2fe1f1e7fea0e13396b3b86"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:de4f664448060adceab1179dbf76ba52cc07a82649b1dde5cee853f7e7346019",
+      "work_item_id": "svi:15e9f2abb13b26d89161148e80cea9059d0ee16eb003373729625e5c36995c8c"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:1a781d00bf681918323e61890204a70ad37e9c799e8e6a1cfecabd4131fc9cd8",
+      "work_item_id": "svi:21bfd213161e5f3c1ade3ffb192fcf318bbed4c66ec603148ee4e2524f4716ac"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:9ef4b84fdd93ae64033e2c01c7fe511446fda445945a2f90d379cdeddb72ad29",
+      "work_item_id": "svi:2b555fbc83a5d2c7855d84c613588f38fe3aee2d8599fec448998583da6b4690"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:57e2a57232640fb5427749a4e67651529ee64d7e5bee0bc469bbdfeea6597cb4",
+      "work_item_id": "svi:30f1533fb1a5c147d76a3a50020da540e2f720d77c6f505a4492fa0fcee80606"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGOPS-CAMPAIGN-CRM-PROJECTION-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:2c0949372125979fccc682cb1e140aea2b2382e7250d51e25ea5c98e089d82ae",
+      "work_item_id": "svi:3157b2bfb120a246fe10dc27df65e33b555a2ccd8ccc3c2020d09e828066fe72"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:5a44ea3ef5358e3b36e034215a06b7e82257a8f1b96f266d88662ebe1d90f6fd",
+      "work_item_id": "svi:404bdde69740761824346668d1e57f26b61db11c7a13b50274ceeb06e58d6f20"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:5196399a3ed32d6cd10d0282efd6b583c1d716f074ecf6b6c044748d3025f3af",
+      "work_item_id": "svi:41141ee79dce571a8f14dad755ba96a7ff8a3af8c7b7581a3b3f9dddfc99fce4"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:796996b8d982284c100c459124aad94a6485e178c08fa172e5741b03ce92a93b",
+      "work_item_id": "svi:4a250e2ae51d9137e2e5c57a6a25c438381a30d8132f2671d793d927a7fa1c62"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGOPS-CAMPAIGN-CRM-PROJECTION-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:ddcd78c5317d003854ada32e510a4d493847f6a60a173c4a0ae337d40089a4c7",
+      "work_item_id": "svi:4b6e1a1cc4c7fc271f56573c6f9583d7477d9e5ba3e3f4b3d9a97245e8e9d414"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:ab521a9202c310137542794585f4781d9de89e282428e0884a3d05aee5b369b2",
+      "work_item_id": "svi:538361b19a72da034f3f43f7a9a44dd08aadda3a12acf5b01733c10641e269f0"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:b311180428a6444bed6c8c0b3f7f4e83e3dfd297167c138d85f5c4b769fb24fe",
+      "work_item_id": "svi:60f81c39d6583f34c95b5398e0ffd08ebbb977cb93a9d5301b0b505ba9a7c00e"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:b605971847dd014528ff6a76ae421e2cb3c5cc3709ec62da0ee3cd304cd9f110",
+      "work_item_id": "svi:67e919e583998893b4768a708a108f85a6eaa46060b0ae3f76693ef2722e002c"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:8fa6813275b9de99d616d7bf6b191c3fb829f3f6cdcbb0b83c64cea721aaca31",
+      "work_item_id": "svi:7983165c9f9b6686f921af0c046ec8421bc8f4c2dbf68b7c0d7c26aece06e166"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGOPS-CAMPAIGN-CRM-PROJECTION-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:dda73ff6a82998b173299bd0187f0a47e13a422e90855875ebbdcf363b784cbf",
+      "work_item_id": "svi:8414688dff53e1ef501063a6c75ce14417ef65892e7a13b4ac38844bae555411"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:b2c572eceb7121e12f706527227746df5336e1e18f176dbc44e7dc576df089fd",
+      "work_item_id": "svi:93944159fa701528596611847d37a0f14cd4072aab8cfc92ede36033fcbc883b"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:3ec690ae2fd17a523c7d929bab0ab180cfbe45e3118265bdd5813a734b2fb83c",
+      "work_item_id": "svi:9af400dcbe2606ad23d6ff90485f15ff4ab8621506f8cf07f7c7a87e9df414cb"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:27a8b9d90ecb9586fbd9a6c03ebd9c1c2d9f615abc0d1a3c7b9fa78fe6ab29be",
+      "work_item_id": "svi:9c4446c1c98b56114d198fd8dbb31d51d9759ca4a3680771b0716ad9aa7ef897"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:3fed12ad47cbd3d4c4b7c5c59faf035d67fd1ab92262e1ca7c7c4d2b6ded87aa",
+      "work_item_id": "svi:a8ab58dd007c79d831b1e0f10a07a4d7f353e2b078b971375f5bd0da87f60269"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:081f7e73b00059d77495e2bf6976e6949ab219ad05a18b33cbb069a4af90159b",
+      "work_item_id": "svi:b67fe3109ac7618046c0a3bcb5e161f34fe2c86f363350cb419dc1803a64e120"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:cd8f8b924520cf0aff6590cf9cf3e39fa9422f68a7aaf834992ca12346489118",
+      "work_item_id": "svi:b746fdcbe9a42535318affc1b7a4e6c82016d3234452becf1f1aae964fd23083"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:24cac857d8c5c8d53564ee1772c4483f9e62d6ed9933b180bc7767384fb9d799",
+      "work_item_id": "svi:b8b82c836790bc9332b9ead25d086f87e299e84cac40ebacd625d0b9abba7c52"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:8dabb1e1b7988b8d17fd7c8a6e114a62f67961d156c54e985654a3007ec83ba3",
+      "work_item_id": "svi:c109f0f3fe840461a35559ebc54cf5876a338a478ff3ee71c44b359c9ef490a7"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:9a555cc18237872f464808ddfa92bee4411cd887f61e713ab8a07983243c56c7",
+      "work_item_id": "svi:cad2f701e9ba8578152fc7736bb591ed085fae07be4d78d3bd5c65dc218b20b1"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:af29b1e959707f2ba33a1ec8f0ac40e513a438bec4e0e5dac495ff64b6af01b1",
+      "work_item_id": "svi:cfa15bd988ac7152e93d62ab4050a015889ced0e5a70bf6512c4c20a2321d6fe"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:7680b95c3639bd6bccc28a7c6bee578dbb09b5369090a4d22f08badd81134edf",
+      "work_item_id": "svi:d7a51932d6c593c4c4f2ddb6b82b9cb4851442d5eaffa34295e8fdeb0ac92a90"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:9de7c4cf5c537477239bdcf71caf3d8feef55c720df761b9cafe91bfd512fc8a",
+      "work_item_id": "svi:d8c80cbe13968939172772b3cb0f1b0d6d4f275b91b6596c8e35a5dd1f4bbbd0"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:4e10560fbed9d8629799812dbc3dc5e8e619cff68f1eec98d3b246dbd5302587",
+      "work_item_id": "svi:e932853405cb62e1976ecd73c397635142dcabc40f5ddc6d4eb2970c67323139"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:6ec819774713c048e83bf8fd5ced2f8b2d97e3d5c9a3709c4073bc303727369b",
+      "work_item_id": "svi:effb925d1bb6976f9120ca435897b85e825aa72079cc3cc39b365a864536d24f"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:0c9191703e27df384942a83e2e571e4316013f1f3e7c142e47c239f7ffd1c6b8",
+      "work_item_id": "svi:fb7345e28725d78bc328305f8a20c4a052ecc0886d5142f4bc2c67516a051cc4"
+    }
+  ]
+}

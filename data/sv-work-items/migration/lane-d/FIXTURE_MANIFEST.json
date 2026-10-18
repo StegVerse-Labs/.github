@@ -1,0 +1,147 @@
+{
+  "schema": "stegverse.lane-d.s0-migration-fixture-manifest/v1",
+  "stage": "NWI-S0 (INDEX 12:53Z): SV_ISSUE and SV_CHANGE as record kinds inside STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse",
+  "base": {
+    "branch": "p1/sv-native-work-items",
+    "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b",
+    "pr": "StegVerse-Labs/.github#3264"
+  },
+  "status": "MIGRATED_HISTORICAL fixtures only. Never admissible (ADMIT -> FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE); nothing is admitted, applied or ledger-receipted.",
+  "pinned_sources": [
+    {
+      "path": "schemas/sv-issue.v1.schema.json",
+      "git_blob": "16579451821564c4b4612b82dd21f938b01018f0",
+      "sha256": "sha256:57b6632fd73ce595cbd5cba8961eb317c4913e6b503f848af60c03f8fed3cc89",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    },
+    {
+      "path": "schemas/sv-change.v1.schema.json",
+      "git_blob": "b03991e88ae6c650fd9779f8d51314b61f0849e2",
+      "sha256": "sha256:8df178c851f13dd8d3bf93711af6b4d7f509dcf3c52dc3a3ef6ef743a9ddb012",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    },
+    {
+      "path": "schemas/canonical-task-work-items.v1.schema.json",
+      "git_blob": "92adebe15cbae5671b55bc30d89fc715fa288d51",
+      "sha256": "sha256:439c6819c17c409149fb0cd65b89ebd131b394a24f38b4b6ceb247e79c04f69c",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    },
+    {
+      "path": "schemas/admission-corpus.v1.schema.json",
+      "git_blob": "5aa5322c7c2b7cff5613996e5e5d33281ad3d53c",
+      "sha256": "sha256:4777b54dfe591d9d8eff99d6f0b827aa9c62b6cd700cc12528e1c3b839537052",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    },
+    {
+      "path": "data/sv-work-items/surface-aliases.json",
+      "git_blob": "125083bc84edb97f6132c37e467055410cd7c005",
+      "sha256": "sha256:2a97214a67016f796c8118713b0c4a7aad55019da6094fd06c65239c75789751",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    },
+    {
+      "path": "data/sv-work-items/lifecycle-transitions.json",
+      "git_blob": "79ed24706b2d3643abfdbfd74da9ac122201f25f",
+      "sha256": "sha256:ee0b375466a662ef95aac27327be2d594376ccefeb3095dbb5c389474cc19c99",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    },
+    {
+      "path": "data/sv-work-items/required-checks.json",
+      "git_blob": "473862673e0327c4907d5c83c51c89fd30c77f3a",
+      "sha256": "sha256:f851a17c596ae521f09fbbbda885ca44cf1160f1933d65b4d37f155e158e5384",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    },
+    {
+      "path": "resident-runtime/sv_work_items.py",
+      "git_blob": "4c6f3e75c636e19404667a7c32c22ae8dac652d4",
+      "sha256": "sha256:671f34fcd341063371db31c1181026ccdebbeed10885120582364443f4494291",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    },
+    {
+      "path": "resident-runtime/sv_migration.py",
+      "git_blob": "5f4bd2125ac627266b9a378ad2a57bee86c171fb",
+      "sha256": "sha256:2e6574d5cfc482af5c3e20851c4cefb35e93eeed7de64a5a8e0e5a0cb48eeef1",
+      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "data/sv-work-items/migration/lane-d/sources/LANE_D_S14_S26.md",
+      "sha256": "sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5",
+      "origin": "Lane D lane file (Drive 1EmaRyhHeR5afyrMWIaz3Qt8xhz4hSjal) sections 14-26, excerpted from the revision with full-file sha256:7204d4dbd5218c7355d2dac0e2a46c472ae09c3d2bbcb171b2c847a91b37b1fa"
+    },
+    {
+      "path": "data/sv-work-items/migration/lane-d/inputs/github-pr-snapshot.json",
+      "sha256": "sha256:2f91880ccdfc80ed87a74e8455dee19cf2a62a08595d93c4b2a5bfe49efdb2fb",
+      "origin": "one GitHub read of the 11 open Lane D PRs (2026-10-18 ~13:0xZ); blob digests from the fetched heads"
+    }
+  ],
+  "builder": "scripts/build_lane_d_s0_migration_fixtures.py (--check reproduces). Lane D owns only six-field row extraction; surfaces, ids, digests, merging, change finishing and the work-items record come from P1's sv_work_items / sv_migration, unmodified",
+  "test": "tests/test_s0_lane_d_migration_fixtures.py",
+  "counts": {
+    "sv_issue": 30,
+    "sv_change": 11,
+    "work_items": 41,
+    "schema_gaps": 0,
+    "source_rows": 35,
+    "merged_restatements": 5,
+    "surface_kinds": {
+      "NON_REPOSITORY_EVIDENCE": 2,
+      "UNKNOWN": 13,
+      "doc": 2,
+      "registry": 2,
+      "schema": 1,
+      "transition": 7,
+      "workflow": 3
+    }
+  },
+  "pinned_change_ids": {
+    "3231": "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204",
+    "3232": "svc:77ba7e8cb6befca5923be8122d9dfefb34a8733cb289237a5a9d6f23d95fe5bd",
+    "3235": "svc:c5fb62fb06c54cbc82084b8ace645395ca8a27b43795af9feca3834787cb8d35",
+    "3241": "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69",
+    "3243": "svc:2aebce74ad7103b4995b79ccda20c5985c03fb03205cbacd75c5c70a64157835",
+    "3245": "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da",
+    "3251": "svc:47a3143779a10ecb5ec05932448854282e9837193b7f53d136b0fc205dd03af3",
+    "3253": "svc:d6df893a9982e89ccbf2bc4140923fce767a3ba76defc070164a9e338faff953",
+    "3255": "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375",
+    "3258": "svc:8aa8412b7b76e4d96ac50157f17e8e73748c12ad482d6c24c1f850a337e13e87",
+    "3261": "svc:5530c50768bf3112045a3ee6c08f80b6600df1082c5903bf9e8087ade7207658"
+  },
+  "observed_base": {
+    "main_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+    "main_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
+    "registry_generation": 319,
+    "organization_ledger_head": "a5bb54d81893b392a3ce28182986fc39857807e1",
+    "note": "observed at fixture build; each record's original base is not observed (migration_provenance.original_base_observed false)"
+  },
+  "rules": [
+    "extraction: \u00a714 six-field table ('same' = previous cell), \u00a716 'fc/fp/rep/re/goal/next' rows (goal KV per legend), six-field bullet blocks, and the #3245 BRANCH_WRITER_IS_BRANCH_OWNER row (failure_code BRANCH_HAS_FOREIGN_WRITER from INDEX MERGE AUTHORITY)",
+    "surface: P1 sv_migration.resolve_surface over retry_entrypoint with the pinned alias table and prefix rules (no repo_paths); for \u00a716 rows still UNKNOWN, the same resolver over the row's Class column. Lane D's former local alias map is dropped; proposals are in PROPOSED_SURFACE_ALIASES.json and are not applied",
+    "owning_goal: the first registry task id in owning_existing_goal, otherwise UNKNOWN; SV_CHANGE owning_goal only when its resolved issues share exactly one goal",
+    "SV_CHANGE resolves: issues whose repair or retry_entrypoint cites the PR number",
+    "writer_session {null, UNKNOWN} everywhere (JDQ Q-WRITER-IDENTITY); declared_session from the PR body's Authoring session line; GitHub CI is projection only",
+    "#3245: BRANCH_WRITER_IS_BRANCH_OWNER FAIL_CLOSED as OBSERVED_ARTIFACT (frozen lane-file line + file sha256), bound to the current head.change_digest"
+  ],
+  "excluded_records": [
+    {
+      "failure_code": "S0_RECORD_FORMAT_NOT_PUBLISHED",
+      "source": "lane file \u00a726.4",
+      "reason": "no failed_predicate is recorded and it is an identity input that may not be UNKNOWN; moot now that the S0 schemas exist"
+    }
+  ],
+  "feedback_for_p1": [
+    {
+      "id": "FB-1",
+      "item": "Four alias proposals in PROPOSED_SURFACE_ALIASES.json: 'that script' (L586), SPPA (L751), '#3235 verify workflow' (L689), 'allocator workflow' (L898). Two point to files that exist only on open PR heads."
+    },
+    {
+      "id": "FB-2",
+      "item": "The Class-column rule for \u00a716 rows is applied here by calling resolve_surface on that cell (it gives row 587's surface). If P1 wants it to be a declared rule, it belongs in sv_migration rather than in the Lane D builder."
+    },
+    {
+      "id": "FB-3",
+      "item": "Known limit from P1: issues with UNKNOWN owning_goal can still collide; 2 Lane D issues have UNKNOWN goals and do not collide today."
+    }
+  ]
+}

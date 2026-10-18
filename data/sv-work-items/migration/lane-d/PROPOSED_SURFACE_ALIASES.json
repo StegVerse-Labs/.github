@@ -1,0 +1,113 @@
+{
+  "schema": "stegverse.lane-d.proposed-surface-aliases/v1",
+  "status": "PROPOSED_NOT_APPLIED",
+  "note": "Lane D proposes these for P1's data/sv-work-items/surface-aliases.json (blob 125083bc). The builder does not use them; every affected row stays UNKNOWN until P1 declares and verifies an entry.",
+  "declared_by_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268",
+  "proposals": [
+    {
+      "alias": "that script",
+      "row_line": 586,
+      "proposed_path": "scripts/project_worker_claim_into_canonical_task.py",
+      "evidence_line": 586,
+      "evidence_text": "`scripts/project_worker_claim_into_canonical_task.py` reads only `worker-registry.json`",
+      "evidence": "the same row's 'Decided by' column names the script the anaphora refers to",
+      "verified": {
+        "repository": "StegVerse-Labs/.github",
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "9573c5bb963d7c19f64a08173f7397f427ba32dd"
+      }
+    },
+    {
+      "alias": "SPPA",
+      "row_line": 751,
+      "proposed_path": "scripts/authorize_site_production_promotion.py",
+      "evidence_line": 776,
+      "evidence_text": "`scripts/authorize_site_production_promotion.py`",
+      "evidence": "\u00a720.2 'SPPA (B) ... Labs#3244' lists this file first under Files; the script is on main",
+      "verified": {
+        "repository": "StegVerse-Labs/.github",
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "0538784f657f5e58cf1f7c975710e64ead3a4e00"
+      }
+    },
+    {
+      "alias": "#3235 verify workflow",
+      "row_line": 689,
+      "proposed_path": ".github/workflows/worker-claim-grant-projection-transition.yml",
+      "evidence_line": 634,
+      "evidence_text": "`.github/workflows/worker-claim-grant-projection-transition.yml`",
+      "evidence": "\u00a717.1 lists this as #3235's only workflow; it exists only on the PR head, so with repo_paths=main trees it is NON_REPOSITORY_EVIDENCE",
+      "verified": {
+        "repository": "StegVerse-Labs/.github",
+        "commit": "5052569970dc05f3932ad640f9ea296b555d038a",
+        "object": "blob",
+        "object_sha": "9fa318915334ab6d3e9f2bf75ee5815195ab261d",
+        "note": "PR #3235 head, not main"
+      }
+    },
+    {
+      "alias": "allocator workflow",
+      "row_line": 898,
+      "proposed_path": ".github/workflows/organization-claim-allocator-transition.yml",
+      "evidence_line": 872,
+      "evidence_text": ".github/workflows/organization-claim-allocator-transition.yml",
+      "evidence": "the row at L870-874 names this file as the allocator workflow entrypoint for the same failure",
+      "verified": {
+        "repository": "StegVerse-Labs/.github",
+        "commit": "e5ba67b26403bef2207638161fcc9cc28e7d8036",
+        "object": "blob",
+        "object_sha": "d6848de380686c4752e4d7e7c47dd48f6b1605b3",
+        "note": "PR #3241 head, not main"
+      }
+    }
+  ],
+  "still_unresolvable": [
+    {
+      "row_line": 24,
+      "entrypoint": "patches/D14-*.json-patch.json",
+      "reason": "glob matches two targets (P1)"
+    },
+    {
+      "row_line": 26,
+      "entrypoint": "\u00a713.1",
+      "reason": "section reference"
+    },
+    {
+      "row_line": 27,
+      "entrypoint": "Labs#3211",
+      "reason": "PR reference"
+    },
+    {
+      "row_line": 28,
+      "entrypoint": "Labs#3211 new head",
+      "reason": "PR reference"
+    },
+    {
+      "row_line": 57,
+      "entrypoint": "Labs#3211 checks on the new head",
+      "reason": "PR checks, no path"
+    },
+    {
+      "row_line": 455,
+      "entrypoint": "a fresh independent audit on #167",
+      "reason": "issue reference"
+    },
+    {
+      "row_line": 595,
+      "entrypoint": "#167",
+      "reason": "issue reference"
+    },
+    {
+      "row_line": 597,
+      "entrypoint": "#167",
+      "reason": "issue reference"
+    },
+    {
+      "row_line": 1204,
+      "entrypoint": "superseding laned/ draft for #3245",
+      "reason": "no draft exists yet"
+    }
+  ]
+}
