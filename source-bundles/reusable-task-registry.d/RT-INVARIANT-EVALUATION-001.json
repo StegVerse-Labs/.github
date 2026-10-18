@@ -1,0 +1,31 @@
+{
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "name": "Invariant evaluation answer",
+  "purpose": "Answer one stegverse.invariant-question/v1 against caller-supplied, digest-bound invariant source bytes with ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line.",
+  "trigger": "an existing canonical task selects this reusable scenario in its invocation manifest",
+  "scope": "one manifest-bound question over the source bytes the caller supplies; nothing is fetched",
+  "parameter_keys": [
+    "question_sha256",
+    "source_bindings",
+    "relay_queue_dir"
+  ],
+  "composes": [],
+  "runner_templates": [],
+  "recording_levels": [
+    "operation",
+    "task"
+  ],
+  "completion_predicates": [
+    "SOURCE_DIGESTS_VERIFIED_BEFORE_PARSE",
+    "ANSWER_CITES_REPO_REV_PATH_LINE",
+    "NON_ALLOW_CARRIES_SIX_FIELDS",
+    "UNDECIDABLE_RELAY_ENTRY_WRITTEN_ONCE",
+    "NO_ANSWER_AUTHORITY"
+  ],
+  "authority_effect": "NONE_ANSWER_ONLY",
+  "reuse_instructions": "Evaluate with scripts/invariant_evaluation.py --question <question.json> --source <repo> <rev> <path> <sha256> <file> [--relay-queue-dir <dir>]. The answer is evidence only: it admits, authorizes and commits nothing. UNDECIDABLE writes one write-once relay entry under the DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION convention (management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json); the invariant owner answers it on the next event, never by a poll. No runner template is declared: the generic trigger passes no question or source bytes, so it stops at NO_EXECUTABLE_RUNNER_DECLARED until an existing owner binds an entrypoint that supplies them.",
+  "existing_owner_refs": [
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "TASK-REGISTRY-KV-SKAP-VERIFIER-NODE-INVARIANT-001"
+  ]
+}
