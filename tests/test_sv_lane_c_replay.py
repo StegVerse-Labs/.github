@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import subprocess
 import unittest
+from unittest import mock
 
 from tests import test_sv_native_work_items as base
 from tests import test_sv_record_modes as rm
@@ -15,6 +16,10 @@ SCN = "data/admission-scenarios/"
 GOAL163 = "StegVerse-org/.github#163"
 SIGNOFF_SCHEMA = json.loads((ROOT / "schemas/sv-change-signoff-receipt.v0.1.schema.json").read_text())
 CHANGE_SCHEMA = json.loads((ROOT / "schemas/sv-change.v1.schema.json").read_text())
+
+
+UNKNOWN_ENTRY = {"appender": "org-ledger-writer (Labs#3255)", "command_paths": [], "expected": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+                 "minter": "NWI-S1-verifier (SV-LLM/.github#46)", "offline_command": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"}
 
 
 def refusal(fn, *a, **k):
@@ -75,7 +80,7 @@ class ReplayEvaluationTests(unittest.TestCase):
     def evaluate(self, m, rebind=True):
         mut = m["mutation"] if rebind or m["mutation"] is None else {**m["mutation"], "rebind_request_digest": False}
         ch = fx.apply_replay_mutation(self.CH[m["sv_change_id"]], mut)
-        obs = wi.admission_inputs(ch, m["current_base"], [self.SIGN[k] for k in m["signoff_receipts"]])
+        obs = wi.admission_inputs(ch, m["current_base"], [self.SIGN[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"])
         out = wi.admit(obs, fixture_mode=True)
         return out["disposition"], out.get("failure_code")
 
@@ -226,6 +231,9 @@ class LedgerReceiptBindingTests(unittest.TestCase):
         self.assertFalse(rb.self_verifies({**rec, "authority_effect": "TAMPERED"}))
 
 
+EPOCH_CID = "ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer"
+
+
 class HarvestedWriterEvidenceLostTests(unittest.TestCase):
     CID = "ASC-BRANCH_WRITER_IS_BRANCH_OWNER@transition"
     SID = CID + "/harvested/WRITER_EVIDENCE_LOST_BY_SNAPSHOT_RESTORE@StegVerse-org/.github#192@f108ed0a"
@@ -234,7 +242,7 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_maps_onto_existing_class_as_alias_not_duplicate(self):
         latest = al.latest_classes(self.CLASSES)
-        self.assertEqual(len(latest), 10)
+        self.assertEqual(len(latest), 11)
         self.assertNotIn("ASC-WRITER_EVIDENCE_LOST_BY_SNAPSHOT_RESTORE@transition", latest)
         c = latest[self.CID]
         self.assertEqual((c["class_version"], c["predicate"]), (2, "BRANCH_WRITER_IS_BRANCH_OWNER"))
@@ -266,10 +274,14 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_appended_through_the_gate(self):
         classes, scenarios, receipts = fx.corpus()
-        self.assertEqual(receipts[-1]["class_id"], self.CID)
-        self.assertEqual(receipts[-1]["disposition"], "ALLOW")
+        self.assertEqual(receipts[-2]["class_id"], self.CID)  # the JD-P4-3 epoch class is appended after the harvest
+        self.assertEqual(receipts[-2]["disposition"], "ALLOW")
+        self.assertEqual(receipts[-1]["class_id"], EPOCH_CID)
         self.assertEqual([s["scenario_id"] for s in scenarios], [s["scenario_id"] for s in self.CORPUS])
         # the gate refuses the harvest when the harvested scenario expects the wrong code
+        self.assertEqual(classes[-2]["class_id"], self.CID)
+        classes = classes[:-1]
+        scenarios = [s for s in scenarios if s["scenario_class"] != EPOCH_CID]
         pre_c, pre_s = classes[:-1], [s for s in scenarios if s["scenario_class"] != self.CID or "content[*]" not in s["scenario_id"]]
         bad = [wi.seal({**{k: v for k, v in s.items() if k != "scenario_sha256"}, "expected_failure_code": "BRANCH_HAS_FOREIGN_WRITER"},
                        "scenario_sha256") for s in scenarios if s["scenario_class"] == self.CID and "content[*]" in s["scenario_id"]]
@@ -313,7 +325,14 @@ class CheckCommandRowTests(unittest.TestCase):
     def test_every_check_declares_a_command_or_fails_closed(self):
         for cid, c in self.ROW["checks"].items():
             self.assertIn("offline_command", c)
-            if c["offline_command"] == U:
+            if wi.verifier_builtin(c) is not None:  # built into the NWI-S1 verifier: no paths, no argv
+                self.assertEqual(c["offline_command"]["verifier_builtin"], cid)
+                self.assertEqual(c["command_paths"], [])
+                self.assertEqual(c["expected"], {"disposition": "ALLOW"})
+                self.assertNotIn("command_status", c)
+                out = wi.check_command(cid, [])  # CHECK_COMMAND_ABSENT_AT_HEAD does not apply to a built-in
+                self.assertEqual((out["disposition"], out["argv"]), ("ALLOW", None))
+            elif c["offline_command"] == U:
                 st = c["command_status"]
                 self.assertEqual((st["disposition"], st["failure_code"]), ("FAIL_CLOSED", "CHECK_COMMAND_UNDECLARED"))
                 self.assertTrue(six(st))
@@ -327,7 +346,11 @@ class CheckCommandRowTests(unittest.TestCase):
                 for p in c["command_paths"]:
                     self.assertTrue((ROOT / p).is_file(), p)
                 self.assertEqual(wi.check_command(cid, self.HEAD_PATHS)["disposition"], "ALLOW")
-        self.assertEqual(self.ROW["checks"]["supplied-epoch-binder-check"]["offline_command"], U)
+        self.assertEqual(self.ROW["checks"]["supplied-epoch-binder-check"]["offline_command"],
+                         {"verifier_builtin": "supplied-epoch-binder-check", "verifier_ref": "SV-LLM/.github#46",
+                          "predicate": "the supplied hb_epoch equals the epoch on the readback receipt sealed by Labs#3266 at "
+                                       "base_ref.ledger_head, and passes 726248a5 validation"})
+        self.assertFalse([cid for cid, c in self.ROW["checks"].items() if c["offline_command"] == U])  # none undeclared now
 
     def test_command_absent_at_older_heads(self):
         for pr, head in (("#3225", "e6ba9601933c1c9d58f6b704c2a119544d21cb4d"), ("#3226", "f82c0324aa4b6ac74adc44a3541ac98b33826447")):
@@ -353,10 +376,13 @@ class CheckCommandRowTests(unittest.TestCase):
         self.assertFalse(wi.check_outcome_matches(ut, 0, "", "Ran 4 tests\n\nFAILED (failures=1)\n"))
 
     def test_no_receipt_for_an_undeclared_command(self):
+        """Generic: a row entry whose command is UNKNOWN (simulated on a declared id) admits no ALLOW receipt."""
         ch = fx.known_good_change(fx.SURFACE_PATH["ledger_writer"])
         r = {"schema": wi.CHECK_RECEIPT_SCHEMA, "check_id": "supplied-epoch-binder-check", "disposition": "ALLOW",
              "change_digest": ch["head"]["change_digest"], "head_sha": "b" * 40, "hb_epoch": str(base.EPOCH), "verifier_ref": "fixture"}
-        out = refusal(wi.validate_check_receipt, r, ch)
+        self.assertEqual(wi.validate_check_receipt(r, ch)["disposition"], "ALLOW")  # declared built-in: an ALLOW is acceptable
+        with mock.patch.dict(wi.REQUIRED_CHECKS["checks"], {"supplied-epoch-binder-check": UNKNOWN_ENTRY}):
+            out = refusal(wi.validate_check_receipt, r, ch)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "CHECK_COMMAND_UNDECLARED"))
 
 

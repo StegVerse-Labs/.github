@@ -1,15 +1,57 @@
 {
   "invariants": [
     {
+      "corpus_class": "ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer",
+      "decided_by": "orchestrator 2026-10-18T15:09Z (KV INDEX: JD-P4-3 PART-DECIDED BY INVARIANT)",
+      "enforced_by": "resident-runtime/sv_work_items.py::verify_admission_hb_epoch(supplied, readback, ledger_head) -- the in-repo reference of the supplied-epoch-binder-check predicate (built into the NWI-S1 verifier, SV-LLM/.github#46); evaluate_admission applies it wherever the row requires that check (ledger_writer); admission_inputs carries supplied_hb_epoch and hb_epoch_readback",
+      "escalated_not_decided": "minting the epoch for a NEW ledger append (Lane B's highest+1 candidate) stays escalated (Claude/ChatGPT); request modes stay dispatched-or-refuse",
+      "invariant_id": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH",
+      "invariants_checked": [
+        "SV_CHANGE binds to its base (registry generation + ledger head)",
+        "base state is observed state",
+        "ORRD no-clock",
+        "726248a5 supplied-epoch validation applies to the read value",
+        "Labs#3236 977a243d precedent (stamps with the org-ledger head epoch)"
+      ],
+      "mismatch": {
+        "disposition": "DENY",
+        "disposition_source": "no orchestrator or orchestration file names a disposition for HB_EPOCH_MISMATCH (searched /workspace/orch INDEX.md/GROK_STATUS.md and the lane clones); DENY kept. Open alignment item: Lane C's uncommitted Labs#3266 working tree (sv_change_base_state_readback.py, worktree mtime 15:12Z, after 78a0c78e) refuses its own caller-expected-epoch mismatch as FAIL_CLOSED, under the retired code name with alias HB_EPOCH_MISMATCH",
+        "failure_code": "HB_EPOCH_MISMATCH"
+      },
+      "native_record_application": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
+      "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
+      "status": "DECIDED_BY_INVARIANT (JD-P4-3, partial)",
+      "supplied_epoch_rule": {
+        "file_blob_at_fc19b532": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
+        "function": "supplied_epoch_failure",
+        "lines_at_fc19b532": "236-269",
+        "note": "726248a5 is the sha256 of the function's source segment, not a git object id",
+        "path": "org-kernel/kernel.py",
+        "repository": "StegVerse-Labs/.github",
+        "sha256": "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
+      },
+      "unobserved": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH",
+        "failure_code": "HB_EPOCH_SOURCE_UNOBSERVED",
+        "next_attempt": "after Lane C's readback (Labs#3266) seals an epoch read at that ledger head; no epoch is minted",
+        "owning_existing_goal": "StegVerse-org/.github#163",
+        "required_evidence_or_repair": "a sealed ALLOW stegverse.sv-change-base-state-readback/v1 receipt (Labs#3266) for base_ref.ledger_head whose hb_epoch slot was read from $.hb_reference.epoch of the head receipt and passes org-kernel/kernel.py::supplied_epoch_failure (sha256 726248a5)",
+        "retry_entrypoint": "resident-runtime/sv_work_items.py::verify_admission_hb_epoch"
+      },
+      "unobserved_cases": "no readback receipt, not that schema, broken seal (result_sha256), not ALLOW, fixture_only outside fixture_mode, bound to another ledger head, no hb_epoch_source naming $.hb_reference.epoch at that head, an hb_epoch slot failing 726248a5 (non-digits / non-int such as a float, < 32, derived_from_clock not false), or kernel.py's rule not the pinned 726248a5"
+    },
+    {
+      "application_of": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH",
       "enforced_by": "resident-runtime/sv_work_items.py::verify_native_hb_epoch (pure over supplied ledger bytes); validate_change/validate_issue(rec, ledger_objects) apply it when ledger bytes are supplied; without them behavior is unchanged (UNKNOWN in a NATIVE record stays DENY UNKNOWN_IN_NATIVE_RECORD)",
       "invariant_id": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
       "mismatch": {
         "disposition": "DENY",
-        "failure_code": "HB_EPOCH_NOT_BASE_LEDGER_EPOCH"
+        "failure_code": "HB_EPOCH_MISMATCH"
       },
       "source_layout": "resident-runtime/aggregate_repo_transition.py:1073-1089 (body incl. hb_reference, seal), :1092 (HEAD.json); resident-runtime/ledger_store.py:44-56 (HEAD_KEY, receipt_key); org-kernel/kernel.py:22 (HB_ANCHOR_EPOCH=32), :68-74",
       "statement": "A NATIVE record's hb_epoch (ASCII digits) equals, by integer value, $.hb_reference.epoch of the stegverse.organization-transition-receipt/v1 at its base ledger head (SV_CHANGE base_ref.ledger_head, SV_ISSUE observed_base.ledger_head), read from refs/stegverse/organization-ledger: HEAD.json at that commit -> receipts/<receipt_sha256 hex>.json, seal verified (receipt_sha256 = sha256 of the canonical body without it). The epoch is an int >= 32 (not bool, no coercion from other types) from a reference not derived from a clock (kernel.hb_reference, org-kernel/kernel.py:68-74); there is no top-level hb_epoch on the org receipt. Never read from a clock.",
-      "status": "PROVISIONAL_UNTIL_JD-P4-3",
+      "status": "DECIDED (native-record application of ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH; JD-P4-3, partial)",
       "unobserved": {
         "disposition": "FAIL_CLOSED",
         "failed_predicate": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
@@ -47,7 +89,7 @@
       "status": "ACTIVE"
     }
   ],
-  "note": "Invariants of the native work-items path that are not schema keywords; enforced in resident-runtime/sv_work_items.py. sv-change.v1 and sv-issue.v1 are unchanged (Lane D re-pins against 734968c0 / 62ee5307).",
+  "note": "Invariants of the native work-items path that are not schema keywords; enforced in resident-runtime/sv_work_items.py. sv-change.v1, sv-issue.v1 and sv-check-receipt.v1 are unchanged (734968c0 / 62ee5307 / 070f13f4).",
   "owning_goal": "StegVerse-org/.github#163",
   "schema": "stegverse.sv-work-items-invariants/v1"
 }

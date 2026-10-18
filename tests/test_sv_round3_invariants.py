@@ -1,9 +1,10 @@
-"""Round 3: undeclared-command receipts, NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH (provisional, JD-P4-3) and
+"""Round 3: undeclared-command receipts, NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH (decided in round 5, JD-P4-3 partial) and
 CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT. Pure functions over supplied bytes; no clock, no network."""
 from __future__ import annotations
 
 import json
 import unittest
+from unittest import mock
 
 from tests import test_sv_native_work_items as base
 from tests import test_sv_record_modes as rm
@@ -41,8 +42,19 @@ def check_receipt(check_id, disposition="FAIL_CLOSED", code=None, digest="sha256
     return r
 
 
+UNKNOWN_ENTRY = {"appender": "org-ledger-writer (Labs#3255)", "command_paths": [], "expected": U,
+                 "minter": "NWI-S1-verifier (SV-LLM/.github#46)", "offline_command": U}
+
+
 class UndeclaredCommandReceiptTests(unittest.TestCase):
+    """The undeclared-command receipt rule stays generic for any future UNKNOWN command: simulated here by setting a
+    declared id's row entry to UNKNOWN (no check in the committed row is in that state)."""
     CID = "supplied-epoch-binder-check"
+
+    def setUp(self):
+        p = mock.patch.dict(wi.REQUIRED_CHECKS["checks"], {self.CID: UNKNOWN_ENTRY})
+        p.start()
+        self.addCleanup(p.stop)
 
     def test_explicit_fail_closed_receipt_is_accepted(self):
         r = check_receipt(self.CID)
@@ -123,7 +135,7 @@ class NativeHbEpochTests(unittest.TestCase):
         objs, _ = ledger_at(ch["base_ref"]["ledger_head"], 2048)
         out = refusal(wi.validate_change, ch, objs)
         self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
-                         ("DENY", "HB_EPOCH_NOT_BASE_LEDGER_EPOCH", "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH"))
+                         ("DENY", "HB_EPOCH_MISMATCH", "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH"))
         self.assertEqual(out["expected"], "2048")
 
     def test_unobserved_cases(self):
@@ -162,7 +174,7 @@ class NativeHbEpochTests(unittest.TestCase):
         for bad in ("01024x", " 1024"):
             self.assertEqual(wi.verify_native_hb_epoch(dict(ch, hb_epoch="1024"), objs)["disposition"], "ALLOW")
             self.assertEqual(refusal(wi.verify_native_hb_epoch, dict(ch, hb_epoch=bad), objs)["failure_code"],
-                             "HB_EPOCH_NOT_BASE_LEDGER_EPOCH")
+                             "HB_EPOCH_MISMATCH")
         self.assertEqual(wi.verify_native_hb_epoch(dict(ch, hb_epoch="01024"), objs)["disposition"], "ALLOW")  # integer value
 
     def test_without_ledger_bytes_behavior_unchanged(self):
@@ -271,7 +283,16 @@ class CheckDerivedIssueTests(unittest.TestCase):
     def test_invariants_recorded(self):
         inv = json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())
         ids = {i["invariant_id"]: i for i in inv["invariants"]}
-        self.assertEqual(ids["NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH"]["status"], "PROVISIONAL_UNTIL_JD-P4-3")
+        nat, adm = ids["NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH"], ids["ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"]
+        self.assertNotIn("PROVISIONAL", nat["status"])
+        self.assertEqual(nat["application_of"], "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH")
+        self.assertEqual(adm["native_record_application"], "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH")
+        self.assertEqual(adm["status"], "DECIDED_BY_INVARIANT (JD-P4-3, partial)")
+        for i in (nat, adm):
+            self.assertEqual((i["mismatch"]["disposition"], i["mismatch"]["failure_code"]), ("DENY", "HB_EPOCH_MISMATCH"))
+        self.assertEqual(adm["unobserved"]["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
+        self.assertTrue(six(adm["unobserved"]))
+        self.assertNotIn("HB_EPOCH_NOT_BASE_LEDGER_EPOCH", json.dumps(inv))
         self.assertIn("$.hb_reference.epoch", ids["NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH"]["statement"])
         self.assertIn("repo_receipt_sha256", ids["CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT"]["ledger_object_shape"])
         doc = (ROOT / "docs/NWI_S0_NATIVE_WORK_ITEMS_MIRROR_HANDOFF.md").read_text()

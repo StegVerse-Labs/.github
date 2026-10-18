@@ -304,7 +304,8 @@ class TVCReplayTests(unittest.TestCase):
             self.assertEqual(m["expected_failure_code"], sc["expected_failure_code"])
             if m["mutation"] is None:
                 rcpts = {r["receipt_sha256"]: r for r in base.jsonl("data/admission-scenarios/tvc-replay/signoff-receipts.jsonl")}
-                self.assertEqual(wi.admission_inputs(ch, m["current_base"], [rcpts[k] for k in m["signoff_receipts"]]), sc["observed_inputs"])
+                self.assertEqual(wi.admission_inputs(ch, m["current_base"], [rcpts[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"]),
+                                 sc["observed_inputs"])
                 self.assertEqual(fx_admit(sc["observed_inputs"])["disposition"], "ALLOW")
             else:
                 self.assertEqual(m["mutation"]["axis"], sc["generated_from"]["axis"])

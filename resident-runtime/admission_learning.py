@@ -75,6 +75,17 @@ def _fail_check(o): o["validation_receipts"] = [{**v, "disposition": "DENY"} if 
 def _writer_evidence_lost(o):  # every content writer_session -> {session: null, evidence_class: UNKNOWN}, as admission_inputs reads it
     o["writer_unobserved_paths"] = sorted(o["touched_paths"]); o["writer_sessions"] = []; o["declared_session_matches_writers"] = False
 def _fail_closed_check(o): o["validation_receipts"] = [{**v, "disposition": "FAIL_CLOSED"} if i == 0 else v for i, v in enumerate(o["validation_receipts"])]
+# ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: the Labs#3266 base-state readback receipt and the supplied epoch
+def _reseal_readback(o, **change):
+    rb = {k: v for k, v in o["hb_epoch_readback"].items() if k != "result_sha256"}
+    for k, v in change.items():
+        rb[k] = v
+    o["hb_epoch_readback"] = wi.seal(rb, "result_sha256")
+def _no_readback(o): o["hb_epoch_readback"] = None
+def _unsealed_readback(o): o["hb_epoch_readback"] = {**o["hb_epoch_readback"], "result_sha256": "sha256:" + "0" * 64}
+def _clock_epoch(o): _reseal_readback(o, hb_epoch_source={**o["hb_epoch_readback"]["hb_epoch_source"], "derived_from_clock": True})
+def _non_int_epoch(o): _reseal_readback(o, hb_epoch=float(o["hb_epoch_readback"]["hb_epoch"]))
+def _other_epoch(o): o["supplied_hb_epoch"] = str(int(o["supplied_hb_epoch"]) + 1)
 
 
 PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
@@ -100,7 +111,17 @@ PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
         ("validation_receipts[0].disposition", "a required check refused (DENY)", _fail_check)]),
     "CHECK_RECEIPT_DISPOSITION_IS_ALLOW": ("CHECK_SKIPPED_OR_UNOBSERVED", [
         ("validation_receipts[0].disposition", "a required check failed closed", _fail_closed_check)]),
+    # an axis may carry a 4th element: its own expected failure code (then its disposition is DISPOSITION_OF[code])
+    "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH": ("HB_EPOCH_SOURCE_UNOBSERVED", [
+        ("hb_epoch_readback", "no base-state readback receipt for the bound ledger head", _no_readback),
+        ("hb_epoch_readback.result_sha256", "the readback receipt is not sealed (result_sha256 does not verify)", _unsealed_readback),
+        ("hb_epoch_readback.hb_epoch_source.derived_from_clock", "the sealed epoch's source reference is derived from a clock",
+         _clock_epoch),
+        ("hb_epoch_readback.hb_epoch", "the sealed epoch slot is not an integer (a JSON float)", _non_int_epoch),
+        ("supplied_hb_epoch", "the SV_CHANGE carries an epoch other than the sealed readback epoch", _other_epoch, "HB_EPOCH_MISMATCH")]),
 }
+DENY_CODES = ("BASE_STALE", "REQUIRED_CHECK_DENIED", "HB_EPOCH_MISMATCH")
+def disposition_of(code: str) -> str: return "DENY" if code in DENY_CODES else "FAIL_CLOSED"
 PREDICATE_ALIASES: dict[str, str] = {}
 # Axes a predicate binds under a second failure code. generalize adds them (each axis names its own expected code)
 # only when a harvested candidate carries that code; a seed generalized from the predicate alone does not get them.
@@ -116,7 +137,7 @@ CLASS_ALIASES: dict[str, str] = {
 
 def _axis_mutator(pred: str, field: str) -> Callable:
     for (p, _), axes in [((pred, None), PREDICATE_BINDINGS[pred][1])] + [(k, v) for k, v in SECONDARY_AXES.items() if k[0] == pred]:
-        for f, _, fn in axes:
+        for f, _, fn, *_ in axes:
             if f == field:
                 return fn
     raise _fail("PREDICATE_BINDING_UNDECLARED", "FAILED_PREDICATE_HAS_DECLARED_BINDINGS", "declare the axis", "generate", axis=field)
@@ -172,7 +193,9 @@ def generalize(candidate: Mapping[str, Any], *, surface: str, origin_scenarios: 
                     "declare the predicate's bound fields in PREDICATE_BINDINGS (or answer via JDQ Q-SCENARIO-GENERALIZATION)",
                     "generalize", failed_predicate=pred)
     code, axes = PREDICATE_BINDINGS[pred]
-    mutation_axes = [{"field": f, "bound_value_source": "positive_control", "mutation": m} for f, m, _ in axes]
+    mutation_axes = [{"field": a[0], "bound_value_source": "positive_control", "mutation": a[1],
+                      **({"expected_failure_code": a[3], "expected_disposition": disposition_of(a[3])} if len(a) > 3 else {})}
+                     for a in axes]
     for a in (prior or {}).get("mutation_axes") or []:
         if a["field"] not in {x["field"] for x in mutation_axes}:
             mutation_axes.append(dict(a))
@@ -186,7 +209,7 @@ def generalize(candidate: Mapping[str, Any], *, surface: str, origin_scenarios: 
                                                                      if c == class_id_for(pred, surface) and n == candidate.get("class_name")})
     body = {"schema": CLASS_SCHEMA, "class_id": class_id_for(pred, surface), "class_version": class_version,
             "supersedes": supersedes, "predicate": pred, "expected_failure_code": code,
-            "expected_disposition": "DENY" if code in ("BASE_STALE", "REQUIRED_CHECK_DENIED") else "FAIL_CLOSED",
+            "expected_disposition": disposition_of(code),
             "surfaces": [{"kind": surface}],
             "mutation_axes": mutation_axes,
             "positive_controls": ["PC-" + surface],
@@ -208,7 +231,7 @@ def generate(cls: Mapping[str, Any], known_good: Mapping[str, Any], *, hb_epoch:
         field = axis["field"]
         obs = copy.deepcopy(dict(known_good)); _axis_mutator(cls["predicate"], field)(obs)
         out.append(wi.seal({**base, "scenario_id": cls["class_id"] + "/" + field, "observed_inputs": obs,
-                            "expected_disposition": cls["expected_disposition"],
+                            "expected_disposition": axis.get("expected_disposition", cls["expected_disposition"]),
                             "expected_failure_code": axis.get("expected_failure_code", cls["expected_failure_code"]),
                             "generated_from": {"class_id": cls["class_id"], "axis": field}}, "scenario_sha256"))
     return out

@@ -156,22 +156,22 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
 - Each check in `required-checks.json#checks` declares `offline_command` (argv, run from the repo root at the exact head, no network), `expected` and `command_paths`.
 - A head never declares its own pass criteria. It binds them through `required_checks_ref.blob_sha`.
 - `{base_commit}` (registry-generation-fence) is the only argument binding. The verifier supplies it from the local clone and never infers it. None of the commands needs an epoch argument.
-- supplied-epoch-binder-check: nothing in this repo performs it, so it is UNKNOWN and FAIL_CLOSED CHECK_COMMAND_UNDECLARED (six fields in `command_status`). validate_check_receipt refuses a receipt for it.
+- supplied-epoch-binder-check: nothing in this repo performs it, so it is UNKNOWN and FAIL_CLOSED CHECK_COMMAND_UNDECLARED (six fields in `command_status`). validate_check_receipt refuses a receipt for it. (Superseded in round 5: it is now a declared verifier built-in.)
 - A command_path absent at the head is FAIL_CLOSED CHECK_COMMAND_ABSENT_AT_HEAD. This is the state of #3225 and #3226 for schema-validate, unit-tests and mutation-negative-suite.
 - Both rules are implemented as pure functions: `sv_work_items.check_command` and `check_outcome_matches`.
 
 ## Round 3 (no change to sv-change.v1 734968c0 or sv-issue.v1 62ee5307)
-- **CHECK_COMMAND_UNDECLARED receipts.** For a declared check id whose row command is UNKNOWN (supplied-epoch-binder-check):
+- **CHECK_COMMAND_UNDECLARED receipts.** For a declared check id whose row command is UNKNOWN (supplied-epoch-binder-check until round 5; the rule stays generic):
   - `validate_check_receipt` accepts the verifier's explicit FAIL_CLOSED CHECK_COMMAND_UNDECLARED receipt (six fields).
   - It refuses an ALLOW, a DENY, or any other FAIL_CLOSED code for that check, with FAIL_CLOSED CHECK_COMMAND_UNDECLARED.
   - Admission fails closed CHECK_COMMAND_UNDECLARED (CHECK_HAS_OFFLINE_COMMAND), not CHECK_SKIPPED_OR_UNOBSERVED.
   - An id outside the row stays CHECK_ID_UNDECLARED.
   - The registry-generation-fence base is **not** recorded: sv-check-receipt.v1 is `additionalProperties: false`, so a `base_commit` field is refused. Recording it needs a receipt-schema change, which was not made.
-- **NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH** (provisional until JD-P4-3; `data/sv-work-items/invariants.json`):
+- **NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH** (provisional until JD-P4-3 in round 3; decided in round 5 as the native-record application of ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH; `data/sv-work-items/invariants.json`):
   - What it checks: a NATIVE record's hb_epoch must equal the hb_epoch of the org-ledger receipt at its base ledger head. The value is read from supplied ledger bytes (`<ledger_head>:HEAD.json` then `<ledger_head>:receipts/<hex>.json`, sealed), never from a clock.
   - Where it runs: `verify_native_hb_epoch`. `validate_change(rec, ledger_objects)` and `validate_issue(rec, ledger_objects)` apply it only when bytes are supplied. Without them, behavior is unchanged.
   - If the source is unobserved: FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
-  - On a mismatch: DENY HB_EPOCH_NOT_BASE_LEDGER_EPOCH.
+  - On a mismatch: DENY HB_EPOCH_MISMATCH (renamed in round 5).
 - **CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT** (`invariants.json`, `required-checks.json#check_derived_issue_rule`):
   - `derive_issue_from_check_receipt(receipt_bytes, ledger_ref, row, observed_base=...)` derives a NATIVE SV_ISSUE from the sealed org-ledger receipt at `ledger_ref`. That receipt's `evidence` is the check receipt.
   - Derived fields:
@@ -194,7 +194,7 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
 - **NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH.** `base_ledger_head_epoch` reads HEAD.json, then the sealed org receipt, then `$.hb_reference.epoch`.
   - The epoch must be an int >= 32: not bool, and no coercion from other types. A reference marked `derived_from_clock` is not accepted.
   - It is compared with the record's ASCII-digit hb_epoch by integer value.
-  - A missing value or a broken seal gives FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. A mismatch gives DENY HB_EPOCH_NOT_BASE_LEDGER_EPOCH.
+  - A missing value or a broken seal gives FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. A mismatch gives DENY HB_EPOCH_MISMATCH (renamed in round 5).
 - **CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT.** `derive_issue_from_check_receipt(ledger_objects, ledger_ref, row, observed_base=...)` follows: org receipt at the ref (sealed), then `repo_receipt_sha256`, then the repo receipt at `source-receipts/<hex>.json` (sealed), then `$.evidence`.
   - The evidence must self-identify: `$.evidence.schema == stegverse.sv_check_receipt.v1`, or `$.evidence.kind == 'sv_check_receipt'` with the rest being the pinned receipt shape.
   - `boundary_evidence.operation`, when present, must be `sv_check_receipt` (Lane D's append operation).
@@ -204,3 +204,40 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - It uses the real `aggregate_repo_transition.verify_source`, `kernel.hb_reference(epoch=...)` and the `ledger_store` keys.
   - The append bodies are mirrored line for line (emit.py:116-117; aggregate_repo_transition.py:1073-1089), because the append functions need a store and stamp `observed_at` from the host clock. The fixture uses a constant instead.
   - The round-3 fixtures (top-level hb_epoch, `evidence` on the org receipt) were removed.
+
+## Round 5: ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH (JD-P4-3, part-decided by invariant, orchestrator 15:09Z)
+- **Invariant (decided, partial).** For admission, hb_epoch is observed state: the epoch on the org-ledger head receipt the SV_CHANGE base is bound to (`$.hb_reference.epoch`), read and sealed by Lane C's base-state readback (Labs#3266, `stegverse.sv-change-base-state-readback/v1`: `hb_epoch` slot plus `hb_epoch_source`, sealed by `result_sha256`). The shared supplied-epoch rule (726248a5) still applies to the read value.
+  - NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH is its native-record application and is no longer provisional. The two invariants cross-reference each other in `invariants.json`.
+  - Still escalated, and not touched here: minting an epoch for a new ledger append.
+- **726248a5.** This is the sha256 of the source segment of `org-kernel/kernel.py::supplied_epoch_failure` (lines 236-269; file blob ffec5d648d7fa4aead1f44f76df936a2da21bb96 at fc19b532). It is not a git object.
+  - Full value: 726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef.
+  - The same pin is used by SV-LLM/.github#46 (`SHARED_RULE_SHA256`) and Labs#3266 (`SUPPLIED_EPOCH_RULE_SHA256`).
+  - `sv_work_items.KERNEL_RULE_SHA256` is recomputed at import. If it differs from the pin, the epoch is unobserved.
+- **Predicate.** `sv_work_items.verify_admission_hb_epoch(supplied, readback, ledger_head)` is the in-repo reference of the supplied-epoch-binder-check.
+  - **FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED** in any of these cases:
+    - no readback, or a readback of another schema;
+    - a broken seal;
+    - a readback that is not ALLOW (for example, Lane C's refusal for a clock-derived or non-int head epoch);
+    - a fixture_only readback outside fixture_mode;
+    - a readback bound to another ledger head;
+    - no `hb_epoch_source` naming `$.hb_reference.epoch` at that head;
+    - a slot that fails 726248a5 (a float or bool, below 32, coerced, or with `derived_from_clock` not exactly false).
+  - **DENY HB_EPOCH_MISMATCH** when the SV_CHANGE's hb_epoch is not ASCII digits equal by integer value to the sealed epoch.
+    - Nothing the orchestrator or any orchestration file says sets a disposition for HB_EPOCH_MISMATCH, so DENY is kept.
+    - Open alignment item: Lane C's uncommitted #3266 worktree refuses its own expected-epoch mismatch as FAIL_CLOSED.
+  - `evaluate_admission` applies the predicate where the row requires the binder check (ledger_writer), after the check receipts and before the sign-offs.
+  - `admission_inputs` gains `supplied_hb_epoch` and `hb_epoch_readback`. The `transition()` VERIFY and ADMIT steps pass `context["hb_epoch_readback"]`.
+- **Code rename.** HB_EPOCH_NOT_BASE_LEDGER_EPOCH is replaced by HB_EPOCH_MISMATCH everywhere in this repo, including the native-record check.
+- **Row: verifier built-in.** `supplied-epoch-binder-check` now declares `offline_command {verifier_builtin, verifier_ref: SV-LLM/.github#46, predicate}`, `expected {disposition: ALLOW}`, `command_paths []`, and `predicate_pins.726248a5`.
+  - `check_command_rule.verifier_builtin` documents the form.
+  - CHECK_COMMAND_ABSENT_AT_HEAD does not apply to built-ins: `check_command` returns ALLOW with `argv` null.
+  - A malformed built-in is CHECK_COMMAND_UNDECLARED.
+  - The check's command surface is the row file.
+  - Its `command_status` (CHECK_COMMAND_UNDECLARED) is removed. The undeclared-receipt rule stays generic, and the tests simulate a future UNKNOWN entry.
+- **Corpus.** One new class is added through SCENARIO_CORPUS_APPEND (`build_sv_native_fixtures.epoch_binding_append`, after the harvest): `ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer` v1, by the class rule (predicate plus surface kind). No existing class carries the predicate. It generates:
+  - a positive control (the supplied epoch equals the sealed readback epoch): ALLOW;
+  - four FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED negatives: no readback, an unsealed readback, `derived_from_clock` true on the epoch source, and a non-int (float) slot;
+  - the `supplied_hb_epoch` axis: DENY HB_EPOCH_MISMATCH. An axis may now carry its own code, with its disposition taken from `admission_learning.disposition_of`.
+  - The earlier classes are byte-identical.
+  - The positive controls carry a fixture readback (`fixture_base_state_readback`: fixture_only, with unobserved fields listed).
+  - Replay-map rows carry `hb_epoch_readback`. The readback axes are REPLAY_INPUT; `supplied_hb_epoch` is SV_CHANGE `/hb_epoch` (not part of the request digest).

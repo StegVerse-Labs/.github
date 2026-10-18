@@ -317,7 +317,7 @@ class CorpusTests(unittest.TestCase):
 
     def test_seed_corpus_loads_and_covers_seed_fixtures(self):
         latest = al.latest_classes(self.CLASSES)
-        self.assertEqual(len(latest), 10)
+        self.assertEqual(len(latest), 11)  # 10 seed classes + ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer
         origins = json.dumps([c["provenance"] for c in latest.values()])
         for ref in ("#3241", "#3244", "#3245", "SDK#533", "SDK#546", "TVC#526", "#3246", ".github#189"):
             self.assertIn(ref, origins)
