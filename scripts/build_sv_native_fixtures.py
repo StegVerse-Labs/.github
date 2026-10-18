@@ -125,9 +125,9 @@ def changes(issue_rows: list[dict]) -> list[dict]:
     return out
 
 
-def known_good(kind_path: str) -> dict:
-    """A known-good SV_CHANGE observation touching one surface kind (positive control)."""
-    content = [{"path": kind_path, "blob_digest": "sha256:" + "a" * 64, "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
+def known_good_change(kind_path: str) -> dict:
+    """The full known-good NATIVE SV_CHANGE touching one surface kind (valid under the tightened sv-change.v1)."""
+    content = [{"path": kind_path, "blob_digest": "sha256:" + "a" * 64, "deleted": False, "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
     digest = wi.change_digest({"target_repository": "StegVerse-Labs/.github", "base_ref": dict(LABS_BASE), "content": content})
     checks, signoffs = wi.required_for([kind_path])
     ch = {"schema": wi.CHANGE_SCHEMA, "record_mode": "NATIVE", "target_repository": "StegVerse-Labs/.github", "resolves": ["svi:" + "0" * 64],
@@ -139,7 +139,45 @@ def known_good(kind_path: str) -> dict:
           "hb_epoch": FIXTURE_HB_EPOCH}
     ch["change_id"] = wi.change_identity(ch)
     ch["request_digest"] = wi.request_digest(ch)
-    return wi.admission_inputs(wi.validate_change(ch), LABS_BASE)
+    return wi.validate_change(ch)
+
+
+def known_good(kind_path: str) -> dict:
+    """A known-good SV_CHANGE observation touching one surface kind (positive control)."""
+    return wi.admission_inputs(known_good_change(kind_path), LABS_BASE)
+
+
+# (d) TVC#519 replay: which SV_CHANGE field (or replay input) each mutation axis changes
+AXIS_TARGET = {
+    "writer_sessions": ("SV_CHANGE", "/content/*/writer_session/session", "a content entry written by a session other than declared_session"),
+    "current_base.registry_generation": ("REPLAY_INPUT", "/current_base/registry_generation", "current base moved; the SV_CHANGE is unchanged"),
+    "current_base.ledger_head": ("REPLAY_INPUT", "/current_base/ledger_head", "current base moved; the SV_CHANGE is unchanged"),
+    "validation_receipts[required_check_ids[0]]": ("SV_CHANGE", "/validation_receipts", "drop the receipt of the first required check id"),
+    "validation_receipts[*].ref": ("SV_CHANGE", "/validation_receipts/*/ref", "set every ref to the empty string"),
+    "validation_receipts[*].evidence_class": ("SV_CHANGE", "/validation_receipts/*/evidence_class", "set every evidence_class to OBSERVED_ARTIFACT"),
+    "validation_receipts[*].change_digest": ("SV_CHANGE", "/validation_receipts/*/change_digest", "bind every receipt to another digest"),
+    "bound_request_digest": ("SV_CHANGE", "/request_digest", "bind the decision to a different request digest"),
+    "declared_session": ("SV_CHANGE", "/declared_session", "empty the declared session"),
+    "signoffs": ("SV_CHANGE", "/signoffs", "drop every sign-off"),
+    "signoffs[*].receipt_ref": ("SV_CHANGE", "/signoffs/*/receipt_ref", "set every sign-off receipt_ref to the empty string"),
+    "validation_receipts[0].disposition": ("SV_CHANGE", "/validation_receipts/0/disposition", "the first receipt refuses (DENY)"),
+}
+
+
+def replay(scenarios: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Each corpus scenario references the full known-good SV_CHANGE of its class's surface plus the one mutation
+    (an SV_CHANGE pointer or a replay input) its axis applies; positive controls apply none."""
+    changes, rows = {}, []
+    for sc in scenarios:
+        path = sc["observed_inputs"]["touched_paths"][0]
+        ch = changes.setdefault(path, known_good_change(path))
+        axis = sc["generated_from"]["axis"]
+        tgt = AXIS_TARGET[axis] if axis is not None else None
+        rows.append({"scenario_id": sc["scenario_id"], "scenario_sha256": sc["scenario_sha256"], "sv_change_id": ch["change_id"],
+                     "current_base": sc["observed_inputs"]["current_base"] if tgt and tgt[0] == "REPLAY_INPUT" else dict(LABS_BASE),
+                     "mutation": None if tgt is None else {"axis": axis, "applies_to": tgt[0], "pointer": tgt[1], "operation": tgt[2]},
+                     "expected_disposition": sc["expected_disposition"], "expected_failure_code": sc["expected_failure_code"]})
+    return sorted(changes.values(), key=lambda c: c["change_id"]), rows
 
 
 def ledger_receipt(check_id: str, digest: str, disposition: str = "ALLOW") -> dict:
@@ -159,7 +197,7 @@ SEEDS = [
     ("BRANCH_WRITER_IS_BRANCH_OWNER", "transition", ["StegVerse-Labs/.github#3245 foreign writer", "StegVerse-org/StegVerse-SDK#533 cross-branch pushes"]),
     ("BASE_IS_CURRENT", "transition", ["StegVerse-org/StegVerse-SDK#546 stale-base merge"]),
     ("AUTHORIZATION_BINDS_FULL_REQUEST", "transition", ["StegVerse-Labs/TVC#526 RELEASE_POLICY_FIELDS_NOT_BOUND_TO_GOVERNANCE_SUBJECT (repair TVC#527)"]),
-    ("VALIDATION_RECEIPT_BINDS_EXACT_HEAD", "transition", ["StegVerse-Labs/.github#3246 SDK_ENTRYPOINT_RESOLVED_FROM_PROCESS_MODULE_CACHE"]),
+    ("RECEIPT_CHANGE_DIGEST_EQUALS_HEAD", "transition", ["StegVerse-Labs/.github#3246 SDK_ENTRYPOINT_RESOLVED_FROM_PROCESS_MODULE_CACHE"]),
     ("REQUIRED_SIGNOFF_RECORDED", "ledger_writer", ["StegVerse-org/.github#189 merged without ledger-component-owner sign-off (merge 40a5d235)"]),
     ("MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED", "ledger_writer", ["StegVerse-org/.github#189 epoch binder gaps (189-binder-check rows 1, 5b, 6, 8, 13, 15)"]),
     ("PR_AUTHOR_SESSION_DECLARED", "schema", ["KV INDEX MERGE AUTHORITY PR_AUTHOR_SESSION_DECLARED (12:47Z)"]),
@@ -191,7 +229,8 @@ def build() -> dict[Path, str]:
     c, s, r = corpus()
     iss = issues()
     return {MIG / "sv-issues.jsonl": _jsonl(iss), MIG / "sv-changes.jsonl": _jsonl(changes(iss)), SCN / "classes.jsonl": _jsonl(c), SCN / "corpus.jsonl": _jsonl(s),
-            SCN / "seed-append-outcomes.jsonl": _jsonl(r)}
+            SCN / "seed-append-outcomes.jsonl": _jsonl(r), **dict(zip((SCN / "tvc-replay/sv-changes.jsonl", SCN / "tvc-replay/replay-map.jsonl"),
+                                                                       map(_jsonl, replay(s))))}
 
 
 def main(argv=None) -> int:

@@ -84,20 +84,24 @@ PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
         ("validation_receipts[required_check_ids[0]]", "a required check has no receipt (skipped)", _drop_first_check),
         ("validation_receipts[*].ref", "checks reported but unreceipted", _unreceipt),
         ("validation_receipts[*].evidence_class", "checks evidenced by an observed artifact, not a ledger receipt", _artifact_only)]),
-    "VALIDATION_RECEIPT_BINDS_EXACT_HEAD": ("VALIDATION_NOT_AT_EXACT_HEAD", [
+    "RECEIPT_CHANGE_DIGEST_EQUALS_HEAD": ("CHECK_SKIPPED_OR_UNOBSERVED", [
         ("validation_receipts[*].change_digest", "receipts from another head", _off_head)]),
     "AUTHORIZATION_BINDS_FULL_REQUEST": ("REQUEST_DIGEST_MISMATCH", [
         ("bound_request_digest", "decision bound to a different request", _req_digest)]),
     "PR_AUTHOR_SESSION_DECLARED": ("AUTHOR_SESSION_NOT_DECLARED", [
         ("declared_session", "author session empty", _no_session)]),
-    "REQUIRED_SIGNOFF_RECORDED": ("SIGNOFF_ABSENT", [
+    "REQUIRED_SIGNOFF_RECORDED": ("SIGNOFF_RECEIPT_ABSENT", [
         ("signoffs", "required role sign-off absent", _drop_signoff),
         ("signoffs[*].receipt_ref", "sign-off claimed without receipt", _unreceipt_signoff)]),
     "CHECK_PASSES": ("CHECK_NOT_PASSING", [
         ("validation_receipts[0].disposition", "a required check refused", _fail_check)]),
 }
 PREDICATE_ALIASES = {"CHECK_NOT_PASSING": "CHECK_PASSES"}
-FAILURE_CODE_TO_PREDICATE = {v[0]: k for k, v in PREDICATE_BINDINGS.items()}
+# A failure code shared by two predicates (TVC#519: CHECK_SKIPPED_OR_UNOBSERVED under MERGE_READY_... and
+# RECEIPT_CHANGE_DIGEST_EQUALS_HEAD) names no single predicate, so it is not a fallback key: such a candidate must
+# carry its failed_predicate, else PREDICATE_BINDING_UNDECLARED.
+_CODES = [v[0] for v in PREDICATE_BINDINGS.values()]
+FAILURE_CODE_TO_PREDICATE = {v[0]: k for k, v in PREDICATE_BINDINGS.items() if _CODES.count(v[0]) == 1}
 
 
 # ------------------------------------------------------------------ harvest

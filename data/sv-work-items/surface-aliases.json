@@ -1,7 +1,7 @@
 {
   "bare_names": [
     {
-      "declared_in": "Lane D §16 Class column (table-column rule: the repository path the row's Class column names)",
+      "declared_in": "Lane D \u00a716 Class column (table-column rule: the repository path the row's Class column names)",
       "name": "apply_admitted_canonical_work_projection.py",
       "path": "scripts/apply_admitted_canonical_work_projection.py",
       "verified": {
@@ -37,7 +37,7 @@
   "lane_aliases": [
     {
       "alias": "CONS",
-      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "declared_in": "Lane D lane file \u00a716 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
       "path": "scripts/consume_org_claim_allocator_request.py",
       "verified": {
         "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
@@ -49,7 +49,7 @@
     },
     {
       "alias": "TRCI",
-      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "declared_in": "Lane D lane file \u00a716 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
       "path": "TASK_REGISTRY_CANONICAL_INVARIANTS.md",
       "verified": {
         "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
@@ -61,7 +61,7 @@
     },
     {
       "alias": "TCP",
-      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "declared_in": "Lane D lane file \u00a716 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
       "path": "data/task-coordination-policy.json",
       "verified": {
         "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
@@ -73,7 +73,7 @@
     },
     {
       "alias": "GI",
-      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "declared_in": "Lane D lane file \u00a716 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
       "path": "data/task-registry-global-invariants.json",
       "verified": {
         "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
@@ -85,7 +85,7 @@
     },
     {
       "alias": "WBF",
-      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "declared_in": "Lane D lane file \u00a716 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
       "path": "docs/WORKER_BLOCKER_FALLBACK_INVARIANT.md",
       "verified": {
         "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
@@ -97,7 +97,7 @@
     },
     {
       "alias": "ORRD",
-      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "declared_in": "Lane D lane file \u00a716 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
       "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
       "verified": {
         "commit": "40a5d235551077185d9f7849a2c866ff5acf2796",
@@ -108,7 +108,7 @@
     },
     {
       "alias": "Site data/session-work-claims.d",
-      "declared_in": "Lane D lane file §14 table (repository-qualified directory)",
+      "declared_in": "Lane D lane file \u00a714 table (repository-qualified directory)",
       "path": "data/session-work-claims.d",
       "verified": {
         "commit": "379dba2aab7ac9c0e3c96b5c045704b99419d876",
@@ -119,15 +119,29 @@
     },
     {
       "alias": "SPPA",
-      "declared_in": "Lane D lane file §18.3 names SPPA as a transition, not a path",
-      "path": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "reason": "no declared path; the mapping to scripts/authorize_site_production_promotion.py would be inferred"
+      "declared_in": "Lane D lane file \u00a718.3 'SPPA, the Site production-promotion authorization transition', Location lists scripts/authorize_site_production_promotion.py (L766-776, LANE_D_S14_S26.md, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5; git blob 1d0fa508fbf3437bf4fa20618c18103c40da12fc at StegVerse-Labs/.github#3265 head d1a00300f48123faa022df8c80be0b6729093862)",
+      "path": "scripts/authorize_site_production_promotion.py",
+      "proposed_by": "Lane D (b699e0c0) PROPOSED_SURFACE_ALIASES.json at StegVerse-Labs/.github#3265 head d1a00300f48123faa022df8c80be0b6729093862 (FB-1)",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "0538784f657f5e58cf1f7c975710e64ead3a4e00",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
     },
     {
       "alias": "that script",
-      "declared_in": "Lane D lane file §16 row L586",
-      "path": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "reason": "anaphora; the row's Class column names no path"
+      "declared_in": "Lane D lane file \u00a716 row L586: 're that script'; the same row's evidence column names exactly one script, scripts/project_worker_claim_into_canonical_task.py (LANE_D_S14_S26.md, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5; git blob 1d0fa508fbf3437bf4fa20618c18103c40da12fc at StegVerse-Labs/.github#3265 head d1a00300f48123faa022df8c80be0b6729093862)",
+      "path": "scripts/project_worker_claim_into_canonical_task.py",
+      "proposed_by": "Lane D (b699e0c0) PROPOSED_SURFACE_ALIASES.json at StegVerse-Labs/.github#3265 head d1a00300f48123faa022df8c80be0b6729093862 (FB-1)",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "9573c5bb963d7c19f64a08173f7397f427ba32dd",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
     }
   ],
   "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
@@ -201,7 +215,7 @@
       "reason": "glob matches two patches with different targets (record file and registry row); not resolved to one surface"
     }
   ],
-  "purpose": "Declared resolution of lane aliases, bare filenames and patch entrypoints to repository surfaces for MIGRATED_HISTORICAL records (sv_migration.resolve_surface). Only aliases verified against a real repository tree are resolved; anything else is UNKNOWN or NON_REPOSITORY_EVIDENCE. The lifter refuses this file unless its git blob equals sv_migration.SURFACE_ALIASES_BLOB.",
+  "purpose": "Declared resolution of lane aliases, bare filenames and patch entrypoints to repository surfaces for MIGRATED_HISTORICAL records (sv_migration.resolve_surface). Only aliases verified against a real repository tree are resolved; aliases whose target exists only at another PR head are unresolved_declarations (FAIL_CLOSED, never ALLOW); anything else is UNKNOWN or NON_REPOSITORY_EVIDENCE. The lifter refuses this file unless its git blob equals sv_migration.SURFACE_ALIASES_BLOB.",
   "repositories": [
     {
       "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
@@ -218,11 +232,60 @@
     }
   ],
   "resolution_order": [
-    "lane_aliases (exact token)",
     "patch_entrypoints (exact entrypoint)",
     "repository path in text (box-local -> NON_REPOSITORY_EVIDENCE; outside every supplied tree -> NON_REPOSITORY_EVIDENCE)",
+    "lane_aliases and unresolved_declarations (longest exact token; an unresolved declaration stays UNKNOWN and alias_disposition is its FAIL_CLOSED)",
     "bare_names (exact token)",
     "otherwise UNKNOWN"
   ],
-  "schema": "stegverse.sv-surface-aliases/v1"
+  "schema": "stegverse.sv-surface-aliases/v1",
+  "schema_file": "schemas/sv-surface-aliases.v1.schema.json",
+  "unresolved_declarations": [
+    {
+      "alias": "#3235 verify workflow",
+      "candidate_path": ".github/workflows/worker-claim-grant-projection-transition.yml",
+      "declared_in": "Lane D lane file \u00a717 L689 retry_entrypoint; \u00a717.1 L634 lists this as #3235's only workflow (LANE_D_S14_S26.md, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5; git blob 1d0fa508fbf3437bf4fa20618c18103c40da12fc at StegVerse-Labs/.github#3265 head d1a00300f48123faa022df8c80be0b6729093862)",
+      "disposition": "FAIL_CLOSED",
+      "evidence": {
+        "commit": "5052569970dc05f3932ad640f9ea296b555d038a",
+        "object": "blob",
+        "object_sha": "9fa318915334ab6d3e9f2bf75ee5815195ab261d",
+        "on_base": false,
+        "path": ".github/workflows/worker-claim-grant-projection-transition.yml",
+        "pull_request": "StegVerse-Labs/.github#3235",
+        "repository": "StegVerse-Labs/.github"
+      },
+      "failed_predicate": "SURFACE_ALIAS_TARGET_EXISTS_AT_BASE",
+      "failure_code": "SURFACE_ALIAS_TARGET_NOT_ON_BASE",
+      "next_attempt": "after StegVerse-Labs/.github#3235 is admitted to main",
+      "owning_existing_goal": "StegVerse-org/.github#163",
+      "path": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "proposed_by": "Lane D (b699e0c0) PROPOSED_SURFACE_ALIASES.json at StegVerse-Labs/.github#3265 head d1a00300f48123faa022df8c80be0b6729093862 (FB-1)",
+      "required_evidence_or_repair": "the candidate path lands on StegVerse-Labs/.github main through the merge-admission transition; then re-verify it against that tree, move the entry to lane_aliases and re-pin SURFACE_ALIASES_BLOB",
+      "retry_entrypoint": "resident-runtime/sv_migration.py::alias_disposition"
+    },
+    {
+      "alias": "allocator workflow",
+      "candidate_path": ".github/workflows/organization-claim-allocator-transition.yml",
+      "declared_in": "Lane D lane file L898 retry_entrypoint; the row at L870-874 names this file as the allocator workflow entrypoint (LANE_D_S14_S26.md, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5; git blob 1d0fa508fbf3437bf4fa20618c18103c40da12fc at StegVerse-Labs/.github#3265 head d1a00300f48123faa022df8c80be0b6729093862)",
+      "disposition": "FAIL_CLOSED",
+      "evidence": {
+        "commit": "e5ba67b26403bef2207638161fcc9cc28e7d8036",
+        "object": "blob",
+        "object_sha": "d6848de380686c4752e4d7e7c47dd48f6b1605b3",
+        "on_base": false,
+        "path": ".github/workflows/organization-claim-allocator-transition.yml",
+        "pull_request": "StegVerse-Labs/.github#3241",
+        "repository": "StegVerse-Labs/.github"
+      },
+      "failed_predicate": "SURFACE_ALIAS_TARGET_EXISTS_AT_BASE",
+      "failure_code": "SURFACE_ALIAS_TARGET_NOT_ON_BASE",
+      "next_attempt": "after StegVerse-Labs/.github#3241 is admitted to main",
+      "owning_existing_goal": "StegVerse-org/.github#163",
+      "path": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "proposed_by": "Lane D (b699e0c0) PROPOSED_SURFACE_ALIASES.json at StegVerse-Labs/.github#3265 head d1a00300f48123faa022df8c80be0b6729093862 (FB-1)",
+      "required_evidence_or_repair": "the candidate path lands on StegVerse-Labs/.github main through the merge-admission transition; then re-verify it against that tree, move the entry to lane_aliases and re-pin SURFACE_ALIASES_BLOB",
+      "retry_entrypoint": "resident-runtime/sv_migration.py::alias_disposition"
+    }
+  ]
 }

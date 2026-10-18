@@ -203,7 +203,7 @@ class SchemaFixTests(unittest.TestCase):
         self.assertEqual(set(wi.issue_identity_inputs(a)), {"violated_invariant", "failed_predicate", "owning_goal", "surface", "source_receipt_ref"})
 
     def test_sf8_owning_goal_unknown_only_migrated(self):
-        m = migrated_issue(owning_goal=U)
+        m = migrated_issue(owning_goal=U, source_receipt={**base.ISSUES[0]["source_receipt"], "evidence_locator": "L1"})
         self.assertIn("/owning_goal", m["unknown_fields"])
         self.assertEqual(both(m, ISSUE_SCHEMA, wi.validate_issue), ([], "ALLOW"))
         self.assertEqual(both(migrated_change(owning_goal=U), CHANGE_SCHEMA, wi.validate_change), ([], "ALLOW"))
@@ -361,11 +361,14 @@ class RemainingFeedbackTests(unittest.TestCase):
         self.assertEqual(set(idx), {"STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001", "STEGOPS-CAMPAIGN-CRM-PROJECTION-001"})
         self.assertEqual(migrated_issue(owning_goal=" STEGOPS-CAMPAIGN-CRM-PROJECTION-001 ")["issue_id"], b["issue_id"])  # stripped
 
-    def test_rf1_known_limit_unknown_goals_still_collide(self):
-        x = migrated_issue(owning_goal=U)
-        y = migrated_issue(owning_goal=U, disposition={**base.ISSUES[0]["disposition"], "next_attempt": "another goal's row"})
-        self.assertEqual(x["issue_id"], y["issue_id"])
-        self.assertIn("known limit", ISSUE_SCHEMA["properties"]["issue_id"]["x-derivation"])
+    def test_fb3_unknown_goals_are_separated_by_evidence_locator(self):
+        loc = lambda l: {**base.ISSUES[0]["source_receipt"], "evidence_locator": l}
+        x = migrated_issue(owning_goal=U, source_receipt=loc("L10"))
+        y = migrated_issue(owning_goal=U, source_receipt=loc("L20"),
+                           disposition={**base.ISSUES[0]["disposition"], "next_attempt": "another goal's row"})
+        self.assertNotEqual(x["issue_id"], y["issue_id"])
+        self.assertIn("FB-3", ISSUE_SCHEMA["properties"]["issue_id"]["x-derivation"])
+        self.assertNotIn("known limit", ISSUE_SCHEMA["properties"]["issue_id"]["x-derivation"])
 
     def test_rf2_alias_table_is_pinned_by_blob(self):
         raw = mg.SURFACE_ALIASES_PATH.read_bytes()
@@ -407,8 +410,11 @@ class RemainingFeedbackTests(unittest.TestCase):
                          {"kind": "workflow", "path": ".github/workflows/workspace-kv-binding-validation.yml"})
         self.assertEqual(r("patches/STEGOPS-CRM-registry-row.json-patch.json"), {"kind": "registry", "path": "data/canonical-task-registry.json"})
         self.assertEqual(r("patches/D14-*.json-patch.json"), U)  # ambiguous glob, declared UNKNOWN
-        self.assertEqual(r("SPPA (18.3) in retro-classification mode"), U)  # alias without a declared path
-        self.assertEqual(r("that script"), U)
+        self.assertEqual(r("SPPA (18.3) in retro-classification mode"),  # FB-1: declared in §18.3, verified at 978b8880
+                         {"kind": "transition", "path": "scripts/authorize_site_production_promotion.py"})
+        self.assertEqual(r("re that script"), {"kind": "transition", "path": "scripts/project_worker_claim_into_canonical_task.py"})
+        self.assertEqual(r("#3235 verify workflow"), U)  # FB-1: target only at a PR head
+        self.assertEqual(r("dispatcher --hb-epoch / allocator workflow"), U)
         self.assertEqual(r("Labs#3211 new head"), U)
 
     def test_rf3_box_local_paths_are_non_repository_evidence(self):
@@ -478,7 +484,7 @@ class ChangeDigestTests(unittest.TestCase):
         self.assertEqual(code(wi.validate_change, bad), "SV_CHANGE_DIGEST_MISMATCH")
         stale = base.reseal_change(dict(ch, validation_receipts=[dict(v, change_digest=legacy) for v in ch["validation_receipts"]]))
         out = wi.admit({**wi.admission_inputs(stale, stale["base_ref"]), "required_signoff_roles": []})
-        self.assertEqual(out["failure_code"], "VALIDATION_NOT_AT_EXACT_HEAD")
+        self.assertEqual((out["failure_code"], out["failed_predicate"]), ("CHECK_SKIPPED_OR_UNOBSERVED", "RECEIPT_CHANGE_DIGEST_EQUALS_HEAD"))
 
     def test_lift_reexpresses_only_receipts_bound_to_same_content(self):
         src = copy.deepcopy(base.CHANGES[2])
@@ -498,6 +504,6 @@ class ChangeDigestTests(unittest.TestCase):
         bad = sealed(content=[keep, {"path": "docs/old.md", "blob_digest": "sha256:" + "0" * 64, "deleted": True, "writer_session": ws}])
         errs, c = both(bad, CHANGE_SCHEMA, wi.validate_change)
         self.assertTrue(errs); self.assertEqual(c, "SV_CHANGE_CONTENT_ENTRY_INVALID")
-        live_null = sealed(content=[keep, {"path": "docs/new.md", "blob_digest": None, "writer_session": ws}])
+        live_null = sealed(content=[keep, {"path": "docs/new.md", "blob_digest": None, "deleted": False, "writer_session": ws}])
         errs, c = both(live_null, CHANGE_SCHEMA, wi.validate_change)
         self.assertTrue(errs); self.assertEqual(c, "SV_CHANGE_CONTENT_ENTRY_INVALID")

@@ -181,6 +181,27 @@
           "migration_provenance"
         ]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "owning_goal": {
+            "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+          }
+        },
+        "required": [
+          "owning_goal"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_receipt": {
+            "required": [
+              "evidence_locator"
+            ]
+          }
+        }
+      }
     }
   ],
   "properties": {
@@ -256,7 +277,7 @@
       "description": "content-addressed; a reworded restatement of the same failure has the same id",
       "pattern": "^svi:[0-9a-f]{64}$",
       "type": "string",
-      "x-derivation": "svi: + sha256(canonical JSON {violated_invariant:{repository,file,rule_id}, failed_predicate: disposition.failed_predicate, owning_goal (stripped), surface, source_receipt_ref}); source_receipt_ref = 'migration:<evidence_path>@<evidence_sha256>' or '<ledger_ref>@<receipt_sha256>'. Canonical JSON = sorted keys, separators (',',':'), UTF-8. Helper: sv_work_items.issue_identity. No free text (SF-7). RF-1: owning_goal is identity; known limit: UNKNOWN goals share one value and can still collide."
+      "x-derivation": "svi: + sha256(canonical JSON {violated_invariant:{repository,file,rule_id}, failed_predicate: disposition.failed_predicate, owning_goal (stripped), surface, source_receipt_ref}); source_receipt_ref = 'migration:<evidence_path>@<evidence_sha256>' or '<ledger_ref>@<receipt_sha256>'. Canonical JSON = sorted keys, separators (',',':'), UTF-8. Helper: sv_work_items.issue_identity. No free text (SF-7). RF-1: owning_goal is identity. FB-3: when owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED the inputs also carry source_locator = source_receipt.evidence_locator (required then); for a known goal the inputs are unchanged. A record set that repeats an issue_id fails closed (SV_ISSUE_ID_COLLISION, sv_work_items.validate_issue_set)."
     },
     "issue_sha256": {
       "pattern": "^sha256:[0-9a-f]{64}$",
@@ -270,6 +291,17 @@
         "CLOSED_BY_INVARIANT",
         "SUPERSEDED"
       ]
+    },
+    "migration_flags": {
+      "description": "FB-2. MIGRATED_HISTORICAL only. SURFACE_DERIVED_FROM_CLASS_COLUMN: surface came from the lane table's Class column because retry_entrypoint resolved to UNKNOWN (sv_migration.derive_surface_with_class_column); derived, not observed. Not part of issue_id.",
+      "items": {
+        "enum": [
+          "SURFACE_DERIVED_FROM_CLASS_COLUMN"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
     },
     "migration_provenance": {
       "additionalProperties": false,
@@ -476,6 +508,11 @@
     },
     "source_receipt": {
       "properties": {
+        "evidence_locator": {
+          "description": "FB-3. The entry's position inside the evidence (e.g. L586). Required when owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (SV_ISSUE_UNKNOWN_GOAL_UNLOCATED otherwise); then hashed into issue_id as source_locator.",
+          "minLength": 1,
+          "type": "string"
+        },
         "evidence_path": {
           "minLength": 1,
           "type": "string"

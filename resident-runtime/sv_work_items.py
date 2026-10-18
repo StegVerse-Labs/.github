@@ -33,6 +33,9 @@ ISSUE_SCHEMA = "stegverse.sv_issue.v1"
 CHANGE_SCHEMA = "stegverse.sv_change.v1"
 LIFECYCLE = json.loads((ROOT / "data/sv-work-items/lifecycle-transitions.json").read_text())
 REQUIRED_CHECKS = json.loads((ROOT / "data/sv-work-items/required-checks.json").read_text())
+CHECK_RECEIPT_INVARIANT = "REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIER_OUTPUTS_APPENDED_BY_ORG_WRITER"
+CHECK_RECEIPT_SCHEMA = "stegverse.sv_check_receipt.v1"
+EXACT_HEAD_PREDICATE = "RECEIPT_CHANGE_DIGEST_EQUALS_HEAD"  # TVC#519: CHECK_SKIPPED_OR_UNOBSERVED, kept distinct by this predicate
 OWNING_GOAL = "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)"
 EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
@@ -62,6 +65,10 @@ MIGRATED_UNKNOWN_ALLOWED = {
     "SV_CHANGE": ("/hb_epoch", "/owning_goal"),
 }
 MIGRATION_FLAG_RESOLVES = "RESOLVES_NOT_RECORDED"
+# FB-2: an SV_ISSUE surface taken from the lane table's Class column (sv_migration.derive_surface_with_class_column)
+# because the retry_entrypoint resolved to UNKNOWN. Derived by a published rule, never observed.
+MIGRATION_FLAG_SURFACE_FROM_CLASS = "SURFACE_DERIVED_FROM_CLASS_COLUMN"
+ISSUE_MIGRATION_FLAGS = (MIGRATION_FLAG_SURFACE_FROM_CLASS,)
 WRITER_EVIDENCE = ("DECLARED", "OBSERVED_COMMIT_TRAILER", UNKNOWN)
 VALIDATION_EVIDENCE = ("LEDGER_RECEIPT", "OBSERVED_ARTIFACT")  # only LEDGER_RECEIPT counts toward VERIFIED
 # Fields outside the full-request digest (TVC#527 pattern: everything else,
@@ -133,18 +140,24 @@ def source_receipt_ref(src: Mapping[str, Any]) -> str:
 def issue_identity_inputs(rec: Mapping[str, Any]) -> dict[str, Any]:
     inv = rec.get("violated_invariant") or {}
     goal = rec.get("owning_goal")
-    return {"violated_invariant": {k: inv.get(k) for k in ("repository", "file", "rule_id")},
-            "failed_predicate": (rec.get("disposition") or {}).get("failed_predicate"),
-            "owning_goal": goal.strip() if isinstance(goal, str) else goal,
-            "surface": rec.get("surface"),
-            "source_receipt_ref": source_receipt_ref(rec.get("source_receipt") or {})}
+    goal = goal.strip() if isinstance(goal, str) else goal
+    out = {"violated_invariant": {k: inv.get(k) for k in ("repository", "file", "rule_id")},
+           "failed_predicate": (rec.get("disposition") or {}).get("failed_predicate"),
+           "owning_goal": goal,
+           "surface": rec.get("surface"),
+           "source_receipt_ref": source_receipt_ref(rec.get("source_receipt") or {})}
+    if goal == UNKNOWN:  # FB-3: only here; records with a known goal keep their identity bytes unchanged
+        out["source_locator"] = (rec.get("source_receipt") or {}).get("evidence_locator")
+    return out
 
 
 def issue_identity(rec: Mapping[str, Any]) -> str:
     """issue_id = "svi:" + sha256(canon({violated_invariant{repository,file,rule_id}, failed_predicate, owning_goal,
     surface, source_receipt_ref})). No free text: a reworded restatement of the same failure is the same issue.
-    RF-1: owning_goal is identity, so one predicate under two goals stays two issues. Known limit: records whose
-    owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED share that value and can still collide."""
+    RF-1: owning_goal is identity, so one predicate under two goals stays two issues. FB-3: when owning_goal is
+    UNKNOWN_NOT_AUTHENTICALLY_OBSERVED the goal cannot separate two entries of one evidence file, so the entry's
+    position in the evidence (source_receipt.evidence_locator, required then) joins the inputs as source_locator.
+    validate_issue_set refuses any record set that still repeats an issue_id (SV_ISSUE_ID_COLLISION)."""
     return "svi:" + sha(issue_identity_inputs(rec))[7:]
 
 
@@ -251,6 +264,17 @@ def validate_issue(rec: Any) -> dict[str, Any]:
                     path=sf["path"])
     if not _str(rec.get("owning_goal")):
         raise _deny("SV_ISSUE_GOAL_ABSENT", "ISSUE_NAMES_OWNING_GOAL", "name the owning goal", e)
+    if rec["owning_goal"].strip() == UNKNOWN and not _str(src.get("evidence_locator")):
+        raise _fail("SV_ISSUE_UNKNOWN_GOAL_UNLOCATED", "ISSUE_ID_IS_UNIQUE_IN_RECORD_SET",
+                    "an issue whose owning_goal is UNKNOWN names source_receipt.evidence_locator (the entry's position in the "
+                    "evidence, e.g. L586); issue_id then hashes it as source_locator", e)
+    flags = rec.get("migration_flags")
+    if flags is not None and (not isinstance(flags, list) or len(set(flags)) != len(flags)
+                              or any(f not in ISSUE_MIGRATION_FLAGS for f in flags)
+                              or (MIGRATION_FLAG_SURFACE_FROM_CLASS in flags and not isinstance(rec.get("surface"), Mapping))):
+        raise _deny("MIGRATION_FLAG_MISMATCH", "MIGRATED_GAPS_ARE_FLAGGED",
+                    "migration_flags lists only " + ", ".join(ISSUE_MIGRATION_FLAGS) + " (once each); "
+                    + MIGRATION_FLAG_SURFACE_FROM_CLASS + " only with a resolved surface", e, flags=flags)
     for r in rec.get("restatements") or []:
         if not isinstance(r, Mapping) or any(not _str(r.get(f)) for f in SIX_FIELDS):
             raise _deny("SV_ISSUE_RESTATEMENT_INVALID", "ISSUE_BODY_IS_SIX_FIELD_NON_ALLOW", "each restatement is a six-field body", e)
@@ -268,6 +292,28 @@ def validate_issue(rec: Any) -> dict[str, Any]:
     if rec.get("issue_sha256") != sha({k: v for k, v in rec.items() if k != "issue_sha256"}):
         raise _fail("SV_ISSUE_DIGEST_MISMATCH", "RECORD_DIGEST_VERIFIES", "reseal the record (issue_sha256)", e)
     return dict(rec)
+
+
+def validate_issue_set(records: Iterable[Any]) -> list[dict[str, Any]]:
+    """FB-3: validate every record, then refuse the set if any issue_id appears twice. A duplicate is never merged
+    here: restatements of one issue are merged before storage (sv_migration.merge_issues), so a stored set that still
+    repeats an id holds two different failures under one identity."""
+    e = "validate_issue_set"
+    out = [validate_issue(r) for r in records]
+    seen: dict[str, int] = {}
+    dup: dict[str, list[int]] = {}
+    for i, r in enumerate(out):
+        if r["issue_id"] in seen:
+            dup.setdefault(r["issue_id"], [seen[r["issue_id"]]]).append(i)
+        else:
+            seen[r["issue_id"]] = i
+    if dup:
+        raise _fail("SV_ISSUE_ID_COLLISION", "ISSUE_ID_IS_UNIQUE_IN_RECORD_SET",
+                    "give every entry its own identity inputs (an UNKNOWN-goal issue names source_receipt.evidence_locator), "
+                    "or merge true restatements into one record (restatements[]) before storing the set", e,
+                    "rebuild the record set and resubmit it whole; no record of this set was accepted",
+                    collisions={k: v for k, v in sorted(dup.items())})
+    return out
 
 
 # ------------------------------------------------------------------ SV_CHANGE
@@ -338,7 +384,11 @@ def validate_change(rec: Any) -> dict[str, Any]:
     if not isinstance(content, list) or not content:
         raise _deny("SV_CHANGE_CONTENT_EMPTY", "CHANGE_DIGEST_COVERS_CONTENT", "content lists every changed path", e)
     for c in content:
-        deleted = isinstance(c, Mapping) and c.get("deleted", False)
+        if not isinstance(c, Mapping) or set(c) != {"path", "blob_digest", "deleted", "writer_session"}:
+            raise _deny("SV_CHANGE_CONTENT_ENTRY_INVALID", "CHANGE_DIGEST_COVERS_CONTENT",
+                        "each entry has exactly path, blob_digest, deleted and writer_session (TVC#519: deleted is required)", e,
+                        keys=sorted(c) if isinstance(c, Mapping) else None)
+        deleted = c["deleted"]
         blob_ok = isinstance(c, Mapping) and (c.get("blob_digest") is None if deleted is True
                                               else isinstance(c.get("blob_digest"), str) and DIGEST.match(c["blob_digest"]) is not None)
         if not isinstance(c, Mapping) or not _str(c.get("path")) or deleted not in (True, False) or not blob_ok \
@@ -348,10 +398,13 @@ def validate_change(rec: Any) -> dict[str, Any]:
                         "sha256 (null exactly when deleted)", e)
     if len({c["path"] for c in content}) != len(content):
         raise _deny("SV_CHANGE_CONTENT_DUPLICATE_PATH", "CHANGE_DIGEST_COVERS_CONTENT", "one entry per path", e)
-    if (rec.get("head") or {}).get("change_digest") != change_digest(rec):
+    if not isinstance(rec.get("head"), Mapping) or set(rec["head"]) != {"change_digest"}:
+        raise _deny("SV_CHANGE_HEAD_INVALID", "CHANGE_DIGEST_COVERS_CONTENT", "head is exactly {change_digest}", e)
+    if rec["head"]["change_digest"] != change_digest(rec):
         raise _fail("SV_CHANGE_DIGEST_MISMATCH", "CHANGE_DIGEST_COVERS_CONTENT",
                     "head.change_digest = change_digest(record) (same canonical bytes as change_id)", e, expected=change_digest(rec))
-    if sorted(rec.get("touched_paths") or []) != sorted(c["path"] for c in content):
+    tp = rec.get("touched_paths")
+    if not isinstance(tp, list) or len(set(tp)) != len(tp) or set(tp) != {c["path"] for c in content}:
         raise _deny("SV_CHANGE_TOUCHED_PATHS_MISMATCH", "TOUCHED_PATHS_EQUAL_CONTENT_PATHS", "touched_paths equals the content paths", e)
     if rec.get("lifecycle_state") not in CHANGE_STATES:
         raise _deny("SV_CHANGE_STATE_INVALID", "LIFECYCLE_STATE_DECLARED", "one of " + ", ".join(CHANGE_STATES), e)
@@ -365,6 +418,8 @@ def validate_change(rec: Any) -> dict[str, Any]:
                 or (v["evidence_class"] == "LEDGER_RECEIPT" and not v["ref"].startswith("refs/")):
             raise _deny("VALIDATION_RECEIPT_INVALID", "VALIDATION_RECEIPT_IS_DISPOSITION",
                         "{check_id, disposition, change_digest, evidence_class LEDGER_RECEIPT (ref refs/...) | OBSERVED_ARTIFACT, ref, digest sha256}", e)
+        if v["check_id"] not in declared_check_ids():
+            raise check_id_undeclared(v["check_id"], e)
     if rec.get("request_digest") != request_digest(rec):
         raise _fail("REQUEST_DIGEST_MISMATCH", "AUTHORIZATION_BINDS_FULL_REQUEST", "request_digest = request_digest(record)", e,
                     expected=request_digest(rec))
@@ -407,6 +462,58 @@ def required_for(paths: Iterable[str], row: Mapping[str, Any] = REQUIRED_CHECKS)
         checks |= set(row["surface_kinds"][k]["checks"])
         signoffs |= set(row["surface_kinds"][k]["signoffs"])
     return sorted(checks), sorted(signoffs)
+
+
+def declared_check_ids(row: Mapping[str, Any] = REQUIRED_CHECKS) -> list[str]:
+    """The only check ids any receipt may carry: the ids the NWI-S1 verifier emits (row["checks"])."""
+    return sorted(row["checks"])
+
+
+def check_id_undeclared(check_id: Any, entry: str) -> Refusal:
+    return _fail("CHECK_ID_UNDECLARED", CHECK_RECEIPT_INVARIANT,
+                 "a receipt names a check id of row " + REQUIRED_CHECKS["row_id"] + " (" + ", ".join(declared_check_ids())
+                 + "); no other minter exists", entry, check_id=check_id)
+
+
+def validate_check_receipt(receipt: Any, change: Mapping[str, Any] | None = None, head_sha: str | None = None) -> dict[str, Any]:
+    """The receipt the NWI-S1 verifier (SV-LLM/.github#46) emits (schemas/sv-check-receipt.v1.schema.json). Validating it
+    makes nothing a LEDGER_RECEIPT; only the org-ledger writer transition (Labs#3255) appends it."""
+    e = "validate_check_receipt"
+    r = receipt
+    if not isinstance(r, Mapping) or r.get("schema") != CHECK_RECEIPT_SCHEMA:
+        raise _deny("SV_CHECK_RECEIPT_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + CHECK_RECEIPT_SCHEMA, "supply a " + CHECK_RECEIPT_SCHEMA + " receipt", e)
+    if not isinstance(r.get("check_id"), str) or not re.match(r"^[a-z0-9]+(?:-[a-z0-9]+)*$", r["check_id"]) \
+            or r["check_id"] not in declared_check_ids():
+        raise check_id_undeclared(r.get("check_id"), e)
+    if r.get("disposition") not in DISPOSITIONS:
+        raise _deny("SV_CHECK_RECEIPT_INVALID", CHECK_RECEIPT_INVARIANT, "disposition ALLOW, DENY or FAIL_CLOSED", e)
+    if not isinstance(r.get("change_digest"), str) or not DIGEST.match(r["change_digest"]) \
+            or not isinstance(r.get("head_sha"), str) or not GIT_SHA.match(r["head_sha"]) or not _str(r.get("verifier_ref")):
+        raise _deny("SV_CHECK_RECEIPT_INVALID", CHECK_RECEIPT_INVARIANT, "change_digest sha256:<hex>, head_sha 40-hex, verifier_ref", e)
+    six = [f for f in SIX_FIELDS if _str(r.get(f))]
+    if r["disposition"] != "ALLOW" and len(six) != len(SIX_FIELDS):
+        raise _deny("SV_CHECK_RECEIPT_SIX_FIELDS_INCOMPLETE", "ISSUE_BODY_IS_SIX_FIELD_NON_ALLOW",
+                    "a non-ALLOW receipt carries all six fields", e, missing=[f for f in SIX_FIELDS if f not in six])
+    allowed = {"schema", "check_id", "disposition", "change_digest", "head_sha", "hb_epoch", "verifier_ref"} | set(SIX_FIELDS)
+    if set(r) - allowed:
+        raise _deny("SV_CHECK_RECEIPT_INVALID", CHECK_RECEIPT_INVARIANT, "no fields beyond the pinned receipt shape", e, extra=sorted(set(r) - allowed))
+    epoch_check(r.get("hb_epoch"), e)
+    if change is not None and r["change_digest"] != (change.get("head") or {}).get("change_digest"):
+        raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE, "re-run the check at the exact head.change_digest", e)
+    if head_sha is not None and r["head_sha"] != head_sha:
+        raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE, "re-run the check at the exact head commit", e)
+    return dict(r)
+
+
+def row_receipt_status(appended: Iterable[Mapping[str, Any]] = (), row: Mapping[str, Any] = REQUIRED_CHECKS) -> dict[str, Any]:
+    """The real row fails closed until the org writer has appended a verifier receipt for every declared check id.
+    `appended` is the set of LEDGER_RECEIPT references already read back from refs/stegverse/organization-ledger;
+    nothing here reads the ledger, a clock or a CI job."""
+    have = {a.get("check_id") for a in appended if a.get("evidence_class") == "LEDGER_RECEIPT" and str(a.get("ref") or "").startswith("refs/")}
+    missing = [c for c in declared_check_ids(row) if c not in have]
+    if not missing:
+        return {"disposition": "ALLOW", "failed_predicate": None}
+    return {**row["row_status"], "missing_check_ids": missing}
 
 
 def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any]) -> dict[str, Any]:
@@ -464,6 +571,9 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     required = list(obs.get("required_check_ids") or [])
     if not required:
         raise _fail("REQUIRED_CHECKS_ROW_ABSENT", "REQUIRED_CHECKS_ROW_RESOLVES", "resolve the required-checks row", e)
+    undeclared = sorted({str(v.get("check_id")) for v in obs.get("validation_receipts") or []} - set(declared_check_ids()))
+    if undeclared:
+        raise check_id_undeclared(undeclared, e)
     by_id = {v.get("check_id"): v for v in obs.get("validation_receipts") or []
              if v.get("evidence_class") == "LEDGER_RECEIPT" and str(v.get("ref") or "").startswith("refs/")}
     unobserved = sorted(c for c in required if c not in by_id)
@@ -474,14 +584,15 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
                     e, unobserved=unobserved, artifact_only=artifact_only)
     stale = sorted(c for c in required if by_id[c].get("change_digest") != obs.get("head_change_digest"))
     if stale:
-        raise _fail("VALIDATION_NOT_AT_EXACT_HEAD", "VALIDATION_RECEIPT_BINDS_EXACT_HEAD", "re-run the checks at head.change_digest", e, stale=stale)
+        raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE,
+                    "a receipt whose change_digest equals head.change_digest for every required check (re-run at the exact head)", e, stale=stale)
     failing = sorted(c for c in required if by_id[c].get("disposition") != "ALLOW")
     if failing:
         raise _deny("CHECK_NOT_PASSING", "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED", "every required check ALLOW", e, failing=failing)
     have = {s.get("role") for s in obs.get("signoffs") or [] if _str((s or {}).get("receipt_ref")) and _str((s or {}).get("session"))}
     absent = sorted(set(obs.get("required_signoff_roles") or []) - have)
     if absent:
-        raise _fail("SIGNOFF_ABSENT", "REQUIRED_SIGNOFF_RECORDED", "a receipted sign-off by each required role", e, absent=absent)
+        raise _fail("SIGNOFF_RECEIPT_ABSENT", "REQUIRED_SIGNOFF_RECORDED", "a receipted sign-off by each required role", e, absent=absent)
     if covered_kinds is not None:
         need = set(REQUIRED_CHECKS["coverage_required_kinds"])
         gap = sorted(k for k in obs.get("touched_surface_kinds") or [] if k in need and k not in set(covered_kinds))
