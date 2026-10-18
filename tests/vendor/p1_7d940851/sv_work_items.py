@@ -29,6 +29,18 @@ _spec = importlib.util.spec_from_file_location("sv_work_items_kernel", ROOT / "o
 kernel = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(kernel)
 
+
+def supplied_epoch_rule_sha256(source: str) -> str | None:
+    """sha256 hex of the supplied_epoch_failure source segment in `source` (kernel.py text), else None."""
+    if "def supplied_epoch_failure" not in source:
+        return None
+    a = source.index("def supplied_epoch_failure")
+    b = source.find("\ndef ", a + 5)
+    return hashlib.sha256(source[a:b if b >= 0 else len(source)].rstrip().encode("utf-8")).hexdigest()
+
+
+KERNEL_RULE_SHA256 = supplied_epoch_rule_sha256((ROOT / "org-kernel/kernel.py").read_text(encoding="utf-8"))
+
 ISSUE_SCHEMA = "stegverse.sv_issue.v1"
 CHANGE_SCHEMA = "stegverse.sv_change.v1"
 LIFECYCLE = json.loads((ROOT / "data/sv-work-items/lifecycle-transitions.json").read_text())
@@ -41,7 +53,15 @@ SIGNOFF_RECEIPT_SCHEMA = "stegverse.sv-change-signoff-receipt/v0.1"  # the seale
 FIXTURE_REF_MARK = "#fixture:"  # a fixture validation-receipt ref; counted only in fixture_mode
 LEDGER_RECEIPT_REF = re.compile(r"^refs/stegverse/organization-ledger@(?P<commit>[0-9a-f]{40}):(?P<path>receipts/(?P<hex>[0-9a-f]{64})\.json)$")
 OWNING_GOAL = "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)"
-HB_EPOCH_LEDGER_INVARIANT = "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH"  # provisional until JD-P4-3
+HB_EPOCH_LEDGER_INVARIANT = "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH"  # native-record application of the next
+ADMISSION_HB_EPOCH_INVARIANT = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"  # decided (JD-P4-3, partial)
+HB_EPOCH_MISMATCH = "HB_EPOCH_MISMATCH"
+EPOCH_BINDER_CHECK_ID = "supplied-epoch-binder-check"
+BASE_STATE_READBACK_SCHEMA = "stegverse.sv-change-base-state-readback/v1"  # Labs#3266 RTC-SV-CHANGE-BASE-STATE-READBACK-014
+HB_EPOCH_SOURCE_FIELD = "$.hb_reference.epoch"
+# sha256 of the source segment of org-kernel/kernel.py::supplied_epoch_failure (from "def supplied_epoch_failure" to the
+# next top-level def, trailing whitespace stripped): the shared rule pinned as 726248a5 by SV-LLM/.github#46 and Labs#3266
+SUPPLIED_EPOCH_RULE_SHA256 = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
 CHECK_DERIVED_ISSUE_INVARIANT = "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT"
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 LEDGER_HEAD_KEY = "HEAD.json"  # ledger_store.HEAD_KEY
@@ -367,7 +387,7 @@ def request_digest(rec: Mapping[str, Any]) -> str:
 def validate_change(rec: Any, ledger_objects: Mapping[str, bytes] | None = None) -> dict[str, Any]:
     """Without ledger_objects the behavior is unchanged (UNKNOWN in a NATIVE record is DENY). With the bytes a read of
     refs/stegverse/organization-ledger returned, a NATIVE record's hb_epoch is also bound to the base ledger head
-    (NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH, provisional until JD-P4-3)."""
+    (NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH, decided with JD-P4-3, partial)."""
     e = "validate_change"
     if not isinstance(rec, Mapping) or rec.get("schema") != CHANGE_SCHEMA:
         raise _deny("SV_CHANGE_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + CHANGE_SCHEMA, "supply a stegverse.sv_change.v1 record", e)
@@ -531,16 +551,31 @@ def validate_check_receipt(receipt: Any, change: Mapping[str, Any] | None = None
     return dict(r)
 
 
+def verifier_builtin(c: Mapping[str, Any]) -> Mapping[str, Any] | None:
+    """A command built into the NWI-S1 verifier: offline_command = {verifier_builtin, verifier_ref, predicate}, all
+    non-empty strings (the builtin's name is the check id), with command_paths empty; else None."""
+    oc = c.get("offline_command")
+    if isinstance(oc, Mapping) and all(_str(oc.get(k)) for k in ("verifier_builtin", "verifier_ref", "predicate")) \
+            and c.get("command_paths") == []:
+        return oc
+    return None
+
+
 def command_declared(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> bool:
+    """argv in this repo (a non-empty list), or a verifier built-in naming this check id."""
     c = row["checks"].get(check_id) or {}
-    return isinstance(c.get("offline_command"), list) and bool(c["offline_command"])
+    if isinstance(c.get("offline_command"), list) and bool(c["offline_command"]):
+        return True
+    b = verifier_builtin(c)
+    return b is not None and b["verifier_builtin"] == check_id
 
 
 def check_command_surface(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> str:
     """The repository path a check's command runs: argv[1] for a script, the first command_path naming the unittest
-    module for `-m unittest`; for an undeclared command, the row file itself (the failure is in the row)."""
+    module for `-m unittest`; for an undeclared command or a verifier built-in (no script in this repo), the row file
+    itself (the row is where this repo declares it)."""
     c = row["checks"][check_id]
-    if not command_declared(check_id, row):
+    if not command_declared(check_id, row) or verifier_builtin(c) is not None:
         return row["row_file"]["file"]
     argv = c["offline_command"]
     if argv[1:3] == ["-m", "unittest"]:
@@ -551,12 +586,18 @@ def check_command_surface(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECK
 
 def check_command(check_id: Any, paths_at_head: Iterable[str], row: Mapping[str, Any] = REQUIRED_CHECKS) -> dict[str, Any]:
     """Pure: the offline command a check id binds through the row (never the head). Undeclared id -> CHECK_ID_UNDECLARED;
-    offline_command UNKNOWN -> FAIL_CLOSED CHECK_COMMAND_UNDECLARED; a command_path absent at the head being verified
+    a verifier built-in -> ALLOW with no argv (paths not checked); offline_command UNKNOWN (or any other non-command)
+    -> FAIL_CLOSED CHECK_COMMAND_UNDECLARED; a command_path absent at the head being verified
     (`paths_at_head`, as listed from that head) -> FAIL_CLOSED CHECK_COMMAND_ABSENT_AT_HEAD."""
     e = "check_command"
     if check_id not in row["checks"]:
         raise check_id_undeclared(check_id, e)
     c = row["checks"][check_id]
+    b = verifier_builtin(c)
+    if b is not None and b["verifier_builtin"] == check_id:
+        # built into the verifier: nothing in this repo to locate, so CHECK_COMMAND_ABSENT_AT_HEAD does not apply
+        return {"disposition": "ALLOW", "failed_predicate": None, "check_id": check_id, "argv": None,
+                "verifier_builtin": dict(b), "argument_bindings": {}, "expected": dict(c["expected"])}
     if not isinstance(c.get("offline_command"), list) or not c["offline_command"]:
         st = c.get("command_status") or {}
         raise _fail("CHECK_COMMAND_UNDECLARED", "CHECK_HAS_OFFLINE_COMMAND",
@@ -697,11 +738,11 @@ def base_ledger_head_epoch(ledger_head: Any, ledger_objects: Mapping[str, bytes]
 
 
 def verify_native_hb_epoch(record: Mapping[str, Any], ledger_objects: Mapping[str, bytes]) -> dict[str, Any]:
-    """NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH (provisional until JD-P4-3). A NATIVE record's hb_epoch (ASCII
+    """NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH (decided with JD-P4-3, partial). A NATIVE record's hb_epoch (ASCII
     digits) equals, by integer value, $.hb_reference.epoch of the org receipt at its base ledger head (SV_CHANGE
     base_ref, SV_ISSUE observed_base), read from the supplied ledger bytes only, never a clock. Unobserved (no HEAD,
     no receipt, broken seal, missing/invalid epoch) -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; mismatch -> DENY
-    HB_EPOCH_NOT_BASE_LEDGER_EPOCH."""
+    HB_EPOCH_MISMATCH. The native-record application of ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH."""
     base = record.get("base_ref") if record.get("schema") == CHANGE_SCHEMA else record.get("observed_base")
     head = (base or {}).get("ledger_head") if isinstance(base, Mapping) else None
     want = base_ledger_head_epoch(head, ledger_objects)
@@ -713,13 +754,70 @@ def verify_native_hb_epoch(record: Mapping[str, Any], ledger_objects: Mapping[st
         raise r
     mine = record.get("hb_epoch")
     if not (isinstance(mine, str) and re.fullmatch(r"[0-9]+", mine) and int(mine) == want):
-        r = Refusal("DENY", "HB_EPOCH_NOT_BASE_LEDGER_EPOCH", HB_EPOCH_LEDGER_INVARIANT,
+        r = Refusal("DENY", HB_EPOCH_MISMATCH, HB_EPOCH_LEDGER_INVARIANT,
                     "re-derive the native record with hb_epoch = the base ledger head receipt's hb_reference.epoch",
                     "verify_native_hb_epoch", "propose a successor record bound to the base ledger head's epoch",
                     ledger_head=head, expected=str(want), hb_epoch=mine)
         r.record["retry_entrypoint"] = "native record re-derivation"
         raise r
     return {"disposition": "ALLOW", "failed_predicate": None, "hb_epoch": str(want), "ledger_head": head}
+
+
+def _readback_epoch_unobserved(why: str, ledger_head: Any) -> Refusal:
+    r = Refusal("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED", ADMISSION_HB_EPOCH_INVARIANT,
+                "a sealed ALLOW " + BASE_STATE_READBACK_SCHEMA + " receipt (Labs#3266) for base_ref.ledger_head whose hb_epoch slot "
+                "was read from " + HB_EPOCH_SOURCE_FIELD + " of the head receipt and passes org-kernel/kernel.py::supplied_epoch_failure "
+                "(sha256 " + SUPPLIED_EPOCH_RULE_SHA256[:8] + ")", "verify_admission_hb_epoch",
+                "after Lane C's readback (Labs#3266) seals an epoch read at that ledger head; no epoch is minted",
+                ledger_head=ledger_head, detail=why)
+    return r
+
+
+def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *, fixture_mode: bool = False) -> dict[str, Any]:
+    """ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH (JD-P4-3, part-decided by invariant). The admission hb_epoch is
+    the epoch on the org-ledger head receipt the SV_CHANGE base is bound to, as read and sealed by Lane C's base-state
+    readback (Labs#3266): the in-repo reference of the supplied-epoch-binder-check predicate (built into the NWI-S1
+    verifier, SV-LLM/.github#46). Pure over the supplied receipt; nothing is read, minted or clocked here.
+      FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED: no readback, not that schema, broken seal (result_sha256), not ALLOW,
+        a fixture_only receipt outside fixture_mode, bound to another ledger head, no hb_epoch_source naming
+        $.hb_reference.epoch at that head, or an hb_epoch slot that fails the shared supplied-epoch rule (726248a5:
+        ASCII digits, >= 32, the source reference's derived_from_clock exactly false), or that rule is not the pinned one.
+      DENY HB_EPOCH_MISMATCH: the SV_CHANGE's (supplied) hb_epoch fails 726248a5 (absent, non-digit, coerced such as '+33',
+        below 32, an int or bool rather than ASCII text) or is not equal by integer value to the sealed epoch."""
+    if KERNEL_RULE_SHA256 != SUPPLIED_EPOCH_RULE_SHA256:
+        raise _readback_epoch_unobserved("org-kernel/kernel.py::supplied_epoch_failure is not the pinned rule "
+                                         + SUPPLIED_EPOCH_RULE_SHA256[:8], ledger_head)
+    rb = readback
+    if not isinstance(rb, Mapping):
+        raise _readback_epoch_unobserved("no base-state readback receipt", ledger_head)
+    if rb.get("schema") != BASE_STATE_READBACK_SCHEMA:
+        raise _readback_epoch_unobserved("not a " + BASE_STATE_READBACK_SCHEMA + " receipt", ledger_head)
+    if not isinstance(rb.get("result_sha256"), str) or rb["result_sha256"] != sha({k: v for k, v in rb.items() if k != "result_sha256"}):
+        raise _readback_epoch_unobserved("the readback receipt does not verify against its own body (result_sha256)", ledger_head)
+    if rb.get("disposition") != "ALLOW":
+        raise _readback_epoch_unobserved("the readback receipt is %s %s, not ALLOW" % (rb.get("disposition"), rb.get("failure_code")), ledger_head)
+    if rb.get("fixture_only") is True and not fixture_mode:
+        raise _readback_epoch_unobserved("a fixture_only readback counts only in fixture_mode", ledger_head)
+    if not (isinstance(ledger_head, str) and GIT_SHA.match(ledger_head)) or (rb.get("base_ref") or {}).get("ledger_head") != ledger_head:
+        raise _readback_epoch_unobserved("the readback is bound to another ledger head", ledger_head)
+    src = rb.get("hb_epoch_source")
+    if not isinstance(src, Mapping) or src.get("ledger_head") != ledger_head or src.get("field") != HB_EPOCH_SOURCE_FIELD:
+        raise _readback_epoch_unobserved("no hb_epoch_source naming " + HB_EPOCH_SOURCE_FIELD + " at the bound head", ledger_head)
+    bad = kernel.supplied_epoch_failure(rb.get("hb_epoch"), src)
+    if rb.get("hb_epoch") is None or bad is not None:
+        raise _readback_epoch_unobserved("the sealed hb_epoch slot fails the shared supplied-epoch rule: "
+                                         + (bad[0] + ": " + bad[1] if bad else "absent"), ledger_head)
+    want = int(str(rb["hb_epoch"]))
+    # Ruling (orchestrator, both verifiers, 60 cases): a SUPPLIED epoch that fails 726248a5 is DENY HB_EPOCH_MISMATCH;
+    # HB_EPOCH_SOURCE_UNOBSERVED is only the sealed-source side above.
+    supplied_failure = kernel.supplied_epoch_failure(supplied)
+    if supplied_failure is not None or not (isinstance(supplied, str) and re.fullmatch(r"[0-9]+", supplied) and int(supplied) == want):
+        raise _deny(HB_EPOCH_MISMATCH, ADMISSION_HB_EPOCH_INVARIANT,
+                    "the SV_CHANGE's hb_epoch equals the epoch the base-state readback sealed at base_ref.ledger_head",
+                    "verify_admission_hb_epoch", "propose a successor SV_CHANGE at the observed epoch; nothing was admitted",
+                    ledger_head=ledger_head, expected=str(want), hb_epoch=supplied,
+                    **({"supplied_epoch_rule": supplied_failure[0] + ": " + supplied_failure[1]} if supplied_failure else {}))
+    return {"disposition": "ALLOW", "failed_predicate": None, "hb_epoch": str(want), "ledger_head": ledger_head}
 
 
 def _check_receipt_from_evidence(ev: Any) -> Mapping[str, Any] | None:
@@ -813,8 +911,10 @@ def derive_issue_from_check_receipt(ledger_objects: Mapping[str, bytes], ledger_
 
 
 def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
-                     signoff_receipts: Iterable[Mapping[str, Any]] = ()) -> dict[str, Any]:
-    """The observed inputs the admission predicate and the scenario corpus bind to (registry/ledger, not GitHub)."""
+                     signoff_receipts: Iterable[Mapping[str, Any]] = (),
+                     hb_epoch_readback: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """The observed inputs the admission predicate and the scenario corpus bind to (registry/ledger, not GitHub).
+    `hb_epoch_readback` is Lane C's sealed base-state readback receipt (Labs#3266) for the change's base, or None."""
     checks, signoffs = required_for(change["touched_paths"])
     ws = [c["writer_session"] for c in change["content"]]
     writers = sorted({w["session"] for w in ws if w["evidence_class"] != UNKNOWN})
@@ -840,6 +940,8 @@ def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
         "touched_paths": sorted(change["touched_paths"]),
         "touched_surface_kinds": sorted({surface_kind(p) for p in change["touched_paths"]}),
         "admission_order_slot": change.get("admission_order_slot"),
+        "supplied_hb_epoch": change.get("hb_epoch"),
+        "hb_epoch_readback": dict(hb_epoch_readback) if isinstance(hb_epoch_readback, Mapping) else None,
     }
 
 
@@ -901,6 +1003,11 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     denied = sorted(c for c in required if by_id[c].get("disposition") == "DENY")
     if denied:
         raise _deny("REQUIRED_CHECK_DENIED", "CHECK_PASSES", "every required check ALLOW", e, denied=denied)
+    # ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH applies to every admission (the row requires the
+    # supplied-epoch-binder-check on the 'all' surface); evaluated over the sealed readback after the check receipts
+    # and before the sign-offs
+    verify_admission_hb_epoch(obs.get("supplied_hb_epoch"), obs.get("hb_epoch_readback"),
+                              (obs.get("base_ref") or {}).get("ledger_head"), fixture_mode=fixture_mode)
     have = {s.get("role") for s in obs.get("signoffs") or []
             if signoff_resolves(s, obs.get("signoff_receipts") or [], obs.get("head_change_digest"), fixture_mode)}
     absent = sorted(set(obs.get("required_signoff_roles") or []) - have)
@@ -1039,7 +1146,7 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
                             "a superseding SV_CHANGE by the owner that carries the foreign content openly", e)
         if transition_class == "SV_CHANGE_VERIFY":
             validate_change(record)
-            obs = admission_inputs(record, record["base_ref"])
+            obs = admission_inputs(record, record["base_ref"], (), ctx.get("hb_epoch_readback"))
             out = admit({**obs, "required_signoff_roles": []}, fixture_mode=bool(ctx.get("fixture_mode")))
             if out["disposition"] != "ALLOW":
                 raise Refusal(out["disposition"], out["failure_code"], out["failed_predicate"], out["required_evidence_or_repair"],
@@ -1054,7 +1161,7 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
                 new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]
                 return {**out, "predicate_digest": ctx["predicate_digest"], "corpus_head": ctx["corpus_head"],
                         "actor_session": ctx.get("actor_session"), "transition_class": transition_class, "record": new}
-            obs = admission_inputs(record, ctx.get("current_base") or {}, ctx.get("signoff_receipts") or ())
+            obs = admission_inputs(record, ctx.get("current_base") or {}, ctx.get("signoff_receipts") or (), ctx.get("hb_epoch_readback"))
             kw = {"fixture_mode": True} if ctx.get("fixture_mode") else {}
             out = admit(obs, ctx.get("evaluator") or evaluate_admission, covered_kinds=ctx.get("covered_kinds"), **kw)
             new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]

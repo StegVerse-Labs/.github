@@ -14,9 +14,14 @@ Layout. These are the existing receipts, unchanged:
     ``boundary_evidence.operation == "sv_check_receipt"``. Its ``repo_receipt_sha256`` names the repository
     receipt, which the organization ledger keeps beside it at ``source-receipts/<hex>.json``
     (ledger_store.source_key). The organization receipt itself is at ``receipts/<hex>.json``.
-  * Time: ``hb_reference`` comes from kernel.hb_reference(epoch=<supplied int >= 32>), so derived_from_clock
-    is False. This operation never lets the emitter read a clock: an absent or invalid epoch fails closed
-    before anything is written.
+  * Time: ``hb_reference`` comes from kernel.hb_reference(epoch=<supplied int >= 32>) (org-kernel/kernel.py:68-74,
+    the storage location), so derived_from_clock is False. The append epoch and the check receipt's own
+    ``hb_epoch`` must both pass the shared rule org-kernel/kernel.py::supplied_epoch_failure (L236-269, blob
+    ffec5d64, SHARED_RULE_SHA256 726248a5...) and must be equal. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED,
+    different -> DENY HB_EPOCH_MISMATCH, in both cases before anything is written. A clock epoch is never written.
+  * Command: a check whose command data/sv-work-items/required-checks.json (P1, row SV-CHANGE-REQUIRED-CHECKS-001)
+    does not declare is FAIL_CLOSED CHECK_COMMAND_UNDECLARED before any append. The one exception is the verifier's
+    own FAIL_CLOSED CHECK_COMMAND_UNDECLARED receipt, which is P1's rule (sv_work_items.validate_check_receipt).
 
 The append path is intr_destination_ingress._append (repository append, then
 aggregate_transition), under the writer workflow's ORGANIZATION_LEDGER_LOCK
@@ -27,6 +32,7 @@ for it. Stdlib only.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import re
@@ -42,10 +48,18 @@ PROFILE_ID = "org-ledger-writer"
 CHECK_RECEIPT_SCHEMA_ID = "stegverse.sv_check_receipt.v1"
 CHECK_RECEIPT_SCHEMA_PATH = ROOT / "schemas" / "sv-check-receipt.v1.schema.json"
 RESULT_SCHEMA = "stegverse.org-sv-check-receipt-append-result/v1"
+EPOCH_MISMATCH = "HB_EPOCH_MISMATCH"
 READBACK_SCHEMA = "stegverse.org-sv-check-receipt-readback/v1"
 OWNING_GOAL = "StegVerse-org/.github#163 (REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIER_OUTPUTS_APPENDED_BY_ORG_WRITER)"
 RETRY = "resident-runtime/sv_check_receipt_append.py::append_check_receipt"
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py HB_ANCHOR_EPOCH
+REQUIRED_CHECKS_PATH = ROOT / "data" / "sv-work-items" / "required-checks.json"
+CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
+EPOCH_SOURCE_PREDICATE = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
+EPOCH_TIE_PREDICATE = "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH"
+# sha256 of org-kernel/kernel.py::supplied_epoch_failure (L236-269 at blob ffec5d64): from "def supplied_epoch_failure"
+# to the next top-level def, trailing whitespace stripped (the segment rule of P1 sv_work_items.supplied_epoch_rule_sha256).
+SHARED_RULE_SHA256 = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
               "retry_entrypoint", "owning_existing_goal", "next_attempt")
 IDEMPOTENT_ON = ("schema", "check_id", "disposition", "change_digest", "head_sha", "hb_epoch", "verifier_ref")
@@ -66,6 +80,19 @@ def _module(name: str, relative: str):
 
 ingress = _module("intr_destination_ingress_sv_check", "resident-runtime/intr_destination_ingress.py")
 sha = ingress.sha
+kernel = ingress.repository_ledger.kernel
+REQUIRED_CHECKS = json.loads(REQUIRED_CHECKS_PATH.read_text(encoding="utf-8"))
+
+
+def supplied_epoch_rule_sha256(source: str) -> str | None:
+    if "def supplied_epoch_failure" not in source:
+        return None
+    a = source.index("def supplied_epoch_failure")
+    b = source.find("\ndef ", a + 5)
+    return hashlib.sha256(source[a:b if b >= 0 else len(source)].rstrip().encode("utf-8")).hexdigest()
+
+
+KERNEL_RULE_SHA256 = supplied_epoch_rule_sha256((ROOT / "org-kernel" / "kernel.py").read_text(encoding="utf-8"))
 CHECK_RECEIPT_SCHEMA = json.loads(CHECK_RECEIPT_SCHEMA_PATH.read_text(encoding="utf-8"))
 if CHECK_RECEIPT_SCHEMA.get("$id") != CHECK_RECEIPT_SCHEMA_ID:
     raise SystemExit("pinned sv-check-receipt schema id mismatch")
@@ -142,17 +169,84 @@ def check_payload(receipt: Any) -> dict[str, Any] | None:
     return None
 
 
-def _epoch_refusal(hb_epoch: Any) -> dict[str, Any] | None:
-    if type(hb_epoch) is not int or hb_epoch < HB_ANCHOR_EPOCH:
-        return refusal("HB_EPOCH_UNSUPPLIED_OR_INVALID", "HB_EPOCH_IS_SUPPLIED_NOT_CLOCK_DERIVED",
-                       "supply hb_epoch as an integer >= 32 with the dispatch; it is never derived from a clock",
-                       "after the epoch is supplied; nothing was written", hb_epoch=repr(hb_epoch))
+def command_declared(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> bool:
+    """P1's rule (sv_work_items.command_declared @7d940851): argv (a non-empty list), or a verifier built-in
+    {verifier_builtin == check_id, verifier_ref, predicate} with command_paths empty."""
+    c = (row.get("checks") or {}).get(check_id) or {}
+    oc = c.get("offline_command")
+    if isinstance(oc, list) and oc:
+        return True
+    return (isinstance(oc, dict) and all(isinstance(oc.get(k), str) and oc[k].strip()
+                                         for k in ("verifier_builtin", "verifier_ref", "predicate"))
+            and c.get("command_paths") == [] and oc["verifier_builtin"] == check_id)
+
+
+def _command_refusal(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
+    if command_declared(receipt["check_id"]):
+        return None
+    if receipt["disposition"] == "FAIL_CLOSED" and receipt.get("failure_code") == "CHECK_COMMAND_UNDECLARED":
+        return None  # the verifier's own six-field refusal for an undeclared command is the receipt to ledger
+    return refusal("CHECK_COMMAND_UNDECLARED", CHECK_COMMAND_PREDICATE,
+                   "the row data/sv-work-items/required-checks.json#checks." + receipt["check_id"] + " declares no offline "
+                   "command; the only receipt that can be appended for it is the verifier's FAIL_CLOSED CHECK_COMMAND_UNDECLARED",
+                   "after the row declares the command, or the verifier emits CHECK_COMMAND_UNDECLARED; nothing was written",
+                   check_id=receipt["check_id"], receipt_disposition=receipt["disposition"])
+
+
+def _unobserved(detail: str, **extra: Any) -> dict[str, Any]:
+    return refusal("HB_EPOCH_SOURCE_UNOBSERVED", EPOCH_SOURCE_PREDICATE,
+                   "supply the append epoch as an integer and carry the same supplied epoch in the check receipt; both must "
+                   "pass org-kernel/kernel.py::supplied_epoch_failure (SHARED_RULE_SHA256 " + SHARED_RULE_SHA256 + ")",
+                   "after a supplied epoch is observed on both; nothing was written",
+                   detail=detail, shared_rule_sha256=SHARED_RULE_SHA256, epoch_storage="org-kernel/kernel.py:68-74 hb_reference.epoch",
+                   **extra)
+
+
+def _epoch_refusal(receipt: Mapping[str, Any], hb_epoch: Any) -> dict[str, Any] | None:
+    """The append epoch and the receipt's epoch: both supplied (shared rule), the append epoch an int, and equal."""
+    if KERNEL_RULE_SHA256 != SHARED_RULE_SHA256:
+        return _unobserved("org-kernel/kernel.py::supplied_epoch_failure is not the pinned shared rule",
+                           kernel_rule_sha256=KERNEL_RULE_SHA256)
+    if type(hb_epoch) is not int:
+        return _unobserved("the append epoch is not an int (bool, text, float and absent are refused)", hb_epoch=repr(hb_epoch))
+    bad = kernel.supplied_epoch_failure(hb_epoch)
+    if bad is not None:
+        return _unobserved("append epoch: " + bad[0] + ": " + bad[1], hb_epoch=repr(hb_epoch))
+    bad = kernel.supplied_epoch_failure(receipt.get("hb_epoch"))
+    if bad is not None:
+        return _unobserved("check receipt hb_epoch: " + bad[0] + ": " + bad[1], receipt_hb_epoch=repr(receipt.get("hb_epoch")))
+    if int(receipt["hb_epoch"]) != hb_epoch:
+        out = refusal(EPOCH_MISMATCH, EPOCH_TIE_PREDICATE,
+                      "append the receipt at the epoch it carries: hb_epoch input = $.evidence.hb_epoch",
+                      "re-dispatch with the receipt's own epoch; nothing was written",
+                      hb_epoch=hb_epoch, receipt_hb_epoch=receipt["hb_epoch"], shared_rule_sha256=SHARED_RULE_SHA256)
+        out["disposition"] = "DENY"
+        return out
+    return None
+
+
+def _stored_epoch_refusal(row: Any, hb_epoch: int) -> dict[str, Any] | None:
+    """A stored receipt: sealed, and hb_reference.epoch (kernel.py:68-74) an int that passes the shared rule with its
+    reference (derived_from_clock exactly false) and equals the append epoch."""
+    if not _self_verifies(row):
+        return _unobserved("a stored receipt does not verify against its body")
+    hb = row.get("hb_reference")
+    ep = hb.get("epoch") if isinstance(hb, dict) else None
+    if type(ep) is not int or kernel.supplied_epoch_failure(ep, hb) is not None or hb.get("derived_from_clock") is not False:
+        return _unobserved("a stored hb_reference.epoch is not a supplied int epoch", receipt_sha256=row.get("receipt_sha256"))
+    if ep != hb_epoch:
+        out = refusal(EPOCH_MISMATCH, EPOCH_TIE_PREDICATE, "the stored receipt carries another epoch than this append",
+                      "none; the recorded receipt stands", receipt_sha256=row.get("receipt_sha256"), stored_epoch=ep, hb_epoch=hb_epoch)
+        out["disposition"] = "DENY"
+        return out
     return None
 
 
 def append_check_receipt(receipt: Any, *, hb_epoch: Any) -> dict[str, Any]:
     """Append `receipt` as the repository receipt's $.evidence and aggregate it into the organization ledger."""
-    bad = _epoch_refusal(hb_epoch) or check_payload(receipt)
+    if not isinstance(receipt, dict) or receipt.get("schema") != CHECK_RECEIPT_SCHEMA_ID:
+        return check_payload(receipt)
+    bad = _epoch_refusal(receipt, hb_epoch) or check_payload(receipt) or _command_refusal(receipt)
     if bad is not None:
         return bad
     payload_sha256 = sha(receipt)
@@ -187,11 +281,10 @@ def append_check_receipt(receipt: Any, *, hb_epoch: Any) -> dict[str, Any]:
     repository = appended["repository_receipt"]
     organization = appended["organization_receipt"]
     for row in (repository, organization):
-        hb = row.get("hb_reference") or {}
-        if hb.get("derived_from_clock") is not False or type(hb.get("epoch")) is not int or hb["epoch"] < HB_ANCHOR_EPOCH:
-            return refusal("HB_EPOCH_SOURCE_UNOBSERVED", "HB_EPOCH_IS_SUPPLIED_NOT_CLOCK_DERIVED",
-                           "the stored receipt carries no supplied epoch; the writer workflow publishes nothing for this run",
-                           "re-dispatch with a supplied epoch", receipt_sha256=row.get("receipt_sha256"))
+        bad = _stored_epoch_refusal(row, hb_epoch)
+        if bad is not None:
+            bad["consequence_committed"] = "LOCAL_ONLY_NOT_PUBLISHED"  # the writer workflow pushes nothing after a refusal
+            return bad
     return {
         "schema": RESULT_SCHEMA,
         "operation": OPERATION_ID,

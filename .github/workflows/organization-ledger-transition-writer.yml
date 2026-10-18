@@ -212,7 +212,8 @@ jobs:
           export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
           export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
           # Time is supplied with the dispatch. It is not sampled from a clock; the
-          # operation itself refuses anything but an integer epoch >= 32.
+          # operation refuses anything but an integer epoch >= 32 that passes
+          # kernel.py::supplied_epoch_failure and equals the receipt's own hb_epoch.
           python resident-runtime/sv_check_receipt_append.py append \
             --check-receipt "$RUNNER_TEMP/check-receipt.json" \
             --hb-epoch "$HB_EPOCH" \

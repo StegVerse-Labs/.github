@@ -4,10 +4,13 @@ Temporary repositories only. Receipts here are exercise evidence on those
 repositories, not records of the published organization ledger.
 
 Oracle: P1's readers at StegVerse-Labs/.github#3264 head
-fc19b5321bb37c5203fe9244441a268e72eaa67b, vendored test-only under
-tests/vendor/p1_fc19b532/ (sv_work_items.py blob 689d3a76, required-checks.json
-409264f1, lifecycle-transitions.json c66de6e8), with P1's tests/sv_ledger_fixtures.py
-(blob 30a9fe89) byte-identical. org-kernel/kernel.py (ffec5d64) and
+7d940851034697c019684ec073ea676f27d7ac37, vendored test-only under
+tests/vendor/p1_7d940851/ (sv_work_items.py blob 20b03916, required-checks.json
+42405012, lifecycle-transitions.json c66de6e8), with P1's tests/sv_ledger_fixtures.py
+(blob 30a9fe89) byte-identical. data/sv-work-items/required-checks.json is the
+same 42405012 blob (the row the operation's undeclared-command rule reads).
+Shared epoch rule: org-kernel/kernel.py::supplied_epoch_failure L236-269 (blob
+ffec5d64), SHARED_RULE_SHA256 726248a5...; storage location kernel.py:68-74. org-kernel/kernel.py (ffec5d64) and
 scripts/project_worker_claim_into_canonical_task.py (9573c5bb) are the same blobs
 here as at that pin, so the vendored module runs over them through symlinks.
 """
@@ -25,8 +28,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REF = "refs/stegverse/organization-ledger"
 NAMESPACE = "repository-ledger/StegVerse-Labs/.github"
-VENDOR = ROOT / "tests" / "vendor" / "p1_fc19b532"
-P1_PIN = "fc19b5321bb37c5203fe9244441a268e72eaa67b"
+VENDOR = ROOT / "tests" / "vendor" / "p1_7d940851"
+P1_PIN = "7d940851034697c019684ec073ea676f27d7ac37"
 WRITER = ROOT / ".github" / "workflows" / "organization-ledger-transition-writer.yml"
 PR_FACING = ROOT / ".github" / "workflows" / "organization-ledger-transition.yml"
 HEAD = "a" * 40
@@ -63,7 +66,7 @@ def _p1():
     for link in ("org-kernel", "scripts"):
         if not (root / link).exists():
             os.symlink(ROOT / link, root / link)
-    return _module("sv_work_items_p1_fc19b532", root / "resident-runtime" / "sv_work_items.py")
+    return _module("sv_work_items_p1_7d940851", root / "resident-runtime" / "sv_work_items.py")
 
 
 wi = _p1()
@@ -170,7 +173,7 @@ class AppendRoundTrip(GitLedger):
         self.assertEqual(result["disposition"], "ALLOW", result)
         self.assertIs(result["organization_receipt_preserves_repository_receipt"], True)
         self.assertEqual(result["hb_epoch"], 40)
-        replay = svc.append_check_receipt(check_receipt(), hb_epoch=41)
+        replay = svc.append_check_receipt(check_receipt(), hb_epoch=40)
         self.assertIs(replay["transition_replayed"], True)
         self.assertEqual(replay["organization_receipt_sha256"], result["organization_receipt_sha256"])
         self.assertEqual(replay["repository_receipt_sha256"], result["repository_receipt_sha256"])
@@ -258,8 +261,8 @@ class P1ReadersDerive(GitLedger):
 
 
 class Refusals(GitLedger):
-    def _assert_nothing_written(self, result, code):
-        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+    def _assert_nothing_written(self, result, code, disposition="FAIL_CLOSED"):
+        self.assertEqual(result["disposition"], disposition, result)
         self.assertEqual(result["failure_code"], code)
         for field in svc.SIX_FIELDS:
             self.assertTrue(isinstance(result[field], str) and result[field], field)
@@ -274,16 +277,73 @@ class Refusals(GitLedger):
 
     def test_invalid_check_receipt_is_refused_before_any_write(self):
         for bad in (check_receipt(head_sha=None), check_receipt(failure_code=None), check_receipt(check_id="not-declared"),
-                    check_receipt(hb_epoch="31"), dict(check_receipt(), kind="sv_check_receipt"),
+                    dict(check_receipt(), kind="sv_check_receipt"),
                     check_receipt(change_digest="sha256:short")):
             result = svc.append_check_receipt(bad, hb_epoch=40)
             self._assert_nothing_written(result, "LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT")
             self.assertTrue(result["schema_errors"])
 
-    def test_an_absent_or_invalid_epoch_fails_closed_and_no_clock_is_read(self):
-        for bad in (None, True, 31, "40", 40.0):
-            self._assert_nothing_written(svc.append_check_receipt(check_receipt(), hb_epoch=bad),
-                                         "HB_EPOCH_UNSUPPLIED_OR_INVALID")
+    def test_an_absent_or_invalid_append_epoch_is_unobserved_and_no_clock_is_read(self):
+        for bad in (None, True, False, 31, "40", 40.0, -40):
+            result = svc.append_check_receipt(check_receipt(), hb_epoch=bad)
+            self._assert_nothing_written(result, "HB_EPOCH_SOURCE_UNOBSERVED")
+            self.assertEqual(result["shared_rule_sha256"], svc.SHARED_RULE_SHA256)
+
+    def test_an_absent_or_invalid_receipt_epoch_is_unobserved(self):
+        for bad in (None, "", "31", "+40", " 40", "4_0", "40.0", "\uff14\uff10", True):
+            receipt = check_receipt()
+            if bad is None:
+                del receipt["hb_epoch"]
+            else:
+                receipt["hb_epoch"] = bad
+            self._assert_nothing_written(svc.append_check_receipt(receipt, hb_epoch=40), "HB_EPOCH_SOURCE_UNOBSERVED")
+        # an int passes the shared rule's digit test but is not the receipt shape (hb_epoch is ASCII text in sv-check-receipt.v1)
+        self._assert_nothing_written(svc.append_check_receipt(check_receipt(hb_epoch=40), hb_epoch=40),
+                                     "LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT")
+
+    def test_a_receipt_epoch_other_than_the_append_epoch_is_denied(self):
+        for receipt_epoch, append_epoch in (("41", 40), ("40", 41), ("1024", 40)):
+            result = svc.append_check_receipt(check_receipt(hb_epoch=receipt_epoch), hb_epoch=append_epoch)
+            self._assert_nothing_written(result, "HB_EPOCH_MISMATCH", disposition="DENY")
+            self.assertEqual(result["failed_predicate"], "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH")
+
+    def test_an_unpinned_kernel_rule_is_unobserved(self):
+        from unittest import mock
+        with mock.patch.object(svc, "KERNEL_RULE_SHA256", "0" * 64):
+            self._assert_nothing_written(svc.append_check_receipt(check_receipt(), hb_epoch=40), "HB_EPOCH_SOURCE_UNOBSERVED")
+
+    def test_a_clock_derived_or_unsealed_stored_epoch_is_unobserved(self):
+        clock = {"schema": "x", "hb_reference": kernel_ref(40, derived=True)}
+        clock["receipt_sha256"] = svc.sha({k: v for k, v in clock.items()})
+        self.assertEqual(svc._stored_epoch_refusal(clock, 40)["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
+        unsealed = {"schema": "x", "hb_reference": kernel_ref(40), "receipt_sha256": "sha256:" + "0" * 64}
+        self.assertEqual(svc._stored_epoch_refusal(unsealed, 40)["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
+        good = {"schema": "x", "hb_reference": kernel_ref(40)}
+        good["receipt_sha256"] = svc.sha(dict(good))
+        self.assertIsNone(svc._stored_epoch_refusal(good, 40))
+        self.assertEqual(svc._stored_epoch_refusal(good, 41)["failure_code"], "HB_EPOCH_MISMATCH")
+
+    def test_an_undeclared_check_command_is_refused_before_any_write(self):
+        from unittest import mock
+        undeclared = {"offline_command": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED", "command_paths": []}
+        with mock.patch.dict(svc.REQUIRED_CHECKS["checks"], {"workflow-surface-registered": undeclared}):
+            self.assertFalse(svc.command_declared("workflow-surface-registered"))
+            self.assertEqual(svc.command_declared("workflow-surface-registered"),
+                             wi.command_declared("workflow-surface-registered", svc.REQUIRED_CHECKS))
+            for receipt in (check_receipt(), check_receipt(disposition="ALLOW", failure_code=None, failed_predicate=None,
+                                                           required_evidence_or_repair=None, retry_entrypoint=None,
+                                                           owning_existing_goal=None, next_attempt=None)):
+                result = svc.append_check_receipt(receipt, hb_epoch=40)
+                self._assert_nothing_written(result, "CHECK_COMMAND_UNDECLARED")
+                self.assertEqual(result["failed_predicate"], "CHECK_HAS_OFFLINE_COMMAND")
+            # the verifier's own FAIL_CLOSED CHECK_COMMAND_UNDECLARED receipt is the one receipt it may append (P1's rule)
+            own = check_receipt(failure_code="CHECK_COMMAND_UNDECLARED", failed_predicate="CHECK_HAS_OFFLINE_COMMAND")
+            self.assertEqual(svc.append_check_receipt(own, hb_epoch=40)["disposition"], "ALLOW")
+
+    def test_the_command_rule_matches_p1_for_every_declared_check(self):
+        for check_id in svc.REQUIRED_CHECKS["checks"]:
+            self.assertEqual(svc.command_declared(check_id), wi.command_declared(check_id), check_id)
+            self.assertTrue(svc.command_declared(check_id), check_id)
 
     def test_p1_oracle_wrong_operation_or_evidence_and_missing_receipt(self):
         commit = "c" * 40
@@ -301,7 +361,22 @@ class Refusals(GitLedger):
             self.assertEqual(rec["failure_code"], code)
 
 
+def kernel_ref(epoch, derived=False):
+    ref = svc.kernel.hb_reference(epoch=epoch)
+    return dict(ref, derived_from_clock=True) if derived else ref
+
+
 class Declarations(unittest.TestCase):
+    def test_shared_rule_hash_and_pins(self):
+        lines = (ROOT / "org-kernel" / "kernel.py").read_bytes().split(b"\n")
+        import hashlib
+        self.assertEqual(hashlib.sha256(b"\n".join(lines[235:269])).hexdigest(), svc.SHARED_RULE_SHA256)
+        self.assertTrue(lines[235].startswith(b"def supplied_epoch_failure"))
+        self.assertEqual(svc.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
+        self.assertEqual(wi.SUPPLIED_EPOCH_RULE_SHA256, svc.SHARED_RULE_SHA256)
+        self.assertEqual(wi.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
+        self.assertEqual((ROOT / "data/sv-work-items/required-checks.json").read_bytes(), (VENDOR / "required-checks.json").read_bytes())
+
     def test_the_operation_is_declared_and_the_schema_is_pinned(self):
         boundary = json.loads((ROOT / "org-runtime" / "interlock-intr.json").read_text(encoding="utf-8"))
         declared = boundary["organization_ledger_writer_operations"]
