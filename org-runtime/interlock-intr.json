@@ -282,5 +282,24 @@
   "github_token_runtime_authority": "NONE",
   "authority_transfer_assumed": false,
   "authority_effect_resolution": "DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS",
-  "repository_endpoint_rule": "APPLICATION_REPOSITORIES_EXPOSE_PROFILES_ONLY_ORG_DOT_GITHUB_OWNS_ORG_COMMUNICATION"
+  "repository_endpoint_rule": "APPLICATION_REPOSITORIES_EXPOSE_PROFILES_ONLY_ORG_DOT_GITHUB_OWNS_ORG_COMMUNICATION",
+  "organization_ledger_writer_operations": [
+    {
+      "operation": "sv_check_receipt",
+      "operation_module": "resident-runtime/sv_check_receipt_append.py",
+      "entrypoint": "resident-runtime/sv_check_receipt_append.py::append_check_receipt",
+      "append_path": "resident-runtime/intr_destination_ingress.py::_append",
+      "transition_class": "SV_CHECK_RECEIPT_APPEND",
+      "evidence_schema": "stegverse.sv_check_receipt.v1",
+      "evidence_schema_file": "schemas/sv-check-receipt.v1.schema.json",
+      "evidence_location": "repository receipt $.evidence (the complete check receipt, self-identified by $.evidence.schema), retained beside the organization receipt at source-receipts/<hex>.json",
+      "organization_receipt_boundary_operation": "sv_check_receipt",
+      "ledger_ref": "refs/stegverse/organization-ledger",
+      "invoked_by": ".github/workflows/organization-ledger-transition-writer.yml (workflow_dispatch, ORGANIZATION_LEDGER_LOCK)",
+      "hb_reference": "supplied epoch only (integer >= 32); derived_from_clock false or the operation fails closed",
+      "ingress_capability": false,
+      "addressable_from_the_service_registry": false,
+      "authority_effect": "NONE_DECLARATION_ONLY"
+    }
+  ]
 }

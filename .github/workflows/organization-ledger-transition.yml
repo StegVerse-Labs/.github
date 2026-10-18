@@ -24,6 +24,12 @@ on:
       - 'resident-runtime/intr_destination_ingress.py'
       - 'resident-runtime/ledger_store.py'
       - 'resident-runtime/organization_ledger_readback.py'
+      - 'resident-runtime/sv_check_receipt_append.py'
+      - 'schemas/sv-check-receipt.v1.schema.json'
+      - 'org-runtime/interlock-intr.json'
+      - 'tests/sv_ledger_fixtures.py'
+      - 'tests/vendor/p1_fc19b532/**'
+      - 'tests/test_sv_check_receipt_append.py'
       - 'tests/test_intr_destination_capability.py'
       - 'tests/test_organization_ledger_transition_writer.py'
       - 'tests/test_transition_job_runs_on_pull_request.py'
@@ -56,10 +62,12 @@ jobs:
             resident-runtime/organization_ledger_readback.py \
             resident-runtime/intr_destination_ingress.py \
             resident-runtime/ledger_store.py \
+            resident-runtime/sv_check_receipt_append.py \
             .stegverse/transition-ledger/emit.py
           python -m pip install pytest
           python -m pytest -q --tb=short \
             tests/test_organization_ledger_transition_writer.py \
+            tests/test_sv_check_receipt_append.py \
             tests/test_intr_destination_capability.py
 
   transition:
