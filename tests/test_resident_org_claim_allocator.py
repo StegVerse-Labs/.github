@@ -680,7 +680,8 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
         refusals = [json.loads(line.strip()[len("echo '"):-1]) for line in text.splitlines()
                     if line.strip().startswith("echo '{\"disposition\":\"FAIL_CLOSED\"")]
-        self.assertEqual(len(refusals), 4)
+        # 4 publishing-path refusals + 2 pull_request dry-run refusals.
+        self.assertEqual(len(refusals), 6)
         for refusal in refusals:
             for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
                           "owning_existing_goal", "next_attempt"):
