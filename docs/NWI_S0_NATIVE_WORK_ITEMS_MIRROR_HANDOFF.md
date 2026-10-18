@@ -87,3 +87,14 @@ Author session: P1 Ecosystem AI Lane (d8cbc58c). Invariants: WORK_ITEMS_ARE_TASK
   - Serialized form: 342 bytes, starting `{"base_ref":{"ledger_head":"a5bb54d8…","registry_generation":319},"content":[{"blob_digest":null,"deleted":true,"path":"docs/old.md"},…`
   - change_id: `svc:b1f56ebe998a4a0896e8f3f18ef76abe65f6f6bd0c613fa04e50291025300239`
 - **OBSERVED_ARTIFACT** counts as UNKNOWN for VERIFIED. A check with only artifact evidence is FAIL_CLOSED CHECK_SKIPPED_OR_UNOBSERVED. It is never a pass, and it never hides a ledger refusal.
+
+## RF-1..RF-3 (Lane D @1b53fb05)
+- **RF-1:** `owning_goal` (stripped) is now part of `issue_id`, so one predicate under two goals stays two issues and both goals appear in `goal_index`. **Known limit:** records whose `owning_goal` is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED all share that one value, so they can still collide.
+- **RF-2:** `data/sv-work-items/surface-aliases.json` (stegverse.sv-surface-aliases/v1) is pinned by git blob in `sv_migration.SURFACE_ALIASES_BLOB`. `load_aliases` refuses any other blob with FAIL_CLOSED SURFACE_ALIAS_TABLE_UNPINNED.
+  - It holds three kinds of entry: lane aliases from the Lane D §16 legend (CONS, TRCI, TCP, GI, WBF and ORRD, plus `Site data/session-work-claims.d`), bare names (the Class-column rule) and patch entrypoints (matched by diff preimage index or by the patch's own `_comment`/`_note` target).
+  - Each entry is verified against Labs 978b8880, Site 379dba2a or org 40a5d235, and records the object sha.
+  - These are left UNKNOWN: SPPA (no declared path), "that script" (an anaphora), and `patches/D14-*.json-patch.json` (the glob matches two targets).
+  - Resolution order: patch entrypoint, then repository path, then lane alias, then bare name, otherwise UNKNOWN.
+- **RF-3:** box-local paths are surface kind `NON_REPOSITORY_EVIDENCE`. That covers `patches/`, `/workspace/`, `/tmp/`, `/home/`, any absolute path, and any path outside every supplied repository tree (`--repo-paths`).
+  - Such a path is kept for identity but is allowed only in MIGRATED_HISTORICAL records.
+  - A NATIVE issue with this kind is denied (DENY SURFACE_NOT_IN_REPOSITORY_TREE), and so is a box-local path disguised under a repository kind.

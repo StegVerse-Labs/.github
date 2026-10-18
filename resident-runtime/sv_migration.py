@@ -3,8 +3,9 @@
 Nothing here invents a value. A field the history does not carry is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED,
 listed in unknown_fields, and permitted only where the schema's x-migrated-unknown-allowed says so. Every
 other field is copied or derived by a published rule:
-  surface        <- the first repository path in retry_entrypoint, typed by sv_work_items.surface_kind
-                    (UNKNOWN when the entrypoint names no path)
+  surface        <- resolve_surface(retry_entrypoint) through the pinned data/sv-work-items/surface-aliases.json:
+                    patch entrypoints, repository paths, lane aliases, bare names (RF-2); box-local paths and paths
+                    outside every supplied repository tree are NON_REPOSITORY_EVIDENCE (RF-3); otherwise UNKNOWN
   issue_id       <- sv_work_items.issue_identity; reworded restatements merge into one record (restatements[])
   change_id      <- sv_work_items.change_identity over {target_repository, base_ref, content}
   writer_session <- {session, DECLARED} when the history names a session, else {null, UNKNOWN}
@@ -14,18 +15,87 @@ other field is copied or derived by a published rule:
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 import re
 import sys
-from typing import Any, Iterable, Mapping
+from pathlib import Path
+from typing import Any, Collection, Iterable, Mapping
 
 wi = sys.modules["sv_work_items"]
 U = wi.UNKNOWN
-PATH = re.compile(r"(?<![\w/.-])((?:\.?[\w-]+/)+[\w.-]+\.(?:py|json|jsonl|yml|yaml|md|sh))")
+NRE = wi.NON_REPOSITORY_EVIDENCE
+EXT = r"(?:py|json|jsonl|yml|yaml|md|sh|diff|patch|js|cjs|mjs|ts|toml|txt)"
+PATH = re.compile(r"(?<![\w.-])((?:[/~]|\.{1,2}/)?(?:[\w.*-]+/)+[\w.*-]+\." + EXT + r")")
+BARE = re.compile(r"(?<![\w/.-])([\w-][\w.-]*\." + EXT + r")(?![\w/])")
+SURFACE_ALIASES_PATH = wi.ROOT / "data/sv-work-items/surface-aliases.json"
+SURFACE_ALIASES_BLOB = "125083bc84edb97f6132c37e467055410cd7c005"  # git blob sha of surface-aliases.json; the lifter refuses any other table
 
 
-def derive_surface(retry_entrypoint: Any) -> Any:
-    m = PATH.search(retry_entrypoint) if isinstance(retry_entrypoint, str) else None
-    return {"kind": wi.surface_kind(m.group(1)), "path": m.group(1)} if m else U
+def git_blob(raw: bytes) -> str:
+    return hashlib.sha1(b"blob %d\0" % len(raw) + raw).hexdigest()
+
+
+def load_aliases(path: Path = SURFACE_ALIASES_PATH, pin: str | None = None) -> dict[str, Any]:
+    raw = Path(path).read_bytes()
+    if git_blob(raw) != (pin or SURFACE_ALIASES_BLOB):
+        raise wi._fail("SURFACE_ALIAS_TABLE_UNPINNED", "SURFACE_ALIASES_ARE_DECLARED_AND_PINNED",
+                       "use data/sv-work-items/surface-aliases.json at blob " + (pin or SURFACE_ALIASES_BLOB), "load_aliases",
+                       observed_blob=git_blob(raw))
+    table = json.loads(raw)
+    if tuple(table["box_local_prefixes"]) != wi.BOX_LOCAL_PREFIXES:
+        raise wi._fail("SURFACE_ALIAS_TABLE_INCONSISTENT", "SURFACE_ALIASES_ARE_DECLARED_AND_PINNED",
+                       "box_local_prefixes equals sv_work_items.BOX_LOCAL_PREFIXES", "load_aliases")
+    return table
+
+
+def _surface(path: str, repo_paths: Collection[str] | None) -> dict[str, str]:
+    if path == NRE or wi.is_box_local(path) or (repo_paths is not None and path not in repo_paths):
+        return {"kind": NRE, "path": path}
+    return {"kind": wi.surface_kind(path), "path": path}
+
+
+def _resolved(entry: Mapping[str, Any], token: str, repo_paths) -> Any:
+    if entry["path"] == U:
+        return U
+    if entry["path"] == NRE:
+        return {"kind": NRE, "path": token}
+    return {"kind": wi.surface_kind(entry["path"]), "path": entry["path"]}  # verified against a declared tree
+
+
+def resolve_surface(text: Any, repo_paths: Collection[str] | None = None, table: Mapping[str, Any] | None = None) -> Any:
+    """RF-2/RF-3 resolution, in the table's declared order: patch entrypoints, repository paths (box-local or outside every
+    supplied tree -> NON_REPOSITORY_EVIDENCE), lane aliases, bare names; otherwise UNKNOWN. Never guesses."""
+    if not isinstance(text, str) or not text.strip():
+        return U
+    table = table if table is not None else load_aliases()
+    for e in table["patch_entrypoints"]:
+        if e["entrypoint"] in text:
+            return _resolved(e, e["entrypoint"], repo_paths)
+    m = PATH.search(text)
+    if m:
+        return _surface(m.group(1), repo_paths)
+    for e in sorted(table["lane_aliases"], key=lambda e: -len(e["alias"])):
+        if re.search(r"(?<![\w/.-])" + re.escape(e["alias"]) + r"(?![\w/-])", text):
+            return _resolved(e, e["alias"], repo_paths)
+    for m in BARE.finditer(text):
+        for e in table["bare_names"]:
+            if e["name"] == m.group(1):
+                return _resolved(e, e["name"], repo_paths)
+    return U
+
+
+def derive_surface(retry_entrypoint: Any, repo_paths: Collection[str] | None = None) -> Any:
+    return resolve_surface(retry_entrypoint, repo_paths)
+
+
+def recheck_surface(surface: Any, repo_paths: Collection[str] | None = None) -> Any:
+    """A surface a source record already carries is re-resolved by the same rules (RF-3: patches/... is not a surface)."""
+    if not isinstance(surface, Mapping) or not isinstance(surface.get("path"), str):
+        return surface
+    if surface.get("kind") == NRE:
+        return dict(surface)
+    return resolve_surface(surface["path"], repo_paths)
 
 
 def provenance(base: Mapping[str, Any], original: Mapping[str, Any] | None = None) -> dict[str, Any]:
@@ -82,10 +152,12 @@ def _writer(w: Any) -> dict[str, Any]:
     return {"session": None, "evidence_class": U} if (not isinstance(w, str) or U in w) else {"session": w, "evidence_class": "DECLARED"}
 
 
-def lift_v0_issue(rec: Mapping[str, Any]) -> dict[str, Any]:
+def lift_v0_issue(rec: Mapping[str, Any], repo_paths: Collection[str] | None = None) -> dict[str, Any]:
     r = copy.deepcopy(dict(rec))
     r["_old_id"] = r.get("issue_id")
-    r.setdefault("surface", derive_surface((r.get("disposition") or {}).get("retry_entrypoint")))
+    given = r.get("surface")
+    derived = derive_surface((r.get("disposition") or {}).get("retry_entrypoint"), repo_paths)
+    r["surface"] = recheck_surface(given, repo_paths) if isinstance(given, Mapping) else derived
     r.setdefault("migration_provenance", provenance(r.get("observed_base") or {}))
     old = r.pop("_old_id")
     out = finish_issue(r)

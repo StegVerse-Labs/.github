@@ -43,6 +43,13 @@ CHANGE_STATES = ("PROPOSED", "VERIFIED", "ADMITTED", "DENIED", "FAIL_CLOSED", "A
 RESOLUTION_CLASSES = ("A", "B", "C", "D")
 SOURCE_KINDS = ("ORGANIZATION_LEDGER_RECEIPT", "REPOSITORY_LEDGER_RECEIPT", "MIGRATION_EVIDENCE")
 SURFACE_KINDS = ("workflow", "transition", "schema", "ledger_writer", "registry", "doc")
+# RF-3: box-local paths are evidence, never a surface. Classified, kept distinct for identity, not admissible.
+NON_REPOSITORY_EVIDENCE = "NON_REPOSITORY_EVIDENCE"
+BOX_LOCAL_PREFIXES = ("patches/", "/workspace/", "/tmp/", "/home/", "/", "~/", "./", "../")
+
+
+def is_box_local(path: str) -> bool:
+    return any(path.startswith(p) for p in BOX_LOCAL_PREFIXES)
 # Record mode. A MIGRATED_HISTORICAL record carries history that predates the
 # native path; it may hold UNKNOWN only at the pointers listed below (and must
 # list each one in unknown_fields), and it is never admissible. It becomes NATIVE
@@ -125,15 +132,19 @@ def source_receipt_ref(src: Mapping[str, Any]) -> str:
 
 def issue_identity_inputs(rec: Mapping[str, Any]) -> dict[str, Any]:
     inv = rec.get("violated_invariant") or {}
+    goal = rec.get("owning_goal")
     return {"violated_invariant": {k: inv.get(k) for k in ("repository", "file", "rule_id")},
             "failed_predicate": (rec.get("disposition") or {}).get("failed_predicate"),
+            "owning_goal": goal.strip() if isinstance(goal, str) else goal,
             "surface": rec.get("surface"),
             "source_receipt_ref": source_receipt_ref(rec.get("source_receipt") or {})}
 
 
 def issue_identity(rec: Mapping[str, Any]) -> str:
-    """issue_id = "svi:" + sha256(canon({violated_invariant{repository,file,rule_id}, failed_predicate, surface,
-    source_receipt_ref})). No free text: a reworded restatement of the same failure is the same issue."""
+    """issue_id = "svi:" + sha256(canon({violated_invariant{repository,file,rule_id}, failed_predicate, owning_goal,
+    surface, source_receipt_ref})). No free text: a reworded restatement of the same failure is the same issue.
+    RF-1: owning_goal is identity, so one predicate under two goals stays two issues. Known limit: records whose
+    owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED share that value and can still collide."""
     return "svi:" + sha(issue_identity_inputs(rec))[7:]
 
 
@@ -228,8 +239,16 @@ def validate_issue(rec: Any) -> dict[str, Any]:
     if rec.get("resolution_class") not in RESOLUTION_CLASSES + (UNKNOWN,):
         raise _deny("SV_ISSUE_CLASS_INVALID", "ISSUE_RESOLUTION_CLASS_IS_A_B_C_OR_D", "classify the issue A, B, C or D", e)
     sf = rec.get("surface")
-    if sf != UNKNOWN and not (isinstance(sf, Mapping) and set(sf) == {"kind", "path"} and sf.get("kind") in SURFACE_KINDS and _str(sf.get("path"))):
-        raise _deny("SV_ISSUE_SURFACE_INVALID", "ISSUE_NAMES_SURFACE", "surface{kind in " + "/".join(SURFACE_KINDS) + ", path}", e)
+    kinds = SURFACE_KINDS + (NON_REPOSITORY_EVIDENCE,)
+    if sf != UNKNOWN and not (isinstance(sf, Mapping) and set(sf) == {"kind", "path"} and sf.get("kind") in kinds and _str(sf.get("path"))):
+        raise _deny("SV_ISSUE_SURFACE_INVALID", "ISSUE_NAMES_SURFACE", "surface{kind in " + "/".join(kinds) + ", path}", e)
+    if isinstance(sf, Mapping) and sf["kind"] != NON_REPOSITORY_EVIDENCE and is_box_local(sf["path"]):
+        raise _deny("SURFACE_NOT_IN_REPOSITORY_TREE", "SURFACE_IS_A_REPOSITORY_PATH",
+                    "a box-local path is NON_REPOSITORY_EVIDENCE, not a surface; name the repository path it concerns", e, path=sf["path"])
+    if isinstance(sf, Mapping) and sf["kind"] == NON_REPOSITORY_EVIDENCE and rec.get("record_mode") == "NATIVE":
+        raise _deny("SURFACE_NOT_IN_REPOSITORY_TREE", "SURFACE_IS_A_REPOSITORY_PATH",
+                    "a NATIVE issue names a repository path as its surface; non-repository evidence is not admissible as a surface", e,
+                    path=sf["path"])
     if not _str(rec.get("owning_goal")):
         raise _deny("SV_ISSUE_GOAL_ABSENT", "ISSUE_NAMES_OWNING_GOAL", "name the owning goal", e)
     for r in rec.get("restatements") or []:

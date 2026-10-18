@@ -40,10 +40,10 @@ def _check(rec, schema, validator):
     return {"schema_errors": [list(e) for e in errs], "refusal": refusal, "valid": not errs and refusal is None}
 
 
-def evaluate(fixtures: Path) -> dict:
+def evaluate(fixtures: Path, repo_paths: set | None = None) -> dict:
     v0_issues = [json.loads(l) for l in (fixtures / "sv-issues.jsonl").read_text().splitlines() if l.strip()]
     v0_changes = [json.loads(l) for l in (fixtures / "sv-changes.jsonl").read_text().splitlines() if l.strip()]
-    lifted = [mg.lift_v0_issue(r) for r in v0_issues]
+    lifted = [mg.lift_v0_issue(r, repo_paths) for r in v0_issues]
     issues, remap = mg.merge_issues(lifted)
     changes = [mg.lift_v0_change(r, remap) for r in v0_changes]
     rid = {}
@@ -58,7 +58,12 @@ def evaluate(fixtures: Path) -> dict:
         out_changes[key] = _check(r, SCHEMAS["sv-change.v1"], wi.validate_change)
     items = wi.work_items_record(issues + changes)
     items_errs = ss.validate(items, SCHEMAS["canonical-task-work-items.v1"])
-    report = {"lifted": {"sv_issue_in": len(v0_issues), "sv_issue_out": len(issues), "merged_restatements": len(v0_issues) - len(issues),
+    surfaces = [r["surface"] for r in issues]
+    report = {"surface_aliases_blob": mg.SURFACE_ALIASES_BLOB, "repo_paths_supplied": None if repo_paths is None else len(repo_paths),
+              "surfaces": {"repository": sum(isinstance(x, dict) and x["kind"] != wi.NON_REPOSITORY_EVIDENCE for x in surfaces),
+                           "non_repository_evidence": sum(isinstance(x, dict) and x["kind"] == wi.NON_REPOSITORY_EVIDENCE for x in surfaces),
+                           "unknown": sum(x == wi.UNKNOWN for x in surfaces)},
+              "lifted": {"sv_issue_in": len(v0_issues), "sv_issue_out": len(issues), "merged_restatements": len(v0_issues) - len(issues),
                          "sv_change": len(changes), "work_items": len(items["work_items"]), "goal_index_keys": sorted(items["goal_index"])},
               "issues_valid": sum(v["valid"] for v in out_issues.values()), "changes_valid": sum(v["valid"] for v in out_changes.values()),
               "work_items_schema_errors": [list(e) for e in items_errs],
@@ -84,8 +89,16 @@ def evaluate(fixtures: Path) -> dict:
 
 
 def main(argv=None) -> int:
-    a = argparse.ArgumentParser(); a.add_argument("--fixtures", required=True, type=Path); args = a.parse_args(argv)
-    print(json.dumps(evaluate(args.fixtures), indent=1, sort_keys=True))
+    a = argparse.ArgumentParser(); a.add_argument("--fixtures", required=True, type=Path)
+    a.add_argument("--repo-paths", action="append", type=Path, default=[],
+                   help="file listing one repository path per line (e.g. git ls-tree -r --name-only <commit>); repeatable, unioned")
+    args = a.parse_args(argv)
+    paths = None
+    if args.repo_paths:
+        paths = set()
+        for f in args.repo_paths:
+            paths |= {l for l in f.read_text().splitlines() if l}
+    print(json.dumps(evaluate(args.fixtures, paths), indent=1, sort_keys=True))
     return 0
 
 

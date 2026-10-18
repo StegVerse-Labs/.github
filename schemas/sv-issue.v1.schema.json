@@ -91,6 +91,13 @@
                 ]
               },
               "surface": {
+                "properties": {
+                  "kind": {
+                    "not": {
+                      "const": "NON_REPOSITORY_EVIDENCE"
+                    }
+                  }
+                },
                 "type": "object"
               },
               "violated_invariant": {
@@ -249,7 +256,7 @@
       "description": "content-addressed; a reworded restatement of the same failure has the same id",
       "pattern": "^svi:[0-9a-f]{64}$",
       "type": "string",
-      "x-derivation": "svi: + sha256(canonical JSON {violated_invariant:{repository,file,rule_id}, failed_predicate: disposition.failed_predicate, surface, source_receipt_ref}); source_receipt_ref = 'migration:<evidence_path>@<evidence_sha256>' or '<ledger_ref>@<receipt_sha256>'. Canonical JSON = sorted keys, separators (',',':'), UTF-8. Helper: sv_work_items.issue_identity. No free text (SF-7)."
+      "x-derivation": "svi: + sha256(canonical JSON {violated_invariant:{repository,file,rule_id}, failed_predicate: disposition.failed_predicate, owning_goal (stripped), surface, source_receipt_ref}); source_receipt_ref = 'migration:<evidence_path>@<evidence_sha256>' or '<ledger_ref>@<receipt_sha256>'. Canonical JSON = sorted keys, separators (',',':'), UTF-8. Helper: sv_work_items.issue_identity. No free text (SF-7). RF-1: owning_goal is identity; known limit: UNKNOWN goals share one value and can still collide."
     },
     "issue_sha256": {
       "pattern": "^sha256:[0-9a-f]{64}$",
@@ -522,7 +529,8 @@
                 "schema",
                 "ledger_writer",
                 "registry",
-                "doc"
+                "doc",
+                "NON_REPOSITORY_EVIDENCE"
               ]
             },
             "path": {
@@ -540,7 +548,7 @@
           "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
         }
       ],
-      "description": "the surface the failed predicate was observed on (sv_work_items.surface_kind for kind); part of issue_id"
+      "description": "the repository surface the failed predicate was observed on (kind from sv_work_items.surface_kind); part of issue_id. RF-3: a box-local path (patches/, /workspace/, /tmp/, any absolute path, or a path outside every resolved repository tree) is kind NON_REPOSITORY_EVIDENCE: kept for identity, permitted only in MIGRATED_HISTORICAL, never admissible as a surface. RF-2: migration resolves lane aliases, bare names and patch entrypoints only through data/sv-work-items/surface-aliases.json (pinned by blob)."
     },
     "unknown_fields": {
       "description": "JSON pointers holding UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; exactly those, no others",

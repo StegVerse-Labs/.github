@@ -189,7 +189,7 @@ class SchemaFixTests(unittest.TestCase):
         d = a["disposition"]
         reworded = migrated_issue(disposition={**d, "required_evidence_or_repair": "reworded: " + d["required_evidence_or_repair"],
                                                "next_attempt": "later, differently worded", "owning_existing_goal": U,
-                                               "failure_code": d["failure_code"] + "_RESTATED"}, owning_goal=U)
+                                               "failure_code": d["failure_code"] + "_RESTATED"})
         self.assertEqual(reworded["issue_id"], a["issue_id"])
         merged, _ = mg.merge_issues([a, reworded])
         self.assertEqual(len(merged), 1)
@@ -200,7 +200,7 @@ class SchemaFixTests(unittest.TestCase):
                      {"violated_invariant": {**a["violated_invariant"], "rule_id": "OTHER_RULE"}},
                      {"source_receipt": {**a["source_receipt"], "evidence_sha256": "sha256:" + "9" * 64}}):
             self.assertNotEqual(migrated_issue(**over)["issue_id"], a["issue_id"], over)
-        self.assertEqual(set(wi.issue_identity_inputs(a)), {"violated_invariant", "failed_predicate", "surface", "source_receipt_ref"})
+        self.assertEqual(set(wi.issue_identity_inputs(a)), {"violated_invariant", "failed_predicate", "owning_goal", "surface", "source_receipt_ref"})
 
     def test_sf8_owning_goal_unknown_only_migrated(self):
         m = migrated_issue(owning_goal=U)
@@ -346,6 +346,98 @@ class ChangeIdCanonicalTests(unittest.TestCase):
             [{**ch["validation_receipts"][0], "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/evidence.md"}]))
         self.assertEqual(wi.admit({**wi.admission_inputs(mixed, mixed["base_ref"]), "required_signoff_roles": []})["failure_code"],
                          "CHECK_NOT_PASSING")
+
+
+class RemainingFeedbackTests(unittest.TestCase):
+    """Lane D RF-1..RF-3 (laned/s0-lane-d-migration-fixtures @1b53fb05)."""
+
+    def test_rf1_same_predicate_under_two_goals_stays_two_issues(self):
+        a = migrated_issue(owning_goal="STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001")
+        b = migrated_issue(owning_goal="STEGOPS-CAMPAIGN-CRM-PROJECTION-001")
+        self.assertNotEqual(a["issue_id"], b["issue_id"])
+        merged, _ = mg.merge_issues([a, b])
+        self.assertEqual(len(merged), 2)
+        idx = wi.work_items_record(merged)["goal_index"]
+        self.assertEqual(set(idx), {"STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001", "STEGOPS-CAMPAIGN-CRM-PROJECTION-001"})
+        self.assertEqual(migrated_issue(owning_goal=" STEGOPS-CAMPAIGN-CRM-PROJECTION-001 ")["issue_id"], b["issue_id"])  # stripped
+
+    def test_rf1_known_limit_unknown_goals_still_collide(self):
+        x = migrated_issue(owning_goal=U)
+        y = migrated_issue(owning_goal=U, disposition={**base.ISSUES[0]["disposition"], "next_attempt": "another goal's row"})
+        self.assertEqual(x["issue_id"], y["issue_id"])
+        self.assertIn("known limit", ISSUE_SCHEMA["properties"]["issue_id"]["x-derivation"])
+
+    def test_rf2_alias_table_is_pinned_by_blob(self):
+        raw = mg.SURFACE_ALIASES_PATH.read_bytes()
+        self.assertEqual(mg.git_blob(raw), mg.SURFACE_ALIASES_BLOB)
+        table = mg.load_aliases()
+        self.assertEqual(table["schema"], "stegverse.sv-surface-aliases/v1")
+        import tempfile, pathlib
+        with tempfile.TemporaryDirectory() as d:
+            alt = pathlib.Path(d) / "aliases.json"
+            alt.write_bytes(raw.replace(b'"CONS"', b'"CONZ"'))
+            with self.assertRaises(wi.Refusal) as cm:
+                mg.load_aliases(alt)
+            self.assertEqual(cm.exception.record["failure_code"], "SURFACE_ALIAS_TABLE_UNPINNED")
+
+    def test_rf2_every_resolved_alias_names_a_verified_object(self):
+        table = mg.load_aliases()
+        repos = {r["repository"]: r["commit"] for r in table["repositories"]}
+        for group in ("lane_aliases", "bare_names", "patch_entrypoints"):
+            for e in table[group]:
+                if e["path"] in (U, wi.NON_REPOSITORY_EVIDENCE):
+                    self.assertTrue(e.get("reason"), e)
+                    self.assertNotIn("verified", e)
+                    continue
+                v = e["verified"]
+                self.assertEqual(repos[v["repository"]], v["commit"], e)
+                self.assertRegex(v["object_sha"], r"^[0-9a-f]{40}$")
+                self.assertFalse(wi.is_box_local(e["path"]), e)
+
+    def test_rf2_resolution(self):
+        r = mg.resolve_surface
+        self.assertEqual(r("CONS::consume"), {"kind": "transition", "path": "scripts/consume_org_claim_allocator_request.py"})
+        self.assertEqual(r("re CONS"), {"kind": "transition", "path": "scripts/consume_org_claim_allocator_request.py"})
+        self.assertEqual(r("CONSOLE output"), U)  # whole token only
+        self.assertEqual(r("Site data/session-work-claims.d"), {"kind": "doc", "path": "data/session-work-claims.d"})
+        self.assertEqual(r("projection in apply_admitted_canonical_work_projection.py"),
+                         {"kind": "transition", "path": "scripts/apply_admitted_canonical_work_projection.py"})
+        self.assertEqual(r("patches/D4-canonical-task-record-schema.diff"), {"kind": "schema", "path": "schemas/canonical-task-record.schema.json"})
+        self.assertEqual(r("patches/D13-r6-rebased-on-site-b6ebfee0.diff"),
+                         {"kind": "workflow", "path": ".github/workflows/workspace-kv-binding-validation.yml"})
+        self.assertEqual(r("patches/STEGOPS-CRM-registry-row.json-patch.json"), {"kind": "registry", "path": "data/canonical-task-registry.json"})
+        self.assertEqual(r("patches/D14-*.json-patch.json"), U)  # ambiguous glob, declared UNKNOWN
+        self.assertEqual(r("SPPA (18.3) in retro-classification mode"), U)  # alias without a declared path
+        self.assertEqual(r("that script"), U)
+        self.assertEqual(r("Labs#3211 new head"), U)
+
+    def test_rf3_box_local_paths_are_non_repository_evidence(self):
+        r, N = mg.resolve_surface, wi.NON_REPOSITORY_EVIDENCE
+        for text, path in (("patches/H46-fence-floor-repair.diff", "patches/H46-fence-floor-repair.diff"),
+                           ("/workspace/lane-d/wu2-wu3-plan.md", "/workspace/lane-d/wu2-wu3-plan.md"),
+                           ("/tmp/b189/repair/org-kernel/kernel.py", "/tmp/b189/repair/org-kernel/kernel.py"),
+                           ("wu1-wu5-readiness.md WU1", "wu1-wu5-readiness.md"), ("wu2-wu3-plan.md", "wu2-wu3-plan.md")):
+            self.assertEqual(r(text), {"kind": N, "path": path}, text)
+        tree = {"scripts/real.py"}
+        self.assertEqual(r("scripts/real.py", repo_paths=tree), {"kind": "transition", "path": "scripts/real.py"})
+        self.assertEqual(r("scripts/not_in_tree.py", repo_paths=tree), {"kind": N, "path": "scripts/not_in_tree.py"})
+        self.assertEqual(mg.recheck_surface({"kind": "doc", "path": "patches/WU4-restated-registry-entry.json"}),
+                         {"kind": "registry", "path": "data/canonical-task-records/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json"})
+        self.assertEqual(mg.recheck_surface({"kind": "doc", "path": "patches/local-only.json"}), {"kind": N, "path": "patches/local-only.json"})
+
+    def test_rf3_non_repository_surface_is_never_admissible(self):
+        N = wi.NON_REPOSITORY_EVIDENCE
+        m = migrated_issue(surface={"kind": N, "path": "patches/x.diff"})
+        self.assertEqual(both(m, ISSUE_SCHEMA, wi.validate_issue), ([], "ALLOW"))  # classified history only
+        errs, c = both(base.nativize_issue(base.ISSUES[0], surface={"kind": N, "path": "patches/x.diff"}), ISSUE_SCHEMA, wi.validate_issue)
+        self.assertEqual(c, "SURFACE_NOT_IN_REPOSITORY_TREE")
+        self.assertTrue(errs)
+        disguised = migrated_issue(surface={"kind": "doc", "path": "patches/x.diff"})
+        self.assertEqual(code(wi.validate_issue, disguised), "SURFACE_NOT_IN_REPOSITORY_TREE")
+        for p in ("/workspace/a.py", "/tmp/a.py", "/abs/a.py"):
+            self.assertEqual(code(wi.validate_issue, migrated_issue(surface={"kind": "transition", "path": p})), "SURFACE_NOT_IN_REPOSITORY_TREE", p)
+        self.assertNotEqual(migrated_issue(surface={"kind": N, "path": "wu1-wu5-readiness.md"})["issue_id"],
+                            migrated_issue(surface={"kind": N, "path": "wu2-wu3-plan.md"})["issue_id"])
 
 
 if __name__ == "__main__":

@@ -1,0 +1,228 @@
+{
+  "bare_names": [
+    {
+      "declared_in": "Lane D §16 Class column (table-column rule: the repository path the row's Class column names)",
+      "name": "apply_admitted_canonical_work_projection.py",
+      "path": "scripts/apply_admitted_canonical_work_projection.py",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "a6dfeec05c70ddb534efe61be61f8a875d166892",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "name": "wu1-wu5-readiness.md",
+      "path": "NON_REPOSITORY_EVIDENCE",
+      "reason": "absent from the Labs and Site trees above; present only box-local (/workspace/lane-d/wu1-wu5-readiness.md sha256:b15c9d868119a7e3...)"
+    },
+    {
+      "name": "wu2-wu3-plan.md",
+      "path": "NON_REPOSITORY_EVIDENCE",
+      "reason": "absent from the Labs and Site trees above; present only box-local (/workspace/lane-d/wu2-wu3-plan.md sha256:ec9d8050868656e7...)"
+    }
+  ],
+  "box_local_prefixes": [
+    "patches/",
+    "/workspace/",
+    "/tmp/",
+    "/home/",
+    "/",
+    "~/",
+    "./",
+    "../"
+  ],
+  "declared_by_session": "P1 Ecosystem AI Lane (d8cbc58c)",
+  "lane_aliases": [
+    {
+      "alias": "CONS",
+      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "path": "scripts/consume_org_claim_allocator_request.py",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "8c225efdb6c7ff4c87b7e0d88e798968a6773123",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "alias": "TRCI",
+      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "path": "TASK_REGISTRY_CANONICAL_INVARIANTS.md",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "1f9669a991c5a05bf6701583ca6f3b551e713770",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "alias": "TCP",
+      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "path": "data/task-coordination-policy.json",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "9e3d696f16ac37d6b8048ea3c911f944bd2a0eed",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "alias": "GI",
+      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "path": "data/task-registry-global-invariants.json",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "208177e09d7b515d19e073dd962832742e6da6a5",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "alias": "WBF",
+      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "path": "docs/WORKER_BLOCKER_FALLBACK_INVARIANT.md",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "553a079e9ca7c9727d38747fde629b6d073d8355",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "alias": "ORRD",
+      "declared_in": "Lane D lane file §16 legend (LANE_D_S14_S26.md L555-560, sha256:c36f36ed97ff05e3b6a3d25ddbe56a16ddc8a8c3b7b6c6033d088678cff5a3f5)",
+      "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
+      "verified": {
+        "commit": "40a5d235551077185d9f7849a2c866ff5acf2796",
+        "object": "blob",
+        "object_sha": "cd56b2d066ee570bdfdddc8371e92a07f201c8fc",
+        "repository": "StegVerse-org/.github"
+      }
+    },
+    {
+      "alias": "Site data/session-work-claims.d",
+      "declared_in": "Lane D lane file §14 table (repository-qualified directory)",
+      "path": "data/session-work-claims.d",
+      "verified": {
+        "commit": "379dba2aab7ac9c0e3c96b5c045704b99419d876",
+        "object": "tree",
+        "object_sha": "89832fc943d0beefba367130dbdf38899ba9ac81",
+        "repository": "StegVerse-Labs/Site"
+      }
+    },
+    {
+      "alias": "SPPA",
+      "declared_in": "Lane D lane file §18.3 names SPPA as a transition, not a path",
+      "path": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "reason": "no declared path; the mapping to scripts/authorize_site_production_promotion.py would be inferred"
+    },
+    {
+      "alias": "that script",
+      "declared_in": "Lane D lane file §16 row L586",
+      "path": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "reason": "anaphora; the row's Class column names no path"
+    }
+  ],
+  "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+  "patch_entrypoints": [
+    {
+      "entrypoint": "patches/D4-canonical-task-record-schema.diff",
+      "evidence": "index 3812da6 == tree blob",
+      "path": "schemas/canonical-task-record.schema.json",
+      "rule": "first modified (non-/dev/null) diff target whose preimage index equals the tree blob",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "3812da6d67c5ae8c46ef4332a200b34084c5f893",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "entrypoint": "patches/D13-r6-rebased-on-site-b6ebfee0.diff",
+      "evidence": "index 4d3c6116 == tree blob (also at b6ebfee0)",
+      "path": ".github/workflows/workspace-kv-binding-validation.yml",
+      "rule": "first modified diff target whose preimage index equals the tree blob",
+      "verified": {
+        "commit": "379dba2aab7ac9c0e3c96b5c045704b99419d876",
+        "object": "blob",
+        "object_sha": "4d3c6116ef056199d71392793f9ca50ac8d18e9c",
+        "repository": "StegVerse-Labs/Site"
+      }
+    },
+    {
+      "entrypoint": "patches/WU5-storage-persist-tests.diff",
+      "evidence": "index 4d3c6116 == tree blob",
+      "path": ".github/workflows/workspace-kv-binding-validation.yml",
+      "rule": "first modified diff target whose preimage index equals the tree blob",
+      "verified": {
+        "commit": "379dba2aab7ac9c0e3c96b5c045704b99419d876",
+        "object": "blob",
+        "object_sha": "4d3c6116ef056199d71392793f9ca50ac8d18e9c",
+        "repository": "StegVerse-Labs/Site"
+      }
+    },
+    {
+      "entrypoint": "patches/WU4-restated-registry-entry.json",
+      "evidence": "_comment Base: StegVerse-Labs/.github @3da74c74 <path>",
+      "path": "data/canonical-task-records/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json",
+      "rule": "target named in the patch's _comment, present in the tree",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "106a2c21b5127eeb492da51886fc3a8c8ebfe885",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "entrypoint": "patches/STEGOPS-CRM-registry-row.json-patch.json",
+      "evidence": "_note RFC 6902 for data/canonical-task-registry.json at Labs main bfcf0318",
+      "path": "data/canonical-task-registry.json",
+      "rule": "target named in the patch's _note, present in the tree",
+      "verified": {
+        "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+        "object": "blob",
+        "object_sha": "8d3ff1902412ab85c0fafcdb4c2f11cc0b0afbef",
+        "repository": "StegVerse-Labs/.github",
+        "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+      }
+    },
+    {
+      "entrypoint": "patches/D14-*.json-patch.json",
+      "path": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "reason": "glob matches two patches with different targets (record file and registry row); not resolved to one surface"
+    }
+  ],
+  "purpose": "Declared resolution of lane aliases, bare filenames and patch entrypoints to repository surfaces for MIGRATED_HISTORICAL records (sv_migration.resolve_surface). Only aliases verified against a real repository tree are resolved; anything else is UNKNOWN or NON_REPOSITORY_EVIDENCE. The lifter refuses this file unless its git blob equals sv_migration.SURFACE_ALIASES_BLOB.",
+  "repositories": [
+    {
+      "commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+      "repository": "StegVerse-Labs/.github",
+      "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+    },
+    {
+      "commit": "379dba2aab7ac9c0e3c96b5c045704b99419d876",
+      "repository": "StegVerse-Labs/Site"
+    },
+    {
+      "commit": "40a5d235551077185d9f7849a2c866ff5acf2796",
+      "repository": "StegVerse-org/.github"
+    }
+  ],
+  "resolution_order": [
+    "lane_aliases (exact token)",
+    "patch_entrypoints (exact entrypoint)",
+    "repository path in text (box-local -> NON_REPOSITORY_EVIDENCE; outside every supplied tree -> NON_REPOSITORY_EVIDENCE)",
+    "bare_names (exact token)",
+    "otherwise UNKNOWN"
+  ],
+  "schema": "stegverse.sv-surface-aliases/v1"
+}
