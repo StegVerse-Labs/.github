@@ -567,6 +567,83 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         self.assertFalse(consumer.event_ephemeral_materialization(self.env.source, other, None))
         self.assert_refused_before_anything(repo_ledger_root=other)
 
+    # H46 fence-floor repair (Lane D, STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 D1).
+    def fresh_runtime(self, name: str, *, source_claims: list | None = None):
+        """A runtime with no preserved claim registry, as the hosted workflow materializes it."""
+        env = custody_tests.Env(self.base / name, generation=None, seed=False,
+                                org_ledger=self.base / "unused-org-root")
+        if source_claims is not None:
+            path = env.source / "control/claims-active.json"
+            state = json.loads(path.read_text(encoding="utf-8"))
+            state["claims"] = source_claims
+            path.write_text(json.dumps(state), encoding="utf-8")
+        return env
+
+    def consume_hosted(self, env):
+        return consumer.consume(env.source, env.runtime, repo_ledger_root=locator(self.node), runner=self.runner,
+                                env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), **HOSTED})
+
+    def test_committed_claims_registry_is_behind_the_issued_fences(self):
+        committed = json.loads((ROOT / "control/claims-active.json").read_text(encoding="utf-8"))
+        floor = consumer.provenance_floor(ROOT)
+        self.assertLess(committed["generation"], floor["fence"])
+        self.assertEqual(committed.get("claims") or [], [])
+
+    def test_event_ephemeral_rematerializes_a_stale_empty_source_registry_from_the_chain(self):
+        env = self.fresh_runtime("fresh")
+        source_bytes = (env.source / "control/claims-active.json").read_bytes()
+        result = self.consume_hosted(env)
+        self.assertEqual(result["transition_class"], consumer.GRANTED, result)
+        self.assertEqual(result["fencing_token"], 8)
+        self.assertEqual(result["organization_readback"], "VERIFIED")
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        keys = custody["emitter"].ledger_store
+        receipt = custody["repository_store"].get(keys.receipt_key(result["repository_receipt_sha256"]))
+        evidence = receipt["evidence"]
+        basis = evidence["runtime_claims_generation_rematerialized"]
+        self.assertEqual(basis["basis"], consumer.FENCE_FLOOR_REMATERIALIZATION_BASIS)
+        self.assertEqual((basis["source_generation"], basis["rematerialized_generation"]), (2, 7))
+        self.assertEqual((basis["chain_max_fence"], basis["provenance_floor_fence"]), (0, 7))
+        self.assertEqual(evidence["runtime_claims_generation_observed"], 7)
+        # The committed source registry is never edited; only the ephemeral runtime projection moved.
+        self.assertEqual((env.source / "control/claims-active.json").read_bytes(), source_bytes)
+        # A later event derives the generation from the chain again: no fence is reissued.
+        again = self.consume_hosted(self.fresh_runtime("fresh-again"))
+        self.assertEqual(again["fencing_token"], 8)
+        self.assertEqual(again["organization_receipt_sha256"], result["organization_receipt_sha256"])
+
+    def test_source_registry_holding_claims_is_not_rematerialized(self):
+        held = {"task_id": "TASK-2026-0007", "lease": {"fencing_token": 2}}
+        env = self.fresh_runtime("held", source_claims=[held])
+        result = self.consume_hosted(env)
+        self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
+        self.assertNotIn("generation_basis", env.claims())
+        self.assertEqual(env.claims()["generation"], 2)
+
+    def test_every_event_ephemeral_non_allow_carries_the_six_fields(self):
+        result = self.consume_hosted(self.fresh_runtime("held6", source_claims=[{"task_id": "TASK-2026-0007"}]))
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result.get(field), field)
+        self.assertEqual(result["retry_entrypoint"], consumer.EVENT_EPHEMERAL_ENTRYPOINT)
+
+    def test_preserved_runtime_registry_behind_the_fences_still_fails_closed(self):
+        env = custody_tests.Env(self.base / "preserved", generation=2, seed=False,
+                                org_ledger=self.base / "unused-org-root")
+        result = self.consume_hosted(env)
+        self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
+        self.assertEqual(result["failed_predicate"], "FENCE_GENERATION_BEHIND_ISSUED_FENCES")
+
+    def test_workflow_refusals_carry_the_six_fields(self):
+        text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
+        refusals = [json.loads(line.strip()[len("echo '"):-1]) for line in text.splitlines()
+                    if line.strip().startswith("echo '{\"disposition\":\"FAIL_CLOSED\"")]
+        self.assertEqual(len(refusals), 4)
+        for refusal in refusals:
+            for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                          "owning_existing_goal", "next_attempt"):
+                self.assertIn(field, refusal)
+
     def test_event_ephemeral_requires_the_repository_chain_on_the_declared_store(self):
         elsewhere = bare_repository(self.base / "elsewhere.git")
         with self.assertRaises(consumer.OrganizationLedgerNotAdmitted) as raised:

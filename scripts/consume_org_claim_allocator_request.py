@@ -438,6 +438,7 @@ def ledger_custody(source: Path, repo_ledger_root: Any, org_ledger_root: Path | 
         "organization_root": organization_root,
         "organization_store": organization_store,
         "shared_ref": shared_ref,
+        "event_ephemeral": bool(event_ephemeral),
     }
 
 
@@ -605,6 +606,43 @@ def provenance_floor(source: Path) -> dict[str, Any]:
         "allocator_generation": provenance.get("allocator_generation"),
         "provenance_record_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
     }
+
+
+FENCE_FLOOR_REMATERIALIZATION_BASIS = "ORGANIZATION_CHAIN_MAX_FENCE_AND_PROVENANCE_FLOOR"
+
+
+def rematerialize_runtime_claim_generation(runtime: Path, issued: int, *, chain_max: int,
+                                           floor: Mapping[str, Any], head: str | None,
+                                           initialized_from_source: bool, event_ephemeral: bool) -> dict[str, Any] | None:
+    """Raise a stale, empty ephemeral runtime claim registry to the verified issued fence.
+
+    Only in the event-ephemeral materialization, and only when this run initialized
+    the runtime registry from the committed source copy (no runtime state is
+    preserved) and that copy holds no claims. The generation is derived from the
+    verified Organization chain (`chain_max`) and the immutable provenance floor,
+    never from a clock and never lowered; the next fence is still issued + 1, so no
+    fence is reissued. The committed control/claims-active.json is not touched: the
+    basis is recorded in the transition's own receipt evidence. Anything else stays
+    FAIL_CLOSED FENCE_GENERATION_BEHIND_ISSUED_FENCES.
+    """
+    path = runtime / "control/claims-active.json"
+    state = load_json(path)
+    generation = state.get("generation", 0)
+    if (not event_ephemeral or not initialized_from_source or state.get("claims")
+            or not isinstance(generation, int) or isinstance(generation, bool) or generation >= issued):
+        return None
+    state["generation"] = issued
+    state["generation_basis"] = {
+        "basis": FENCE_FLOOR_REMATERIALIZATION_BASIS,
+        "chain_max_fence": chain_max,
+        "provenance_floor_fence": floor["fence"],
+        "provenance_floor_sha256": floor["provenance_record_sha256"],
+        "organization_head_sha256": head,
+        "source_generation": generation,
+    }
+    path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return dict(state["generation_basis"], rematerialized_generation=issued,
+                authority_effect="NONE_EPHEMERAL_RUNTIME_PROJECTION_ONLY")
 
 
 def task_cosv(source: Path, task: Mapping[str, Any]) -> str | None:
@@ -985,10 +1023,13 @@ def _ledger_refusal(request: Mapping[str, Any] | None, detail: str, *,
         "request_id": (request or {}).get("request_id"),
         "task_id": TASK_ID,
         "disposition": "FAIL_CLOSED",
+        "failure_code": predicate,
         "failed_predicate": predicate,
         "detail": detail,
         "required_evidence_or_repair": repair,
         "retry_entrypoint": RETRY_ENTRYPOINT,
+        "owning_existing_goal": (request or {}).get("task_id") or TASK_ID,
+        "next_attempt": "on the next request event after the repair is recorded",
         "runtime_execution_attempted": False,
         "fence_issued": False,
         "consequence_committed": False,
@@ -1056,13 +1097,16 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             "request_id": request.get("request_id"),
             "request_sha256": request_hash,
             "target_task_id": target,
+            "failure_code": predicate,
             "failed_predicate": predicate,
             "detail": detail,
             "organization_head_sha256": head,
             "fencing_token": None,
             "fence_issued": False,
             "required_evidence_or_repair": repair,
-            "retry_entrypoint": RETRY_ENTRYPOINT if transition_class == FAIL_CLOSED else None,
+            "retry_entrypoint": EVENT_EPHEMERAL_ENTRYPOINT if custody.get("event_ephemeral") else RETRY_ENTRYPOINT,
+            "owning_existing_goal": request.get("task_id") or TASK_ID,
+            "next_attempt": "on the next request event after the repair is recorded",
             "consequence_committed": False,
         }
         if readback_refusal is not None:
@@ -1093,10 +1137,13 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             "transition_id": transition_id,
             "disposition": DISPOSITION[transition_class],
             "claim_task_id": claim_task,
+            "failure_code": predicate,
             "failed_predicate": predicate,
             "detail": detail,
             "required_evidence_or_repair": repair,
             "retry_entrypoint": evidence["retry_entrypoint"],
+            "owning_existing_goal": evidence["owning_existing_goal"],
+            "next_attempt": evidence["next_attempt"],
             "fencing_token": None,
             "fence_issued": False,
             "selected_task_id": None,
@@ -1208,6 +1255,15 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 prior = prior_grant(grants, target) if target else None
                 if prior is not None:
                     return allow(target, prior, None, replayed=True)
+                # Only a run that may mint rematerializes; a replay reprojects the retained grant.
+                claims_rel = runtime / "control/claims-active.json"
+                runtime_claims_before = claims_rel.read_bytes()
+                verified_chain_max = max([row["boundary_evidence"]["fencing_token"] for row in grants], default=0)
+                rematerialized = rematerialize_runtime_claim_generation(
+                    runtime, max(verified_chain_max, floor["fence"]), chain_max=verified_chain_max,
+                    floor=floor, head=head,
+                    initialized_from_source="control/claims-active.json" in control_inputs.get("initialized_control_files", []),
+                    event_ephemeral=bool(custody.get("event_ephemeral")))
                 plan = run_allocator(runner, runtime, safe_env, "--plan", *(("--task", target) if target else ()))
                 selected = plan.get("selected")
                 if not isinstance(selected, str) or not selected:
@@ -1218,6 +1274,8 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 claim_task = selected
                 prior = prior_grant(grants, selected)
                 if prior is not None:
+                    if rematerialized is not None:
+                        claims_rel.write_bytes(runtime_claims_before)
                     return allow(selected, prior, None, replayed=True)
                 chain_max = max([row["boundary_evidence"]["fencing_token"] for row in grants], default=0)
                 runtime_generation = plan.get("claim_registry_generation")
@@ -1252,6 +1310,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                     "provenance_floor": floor,
                     "provenance_floor_sha256": floor["provenance_record_sha256"],
                     "runtime_claims_generation_observed": runtime_generation,
+                    "runtime_claims_generation_rematerialized": rematerialized,
                     "request_id": request.get("request_id"),
                     "request_sha256": request_hash,
                     "target_task_id": target,

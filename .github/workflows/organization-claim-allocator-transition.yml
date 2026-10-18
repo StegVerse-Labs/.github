@@ -103,7 +103,7 @@ jobs:
             git fetch --no-tags origin "+$LEDGER_REF:$LEDGER_REF"
             echo "ledger tip before append: $(git rev-parse "$LEDGER_REF")"
           else
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger already exists; this writer appends to it and does not open a replacement","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger already exists; this writer appends to it and does not open a replacement","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next request event after the repair is recorded","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
             exit 1
           fi
           git rev-parse "$LEDGER_REF" > "$RUNNER_TEMP/ledger-before"
@@ -163,7 +163,7 @@ jobs:
           before=$(cat "$RUNNER_TEMP/ledger-before")
           after=$(git rev-parse "$LEDGER_REF")
           if ! git merge-base --is-ancestor "$before" "$after"; then
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_HISTORY_REWRITTEN","failed_predicate":"APPEND_FAST_FORWARDS_THE_EXISTING_REF","required_evidence_or_repair":"the local ref is not a descendant of the fetched tip; nothing is pushed","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_HISTORY_REWRITTEN","failed_predicate":"APPEND_FAST_FORWARDS_THE_EXISTING_REF","required_evidence_or_repair":"the local ref is not a descendant of the fetched tip; nothing is pushed","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next request event after the repair is recorded","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
             exit 1
           fi
           echo "ledger tip after append: $after (ancestor $before)"
@@ -176,7 +176,7 @@ jobs:
             exit 0
           fi
           if ! git push origin "$LEDGER_REF:$LEDGER_REF"; then
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_PUBLISH_RACE","failed_predicate":"PUBLISHED_REF_FAST_FORWARDS","required_evidence_or_repair":"another append moved the ref first; this run published nothing","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_PUBLISH_RACE","failed_predicate":"PUBLISHED_REF_FAST_FORWARDS","required_evidence_or_repair":"another append moved the ref first; this run published nothing","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next request event after the repair is recorded","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
             exit 1
           fi
 
@@ -187,7 +187,7 @@ jobs:
           git init -q --bare "$fresh"
           auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
           if [ -z "$auth_header" ]; then
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next request event after the repair is recorded","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
             exit 1
           fi
           git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
