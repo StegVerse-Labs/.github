@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/consume_ungoverned_ai_defensive_envelope_request.py'
+      - 'scripts/evaluate_admission_job_observation.py'
+      - 'tests/test_evaluate_admission_job_observation.py'
       - 'scripts/dispatch_resident_execution_requests.py'
       - 'scripts/refresh_sovereign_worker_runtime_source.py'
       - 'scripts/refresh_and_execute_resident_task.py'
@@ -85,6 +87,8 @@ on:
   pull_request:
     paths:
       - 'scripts/consume_ungoverned_ai_defensive_envelope_request.py'
+      - 'scripts/evaluate_admission_job_observation.py'
+      - 'tests/test_evaluate_admission_job_observation.py'
       - 'scripts/dispatch_resident_execution_requests.py'
       - 'scripts/refresh_sovereign_worker_runtime_source.py'
       - 'scripts/refresh_and_execute_resident_task.py'
