@@ -188,19 +188,37 @@ class LaneDS0MigrationFixtures(unittest.TestCase):
         self.assertEqual(sorted(c["projection"]["pr"] for c in self.changes),
                          [3231, 3232, 3235, 3241, 3243, 3245, 3251, 3253, 3255, 3258, 3261])
 
-    def test_3245_records_branch_writer_is_branch_owner_fail(self):
+    def test_3245_fail_closed_without_validation_receipt(self):
         c = next(c for c in self.changes if c["projection"]["pr"] == 3245)
         self.assertEqual(c["lifecycle_state"], "FAIL_CLOSED")
-        (v,) = c["validation_receipts"]
-        self.assertEqual((v["check_id"], v["disposition"], v["evidence_class"]), ("BRANCH_WRITER_IS_BRANCH_OWNER", "FAIL_CLOSED", "OBSERVED_ARTIFACT"))
-        self.assertEqual(v["change_digest"], c["head"]["change_digest"])
-        path, line = v["ref"].split("#L")
-        raw = (ROOT / path).read_bytes()
-        self.assertEqual(v["digest"], "sha256:" + hashlib.sha256(raw).hexdigest())
-        cited = raw.decode("utf-8").splitlines()[int(line) - 1]
-        self.assertTrue(cited.startswith("| #3245 |") and "BRANCH_WRITER_IS_BRANCH_OWNER" in cited)
-        self.assertTrue(any(i["disposition"]["failure_code"] == "BRANCH_HAS_FOREIGN_WRITER" for i in self.issues))
-        self.assertFalse([c for c in self.changes if c["projection"]["pr"] != 3245 and c["validation_receipts"]])
+        self.assertEqual(c["projection"]["branch_writer_is_branch_owner"], "FAIL")
+        # BRANCH_WRITER_IS_BRANCH_OWNER is a predicate, not a declared check id; the failure lives in the L1204 SV_ISSUE
+        self.assertEqual(c["validation_receipts"], [])
+        self.assertFalse([c for c in self.changes if c["validation_receipts"]])
+        i = next(i for i in self.issues if i["disposition"]["failure_code"] == "BRANCH_HAS_FOREIGN_WRITER")
+        self.assertEqual(i["disposition"]["failed_predicate"], "BRANCH_WRITER_IS_BRANCH_OWNER")
+        self.assertEqual(i["projection"]["source_line"], 1204)
+
+    def test_issue_set_has_no_collisions(self):
+        self.assertEqual(len(self.wi.validate_issue_set(self.issues)), len(self.issues))
+
+    def test_class_column_flag_and_unknown_goal_locator(self):
+        flagged = sorted(i["projection"]["source_line"] for i in self.issues
+                         if "SURFACE_DERIVED_FROM_CLASS_COLUMN" in i.get("migration_flags", []))
+        self.assertEqual(flagged, [587])
+        for i in self.issues:
+            loc = i["source_receipt"].get("evidence_locator")
+            if i["owning_goal"] == UNKNOWN:
+                self.assertEqual(loc, "L%d" % i["projection"]["source_line"])
+            else:
+                self.assertIsNone(loc)
+        self.assertFalse(hasattr(self.b, "_local_aliases"))
+
+    def test_identity_moves_at_d2ba0957(self):
+        by_line = {i["projection"]["source_line"]: i["issue_id"] for i in self.issues}
+        for m in self.manifest["identity_moves_at_d2ba0957"]:
+            self.assertTrue(by_line[m["source_line"]].startswith(m["to"]), m)
+            self.assertNotIn(m["from"], {v[:12] for v in by_line.values()})
 
     def test_rf1_split_and_line_587(self):
         by_line = {i["projection"]["source_line"]: i for i in self.issues}
@@ -222,9 +240,16 @@ class LaneDS0MigrationFixtures(unittest.TestCase):
         declared = {e["alias"] for e in table["lane_aliases"]}
         self.assertEqual(prop["status"], "PROPOSED_NOT_APPLIED")
         src = (FIX / "sources/LANE_D_S14_S26.md").read_text().splitlines()
+        self.assertEqual(sorted(e["alias"] for e in prop["proposals"]), ["#3235 verify workflow", "allocator workflow"])
         for e in prop["proposals"]:
             self.assertIn(e["evidence_text"], src[e["evidence_line"] - 1])
-        self.assertTrue(declared)
+            self.assertNotIn(e["alias"], declared)
+            d = self.mg.alias_disposition(e["alias"])
+            self.assertEqual((d["disposition"], d["failure_code"]), ("FAIL_CLOSED", "SURFACE_ALIAS_TARGET_NOT_ON_BASE"))
+            self.assertEqual(e["disposition"], {k: d[k] for k in ("disposition",) + tuple(self.wi.SIX_FIELDS)})
+        for e in prop["applied_by_p1"]:
+            self.assertIn(e["alias"], declared)
+            self.assertEqual(self.mg.alias_disposition(e["alias"])["disposition"], "ALLOW")
 
     def test_validator_rejects_known_bad(self):
         s = _schema("sv-issue.v1.schema.json")

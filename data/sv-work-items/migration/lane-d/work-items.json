@@ -28,12 +28,12 @@
       "svi:41141ee79dce571a8f14dad755ba96a7ff8a3af8c7b7581a3b3f9dddfc99fce4",
       "svi:4a250e2ae51d9137e2e5c57a6a25c438381a30d8132f2671d793d927a7fa1c62",
       "svi:538361b19a72da034f3f43f7a9a44dd08aadda3a12acf5b01733c10641e269f0",
-      "svi:60f81c39d6583f34c95b5398e0ffd08ebbb977cb93a9d5301b0b505ba9a7c00e",
+      "svi:66a7b416288ea9c0c6f036eb987e0a69815c5612bedb98e9a3ed9fc0fbc330f8",
       "svi:67e919e583998893b4768a708a108f85a6eaa46060b0ae3f76693ef2722e002c",
-      "svi:7983165c9f9b6686f921af0c046ec8421bc8f4c2dbf68b7c0d7c26aece06e166",
       "svi:93944159fa701528596611847d37a0f14cd4072aab8cfc92ede36033fcbc883b",
       "svi:9af400dcbe2606ad23d6ff90485f15ff4ab8621506f8cf07f7c7a87e9df414cb",
       "svi:9c4446c1c98b56114d198fd8dbb31d51d9759ca4a3680771b0716ad9aa7ef897",
+      "svi:b45ba54cb2b882f7bc55deb819160ffd645e4cb2dc56af0bc02391563c3171bb",
       "svi:b8b82c836790bc9332b9ead25d086f87e299e84cac40ebacd625d0b9abba7c52",
       "svi:c109f0f3fe840461a35559ebc54cf5876a338a478ff3ee71c44b359c9ef490a7",
       "svi:cad2f701e9ba8578152fc7736bb591ed085fae07be4d78d3bd5c65dc218b20b1",
@@ -50,7 +50,7 @@
       "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375",
       "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da",
       "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69",
-      "svi:2b555fbc83a5d2c7855d84c613588f38fe3aee2d8599fec448998583da6b4690"
+      "svi:6dbf4f7099bfd8872831f702e78249a6394302ae14e72cc23a54d5c3fa8c5657"
     ]
   },
   "schema": "stegverse.canonical-task-work-items.v1",
@@ -68,7 +68,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:124efd1302883144a45b7555c2f975c4740129b1e31992980d0db980892c4239",
+      "record_sha256": "sha256:7b83c4c69569566bfd448ad82d5e3abe3425cfd1a883729995b2a53093b759e7",
       "work_item_id": "svc:2aebce74ad7103b4995b79ccda20c5985c03fb03205cbacd75c5c70a64157835"
     },
     {
@@ -84,7 +84,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:3b624f92e27f7132d58afdf71f74bb491881118836c321051fc39e26c7419522",
+      "record_sha256": "sha256:afc0ac52a5bf1d39935d72785ec6f136ea717dc52c15e0f8a1aa197cf8d104cf",
       "work_item_id": "svc:47a3143779a10ecb5ec05932448854282e9837193b7f53d136b0fc205dd03af3"
     },
     {
@@ -100,7 +100,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:fa02ee4fb513f3b8bd0ee4cfe25ca503d39022091a2f77f8f688734959de8efb",
+      "record_sha256": "sha256:97548838d52c0022e0b6c07f0a3f6c7e4a3c2762cf6a31a337ed45154a6aa5d2",
       "work_item_id": "svc:5530c50768bf3112045a3ee6c08f80b6600df1082c5903bf9e8087ade7207658"
     },
     {
@@ -116,7 +116,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:71004c9f8de5e3fc40e74231f416e946a3818d8fb3a9ea91b2abf8ff2ee3a2a2",
+      "record_sha256": "sha256:5640441c976e59371ad730eff56f2fa78c3b7c2b13ca82b553dca598a9bbcb87",
       "work_item_id": "svc:77ba7e8cb6befca5923be8122d9dfefb34a8733cb289237a5a9d6f23d95fe5bd"
     },
     {
@@ -132,7 +132,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:e7e841aef12b8510bfc5b7e2a17194ac5bb02053131423a56bf4b717a0db4f4e",
+      "record_sha256": "sha256:8ee9759dd66fe43e90237450af36f6f29cb4e08761f49f2d33280c9347159b0d",
       "work_item_id": "svc:8aa8412b7b76e4d96ac50157f17e8e73748c12ad482d6c24c1f850a337e13e87"
     },
     {
@@ -148,7 +148,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:76f461ef42be04788705a47702bd05766304775ebfacf49f55aa66de7afd6ceb",
+      "record_sha256": "sha256:d334f691ca9eaf7bea493539ffcd30e323a23741b907eb6e39dc9891801d35af",
       "work_item_id": "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375"
     },
     {
@@ -164,7 +164,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:78ad6f9f759256b77faa585f4030cdc1ae6901b57656afb860d410e88dbc4a48",
+      "record_sha256": "sha256:4b1c514d55337fe472641086a686541d31801689af9b8c5a329d4354086f67bf",
       "work_item_id": "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da"
     },
     {
@@ -180,7 +180,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:c3db0eb95fb8a50d5efc6c03e6985babe6af82aaa7d4ffc833eb0a7952a74817",
+      "record_sha256": "sha256:e12e4dd0dae3df5753f706baab83075043aadc4ac1e83d9b9549b8d3f96465df",
       "work_item_id": "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204"
     },
     {
@@ -196,7 +196,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:9d6d54551cca46c634fa987bab0ab50351222d5aac4455eee1fb95678a7fe189",
+      "record_sha256": "sha256:d2d618d827d100ec007c3be4ec831c3ab59ee6be6d8535769d6eef771c1386a1",
       "work_item_id": "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69"
     },
     {
@@ -212,7 +212,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:7cd1d51db3f1be8ace147601e5f46ded184c1f71b0cb225c4ab94c7c364807c9",
+      "record_sha256": "sha256:67cf95d1401b67931647febedf338badeaf36580a5451ce1428ea1a299cdc3ee",
       "work_item_id": "svc:c5fb62fb06c54cbc82084b8ace645395ca8a27b43795af9feca3834787cb8d35"
     },
     {
@@ -228,7 +228,7 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:06d11cd8413d3f56d87d55182313a8277310e8a5d2248c8eccb770c2585ae405",
+      "record_sha256": "sha256:8323501d7871822117ddca5732a2e3c9f64b7c1d59531384e6bbaaeaab887b41",
       "work_item_id": "svc:d6df893a9982e89ccbf2bc4140923fce767a3ba76defc070164a9e338faff953"
     },
     {
@@ -278,22 +278,6 @@
       "record_mode": "MIGRATED_HISTORICAL",
       "record_sha256": "sha256:1a781d00bf681918323e61890204a70ad37e9c799e8e6a1cfecabd4131fc9cd8",
       "work_item_id": "svi:21bfd213161e5f3c1ade3ffb192fcf318bbed4c66ec603148ee4e2524f4716ac"
-    },
-    {
-      "canonical_coordination_state": "INGRESS_ADMITTED",
-      "kind": "SV_ISSUE",
-      "lifecycle_state": "OPENED",
-      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "projection": {
-        "github_state": null,
-        "head_sha": null,
-        "issue": null,
-        "pr": null,
-        "repo": null
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:9ef4b84fdd93ae64033e2c01c7fe511446fda445945a2f90d379cdeddb72ad29",
-      "work_item_id": "svi:2b555fbc83a5d2c7855d84c613588f38fe3aee2d8599fec448998583da6b4690"
     },
     {
       "canonical_coordination_state": "INGRESS_ADMITTED",
@@ -420,8 +404,8 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:b311180428a6444bed6c8c0b3f7f4e83e3dfd297167c138d85f5c4b769fb24fe",
-      "work_item_id": "svi:60f81c39d6583f34c95b5398e0ffd08ebbb977cb93a9d5301b0b505ba9a7c00e"
+      "record_sha256": "sha256:77754401f08d28753a493133f3342b6aa9e2a7850b8bd130257272488b62a279",
+      "work_item_id": "svi:66a7b416288ea9c0c6f036eb987e0a69815c5612bedb98e9a3ed9fc0fbc330f8"
     },
     {
       "canonical_coordination_state": "INGRESS_ADMITTED",
@@ -443,7 +427,7 @@
       "canonical_coordination_state": "INGRESS_ADMITTED",
       "kind": "SV_ISSUE",
       "lifecycle_state": "OPENED",
-      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
       "projection": {
         "github_state": null,
         "head_sha": null,
@@ -452,8 +436,8 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:8fa6813275b9de99d616d7bf6b191c3fb829f3f6cdcbb0b83c64cea721aaca31",
-      "work_item_id": "svi:7983165c9f9b6686f921af0c046ec8421bc8f4c2dbf68b7c0d7c26aece06e166"
+      "record_sha256": "sha256:b9755e92c9fdc6dae7c8261cce31b3511bd2b5c3f6636249079b2437ed1feda0",
+      "work_item_id": "svi:6dbf4f7099bfd8872831f702e78249a6394302ae14e72cc23a54d5c3fa8c5657"
     },
     {
       "canonical_coordination_state": "INGRESS_ADMITTED",
@@ -484,7 +468,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:b2c572eceb7121e12f706527227746df5336e1e18f176dbc44e7dc576df089fd",
+      "record_sha256": "sha256:eb99eb33c6bad628d54ea475af95dab41b06b64cb94c732748b2ab9cd27ce959",
       "work_item_id": "svi:93944159fa701528596611847d37a0f14cd4072aab8cfc92ede36033fcbc883b"
     },
     {
@@ -534,6 +518,22 @@
       "record_mode": "MIGRATED_HISTORICAL",
       "record_sha256": "sha256:3fed12ad47cbd3d4c4b7c5c59faf035d67fd1ab92262e1ca7c7c4d2b6ded87aa",
       "work_item_id": "svi:a8ab58dd007c79d831b1e0f10a07a4d7f353e2b078b971375f5bd0da87f60269"
+    },
+    {
+      "canonical_coordination_state": "INGRESS_ADMITTED",
+      "kind": "SV_ISSUE",
+      "lifecycle_state": "OPENED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": null,
+        "head_sha": null,
+        "issue": null,
+        "pr": null,
+        "repo": null
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:d50f104a1031eeb2aec6de5d30d742d286faeff40c482b4089afbabb98afcde1",
+      "work_item_id": "svi:b45ba54cb2b882f7bc55deb819160ffd645e4cb2dc56af0bc02391563c3171bb"
     },
     {
       "canonical_coordination_state": "INGRESS_ADMITTED",

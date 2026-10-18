@@ -4,64 +4,70 @@
   "authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse",
   "base": {
     "branch": "p1/sv-native-work-items",
-    "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b",
+    "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0",
     "pr": "StegVerse-Labs/.github#3264"
   },
   "status": "MIGRATED_HISTORICAL fixtures only. Never admissible (ADMIT -> FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE); nothing is admitted, applied or ledger-receipted.",
   "pinned_sources": [
     {
       "path": "schemas/sv-issue.v1.schema.json",
-      "git_blob": "16579451821564c4b4612b82dd21f938b01018f0",
-      "sha256": "sha256:57b6632fd73ce595cbd5cba8961eb317c4913e6b503f848af60c03f8fed3cc89",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "git_blob": "62ee530793a2aab6c87542d82e525e90b46d31fb",
+      "sha256": "sha256:ff2f4804cb1b603294f189e7a2351aee6f0a74957614be637bd0df2fe202946d",
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     },
     {
       "path": "schemas/sv-change.v1.schema.json",
-      "git_blob": "b03991e88ae6c650fd9779f8d51314b61f0849e2",
-      "sha256": "sha256:8df178c851f13dd8d3bf93711af6b4d7f509dcf3c52dc3a3ef6ef743a9ddb012",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "git_blob": "fb94a2169ca5b6ea7210424e1f7b4ce68d57ddda",
+      "sha256": "sha256:df3a5fa5dbcf278fd7cd16f5d9d693f77ac5c57f81d801ead5e6822344fd5721",
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     },
     {
       "path": "schemas/canonical-task-work-items.v1.schema.json",
       "git_blob": "92adebe15cbae5671b55bc30d89fc715fa288d51",
       "sha256": "sha256:439c6819c17c409149fb0cd65b89ebd131b394a24f38b4b6ceb247e79c04f69c",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     },
     {
       "path": "schemas/admission-corpus.v1.schema.json",
       "git_blob": "5aa5322c7c2b7cff5613996e5e5d33281ad3d53c",
       "sha256": "sha256:4777b54dfe591d9d8eff99d6f0b827aa9c62b6cd700cc12528e1c3b839537052",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     },
     {
       "path": "data/sv-work-items/surface-aliases.json",
-      "git_blob": "125083bc84edb97f6132c37e467055410cd7c005",
-      "sha256": "sha256:2a97214a67016f796c8118713b0c4a7aad55019da6094fd06c65239c75789751",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "git_blob": "debd7d7b0544b11bc1ac87d0b82bb21c22247c55",
+      "sha256": "sha256:00387d39d713942365248d628c4f4fff2715041c6e6c28eb0669a44dbb4e65e1",
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+    },
+    {
+      "path": "schemas/sv-surface-aliases.v1.schema.json",
+      "git_blob": "930261dfc23cb75607e3db55e6a1db3d3357647f",
+      "sha256": "sha256:38b4d32032cb96566f890906d2baa396913ff45c95c7bc7ae5f3ec4a1e0a805a",
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     },
     {
       "path": "data/sv-work-items/lifecycle-transitions.json",
-      "git_blob": "79ed24706b2d3643abfdbfd74da9ac122201f25f",
-      "sha256": "sha256:ee0b375466a662ef95aac27327be2d594376ccefeb3095dbb5c389474cc19c99",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "git_blob": "c66de6e86c9ec7d167f0e5edf74e717af0688224",
+      "sha256": "sha256:853c5545bf306eea48c66150ca42d323f130531519112d69e19c4f472556675f",
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     },
     {
       "path": "data/sv-work-items/required-checks.json",
-      "git_blob": "473862673e0327c4907d5c83c51c89fd30c77f3a",
-      "sha256": "sha256:f851a17c596ae521f09fbbbda885ca44cf1160f1933d65b4d37f155e158e5384",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "git_blob": "acbe80611369681c2a3af9dd13edf10c5cc2dca2",
+      "sha256": "sha256:ecc59b94b6b360a7cacb669c0bd311a796b63e76836ee81dfe74fd3ee61727de",
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     },
     {
       "path": "resident-runtime/sv_work_items.py",
-      "git_blob": "4c6f3e75c636e19404667a7c32c22ae8dac652d4",
-      "sha256": "sha256:671f34fcd341063371db31c1181026ccdebbeed10885120582364443f4494291",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "git_blob": "b749e2255670c175e9b35b589039ce15370072d1",
+      "sha256": "sha256:b9f75169ca159f11ff414be21dc000fb626fa360f4946d1e59d99dac099aa9a4",
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     },
     {
       "path": "resident-runtime/sv_migration.py",
-      "git_blob": "5f4bd2125ac627266b9a378ad2a57bee86c171fb",
-      "sha256": "sha256:2e6574d5cfc482af5c3e20851c4cefb35e93eeed7de64a5a8e0e5a0cb48eeef1",
-      "commit": "725d0f65cd5e7b81684c045c6f5d047f95fa946b"
+      "git_blob": "d98c40c0ba3d0de72fbbf4a96a8d2594d99ee904",
+      "sha256": "sha256:7fed03d5760bb30953bae62c0660b1812c5404fa2515c866ad350b645509a0d8",
+      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
     }
   ],
   "inputs": [
@@ -87,13 +93,15 @@
     "merged_restatements": 5,
     "surface_kinds": {
       "NON_REPOSITORY_EVIDENCE": 2,
-      "UNKNOWN": 13,
+      "UNKNOWN": 11,
       "doc": 2,
       "registry": 2,
       "schema": 1,
-      "transition": 7,
+      "transition": 9,
       "workflow": 3
-    }
+    },
+    "surface_derived_from_class_column": 1,
+    "unknown_goal_issues_with_evidence_locator": 1
   },
   "pinned_change_ids": {
     "3231": "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204",
@@ -116,32 +124,56 @@
     "note": "observed at fixture build; each record's original base is not observed (migration_provenance.original_base_observed false)"
   },
   "rules": [
-    "extraction: \u00a714 six-field table ('same' = previous cell), \u00a716 'fc/fp/rep/re/goal/next' rows (goal KV per legend), six-field bullet blocks, and the #3245 BRANCH_WRITER_IS_BRANCH_OWNER row (failure_code BRANCH_HAS_FOREIGN_WRITER from INDEX MERGE AUTHORITY)",
-    "surface: P1 sv_migration.resolve_surface over retry_entrypoint with the pinned alias table and prefix rules (no repo_paths); for \u00a716 rows still UNKNOWN, the same resolver over the row's Class column. Lane D's former local alias map is dropped; proposals are in PROPOSED_SURFACE_ALIASES.json and are not applied",
+    "extraction: §14 six-field table ('same' = previous cell), §16 'fc/fp/rep/re/goal/next' rows (goal KV per legend), six-field bullet blocks, and the #3245 BRANCH_WRITER_IS_BRANCH_OWNER row (failure_code BRANCH_HAS_FOREIGN_WRITER from INDEX MERGE AUTHORITY)",
+    "surface: P1 sv_migration.derive_surface_with_class_column(retry_entrypoint, class_cell) over the pinned alias table (no repo_paths); the returned migration_flags are written (SURFACE_DERIVED_FROM_CLASS_COLUMN on L587). Lane D keeps no local fallback or alias map; proposals are in PROPOSED_SURFACE_ALIASES.json and are not applied",
     "owning_goal: the first registry task id in owning_existing_goal, otherwise UNKNOWN; SV_CHANGE owning_goal only when its resolved issues share exactly one goal",
+    "source_receipt.evidence_locator 'L<line>' only when owning_goal is UNKNOWN (FB-3; L1204), hashed by P1 as source_locator",
     "SV_CHANGE resolves: issues whose repair or retry_entrypoint cites the PR number",
     "writer_session {null, UNKNOWN} everywhere (JDQ Q-WRITER-IDENTITY); declared_session from the PR body's Authoring session line; GitHub CI is projection only",
-    "#3245: BRANCH_WRITER_IS_BRANCH_OWNER FAIL_CLOSED as OBSERVED_ARTIFACT (frozen lane-file line + file sha256), bound to the current head.change_digest"
+    "#3245: lifecycle_state FAIL_CLOSED, validation_receipts empty. BRANCH_WRITER_IS_BRANCH_OWNER is a predicate, not a declared check id (CHECK_ID_UNDECLARED); the failure is recorded once, as the L1204 SV_ISSUE (BRANCH_HAS_FOREIGN_WRITER). No receipt was minted"
   ],
   "excluded_records": [
     {
       "failure_code": "S0_RECORD_FORMAT_NOT_PUBLISHED",
-      "source": "lane file \u00a726.4",
+      "source": "lane file §26.4",
       "reason": "no failed_predicate is recorded and it is an identity input that may not be UNKNOWN; moot now that the S0 schemas exist"
     }
   ],
   "feedback_for_p1": [
     {
       "id": "FB-1",
-      "item": "Four alias proposals in PROPOSED_SURFACE_ALIASES.json: 'that script' (L586), SPPA (L751), '#3235 verify workflow' (L689), 'allocator workflow' (L898). Two point to files that exist only on open PR heads."
+      "status": "APPLIED_BY_P1 d2ba0957 (2 of 4)",
+      "item": "'that script' and SPPA applied; '#3235 verify workflow' and 'allocator workflow' stay FAIL_CLOSED SURFACE_ALIAS_TARGET_NOT_ON_BASE until their PRs reach main"
     },
     {
       "id": "FB-2",
-      "item": "The Class-column rule for \u00a716 rows is applied here by calling resolve_surface on that cell (it gives row 587's surface). If P1 wants it to be a declared rule, it belongs in sv_migration rather than in the Lane D builder."
+      "status": "APPLIED_BY_P1 d2ba0957",
+      "item": "sv_migration.derive_surface_with_class_column; Lane D's fallback removed"
     },
     {
       "id": "FB-3",
-      "item": "Known limit from P1: issues with UNKNOWN owning_goal can still collide; 2 Lane D issues have UNKNOWN goals and do not collide today."
+      "status": "APPLIED_BY_P1 d2ba0957",
+      "item": "evidence_locator for UNKNOWN-goal issues; validate_issue_set refuses collisions"
+    }
+  ],
+  "identity_moves_at_d2ba0957": [
+    {
+      "source_line": 586,
+      "from": "svi:60f81c39",
+      "to": "svi:66a7b416",
+      "cause": "FB-1 alias 'that script' resolves"
+    },
+    {
+      "source_line": 746,
+      "from": "svi:7983165c",
+      "to": "svi:b45ba54c",
+      "cause": "FB-1 alias SPPA resolves"
+    },
+    {
+      "source_line": 1204,
+      "from": "svi:2b555fbc",
+      "to": "svi:6dbf4f70",
+      "cause": "FB-3 evidence_locator L1204"
     }
   ]
 }

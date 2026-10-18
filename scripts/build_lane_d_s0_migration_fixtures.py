@@ -50,13 +50,9 @@ GOAL_ID = re.compile(r"\b([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b")
 
 
 def surface_for(retry_entrypoint: str, class_cell: str | None):
-    """P1 resolve_surface on retry_entrypoint (pinned alias table, prefix rules, no repo_paths). For a section 16
-    table row whose entrypoint stays UNKNOWN, the same resolver runs on the row's Class column (the table-column
-    rule that the alias table's bare_names entry cites). Nothing else is resolved."""
-    s = mg.resolve_surface(retry_entrypoint)
-    if s == UNKNOWN and class_cell:
-        s = mg.resolve_surface(class_cell)
-    return s
+    """P1 sv_migration.derive_surface_with_class_column, given only the cells: returns (surface, migration_flags).
+    The Class-column rule lives in P1's module (FB-2); Lane D keeps no fallback of its own."""
+    return mg.derive_surface_with_class_column(retry_entrypoint, class_cell)
 
 
 def _clean(v: str) -> str:
@@ -189,10 +185,6 @@ def foreign_writer(lines):
     return []
 
 
-def foreign_line(text: str) -> int:
-    return next(i + 1 for i, l in enumerate(text.splitlines()) if l.startswith("| #3245 |") and "BRANCH_WRITER_IS_BRANCH_OWNER" in l)
-
-
 def issues(text: str, raw: bytes, base: dict) -> list[dict]:
     lines = text.splitlines()
     # §26.4 (S0_RECORD_FORMAT_NOT_PUBLISHED) is left out: the lane file records no failed_predicate for it, and the
@@ -202,14 +194,18 @@ def issues(text: str, raw: bytes, base: dict) -> list[dict]:
     finished, lines_by_id = [], {}
     for f in found:
         six = f["six"]
+        surface, flags = surface_for(six["retry_entrypoint"], f.get("class_cell"))
+        goal = _goal(six["owning_existing_goal"])
         body = {"schema": wi.ISSUE_SCHEMA,
                 "disposition": {"disposition": f["disposition"], **six},
                 "violated_invariant": {"rule_id": six["failed_predicate"], "file": LANE_FILE + "#" + _section_of(lines, f["line"] - 1),
                                        "blob_sha": None, "invariant_declared": False},
-                "surface": surface_for(six["retry_entrypoint"], f.get("class_cell")),
-                "source_receipt": dict(ev), "resolution_class": f["resolution_class"], "lifecycle_state": "OPENED",
+                "surface": surface, "migration_flags": flags,
+                # FB-3: an UNKNOWN-goal row names its own lane-file line, which is hashed into issue_id as source_locator.
+                "source_receipt": dict(ev, **({"evidence_locator": "L%d" % f["line"]} if goal == UNKNOWN else {})),
+                "resolution_class": f["resolution_class"], "lifecycle_state": "OPENED",
                 "observed_base": dict(base), "migration_provenance": mg.provenance(base),
-                "owning_goal": _goal(six["owning_existing_goal"]), "opened_by_session": SESSION, "hb_epoch": UNKNOWN,
+                "owning_goal": goal, "opened_by_session": SESSION, "hb_epoch": UNKNOWN,
                 "projection": {"lane_file_section": _section_of(lines, f["line"] - 1), "source_line": f["line"],
                                "source_form": f["form"], "item": f["item"]}}
         rec = mg.finish_issue(body)
@@ -256,12 +252,8 @@ def build():
                                "github_ci": {"counts": p["ci_counts"], "authority": "PROJECTION_ONLY_NOT_A_VALIDATION_RECEIPT"},
                                "branch_writers_evidence": UNKNOWN + " (JDQ Q-WRITER-IDENTITY)",
                                "branch_writer_is_branch_owner": "FAIL" if foreign else UNKNOWN}}
-        if foreign:
-            # The observed artifact is the lane-file record of the foreign commits (frozen excerpt, line cited), bound
-            # to the current head.change_digest. OBSERVED_ARTIFACT is cited evidence only and never counts toward VERIFIED.
-            body["validation_receipts"] = [{"check_id": "BRANCH_WRITER_IS_BRANCH_OWNER", "disposition": "FAIL_CLOSED",
-                                            "change_digest": wi.change_digest(body), "evidence_class": "OBSERVED_ARTIFACT",
-                                            "ref": "%s#L%d" % (SRC.relative_to(ROOT), foreign_line(text)), "digest": wi.sha(raw)}]
+        # #3245: no validation receipt. BRANCH_WRITER_IS_BRANCH_OWNER is a predicate, not a declared check id
+        # (CHECK_ID_UNDECLARED); the failure is recorded once, as the L1204 SV_ISSUE. Nothing was minted.
         out_changes.append(mg.finish_change(body))
     record = wi.work_items_record(out_issues + out_changes)
     return out_issues, out_changes, record
