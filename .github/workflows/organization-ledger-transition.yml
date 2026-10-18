@@ -24,6 +24,7 @@ on:
       - 'resident-runtime/organization_ledger_readback.py'
       - 'tests/test_intr_destination_capability.py'
       - 'tests/test_organization_ledger_transition_writer.py'
+      - 'tests/test_transition_job_runs_on_pull_request.py'
   workflow_dispatch:
     inputs:
       communication_id:
@@ -47,8 +48,10 @@ permissions:
 # decision writer of this same ref. The push below is the compare-and-swap
 # against the published ref, so a writer that lost a race fails closed instead
 # of overwriting.
+# A pull_request run only verifies a temporary copy and never publishes, so it
+# takes a per-PR group and cannot displace a pending appender.
 concurrency:
-  group: organization-ledger
+  group: organization-ledger${{ github.event_name == 'pull_request' && format('-pr-dry-run-{0}', github.event.pull_request.number) || '' }}
   cancel-in-progress: false
 
 jobs:
@@ -77,8 +80,16 @@ jobs:
             tests/test_organization_ledger_transition_writer.py \
             tests/test_intr_destination_capability.py
 
+  # On workflow_dispatch this job appends the diagnostic self-closure to the
+  # published Organization ledger and pushes the ref (contents: write). On
+  # pull_request the same job runs a PR-SAFE VERIFY instead of being skipped:
+  # the designated ref and repository subtree are bound exactly as below, the
+  # published ledger is copied anonymously into a temporary ledger and read
+  # back through the same readback, and the published ref is required to be
+  # unchanged. No append is attempted there: the self-closure needs the
+  # dispatch-supplied communication_id and hb_epoch, and none is synthesized.
+  # Every publishing step is gated on github.event_name != 'pull_request'.
   transition:
-    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -86,7 +97,15 @@ jobs:
       LEDGER_REF: refs/stegverse/organization-ledger
       HB_EPOCH: ${{ github.event.inputs.hb_epoch }}
     steps:
+      - name: Checkout organization boundary (pull_request verify, no persisted credential)
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
       - name: Checkout organization boundary
+        if: github.event_name != 'pull_request'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -95,7 +114,69 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: 'PR verify: bind the designated ref and subtree, copy the published ledger into a temporary ledger, read it back'
+        if: github.event_name == 'pull_request'
+        env:
+          GIT_TERMINAL_PROMPT: '0'
+        run: |
+          set -euo pipefail
+          if git config --local --get-regexp '^http\..*\.extraheader$' >/dev/null; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"PR_VERIFY_CREDENTIAL_PERSISTED","failed_predicate":"PULL_REQUEST_RUN_HOLDS_NO_PERSISTED_CREDENTIAL","required_evidence_or_repair":"the pull_request checkout must use persist-credentials: false","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+          python -m py_compile resident-runtime/organization_ledger_readback.py \
+            resident-runtime/intr_destination_ingress.py
+          namespace=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          org = json.loads(Path(".stegverse/transition-ledger/org-contract.json").read_text())
+          repo = json.loads(Path(".stegverse/transition-ledger/contract.json").read_text())
+          assert org["organization_ledger_repository"] == "StegVerse-Labs/.github"
+          assert org["organization_ledger_ref"] == "refs/stegverse/organization-ledger"
+          location = repo["repository_ledger_location"]
+          assert location["repository"] == org["organization_ledger_repository"]
+          assert location["ref"] == org["organization_ledger_ref"]
+          assert location["new_ledger_root"] is False and location["namespace"]
+          print(location["namespace"])
+          PY
+          )
+          published="https://github.com/StegVerse-Labs/.github.git"
+          before=$(git -c credential.helper= ls-remote --exit-code "$published" "$LEDGER_REF" | cut -f1) || {
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger is not readable anonymously; the verify copies it and does not open a replacement","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1; }
+          dry="$RUNNER_TEMP/pr-verify-ledger.git"
+          git init -q --bare "$dry"
+          git --git-dir="$dry" -c credential.helper= fetch -q --no-tags "$published" "+$LEDGER_REF:$LEDGER_REF"
+          test "$(git --git-dir="$dry" rev-parse "$LEDGER_REF")" = "$before"
+          mkdir -p "$RUNNER_TEMP/results"
+          python resident-runtime/organization_ledger_readback.py \
+            --location "git+$dry#$LEDGER_REF" \
+            --repository-namespace "$namespace" \
+            --out "$RUNNER_TEMP/results/readback.json" > /dev/null
+          python - <<'PY'
+          import json, os
+          readback = json.load(open(os.environ["RUNNER_TEMP"] + "/results/readback.json"))
+          summary = {k: readback.get(k) for k in ("disposition", "chain_length", "head_receipt_sha256",
+                                                   "every_receipt_verifies_against_its_body", "readback_writes")}
+          print(json.dumps({"mode": "PULL_REQUEST_VERIFY", "ledger": "TEMPORARY_COPY", "append_attempted": False,
+                            "published": False, "consequence_committed": False, **summary}, sort_keys=True))
+          if readback.get("disposition") != "ALLOW" or readback.get("readback_writes") is not False:
+              raise SystemExit(1)
+          PY
+          now=$(git -c credential.helper= ls-remote "$published" "$LEDGER_REF" | cut -f1)
+          if [ "$now" != "$before" ]; then
+            git --git-dir="$dry" -c credential.helper= fetch -q --no-tags "$published" "+$LEDGER_REF:refs/published/now"
+            git --git-dir="$dry" merge-base --is-ancestor "$before" refs/published/now
+          fi
+          {
+            echo "### organization ledger PR verify (temporary copy; no append; nothing published)"
+            echo '```json'
+            python -c 'import json,os; r=json.load(open(os.environ["RUNNER_TEMP"]+"/results/readback.json")); print(json.dumps({k: r.get(k) for k in ("disposition","chain_length","head_receipt_sha256")}, indent=2))'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Validate the designated ref and the repository subtree before any append
+        if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           python -m py_compile resident-runtime/organization_ledger_readback.py \
@@ -115,6 +196,7 @@ jobs:
           PY
 
       - name: Bind the designated organization ledger ref
+        if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           ref=$(python -c 'import json; c=json.load(open(".stegverse/transition-ledger/org-contract.json")); assert c["organization_ledger_repository"]=="StegVerse-Labs/.github"; print(c["organization_ledger_ref"])')
@@ -131,6 +213,7 @@ jobs:
           git rev-parse "$LEDGER_REF" > "$RUNNER_TEMP/ledger-before"
 
       - name: Accept the self-closure inputs
+        if: github.event_name != 'pull_request'
         env:
           INPUT_COMMUNICATION_ID: ${{ github.event.inputs.communication_id }}
           INPUT_PACKET_ID: ${{ github.event.inputs.packet_id }}
@@ -153,6 +236,7 @@ jobs:
           echo "CLOSURE_PACKET_ID=${inputs[1]}" >> "$GITHUB_ENV"
 
       - name: Append the diagnostic self-closure to the repository and organization ledgers
+        if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
@@ -189,6 +273,7 @@ jobs:
           PY
 
       - name: Require the append to fast-forward the existing ref
+        if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           before=$(cat "$RUNNER_TEMP/ledger-before")
@@ -200,6 +285,7 @@ jobs:
           echo "ledger tip after append: $after (ancestor $before)"
 
       - name: Publish the ledger ref (fast-forward only)
+        if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           if ! git push origin "$LEDGER_REF:$LEDGER_REF"; then
@@ -208,6 +294,7 @@ jobs:
           fi
 
       - name: Read the organization and repository ledgers back from a fresh fetch
+        if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           fresh="$RUNNER_TEMP/readback.git"

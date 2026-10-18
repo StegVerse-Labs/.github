@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Consume the bounded SDK evaluator-governance posture runtime proof request."""
 from __future__ import annotations
-import argparse, hashlib, json, os, sys
+import argparse, contextlib, hashlib, json, os, sys
 from pathlib import Path
 from typing import Any
 
@@ -38,6 +38,50 @@ def validate_request(req: dict[str, Any]) -> None:
     if not isinstance(req.get("manifest_ref"),str) or not req["manifest_ref"].strip():
         raise RuntimeError("manifest_ref missing")
 
+SDK_PACKAGE = "stegverse"
+
+
+def _is_package_module(name: str) -> bool:
+    return name == SDK_PACKAGE or name.startswith(SDK_PACKAGE + ".")
+
+
+@contextlib.contextmanager
+def _declared_sdk_import_scope(roots: list[Path]):
+    """Resolve the `stegverse` package only from the declared source roots.
+
+    The entrypoint used to be imported through the process-global module
+    cache, so whichever `stegverse` package the process imported first (an
+    installed SDK, another test's tree, a second checkout) silently answered
+    instead of STEGVERSE_SDK_SOURCE_ROOT. Inside this scope any cached
+    `stegverse` modules are set aside and the declared roots lead sys.path;
+    on exit the modules imported here are dropped and the previous modules
+    and sys.path are restored exactly, so nothing leaks in either direction.
+    """
+    saved_modules = {name: module for name, module in sys.modules.items() if _is_package_module(name)}
+    saved_path = list(sys.path)
+    for name in saved_modules:
+        del sys.modules[name]
+    for root in reversed(roots):
+        sys.path.insert(0, str(root))
+    try:
+        yield
+    finally:
+        for name in [name for name in sys.modules if _is_package_module(name)]:
+            del sys.modules[name]
+        sys.modules.update(saved_modules)
+        sys.path[:] = saved_path
+
+
+def _module_is_under(module_file: str | None, root: Path) -> bool:
+    if not module_file:
+        return False
+    try:
+        Path(module_file).resolve().relative_to(root.resolve())
+    except ValueError:
+        return False
+    return True
+
+
 def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=None) -> dict[str, Any]:
     source=source_root.expanduser().resolve()
     runtime=runtime_root.expanduser().resolve()
@@ -54,17 +98,19 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
     stegos_root=Path(values.get("STEGVERSE_STEGOS_ROOT","")).expanduser() if values.get("STEGVERSE_STEGOS_ROOT") else None
     if sdk_root is None or not sdk_root.is_dir():
         return {"schema":"stegverse.sdk-evaluator-governance-posture-runtime-proof/v1","state":"INPUT_NOT_MATERIALIZED","missing":"sdk_source_root","runtime_execution_attempted":False,"authority_effect":"NONE"}
-    for root in (stegos_root,sdk_root):
-        if root is not None and root.is_dir():
-            value=str(root.resolve())
-            if value not in sys.path:
-                sys.path.insert(0,value)
-    from stegverse.evaluator_governance_runtime import run_evaluator_governance_manifest
+    # The SDK root leads, then StegOS, exactly the order the previous
+    # sys.path.insert(0, ...) loop produced.
+    import_roots=[root.resolve() for root in (sdk_root,stegos_root) if root is not None and root.is_dir()]
     manifest=load_json(manifest_path)
     custody_rel=Path(str(request.get("custody_db_ref") or "runtime-state/sdk-evaluator-governance-posture/custody.sqlite3"))
     custody_path=runtime/custody_rel
     custody_path.parent.mkdir(parents=True,exist_ok=True)
-    result=run_evaluator_governance_manifest(manifest,custody_db=str(custody_path),host_identity=str(request.get("host_identity") or "stegverse-sovereign-local"))
+    with _declared_sdk_import_scope(import_roots):
+        import importlib
+        entry_module=importlib.import_module("stegverse.evaluator_governance_runtime")
+        if not _module_is_under(getattr(entry_module,"__file__",None),sdk_root):
+            raise RuntimeError("sdk_entrypoint_not_from_declared_source_root: "+str(getattr(entry_module,"__file__",None)))
+        result=entry_module.run_evaluator_governance_manifest(manifest,custody_db=str(custody_path),host_identity=str(request.get("host_identity") or "stegverse-sovereign-local"))
     binding=result.get("intr_security_posture_binding") if isinstance(result,dict) else None
     resolution=(binding or {}).get("resolution") if isinstance(binding,dict) else None
     projection=(binding or {}).get("projection") if isinstance(binding,dict) else None
