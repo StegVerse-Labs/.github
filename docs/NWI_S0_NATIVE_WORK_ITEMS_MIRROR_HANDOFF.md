@@ -39,3 +39,39 @@ Author session: P1 Ecosystem AI Lane (d8cbc58c). Invariants: WORK_ITEMS_ARE_TASK
   - INVARIANT CHECKED: org-contract `write_mode: MANIFEST_DIRECTED_APPEND`; org `organization-ledger-transition.yml` (triggered by a push to main of `.stegverse/transition-requests/**`); NG.
   - QUESTION: the genesis request and these record kinds must reach main before the native path exists. Is that last landing a projection-era admission (TVC#519) by declaration, and which receipt marks it as the end of the GitHub-authority era?
   - FEEDBACK OUTPUT: a BOOTSTRAP_SELF_ADMISSION invariant plus the NWI genesis request file.
+
+## Record modes and schema fixes SF-1..SF-10 (from Lane D's migration fixtures, laned/s0-lane-d-migration-fixtures @76f06381)
+- `record_mode: NATIVE | MIGRATED_HISTORICAL` (both record kinds).
+  - **NATIVE:** every field is observed, and the record carries no `unknown_fields`, `migration_provenance` or `migration_flags`.
+  - **MIGRATED_HISTORICAL:** `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` is allowed only at the pointers in the schema's `x-migrated-unknown-allowed`, and every one is listed in `unknown_fields` (`sv_work_items.mode_check`). `/projection` is a non-authority view and is not scanned.
+  - A MIGRATED_HISTORICAL record is never admissible. ADMIT, and VERIFY too, returns FAIL_CLOSED `HISTORICAL_RECORD_NOT_ADMISSIBLE` (predicate ADMITTED_RECORDS_ARE_NATIVE) with all six fields. This is enforced in `transition()` before any injected evaluator runs, and again inside `evaluate_admission`.
+  - Such a record becomes NATIVE only through `SV_ISSUE_SUPERSEDE` / `SV_CHANGE_SUPERSEDE` with a NATIVE successor whose `supersedes` names the predecessor's digest. Flipping the mode in place fails, because the sentinels and the seal no longer verify.
+- **SF-1:** `hb_epoch` may be UNKNOWN only when migrated.
+- **SF-2:** `change_id = "svc:" + sha256(canon({target_repository, base_ref, content: [{path, blob_digest, deleted}] sorted by path}))`.
+  - Writer evidence is not part of the identity.
+  - The helper is `sv_work_items.change_identity`, and the derivation is published in the schema's `x-derivation`.
+- **SF-3:** `resolution_class` may be UNKNOWN only when migrated. The builder no longer defaults to B: it uses the class the source table states, or UNKNOWN. This corrects 12 of the 20 P1 migration issues, which had been defaulted to B.
+- **SF-4:** `resolves` needs at least one item for NATIVE. A migrated record may have an empty list, and must then carry `migration_flags: [RESOLVES_NOT_RECORDED]`.
+- **SF-5:** a validation receipt is `{check_id, disposition, change_digest, evidence_class: LEDGER_RECEIPT | OBSERVED_ARTIFACT, ref, digest}`.
+  - Only a LEDGER_RECEIPT with its `ref` under `refs/` counts toward VERIFIED.
+  - A check that has only artifact evidence is CHECK_SKIPPED_OR_UNOBSERVED, with `artifact_only` set.
+- **SF-6:** `writer_session` is `{session | null, evidence_class: DECLARED | OBSERVED_COMMIT_TRAILER | UNKNOWN_NOT_AUTHENTICALLY_OBSERVED}`.
+  - UNKNOWN (with a null session) fails BRANCH_WRITER_IS_BRANCH_OWNER as `BRANCH_WRITER_UNOBSERVED`, at PROPOSE and at admission.
+  - Neither DECLARED nor OBSERVED_COMMIT_TRAILER is an authenticated identity, because every session pushes as one account. That stays open as JDQ **Q-WRITER-IDENTITY**:
+    - INVARIANT CHECKED: BRANCH_WRITER_IS_BRANCH_OWNER.
+    - QUESTION: which receipt authenticates a per-path writer session (a session-signed commit trailer, or a WorkerCoordinator claim receipt per push)?
+    - FEEDBACK OUTPUT: a WRITER_SESSION_RECEIPT evidence class.
+- **SF-7:** `issue_id = "svi:" + sha256(canon({violated_invariant{repository,file,rule_id}, failed_predicate, surface, source_receipt_ref}))`. It hashes no free text.
+  - Reworded restatements merge into one record under `restatements[]`.
+  - `surface` is a new required field `{kind, path}`. A migrated record may have UNKNOWN there. Migration derives it from the first repository path in `retry_entrypoint` (`sv_migration.derive_surface`).
+- **SF-8:** `owning_goal` (and `disposition.owning_existing_goal`) may be UNKNOWN only when migrated.
+- **SF-9:** each canonical coordination task has exactly one work-items record: `{schema, coordination_task_id, goal_index, work_items}`.
+  - `goal_index` is the multi-goal index, mapping `owning_goal` to work item ids. Migrated items with an UNKNOWN goal are indexed under that key on the same record.
+  - The helper is `sv_work_items.work_items_record`, and the schema states this in `x-carrier`.
+- **SF-10:** `migration_provenance {original_base_observed, original_base_ref | null, migrated_at_base}` is required when migrated.
+  - `original_base_ref` is null exactly when `original_base_observed` is false.
+  - `migrated_at_base` must equal `observed_base` / `base_ref`.
+- **Tooling:**
+  - `resident-runtime/schema_subset.py` is a stdlib JSON-schema subset validator. It refuses any keyword it does not implement.
+  - `resident-runtime/sv_migration.py` holds the published lift rules.
+  - `scripts/evaluate_migration_fixtures.py --fixtures DIR` lifts a fixture set written against 1673cb5f and reports each listed gap as CLEARED or REMAINS.
