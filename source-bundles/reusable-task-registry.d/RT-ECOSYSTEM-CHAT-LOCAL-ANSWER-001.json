@@ -18,10 +18,12 @@
       "role": "FACT_INDEX",
       "work_unit": "WU-R15",
       "owner_repository": "StegVerse-org/LLM-adapter",
-      "source_ref": null,
-      "state": "NOT_FOUND_FAIL_CLOSED",
-      "observed": "absent from LLM-adapter main@4fbbfff40dbf920662c6a5416ea576253163c105, every branch and every refs/pull/*/head at 2026-10-18",
-      "failure_code": "FACT_INDEX_DEPENDENCY_NOT_FOUND"
+      "source_ref": "StegVerse-org/LLM-adapter#426@578e922c5ed32f6b420add2e0b4a3d982c9e244a:llm_adapter/ecosystem_fact_index.py",
+      "source_blob": "742823b2a7f496ca02c1700821552537844197bd",
+      "state": "OWNER_GATED_PENDING_MERGE_FAIL_CLOSED",
+      "observed": "present at LLM-adapter#426 head, absent from main@4fbbfff40dbf920662c6a5416ea576253163c105 at 2026-10-18",
+      "vendored": false,
+      "failure_code": "FACT_INDEX_DEPENDENCY_NOT_ON_MAIN"
     },
     {
       "role": "INVARIANT_EVALUATOR",
@@ -66,7 +68,7 @@
     "next_attempt"
   ],
   "authority_effect": "NONE_ANSWER_ONLY",
-  "reuse_instructions": "Materialize with the existing reusable-task constructor (scripts/materialize_reusable_task_construct.py). This is a definition, not an executable runner or admission. An answer is ALLOW only when the invariant evaluator returns ALLOW over facts the fact index resolved from pinned local registry sources. A DENY, UNDECIDABLE, missing fact or unresolved dependency returns a non-ALLOW record carrying the six non_allow_record_fields and stops; it never falls back to RT-ECOSYSTEM-CHAT-ANSWER-001 or any other LLM round trip. Dependencies stay out of composes until each resolves as a registry entry: the fact index (WU-R15) is FAIL_CLOSED until its LLM-adapter source exists, and the invariant evaluator is referenced from SV-LLM/sandbox#38 without vendoring until the owner-gated Labs port (OQ-C13) registers RT-INVARIANT-EVALUATION-001. Until then the trigger stops at NO_EXECUTABLE_RUNNER_DECLARED. No second runtime, evaluator or synthetic receipt.",
+  "reuse_instructions": "Materialize with the existing reusable-task constructor (scripts/materialize_reusable_task_construct.py). This is a definition, not an executable runner or admission. An answer is ALLOW only when the invariant evaluator returns ALLOW over facts the fact index resolved from pinned local registry sources. A DENY, UNDECIDABLE, missing fact or unresolved dependency returns a non-ALLOW record carrying the six non_allow_record_fields and stops; it never falls back to RT-ECOSYSTEM-CHAT-ANSWER-001 or any other LLM round trip. Dependencies stay out of composes until each resolves as a registry entry: the fact index (WU-R15) is referenced from StegVerse-org/LLM-adapter#426 without vendoring and stays FAIL_CLOSED until that PR merges to main, and the invariant evaluator is referenced from SV-LLM/sandbox#38 without vendoring until the owner-gated Labs port (OQ-C13) registers RT-INVARIANT-EVALUATION-001. Until then the trigger stops at NO_EXECUTABLE_RUNNER_DECLARED. No second runtime, evaluator or synthetic receipt.",
   "existing_owner_refs": [
     "StegVerse-Labs/.github#3183"
   ]

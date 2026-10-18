@@ -129,9 +129,9 @@ class LocalAnswerDefinitionTests(unittest.TestCase):
         for dep in d["dependency_refs"]:
             self.assertNotIn(dep.get("reusable_task_id"), ids)
             self.assertTrue(dep["failure_code"])
-            self.assertIn(dep["state"], {"NOT_FOUND_FAIL_CLOSED", "OWNER_GATED_PENDING_LABS_PORT"})
-        evaluator = next(x for x in d["dependency_refs"] if x["role"] == "INVARIANT_EVALUATOR")
-        self.assertFalse(evaluator["vendored"])
+            self.assertIn(dep["state"], {"OWNER_GATED_PENDING_MERGE_FAIL_CLOSED", "OWNER_GATED_PENDING_LABS_PORT"})
+            self.assertRegex(dep["source_ref"], r"^[\w.-]+/[\w.-]+#\d+@[0-9a-f]{40}:\S+\.py$")
+            self.assertFalse(dep["vendored"])
 
     def test_local_answer_manifest_materializes_without_runner(self):
         manifest = constructor.build_manifest(argparse.Namespace(
