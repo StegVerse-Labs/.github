@@ -1,0 +1,194 @@
+name: Canonical work projection trigger
+
+# Apply one admitted CanonicalWork projection to canonical task state when the
+# request that carries it lands on main. Action is by manifest: a request
+# committed under .stegverse/canonical-work-projection-requests/ (schema
+# stegverse.canonical-work-projection-request/v1) carries the ingress and
+# consumption receipts, the registry generation it was prepared against and a
+# supplied hb_epoch, and the push that lands it starts this run - the same push
+# trigger organization-governance-decision.yml uses for
+# .stegverse/governance-decision-requests/**, narrowed to *.json so the
+# directory README does not start a run.
+#
+# The projection is scripts/apply_admitted_canonical_work_projection.py, called
+# unchanged through scripts/canonical_work_projection_trigger.py. This workflow
+# never sets a generation: the projection's own `generation + 1` is the only
+# bump, the existing fence (scripts/check_registry_generation_fence.py) must
+# ALLOW it against the live generation before anything is written, and the
+# same fence runs again in push mode on the projection commit before it is
+# published. The commit is pushed to main fast-forward only; nothing is forced.
+#
+# Every decision, ALLOW or FAIL_CLOSED, is appended as a repository receipt and
+# its organization receipt on refs/stegverse/organization-ledger under
+# ORGANIZATION_LEDGER_LOCK, published fast-forward only and read back from a
+# fresh fetch, as organization-governance-decision.yml and
+# organization-ledger-transition.yml do. A refusal carries the six fields. A
+# refusal whose request carries no supplied hb_epoch (HB_EPOCH_NOT_SUPPLIED /
+# HB_EPOCH_INVALID, or an unreadable request) is recorded too, stamped with the
+# epoch of the organization ledger head receipt it appends after; no clock is
+# read. The projection is written in the target file's existing layout, so a
+# row projection changes only that row and the header fields the projection
+# sets; a layout it cannot reproduce is refused, never rewritten.
+#
+# This file is push-only, so no job here is ever skipped on a pull request.
+# The pull-request side is canonical-work-projection-trigger-evaluate.yml: its
+# `apply` job runs the same fence and project() evaluation against the pull
+# request's request files (or the empty set) with contents: read and no
+# persisted credential, and writes nothing.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.stegverse/canonical-work-projection-requests/*.json'
+
+concurrency:
+  group: ${{ github.event_name == 'push' && 'organization-ledger' || format('canonical-work-projection-pr-{0}', github.ref) }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      LEDGER_REF: refs/stegverse/organization-ledger
+      GIT_AUTHOR_NAME: StegVerse
+      GIT_AUTHOR_EMAIL: 210078727+StegVerse@users.noreply.github.com
+      GIT_COMMITTER_NAME: StegVerse
+      GIT_COMMITTER_EMAIL: 210078727+StegVerse@users.noreply.github.com
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Locate the evidence directory
+        run: echo "EVIDENCE=$RUNNER_TEMP/evidence" >> "$GITHUB_ENV"
+
+      - name: Resolve the request the push added or modified
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$EVIDENCE"
+          start="$BEFORE"
+          case "$start" in ''|*[!0]*) ;; *) start="$GITHUB_SHA^1" ;; esac
+          git diff --name-only --diff-filter=AM "$start" "$GITHUB_SHA" -- '.stegverse/canonical-work-projection-requests/*.json' > "$EVIDENCE/changed.txt"
+          cat "$EVIDENCE/changed.txt"
+          echo "BASE_SHA=$GITHUB_SHA" >> "$GITHUB_ENV"
+          if [ "$(wc -l < "$EVIDENCE/changed.txt")" = "1" ]; then
+            echo "REQUEST_PATH=$(cat "$EVIDENCE/changed.txt")" >> "$GITHUB_ENV"
+          fi
+
+      - name: Decide and project (the fence must ALLOW before anything is written)
+        run: |
+          set -uo pipefail
+          python scripts/canonical_work_projection_trigger.py evaluate --mode apply \
+            --changed "$EVIDENCE/changed.txt" --out "$EVIDENCE/decision.json"
+          cp "$EVIDENCE/decision.json" "$EVIDENCE/final.json"
+
+      - name: Commit the projection, re-run the generation fence on it, and publish fast-forward
+        run: |
+          set -uo pipefail
+          trigger=scripts/canonical_work_projection_trigger.py
+          read -r disposition written target < <(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["disposition"], str(d.get("written", False)).lower(), d.get("target","-"))' "$EVIDENCE/decision.json")
+          if [ "$disposition" != "ALLOW" ] || [ "$written" != "true" ]; then
+            echo "nothing to publish ($disposition, written=$written)"; exit 0
+          fi
+          request_id=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["request_id"])' "$EVIDENCE/decision.json")
+          git add -- "$target"
+          git commit -q -m "registry: apply admitted canonical work projection $request_id" \
+            -m "Applied by .github/workflows/canonical-work-projection-trigger.yml from $REQUEST_PATH at $BASE_SHA."
+          if ! python scripts/check_registry_generation_fence.py --mode push --before "$BASE_SHA" --after HEAD > "$EVIDENCE/fence-push.json" 2> "$EVIDENCE/fence-push.err"; then
+            python "$trigger" refuse --decision "$EVIDENCE/decision.json" \
+              --failure-code REGISTRY_GENERATION_FENCE_MISMATCH \
+              --failed-predicate "check_registry_generation_fence --mode push ALLOWs the projection commit" \
+              --required-evidence-or-repair "re-prepare the request against the live main generation; nothing was published" \
+              --next-attempt "on the next push of a request prepared at the live generation" \
+              --detail-file "$EVIDENCE/fence-push.json" --out "$EVIDENCE/final.json" || true
+            exit 0
+          fi
+          if ! git push origin "HEAD:refs/heads/main" 2> "$EVIDENCE/publish.err"; then
+            python "$trigger" refuse --decision "$EVIDENCE/decision.json" \
+              --failure-code CANONICAL_WORK_PROJECTION_PUBLISH_RACE \
+              --failed-predicate "THE_PROJECTION_COMMIT_FAST_FORWARDS_MAIN" \
+              --required-evidence-or-repair "main moved or refused the push; re-prepare the request at the new generation; nothing was published" \
+              --next-attempt "on the next push of a request prepared at the live generation" \
+              --detail-file "$EVIDENCE/publish.err" --out "$EVIDENCE/final.json" || true
+            exit 0
+          fi
+          python - "$EVIDENCE/final.json" "$(git rev-parse HEAD)" <<'PY'
+          import json, sys
+          path, commit = sys.argv[1], sys.argv[2]
+          result = json.load(open(path)); result["commit"] = commit; result["published"] = True
+          json.dump(result, open(path, "w"), indent=2, sort_keys=True)
+          PY
+
+      - name: Bind the designated organization ledger ref
+        run: |
+          set -euo pipefail
+          ref=$(python -c 'import json; c=json.load(open(".stegverse/transition-ledger/org-contract.json")); assert c["organization_ledger_repository"]=="StegVerse-Labs/.github"; print(c["organization_ledger_ref"])')
+          test "$ref" = "$LEDGER_REF"
+          namespace=$(python -c 'import json; l=json.load(open(".stegverse/transition-ledger/contract.json"))["repository_ledger_location"]; assert l["ref"]=="refs/stegverse/organization-ledger" and l["new_ledger_root"] is False; print(l["namespace"])')
+          echo "REPO_LEDGER_NAMESPACE=$namespace" >> "$GITHUB_ENV"
+          if ! git ls-remote --exit-code origin "$LEDGER_REF" >/dev/null; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger already exists; this writer appends to it and does not open a replacement","retry_entrypoint":".github/workflows/canonical-work-projection-trigger.yml","owning_existing_goal":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","next_attempt":"after the designated ref is published","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+          git fetch --no-tags origin "+$LEDGER_REF:$LEDGER_REF"
+          git rev-parse "$LEDGER_REF" > "$EVIDENCE/ledger-before"
+
+      - name: Record the decision at the repository and organization levels
+        run: |
+          set -euo pipefail
+          export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
+          export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
+          python scripts/canonical_work_projection_trigger.py record \
+            --result "$EVIDENCE/final.json" --request "${REQUEST_PATH:-}" --out "$EVIDENCE/recorded.json"
+
+      - name: Publish the organization ledger ref (fast-forward only)
+        run: |
+          set -euo pipefail
+          before=$(cat "$EVIDENCE/ledger-before")
+          git merge-base --is-ancestor "$before" "$(git rev-parse "$LEDGER_REF")"
+          if ! git push origin "$LEDGER_REF:$LEDGER_REF"; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_PUBLISH_RACE","failed_predicate":"PUBLISHED_REF_FAST_FORWARDS","required_evidence_or_repair":"another append moved the ref first; this run published nothing to the ledger","retry_entrypoint":".github/workflows/canonical-work-projection-trigger.yml","owning_existing_goal":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","next_attempt":"re-run this workflow run","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+
+      - name: Read both receipts back from a fresh fetch
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/readback.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+            fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
+          python scripts/canonical_work_projection_trigger.py readback \
+            --location "git+$fresh#$LEDGER_REF" --namespace "$REPO_LEDGER_NAMESPACE" \
+            --recorded "$EVIDENCE/recorded.json" --out "$EVIDENCE/readback.json"
+
+      - name: A refused request fails the run once its refusal is recorded
+        run: |
+          python - "$EVIDENCE/final.json" <<'PY'
+          import json, sys
+          result = json.load(open(sys.argv[1]))
+          print(json.dumps({k: result.get(k) for k in ("disposition", "applicability", "request_id", "commit",
+                "failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                "owning_existing_goal", "next_attempt")}, indent=2))
+          sys.exit(0 if result.get("disposition") == "ALLOW" else 1)
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: canonical-work-projection-trigger-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidence
+          retention-days: 90
+          if-no-files-found: warn

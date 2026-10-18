@@ -1,0 +1,149 @@
+name: Canonical work projection trigger (evaluate-only)
+
+# The pull-request side of canonical-work-projection-trigger.yml, which is
+# push-only and is the only writer. Nothing here writes: contents: read, the
+# checkout persists no credential, and no step commits to a remote, appends to
+# a ledger or pushes. The `apply` job runs the same evaluation the writer's
+# `apply` job runs on push - the existing generation fence
+# (scripts/check_registry_generation_fence.py) and
+# scripts/canonical_work_projection_trigger.py evaluate, which calls
+# apply_admitted_canonical_work_projection.project() - against the request
+# files this pull request adds or changes, or the empty set, and emits the
+# decision JSON. A FAIL_CLOSED decision fails the job with the six fields; it
+# is never absorbed. When a request projects, the projection is also written
+# into the runner's own checkout and committed locally only, so the writer's
+# second fence (push mode, on the projection commit) is exercised too; that
+# commit is discarded with the runner. A step also proves the refusal path is
+# live, so an empty set cannot turn the job into a no-op.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/canonical-work-projection-trigger.yml'
+      - '.github/workflows/canonical-work-projection-trigger-evaluate.yml'
+      - '.stegverse/canonical-work-projection-requests/*.json'
+      - 'scripts/canonical_work_projection_trigger.py'
+      - 'scripts/apply_admitted_canonical_work_projection.py'
+      - 'scripts/check_registry_generation_fence.py'
+      - 'tests/test_canonical_work_projection_trigger.py'
+
+concurrency:
+  group: canonical-work-projection-evaluate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test the trigger against temporary registries and ledgers
+        run: |
+          python -m py_compile scripts/canonical_work_projection_trigger.py \
+            scripts/apply_admitted_canonical_work_projection.py scripts/check_registry_generation_fence.py
+          python -m pip install pytest
+          python -m pytest -q --tb=short tests/test_canonical_work_projection_trigger.py
+
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      GIT_AUTHOR_NAME: canonical-work-projection-evaluate
+      GIT_AUTHOR_EMAIL: evaluate-only@invalid
+      GIT_COMMITTER_NAME: canonical-work-projection-evaluate
+      GIT_COMMITTER_EMAIL: evaluate-only@invalid
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Evaluate-only - no credential is persisted, so nothing can be pushed
+        run: |
+          set -euo pipefail
+          echo "EVIDENCE=$RUNNER_TEMP/evidence" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/evidence"
+          if git config --local --get-regexp '^http\..*\.extraheader$'; then
+            echo "a persisted credential was found; evaluate-only refuses to run with one" >&2
+            exit 1
+          fi
+
+      - name: Resolve the requests this pull request adds or changes
+        run: |
+          set -euo pipefail
+          git diff --name-only --diff-filter=AM "$BASE_SHA...HEAD" -- '.stegverse/canonical-work-projection-requests/*.json' > "$EVIDENCE/changed.txt"
+          echo "changed requests: $(wc -l < "$EVIDENCE/changed.txt")"
+          cat "$EVIDENCE/changed.txt"
+
+      - name: Generation fence (pull_request mode) on this pull request
+        run: |
+          set -euo pipefail
+          python scripts/check_registry_generation_fence.py --mode pull_request \
+            --base-ref "$BASE_SHA" --head-ref HEAD > "$EVIDENCE/fence-pull-request.json"
+          cat "$EVIDENCE/fence-pull-request.json"
+
+      - name: Decide and project (evaluate-only; writes nothing)
+        run: |
+          set -euo pipefail
+          python scripts/canonical_work_projection_trigger.py evaluate --mode plan --allow-none \
+            --changed "$EVIDENCE/changed.txt" --out "$EVIDENCE/decision.json"
+          test -z "$(git status --porcelain --untracked-files=no)"
+
+      - name: Exercise the writer's push-mode fence on a local-only projection commit
+        run: |
+          set -euo pipefail
+          read -r disposition applicability < <(python -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["disposition"], d.get("applicability","-"))' "$EVIDENCE/decision.json")
+          if [ "$disposition" != "ALLOW" ] || [ "$applicability" != "PROJECTED" ]; then
+            echo "no projection to fence ($disposition, $applicability)"; exit 0
+          fi
+          before=$(git rev-parse HEAD)
+          python scripts/canonical_work_projection_trigger.py evaluate --mode apply \
+            --changed "$EVIDENCE/changed.txt" --out "$EVIDENCE/local-projection.json"
+          target=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["target"])' "$EVIDENCE/local-projection.json")
+          git add -- "$target"
+          git commit -q -m "evaluate-only local projection (never pushed)"
+          python scripts/check_registry_generation_fence.py --mode push --before "$before" --after HEAD \
+            > "$EVIDENCE/fence-push.json"
+          cat "$EVIDENCE/fence-push.json"
+
+      - name: The refusal path is live (no request and no --allow-none must FAIL_CLOSED)
+        run: |
+          set -euo pipefail
+          : > "$RUNNER_TEMP/empty.txt"
+          # The runner's bash runs with -e; capture the expected exit 1 instead of dying on it.
+          status=0
+          python scripts/canonical_work_projection_trigger.py evaluate --mode plan \
+            --changed "$RUNNER_TEMP/empty.txt" --out "$EVIDENCE/refusal-probe.json" 2> "$EVIDENCE/refusal-probe.err" || status=$?
+          test "$status" -eq 1
+          python - "$EVIDENCE/refusal-probe.json" "$EVIDENCE/refusal-probe.err" <<'PY'
+          import json, sys
+          result = json.load(open(sys.argv[1])); err = open(sys.argv[2]).read()
+          assert result["disposition"] == "FAIL_CLOSED", result
+          assert result["failure_code"] == "CANONICAL_WORK_PROJECTION_MANIFEST_ABSENT", result
+          for key in ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                      "retry_entrypoint", "owning_existing_goal", "next_attempt"):
+              assert result.get(key), key
+              assert key + "=" in err, key
+          print("REFUSAL_PATH_LIVE")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: canonical-work-projection-evaluate-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidence
+          retention-days: 30
+          if-no-files-found: warn
