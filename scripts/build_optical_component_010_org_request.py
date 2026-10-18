@@ -19,6 +19,9 @@ ingress recomputes: resident-runtime/organization_manifest_ingress.py
 records declare no manifest for the transition, nothing is written and the
 refusal is returned with its six fields, naming each undeclared input.
 
+The canonical records and the ingress are both read from --organization-root,
+the checkout the request is then written into.
+
 It grants nothing. The ingress decides the disposition and the ledger records
 it; a request file is not an Organization receipt.
 """
@@ -66,14 +69,17 @@ SDK_MANIFEST_INPUTS = (
 )
 STANDING_INPUTS = ("standing.mode", "standing.node_ref", "standing.predecessor")
 NULLABLE_INPUTS = ("standing.predecessor",)
-# A value that only stands in for one is not a declaration of it.
-PLACEHOLDER_PREFIXES = ("OWNER_PLACEHOLDER", "<")
+# A value that only stands in for one is not a declaration of it. Matched
+# against the upper-cased string, anywhere in the declared manifest or standing.
+PLACEHOLDER_PREFIXES = ("OWNER_PLACEHOLDER", "PLACEHOLDER", "TODO", "TBD", "<")
 
 INPUTS_UNDECLARED = "COMPONENT_010_MANIFEST_INPUTS_UNDECLARED"
 DIGEST_NOT_PINNED = "COMPONENT_010_REQUEST_DIGEST_NOT_PINNED"
 DIGEST_MISMATCH = "COMPONENT_010_REQUEST_DIGEST_MISMATCH"
 CONTRACT_INVALID = "COMPONENT_010_MANIFEST_CONTRACT_INVALID"
 SDK_UNAVAILABLE = "COMPONENT_010_INGRESS_SDK_UNAVAILABLE"
+CANONICAL_REFUSED = "COMPONENT_010_MANIFEST_INGRESS_CANONICAL_REFUSED"
+RECORDS_UNREADABLE = "COMPONENT_010_CANONICAL_RECORDS_UNREADABLE"
 RETRY_ENTRYPOINT = "scripts/build_optical_component_010_org_request.py --organization-root ."
 
 
@@ -84,7 +90,12 @@ class Refusal(Exception):
 
 
 def _read(root: Path, relative: str) -> Any:
-    return json.loads((root / relative).read_text(encoding="utf-8"))
+    try:
+        return json.loads((root / relative).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise refusal(RECORDS_UNREADABLE, f"{relative} is readable JSON under the organization root",
+                      "run against a StegVerse-Labs/.github checkout carrying the canonical records",
+                      detail=f"{root / relative}: {exc}") from exc
 
 
 def refusal(failure_code: str, failed_predicate: str, repair: str, **detail: Any) -> Refusal:
@@ -143,7 +154,7 @@ def _placeholder(value: Any, *, nested: bool = False) -> bool:
     """
     if isinstance(value, str):
         text = value.strip()
-        return text.startswith(PLACEHOLDER_PREFIXES) or (not nested and not text)
+        return text.upper().startswith(PLACEHOLDER_PREFIXES) or (not nested and not text)
     if isinstance(value, (dict, list)):
         children = value.values() if isinstance(value, dict) else value
         return (not nested and not value) or any(_placeholder(v, nested=True) for v in children)
@@ -171,6 +182,17 @@ def _present(declaration: dict[str, Any] | None, dotted: str) -> bool:
     return not _placeholder(node)
 
 
+def placeholder_paths(value: Any, path: str) -> list[str]:
+    """Every string within the value that stands in for one, by dotted path."""
+    if isinstance(value, str):
+        return [path] if value.strip().upper().startswith(PLACEHOLDER_PREFIXES) else []
+    if isinstance(value, dict):
+        return [p for k, v in value.items() for p in placeholder_paths(v, f"{path}.{k}")]
+    if isinstance(value, list):
+        return [p for i, v in enumerate(value) for p in placeholder_paths(v, f"{path}[{i}]")]
+    return []
+
+
 def missing_inputs(record: dict[str, Any], profile: dict[str, Any],
                    declaration: dict[str, Any] | None) -> list[str]:
     """The inputs a valid request needs that no canonical record declares."""
@@ -186,26 +208,34 @@ def missing_inputs(record: dict[str, Any], profile: dict[str, Any],
                 and not _placeholder(payload[name])):
             missing.append(f"{COMPONENT}.{name}")
     missing += [n for n in SDK_MANIFEST_INPUTS + STANDING_INPUTS if not _present(declaration, n)]
+    # A placeholder anywhere else, source_instance or context_refs included, is
+    # missing too: only the listed inputs are required, but none may be faked.
+    covered = [c for m in missing for c in (
+        ("manifest.payload", "manifest.payload_commitment") if m == "manifest.payload_or_payload_commitment"
+        else (m,))]
+    for head in ("manifest", "standing"):
+        missing += [p for p in placeholder_paths((declaration or {}).get(head), head)
+                    if not any(p == c or p.startswith((c + ".", c + "[")) for c in covered)]
     return missing
 
 
-@functools.lru_cache(maxsize=1)
-def ingress_module() -> Any:
-    """This organization's ingress, which imports the SDK it validates and derives with."""
-    spec = importlib.util.spec_from_file_location("organization_manifest_ingress", ROOT / INGRESS)
+@functools.lru_cache(maxsize=None)
+def ingress_module(root: Path = ROOT) -> Any:
+    """The organization root's ingress, which imports the SDK it validates and derives with."""
+    spec = importlib.util.spec_from_file_location("organization_manifest_ingress", root / INGRESS)
     ingress = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(ingress)
     return ingress
 
 
-def ingress_validate(manifest: dict[str, Any]) -> None:
+def ingress_validate(manifest: dict[str, Any], root: Path = ROOT) -> None:
     """The ingress's own envelope check, stegverse.manifest_contract.validate_ingress_manifest."""
-    ingress_module().validate_ingress_manifest(manifest)
+    ingress_module(root).validate_ingress_manifest(manifest)
 
 
-def ingress_canonical(manifest: dict[str, Any]) -> str:
+def ingress_canonical(manifest: dict[str, Any], root: Path = ROOT) -> str:
     """The canonical projection exactly as this organization's ingress derives it."""
-    ingress = ingress_module()
+    ingress = ingress_module(root)
     return ingress.derive_execution_request(manifest, ingress.boundary())["canonical_manifest_sha256"]
 
 
@@ -227,10 +257,17 @@ def _held_to(name: str, pinned: str | None, actual: str) -> None:
                       expected_sha256=pinned, observed_sha256=actual)
 
 
-def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]], str] = ingress_canonical,
-                  validate_of: Callable[[dict[str, Any]], None] = ingress_validate,
+def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]], str] | None = None,
+                  validate_of: Callable[[dict[str, Any]], None] | None = None,
                   pins: dict[str, str | None] | None = None) -> tuple[dict[str, Any], bytes]:
-    """Return the request and its file bytes, or raise Refusal with six fields."""
+    """Return the request and its file bytes, or raise Refusal with six fields.
+
+    The records are read from `root`, and the ingress that validates and derives
+    is the one `root` carries.
+    """
+    root = Path(root).resolve()
+    canonical_of = canonical_of or (lambda m: ingress_canonical(m, root))
+    validate_of = validate_of or (lambda m: ingress_validate(m, root))
     pins = pins if pins is not None else {
         "MANIFEST_FILE_SHA256": MANIFEST_FILE_SHA256,
         "CANONICAL_MANIFEST_SHA256": CANONICAL_MANIFEST_SHA256,
@@ -267,10 +304,17 @@ def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]],
                       "the declared manifest passes stegverse.manifest_contract.validate_ingress_manifest",
                       f"correct the declared {TRANSITION} manifest in {TASK_RECORD}",
                       detail=str(exc)) from exc
-    _held_to("MANIFEST_FILE_SHA256", pins["MANIFEST_FILE_SHA256"],
-             hashlib.sha256(manifest_file_bytes(manifest)).hexdigest())
-    canonical = canonical_of(manifest)
-    _held_to("CANONICAL_MANIFEST_SHA256", pins["CANONICAL_MANIFEST_SHA256"], canonical)
+    # derive_execution_request refuses some manifests the envelope check admits
+    # (a processing capability its route does not select, for one). Every digest
+    # is taken before any pin is consulted, so that refusal is reached, and
+    # returned with its six fields, while the pins are still unset.
+    try:
+        canonical = canonical_of(manifest)
+    except ValueError as exc:
+        raise refusal(CANONICAL_REFUSED,
+                      f"{INGRESS} derive_execution_request(manifest, boundary()) admits the declared manifest",
+                      f"correct the declared {TRANSITION} manifest in {TASK_RECORD} so the ingress derives it",
+                      detail=str(exc)) from exc
     request = {
         "schema": SCHEMA,
         "request_id": REQUEST_ID,
@@ -283,6 +327,9 @@ def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]],
         "standing": declaration["standing"],
     }
     data = request_file_bytes(request)
+    _held_to("MANIFEST_FILE_SHA256", pins["MANIFEST_FILE_SHA256"],
+             hashlib.sha256(manifest_file_bytes(manifest)).hexdigest())
+    _held_to("CANONICAL_MANIFEST_SHA256", pins["CANONICAL_MANIFEST_SHA256"], canonical)
     _held_to("REQUEST_FILE_SHA256", pins["REQUEST_FILE_SHA256"], hashlib.sha256(data).hexdigest())
     return request, data
 
@@ -290,10 +337,11 @@ def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]],
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("--organization-root", type=Path, required=True,
-                   help="StegVerse-Labs/.github checkout the request is written into")
+                   help="StegVerse-Labs/.github checkout whose canonical records and ingress "
+                        "the request is built from, and which it is written into")
     a = p.parse_args(argv)
     try:
-        _, data = build_request()
+        _, data = build_request(a.organization_root)
     except Refusal as exc:
         print(json.dumps(exc.record, indent=2, sort_keys=True))
         return 2

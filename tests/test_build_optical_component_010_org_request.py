@@ -69,11 +69,24 @@ def test_current_records_fail_closed_naming_every_undeclared_input():
     assert "ORGANIZATION_LEDGER_LOCK" in record["satisfying_edge"]
 
 
-def test_main_writes_nothing_on_refusal(tmp_path, capsys):
-    assert builder.main(["--organization-root", str(tmp_path)]) == 2
-    assert not (tmp_path / builder.REQUEST_PATH).exists()
+def test_main_builds_from_the_organization_root_and_writes_nothing_on_refusal(tmp_path, capsys):
+    root = _records(tmp_path)
+    assert builder.main(["--organization-root", str(root)]) == 2
+    assert not (root / builder.REQUEST_PATH).exists()
     printed = json.loads(capsys.readouterr().out)
     assert printed["failure_code"] == "COMPONENT_010_MANIFEST_INPUTS_UNDECLARED"
+
+
+def test_main_reads_the_records_of_the_organization_root_it_is_given(tmp_path, capsys):
+    # A root without the canonical records is refused; the script's own
+    # checkout is never read in its place.
+    assert builder.main(["--organization-root", str(tmp_path)]) == 2
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["failure_code"] == "COMPONENT_010_CANONICAL_RECORDS_UNREADABLE"
+    assert str(tmp_path.resolve()) in printed["detail"]
+    for field in SIX_FIELDS:
+        assert printed[field], field
+    assert not (tmp_path / builder.REQUEST_PATH).exists()
 
 
 def test_a_partial_declaration_still_names_what_it_lacks(tmp_path):
@@ -187,10 +200,92 @@ def test_a_manifest_the_ingress_contract_refuses_is_refused_before_any_digest(tm
 
 
 def test_the_default_contract_check_is_the_ingress_sdk_and_refuses_without_it(tmp_path, monkeypatch):
-    def unavailable():
+    def unavailable(*_):
         raise ModuleNotFoundError("No module named 'stegverse'")
 
     monkeypatch.setattr(builder, "ingress_module", unavailable)
     record = _refusal(root=_records(tmp_path, _declaration()))
     assert record["failure_code"] == "COMPONENT_010_INGRESS_SDK_UNAVAILABLE"
     assert record["consequence_committed"] is False
+
+
+def test_a_placeholder_anywhere_in_the_manifest_is_missing(tmp_path):
+    declaration = _declaration()
+    declaration["manifest"]["source_instance"] = "placeholder-instance"
+    declaration["manifest"]["context_refs"] = ["TODO: link the session", "https://example.invalid/ok"]
+    declaration["manifest"]["manifest_labels"] = {"owner": "tbd"}
+    declaration["standing"]["node_ref"] = "TBD"
+    record = _refusal(root=_records(tmp_path, declaration))
+    assert record["failure_code"] == "COMPONENT_010_MANIFEST_INPUTS_UNDECLARED"
+    assert set(record["missing_inputs"]) == {
+        "manifest.source_instance", "manifest.context_refs[0]", "manifest.manifest_labels.owner",
+        "standing.node_ref"}
+
+
+def test_an_ingress_derivation_refusal_is_a_six_field_refusal(tmp_path):
+    def mismatch(manifest):
+        raise ValueError("MANIFEST_PROCESSING_CAPABILITY_ROUTE_MISMATCH: manifest processing capability "
+                         "does not select governance")
+
+    root = _records(tmp_path, _declaration())
+    record = _refusal(root=root, canonical_of=mismatch, validate_of=lambda m: None)
+    for field in SIX_FIELDS:
+        assert record[field], field
+    assert record["failure_code"] == "COMPONENT_010_MANIFEST_INGRESS_CANONICAL_REFUSED"
+    assert "MANIFEST_PROCESSING_CAPABILITY_ROUTE_MISMATCH" in record["detail"]
+    assert record["consequence_committed"] is False
+    assert not (root / builder.REQUEST_PATH).exists()
+
+
+# StegVerse-SDK inspection/examples/external-framework-generic-manifest.json at
+# d6873d84dddc91ef6b26774336b05c8e1f4042c0, the SDK commit org-runtime-boundary.yml
+# pins, copied unchanged (sha256 e15ec3fd92da469c5c9d544784727cb00787badca7300a80d5eb2049c0237354).
+SDK_EXAMPLE = ROOT / "tests" / "fixtures" / "sdk-external-framework-generic-manifest.json"
+SDK_EXAMPLE_SHA256 = "e15ec3fd92da469c5c9d544784727cb00787badca7300a80d5eb2049c0237354"
+requires_sdk = pytest.mark.skipif(
+    importlib.util.find_spec("stegverse") is None,
+    reason="StegVerse-SDK is not installed here; the ingress validator and derivation are the SDK's own")
+
+
+def test_the_sdk_example_fixture_is_the_pinned_sdk_file():
+    assert hashlib.sha256(SDK_EXAMPLE.read_bytes()).hexdigest() == SDK_EXAMPLE_SHA256
+
+
+def _sdk_declaration() -> dict:
+    from stegverse.manifest_contract import canonical_sha256
+
+    manifest = json.loads(SDK_EXAMPLE.read_text(encoding="utf-8"))
+    manifest["payload"] = _declaration()["manifest"]["payload"]
+    manifest["hashes"]["payload_sha256"] = canonical_sha256(manifest["payload"])
+    return {"transition_id": builder.TRANSITION, "manifest": manifest,
+            "standing": _declaration()["standing"]}
+
+
+def _sdk_root(tmp_path: Path, declaration: dict) -> Path:
+    root = _records(tmp_path, declaration)
+    for directory in ("resident-runtime", "org-runtime", "org-boundary", ".stegverse"):
+        (root / directory).symlink_to(ROOT / directory, target_is_directory=True)
+    return root
+
+
+@requires_sdk
+def test_a_manifest_the_real_sdk_admits_reaches_the_pin_stage(tmp_path):
+    root = _sdk_root(tmp_path, _sdk_declaration())
+    record = _refusal(root=root)
+    assert record["failure_code"] == "COMPONENT_010_REQUEST_DIGEST_NOT_PINNED"
+    assert record["failed_predicate"] == "MANIFEST_FILE_SHA256 is pinned in this builder"
+    assert not (root / builder.REQUEST_PATH).exists()
+
+
+@requires_sdk
+def test_a_capability_its_route_does_not_select_is_refused_with_six_fields(tmp_path):
+    declaration = _sdk_declaration()
+    declaration["manifest"]["processing"]["capability"] = "ecosystem_diagnostic"
+    root = _sdk_root(tmp_path, declaration)
+    assert builder.main(["--organization-root", str(root)]) == 2
+    assert not (root / builder.REQUEST_PATH).exists()
+    record = _refusal(root=root)
+    for field in SIX_FIELDS:
+        assert record[field], field
+    assert record["failure_code"] == "COMPONENT_010_MANIFEST_INGRESS_CANONICAL_REFUSED"
+    assert "MANIFEST_PROCESSING_CAPABILITY_ROUTE_MISMATCH" in record["detail"]
