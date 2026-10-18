@@ -6,6 +6,44 @@ Issue: #2897
 COSV ID: `50000000102000`
 Status: `ACTIVE / CHECKED OUT / CONFORMANCE VECTOR PREPARATION`
 
+## 2026-10-17 conformance reconciliation (read this first)
+
+Read at `StegVerse-Labs/.github` main `5b3fc476`, Registry generation 317. Coordination: StegVerse-org/.github#162 (P0), [#2897](https://github.com/StegVerse-Labs/.github/issues/2897). Evidence class: source reading and a local verifier run. This section changes no record, Registry row, claim or ledger.
+
+- **Status line correction.** The line above says `ACTIVE / CHECKED OUT`. The task record is `ACTIVE`. It has no `checkout_state`, and its `worker_claim` is `projection_only: true` with null `claim_ref` and `fence_ref`, so "CHECKED OUT" is not supported. The task is also absent from `data/canonical-task-registry.json` at generation 317.
+- **Next action above is done.** The #2915 artifacts are on main: the test vectors, the source mapping and `scripts/verify_interlock_intr_runtime_independent_protocol.py`. Run on main `5b3fc476`, the verifier returned `status: PASS` across ALLOW, DENY, FAIL_CLOSED, the MasterRecordsCheckpoint profile and six negative vectors. That is CI-class evidence for the one allowed transition, `PROTOCOL_SCHEMA_AND_CONFORMANCE_VECTORS_VALIDATED`. It is not runtime execution or external conformance.
+- **Runtime state needs the six fields.** The sentence "runtime state remains `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED`" is not a finding under conformance item 5. The six-field form, matching Lane B's F-1/F-2 on #162:
+  - `failure_code`: `TVC_HOP_WARRANT_ISSUANCE_PATH_ABSENT`
+  - `failed_predicate`: `CROSS_ORG_HOP_CREDENTIAL_IS_TV_TVC_WARRANTED` and `DESTINATION_RECEIVE_NOT_MANIFEST_AND_WARRANT_BOUND`
+  - `required_evidence_or_repair`: a TV/TVC broker operation for the hop (StegVerse-Labs/TVC#488), then a receive that checks the warrant and manifest digest before any ledger append
+  - `retry_entrypoint`: TVC#488, then the hop branches (Labs #3206 and twins) and StegVerse-SDK#537
+  - `owning_existing_goal`: this task
+  - `next_attempt`: the owner's choice of credential form (#162)
+- **Standing rules for this protocol** (from the standard and the invariants):
+  - Destination existence is sufficient; liveness is not a predicate.
+  - An unavailable receiver is answered by `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION`.
+  - `FEDERATION_HOP_TOKEN` is not installed: credentials are TV/TVC-issued.
+  - The 56-hop readback (0 PASS / 12 FAIL / 44 UNREACHABLE) is an evidence state. The 44 UNREACHABLE results are not a blocker; the 12 FAIL results need per-hop root cause.
+
+### Open draft PRs in this lane (all draft; merge is the owner's)
+
+- Labs: #3206 (one-way hop), #3207 (ledger-transition six fields), #3212 (governance six fields, carrier epoch), #3213 (D6/D7 crossing refusals, twin of org#185)
+- StegVerse-org/.github: #181, #183, #184, #185
+- StegVerse-org/StegVerse-SDK#537
+- Hop twins: SV-011/.github#11, GCAT-BCAT-Engine/.github#13, Admissible-Existence/.github#95, StegGhost/.github#21, StegVerse-002/.github#47, SV-LLM/.github#41
+
+### Work that can run in parallel now
+
+| Work | Owner | Depends on |
+|---|---|---|
+| TVC broker operation `DISPATCH_INTR_DESTINATION_PHASE` (fixture tests only, no real tokens) | TV/TVC owner, Lane B | nothing |
+| Six fields on refusals: #3207, #3212, #3213 and org #184, #185 | Lane B | nothing |
+| Independent negative and consumer tests (H36) | Claude | nothing |
+| Exact-head and ledger readback audit (H37) | ChatGPT | nothing |
+| Per-hop root cause for the 12 FAIL hops | Lane B | nothing |
+| Aggregate Registry row for this task; Task ID for `intr-destination` | Registry owner | nothing |
+| Receive-side warrant and manifest binding | Lane B | TVC broker operation |
+
 ## Goal
 
 Define a runtime-independent, machine-readable Interlock/InTr interoperability protocol in which registered nodes exchange manifested, payload-bound communications while each receiving framework independently determines the admissible state transition in its own runtime.

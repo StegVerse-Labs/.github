@@ -55,7 +55,7 @@
     {
       "work_unit_id": "WU1-NO-BROWSER-LOCAL-ROOT-OF-TRUTH",
       "statement": "No user-visible WorkSpace state may have its root of truth in script-writable browser storage. IndexedDB and localStorage may cache an admitted projection; they may not be its authority.",
-      "current_state": "Violated. The Personal path's precondition is a node registration held in device-local IndexedDB, and the Organizational path reads its five Org-Emp-KV predicates from sessionStorage['stegverse.workspace.orgEmpGate'], which nothing writes.",
+      "current_state": "Partly violated, with a registered exemption. The Organizational path no longer reads browser storage: Site W2 (2026-10-10) removed sessionStorage['stegverse.workspace.orgEmpGate'], and the gate renders FAIL_CLOSED ORG_KV_PROJECTION_NOT_OBSERVED with an actionable disposition until an authenticated Org-KV projection exists (Site#1604). The Personal path's KV query binding still requires a device-local StegOS node registration or an admitted device-continuity recovery result (Site assets/workspace-node-binding.js); that precondition holds a registered exemption in data/organization-role-exemption-register.json until a device-independent verified-user query path exists.",
       "assigned_owner": null
     },
     {
@@ -306,7 +306,7 @@
     "StegVerse-Labs/.github:docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md"
   ],
   "allowed_next_transitions": [
-    "PROPOSED_TO_ACTIVE_ON_REGISTRY_OWNER_DECISION_OF_REMAINING_THREE_BLOCKERS",
+    "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
     "PROPOSED_TO_SUPERSEDED_IF_MERGED_INTO_AN_EXISTING_OWNER"
   ],
   "completion": {

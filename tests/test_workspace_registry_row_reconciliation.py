@@ -41,3 +41,29 @@ class WorkspaceRegistryRowReconciliationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WorkspaceConformanceRecordTests(unittest.TestCase):
+    def setUp(self):
+        self.record = json.loads((ROOT / "data/canonical-task-records" / f"{TASK}.json").read_text(encoding="utf-8"))
+        self.register = json.loads((ROOT / "data/organization-role-exemption-register.json").read_text(encoding="utf-8"))
+
+    def test_next_transition_names_admission_not_resolved_blockers(self):
+        # Every blocker carries a recorded owner decision, so the remaining precondition is admission and the claim/fence.
+        self.assertTrue(all(b["owner_decision_recorded"] is True for b in self.record["blockers"]))
+        self.assertIn("PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE", self.record["allowed_next_transitions"])
+        self.assertFalse(any("REMAINING_THREE_BLOCKERS" in t for t in self.record["allowed_next_transitions"]))
+
+    def test_wu1_personal_path_precondition_holds_a_registered_exemption(self):
+        entries = [e for e in self.register["exemptions"] if e["surface"].startswith("StegVerse-Labs/Site:assets/workspace-node-binding.js")]
+        self.assertEqual(len(entries), 1)
+        entry = entries[0]
+        for field in self.register["required_fields"]:
+            self.assertTrue(isinstance(entry.get(field), str) and entry[field].strip(), field)
+        self.assertEqual(entry["owning_existing_goal"], TASK)
+        self.assertEqual(entry["current_disposition"], "FAIL_CLOSED")
+        self.assertIs(entry["consequence_committed"], False)
+        self.assertEqual(entry["authority_effect"], "NONE_REGISTER_ONLY")
+        wu1 = next(w for w in self.record["work_units"] if w["work_unit_id"] == "WU1-NO-BROWSER-LOCAL-ROOT-OF-TRUTH")
+        self.assertIn("registered exemption", wu1["current_state"])
+        self.assertNotIn("reads its five Org-Emp-KV predicates from sessionStorage", wu1["current_state"])

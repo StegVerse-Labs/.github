@@ -9,6 +9,20 @@
 **Boundary document:** `org-runtime/interlock-intr.json` → `ingress.capability_endpoint_bindings`, `egress.peer_capability_resolution`
 **Status:** ADVERTISED_AND_SERVED_HERE_PEER_INSTALLATION_UNPROVEN
 
+## 2026-10-17 conformance reconciliation
+
+Read at main `5b3fc476`. This section changes no code. The goal handoff is `docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md`, and the coordinating issues are [#2897](https://github.com/StegVerse-Labs/.github/issues/2897) and StegVerse-org/.github#162.
+
+- **No Task ID of its own.** This capability is tracked under `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001` until the Registry owner registers it, either there or as a child task.
+- **`close` returns a bare `PENDING`.** In `resident-runtime/organization_egress_boundary.py`, `close()` (L800–826) returns `disposition: PENDING`, with no six fields and no durable-queue disposition, when no response is in the mesh. A caller that wants a closure has to call again, which is a poll. Conformance items 3 and 5 require the unavailable receiver to be answered by `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION`, and a bare status is not a finding. Not recording an absence on the ledger is still correct.
+  - `failure_code`: `CLOSE_ABSENCE_RETURNS_BARE_PENDING`
+  - `failed_predicate`: `UNAVAILABLE_RECEIVER_ANSWERED_BY_DURABLE_QUEUE_WITH_SIX_FIELDS`
+  - `required_evidence_or_repair`: the no-response branch returns `DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION` with the six fields (`next_attempt` names the response-frame arrival event, not a clock or a poll), still records nothing on the ledger, and has a regression test. The same change goes to the org twin and the hop branches.
+  - `retry_entrypoint`: `resident-runtime/organization_egress_boundary.py::close`
+  - `owning_existing_goal`: `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001`
+  - `next_attempt`: Lane B's next six-field PR (#3213 or a follow-up)
+- **The fabricated far side stays test scaffolding.** The fabricated temporary-mesh far side described above must not become a required runtime component.
+
 ## Why this capability exists
 
 A peer could be addressed at a purpose route — governance — or at

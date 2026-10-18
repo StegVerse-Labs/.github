@@ -79,6 +79,8 @@ on:
       - 'scripts/run_canonical_work_event_bootstrap.py'
       - 'scripts/apply_admitted_canonical_work_projection.py'
       - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
+      - 'scripts/check_registry_generation_fence.py'
+      - 'tests/test_registry_generation_fence.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
@@ -163,6 +165,8 @@ on:
       - 'source-bundles/reusable-task-registry.d/RT-LOCAL-AI-*.json'
       - 'data/ephemeral-external-ai-reusable-component-profile.v1.json'
       - 'data/canonical-task-records/EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001.json'
+      - 'scripts/check_registry_generation_fence.py'
+      - 'tests/test_registry_generation_fence.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
 permissions: {}
@@ -220,7 +224,8 @@ jobs:
             tests.test_ungoverned_ai_defensive_envelope_worker \
             tests.test_ungoverned_ai_defensive_envelope_consumer \
             tests.test_ephemeral_external_ai_org_first_components \
-            tests.test_ecosystem_chat_reusable_composition
+            tests.test_ecosystem_chat_reusable_composition \
+            tests.test_registry_generation_fence
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
           python scripts/validate_four_missing_cosv_tracking.py
           python scripts/validate_task_registration_substrate_resolution.py
@@ -292,3 +297,33 @@ jobs:
           assert presence_preflight['current_disposition']=='NOT_ADMISSIBLE_UNTIL_EXACT_RUNTIME_SUBJECT_BINDING_EXISTS'
           print('CROSS_TASK_COORDINATION_COMPOSED_NON_AUTHORITY_PASS')
           PY
+      - name: Registry generation fence - live base tip + 1 (fail closed, read-only)
+        # Always runs, even when an earlier step failed. A PR that changes the
+        # registry must sit at the live base tip's generation + 1; the tip is
+        # fetched here because github.event.pull_request.base.sha is fixed when
+        # the event fires. A push to main must raise the generation by exactly 1 on every
+        # first-parent commit that changes registry content. Anonymous fetch,
+        # no token, no event ledger written. Six-field failure in the summary.
+        if: ${{ !cancelled() }}
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          fence_repo="${RUNNER_TEMP}/registry-generation-fence"
+          git init -q "$fence_repo"
+          git -C "$fence_repo" remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git -C "$fence_repo" fetch -q --no-tags --filter=blob:none origin \
+              "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}" \
+              "+refs/pull/${PR_NUMBER}/head:refs/remotes/pr/head"
+            python scripts/check_registry_generation_fence.py --mode pull_request \
+              --repo "$fence_repo" --base-ref "origin/${BASE_REF}" --head-ref pr/head
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git -C "$fence_repo" fetch -q --no-tags --filter=blob:none origin \
+              "+refs/heads/main:refs/remotes/origin/main"
+            python scripts/check_registry_generation_fence.py --mode push \
+              --repo "$fence_repo" --before "${PUSH_BEFORE:-}" --after "${GITHUB_SHA}"
+          fi
