@@ -164,7 +164,7 @@ class SchemaFixTests(unittest.TestCase):
 
     def test_sf5_only_ledger_receipts_count(self):
         ch = base.al_known_good_change("svi:" + "1" * 64)
-        obs = wi.admission_inputs(ch, ch["base_ref"])
+        obs = wi.admission_inputs(ch, ch["base_ref"], (), base.fx.fixture_base_state_readback(ch["base_ref"], ch["hb_epoch"]))
         self.assertEqual(fx_admit({**obs, "required_signoff_roles": []})["disposition"], "ALLOW")
         art = base.reseal_change(dict(ch, validation_receipts=[
             {**v, "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/lane-file.md#L57"} for v in ch["validation_receipts"]]))

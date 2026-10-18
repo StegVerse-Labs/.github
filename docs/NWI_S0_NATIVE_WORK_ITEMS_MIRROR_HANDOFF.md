@@ -241,3 +241,10 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - The earlier classes are byte-identical.
   - The positive controls carry a fixture readback (`fixture_base_state_readback`: fixture_only, with unobserved fields listed).
   - Replay-map rows carry `hb_epoch_readback`. The readback axes are REPLAY_INPUT; `supplied_hb_epoch` is SV_CHANGE `/hb_epoch` (not part of the request digest).
+
+## Round 5b: the admission epoch binding applies to every admission (decision 15:23Z)
+- `supplied-epoch-binder-check` moves to `surface_kinds.all` in the row (removed from `ledger_writer`, where it is now implied), so every SV_CHANGE requires it and carries hb_epoch.
+- `evaluate_admission` runs `verify_admission_hb_epoch` for every admission (after the check receipts, before the sign-offs); the ledger_writer gate is gone.
+- Corpus and replay regenerated through the existing paths (`build_sv_native_fixtures.py`, SCENARIO_CORPUS_APPEND): every positive control carries the sealed fixture readback (`fixture_only`, `unobserved_fields` as for the fixture sign-offs). Scenario ids unchanged (the 32 earlier ids plus the 6 of round 5); `classes.jsonl` is byte-identical.
+- The class stays `ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer`: the class rule keys on (failed predicate, surface kind) of the first observation (org#189 epoch binder gaps, ledger_writer), and `all` is not a surface kind (`sv_work_items.SURFACE_KINDS`). A harvested outcome on another surface would derive a sibling class.
+- HB_EPOCH_MISMATCH stays DENY: a sealed epoch that contradicts the record is an observed contradiction, not an unobservation.

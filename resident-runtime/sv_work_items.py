@@ -998,11 +998,11 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     denied = sorted(c for c in required if by_id[c].get("disposition") == "DENY")
     if denied:
         raise _deny("REQUIRED_CHECK_DENIED", "CHECK_PASSES", "every required check ALLOW", e, denied=denied)
-    if EPOCH_BINDER_CHECK_ID in (obs.get("required_check_ids") or []):
-        # where the row requires the supplied-epoch-binder-check, its predicate (ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH)
-        # is also evaluated here over the sealed readback, after the check receipts and before the sign-offs
-        verify_admission_hb_epoch(obs.get("supplied_hb_epoch"), obs.get("hb_epoch_readback"),
-                                  (obs.get("base_ref") or {}).get("ledger_head"), fixture_mode=fixture_mode)
+    # ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH applies to every admission (the row requires the
+    # supplied-epoch-binder-check on the 'all' surface); evaluated over the sealed readback after the check receipts
+    # and before the sign-offs
+    verify_admission_hb_epoch(obs.get("supplied_hb_epoch"), obs.get("hb_epoch_readback"),
+                              (obs.get("base_ref") or {}).get("ledger_head"), fixture_mode=fixture_mode)
     have = {s.get("role") for s in obs.get("signoffs") or []
             if signoff_resolves(s, obs.get("signoff_receipts") or [], obs.get("head_change_digest"), fixture_mode)}
     absent = sorted(set(obs.get("required_signoff_roles") or []) - have)

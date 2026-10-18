@@ -135,11 +135,28 @@ class AdmissionTests(unittest.TestCase):
         # outside fixture_mode the fixture receipts never count (the checks fail first)
         self.assertNotEqual(wi.admit(self.obs())["disposition"], "ALLOW")
 
-    def test_only_where_the_row_requires_the_binder_check(self):
-        self.assertIn("supplied-epoch-binder-check", wi.required_for([fx.SURFACE_PATH["ledger_writer"]])[0])
-        for kind in ("transition", "workflow", "schema", "registry"):
-            self.assertNotIn("supplied-epoch-binder-check", wi.required_for([fx.SURFACE_PATH[kind]])[0])
-            self.assertEqual(wi.admit(self.obs(fx.SURFACE_PATH[kind], rb=None), fixture_mode=True)["disposition"], "ALLOW", kind)
+    def test_every_admission_binds_the_readback_epoch(self):
+        row = json.loads((ROOT / "data/sv-work-items/required-checks.json").read_text())
+        self.assertIn("supplied-epoch-binder-check", row["surface_kinds"]["all"]["checks"])
+        self.assertEqual([k for k, v in row["surface_kinds"].items() if "supplied-epoch-binder-check" in v["checks"]], ["all"])
+        for kind, path in sorted(fx.SURFACE_PATH.items()) + [("doc", "docs/example.md")]:
+            self.assertIn("supplied-epoch-binder-check", wi.required_for([path])[0], kind)
+            if kind == "doc":
+                continue
+            self.assertEqual(wi.admit(self.obs(path), fixture_mode=True)["disposition"], "ALLOW", kind)
+            out = wi.admit(self.obs(path, rb=None), fixture_mode=True)
+            self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"), kind)
+            out = wi.admit(self.obs(path, hb="2048"), fixture_mode=True)
+            self.assertEqual((out["disposition"], out["failure_code"]), ("DENY", "HB_EPOCH_MISMATCH"), kind)
+
+    def test_every_positive_control_carries_a_sealed_fixture_readback(self):
+        for s in base.jsonl("data/admission-scenarios/corpus.jsonl"):
+            if s["expected_disposition"] == "ALLOW":
+                rb = s["observed_inputs"]["hb_epoch_readback"]
+                self.assertEqual(rb["result_sha256"], wi.sha({k: v for k, v in rb.items() if k != "result_sha256"}), s["scenario_id"])
+                self.assertIs(rb["fixture_only"], True)
+                self.assertEqual(rb["unobserved_fields"], ["bound_main_commit", "hb_epoch", "hb_epoch_source/receipt_sha256", "sources"])
+                self.assertEqual(rb["hb_epoch"], s["observed_inputs"]["supplied_hb_epoch"])
 
     def test_inputs_carry_the_supplied_epoch_and_readback(self):
         o = self.obs()

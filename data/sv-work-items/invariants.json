@@ -1,9 +1,9 @@
 {
   "invariants": [
     {
-      "corpus_class": "ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer",
+      "corpus_class": "ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer: the class rule (G1: failed predicate + surface kind, S1: kinds typed by sv_work_items.surface_kind) keys on the surface where the class was first observed (org#189 epoch binder gaps, ledger_writer); 'all' is not a surface kind, so the class is not re-keyed. A harvested non-ALLOW outcome on another surface would derive a sibling class by the same rule.",
       "decided_by": "orchestrator 2026-10-18T15:09Z (KV INDEX: JD-P4-3 PART-DECIDED BY INVARIANT)",
-      "enforced_by": "resident-runtime/sv_work_items.py::verify_admission_hb_epoch(supplied, readback, ledger_head) -- the in-repo reference of the supplied-epoch-binder-check predicate (built into the NWI-S1 verifier, SV-LLM/.github#46); evaluate_admission applies it wherever the row requires that check (ledger_writer); admission_inputs carries supplied_hb_epoch and hb_epoch_readback",
+      "enforced_by": "resident-runtime/sv_work_items.py::verify_admission_hb_epoch(supplied, readback, ledger_head) -- the in-repo reference of the supplied-epoch-binder-check predicate (built into the NWI-S1 verifier, SV-LLM/.github#46); evaluate_admission applies it to every admission (the row requires the check on the 'all' surface; every SV_CHANGE carries hb_epoch); admission_inputs carries supplied_hb_epoch and hb_epoch_readback",
       "escalated_not_decided": "minting the epoch for a NEW ledger append (Lane B's highest+1 candidate) stays escalated (Claude/ChatGPT); request modes stay dispatched-or-refuse",
       "invariant_id": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH",
       "invariants_checked": [
@@ -16,9 +16,11 @@
       "mismatch": {
         "disposition": "DENY",
         "disposition_source": "no orchestrator or orchestration file names a disposition for HB_EPOCH_MISMATCH (searched /workspace/orch INDEX.md/GROK_STATUS.md and the lane clones); DENY kept. Open alignment item: Lane C's uncommitted Labs#3266 working tree (sv_change_base_state_readback.py, worktree mtime 15:12Z, after 78a0c78e) refuses its own caller-expected-epoch mismatch as FAIL_CLOSED, under the retired code name with alias HB_EPOCH_MISMATCH",
-        "failure_code": "HB_EPOCH_MISMATCH"
+        "failure_code": "HB_EPOCH_MISMATCH",
+        "why_deny": "a sealed epoch that contradicts the record is an observed contradiction, not an unobservation"
       },
       "native_record_application": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
+      "scope": "every admission (decision 2026-10-18 15:23Z): supplied-epoch-binder-check is on surface_kinds.all",
       "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
       "status": "DECIDED_BY_INVARIANT (JD-P4-3, partial)",
       "supplied_epoch_rule": {

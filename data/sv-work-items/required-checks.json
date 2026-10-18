@@ -223,6 +223,7 @@
     "all": {
       "checks": [
         "schema-validate",
+        "supplied-epoch-binder-check",
         "unit-tests"
       ],
       "signoffs": []
@@ -233,7 +234,6 @@
     },
     "ledger_writer": {
       "checks": [
-        "supplied-epoch-binder-check",
         "mutation-negative-suite"
       ],
       "signoffs": [

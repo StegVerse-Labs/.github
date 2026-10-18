@@ -242,12 +242,15 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(prop["disposition"], "ALLOW")
         real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH)  # fixture refs never count on the real path
         self.assertEqual((real["disposition"], real["failure_code"]), ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED"))
-        ver = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True})
+        rb = fx.fixture_base_state_readback(prop["record"]["base_ref"], prop["record"]["hb_epoch"])
+        noepoch = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True})
+        self.assertEqual((noepoch["disposition"], noepoch["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
+        ver = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True, "hb_epoch_readback": rb})
         self.assertEqual(ver["disposition"], "ALLOW", ver)
         noprov = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={"current_base": BASE})
         self.assertEqual(noprov["failure_code"], "ADMISSION_PROVENANCE_ABSENT")
         ctx = {"current_base": BASE, "predicate_digest": "sha256:" + "c" * 64, "corpus_head": "sha256:" + "d" * 64,
-               "actor_session": "AI Entity (by manifest)", "covered_kinds": ["transition"], "fixture_mode": True}
+               "actor_session": "AI Entity (by manifest)", "covered_kinds": ["transition"], "fixture_mode": True, "hb_epoch_readback": rb}
         moved = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**ctx, "current_base": {**BASE, "registry_generation": 320}})
         self.assertEqual((moved["disposition"], moved["failure_code"], moved["record"]["lifecycle_state"]), ("DENY", "BASE_STALE", "DENIED"))
         uncovered = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**ctx, "covered_kinds": []})
