@@ -203,6 +203,7 @@ class RowFieldsAndRegistrationTests(unittest.TestCase):
             {"kind": "ISSUE", "repo": "StegVerse-org/.github", "number": 162, "state": "OPEN", "owner_approved": False}]}}
         self.assertEqual(self.run_apply(payload)["disposition"], "ALLOW")
         self.assertEqual(self.row(INTERLOCK)["work_items"][0]["number"], 162)
+        self.assertEqual(self.run_apply(payload, tip=self.tip + 1)["disposition"], "NO_CHANGE")
 
     def test_failed_validator_restores_registry_and_records(self):
         (self.dir / "scripts").mkdir()

@@ -186,7 +186,9 @@ def merge(registry: dict[str, Any], data: Any, task_shards: Path) -> tuple[dict[
             raise Refused("RECORD_DATA_RECORD_IDENTITY", f"{path.name} carries task_id {task_id}",
                           "correct the record identity", "after the record is corrected", task_id=task_id)
         existing = [row for row in merged.get("tasks", []) if row.get("task_id") == task_id]
-        if existing and existing[0] != record:
+        # A row this same data registered earlier also carries this data's work items for it.
+        expected = dict(record, work_items=work_items[task_id]) if task_id in work_items else record
+        if existing and existing[0] not in (record, expected):
             raise Refused("RECORD_DATA_ALREADY_REGISTERED", f"{task_id} is not yet a different aggregate row",
                           "edit the existing row with row_fields instead of re-registering it", "after the data is restated",
                           task_id=task_id)
