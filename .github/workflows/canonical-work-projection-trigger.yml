@@ -23,8 +23,12 @@ name: Canonical work projection trigger
 # ORGANIZATION_LEDGER_LOCK, published fast-forward only and read back from a
 # fresh fetch, as organization-governance-decision.yml and
 # organization-ledger-transition.yml do. A refusal carries the six fields. A
-# request with no supplied hb_epoch is refused without a receipt: no clock is
-# read to stamp one.
+# refusal whose request carries no supplied hb_epoch (HB_EPOCH_NOT_SUPPLIED /
+# HB_EPOCH_INVALID, or an unreadable request) is recorded too, stamped with the
+# epoch of the organization ledger head receipt it appends after; no clock is
+# read. The projection is written in the target file's existing layout, so a
+# row projection changes only that row and the header fields the projection
+# sets; a layout it cannot reproduce is refused, never rewritten.
 on:
   push:
     branches: [main]

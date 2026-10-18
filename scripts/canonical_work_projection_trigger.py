@@ -13,14 +13,26 @@ organization-governance-decision.yml.
 Subcommands:
 
 * evaluate: decide one request. `--mode plan` writes nothing; `--mode apply`
-  writes exactly the bytes apply_admitted_canonical_work_projection.py would
-  write for the same inputs. Nothing here sets the generation: the projection
-  script's own `generation + 1` is the only bump, and the existing generation
-  fence (scripts/check_registry_generation_fence.py) must ALLOW it against the
-  live registry generation before anything is written.
+  writes the content apply_admitted_canonical_work_projection.project()
+  returns, serialized in the target file's own existing layout (indent, key
+  order, separators, ASCII escaping, trailing newline), so a projection changes
+  only the projected row and the header fields project() itself sets
+  (generation, status, nonclaims). A target whose layout this cannot reproduce
+  byte-for-byte is refused (REGISTRY_LAYOUT_NOT_PRESERVABLE): the projection
+  never rewrites a file's layout. Nothing here sets the generation: the
+  projection script's own `generation + 1` is the only bump, and the existing
+  generation fence (scripts/check_registry_generation_fence.py) must ALLOW it
+  against the live registry generation before anything is written.
 * record: append the decision (ALLOW or FAIL_CLOSED) as a repository receipt
   and its organization receipt on the declared organization ledger, the way
-  resident-runtime/intr_destination_ingress.py records both levels.
+  resident-runtime/intr_destination_ingress.py records both levels. An ALLOW
+  is stamped with the request's supplied hb_epoch. A refusal whose request
+  carries no supplied epoch (HB_EPOCH_NOT_SUPPLIED / HB_EPOCH_INVALID, or a
+  request that could not be read) is still recorded: it is stamped with the
+  epoch of the organization ledger head receipt it appends after - an epoch
+  already on the chain, itself passing supplied_epoch_failure with
+  derived_from_clock false - so no refusal goes unrecorded and no clock is
+  read.
 * refuse: the six-field FAIL_CLOSED for a later workflow stage (the generation
   fence on the projection commit, or a publish that did not fast-forward).
 * readback: confirm both receipts from a fresh fetch of the ledger ref.
@@ -61,6 +73,10 @@ REQUEST_INVALID = "CANONICAL_WORK_PROJECTION_REQUEST_INVALID"
 NOT_ADMITTED = "CANONICAL_WORK_PROJECTION_NOT_ADMITTED"
 FENCE_MISMATCH = "REGISTRY_GENERATION_FENCE_MISMATCH"
 INTERNAL_ERROR = "CANONICAL_WORK_PROJECTION_TRIGGER_INTERNAL_ERROR"
+LAYOUT_NOT_PRESERVABLE = "REGISTRY_LAYOUT_NOT_PRESERVABLE"
+REFUSAL_NOT_RECORDED = "PROPAGATION_REFUSAL_NOT_RECORDED"
+HB_EPOCH_SOURCE_REQUEST = "REQUEST_SUPPLIED"
+HB_EPOCH_SOURCE_LEDGER_HEAD = "ORGANIZATION_LEDGER_HEAD_RECEIPT"
 
 
 def _module(name: str, relative: str):
@@ -80,9 +96,57 @@ def sha_bytes(raw: bytes) -> str:
     return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
-def serialize(value: dict[str, Any]) -> str:
-    # Byte-identical to apply_admitted_canonical_work_projection.main().
-    return json.dumps(value, indent=2, sort_keys=True) + "\n"
+# The script's own CLI serialization (apply_admitted_canonical_work_projection.main()).
+SCRIPT_LAYOUT = {"indent": 2, "sort_keys": True, "ensure_ascii": True, "separators": None, "newline": "\n"}
+
+
+def serialize(value: dict[str, Any], layout: dict[str, Any] | None = None) -> str:
+    layout = layout or SCRIPT_LAYOUT
+    kwargs = {"indent": layout["indent"], "sort_keys": layout["sort_keys"], "ensure_ascii": layout["ensure_ascii"]}
+    if layout["separators"] is not None:
+        kwargs["separators"] = tuple(layout["separators"])
+    return json.dumps(value, **kwargs) + layout["newline"]
+
+
+def _layout_candidates():
+    for indent in (2, 4, 1, 3, "\t", None):
+        for sep in (None, (",", ":")):
+            # Sorted and ASCII-escaped first: a file that is already sorted (or
+            # pure ASCII) stays so when the projection adds keys (or text).
+            for sort_keys in (True, False):
+                for ensure_ascii in (True, False):
+                    for newline in ("\n", ""):
+                        yield {"indent": indent, "sort_keys": sort_keys, "ensure_ascii": ensure_ascii,
+                               "separators": list(sep) if sep else None, "newline": newline}
+
+
+def detect_layout(raw: bytes) -> dict[str, Any] | None:
+    """The json.dumps parameters that reproduce `raw` byte-for-byte, or None.
+
+    The projection re-emits the target in this layout, so every byte outside
+    the projected row and the header fields project() sets is unchanged.
+    """
+    try:
+        text = raw.decode("utf-8")
+        value = json.loads(text)
+    except (UnicodeDecodeError, ValueError):
+        return None
+    for layout in _layout_candidates():
+        if serialize(value, layout) == text:
+            return layout
+    return None
+
+
+def layout_refusal(target: Path, base: dict[str, Any]) -> dict[str, Any]:
+    return refusal(LAYOUT_NOT_PRESERVABLE,
+                   "THE_PROJECTION_TARGET_LAYOUT_IS_REPRODUCIBLE_SO_A_ROW_PROJECTION_CHANGES_ONLY_THAT_ROW",
+                   f"{_relative(target)} is not in a layout json.dumps reproduces byte-for-byte; "
+                   "normalize its layout as its own fenced registry generation ahead of the "
+                   "REGISTRY FENCE QUEUE (a layout-only PR, generation live + 1, under "
+                   "scripts/check_registry_generation_fence.py) - this trigger never rewrites a layout "
+                   "alongside a row change",
+                   "on the next push of the request after the layout normalization generation lands",
+                   target=_relative(target), **base)
 
 
 def refusal(code: str, predicate: str, repair: str, next_attempt: str, **evidence: Any) -> dict[str, Any]:
@@ -144,7 +208,8 @@ def load_request(path: Path) -> tuple[dict[str, Any] | None, dict[str, Any] | No
         result = refusal(code, kernel.HB_EPOCH_PREDICATE,
                          "carry hb_epoch in the request as ASCII digits with value >= 32; no clock is read",
                          "on the next push of a request carrying a supplied epoch",
-                         request_path=str(path), detail=detail)
+                         request_path=str(path), detail=detail, request_id=rid, task_id=request["task_id"])
+        result["request_id"], result["task_id"] = rid, request["task_id"]
         result["derived_from_clock"] = False
         return None, result
     return request, None
@@ -217,28 +282,83 @@ def evaluate(paths: list[Path], *, registry_path: Path, task_shards: Path, apply
         target = shard_path
         fence_result = {"disposition": ALLOW, "applicability": "NOT_APPLICABLE",
                         "reason": "sharded projection does not change data/canonical-task-registry.json"}
-    text = serialize(proposed)
+    target_raw = registry_raw if source_kind == "MONOLITHIC_REGISTRY" else Path(target).read_bytes()
+    layout = detect_layout(target_raw)
+    if layout is None:
+        return layout_refusal(Path(target), base)
+    text = serialize(proposed, layout)
     if apply:
-        Path(target).write_text(text, encoding="utf-8")
+        Path(target).write_bytes(text.encode("utf-8"))
     return {"schema": RESULT_SCHEMA, "disposition": ALLOW, "applicability": "PROJECTED",
             "source_kind": source_kind, "target": _relative(Path(target)), "written": apply,
+            "layout": {**layout, "preserved_from": "target_file", "target_sha256_before": sha_bytes(target_raw)},
             "projected_sha256": sha_bytes(text.encode("utf-8")),
             "projected_generation": proposed.get("generation") if source_kind == "MONOLITHIC_REGISTRY" else live,
             "generation_fence": fence_result, "generation_set_by": "apply_admitted_canonical_work_projection.project",
             "authority_effect": "CANONICAL_TASK_STATE_PROJECTION_FROM_ADMITTED_INGRESS", **base}
 
 
+class RefusalEpochUnavailable(ValueError):
+    """A refusal has no supplied epoch to be stamped with: no request epoch and no ledger head epoch."""
+
+    def __init__(self, detail: str) -> None:
+        super().__init__(detail)
+        self.detail = detail
+
+
+def ledger_head_epoch(organization_ledger) -> tuple[int, str]:
+    """The epoch of the organization ledger head receipt, and that receipt's digest.
+
+    It is an epoch already recorded on the chain the refusal appends after; it
+    must itself pass the shared supplied-epoch rule with derived_from_clock
+    false. No clock is read.
+    """
+    ledger_store = organization_ledger.ledger_store
+    store = organization_ledger.organization_store()
+    head = store.get(ledger_store.HEAD_KEY)
+    digest = head.get("receipt_sha256") if isinstance(head, dict) else None
+    if not digest:
+        raise RefusalEpochUnavailable("the organization ledger has no head receipt to take an epoch from")
+    receipt = store.get(ledger_store.receipt_key(digest))
+    if not isinstance(receipt, dict) or receipt.get("receipt_sha256") != digest:
+        raise RefusalEpochUnavailable("the organization ledger head receipt is not readable as " + digest)
+    reference = receipt.get("hb_reference")
+    epoch = reference.get("epoch") if isinstance(reference, dict) else None
+    failure = kernel.supplied_epoch_failure(epoch, reference if reference is not None else {})
+    if failure is not None or not isinstance(reference, dict) or reference.get("derived_from_clock") is not False:
+        raise RefusalEpochUnavailable("the organization ledger head epoch is not a supplied epoch: "
+                                      + (failure[1] if failure else "derived_from_clock is not exactly false"))
+    return int(str(epoch)), digest
+
+
 def record(result: dict[str, Any], hb_epoch: Any) -> dict[str, Any]:
-    """Append the decision at the repository and organization levels; return both digests."""
-    if kernel.supplied_epoch_failure(hb_epoch) is not None:
+    """Append the decision at the repository and organization levels; return both digests.
+
+    An ALLOW must carry the request's supplied hb_epoch. A FAIL_CLOSED without
+    one is stamped with the organization ledger head epoch (ledger_head_epoch),
+    so every refusal is recorded; RefusalEpochUnavailable when there is none.
+    """
+    disposition = result.get("disposition")
+    epoch_failure = kernel.supplied_epoch_failure(hb_epoch)
+    if epoch_failure is not None and disposition != FAIL_CLOSED:
         raise ValueError("record_requires_a_supplied_hb_epoch")
     repository_ledger = _module("repo_transition_emit", ".stegverse/transition-ledger/emit.py")
     organization_ledger = _module("aggregate_repo_transition", "resident-runtime/aggregate_repo_transition.py")
-    disposition = result.get("disposition")
+    if epoch_failure is None:
+        epoch, epoch_source, epoch_head = int(str(hb_epoch)), HB_EPOCH_SOURCE_REQUEST, None
+    else:
+        epoch, epoch_head = ledger_head_epoch(organization_ledger)
+        epoch_source = HB_EPOCH_SOURCE_LEDGER_HEAD
     transition_class = APPLIED_CLASS if disposition == ALLOW else REFUSED_CLASS
-    request_id = result.get("request_id") or result.get("evidence", {}).get("request_id") or "unidentified-request"
-    evidence = {"request_id": request_id, "disposition": disposition,
-                "result_sha256": sha_bytes(json.dumps(result, sort_keys=True).encode("utf-8"))}
+    result_sha256 = sha_bytes(json.dumps(result, sort_keys=True).encode("utf-8"))
+    request_id = result.get("request_id") or (result.get("evidence") or {}).get("request_id")
+    if not isinstance(request_id, str) or not request_id:
+        # No request identity was established (absent, unreadable or invalid
+        # request): the refusal is identified by its own content, so two
+        # different refusals never collide on one transition id.
+        stem = Path(str((result.get("evidence") or {}).get("request_path") or "request")).stem
+        request_id = "unidentified-" + re.sub(r"[^A-Za-z0-9._-]", "_", stem)[:64] + "-" + result_sha256[7:23]
+    evidence = {"request_id": request_id, "disposition": disposition, "result_sha256": result_sha256}
     for key in SIX_FIELDS:
         if key in result:
             evidence[key] = result[key]
@@ -246,9 +366,13 @@ def record(result: dict[str, Any], hb_epoch: Any) -> dict[str, Any]:
                 "live_generation", "commit"):
         if key in result:
             evidence[key] = result[key]
+    evidence["hb_epoch_source"] = epoch_source
+    evidence["derived_from_clock"] = False
+    if epoch_head is not None:
+        evidence["hb_epoch_ledger_head_receipt_sha256"] = epoch_head
+        evidence["request_hb_epoch_failure"] = epoch_failure[0]
     predecessor = result.get("registry_sha256_before") or evidence["result_sha256"]
     successor = result.get("projected_sha256") or predecessor
-    epoch = int(str(hb_epoch))
     repository_receipt = repository_ledger.append(
         transition_class + ":" + request_id, transition_class, predecessor, successor, evidence, "NONE",
         hb_epoch=epoch, idempotent_on=("request_id", "disposition", "result_sha256"))
@@ -261,7 +385,8 @@ def record(result: dict[str, Any], hb_epoch: Any) -> dict[str, Any]:
             "organization_receipt_sha256": organization_receipt["receipt_sha256"],
             "organization_receipt_preserves_repository_receipt":
                 organization_receipt.get("repo_receipt_sha256") == repository_receipt["receipt_sha256"],
-            "transition_class": transition_class}
+            "transition_class": transition_class, "request_id": request_id,
+            "hb_epoch": epoch, "hb_epoch_source": epoch_source}
 
 
 def readback(location: str, namespace: str, recorded: dict[str, Any]) -> dict[str, Any]:
@@ -304,6 +429,17 @@ def emit(result: dict[str, Any], out: str | None) -> int:
             print(f"{key}={result.get(key, '')}", file=sys.stderr)
         return 1
     return 0
+
+
+def request_epoch(path: str | None) -> Any:
+    """The request's hb_epoch, or None when the request is absent or unreadable."""
+    if not path or not Path(path).is_file():
+        return None
+    try:
+        value = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeDecodeError):
+        return None
+    return value.get("hb_epoch") if isinstance(value, dict) else None
 
 
 def changed_paths(changed_file: str | None, explicit: list[str]) -> list[Path]:
@@ -360,18 +496,21 @@ def main(argv: list[str] | None = None) -> int:
                                  apply=args.mode == "apply"), out)
         if args.command == "record":
             result = json.loads(Path(args.result).read_text(encoding="utf-8"))
-            hb_epoch = None
-            if args.request and Path(args.request).is_file():
-                hb_epoch = json.loads(Path(args.request).read_text(encoding="utf-8")).get("hb_epoch")
+            hb_epoch = request_epoch(args.request)
             epoch_failure = kernel.supplied_epoch_failure(hb_epoch)
-            if epoch_failure is not None:
-                # No clock is read for an epoch, so a decision without a supplied
-                # epoch cannot be stamped; it stays a run-level FAIL_CLOSED.
+            if epoch_failure is not None and result.get("disposition") != FAIL_CLOSED:
                 return emit(refusal(epoch_failure[0], kernel.HB_EPOCH_PREDICATE,
-                                    "the request must carry a supplied hb_epoch for its decision to be recorded",
+                                    "an ALLOW is recorded only with the request's supplied hb_epoch",
                                     "on the next push of a request carrying a supplied epoch",
-                                    decision=result, ledger_recorded=False), out)
-            recorded = record(result, hb_epoch)
+                                    decision=result, ledger_recorded=False, derived_from_clock=False), out)
+            try:
+                recorded = record(result, hb_epoch)
+            except RefusalEpochUnavailable as exc:
+                return emit(refusal(REFUSAL_NOT_RECORDED, "EVERY_REFUSAL_IS_RECORDED_AT_A_SUPPLIED_EPOCH",
+                                    "publish refs/stegverse/organization-ledger with a head receipt whose "
+                                    "hb_reference is a supplied epoch, or carry hb_epoch in the request: " + exc.detail,
+                                    "on the next run of the trigger", decision=result, ledger_recorded=False,
+                                    derived_from_clock=False), out)
             recorded["decision_disposition"] = result.get("disposition")
             return emit({"schema": RESULT_SCHEMA, "disposition": ALLOW, **recorded}, out)
         if args.command == "refuse":

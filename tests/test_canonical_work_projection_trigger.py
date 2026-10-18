@@ -5,9 +5,11 @@ data/canonical-task-registry.json is never written.
 """
 from __future__ import annotations
 
+import difflib
 import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -19,6 +21,7 @@ SCRIPT = ROOT / "scripts" / "canonical_work_projection_trigger.py"
 PROJECTION = ROOT / "scripts" / "apply_admitted_canonical_work_projection.py"
 WORKFLOW = ROOT / ".github" / "workflows" / "canonical-work-projection-trigger.yml"
 GOVERNANCE = ROOT / ".github" / "workflows" / "organization-governance-decision.yml"
+MAIN_REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 
 _spec = importlib.util.spec_from_file_location("canonical_work_projection_trigger", SCRIPT)
 trigger = importlib.util.module_from_spec(_spec)
@@ -171,6 +174,82 @@ class DecisionTests(Workspace):
             self.assertIs(result["derived_from_clock"], False)
         self.assertEqual(self.decide([self.write_request(request(hb_epoch="32"))])["disposition"], "ALLOW")
 
+    def test_a_layout_it_cannot_reproduce_is_refused_and_never_rewritten(self):
+        value = json.loads(self.registry.read_text())
+        self.registry.write_text(json.dumps(value, indent=2).replace('"status": "FIXTURE"', '"status":  "FIXTURE"') + "\n",
+                                 encoding="utf-8")
+        before = self.registry.read_bytes()
+        result = self.decide([self.write_request(request())], apply=True)
+        self.assertRefused(result, "REGISTRY_LAYOUT_NOT_PRESERVABLE")
+        self.assertIn("own fenced registry generation", result["required_evidence_or_repair"])
+        self.assertEqual(self.registry.read_bytes(), before)
+
+    def test_an_unsorted_non_ascii_layout_is_preserved(self):
+        value = {"tasks": [{"task_id": TASK_ID, "coordination_state": "PROPOSED", "correlation_id": CORRELATION,
+                            "goal": "caf\u00e9 \u2014 fixture"}],
+                 "generation": 7, "status": "FIXTURE", "nonclaims": []}
+        self.registry.write_text(json.dumps(value, indent=4, ensure_ascii=False), encoding="utf-8")
+        result = self.decide([self.write_request(request())], apply=True)
+        self.assertEqual(result["disposition"], "ALLOW", result)
+        self.assertEqual(result["layout"]["indent"], 4)
+        self.assertIs(result["layout"]["sort_keys"], False)
+        text = self.registry.read_text(encoding="utf-8")
+        self.assertIn("caf\u00e9 \u2014 fixture", text)
+        self.assertTrue(text.startswith('{\n    "tasks": [\n'))
+        self.assertFalse(text.endswith("\n"))
+        self.assertEqual(json.loads(text)["generation"], 8)
+
+    def test_a_row_projection_against_the_main_registry_changes_only_that_row(self):
+        main_raw = MAIN_REGISTRY.read_text(encoding="utf-8")
+        main = json.loads(main_raw)
+        ids = [t.get("task_id") for t in main["tasks"]]
+        row = next((t for t in main["tasks"] if t.get("coordination_state") == "PROPOSED"
+                    and ids.count(t.get("task_id")) == 1 and t.get("correlation_id")), None)
+        if row is None:
+            self.skipTest("main has no projectable PROPOSED row")
+        shutil.copyfile(MAIN_REGISTRY, self.registry)
+        task_id = row["task_id"]
+        value = request(task_id=task_id, generation=main["generation"],
+                        consumption_receipt=consumption(task_id=task_id, correlation_id=row["correlation_id"]))
+        result = self.decide([self.write_request(value)], apply=True)
+        self.assertEqual(result["disposition"], "ALLOW", result)
+        self.assertEqual(result["projected_generation"], main["generation"] + 1)
+        new_raw = self.registry.read_text(encoding="utf-8")
+        # Content is exactly what project() returns.
+        _, expected, _ = trigger.projection.project(main, value["ingress_receipt"], value["consumption_receipt"],
+                                                    task_shards=self.shards)
+        self.assertEqual(json.loads(new_raw), expected)
+        old_lines, new_lines = main_raw.splitlines(), new_raw.splitlines()
+
+        def row_span(lines):
+            at = lines.index(f'      "task_id": {json.dumps(task_id, ensure_ascii=False)},')
+            start = max(i for i in range(at) if lines[i] == "    {")
+            end = next(i for i in range(at, len(lines)) if lines[i] in ("    }", "    },"))
+            return range(start, end + 1)
+
+        def block_span(lines, key):
+            start = lines.index(f'  "{key}": [')
+            end = next(i for i in range(start, len(lines)) if lines[i] in ("  ]", "  ],"))
+            return range(start, end + 1)
+
+        def header(lines, key):
+            return {i for i, line in enumerate(lines) if line.startswith(f'  "{key}": ')}
+
+        allowed_old = set(row_span(old_lines)) | set(block_span(old_lines, "nonclaims")) | header(old_lines, "generation") | header(old_lines, "status")
+        allowed_new = set(row_span(new_lines)) | set(block_span(new_lines, "nonclaims")) | header(new_lines, "generation") | header(new_lines, "status")
+        changed_old, changed_new = set(), set()
+        for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, old_lines, new_lines, autojunk=False).get_opcodes():
+            if tag != "equal":
+                changed_old.update(range(i1, i2))
+                changed_new.update(range(j1, j2))
+        self.assertTrue(changed_old or changed_new)
+        self.assertLessEqual(changed_old, allowed_old)
+        self.assertLessEqual(changed_new, allowed_new)
+        # Outside the row: only the header fields project() itself sets.
+        outside = (changed_old - set(row_span(old_lines))) | {i for i in changed_new - set(row_span(new_lines))}
+        self.assertLessEqual(len(outside), 2 * 2 + len(block_span(new_lines, "nonclaims")))
+        self.assertLess(len(changed_old) + len(changed_new), 100, "a row projection must not rewrite the layout")
+
     def test_the_cli_exits_nonzero_with_the_six_fields_on_stderr(self):
         path = self.write_request(request(generation=5))
         done = subprocess.run([sys.executable, str(SCRIPT), "evaluate", "--mode", "plan", "--request", str(path),
@@ -222,6 +301,79 @@ class LedgerTests(Workspace):
         result = self.decide([self.write_request(request())])
         first, second = trigger.record(result, "33"), trigger.record(result, "40")
         self.assertEqual(first["repository_receipt_sha256"], second["repository_receipt_sha256"])
+
+    def child_env(self):
+        # The child interpreter declares the POSIX ledger locus the way
+        # tests/posix_ledger_locus documents for a child given a POSIX root.
+        env = dict(os.environ)
+        env["PYTHONPATH"] = os.pathsep.join(filter(None, [str(ROOT / "tests" / "posix_ledger_locus"),
+                                                          env.get("PYTHONPATH")]))
+        return env
+
+    def refusal_receipt(self, request_id):
+        repo = self.receipts("STEGVERSE_REPO_LEDGER_ROOT", "stegverse.repo-transition-receipt/v1")
+        found = [r for r in repo if r["transition_id"] == trigger.REFUSED_CLASS + ":" + request_id]
+        self.assertEqual(len(found), 1, [r["transition_id"] for r in repo])
+        return found[0]
+
+    def test_a_refusal_without_a_supplied_epoch_is_recorded_at_the_ledger_head_epoch(self):
+        trigger.record(self.decide([self.write_request(request())], apply=True), "41")
+        missing = request("cwp-no-epoch-001")
+        del missing["hb_epoch"]
+        cases = (("cwp-no-epoch-001", missing, "HB_EPOCH_NOT_SUPPLIED", None),
+                 ("cwp-low-epoch-001", request("cwp-low-epoch-001", hb_epoch="31"), "HB_EPOCH_INVALID", "31"),
+                 ("cwp-coerced-epoch-001", request("cwp-coerced-epoch-001", hb_epoch="+33"), "HB_EPOCH_INVALID", "+33"))
+        for request_id, value, code, supplied in cases:
+            result = self.decide([self.write_request(value)])
+            self.assertRefused(result, code)
+            self.assertEqual(result["failed_predicate"], "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
+            recorded = trigger.record(result, supplied)
+            self.assertEqual(recorded["transition_class"], trigger.REFUSED_CLASS)
+            self.assertEqual(recorded["hb_epoch_source"], "ORGANIZATION_LEDGER_HEAD_RECEIPT")
+            self.assertIs(recorded["organization_receipt_preserves_repository_receipt"], True)
+            receipt = self.refusal_receipt(request_id)
+            for key in trigger.SIX_FIELDS:
+                self.assertTrue(receipt["evidence"][key], key)
+            self.assertEqual(receipt["evidence"]["failure_code"], code)
+            self.assertEqual(receipt["evidence"]["request_hb_epoch_failure"], code)
+            self.assertIs(receipt["evidence"]["derived_from_clock"], False)
+            self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
+            self.assertEqual(receipt["hb_reference"]["epoch"], 41)
+
+    def test_an_unreadable_request_refusal_is_recorded_through_the_cli(self):
+        trigger.record(self.decide([self.write_request(request())], apply=True), "35")
+        broken = self.requests / "broken.json"
+        broken.write_text("{not json", encoding="utf-8")
+        decision = self.dir / "decision.json"
+        decision.write_text(json.dumps(self.decide([broken])), encoding="utf-8")
+        done = subprocess.run([sys.executable, str(SCRIPT), "record", "--result", str(decision),
+                               "--request", str(broken)], capture_output=True, text=True, env=self.child_env())
+        self.assertEqual(done.returncode, 0, done.stderr)
+        out = json.loads(done.stdout)
+        self.assertEqual(out["decision_disposition"], "FAIL_CLOSED")
+        self.assertEqual(out["hb_epoch"], 35)
+        self.assertEqual(out["hb_epoch_source"], "ORGANIZATION_LEDGER_HEAD_RECEIPT")
+        receipt = self.refusal_receipt(out["request_id"])
+        self.assertTrue(out["request_id"].startswith("unidentified-broken-"))
+        self.assertEqual(receipt["evidence"]["failure_code"], "CANONICAL_WORK_PROJECTION_REQUEST_INVALID")
+
+    def test_with_no_supplied_epoch_anywhere_the_refusal_says_it_was_not_recorded(self):
+        value = request()
+        del value["hb_epoch"]
+        path = self.write_request(value)
+        result = self.decide([path])
+        with self.assertRaises(trigger.RefusalEpochUnavailable):
+            trigger.record(result, None)
+        decision = self.dir / "decision.json"
+        decision.write_text(json.dumps(result), encoding="utf-8")
+        done = subprocess.run([sys.executable, str(SCRIPT), "record", "--result", str(decision),
+                               "--request", str(path)], capture_output=True, text=True, env=self.child_env())
+        self.assertEqual(done.returncode, 1)
+        out = json.loads(done.stdout)
+        self.assertEqual(out["failure_code"], "PROPAGATION_REFUSAL_NOT_RECORDED")
+        for key in trigger.SIX_FIELDS:
+            self.assertIn(key + "=", done.stderr)
+        self.assertEqual(self.receipts("STEGVERSE_REPO_LEDGER_ROOT", "stegverse.repo-transition-receipt/v1"), [])
 
     def test_record_refuses_without_a_supplied_epoch(self):
         result = self.decide([self.write_request(request())])
