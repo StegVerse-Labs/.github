@@ -7,6 +7,10 @@ from a parameter file (the formalism-tests pilot). No network, no clock, no
 external machine.
 """
 import ast
+import contextlib
+import hashlib
+import importlib.util
+import io
 import json
 import os
 import re
@@ -1309,6 +1313,137 @@ class PropagationGate(unittest.TestCase):
         self.assertIn('"$RUNNER_TEMP/results/NO_REQUESTS.json" "$listed"', wf)
         self.assertIn('received=$((received + 1))', wf)
         self.assertLess(wf.index('mkdir -p "$out"\n            received=$((received + 1))'), wf.index('if [ "$received" -eq 0 ]; then'))
+
+
+
+class ReadbackOnlyMode(unittest.TestCase):
+    """P1-FC-11 (INDEX H51): mode readback reads the designated ledger back under a run id and appends nothing."""
+    PIN = "e6ba9601933c1c9d58f6b704c2a119544d21cb4d"
+
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location("readback_only_under_test", COMPONENT / "readback_only.py")
+        self.RO = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.RO)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+
+    def ledger(self, *kinds):
+        g = GitLedger()
+        self.addCleanup(g.close)
+        for k in kinds:
+            g.append(k)
+        return g
+
+    def run_ro(self, location, run_id="4242", component_ref=PIN, sha="", name="out"):
+        out = Path(self.tmp.name) / name
+        record = self.RO.run(location, out, run_id, component_ref, LEDGER_REF, sha, "formalism-tests")
+        self.assertEqual(json.loads((out / "invocation.json").read_text()), record)
+        return out, record
+
+    def assertSixFields(self, record):
+        for field in SIX:
+            self.assertTrue(isinstance(record.get(field), str) and record[field].strip(), field)
+
+    def test_an_allow_ledger_is_recorded_under_the_run_id_and_nothing_is_written(self):
+        g = self.ledger("retained", "retained")
+        before = g.git("rev-parse", LEDGER_REF)
+        out, r = self.run_ro(g.location, sha=before)
+        self.assertEqual((r["disposition"], r["exit_code"], r["run_id"], r["ledger_ref_sha"]), ("ALLOW", 0, "4242", before))
+        self.assertEqual(r["readback_sha256"], "sha256:" + hashlib.sha256((out / "readback.json").read_bytes()).hexdigest())
+        self.assertEqual(json.loads((out / "readback.json").read_text())["disposition"], "ALLOW")
+        self.assertIs(r["appended"], False)
+        self.assertEqual(r["authority_effect"], "NONE_READBACK_ONLY")
+        self.assertEqual(r["command"][:3], ["organization_ledger_readback.py", "--location", g.location])
+        self.assertEqual(g.git("rev-parse", LEDGER_REF), before)
+        self.assertEqual(g.git("status", "--porcelain"), "")
+        with contextlib.redirect_stdout(io.StringIO()):
+            code = self.RO.main(["--location", g.location, "--out-dir", str(Path(self.tmp.name) / "cli"), "--run-id", "7",
+                                 "--component-ref", self.PIN, "--ledger-ref", LEDGER_REF, "--organization", "formalism-tests"])
+        self.assertEqual(code, 0)
+
+    def test_a_non_allow_readback_is_copied_with_its_own_six_fields(self):
+        g = GitLedger()
+        self.addCleanup(g.close)
+        (g.repo / "README").write_text("x")
+        g.git("add", "-A")
+        g.git("commit", "-q", "-m", "empty")
+        g.git("update-ref", LEDGER_REF, "HEAD")
+        _, r = self.run_ro(g.location)
+        self.assertEqual((r["disposition"], r["failure_code"], r["exit_code"]),
+                         ("FAIL_CLOSED", "ORGANIZATION_LEDGER_HEAD_ABSENT", 1))
+        self.assertSixFields(r)
+        tampered = self.ledger("retained")
+        tampered.append("retained", tamper=True)
+        _, r = self.run_ro(tampered.location, name="tampered")
+        self.assertEqual(r["disposition"], "FAIL_CLOSED")
+        self.assertSixFields(r)
+        _, r = self.run_ro("git+https://github.com/StegVerse-org/.github#" + LEDGER_REF, name="remote")
+        self.assertEqual((r["disposition"], r["failure_code"]), ("FAIL_CLOSED", "LEDGER_LOCATOR_INVALID"))
+        self.assertSixFields(r)
+
+    def test_no_run_id_or_an_unpinned_component_is_refused_before_the_readback(self):
+        g = self.ledger("retained")
+        for i, (run_id, ref, code) in enumerate((("", self.PIN, "READBACK_RUN_ID_ABSENT"),
+                                                 ("9", "main", "COMPONENT_REF_NOT_PINNED"),
+                                                 ("9", "", "COMPONENT_REF_NOT_PINNED"))):
+            out, r = self.run_ro(g.location, run_id=run_id, component_ref=ref, name="refused-%d" % i)
+            self.assertEqual((r["disposition"], r["failure_code"]), ("FAIL_CLOSED", code))
+            self.assertSixFields(r)
+            self.assertFalse((out / "readback.json").exists())
+            self.assertNotIn("exit_code", r)
+
+    def step_one(self):
+        wf = (COMPONENT.parents[1] / ".github/workflows/organization-ledger-transition-reusable.yml").read_text()
+        step = wf[wf.index("- name: Refuse unpinned refs and an unsupplied epoch"):]
+        step = step[:step.index("\n      - name:")]
+        body = step[step.index("run: |\n") + len("run: |\n"):]
+        body = "\n".join(line[10:] for line in body.splitlines())
+        return body.replace("${{ inputs.component_ref }}", self.PIN).replace("${{ inputs.intr_interface_ref }}", self.PIN)
+
+    def step_one_run(self, mode, epoch):
+        root = Path(self.tmp.name) / ("consumer-" + mode + "-" + (epoch or "none"))
+        (root / ".stegverse/transition-ledger").mkdir(parents=True)
+        (root / ".stegverse/transition-ledger/organization-ledger.parameters.json").write_text(
+            json.dumps({"owning_existing_goal": "StegVerse-org/.github#163"}))
+        env = dict(os.environ, MODE=mode, HB_EPOCH=epoch, GOAL="StegVerse-org/.github#163", RETRY="wf",
+                   GITHUB_ENV=str(root / "env"))
+        p = subprocess.run(["bash", "-c", "set -euo pipefail\n" + self.step_one()], cwd=root, env=env,
+                           capture_output=True, text=True)
+        return p.returncode, p.stdout
+
+    def test_step_one_admits_readback_without_an_epoch_and_refuses_an_undeclared_mode(self):
+        self.assertEqual(self.step_one_run("readback", "")[0], 0)
+        rc, out = self.step_one_run("self-closure", "")
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out.splitlines()[-1])["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
+        self.assertEqual(self.step_one_run("self-closure", "33")[0], 0)
+        self.assertEqual(json.loads(self.step_one_run("self-closure", "+33")[1].splitlines()[-1])["failure_code"], "HB_EPOCH_INVALID")
+        for mode in ("readback-only", "Request", ""):
+            rc, out = self.step_one_run(mode, "33")
+            self.assertEqual(rc, 1, mode)
+            refusal = json.loads(out.splitlines()[-1])
+            self.assertEqual(refusal["failure_code"], "MODE_INVALID")
+            self.assertSixFields(refusal)
+
+    def test_the_workflow_appends_and_publishes_nothing_in_readback_mode(self):
+        wf = (COMPONENT.parents[1] / ".github/workflows/organization-ledger-transition-reusable.yml").read_text()
+        self.assertNotIn("inputs.mode != 'self-closure'", wf, "an undeclared mode must not fall into request mode")
+        steps = wf.split("\n      - name: ")[1:]
+        by_name = {s.splitlines()[0]: s for s in steps}
+        writers = [n for n, s in by_name.items() if "git push" in s or "aggregate" in s or "--self-close" in s
+                   or "propagate_after_append.py" in s]
+        self.assertTrue(writers)
+        for name in writers:
+            cond = by_name[name].split("run: |")[0]
+            self.assertTrue("inputs.mode == 'request'" in cond or "inputs.mode == 'self-closure'" in cond
+                            or "inputs.mode != 'readback'" in cond, name)
+        ro = by_name["Read the designated ledger back (readback mode, nothing appended)"]
+        self.assertIn("if: inputs.mode == 'readback'", ro)
+        self.assertIn('python3 "$COMPONENT/readback_only.py"', ro)
+        self.assertIn('--run-id "${{ github.run_id }}"', ro)
+        self.assertNotIn("git push", ro)
+        gate = by_name["Fail on a recorded propagation refusal (six fields)"]
+        self.assertIn("if: always() && inputs.mode != 'readback'", gate)
 
 
 if __name__ == "__main__":
