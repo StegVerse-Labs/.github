@@ -36,6 +36,10 @@ REQUIRED_CHECKS = json.loads((ROOT / "data/sv-work-items/required-checks.json").
 CHECK_RECEIPT_INVARIANT = "REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIER_OUTPUTS_APPENDED_BY_ORG_WRITER"
 CHECK_RECEIPT_SCHEMA = "stegverse.sv_check_receipt.v1"
 EXACT_HEAD_PREDICATE = "RECEIPT_CHANGE_DIGEST_EQUALS_HEAD"  # TVC#519: CHECK_SKIPPED_OR_UNOBSERVED, kept distinct by this predicate
+CHECK_ALLOW_PREDICATE = "CHECK_RECEIPT_DISPOSITION_IS_ALLOW"  # TVC#519: a FAIL_CLOSED check receipt -> CHECK_SKIPPED_OR_UNOBSERVED
+SIGNOFF_RECEIPT_SCHEMA = "stegverse.sv-change-signoff-receipt/v0.1"  # the sealed sign-off receipt TVC resolves (TVC#519)
+FIXTURE_REF_MARK = "#fixture:"  # a fixture validation-receipt ref; counted only in fixture_mode
+LEDGER_RECEIPT_REF = re.compile(r"^refs/stegverse/organization-ledger@(?P<commit>[0-9a-f]{40}):(?P<path>receipts/(?P<hex>[0-9a-f]{64})\.json)$")
 OWNING_GOAL = "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)"
 EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
@@ -62,7 +66,7 @@ RECORD_MODES = ("NATIVE", "MIGRATED_HISTORICAL")
 MIGRATED_UNKNOWN_ALLOWED = {
     "SV_ISSUE": ("/hb_epoch", "/resolution_class", "/owning_goal", "/disposition/owning_existing_goal", "/surface",
                  "/restatements/*/owning_existing_goal"),
-    "SV_CHANGE": ("/hb_epoch", "/owning_goal"),
+    "SV_CHANGE": ("/hb_epoch", "/owning_goal", "/required_checks_ref/blob_sha"),
 }
 MIGRATION_FLAG_RESOLVES = "RESOLVES_NOT_RECORDED"
 # FB-2: an SV_ISSUE surface taken from the lane table's Class column (sv_migration.derive_surface_with_class_column)
@@ -411,6 +415,10 @@ def validate_change(rec: Any) -> dict[str, Any]:
     ref = rec.get("required_checks_ref")
     if not isinstance(ref, Mapping) or not all(_str(ref.get(k)) for k in ("file", "blob_sha", "row_id")):
         raise _fail("REQUIRED_CHECKS_ROW_ABSENT", "REQUIRED_CHECKS_ROW_RESOLVES", "required_checks_ref{file, blob_sha, row_id}", e)
+    if not GIT_SHA.match(ref["blob_sha"]) and not (mode == "MIGRATED_HISTORICAL" and ref["blob_sha"] == UNKNOWN):
+        raise _fail("REQUIRED_CHECKS_ROW_NOT_PINNED", "REQUIRED_CHECKS_ROW_RESOLVES",
+                    "required_checks_ref.blob_sha is the 40-hex git blob of the row file (UNKNOWN only in MIGRATED_HISTORICAL)", e,
+                    blob_sha=ref["blob_sha"])
     for v in rec.get("validation_receipts") or []:
         if not isinstance(v, Mapping) or v.get("disposition") not in DISPOSITIONS or not _str(v.get("check_id")) \
                 or v.get("evidence_class") not in VALIDATION_EVIDENCE or not _str(v.get("ref")) \
@@ -498,11 +506,55 @@ def validate_check_receipt(receipt: Any, change: Mapping[str, Any] | None = None
     if set(r) - allowed:
         raise _deny("SV_CHECK_RECEIPT_INVALID", CHECK_RECEIPT_INVARIANT, "no fields beyond the pinned receipt shape", e, extra=sorted(set(r) - allowed))
     epoch_check(r.get("hb_epoch"), e)
+    if not isinstance(REQUIRED_CHECKS["checks"][r["check_id"]].get("offline_command"), list):
+        raise _fail("CHECK_COMMAND_UNDECLARED", "CHECK_HAS_OFFLINE_COMMAND",
+                    "the row declares no offline command for this check, so no receipt for it can be minted", e, check_id=r["check_id"])
     if change is not None and r["change_digest"] != (change.get("head") or {}).get("change_digest"):
         raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE, "re-run the check at the exact head.change_digest", e)
     if head_sha is not None and r["head_sha"] != head_sha:
         raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE, "re-run the check at the exact head commit", e)
     return dict(r)
+
+
+def check_command(check_id: Any, paths_at_head: Iterable[str], row: Mapping[str, Any] = REQUIRED_CHECKS) -> dict[str, Any]:
+    """Pure: the offline command a check id binds through the row (never the head). Undeclared id -> CHECK_ID_UNDECLARED;
+    offline_command UNKNOWN -> FAIL_CLOSED CHECK_COMMAND_UNDECLARED; a command_path absent at the head being verified
+    (`paths_at_head`, as listed from that head) -> FAIL_CLOSED CHECK_COMMAND_ABSENT_AT_HEAD."""
+    e = "check_command"
+    if check_id not in row["checks"]:
+        raise check_id_undeclared(check_id, e)
+    c = row["checks"][check_id]
+    if not isinstance(c.get("offline_command"), list) or not c["offline_command"]:
+        st = c.get("command_status") or {}
+        raise _fail("CHECK_COMMAND_UNDECLARED", "CHECK_HAS_OFFLINE_COMMAND",
+                    st.get("required_evidence_or_repair") or "declare offline_command, expected and command_paths in the row", e,
+                    st.get("next_attempt") or "after the row declares the command", check_id=check_id)
+    have = set(paths_at_head)
+    absent = sorted(p for p in c["command_paths"] if p not in have)
+    if absent:
+        raise _fail("CHECK_COMMAND_ABSENT_AT_HEAD", "CHECK_COMMAND_PATHS_PRESENT_AT_HEAD",
+                    "a head that carries every command_path of the check (rebase onto a base that has them)", e,
+                    "after the head carries the command's files; nothing was run", check_id=check_id, absent=absent)
+    return {"disposition": "ALLOW", "failed_predicate": None, "check_id": check_id, "argv": list(c["offline_command"]),
+            "argument_bindings": dict(c.get("argument_bindings") or {}), "expected": dict(c["expected"])}
+
+
+def check_outcome_matches(expected: Mapping[str, Any], exit_code: int, stdout: str, stderr: str) -> bool:
+    """Pure: exit_code equal; every stdout_json_subset key equal in the JSON stdout; stderr_last_line equal."""
+    if exit_code != expected.get("exit_code"):
+        return False
+    if "stdout_json_subset" in expected:
+        try:
+            out = json.loads(stdout)
+        except ValueError:
+            return False
+        if not isinstance(out, Mapping) or any(out.get(k) != v for k, v in expected["stdout_json_subset"].items()):
+            return False
+    if "stderr_last_line" in expected:
+        lines = [l for l in stderr.splitlines() if l.strip()]
+        if not lines or lines[-1].strip() != expected["stderr_last_line"]:
+            return False
+    return True
 
 
 def row_receipt_status(appended: Iterable[Mapping[str, Any]] = (), row: Mapping[str, Any] = REQUIRED_CHECKS) -> dict[str, Any]:
@@ -516,7 +568,57 @@ def row_receipt_status(appended: Iterable[Mapping[str, Any]] = (), row: Mapping[
     return {**row["row_status"], "missing_check_ids": missing}
 
 
-def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any]) -> dict[str, Any]:
+def signoff_resolves(so: Any, receipts: Iterable[Mapping[str, Any]], change_digest_: Any, fixture_mode: bool = False) -> bool:
+    """A sign-off counts only if its receipt_ref is the receipt_sha256 of a sealed ALLOW sign-off receipt for this
+    change (change_digest), by the same role and session. A fixture_only receipt counts only in fixture_mode."""
+    if not isinstance(so, Mapping) or not _str(so.get("receipt_ref")) or not _str(so.get("session")):
+        return False
+    for r in receipts:
+        if isinstance(r, Mapping) and r.get("schema") == SIGNOFF_RECEIPT_SCHEMA and r.get("receipt_sha256") == so["receipt_ref"] \
+                and r["receipt_sha256"] == sha({k: v for k, v in r.items() if k != "receipt_sha256"}) \
+                and r.get("role") == so.get("role") and r.get("session") == so.get("session") \
+                and r.get("change_digest") == change_digest_ and r.get("disposition") == "ALLOW" \
+                and (fixture_mode or r.get("fixture_only") is not True):
+            return True
+    return False
+
+
+def ledger_receipt_digest(receipt_bytes: bytes) -> str:
+    """'sha256:' + hex over canon(receipt object): the same pinned canonical JSON as change_id."""
+    return "sha256:" + hashlib.sha256(canon(json.loads(receipt_bytes.decode("utf-8")))).hexdigest()
+
+
+def verify_ledger_receipt_binding(receipt: Mapping[str, Any], ledger_objects: Mapping[str, bytes]) -> dict[str, Any]:
+    """Pure: binds a validation receipt's `digest` to the ledger receipt its `ref` names. `ref` addresses the stored
+    receipt the way the org-ledger readback does (ledger_store.receipt_key on refs/stegverse/organization-ledger):
+    refs/stegverse/organization-ledger@<commit 40-hex>:receipts/<receipt_sha256 hex>.json. `ledger_objects` maps
+    "<commit>:<path>" to the bytes a read of that ref returned; nothing here fetches. Unparsable ref, absent object,
+    non-JSON bytes, or a stored receipt whose receipt_sha256 is not the one its path names -> FAIL_CLOSED
+    LEDGER_RECEIPT_UNRESOLVED; digest != ledger_receipt_digest(bytes) -> FAIL_CLOSED LEDGER_RECEIPT_DIGEST_MISMATCH."""
+    e = "verify_ledger_receipt_binding"
+    nxt = "after a fresh read of refs/stegverse/organization-ledger holds the receipt; nothing was counted"
+    ref = receipt.get("ref") if isinstance(receipt, Mapping) else None
+    m = LEDGER_RECEIPT_REF.match(ref) if isinstance(ref, str) else None
+    raw = ledger_objects.get(m.group("commit") + ":" + m.group("path")) if m else None
+    obj = None
+    if isinstance(raw, (bytes, bytearray)):
+        try:
+            obj = json.loads(bytes(raw).decode("utf-8"))
+        except (UnicodeDecodeError, ValueError):
+            obj = None
+    if not isinstance(obj, Mapping) or obj.get("receipt_sha256") != "sha256:" + m.group("hex"):
+        raise _fail("LEDGER_RECEIPT_UNRESOLVED", "VALIDATION_RECEIPT_REF_RESOLVES_ON_ORGANIZATION_LEDGER",
+                    "ref = refs/stegverse/organization-ledger@<commit>:receipts/<receipt_sha256 hex>.json naming a receipt a read of "
+                    "that ref returns", e, nxt, ref=ref)
+    want = ledger_receipt_digest(bytes(raw))
+    if receipt.get("digest") != want:
+        raise _fail("LEDGER_RECEIPT_DIGEST_MISMATCH", "VALIDATION_RECEIPT_DIGEST_BINDS_LEDGER_RECEIPT",
+                    "digest = 'sha256:' + hex sha256 of the canonical JSON of the receipt at ref", e, nxt, expected=want, ref=ref)
+    return {"disposition": "ALLOW", "failed_predicate": None, "ref": ref, "digest": want}
+
+
+def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
+                     signoff_receipts: Iterable[Mapping[str, Any]] = ()) -> dict[str, Any]:
     """The observed inputs the admission predicate and the scenario corpus bind to (registry/ledger, not GitHub)."""
     checks, signoffs = required_for(change["touched_paths"])
     ws = [c["writer_session"] for c in change["content"]]
@@ -537,6 +639,7 @@ def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any])
         "validation_receipts": [dict(v) for v in change.get("validation_receipts") or []],
         "required_signoff_roles": signoffs,
         "signoffs": [dict(s) for s in change.get("signoffs") or []],
+        "signoff_receipts": [dict(r) for r in signoff_receipts],
         "bound_request_digest": change.get("request_digest"),
         "recomputed_request_digest": request_digest(change),
         "touched_paths": sorted(change["touched_paths"]),
@@ -545,10 +648,13 @@ def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any])
     }
 
 
-def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | None = None) -> dict[str, Any]:
+def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | None = None, *,
+                       fixture_mode: bool = False) -> dict[str, Any]:
     """Native admission predicate over admission_inputs(). Lane C's reference
     implementation (#164) replaces this by injection; the corpus tests run
-    against whichever evaluator is supplied."""
+    against whichever evaluator is supplied. Fixture receipts (a validation ref carrying #fixture:, a sign-off
+    receipt with fixture_only true) count only when fixture_mode is True (scenario corpus and tests); the real
+    admission path never sets it, so a fixture is never counted as a LEDGER_RECEIPT or a sign-off there."""
     e = "evaluate_admission"
     if obs.get("record_mode") != "NATIVE":
         raise historical_refusal(e)
@@ -575,7 +681,8 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     if undeclared:
         raise check_id_undeclared(undeclared, e)
     by_id = {v.get("check_id"): v for v in obs.get("validation_receipts") or []
-             if v.get("evidence_class") == "LEDGER_RECEIPT" and str(v.get("ref") or "").startswith("refs/")}
+             if v.get("evidence_class") == "LEDGER_RECEIPT" and str(v.get("ref") or "").startswith("refs/")
+             and (fixture_mode or FIXTURE_REF_MARK not in str(v.get("ref")))}
     unobserved = sorted(c for c in required if c not in by_id)
     if unobserved:
         artifact_only = sorted(c for c in unobserved if any(v.get("check_id") == c for v in obs.get("validation_receipts") or []))
@@ -586,10 +693,15 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     if stale:
         raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE,
                     "a receipt whose change_digest equals head.change_digest for every required check (re-run at the exact head)", e, stale=stale)
-    failing = sorted(c for c in required if by_id[c].get("disposition") != "ALLOW")
-    if failing:
-        raise _deny("CHECK_NOT_PASSING", "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED", "every required check ALLOW", e, failing=failing)
-    have = {s.get("role") for s in obs.get("signoffs") or [] if _str((s or {}).get("receipt_ref")) and _str((s or {}).get("session"))}
+    failed_closed = sorted(c for c in required if by_id[c].get("disposition") not in ("ALLOW", "DENY"))
+    if failed_closed:
+        raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", CHECK_ALLOW_PREDICATE,
+                    "the check runs to an ALLOW receipt at the exact head (a FAIL_CLOSED receipt is not a pass)", e, failed_closed=failed_closed)
+    denied = sorted(c for c in required if by_id[c].get("disposition") == "DENY")
+    if denied:
+        raise _deny("REQUIRED_CHECK_DENIED", "CHECK_PASSES", "every required check ALLOW", e, denied=denied)
+    have = {s.get("role") for s in obs.get("signoffs") or []
+            if signoff_resolves(s, obs.get("signoff_receipts") or [], obs.get("head_change_digest"), fixture_mode)}
     absent = sorted(set(obs.get("required_signoff_roles") or []) - have)
     if absent:
         raise _fail("SIGNOFF_RECEIPT_ABSENT", "REQUIRED_SIGNOFF_RECORDED", "a receipted sign-off by each required role", e, absent=absent)
@@ -727,7 +839,7 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
         if transition_class == "SV_CHANGE_VERIFY":
             validate_change(record)
             obs = admission_inputs(record, record["base_ref"])
-            out = admit({**obs, "required_signoff_roles": []})
+            out = admit({**obs, "required_signoff_roles": []}, fixture_mode=bool(ctx.get("fixture_mode")))
             if out["disposition"] != "ALLOW":
                 raise Refusal(out["disposition"], out["failure_code"], out["failed_predicate"], out["required_evidence_or_repair"],
                               "transition", "re-verify once every required check is receipted at the exact head")
@@ -741,8 +853,9 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
                 new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]
                 return {**out, "predicate_digest": ctx["predicate_digest"], "corpus_head": ctx["corpus_head"],
                         "actor_session": ctx.get("actor_session"), "transition_class": transition_class, "record": new}
-            obs = admission_inputs(record, ctx.get("current_base") or {})
-            out = admit(obs, ctx.get("evaluator") or evaluate_admission, covered_kinds=ctx.get("covered_kinds"))
+            obs = admission_inputs(record, ctx.get("current_base") or {}, ctx.get("signoff_receipts") or ())
+            kw = {"fixture_mode": True} if ctx.get("fixture_mode") else {}
+            out = admit(obs, ctx.get("evaluator") or evaluate_admission, covered_kinds=ctx.get("covered_kinds"), **kw)
             new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]
             out = {**out, "predicate_digest": ctx["predicate_digest"], "corpus_head": ctx["corpus_head"],
                    "actor_session": ctx.get("actor_session")}

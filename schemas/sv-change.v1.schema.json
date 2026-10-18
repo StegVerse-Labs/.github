@@ -48,6 +48,14 @@
                   "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
                 }
               },
+              "required_checks_ref": {
+                "properties": {
+                  "blob_sha": {
+                    "pattern": "^[0-9a-f]{40}$",
+                    "type": "string"
+                  }
+                }
+              },
               "resolves": {
                 "minItems": 1
               }
@@ -487,8 +495,16 @@
     "required_checks_ref": {
       "properties": {
         "blob_sha": {
-          "minLength": 1,
-          "type": "string"
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            },
+            {
+              "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+            }
+          ],
+          "description": "the 40-hex git blob of the required-checks row file as committed; anything else is FAIL_CLOSED REQUIRED_CHECKS_ROW_NOT_PINNED. UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL (a recorded placeholder such as WORKTREE is not a blob)."
         },
         "file": {
           "minLength": 1,
@@ -518,6 +534,7 @@
       "const": "stegverse.sv_change.v1"
     },
     "signoffs": {
+      "description": "{role, session, receipt_ref}; receipt_ref is the receipt_sha256 of a sealed sign-off receipt (schemas/sv-change-signoff-receipt.v0.1.schema.json) for this change_digest by that role and session; fixture_only receipts count only in fixture_mode.",
       "items": {
         "required": [
           "role",
@@ -554,7 +571,7 @@
     },
     "unknown_fields": {
       "items": {
-        "pattern": "^(/hb_epoch|/owning_goal)$",
+        "pattern": "^(/hb_epoch|/owning_goal|/required_checks_ref/blob_sha)$",
         "type": "string"
       },
       "type": "array",
@@ -602,6 +619,7 @@
             "type": "string"
           },
           "digest": {
+            "description": "'sha256:' + lowercase hex sha256 of the canonical bytes of the receipt object stored at ref (the same canonical JSON pin as change_id: sort_keys, separators (',',':'), UTF-8, ensure_ascii false). Verified by a read of the ledger ref only (sv_work_items.verify_ledger_receipt_binding, a pure function over the supplied bytes): mismatch -> FAIL_CLOSED LEDGER_RECEIPT_DIGEST_MISMATCH; a ref that does not resolve -> FAIL_CLOSED LEDGER_RECEIPT_UNRESOLVED.",
             "pattern": "^sha256:[0-9a-f]{64}$",
             "type": "string"
           },
@@ -619,6 +637,7 @@
             ]
           },
           "ref": {
+            "description": "For evidence_class LEDGER_RECEIPT, names the ledger receipt the way the org-ledger readback addresses it (resident-runtime/ledger_store.py receipt_key on refs/stegverse/organization-ledger): refs/stegverse/organization-ledger@<commit 40-hex>:receipts/<receipt_sha256 hex>.json. A ref carrying '#fixture:' is a fixture and counts only in fixture_mode (scenario corpus/tests), never on the real admission path.",
             "minLength": 1,
             "type": "string"
           }
@@ -659,6 +678,7 @@
   "type": "object",
   "x-migrated-unknown-allowed": [
     "/hb_epoch",
-    "/owning_goal"
+    "/owning_goal",
+    "/required_checks_ref/blob_sha"
   ]
 }

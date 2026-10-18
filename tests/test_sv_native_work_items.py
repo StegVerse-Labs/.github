@@ -12,6 +12,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def fx_admit(obs, **kw):
+    """Fixture context: fixture validation refs and fixture_only sign-off receipts count (never on the real path)."""
+    return wi.admit(obs, fixture_mode=True, **kw)
+
+
 def _load(name, rel):
     if name in sys.modules:
         return sys.modules[name]
@@ -56,6 +61,8 @@ def nativize_issue(rec, **over):
 def nativize_change(rec, **over):
     rec = {k: v for k, v in copy.deepcopy(rec).items() if k not in MIGRATION_KEYS}
     rec.update(record_mode="NATIVE", hb_epoch=EPOCH)
+    if "required_checks_ref" in rec:  # a NATIVE record pins the committed row blob, never UNKNOWN
+        rec["required_checks_ref"] = {**rec["required_checks_ref"], "blob_sha": fx.REQUIRED_CHECKS_BLOB}
     rec.update(over)
     return reseal_change(rec)
 
@@ -233,12 +240,14 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(unclaimed["failure_code"], "RESOLVED_ISSUE_NOT_CLAIMED_BY_AUTHOR")
         prop = wi.transition("SV_CHANGE_PROPOSE", good, hb_epoch=EPOCH, context={"issues": [claimed]})
         self.assertEqual(prop["disposition"], "ALLOW")
-        ver = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH)
+        real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH)  # fixture refs never count on the real path
+        self.assertEqual((real["disposition"], real["failure_code"]), ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED"))
+        ver = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True})
         self.assertEqual(ver["disposition"], "ALLOW", ver)
         noprov = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={"current_base": BASE})
         self.assertEqual(noprov["failure_code"], "ADMISSION_PROVENANCE_ABSENT")
         ctx = {"current_base": BASE, "predicate_digest": "sha256:" + "c" * 64, "corpus_head": "sha256:" + "d" * 64,
-               "actor_session": "AI Entity (by manifest)", "covered_kinds": ["transition"]}
+               "actor_session": "AI Entity (by manifest)", "covered_kinds": ["transition"], "fixture_mode": True}
         moved = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**ctx, "current_base": {**BASE, "registry_generation": 320}})
         self.assertEqual((moved["disposition"], moved["failure_code"], moved["record"]["lifecycle_state"]), ("DENY", "BASE_STALE", "DENIED"))
         uncovered = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**ctx, "covered_kinds": []})
@@ -296,7 +305,7 @@ def al_known_good_change(issue_id):
     ch = {"schema": wi.CHANGE_SCHEMA, "record_mode": "NATIVE", "target_repository": "StegVerse-Labs/.github", "resolves": [issue_id],
           "owning_goal": "StegVerse-org/.github#163", "declared_session": SESSION, "base_ref": dict(BASE), "head": {"change_digest": digest},
           "content": content, "touched_paths": [path], "lifecycle_state": "PROPOSED",
-          "required_checks_ref": {"file": "data/sv-work-items/required-checks.json", "blob_sha": "WORKTREE", "row_id": "SV-CHANGE-REQUIRED-CHECKS-001"},
+          "required_checks_ref": {"file": "data/sv-work-items/required-checks.json", "blob_sha": fx.REQUIRED_CHECKS_BLOB, "row_id": "SV-CHANGE-REQUIRED-CHECKS-001"},
           "validation_receipts": [fx.ledger_receipt(c, digest) for c in checks],
           "signoffs": [], "hb_epoch": EPOCH}
     return reseal_change(ch)
@@ -316,12 +325,13 @@ class CorpusTests(unittest.TestCase):
         for s in self.SCEN:
             al.verify_line(s, "scenario_sha256", "t")
             self.assertIn(s["scenario_class"], latest)
-            out = wi.admit(s["observed_inputs"])
+            out = fx_admit(s["observed_inputs"])
             self.assertEqual((out["disposition"], out.get("failure_code")), (s["expected_disposition"], s["expected_failure_code"]), s["scenario_id"])
 
     def test_same_class_rule_merges_3245_and_sdk533(self):
         c = al.latest_classes(self.CLASSES)["ASC-BRANCH_WRITER_IS_BRANCH_OWNER@transition"]
-        self.assertEqual(len(c["provenance"]["origin_scenarios"]), 2)
+        self.assertEqual(len(c["provenance"]["origin_scenarios"]), 3)  # #3245, SDK#533, and the harvested org#192 alias (v2)
+        self.assertEqual(c["class_version"], 2)
 
     def _cls(self, pred, surface, **kw):
         return al.generalize({"failed_predicate": pred}, surface=surface, origin_scenarios=["test"], rule_refs=[fx.REFS["ST019"]],

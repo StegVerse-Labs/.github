@@ -11,6 +11,7 @@ other field is copied or derived by a published rule:
   surface (class column) <- derive_surface_with_class_column: only when the entrypoint resolves to UNKNOWN, the same
                     resolver runs on the lane table's Class column; the result carries migration_flags
                     SURFACE_DERIVED_FROM_CLASS_COLUMN (derived, not observed). Builders supply the cells only (FB-2)
+  required_checks_ref.blob_sha <- the recorded 40-hex blob; any placeholder (WORKTREE) becomes UNKNOWN
   content.deleted <- recorded value; when the history records none, deleted = (blob_digest is null), the schema's
                     "null exactly when deleted" rule read backwards (TVC#519 makes deleted required)
   issue_id       <- sv_work_items.issue_identity; reworded restatements merge into one record (restatements[])
@@ -196,6 +197,9 @@ def finish_change(body: Mapping[str, Any]) -> dict[str, Any]:
     rec = {k: v for k, v in body.items() if k not in ("change_id", "request_digest", "unknown_fields", "migration_flags")}
     rec["record_mode"] = "MIGRATED_HISTORICAL"
     rec["content"] = [content_entry(c) for c in rec.get("content") or []]
+    rcr = rec.get("required_checks_ref")
+    if isinstance(rcr, Mapping) and not (isinstance(rcr.get("blob_sha"), str) and wi.GIT_SHA.match(rcr["blob_sha"])):
+        rec["required_checks_ref"] = {**rcr, "blob_sha": U}  # a placeholder (e.g. WORKTREE) is not an observed blob
     old_head = (rec.get("head") or {}).get("change_digest")
     rec["head"] = {"change_digest": wi.change_digest(rec)}
     legacy = legacy_change_digest(rec["content"])
