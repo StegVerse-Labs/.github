@@ -1,0 +1,269 @@
+{
+  "admit_outcome_states": {
+    "ALLOW": "ADMITTED",
+    "DENY": "DENIED",
+    "FAIL_CLOSED": "FAIL_CLOSED"
+  },
+  "canonical_coordination_state": {
+    "SV_CHANGE": {
+      "ADMITTED": "IN_PROGRESS",
+      "APPLIED": "CLOSED",
+      "DENIED": "COMPLETION_REVOKED",
+      "FAIL_CLOSED": "IN_PROGRESS",
+      "PROPOSED": "PROPOSED",
+      "SUPERSEDED": "SUPERSEDED",
+      "VERIFIED": "COMPLETION_CLAIMED",
+      "WITHDRAWN": "SUPERSEDED"
+    },
+    "SV_ISSUE": {
+      "CLAIMED": "CLAIMED",
+      "CLOSED_BY_INVARIANT": "CLOSED",
+      "OPENED": "INGRESS_ADMITTED",
+      "RESOLVED": "CLOSED",
+      "SUPERSEDED": "SUPERSEDED"
+    }
+  },
+  "dispositions": [
+    "ALLOW",
+    "DENY",
+    "FAIL_CLOSED"
+  ],
+  "github": "ONE_WAY_PROJECTION_ONLY",
+  "host": {
+    "admitted_by": "Interlock/InTr disposition from the native predicate",
+    "applied_by": "manifest-directed organization-ledger append",
+    "claim_authority": "WorkerCoordinator (control/worker-registry.json, scripts/project_worker_claim_into_canonical_task.py::worker_projection)",
+    "handoff": "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+    "pipeline": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "schema_owner": "StegVerse-Labs/repo-standards schemas/task-registry.schema.json, bundled with StegVerse-org/.github#150"
+  },
+  "invariant": "WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE",
+  "owning_existing_goal": "StegVerse-org/.github#163",
+  "receipt": {
+    "authority_effect": "NONE_RECORD_ONLY",
+    "non_allow_is_recorded": true,
+    "organization_receipt": "stegverse.organization-transition-receipt/v1 via resident-runtime/aggregate_repo_transition.py, refs/stegverse/organization-ledger",
+    "repository_receipt": "stegverse.repo-transition-receipt/v1 via .stegverse/transition-ledger/emit.py::append (hb_epoch supplied)"
+  },
+  "schema": "stegverse.sv-work-item-lifecycle/v1",
+  "terminal_states": [
+    "RESOLVED",
+    "CLOSED_BY_INVARIANT",
+    "SUPERSEDED",
+    "WITHDRAWN"
+  ],
+  "transitions": [
+    {
+      "from_states": [
+        null
+      ],
+      "predicates": [
+        "ISSUE_BODY_IS_SIX_FIELD_NON_ALLOW",
+        "ISSUE_NAMES_VIOLATED_INVARIANT",
+        "ISSUE_NAMES_SOURCE_RECEIPT",
+        "ISSUE_IDENTITY_IS_CONTENT_ADDRESSED",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_ISSUE",
+      "to_state": "OPENED",
+      "transition_class": "SV_ISSUE_OPEN"
+    },
+    {
+      "from_states": [
+        "OPENED"
+      ],
+      "predicates": [
+        "CLAIM_IS_A_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+        "SESSION_OBSERVED_REGISTRY_GENERATION_EQUALS_CURRENT",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_ISSUE",
+      "to_state": "CLAIMED",
+      "transition_class": "SV_ISSUE_CLAIM"
+    },
+    {
+      "from_states": [
+        "CLAIMED"
+      ],
+      "predicates": [
+        "RELEASE_FOLLOWS_WORKERCOORDINATOR_RELEASE",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_ISSUE",
+      "to_state": "OPENED",
+      "transition_class": "SV_ISSUE_RELEASE"
+    },
+    {
+      "from_states": [
+        "CLAIMED"
+      ],
+      "predicates": [
+        "RESOLVING_SV_CHANGE_IS_APPLIED",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_ISSUE",
+      "to_state": "RESOLVED",
+      "transition_class": "SV_ISSUE_RESOLVE"
+    },
+    {
+      "from_states": [
+        "OPENED",
+        "CLAIMED"
+      ],
+      "predicates": [
+        "INVARIANT_DETERMINATION_RECEIPT_NAMES_DECIDING_RULE",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_ISSUE",
+      "to_state": "CLOSED_BY_INVARIANT",
+      "transition_class": "SV_ISSUE_CLOSE_BY_INVARIANT"
+    },
+    {
+      "from_states": [
+        "OPENED",
+        "CLAIMED"
+      ],
+      "predicates": [
+        "SUCCESSOR_ISSUE_IS_RECORDED",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_ISSUE",
+      "to_state": "SUPERSEDED",
+      "transition_class": "SV_ISSUE_SUPERSEDE"
+    },
+    {
+      "from_states": [
+        null
+      ],
+      "predicates": [
+        "PR_AUTHOR_SESSION_DECLARED",
+        "CHANGE_RESOLVES_CLAIMED_SV_ISSUES",
+        "BASE_BOUND_TO_REGISTRY_GENERATION_AND_LEDGER_HEAD",
+        "CHANGE_DIGEST_COVERS_CONTENT",
+        "BRANCH_WRITER_IS_BRANCH_OWNER",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_CHANGE",
+      "to_state": "PROPOSED",
+      "transition_class": "SV_CHANGE_PROPOSE"
+    },
+    {
+      "from_states": [
+        "PROPOSED",
+        "VERIFIED"
+      ],
+      "predicates": [
+        "REQUIRED_CHECKS_ROW_RESOLVES",
+        "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED",
+        "UNKNOWN_NEVER_YIELDS_PASS",
+        "VALIDATION_RECEIPT_BINDS_EXACT_HEAD",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_CHANGE",
+      "to_state": "VERIFIED",
+      "transition_class": "SV_CHANGE_VERIFY"
+    },
+    {
+      "from_states": [
+        "VERIFIED",
+        "FAIL_CLOSED"
+      ],
+      "predicates": [
+        "BASE_IS_CURRENT",
+        "AUTHORIZATION_BINDS_FULL_REQUEST",
+        "BRANCH_WRITER_IS_BRANCH_OWNER",
+        "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED",
+        "REQUIRED_SIGNOFF_RECORDED",
+        "SCENARIO_COVERAGE_FOR_EVERY_TOUCHED_SURFACE",
+        "MERGE_PROVENANCE_DECLARED",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_CHANGE",
+      "to_state": "ADMITTED",
+      "transition_class": "SV_CHANGE_ADMIT"
+    },
+    {
+      "from_states": [
+        "ADMITTED"
+      ],
+      "predicates": [
+        "BASE_IS_CURRENT",
+        "REGISTRY_GENERATION_ADVANCES_BY_EXACTLY_ONE",
+        "LEDGER_HEAD_COMPARE_AND_SWAP",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_CHANGE",
+      "to_state": "APPLIED",
+      "transition_class": "SV_CHANGE_APPLY"
+    },
+    {
+      "from_states": [
+        "PROPOSED",
+        "VERIFIED",
+        "FAIL_CLOSED",
+        "DENIED"
+      ],
+      "predicates": [
+        "SUCCESSOR_CHANGE_IS_PROPOSED",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_CHANGE",
+      "to_state": "SUPERSEDED",
+      "transition_class": "SV_CHANGE_SUPERSEDE"
+    },
+    {
+      "from_states": [
+        "PROPOSED",
+        "VERIFIED",
+        "FAIL_CLOSED",
+        "DENIED"
+      ],
+      "predicates": [
+        "WITHDRAW_BY_DECLARED_SESSION",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_CHANGE",
+      "to_state": "WITHDRAWN",
+      "transition_class": "SV_CHANGE_WITHDRAW"
+    },
+    {
+      "from_states": [
+        "APPLIED"
+      ],
+      "predicates": [
+        "PROJECTION_IS_ONE_WAY_AUTHORITY_NONE",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_CHANGE",
+      "to_state": "APPLIED",
+      "transition_class": "SV_CHANGE_PROJECT_GITHUB"
+    },
+    {
+      "from_states": [
+        "APPLIED"
+      ],
+      "predicates": [
+        "CORRECTING_REF_IS_RECEIPTED",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "SV_CHANGE",
+      "to_state": "APPLIED",
+      "transition_class": "ADMISSION_MISS"
+    },
+    {
+      "from_states": [
+        null
+      ],
+      "predicates": [
+        "CLASS_FIRES_ON_EVERY_MUTATION_NEGATIVE",
+        "CLASS_ALLOWS_EVERY_KNOWN_GOOD_FIXTURE",
+        "CLASS_SUPERSEDE_CHAIN_LINEAR",
+        "CLASS_NAMES_PROVENANCE",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "ADMISSION_SCENARIO_CLASS",
+      "to_state": "APPENDED",
+      "transition_class": "SCENARIO_CORPUS_APPEND"
+    }
+  ]
+}

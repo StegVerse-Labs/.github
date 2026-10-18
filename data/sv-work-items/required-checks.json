@@ -1,0 +1,58 @@
+{
+  "coverage_required_kinds": [
+    "workflow",
+    "transition",
+    "schema",
+    "ledger_writer",
+    "registry"
+  ],
+  "generation_fence": "data/task-coordination-policy.json#session_mutation_generation_fence",
+  "row_id": "SV-CHANGE-REQUIRED-CHECKS-001",
+  "schema": "stegverse.sv-change-required-checks/v1",
+  "skipped_or_unreceipted": "FAIL_CLOSED CHECK_SKIPPED_OR_UNOBSERVED",
+  "supersedes_for_native_path": "StegVerse-Labs/repo-standards config/repository-protection-policy.json@ce3d413d#merge_admission (ST019-MERGE-ADMISSION-001; required_status_checks is GitHub-bound and stays the projection's row)",
+  "surface_kinds": {
+    "all": {
+      "checks": [
+        "schema-validate",
+        "unit-tests"
+      ],
+      "signoffs": []
+    },
+    "doc": {
+      "checks": [],
+      "signoffs": []
+    },
+    "ledger_writer": {
+      "checks": [
+        "supplied-epoch-binder-check",
+        "mutation-negative-suite"
+      ],
+      "signoffs": [
+        "ledger-component-owner"
+      ]
+    },
+    "registry": {
+      "checks": [
+        "registry-generation-fence"
+      ],
+      "signoffs": []
+    },
+    "schema": {
+      "checks": [],
+      "signoffs": []
+    },
+    "transition": {
+      "checks": [
+        "mutation-negative-suite"
+      ],
+      "signoffs": []
+    },
+    "workflow": {
+      "checks": [
+        "workflow-surface-registered"
+      ],
+      "signoffs": []
+    }
+  }
+}

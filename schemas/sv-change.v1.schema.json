@@ -1,0 +1,248 @@
+{
+  "$id": "stegverse.sv_change.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "admission_order_slot": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "applied": {
+      "type": "object"
+    },
+    "base_ref": {
+      "additionalProperties": false,
+      "properties": {
+        "ledger_head": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "registry_generation": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tree_sha": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "registry_generation",
+        "ledger_head"
+      ],
+      "type": "object"
+    },
+    "change_id": {
+      "pattern": "^svc:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "co_author_grants": {
+      "items": {
+        "required": [
+          "session",
+          "receipt_ref"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "content": {
+      "items": {
+        "properties": {
+          "blob_digest": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "writer_session": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "blob_digest",
+          "writer_session"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "declared_session": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "governance_decision_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hb_epoch": {
+      "description": "supplied; value >= 32 (org-kernel/kernel.py::supplied_epoch_failure); never from a clock",
+      "pattern": "^[0-9]+$",
+      "type": "string"
+    },
+    "head": {
+      "properties": {
+        "change_digest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "change_digest"
+      ],
+      "type": "object"
+    },
+    "lifecycle_state": {
+      "enum": [
+        "PROPOSED",
+        "VERIFIED",
+        "ADMITTED",
+        "DENIED",
+        "FAIL_CLOSED",
+        "APPLIED",
+        "SUPERSEDED",
+        "WITHDRAWN"
+      ]
+    },
+    "owning_goal": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "projection": {
+      "description": "one-way GitHub projection; never authority",
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "request_digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "required_checks_ref": {
+      "properties": {
+        "blob_sha": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "file": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "row_id": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "file",
+        "blob_sha",
+        "row_id"
+      ],
+      "type": "object"
+    },
+    "resolves": {
+      "items": {
+        "pattern": "^svi:[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema": {
+      "const": "stegverse.sv_change.v1"
+    },
+    "signoffs": {
+      "items": {
+        "required": [
+          "role",
+          "session",
+          "receipt_ref"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "supersedes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "target_repository": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "touched_paths": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "validation_receipts": {
+      "items": {
+        "properties": {
+          "change_digest": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "check_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "disposition": {
+            "enum": [
+              "ALLOW",
+              "DENY",
+              "FAIL_CLOSED"
+            ]
+          },
+          "receipt_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "check_id",
+          "receipt_ref",
+          "disposition",
+          "change_digest"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "change_id",
+    "target_repository",
+    "resolves",
+    "owning_goal",
+    "declared_session",
+    "base_ref",
+    "head",
+    "content",
+    "touched_paths",
+    "lifecycle_state",
+    "validation_receipts",
+    "required_checks_ref",
+    "signoffs",
+    "request_digest",
+    "hb_epoch"
+  ],
+  "title": "SV_CHANGE (Lane C consumer schema + B1-B7)",
+  "type": "object"
+}

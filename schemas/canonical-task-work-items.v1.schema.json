@@ -1,0 +1,84 @@
+{
+  "$id": "stegverse.canonical-task-work-items.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "items": {
+    "additionalProperties": false,
+    "properties": {
+      "canonical_coordination_state": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "kind": {
+        "enum": [
+          "SV_ISSUE",
+          "SV_CHANGE"
+        ]
+      },
+      "lifecycle_state": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "projection": {
+        "additionalProperties": false,
+        "properties": {
+          "github_state": {
+            "enum": [
+              "DRAFT",
+              "HELD",
+              "MERGED",
+              "OPEN",
+              "CLOSED",
+              null
+            ]
+          },
+          "head_sha": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "issue": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pr": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "repo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "record_sha256": {
+        "pattern": "^sha256:[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "work_item_id": {
+        "pattern": "^sv[ic]:[0-9a-f]{64}$",
+        "type": "string"
+      }
+    },
+    "required": [
+      "work_item_id",
+      "kind",
+      "record_sha256",
+      "lifecycle_state",
+      "canonical_coordination_state"
+    ],
+    "type": "object"
+  },
+  "title": "work_items[] on a canonical task record (merges #160 6249905378; native id primary; no owner-approval flag)",
+  "type": "array"
+}
