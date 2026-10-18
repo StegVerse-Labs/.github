@@ -1,0 +1,42 @@
+{
+  "invariants": [
+    {
+      "enforced_by": "resident-runtime/sv_work_items.py::verify_native_hb_epoch (pure over supplied ledger bytes); validate_change/validate_issue(rec, ledger_objects) apply it when ledger bytes are supplied; without them behavior is unchanged (UNKNOWN in a NATIVE record stays DENY UNKNOWN_IN_NATIVE_RECORD)",
+      "invariant_id": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
+      "mismatch": {
+        "disposition": "DENY",
+        "failure_code": "HB_EPOCH_NOT_BASE_LEDGER_EPOCH"
+      },
+      "statement": "A NATIVE record's hb_epoch equals the hb_epoch carried by the organization-ledger receipt at its base ledger head (SV_CHANGE base_ref.ledger_head, SV_ISSUE observed_base.ledger_head), read from refs/stegverse/organization-ledger (HEAD.json at that commit -> receipts/<receipt_sha256 hex>.json, sealed), never from a clock.",
+      "status": "PROVISIONAL_UNTIL_JD-P4-3",
+      "unobserved": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
+        "failure_code": "HB_EPOCH_SOURCE_UNOBSERVED",
+        "next_attempt": "after the org writer appends at that head",
+        "owning_existing_goal": "StegVerse-org/.github#163",
+        "required_evidence_or_repair": "bind base_ref.ledger_head to an org-ledger receipt carrying hb_epoch",
+        "retry_entrypoint": "native record re-derivation"
+      }
+    },
+    {
+      "enforced_by": "resident-runtime/sv_work_items.py::derive_issue_from_check_receipt(receipt_bytes, ledger_ref, row, observed_base=...); rule details in data/sv-work-items/required-checks.json#check_derived_issue_rule",
+      "invariant_id": "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT",
+      "ledger_object_shape": "the bytes at ledger_ref are a sealed org-ledger receipt (receipt_sha256 = sha256 over the other fields = the path hex) whose `evidence` is the stegverse.sv_check_receipt.v1 (P1's reading of the Labs#3255 append; the same `evidence` convention admission_learning.harvest reads)",
+      "not_ledgered": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT",
+        "failure_code": "SOURCE_RECEIPT_NOT_LEDGERED",
+        "next_attempt": "after the org writer appends the receipt; nothing was derived",
+        "owning_existing_goal": "StegVerse-org/.github#163",
+        "required_evidence_or_repair": "the org-ledger writer (Labs#3255) appends the verifier's receipt; derive from the bytes at its ledger ref",
+        "retry_entrypoint": "resident-runtime/sv_work_items.py::derive_issue_from_check_receipt"
+      },
+      "statement": "A check-derived SV_ISSUE is a deterministic derivation from the org-ledger-appended non-ALLOW check receipt: source_receipt_ref = that ledger ref (@ its receipt_sha256), failed_predicate = the receipt's failed check, surface = the check's command surface, owning_goal = the required-checks row's owning_goal. Its issue_id does not depend on who runs the derivation, so no lane owns minting: sv_work_items.derive_issue_from_check_receipt is the sanctioned derivation and fixing lanes cite the issue in resolves.",
+      "status": "ACTIVE"
+    }
+  ],
+  "note": "Invariants of the native work-items path that are not schema keywords; enforced in resident-runtime/sv_work_items.py. sv-change.v1 and sv-issue.v1 are unchanged (Lane D re-pins against 734968c0 / 62ee5307).",
+  "owning_goal": "StegVerse-org/.github#163",
+  "schema": "stegverse.sv-work-items-invariants/v1"
+}

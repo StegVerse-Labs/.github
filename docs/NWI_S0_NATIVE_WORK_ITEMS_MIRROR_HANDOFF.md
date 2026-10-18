@@ -159,3 +159,28 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
 - supplied-epoch-binder-check: nothing in this repo performs it, so it is UNKNOWN and FAIL_CLOSED CHECK_COMMAND_UNDECLARED (six fields in `command_status`). validate_check_receipt refuses a receipt for it.
 - A command_path absent at the head is FAIL_CLOSED CHECK_COMMAND_ABSENT_AT_HEAD. This is the state of #3225 and #3226 for schema-validate, unit-tests and mutation-negative-suite.
 - Both rules are implemented as pure functions: `sv_work_items.check_command` and `check_outcome_matches`.
+
+## Round 3 (no change to sv-change.v1 734968c0 or sv-issue.v1 62ee5307)
+- **CHECK_COMMAND_UNDECLARED receipts.** For a declared check id whose row command is UNKNOWN (supplied-epoch-binder-check):
+  - `validate_check_receipt` accepts the verifier's explicit FAIL_CLOSED CHECK_COMMAND_UNDECLARED receipt (six fields).
+  - It refuses an ALLOW, a DENY, or any other FAIL_CLOSED code for that check, with FAIL_CLOSED CHECK_COMMAND_UNDECLARED.
+  - Admission fails closed CHECK_COMMAND_UNDECLARED (CHECK_HAS_OFFLINE_COMMAND), not CHECK_SKIPPED_OR_UNOBSERVED.
+  - An id outside the row stays CHECK_ID_UNDECLARED.
+  - The registry-generation-fence base is **not** recorded: sv-check-receipt.v1 is `additionalProperties: false`, so a `base_commit` field is refused. Recording it needs a receipt-schema change, which was not made.
+- **NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH** (provisional until JD-P4-3; `data/sv-work-items/invariants.json`):
+  - What it checks: a NATIVE record's hb_epoch must equal the hb_epoch of the org-ledger receipt at its base ledger head. The value is read from supplied ledger bytes (`<ledger_head>:HEAD.json` then `<ledger_head>:receipts/<hex>.json`, sealed), never from a clock.
+  - Where it runs: `verify_native_hb_epoch`. `validate_change(rec, ledger_objects)` and `validate_issue(rec, ledger_objects)` apply it only when bytes are supplied. Without them, behavior is unchanged.
+  - If the source is unobserved: FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
+  - On a mismatch: DENY HB_EPOCH_NOT_BASE_LEDGER_EPOCH.
+- **CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT** (`invariants.json`, `required-checks.json#check_derived_issue_rule`):
+  - `derive_issue_from_check_receipt(receipt_bytes, ledger_ref, row, observed_base=...)` derives a NATIVE SV_ISSUE from the sealed org-ledger receipt at `ledger_ref`. That receipt's `evidence` is the check receipt.
+  - Derived fields:
+    - source_receipt: the ledger ref and the receipt_sha256.
+    - failed_predicate: the receipt's failed check.
+    - surface: `check_command_surface` (argv[1], the unittest module file, or the row file when the command is undeclared).
+    - owning_goal: the row's `owning_goal` (#163).
+    - violated_invariant: `SV-CHANGE-REQUIRED-CHECKS-001#checks.<check_id>`.
+    - resolution_class: B by rule.
+    - opened_by_session: the derivation itself.
+  - Derivation is idempotent, and the id does not depend on who runs it.
+  - If the receipt is not yet ledgered: FAIL_CLOSED SOURCE_RECEIPT_NOT_LEDGERED.

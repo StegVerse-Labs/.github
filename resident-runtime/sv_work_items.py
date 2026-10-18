@@ -41,6 +41,11 @@ SIGNOFF_RECEIPT_SCHEMA = "stegverse.sv-change-signoff-receipt/v0.1"  # the seale
 FIXTURE_REF_MARK = "#fixture:"  # a fixture validation-receipt ref; counted only in fixture_mode
 LEDGER_RECEIPT_REF = re.compile(r"^refs/stegverse/organization-ledger@(?P<commit>[0-9a-f]{40}):(?P<path>receipts/(?P<hex>[0-9a-f]{64})\.json)$")
 OWNING_GOAL = "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)"
+HB_EPOCH_LEDGER_INVARIANT = "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH"  # provisional until JD-P4-3
+CHECK_DERIVED_ISSUE_INVARIANT = "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT"
+CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
+LEDGER_HEAD_KEY = "HEAD.json"  # ledger_store.HEAD_KEY
+ISSUE_DERIVATION_SESSION = "derivation:sv_work_items.derive_issue_from_check_receipt"
 EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
               "retry_entrypoint", "owning_existing_goal", "next_attempt")
@@ -228,7 +233,7 @@ def _epoch_or_unknown(rec: Mapping[str, Any], e: str) -> None:
     epoch_check(rec.get("hb_epoch"), e)
 
 
-def validate_issue(rec: Any) -> dict[str, Any]:
+def validate_issue(rec: Any, ledger_objects: Mapping[str, bytes] | None = None) -> dict[str, Any]:
     e = "validate_issue"
     if not isinstance(rec, Mapping) or rec.get("schema") != ISSUE_SCHEMA:
         raise _deny("SV_ISSUE_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + ISSUE_SCHEMA, "supply a stegverse.sv_issue.v1 record", e)
@@ -295,6 +300,8 @@ def validate_issue(rec: Any) -> dict[str, Any]:
     _epoch_or_unknown(rec, e)
     if rec.get("issue_sha256") != sha({k: v for k, v in rec.items() if k != "issue_sha256"}):
         raise _fail("SV_ISSUE_DIGEST_MISMATCH", "RECORD_DIGEST_VERIFIES", "reseal the record (issue_sha256)", e)
+    if ledger_objects is not None and rec.get("record_mode") == "NATIVE":
+        verify_native_hb_epoch(rec, ledger_objects)
     return dict(rec)
 
 
@@ -357,7 +364,10 @@ def request_digest(rec: Mapping[str, Any]) -> str:
     return sha({k: v for k, v in rec.items() if k not in CHANGE_NON_REQUEST_FIELDS})
 
 
-def validate_change(rec: Any) -> dict[str, Any]:
+def validate_change(rec: Any, ledger_objects: Mapping[str, bytes] | None = None) -> dict[str, Any]:
+    """Without ledger_objects the behavior is unchanged (UNKNOWN in a NATIVE record is DENY). With the bytes a read of
+    refs/stegverse/organization-ledger returned, a NATIVE record's hb_epoch is also bound to the base ledger head
+    (NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH, provisional until JD-P4-3)."""
     e = "validate_change"
     if not isinstance(rec, Mapping) or rec.get("schema") != CHANGE_SCHEMA:
         raise _deny("SV_CHANGE_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + CHANGE_SCHEMA, "supply a stegverse.sv_change.v1 record", e)
@@ -432,6 +442,8 @@ def validate_change(rec: Any) -> dict[str, Any]:
         raise _fail("REQUEST_DIGEST_MISMATCH", "AUTHORIZATION_BINDS_FULL_REQUEST", "request_digest = request_digest(record)", e,
                     expected=request_digest(rec))
     _epoch_or_unknown(rec, e)
+    if ledger_objects is not None and rec.get("record_mode") == "NATIVE":
+        verify_native_hb_epoch(rec, ledger_objects)
     return dict(rec)
 
 
@@ -506,14 +518,35 @@ def validate_check_receipt(receipt: Any, change: Mapping[str, Any] | None = None
     if set(r) - allowed:
         raise _deny("SV_CHECK_RECEIPT_INVALID", CHECK_RECEIPT_INVARIANT, "no fields beyond the pinned receipt shape", e, extra=sorted(set(r) - allowed))
     epoch_check(r.get("hb_epoch"), e)
-    if not isinstance(REQUIRED_CHECKS["checks"][r["check_id"]].get("offline_command"), list):
-        raise _fail("CHECK_COMMAND_UNDECLARED", "CHECK_HAS_OFFLINE_COMMAND",
-                    "the row declares no offline command for this check, so no receipt for it can be minted", e, check_id=r["check_id"])
+    if not command_declared(r["check_id"]) and not (r["disposition"] == "FAIL_CLOSED" and r.get("failure_code") == "CHECK_COMMAND_UNDECLARED"):
+        # the only receipt for a check whose row command is UNKNOWN is the verifier's explicit FAIL_CLOSED
+        # CHECK_COMMAND_UNDECLARED (six fields); an ALLOW (or any other outcome) cannot have been produced by running it
+        raise _fail("CHECK_COMMAND_UNDECLARED", CHECK_COMMAND_PREDICATE,
+                    "the row declares no offline command for this check; the only acceptable receipt is FAIL_CLOSED "
+                    "CHECK_COMMAND_UNDECLARED with the six fields", e, check_id=r["check_id"], receipt_disposition=r["disposition"])
     if change is not None and r["change_digest"] != (change.get("head") or {}).get("change_digest"):
         raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE, "re-run the check at the exact head.change_digest", e)
     if head_sha is not None and r["head_sha"] != head_sha:
         raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE, "re-run the check at the exact head commit", e)
     return dict(r)
+
+
+def command_declared(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> bool:
+    c = row["checks"].get(check_id) or {}
+    return isinstance(c.get("offline_command"), list) and bool(c["offline_command"])
+
+
+def check_command_surface(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> str:
+    """The repository path a check's command runs: argv[1] for a script, the first command_path naming the unittest
+    module for `-m unittest`; for an undeclared command, the row file itself (the failure is in the row)."""
+    c = row["checks"][check_id]
+    if not command_declared(check_id, row):
+        return row["row_file"]["file"]
+    argv = c["offline_command"]
+    if argv[1:3] == ["-m", "unittest"]:
+        mod = argv[3]
+        return next(p for p in c["command_paths"] if p.endswith(".py") and (mod + ".").startswith(p[:-3].replace("/", ".") + "."))
+    return argv[1]
 
 
 def check_command(check_id: Any, paths_at_head: Iterable[str], row: Mapping[str, Any] = REQUIRED_CHECKS) -> dict[str, Any]:
@@ -617,6 +650,105 @@ def verify_ledger_receipt_binding(receipt: Mapping[str, Any], ledger_objects: Ma
     return {"disposition": "ALLOW", "failed_predicate": None, "ref": ref, "digest": want}
 
 
+def _ledger_object(ledger_objects: Mapping[str, bytes], commit: str, path: str) -> Any:
+    raw = ledger_objects.get(commit + ":" + path)
+    if not isinstance(raw, (bytes, bytearray)):
+        return None
+    try:
+        return json.loads(bytes(raw).decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return None
+
+
+def _self_verifies(doc: Any) -> bool:
+    return isinstance(doc, Mapping) and doc.get("receipt_sha256") == sha({k: v for k, v in doc.items() if k != "receipt_sha256"})
+
+
+def base_ledger_head_epoch(ledger_head: Any, ledger_objects: Mapping[str, bytes]) -> str | None:
+    """Pure: the hb_epoch carried by the organization-ledger receipt at commit `ledger_head` of
+    refs/stegverse/organization-ledger (HEAD.json -> receipts/<hex>.json, ledger_store addressing), read only from the
+    supplied bytes; None when any piece is absent, unsealed, or carries no hb_epoch."""
+    if not isinstance(ledger_head, str) or not GIT_SHA.match(ledger_head):
+        return None
+    head = _ledger_object(ledger_objects, ledger_head, LEDGER_HEAD_KEY)
+    digest = head.get("receipt_sha256") if isinstance(head, Mapping) else None
+    if not isinstance(digest, str) or not DIGEST.match(digest):
+        return None
+    rec = _ledger_object(ledger_objects, ledger_head, "receipts/%s.json" % digest.split(":", 1)[1])
+    if not _self_verifies(rec) or rec.get("receipt_sha256") != digest:
+        return None
+    ep = rec.get("hb_epoch")
+    return ep if isinstance(ep, str) and re.fullmatch(r"[0-9]+", ep) else None
+
+
+def verify_native_hb_epoch(record: Mapping[str, Any], ledger_objects: Mapping[str, bytes]) -> dict[str, Any]:
+    """NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH (provisional until JD-P4-3). A NATIVE record's hb_epoch equals
+    the hb_epoch of the org-ledger receipt at its base ledger head (SV_CHANGE base_ref, SV_ISSUE observed_base). Read
+    from the supplied ledger bytes only, never a clock. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; mismatch ->
+    DENY HB_EPOCH_NOT_BASE_LEDGER_EPOCH."""
+    base = record.get("base_ref") if record.get("schema") == CHANGE_SCHEMA else record.get("observed_base")
+    head = (base or {}).get("ledger_head") if isinstance(base, Mapping) else None
+    want = base_ledger_head_epoch(head, ledger_objects)
+    if want is None:
+        r = Refusal("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED", HB_EPOCH_LEDGER_INVARIANT,
+                    "bind base_ref.ledger_head to an org-ledger receipt carrying hb_epoch", "verify_native_hb_epoch",
+                    "after the org writer appends at that head", ledger_head=head)
+        r.record["retry_entrypoint"] = "native record re-derivation"
+        raise r
+    if record.get("hb_epoch") != want:
+        r = Refusal("DENY", "HB_EPOCH_NOT_BASE_LEDGER_EPOCH", HB_EPOCH_LEDGER_INVARIANT,
+                    "re-derive the native record with hb_epoch = the base ledger head receipt's hb_epoch", "verify_native_hb_epoch",
+                    "propose a successor record bound to the base ledger head's epoch", ledger_head=head,
+                    expected=want, hb_epoch=record.get("hb_epoch"))
+        r.record["retry_entrypoint"] = "native record re-derivation"
+        raise r
+    return {"disposition": "ALLOW", "failed_predicate": None, "hb_epoch": want, "ledger_head": head}
+
+
+def derive_issue_from_check_receipt(receipt_bytes: bytes, ledger_ref: str, row: Mapping[str, Any] = REQUIRED_CHECKS, *,
+                                    observed_base: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT. The sanctioned, deterministic derivation of
+    a NATIVE SV_ISSUE from an org-ledger-appended non-ALLOW check receipt. `receipt_bytes` are the bytes stored at
+    `ledger_ref` (refs/stegverse/organization-ledger@<commit>:receipts/<receipt_sha256 hex>.json): a sealed org-ledger
+    receipt whose `evidence` is the stegverse.sv_check_receipt.v1 the NWI-S1 verifier emitted. The issue_id depends
+    only on the receipt, the ledger ref and the row, never on who derives it (opened_by_session is the derivation).
+    Not ledgered (ref not an org-ledger receipt path, bytes unsealed or not at that path, a bare verifier receipt)
+    -> FAIL_CLOSED SOURCE_RECEIPT_NOT_LEDGERED: the issue cannot be NATIVE before the org writer appended it."""
+    e = "derive_issue_from_check_receipt"
+    m = LEDGER_RECEIPT_REF.match(ledger_ref) if isinstance(ledger_ref, str) else None
+    try:
+        env = json.loads(bytes(receipt_bytes).decode("utf-8"))
+    except (TypeError, UnicodeDecodeError, ValueError):
+        env = None
+    if m is None or not _self_verifies(env) or env["receipt_sha256"] != "sha256:" + m.group("hex")             or not isinstance(env.get("evidence"), Mapping):
+        raise _fail("SOURCE_RECEIPT_NOT_LEDGERED", CHECK_DERIVED_ISSUE_INVARIANT,
+                    "the org-ledger writer (Labs#3255) appends the verifier's receipt; derive from the bytes at its ledger ref "
+                    "refs/stegverse/organization-ledger@<commit>:receipts/<receipt_sha256 hex>.json", e,
+                    "after the org writer appends the receipt; nothing was derived", ledger_ref=ledger_ref)
+    r = env["evidence"]
+    validate_check_receipt(r)
+    if r["disposition"] == "ALLOW":
+        raise _deny("CHECK_RECEIPT_NOT_FAILING", CHECK_DERIVED_ISSUE_INVARIANT, "only a non-ALLOW check receipt derives an issue", e,
+                    "nothing to derive; the check passed", ledger_ref=ledger_ref)
+    if not isinstance(observed_base, Mapping) or not isinstance(observed_base.get("registry_generation"), int)             or not (isinstance(observed_base.get("ledger_head"), str) and GIT_SHA.match(observed_base["ledger_head"])):
+        raise _fail("ISSUE_OBSERVED_BASE_UNSUPPLIED", CHECK_DERIVED_ISSUE_INVARIANT,
+                    "supply the observed base {registry_generation, ledger_head} the check ran against (not part of issue_id)", e,
+                    "after the base is supplied; nothing was derived")
+    path = check_command_surface(r["check_id"], row)
+    rec = {"schema": ISSUE_SCHEMA, "record_mode": "NATIVE",
+           "disposition": {"disposition": r["disposition"], **{f: r[f] for f in SIX_FIELDS}},
+           "violated_invariant": {"repository": row["row_file"]["repository"], "file": row["row_file"]["file"],
+                                  "rule_id": row["row_id"] + "#checks." + r["check_id"], "blob_sha": None, "invariant_declared": True},
+           "source_receipt": {"kind": "ORGANIZATION_LEDGER_RECEIPT", "ledger_ref": ledger_ref, "receipt_sha256": env["receipt_sha256"]},
+           "surface": {"kind": surface_kind(path), "path": path},
+           "owning_goal": row["owning_goal"],
+           "observed_base": {k: observed_base[k] for k in ("registry_generation", "ledger_head", "tree_sha") if k in observed_base},
+           "opened_by_session": ISSUE_DERIVATION_SESSION, "lifecycle_state": "OPENED",
+           "resolution_class": row["check_derived_issue_rule"]["resolution_class"], "hb_epoch": r["hb_epoch"]}
+    rec["issue_id"] = issue_identity(rec)
+    return validate_issue(seal(rec, "issue_sha256"))
+
+
 def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
                      signoff_receipts: Iterable[Mapping[str, Any]] = ()) -> dict[str, Any]:
     """The observed inputs the admission predicate and the scenario corpus bind to (registry/ledger, not GitHub)."""
@@ -694,6 +826,12 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
         raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", EXACT_HEAD_PREDICATE,
                     "a receipt whose change_digest equals head.change_digest for every required check (re-run at the exact head)", e, stale=stale)
     failed_closed = sorted(c for c in required if by_id[c].get("disposition") not in ("ALLOW", "DENY"))
+    no_command = [c for c in failed_closed if not command_declared(c)]
+    if no_command:
+        st = REQUIRED_CHECKS["checks"][no_command[0]].get("command_status") or {}
+        raise _fail("CHECK_COMMAND_UNDECLARED", CHECK_COMMAND_PREDICATE,
+                    st.get("required_evidence_or_repair") or "declare the check's offline command in the row", e,
+                    st.get("next_attempt") or "after the row declares the command", command_undeclared=no_command)
     if failed_closed:
         raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", CHECK_ALLOW_PREDICATE,
                     "the check runs to an ALLOW receipt at the exact head (a FAIL_CLOSED receipt is not a pass)", e, failed_closed=failed_closed)
