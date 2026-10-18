@@ -139,7 +139,7 @@ def p1_source_on_ref(request: Mapping[str, Any]) -> dict[str, Any]:
         return _result("P1", "FAIL", SOURCE_NOT_ON_REF,
                        f"{sha} is not reachable from {ref} at {observed.get('base_sha')} (compare status {status}, "
                        f"ahead_by {observed.get('ahead_by')}, behind_by {observed.get('behind_by')})")
-    return _result("P1", "PASS", detail=f"{sha} reachable from {ref} ({status})")
+    return _result("P1", "FAIL", SOURCE_NOT_ON_REF, "repository ancestry is caller-supplied; authenticated issuer compare unavailable")
 
 
 def p2_manifest_binds_sha(request: Mapping[str, Any]) -> dict[str, Any]:
@@ -211,8 +211,7 @@ def p5_intr(request: Mapping[str, Any]) -> dict[str, Any]:
             or admission.get("transition") != "SITE_PRODUCTION_PROMOTION" \
             or not SHA256.match(str(admission.get("admission_receipt_sha256"))):
         return _result("P5", "FAIL", INTR_MISSING, "no InTr admission reference for this sha")
-    return _result("P5", "PASS", detail="InTr admission " + admission["admission_receipt_sha256"],
-                   authenticity=UNKNOWN)
+    return _result("P5", "FAIL", INTR_MISSING, "InTr admission receipt issuer and chain membership not authenticated", authenticity=UNKNOWN)
 
 
 def p6_credential(request: Mapping[str, Any]) -> dict[str, Any]:
@@ -221,7 +220,7 @@ def p6_credential(request: Mapping[str, Any]) -> dict[str, Any]:
         return _result("P6", "FAIL", CREDENTIAL_NOT_TVC, "no credential reference")
     if credential.get("authority") != CREDENTIAL_AUTHORITY or credential.get("github_token_runtime_authority") != "NONE":
         return _result("P6", "FAIL", CREDENTIAL_NOT_TVC, "credential authority is not TV/TVC with GitHub token authority NONE")
-    return _result("P6", "PASS", detail="TV/TVC reference " + str(credential.get("reference")))
+    return _result("P6", "FAIL", CREDENTIAL_NOT_TVC, "TV/TVC issuer verification unavailable; declared authority is not proof")
 
 
 def p7_provider_build(request: Mapping[str, Any]) -> dict[str, Any]:
@@ -236,7 +235,7 @@ def p7_provider_build(request: Mapping[str, Any]) -> dict[str, Any]:
             return _result("P7", "FAIL", IDENTITY_MISMATCH, f"provider build {key} {build.get(key)!r} != {expected!r}")
     if manifest.get("provider_build_id") not in (None, build.get("build_id")):
         return _result("P7", "FAIL", IDENTITY_MISMATCH, "provider build id differs from the manifest")
-    return _result("P7", "PASS", detail="provider build " + str(build.get("build_id")))
+    return _result("P7", "FAIL", IDENTITY_MISMATCH, "provider build identity is caller-supplied; authenticated provider readback unavailable")
 
 
 def evaluate(request: Mapping[str, Any], *, grants: list[dict[str, Any]] | None = None,
