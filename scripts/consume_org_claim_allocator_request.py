@@ -52,6 +52,8 @@ PROVENANCE_FLOOR_REL = Path("tasks/TASK-2026-0012.json")
 PROVENANCE_FLOOR_POINTER = "predecessor_provenance.allocator_fence"
 FENCE_HISTORY_UNVERIFIED = "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED"
 ORGANIZATION_APPEND_FAILED = "ORGANIZATION_APPEND_FAILED"
+GRANT_EPOCH_NOT_CARRIER_SUPPLIED = "GRANT_EPOCH_NOT_CARRIER_SUPPLIED"
+GRANT_EPOCH_INVALID = "GRANT_EPOCH_INVALID"
 # What the chain verification establishes, and all it establishes.
 CUSTODY_AUTHENTICATION = "HASH_CHAIN_CONTINUITY_ONLY"
 PREDECESSOR_PROVENANCE_IMMUTABLE = "PREDECESSOR_PROVENANCE_IMMUTABLE"
@@ -809,8 +811,14 @@ CARRIED_IF_RECORDED = ("custody_authentication",)
 
 def record_transition(custody: Mapping[str, Any], transition_class: str, transition_id: str,
                       predecessor: str, evidence: dict[str, Any], *, organization: bool,
-                      identity: tuple[str, ...], lock_held: bool = False) -> dict[str, Any]:
+                      identity: tuple[str, ...], lock_held: bool = False,
+                      hb_epoch: int | None = None) -> dict[str, Any]:
     """Append the repository receipt, then the organization receipt consuming it.
+
+    `hb_epoch` is the carrier-supplied heartbeat epoch. Supplied, it passes
+    through to both receipts, so neither falls back to a clock-derived
+    reference; a grant is never recorded without it (consume_request refuses
+    GRANT_EPOCH_NOT_CARRIER_SUPPLIED first).
 
     The organization receipt is built from the returned repository receipt, so
     a retry of a recorded transition consumes the same source with the same
@@ -836,7 +844,7 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
         pinned = custody["organization_store"]._snapshot()
     repository_receipt = custody["emitter"].append(
         transition_id, transition_class, predecessor, successor, evidence, "NONE",
-        store=custody["repository_store"], idempotent_on=identity)
+        hb_epoch=hb_epoch, store=custody["repository_store"], idempotent_on=identity)
     if pinned is not None:
         adopted = adopt_repository_append(custody, pinned, repository_receipt)
     organization_receipt = None
@@ -848,7 +856,7 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
             successor_org_state_sha256=repository_receipt["successor_state_sha256"],
             boundary_evidence={"operation": transition_class, **{key: recorded.get(key) for key in CARRIED},
                                **{key: recorded[key] for key in CARRIED_IF_RECORDED if key in recorded}},
-            authority_effect="NONE")
+            authority_effect="NONE", hb_epoch=hb_epoch)
         organization = custody["organization_ledger"]
         try:
             if adopted is not None and not adopted:
@@ -1038,7 +1046,7 @@ def _ledger_refusal(request: Mapping[str, Any] | None, detail: str, *,
 
 
 def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: Mapping[str, Any],
-                    runner, safe_env: Mapping[str, str]) -> dict[str, Any]:
+                    runner, safe_env: Mapping[str, str], hb_epoch: int | None = None) -> dict[str, Any]:
     request = load_json(runtime / request_rel)
     validate_request(request)
     request_hash = stable_hash(request)
@@ -1117,7 +1125,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
         receipts = record_transition(
             custody, transition_class, transition_id, "sha256:" + request_hash, evidence,
             organization=organization, identity=("task_id", "request_sha256", "failed_predicate"),
-            lock_held=lock_held)
+            lock_held=lock_held, hb_epoch=hb_epoch)
         organization_receipt = receipts["organization_receipt"]
         organization_sha = organization_receipt and organization_receipt["receipt_sha256"]
         own_refusal = readback_basis = None
@@ -1295,6 +1303,15 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                         FENCE_HISTORY_UNVERIFIED,
                         f"runtime generation {runtime_generation} carries fences beyond the verified history {issued}",
                         "record or retire the runtime fences the organization chain does not hold")
+                if hb_epoch is None:
+                    if rematerialized is not None:
+                        claims_rel.write_bytes(runtime_claims_before)
+                    # A grant's receipts carry the carrier's heartbeat epoch; one is
+                    # never synthesized from the host clock (kernel.hb_reference).
+                    raise ClaimFailClosed(
+                        GRANT_EPOCH_NOT_CARRIER_SUPPLIED,
+                        "no carrier heartbeat epoch was supplied for this grant",
+                        "supply the carrier heartbeat epoch with --hb-epoch; no epoch is derived from a clock")
                 fence = issued + 1
                 task = load_json(runtime / "tasks" / f"{selected}.json")
                 requested = plan.get("requested_claims") or task["requirements"]["mandatory"]
@@ -1323,7 +1340,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 receipts = record_transition(
                     custody, GRANTED, transition_id, predecessor, evidence, organization=True,
                     identity=("task_id", "fencing_token", "claim_scope_sha256", "organization_head_sha256"),
-                    lock_held=True)
+                    lock_held=True, hb_epoch=hb_epoch)
                 return allow(selected, receipts["organization_receipt"], receipts, replayed=False)
         except OrganizationReadbackRefused as exc:
             transition_class = REFUSED if exc.refusal["disposition"] == "DENY" else FAIL_CLOSED
@@ -1351,6 +1368,7 @@ def consume(
     org_ledger_root: Path | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -1380,7 +1398,16 @@ def consume(
         return _ledger_refusal(load_json(runtime / present[0]), exc.detail, predicate=exc.predicate, repair=exc.repair)
     except ClaimFailClosed as exc:
         return _ledger_refusal(load_json(runtime / present[0]), exc.predicate + ": " + exc.detail)
-    attempts = [consume_request(source, runtime, rel, custody=custody, runner=runner, safe_env=safe_env)
+    if hb_epoch is not None:
+        try:
+            # The kernel validates a carrier epoch; an invalid one is refused before anything is read or appended.
+            custody["organization_ledger"].kernel.hb_reference(epoch=hb_epoch)
+        except ValueError as exc:
+            return _ledger_refusal(load_json(runtime / present[0]), f"carrier heartbeat epoch invalid: {exc}",
+                                   predicate=GRANT_EPOCH_INVALID,
+                                   repair="supply the carrier heartbeat epoch as an integer at or after the HB32 anchor")
+    attempts = [consume_request(source, runtime, rel, custody=custody, runner=runner, safe_env=safe_env,
+                                hb_epoch=hb_epoch)
                 for rel in present]
     if len(attempts) == 1:
         return attempts[0]
@@ -1453,6 +1480,8 @@ def main() -> int:
     # A POSIX root, or git+<checkout>#<ref>:<namespace>; kept as given so a locator is not path-normalized.
     parser.add_argument("--repo-ledger-root", type=str, default=None)
     parser.add_argument("--org-ledger-root", type=Path, default=None)
+    parser.add_argument("--hb-epoch", type=int, default=None,
+                        help="the carrier's heartbeat epoch; a grant without one is FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED")
     parser.add_argument("--readback-result", type=Path, default=None,
                         help="read back the Organization receipts a prior consumption result reports")
     args = parser.parse_args()
@@ -1468,7 +1497,8 @@ def main() -> int:
         return 0 if verdict["disposition"] == "VERIFIED" else 1
     try:
         receipt = consume(args.source_root, args.runtime_root,
-                          repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root)
+                          repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root,
+                          hb_epoch=args.hb_epoch)
     except Exception as exc:
         receipt = {
             "schema": "stegverse.resident-execution-request-consumption/v1",

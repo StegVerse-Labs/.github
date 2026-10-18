@@ -24,6 +24,8 @@ def load_module(name: str, rel: str):
 allocator = load_module("resident_org_allocator_test", "scripts/allocate_claims.py")
 consumer = load_module("resident_org_allocator_consumer_test", "scripts/consume_org_claim_allocator_request.py")
 LEDGER_EMITTER = ".stegverse/transition-ledger/emit.py"
+# A carrier heartbeat epoch (kernel HB32 anchor is 32); supplied, never derived from a clock.
+CARRIER_HB_EPOCH = 4096
 
 
 class ResidentOrgClaimAllocatorTests(unittest.TestCase):
@@ -95,6 +97,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
                 {"disposition": "DENY", "task_id": "NONE", "request_sha256": "0" * 64,
                  "failed_predicate": "NO_ELIGIBLE_TASK", "fencing_token": None, "consequence_committed": False},
                 organization=True, identity=("task_id", "request_sha256", "failed_predicate"))
+        kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
         return consumer.consume(source, runtime, repo_ledger_root=ledgers / "repo",
                                 org_ledger_root=ledgers / "org", **kwargs)
 
@@ -489,6 +492,7 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         return subprocess.run(command, **kwargs)
 
     def hosted(self, **kwargs):
+        kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
         return consumer.consume(self.env.source, self.env.runtime, runner=self.runner,
                                 env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), **HOSTED}, **kwargs)
 
@@ -579,9 +583,10 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
             path.write_text(json.dumps(state), encoding="utf-8")
         return env
 
-    def consume_hosted(self, env):
+    def consume_hosted(self, env, **kwargs):
+        kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
         return consumer.consume(env.source, env.runtime, repo_ledger_root=locator(self.node), runner=self.runner,
-                                env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), **HOSTED})
+                                env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), **HOSTED}, **kwargs)
 
     def test_committed_claims_registry_is_behind_the_issued_fences(self):
         committed = json.loads((ROOT / "control/claims-active.json").read_text(encoding="utf-8"))
@@ -633,6 +638,43 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         result = self.consume_hosted(env)
         self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
         self.assertEqual(result["failed_predicate"], "FENCE_GENERATION_BEHIND_ISSUED_FENCES")
+
+    def test_event_ephemeral_grant_without_carrier_epoch_fails_closed(self):
+        env = self.fresh_runtime("no-epoch")
+        result = self.consume_hosted(env, hb_epoch=None)
+        self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
+        self.assertEqual(result["failed_predicate"], consumer.GRANT_EPOCH_NOT_CARRIER_SUPPLIED)
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result.get(field), field)
+        self.assertEqual(result["retry_entrypoint"], consumer.EVENT_EPHEMERAL_ENTRYPOINT)
+        self.assertFalse(result["fence_issued"])
+        self.assertIsNone(result["fencing_token"])
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        self.assertEqual(consumer.chain_grants(consumer.verify_organization_chain(custody)), [])
+        # The ephemeral runtime projection is restored; nothing was issued.
+        self.assertEqual(env.claims()["generation"], 2)
+
+    def test_event_ephemeral_grant_carries_the_carrier_epoch_not_a_clock_reference(self):
+        env = self.fresh_runtime("carrier")
+        result = self.consume_hosted(env, hb_epoch=CARRIER_HB_EPOCH)
+        self.assertEqual(result["transition_class"], consumer.GRANTED, result)
+        self.assertEqual(result["fencing_token"], 8)
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        org_keys = custody["organization_ledger"].ledger_store
+        grant = custody["organization_store"].get(org_keys.receipt_key(result["organization_receipt_sha256"]))
+        repository = custody["repository_store"].get(
+            custody["emitter"].ledger_store.receipt_key(result["repository_receipt_sha256"]))
+        for receipt in (grant, repository):
+            self.assertEqual(receipt["hb_reference"]["epoch"], CARRIER_HB_EPOCH)
+            self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
+
+    def test_hosted_workflow_synthesizes_no_heartbeat_epoch(self):
+        # The hosted path has no carrier, so it supplies no epoch and derives none;
+        # its grants are FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED until a carrier does.
+        text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
+        for forbidden in ("--hb-epoch", "date +%s", "hb_reference(", "time.time", "datetime.now"):
+            self.assertNotIn(forbidden, text)
 
     def test_workflow_refusals_carry_the_six_fields(self):
         text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
