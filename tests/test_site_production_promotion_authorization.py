@@ -314,3 +314,33 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ForgedIssuerEvidenceRegressionTests(unittest.TestCase):
+    """Caller-controlled evidence must not authorize a sovereign promotion."""
+
+    def setUp(self):
+        self._td = tempfile.TemporaryDirectory()
+        self.ledger = Ledger(Path(self._td.name))
+
+    def tearDown(self):
+        self._td.cleanup()
+
+    def test_forged_well_formed_inputs_never_authorize(self):
+        request = promote_request(self.ledger)
+        results = sppa.evaluate(request, grants=[], floor_fence=0)
+        for name in ("P1", "P5", "P6", "P7"):
+            predicate = next(row for row in results if row["predicate"] == name)
+            self.assertEqual(predicate["state"], "FAIL", name)
+        decision = sppa.decide(request, results, prior_authorization=None)
+        self.assertNotEqual(decision["transition_class"], sppa.AUTHORIZED)
+
+    def test_replay_of_forged_evidence_never_authorizes(self):
+        request = promote_request(self.ledger)
+        first = sppa.evaluate(request, grants=[], floor_fence=0)
+        second = sppa.evaluate(copy.deepcopy(request), grants=[], floor_fence=0)
+        self.assertEqual(first, second)
+        for predicates in (first, second):
+            self.assertNotEqual(
+                sppa.decide(request, predicates, prior_authorization=None)["transition_class"],
+                sppa.AUTHORIZED)
