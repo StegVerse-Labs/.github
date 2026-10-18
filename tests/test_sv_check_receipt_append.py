@@ -7,7 +7,8 @@ Oracle: P1's readers at StegVerse-Labs/.github#3264 head
 7d940851034697c019684ec073ea676f27d7ac37, vendored test-only under
 tests/vendor/p1_7d940851/ (sv_work_items.py blob 20b03916, required-checks.json
 42405012, lifecycle-transitions.json c66de6e8), with P1's tests/sv_ledger_fixtures.py
-(blob 30a9fe89) byte-identical. The vendored required-checks.json (42405012) is
+(blob 30a9fe89) and schemas/sv-check-receipt.v1.schema.json (070f13f4), all
+vendored there byte-identical. The vendored required-checks.json (42405012) is
 also the row the operation's undeclared-command rule reads; this PR does not
 touch P1's data/sv-work-items/required-checks.json.
 Shared epoch rule: org-kernel/kernel.py::supplied_epoch_failure L236-269 (blob
@@ -71,7 +72,30 @@ def _p1():
 
 
 wi = _p1()
-fx = _module("sv_ledger_fixtures_p1", ROOT / "tests" / "sv_ledger_fixtures.py")
+# (vendored name, P1 path, pinned blob at P1 #3264 head 7d940851)
+VENDORED_P1_FILES = (
+    ("required-checks.json", "data/sv-work-items/required-checks.json", "424050129f4ddfa7e14aac61c68c7037f075a709"),
+    ("sv-check-receipt.v1.schema.json", "schemas/sv-check-receipt.v1.schema.json", "070f13f468558ca08aa5162a8f34431608fc1404"),
+    ("sv_ledger_fixtures.py", "tests/sv_ledger_fixtures.py", "30a9fe8980671e63348810c837882f3dab525459"),
+    ("sv_work_items.py", "resident-runtime/sv_work_items.py", "20b03916acf3fff9b530f1bccb85cc7521754777"),
+    ("lifecycle-transitions.json", "data/sv-work-items/lifecycle-transitions.json", "c66de6e86c9ec7d167f0e5edf74e717af0688224"),
+)
+_FX_ROOT = tempfile.TemporaryDirectory()
+
+
+def _fixtures():
+    """P1's tests/sv_ledger_fixtures.py (vendored byte-identical) resolves its modules from parents[1]; run the vendored
+    bytes from a temp root's tests/ whose other top-level entries link to this checkout."""
+    root = Path(_FX_ROOT.name)
+    (root / "tests").mkdir(exist_ok=True)
+    (root / "tests" / "sv_ledger_fixtures.py").write_bytes((VENDOR / "sv_ledger_fixtures.py").read_bytes())
+    for entry in ROOT.iterdir():
+        if entry.name not in ("tests", ".git") and not (root / entry.name).exists():
+            os.symlink(entry, root / entry.name)
+    return _module("sv_ledger_fixtures_p1", root / "tests" / "sv_ledger_fixtures.py")
+
+
+fx = _fixtures()
 
 
 def check_receipt(**override):
@@ -284,29 +308,77 @@ class Refusals(GitLedger):
             self._assert_nothing_written(result, "LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT")
             self.assertTrue(result["schema_errors"])
 
-    def test_an_absent_or_invalid_append_epoch_is_unobserved_and_no_clock_is_read(self):
-        for bad in (None, True, False, 31, "40", 40.0, -40):
+    def test_an_absent_null_or_sentinel_epoch_is_unobserved_on_either_side(self):
+        for bad in (None, "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"):
             result = svc.append_check_receipt(check_receipt(), hb_epoch=bad)
             self._assert_nothing_written(result, "HB_EPOCH_SOURCE_UNOBSERVED")
             self.assertEqual(result["shared_rule_sha256"], svc.SHARED_RULE_SHA256)
-
-    def test_an_absent_or_invalid_receipt_epoch_is_unobserved(self):
-        for bad in (None, "", "31", "+40", " 40", "4_0", "40.0", "\uff14\uff10", True):
+        for bad in ("ABSENT", None, "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"):
             receipt = check_receipt()
-            if bad is None:
+            if bad == "ABSENT":
                 del receipt["hb_epoch"]
             else:
                 receipt["hb_epoch"] = bad
             self._assert_nothing_written(svc.append_check_receipt(receipt, hb_epoch=40), "HB_EPOCH_SOURCE_UNOBSERVED")
-        # an int passes the shared rule's digit test but is not the receipt shape (hb_epoch is ASCII text in sv-check-receipt.v1)
-        self._assert_nothing_written(svc.append_check_receipt(check_receipt(hb_epoch=40), hb_epoch=40),
-                                     "LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT")
+
+    def test_a_malformed_append_epoch_is_a_mismatch_and_no_clock_is_read(self):
+        for bad in (True, False, 31, 0, -40, "40", "", 40.0, "unknown"):
+            result = svc.append_check_receipt(check_receipt(), hb_epoch=bad)
+            self._assert_nothing_written(result, "HB_EPOCH_MISMATCH", disposition="DENY")
+            self.assertEqual(result["failed_predicate"], "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH")
+
+    def test_a_malformed_receipt_epoch_is_a_mismatch(self):
+        for bad in ("", "31", "+40", " 40", "4_0", "40.0", "\uff14\uff10", True, False, 40, 40.0, "unknown"):
+            result = svc.append_check_receipt(check_receipt(hb_epoch=bad), hb_epoch=40)
+            self._assert_nothing_written(result, "HB_EPOCH_MISMATCH", disposition="DENY")
 
     def test_a_receipt_epoch_other_than_the_append_epoch_is_denied(self):
         for receipt_epoch, append_epoch in (("41", 40), ("40", 41), ("1024", 40)):
             result = svc.append_check_receipt(check_receipt(hb_epoch=receipt_epoch), hb_epoch=append_epoch)
             self._assert_nothing_written(result, "HB_EPOCH_MISMATCH", disposition="DENY")
             self.assertEqual(result["failed_predicate"], "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH")
+
+    def test_parity_with_p1_verify_admission_hb_epoch(self):
+        """The receipt's hb_epoch against the append epoch, versus P1's supplied hb_epoch against a sealed readback slot
+        (P1 #3264 head 7d940851). Agree on every malformed and differing value (DENY HB_EPOCH_MISMATCH) and on ALLOW.
+        Divergence by ruling: an absent/null/sentinel supplied epoch is DENY in P1 and FAIL_CLOSED here."""
+        head = "a" * 40
+
+        def p1(supplied, sealed=40):
+            rb = {"schema": wi.BASE_STATE_READBACK_SCHEMA, "disposition": "ALLOW", "base_ref": {"ledger_head": head},
+                  "hb_epoch_source": {"ledger_head": head, "field": wi.HB_EPOCH_SOURCE_FIELD, "derived_from_clock": False},
+                  "hb_epoch": str(sealed)}
+            rb["result_sha256"] = wi.sha(rb)
+            try:
+                return wi.verify_admission_hb_epoch(supplied, rb, head)["disposition"], None
+            except wi.Refusal as refusal:
+                return refusal.record["disposition"], refusal.record["failure_code"]
+
+        def mine(supplied, append=40):
+            receipt = check_receipt(hb_epoch=supplied)
+            result = svc._epoch_refusal(receipt, append)
+            return ("ALLOW", None) if result is None else (result["disposition"], result["failure_code"])
+
+        for value in ("40", "41", "1024", "", "31", "+40", " 40", "4_0", "40.0", "\uff14\uff10", True, False, 40, 40.0, "unknown"):
+            self.assertEqual(mine(value), p1(value), repr(value))
+        for value in (None, "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"):
+            self.assertEqual(p1(value), ("DENY", "HB_EPOCH_MISMATCH"), repr(value))
+            self.assertEqual(mine(value), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"), repr(value))
+
+    def test_a_clock_derived_source_is_unobserved_in_both(self):
+        head = "a" * 40
+        rb = {"schema": wi.BASE_STATE_READBACK_SCHEMA, "disposition": "ALLOW", "base_ref": {"ledger_head": head},
+              "hb_epoch_source": {"ledger_head": head, "field": wi.HB_EPOCH_SOURCE_FIELD, "derived_from_clock": True},
+              "hb_epoch": "40"}
+        rb["result_sha256"] = wi.sha(rb)
+        with self.assertRaises(wi.Refusal) as caught:
+            wi.verify_admission_hb_epoch("40", rb, head)
+        self.assertEqual((caught.exception.record["disposition"], caught.exception.record["failure_code"]),
+                         ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
+        clock = {"schema": "x", "hb_reference": kernel_ref(40, derived=True)}
+        clock["receipt_sha256"] = svc.sha(dict(clock))
+        self.assertEqual((svc._stored_epoch_refusal(clock, 40)["disposition"], svc._stored_epoch_refusal(clock, 40)["failure_code"]),
+                         ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
 
     def test_an_unpinned_kernel_rule_is_unobserved(self):
         from unittest import mock
@@ -378,21 +450,24 @@ class Declarations(unittest.TestCase):
         self.assertEqual(wi.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
         self.assertEqual(svc.REQUIRED_CHECKS_PATH, VENDOR / "required-checks.json")
 
-    def test_required_checks_row_does_not_drift_from_p1(self):
-        """The vendored row is pinned to blob 42405012. If P1's file is in the checkout it must be byte-identical;
-        if it is absent (before #3264 lands) the pin alone is verified and the comparison is UNKNOWN. No network."""
+    def test_vendored_p1_files_do_not_drift_from_p1(self):
+        """Each vendored P1 file is pinned to its blob. If P1's file is in the checkout it must be byte-identical; if it
+        is absent (before #3264 lands) the pin alone is verified and the comparison is UNKNOWN. No network."""
         import subprocess
-        vendored = (VENDOR / "required-checks.json").read_bytes()
-        blob = subprocess.run(["git", "hash-object", "--stdin"], input=vendored, capture_output=True, check=True).stdout.decode().strip()
-        self.assertEqual(blob, svc.REQUIRED_CHECKS_BLOB)
-        p1 = ROOT / svc.P1_REQUIRED_CHECKS_PATH
-        if p1.is_file():
-            comparison = "IDENTICAL" if p1.read_bytes() == vendored else "DRIFT"
-            self.assertEqual(comparison, "IDENTICAL", "P1's " + svc.P1_REQUIRED_CHECKS_PATH + " drifted from vendored blob 42405012; re-vendor")
-        else:
-            comparison = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"  # P1's file is not in this checkout; only the pin is verified
-        print("required-checks drift comparison:", comparison)
-        self.assertIn(comparison, ("IDENTICAL", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"))
+        for vendored_name, p1_path, pin in VENDORED_P1_FILES:
+            vendored = (VENDOR / vendored_name).read_bytes()
+            blob = subprocess.run(["git", "hash-object", "--stdin"], input=vendored, capture_output=True, check=True).stdout.decode().strip()
+            self.assertEqual(blob, pin, vendored_name)
+            p1 = ROOT / p1_path
+            if p1.is_file():
+                comparison = "IDENTICAL" if p1.read_bytes() == vendored else "DRIFT"
+                self.assertEqual(comparison, "IDENTICAL", "P1's " + p1_path + " drifted from vendored blob " + pin[:8] + "; re-vendor")
+            else:
+                comparison = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"  # P1's file is not in this checkout; only the pin is verified
+            print("drift comparison", p1_path, comparison)
+            self.assertIn(comparison, ("IDENTICAL", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"))
+        self.assertEqual(svc.REQUIRED_CHECKS_BLOB, VENDORED_P1_FILES[0][2])
+        self.assertEqual(svc.CHECK_RECEIPT_SCHEMA_BLOB, VENDORED_P1_FILES[1][2])
 
     def test_the_operation_is_declared_and_the_schema_is_pinned(self):
         boundary = json.loads((ROOT / "org-runtime" / "interlock-intr.json").read_text(encoding="utf-8"))
@@ -403,7 +478,8 @@ class Declarations(unittest.TestCase):
         self.assertIs(entry["ingress_capability"], False)
         self.assertEqual(svc.CHECK_RECEIPT_SCHEMA["$id"], wi.CHECK_RECEIPT_SCHEMA)
         self.assertEqual(svc.OPERATION_ID, wi.SV_CHECK_RECEIPT_OPERATION)
-        raw = (ROOT / "schemas" / "sv-check-receipt.v1.schema.json").read_bytes()
+        self.assertEqual(svc.CHECK_RECEIPT_SCHEMA_PATH, VENDOR / "sv-check-receipt.v1.schema.json")
+        raw = svc.CHECK_RECEIPT_SCHEMA_PATH.read_bytes()
         blob = subprocess.run(["git", "hash-object", "--stdin"], input=raw, capture_output=True, check=True).stdout.decode().strip()
         self.assertEqual(blob, "070f13f468558ca08aa5162a8f34431608fc1404")
 
