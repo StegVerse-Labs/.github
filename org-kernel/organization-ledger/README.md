@@ -27,13 +27,13 @@ Registration and CI never stand for runtime. Runtime counts only when a manifest
    - Absent: FAIL_CLOSED `HB_EPOCH_NOT_SUPPLIED`.
    - Malformed: FAIL_CLOSED `HB_EPOCH_INVALID`.
    - In both cases nothing is written, the retry is a re-dispatch with the epoch, and no clock is read anywhere.
-   - This is the same rule as InTr's TVC `validate_warrant` (TVC#488).
+   - This is the same rule as InTr's TVC `validate_warrant` (TVC#488). It decides case for case like `org-kernel/kernel.py::supplied_epoch_failure`, with the same codes and predicate `SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH`, and carries `derived_from_clock: false`. Only `None` is absent; `""` is invalid. The test `SharedSuppliedEpochRule` pins the two together (Lane B #162 N2).
    - Test: `test_repo_receipt_refuses_without_supplied_epoch`.
 2. **Six fields.** Every non-ALLOW carries `failure_code`, `failed_predicate`, `required_evidence_or_repair`, `retry_entrypoint`, `owning_existing_goal` and `next_attempt`.
    - `owning_existing_goal` comes from the consumer's committed parameter file.
    - The SystemExit message is unchanged, so existing callers behave as before. `.refusal` is the record.
    - `required_evidence_or_repair` is never empty or `None`. For example, an unretained source receipt names the receipt and the repair (retain it, or declare a legacy segment) instead of `None`.
-   - **Local locators only (P1-FC-12).** `ledger_store.parse_locator` refuses a remote location (a URL such as `https://`, `ssh://`, `git://`, `file://`, or scp-style `user@host:path`), bare or as the repository of `git+`. The refusal is FAIL_CLOSED `LEDGER_LOCATOR_INVALID` in six fields, owned by StegVerse-org/.github#163. Before the fix such a location read as an empty ledger. The readback reports it, and the writers re-raise it as a LedgerRefusal with their own retry entrypoint. Nothing is opened, read or written. Test classes: `RemoteLocatorRefused` and `RequiredRepairIsNeverEmpty`.
+   - **Local locators only (P1-FC-12).** `ledger_store.parse_locator` refuses a remote location (a URL such as `https://`, `ssh://`, `git://`, `file://`, or scp-style `user@host:path`), bare or as the repository of `git+`. The refusal is FAIL_CLOSED `LEDGER_LOCATOR_INVALID` in six fields, owned by StegVerse-org/.github#163. Before the fix such a location read as an empty ledger. The readback reports it, and the writers re-raise it as a LedgerRefusal with their own retry entrypoint. Nothing is opened, read or written. Its `retry_entrypoint` is worked out from `__file__` (the path from the repository root, plus `::parse_locator`), so an organization's `resident-runtime/` byte copy names its own path. Test classes: `RemoteLocatorRefused`, `RequiredRepairIsNeverEmpty` and `LocatorRetryEntrypointFromFile`.
 3. **Component-relative loading.**
    - Siblings load from this directory, and the kernel is `../kernel.py`.
    - The consumer's contracts are read from the working directory, which is the consumer checkout.

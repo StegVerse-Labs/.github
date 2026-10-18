@@ -87,6 +87,22 @@ _SCP_LIKE = re.compile(r"^(?:[^/@\s]+@)?[^/:\s]+:(?!//)")
 LOCATOR_OWNING_GOAL = "StegVerse-org/.github#163"
 
 
+def _locator_retry_entrypoint():
+    """This file's path from its repository root, plus ::parse_locator, worked out from __file__.
+
+    The root is the parent of `org-kernel/` (the component) or of `resident-runtime/` (an organization's
+    byte copy), else the nearest directory holding `.git`. So one blob names its own path wherever it is
+    copied; nothing about the location is hard-coded.
+    """
+    here = Path(__file__).resolve()
+    for ancestor in here.parents:
+        if ancestor.name in ("org-kernel", "resident-runtime"):
+            return here.relative_to(ancestor.parent).as_posix() + "::parse_locator"
+        if (ancestor / ".git").exists():
+            return here.relative_to(ancestor).as_posix() + "::parse_locator"
+    return here.name + "::parse_locator"
+
+
 class LedgerLocatorRefused(LedgerLocatorInvalid):
     """A locator refused before anything is opened, read or written, with the six fields of a non-ALLOW.
 
@@ -111,7 +127,7 @@ class LedgerLocatorRefused(LedgerLocatorInvalid):
             "required_evidence_or_repair": ("supply a local ledger location: a POSIX path or "
                                             "git+<local repository path>#<fully qualified ref>; "
                                             + repr(locator) + " names a remote (" + detail + ")"),
-            "retry_entrypoint": "org-kernel/organization-ledger/ledger_store.py::parse_locator",
+            "retry_entrypoint": _locator_retry_entrypoint(),
             "owning_existing_goal": LOCATOR_OWNING_GOAL,
             "next_attempt": self.next_attempt,
             "consequence_committed": False,
