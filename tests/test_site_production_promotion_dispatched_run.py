@@ -13,6 +13,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -128,15 +129,39 @@ class DispatchedSppaRunTests(unittest.TestCase):
         self.assertEqual(latest["organization_receipt_sha256"], result["organization_receipt_sha256"])
         self.assertEqual(self.run_consumer(ledger), result)
 
-    def test_first_real_promotion_run_is_fail_closed_until_a_carrier_epoch_arrives(self):
+    def test_first_real_promotion_run_is_fail_closed_on_unauthenticated_evidence(self):
+        """Under the real custody verifier no evidence receipt authenticates (SPPA correction, Q74-01)."""
         ledger = materialized_ledger(self.base)
         self.commit(resident_request(sppa_tests.promote_request(ledger)))
-        first = self.run_consumer(ledger)
-        self.assertEqual((first["transition_class"], first["failure_code"]), (sppa.FAIL_CLOSED, "HB_EPOCH_NOT_SUPPLIED"))
-        self.assertFalse(first["carrier_hb_epoch_supplied"])
-        self.assertFalse(first["promotion_may_proceed"])
-        # Once a carrier frame supplies the epoch (Q-D-6), the same request authorizes and reads back.
-        later = self.run_consumer(ledger, hb_epoch=str(sppa_tests.CARRIER_HB_EPOCH))
+        for epoch in (None, str(sppa_tests.CARRIER_HB_EPOCH)):
+            result = self.run_consumer(ledger, hb_epoch=epoch)
+            self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED, epoch)
+            self.assertEqual(result["failure_code"], sppa.SOURCE_UNAUTHENTICATED, epoch)
+            self.assertFalse(result["promotion_may_proceed"], epoch)
+            for field in SIX:
+                self.assertTrue(result[field], field)
+
+    def test_authenticated_promotion_run_is_fail_closed_until_a_carrier_epoch_arrives(self):
+        ledger = materialized_ledger(self.base)
+        self.commit(resident_request(sppa_tests.promote_request(ledger)))
+        real_load = consumer._load
+
+        def authenticated(name, path):
+            module = real_load(name, path)
+            if name == "sppa_consumer_transition":
+                # Test-only stand-in for an authenticating custody basis (none exists on main).
+                module.AUTHENTICATING_CUSTODY_BASES = frozenset({sppa_tests.FIXTURE_BASIS})
+                module.evidence_custody_basis = lambda custody, row: sppa_tests.FIXTURE_BASIS
+            return module
+
+        with mock.patch.object(consumer, "_load", authenticated):
+            first = self.run_consumer(ledger)
+            self.assertEqual((first["transition_class"], first["failure_code"]),
+                             (sppa.FAIL_CLOSED, "HB_EPOCH_NOT_SUPPLIED"))
+            self.assertFalse(first["carrier_hb_epoch_supplied"])
+            self.assertFalse(first["promotion_may_proceed"])
+            # Once a carrier frame supplies the epoch (Q-D-6), the same request authorizes and reads back.
+            later = self.run_consumer(ledger, hb_epoch=str(sppa_tests.CARRIER_HB_EPOCH))
         self.assertEqual(later["transition_class"], sppa.AUTHORIZED)
         self.assertEqual(later["organization_readback"], "VERIFIED")
         self.assertTrue(later["promotion_may_proceed"])
