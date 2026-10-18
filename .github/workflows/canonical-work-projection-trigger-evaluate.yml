@@ -121,11 +121,12 @@ jobs:
 
       - name: The refusal path is live (no request and no --allow-none must FAIL_CLOSED)
         run: |
-          set -uo pipefail
+          set -euo pipefail
           : > "$RUNNER_TEMP/empty.txt"
+          # The runner's bash runs with -e; capture the expected exit 1 instead of dying on it.
+          status=0
           python scripts/canonical_work_projection_trigger.py evaluate --mode plan \
-            --changed "$RUNNER_TEMP/empty.txt" --out "$EVIDENCE/refusal-probe.json" 2> "$EVIDENCE/refusal-probe.err"
-          status=$?
+            --changed "$RUNNER_TEMP/empty.txt" --out "$EVIDENCE/refusal-probe.json" 2> "$EVIDENCE/refusal-probe.err" || status=$?
           test "$status" -eq 1
           python - "$EVIDENCE/refusal-probe.json" "$EVIDENCE/refusal-probe.err" <<'PY'
           import json, sys
