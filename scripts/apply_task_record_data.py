@@ -64,6 +64,17 @@ _MISSING = object()
 ABSENT = {"$absent": True}
 
 
+def _same(a: Any, b: Any) -> bool:
+    """JSON-typed equality: no bool/number equivalence (1, 1.0 and True differ), recursively."""
+    if type(a) is not type(b):
+        return False
+    if isinstance(a, dict):
+        return a.keys() == b.keys() and all(_same(a[k], b[k]) for k in a)
+    if isinstance(a, list):
+        return len(a) == len(b) and all(_same(x, y) for x, y in zip(a, b))
+    return a == b
+
+
 def _module(name: str, root: Path = ROOT):
     spec = importlib.util.spec_from_file_location(f"_apply_record_data_{name}", root / "scripts" / f"{name}.py")
     module = importlib.util.module_from_spec(spec)
@@ -90,7 +101,7 @@ def _schema(predicate: str, repair: str, **evidence: Any) -> Refused:
     return Refused("RECORD_DATA_SCHEMA_MISMATCH", predicate, repair, "after the data file is corrected", **evidence)
 
 
-def validate_data(data: Any) -> tuple[dict[str, list[dict[str, Any]]], list[dict[str, Any]]]:
+def validate_data(data: Any) -> tuple[dict[str, list[dict[str, Any]]], list[dict[str, Any]], list[str], list[dict[str, Any]]]:
     if not isinstance(data, dict) or data.get("schema") != DATA_SCHEMA:
         raise _schema(f"data schema == {DATA_SCHEMA}", "supply a record-data file of the declared schema")
     work_items = data.get("work_items", {})
@@ -109,7 +120,7 @@ def validate_data(data: Any) -> tuple[dict[str, list[dict[str, Any]]], list[dict
         if (not isinstance(edit, dict) or not isinstance(edit.get("task_id"), str) or "before" not in edit or "after" not in edit
                 or not isinstance(path, list) or not 1 <= len(path) <= 2 or not isinstance(path[0], str)
                 or path[0] in PROTECTED_FIELDS or (len(path) == 2 and (isinstance(path[1], bool) or not isinstance(path[1], int)))
-                or edit["after"] == ABSENT or (edit["before"] == ABSENT and len(path) != 1)):
+                or _same(edit["after"], ABSENT) or (_same(edit["before"], ABSENT) and len(path) != 1)):
             raise _schema("every row_fields edit has task_id, path ([field] or [field, index]), before and after; "
                           "task_id and identity fields are not editable; an absent before adds a top-level field only, "
                           "and after is never absent", "fix the row_fields edit", edit=edit)
@@ -164,12 +175,13 @@ def _set(container: dict[str, Any], path: list[Any], value: Any) -> None:
 def _edit(target: dict[str, Any], edit: dict[str, Any], where: str) -> bool:
     """Apply one exact before -> after edit; True when it changed something."""
     current = _get(target, edit["path"])
-    if current == edit["after"]:
+    if current is not _MISSING and _same(current, edit["after"]):
         return False
-    if edit["before"] == ABSENT and current is _MISSING:
+    absent_before = _same(edit["before"], ABSENT)
+    if absent_before and current is _MISSING:
         _set(target, edit["path"], edit["after"])
         return True
-    if current is _MISSING or current != edit["before"]:
+    if absent_before or current is _MISSING or not _same(current, edit["before"]):
         raise Refused("RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH",
                       f"{where} {edit['task_id']}{edit['path']} == the declared before value",
                       "re-read the current value and restate the edit against it", "after the edit is restated",
@@ -195,7 +207,7 @@ def merge(registry: dict[str, Any], data: Any, task_shards: Path) -> tuple[dict[
         existing = [row for row in merged.get("tasks", []) if row.get("task_id") == task_id]
         # A row this same data registered earlier also carries this data's work items for it.
         expected = dict(record, work_items=work_items[task_id]) if task_id in work_items else record
-        if existing and existing[0] not in (record, expected):
+        if existing and not (_same(existing[0], record) or _same(existing[0], expected)):
             raise Refused("RECORD_DATA_ALREADY_REGISTERED", f"{task_id} is not yet a different aggregate row",
                           "edit the existing row with row_fields instead of re-registering it", "after the data is restated",
                           task_id=task_id)
@@ -232,7 +244,7 @@ def merge(registry: dict[str, Any], data: Any, task_shards: Path) -> tuple[dict[
 
 def plan(registry: dict[str, Any], data: Any, tip_generation: int, task_shards: Path) -> dict[str, Any]:
     merged, records = merge(registry, data, task_shards)
-    if merged == registry and not records:
+    if _same(merged, registry) and not records:
         return {"disposition": "NO_CHANGE", "generation": registry.get("generation"), "registry": registry, "records": {}}
     current = fence.parse_generation(json.dumps(registry), "working tree")
     merged["generation"] = current + 1
@@ -282,8 +294,12 @@ def apply(data: Any, *, registry_path: Path, task_shards: Path, tip_generation: 
             path.write_text(render(record), encoding="utf-8")
         verify(root, registry_path, validators)
     except BaseException:
+        # Restore every file even if one restore write fails; the original exception is the one raised.
         for path, text in originals.items():
-            path.write_text(text, encoding="utf-8")
+            try:
+                path.write_text(text, encoding="utf-8")
+            except OSError:
+                continue
         raise
     report["files_changed"] = True
     return report

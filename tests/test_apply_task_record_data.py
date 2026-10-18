@@ -190,6 +190,33 @@ class RowFieldsAndRegistrationTests(unittest.TestCase):
                            tip=self.tip + 1)
         self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH")
 
+    def test_equality_is_json_typed_not_python_loose(self):
+        # WU-V12 defect d: Python == makes 1, 1.0 and True equal; JSON values of different types are different values.
+        field = ["wu_v12_probe"]
+        self.assertEqual(self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [
+            edit(path=field, before=atr.ABSENT, after=1)]})["disposition"], "ALLOW")
+        to_true = {"schema": atr.DATA_SCHEMA, "row_fields": [edit(path=field, before=1, after=True)]}
+        self.assertEqual(self.run_apply(to_true, tip=self.tip + 1)["disposition"], "ALLOW")
+        self.assertIs(self.row(OPTICAL)["wu_v12_probe"], True)
+        self.assertIs(self.record(OPTICAL)["wu_v12_probe"], True)
+        with self.assertRaises(atr.Refused) as raised:  # a stored true is not matched by before 1, nor by 1.0
+            self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [edit(path=field, before=1.0, after=2)]}, tip=self.tip + 2)
+        self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH")
+        self.assertTrue(atr._same({"a": [1, {"b": None}]}, {"a": [1, {"b": None}]}))
+        self.assertFalse(atr._same([1], [True]) or atr._same({"a": 1}, {"a": 1.0}) or atr._same(0, False))
+
+    def test_absent_sentinel_is_exact_and_never_matches_a_present_field(self):
+        with self.assertRaises(atr.Refused) as raised:  # {"$absent": 1} is an ordinary value, not the sentinel
+            self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [
+                edit(path=["wu_v12_new"], before={"$absent": 1}, after="x")]})
+        self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH")
+        registry = json.loads(self.registry.read_text(encoding="utf-8"))  # a field genuinely holding the sentinel's value
+        next(t for t in registry["tasks"] if t["task_id"] == OPTICAL)["wu_v12_holder"] = {"$absent": True}
+        self.registry.write_text(json.dumps(registry, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        with self.assertRaises(atr.Refused) as raised:  # it is present, not absent, so it is never overwritten
+            self.run_apply({"schema": atr.DATA_SCHEMA, "row_fields": [edit(path=["wu_v12_holder"], before=atr.ABSENT, after="y")]})
+        self.assertEqual(raised.exception.result["failure_code"], "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH")
+
     def test_identity_fields_and_bad_paths_are_not_editable(self):
         for bad in (edit(path=["task_id"]), edit(path=["schema"]), edit(path=[]), edit(path=["a", "b"]), edit(path=["a", True]),
                     edit(before=atr.ABSENT), edit(path=["goal"], after=atr.ABSENT)):
