@@ -30,11 +30,13 @@
       "digest_function": "sv_work_items.stage_evaluation_digest",
       "fields": {
         "base_ref": "{registry_generation read at evaluated_commit, ledger_head = the observed head of the repository's own refs/stegverse/organization-ledger}",
-        "evaluated_commit": "the 40-hex commit of that repository's main the stage is evaluated at (the receipts' head_sha)",
-        "manifest_blob": "git blob sha of data/sv-work-items/stages/NWI-S0.json at evaluated_commit",
+        "evaluated_commit": "the 40-hex commit of the repository the stage is evaluated at (the receipts' head_sha); it identifies the subject only and never supplies the gate manifest",
+        "manifest_blob": "the git blob the gate declaration's data/sv-work-items/contract-pins.json pins for data/sv-work-items/stages/NWI-S0.json (manifest_source CONTRACT_PINS; GATE_MANIFEST_IS_THE_CONTRACT_PINNED_MANIFEST); never the blob at evaluated_commit, which only identifies the subject. A subject whose manifest was read from itself is DENY GATE_MANIFEST_READ_FROM_SUBJECT",
         "repository": "the repository the stage is evaluated in, e.g. StegVerse-Labs/.github",
         "stage_id": "this manifest's stage_id (NWI-S0)"
       },
+      "manifest_source": "CONTRACT_PINS",
+      "pairing": "a gate-derived issue is sourced by the base-side failing receipt (evaluated_commit = the change's base commit) and resolved by the head-side ALLOW receipt (evaluated_commit = the change's head commit); same repository, exactly the same contract-pinned manifest_blob, both ledgered at the change's base ledger_head (sv_work_items.verify_resolution_pair)",
       "schema": "stegverse.nwi-stage-evaluation-subject/v1",
       "serialization": "schemas/sv-change.v1.schema.json#/properties/change_id/x-canonical-serialization"
     },
@@ -107,12 +109,12 @@
       "check": "sv_work_items.verify_admission_hb_epoch(receipt.hb_epoch, readback, ledger_head, target_repository=evaluation_subject.repository)",
       "field": "$.hb_reference.epoch",
       "readback_pin": {
-        "blob": "2c730142254b78a5b9e1c05566fe6f5111b7d571",
+        "blob": "035352f6dd729724b095c0dcf320b8c1b559f235",
         "file": "resident-runtime/sv_change_base_state_readback.py",
-        "head": "2ba0e329c224c94863dac15de3f8011f777cb34f",
+        "head": "9c9b9f51ba658d94c8998985d4bf3783edb45f52",
         "pull_request": 3266,
         "repository": "StegVerse-Labs/.github",
-        "sha256": "88d3b72b3915c71b191b71a0dd7c607dfc675f0490acfe87ec92f808f17eaefe"
+        "sha256": "de5f8b5a7c5da09759f387ff511793c9681e78e60f49ec2f972c72c4fd3667ef"
       },
       "source": "the Labs#3266 base-state readback (stegverse.sv-change-base-state-readback/v1) of evaluation_subject.repository",
       "unobserved": "no receipt is emitted (sv-check-receipt.v1 requires a well-formed hb_epoch and none is minted); the stage evaluation is FAIL_CLOSED STAGE_EVIDENCE_UNOBSERVED with no stage move"
@@ -138,6 +140,8 @@
         "source-receipts/<repo receipt sha256 hex>.json"
       ],
       "ledger_ref": "refs/stegverse/organization-ledger@<ledger commit>:receipts/<org receipt sha256 hex>.json of the evaluation subject's own repository (CHANGE_BINDS_TARGET_REPOSITORY_LEDGER; StegVerse-Labs/.github for Labs)",
+      "manifest_binding": "change_digest binds the subject, whose manifest_blob is the contract-pinned blob; validate_gate_receipt(..., contract_pins=) gives DENY GATE_MANIFEST_READ_FROM_SUBJECT otherwise",
+      "manifest_source": "CONTRACT_PINS",
       "schema": "stegverse.sv_check_receipt.v1",
       "six_fields": "on DENY and FAIL_CLOSED: failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal, next_attempt",
       "validator": "sv_work_items.validate_gate_receipt(receipt, subject, readback)",

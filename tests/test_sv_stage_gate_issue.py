@@ -129,9 +129,12 @@ class ResolutionTests(unittest.TestCase):
         self.assertEqual(wi.resolved_issue_facts([self.iss], {}), [])  # not ledgered: no fact
 
     def test_clean_change_resolves_the_issue(self):
+        # commit 4 (GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE): the base-side receipt alone sources the issue but never resolves
+        # it; ALLOW needs the head-side ALLOW receipt (tests/test_nwi_gate_receipt_pair.py)
         ch = resolving_change([self.iss["issue_id"]])
-        self.assertEqual(admit(ch, self.facts)["disposition"], "ALLOW")
-        self.assertEqual(admit(ch, self.facts)["resolved"], [self.iss["issue_id"]])
+        out = admit(ch, self.facts)
+        self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
+                         ("FAIL_CLOSED", "GATE_PAIR_HEAD_RECEIPT_MISSING", "GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE"))
 
     def test_a_self_sourced_issue_is_deny(self):
         f, = self.facts
@@ -181,7 +184,7 @@ class ResolutionTests(unittest.TestCase):
         out = admit(second, facts)
         self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
                          ("DENY", "SV_ISSUE_ALREADY_RESOLVED", "RECEIPT_DERIVED_ISSUE_IS_RESOLVED_ONCE"))
-        self.assertEqual(admit(first, facts)["disposition"], "ALLOW")  # its own resolution is not a second one
+        self.assertEqual(admit(first, facts)["failure_code"], "GATE_PAIR_HEAD_RECEIPT_MISSING")  # its own resolution is not a second one
 
     def test_3264_stays_resolves_nothing_until_the_receipt_is_ledgered(self):
         ch = resolving_change([])  # what #3264 cites today: nothing (no gate receipt is on the ledger)

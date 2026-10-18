@@ -244,7 +244,7 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_maps_onto_existing_class_as_alias_not_duplicate(self):
         latest = al.latest_classes(self.CLASSES)
-        self.assertEqual(len(latest), 17)
+        self.assertEqual(len(latest), 18)
         self.assertNotIn("ASC-WRITER_EVIDENCE_LOST_BY_SNAPSHOT_RESTORE@transition", latest)
         c = latest[self.CID]
         self.assertEqual((c["class_version"], c["predicate"]), (2, "BRANCH_WRITER_IS_BRANCH_OWNER"))
@@ -276,7 +276,8 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_appended_through_the_gate(self):
         classes, scenarios, receipts = fx.corpus()
-        n = len(fx.BOOTSTRAP_SEEDS) + 2  # epoch class v2 (UNKNOWN axis), the bootstrap classes and the native-UNKNOWN class follow epoch v1
+        n = len(fx.BOOTSTRAP_SEEDS) + 5  # epoch v2 (UNKNOWN axis), the bootstrap classes, the native-UNKNOWN class, epoch v3 (int axis),
+        # the gate-pair class and epoch v4 (void readback shape) (commit 4) follow epoch v1
         self.assertEqual(receipts[-2 - n]["class_id"], self.CID)  # the JD-P4-3 epoch class is appended after the harvest
         self.assertEqual(receipts[-2 - n]["disposition"], "ALLOW")
         self.assertEqual(receipts[-1 - n]["class_id"], EPOCH_CID)

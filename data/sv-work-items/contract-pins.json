@@ -8,21 +8,25 @@
     "data/sv-work-items/contract-pins.json (the manifest never lists itself)"
   ],
   "files": {
+    ".stegverse/transition-ledger/emit.py": {
+      "blob": "f2de8a1aa424eba64ea2ae96328bb9ecb5a625c9",
+      "sha256": "sha256:33a665ea35d3dc41c0844dcb6c67fb0fca301180846189632c0bfe815d456536"
+    },
     "data/admission-scenarios/classes.jsonl": {
-      "blob": "d3fb93f75a9fbe92e75c293bba5261ce143d7b01",
-      "sha256": "sha256:c3a91bd4d7af8493f1cc860a8f702edb9dbcdc3c94cd0d9d01d5ec8a66d92705"
+      "blob": "8f43e4c1111ddc5ccc22ab43056558f02676a3e9",
+      "sha256": "sha256:182a036022258dea1731fa013901db26dbb0bbeeb7ef9dc1de25dd3c8cae6925"
     },
     "data/admission-scenarios/corpus.jsonl": {
-      "blob": "3aec38e1ce42a65e3d185ef6dcb0c3ccb98e896b",
-      "sha256": "sha256:0bd215f4ed722878c103a9f9c152753856308b9baf1be48e27c01e776c63e132"
+      "blob": "43e87090f91572f0fea2c9fb38da8970a0e73a0a",
+      "sha256": "sha256:4e1267f89c468ecfc1f7f530246fcc6aebb7b4855656eca12ddc78938a75061e"
     },
     "data/admission-scenarios/seed-append-outcomes.jsonl": {
-      "blob": "b22d9109324cdb90b111ea5b7cf8055df3c368e1",
-      "sha256": "sha256:5dbd992bff4e70f78c01cf045443bc2f7cfba09a28d23779107282779679a7ae"
+      "blob": "a9159c5d96c7f054dcb7431cf9b77ef535db4bb3",
+      "sha256": "sha256:dd699d7e453c0700f71615d0a5c92a9612cec10ad8208e274b8f4e89d683e8d1"
     },
     "data/admission-scenarios/tvc-replay/replay-map.jsonl": {
-      "blob": "855bd7697ec7d1dac7259021a793eba0477e478c",
-      "sha256": "sha256:df8b8b17f2f5c09d96914dc434e3191066b91a9b4eb993eac040de42e78fb734"
+      "blob": "2cf680d3255ebdac861086f9ffcc8f6fa9110673",
+      "sha256": "sha256:2dac7655447ba853c50f7608662fe19d491a7250ca1481202abfc73e0d333b3e"
     },
     "data/admission-scenarios/tvc-replay/signoff-receipts.jsonl": {
       "blob": "b3c494fb31c3d469a1ce12871fd3864f86856e0e",
@@ -33,8 +37,8 @@
       "sha256": "sha256:0d89d7be2422c5729db1bca98a6cb03664dee0a83bda9b9ff4856c4d95f829ef"
     },
     "data/sv-work-items/invariants.json": {
-      "blob": "6d10e634f6276f370ea2cc122cd35ecfcb1ea6b7",
-      "sha256": "sha256:0c095d715d7bda55b5ac358b04293a88496da2d09f030b5992d03cde97f41b96"
+      "blob": "38924d436fd14d496e530d8b1b17f3e90d59c841",
+      "sha256": "sha256:b1b209b6f0e98bf312aa50b140c2d45cc1f247b28e980311eb5a7b3ebcb6210d"
     },
     "data/sv-work-items/lifecycle-transitions.json": {
       "blob": "c66de6e86c9ec7d167f0e5edf74e717af0688224",
@@ -53,8 +57,8 @@
       "sha256": "sha256:468c08adc9f269f130217db51c8eb22260fbf2369fac48232fe9d3937e583110"
     },
     "data/sv-work-items/stages/NWI-S0.json": {
-      "blob": "20b37917e1454ec788e8f1b8c75d1562ba76d1b3",
-      "sha256": "sha256:f92387e4cd2af861411da101f694eda9cd306833f9857d577573fae3eeace56a"
+      "blob": "c6da02f20c8c58551b75a7a3b9583b3ee9896421",
+      "sha256": "sha256:a46ada45c7565540f9ec064db256ce7e69924d4c32bf9868486e33719a193813"
     },
     "data/sv-work-items/stages/NWI-S1.json": {
       "blob": "29ea5257327c6887fa92e366f2666b9207785cf4",
@@ -76,9 +80,33 @@
       "blob": "debd7d7b0544b11bc1ac87d0b82bb21c22247c55",
       "sha256": "sha256:00387d39d713942365248d628c4f4fff2715041c6e6c28eb0669a44dbb4e65e1"
     },
+    "heartbeat_runtime/independent_oscillator.py": {
+      "blob": "3de31814cbc7a726dbe154c7cc7ff0e72a33d203",
+      "sha256": "sha256:837343e7fae10ed39b8d2bf63355dcfdcf02277f9b9f944b3dff34e986164fd6"
+    },
+    "org-kernel/kernel.py": {
+      "blob": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
+      "sha256": "sha256:3463f1659ec849caf77b32263fbce0711b9c869faade8da2fcd05191e33a4b1f"
+    },
+    "org-kernel/node_store.py": {
+      "blob": "10b9897847db7d734f47ccfe3c6422f02a7eee3b",
+      "sha256": "sha256:7424b384d6c1116a9ca64290ac1f4f301613086032eea3f2bc878c5b5302aed2"
+    },
     "resident-runtime/admission_learning.py": {
-      "blob": "22bac79bbf83466d97b47ec9647e2a8333f59ea4",
-      "sha256": "sha256:0ebdf40e22e9a7054a09df173486522322a583fa474ab713321051cf408093a1"
+      "blob": "b0a3d225ba3ce5a0d03e38d963d9d5ced67702e1",
+      "sha256": "sha256:8d76001a9046bce73f0e1a1ab530ea9db97f0a6bebfba6ba11faca4e74c3783a"
+    },
+    "resident-runtime/aggregate_repo_transition.py": {
+      "blob": "7660d2bc10231c68f9c8b1015caee558ee9423d8",
+      "sha256": "sha256:ff4a2dc76142988dffc63f3088ffe883fe526da03e323017aee4807d60ecd7f5"
+    },
+    "resident-runtime/ledger_store.py": {
+      "blob": "43d36e6adb2e10712c1db833dc0bb909b0abdb78",
+      "sha256": "sha256:e6e493a9a3c0d1c527ab118d406dbea5aa6f7b294bd476a540ee3f9881b898df"
+    },
+    "resident-runtime/organization_batch_custody.py": {
+      "blob": "0b86c0a9ac4b324e48eeb8b4916d63d0b809027b",
+      "sha256": "sha256:f40ba43cad6d25887c5b2fec0f4b478f4085db9cf73aecf8efae841251e06c2e"
     },
     "resident-runtime/schema_subset.py": {
       "blob": "b29dfb33b0ccfe29b6a96862694f9fc4b9787a20",
@@ -93,8 +121,8 @@
       "sha256": "sha256:b3c56d21180e9a1bd749f9165072a757d765773c4dad384687f5c23abe84292b"
     },
     "resident-runtime/sv_work_items.py": {
-      "blob": "4c2aa6ef97b5e4e6f055a2a904e42e0487ed5a9a",
-      "sha256": "sha256:81de9604f6c011522c7c7c37972e78a666b3208a622c5a4605913551c541f6d8"
+      "blob": "6d3a0d3a2722c97f39e27eb38ecb8e58a5ea01a3",
+      "sha256": "sha256:95a40609ab987a2488b9a2aa0d402686c951e4fad352b62987838de967deae6e"
     },
     "schemas/admission-corpus.v1.schema.json": {
       "blob": "5aa5322c7c2b7cff5613996e5e5d33281ad3d53c",
@@ -125,11 +153,44 @@
       "sha256": "sha256:38b4d32032cb96566f890906d2baa396913ff45c95c7bc7ae5f3ec4a1e0a805a"
     },
     "scripts/build_sv_native_fixtures.py": {
-      "blob": "59059a371124f2f2059823bcbffe21dc658b9964",
-      "sha256": "sha256:8e1e5cbfe914f620790fbb0de1320fe8e7117742ab0bcc1dab3d460cf6250d7c"
+      "blob": "377348ca7cd5817ba7b01821a544e27adf0e1202",
+      "sha256": "sha256:5cfa737ab1f5d417304d5163acb53d524dc43290cbefb619b66e009660870eea"
+    },
+    "scripts/project_worker_claim_into_canonical_task.py": {
+      "blob": "9573c5bb963d7c19f64a08173f7397f427ba32dd",
+      "sha256": "sha256:e99c34ec793719af945bb244084f41642b5a74a87d7d4500554557b26de007a2"
+    },
+    "tests/sv_ledger_fixtures.py": {
+      "blob": "30a9fe8980671e63348810c837882f3dab525459",
+      "sha256": "sha256:de648000ee6c5e1e5f476e8a0084d742a1c92348be3082cd599733b91fd232b3"
+    },
+    "workers/canonical_state_transition_custody.py": {
+      "blob": "e22a004882aeced9d276ccfeac6b894906cd46ce",
+      "sha256": "sha256:68d1d28812756ae53adbd9e0b2f906b7ced73cbc718b6123193c3e34378e0217"
     }
   },
   "generated_by": "scripts/build_sv_native_fixtures.py (--check flags a stale manifest)",
+  "import_closure": {
+    "dispatch_root_loads_excluded": {
+      "org-kernel/kernel.py": [
+        "capability_ingress",
+        "manifest_selection",
+        "node_standing"
+      ]
+    },
+    "members": [
+      ".stegverse/transition-ledger/emit.py",
+      "heartbeat_runtime/independent_oscillator.py",
+      "org-kernel/kernel.py",
+      "org-kernel/node_store.py",
+      "resident-runtime/aggregate_repo_transition.py",
+      "resident-runtime/ledger_store.py",
+      "resident-runtime/organization_batch_custody.py",
+      "scripts/project_worker_claim_into_canonical_task.py",
+      "workers/canonical_state_transition_custody.py"
+    ],
+    "rule": "every repo-local module the listed Python files load (import, import_module, importlib spec_from_file_location with a statically resolvable path, eagerly or on call), transitively, is listed"
+  },
   "invariant": "data/sv-work-items/invariants.json#CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN",
   "repository": "StegVerse-Labs/.github",
   "schema": "stegverse.sv-contract-pins/v1"

@@ -98,11 +98,13 @@ class CorpusTests(unittest.TestCase):
     CLASSES = base.jsonl("data/admission-scenarios/classes.jsonl")
 
     def test_class_and_scenario_appended_last(self):
-        self.assertEqual(self.CLASSES[-1]["class_id"], CID)
-        self.assertEqual((self.CLASSES[-1]["class_version"], self.CLASSES[-1]["expected_disposition"], self.CLASSES[-1]["expected_failure_code"]),
-                         (1, "FAIL_CLOSED", "UNKNOWN_IN_NATIVE_RECORD"))
-        self.assertEqual([s["scenario_id"] for s in self.CORPUS[-2:]], ["PC-transition/" + CID, CID + "/owning_goal[UNKNOWN]"])
-        for s in self.CORPUS[-2:]:
+        # appended last in commit 2; commit 4 appends after it (epoch v3: 1 scenario; the gate-pair class: 11; epoch v4: 2), no id moved
+        cls = self.CLASSES[-4]
+        self.assertEqual(cls["class_id"], CID)
+        self.assertEqual((cls["class_version"], cls["expected_disposition"], cls["expected_failure_code"]), (1, "FAIL_CLOSED", "UNKNOWN_IN_NATIVE_RECORD"))
+        mine = self.CORPUS[-16:-14]
+        self.assertEqual([s["scenario_id"] for s in mine], ["PC-transition/" + CID, CID + "/owning_goal[UNKNOWN]"])
+        for s in mine:
             out = wi.admit(s["observed_inputs"], fixture_mode=True)
             self.assertEqual((out["disposition"], out.get("failure_code")), (s["expected_disposition"], s["expected_failure_code"]))
         self.assertEqual(al.disposition_of("UNKNOWN_IN_NATIVE_RECORD"), "FAIL_CLOSED")

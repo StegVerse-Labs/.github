@@ -53,7 +53,8 @@ def lane_c_mismatch(expected, observed="1024"):
     rb = fx.fixture_base_state_readback(hb_epoch=observed)
     body = {k: v for k, v in rb.items() if k != "result_sha256"}
     body.update({"disposition": "DENY", "failure_code": "HB_EPOCH_MISMATCH", "failed_predicate": INV, "expected_hb_epoch": expected,
-                 "flag_failure_code": "HB_EPOCH_FLAG_MISMATCH"})
+                 "flag_failure_code": "HB_EPOCH_FLAG_MISMATCH", "cross_checked": True})  # ruling ~17:15Z: always emitted
+    body.pop("detail", None)
     return wi.seal(body, "result_sha256")
 
 
@@ -124,7 +125,7 @@ class PredicateTests(unittest.TestCase):
         self.assertIsNone(rc["hb_epoch"])
 
     def test_readback_pin(self):
-        self.assertEqual(wi.BASE_STATE_READBACK_PIN["blob"], "2c730142254b78a5b9e1c05566fe6f5111b7d571")
+        self.assertRegex(wi.BASE_STATE_READBACK_PIN["blob"], r"^[0-9a-f]{40}$")  # single constant (tests/test_nwi_gate_declaration.py)
         entry = next(i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"] if i["invariant_id"] == INV)
         self.assertEqual(entry["readback_pin"], wi.BASE_STATE_READBACK_PIN)
 
@@ -150,7 +151,7 @@ class PredicateTests(unittest.TestCase):
         self.assertEqual((out["disposition"], out["hb_epoch"], out["cross_checked"], out["detail"]),
                          ("ALLOW", "1024", False, "HB_EPOCH_NOT_CROSS_CHECKED"))  # the canonical marker (NOT_CROSS_CHECKED_MARKER)
         self.assertNotIn("hb_epoch_cross_check", out)
-        self.assertNotIn("cross_checked", self.verify("1024"))  # absent when the cross-check ran
+        self.assertEqual((self.verify("1024")["cross_checked"], self.verify("1024")["supplied_hb_epoch"]), (True, "1024"))  # ruling ~17:15Z: always emitted
         out = self.verify(wi.HB_EPOCH_NOT_CROSS_CHECKED, rb=None)  # ...but the sealed source must still be observed
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
         # the sentinel's case variants, "NULL" and whitespace are not the sentinel: malformed -> DENY
@@ -318,7 +319,7 @@ class CorpusTests(unittest.TestCase):
         latest = al.latest_classes(self.CLASSES)
         c = latest[CID]
         self.assertEqual((c["class_version"], c["predicate"], c["surfaces"], c["expected_failure_code"], c["expected_disposition"]),
-                         (2, INV, [{"kind": "ledger_writer"}], "HB_EPOCH_SOURCE_UNOBSERVED", "FAIL_CLOSED"))  # v2: the UNKNOWN axis
+                         (4, INV, [{"kind": "ledger_writer"}], "HB_EPOCH_SOURCE_UNOBSERVED", "FAIL_CLOSED"))  # v2: UNKNOWN; v3: int; v4: void shape
         self.assertEqual([x for x in latest if latest[x]["predicate"] == INV], [CID])  # no other class carries this predicate
         got = {s["generated_from"]["axis"]: (s["expected_disposition"], s["expected_failure_code"]) for s in self.CORPUS if s["scenario_class"] == CID}
         self.assertEqual(got, {None: ("ALLOW", None),
@@ -327,13 +328,19 @@ class CorpusTests(unittest.TestCase):
                                "hb_epoch_readback.hb_epoch_source.derived_from_clock": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"),
                                "hb_epoch_readback.hb_epoch": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"),
                                "supplied_hb_epoch": ("DENY", "HB_EPOCH_MISMATCH"),
-                               "supplied_hb_epoch[UNKNOWN]": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED")})
+                               "supplied_hb_epoch[UNKNOWN]": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"),
+                               "supplied_hb_epoch[int]": ("DENY", "HB_EPOCH_MISMATCH"),  # NATIVE_RECORD_HB_EPOCH_IS_A_STRING
+                               "hb_epoch_readback.hb_epoch_cross_check": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"),  # void 2ba0e329 shape
+                           "hb_epoch_readback.cross_checked[stripped]": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED")})  # stripped, resealed
         # appended after every earlier scenario; only later classes' scenarios follow it, so no id moved
         ids = [s["scenario_id"] for s in self.CORPUS]
         at = ids.index(CID + "/supplied_hb_epoch[UNKNOWN]")
-        later = {c["class_id"] for c in self.CLASSES[-1 - len(fx.BOOTSTRAP_SEEDS):]}
-        self.assertNotIn(CID, later)
-        self.assertTrue(all(s["scenario_class"] in later for s in self.CORPUS[at + 1:]))
+        later = {c["class_id"] for c in self.CLASSES[-4 - len(fx.BOOTSTRAP_SEEDS):] if c["class_id"] != CID}  # after epoch v2 (v3, v4 are CID)
+        self.assertTrue(all(s["scenario_class"] in later or s["scenario_id"] in (CID + "/supplied_hb_epoch[int]", CID + "/hb_epoch_readback.hb_epoch_cross_check",
+                                                                       CID + "/hb_epoch_readback.cross_checked[stripped]")
+                            for s in self.CORPUS[at + 1:]))
+        self.assertEqual(ids[-2:], [CID + "/hb_epoch_readback.hb_epoch_cross_check", CID + "/hb_epoch_readback.cross_checked[stripped]"])
+        self.assertGreater(ids.index(CID + "/supplied_hb_epoch[int]"), ids.index("PC-transition/ASC-NATIVE_RECORD_FIELDS_ARE_OBSERVED@transition"))
         for s in self.CORPUS:
             if s["scenario_class"] == CID:
                 out = wi.admit(s["observed_inputs"], fixture_mode=True)
@@ -343,7 +350,7 @@ class CorpusTests(unittest.TestCase):
 
     def test_gate_refuses_a_wrong_expected_code(self):
         classes, scenarios, _ = fx.corpus()
-        n = len(fx.BOOTSTRAP_SEEDS) + 2  # epoch class v2, the bootstrap classes and the native-UNKNOWN class follow epoch v1
+        n = len(fx.BOOTSTRAP_SEEDS) + 5  # epoch v2, the bootstrap classes, the native-UNKNOWN class, epoch v3, the gate-pair class, epoch v4 follow v1
         later = {c["class_sha256"] for c in classes[len(classes) - n:]}
         later_ids = {c["class_id"] for c in classes[len(classes) - n:] if c["class_id"] != CID}
         classes = classes[:len(classes) - n]
@@ -364,8 +371,9 @@ class CorpusTests(unittest.TestCase):
                              cwd=ROOT, capture_output=True, text=True)
         if old.returncode != 0:
             self.skipTest("fc19b532 not in the local clone")
-        # fc19b532's classes are a prefix: epoch v1, epoch v2, the 5 bootstrap classes and the native-UNKNOWN class follow
-        self.assertEqual([json.loads(l) for l in old.stdout.splitlines()], self.CLASSES[:-3 - len(fx.BOOTSTRAP_SEEDS)])
+        # fc19b532's classes are a prefix: epoch v1, epoch v2, the 5 bootstrap classes, the native-UNKNOWN class, epoch v3 and the
+        # gate-pair class (commit 4) follow
+        self.assertEqual([json.loads(l) for l in old.stdout.splitlines()], self.CLASSES[:-6 - len(fx.BOOTSTRAP_SEEDS)])  # + epoch v4
 
 
 

@@ -54,7 +54,7 @@ class GateDeclarationTests(unittest.TestCase):
             row = wi.REQUIRED_CHECKS["checks"][p["check_id"]]
             self.assertEqual((p["offline_command"], p["command_paths"], p["expected"]), (row["offline_command"], row["command_paths"], row["expected"]))
         self.assertEqual(wi.check_command("nwi-s0-exit-gate", [])["disposition"], "ALLOW")
-        self.assertEqual(M["exit_gate_check"]["hb_epoch"]["readback_pin"]["head"], "2ba0e329c224c94863dac15de3f8011f777cb34f")
+        self.assertEqual(M["exit_gate_check"]["hb_epoch"]["readback_pin"]["head"], wi.BASE_STATE_READBACK_PIN["head"])
         self.assertEqual(M["exit_gate_check"]["cadence"]["per"], "STAGE_EVALUATION")
         self.assertIs(M["exit_gate_check"]["cadence"]["in_required_checks_row"], False)
 
@@ -160,34 +160,131 @@ class StageEvaluationSubjectTests(unittest.TestCase):
         self.assertEqual(issue["violated_invariant"]["rule_id"], "NWI-S0#exit_gate_check.nwi-s0-exit-gate")
 
 
+# The #3266 pin has ONE source: sv_work_items.BASE_STATE_READBACK_PIN (synced into invariants.json and NWI-S0.json by the
+# build). PENDING (orchestrator ~17:15Z): Lane C's next #3266 head replaces 9c9b9f51; these tests read the constant.
+PIN = wi.BASE_STATE_READBACK_PIN
+
+
+def resealed(**over):
+    body = {k: v for k, v in fx.fixture_base_state_readback().items() if k != "result_sha256"}
+    body.update(over)
+    return wi.seal({k: v for k, v in body.items() if v is not DROP}, "result_sha256")
+
+
+DROP = object()
+CROSS_CHECKED_ALLOW = dict(cross_checked=True, detail=DROP, supplied_hb_epoch="1024")  # over the fixture (hb_epoch "1024")
+
+
 class ReadbackRepinTests(unittest.TestCase):
-    def test_pin_is_2ba0e329(self):
-        self.assertEqual((wi.BASE_STATE_READBACK_PIN["head"], wi.BASE_STATE_READBACK_PIN["blob"], wi.BASE_STATE_READBACK_PIN["sha256"],
-                          wi.BASE_STATE_READBACK_PIN["tests_blob"]),
-                         ("2ba0e329c224c94863dac15de3f8011f777cb34f", "2c730142254b78a5b9e1c05566fe6f5111b7d571",
-                          "88d3b72b3915c71b191b71a0dd7c607dfc675f0490acfe87ec92f808f17eaefe", "31550f4d54555df4683b37401da39067b71cee60"))
+    def test_pin_is_a_single_constant(self):
+        self.assertEqual(set(PIN), {"repository", "pull_request", "head", "file", "blob", "sha256", "tests_file", "tests_blob"})
         inv = {i["invariant_id"]: i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"]}
-        self.assertEqual(inv["ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"]["readback_pin"], wi.BASE_STATE_READBACK_PIN)
+        a = inv["ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"]
+        self.assertEqual(a["readback_pin"], PIN)
+        hist = [h["head"] for h in a["readback_pin_history"]]
+        self.assertEqual(hist[:2], ["641f4b03e612d07047e15f2384d24780e2af86c0", "2ba0e329c224c94863dac15de3f8011f777cb34f"])
+        self.assertNotIn(PIN["head"], hist)
+        pin = M["exit_gate_check"]["hb_epoch"]["readback_pin"]
+        self.assertEqual(pin, {k: PIN[k] for k in ("repository", "pull_request", "head", "file", "blob", "sha256")})
+        self.assertEqual(fx.readback_pin_sync(), {p: p.read_text() for p in fx.READBACK_PIN_TARGETS})  # synced
 
-    def test_pinned_blob_when_present(self):
-        out = subprocess.run(["git", "rev-parse", "2ba0e329c224c94863dac15de3f8011f777cb34f:resident-runtime/sv_change_base_state_readback.py"],
-                             cwd=ROOT, capture_output=True, text=True)
-        if out.returncode != 0:
-            self.skipTest("2ba0e329 not in the local clone")
-        self.assertEqual(out.stdout.strip(), wi.BASE_STATE_READBACK_PIN["blob"])
+    def test_pinned_blobs_when_present(self):
+        for path, want in ((PIN["file"], PIN["blob"]), (PIN["tests_file"], PIN["tests_blob"])):
+            out = subprocess.run(["git", "rev-parse", PIN["head"] + ":" + path], cwd=ROOT, capture_output=True, text=True)
+            if out.returncode != 0:
+                self.skipTest(PIN["head"][:8] + " not in the local clone")
+            self.assertEqual(out.stdout.strip(), want, path)
+        data = subprocess.run(["git", "show", PIN["head"] + ":" + PIN["file"]], cwd=ROOT, capture_output=True).stdout
+        self.assertEqual(hashlib.sha256(data).hexdigest(), PIN["sha256"])
 
-    def test_omitted_flag_allow_shape_of_2ba0e329_is_observed(self):
-        """2ba0e329 adds cross_checked false and hb_epoch_cross_check to an omitted-flag ALLOW; still an observed epoch."""
-        rb = fx.fixture_base_state_readback()
-        body = {k: v for k, v in rb.items() if k != "result_sha256"}
-        body.update({"cross_checked": False, "hb_epoch_cross_check": "HB_EPOCH_NOT_CROSS_CHECKED"})
-        rb = wi.seal(body, "result_sha256")
-        self.assertEqual(wi.verify_admission_hb_epoch("1024", rb, HEAD, fixture_mode=True)["disposition"], "ALLOW")
+    def test_producer_shapes_are_observed(self):
+        """Ruling ~17:15Z: the producer always emits cross_checked. Omitted flag: {cross_checked: false, detail:
+        HB_EPOCH_NOT_CROSS_CHECKED}; cross-checked: cross_checked true plus the supplied value; mismatch: DENY with cross_checked true."""
+        omitted = fx.fixture_base_state_readback()
+        self.assertEqual((omitted["cross_checked"], omitted["detail"]), (False, "HB_EPOCH_NOT_CROSS_CHECKED"))  # our fixture follows it
+        crossed = resealed(**CROSS_CHECKED_ALLOW)
+        for rb in (omitted, crossed):
+            self.assertIsNone(wi.readback_shape_violation(rb))
+            self.assertNotIn("hb_epoch_cross_check", rb)
+            for supplied in ("1024", wi.HB_EPOCH_NOT_CROSS_CHECKED):
+                self.assertEqual(wi.verify_admission_hb_epoch(supplied, rb, HEAD, fixture_mode=True)["disposition"], "ALLOW")
+            self.assertEqual(refusal(wi.verify_admission_hb_epoch, "1025", rb, HEAD, fixture_mode=True)["failure_code"], "HB_EPOCH_MISMATCH")
+        mismatch = resealed(disposition="DENY", failure_code="HB_EPOCH_MISMATCH", cross_checked=True, detail=DROP)
+        self.assertIsNone(wi.readback_shape_violation(mismatch))
         # explicit '' / 'null' / sentinel at the producer: FAIL_CLOSED, both slots null -> unobserved here
-        body = {k: v for k, v in fx.fixture_base_state_readback().items() if k != "result_sha256"}
-        body.update({"disposition": "FAIL_CLOSED", "failure_code": "HB_EPOCH_SOURCE_UNOBSERVED", "hb_epoch": None, "hb_epoch_source": None})
-        out = refusal(wi.verify_admission_hb_epoch, "1024", wi.seal(body, "result_sha256"), HEAD, fixture_mode=True)
+        out = refusal(wi.verify_admission_hb_epoch, "1024", resealed(disposition="FAIL_CLOSED", failure_code="HB_EPOCH_SOURCE_UNOBSERVED",
+                                                                     hb_epoch=None, hb_epoch_source=None, detail=DROP), HEAD, fixture_mode=True)
         self.assertEqual(out["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
+        # our own output always carries cross_checked
+        out = wi.verify_admission_hb_epoch("1024", omitted, HEAD, fixture_mode=True)
+        self.assertEqual((out["cross_checked"], out["supplied_hb_epoch"]), (True, "1024"))
+
+    def assert_void(self, rb, name):
+        for supplied in ("1024", "1025", wi.HB_EPOCH_NOT_CROSS_CHECKED):
+            out = refusal(wi.verify_admission_hb_epoch, supplied, rb, HEAD, fixture_mode=True)
+            self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
+                             ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED", "READBACK_SHAPE_MATCHES_PINNED_PRODUCER"), (name, supplied))
+            self.assertTrue(six(out), name)
+
+    def test_void_shapes_are_fail_closed(self):
+        """Rulings ~17:05Z / ~17:15Z (NOT_CROSS_CHECKED_MARKER): FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED,
+        READBACK_SHAPE_MATCHES_PINNED_PRODUCER, with all six fields."""
+        void = {
+            "2ba0e329 shape": resealed(cross_checked=False, detail=DROP, hb_epoch_cross_check="HB_EPOCH_NOT_CROSS_CHECKED"),
+            "key alone, no cross_checked": resealed(cross_checked=DROP, detail=DROP, hb_epoch_cross_check="HB_EPOCH_NOT_CROSS_CHECKED"),
+            "key beside the canonical marker": resealed(hb_epoch_cross_check=None),
+            "key beside a cross-checked ALLOW": resealed(hb_epoch_cross_check=None, **CROSS_CHECKED_ALLOW),
+            "cross_checked false, no detail": resealed(detail=DROP),
+            "detail, no cross_checked": resealed(cross_checked=DROP),
+            "cross_checked true with the marker": resealed(cross_checked=True),
+            "cross_checked true, no supplied value": resealed(cross_checked=True, detail=DROP),
+            "cross_checked true, other supplied value": resealed(cross_checked=True, detail=DROP, supplied_hb_epoch="1025"),
+            "cross_checked true, int supplied value": resealed(cross_checked=True, detail=DROP, supplied_hb_epoch=1024),
+            "cross_checked false with a supplied value": resealed(supplied_hb_epoch="1024"),
+            "cross_checked 'false'": resealed(cross_checked="false"),
+            "DENY without cross_checked": resealed(disposition="DENY", failure_code="HB_EPOCH_MISMATCH", cross_checked=DROP, detail=DROP),
+            "marker on a DENY": resealed(disposition="DENY", failure_code="HB_EPOCH_MISMATCH"),
+            "key on a DENY": resealed(disposition="DENY", failure_code="HB_EPOCH_MISMATCH", cross_checked=True, detail=DROP,
+                                      hb_epoch_cross_check="x"),
+        }
+        for name, rb in void.items():
+            self.assert_void(rb, name)
+        # the gate receipt path uses the same reader
+        out = refusal(wi.validate_gate_receipt, gate_receipt(subject()), subject(), void["2ba0e329 shape"], fixture_mode=True)
+        self.assertEqual(out["failed_predicate"], "READBACK_SHAPE_MATCHES_PINNED_PRODUCER")
+        inv = {i["invariant_id"]: i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"]}
+        m = inv["NOT_CROSS_CHECKED_MARKER"]
+        self.assertIn("VOID", m["statement"]); self.assertIn("ALWAYS emits cross_checked", m["statement"])
+        self.assertEqual(m["void_disposition"]["failed_predicate"], "READBACK_SHAPE_MATCHES_PINNED_PRODUCER")
+
+    def test_stripped_and_resealed_is_void(self):
+        """Ruling ~17:15Z: a self-seal cannot prove which producer path ran. Stripping cross_checked (and the marker, or the
+        supplied value) from a genuine-shaped readback and recomputing result_sha256 verifies as a seal but is void."""
+        for name, src in (("omitted-flag ALLOW", fx.fixture_base_state_readback()), ("cross-checked ALLOW", resealed(**CROSS_CHECKED_ALLOW)),
+                          ("DENY mismatch", resealed(disposition="DENY", failure_code="HB_EPOCH_MISMATCH", cross_checked=True, detail=DROP))):
+            for strip in (("cross_checked",), ("cross_checked", "detail"), ("cross_checked", "supplied_hb_epoch"),
+                          ("cross_checked", "detail", "supplied_hb_epoch")):
+                body = {k: v for k, v in src.items() if k != "result_sha256" and k not in strip}
+                rb = wi.seal(body, "result_sha256")
+                self.assertEqual(rb["result_sha256"], wi.sha(body))  # the seal itself verifies
+                self.assert_void(rb, (name, strip))
+        # the admission_learning mutation and its corpus scenario (appended last)
+        corpus = base.jsonl("data/admission-scenarios/corpus.jsonl")
+        sc = corpus[-1]
+        self.assertEqual(sc["generated_from"]["axis"], "hb_epoch_readback.cross_checked[stripped]")
+        self.assertNotIn("cross_checked", sc["observed_inputs"]["hb_epoch_readback"])
+        out = wi.admit(sc["observed_inputs"], fixture_mode=True)
+        self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
+                         ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED", "READBACK_SHAPE_MATCHES_PINNED_PRODUCER"))
+
+    def test_void_shape_corpus_scenario(self):
+        corpus = base.jsonl("data/admission-scenarios/corpus.jsonl")
+        sc = next(s for s in corpus if s["generated_from"]["axis"] == "hb_epoch_readback.hb_epoch_cross_check")
+        self.assertEqual(sc["scenario_id"], corpus[-2]["scenario_id"])  # appended (the stripped axis follows it)
+        self.assertIn("hb_epoch_cross_check", sc["observed_inputs"]["hb_epoch_readback"])
+        out = wi.admit(sc["observed_inputs"], fixture_mode=True)
+        self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
+                         ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED", "READBACK_SHAPE_MATCHES_PINNED_PRODUCER"))
 
 
 class MarkerTests(unittest.TestCase):
@@ -197,6 +294,8 @@ class MarkerTests(unittest.TestCase):
         self.assertNotIn("hb_epoch_cross_check", out)
         inv = {i["invariant_id"]: i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"]}
         self.assertEqual(inv["NOT_CROSS_CHECKED_MARKER"]["canonical"], {"cross_checked": False, "detail": "HB_EPOCH_NOT_CROSS_CHECKED"})
+        self.assertEqual(inv["NOT_CROSS_CHECKED_MARKER"]["producers_to_align"][0], "P4 #192 (detail)")
+        self.assertTrue(inv["NOT_CROSS_CHECKED_MARKER"]["producers_to_align"][1].startswith("Labs#3266: next head"))
 
 
 class ResolvedIssueFactsTests(unittest.TestCase):
@@ -210,15 +309,19 @@ class ResolvedIssueFactsTests(unittest.TestCase):
         a = wi.derive_resolved_issue_facts(self.objs, self.at, self.ch, [self.issue])
         b = wi.derive_resolved_issue_facts(dict(self.objs), self.at, copy.deepcopy(self.ch), [copy.deepcopy(self.issue)])
         self.assertEqual(a, b)
-        self.assertEqual(a, wi.resolved_issue_facts([self.issue], self.objs))
+        # the same facts resolved_issue_facts observes, plus the gate issue's resolution_pair (commit 4)
+        self.assertEqual([{k: v for k, v in f.items() if k != "resolution_pair"} for f in a], wi.resolved_issue_facts([self.issue], self.objs))
         self.assertEqual(a[0]["issue_id"], self.issue["issue_id"])
         self.assertIs(a[0]["fixture_only"], False)
+        self.assertEqual(a[0]["resolution_pair"]["base"]["receipt"]["receipt_ledger_ref"], self.ref)
+        self.assertIsNone(a[0]["resolution_pair"]["head"])
 
     def test_admission_uses_the_same_function(self):
         obs = wi.admission_inputs(self.ch, fx.LABS_BASE, fx.signoff_receipts_for(self.ch), fx.fixture_base_state_readback(),
                                   ledger_objects=self.objs, ledger_ref=self.at, issue_records=[self.issue])
         self.assertEqual(obs["resolved_issues"], wi.derive_resolved_issue_facts(self.objs, self.at, self.ch, [self.issue]))
-        self.assertEqual(wi.verify_resolutions(obs)["resolved"], [self.issue["issue_id"]])  # observed, not fixture: counts outside fixture_mode
+        # observed (not fixture), but the base receipt alone never resolves a gate issue (commit 4)
+        self.assertEqual(refusal(wi.verify_resolutions, obs)["failure_code"], "GATE_PAIR_CHANGE_COMMITS_UNOBSERVED")
         out = refusal(wi.admission_inputs, self.ch, fx.LABS_BASE, (), None, [], ledger_objects=self.objs, ledger_ref=self.at)
         self.assertEqual(out["failure_code"], "RESOLVED_ISSUE_FACTS_DOUBLY_SOURCED")
         ctx = {"current_base": fx.LABS_BASE, "ledger_objects": self.objs, "ledger_ref": self.at, "issue_records": [self.issue],
@@ -227,13 +330,15 @@ class ResolvedIssueFactsTests(unittest.TestCase):
         tr = wi.transition("SV_CHANGE_ADMIT", self.ch, hb_epoch="1024", context=ctx)
         self.assertEqual(tr["disposition"], "ALLOW")
 
-    def test_unledgered_or_off_base_receipt_yields_no_fact(self):
+    def test_off_base_gate_receipt_is_base_missing(self):
         objs, ref, _, _ = sgi.ledgered(gate_receipt(subject()), commit="c" * 40)  # ledgered, but not at the change's base head
         issue = wi.derive_issue_from_check_receipt(objs, ref, observed_base=fx.LABS_BASE)
         ch = sgi.resolving_change([issue["issue_id"]])
-        self.assertEqual(wi.derive_resolved_issue_facts(objs, self.at, ch, [issue]), [])
-        obs = wi.admission_inputs(ch, fx.LABS_BASE, (), None, ledger_objects=objs, ledger_ref=self.at, issue_records=[issue])
-        self.assertEqual(refusal(wi.verify_resolutions, obs)["failure_code"], "SV_CHANGE_RESOLVES_NOTHING")
+        f, = wi.derive_resolved_issue_facts(objs, self.at, ch, [issue])
+        self.assertIs(f["resolution_pair"]["base"]["receipt"]["ledgered_at_base"], False)
+        obs = wi.admission_inputs(ch, fx.LABS_BASE, (), None, ledger_objects=objs, ledger_ref=self.at, issue_records=[issue],
+                                  change_commits={"base_commit": "e" * 40, "head_commit": "f" * 40})
+        self.assertEqual(refusal(wi.verify_resolutions, obs)["failure_code"], "GATE_PAIR_BASE_RECEIPT_MISSING")
         self.assertEqual(wi.derive_resolved_issue_facts({}, self.at, self.ch, [self.issue]), [])  # no bytes: unobserved
         self.assertEqual(wi.derive_resolved_issue_facts(self.objs, self.at, self.ch, []), [])  # no record: unobserved
 

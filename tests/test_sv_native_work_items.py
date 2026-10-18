@@ -329,7 +329,8 @@ class CorpusTests(unittest.TestCase):
 
     def test_seed_corpus_loads_and_covers_seed_fixtures(self):
         latest = al.latest_classes(self.CLASSES)
-        self.assertEqual(len(latest), 17)  # 10 seed + the epoch class + 5 STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE classes + UNKNOWN_IN_NATIVE_RECORD
+        self.assertEqual(len(latest), 18)  # 10 seed + the epoch class + 5 STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE classes + UNKNOWN_IN_NATIVE_RECORD
+        # + GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE (commit 4; epoch v3 keeps its class id)
         origins = json.dumps([c["provenance"] for c in latest.values()])
         for ref in ("#3241", "#3244", "#3245", "SDK#533", "SDK#546", "TVC#526", "#3246", ".github#189"):
             self.assertIn(ref, origins)

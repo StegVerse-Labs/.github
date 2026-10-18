@@ -163,7 +163,7 @@ def signoff_receipts_for(ch: dict) -> list[dict]:
 
 def fixture_base_state_readback(base: dict = LABS_BASE, hb_epoch: str = FIXTURE_HB_EPOCH) -> dict:
     """FIXTURE ONLY: a sealed ALLOW base-state readback receipt in the shape of Lane C's RTC-SV-CHANGE-BASE-STATE-
-    READBACK-014 (Labs#3266 @2ba0e329, readback blob 2c730142: hb_epoch_source {ledger_head, receipt, field}) for the positive controls. Nothing
+    READBACK-014 (Labs#3266 @9c9b9f51, readback blob 035352f6: hb_epoch_source {ledger_head, receipt, field}) for the positive controls. Nothing
     was read: fixture_only is true, the values no readback observed are UNKNOWN and listed in unobserved_fields, and
     sv_work_items.verify_admission_hb_epoch counts it only in fixture_mode."""
     return wi.seal({"schema": wi.BASE_STATE_READBACK_SCHEMA, "component_id": "RTC-SV-CHANGE-BASE-STATE-READBACK-014",
@@ -171,6 +171,8 @@ def fixture_base_state_readback(base: dict = LABS_BASE, hb_epoch: str = FIXTURE_
                     "sources": [], "hb_epoch": hb_epoch,
                     "hb_epoch_source": {"ledger_head": base["ledger_head"], "receipt": wi.UNKNOWN, "field": wi.HB_EPOCH_SOURCE_FIELD},
                     "disposition": "ALLOW", "authority_effect": "NONE_READBACK_ONLY", "readback_writes": False, "fixture_only": True,
+                    # ruling ~17:15Z: the producer always emits cross_checked; the fixture is the omitted-flag ALLOW
+                    "cross_checked": False, "detail": wi.NOT_CROSS_CHECKED_DETAIL,
                     "unobserved_fields": ["bound_main_commit", "hb_epoch", "hb_epoch_source/receipt", "sources"]}, "result_sha256")
 
 
@@ -192,6 +194,52 @@ def fixture_resolved_issues(ch: dict) -> list[dict]:
              "emitter_session": wi.S1_VERIFIER_REF, "derived_issue_ids_from_receipt": [i],
              "unobserved_fields": ["ledger_ref", "receipt_file_sha256", "receipt_ledger_paths", "receipt_sha256"]}
             for i in ch["resolves"]]
+
+
+# GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE (commit 4): the pair Lane B (SV-LLM/.github#46 @9fbc2e92) is producing for #3264:
+# the gate ran at the change's head 7898cedb (ALLOW, evaluation af569561) and a base-side evaluation at the change's base 978b8880
+# (expected to fail: the head's NWI-S0 gate applied to a tree without its evidence producers). The commits and the manifest blob
+# are observed in git (git rev-parse 7898cedb:data/sv-work-items/stages/NWI-S0.json); no receipt was read, so every receipt
+# value is a fixture (fixture_only, unobserved_fields) and the pair counts only in fixture_mode, never on the real path.
+LANE_B_BASE_COMMIT = "978b8880d238dc3e3a8b690c0675d8bb0e9d6985"
+LANE_B_HEAD_COMMIT = "7898cedba1400c8545cebcb463fd26deb25f7d5a"
+LANE_B_MANIFEST_BLOB = "20b37917e1454ec788e8f1b8c75d1562ba76d1b3"
+FIXTURE_HEAD_GATE_RECEIPT_HEX = "1" * 64
+LANE_B_CONTRACT_PINS_SHA256 = "sha256:317aef68d7a875b84633361a25b000810457fbc89b96f735dde3259008b897d7"  # contract-pins.json @7898cedb
+LANE_B_MANIFEST_SHA256 = "sha256:f92387e4cd2af861411da101f694eda9cd306833f9857d577573fae3eeace56a"  # NWI-S0.json @7898cedb
+
+
+def fixture_pair_side(commit: str, disposition: str, receipt_hex: str) -> dict:
+    subject = wi.stage_evaluation_subject("StegVerse-Labs/.github", "NWI-S0", LANE_B_MANIFEST_BLOB, commit, LABS_BASE)
+    digest = wi.stage_evaluation_digest(subject)
+    return {"subject": subject, "subject_digest": digest,
+            "receipt": {"receipt_ledger_ref": wi.LEDGER_REF + "@" + FIXTURE_LEDGER_COMMIT + ":receipts/" + receipt_hex + ".json",
+                        "check_id": "nwi-s0-exit-gate", "disposition": disposition, "change_digest": digest, "head_sha": commit,
+                        "verifier_ref": wi.S1_VERIFIER_REF, "ledgered_at_base": True,
+                        "receipt_ledger_paths": ["receipts/" + receipt_hex + ".json", "source-receipts/" + receipt_hex + ".json"],
+                        "receipt_file_sha256": ["sha256:" + receipt_hex]}}
+
+
+def fixture_resolution_pair(ch: dict) -> dict:
+    """FIXTURE ONLY: the resolution_pair derive_resolved_issue_facts builds, for the Lane B pair above."""
+    return {"rule": wi.GATE_PAIR_PREDICATE, "ledger_head": ch["base_ref"]["ledger_head"], "target_repository": ch["target_repository"],
+            "change_commits": {"base_commit": LANE_B_BASE_COMMIT, "head_commit": LANE_B_HEAD_COMMIT}, "manifest_source": wi.MANIFEST_SOURCE,
+            # contract-pins.json at 7898cedb pins NWI-S0.json at this blob (manifest sha256 317aef68..., observed in git)
+            "pinned_manifest": {"file": "data/sv-work-items/stages/NWI-S0.json", "blob": LANE_B_MANIFEST_BLOB,
+                                "sha256": LANE_B_MANIFEST_SHA256, "contract_pins_sha256": LANE_B_CONTRACT_PINS_SHA256},
+            "base": fixture_pair_side(LANE_B_BASE_COMMIT, "FAIL_CLOSED", FIXTURE_GATE_RECEIPT_HEX),
+            "head": fixture_pair_side(LANE_B_HEAD_COMMIT, "ALLOW", FIXTURE_HEAD_GATE_RECEIPT_HEX)}
+
+
+def known_good_paired(kind_path: str) -> dict:
+    """known_good() whose cited gate-derived issue also carries its fixture resolution_pair (the commit-4 positive control)."""
+    obs = known_good(kind_path)
+    ch = known_good_change(kind_path)
+    obs["resolved_issues"] = [{**f, "resolution_pair": fixture_resolution_pair(ch),
+                               "unobserved_fields": sorted(set(f["unobserved_fields"]) | {"resolution_pair/base/receipt",
+                                                                                           "resolution_pair/head/receipt"})}
+                              for f in obs["resolved_issues"]]
+    return obs
 
 
 def known_good(kind_path: str) -> dict:
@@ -235,6 +283,21 @@ AXIS_TARGET = {
     "record_mode": ("SV_CHANGE", "/record_mode", "the SV_CHANGE is MIGRATED_HISTORICAL"),
     "owning_goal[UNKNOWN]": ("SV_CHANGE", "/owning_goal", "the NATIVE SV_CHANGE's owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"),
     "resolved_issues[0].record_mode": ("REPLAY_INPUT", "/resolved_issues/0/record_mode", "the cited issue is MIGRATED_HISTORICAL"),
+    "supplied_hb_epoch[int]": ("SV_CHANGE", "/hb_epoch", "the SV_CHANGE's hb_epoch is the sealed epoch as a JSON integer"),
+    "hb_epoch_readback.hb_epoch_cross_check": ("REPLAY_INPUT", "/hb_epoch_readback/hb_epoch_cross_check",
+                                                "the readback carries hb_epoch_cross_check (void 2ba0e329 shape), resealed"),
+    "hb_epoch_readback.cross_checked[stripped]": ("REPLAY_INPUT", "/hb_epoch_readback/cross_checked",
+                                                  "the readback's cross_checked and marker stripped, resealed"),
+    **{"resolved_issues[0].resolution_pair." + f: ("REPLAY_INPUT", "/resolved_issues/0/resolution_pair/" + f.replace(".", "/"), why)
+       for f, why in (("head", "no head-side ALLOW gate receipt"), ("base.receipt.ledgered_at_base", "the base receipt is not at the base ledger head"),
+                      ("head.receipt.change_digest", "the head receipt binds another digest"),
+                      ("head.receipt.disposition", "the head gate receipt is FAIL_CLOSED"),
+                      ("head.subject.repository", "the head subject is StegVerse-org/.github's"),
+                      ("head.subject.manifest_blob", "the head subject binds another manifest blob"),
+                      ("pinned_manifest", "the gate declaration's contract-pins.json is not supplied"),
+                      ("*.subject.manifest_blob", "both subjects' manifest was read from the subject, not contract-pins"),
+                      ("base.subject.evaluated_commit", "the base subject is at the change's head commit"),
+                      ("change_commits", "the change's commits are unobserved"))},
 }
 FOREIGN_SESSION = "FOREIGN-SESSION"  # fixture: the session admission_learning._foreign adds
 
@@ -248,7 +311,8 @@ def axis_value(axis: str, expected_code: str | None):
             "content[*].writer_session.evidence_class": {"session": None, "evidence_class": wi.UNKNOWN},
             "validation_receipts[0].disposition": "DENY" if expected_code == "REQUIRED_CHECK_DENIED" else "FAIL_CLOSED",
             "supplied_hb_epoch": str(int(FIXTURE_HB_EPOCH) + 1), "resolves": [], "resolves[+unobserved]": ["svi:" + "f" * 64],
-            "record_mode": "MIGRATED_HISTORICAL", "supplied_hb_epoch[UNKNOWN]": wi.UNKNOWN, "owning_goal[UNKNOWN]": wi.UNKNOWN}.get(axis)
+            "record_mode": "MIGRATED_HISTORICAL", "supplied_hb_epoch[UNKNOWN]": wi.UNKNOWN, "owning_goal[UNKNOWN]": wi.UNKNOWN,
+            "supplied_hb_epoch[int]": int(FIXTURE_HB_EPOCH)}.get(axis)
 
 
 def apply_replay_mutation(ch: dict, m: dict | None) -> dict:
@@ -278,7 +342,7 @@ def apply_replay_mutation(ch: dict, m: dict | None) -> dict:
         ch["signoffs"] = list(v)
     elif axis == "signoffs[*].receipt_ref":
         ch["signoffs"] = [{**s, "receipt_ref": v} for s in ch["signoffs"]]
-    elif axis in ("supplied_hb_epoch", "supplied_hb_epoch[UNKNOWN]"):
+    elif axis in ("supplied_hb_epoch", "supplied_hb_epoch[UNKNOWN]", "supplied_hb_epoch[int]"):
         ch["hb_epoch"] = v
     elif axis == "resolves":
         ch["resolves"] = list(v)
@@ -515,6 +579,66 @@ def epoch_unknown_append(classes: list[dict], scenarios: list[dict]) -> list[dic
     return [{k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]}]
 
 
+# Orchestrator 16:55Z: an integer hb_epoch on a NATIVE SV_CHANGE is an observed, malformed value (sv-change 6b43b6ec requires the
+# string) -> DENY HB_EPOCH_MISMATCH. The epoch class gains the axis as version 3 (supersedes v2), appended last; no id moves.
+EPOCH_INT_RULING = "NATIVE_RECORD_HB_EPOCH_IS_A_STRING"
+EPOCH_INT_ORIGINS = ["orchestrator 2026-10-18T16:55Z: validate_change accepted an integer hb_epoch that the sv-change schema (6b43b6ec) "
+                     "and admission reject; an integer is a malformed native value: DENY HB_EPOCH_MISMATCH"]
+
+
+def epoch_int_append(classes: list[dict], scenarios: list[dict], ruling: str = EPOCH_INT_RULING,
+                     ruling_origins: list[str] = EPOCH_INT_ORIGINS) -> list[dict]:
+    pred, surface, origins = EPOCH_BINDING_SEED
+    prior = al.latest_classes(classes)[al.class_id_for(pred, surface)]
+    cls = al.generalize({"failed_predicate": pred}, surface=surface, origin_scenarios=origins + ruling_origins,
+                        rule_refs=EPOCH_RULE_REFS, declared_by_session=SESSION, harvest_receipt_ref=None, hb_epoch=FIXTURE_HB_EPOCH,
+                        prior=prior, class_version=prior["class_version"] + 1, supersedes=prior["class_sha256"], ruling=ruling)
+    have = {s["scenario_id"] for s in scenarios}
+    gen = [s for s in al.generate(cls, known_good(SURFACE_PATH[surface]), hb_epoch=FIXTURE_HB_EPOCH) if s["scenario_id"] not in have]
+    gen = [wi.seal({**{k: v for k, v in s.items() if k != "scenario_sha256"},
+                    "source": {**s["source"], "origin_scenarios": ruling_origins}}, "scenario_sha256") for s in gen]
+    out = al.corpus_append(classes, scenarios, cls, gen, hb_epoch=FIXTURE_HB_EPOCH)
+    if out["disposition"] != "ALLOW":
+        raise SystemExit(json.dumps(out, sort_keys=True))
+    classes += out["append_classes"]; scenarios += out["append_scenarios"]
+    return [{k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]}]
+
+
+# Ruling ~17:05Z (decided by invariant, NOT_CROSS_CHECKED_MARKER + the 9c9b9f51 pin): a readback carrying hb_epoch_cross_check
+# (the 2ba0e329 shape) was not produced by the pinned readback -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. Epoch class v4, last.
+READBACK_SHAPE_RULING = "READBACK_SHAPE_MATCHES_PINNED_PRODUCER"
+READBACK_SHAPE_ORIGINS = ["orchestrator ruling 2026-10-18 ~17:05Z: the Labs#3266 2ba0e329-shaped readback (hb_epoch_cross_check) is void "
+                          "under NOT_CROSS_CHECKED_MARKER and the 9c9b9f51 pin; not authentically observed: FAIL_CLOSED "
+                          "HB_EPOCH_SOURCE_UNOBSERVED (READBACK_SHAPE_MATCHES_PINNED_PRODUCER), never DENY"]
+
+
+# Orchestrator 16:58Z GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE: a new class @transition (the predicate had none), appended
+# last; its positive control is the Lane B pair (known_good_paired); each axis carries its own six-field code.
+GATE_PAIR_ORIGINS = ["orchestrator 2026-10-18T16:58Z: the BASE-side failing nwi-s0-exit-gate receipt sources the native issue, the "
+                     "HEAD-side ALLOW gate receipt resolves it; same manifest (or equivalent gate declaration), same repository, both "
+                     "ledgered at the change's base ledger_head",
+                     "SV-LLM/.github#46 @9fbc2e92: gate ALLOW at 7898cedb (evaluation af569561); base-side evaluation at 978b8880"]
+GATE_PAIR_RULE_REFS = [{"file": "data/sv-work-items/invariants.json#GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE", "blob_sha": None,
+                        "rule_id": "GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE"}]
+
+
+def gate_pair_append(classes: list[dict], scenarios: list[dict]) -> list[dict]:
+    pred, surface = wi.GATE_PAIR_PREDICATE, "transition"
+    prior = al.latest_classes(classes).get(al.class_id_for(pred, surface))
+    if prior is not None:
+        raise SystemExit(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "CLASS_EXISTS", "class_id": prior["class_id"]}))
+    cls = al.generalize({"failed_predicate": pred}, surface=surface, origin_scenarios=GATE_PAIR_ORIGINS, rule_refs=GATE_PAIR_RULE_REFS,
+                        declared_by_session=SESSION, harvest_receipt_ref=None, hb_epoch=FIXTURE_HB_EPOCH)
+    gen = al.generate(cls, known_good_paired(SURFACE_PATH[surface]), hb_epoch=FIXTURE_HB_EPOCH)
+    gen = [s if s["expected_disposition"] == "ALLOW" else wi.seal({**{k: v for k, v in s.items() if k != "scenario_sha256"},
+           "source": {**s["source"], "origin_scenarios": GATE_PAIR_ORIGINS}}, "scenario_sha256") for s in gen]
+    out = al.corpus_append(classes, scenarios, cls, gen, hb_epoch=FIXTURE_HB_EPOCH)
+    if out["disposition"] != "ALLOW":
+        raise SystemExit(json.dumps(out, sort_keys=True))
+    classes += out["append_classes"]; scenarios += out["append_scenarios"]
+    return [{k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]}]
+
+
 def corpus() -> tuple[list[dict], list[dict], list[dict]]:
     classes, scenarios, receipts = [], [], []
     for pred, surface, origins in SEEDS:
@@ -534,6 +658,9 @@ def corpus() -> tuple[list[dict], list[dict], list[dict]]:
     receipts += epoch_unknown_append(classes, scenarios)
     receipts += bootstrap_append(classes, scenarios)
     receipts += native_unknown_append(classes, scenarios)
+    receipts += epoch_int_append(classes, scenarios)
+    receipts += gate_pair_append(classes, scenarios)
+    receipts += epoch_int_append(classes, scenarios, READBACK_SHAPE_RULING, READBACK_SHAPE_ORIGINS)
     return classes, scenarios, receipts
 
 
@@ -544,6 +671,19 @@ def _jsonl(rows): return "".join(json.dumps(r, sort_keys=True, separators=(",", 
 # Lane C TVC#519, Lane D, P4) pins, with its git blob sha and sha256. Consumers pin the manifest's own digest and re-pin a
 # file only when its entry changes. The manifest never lists itself.
 CONTRACT_PINS = ROOT / "data/sv-work-items/contract-pins.json"
+# The repo-local import closure of the pinned Python files (CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN.import_closure).
+# Loaded when sv_work_items is imported: org-kernel/kernel.py (its supplied_epoch_failure / hb_reference; reached by
+# derive_resolved_issue_facts through epoch_check), org-kernel/node_store.py (kernel, at import) and
+# scripts/project_worker_claim_into_canonical_task.py (claim_projection). Loaded by kernel.py's _own_module (its own
+# repository, on a crossing) and transitively: the rest. tests/test_nwi_gate_declaration.py recomputes the closure.
+IMPORT_CLOSURE_FILES = [
+    "org-kernel/kernel.py", "org-kernel/node_store.py", "scripts/project_worker_claim_into_canonical_task.py",
+    ".stegverse/transition-ledger/emit.py", "resident-runtime/aggregate_repo_transition.py", "resident-runtime/ledger_store.py",
+    "resident-runtime/organization_batch_custody.py", "workers/canonical_state_transition_custody.py",
+    "heartbeat_runtime/independent_oscillator.py"]
+# Loaded by kernel.py from a caller-supplied dispatch root (root/"org-boundary/runtime/<m>.py"), never from this repository's
+# own path: not repo-local by construction, so outside the closure; declared so a new unresolved load fails the test.
+DISPATCH_ROOT_LOADS = {"org-kernel/kernel.py": ["capability_ingress", "manifest_selection", "node_standing"]}
 CONTRACT_FILES = sorted([
     "schemas/admission-corpus.v1.schema.json", "schemas/canonical-task-work-items.v1.schema.json",
     "schemas/sv-change-signoff-receipt.v0.1.schema.json", "schemas/sv-change.v1.schema.json", "schemas/sv-check-receipt.v1.schema.json",
@@ -555,7 +695,9 @@ CONTRACT_FILES = sorted([
     "data/admission-scenarios/tvc-replay/replay-map.jsonl", "data/admission-scenarios/tvc-replay/sv-changes.jsonl",
     "data/admission-scenarios/tvc-replay/signoff-receipts.jsonl",
     "resident-runtime/sv_work_items.py", "resident-runtime/admission_learning.py", "resident-runtime/stage_gate.py",
-    "resident-runtime/sv_migration.py", "resident-runtime/schema_subset.py", "scripts/build_sv_native_fixtures.py"])
+    "resident-runtime/sv_migration.py", "resident-runtime/schema_subset.py", "scripts/build_sv_native_fixtures.py",
+    "tests/sv_ledger_fixtures.py",  # orchestrator 16:58Z: Lane D pins it (blob 30a9fe89)
+    *IMPORT_CLOSURE_FILES])
 
 
 def git_blob_sha(data: bytes) -> str:
@@ -573,6 +715,10 @@ def contract_pins(generated: dict[Path, str]) -> str:
             "invariant": "data/sv-work-items/invariants.json#CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN",
             "digest_rule": {"blob": "git blob sha1 of the file bytes (git hash-object)", "sha256": "sha256:<hex> of the file bytes"},
             "excludes": ["data/sv-work-items/contract-pins.json (the manifest never lists itself)"],
+            "import_closure": {"rule": "every repo-local module the listed Python files load (import, import_module, "
+                                       "importlib spec_from_file_location with a statically resolvable path, eagerly or on call), "
+                                       "transitively, is listed", "members": sorted(IMPORT_CLOSURE_FILES),
+                               "dispatch_root_loads_excluded": DISPATCH_ROOT_LOADS},
             "consumer_contract": "pin this manifest's own blob and sha256; re-pin a listed file only when its entry changes",
             "generated_by": "scripts/build_sv_native_fixtures.py (--check flags a stale manifest)", "files": files}
     return json.dumps(body, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
@@ -598,7 +744,29 @@ def build() -> dict[Path, str]:
            SCN / "seed-append-outcomes.jsonl": _jsonl(r),
            **dict(zip((SCN / "tvc-replay/sv-changes.jsonl", SCN / "tvc-replay/replay-map.jsonl", SCN / "tvc-replay/signoff-receipts.jsonl"),
                       map(_jsonl, replay(s))))}
+    out.update(readback_pin_sync())
     out[CONTRACT_PINS] = contract_pins(out)
+    return out
+
+
+READBACK_PIN_TARGETS = {  # where the single #3266 pin (sv_work_items.BASE_STATE_READBACK_PIN) is copied
+    ROOT / "data/sv-work-items/invariants.json": None,
+    ROOT / "data/sv-work-items/stages/NWI-S0.json": ("repository", "pull_request", "head", "file", "blob", "sha256")}
+
+
+def readback_pin_sync() -> dict[Path, str]:
+    """Copy wi.BASE_STATE_READBACK_PIN into invariants.json (ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH.readback_pin,
+    all fields) and NWI-S0.json (exit_gate_check.hb_epoch.readback_pin, the six it carries). Drop new values into the
+    constant only; history and prose entries are edited by hand."""
+    out = {}
+    for p, keys in READBACK_PIN_TARGETS.items():
+        d = json.loads(p.read_text())
+        pin = {k: wi.BASE_STATE_READBACK_PIN[k] for k in (keys or wi.BASE_STATE_READBACK_PIN)}
+        if keys is None:
+            next(i for i in d["invariants"] if i["invariant_id"] == "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH")["readback_pin"] = pin
+        else:
+            d["exit_gate_check"]["hb_epoch"]["readback_pin"] = pin
+        out[p] = json.dumps(d, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     return out
 
 
@@ -607,8 +775,8 @@ def pin_violations(out: dict[Path, str]) -> list[dict]:
     no placeholder such as WORKTREE is ever written."""
     bad = []
     for p, text in out.items():
-        if p == CONTRACT_PINS:
-            continue  # not a record file: hashes only
+        if p == CONTRACT_PINS or p in READBACK_PIN_TARGETS:
+            continue  # not a record file (hashes only / pin sync)
         for n, line in enumerate(text.splitlines()):
             if "WORKTREE" in line:
                 bad.append({"file": str(p.relative_to(ROOT)), "line": n + 1, "found": "WORKTREE"})

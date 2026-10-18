@@ -103,6 +103,33 @@ def _migrated_change(o): o["record_mode"] = "MIGRATED_HISTORICAL"
 # UNKNOWN_IN_NATIVE_RECORD (orchestrator decision): a NATIVE record field holding the sentinel is FAIL_CLOSED, never DENY
 def _unknown_owning_goal(o): o["native_unknown_pointers"] = sorted(set(o["native_unknown_pointers"]) | {"/owning_goal"})
 def _migrated_issue(o): _f0(o, record_mode="MIGRATED_HISTORICAL")
+# NATIVE_RECORD_HB_EPOCH_IS_A_STRING (commit 4): an integer epoch is an observed, malformed value -> DENY HB_EPOCH_MISMATCH
+def _int_epoch(o): o["supplied_hb_epoch"] = int(o["supplied_hb_epoch"])
+# READBACK_SHAPE_MATCHES_PINNED_PRODUCER (ruling ~17:05Z): the void Labs#3266 2ba0e329 shape (marker under hb_epoch_cross_check)
+def _void_2ba0e329_shape(o): _reseal_readback(o, cross_checked=False, hb_epoch_cross_check="HB_EPOCH_NOT_CROSS_CHECKED")
+def _strip_cross_checked(o):  # ruling ~17:15Z: cross_checked / detail stripped, then resealed (a self-seal proves no path)
+    rb = {k: v for k, v in o["hb_epoch_readback"].items() if k not in ("result_sha256", "cross_checked", "detail", wi.READBACK_SUPPLIED_FIELD)}
+    o["hb_epoch_readback"] = wi.seal(rb, "result_sha256")
+# GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE (commit 4): the resolution_pair fact derive_resolved_issue_facts builds
+def _pair(o): return o["resolved_issues"][0]["resolution_pair"]
+def _rebind(side):  # the side's receipt keeps binding its (mutated) subject, so the mutation fires its own predicate
+    side["subject_digest"] = wi.stage_evaluation_digest(side["subject"])
+    side["receipt"] = {**side["receipt"], "change_digest": side["subject_digest"], "head_sha": side["subject"]["evaluated_commit"]}
+def _pair_base_unledgered(o): _pair(o)["base"]["receipt"]["ledgered_at_base"] = False
+def _pair_no_head(o): _pair(o)["head"] = None
+def _pair_head_failing(o): _pair(o)["head"]["receipt"]["disposition"] = "FAIL_CLOSED"
+def _pair_head_unbound(o): _pair(o)["head"]["receipt"]["change_digest"] = "sha256:" + "0" * 64
+def _pair_head_other_repo(o):
+    h = _pair(o)["head"]; h["subject"]["repository"] = "StegVerse-org/.github"; _rebind(h)
+def _pair_head_other_manifest(o):
+    h = _pair(o)["head"]; h["subject"]["manifest_blob"] = "f" * 40; _rebind(h)
+def _pair_read_from_subject(o):  # both subjects bind a blob other than the contract-pinned one (read from the subject)
+    for k in ("base", "head"):
+        side = _pair(o)[k]; side["subject"]["manifest_blob"] = "e" * 40; _rebind(side)
+def _pair_pins_unobserved(o): _pair(o)["pinned_manifest"] = None
+def _pair_base_at_head(o):
+    b = _pair(o)["base"]; b["subject"]["evaluated_commit"] = _pair(o)["change_commits"]["head_commit"]; _rebind(b)
+def _pair_commits_unobserved(o): _pair(o)["change_commits"] = {"base_commit": None, "head_commit": None}
 
 
 PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
@@ -159,9 +186,33 @@ PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
     "NATIVE_RECORD_FIELDS_ARE_OBSERVED": ("UNKNOWN_IN_NATIVE_RECORD", [
         ("owning_goal[UNKNOWN]", "the NATIVE SV_CHANGE's owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (FAIL_CLOSED, never DENY)",
          _unknown_owning_goal)]),
+    # the BASE-side failing gate receipt sources the issue, the HEAD-side ALLOW gate receipt resolves it (orchestrator 16:58Z)
+    "GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE": ("GATE_PAIR_HEAD_RECEIPT_MISSING", [
+        ("resolved_issues[0].resolution_pair.head", "no head-side ALLOW gate receipt on the ledger at the change's base ledger_head",
+         _pair_no_head),
+        ("resolved_issues[0].resolution_pair.base.receipt.ledgered_at_base", "the base-side failing gate receipt is not on the ledger "
+         "at the change's base ledger_head", _pair_base_unledgered, "GATE_PAIR_BASE_RECEIPT_MISSING"),
+        ("resolved_issues[0].resolution_pair.head.receipt.change_digest", "the head receipt does not bind its stage-evaluation subject",
+         _pair_head_unbound, "GATE_PAIR_SUBJECT_NOT_BOUND_BY_RECEIPT"),
+        ("resolved_issues[0].resolution_pair.head.receipt.disposition", "the head-side gate receipt failed closed (not ALLOW)",
+         _pair_head_failing, "GATE_PAIR_HEAD_RECEIPT_NOT_ALLOW"),
+        ("resolved_issues[0].resolution_pair.head.subject.repository", "the head subject is another repository's evaluation",
+         _pair_head_other_repo, "GATE_PAIR_REPOSITORY_MISMATCH"),
+        ("resolved_issues[0].resolution_pair.head.subject.manifest_blob", "the head subject binds another manifest blob (an exact "
+         "match is required)", _pair_head_other_manifest, "GATE_PAIR_MANIFEST_MISMATCH"),
+        ("resolved_issues[0].resolution_pair.pinned_manifest", "the gate declaration's contract-pins.json is not supplied",
+         _pair_pins_unobserved, "GATE_PAIR_PINNED_MANIFEST_UNOBSERVED"),
+        ("resolved_issues[0].resolution_pair.*.subject.manifest_blob", "both subjects' manifest was read from the subject, not the "
+         "contract-pinned manifest", _pair_read_from_subject, "GATE_MANIFEST_READ_FROM_SUBJECT"),
+        ("resolved_issues[0].resolution_pair.base.subject.evaluated_commit", "the base receipt's subject is at the change's head commit, "
+         "not its base commit", _pair_base_at_head, "GATE_PAIR_SUBJECT_COMMIT_WRONG"),
+        ("resolved_issues[0].resolution_pair.change_commits", "the change's base and head commits are not observed",
+         _pair_commits_unobserved, "GATE_PAIR_CHANGE_COMMITS_UNOBSERVED")]),
 }
 DENY_CODES = ("BASE_STALE", "REQUIRED_CHECK_DENIED", "HB_EPOCH_MISMATCH", "SV_CHANGE_RESOLVES_NOTHING", "SV_CHANGE_SELF_SOURCED_ISSUE",
-              "SV_ISSUE_ALREADY_RESOLVED")
+              "SV_ISSUE_ALREADY_RESOLVED", "GATE_PAIR_SUBJECT_NOT_BOUND_BY_RECEIPT", "GATE_PAIR_HEAD_RECEIPT_NOT_ALLOW",
+              "GATE_PAIR_REPOSITORY_MISMATCH", "GATE_PAIR_MANIFEST_MISMATCH", "GATE_PAIR_SUBJECT_COMMIT_WRONG",
+              "GATE_MANIFEST_READ_FROM_SUBJECT")
 def disposition_of(code: str) -> str: return "DENY" if code in DENY_CODES else "FAIL_CLOSED"
 PREDICATE_ALIASES: dict[str, str] = {}
 # Axes a predicate binds under a second failure code. generalize adds them (each axis names its own expected code)
@@ -181,7 +232,17 @@ CLASS_ALIASES: dict[str, str] = {
 RULING_AXES: dict[tuple[str, str], list[tuple]] = {
     ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "UNKNOWN_IS_FAIL_CLOSED_NEVER_DENY"): [
         ("supplied_hb_epoch[UNKNOWN]", "the SV_CHANGE's hb_epoch is the UNKNOWN_NOT_AUTHENTICALLY_OBSERVED sentinel (FAIL_CLOSED, "
-         "never DENY; precedes 726248a5)", _unknown_epoch, "HB_EPOCH_SOURCE_UNOBSERVED")]}
+         "never DENY; precedes 726248a5)", _unknown_epoch, "HB_EPOCH_SOURCE_UNOBSERVED")],
+    ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "NATIVE_RECORD_HB_EPOCH_IS_A_STRING"): [
+        ("supplied_hb_epoch[int]", "the NATIVE SV_CHANGE's hb_epoch is a JSON integer, not the epoch string (observed, malformed: "
+         "DENY, never FAIL_CLOSED)", _int_epoch, "HB_EPOCH_MISMATCH")],
+    ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "READBACK_SHAPE_MATCHES_PINNED_PRODUCER"): [
+        ("hb_epoch_readback.hb_epoch_cross_check", "the readback carries hb_epoch_cross_check (the void Labs#3266 2ba0e329 shape): not "
+         "produced by the pinned readback, so not authentically observed (FAIL_CLOSED, never DENY)", _void_2ba0e329_shape,
+         "HB_EPOCH_SOURCE_UNOBSERVED"),
+        ("hb_epoch_readback.cross_checked[stripped]", "the readback's cross_checked (and marker) were stripped and the body resealed: "
+         "the producer always emits cross_checked and a self-seal cannot prove which path ran (FAIL_CLOSED, never DENY)",
+         _strip_cross_checked, "HB_EPOCH_SOURCE_UNOBSERVED")]}
 
 
 def _axis_mutator(pred: str, field: str) -> Callable:
