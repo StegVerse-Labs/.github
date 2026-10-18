@@ -184,3 +184,23 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
     - opened_by_session: the derivation itself.
   - Derivation is idempotent, and the id does not depend on who runs it.
   - If the receipt is not yet ledgered: FAIL_CLOSED SOURCE_RECEIPT_NOT_LEDGERED.
+
+## Round 4: ledger readers follow the real org-ledger layout (Lane D, Labs#3255 @75fc4ddd; runtime files unchanged from main)
+- **Org receipt.** `stegverse.organization-transition-receipt/v1` (`resident-runtime/aggregate_repo_transition.py:1073-1089`) is sealed: `receipt_sha256` = sha256 of the canonical body without it.
+  - It is stored at `receipts/<hex>.json` (`ledger_store.receipt_key`, `ledger_store.py:49-56`), and `HEAD.json` points to it (`:1092`).
+  - It has no `evidence` and no top-level hb_epoch.
+  - It carries `boundary_evidence {operation, profile_id, disposition, communication_id}`, the `verify_source` fields including `repo_receipt_sha256` (`:627-651`), and `hb_reference` (`org-kernel/kernel.py:68-74`).
+- **Repo receipt.** The org ledger retains the source repo receipt (`stegverse.repo-transition-receipt/v1`, sealed, carrying `$.evidence`: `.stegverse/transition-ledger/emit.py:116-117`) beside the org receipt at `source-receipts/<hex>.json` (`ledger_store.source_key`, `:1064-1066`; `organization_ledger_readback.py:89-91`).
+- **NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH.** `base_ledger_head_epoch` reads HEAD.json, then the sealed org receipt, then `$.hb_reference.epoch`.
+  - The epoch must be an int >= 32: not bool, and no coercion from other types. A reference marked `derived_from_clock` is not accepted.
+  - It is compared with the record's ASCII-digit hb_epoch by integer value.
+  - A missing value or a broken seal gives FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. A mismatch gives DENY HB_EPOCH_NOT_BASE_LEDGER_EPOCH.
+- **CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT.** `derive_issue_from_check_receipt(ledger_objects, ledger_ref, row, observed_base=...)` follows: org receipt at the ref (sealed), then `repo_receipt_sha256`, then the repo receipt at `source-receipts/<hex>.json` (sealed), then `$.evidence`.
+  - The evidence must self-identify: `$.evidence.schema == stegverse.sv_check_receipt.v1`, or `$.evidence.kind == 'sv_check_receipt'` with the rest being the pinned receipt shape.
+  - `boundary_evidence.operation`, when present, must be `sv_check_receipt` (Lane D's append operation).
+  - A missing or unsealed org or repo receipt gives FAIL_CLOSED SOURCE_RECEIPT_NOT_LEDGERED. Anything else in the evidence gives FAIL_CLOSED LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT.
+- **verify_ledger_receipt_binding.** The addressing stays `receipts/<hex>.json`. It now also verifies the seal: a receipt that does not hash to its own receipt_sha256 is LEDGER_RECEIPT_UNRESOLVED.
+- **Fixtures.** `tests/sv_ledger_fixtures.py` builds receipts in the real layout.
+  - It uses the real `aggregate_repo_transition.verify_source`, `kernel.hb_reference(epoch=...)` and the `ledger_store` keys.
+  - The append bodies are mirrored line for line (emit.py:116-117; aggregate_repo_transition.py:1073-1089), because the append functions need a store and stamp `observed_at` from the host clock. The fixture uses a constant instead.
+  - The round-3 fixtures (top-level hb_epoch, `evidence` on the org receipt) were removed.

@@ -621,33 +621,10 @@ def ledger_receipt_digest(receipt_bytes: bytes) -> str:
     return "sha256:" + hashlib.sha256(canon(json.loads(receipt_bytes.decode("utf-8")))).hexdigest()
 
 
-def verify_ledger_receipt_binding(receipt: Mapping[str, Any], ledger_objects: Mapping[str, bytes]) -> dict[str, Any]:
-    """Pure: binds a validation receipt's `digest` to the ledger receipt its `ref` names. `ref` addresses the stored
-    receipt the way the org-ledger readback does (ledger_store.receipt_key on refs/stegverse/organization-ledger):
-    refs/stegverse/organization-ledger@<commit 40-hex>:receipts/<receipt_sha256 hex>.json. `ledger_objects` maps
-    "<commit>:<path>" to the bytes a read of that ref returned; nothing here fetches. Unparsable ref, absent object,
-    non-JSON bytes, or a stored receipt whose receipt_sha256 is not the one its path names -> FAIL_CLOSED
-    LEDGER_RECEIPT_UNRESOLVED; digest != ledger_receipt_digest(bytes) -> FAIL_CLOSED LEDGER_RECEIPT_DIGEST_MISMATCH."""
-    e = "verify_ledger_receipt_binding"
-    nxt = "after a fresh read of refs/stegverse/organization-ledger holds the receipt; nothing was counted"
-    ref = receipt.get("ref") if isinstance(receipt, Mapping) else None
-    m = LEDGER_RECEIPT_REF.match(ref) if isinstance(ref, str) else None
-    raw = ledger_objects.get(m.group("commit") + ":" + m.group("path")) if m else None
-    obj = None
-    if isinstance(raw, (bytes, bytearray)):
-        try:
-            obj = json.loads(bytes(raw).decode("utf-8"))
-        except (UnicodeDecodeError, ValueError):
-            obj = None
-    if not isinstance(obj, Mapping) or obj.get("receipt_sha256") != "sha256:" + m.group("hex"):
-        raise _fail("LEDGER_RECEIPT_UNRESOLVED", "VALIDATION_RECEIPT_REF_RESOLVES_ON_ORGANIZATION_LEDGER",
-                    "ref = refs/stegverse/organization-ledger@<commit>:receipts/<receipt_sha256 hex>.json naming a receipt a read of "
-                    "that ref returns", e, nxt, ref=ref)
-    want = ledger_receipt_digest(bytes(raw))
-    if receipt.get("digest") != want:
-        raise _fail("LEDGER_RECEIPT_DIGEST_MISMATCH", "VALIDATION_RECEIPT_DIGEST_BINDS_LEDGER_RECEIPT",
-                    "digest = 'sha256:' + hex sha256 of the canonical JSON of the receipt at ref", e, nxt, expected=want, ref=ref)
-    return {"disposition": "ALLOW", "failed_predicate": None, "ref": ref, "digest": want}
+ORG_RECEIPT_SCHEMA = "stegverse.organization-transition-receipt/v1"  # aggregate_repo_transition.py:1074
+REPO_RECEIPT_SCHEMA = "stegverse.repo-transition-receipt/v1"          # .stegverse/transition-ledger/emit.py:116
+HB_ANCHOR_EPOCH = 32                                                   # org-kernel/kernel.py:22
+SV_CHECK_RECEIPT_OPERATION = "sv_check_receipt"  # Lane D's append operation (boundary_evidence.operation / $.evidence.kind)
 
 
 def _ledger_object(ledger_objects: Mapping[str, bytes], commit: str, path: str) -> Any:
@@ -661,31 +638,70 @@ def _ledger_object(ledger_objects: Mapping[str, bytes], commit: str, path: str) 
 
 
 def _self_verifies(doc: Any) -> bool:
-    return isinstance(doc, Mapping) and doc.get("receipt_sha256") == sha({k: v for k, v in doc.items() if k != "receipt_sha256"})
+    """The ledger seal rule: receipt_sha256 = sha256 over the canonical body without receipt_sha256
+    (aggregate_repo_transition.py:1089, emit.py:117, organization_ledger_readback.py:69-73)."""
+    return isinstance(doc, Mapping) and isinstance(doc.get("receipt_sha256"), str) \
+        and doc["receipt_sha256"] == sha({k: v for k, v in doc.items() if k != "receipt_sha256"})
 
 
-def base_ledger_head_epoch(ledger_head: Any, ledger_objects: Mapping[str, bytes]) -> str | None:
-    """Pure: the hb_epoch carried by the organization-ledger receipt at commit `ledger_head` of
-    refs/stegverse/organization-ledger (HEAD.json -> receipts/<hex>.json, ledger_store addressing), read only from the
-    supplied bytes; None when any piece is absent, unsealed, or carries no hb_epoch."""
+def _sealed_at(ledger_objects: Mapping[str, bytes], commit: str, key: str, digest: Any) -> Mapping[str, Any] | None:
+    """The sealed receipt stored at `key` in commit `commit` whose receipt_sha256 is `digest`, else None."""
+    doc = _ledger_object(ledger_objects, commit, key)
+    return doc if _self_verifies(doc) and doc["receipt_sha256"] == digest else None
+
+
+def verify_ledger_receipt_binding(receipt: Mapping[str, Any], ledger_objects: Mapping[str, bytes]) -> dict[str, Any]:
+    """Pure: binds a validation receipt's `digest` to the ledger receipt its `ref` names. `ref` addresses the stored
+    receipt the way the org ledger stores it (ledger_store.receipt_key: receipts/<hex>.json, ledger_store.py:49-56;
+    written at aggregate_repo_transition.py:1089-1093): refs/stegverse/organization-ledger@<commit 40-hex>:receipts/<hex>.json.
+    `ledger_objects` maps "<commit>:<path>" to the bytes a read of that ref returned; nothing here fetches.
+    Unparsable ref, absent object, non-JSON bytes, a receipt that does not verify against its own body (the seal), or
+    whose receipt_sha256 is not the one its path names -> FAIL_CLOSED LEDGER_RECEIPT_UNRESOLVED;
+    digest != ledger_receipt_digest(bytes) -> FAIL_CLOSED LEDGER_RECEIPT_DIGEST_MISMATCH."""
+    e = "verify_ledger_receipt_binding"
+    nxt = "after a fresh read of refs/stegverse/organization-ledger holds the receipt; nothing was counted"
+    ref = receipt.get("ref") if isinstance(receipt, Mapping) else None
+    m = LEDGER_RECEIPT_REF.match(ref) if isinstance(ref, str) else None
+    obj = _sealed_at(ledger_objects, m.group("commit"), m.group("path"), "sha256:" + m.group("hex")) if m else None
+    if obj is None:
+        raise _fail("LEDGER_RECEIPT_UNRESOLVED", "VALIDATION_RECEIPT_REF_RESOLVES_ON_ORGANIZATION_LEDGER",
+                    "ref = refs/stegverse/organization-ledger@<commit>:receipts/<receipt_sha256 hex>.json naming a sealed receipt a "
+                    "read of that ref returns", e, nxt, ref=ref)
+    want = ledger_receipt_digest(bytes(ledger_objects[m.group("commit") + ":" + m.group("path")]))
+    if receipt.get("digest") != want:
+        raise _fail("LEDGER_RECEIPT_DIGEST_MISMATCH", "VALIDATION_RECEIPT_DIGEST_BINDS_LEDGER_RECEIPT",
+                    "digest = 'sha256:' + hex sha256 of the canonical JSON of the receipt at ref", e, nxt, expected=want, ref=ref)
+    return {"disposition": "ALLOW", "failed_predicate": None, "ref": ref, "digest": want}
+
+
+def base_ledger_head_epoch(ledger_head: Any, ledger_objects: Mapping[str, bytes]) -> int | None:
+    """Pure: $.hb_reference.epoch of the organization-transition receipt at commit `ledger_head` of
+    refs/stegverse/organization-ledger: HEAD.json (ledger_store.HEAD_KEY, aggregate_repo_transition.py:1092) ->
+    receipts/<hex>.json (ledger_store.receipt_key) -> seal verified -> hb_reference.epoch (kernel.hb_reference,
+    kernel.py:68-74). The epoch must be an int (not bool, no coercion) >= 32 and the reference not derived from a clock;
+    otherwise None. Read only from the supplied bytes."""
     if not isinstance(ledger_head, str) or not GIT_SHA.match(ledger_head):
         return None
     head = _ledger_object(ledger_objects, ledger_head, LEDGER_HEAD_KEY)
     digest = head.get("receipt_sha256") if isinstance(head, Mapping) else None
     if not isinstance(digest, str) or not DIGEST.match(digest):
         return None
-    rec = _ledger_object(ledger_objects, ledger_head, "receipts/%s.json" % digest.split(":", 1)[1])
-    if not _self_verifies(rec) or rec.get("receipt_sha256") != digest:
+    rec = _sealed_at(ledger_objects, ledger_head, "receipts/%s.json" % digest.split(":", 1)[1], digest)
+    if rec is None or rec.get("schema") != ORG_RECEIPT_SCHEMA:
         return None
-    ep = rec.get("hb_epoch")
-    return ep if isinstance(ep, str) and re.fullmatch(r"[0-9]+", ep) else None
+    hb = rec.get("hb_reference")
+    ep = hb.get("epoch") if isinstance(hb, Mapping) else None
+    if type(ep) is not int or ep < HB_ANCHOR_EPOCH or hb.get("derived_from_clock") is not False:
+        return None
+    return ep
 
 
 def verify_native_hb_epoch(record: Mapping[str, Any], ledger_objects: Mapping[str, bytes]) -> dict[str, Any]:
-    """NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH (provisional until JD-P4-3). A NATIVE record's hb_epoch equals
-    the hb_epoch of the org-ledger receipt at its base ledger head (SV_CHANGE base_ref, SV_ISSUE observed_base). Read
-    from the supplied ledger bytes only, never a clock. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; mismatch ->
-    DENY HB_EPOCH_NOT_BASE_LEDGER_EPOCH."""
+    """NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH (provisional until JD-P4-3). A NATIVE record's hb_epoch (ASCII
+    digits) equals, by integer value, $.hb_reference.epoch of the org receipt at its base ledger head (SV_CHANGE
+    base_ref, SV_ISSUE observed_base), read from the supplied ledger bytes only, never a clock. Unobserved (no HEAD,
+    no receipt, broken seal, missing/invalid epoch) -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; mismatch -> DENY
+    HB_EPOCH_NOT_BASE_LEDGER_EPOCH."""
     base = record.get("base_ref") if record.get("schema") == CHANGE_SCHEMA else record.get("observed_base")
     head = (base or {}).get("ledger_head") if isinstance(base, Mapping) else None
     want = base_ledger_head_epoch(head, ledger_objects)
@@ -695,43 +711,90 @@ def verify_native_hb_epoch(record: Mapping[str, Any], ledger_objects: Mapping[st
                     "after the org writer appends at that head", ledger_head=head)
         r.record["retry_entrypoint"] = "native record re-derivation"
         raise r
-    if record.get("hb_epoch") != want:
+    mine = record.get("hb_epoch")
+    if not (isinstance(mine, str) and re.fullmatch(r"[0-9]+", mine) and int(mine) == want):
         r = Refusal("DENY", "HB_EPOCH_NOT_BASE_LEDGER_EPOCH", HB_EPOCH_LEDGER_INVARIANT,
-                    "re-derive the native record with hb_epoch = the base ledger head receipt's hb_epoch", "verify_native_hb_epoch",
-                    "propose a successor record bound to the base ledger head's epoch", ledger_head=head,
-                    expected=want, hb_epoch=record.get("hb_epoch"))
+                    "re-derive the native record with hb_epoch = the base ledger head receipt's hb_reference.epoch",
+                    "verify_native_hb_epoch", "propose a successor record bound to the base ledger head's epoch",
+                    ledger_head=head, expected=str(want), hb_epoch=mine)
         r.record["retry_entrypoint"] = "native record re-derivation"
         raise r
-    return {"disposition": "ALLOW", "failed_predicate": None, "hb_epoch": want, "ledger_head": head}
+    return {"disposition": "ALLOW", "failed_predicate": None, "hb_epoch": str(want), "ledger_head": head}
 
 
-def derive_issue_from_check_receipt(receipt_bytes: bytes, ledger_ref: str, row: Mapping[str, Any] = REQUIRED_CHECKS, *,
+def _check_receipt_from_evidence(ev: Any) -> Mapping[str, Any] | None:
+    """Lane D's sv_check_receipt append puts the verifier receipt under the repo receipt's $.evidence, self-identified by
+    $.evidence.schema == stegverse.sv_check_receipt.v1 or $.evidence.kind == 'sv_check_receipt'. With the kind marker the
+    object minus `kind` must still be the pinned receipt shape (validate_check_receipt checks it)."""
+    if not isinstance(ev, Mapping):
+        return None
+    if ev.get("schema") == CHECK_RECEIPT_SCHEMA and "kind" not in ev:
+        return ev
+    if ev.get("kind") == SV_CHECK_RECEIPT_OPERATION:
+        return {k: v for k, v in ev.items() if k != "kind"}
+    return None
+
+
+def derive_issue_from_check_receipt(ledger_objects: Mapping[str, bytes], ledger_ref: str, row: Mapping[str, Any] = REQUIRED_CHECKS, *,
                                     observed_base: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    """CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT. The sanctioned, deterministic derivation of
-    a NATIVE SV_ISSUE from an org-ledger-appended non-ALLOW check receipt. `receipt_bytes` are the bytes stored at
-    `ledger_ref` (refs/stegverse/organization-ledger@<commit>:receipts/<receipt_sha256 hex>.json): a sealed org-ledger
-    receipt whose `evidence` is the stegverse.sv_check_receipt.v1 the NWI-S1 verifier emitted. The issue_id depends
-    only on the receipt, the ledger ref and the row, never on who derives it (opened_by_session is the derivation).
-    Not ledgered (ref not an org-ledger receipt path, bytes unsealed or not at that path, a bare verifier receipt)
-    -> FAIL_CLOSED SOURCE_RECEIPT_NOT_LEDGERED: the issue cannot be NATIVE before the org writer appended it."""
+    """CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT. The sanctioned, deterministic derivation of a
+    NATIVE SV_ISSUE from an org-ledger-appended non-ALLOW check receipt, read only from the supplied bytes of
+    refs/stegverse/organization-ledger (`ledger_objects`: "<commit>:<path>" -> bytes):
+      ledger_ref = refs/stegverse/organization-ledger@<commit>:receipts/<hex>.json names the sealed
+      stegverse.organization-transition-receipt/v1 (aggregate_repo_transition.py:1073-1089);
+      its repo_receipt_sha256 (verify_source, :627-651) names the sealed stegverse.repo-transition-receipt/v1 the org
+      ledger retains beside it at source-receipts/<hex>.json (ledger_store.source_key; :1064-1066; readback :89-91);
+      the check receipt is that repo receipt's $.evidence (emit.py:116), self-identified.
+    The issue_id depends only on these bytes, the ref and the row, never on who derives it."""
     e = "derive_issue_from_check_receipt"
+    inv = CHECK_DERIVED_ISSUE_INVARIANT
+
+    def not_ledgered(why: str) -> Refusal:
+        return _fail("SOURCE_RECEIPT_NOT_LEDGERED", inv,
+                     "the org-ledger writer appends the verifier's receipt (Lane D sv_check_receipt operation); derive from the "
+                     "org receipt at its ledger ref and the repo receipt the org ledger retains beside it", e,
+                     "after the org writer appends the receipt; nothing was derived", ledger_ref=ledger_ref, detail=why)
+
+    def not_check(why: str) -> Refusal:
+        return _fail("LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT", inv,
+                     "the repo receipt's $.evidence is a stegverse.sv_check_receipt.v1 self-identified by $.evidence.schema "
+                     "(or $.evidence.kind == 'sv_check_receipt'), appended by the sv_check_receipt operation", e,
+                     "after the check receipt is appended through the sv_check_receipt operation; nothing was derived",
+                     ledger_ref=ledger_ref, detail=why)
+
     m = LEDGER_RECEIPT_REF.match(ledger_ref) if isinstance(ledger_ref, str) else None
+    if m is None:
+        raise not_ledgered("ref is not refs/stegverse/organization-ledger@<commit>:receipts/<hex>.json")
+    commit = m.group("commit")
+    org = _sealed_at(ledger_objects, commit, m.group("path"), "sha256:" + m.group("hex"))
+    if org is None or org.get("schema") != ORG_RECEIPT_SCHEMA:
+        raise not_ledgered("no sealed organization-transition receipt at the ref")
+    repo_sha = org.get("repo_receipt_sha256")
+    if not isinstance(repo_sha, str) or not DIGEST.match(repo_sha):
+        raise not_check("the org receipt names no repo receipt (repo_receipt_sha256)")
+    repo = _sealed_at(ledger_objects, commit, "source-receipts/%s.json" % repo_sha.split(":", 1)[1], repo_sha)
+    if repo is None:
+        raise not_ledgered("the repo receipt the org receipt names is not retained (sealed) in the org ledger at that commit")
+    if repo.get("schema") != REPO_RECEIPT_SCHEMA:
+        raise not_check("the retained source is not a repo-transition receipt")
+    op = (org.get("boundary_evidence") or {}).get("operation") if isinstance(org.get("boundary_evidence"), Mapping) else None
+    if op is not None and op != SV_CHECK_RECEIPT_OPERATION:
+        raise not_check("boundary_evidence.operation is %r, not 'sv_check_receipt'" % (op,))
+    r = _check_receipt_from_evidence(repo.get("evidence"))
+    if r is None:
+        raise not_check("$.evidence is not self-identified as an sv_check_receipt")
     try:
-        env = json.loads(bytes(receipt_bytes).decode("utf-8"))
-    except (TypeError, UnicodeDecodeError, ValueError):
-        env = None
-    if m is None or not _self_verifies(env) or env["receipt_sha256"] != "sha256:" + m.group("hex")             or not isinstance(env.get("evidence"), Mapping):
-        raise _fail("SOURCE_RECEIPT_NOT_LEDGERED", CHECK_DERIVED_ISSUE_INVARIANT,
-                    "the org-ledger writer (Labs#3255) appends the verifier's receipt; derive from the bytes at its ledger ref "
-                    "refs/stegverse/organization-ledger@<commit>:receipts/<receipt_sha256 hex>.json", e,
-                    "after the org writer appends the receipt; nothing was derived", ledger_ref=ledger_ref)
-    r = env["evidence"]
-    validate_check_receipt(r)
+        validate_check_receipt(r)
+    except Refusal as x:
+        if x.record["failure_code"] == "CHECK_ID_UNDECLARED":
+            raise
+        raise not_check("$.evidence is not a valid stegverse.sv_check_receipt.v1: " + x.record["failure_code"])
     if r["disposition"] == "ALLOW":
-        raise _deny("CHECK_RECEIPT_NOT_FAILING", CHECK_DERIVED_ISSUE_INVARIANT, "only a non-ALLOW check receipt derives an issue", e,
+        raise _deny("CHECK_RECEIPT_NOT_FAILING", inv, "only a non-ALLOW check receipt derives an issue", e,
                     "nothing to derive; the check passed", ledger_ref=ledger_ref)
-    if not isinstance(observed_base, Mapping) or not isinstance(observed_base.get("registry_generation"), int)             or not (isinstance(observed_base.get("ledger_head"), str) and GIT_SHA.match(observed_base["ledger_head"])):
-        raise _fail("ISSUE_OBSERVED_BASE_UNSUPPLIED", CHECK_DERIVED_ISSUE_INVARIANT,
+    if not isinstance(observed_base, Mapping) or type(observed_base.get("registry_generation")) is not int \
+            or not (isinstance(observed_base.get("ledger_head"), str) and GIT_SHA.match(observed_base["ledger_head"])):
+        raise _fail("ISSUE_OBSERVED_BASE_UNSUPPLIED", inv,
                     "supply the observed base {registry_generation, ledger_head} the check ran against (not part of issue_id)", e,
                     "after the base is supplied; nothing was derived")
     path = check_command_surface(r["check_id"], row)
@@ -739,7 +802,7 @@ def derive_issue_from_check_receipt(receipt_bytes: bytes, ledger_ref: str, row: 
            "disposition": {"disposition": r["disposition"], **{f: r[f] for f in SIX_FIELDS}},
            "violated_invariant": {"repository": row["row_file"]["repository"], "file": row["row_file"]["file"],
                                   "rule_id": row["row_id"] + "#checks." + r["check_id"], "blob_sha": None, "invariant_declared": True},
-           "source_receipt": {"kind": "ORGANIZATION_LEDGER_RECEIPT", "ledger_ref": ledger_ref, "receipt_sha256": env["receipt_sha256"]},
+           "source_receipt": {"kind": "ORGANIZATION_LEDGER_RECEIPT", "ledger_ref": ledger_ref, "receipt_sha256": org["receipt_sha256"]},
            "surface": {"kind": surface_kind(path), "path": path},
            "owning_goal": row["owning_goal"],
            "observed_base": {k: observed_base[k] for k in ("registry_generation", "ledger_head", "tree_sha") if k in observed_base},

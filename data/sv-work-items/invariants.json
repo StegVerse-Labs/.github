@@ -7,7 +7,8 @@
         "disposition": "DENY",
         "failure_code": "HB_EPOCH_NOT_BASE_LEDGER_EPOCH"
       },
-      "statement": "A NATIVE record's hb_epoch equals the hb_epoch carried by the organization-ledger receipt at its base ledger head (SV_CHANGE base_ref.ledger_head, SV_ISSUE observed_base.ledger_head), read from refs/stegverse/organization-ledger (HEAD.json at that commit -> receipts/<receipt_sha256 hex>.json, sealed), never from a clock.",
+      "source_layout": "resident-runtime/aggregate_repo_transition.py:1073-1089 (body incl. hb_reference, seal), :1092 (HEAD.json); resident-runtime/ledger_store.py:44-56 (HEAD_KEY, receipt_key); org-kernel/kernel.py:22 (HB_ANCHOR_EPOCH=32), :68-74",
+      "statement": "A NATIVE record's hb_epoch (ASCII digits) equals, by integer value, $.hb_reference.epoch of the stegverse.organization-transition-receipt/v1 at its base ledger head (SV_CHANGE base_ref.ledger_head, SV_ISSUE observed_base.ledger_head), read from refs/stegverse/organization-ledger: HEAD.json at that commit -> receipts/<receipt_sha256 hex>.json, seal verified (receipt_sha256 = sha256 of the canonical body without it). The epoch is an int >= 32 (not bool, no coercion from other types) from a reference not derived from a clock (kernel.hb_reference, org-kernel/kernel.py:68-74); there is no top-level hb_epoch on the org receipt. Never read from a clock.",
       "status": "PROVISIONAL_UNTIL_JD-P4-3",
       "unobserved": {
         "disposition": "FAIL_CLOSED",
@@ -17,19 +18,29 @@
         "owning_existing_goal": "StegVerse-org/.github#163",
         "required_evidence_or_repair": "bind base_ref.ledger_head to an org-ledger receipt carrying hb_epoch",
         "retry_entrypoint": "native record re-derivation"
-      }
+      },
+      "unobserved_cases": "no HEAD.json, no receipt at the HEAD's digest, broken seal, not an organization-transition receipt, missing or non-int epoch, epoch < 32, derived_from_clock not false"
     },
     {
-      "enforced_by": "resident-runtime/sv_work_items.py::derive_issue_from_check_receipt(receipt_bytes, ledger_ref, row, observed_base=...); rule details in data/sv-work-items/required-checks.json#check_derived_issue_rule",
+      "enforced_by": "resident-runtime/sv_work_items.py::derive_issue_from_check_receipt(ledger_objects, ledger_ref, row, observed_base=...) (ledger_objects: '<commit>:<path>' -> bytes of a read of refs/stegverse/organization-ledger); rule details in data/sv-work-items/required-checks.json#check_derived_issue_rule",
       "invariant_id": "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT",
-      "ledger_object_shape": "the bytes at ledger_ref are a sealed org-ledger receipt (receipt_sha256 = sha256 over the other fields = the path hex) whose `evidence` is the stegverse.sv_check_receipt.v1 (P1's reading of the Labs#3255 append; the same `evidence` convention admission_learning.harvest reads)",
+      "ledger_object_shape": "ledger_ref = refs/stegverse/organization-ledger@<commit>:receipts/<hex>.json names the sealed stegverse.organization-transition-receipt/v1 (aggregate_repo_transition.py:1073-1089). It carries no `evidence`; it carries boundary_evidence {operation, profile_id, disposition, communication_id} and repo_receipt_sha256 (verify_source, :627-651). The org ledger retains that sealed stegverse.repo-transition-receipt/v1 beside it at source-receipts/<hex>.json in the same commit (ledger_store.source_key, ledger_store.py:59-61; :1064-1066; organization_ledger_readback.py:89-91). The check receipt is the repo receipt's $.evidence (.stegverse/transition-ledger/emit.py:116), placed there by Lane D's sv_check_receipt append operation and self-identified by $.evidence.schema == stegverse.sv_check_receipt.v1 or $.evidence.kind == 'sv_check_receipt' (then the object minus kind must be the pinned receipt shape). boundary_evidence.operation, when present, must be 'sv_check_receipt'.",
+      "not_a_check_receipt": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT",
+        "failure_code": "LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT",
+        "next_attempt": "after the check receipt is appended through the sv_check_receipt operation; nothing was derived",
+        "owning_existing_goal": "StegVerse-org/.github#163",
+        "required_evidence_or_repair": "the repo receipt's $.evidence is a stegverse.sv_check_receipt.v1 self-identified by $.evidence.schema (or $.evidence.kind == 'sv_check_receipt'), appended by the sv_check_receipt operation",
+        "retry_entrypoint": "resident-runtime/sv_work_items.py::derive_issue_from_check_receipt"
+      },
       "not_ledgered": {
         "disposition": "FAIL_CLOSED",
         "failed_predicate": "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT",
         "failure_code": "SOURCE_RECEIPT_NOT_LEDGERED",
         "next_attempt": "after the org writer appends the receipt; nothing was derived",
         "owning_existing_goal": "StegVerse-org/.github#163",
-        "required_evidence_or_repair": "the org-ledger writer (Labs#3255) appends the verifier's receipt; derive from the bytes at its ledger ref",
+        "required_evidence_or_repair": "the org-ledger writer appends the verifier's receipt (Lane D sv_check_receipt operation); derive from the org receipt at its ledger ref and the repo receipt the org ledger retains beside it",
         "retry_entrypoint": "resident-runtime/sv_work_items.py::derive_issue_from_check_receipt"
       },
       "statement": "A check-derived SV_ISSUE is a deterministic derivation from the org-ledger-appended non-ALLOW check receipt: source_receipt_ref = that ledger ref (@ its receipt_sha256), failed_predicate = the receipt's failed check, surface = the check's command surface, owning_goal = the required-checks row's owning_goal. Its issue_id does not depend on who runs the derivation, so no lane owns minting: sv_work_items.derive_issue_from_check_receipt is the sanctioned derivation and fixing lanes cite the issue in resolves.",

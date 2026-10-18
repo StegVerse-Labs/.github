@@ -174,14 +174,16 @@ class CheckDispositionSplitTests(unittest.TestCase):
 
 
 class LedgerReceiptBindingTests(unittest.TestCase):
+    """Real org-ledger layout (tests/sv_ledger_fixtures.py: aggregate_repo_transition.py:1073-1089, ledger_store.py:49-61)."""
     COMMIT = "c" * 40
 
     def stored(self):
-        body = {"check_id": "unit-tests", "disposition": "ALLOW", "change_digest": "sha256:" + "a" * 64}
-        rec = wi.seal(body, "receipt_sha256")
-        path = "receipts/%s.json" % rec["receipt_sha256"].split(":", 1)[1]
-        raw = json.dumps(rec, indent=2).encode()  # stored bytes need not be canonical; the digest is over canon(object)
-        return rec, path, raw
+        from tests import sv_ledger_fixtures as lf
+        repo = lf.repo_receipt({"note": "binding fixture"}, 1024)
+        org = lf.org_receipt(repo, 1024, boundary_evidence=lf.boundary())
+        path = lf.ledger_store.receipt_key(org["receipt_sha256"])
+        raw = lf.ledger_objects(self.COMMIT, org)[self.COMMIT + ":" + path]  # stored bytes need not be canonical
+        return org, path, raw
 
     def test_allow_mismatch_unresolved(self):
         rec, path, raw = self.stored()
@@ -196,13 +198,16 @@ class LedgerReceiptBindingTests(unittest.TestCase):
                          ("FAIL_CLOSED", "LEDGER_RECEIPT_DIGEST_MISMATCH", "VALIDATION_RECEIPT_DIGEST_BINDS_LEDGER_RECEIPT"))
         self.assertTrue(six(mis))
         other = "receipts/%s.json" % ("e" * 64)
+        broken = json.dumps({**rec, "authority_effect": "TAMPERED"}).encode()  # receipt_sha256 kept, seal broken
         cases = [({"ref": "docs/evidence.md", "digest": digest}, objs),
                  ({"ref": wi.LEDGER_REF + "#fixture:unit-tests", "digest": digest}, objs),
                  ({"ref": ref.replace(self.COMMIT, "d" * 40), "digest": digest}, objs),
                  ({"ref": ref, "digest": digest}, {self.COMMIT + ":" + path: b"\xff not json"}),
                  ({"ref": ref, "digest": digest}, {self.COMMIT + ":" + path: b"[1,2]"}),
+                 ({"ref": ref, "digest": wi.ledger_receipt_digest(broken)}, {self.COMMIT + ":" + path: broken}),
                  ({"ref": "refs/stegverse/organization-ledger@%s:%s" % (self.COMMIT, other), "digest": digest},
                   {self.COMMIT + ":" + other: raw}),
+                 ({"ref": ref.replace(":receipts/", ":source-receipts/"), "digest": digest}, objs),
                  ({"digest": digest}, objs)]
         for receipt, store in cases:
             out = refusal(wi.verify_ledger_receipt_binding, receipt, store)
@@ -210,13 +215,15 @@ class LedgerReceiptBindingTests(unittest.TestCase):
                              ("FAIL_CLOSED", "LEDGER_RECEIPT_UNRESOLVED", "VALIDATION_RECEIPT_REF_RESOLVES_ON_ORGANIZATION_LEDGER"), receipt)
             self.assertTrue(six(out))
 
-    def test_addressing_matches_ledger_store(self):
+    def test_addressing_and_seal_match_ledger_store_and_readback(self):
         import importlib.util
-        spec = importlib.util.spec_from_file_location("ledger_store_t", ROOT / "resident-runtime/ledger_store.py")
-        ls = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(ls)
+        spec = importlib.util.spec_from_file_location("organization_ledger_readback_t", ROOT / "resident-runtime/organization_ledger_readback.py")
+        rb = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(rb)
         rec, path, _ = self.stored()
-        self.assertEqual(ls.receipt_key(rec["receipt_sha256"]), path)
+        self.assertEqual(rb.receipt_key(rec["receipt_sha256"]), path)
+        self.assertTrue(rb.self_verifies(rec))
+        self.assertFalse(rb.self_verifies({**rec, "authority_effect": "TAMPERED"}))
 
 
 class HarvestedWriterEvidenceLostTests(unittest.TestCase):
