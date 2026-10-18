@@ -18,11 +18,11 @@ Layout. These are the existing receipts, unchanged:
     the storage location), so derived_from_clock is False. The append epoch and the check receipt's own
     ``hb_epoch`` must both pass the shared rule org-kernel/kernel.py::supplied_epoch_failure (L236-269, blob
     ffec5d64, SHARED_RULE_SHA256 726248a5...) and must be equal. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED,
-    absent/null/UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; any other malformed or
+    absent/null/""/"null"/UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; any other malformed or
     different value -> DENY HB_EPOCH_MISMATCH; in both cases before anything is written. A clock-derived epoch (only
     possible on a stored hb_reference) is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. A clock epoch is never written.
   * Command: a check whose command P1's row SV-CHANGE-REQUIRED-CHECKS-001 (vendored at
-    tests/vendor/p1_7d940851/required-checks.json, blob 42405012) does not declare is FAIL_CLOSED CHECK_COMMAND_UNDECLARED before any append. The one exception is the verifier's
+    tests/vendor/p1_ae8b105d/required-checks.json, blob 9c75778f) does not declare is FAIL_CLOSED CHECK_COMMAND_UNDECLARED before any append. The one exception is the verifier's
     own FAIL_CLOSED CHECK_COMMAND_UNDECLARED receipt, which is P1's rule (sv_work_items.validate_check_receipt).
 
 The append path is intr_destination_ingress._append (repository append, then
@@ -49,8 +49,8 @@ TRANSITION_CLASS = "SV_CHECK_RECEIPT_APPEND"
 PROFILE_ID = "org-ledger-writer"
 CHECK_RECEIPT_SCHEMA_ID = "stegverse.sv_check_receipt.v1"
 # P1's schemas/sv-check-receipt.v1.schema.json, single-sourced as the Lane D vendored copy pinned to P1 #3264 head
-# 7d940851, blob 070f13f4 (this PR touches no P1 path).
-CHECK_RECEIPT_SCHEMA_PATH = ROOT / "tests" / "vendor" / "p1_7d940851" / "sv-check-receipt.v1.schema.json"
+# ae8b105d, blob 070f13f4 (this PR touches no P1 path).
+CHECK_RECEIPT_SCHEMA_PATH = ROOT / "tests" / "vendor" / "p1_ae8b105d" / "sv-check-receipt.v1.schema.json"
 CHECK_RECEIPT_SCHEMA_BLOB = "070f13f468558ca08aa5162a8f34431608fc1404"
 RESULT_SCHEMA = "stegverse.org-sv-check-receipt-append-result/v1"
 EPOCH_MISMATCH = "HB_EPOCH_MISMATCH"
@@ -59,9 +59,9 @@ OWNING_GOAL = "StegVerse-org/.github#163 (REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIE
 RETRY = "resident-runtime/sv_check_receipt_append.py::append_check_receipt"
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py HB_ANCHOR_EPOCH
 # P1's row SV-CHANGE-REQUIRED-CHECKS-001 (data/sv-work-items/required-checks.json), single-sourced as a Lane D vendored
-# copy pinned to P1 #3264 head 7d940851, blob 42405012; this PR does not touch P1's path or depend on #3264 landing.
-REQUIRED_CHECKS_PATH = ROOT / "tests" / "vendor" / "p1_7d940851" / "required-checks.json"
-REQUIRED_CHECKS_BLOB = "424050129f4ddfa7e14aac61c68c7037f075a709"
+# copy pinned to P1 #3264 head ae8b105d, blob 9c75778f; this PR does not touch P1's path or depend on #3264 landing.
+REQUIRED_CHECKS_PATH = ROOT / "tests" / "vendor" / "p1_ae8b105d" / "required-checks.json"
+REQUIRED_CHECKS_BLOB = "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d"
 P1_REQUIRED_CHECKS_PATH = "data/sv-work-items/required-checks.json"
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 EPOCH_SOURCE_PREDICATE = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
@@ -179,7 +179,7 @@ def check_payload(receipt: Any) -> dict[str, Any] | None:
 
 
 def command_declared(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> bool:
-    """P1's rule (sv_work_items.command_declared @7d940851): argv (a non-empty list), or a verifier built-in
+    """P1's rule (sv_work_items.command_declared @ae8b105d): argv (a non-empty list), or a verifier built-in
     {verifier_builtin == check_id, verifier_ref, predicate} with command_paths empty."""
     c = (row.get("checks") or {}).get(check_id) or {}
     oc = c.get("offline_command")
@@ -196,7 +196,7 @@ def _command_refusal(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
     if receipt["disposition"] == "FAIL_CLOSED" and receipt.get("failure_code") == "CHECK_COMMAND_UNDECLARED":
         return None  # the verifier's own six-field refusal for an undeclared command is the receipt to ledger
     return refusal("CHECK_COMMAND_UNDECLARED", CHECK_COMMAND_PREDICATE,
-                   "the row " + P1_REQUIRED_CHECKS_PATH + "#checks." + receipt["check_id"] + " (vendored blob 42405012)" + " declares no offline "
+                   "the row " + P1_REQUIRED_CHECKS_PATH + "#checks." + receipt["check_id"] + " (vendored blob 9c75778f)" + " declares no offline "
                    "command; the only receipt that can be appended for it is the verifier's FAIL_CLOSED CHECK_COMMAND_UNDECLARED",
                    "after the row declares the command, or the verifier emits CHECK_COMMAND_UNDECLARED; nothing was written",
                    check_id=receipt["check_id"], receipt_disposition=receipt["disposition"])
@@ -212,6 +212,12 @@ def _unobserved(detail: str, **extra: Any) -> dict[str, Any]:
 
 
 UNKNOWN_SENTINEL = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+# P1 sv_work_items.SUPPLIED_EPOCH_UNOBSERVED_VALUES @ae8b105d: an epoch-source field holding one of these is not observed.
+UNOBSERVED_EPOCH_VALUES = (None, "", "null", UNKNOWN_SENTINEL)
+
+
+def _unobserved_value(value: Any) -> bool:
+    return value is None or (isinstance(value, str) and value in UNOBSERVED_EPOCH_VALUES[1:])
 
 
 def _mismatch(detail: str, **extra: Any) -> dict[str, Any]:
@@ -226,8 +232,10 @@ def _mismatch(detail: str, **extra: Any) -> dict[str, Any]:
 
 def _epoch_refusal(receipt: Mapping[str, Any], hb_epoch: Any) -> dict[str, Any] | None:
     """The epoch tie (orchestrator ruling, refined 15:59Z):
-      FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED: the append epoch or the receipt's hb_epoch is absent, null or the sentinel
-        UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; or the loaded kernel rule is not the pinned shared rule.
+      FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED: the append epoch or the receipt's hb_epoch (both are epoch-source fields, so
+        no optional cross-check / HB_EPOCH_NOT_CROSS_CHECKED applies) is absent, JSON null, "", "null" or the sentinel
+        UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, checked before the shared rule as in P1 verify_admission_hb_epoch @ae8b105d;
+        or the loaded kernel rule is not the pinned shared rule.
       DENY HB_EPOCH_MISMATCH: any other value failing the shared rule (bool, float, coerced text, < 32), an append epoch
         that is not an int, a receipt epoch that is not ASCII text (as P1 verify_admission_hb_epoch), or unequal values.
     A clock-derived epoch can only appear on a stored hb_reference (the sealed source); see _stored_epoch_refusal."""
@@ -236,8 +244,8 @@ def _epoch_refusal(receipt: Mapping[str, Any], hb_epoch: Any) -> dict[str, Any] 
                            kernel_rule_sha256=KERNEL_RULE_SHA256)
     mine = receipt.get("hb_epoch")
     for side, value in (("append epoch", hb_epoch), ("check receipt hb_epoch", mine)):
-        if value is None or value == UNKNOWN_SENTINEL:
-            return _unobserved(side + " is absent, null or " + UNKNOWN_SENTINEL, side=side, value=repr(value))
+        if _unobserved_value(value):
+            return _unobserved(side + " is absent, null, '', 'null' or " + UNKNOWN_SENTINEL, side=side, value=repr(value))
     bad = kernel.supplied_epoch_failure(hb_epoch)
     if bad is not None or type(hb_epoch) is not int:
         return _mismatch("append epoch " + repr(hb_epoch) + ": " + (bad[0] + ": " + bad[1] if bad else "not an int"),

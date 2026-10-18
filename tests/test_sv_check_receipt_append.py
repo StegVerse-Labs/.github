@@ -4,11 +4,11 @@ Temporary repositories only. Receipts here are exercise evidence on those
 repositories, not records of the published organization ledger.
 
 Oracle: P1's readers at StegVerse-Labs/.github#3264 head
-7d940851034697c019684ec073ea676f27d7ac37, vendored test-only under
-tests/vendor/p1_7d940851/ (sv_work_items.py blob 20b03916, required-checks.json
-42405012, lifecycle-transitions.json c66de6e8), with P1's tests/sv_ledger_fixtures.py
+ae8b105d7504565665bf6918367517ffdcb481fd, vendored test-only under
+tests/vendor/p1_ae8b105d/ (sv_work_items.py blob 446889c5, required-checks.json
+9c75778f, lifecycle-transitions.json c66de6e8), with P1's tests/sv_ledger_fixtures.py
 (blob 30a9fe89) and schemas/sv-check-receipt.v1.schema.json (070f13f4), all
-vendored there byte-identical. The vendored required-checks.json (42405012) is
+vendored there byte-identical. The vendored required-checks.json (9c75778f) is
 also the row the operation's undeclared-command rule reads; this PR does not
 touch P1's data/sv-work-items/required-checks.json.
 Shared epoch rule: org-kernel/kernel.py::supplied_epoch_failure L236-269 (blob
@@ -30,8 +30,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REF = "refs/stegverse/organization-ledger"
 NAMESPACE = "repository-ledger/StegVerse-Labs/.github"
-VENDOR = ROOT / "tests" / "vendor" / "p1_7d940851"
-P1_PIN = "7d940851034697c019684ec073ea676f27d7ac37"
+VENDOR = ROOT / "tests" / "vendor" / "p1_ae8b105d"
+P1_PIN = "ae8b105d7504565665bf6918367517ffdcb481fd"
 WRITER = ROOT / ".github" / "workflows" / "organization-ledger-transition-writer.yml"
 PR_FACING = ROOT / ".github" / "workflows" / "organization-ledger-transition.yml"
 HEAD = "a" * 40
@@ -68,17 +68,18 @@ def _p1():
     for link in ("org-kernel", "scripts"):
         if not (root / link).exists():
             os.symlink(ROOT / link, root / link)
-    return _module("sv_work_items_p1_7d940851", root / "resident-runtime" / "sv_work_items.py")
+    return _module("sv_work_items_p1_ae8b105d", root / "resident-runtime" / "sv_work_items.py")
 
 
 wi = _p1()
-# (vendored name, P1 path, pinned blob at P1 #3264 head 7d940851)
+# (vendored name, P1 path, pinned blob at P1 #3264 head ae8b105d)
 VENDORED_P1_FILES = (
-    ("required-checks.json", "data/sv-work-items/required-checks.json", "424050129f4ddfa7e14aac61c68c7037f075a709"),
+    ("required-checks.json", "data/sv-work-items/required-checks.json", "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d"),
     ("sv-check-receipt.v1.schema.json", "schemas/sv-check-receipt.v1.schema.json", "070f13f468558ca08aa5162a8f34431608fc1404"),
     ("sv_ledger_fixtures.py", "tests/sv_ledger_fixtures.py", "30a9fe8980671e63348810c837882f3dab525459"),
-    ("sv_work_items.py", "resident-runtime/sv_work_items.py", "20b03916acf3fff9b530f1bccb85cc7521754777"),
+    ("sv_work_items.py", "resident-runtime/sv_work_items.py", "446889c5114c416f34ee4ceadd5c3492c821df50"),
     ("lifecycle-transitions.json", "data/sv-work-items/lifecycle-transitions.json", "c66de6e86c9ec7d167f0e5edf74e717af0688224"),
+    ("invariants.json", "data/sv-work-items/invariants.json", "db0d2c7e382014a62f3fbc1a161266014c1baaea"),
 )
 _FX_ROOT = tempfile.TemporaryDirectory()
 
@@ -309,11 +310,11 @@ class Refusals(GitLedger):
             self.assertTrue(result["schema_errors"])
 
     def test_an_absent_null_or_sentinel_epoch_is_unobserved_on_either_side(self):
-        for bad in (None, "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"):
+        for bad in (None, "", "null", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"):
             result = svc.append_check_receipt(check_receipt(), hb_epoch=bad)
             self._assert_nothing_written(result, "HB_EPOCH_SOURCE_UNOBSERVED")
             self.assertEqual(result["shared_rule_sha256"], svc.SHARED_RULE_SHA256)
-        for bad in ("ABSENT", None, "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"):
+        for bad in ("ABSENT", None, "", "null", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"):
             receipt = check_receipt()
             if bad == "ABSENT":
                 del receipt["hb_epoch"]
@@ -322,13 +323,13 @@ class Refusals(GitLedger):
             self._assert_nothing_written(svc.append_check_receipt(receipt, hb_epoch=40), "HB_EPOCH_SOURCE_UNOBSERVED")
 
     def test_a_malformed_append_epoch_is_a_mismatch_and_no_clock_is_read(self):
-        for bad in (True, False, 31, 0, -40, "40", "", 40.0, "unknown"):
+        for bad in (True, False, 31, 0, -40, "40", 40.0, "unknown", "NULL", " null", "None"):
             result = svc.append_check_receipt(check_receipt(), hb_epoch=bad)
             self._assert_nothing_written(result, "HB_EPOCH_MISMATCH", disposition="DENY")
             self.assertEqual(result["failed_predicate"], "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH")
 
     def test_a_malformed_receipt_epoch_is_a_mismatch(self):
-        for bad in ("", "31", "+40", " 40", "4_0", "40.0", "\uff14\uff10", True, False, 40, 40.0, "unknown"):
+        for bad in ("31", "+40", " 40", "4_0", "40.0", "\uff14\uff10", True, False, 40, 40.0, "unknown", "NULL", "None"):
             result = svc.append_check_receipt(check_receipt(hb_epoch=bad), hb_epoch=40)
             self._assert_nothing_written(result, "HB_EPOCH_MISMATCH", disposition="DENY")
 
@@ -339,14 +340,16 @@ class Refusals(GitLedger):
             self.assertEqual(result["failed_predicate"], "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH")
 
     def test_parity_with_p1_verify_admission_hb_epoch(self):
-        """The receipt's hb_epoch against the append epoch, versus P1's supplied hb_epoch against a sealed readback slot
-        (P1 #3264 head 7d940851). Agree on every malformed and differing value (DENY HB_EPOCH_MISMATCH) and on ALLOW.
-        Divergence by ruling: an absent/null/sentinel supplied epoch is DENY in P1 and FAIL_CLOSED here."""
+        """The receipt's hb_epoch against the append epoch, versus P1's supplied hb_epoch (an SV_CHANGE record's hb_epoch,
+        an epoch-source field) against a sealed readback slot (P1 #3264 head ae8b105d): identical disposition and code
+        in every case. HB_EPOCH_NOT_CROSS_CHECKED (an optional cross-check) has no counterpart here: both of this
+        operation's fields are epoch sources."""
         head = "a" * 40
 
         def p1(supplied, sealed=40):
             rb = {"schema": wi.BASE_STATE_READBACK_SCHEMA, "disposition": "ALLOW", "base_ref": {"ledger_head": head},
-                  "hb_epoch_source": {"ledger_head": head, "field": wi.HB_EPOCH_SOURCE_FIELD, "derived_from_clock": False},
+                  "hb_epoch_source": {"ledger_head": head, "field": wi.HB_EPOCH_SOURCE_FIELD, "derived_from_clock": False,
+                                      "receipt": "receipts/" + "b" * 64 + ".json"},
                   "hb_epoch": str(sealed)}
             rb["result_sha256"] = wi.sha(rb)
             try:
@@ -359,16 +362,23 @@ class Refusals(GitLedger):
             result = svc._epoch_refusal(receipt, append)
             return ("ALLOW", None) if result is None else (result["disposition"], result["failure_code"])
 
-        for value in ("40", "41", "1024", "", "31", "+40", " 40", "4_0", "40.0", "\uff14\uff10", True, False, 40, 40.0, "unknown"):
+        cases = (None, "", "null", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+                 "40", "41", "1024", "31", "0", "+40", " 40", "40 ", "4_0", "40.0", "\uff14\uff10", "NULL", "None", " null",
+                 True, False, 40, 41, 31, 40.0, "unknown", [], {})
+        seen = set()
+        for value in cases:
             self.assertEqual(mine(value), p1(value), repr(value))
-        for value in (None, "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"):
-            self.assertEqual(p1(value), ("DENY", "HB_EPOCH_MISMATCH"), repr(value))
-            self.assertEqual(mine(value), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"), repr(value))
+            seen.add(mine(value))
+        self.assertEqual(seen, {("ALLOW", None), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"), ("DENY", "HB_EPOCH_MISMATCH")})
+        self.assertEqual(tuple(svc.UNOBSERVED_EPOCH_VALUES), tuple(wi.SUPPLIED_EPOCH_UNOBSERVED_VALUES))
+        # P1's optional cross-check left out is ALLOW, not comparable here
+        self.assertEqual(p1(wi.HB_EPOCH_NOT_CROSS_CHECKED), ("ALLOW", None))
 
     def test_a_clock_derived_source_is_unobserved_in_both(self):
         head = "a" * 40
         rb = {"schema": wi.BASE_STATE_READBACK_SCHEMA, "disposition": "ALLOW", "base_ref": {"ledger_head": head},
-              "hb_epoch_source": {"ledger_head": head, "field": wi.HB_EPOCH_SOURCE_FIELD, "derived_from_clock": True},
+              "hb_epoch_source": {"ledger_head": head, "field": wi.HB_EPOCH_SOURCE_FIELD, "derived_from_clock": True,
+                                  "receipt": "receipts/" + "b" * 64 + ".json"},
               "hb_epoch": "40"}
         rb["result_sha256"] = wi.sha(rb)
         with self.assertRaises(wi.Refusal) as caught:
