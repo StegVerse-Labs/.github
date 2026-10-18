@@ -159,7 +159,13 @@ class OffloadRatioTests(unittest.TestCase):
             done = subprocess.run([sys.executable, script, *full], capture_output=True, text=True)
             self.assertEqual(done.returncode, 0)
             self.assertEqual(json.loads(done.stdout)["rows"][0]["EOR_measured"], "15/58")
-            for drop in range(0, 6, 2):
+            # Without a session table the measured E still computes; the measured ratio is null.
+            no_sessions = full[:2] + full[4:]
+            done = subprocess.run([sys.executable, script, *no_sessions], capture_output=True, text=True)
+            self.assertEqual(done.returncode, 0)
+            row = json.loads(done.stdout)["rows"][0]
+            self.assertEqual((row["E_seconds"], row["EOR_measured"], row["measured"]), (1800, None, "L_NOT_SUPPLIED_FOR_LANE_DAY"))
+            for drop in (0, 4):
                 with self.subTest(missing=full[drop]):
                     args = full[:drop] + full[drop + 2:]
                     done = subprocess.run([sys.executable, script, *args], capture_output=True, text=True)

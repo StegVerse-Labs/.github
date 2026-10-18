@@ -51,8 +51,8 @@ RESULT_SCHEMA = "stegverse.ecosystem-offload-ratio.v1"
 SESSION_HEADER = ["date", "lane", "session_id", "llm_minutes"]
 USAGE_HEADER = ["date", "lane", "unit_id", "e_minutes", "l_minutes", "source"]
 OWNING_GOAL = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
-RETRY_ENTRYPOINT = ("python scripts/compute_ecosystem_offload_ratio.py --ci-runs <export.json> "
-                    "--sessions <usage.csv> --lanes <lane-map.json> [--lane-usage <lane-usage.csv>]")
+RETRY_ENTRYPOINT = ("python scripts/compute_ecosystem_offload_ratio.py --ci-runs <export.json> --lanes <lane-map.json> "
+                    "[--sessions <usage.csv>] [--lane-usage <lane-usage.csv>]")
 TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -273,8 +273,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--lane-usage", type=Path)
     args = parser.parse_args(argv)
     try:
-        for name in ("ci_runs", "sessions", "lanes"):
-            if getattr(args, name) is None and not (name == "sessions" and args.lane_usage is not None):
+        # Measured E needs only the run export and the lane map. Without a session table no
+        # measured EOR exists (L_NOT_SUPPLIED_FOR_LANE_DAY); lane-reported usage is optional.
+        for name in ("ci_runs", "lanes"):
+            if getattr(args, name) is None:
                 flag = "--" + name.replace("_", "-")
                 raise Refused("INPUT_NOT_SUPPLIED", f"{flag} names a committed input file", f"supply {flag}", input=flag)
         try:
