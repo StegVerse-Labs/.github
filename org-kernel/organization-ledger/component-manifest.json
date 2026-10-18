@@ -23,9 +23,9 @@
     "ledger_common.py": "e1eed94145678543bf3e1ced34a053191749332a",
     "ledger_store.py": "9c50cd200db1496c6820616262bbc1ae4b23879a",
     "organization_ledger_readback.py": "da7d4b2c9181c506e1bd5bf306987101609c990d",
-    "propagate_after_append.py": "b4f55183ae2a2f1a45d7aa2c7ce001f49579211c",
-    "propagate_repository_receipts.py": "c4500ea238a3fb1088993fc50e7ce7ed0776ad40",
-    "propagation_gate.py": "9ee3a00a184c46c3e27d808c9fd0fae975d539e5",
+    "propagate_after_append.py": "0a453a6a56863c364ae1e97c6a6363330e217884",
+    "propagate_repository_receipts.py": "9e52daecc99278baf8e4e88ef29d6a1bfea87e40",
+    "propagation_gate.py": "d4ee2bc440e5343c2a98112d7509f0ff6ce2f824",
     "schemas/stegverse.organization-ledger-parameters.v1.schema.json": "bf3808f13f351870f9c207375db15d11e9e7e8fb",
     "schemas/stegverse.organization-transition-request.v1.schema.json": "7a3f53f8230bc0a203c3092492fbab14d8432d90",
     "verify_component_manifest.py": "a901b775104a305d09f3d229487f1470f36bfd02"

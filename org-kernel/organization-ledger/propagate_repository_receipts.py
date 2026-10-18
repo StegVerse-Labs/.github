@@ -199,6 +199,14 @@ def propagate(repository: str, *, repository_root: Path | None = None,
                 refusal["propagated_before_refusal"] = list(propagated)
                 refusal["consequence_committed"] = bool(propagated)
             raise
+        except Exception as exc:
+            # The same for a RuntimeError (store contention, git failure), a ValueError or anything else raised
+            # part-way: the exception carries what was already committed, and the wrapper records it.
+            try:
+                exc.propagated_before_refusal = list(propagated)
+            except Exception:   # an exception type that takes no attributes still propagates unchanged
+                pass
+            raise
         propagated.append({
             "repository_receipt_sha256": digest,
             "repository_transition_id": receipt.get("transition_id"),

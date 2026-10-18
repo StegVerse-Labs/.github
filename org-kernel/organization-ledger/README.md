@@ -84,11 +84,12 @@ That module is wiring only. It calls the existing `propagate_repository_receipts
   - A `LedgerRefusal` is printed as `json.dumps(exc.refusal)`, unchanged.
   - A plain `SystemExit(str)` or `LedgerLocationRequired` gets the six fields (`REPOSITORY_RECEIPTS_PROPAGATE_AFTER_THE_APPEND`).
   - Any other exception (`RuntimeError`, `FileNotFoundError`, `KeyError`, a non-str `SystemExit`, ...) is six-field FAIL_CLOSED `PROPAGATION_REFUSAL_NOT_RECORDED`. `--out` is always written (Lane B #162 W1).
-  - If an append refuses part-way through, the refusal lists `propagated_before_refusal`, and `consequence_committed` is true when any receipt was carried (N1).
+  - If an append refuses or raises part-way through (a `LedgerRefusal`, `RuntimeError`, `ValueError` or anything else), the record lists `propagated_before_refusal`, and `consequence_committed` is true when any receipt was carried (N1).
   - A success carries `disposition: ALLOW`.
 - **No rollback, no block:** this follows the existing contract. Each organization append is its own committed receipt under the ledger lock, and a refused propagation writes nothing.
   - The appended receipt is published and read back as usual.
   - The workflow records the wrapper's exit status in `propagation.exit` (no `|| true`).
-  - The final step "Fail on a recorded propagation refusal" runs `propagation_gate.py`. Every request that appended must have a `propagation.json` with `disposition: ALLOW` under the result schema and exit 0. Absence (no `results/`, no request directory, no record) is FAIL_CLOSED `PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS`. DENY, PENDING, a missing disposition or an unreadable record fail too, all in six fields (G1/G2).
+  - The final step "Fail on a recorded propagation refusal" runs `propagation_gate.py`. Every request that appended must have a `propagation.json` with `disposition: ALLOW` under the result schema and exit 0. Absence (no `results/`, no request directory, no record) is FAIL_CLOSED `PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS`. DENY, PENDING, a missing disposition or an unreadable record fail too, all in six fields (G1/G2). A missing `propagation.exit` is `PROPAGATION_EXIT_STATUS_ABSENT` (G3).
+  - A request-mode run that received no request writes `results/NO_REQUESTS.json` (requests listed, those deferred, received 0). Only then is an empty run ALLOW (`applicability: NO_REQUEST_RECEIVED`), because nothing was appended. An empty `results/` without the marker is `PROPAGATION_NO_REQUEST_RECORDED`. A marker that is invalid or contradicted is `PROPAGATION_NO_REQUESTS_MARKER_INVALID` (N3).
 - **Normal result:** after a normal append the repository receipt is already carried, so propagation is a no-op (`skipped`). It appends `REPO_STATE_PROPAGATION` receipts only for repository receipts the organization chain does not yet carry. A rerun skips them.
 

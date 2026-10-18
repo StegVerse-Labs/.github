@@ -218,8 +218,13 @@ jobs:
           else
             echo "no mesh declared by the committed requests or dispatched; an emission is refused at egress and the refusal is recorded (SVORG-MESH-LOCATION-BINDING-001)"
           fi
+          # N3 (Lane B #162): count what this run received, so a run that received no request records that
+          # (results/NO_REQUESTS.json) instead of leaving an empty results/ the last step cannot tell from a loss.
+          mkdir -p "$RUNNER_TEMP/results"
+          listed=0; received=0; deferred=()
           while IFS= read -r request; do
             [ -n "$request" ] || continue
+            listed=$((listed + 1))
             name=$(basename "$request" .json)
             # A request whose process the boundary binds to egress leaves this
             # organization, and a run without a supplied mesh can
@@ -240,10 +245,12 @@ jobs:
           PY
             then
               echo "deferred $name: its process leaves this organization; commit a successor request declaring mesh_root, or dispatch with request=$request and mesh_root, to receive it"
+              deferred+=("$name")
               continue
             fi
             out="$RUNNER_TEMP/results/$name"
             mkdir -p "$out"
+            received=$((received + 1))
             python - "$request" "$out" <<'PY'
           import importlib.util, json, os, sys
           from pathlib import Path
@@ -301,6 +308,11 @@ jobs:
               --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?
             echo "$rc" > "$out/propagation.exit"
           done < "$RUNNER_TEMP/requests.txt"
+          if [ "$received" -eq 0 ]; then
+            python3 -c 'import json,sys; json.dump({"schema":"stegverse.organization-ledger-no-requests/v1","requests_listed":int(sys.argv[2]),"received":0,"deferred":sys.argv[3:]}, open(sys.argv[1],"w"), sort_keys=True)' \
+              "$RUNNER_TEMP/results/NO_REQUESTS.json" "$listed" ${deferred[@]+"${deferred[@]}"}
+            echo "no request received ($listed listed, ${#deferred[@]} deferred); recorded results/NO_REQUESTS.json"
+          fi
 
       # mode=self-closure: this organization's own intr-destination, at the
       # supplied epoch. No peer is named; the address is derived from this

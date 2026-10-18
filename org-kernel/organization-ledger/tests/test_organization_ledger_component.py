@@ -1133,6 +1133,38 @@ class PropagationAlwaysRecorded(unittest.TestCase):
                             str(Path(self.c.tmp.name) / "nothing-here"), "--hb-epoch", str(EPOCH))
         self.assertEqual((absent.returncode, json.loads(absent.stdout.splitlines()[-1])["disposition"]), (0, "ALLOW"))
 
+    def test_a_partial_append_by_any_exception_lists_what_was_committed(self):
+        """N1 (Lane B re-review): RuntimeError, ValueError and other exceptions part-way are recorded the same way."""
+        out_dir = Path(self.c.tmp.name) / "partial"
+        for kind in ("RuntimeError('LEDGER_STORE_CAS_CONTENTION_EXHAUSTED')", "ValueError('LEDGER_RECEIPT_COLLISION')",
+                     "KeyError('x')"):
+            c = Consumer()
+            self.addCleanup(c.close)
+            self.c, self.repo_root = c, c.ledgers / "repo"
+            self.emit("t-1")
+            self.emit("t-2")
+            out = out_dir / (kind.split("(")[0] + ".json")
+            r = self.c.py('w = load("propagate_after_append.py")\nreal = w._load\ncalls = []\nimport io, contextlib\n'
+                          'def spy(name):\n    m = real(name)\n    orig = m.organization_ledger.append\n'
+                          '    def flaky(*a, **k):\n'
+                          '        calls.append(1)\n'
+                          '        if len(calls) == 2:\n'
+                          '            raise %s\n'
+                          '        return orig(*a, **k)\n'
+                          '    m.organization_ledger.append = flaky\n    return m\n'
+                          'w._load = spy\nbuf = io.StringIO()\n'
+                          'with contextlib.redirect_stdout(buf): code = w.main(["--repository", %r, "--repository-ledger-root", %r, "--hb-epoch", "%d", "--out", %r])\n'
+                          'print(json.dumps({"code": code, "out": json.loads(Path(%r).read_text())}))'
+                          % (kind, self.REPO, str(self.repo_root), EPOCH, str(out), str(out)))
+            self.assertEqual(r["code"], 1, kind)
+            rec = r["out"]
+            self.assertEqual(rec["disposition"], "FAIL_CLOSED", kind)
+            self.assertIs(rec["consequence_committed"], True, kind)
+            self.assertEqual(len(rec["propagated_before_refusal"]), 1, kind)
+            for field in SIX:
+                self.assertTrue(isinstance(rec.get(field), str) and rec[field].strip(), (kind, field))
+            self.assertEqual(len([p for p in self.c.written("org") if p.startswith("receipts/")]), 1, kind)
+
     def test_a_partial_append_lists_what_was_committed(self):
         self.emit("t-1")
         self.emit("t-2")
@@ -1191,7 +1223,44 @@ class PropagationGate(unittest.TestCase):
     def test_missing_or_empty_results_fail_closed(self):
         self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
         self.results.mkdir()
-        self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
+        # N3: an empty results/ with no NO_REQUESTS.json is its own code: whether any request ran is unrecorded
+        self.assertRefused("PROPAGATION_NO_REQUEST_RECORDED")
+
+    def marker(self, **override):
+        self.results.mkdir(parents=True, exist_ok=True)
+        doc = {"schema": "stegverse.organization-ledger-no-requests/v1", "requests_listed": 0, "received": 0, "deferred": []}
+        doc.update(override)
+        (self.results / "NO_REQUESTS.json").write_text(json.dumps(doc))
+
+    def test_a_recorded_run_with_no_request_received_is_allow(self):
+        for listed, deferred in ((0, []), (2, ["req-a", "req-b"])):
+            self.results = Path(self.tmp.name) / ("nr-%d" % listed)
+            self.marker(requests_listed=listed, deferred=deferred)
+            rc, findings = self.gate()
+            self.assertEqual(rc, 0, findings)
+            self.assertEqual((findings[-1]["disposition"], findings[-1]["applicability"]), ("ALLOW", "NO_REQUEST_RECEIVED"))
+
+    def test_an_invalid_or_contradicted_no_requests_marker_fails(self):
+        for i, override in enumerate(({"received": 1}, {"requests_listed": 2, "deferred": ["one"]}, {"schema": "x"},
+                                      {"deferred": "req"}, {"requests_listed": True})):
+            self.results = Path(self.tmp.name) / ("bad-%d" % i)
+            self.marker(**override)
+            self.assertRefused("PROPAGATION_NO_REQUESTS_MARKER_INVALID")
+        self.results = Path(self.tmp.name) / "bad-json"
+        self.results.mkdir()
+        (self.results / "NO_REQUESTS.json").write_text("{trunc")
+        self.assertRefused("PROPAGATION_NO_REQUESTS_MARKER_INVALID")
+        self.results = Path(self.tmp.name) / "contradicted"
+        self.marker()
+        self.request("req-1", propagation=self.OK, exit_code=0)
+        self.assertRefused("PROPAGATION_NO_REQUESTS_MARKER_INVALID")
+
+    def test_a_missing_exit_status_fails_closed(self):
+        """G3: both call sites write propagation.exit, so a missing one is absence, not exit 0."""
+        self.request("req", propagation=self.OK)
+        refused = self.assertRefused("PROPAGATION_EXIT_STATUS_ABSENT")
+        self.assertEqual(refused[0]["failed_predicate"],
+                         "EVERY_APPENDED_REQUEST_HAS_A_PROPAGATION_RECORD_AND_ONLY_A_RECOGNIZED_SUCCESS_PASSES")
 
     def test_an_appended_request_without_a_record_fails_closed(self):
         self.request("req-1")
@@ -1236,6 +1305,10 @@ class PropagationGate(unittest.TestCase):
         self.assertIn("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS", step)
         self.assertNotIn('result.get("disposition") == "FAIL_CLOSED"', wf)
         self.assertNotIn("\n      - name:", step[1:], "it is the last step")
+        # N3: the request loop records a run that received no request
+        self.assertIn('"$RUNNER_TEMP/results/NO_REQUESTS.json" "$listed"', wf)
+        self.assertIn('received=$((received + 1))', wf)
+        self.assertLess(wf.index('mkdir -p "$out"\n            received=$((received + 1))'), wf.index('if [ "$received" -eq 0 ]; then'))
 
 
 if __name__ == "__main__":

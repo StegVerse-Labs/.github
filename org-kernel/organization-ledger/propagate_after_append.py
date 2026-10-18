@@ -97,6 +97,15 @@ def not_recorded(exc: BaseException) -> dict:
     }
 
 
+def with_partial(record: dict, exc: BaseException) -> dict:
+    """Lane B #162 N1: name the receipts an exception raised part-way left committed."""
+    carried = getattr(exc, "propagated_before_refusal", None)
+    if isinstance(carried, list) and "propagated_before_refusal" not in record:
+        record["propagated_before_refusal"] = carried
+        record["consequence_committed"] = bool(carried)
+    return record
+
+
 def run(repository: str, repository_ledger_root: Path, hb_epoch) -> dict:
     """Validate the epoch, then propagate in-process. Raises LedgerRefusal / SystemExit / ValueError on refusal."""
     epoch = common.require_supplied_epoch(hb_epoch, RETRY)       # '+33' is refused here, before propagation loads
@@ -125,11 +134,11 @@ def main(argv=None) -> int:
         elif isinstance(exc.code, str) and exc.code:
             result, code = six_fields(exc.code), 1
         else:   # SystemExit(int) or SystemExit(None): recorded, never re-raised
-            result, code = not_recorded(exc), 1
+            result, code = with_partial(not_recorded(exc), exc), 1
     except ValueError as exc:   # LedgerLocationRequired and other writer ValueErrors
-        result, code = six_fields(str(exc), getattr(exc, "failed_predicate", None)), 1
+        result, code = with_partial(six_fields(str(exc), getattr(exc, "failed_predicate", None)), exc), 1
     except Exception as exc:    # RuntimeError, FileNotFoundError, KeyError, ...: Lane B #162 W1
-        result, code = not_recorded(exc), 1
+        result, code = with_partial(not_recorded(exc), exc), 1
     try:
         text = json.dumps(result, sort_keys=True)
     except (TypeError, ValueError) as exc:
