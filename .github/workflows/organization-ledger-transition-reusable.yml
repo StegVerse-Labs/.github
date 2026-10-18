@@ -295,8 +295,11 @@ jobs:
             if git cat-file -e "$LEDGER_REF:$REPO_LEDGER_NAMESPACE/HEAD.json" 2>/dev/null; then
               git archive "$LEDGER_REF" "$REPO_LEDGER_NAMESPACE" | tar -x -C "$home"
             fi
+            # Not `|| true`: the exit status is recorded next to the record, and the last step requires 0 and ALLOW.
+            rc=0
             python "$COMPONENT/propagate_after_append.py" --repository "$GITHUB_REPOSITORY" \
-              --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || true
+              --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?
+            echo "$rc" > "$out/propagation.exit"
           done < "$RUNNER_TEMP/requests.txt"
 
       # mode=self-closure: this organization's own intr-destination, at the
@@ -355,8 +358,11 @@ jobs:
           if git cat-file -e "$LEDGER_REF:$REPO_LEDGER_NAMESPACE/HEAD.json" 2>/dev/null; then
             git archive "$LEDGER_REF" "$REPO_LEDGER_NAMESPACE" | tar -x -C "$home"
           fi
+          # Not `|| true`: the exit status is recorded next to the record, and the last step requires 0 and ALLOW.
+          rc=0
           python "$COMPONENT/propagate_after_append.py" --repository "$GITHUB_REPOSITORY" \
-            --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || true
+            --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?
+          echo "$rc" > "$out/propagation.exit"
 
       # The frames a request left on the designated mesh are published before
       # the ledger that says they were emitted: a receipt never claims an
@@ -484,14 +490,11 @@ jobs:
         if: always()
         run: |
           set -euo pipefail
-          python3 - "$RUNNER_TEMP/results" <<'PY'
-          import json, sys
-          from pathlib import Path
-          refused = []
-          for path in sorted(Path(sys.argv[1]).glob("*/propagation.json")):
-              result = json.loads(path.read_text())
-              print(path.parent.name, json.dumps(result, sort_keys=True))
-              if result.get("disposition") == "FAIL_CLOSED":
-                  refused.append(path.parent.name)
-          sys.exit(1 if refused else 0)
-          PY
+          # Lane B #162 G1/G2: absence, a non-ALLOW disposition, an unreadable record or a nonzero exit all fail
+          # closed in six fields (PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS for absence); only ALLOW passes.
+          if [ -f "$COMPONENT/propagation_gate.py" ]; then
+            python3 "$COMPONENT/propagation_gate.py" "$RUNNER_TEMP/results"
+          else
+            python3 -c 'import json,os; print(json.dumps({"disposition":"FAIL_CLOSED","failure_code":"PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS","failed_predicate":"EVERY_APPENDED_REQUEST_HAS_A_PROPAGATION_RECORD_AND_ONLY_A_RECOGNIZED_SUCCESS_PASSES","required_evidence_or_repair":"the pinned component has no propagation_gate.py, so no propagation outcome can be checked; absence is not a pass","retry_entrypoint":"organization-ledger-transition-reusable.yml step Fail on a recorded propagation refusal (six fields)","owning_existing_goal":"StegVerse-org/.github#163","next_attempt":"re-run with a component_ref that carries propagation_gate.py","consequence_committed":False},sort_keys=True))'
+            exit 1
+          fi

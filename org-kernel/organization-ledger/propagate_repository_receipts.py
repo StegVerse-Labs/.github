@@ -166,7 +166,7 @@ def propagate(repository: str, *, repository_root: Path | None = None,
     if not (root / HEAD_KEY).is_file():
         # The capability holding that ledger did not materialize on this node.
         # Nothing is missing; there is nothing of it here to carry.
-        return {"schema": RESULT_SCHEMA, "repository": repository,
+        return {"schema": RESULT_SCHEMA, "disposition": "ALLOW", "repository": repository,
                 "repository_ledger_present": False, "propagated": [], "skipped": [],
                 "authority_effect": "NONE_PROPAGATION_ONLY"}
 
@@ -182,14 +182,23 @@ def propagate(repository: str, *, repository_root: Path | None = None,
         # P1-FC-4: refuse before the first append when no epoch was supplied; no clock is read.
         hb_epoch = common.require_supplied_epoch(hb_epoch, RETRY)
         predecessor = receipt.get("previous_receipt_sha256") or _no_prior_repository_receipt(repository)
-        organization_receipt = organization_ledger.append(
-            receipt, ORG_TRANSITION_CLASS, predecessor, digest,
-            {"propagated_by": common.entrypoint(__file__),
-             "repository_ledger_address": str(root),
-             "repository_transition_class": receipt.get("transition_class"),
-             "crossed_an_organization_boundary": False,
-             "interlock_intr_involved": False},
-            "NONE", hb_epoch=hb_epoch)
+        try:
+            organization_receipt = organization_ledger.append(
+                receipt, ORG_TRANSITION_CLASS, predecessor, digest,
+                {"propagated_by": common.entrypoint(__file__),
+                 "repository_ledger_address": str(root),
+                 "repository_transition_class": receipt.get("transition_class"),
+                 "crossed_an_organization_boundary": False,
+                 "interlock_intr_involved": False},
+                "NONE", hb_epoch=hb_epoch)
+        except SystemExit as exc:
+            # Lane B #162 N1: each append is its own committed receipt, so receipts carried earlier in this call
+            # stand. The refusal says so instead of claiming nothing was committed.
+            refusal = getattr(exc, "refusal", None)
+            if isinstance(refusal, dict):
+                refusal["propagated_before_refusal"] = list(propagated)
+                refusal["consequence_committed"] = bool(propagated)
+            raise
         propagated.append({
             "repository_receipt_sha256": digest,
             "repository_transition_id": receipt.get("transition_id"),
@@ -199,6 +208,7 @@ def propagate(repository: str, *, repository_root: Path | None = None,
         carried.add(digest)
     return {
         "schema": RESULT_SCHEMA,
+        "disposition": "ALLOW",
         "repository": repository,
         "repository_ledger_present": True,
         "repository_ledger_address": str(root),

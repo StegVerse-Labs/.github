@@ -21,6 +21,11 @@ ledger the run just appended to.
 - **Refusals.** A `LedgerRefusal` is printed as `json.dumps(exc.refusal)`,
   unchanged. A plain `SystemExit(str)` (or the writer's
   `LedgerLocationRequired`) gets the six fields here.
+- **Every outcome is recorded (Lane B #162 W1).** Any other exception
+  (`RuntimeError`, `FileNotFoundError`, `KeyError`, a non-str `SystemExit`,
+  ...) is six-field FAIL_CLOSED `PROPAGATION_REFUSAL_NOT_RECORDED`, and
+  `--out` is always written. A success carries `disposition: ALLOW`; the
+  workflow's last step passes only that.
 """
 from __future__ import annotations
 
@@ -43,6 +48,10 @@ def _load(name: str):
 common = _load("ledger_common")
 RETRY = common.entrypoint(__file__, "main")
 PREDICATE = "REPOSITORY_RECEIPTS_PROPAGATE_AFTER_THE_APPEND"
+NOT_RECORDED = "PROPAGATION_REFUSAL_NOT_RECORDED"
+NOT_RECORDED_PREDICATE = "EVERY_NON_ALLOW_PROPAGATION_IS_RECORDED_IN_SIX_FIELDS"
+COMPONENT_GOAL = "StegVerse-org/.github#163"
+RESULT_SCHEMA = "stegverse.organization-repository-propagation/v1"
 
 
 def six_fields(message: str, code: str | None = None) -> dict:
@@ -55,7 +64,33 @@ def six_fields(message: str, code: str | None = None) -> dict:
         "required_evidence_or_repair": "repair what propagation refused (" + str(message) + ") and run the propagation again; "
                                        "the receipt already appended stands and is not rolled back",
         "retry_entrypoint": RETRY,
-        "owning_existing_goal": common.owning_existing_goal(),
+        "owning_existing_goal": _goal(),
+        "next_attempt": "rerun propagate_after_append.py with the same --hb-epoch; receipts already carried are skipped",
+        "consequence_committed": False,
+        "authority_effect": "NONE_REFUSAL_ONLY",
+    }
+
+
+def _goal() -> str:
+    try:
+        return common.owning_existing_goal() or COMPONENT_GOAL
+    except Exception:   # the record must still be written
+        return COMPONENT_GOAL
+
+
+def not_recorded(exc: BaseException) -> dict:
+    """Any exception propagation did not turn into a refusal, as six non-empty fields."""
+    detail = type(exc).__name__ + ": " + (str(exc) or repr(exc))
+    return {
+        "schema": "stegverse.organization-repository-propagation-refusal/v1",
+        "disposition": "FAIL_CLOSED",
+        "failure_code": NOT_RECORDED,
+        "failed_predicate": NOT_RECORDED_PREDICATE,
+        "detail": detail,
+        "required_evidence_or_repair": "propagation stopped on " + detail + " without a recorded refusal; repair that "
+                                       "cause and run the propagation again; the receipt already appended stands",
+        "retry_entrypoint": RETRY,
+        "owning_existing_goal": _goal(),
         "next_attempt": "rerun propagate_after_append.py with the same --hb-epoch; receipts already carried are skipped",
         "consequence_committed": False,
         "authority_effect": "NONE_REFUSAL_ONLY",
@@ -79,19 +114,27 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     try:
         result, code = run(args.repository, args.repository_ledger_root, args.hb_epoch), 0
+        if not isinstance(result, dict) or result.get("disposition") != "ALLOW":
+            raise RuntimeError("propagation returned no ALLOW record: " + repr(result)[:200])
     except SystemExit as exc:
         # A LedgerRefusal carries its six fields as `.refusal` (read off the exception, not by class:
         # each module loads ledger_common on its own, so the class objects differ). Printed unchanged.
         refusal = getattr(exc, "refusal", None)
         if isinstance(refusal, dict):
             result, code = refusal, 1
-        elif isinstance(exc.code, str):
+        elif isinstance(exc.code, str) and exc.code:
             result, code = six_fields(exc.code), 1
-        else:
-            raise
+        else:   # SystemExit(int) or SystemExit(None): recorded, never re-raised
+            result, code = not_recorded(exc), 1
     except ValueError as exc:   # LedgerLocationRequired and other writer ValueErrors
         result, code = six_fields(str(exc), getattr(exc, "failed_predicate", None)), 1
-    text = json.dumps(result, sort_keys=True)
+    except Exception as exc:    # RuntimeError, FileNotFoundError, KeyError, ...: Lane B #162 W1
+        result, code = not_recorded(exc), 1
+    try:
+        text = json.dumps(result, sort_keys=True)
+    except (TypeError, ValueError) as exc:
+        result, code = not_recorded(exc), 1
+        text = json.dumps(result, sort_keys=True)
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(text + "\n")

@@ -903,7 +903,9 @@ class PropagateAfterAppend(unittest.TestCase):
         self.assertEqual(wf.count('python "$COMPONENT/propagate_after_append.py"'), 2)
         self.assertLess(wf.index("organization_manifest_ingress.py\" \\"), wf.index('propagate_after_append.py"'))
         self.assertLess(wf.index("--self-close \\"), wf.rindex('propagate_after_append.py"'))
-        self.assertIn('--hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || true', wf)
+        self.assertNotIn('--out "$out/propagation.json" || true', wf)
+        self.assertEqual(wf.count('--hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?'), 2)
+        self.assertEqual(wf.count('echo "$rc" > "$out/propagation.exit"'), 2)
         gate = wf.index("Fail on a recorded propagation refusal")
         self.assertLess(wf.index("Publish the ledger ref (fast-forward only)"), gate)
         self.assertLess(wf.index("Read the organization and repository ledgers back from a fresh fetch"), gate)
@@ -1081,6 +1083,152 @@ class SharedSuppliedEpochRule(unittest.TestCase):
             else:
                 self.assertEqual(predicate, r["predicate"], value)
                 self.assertIs(derived, False, value)
+
+
+
+class PropagationAlwaysRecorded(unittest.TestCase):
+    """Lane B #162 W1 and N1: every outcome is recorded in six fields and --out is always written."""
+    REPO = PropagateAfterAppend.REPO
+    setUp, emit, propagate = PropagateAfterAppend.setUp, PropagateAfterAppend.emit, PropagateAfterAppend.propagate
+    assertSix = PropagateAfterAppend.assertSix
+
+    def test_any_exception_is_recorded_and_out_is_written(self):
+        out_dir = Path(self.c.tmp.name) / "outs"
+        r = self.c.py('w = load("propagate_after_append.py")\nimport io, contextlib\n'
+                      'cases = {"runtime": RuntimeError("LEDGER_STORE_CAS_CONTENTION_EXHAUSTED"), "notfound": FileNotFoundError("HEAD.json"),\n'
+                      '         "key": KeyError("receipt_sha256"), "exit_int": SystemExit(2), "exit_none": SystemExit(None),\n'
+                      '         "exit_empty": SystemExit(""), "type": TypeError("bad"), "no_allow": None}\n'
+                      'res = {}\n'
+                      'for name, exc in cases.items():\n'
+                      '    def boom(*a, _e=exc):\n'
+                      '        if _e is None: return {"schema": "x", "propagated": []}\n'
+                      '        raise _e\n'
+                      '    w.run = boom\n'
+                      '    out = Path(%r) / (name + ".json")\n'
+                      '    buf = io.StringIO()\n'
+                      '    with contextlib.redirect_stdout(buf): code = w.main(["--repository", "x/y", "--repository-ledger-root", "/nonexistent", "--out", str(out)])\n'
+                      '    res[name] = {"code": code, "out": json.loads(out.read_text()) if out.exists() else None}\n'
+                      'print(json.dumps(res))' % str(out_dir))
+        for name, got in r.items():
+            self.assertEqual(got["code"], 1, name)
+            self.assertIsNotNone(got["out"], name + ": --out must be written")
+            expected = "PROPAGATION_REFUSAL_NOT_RECORDED"
+            self.assertSix(got["out"], expected)
+            self.assertEqual(got["out"]["failed_predicate"], "EVERY_NON_ALLOW_PROPAGATION_IS_RECORDED_IN_SIX_FIELDS", name)
+            self.assertNotIn(got["out"]["required_evidence_or_repair"].strip(), ("", "None"))
+        self.assertIn("RuntimeError: LEDGER_STORE_CAS_CONTENTION_EXHAUSTED", r["runtime"]["out"]["detail"])
+
+    def test_a_success_carries_disposition_allow(self):
+        self.emit()
+        code, out = self.propagate()
+        self.assertEqual((code, out["disposition"], out["schema"]), (0, "ALLOW", "stegverse.organization-repository-propagation/v1"))
+        absent = self.c.cli("propagate_after_append.py", "--repository", "absent/repo", "--repository-ledger-root",
+                            str(Path(self.c.tmp.name) / "nothing-here"), "--hb-epoch", str(EPOCH))
+        self.assertEqual((absent.returncode, json.loads(absent.stdout.splitlines()[-1])["disposition"]), (0, "ALLOW"))
+
+    def test_a_partial_append_lists_what_was_committed(self):
+        self.emit("t-1")
+        self.emit("t-2")
+        r = self.c.py('w = load("propagate_after_append.py")\nreal = w._load\ncalls = []\n'
+                      'def spy(name):\n    m = real(name)\n    orig = m.organization_ledger.append\n'
+                      '    def flaky(*a, **k):\n'
+                      '        calls.append(1)\n'
+                      '        if len(calls) == 2:\n'
+                      '            raise m.common.LedgerRefusal("ORG_LEDGER_APPEND_CONTENTION_EXHAUSTED", retry_entrypoint="t")\n'
+                      '        return orig(*a, **k)\n'
+                      '    m.organization_ledger.append = flaky\n    return m\n'
+                      'w._load = spy\n'
+                      'print(json.dumps(refusal(lambda: w.run(%r, Path(%r), "%d"))))' % (self.REPO, str(self.repo_root), EPOCH))
+        refused = r["refused"]
+        self.assertIs(refused["consequence_committed"], True)
+        self.assertEqual(len(refused["propagated_before_refusal"]), 1)
+        self.assertEqual(len([p for p in self.c.written("org") if p.startswith("receipts/")]), 1)
+
+
+class PropagationGate(unittest.TestCase):
+    """Lane B #162 G1/G2: the run's last step passes only a recorded ALLOW for every appended request."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.results = Path(self.tmp.name) / "results"
+
+    def request(self, name, marker="ingress.json", marker_doc=None, propagation=None, exit_code=None):
+        d = self.results / name
+        d.mkdir(parents=True)
+        (d / marker).write_text(json.dumps(marker_doc or {"disposition": "ALLOW"}))
+        if propagation is not None:
+            (d / "propagation.json").write_text(propagation if isinstance(propagation, str) else json.dumps(propagation))
+        if exit_code is not None:
+            (d / "propagation.exit").write_text(str(exit_code) + "\n")
+
+    def gate(self):
+        out = subprocess.run([sys.executable, str(COMPONENT / "propagation_gate.py"), str(self.results)],
+                             capture_output=True, text=True)
+        findings = [json.loads(l) for l in out.stdout.splitlines() if l.startswith("{")]
+        return out.returncode, findings
+
+    def assertRefused(self, code):
+        rc, findings = self.gate()
+        self.assertEqual(rc, 1)
+        refused = [f for f in findings if f.get("disposition") == "FAIL_CLOSED"]
+        self.assertTrue(refused)
+        for f in refused:
+            for field in SIX:
+                self.assertTrue(isinstance(f.get(field), str) and f[field].strip(), field)
+        self.assertIn(code, [f["failure_code"] for f in refused])
+        return refused
+
+    OK = {"schema": "stegverse.organization-repository-propagation/v1", "disposition": "ALLOW", "propagated": []}
+
+    def test_missing_or_empty_results_fail_closed(self):
+        self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
+        self.results.mkdir()
+        self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
+
+    def test_an_appended_request_without_a_record_fails_closed(self):
+        self.request("req-1")
+        self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
+        self.results = Path(self.tmp.name) / "results2"
+        self.request("self-closure", marker="closure.json")
+        self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
+
+    def test_only_allow_passes(self):
+        for i, record in enumerate(({"schema": self.OK["schema"], "disposition": "DENY", "failure_code": "X_DENIED"},
+                                    {"schema": self.OK["schema"], "disposition": "PENDING"},
+                                    {"schema": self.OK["schema"], "propagated": []},
+                                    {"error": "boom"},
+                                    {"schema": "other/v1", "disposition": "ALLOW"},
+                                    {"schema": self.OK["schema"], "disposition": "FAIL_CLOSED", "failure_code": "HB_EPOCH_INVALID"})):
+            self.results = Path(self.tmp.name) / ("r%d" % i)
+            self.request("req", propagation=record, exit_code=0)
+            refused = self.assertRefused(record.get("failure_code") or "PROPAGATION_NOT_ALLOW")
+            self.assertEqual(refused[0]["failed_predicate"],
+                             "EVERY_APPENDED_REQUEST_HAS_A_PROPAGATION_RECORD_AND_ONLY_A_RECOGNIZED_SUCCESS_PASSES")
+
+    def test_unreadable_record_or_nonzero_exit_fails(self):
+        self.request("req", propagation="{truncated", exit_code=0)
+        self.assertRefused("PROPAGATION_RECORD_UNREADABLE")
+        self.results = Path(self.tmp.name) / "r-exit"
+        self.request("req", propagation=self.OK, exit_code=1)
+        self.assertRefused("PROPAGATION_NOT_ALLOW")
+
+    def test_allow_and_already_recorded_pass(self):
+        self.request("req-1", propagation=self.OK, exit_code=0)
+        self.request("req-2", marker_doc={"disposition": "ALREADY_RECORDED"})
+        self.request("self-closure", marker="closure.json", propagation=self.OK, exit_code=0)
+        rc, findings = self.gate()
+        self.assertEqual(rc, 0, findings)
+        self.assertEqual(findings[-1]["disposition"], "ALLOW")
+
+    def test_the_workflow_runs_this_gate_last_and_always(self):
+        wf = (COMPONENT.parents[1] / ".github/workflows/organization-ledger-transition-reusable.yml").read_text()
+        step = wf[wf.index("- name: Fail on a recorded propagation refusal (six fields)"):]
+        self.assertIn("if: always()", step.split("run: |")[0])
+        self.assertIn('python3 "$COMPONENT/propagation_gate.py" "$RUNNER_TEMP/results"', step)
+        self.assertIn("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS", step)
+        self.assertNotIn('result.get("disposition") == "FAIL_CLOSED"', wf)
+        self.assertNotIn("\n      - name:", step[1:], "it is the last step")
 
 
 if __name__ == "__main__":

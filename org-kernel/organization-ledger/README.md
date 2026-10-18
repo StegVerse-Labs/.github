@@ -83,8 +83,12 @@ That module is wiring only. It calls the existing `propagate_repository_receipts
 - **Refusals:**
   - A `LedgerRefusal` is printed as `json.dumps(exc.refusal)`, unchanged.
   - A plain `SystemExit(str)` or `LedgerLocationRequired` gets the six fields (`REPOSITORY_RECEIPTS_PROPAGATE_AFTER_THE_APPEND`).
+  - Any other exception (`RuntimeError`, `FileNotFoundError`, `KeyError`, a non-str `SystemExit`, ...) is six-field FAIL_CLOSED `PROPAGATION_REFUSAL_NOT_RECORDED`. `--out` is always written (Lane B #162 W1).
+  - If an append refuses part-way through, the refusal lists `propagated_before_refusal`, and `consequence_committed` is true when any receipt was carried (N1).
+  - A success carries `disposition: ALLOW`.
 - **No rollback, no block:** this follows the existing contract. Each organization append is its own committed receipt under the ledger lock, and a refused propagation writes nothing.
   - The appended receipt is published and read back as usual.
-  - The final step "Fail on a recorded propagation refusal" then fails the run on any `propagation.json` that is FAIL_CLOSED.
+  - The workflow records the wrapper's exit status in `propagation.exit` (no `|| true`).
+  - The final step "Fail on a recorded propagation refusal" runs `propagation_gate.py`. Every request that appended must have a `propagation.json` with `disposition: ALLOW` under the result schema and exit 0. Absence (no `results/`, no request directory, no record) is FAIL_CLOSED `PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS`. DENY, PENDING, a missing disposition or an unreadable record fail too, all in six fields (G1/G2).
 - **Normal result:** after a normal append the repository receipt is already carried, so propagation is a no-op (`skipped`). It appends `REPO_STATE_PROPAGATION` receipts only for repository receipts the organization chain does not yet carry. A rerun skips them.
 
