@@ -45,6 +45,26 @@ ISSUE_SCHEMA = "stegverse.sv_issue.v1"
 CHANGE_SCHEMA = "stegverse.sv_change.v1"
 LIFECYCLE = json.loads((ROOT / "data/sv-work-items/lifecycle-transitions.json").read_text())
 REQUIRED_CHECKS = json.loads((ROOT / "data/sv-work-items/required-checks.json").read_text())
+STAGES_DIR = ROOT / "data/sv-work-items/stages"
+
+
+def _gate_checks() -> dict[str, dict[str, Any]]:
+    """STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE: the check each stage manifest declares for its gate (exit_gate_check), emitted
+    by the NWI-S1 verifier like a row check. Its home is the stage manifest (stage_gate.py reads gates only from there),
+    not the required-checks row: no SV_CHANGE requires a stage gate."""
+    out: dict[str, dict[str, Any]] = {}
+    for f in sorted(STAGES_DIR.glob("NWI-S*.json")):
+        m = json.loads(f.read_text())
+        c = m.get("exit_gate_check")
+        if isinstance(c, dict):
+            rel = f.relative_to(ROOT).as_posix()
+            out[c["check_id"]] = {**c, "declared_in": {"repository": REQUIRED_CHECKS["row_file"]["repository"], "file": rel,
+                                                       "stage_id": m["stage_id"],
+                                                       "rule_id": m["stage_id"] + "#exit_gate_check." + c["check_id"]}}
+    return out
+
+
+GATE_CHECKS = _gate_checks()
 CHECK_RECEIPT_INVARIANT = "REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIER_OUTPUTS_APPENDED_BY_ORG_WRITER"
 CHECK_RECEIPT_SCHEMA = "stegverse.sv_check_receipt.v1"
 EXACT_HEAD_PREDICATE = "RECEIPT_CHANGE_DIGEST_EQUALS_HEAD"  # TVC#519: CHECK_SKIPPED_OR_UNOBSERVED, kept distinct by this predicate
@@ -61,15 +81,15 @@ BASE_STATE_READBACK_SCHEMA = "stegverse.sv-change-base-state-readback/v1"  # Lab
 HB_EPOCH_SOURCE_FIELD = "$.hb_reference.epoch"
 # hb_epoch_source.receipt: ledger_store.receipt_key of the head receipt, relative to refs/stegverse/organization-ledger
 READBACK_RECEIPT_PATH = re.compile(r"^receipts/[0-9a-f]{64}\.json$")
-# The producer this reader is aligned to (Labs#3266 RTC-014 @641f4b03): the hb_epoch slot and hb_epoch_source
+# The producer this reader is aligned to (Labs#3266 RTC-014 @2ba0e329): the hb_epoch slot and hb_epoch_source
 # {ledger_head, receipt, field}, sealed on ALLOW and DENY HB_EPOCH_MISMATCH, present and null on every FAIL_CLOSED.
 BASE_STATE_READBACK_PIN = {"repository": "StegVerse-Labs/.github", "pull_request": 3266,
-                           "head": "641f4b03e612d07047e15f2384d24780e2af86c0",
+                           "head": "2ba0e329c224c94863dac15de3f8011f777cb34f",
                            "file": "resident-runtime/sv_change_base_state_readback.py",
-                           "blob": "fbd453e531fc8d8f62261d2a72bc7a596798a445",
-                           "sha256": "c78026fdab4450c953f8cb475f3b20052acce818258340ad8031863ab0fb45ed",
+                           "blob": "2c730142254b78a5b9e1c05566fe6f5111b7d571",
+                           "sha256": "88d3b72b3915c71b191b71a0dd7c607dfc675f0490acfe87ec92f808f17eaefe",
                            "tests_file": "tests/test_sv_change_base_state_readback_component.py",
-                           "tests_blob": "234867df6cbeb68ab82d9c346761d96e80e56167"}
+                           "tests_blob": "31550f4d54555df4683b37401da39067b71cee60"}
 
 
 class _NotCrossChecked:
@@ -79,6 +99,7 @@ class _NotCrossChecked:
 
 
 HB_EPOCH_NOT_CROSS_CHECKED = _NotCrossChecked()
+NOT_CROSS_CHECKED_DETAIL = "HB_EPOCH_NOT_CROSS_CHECKED"  # the canonical marker's detail value
 # Explicit unobserved values: FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY)
 SUPPLIED_EPOCH_UNOBSERVED_VALUES = (None, "", "null", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
 # sha256 of the source segment of org-kernel/kernel.py::supplied_epoch_failure (from "def supplied_epoch_failure" to the
@@ -88,7 +109,22 @@ CHECK_DERIVED_ISSUE_INVARIANT = "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGE
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 LEDGER_HEAD_KEY = "HEAD.json"  # ledger_store.HEAD_KEY
 ISSUE_DERIVATION_SESSION = "derivation:sv_work_items.derive_issue_from_check_receipt"
+# Q-SV-NATIVE-BOOTSTRAP, decided by invariant (orchestrator): a stage gate is an admitted transition, so a failing gate
+# receipt is a ledgered failing check receipt and derive_issue_from_check_receipt applies to it unchanged; no exception.
+STAGE_GATE_ISSUE_INVARIANT = "STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE"
+S1_VERIFIER_REF = "SV-LLM/.github#46"
+RESOLVES_PREDICATE = "CHANGE_RESOLVES_CLAIMED_SV_ISSUES"
+SELF_SOURCED_PREDICATE = "RESOLVING_CHANGE_DID_NOT_SOURCE_ITS_ISSUE"
+ONE_ISSUE_PREDICATE = "ONE_RECEIPT_DERIVES_ONE_ISSUE"
+RESOLVED_ONCE_PREDICATE = "RECEIPT_DERIVED_ISSUE_IS_RESOLVED_ONCE"
+NATIVE_PREDICATE = "ADMITTED_RECORDS_ARE_NATIVE"
 EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+# Orchestrator decision UNKNOWN_IN_NATIVE_RECORD (2026-10-18): a NATIVE record field holding UNKNOWN_NOT_AUTHENTICALLY_OBSERVED
+# was not observed, so it is FAIL_CLOSED (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY); DENY stays only for
+# values that were observed and are wrong (e.g. MIGRATION_FIELDS_ON_NATIVE_RECORD).
+NATIVE_FIELDS_PREDICATE = "NATIVE_RECORD_FIELDS_ARE_OBSERVED"
+# At admission /hb_epoch is excluded: an unobserved epoch has its own, earlier-decided FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED
+ADMISSION_UNKNOWN_EXCLUDED = ("/hb_epoch",)
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
               "retry_entrypoint", "owning_existing_goal", "next_attempt")
 DISPOSITIONS = ("ALLOW", "DENY", "FAIL_CLOSED")
@@ -129,6 +165,9 @@ CHANGE_NON_REQUEST_FIELDS = frozenset({"_note", "request_digest", "lifecycle_sta
 DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
 GIT_SHA = re.compile(r"^[0-9a-f]{40}$")
 LEDGER_REF = "refs/stegverse/organization-ledger"
+# CHANGE_BINDS_TARGET_REPOSITORY_LEDGER: base_ref.ledger_head is the head of the TARGET repository's own LEDGER_REF (each
+# organization repository carries its own; StegVerse-Labs/.github's is not StegVerse-org/.github's)
+LEDGER_BINDING_INVARIANT = "CHANGE_BINDS_TARGET_REPOSITORY_LEDGER"
 
 
 def canon(value: Any) -> bytes:
@@ -235,6 +274,16 @@ def _pointer_match(pointer: str, allowed: str) -> bool:
     return len(a) == len(b) and all(y == x or (y == "*" and x.isdigit()) for x, y in zip(a, b))
 
 
+def native_unknown_refusal(pointers: Any, e: str) -> Refusal:
+    """UNKNOWN_IN_NATIVE_RECORD is FAIL_CLOSED, never DENY (orchestrator decision): the field was not observed, so
+    nothing about it can be judged wrong; the record is refused until the value is authentically observed."""
+    return _fail("UNKNOWN_IN_NATIVE_RECORD", NATIVE_FIELDS_PREDICATE,
+                 "authentically observe every field the NATIVE record holds as " + UNKNOWN + ", or record the history as "
+                 "MIGRATED_HISTORICAL (UNKNOWN is FAIL_CLOSED, never DENY)", e,
+                 "after the field is observed, propose a successor record carrying the observed value; nothing was recorded as ALLOW",
+                 unknown=pointers)
+
+
 def mode_check(rec: Mapping[str, Any], kind: str, base_field: str, e: str) -> str:
     mode = rec.get("record_mode")
     if mode not in RECORD_MODES:
@@ -242,8 +291,7 @@ def mode_check(rec: Mapping[str, Any], kind: str, base_field: str, e: str) -> st
     found = sentinel_pointers(rec)
     if mode == "NATIVE":
         if found:
-            raise _deny("UNKNOWN_IN_NATIVE_RECORD", "NATIVE_RECORD_FIELDS_ARE_OBSERVED",
-                        "observe every field, or record the history as MIGRATED_HISTORICAL", e, unknown=found)
+            raise native_unknown_refusal(found, e)
         extra = [k for k in ("unknown_fields", "migration_provenance", "migration_flags") if k in rec]
         if extra:
             raise _deny("MIGRATION_FIELDS_ON_NATIVE_RECORD", "NATIVE_RECORD_FIELDS_ARE_OBSERVED",
@@ -347,6 +395,15 @@ def validate_issue(rec: Any, ledger_objects: Mapping[str, bytes] | None = None) 
     return dict(rec)
 
 
+def source_receipt_collision(many: Mapping[str, Any], entry: str) -> Refusal:
+    """ONE_RECEIPT_DERIVES_ONE_ISSUE (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE (b)): the derivation is deterministic, so one
+    ledgered receipt yields exactly one issue_id; two different issues naming one receipt mean one was not derived by
+    derive_issue_from_check_receipt. FAIL_CLOSED like SV_ISSUE_ID_COLLISION: the set cannot say which one is the receipt's."""
+    return _fail("SV_ISSUE_SOURCE_RECEIPT_COLLISION", ONE_ISSUE_PREDICATE,
+                 "keep only the issue derive_issue_from_check_receipt yields from that receipt's ledger bytes; drop the other", entry,
+                 "rebuild the record set from the ledgered receipts and resubmit it whole; nothing was accepted", issues_by_receipt=dict(many))
+
+
 def validate_issue_set(records: Iterable[Any]) -> list[dict[str, Any]]:
     """FB-3: validate every record, then refuse the set if any issue_id appears twice. A duplicate is never merged
     here: restatements of one issue are merged before storage (sv_migration.merge_issues), so a stored set that still
@@ -360,6 +417,14 @@ def validate_issue_set(records: Iterable[Any]) -> list[dict[str, Any]]:
             dup.setdefault(r["issue_id"], [seen[r["issue_id"]]]).append(i)
         else:
             seen[r["issue_id"]] = i
+    by_receipt: dict[str, set[str]] = {}
+    for r in out:
+        src = r.get("source_receipt") or {}
+        if src.get("kind") == "ORGANIZATION_LEDGER_RECEIPT":
+            by_receipt.setdefault(src["receipt_sha256"], set()).add(r["issue_id"])
+    many = {k: sorted(v) for k, v in sorted(by_receipt.items()) if len(v) > 1}
+    if many:
+        raise source_receipt_collision(many, e)
     if dup:
         raise _fail("SV_ISSUE_ID_COLLISION", "ISSUE_ID_IS_UNIQUE_IN_RECORD_SET",
                     "give every entry its own identity inputs (an UNKNOWN-goal issue names source_receipt.evidence_locator), "
@@ -527,8 +592,13 @@ def required_for(paths: Iterable[str], row: Mapping[str, Any] = REQUIRED_CHECKS)
 
 
 def declared_check_ids(row: Mapping[str, Any] = REQUIRED_CHECKS) -> list[str]:
-    """The only check ids any receipt may carry: the ids the NWI-S1 verifier emits (row["checks"])."""
-    return sorted(row["checks"])
+    """The only check ids any receipt may carry: the ids the NWI-S1 verifier emits (row["checks"], plus each stage
+    manifest's exit_gate_check, STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE)."""
+    return sorted(_checks(row))
+
+
+def _checks(row: Mapping[str, Any] = REQUIRED_CHECKS) -> dict[str, Any]:
+    return {**GATE_CHECKS, **row["checks"]}
 
 
 def check_id_undeclared(check_id: Any, entry: str) -> Refusal:
@@ -585,7 +655,7 @@ def verifier_builtin(c: Mapping[str, Any]) -> Mapping[str, Any] | None:
 
 def command_declared(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> bool:
     """argv in this repo (a non-empty list), or a verifier built-in naming this check id."""
-    c = row["checks"].get(check_id) or {}
+    c = _checks(row).get(check_id) or {}
     if isinstance(c.get("offline_command"), list) and bool(c["offline_command"]):
         return True
     b = verifier_builtin(c)
@@ -595,7 +665,9 @@ def command_declared(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) ->
 def check_command_surface(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> str:
     """The repository path a check's command runs: argv[1] for a script, the first command_path naming the unittest
     module for `-m unittest`; for an undeclared command or a verifier built-in (no script in this repo), the row file
-    itself (the row is where this repo declares it)."""
+    itself (the row is where this repo declares it). A stage gate check's surface is the stage manifest that declares it."""
+    if check_id not in row["checks"] and check_id in GATE_CHECKS:
+        return GATE_CHECKS[check_id]["declared_in"]["file"]
     c = row["checks"][check_id]
     if not command_declared(check_id, row) or verifier_builtin(c) is not None:
         return row["row_file"]["file"]
@@ -612,9 +684,12 @@ def check_command(check_id: Any, paths_at_head: Iterable[str], row: Mapping[str,
     -> FAIL_CLOSED CHECK_COMMAND_UNDECLARED; a command_path absent at the head being verified
     (`paths_at_head`, as listed from that head) -> FAIL_CLOSED CHECK_COMMAND_ABSENT_AT_HEAD."""
     e = "check_command"
-    if check_id not in row["checks"]:
+    if check_id not in _checks(row):
         raise check_id_undeclared(check_id, e)
-    c = row["checks"][check_id]
+    c = _checks(row)[check_id]
+    if check_id not in row["checks"] and check_id in GATE_CHECKS:
+        # a stage gate check is runnable only from a complete declaration (STAGE_GATE_DECLARATION_IS_COMPLETE)
+        validate_gate_declaration(json.loads((ROOT / GATE_CHECKS[check_id]["declared_in"]["file"]).read_text()), row)
     b = verifier_builtin(c)
     if b is not None and b["verifier_builtin"] == check_id:
         # built into the verifier: nothing in this repo to locate, so CHECK_COMMAND_ABSENT_AT_HEAD does not apply
@@ -633,6 +708,146 @@ def check_command(check_id: Any, paths_at_head: Iterable[str], row: Mapping[str,
                     "after the head carries the command's files; nothing was run", check_id=check_id, absent=absent)
     return {"disposition": "ALLOW", "failed_predicate": None, "check_id": check_id, "argv": list(c["offline_command"]),
             "argument_bindings": dict(c.get("argument_bindings") or {}), "expected": dict(c["expected"])}
+
+
+# ------------------------------------------------------------------ STAGE GATE DECLARATION (commit 3)
+# What a stage manifest's exit_gate_check must declare so the NWI-S1 verifier (Lane B, SV-LLM/.github#46) can emit it.
+GATE_DECLARATION_PREDICATE = "STAGE_GATE_DECLARATION_IS_COMPLETE"
+STAGE_EVALUATION_SUBJECT_SCHEMA = "stegverse.nwi-stage-evaluation-subject/v1"
+STAGE_EVALUATION_SUBJECT_FIELDS = ("base_ref", "evaluated_commit", "manifest_blob", "repository", "stage_id")
+STAGE_EVALUATION_DIGEST_FUNCTION = "sv_work_items.stage_evaluation_digest"
+CANONICAL_SERIALIZATION_REF = "schemas/sv-change.v1.schema.json#/properties/change_id/x-canonical-serialization"
+# How a gate (or gate-evidence) receipt fills the closed sv-check-receipt.v1 shape, unchanged:
+GATE_RECEIPT_BINDING = {"schema": "stegverse.sv_check_receipt.v1", "change_digest": "evaluation_subject.digest",
+                        "head_sha": "evaluation_subject.evaluated_commit", "hb_epoch": "hb_epoch",
+                        "verifier_ref": "SV-LLM/.github#46@<verifier commit>"}
+GATE_CADENCE = {"per": "STAGE_EVALUATION", "transition": "STAGE_GATE", "not_per_head": True, "in_required_checks_row": False,
+                "one_failing_receipt_derives_one_issue": True}
+REPO_NAME = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
+
+
+def gate_declaration_incomplete(missing: list[str], stage_id: Any, entry: str) -> Refusal:
+    return _fail("STAGE_GATE_DECLARATION_INCOMPLETE", GATE_DECLARATION_PREDICATE,
+                 "the stage manifest's exit_gate_check declares evidence_producers (one S1 row check per receipt predicate, with the "
+                 "row's offline_command, command_paths and expected), receipt_form, evaluation_subject, hb_epoch (the pinned Labs#3266 "
+                 "readback at the subject's ledger head) and cadence (per stage evaluation)", entry,
+                 "after the manifest declares every part; the verifier emits nothing for an incomplete declaration",
+                 stage_id=stage_id, missing=missing)
+
+
+def validate_gate_declaration(manifest: Any, row: Mapping[str, Any] = REQUIRED_CHECKS) -> dict[str, Any]:
+    """Pure. FAIL_CLOSED STAGE_GATE_DECLARATION_INCOMPLETE (six fields, `missing` lists every gap) unless the manifest's
+    exit_gate_check is complete. A manifest that declares no exit_gate_check is not a gate-check stage (returns None)."""
+    e = "validate_gate_declaration"
+    if not isinstance(manifest, Mapping):
+        raise gate_declaration_incomplete(["manifest"], None, e)
+    c = manifest.get("exit_gate_check")
+    if c is None:
+        return None
+    sid = manifest.get("stage_id")
+    if not isinstance(c, Mapping):
+        raise gate_declaration_incomplete(["exit_gate_check"], sid, e)
+    miss: list[str] = []
+    oc = c.get("offline_command")
+    if not (_str(c.get("check_id")) and isinstance(oc, Mapping) and oc.get("verifier_builtin") == c.get("check_id")
+            and oc.get("verifier_ref") == S1_VERIFIER_REF and S1_VERIFIER_REF in str(c.get("minter")) and c.get("command_paths") == []):
+        miss.append("exit_gate_check (S1 verifier built-in)")
+    if sentinel_pointers(c):
+        miss.append("no UNKNOWN_NOT_AUTHENTICALLY_OBSERVED in exit_gate_check: " + ", ".join(sentinel_pointers(c)))
+    wanted = sorted(g.get("predicate") for g in manifest.get("exit_gate") or [] if isinstance(g, Mapping) and g.get("evidence") == "receipt")
+    prods = c.get("evidence_producers")
+    if not isinstance(prods, list) or sorted(p.get("predicate") for p in prods if isinstance(p, Mapping)) != wanted or len(prods) != len(wanted):
+        miss.append("evidence_producers (exactly one per receipt predicate: " + ", ".join(wanted) + ")")
+    else:
+        for p in prods:
+            cid = p.get("check_id")
+            rc = row["checks"].get(cid) if isinstance(cid, str) else None
+            if rc is None or not isinstance(rc.get("offline_command"), list) or not rc["offline_command"]:
+                miss.append("evidence_producers[%s].check_id (a row check with a declared argv)" % p.get("predicate")); continue
+            for k in ("offline_command", "command_paths", "expected"):
+                if p.get(k) != rc.get(k):
+                    miss.append("evidence_producers[%s].%s (= row %s)" % (p.get("predicate"), k, cid))
+            if S1_VERIFIER_REF not in str(p.get("producer")) or S1_VERIFIER_REF not in str(rc.get("minter")):
+                miss.append("evidence_producers[%s].producer (the NWI-S1 verifier)" % p.get("predicate"))
+            if not _str(p.get("covers")):
+                miss.append("evidence_producers[%s].covers" % p.get("predicate"))
+    rf = c.get("receipt_form")
+    if not isinstance(rf, Mapping) or any(rf.get(k) != v for k, v in GATE_RECEIPT_BINDING.items()) \
+            or rf.get("ledger_paths") != ["receipts/<org receipt sha256 hex>.json", "source-receipts/<repo receipt sha256 hex>.json"] \
+            or rf.get("ledger") != "evaluation_subject.repository" or not _str(rf.get("ledger_ref")) or LEDGER_REF not in rf["ledger_ref"]:
+        miss.append("receipt_form")
+    es = c.get("evaluation_subject")
+    if not isinstance(es, Mapping) or es.get("schema") != STAGE_EVALUATION_SUBJECT_SCHEMA \
+            or not isinstance(es.get("fields"), Mapping) or tuple(sorted(es["fields"])) != STAGE_EVALUATION_SUBJECT_FIELDS \
+            or not all(_str(v) for v in es["fields"].values()) or es.get("digest_function") != STAGE_EVALUATION_DIGEST_FUNCTION \
+            or es.get("serialization") != CANONICAL_SERIALIZATION_REF or not _str(es.get("carried_by")):
+        miss.append("evaluation_subject")
+    he = c.get("hb_epoch")
+    pin = {k: BASE_STATE_READBACK_PIN[k] for k in ("repository", "pull_request", "head", "file", "blob", "sha256")}
+    if not isinstance(he, Mapping) or he.get("readback_pin") != pin or he.get("at") != "evaluation_subject.base_ref.ledger_head" \
+            or he.get("field") != HB_EPOCH_SOURCE_FIELD or not _str(he.get("unobserved")):
+        miss.append("hb_epoch (the pinned Labs#3266 readback at evaluation_subject.base_ref.ledger_head)")
+    cad = c.get("cadence")
+    if not isinstance(cad, Mapping) or any(cad.get(k) != v for k, v in GATE_CADENCE.items()) or not _str(cad.get("trigger")):
+        miss.append("cadence (per stage evaluation, not per head, not in the required-checks row; trigger)")
+    if miss:
+        raise gate_declaration_incomplete(miss, sid, e)
+    return {"disposition": "ALLOW", "failed_predicate": None, "stage_id": sid, "check_id": c["check_id"],
+            "producers": {p["predicate"]: p["check_id"] for p in prods}}
+
+
+def stage_evaluation_subject(repository: Any, stage_id: Any, manifest_blob: Any, evaluated_commit: Any, base_ref: Any) -> dict[str, Any]:
+    """The subject a stage evaluation's receipts bind (no SV_CHANGE requires a gate, so there is no change digest to bind):
+    the repository and commit the stage is evaluated at, the stage manifest's git blob at that commit, and the observed base
+    {registry_generation at that commit, ledger_head of the repository's own refs/stegverse/organization-ledger}.
+    Anything missing or malformed is FAIL_CLOSED STAGE_EVALUATION_SUBJECT_UNOBSERVED (nothing is defaulted)."""
+    bad = [k for k, ok in (("repository", isinstance(repository, str) and REPO_NAME.match(repository)),
+                           ("stage_id", isinstance(stage_id, str) and re.fullmatch(r"NWI-S[0-9]+", stage_id)),
+                           ("manifest_blob", isinstance(manifest_blob, str) and GIT_SHA.match(manifest_blob)),
+                           ("evaluated_commit", isinstance(evaluated_commit, str) and GIT_SHA.match(evaluated_commit)),
+                           ("base_ref", _base_ok(base_ref) and set(base_ref) == {"registry_generation", "ledger_head"})) if not ok]
+    if bad:
+        raise _fail("STAGE_EVALUATION_SUBJECT_UNOBSERVED", GATE_DECLARATION_PREDICATE,
+                    "observe repository, stage_id, manifest_blob (git blob at evaluated_commit), evaluated_commit and base_ref", "stage_evaluation_subject",
+                    "after every subject field is observed; nothing is evaluated", fields=bad)
+    return {"repository": repository, "stage_id": stage_id, "manifest_blob": manifest_blob, "evaluated_commit": evaluated_commit,
+            "base_ref": {"registry_generation": base_ref["registry_generation"], "ledger_head": base_ref["ledger_head"]}}
+
+
+def stage_evaluation_digest(subject: Mapping[str, Any]) -> str:
+    """change_digest of every receipt of one stage evaluation: "sha256:" + hex sha256(canon(subject)), canon being the pinned
+    change_id serialization (sort_keys, separators (',',':'), UTF-8, ensure_ascii false, no trailing newline)."""
+    s = stage_evaluation_subject(subject.get("repository"), subject.get("stage_id"), subject.get("manifest_blob"),
+                                 subject.get("evaluated_commit"), subject.get("base_ref")) if isinstance(subject, Mapping) \
+        else stage_evaluation_subject(None, None, None, None, None)
+    if set(subject) != set(STAGE_EVALUATION_SUBJECT_FIELDS):
+        raise _fail("STAGE_EVALUATION_SUBJECT_UNOBSERVED", GATE_DECLARATION_PREDICATE, "exactly the subject fields "
+                    + ", ".join(STAGE_EVALUATION_SUBJECT_FIELDS), "stage_evaluation_digest", "rebuild the subject", extra=sorted(set(subject)))
+    return "sha256:" + hashlib.sha256(canon(s)).hexdigest()
+
+
+def validate_gate_receipt(receipt: Any, subject: Mapping[str, Any], readback: Any, *, fixture_mode: bool = False) -> dict[str, Any]:
+    """A receipt of one stage evaluation (the gate check or one of its evidence producers): the pinned sv-check-receipt.v1
+    shape (validate_check_receipt, unchanged), head_sha = the subject's evaluated_commit, change_digest = its digest
+    (else FAIL_CLOSED CHECK_SKIPPED_OR_UNOBSERVED, STAGE_EVALUATION_SUBJECT_BINDS_RECEIPT), and hb_epoch = the Labs#3266
+    readback epoch at the subject's ledger head of the subject's own repository (verify_admission_hb_epoch: DENY
+    HB_EPOCH_MISMATCH / FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED)."""
+    e = "validate_gate_receipt"
+    digest = stage_evaluation_digest(subject)
+    r = validate_check_receipt(receipt, head_sha=subject["evaluated_commit"])
+    gate = GATE_CHECKS.get(r["check_id"]) or next((g for g in GATE_CHECKS.values()
+                                                   if r["check_id"] in {p.get("check_id") for p in g.get("evidence_producers") or []}), None)
+    if gate is None or gate["declared_in"]["stage_id"] != subject["stage_id"]:
+        raise _fail("CHECK_NOT_PART_OF_STAGE_EVALUATION", GATE_DECLARATION_PREDICATE,
+                    "a stage-evaluation receipt names the stage's gate check or one of its evidence producers", e,
+                    "re-emit under the stage's declared checks", check_id=r["check_id"], stage_id=subject["stage_id"])
+    if r["change_digest"] != digest:
+        raise _fail("CHECK_SKIPPED_OR_UNOBSERVED", "STAGE_EVALUATION_SUBJECT_BINDS_RECEIPT",
+                    "re-run the check for this stage evaluation (change_digest = stage_evaluation_digest(subject))", e,
+                    "re-evaluate the stage; nothing moved", expected=digest, change_digest=r["change_digest"])
+    verify_admission_hb_epoch(r["hb_epoch"], readback, subject["base_ref"]["ledger_head"], fixture_mode=fixture_mode,
+                              target_repository=subject["repository"])
+    return {"disposition": "ALLOW", "failed_predicate": None, "check_id": r["check_id"], "evaluation_subject_digest": digest}
 
 
 def check_outcome_matches(expected: Mapping[str, Any], exit_code: int, stdout: str, stderr: str) -> bool:
@@ -658,7 +873,7 @@ def row_receipt_status(appended: Iterable[Mapping[str, Any]] = (), row: Mapping[
     `appended` is the set of LEDGER_RECEIPT references already read back from refs/stegverse/organization-ledger;
     nothing here reads the ledger, a clock or a CI job."""
     have = {a.get("check_id") for a in appended if a.get("evidence_class") == "LEDGER_RECEIPT" and str(a.get("ref") or "").startswith("refs/")}
-    missing = [c for c in declared_check_ids(row) if c not in have]
+    missing = [c for c in sorted(row["checks"]) if c not in have]  # the row's own checks (a stage gate check is not a row check)
     if not missing:
         return {"disposition": "ALLOW", "failed_predicate": None}
     return {**row["row_status"], "missing_check_ids": missing}
@@ -795,7 +1010,8 @@ def _readback_epoch_unobserved(why: str, ledger_head: Any) -> Refusal:
     return r
 
 
-def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *, fixture_mode: bool = False) -> dict[str, Any]:
+def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *, fixture_mode: bool = False,
+                              target_repository: Any = None) -> dict[str, Any]:
     """ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH (JD-P4-3, part-decided by invariant). The admission hb_epoch is
     the epoch on the org-ledger head receipt the SV_CHANGE base is bound to, as read and sealed by Lane C's base-state
     readback (Labs#3266): the in-repo reference of the supplied-epoch-binder-check predicate (built into the NWI-S1
@@ -809,7 +1025,8 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
       FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY): the supplied hb_epoch,
         where it is the epoch source (an SV_CHANGE record's hb_epoch; absent reads as null), is null, "", "null" or the
         literal UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; checked BEFORE 726248a5 (a deliberate, recorded precedence).
-      ALLOW with cross_checked false: `supplied` is HB_EPOCH_NOT_CROSS_CHECKED (an optional cross-check left out).
+      ALLOW with cross_checked false and detail HB_EPOCH_NOT_CROSS_CHECKED: `supplied` is HB_EPOCH_NOT_CROSS_CHECKED (an optional
+        cross-check left out; the canonical not-cross-checked marker).
       DENY HB_EPOCH_MISMATCH: any other supplied hb_epoch that fails 726248a5 (non-digit, coerced such as '+33', below 32,
         an int or bool rather than ASCII text) or is not equal by integer value to the sealed epoch."""
     if KERNEL_RULE_SHA256 != SUPPLIED_EPOCH_RULE_SHA256:
@@ -822,7 +1039,7 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
         raise _readback_epoch_unobserved("not a " + BASE_STATE_READBACK_SCHEMA + " receipt", ledger_head)
     if not isinstance(rb.get("result_sha256"), str) or rb["result_sha256"] != sha({k: v for k, v in rb.items() if k != "result_sha256"}):
         raise _readback_epoch_unobserved("the readback receipt does not verify against its own body (result_sha256)", ledger_head)
-    # Labs#3266 @641f4b03 producer semantics: the epoch and its source are sealed on ALLOW and on DENY HB_EPOCH_MISMATCH (the
+    # Labs#3266 @2ba0e329 producer semantics: the epoch and its source are sealed on ALLOW and on DENY HB_EPOCH_MISMATCH (the
     # epoch was observed; only the producer's --hb-epoch cross-check disagreed); on every FAIL_CLOSED both are present and null.
     observed = rb.get("disposition") == "ALLOW" or (rb.get("disposition") == "DENY" and rb.get("failure_code") == HB_EPOCH_MISMATCH)
     if not observed:
@@ -831,6 +1048,10 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
                                          ledger_head)
     if rb.get("fixture_only") is True and not fixture_mode:
         raise _readback_epoch_unobserved("a fixture_only readback counts only in fixture_mode", ledger_head)
+    if target_repository is not None and rb.get("repository") != target_repository:
+        # CHANGE_BINDS_TARGET_REPOSITORY_LEDGER: the base is the target repository's own refs/stegverse/organization-ledger
+        raise _readback_epoch_unobserved("the readback read %r's ledger, not the target repository %r's own ledger ref"
+                                         % (rb.get("repository"), target_repository), ledger_head)
     if not (isinstance(ledger_head, str) and GIT_SHA.match(ledger_head)) or (rb.get("base_ref") or {}).get("ledger_head") != ledger_head:
         raise _readback_epoch_unobserved("the readback is bound to another ledger head", ledger_head)
     src = rb.get("hb_epoch_source")
@@ -848,7 +1069,10 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
     want = int(str(rb["hb_epoch"]))
     if supplied is HB_EPOCH_NOT_CROSS_CHECKED:
         # an optional cross-check left out is not a failure: nothing to compare, the sealed epoch stands
-        return {"disposition": "ALLOW", "failed_predicate": None, "hb_epoch": str(want), "ledger_head": ledger_head, "cross_checked": False}
+        # canonical placement (orchestrator ruling 16:30Z, invariants.json#NOT_CROSS_CHECKED_MARKER): top-level
+        # cross_checked false plus detail HB_EPOCH_NOT_CROSS_CHECKED; P4 and Labs#3266 match it
+        return {"disposition": "ALLOW", "failed_predicate": None, "hb_epoch": str(want), "ledger_head": ledger_head,
+                "cross_checked": False, "detail": NOT_CROSS_CHECKED_DETAIL}
     # Contract invariant (orchestrator 15:59Z, narrowed 16:03Z): anything not observed is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED,
     # which is FAIL_CLOSED, never DENY. Where the supplied value IS the epoch source (an SV_CHANGE record's hb_epoch), an
     # absent field (read as null), JSON null, "", "null" or the UNKNOWN sentinel is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
@@ -880,6 +1104,16 @@ def _check_receipt_from_evidence(ev: Any) -> Mapping[str, Any] | None:
     if ev.get("kind") == SV_CHECK_RECEIPT_OPERATION:
         return {k: v for k, v in ev.items() if k != "kind"}
     return None
+
+
+def _violated_check_invariant(check_id: str, row: Mapping[str, Any]) -> dict[str, Any]:
+    """Where the check is declared: the row (rule_id <row_id>#checks.<id>), or for a stage gate check
+    (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE) the stage manifest (rule_id <stage_id>#exit_gate_check.<id>)."""
+    if check_id not in row["checks"] and check_id in GATE_CHECKS:
+        d = GATE_CHECKS[check_id]["declared_in"]
+        return {"repository": d["repository"], "file": d["file"], "rule_id": d["rule_id"], "blob_sha": None, "invariant_declared": True}
+    return {"repository": row["row_file"]["repository"], "file": row["row_file"]["file"],
+            "rule_id": row["row_id"] + "#checks." + check_id, "blob_sha": None, "invariant_declared": True}
 
 
 def derive_issue_from_check_receipt(ledger_objects: Mapping[str, bytes], ledger_ref: str, row: Mapping[str, Any] = REQUIRED_CHECKS, *,
@@ -947,8 +1181,7 @@ def derive_issue_from_check_receipt(ledger_objects: Mapping[str, bytes], ledger_
     path = check_command_surface(r["check_id"], row)
     rec = {"schema": ISSUE_SCHEMA, "record_mode": "NATIVE",
            "disposition": {"disposition": r["disposition"], **{f: r[f] for f in SIX_FIELDS}},
-           "violated_invariant": {"repository": row["row_file"]["repository"], "file": row["row_file"]["file"],
-                                  "rule_id": row["row_id"] + "#checks." + r["check_id"], "blob_sha": None, "invariant_declared": True},
+           "violated_invariant": _violated_check_invariant(r["check_id"], row),
            "source_receipt": {"kind": "ORGANIZATION_LEDGER_RECEIPT", "ledger_ref": ledger_ref, "receipt_sha256": org["receipt_sha256"]},
            "surface": {"kind": surface_kind(path), "path": path},
            "owning_goal": row["owning_goal"],
@@ -959,11 +1192,173 @@ def derive_issue_from_check_receipt(ledger_objects: Mapping[str, bytes], ledger_
     return validate_issue(seal(rec, "issue_sha256"))
 
 
+def is_s1_verifier(ref: Any) -> bool:
+    """The NWI-S1 verifier (SV-LLM/.github#46), optionally qualified by a run: '#46', '#46@<commit>', '#46:<run>'."""
+    return isinstance(ref, str) and (ref == S1_VERIFIER_REF or (len(ref) > len(S1_VERIFIER_REF) + 1
+                                     and ref.startswith(S1_VERIFIER_REF) and ref[len(S1_VERIFIER_REF)] in "@:"))
+
+
+def resolved_issue_facts(issues: Iterable[Mapping[str, Any]], ledger_objects: Mapping[str, bytes],
+                         issue_set: Iterable[Mapping[str, Any]] | None = None) -> list[dict[str, Any]]:
+    """The observed facts admission needs about the SV_ISSUEs a change cites (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE).
+    A receipt-derived issue is observed only if it is exactly what derive_issue_from_check_receipt yields from the
+    supplied bytes of refs/stegverse/organization-ledger at its ledger_ref (so its receipt is ledgered and was appended by
+    the org writer's sv_check_receipt operation); otherwise no fact is emitted and the issue counts as unobserved.
+      receipt_ledger_paths: receipts/<org hex>.json and source-receipts/<repo hex>.json (the ledger keys);
+      receipt_file_sha256: sha256 of those files' bytes (a change carrying the receipt anywhere);
+      verifier_ref / emitter_session: the check receipt's verifier_ref, the only emitter identity the receipt carries;
+      derived_issue_ids_from_receipt: every issue in `issue_set` naming the same source receipt;
+      resolved_by: the change_id an SV_ISSUE_RESOLVE recorded, or null.
+    Pure over the supplied bytes; nothing is read, minted or clocked."""
+    pool = [dict(i) for i in (issue_set if issue_set is not None else issues)]
+    out = []
+    for i in issues:
+        rec = validate_issue(i)
+        fact = {"issue_id": rec["issue_id"], "record_mode": rec["record_mode"], "source_kind": rec["source_receipt"]["kind"],
+                "lifecycle_state": rec["lifecycle_state"], "resolved_by": rec.get("resolved_by"), "fixture_only": False}
+        if fact["source_kind"] == "ORGANIZATION_LEDGER_RECEIPT":
+            ref = rec["source_receipt"]["ledger_ref"]
+            try:
+                again = derive_issue_from_check_receipt(ledger_objects, ref, observed_base=rec["observed_base"])
+            except Refusal:
+                continue  # not derivable from these ledger bytes: unobserved
+            if again["issue_id"] != rec["issue_id"]:
+                continue
+            m = LEDGER_RECEIPT_REF.match(ref)
+            commit = m.group("commit")
+            org_bytes = ledger_objects[commit + ":" + m.group("path")]
+            org = json.loads(org_bytes)
+            repo_key = "source-receipts/%s.json" % org["repo_receipt_sha256"].split(":", 1)[1]
+            repo_bytes = ledger_objects[commit + ":" + repo_key]
+            r = _check_receipt_from_evidence(json.loads(repo_bytes).get("evidence")) or {}
+            fact.update({"ledger_ref": ref, "receipt_sha256": rec["source_receipt"]["receipt_sha256"], "check_id": r.get("check_id"),
+                         "receipt_ledger_paths": sorted([m.group("path"), repo_key]),
+                         "receipt_file_sha256": sorted({"sha256:" + hashlib.sha256(b).hexdigest() for b in (org_bytes, repo_bytes)}),
+                         "verifier_ref": r.get("verifier_ref"), "emitter_session": r.get("verifier_ref"),
+                         "derived_issue_ids_from_receipt": sorted({p["issue_id"] for p in pool
+                                                                   if (p.get("source_receipt") or {}).get("receipt_sha256")
+                                                                   == rec["source_receipt"]["receipt_sha256"]})})
+        out.append(fact)
+    return sorted(out, key=lambda f: f["issue_id"])
+
+
+LEDGER_AT_REF = re.compile(r"^refs/stegverse/organization-ledger@(?P<commit>[0-9a-f]{40})$")
+
+
+def derive_resolved_issue_facts(ledger_objects: Mapping[str, bytes], ledger_ref: Any, change: Mapping[str, Any],
+                                issues: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    """PUBLIC, pure and re-derivable (TVC#519 re-derives instead of trusting supplied facts; admission uses the same
+    function when it is given ledger bytes). Inputs:
+      ledger_objects  "<commit>:<path>" -> bytes of the target repository's refs/stegverse/organization-ledger;
+      ledger_ref      "refs/stegverse/organization-ledger@<commit>", the ledger state the change is bound to; <commit> must be
+                      the change's base_ref.ledger_head (CHANGE_BINDS_TARGET_REPOSITORY_LEDGER), else FAIL_CLOSED
+                      RESOLVED_ISSUE_LEDGER_NOT_CHANGE_BASE;
+      change          the SV_CHANGE (its resolves names the cited issues);
+      issues          the SV_ISSUE records known (cited and others; the others count only for ONE_RECEIPT_DERIVES_ONE_ISSUE).
+    Output: resolved_issue_facts() for the cited issues, keeping a receipt-derived fact only if every receipt file it names
+    (receipt_ledger_paths) is present at <commit> with the same bytes (receipt_file_sha256), i.e. the receipt is on the
+    ledger as of the change's base. A cited issue with no record, or not derivable from these bytes, yields no fact
+    (unobserved). Nothing is read, minted or clocked; the same inputs always give the same facts."""
+    e = "derive_resolved_issue_facts"
+    m = LEDGER_AT_REF.match(ledger_ref) if isinstance(ledger_ref, str) else None
+    head = (change.get("base_ref") or {}).get("ledger_head") if isinstance(change, Mapping) else None
+    if m is None or m.group("commit") != head:
+        raise _fail("RESOLVED_ISSUE_LEDGER_NOT_CHANGE_BASE", RESOLVES_PREDICATE,
+                    "ledger_ref is refs/stegverse/organization-ledger@<the change's base_ref.ledger_head> (the target repository's own ledger)",
+                    e, "re-derive at the change's bound ledger head; nothing was derived", ledger_ref=ledger_ref, base_ledger_head=head)
+    pool = [dict(i) for i in issues]
+    cited = set(change.get("resolves") or [])
+    facts = resolved_issue_facts([i for i in pool if i.get("issue_id") in cited], ledger_objects, issue_set=pool)
+    out = []
+    for f in facts:
+        if f["source_kind"] == "ORGANIZATION_LEDGER_RECEIPT":
+            have = {"sha256:" + hashlib.sha256(ledger_objects[head + ":" + p]).hexdigest()
+                    for p in f.get("receipt_ledger_paths") or [] if head + ":" + p in ledger_objects}
+            if len(f.get("receipt_ledger_paths") or []) == 0 or have != set(f.get("receipt_file_sha256") or []) \
+                    or not all(head + ":" + p in ledger_objects for p in f["receipt_ledger_paths"]):
+                continue  # not on the ledger as of the change's base: unobserved
+        out.append(f)
+    return out
+
+
+def verify_resolutions(obs: Mapping[str, Any], *, fixture_mode: bool = False) -> dict[str, Any]:
+    """STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE at admission, for every NATIVE SV_CHANGE, over admission_inputs():
+      DENY SV_CHANGE_RESOLVES_NOTHING (CHANGE_RESOLVES_CLAIMED_SV_ISSUES): resolves is empty, or no cited issue is observed
+        (a receipt-derived issue exists only once the org writer has appended its receipt; before that the change
+        resolves nothing; never relaxed);
+      FAIL_CLOSED RESOLVED_ISSUE_UNOBSERVED: some cited issue is observed, another is not;
+      FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE (ADMITTED_RECORDS_ARE_NATIVE): a cited issue is MIGRATED_HISTORICAL
+        (a migrated GitHub issue is never admissible; it is resolved through a NATIVE successor);
+      DENY SV_CHANGE_SELF_SOURCED_ISSUE (RESOLVING_CHANGE_DID_NOT_SOURCE_ITS_ISSUE): for a receipt-derived issue, the
+        change touches the receipt's ledger path or carries the receipt's bytes, a writer (or the declared session) is
+        the receipt's emitter, or the receipt's verifier_ref is not the NWI-S1 verifier;
+      FAIL_CLOSED SV_ISSUE_SOURCE_RECEIPT_COLLISION (ONE_RECEIPT_DERIVES_ONE_ISSUE): another issue names the same receipt;
+      DENY SV_ISSUE_ALREADY_RESOLVED (RECEIPT_DERIVED_ISSUE_IS_RESOLVED_ONCE): another change already resolved it.
+    A fixture_only fact counts only in fixture_mode."""
+    e = "verify_resolutions"
+    cited = list(obs.get("resolves") or [])
+    if not cited:
+        raise _deny("SV_CHANGE_RESOLVES_NOTHING", RESOLVES_PREDICATE, "resolves lists at least one svi: id", e,
+                    "cite the SV_ISSUE derived from the ledgered failing receipt once the org writer has appended it")
+    facts = {f.get("issue_id"): f for f in obs.get("resolved_issues") or []
+             if isinstance(f, Mapping) and f.get("issue_id") in cited and (fixture_mode or f.get("fixture_only") is not True)}
+    migrated = sorted(i for i, f in facts.items() if f.get("record_mode") != "NATIVE")
+    if migrated:
+        r = historical_refusal(e)
+        r.record["migrated_issues"] = migrated
+        raise r
+    if not facts:
+        raise _deny("SV_CHANGE_RESOLVES_NOTHING", RESOLVES_PREDICATE,
+                    "cite an SV_ISSUE that is observed: a receipt-derived issue is derived (derive_issue_from_check_receipt) only "
+                    "from a receipt the org writer has appended to refs/stegverse/organization-ledger", e,
+                    "after the org writer appends the receipt and the issue is derived from it; nothing was admitted", unobserved=sorted(cited))
+    missing = sorted(set(cited) - set(facts))
+    if missing:
+        raise _fail("RESOLVED_ISSUE_UNOBSERVED", RESOLVES_PREDICATE,
+                    "every cited svi: id is an observed SV_ISSUE (receipt-derived: derivable from the ledgered receipt)", e,
+                    "after every cited issue is observed, or cite only the observed ones", unobserved=missing)
+    writers = set(obs.get("writer_sessions") or []) | ({obs["declared_session"]} if _str(obs.get("declared_session")) else set())
+    paths, blobs = set(obs.get("touched_paths") or []), set(obs.get("content_blob_digests") or [])
+    for i in sorted(facts):
+        f = facts[i]
+        if f.get("source_kind") != "ORGANIZATION_LEDGER_RECEIPT":
+            continue
+        why = [w for w, bad in (("the change touches the receipt's ledger path", bool(paths & set(f.get("receipt_ledger_paths") or []))),
+                                ("the change carries the receipt's bytes", bool(blobs & set(f.get("receipt_file_sha256") or []))),
+                                ("a writer of the change is the receipt's emitter", f.get("emitter_session") in writers),
+                                ("the receipt's verifier_ref is not the NWI-S1 verifier", not is_s1_verifier(f.get("verifier_ref")))) if bad]
+        if why:
+            raise _deny("SV_CHANGE_SELF_SOURCED_ISSUE", SELF_SOURCED_PREDICATE,
+                        "the issue's receipt is emitted by the NWI-S1 verifier (" + S1_VERIFIER_REF + ") and appended by the org writer "
+                        "(Labs#3255/#3270), never minted or ledgered by the change that resolves it", e,
+                        "propose a change that only repairs the failing predicate; the verifier re-runs the gate", issue_id=i, why=why)
+        ids = set(f.get("derived_issue_ids_from_receipt") or [])
+        if ids != {i}:
+            raise source_receipt_collision({str(f.get("receipt_sha256")): sorted(ids | {i})}, e)
+        if f.get("resolved_by") not in (None, obs.get("change_id")):
+            raise _deny("SV_ISSUE_ALREADY_RESOLVED", RESOLVED_ONCE_PREDICATE,
+                        "a receipt-derived issue is resolved by exactly one change; cite an open issue", e,
+                        "nothing to resolve; a new failing receipt derives a new issue", issue_id=i, resolved_by=f.get("resolved_by"))
+    return {"disposition": "ALLOW", "failed_predicate": None, "resolved": sorted(facts)}
+
+
 def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
                      signoff_receipts: Iterable[Mapping[str, Any]] = (),
-                     hb_epoch_readback: Mapping[str, Any] | None = None) -> dict[str, Any]:
+                     hb_epoch_readback: Mapping[str, Any] | None = None,
+                     resolved_issues: Iterable[Mapping[str, Any]] | None = None, *,
+                     ledger_objects: Mapping[str, bytes] | None = None, ledger_ref: Any = None,
+                     issue_records: Iterable[Mapping[str, Any]] | None = None) -> dict[str, Any]:
     """The observed inputs the admission predicate and the scenario corpus bind to (registry/ledger, not GitHub).
-    `hb_epoch_readback` is Lane C's sealed base-state readback receipt (Labs#3266) for the change's base, or None."""
+    With `ledger_objects` the resolved-issue facts are DERIVED by derive_resolved_issue_facts(ledger_objects, ledger_ref,
+    change, issue_records), the same public function TVC re-derives with; supplying facts as well is refused.
+    `hb_epoch_readback` is Lane C's sealed base-state readback receipt (Labs#3266) for the change's base, or None.
+    `resolved_issues` are the facts resolved_issue_facts() observed for the cited SV_ISSUEs (none: nothing observed)."""
+    if ledger_objects is not None:
+        if resolved_issues is not None:
+            raise _fail("RESOLVED_ISSUE_FACTS_DOUBLY_SOURCED", RESOLVES_PREDICATE,
+                        "supply ledger bytes (facts are derived) or facts, not both", "admission_inputs",
+                        "re-run with one source of resolved-issue facts")
+        resolved_issues = derive_resolved_issue_facts(ledger_objects, ledger_ref, change, issue_records or [])
     checks, signoffs = required_for(change["touched_paths"])
     ws = [c["writer_session"] for c in change["content"]]
     writers = sorted({w["session"] for w in ws if w["evidence_class"] != UNKNOWN})
@@ -990,7 +1385,13 @@ def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
         "touched_surface_kinds": sorted({surface_kind(p) for p in change["touched_paths"]}),
         "admission_order_slot": change.get("admission_order_slot"),
         "supplied_hb_epoch": change.get("hb_epoch"),
+        "native_unknown_pointers": [p for p in sentinel_pointers(change) if p not in ADMISSION_UNKNOWN_EXCLUDED],
         "hb_epoch_readback": dict(hb_epoch_readback) if isinstance(hb_epoch_readback, Mapping) else None,
+        "change_id": change.get("change_id"),
+        "target_repository": change.get("target_repository"),
+        "resolves": sorted(change.get("resolves") or []),
+        "content_blob_digests": sorted({c["blob_digest"] for c in change["content"] if isinstance(c.get("blob_digest"), str)}),
+        "resolved_issues": [json.loads(json.dumps(f)) for f in resolved_issues or []],
     }
 
 
@@ -1004,6 +1405,11 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     e = "evaluate_admission"
     if obs.get("record_mode") != "NATIVE":
         raise historical_refusal(e)
+    unknown = obs.get("native_unknown_pointers")
+    if not isinstance(unknown, list):
+        raise native_unknown_refusal(UNKNOWN, e)  # which fields hold UNKNOWN was itself not observed
+    if unknown:
+        raise native_unknown_refusal(sorted(unknown), e)
     if not _str(obs.get("declared_session")):
         raise _fail("AUTHOR_SESSION_NOT_DECLARED", "PR_AUTHOR_SESSION_DECLARED", "declare the authoring session", e)
     if obs.get("base_ref") != obs.get("current_base"):
@@ -1020,6 +1426,8 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
             w != obs.get("declared_session") and w not in (obs.get("co_author_grants") or []) for w in obs.get("writer_sessions") or []):
         raise _fail("BRANCH_HAS_FOREIGN_WRITER", "BRANCH_WRITER_IS_BRANCH_OWNER",
                     "a superseding SV_CHANGE by the owner that carries the foreign content openly, or a receipted co-author grant", e)
+    # STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE: what the change resolves, for every NATIVE admission
+    verify_resolutions(obs, fixture_mode=fixture_mode)
     required = list(obs.get("required_check_ids") or [])
     if not required:
         raise _fail("REQUIRED_CHECKS_ROW_ABSENT", "REQUIRED_CHECKS_ROW_RESOLVES", "resolve the required-checks row", e)
@@ -1056,7 +1464,8 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
     # supplied-epoch-binder-check on the 'all' surface); evaluated over the sealed readback after the check receipts
     # and before the sign-offs
     verify_admission_hb_epoch(obs.get("supplied_hb_epoch"), obs.get("hb_epoch_readback"),
-                              (obs.get("base_ref") or {}).get("ledger_head"), fixture_mode=fixture_mode)
+                              (obs.get("base_ref") or {}).get("ledger_head"), fixture_mode=fixture_mode,
+                              target_repository=obs.get("target_repository") or UNKNOWN)
     have = {s.get("role") for s in obs.get("signoffs") or []
             if signoff_resolves(s, obs.get("signoff_receipts") or [], obs.get("head_change_digest"), fixture_mode)}
     absent = sorted(set(obs.get("required_signoff_roles") or []) - have)
@@ -1134,6 +1543,13 @@ def work_items_record(records: Iterable[Mapping[str, Any]], coordination_task_id
             "goal_index": {g: sorted(ids) for g, ids in sorted(index.items())}, "work_items": items}
 
 
+def _ledger_kw(ctx: Mapping[str, Any]) -> dict[str, Any]:
+    """transition() context carrying ledger bytes: facts are derived (derive_resolved_issue_facts), never trusted."""
+    if ctx.get("ledger_objects") is None:
+        return {}
+    return {"ledger_objects": ctx["ledger_objects"], "ledger_ref": ctx.get("ledger_ref"), "issue_records": ctx.get("issue_records") or []}
+
+
 def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_epoch: Any,
                context: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Evaluate one lifecycle transition. Returns {disposition, ..., record}; never raises for a refusal."""
@@ -1195,7 +1611,7 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
                             "a superseding SV_CHANGE by the owner that carries the foreign content openly", e)
         if transition_class == "SV_CHANGE_VERIFY":
             validate_change(record)
-            obs = admission_inputs(record, record["base_ref"], (), ctx.get("hb_epoch_readback"))
+            obs = admission_inputs(record, record["base_ref"], (), ctx.get("hb_epoch_readback"), ctx.get("resolved_issues"), **_ledger_kw(ctx))
             out = admit({**obs, "required_signoff_roles": []}, fixture_mode=bool(ctx.get("fixture_mode")))
             if out["disposition"] != "ALLOW":
                 raise Refusal(out["disposition"], out["failure_code"], out["failed_predicate"], out["required_evidence_or_repair"],
@@ -1210,7 +1626,8 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
                 new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]
                 return {**out, "predicate_digest": ctx["predicate_digest"], "corpus_head": ctx["corpus_head"],
                         "actor_session": ctx.get("actor_session"), "transition_class": transition_class, "record": new}
-            obs = admission_inputs(record, ctx.get("current_base") or {}, ctx.get("signoff_receipts") or (), ctx.get("hb_epoch_readback"))
+            obs = admission_inputs(record, ctx.get("current_base") or {}, ctx.get("signoff_receipts") or (), ctx.get("hb_epoch_readback"),
+                                   ctx.get("resolved_issues"), **_ledger_kw(ctx))
             kw = {"fixture_mode": True} if ctx.get("fixture_mode") else {}
             out = admit(obs, ctx.get("evaluator") or evaluate_admission, covered_kinds=ctx.get("covered_kinds"), **kw)
             new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]

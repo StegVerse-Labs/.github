@@ -21,9 +21,18 @@ Layout. These are the existing receipts, unchanged:
     absent/null/""/"null"/UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; any other malformed or
     different value -> DENY HB_EPOCH_MISMATCH; in both cases before anything is written. A clock-derived epoch (only
     possible on a stored hb_reference) is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. A clock epoch is never written.
-  * Command: a check whose command P1's row SV-CHANGE-REQUIRED-CHECKS-001 (vendored at
-    tests/vendor/p1_ae8b105d/required-checks.json, blob 9c75778f) does not declare is FAIL_CLOSED CHECK_COMMAND_UNDECLARED before any append. The one exception is the verifier's
-    own FAIL_CLOSED CHECK_COMMAND_UNDECLARED receipt, which is P1's rule (sv_work_items.validate_check_receipt).
+  * Command: P1's own rule, sv_work_items.command_declared (row checks plus the stage manifests' exit_gate_check
+    built-ins). An undeclared command is FAIL_CLOSED CHECK_COMMAND_UNDECLARED before any append; the one exception is
+    the verifier's own FAIL_CLOSED CHECK_COMMAND_UNDECLARED receipt (P1 validate_check_receipt).
+  * Stage-gate receipts (a check id a P1 stage manifest declares as exit_gate_check, e.g. nwi-s0-exit-gate, or any
+    receipt supplied with a stage-evaluation subject) bind to the subject, not a change: change_digest =
+    sv_work_items.stage_evaluation_digest(subject), head_sha = subject.evaluated_commit. They are validated with P1's
+    validate_gate_receipt(receipt, subject, readback, fixture_mode=False) and appended only into the subject
+    repository's own ledger (subject.repository == the writer's repository), at receipts/<org hex>.json plus
+    source-receipts/<repo hex>.json. Any failure is a six-field FAIL_CLOSED before any write.
+  * P1 readers: loaded from tests/vendor/p1_7898cedb/ (P1 #3264 head 7898cedb, P1's layout mirrored), verified
+    file-by-file against P1's manifest data/sv-work-items/contract-pins.json (pinned by its sha256) before use; any
+    mismatch refuses every append (FAIL_CLOSED P1_CONTRACT_PINS_UNVERIFIED).
 
 The append path is intr_destination_ingress._append (repository append, then
 aggregate_transition), under the writer workflow's ORGANIZATION_LEDGER_LOCK
@@ -48,21 +57,26 @@ OPERATION_ID = "sv_check_receipt"
 TRANSITION_CLASS = "SV_CHECK_RECEIPT_APPEND"
 PROFILE_ID = "org-ledger-writer"
 CHECK_RECEIPT_SCHEMA_ID = "stegverse.sv_check_receipt.v1"
-# P1's schemas/sv-check-receipt.v1.schema.json, single-sourced as the Lane D vendored copy pinned to P1 #3264 head
-# ae8b105d, blob 070f13f4 (this PR touches no P1 path).
-CHECK_RECEIPT_SCHEMA_PATH = ROOT / "tests" / "vendor" / "p1_ae8b105d" / "sv-check-receipt.v1.schema.json"
-CHECK_RECEIPT_SCHEMA_BLOB = "070f13f468558ca08aa5162a8f34431608fc1404"
+P1_HEAD = "7898cedba1400c8545cebcb463fd26deb25f7d5a"
+P1_VENDOR = ROOT / "tests" / "vendor" / "p1_7898cedb"
+P1_MANIFEST = "data/sv-work-items/contract-pins.json"
+P1_MANIFEST_SHA256 = "317aef68d7a875b84633361a25b000810457fbc89b96f735dde3259008b897d7"  # blob 98277496
+# the P1 files this operation uses (paths as in P1's tree and in the manifest)
+P1_USED_FILES = ("resident-runtime/sv_work_items.py", "data/sv-work-items/required-checks.json",
+                 "data/sv-work-items/lifecycle-transitions.json", "schemas/sv-check-receipt.v1.schema.json",
+                 "data/sv-work-items/stages/NWI-S0.json", "data/sv-work-items/stages/NWI-S1.json",
+                 "data/sv-work-items/stages/NWI-S2.json", "data/sv-work-items/stages/NWI-S3.json",
+                 "data/sv-work-items/stages/NWI-S4.json")
+CHECK_RECEIPT_SCHEMA_PATH = P1_VENDOR / "schemas" / "sv-check-receipt.v1.schema.json"
+CHECK_RECEIPT_SCHEMA_BLOB = "a4934cc1afb5f9c65d12f4ab5ae29f462b76b3f3"
 RESULT_SCHEMA = "stegverse.org-sv-check-receipt-append-result/v1"
 EPOCH_MISMATCH = "HB_EPOCH_MISMATCH"
 READBACK_SCHEMA = "stegverse.org-sv-check-receipt-readback/v1"
 OWNING_GOAL = "StegVerse-org/.github#163 (REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIER_OUTPUTS_APPENDED_BY_ORG_WRITER)"
 RETRY = "resident-runtime/sv_check_receipt_append.py::append_check_receipt"
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py HB_ANCHOR_EPOCH
-# P1's row SV-CHANGE-REQUIRED-CHECKS-001 (data/sv-work-items/required-checks.json), single-sourced as a Lane D vendored
-# copy pinned to P1 #3264 head ae8b105d, blob 9c75778f; this PR does not touch P1's path or depend on #3264 landing.
-REQUIRED_CHECKS_PATH = ROOT / "tests" / "vendor" / "p1_ae8b105d" / "required-checks.json"
-REQUIRED_CHECKS_BLOB = "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d"
 P1_REQUIRED_CHECKS_PATH = "data/sv-work-items/required-checks.json"
+GATE_LEDGER_PREDICATE = "STAGE_GATE_RECEIPT_APPENDS_TO_THE_SUBJECT_REPOSITORY_LEDGER"
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 EPOCH_SOURCE_PREDICATE = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 EPOCH_TIE_PREDICATE = "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH"
@@ -90,7 +104,59 @@ def _module(name: str, relative: str):
 ingress = _module("intr_destination_ingress_sv_check", "resident-runtime/intr_destination_ingress.py")
 sha = ingress.sha
 kernel = ingress.repository_ledger.kernel
-REQUIRED_CHECKS = json.loads(REQUIRED_CHECKS_PATH.read_text(encoding="utf-8"))
+
+
+def p1_pin_failure() -> str | None:
+    """None when the manifest has its pinned sha256 and every used vendored file has its manifest sha256."""
+    try:
+        raw = (P1_VENDOR / P1_MANIFEST).read_bytes()
+    except OSError as exc:
+        return "manifest unreadable: %s" % exc
+    if hashlib.sha256(raw).hexdigest() != P1_MANIFEST_SHA256:
+        return "manifest sha256 is not the pinned " + P1_MANIFEST_SHA256
+    files = json.loads(raw)["files"]
+    for rel in P1_USED_FILES:
+        pin = (files.get(rel) or {}).get("sha256")
+        try:
+            have = "sha256:" + hashlib.sha256((P1_VENDOR / rel).read_bytes()).hexdigest()
+        except OSError:
+            return rel + " is not vendored"
+        if pin is None or have != pin:
+            return rel + " does not match its manifest digest"
+    return None
+
+
+P1_PIN_FAILURE = p1_pin_failure()
+_P1: dict[str, Any] = {}
+
+
+def p1_readers():
+    """P1's sv_work_items at P1_HEAD, run over a temporary root holding the vendored files in P1's layout, with
+    org-kernel/ and scripts/ linked to this checkout (kernel.py ffec5d64 and the worker-claim script 9573c5bb are the
+    same blobs on both). Refuses (RuntimeError) unless the manifest pins verify."""
+    if "wi" in _P1:
+        return _P1["wi"]
+    if P1_PIN_FAILURE is not None:
+        raise RuntimeError(P1_PIN_FAILURE)
+    import os
+    import shutil
+    import tempfile
+    root = Path(tempfile.mkdtemp(prefix="p1_7898cedb_"))
+    for rel in P1_USED_FILES:
+        (root / rel).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(P1_VENDOR / rel, root / rel)
+    for link in ("org-kernel", "scripts"):
+        os.symlink(ROOT / link, root / link)
+    name = "sv_work_items_p1_7898cedb"
+    spec = importlib.util.spec_from_file_location(name, root / "resident-runtime" / "sv_work_items.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    _P1["wi"] = module
+    return module
+
+
+REQUIRED_CHECKS = json.loads((P1_VENDOR / P1_REQUIRED_CHECKS_PATH).read_text(encoding="utf-8"))
 
 
 def supplied_epoch_rule_sha256(source: str) -> str | None:
@@ -173,21 +239,15 @@ def check_payload(receipt: Any) -> dict[str, Any] | None:
                        "after the validator covers the pinned schema; nothing was written")
     if errors:
         return refusal("LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT", "CHECK_RECEIPT_VALIDATES_AGAINST_PINNED_SCHEMA",
-                       "supply a complete, valid " + CHECK_RECEIPT_SCHEMA_ID + " receipt (P1 schemas/sv-check-receipt.v1.schema.json, vendored blob 070f13f4)",
+                       "supply a complete, valid " + CHECK_RECEIPT_SCHEMA_ID + " receipt (P1 schemas/sv-check-receipt.v1.schema.json, vendored blob a4934cc1)",
                        "after the verifier re-emits a valid receipt; nothing was written", schema_errors=errors)
     return None
 
 
-def command_declared(check_id: str, row: Mapping[str, Any] = REQUIRED_CHECKS) -> bool:
-    """P1's rule (sv_work_items.command_declared @ae8b105d): argv (a non-empty list), or a verifier built-in
-    {verifier_builtin == check_id, verifier_ref, predicate} with command_paths empty."""
-    c = (row.get("checks") or {}).get(check_id) or {}
-    oc = c.get("offline_command")
-    if isinstance(oc, list) and oc:
-        return True
-    return (isinstance(oc, dict) and all(isinstance(oc.get(k), str) and oc[k].strip()
-                                         for k in ("verifier_builtin", "verifier_ref", "predicate"))
-            and c.get("command_paths") == [] and oc["verifier_builtin"] == check_id)
+def command_declared(check_id: str) -> bool:
+    """P1's rule itself (sv_work_items.command_declared @7898cedb): an argv in the row, or a verifier built-in naming
+    the check id, the row's checks merged with the stage manifests' exit_gate_check declarations (GATE_CHECKS)."""
+    return bool(p1_readers().command_declared(check_id))
 
 
 def _command_refusal(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
@@ -196,8 +256,8 @@ def _command_refusal(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
     if receipt["disposition"] == "FAIL_CLOSED" and receipt.get("failure_code") == "CHECK_COMMAND_UNDECLARED":
         return None  # the verifier's own six-field refusal for an undeclared command is the receipt to ledger
     return refusal("CHECK_COMMAND_UNDECLARED", CHECK_COMMAND_PREDICATE,
-                   "the row " + P1_REQUIRED_CHECKS_PATH + "#checks." + receipt["check_id"] + " (vendored blob 9c75778f)" + " declares no offline "
-                   "command; the only receipt that can be appended for it is the verifier's FAIL_CLOSED CHECK_COMMAND_UNDECLARED",
+                   "neither the row " + P1_REQUIRED_CHECKS_PATH + " nor a stage manifest's exit_gate_check declares a command for "
+                   + receipt["check_id"] + "; the only receipt that can be appended for it is the verifier's FAIL_CLOSED CHECK_COMMAND_UNDECLARED",
                    "after the row declares the command, or the verifier emits CHECK_COMMAND_UNDECLARED; nothing was written",
                    check_id=receipt["check_id"], receipt_disposition=receipt["disposition"])
 
@@ -212,7 +272,7 @@ def _unobserved(detail: str, **extra: Any) -> dict[str, Any]:
 
 
 UNKNOWN_SENTINEL = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
-# P1 sv_work_items.SUPPLIED_EPOCH_UNOBSERVED_VALUES @ae8b105d: an epoch-source field holding one of these is not observed.
+# P1 sv_work_items.SUPPLIED_EPOCH_UNOBSERVED_VALUES @ae8b105d (unchanged at 7898cedb): an epoch-source field holding one of these is not observed.
 UNOBSERVED_EPOCH_VALUES = (None, "", "null", UNKNOWN_SENTINEL)
 
 
@@ -234,7 +294,7 @@ def _epoch_refusal(receipt: Mapping[str, Any], hb_epoch: Any) -> dict[str, Any] 
     """The epoch tie (orchestrator ruling, refined 15:59Z):
       FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED: the append epoch or the receipt's hb_epoch (both are epoch-source fields, so
         no optional cross-check / HB_EPOCH_NOT_CROSS_CHECKED applies) is absent, JSON null, "", "null" or the sentinel
-        UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, checked before the shared rule as in P1 verify_admission_hb_epoch @ae8b105d;
+        UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, checked before the shared rule as in P1 verify_admission_hb_epoch (@ae8b105d, unchanged at 7898cedb);
         or the loaded kernel rule is not the pinned shared rule.
       DENY HB_EPOCH_MISMATCH: any other value failing the shared rule (bool, float, coerced text, < 32), an append epoch
         that is not an int, a receipt epoch that is not ASCII text (as P1 verify_admission_hb_epoch), or unequal values.
@@ -278,11 +338,46 @@ def _stored_epoch_refusal(row: Any, hb_epoch: int) -> dict[str, Any] | None:
     return None
 
 
-def append_check_receipt(receipt: Any, *, hb_epoch: Any) -> dict[str, Any]:
-    """Append `receipt` as the repository receipt's $.evidence and aggregate it into the organization ledger."""
+def _p1_refusal(record: Mapping[str, Any]) -> dict[str, Any]:
+    out = {"schema": RESULT_SCHEMA, "operation": OPERATION_ID, **record}
+    out.update({"consequence_committed": False, "authority_effect": "NONE_REFUSAL_ONLY"})
+    return out
+
+
+def _gate_refusal(receipt: Mapping[str, Any], subject: Any, readback: Any, ledger_repository: Any) -> dict[str, Any] | None:
+    """A stage-gate receipt: P1 validate_gate_receipt (shape, subject digest and evaluated_commit binding, the Labs#3266
+    readback epoch of the subject's own repository), then the subject repository is the ledger being written."""
+    wi = p1_readers()
+    try:
+        wi.validate_gate_receipt(receipt, subject, readback, fixture_mode=False)
+    except wi.Refusal as exc:
+        return _p1_refusal(exc.record)
+    except (KeyError, TypeError, AttributeError) as exc:
+        return refusal("STAGE_EVALUATION_SUBJECT_UNOBSERVED", "STAGE_GATE_DECLARATION_IS_COMPLETE",
+                       "supply the stage-evaluation subject {repository, stage_id, manifest_blob, evaluated_commit, base_ref}",
+                       "after the subject is supplied; nothing was written", detail=f"{type(exc).__name__}: {exc}")
+    if not isinstance(ledger_repository, str) or subject.get("repository") != ledger_repository:
+        return refusal("STAGE_EVALUATION_LEDGER_NOT_SUBJECT_REPOSITORY", GATE_LEDGER_PREDICATE,
+                       "append a stage-evaluation receipt only into the subject repository's own refs/stegverse/organization-ledger "
+                       "(subject.repository == the writer's repository)", "dispatch the writer in the subject repository; nothing was written",
+                       subject_repository=subject.get("repository"), ledger_repository=ledger_repository)
+    return None
+
+
+def append_check_receipt(receipt: Any, *, hb_epoch: Any, subject: Any = None, readback: Any = None,
+                         ledger_repository: Any = None) -> dict[str, Any]:
+    """Append `receipt` as the repository receipt's $.evidence and aggregate it into the organization ledger.
+    A stage-gate receipt also needs the stage-evaluation `subject`, the Labs#3266 `readback` and the writer's
+    `ledger_repository`."""
+    if P1_PIN_FAILURE is not None:
+        return refusal("P1_CONTRACT_PINS_UNVERIFIED", "VENDORED_P1_FILES_MATCH_THE_PINNED_CONTRACT_MANIFEST",
+                       "re-vendor P1's files against data/sv-work-items/contract-pins.json (sha256 " + P1_MANIFEST_SHA256 + ")",
+                       "after the vendored files match the pinned manifest; nothing was written", detail=P1_PIN_FAILURE)
     if not isinstance(receipt, dict) or receipt.get("schema") != CHECK_RECEIPT_SCHEMA_ID:
         return check_payload(receipt)
     bad = _epoch_refusal(receipt, hb_epoch) or check_payload(receipt) or _command_refusal(receipt)
+    if bad is None and (receipt["check_id"] in p1_readers().GATE_CHECKS or subject is not None):
+        bad = _gate_refusal(receipt, subject, readback, ledger_repository)
     if bad is not None:
         return bad
     payload_sha256 = sha(receipt)
@@ -381,6 +476,9 @@ def main() -> int:
     a = sub.add_parser("append")
     a.add_argument("--check-receipt", type=Path, required=True, help="the verifier's sv-check-receipt.v1 JSON file")
     a.add_argument("--hb-epoch", required=True, help="supplied epoch, ASCII digits >= 32; never from a clock")
+    a.add_argument("--subject", type=Path, default=None, help="stage-evaluation subject JSON (stage-gate receipts)")
+    a.add_argument("--readback", type=Path, default=None, help="Labs#3266 base-state readback JSON (stage-gate receipts)")
+    a.add_argument("--ledger-repository", default=None, help="the repository whose ledger is written (GITHUB_REPOSITORY)")
     a.add_argument("--out", type=Path, default=None)
     r = sub.add_parser("readback")
     r.add_argument("--location", required=True)
@@ -391,12 +489,15 @@ def main() -> int:
         epoch = int(args.hb_epoch) if re.fullmatch(r"[0-9]+", args.hb_epoch or "") else args.hb_epoch
         try:
             receipt = json.loads(args.check_receipt.read_text(encoding="utf-8"))
+            subject = json.loads(args.subject.read_text(encoding="utf-8")) if args.subject else None
+            readback = json.loads(args.readback.read_text(encoding="utf-8")) if args.readback else None
         except (OSError, UnicodeDecodeError, ValueError) as exc:
             out = refusal("LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT", "ORGANIZATION_LEDGER_EVIDENCE_IS_A_SELF_IDENTIFYING_CHECK_RECEIPT",
                           "supply the verifier's receipt as one JSON object", "after a readable receipt is supplied; nothing was written",
                           detail=f"{type(exc).__name__}: {exc}")
         else:
-            out = append_check_receipt(receipt, hb_epoch=epoch)
+            out = append_check_receipt(receipt, hb_epoch=epoch, subject=subject, readback=readback,
+                                       ledger_repository=args.ledger_repository)
     else:
         out = bind_check_receipt(args.location, json.loads(args.result.read_text(encoding="utf-8")))
     text = json.dumps(out, indent=2, sort_keys=True) + "\n"

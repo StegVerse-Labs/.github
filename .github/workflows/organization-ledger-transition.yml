@@ -26,7 +26,7 @@ on:
       - 'resident-runtime/organization_ledger_readback.py'
       - 'resident-runtime/sv_check_receipt_append.py'
       - 'org-runtime/interlock-intr.json'
-      - 'tests/vendor/p1_ae8b105d/**'
+      - 'tests/vendor/p1_7898cedb/**'
       - 'tests/test_sv_check_receipt_append.py'
       - 'tests/test_intr_destination_capability.py'
       - 'tests/test_organization_ledger_transition_writer.py'

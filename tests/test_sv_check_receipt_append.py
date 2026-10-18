@@ -4,17 +4,16 @@ Temporary repositories only. Receipts here are exercise evidence on those
 repositories, not records of the published organization ledger.
 
 Oracle: P1's readers at StegVerse-Labs/.github#3264 head
-ae8b105d7504565665bf6918367517ffdcb481fd, vendored test-only under
-tests/vendor/p1_ae8b105d/ (sv_work_items.py blob 446889c5, required-checks.json
-9c75778f, lifecycle-transitions.json c66de6e8), with P1's tests/sv_ledger_fixtures.py
-(blob 30a9fe89) and schemas/sv-check-receipt.v1.schema.json (070f13f4), all
-vendored there byte-identical. The vendored required-checks.json (9c75778f) is
-also the row the operation's undeclared-command rule reads; this PR does not
-touch P1's data/sv-work-items/required-checks.json.
+7898cedba1400c8545cebcb463fd26deb25f7d5a, vendored under tests/vendor/p1_7898cedb/ in
+P1's own layout: the contract manifest data/sv-work-items/contract-pins.json (blob
+98277496, sha256 317aef68...) and only the files this operation uses, each verified
+against its manifest sha256 (sv_work_items.py 4c2aa6ef, required-checks.json 9c75778f,
+lifecycle-transitions.json c66de6e8, sv-check-receipt.v1.schema.json a4934cc1, stages
+NWI-S0..S4). tests/sv_ledger_fixtures.py (30a9fe89) is test-only and not listed in the
+manifest, so it is pinned by its blob at 7898cedb. The operation runs P1's module itself
+(svc.p1_readers()); this test uses that same module. This PR touches no P1 path.
 Shared epoch rule: org-kernel/kernel.py::supplied_epoch_failure L236-269 (blob
-ffec5d64), SHARED_RULE_SHA256 726248a5...; storage location kernel.py:68-74. org-kernel/kernel.py (ffec5d64) and
-scripts/project_worker_claim_into_canonical_task.py (9573c5bb) are the same blobs
-here as at that pin, so the vendored module runs over them through symlinks.
+ffec5d64), SHARED_RULE_SHA256 726248a5...; storage location kernel.py:68-74.
 """
 from __future__ import annotations
 
@@ -30,8 +29,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REF = "refs/stegverse/organization-ledger"
 NAMESPACE = "repository-ledger/StegVerse-Labs/.github"
-VENDOR = ROOT / "tests" / "vendor" / "p1_ae8b105d"
-P1_PIN = "ae8b105d7504565665bf6918367517ffdcb481fd"
+VENDOR = ROOT / "tests" / "vendor" / "p1_7898cedb"
+P1_PIN = "7898cedba1400c8545cebcb463fd26deb25f7d5a"
+MANIFEST_SHA256 = "317aef68d7a875b84633361a25b000810457fbc89b96f735dde3259008b897d7"
+FIXTURES_BLOB = "30a9fe8980671e63348810c837882f3dab525459"
+GATE = "nwi-s0-exit-gate"
+S1_RUN = "SV-LLM/.github#46@64b90721"
+LEDGER_REPOSITORY = "StegVerse-Labs/.github"
 WRITER = ROOT / ".github" / "workflows" / "organization-ledger-transition-writer.yml"
 PR_FACING = ROOT / ".github" / "workflows" / "organization-ledger-transition.yml"
 HEAD = "a" * 40
@@ -54,33 +58,7 @@ ledger_store = ingress.repository_ledger.ledger_store
 readback = _module("organization_ledger_readback_sv_check", ROOT / "resident-runtime" / "organization_ledger_readback.py")
 REGISTRY = json.loads((ROOT / "org-boundary/registry/services.json").read_text(encoding="utf-8"))
 
-_P1_ROOT = tempfile.TemporaryDirectory()
-
-
-def _p1():
-    """P1's sv_work_items at the pin, over a temp root that holds the vendored files and links the identical blobs."""
-    root = Path(_P1_ROOT.name)
-    (root / "resident-runtime").mkdir(exist_ok=True)
-    (root / "data" / "sv-work-items").mkdir(parents=True, exist_ok=True)
-    (root / "resident-runtime" / "sv_work_items.py").write_bytes((VENDOR / "sv_work_items.py").read_bytes())
-    for name in ("lifecycle-transitions.json", "required-checks.json"):
-        (root / "data" / "sv-work-items" / name).write_bytes((VENDOR / name).read_bytes())
-    for link in ("org-kernel", "scripts"):
-        if not (root / link).exists():
-            os.symlink(ROOT / link, root / link)
-    return _module("sv_work_items_p1_ae8b105d", root / "resident-runtime" / "sv_work_items.py")
-
-
-wi = _p1()
-# (vendored name, P1 path, pinned blob at P1 #3264 head ae8b105d)
-VENDORED_P1_FILES = (
-    ("required-checks.json", "data/sv-work-items/required-checks.json", "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d"),
-    ("sv-check-receipt.v1.schema.json", "schemas/sv-check-receipt.v1.schema.json", "070f13f468558ca08aa5162a8f34431608fc1404"),
-    ("sv_ledger_fixtures.py", "tests/sv_ledger_fixtures.py", "30a9fe8980671e63348810c837882f3dab525459"),
-    ("sv_work_items.py", "resident-runtime/sv_work_items.py", "446889c5114c416f34ee4ceadd5c3492c821df50"),
-    ("lifecycle-transitions.json", "data/sv-work-items/lifecycle-transitions.json", "c66de6e86c9ec7d167f0e5edf74e717af0688224"),
-    ("invariants.json", "data/sv-work-items/invariants.json", "db0d2c7e382014a62f3fbc1a161266014c1baaea"),
-)
+wi = svc.p1_readers()
 _FX_ROOT = tempfile.TemporaryDirectory()
 
 
@@ -89,7 +67,7 @@ def _fixtures():
     bytes from a temp root's tests/ whose other top-level entries link to this checkout."""
     root = Path(_FX_ROOT.name)
     (root / "tests").mkdir(exist_ok=True)
-    (root / "tests" / "sv_ledger_fixtures.py").write_bytes((VENDOR / "sv_ledger_fixtures.py").read_bytes())
+    (root / "tests" / "sv_ledger_fixtures.py").write_bytes((VENDOR / "tests" / "sv_ledger_fixtures.py").read_bytes())
     for entry in ROOT.iterdir():
         if entry.name not in ("tests", ".git") and not (root / entry.name).exists():
             os.symlink(entry, root / entry.name)
@@ -341,7 +319,7 @@ class Refusals(GitLedger):
 
     def test_parity_with_p1_verify_admission_hb_epoch(self):
         """The receipt's hb_epoch against the append epoch, versus P1's supplied hb_epoch (an SV_CHANGE record's hb_epoch,
-        an epoch-source field) against a sealed readback slot (P1 #3264 head ae8b105d): identical disposition and code
+        an epoch-source field) against a sealed readback slot (P1 #3264 head 7898cedb): identical disposition and code
         in every case. HB_EPOCH_NOT_CROSS_CHECKED (an optional cross-check) has no counterpart here: both of this
         operation's fields are epoch sources."""
         head = "a" * 40
@@ -409,10 +387,9 @@ class Refusals(GitLedger):
     def test_an_undeclared_check_command_is_refused_before_any_write(self):
         from unittest import mock
         undeclared = {"offline_command": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED", "command_paths": []}
-        with mock.patch.dict(svc.REQUIRED_CHECKS["checks"], {"workflow-surface-registered": undeclared}):
+        with mock.patch.dict(wi.REQUIRED_CHECKS["checks"], {"workflow-surface-registered": undeclared}):
             self.assertFalse(svc.command_declared("workflow-surface-registered"))
-            self.assertEqual(svc.command_declared("workflow-surface-registered"),
-                             wi.command_declared("workflow-surface-registered", svc.REQUIRED_CHECKS))
+            self.assertFalse(wi.command_declared("workflow-surface-registered"))
             for receipt in (check_receipt(), check_receipt(disposition="ALLOW", failure_code=None, failed_predicate=None,
                                                            required_evidence_or_repair=None, retry_entrypoint=None,
                                                            owning_existing_goal=None, next_attempt=None)):
@@ -423,10 +400,14 @@ class Refusals(GitLedger):
             own = check_receipt(failure_code="CHECK_COMMAND_UNDECLARED", failed_predicate="CHECK_HAS_OFFLINE_COMMAND")
             self.assertEqual(svc.append_check_receipt(own, hb_epoch=40)["disposition"], "ALLOW")
 
-    def test_the_command_rule_matches_p1_for_every_declared_check(self):
-        for check_id in svc.REQUIRED_CHECKS["checks"]:
-            self.assertEqual(svc.command_declared(check_id), wi.command_declared(check_id), check_id)
+    def test_the_command_rule_is_p1s_for_every_declared_check_including_the_gate(self):
+        ids = set(wi.REQUIRED_CHECKS["checks"]) | set(wi.GATE_CHECKS)
+        self.assertIn(GATE, ids)
+        self.assertNotIn(GATE, wi.REQUIRED_CHECKS["checks"])  # declared by the NWI-S0 manifest, not the row
+        self.assertEqual(set(svc.CHECK_RECEIPT_SCHEMA["properties"]["check_id"]["enum"]), ids)
+        for check_id in ids:
             self.assertTrue(svc.command_declared(check_id), check_id)
+            self.assertEqual(svc.command_declared(check_id), wi.command_declared(check_id), check_id)
 
     def test_p1_oracle_wrong_operation_or_evidence_and_missing_receipt(self):
         commit = "c" * 40
@@ -444,6 +425,135 @@ class Refusals(GitLedger):
             self.assertEqual(rec["failure_code"], code)
 
 
+def _blob(data):
+    return subprocess.run(["git", "hash-object", "--stdin"], input=data, capture_output=True, check=True).stdout.decode().strip()
+
+
+def subject(ledger_head, **override):
+    s = {"repository": LEDGER_REPOSITORY, "stage_id": "NWI-S0",
+         "manifest_blob": _blob((VENDOR / "data/sv-work-items/stages/NWI-S0.json").read_bytes()),
+         "evaluated_commit": "c" * 40, "base_ref": {"registry_generation": 319, "ledger_head": ledger_head}}
+    s.update(override)
+    return s
+
+
+def base_state_readback(ledger_head, epoch="40", repository=LEDGER_REPOSITORY, **override):
+    """A sealed ALLOW Labs#3266 base-state readback of `repository`'s own ledger at `ledger_head` (not fixture_only)."""
+    rb = {"schema": wi.BASE_STATE_READBACK_SCHEMA, "disposition": "ALLOW", "repository": repository,
+          "base_ref": {"registry_generation": 319, "ledger_head": ledger_head},
+          "hb_epoch_source": {"ledger_head": ledger_head, "field": wi.HB_EPOCH_SOURCE_FIELD, "derived_from_clock": False,
+                              "receipt": "receipts/" + "d" * 64 + ".json"},
+          "hb_epoch": epoch}
+    rb.update(override)
+    rb["result_sha256"] = wi.sha(rb)
+    return rb
+
+
+def gate_receipt(subj, disposition="FAIL_CLOSED", **override):
+    r = {"schema": "stegverse.sv_check_receipt.v1", "check_id": GATE, "disposition": disposition,
+         "change_digest": wi.stage_evaluation_digest(subj), "head_sha": subj["evaluated_commit"], "hb_epoch": "40",
+         "verifier_ref": S1_RUN}
+    if disposition != "ALLOW":
+        r.update({"failure_code": "STAGE_EVIDENCE_UNOBSERVED", "failed_predicate": "UNKNOWN_NEVER_YIELDS_PASS",
+                  "required_evidence_or_repair": "a receipted outcome for every exit predicate",
+                  "retry_entrypoint": "resident-runtime/stage_gate.py::evaluate_gate",
+                  "owning_existing_goal": "StegVerse-org/.github#163", "next_attempt": "re-evaluate with the receipts; nothing moved"})
+    r.update(override)
+    return {k: v for k, v in r.items() if v is not None}
+
+
+class StageGateReceipts(GitLedger):
+    def _append(self, receipt, subj, rb, repository=LEDGER_REPOSITORY, epoch=40):
+        return svc.append_check_receipt(receipt, hb_epoch=epoch, subject=subj, readback=rb, ledger_repository=repository)
+
+    def _refused(self, result, code, disposition="FAIL_CLOSED"):
+        self.assertEqual((result["disposition"], result["failure_code"]), (disposition, code), result)
+        for field in svc.SIX_FIELDS:
+            self.assertTrue(isinstance(result[field], str) and result[field], field)
+        self.assertIs(result["consequence_committed"], False)
+        self.assertEqual(self.tip(), self.seed)
+
+    def test_a_gate_receipt_appends_round_trips_and_p1_derives_an_issue(self):
+        subj = subject(self.seed)
+        receipt = gate_receipt(subj)
+        self.assertEqual(wi.validate_gate_receipt(receipt, subj, base_state_readback(self.seed))["disposition"], "ALLOW")
+        result = self._append(receipt, subj, base_state_readback(self.seed))
+        self.assertEqual(result["disposition"], "ALLOW", result)
+        self.assertTrue(result["organization_receipt_key"].startswith("receipts/"))
+        self.assertTrue(result["repository_receipt_source_key"].startswith("source-receipts/"))
+        replay = self._append(receipt, subj, base_state_readback(self.seed))
+        self.assertIs(replay["transition_replayed"], True)
+        commit, objs = self.ledger_objects(result)
+        repo = json.loads(objs[commit + ":" + result["repository_receipt_source_key"]])
+        self.assertEqual(repo["evidence"], receipt)
+        self.assertEqual(repo["evidence"]["change_digest"], wi.stage_evaluation_digest(subj))
+        self.assertEqual(repo["evidence"]["head_sha"], subj["evaluated_commit"])
+        reader = self.work / "reader.git"
+        subprocess.run(["git", "init", "--bare", "-q", str(reader)], check=True)
+        subprocess.run(["git", "--git-dir", str(reader), "fetch", "-q", str(self.bare), f"+{REF}:{REF}"], check=True)
+        self.assertEqual(svc.bind_check_receipt(f"git+{reader}#{REF}", result)["disposition"], "ALLOW")
+        ref = "%s@%s:%s" % (REF, commit, result["organization_receipt_key"])
+        issue = wi.derive_issue_from_check_receipt(objs, ref, observed_base={"registry_generation": 319, "ledger_head": commit})
+        manifest = "data/sv-work-items/stages/NWI-S0.json"
+        self.assertEqual(issue["record_mode"], "NATIVE")
+        self.assertEqual(issue["surface"]["path"], manifest)
+        self.assertEqual(issue["violated_invariant"]["rule_id"], "NWI-S0#exit_gate_check." + GATE)
+        self.assertEqual(issue["disposition"]["failure_code"], "STAGE_EVIDENCE_UNOBSERVED")
+        self.assertEqual(issue["source_receipt"]["receipt_sha256"], result["organization_receipt_sha256"])
+        self.assertEqual(wi.verify_native_hb_epoch(issue, objs)["disposition"], "ALLOW")
+        again = wi.derive_issue_from_check_receipt(objs, ref, observed_base={"registry_generation": 319, "ledger_head": commit})
+        self.assertEqual(again["issue_id"], issue["issue_id"])
+
+    def test_a_passing_gate_receipt_appends_and_derives_no_issue(self):
+        subj = subject(self.seed)
+        result = self._append(gate_receipt(subj, "ALLOW"), subj, base_state_readback(self.seed))
+        self.assertEqual(result["disposition"], "ALLOW", result)
+        commit, objs = self.ledger_objects(result)
+        rec = _p1_refusal(lambda: wi.derive_issue_from_check_receipt(
+            objs, "%s@%s:%s" % (REF, commit, result["organization_receipt_key"]),
+            observed_base={"registry_generation": 319, "ledger_head": commit}))
+        self.assertEqual((rec["disposition"], rec["failure_code"]), ("DENY", "CHECK_RECEIPT_NOT_FAILING"))
+
+    def test_an_invalid_subject_is_refused_before_any_write(self):
+        good = subject(self.seed)
+        receipt = gate_receipt(good)
+        for bad in (None, {}, dict(good, stage_id="S0"), dict(good, evaluated_commit="short"),
+                    dict(good, manifest_blob="x"), dict(good, base_ref={"ledger_head": self.seed}),
+                    dict(good, repository="not a repo"), dict(good, extra="field")):
+            self._refused(self._append(receipt, bad, base_state_readback(self.seed)), "STAGE_EVALUATION_SUBJECT_UNOBSERVED")
+        self._refused(self._append(receipt, dict(good, stage_id="NWI-S1"), base_state_readback(self.seed)),
+                      "CHECK_NOT_PART_OF_STAGE_EVALUATION")
+
+    def test_a_gate_receipt_without_a_subject_is_refused(self):
+        receipt = gate_receipt(subject(self.seed))
+        self._refused(svc.append_check_receipt(receipt, hb_epoch=40), "STAGE_EVALUATION_SUBJECT_UNOBSERVED")
+
+    def test_a_digest_or_commit_not_bound_to_the_subject_is_refused(self):
+        subj = subject(self.seed)
+        rb = base_state_readback(self.seed)
+        other = subject(self.seed, evaluated_commit="e" * 40)
+        for receipt in (gate_receipt(subj, change_digest="sha256:" + "f" * 64), gate_receipt(subj, change_digest=wi.stage_evaluation_digest(other)),
+                        gate_receipt(subj, head_sha="e" * 40)):
+            out = self._append(receipt, subj, rb)
+            self._refused(out, "CHECK_SKIPPED_OR_UNOBSERVED")
+
+    def test_the_gate_epoch_binds_the_subject_repositorys_readback(self):
+        subj = subject(self.seed)
+        receipt = gate_receipt(subj)
+        self._refused(self._append(receipt, subj, None), "HB_EPOCH_SOURCE_UNOBSERVED")
+        self._refused(self._append(receipt, subj, base_state_readback(self.seed, repository="StegVerse-org/.github")),
+                      "HB_EPOCH_SOURCE_UNOBSERVED")
+        self._refused(self._append(receipt, subj, base_state_readback(self.seed, fixture_only=True)), "HB_EPOCH_SOURCE_UNOBSERVED")
+        self._refused(self._append(receipt, subj, base_state_readback("f" * 40)), "HB_EPOCH_SOURCE_UNOBSERVED")
+        self._refused(self._append(receipt, subj, base_state_readback(self.seed, epoch="41")), "HB_EPOCH_MISMATCH", "DENY")
+
+    def test_a_gate_receipt_goes_only_to_the_subject_repositorys_own_ledger(self):
+        subj = subject(self.seed)
+        for repository in ("StegVerse-org/.github", None):
+            self._refused(self._append(gate_receipt(subj), subj, base_state_readback(self.seed), repository=repository),
+                          "STAGE_EVALUATION_LEDGER_NOT_SUBJECT_REPOSITORY")
+
+
 def kernel_ref(epoch, derived=False):
     ref = svc.kernel.hb_reference(epoch=epoch)
     return dict(ref, derived_from_clock=True) if derived else ref
@@ -458,26 +568,44 @@ class Declarations(unittest.TestCase):
         self.assertEqual(svc.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
         self.assertEqual(wi.SUPPLIED_EPOCH_RULE_SHA256, svc.SHARED_RULE_SHA256)
         self.assertEqual(wi.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
-        self.assertEqual(svc.REQUIRED_CHECKS_PATH, VENDOR / "required-checks.json")
+        self.assertEqual(svc.P1_VENDOR, VENDOR)
 
-    def test_vendored_p1_files_do_not_drift_from_p1(self):
-        """Each vendored P1 file is pinned to its blob. If P1's file is in the checkout it must be byte-identical; if it
-        is absent (before #3264 lands) the pin alone is verified and the comparison is UNKNOWN. No network."""
-        import subprocess
-        for vendored_name, p1_path, pin in VENDORED_P1_FILES:
-            vendored = (VENDOR / vendored_name).read_bytes()
-            blob = subprocess.run(["git", "hash-object", "--stdin"], input=vendored, capture_output=True, check=True).stdout.decode().strip()
-            self.assertEqual(blob, pin, vendored_name)
-            p1 = ROOT / p1_path
-            if p1.is_file():
-                comparison = "IDENTICAL" if p1.read_bytes() == vendored else "DRIFT"
-                self.assertEqual(comparison, "IDENTICAL", "P1's " + p1_path + " drifted from vendored blob " + pin[:8] + "; re-vendor")
-            else:
-                comparison = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"  # P1's file is not in this checkout; only the pin is verified
-            print("drift comparison", p1_path, comparison)
-            self.assertIn(comparison, ("IDENTICAL", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"))
-        self.assertEqual(svc.REQUIRED_CHECKS_BLOB, VENDORED_P1_FILES[0][2])
-        self.assertEqual(svc.CHECK_RECEIPT_SCHEMA_BLOB, VENDORED_P1_FILES[1][2])
+    def test_vendored_p1_files_match_the_contract_manifest(self):
+        """The manifest has its pinned sha256 (and blob); each vendored file the operation uses has its manifest sha256
+        and blob; nothing else from the manifest is vendored. If P1's file is in this checkout, a used file must be
+        byte-identical to the vendored one (drift is flagged only for used files); if absent, UNKNOWN. No network."""
+        import hashlib
+        raw = (VENDOR / svc.P1_MANIFEST).read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), MANIFEST_SHA256)
+        self.assertEqual(svc.P1_MANIFEST_SHA256, MANIFEST_SHA256)
+        self.assertEqual(_blob(raw), "9827749685f71748b640a76909b0662c259eb33a")
+        manifest = json.loads(raw)
+        self.assertEqual(manifest["schema"], "stegverse.sv-contract-pins/v1")
+        self.assertEqual(len(manifest["files"]), 30)
+        self.assertNotIn(svc.P1_MANIFEST, manifest["files"])
+        self.assertIsNone(svc.P1_PIN_FAILURE)
+        vendored = sorted(p.relative_to(VENDOR).as_posix() for p in VENDOR.rglob("*") if p.is_file())
+        self.assertEqual(vendored, sorted(set(svc.P1_USED_FILES) | {svc.P1_MANIFEST, "tests/sv_ledger_fixtures.py"}))
+        for rel in svc.P1_USED_FILES:
+            data = (VENDOR / rel).read_bytes()
+            pin = manifest["files"][rel]
+            self.assertEqual("sha256:" + hashlib.sha256(data).hexdigest(), pin["sha256"], rel)
+            self.assertEqual(_blob(data), pin["blob"], rel)
+            p1 = ROOT / rel
+            comparison = ("IDENTICAL" if p1.read_bytes() == data else "DRIFT") if p1.is_file() else "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+            print("drift comparison", rel, comparison)
+            self.assertNotEqual(comparison, "DRIFT", "P1's " + rel + " drifted from the vendored manifest pin; re-vendor")
+        # not in the manifest (test-only): pinned by its blob at 7898cedb
+        self.assertEqual(_blob((VENDOR / "tests" / "sv_ledger_fixtures.py").read_bytes()), FIXTURES_BLOB)
+        for pin, sha in (("schemas/sv-check-receipt.v1.schema.json", "a4934cc1"), ("resident-runtime/sv_work_items.py", "4c2aa6ef")):
+            self.assertTrue(manifest["files"][pin]["blob"].startswith(sha))
+
+    def test_a_vendored_file_off_its_manifest_digest_refuses_every_append(self):
+        from unittest import mock
+        with mock.patch.object(svc, "P1_PIN_FAILURE", "resident-runtime/sv_work_items.py does not match its manifest digest"):
+            out = svc.append_check_receipt(check_receipt(), hb_epoch=40)
+        self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "P1_CONTRACT_PINS_UNVERIFIED"))
+        self.assertIs(out["consequence_committed"], False)
 
     def test_the_operation_is_declared_and_the_schema_is_pinned(self):
         boundary = json.loads((ROOT / "org-runtime" / "interlock-intr.json").read_text(encoding="utf-8"))
@@ -488,10 +616,10 @@ class Declarations(unittest.TestCase):
         self.assertIs(entry["ingress_capability"], False)
         self.assertEqual(svc.CHECK_RECEIPT_SCHEMA["$id"], wi.CHECK_RECEIPT_SCHEMA)
         self.assertEqual(svc.OPERATION_ID, wi.SV_CHECK_RECEIPT_OPERATION)
-        self.assertEqual(svc.CHECK_RECEIPT_SCHEMA_PATH, VENDOR / "sv-check-receipt.v1.schema.json")
-        raw = svc.CHECK_RECEIPT_SCHEMA_PATH.read_bytes()
-        blob = subprocess.run(["git", "hash-object", "--stdin"], input=raw, capture_output=True, check=True).stdout.decode().strip()
-        self.assertEqual(blob, "070f13f468558ca08aa5162a8f34431608fc1404")
+        self.assertEqual(svc.CHECK_RECEIPT_SCHEMA_PATH, VENDOR / "schemas" / "sv-check-receipt.v1.schema.json")
+        self.assertEqual(_blob(svc.CHECK_RECEIPT_SCHEMA_PATH.read_bytes()), svc.CHECK_RECEIPT_SCHEMA_BLOB)
+        self.assertEqual(svc.CHECK_RECEIPT_SCHEMA_BLOB, "a4934cc1afb5f9c65d12f4ab5ae29f462b76b3f3")
+        self.assertIn(GATE, svc.CHECK_RECEIPT_SCHEMA["properties"]["check_id"]["enum"])
 
     def test_writer_invokes_the_operation_under_the_shared_lock_and_pr_verify_appends_nothing(self):
         text = WRITER.read_text(encoding="utf-8")

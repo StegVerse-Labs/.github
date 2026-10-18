@@ -44,6 +44,14 @@ on:
         description: 'sv_check_receipt only: the verifier receipt, one stegverse.sv_check_receipt.v1 JSON object'
         required: false
         type: string
+      evaluation_subject:
+        description: 'sv_check_receipt stage-gate receipts only (e.g. nwi-s0-exit-gate): the stage-evaluation subject JSON'
+        required: false
+        type: string
+      base_state_readback:
+        description: 'sv_check_receipt stage-gate receipts only: the sealed Labs#3266 base-state readback JSON of this repository'
+        required: false
+        type: string
       hb_epoch:
         description: 'supplied heartbeat epoch the receipts carry (non-negative integer); no clock is read for it'
         required: true
@@ -189,6 +197,8 @@ jobs:
         if: env.WRITER_OPERATION == 'sv_check_receipt'
         env:
           INPUT_CHECK_RECEIPT: ${{ github.event.inputs.check_receipt }}
+          INPUT_EVALUATION_SUBJECT: ${{ github.event.inputs.evaluation_subject }}
+          INPUT_BASE_STATE_READBACK: ${{ github.event.inputs.base_state_readback }}
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/results"
@@ -203,6 +213,12 @@ jobs:
               print('{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT","failed_predicate":"ORGANIZATION_LEDGER_EVIDENCE_IS_A_SELF_IDENTIFYING_CHECK_RECEIPT","required_evidence_or_repair":"dispatch check_receipt as one stegverse.sv_check_receipt.v1 JSON object","retry_entrypoint":".github/workflows/organization-ledger-transition-writer.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}')
               sys.exit(1)
           open(os.environ["RUNNER_TEMP"] + "/check-receipt.json", "w", encoding="utf-8").write(json.dumps(receipt))
+          # stage-gate receipts: the subject and readback are passed through as given (the operation validates them
+          # with P1's validate_gate_receipt and refuses, six fields, before any write)
+          for name, var in (("evaluation-subject", "INPUT_EVALUATION_SUBJECT"), ("base-state-readback", "INPUT_BASE_STATE_READBACK")):
+              raw = os.environ.get(var, "")
+              if raw.strip():
+                  open(os.environ["RUNNER_TEMP"] + "/" + name + ".json", "w", encoding="utf-8").write(raw)
           PY
 
       - name: Append the check receipt to the repository and organization ledgers (operation sv_check_receipt)
@@ -214,9 +230,16 @@ jobs:
           # Time is supplied with the dispatch. It is not sampled from a clock; the
           # operation refuses anything but an integer epoch >= 32 that passes
           # kernel.py::supplied_epoch_failure and equals the receipt's own hb_epoch.
+          # A stage-gate receipt is appended only into the subject repository's own
+          # ledger: --ledger-repository is this repository.
+          gate_args=()
+          if [ -f "$RUNNER_TEMP/evaluation-subject.json" ]; then gate_args+=(--subject "$RUNNER_TEMP/evaluation-subject.json"); fi
+          if [ -f "$RUNNER_TEMP/base-state-readback.json" ]; then gate_args+=(--readback "$RUNNER_TEMP/base-state-readback.json"); fi
           python resident-runtime/sv_check_receipt_append.py append \
             --check-receipt "$RUNNER_TEMP/check-receipt.json" \
             --hb-epoch "$HB_EPOCH" \
+            --ledger-repository "$GITHUB_REPOSITORY" \
+            "${gate_args[@]}" \
             --out "$RUNNER_TEMP/results/check-receipt-append.json"
 
       - name: Require the append to fast-forward the existing ref
