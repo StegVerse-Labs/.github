@@ -133,6 +133,8 @@ def readback(location, ingress_result=None, manifest=None):
         "authority_effect": "NONE_READBACK_ONLY",
     }
     if ingress_result is not None:
+        if not isinstance(ingress_result, dict):
+            raise ReadbackRefused("INGRESS_RESULT_IS_AN_OBJECT", type(ingress_result).__name__)
         # A refusal is recorded too, under its own name, and is bound to the
         # submitted manifest's digest rather than the canonical one.
         refused = ingress_result.get("refusal_organization_receipt_sha256") is not None
@@ -290,6 +292,14 @@ def main():
     args = parser.parse_args()
     namespace = args.repository_namespace
     try:
+        if args.closure_result is not None and (args.ingress_result or args.manifest):
+            raise ReadbackRefused(
+                "CLOSURE_RESULT_IS_READ_WITHOUT_AN_INGRESS_BINDING",
+                "--closure-result does not take --ingress-result or --manifest; run them separately")
+        if args.manifest and not args.ingress_result:
+            raise ReadbackRefused(
+                "MANIFEST_IS_BOUND_THROUGH_AN_INGRESS_RESULT",
+                "--manifest requires the --ingress-result it is bound to")
         ingress = json.loads(args.ingress_result.read_text(encoding="utf-8")) if args.ingress_result else None
         manifest = json.loads(args.manifest.read_text(encoding="utf-8")) if args.manifest else None
         if args.closure_result is not None:

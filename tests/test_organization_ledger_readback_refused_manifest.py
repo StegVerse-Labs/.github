@@ -130,6 +130,42 @@ class RefusedManifestBindingTest(unittest.TestCase):
         self.assertEqual(bound.returncode, 0, bound.stdout + bound.stderr)
         self.assertIs(json.loads(bound.stdout)["ingress_receipt_bound_to_manifest"], True)
 
+    def test_an_ingress_result_that_is_not_an_object_is_refused(self):
+        self.refuse(ASCII_MANIFEST)
+        for other in ([], "x", 1):
+            with self.subTest(other=other):
+                with self.assertRaises(readback.ReadbackRefused) as refused:
+                    readback.readback(str(self.org_root), other, ASCII_MANIFEST)
+                self.assertEqual(refused.exception.failed_predicate, "INGRESS_RESULT_IS_AN_OBJECT")
+
+    def test_the_cli_refuses_flags_it_would_otherwise_ignore_with_the_six_fields(self):
+        result = self.refuse(ASCII_MANIFEST)
+        base = Path(self._temp.name)
+        (base / "ingress.json").write_text(json.dumps(result), encoding="utf-8")
+        (base / "list.json").write_text("[]", encoding="utf-8")
+        (base / "manifest.json").write_text(json.dumps(ASCII_MANIFEST), encoding="utf-8")
+        (base / "closure.json").write_text("{}", encoding="utf-8")
+        command = [sys.executable, str(ROOT / "resident-runtime/organization_ledger_readback.py"),
+                   "--location", str(self.org_root)]
+        cases = (
+            (["--closure-result", str(base / "closure.json"), "--ingress-result", str(base / "ingress.json")],
+             "CLOSURE_RESULT_IS_READ_WITHOUT_AN_INGRESS_BINDING"),
+            (["--closure-result", str(base / "closure.json"), "--manifest", str(base / "manifest.json")],
+             "CLOSURE_RESULT_IS_READ_WITHOUT_AN_INGRESS_BINDING"),
+            (["--manifest", str(base / "manifest.json")], "MANIFEST_IS_BOUND_THROUGH_AN_INGRESS_RESULT"),
+            (["--ingress-result", str(base / "list.json")], "INGRESS_RESULT_IS_AN_OBJECT"),
+        )
+        for flags, predicate in cases:
+            with self.subTest(flags=flags):
+                run = subprocess.run(command + flags, capture_output=True, text=True)
+                self.assertEqual(run.returncode, 1, run.stderr)
+                out = json.loads(run.stdout)
+                for field in SIX_FIELDS:
+                    self.assertIn(field, out)
+                self.assertEqual(out["disposition"], "FAIL_CLOSED")
+                self.assertEqual(out["failed_predicate"], predicate)
+                self.assertIs(out["consequence_committed"], False)
+
 
 if __name__ == "__main__":
     unittest.main()
