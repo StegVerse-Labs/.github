@@ -173,10 +173,30 @@ def fixture_base_state_readback(base: dict = LABS_BASE, hb_epoch: str = FIXTURE_
                     "unobserved_fields": ["bound_main_commit", "hb_epoch", "hb_epoch_source/receipt", "sources"]}, "result_sha256")
 
 
+FIXTURE_GATE_RECEIPT_HEX = "0" * 64  # fixture: no receipt was read; every value below is fixture_only
+FIXTURE_LEDGER_COMMIT = "0" * 40
+
+
+def fixture_resolved_issues(ch: dict) -> list[dict]:
+    """Fixture facts for the issue each known-good change cites, in the shape sv_work_items.resolved_issue_facts emits
+    for a stage-gate-derived issue (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE): emitted by the NWI-S1 verifier, appended by
+    the org writer, not touched by the change, the receipt's only issue, unresolved. Nothing was read: fixture_only is
+    true and the ledger values are listed in unobserved_fields; counted only in fixture_mode."""
+    return [{"issue_id": i, "record_mode": "NATIVE", "source_kind": "ORGANIZATION_LEDGER_RECEIPT", "lifecycle_state": "CLAIMED",
+             "resolved_by": None, "fixture_only": True, "check_id": "nwi-s0-exit-gate",
+             "ledger_ref": wi.LEDGER_REF + "@" + FIXTURE_LEDGER_COMMIT + ":receipts/" + FIXTURE_GATE_RECEIPT_HEX + ".json",
+             "receipt_sha256": "sha256:" + FIXTURE_GATE_RECEIPT_HEX,
+             "receipt_ledger_paths": ["receipts/" + FIXTURE_GATE_RECEIPT_HEX + ".json", "source-receipts/" + FIXTURE_GATE_RECEIPT_HEX + ".json"],
+             "receipt_file_sha256": ["sha256:" + FIXTURE_GATE_RECEIPT_HEX], "verifier_ref": wi.S1_VERIFIER_REF,
+             "emitter_session": wi.S1_VERIFIER_REF, "derived_issue_ids_from_receipt": [i],
+             "unobserved_fields": ["ledger_ref", "receipt_file_sha256", "receipt_ledger_paths", "receipt_sha256"]}
+            for i in ch["resolves"]]
+
+
 def known_good(kind_path: str) -> dict:
     """A known-good SV_CHANGE observation touching one surface kind (positive control)."""
     ch = known_good_change(kind_path)
-    return wi.admission_inputs(ch, LABS_BASE, signoff_receipts_for(ch), fixture_base_state_readback())
+    return wi.admission_inputs(ch, LABS_BASE, signoff_receipts_for(ch), fixture_base_state_readback(), fixture_resolved_issues(ch))
 
 
 # (d) TVC#519 replay: which SV_CHANGE field (or replay input) each mutation axis changes
@@ -202,6 +222,18 @@ AXIS_TARGET = {
     "hb_epoch_readback.hb_epoch": ("REPLAY_INPUT", "/hb_epoch_readback/hb_epoch", "the sealed epoch slot is a JSON float (resealed)"),
     "supplied_hb_epoch": ("SV_CHANGE", "/hb_epoch", "the SV_CHANGE's hb_epoch is the sealed epoch + 1"),
     "supplied_hb_epoch[UNKNOWN]": ("SV_CHANGE", "/hb_epoch", "the SV_CHANGE's hb_epoch is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"),
+    "resolves": ("SV_CHANGE", "/resolves", "the SV_CHANGE cites no SV_ISSUE"),
+    "resolved_issues": ("REPLAY_INPUT", "/resolved_issues", "no issue facts: the receipt is not on the ledger, nothing was derived"),
+    "resolves[+unobserved]": ("SV_CHANGE", "/resolves", "also cite svi:fff...f, which no observed issue carries"),
+    "resolved_issues[0].receipt_ledger_paths": ("REPLAY_INPUT", "/resolved_issues/0/receipt_ledger_paths", "the receipt's ledger paths include a path the change touches"),
+    "resolved_issues[0].receipt_file_sha256": ("REPLAY_INPUT", "/resolved_issues/0/receipt_file_sha256", "the receipt's bytes are a blob the change carries"),
+    "resolved_issues[0].emitter_session": ("REPLAY_INPUT", "/resolved_issues/0/emitter_session", "the receipt's emitter is the change's declared session"),
+    "resolved_issues[0].verifier_ref": ("REPLAY_INPUT", "/resolved_issues/0/verifier_ref", "the receipt's verifier_ref is SV-LLM/.github#460"),
+    "resolved_issues[0].derived_issue_ids_from_receipt": ("REPLAY_INPUT", "/resolved_issues/0/derived_issue_ids_from_receipt", "a second issue names the receipt"),
+    "resolved_issues[0].resolved_by": ("REPLAY_INPUT", "/resolved_issues/0/resolved_by", "another change (svc:eee...e) resolved the issue"),
+    "record_mode": ("SV_CHANGE", "/record_mode", "the SV_CHANGE is MIGRATED_HISTORICAL"),
+    "owning_goal[UNKNOWN]": ("SV_CHANGE", "/owning_goal", "the NATIVE SV_CHANGE's owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"),
+    "resolved_issues[0].record_mode": ("REPLAY_INPUT", "/resolved_issues/0/record_mode", "the cited issue is MIGRATED_HISTORICAL"),
 }
 FOREIGN_SESSION = "FOREIGN-SESSION"  # fixture: the session admission_learning._foreign adds
 
@@ -214,7 +246,8 @@ def axis_value(axis: str, expected_code: str | None):
             "declared_session": "", "signoffs": [], "signoffs[*].receipt_ref": "",
             "content[*].writer_session.evidence_class": {"session": None, "evidence_class": wi.UNKNOWN},
             "validation_receipts[0].disposition": "DENY" if expected_code == "REQUIRED_CHECK_DENIED" else "FAIL_CLOSED",
-            "supplied_hb_epoch": str(int(FIXTURE_HB_EPOCH) + 1), "supplied_hb_epoch[UNKNOWN]": wi.UNKNOWN}.get(axis)
+            "supplied_hb_epoch": str(int(FIXTURE_HB_EPOCH) + 1), "resolves": [], "resolves[+unobserved]": ["svi:" + "f" * 64],
+            "record_mode": "MIGRATED_HISTORICAL", "supplied_hb_epoch[UNKNOWN]": wi.UNKNOWN, "owning_goal[UNKNOWN]": wi.UNKNOWN}.get(axis)
 
 
 def apply_replay_mutation(ch: dict, m: dict | None) -> dict:
@@ -246,6 +279,14 @@ def apply_replay_mutation(ch: dict, m: dict | None) -> dict:
         ch["signoffs"] = [{**s, "receipt_ref": v} for s in ch["signoffs"]]
     elif axis in ("supplied_hb_epoch", "supplied_hb_epoch[UNKNOWN]"):
         ch["hb_epoch"] = v
+    elif axis == "resolves":
+        ch["resolves"] = list(v)
+    elif axis == "resolves[+unobserved]":
+        ch["resolves"] = sorted(ch["resolves"] + list(v))
+    elif axis == "record_mode":
+        ch["record_mode"] = v
+    elif axis == "owning_goal[UNKNOWN]":
+        ch["owning_goal"] = v
     else:
         raise SystemExit(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "REPLAY_AXIS_UNDECLARED", "axis": axis}))
     if m["rebind_request_digest"]:
@@ -269,6 +310,7 @@ def replay(scenarios: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
                      "current_base": sc["observed_inputs"]["current_base"] if tgt and tgt[0] == "REPLAY_INPUT" else dict(LABS_BASE),
                      "signoff_receipts": [r["receipt_sha256"] for r in signoff_receipts_for(ch)],
                      "hb_epoch_readback": sc["observed_inputs"]["hb_epoch_readback"],
+                     "resolved_issues": sc["observed_inputs"]["resolved_issues"],
                      "mutation": mut, "expected_disposition": sc["expected_disposition"], "expected_failure_code": sc["expected_failure_code"]})
     signoffs = {r["receipt_sha256"]: r for ch in changes.values() for r in signoff_receipts_for(ch)}
     return sorted(changes.values(), key=lambda c: c["change_id"]), rows, [signoffs[k] for k in sorted(signoffs)]
@@ -386,6 +428,66 @@ def epoch_binding_append(classes: list[dict], scenarios: list[dict]) -> list[dic
     return [{k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]}]
 
 
+# Q-SV-NATIVE-BOOTSTRAP, decided by invariant STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE (orchestrator 2026-10-18T15:47Z):
+# appended through SCENARIO_CORPUS_APPEND after the epoch class v2 (so the epoch commit's ids do not move). Class rule (failed predicate + surface kind): the stage
+# gate is an admitted transition (resident-runtime/stage_gate.py, kind transition), so each predicate is a class @transition.
+# None of these predicates has a class yet, so each is a new class (v1); no existing scenario id moves.
+BOOTSTRAP_ORIGINS = ["orchestrator 2026-10-18T15:47Z Q-SV-NATIVE-BOOTSTRAP decided by invariant STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE",
+                     "StegVerse-Labs/.github#3264 own SV_CHANGE: DENY SV_CHANGE_RESOLVES_NOTHING until its gate receipt is ledgered"]
+BOOTSTRAP_SEEDS = [("CHANGE_RESOLVES_CLAIMED_SV_ISSUES", "c"), ("RESOLVING_CHANGE_DID_NOT_SOURCE_ITS_ISSUE", "a"),
+                   ("ONE_RECEIPT_DERIVES_ONE_ISSUE", "b"), ("RECEIPT_DERIVED_ISSUE_IS_RESOLVED_ONCE", "b"),
+                   ("ADMITTED_RECORDS_ARE_NATIVE", "d")]
+BOOTSTRAP_RULE_REFS = [{"file": "data/sv-work-items/invariants.json#STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE", "blob_sha": None,
+                        "rule_id": "STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE"}]
+
+
+def bootstrap_append(classes: list[dict], scenarios: list[dict]) -> list[dict]:
+    out_receipts = []
+    for pred, cond in BOOTSTRAP_SEEDS:
+        origins = BOOTSTRAP_ORIGINS + ["condition (" + cond + ")"]
+        prior = al.latest_classes(classes).get(al.class_id_for(pred, "transition"))
+        if prior is not None:
+            raise SystemExit(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "CLASS_EXISTS", "class_id": prior["class_id"]}))
+        cls = al.generalize({"failed_predicate": pred}, surface="transition", origin_scenarios=origins, rule_refs=BOOTSTRAP_RULE_REFS,
+                            declared_by_session=SESSION, harvest_receipt_ref=None, hb_epoch=FIXTURE_HB_EPOCH)
+        gen = al.generate(cls, known_good(SURFACE_PATH["transition"]), hb_epoch=FIXTURE_HB_EPOCH)
+        gen = [s if s["expected_disposition"] == "ALLOW" else wi.seal({**{k: v for k, v in s.items() if k != "scenario_sha256"},
+               "source": {**s["source"], "origin_scenarios": origins}}, "scenario_sha256") for s in gen]
+        out = al.corpus_append(classes, scenarios, cls, gen, hb_epoch=FIXTURE_HB_EPOCH)
+        if out["disposition"] != "ALLOW":
+            raise SystemExit(json.dumps(out, sort_keys=True))
+        classes += out["append_classes"]; scenarios += out["append_scenarios"]
+        out_receipts.append({k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]})
+    return out_receipts
+
+
+# Orchestrator decision UNKNOWN_IN_NATIVE_RECORD (2026-10-18T16:07Z): a NATIVE record field holding the sentinel is FAIL_CLOSED,
+# never DENY. A new class (the predicate had no class), appended after the bootstrap classes so no existing id moves. Surface
+# kind transition: admission of the record is an admitted transition (as for the bootstrap classes).
+NATIVE_UNKNOWN_SEED = ("NATIVE_RECORD_FIELDS_ARE_OBSERVED", "transition",
+                       ["orchestrator 2026-10-18T16:07Z decided UNKNOWN_IN_NATIVE_RECORD: a NATIVE record field holding "
+                        "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED UNKNOWN_IN_NATIVE_RECORD; DENY only for observed, wrong values"])
+NATIVE_UNKNOWN_RULE_REFS = [{"file": "data/sv-work-items/invariants.json#NATIVE_RECORD_FIELDS_ARE_OBSERVED", "blob_sha": None,
+                             "rule_id": "NATIVE_RECORD_FIELDS_ARE_OBSERVED"}]
+
+
+def native_unknown_append(classes: list[dict], scenarios: list[dict]) -> list[dict]:
+    pred, surface, origins = NATIVE_UNKNOWN_SEED
+    prior = al.latest_classes(classes).get(al.class_id_for(pred, surface))
+    if prior is not None:
+        raise SystemExit(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "CLASS_EXISTS", "class_id": prior["class_id"]}))
+    cls = al.generalize({"failed_predicate": pred}, surface=surface, origin_scenarios=origins, rule_refs=NATIVE_UNKNOWN_RULE_REFS,
+                        declared_by_session=SESSION, harvest_receipt_ref=None, hb_epoch=FIXTURE_HB_EPOCH)
+    gen = al.generate(cls, known_good(SURFACE_PATH[surface]), hb_epoch=FIXTURE_HB_EPOCH)
+    gen = [s if s["expected_disposition"] == "ALLOW" else wi.seal({**{k: v for k, v in s.items() if k != "scenario_sha256"},
+           "source": {**s["source"], "origin_scenarios": origins}}, "scenario_sha256") for s in gen]
+    out = al.corpus_append(classes, scenarios, cls, gen, hb_epoch=FIXTURE_HB_EPOCH)
+    if out["disposition"] != "ALLOW":
+        raise SystemExit(json.dumps(out, sort_keys=True))
+    classes += out["append_classes"]; scenarios += out["append_scenarios"]
+    return [{k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]}]
+
+
 # Contract invariant (orchestrator 2026-10-18T15:59Z, narrowed 16:03Z): anything not observed is
 # UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, which is FAIL_CLOSED, never DENY. The epoch class gains the sentinel axis as version 2
 # (supersedes v1) through SCENARIO_CORPUS_APPEND, appended last so no existing scenario id moves; only the new scenario is appended.
@@ -429,6 +531,8 @@ def corpus() -> tuple[list[dict], list[dict], list[dict]]:
     receipts += harvest_append(classes, scenarios)
     receipts += epoch_binding_append(classes, scenarios)
     receipts += epoch_unknown_append(classes, scenarios)
+    receipts += bootstrap_append(classes, scenarios)
+    receipts += native_unknown_append(classes, scenarios)
     return classes, scenarios, receipts
 
 

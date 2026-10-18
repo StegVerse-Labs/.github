@@ -83,7 +83,8 @@ class UndeclaredCommandReceiptTests(unittest.TestCase):
                                                        "FAIL_CLOSED" if v["check_id"] == check_id else "ALLOW")
                                      for v in ch["validation_receipts"]]
         ch = base.reseal_change(ch)
-        return wi.admit(wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch)), fixture_mode=True)
+        return wi.admit(wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), resolved_issues=fx.fixture_resolved_issues(ch)),
+                        fixture_mode=True)
 
     def test_admission_names_check_command_undeclared(self):
         out = self.admission(self.CID)
@@ -182,7 +183,9 @@ class NativeHbEpochTests(unittest.TestCase):
         self.assertEqual(wi.validate_change(ch)["change_id"], ch["change_id"])
         unk = base.reseal_change(dict(ch, hb_epoch=U))
         out = refusal(wi.validate_change, unk)
-        self.assertEqual((out["disposition"], out["failure_code"]), ("DENY", "UNKNOWN_IN_NATIVE_RECORD"))
+        # orchestrator decision UNKNOWN_IN_NATIVE_RECORD: FAIL_CLOSED, never DENY
+        self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "UNKNOWN_IN_NATIVE_RECORD"))
+        self.assertTrue(six(out))
 
     def test_migrated_records_not_bound(self):
         mig = base.jsonl("data/sv-work-items/migration/sv-changes.jsonl")[0]

@@ -1,6 +1,71 @@
 {
   "invariants": [
     {
+      "caveats": [
+        "Q-P1-EPOCH-PROVENANCE (open): the org append does not check whether source epochs were derived from a clock, so a receipt's hb_reference.derived_from_clock false is the receipt's own claim",
+        "only NWI-S0 declares an exit_gate_check; NWI-S1..S4 gate receipts would be CHECK_ID_UNDECLARED until their manifests declare one"
+      ],
+      "conditions": {
+        "a": {
+          "disposition": "DENY",
+          "emitter_note": "sv-check-receipt.v1 carries no emitter field; its verifier_ref (the verifier run) is the only emitter identity, so emitter_session = verifier_ref",
+          "failed_predicate": "RESOLVING_CHANGE_DID_NOT_SOURCE_ITS_ISSUE",
+          "failure_code": "SV_CHANGE_SELF_SOURCED_ISSUE",
+          "rule": "the gate receipt is emitted by the NWI-S1 verifier (SV-LLM/.github#46) and appended by the org writer (Labs#3255/#3270), never minted or ledgered by the change that resolves it. Detected when the change touches the receipt's ledger path (receipts/<hex>.json, source-receipts/<hex>.json), carries the receipt's bytes (a content blob_digest equal to the sha256 of either receipt file), has a writer or declared session equal to the receipt's emitter, or the receipt's verifier_ref is not the S1 verifier ('SV-LLM/.github#46', optionally '@<commit>' or ':<run>')"
+        },
+        "b": {
+          "one_issue": {
+            "disposition": "FAIL_CLOSED",
+            "failed_predicate": "ONE_RECEIPT_DERIVES_ONE_ISSUE",
+            "failure_code": "SV_ISSUE_SOURCE_RECEIPT_COLLISION",
+            "rule": "a second, different issue naming the same source receipt (validate_issue_set and admission); FAIL_CLOSED like SV_ISSUE_ID_COLLISION, since the set cannot say which issue is the receipt's"
+          },
+          "resolved_once": {
+            "disposition": "DENY",
+            "failed_predicate": "RECEIPT_DERIVED_ISSUE_IS_RESOLVED_ONCE",
+            "failure_code": "SV_ISSUE_ALREADY_RESOLVED",
+            "rule": "a second change resolving a receipt-derived issue whose resolved_by (SV_ISSUE_RESOLVE) names another change; the recorded resolution is an observed contradiction, so DENY"
+          }
+        },
+        "c": {
+          "disposition": "DENY",
+          "failed_predicate": "CHANGE_RESOLVES_CLAIMED_SV_ISSUES",
+          "failure_code": "SV_CHANGE_RESOLVES_NOTHING",
+          "rule": "until the receipt is on the ledger no issue is derived, so a change citing it (or citing nothing, as #3264 today) resolves nothing; never relaxed. A change citing some observed and some unobserved ids is FAIL_CLOSED RESOLVED_ISSUE_UNOBSERVED"
+        },
+        "d": {
+          "disposition": "FAIL_CLOSED",
+          "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+          "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+          "rule": "migrated GitHub issues (MIGRATED_HISTORICAL) are never admissible, as a change or as a cited issue"
+        }
+      },
+      "corpus": "five classes @transition (the stage gate is a transition), appended through SCENARIO_CORPUS_APPEND after the epoch class: ASC-CHANGE_RESOLVES_CLAIMED_SV_ISSUES, ASC-RESOLVING_CHANGE_DID_NOT_SOURCE_ITS_ISSUE, ASC-ONE_RECEIPT_DERIVES_ONE_ISSUE, ASC-RECEIPT_DERIVED_ISSUE_IS_RESOLVED_ONCE, ASC-ADMITTED_RECORDS_ARE_NATIVE",
+      "decided_by": "orchestrator 2026-10-18T15:47Z",
+      "decides": "Q-SV-NATIVE-BOOTSTRAP (how the first NATIVE issue, e.g. the one StegVerse-Labs/.github#3264 resolves, comes to exist); replaces the earlier bootstrap self-admission candidate; there is no special exception",
+      "enforced_by": "resident-runtime/sv_work_items.py::verify_resolutions (every NATIVE admission, after the writer checks and before the check receipts) over admission_inputs(..., resolved_issues=resolved_issue_facts(issues, ledger_objects)); validate_issue_set; resident-runtime/stage_gate.py::gate_check",
+      "gate_check": {
+        "check_id": "nwi-s0-exit-gate",
+        "declared_in": "data/sv-work-items/stages/NWI-S0.json#exit_gate_check (stage_gate.gate_check)",
+        "home_rule": "the stage manifest, not the required-checks row: the row declares what an SV_CHANGE needs per touched surface and no change requires a stage gate; stage_gate.py reads gates only from the manifests",
+        "issue_surface": "the manifest file (kind doc); violated_invariant rule_id NWI-S0#exit_gate_check.nwi-s0-exit-gate",
+        "schema_effect": "schemas/sv-check-receipt.v1.schema.json check_id is a closed enum, so the gate check id was added to it (the only schema change)"
+      },
+      "invariant_id": "STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE",
+      "observation_rule": "a receipt-derived issue is observed only if derive_issue_from_check_receipt yields exactly it from the supplied ledger bytes at its ledger_ref; otherwise no fact is emitted",
+      "owning_goal": "StegVerse-org/.github#163",
+      "statement": "A stage gate is an admitted transition (STAGE_GATES_ARE_ADMITTED_TRANSITIONS), so a failing gate receipt is a ledgered failing check receipt, and derive_issue_from_check_receipt (CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT) derives the NATIVE SV_ISSUE from it unchanged. A change that resolves that issue is admitted by the ordinary predicate.",
+      "status": "DECIDED_BY_INVARIANT"
+    },
+    {
+      "enforced_by": "resident-runtime/sv_work_items.py::verify_admission_hb_epoch(target_repository=...) from evaluate_admission: another repository's readback is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (the target's epoch was not observed)",
+      "invariant_id": "CHANGE_BINDS_TARGET_REPOSITORY_LEDGER",
+      "observed": "2026-10-18 read-only git ls-remote: StegVerse-Labs/.github refs/stegverse/organization-ledger = a5bb54d81893b392a3ce28182986fc39857807e1 (HEAD.json organization StegVerse-Labs); StegVerse-org/.github's = 2acec0e1cfd158a6a3313ad422737caf41badda3. #3264 targets StegVerse-Labs/.github, so it binds a5bb54d8.",
+      "owning_goal": "StegVerse-org/.github#163",
+      "statement": "An SV_CHANGE's base_ref.ledger_head is the head of the TARGET repository's own refs/stegverse/organization-ledger; the base-state readback that seals its epoch must have read that repository (readback.repository == target_repository).",
+      "status": "RECORDED (P1; follows from the Labs#3266 readback reading the target repository's own ledger ref)"
+    },
+    {
       "corpus_class": "ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer: the class rule (G1: failed predicate + surface kind, S1: kinds typed by sv_work_items.surface_kind) keys on the surface where the class was first observed (org#189 epoch binder gaps, ledger_writer); 'all' is not a surface kind, so the class is not re-keyed. A harvested non-ALLOW outcome on another surface would derive a sibling class by the same rule.",
       "decided_by": "orchestrator 2026-10-18T15:09Z (KV INDEX: JD-P4-3 PART-DECIDED BY INVARIANT)",
       "enforced_by": "resident-runtime/sv_work_items.py::verify_admission_hb_epoch(supplied, readback, ledger_head) -- the in-repo reference of the supplied-epoch-binder-check predicate (built into the NWI-S1 verifier, SV-LLM/.github#46); evaluate_admission applies it to every admission (the row requires the check on the 'all' surface; every SV_CHANGE carries hb_epoch); admission_inputs carries supplied_hb_epoch and hb_epoch_readback",
@@ -129,6 +194,25 @@
       },
       "statement": "A check-derived SV_ISSUE is a deterministic derivation from the org-ledger-appended non-ALLOW check receipt: source_receipt_ref = that ledger ref (@ its receipt_sha256), failed_predicate = the receipt's failed check, surface = the check's command surface, owning_goal = the required-checks row's owning_goal. Its issue_id does not depend on who runs the derivation, so no lane owns minting: sv_work_items.derive_issue_from_check_receipt is the sanctioned derivation and fixing lanes cite the issue in resolves.",
       "status": "ACTIVE"
+    },
+    {
+      "admission_exclusion": "at admission /hb_epoch is not counted here: an unobserved supplied epoch keeps its earlier-decided FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH); both are FAIL_CLOSED. validate_change on such a record gives FAIL_CLOSED UNKNOWN_IN_NATIVE_RECORD.",
+      "corpus_class": "ASC-NATIVE_RECORD_FIELDS_ARE_OBSERVED@transition v1: owning_goal[UNKNOWN] -> FAIL_CLOSED UNKNOWN_IN_NATIVE_RECORD (SCENARIO_CORPUS_APPEND, appended last)",
+      "enforced_by": "resident-runtime/sv_work_items.py::mode_check (validate_change and validate_issue, shared) and evaluate_admission over admission_inputs().native_unknown_pointers (checked right after record_mode; a missing list is itself FAIL_CLOSED)",
+      "invariant_id": "NATIVE_RECORD_FIELDS_ARE_OBSERVED",
+      "parity": "open item for Lane B/Lane C: any external validator that still emits DENY UNKNOWN_IN_NATIVE_RECORD should move to FAIL_CLOSED",
+      "previously": "DENY UNKNOWN_IN_NATIVE_RECORD (rounds 1-7 epoch commit ae8b105d); the failure code is unchanged, only the disposition",
+      "statement": "every field of a NATIVE SV_CHANGE or SV_ISSUE is authentically observed. A field holding UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (exact or embedded; /projection and writer_session.evidence_class, an enum, are not scanned) was not observed, so the record is FAIL_CLOSED UNKNOWN_IN_NATIVE_RECORD (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY). DENY stays only for values that were observed and are wrong (RECORD_MODE_INVALID, MIGRATION_FIELDS_ON_NATIVE_RECORD).",
+      "status": "DECIDED (orchestrator 2026-10-18T16:07Z, UNKNOWN_IN_NATIVE_RECORD)",
+      "unobserved": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "NATIVE_RECORD_FIELDS_ARE_OBSERVED",
+        "failure_code": "UNKNOWN_IN_NATIVE_RECORD",
+        "next_attempt": "after the field is observed, propose a successor record carrying the observed value; nothing was recorded as ALLOW",
+        "owning_existing_goal": "StegVerse-org/.github#163",
+        "required_evidence_or_repair": "authentically observe every field the NATIVE record holds as UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, or record the history as MIGRATED_HISTORICAL",
+        "retry_entrypoint": "resident-runtime/sv_work_items.py::validate_change / validate_issue / evaluate_admission"
+      }
     }
   ],
   "note": "Invariants of the native work-items path that are not schema keywords; enforced in resident-runtime/sv_work_items.py. sv-change.v1, sv-issue.v1 and sv-check-receipt.v1 are unchanged (734968c0 / 62ee5307 / 070f13f4).",

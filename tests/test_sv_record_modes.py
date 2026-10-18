@@ -84,7 +84,7 @@ class RecordModeTests(unittest.TestCase):
         for f in wi.SIX_FIELDS:
             self.assertTrue(out[f], f)
         self.assertEqual(out["record"]["lifecycle_state"], "FAIL_CLOSED")
-        self.assertEqual(fx_admit(wi.admission_inputs(ch, ch["base_ref"]))["failure_code"], "HISTORICAL_RECORD_NOT_ADMISSIBLE")
+        self.assertEqual(fx_admit(wi.admission_inputs(ch, ch["base_ref"], resolved_issues=base.fx.fixture_resolved_issues(ch)))["failure_code"], "HISTORICAL_RECORD_NOT_ADMISSIBLE")
 
     def test_no_in_place_promotion_to_native(self):
         flipped = dict(base.ISSUES[0], record_mode="NATIVE")
@@ -164,12 +164,13 @@ class SchemaFixTests(unittest.TestCase):
 
     def test_sf5_only_ledger_receipts_count(self):
         ch = base.al_known_good_change("svi:" + "1" * 64)
-        obs = wi.admission_inputs(ch, ch["base_ref"], (), base.fx.fixture_base_state_readback(ch["base_ref"], ch["hb_epoch"]))
+        obs = wi.admission_inputs(ch, ch["base_ref"], (), base.fx.fixture_base_state_readback(ch["base_ref"], ch["hb_epoch"]),
+                                   base.fx.fixture_resolved_issues(ch))
         self.assertEqual(fx_admit({**obs, "required_signoff_roles": []})["disposition"], "ALLOW")
         art = base.reseal_change(dict(ch, validation_receipts=[
             {**v, "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/lane-file.md#L57"} for v in ch["validation_receipts"]]))
         self.assertEqual(both(art, CHANGE_SCHEMA, wi.validate_change), ([], "ALLOW"))
-        out = fx_admit(wi.admission_inputs(art, art["base_ref"]))
+        out = fx_admit(wi.admission_inputs(art, art["base_ref"], resolved_issues=base.fx.fixture_resolved_issues(art)))
         self.assertEqual((out["failure_code"], out["artifact_only"]), ("CHECK_SKIPPED_OR_UNOBSERVED", sorted(c for c in out["unobserved"])))
         bad = base.reseal_change(dict(ch, validation_receipts=[{**ch["validation_receipts"][0], "ref": "receipt:x"}]))
         errs, c = both(bad, CHANGE_SCHEMA, wi.validate_change)
@@ -184,7 +185,7 @@ class SchemaFixTests(unittest.TestCase):
         self.assertEqual(both(ch, CHANGE_SCHEMA, wi.validate_change), ([], "ALLOW"))
         out = wi.transition("SV_CHANGE_PROPOSE", ch, hb_epoch=EPOCH, context={"issues": [issue]})
         self.assertEqual((out["failure_code"], out["failed_predicate"]), ("BRANCH_WRITER_UNOBSERVED", "BRANCH_WRITER_IS_BRANCH_OWNER"))
-        self.assertEqual(fx_admit(wi.admission_inputs(ch, ch["base_ref"]))["failure_code"], "BRANCH_WRITER_UNOBSERVED")
+        self.assertEqual(fx_admit(wi.admission_inputs(ch, ch["base_ref"], resolved_issues=base.fx.fixture_resolved_issues(ch)))["failure_code"], "BRANCH_WRITER_UNOBSERVED")
         for w in ({"session": None, "evidence_class": "DECLARED"}, {"session": "x", "evidence_class": U}, "P1"):
             bad = copy.deepcopy(ch); bad["content"][0]["writer_session"] = w
             errs, c = both(base.reseal_change(bad), CHANGE_SCHEMA, wi.validate_change)
@@ -341,17 +342,18 @@ class ChangeIdCanonicalTests(unittest.TestCase):
         art = base.reseal_change(dict(ch, validation_receipts=[
             {**v, "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/evidence.md"} if v["check_id"] == first else v
             for v in ch["validation_receipts"]]))
-        out = wi.transition("SV_CHANGE_VERIFY", art, hb_epoch=EPOCH, context={"fixture_mode": True})
+        out = wi.transition("SV_CHANGE_VERIFY", art, hb_epoch=EPOCH,
+                            context={"fixture_mode": True, "resolved_issues": base.fx.fixture_resolved_issues(art)})
         self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
                          ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED", "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED"))
         self.assertEqual(out["record"]["lifecycle_state"], art["lifecycle_state"])
-        res = fx_admit(wi.admission_inputs(art, art["base_ref"]))
+        res = fx_admit(wi.admission_inputs(art, art["base_ref"], resolved_issues=base.fx.fixture_resolved_issues(art)))
         self.assertEqual((res["unobserved"], res["artifact_only"]), ([first], [first]))
         # an artifact never upgrades or overrides: alongside a ledger DENY it does not hide the refusal
         mixed = base.reseal_change(dict(ch, validation_receipts=[
             {**v, "disposition": "DENY"} if v["check_id"] == first else v for v in ch["validation_receipts"]] +
             [{**ch["validation_receipts"][0], "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/evidence.md"}]))
-        self.assertEqual(fx_admit({**wi.admission_inputs(mixed, mixed["base_ref"]), "required_signoff_roles": []})["failure_code"],
+        self.assertEqual(fx_admit({**wi.admission_inputs(mixed, mixed["base_ref"], resolved_issues=base.fx.fixture_resolved_issues(mixed)), "required_signoff_roles": []})["failure_code"],
                          "REQUIRED_CHECK_DENIED")
 
 
@@ -490,7 +492,7 @@ class ChangeDigestTests(unittest.TestCase):
         bad = dict(ch, head={"change_digest": legacy})
         self.assertEqual(code(wi.validate_change, bad), "SV_CHANGE_DIGEST_MISMATCH")
         stale = base.reseal_change(dict(ch, validation_receipts=[dict(v, change_digest=legacy) for v in ch["validation_receipts"]]))
-        out = fx_admit({**wi.admission_inputs(stale, stale["base_ref"]), "required_signoff_roles": []})
+        out = fx_admit({**wi.admission_inputs(stale, stale["base_ref"], resolved_issues=base.fx.fixture_resolved_issues(stale)), "required_signoff_roles": []})
         self.assertEqual((out["failure_code"], out["failed_predicate"]), ("CHECK_SKIPPED_OR_UNOBSERVED", "RECEIPT_CHANGE_DIGEST_EQUALS_HEAD"))
 
     def test_lift_reexpresses_only_receipts_bound_to_same_content(self):

@@ -30,7 +30,7 @@ Author session: P1 Ecosystem AI Lane (d8cbc58c). Invariants: WORK_ITEMS_ARE_TASK
   - QUESTION: is surface kind the right granularity, or should a class be scoped to path globs within a kind?
   - FEEDBACK OUTPUT: a `surfaces[].glob` rule in admission-corpus.v1.
 
-## Q-SV-NATIVE-BOOTSTRAP (partly decided)
+## Q-SV-NATIVE-BOOTSTRAP (decided by invariant STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE, round 7)
 - **Decided (D):**
   - Genesis is a FROM_HEAD append on the existing organization ledger, not GENESIS. `aggregate_repo_transition.append` DENYs ORG_LEDGER_GENESIS_ON_NON_EMPTY_LEDGER.
   - The writer is the organization's own ledger writer under ORGANIZATION_LEDGER_LOCK, triggered by a committed `.stegverse/transition-requests/` file. TVC TRANSITION_LEDGER_MIRROR_HANDOFF d50a6255: "No lane does it." Ledger dispatch is never grantable.
@@ -38,7 +38,7 @@ Author session: P1 Ecosystem AI Lane (d8cbc58c). Invariants: WORK_ITEMS_ARE_TASK
 - **Undecided (C):**
   - INVARIANT CHECKED: org-contract `write_mode: MANIFEST_DIRECTED_APPEND`; org `organization-ledger-transition.yml` (triggered by a push to main of `.stegverse/transition-requests/**`); NG.
   - QUESTION: the genesis request and these record kinds must reach main before the native path exists. Is that last landing a projection-era admission (TVC#519) by declaration, and which receipt marks it as the end of the GitHub-authority era?
-  - FEEDBACK OUTPUT: a BOOTSTRAP_SELF_ADMISSION invariant plus the NWI genesis request file.
+  - FEEDBACK OUTPUT (superseded): the self-admission candidate is replaced by STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE (see Round 7). There is no exception: the first native issue is derived from a ledgered failing gate receipt.
 
 ## Record modes and schema fixes SF-1..SF-10 (from Lane D's migration fixtures, laned/s0-lane-d-migration-fixtures @76f06381)
 - `record_mode: NATIVE | MIGRATED_HISTORICAL` (both record kinds).
@@ -278,4 +278,26 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - The epoch class v2 adds the sentinel scenario (`…@ledger_writer/supplied_hb_epoch[UNKNOWN]`, appended last; no id moved).
   - Open item: Lane B's binder_check @64b90721 predates the precedence (null/sentinel are DENY there).
 - **Caveat:** Q-P1-EPOCH-PROVENANCE is still open.
-- The stage-gate part of round 7 (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE) follows in a separate commit.
+- The stage-gate part of round 7 (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE) is in the next section (separate commit).
+
+## Round 7 (stage-gate part): STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE, the per-repo ledger binding, and UNKNOWN_IN_NATIVE_RECORD
+- **Q-SV-NATIVE-BOOTSTRAP is decided by invariant** (orchestrator 15:47Z), with no special exception. A stage gate is an admitted transition, so a failing gate receipt is a ledgered failing check receipt. `derive_issue_from_check_receipt` derives the NATIVE SV_ISSUE from it unchanged.
+  - **Gate check:** `data/sv-work-items/stages/NWI-S0.json#exit_gate_check` declares `nwi-s0-exit-gate`, built into the NWI-S1 verifier (SV-LLM/.github#46) and appended by the org writer (Labs#3255/#3270). `stage_gate.gate_check` reads it and `evaluate_gate` names it as `gate_check_id`.
+    - Its home is the stage manifest, not the required-checks row: the row lists what an SV_CHANGE needs per touched surface, and no change requires a stage gate. The row blob is therefore unchanged by this part.
+    - The derived issue's surface is the manifest (kind doc). Its rule_id is `NWI-S0#exit_gate_check.nwi-s0-exit-gate`.
+    - `schemas/sv-check-receipt.v1.schema.json` has a closed `check_id` enum, so the id was added there. This is the one schema change; sv-change.v1 and sv-issue.v1 are unchanged.
+  - **Admission (`verify_resolutions`, every NATIVE admission, after the writer checks):**
+    - (a) DENY SV_CHANGE_SELF_SOURCED_ISSUE. Triggered when the change touches the receipt's ledger path or carries its bytes, a writer is the receipt's emitter (its verifier_ref), or the verifier_ref is not the S1 verifier.
+    - (b) FAIL_CLOSED SV_ISSUE_SOURCE_RECEIPT_COLLISION when a second issue names the same receipt (also in `validate_issue_set`). DENY SV_ISSUE_ALREADY_RESOLVED when another change already resolved the issue.
+    - (c) DENY SV_CHANGE_RESOLVES_NOTHING until the receipt is on the ledger (#3264 today); never relaxed. Some observed ids plus some unobserved ids gives FAIL_CLOSED RESOLVED_ISSUE_UNOBSERVED.
+    - (d) FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE for a migrated change or a migrated cited issue.
+  - **Facts:** these come from `resolved_issue_facts(issues, ledger_objects)`. A receipt-derived issue is observed only if re-deriving it from the ledger bytes yields exactly that issue.
+  - **Corpus:** five new classes @transition, appended through SCENARIO_CORPUS_APPEND after the epoch class v2 (so the epoch commit's ids do not move). Positive controls carry fixture_only facts.
+- **CHANGE_BINDS_TARGET_REPOSITORY_LEDGER:** base_ref.ledger_head is the target repository's own ledger ref (StegVerse-Labs a5bb54d8, not StegVerse-org 2acec0e1). A readback of another repository is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
+- **UNKNOWN_IN_NATIVE_RECORD is FAIL_CLOSED** (orchestrator decision 16:07Z; invariant NATIVE_RECORD_FIELDS_ARE_OBSERVED):
+  - A NATIVE SV_CHANGE or SV_ISSUE field holding `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` (exact or embedded) gives FAIL_CLOSED UNKNOWN_IN_NATIVE_RECORD with all six fields. It was DENY. `mode_check` is shared, so validate_change and validate_issue both change; the code is unchanged.
+  - DENY stays only for observed, wrong values: RECORD_MODE_INVALID, MIGRATION_FIELDS_ON_NATIVE_RECORD.
+  - Admission enforces it too: `admission_inputs().native_unknown_pointers`, checked right after record_mode (a missing list is FAIL_CLOSED). `/hb_epoch` is excluded there because an unobserved epoch keeps its earlier FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
+  - Corpus: `ASC-NATIVE_RECORD_FIELDS_ARE_OBSERVED@transition` v1 (`owning_goal[UNKNOWN]`), appended last; no id moved.
+  - Open item: external validators (Lane B / Lane C) that still emit DENY UNKNOWN_IN_NATIVE_RECORD.
+- **Caveat:** Q-P1-EPOCH-PROVENANCE is still open.

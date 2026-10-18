@@ -10,6 +10,12 @@ NWI-S0); unobserved evidence is FAIL_CLOSED STAGE_EVIDENCE_UNOBSERVED with no
 move (UNKNOWN_NEVER_YIELDS_PASS, but nothing failed). The outcome is recorded
 through sv_work_items.record (existing emitter) and can be carried as an
 organization transition request (.stegverse/transition-requests/). Stdlib, no clock.
+
+STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE (Q-SV-NATIVE-BOOTSTRAP, decided by invariant): a manifest declares its gate as a
+check (exit_gate_check) the NWI-S1 verifier (SV-LLM/.github#46) emits and the org writer (Labs#3255/#3270) appends. A
+failing gate receipt is then a ledgered failing check receipt, and sv_work_items.derive_issue_from_check_receipt derives
+the NATIVE SV_ISSUE from it unchanged (check id from the manifest, surface = the manifest). This module evaluates the gate;
+it never mints or ledgers the receipt.
 """
 from __future__ import annotations
 
@@ -41,6 +47,22 @@ def load_stages(directory: Path = STAGES_DIR) -> list[dict[str, Any]]:
     return stages
 
 
+def gate_check(stage: Mapping[str, Any]) -> dict[str, Any] | None:
+    """The check a stage manifest declares for its gate, or None when the manifest declares none. A declaration whose
+    minter or verifier_ref is not the NWI-S1 verifier is not a gate check (STAGE_GATE_CHECK_NOT_S1_EMITTED)."""
+    c = stage.get("exit_gate_check")
+    if c is None:
+        return None
+    oc = c.get("offline_command") if isinstance(c, Mapping) else None
+    if not isinstance(oc, Mapping) or oc.get("verifier_ref") != wi.S1_VERIFIER_REF or wi.S1_VERIFIER_REF not in str(c.get("minter")) \
+            or oc.get("verifier_builtin") != c.get("check_id") or c.get("check_id") not in wi.GATE_CHECKS:
+        raise _refusal("STAGE_GATE_CHECK_NOT_S1_EMITTED", wi.STAGE_GATE_ISSUE_INVARIANT,
+                       "declare exit_gate_check as a built-in of the NWI-S1 verifier (" + wi.S1_VERIFIER_REF + ") appended by the org writer",
+                       "re-evaluate once the manifest declares the gate check", stage_id=stage.get("stage_id"))
+    return {"check_id": c["check_id"], "verifier_ref": oc["verifier_ref"], "surface": c["surface"],
+            "declared_in": wi.GATE_CHECKS[c["check_id"]]["declared_in"]}
+
+
 def _refusal(code: str, predicate: str, repair: str, nxt: str, **d: Any) -> wi.Refusal:
     r = wi.Refusal("FAIL_CLOSED", code, predicate, repair, "evaluate_gate", nxt, **d)
     r.record["retry_entrypoint"] = ENTRY
@@ -56,6 +78,9 @@ def evaluate_gate(current_stage: str, target_stage: str, evidence: Mapping[str, 
         stages = stages if stages is not None else load_stages()
         by = {m["stage_id"]: m for m in stages}
         cur, tgt = by.get(current_stage), by.get(target_stage)
+        if cur is not None:
+            gc = gate_check(cur)
+            out_base["gate_check_id"] = gc["check_id"] if gc else None  # the check id a failing gate receipt carries
         if cur is None or tgt is None:
             raise _refusal("STAGE_MANIFEST_ABSENT", "STAGE_IS_DECLARED_BY_MANIFEST", "declare the stage manifest",
                            "re-evaluate once the manifest is committed", unknown=[s for s in (current_stage, target_stage) if s not in by])

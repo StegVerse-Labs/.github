@@ -87,6 +87,22 @@ def _clock_epoch(o): _reseal_readback(o, hb_epoch_source={**o["hb_epoch_readback
 def _non_int_epoch(o): _reseal_readback(o, hb_epoch=float(o["hb_epoch_readback"]["hb_epoch"]))
 def _other_epoch(o): o["supplied_hb_epoch"] = str(int(o["supplied_hb_epoch"]) + 1)
 def _unknown_epoch(o): o["supplied_hb_epoch"] = wi.UNKNOWN
+# STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE (Q-SV-NATIVE-BOOTSTRAP): what the change resolves (admission_inputs' resolves /
+# resolved_issues, the facts sv_work_items.resolved_issue_facts observes from the ledgered receipt)
+def _f0(o, **change): o["resolved_issues"] = [{**f, **change} if i == 0 else f for i, f in enumerate(o["resolved_issues"])]
+def _no_resolves(o): o["resolves"] = []
+def _receipt_not_ledgered(o): o["resolved_issues"] = []
+def _extra_unobserved(o): o["resolves"] = sorted(o["resolves"] + ["svi:" + "f" * 64])
+def _touches_receipt_path(o): _f0(o, receipt_ledger_paths=sorted(o["resolved_issues"][0]["receipt_ledger_paths"] + [o["touched_paths"][0]]))
+def _carries_receipt(o): _f0(o, receipt_file_sha256=sorted(o["resolved_issues"][0]["receipt_file_sha256"] + [o["content_blob_digests"][0]]))
+def _writer_is_emitter(o): _f0(o, emitter_session=o["declared_session"])
+def _not_s1(o): _f0(o, verifier_ref="SV-LLM/.github#460")
+def _second_issue(o): _f0(o, derived_issue_ids_from_receipt=sorted(o["resolved_issues"][0]["derived_issue_ids_from_receipt"] + ["svi:" + "e" * 64]))
+def _already_resolved(o): _f0(o, resolved_by="svc:" + "e" * 64)
+def _migrated_change(o): o["record_mode"] = "MIGRATED_HISTORICAL"
+# UNKNOWN_IN_NATIVE_RECORD (orchestrator decision): a NATIVE record field holding the sentinel is FAIL_CLOSED, never DENY
+def _unknown_owning_goal(o): o["native_unknown_pointers"] = sorted(set(o["native_unknown_pointers"]) | {"/owning_goal"})
+def _migrated_issue(o): _f0(o, record_mode="MIGRATED_HISTORICAL")
 
 
 PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
@@ -120,8 +136,32 @@ PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
          _clock_epoch),
         ("hb_epoch_readback.hb_epoch", "the sealed epoch slot is not an integer (a JSON float)", _non_int_epoch),
         ("supplied_hb_epoch", "the SV_CHANGE carries an epoch other than the sealed readback epoch", _other_epoch, "HB_EPOCH_MISMATCH")]),
+    # STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE (c): until the receipt is on the ledger the change resolves nothing (#3264)
+    "CHANGE_RESOLVES_CLAIMED_SV_ISSUES": ("SV_CHANGE_RESOLVES_NOTHING", [
+        ("resolves", "the change cites no SV_ISSUE (#3264 before its gate receipt is ledgered)", _no_resolves),
+        ("resolved_issues", "the cited issue's receipt is not on the ledger, so no issue is derived from it", _receipt_not_ledgered),
+        ("resolves[+unobserved]", "the change also cites an svi: id no observed issue carries", _extra_unobserved, "RESOLVED_ISSUE_UNOBSERVED")]),
+    # (a) emitted by the S1 verifier and appended by the org writer, never minted or ledgered by the resolving change
+    "RESOLVING_CHANGE_DID_NOT_SOURCE_ITS_ISSUE": ("SV_CHANGE_SELF_SOURCED_ISSUE", [
+        ("resolved_issues[0].receipt_ledger_paths", "the change touches the receipt's ledger path", _touches_receipt_path),
+        ("resolved_issues[0].receipt_file_sha256", "the change carries the receipt's bytes", _carries_receipt),
+        ("resolved_issues[0].emitter_session", "the change's writer is the receipt's emitter", _writer_is_emitter),
+        ("resolved_issues[0].verifier_ref", "the receipt's verifier_ref is not the NWI-S1 verifier (SV-LLM/.github#460)", _not_s1)]),
+    # (b) one receipt derives exactly one issue, resolved by exactly one change
+    "ONE_RECEIPT_DERIVES_ONE_ISSUE": ("SV_ISSUE_SOURCE_RECEIPT_COLLISION", [
+        ("resolved_issues[0].derived_issue_ids_from_receipt", "a second issue names the same source receipt", _second_issue)]),
+    "RECEIPT_DERIVED_ISSUE_IS_RESOLVED_ONCE": ("SV_ISSUE_ALREADY_RESOLVED", [
+        ("resolved_issues[0].resolved_by", "another change already resolved the receipt-derived issue", _already_resolved)]),
+    # (d) migrated records (GitHub issues migrated as MIGRATED_HISTORICAL) are never admissible
+    "ADMITTED_RECORDS_ARE_NATIVE": ("HISTORICAL_RECORD_NOT_ADMISSIBLE", [
+        ("record_mode", "the SV_CHANGE is MIGRATED_HISTORICAL", _migrated_change),
+        ("resolved_issues[0].record_mode", "the cited issue is a migrated (MIGRATED_HISTORICAL) GitHub issue", _migrated_issue)]),
+    "NATIVE_RECORD_FIELDS_ARE_OBSERVED": ("UNKNOWN_IN_NATIVE_RECORD", [
+        ("owning_goal[UNKNOWN]", "the NATIVE SV_CHANGE's owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (FAIL_CLOSED, never DENY)",
+         _unknown_owning_goal)]),
 }
-DENY_CODES = ("BASE_STALE", "REQUIRED_CHECK_DENIED", "HB_EPOCH_MISMATCH")
+DENY_CODES = ("BASE_STALE", "REQUIRED_CHECK_DENIED", "HB_EPOCH_MISMATCH", "SV_CHANGE_RESOLVES_NOTHING", "SV_CHANGE_SELF_SOURCED_ISSUE",
+              "SV_ISSUE_ALREADY_RESOLVED")
 def disposition_of(code: str) -> str: return "DENY" if code in DENY_CODES else "FAIL_CLOSED"
 PREDICATE_ALIASES: dict[str, str] = {}
 # Axes a predicate binds under a second failure code. generalize adds them (each axis names its own expected code)

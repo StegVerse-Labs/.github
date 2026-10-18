@@ -133,7 +133,11 @@ class MigrationFixtureTests(unittest.TestCase):
             out = wi.transition("SV_CHANGE_VERIFY", ch, hb_epoch=EPOCH)
             self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HISTORICAL_RECORD_NOT_ADMISSIBLE"))
             # as NATIVE with the same observed content, GitHub CI is still not a receipt
-            out = wi.transition("SV_CHANGE_VERIFY", nativize_change(ch), hb_epoch=EPOCH)
+            nat = nativize_change(ch)
+            out = wi.transition("SV_CHANGE_VERIFY", nat, hb_epoch=EPOCH)  # no observed issue: it resolves nothing
+            self.assertEqual((out["disposition"], out["failure_code"]), ("DENY", "SV_CHANGE_RESOLVES_NOTHING"))
+            out = wi.transition("SV_CHANGE_VERIFY", nat, hb_epoch=EPOCH,
+                                context={"fixture_mode": True, "resolved_issues": fx.fixture_resolved_issues(nat)})
             self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED"))
 
     def test_work_items_projection_is_native_keyed_without_approval_flag(self):
@@ -240,17 +244,22 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(unclaimed["failure_code"], "RESOLVED_ISSUE_NOT_CLAIMED_BY_AUTHOR")
         prop = wi.transition("SV_CHANGE_PROPOSE", good, hb_epoch=EPOCH, context={"issues": [claimed]})
         self.assertEqual(prop["disposition"], "ALLOW")
-        real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH)  # fixture refs never count on the real path
-        self.assertEqual((real["disposition"], real["failure_code"]), ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED"))
+        real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH)  # no observed issue: resolves nothing
+        self.assertEqual((real["disposition"], real["failure_code"]), ("DENY", "SV_CHANGE_RESOLVES_NOTHING"))
+        facts = fx.fixture_resolved_issues(prop["record"])  # fixture facts never count on the real path either
+        real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"resolved_issues": facts})
+        self.assertEqual((real["disposition"], real["failure_code"]), ("DENY", "SV_CHANGE_RESOLVES_NOTHING"))
         rb = fx.fixture_base_state_readback(prop["record"]["base_ref"], prop["record"]["hb_epoch"])
-        noepoch = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True})
+        noepoch = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True, "resolved_issues": facts})
         self.assertEqual((noepoch["disposition"], noepoch["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
-        ver = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True, "hb_epoch_readback": rb})
+        ver = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True, "hb_epoch_readback": rb,
+                                                                                           "resolved_issues": facts})
         self.assertEqual(ver["disposition"], "ALLOW", ver)
         noprov = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={"current_base": BASE})
         self.assertEqual(noprov["failure_code"], "ADMISSION_PROVENANCE_ABSENT")
         ctx = {"current_base": BASE, "predicate_digest": "sha256:" + "c" * 64, "corpus_head": "sha256:" + "d" * 64,
-               "actor_session": "AI Entity (by manifest)", "covered_kinds": ["transition"], "fixture_mode": True, "hb_epoch_readback": rb}
+               "actor_session": "AI Entity (by manifest)", "covered_kinds": ["transition"], "fixture_mode": True, "hb_epoch_readback": rb,
+               "resolved_issues": facts}
         moved = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**ctx, "current_base": {**BASE, "registry_generation": 320}})
         self.assertEqual((moved["disposition"], moved["failure_code"], moved["record"]["lifecycle_state"]), ("DENY", "BASE_STALE", "DENIED"))
         uncovered = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**ctx, "covered_kinds": []})
@@ -320,7 +329,7 @@ class CorpusTests(unittest.TestCase):
 
     def test_seed_corpus_loads_and_covers_seed_fixtures(self):
         latest = al.latest_classes(self.CLASSES)
-        self.assertEqual(len(latest), 11)  # 10 seed classes + ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer
+        self.assertEqual(len(latest), 17)  # 10 seed + the epoch class + 5 STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE classes + UNKNOWN_IN_NATIVE_RECORD
         origins = json.dumps([c["provenance"] for c in latest.values()])
         for ref in ("#3241", "#3244", "#3245", "SDK#533", "SDK#546", "TVC#526", "#3246", ".github#189"):
             self.assertIn(ref, origins)

@@ -80,7 +80,8 @@ class ReplayEvaluationTests(unittest.TestCase):
     def evaluate(self, m, rebind=True):
         mut = m["mutation"] if rebind or m["mutation"] is None else {**m["mutation"], "rebind_request_digest": False}
         ch = fx.apply_replay_mutation(self.CH[m["sv_change_id"]], mut)
-        obs = wi.admission_inputs(ch, m["current_base"], [self.SIGN[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"])
+        obs = wi.admission_inputs(ch, m["current_base"], [self.SIGN[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"],
+                                  m["resolved_issues"])
         out = wi.admit(obs, fixture_mode=True)
         return out["disposition"], out.get("failure_code")
 
@@ -158,7 +159,8 @@ class CheckDispositionSplitTests(unittest.TestCase):
     def obs(self, disposition):
         ch = fx.known_good_change(fx.SURFACE_PATH["transition"])
         ch["validation_receipts"][0] = fx.ledger_receipt(ch["validation_receipts"][0]["check_id"], ch["head"]["change_digest"], disposition)
-        return wi.admission_inputs(base.reseal_change(ch), fx.LABS_BASE)
+        ch = base.reseal_change(ch)
+        return wi.admission_inputs(ch, fx.LABS_BASE, resolved_issues=fx.fixture_resolved_issues(ch))
 
     def test_deny_and_fail_closed_codes(self):
         d = wi.admit(self.obs("DENY"), fixture_mode=True)
@@ -242,7 +244,7 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_maps_onto_existing_class_as_alias_not_duplicate(self):
         latest = al.latest_classes(self.CLASSES)
-        self.assertEqual(len(latest), 11)  # epoch v2 supersedes v1 under the same class id
+        self.assertEqual(len(latest), 17)
         self.assertNotIn("ASC-WRITER_EVIDENCE_LOST_BY_SNAPSHOT_RESTORE@transition", latest)
         c = latest[self.CID]
         self.assertEqual((c["class_version"], c["predicate"]), (2, "BRANCH_WRITER_IS_BRANCH_OWNER"))
@@ -274,7 +276,7 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_appended_through_the_gate(self):
         classes, scenarios, receipts = fx.corpus()
-        n = 1  # epoch class v2 (UNKNOWN axis) follows epoch v1
+        n = len(fx.BOOTSTRAP_SEEDS) + 2  # epoch class v2 (UNKNOWN axis), the bootstrap classes and the native-UNKNOWN class follow epoch v1
         self.assertEqual(receipts[-2 - n]["class_id"], self.CID)  # the JD-P4-3 epoch class is appended after the harvest
         self.assertEqual(receipts[-2 - n]["disposition"], "ALLOW")
         self.assertEqual(receipts[-1 - n]["class_id"], EPOCH_CID)

@@ -156,7 +156,7 @@ class PredicateTests(unittest.TestCase):
         # absent: a change with no hb_epoch (the record field is the epoch source) reaches admission as supplied_hb_epoch None
         ch = fx.known_good_change(fx.SURFACE_PATH["ledger_writer"])
         ch = base.reseal_change({k: v for k, v in ch.items() if k != "hb_epoch"})
-        obs = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback())
+        obs = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), fx.fixture_resolved_issues(ch))
         self.assertIsNone(obs["supplied_hb_epoch"])
         out = wi.admit(obs, fixture_mode=True)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
@@ -231,7 +231,8 @@ class AdmissionTests(unittest.TestCase):
         ch = fx.known_good_change(path)
         if hb != "1024":
             ch = base.reseal_change(dict(ch, hb_epoch=hb))
-        return wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback() if rb == "fixture" else rb)
+        return wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback() if rb == "fixture" else rb,
+                                   fx.fixture_resolved_issues(ch))
 
     def test_ledger_writer_admission_binds_the_readback_epoch(self):
         self.assertEqual(wi.admit(self.obs(), fixture_mode=True)["disposition"], "ALLOW")
@@ -324,7 +325,12 @@ class CorpusTests(unittest.TestCase):
                                "hb_epoch_readback.hb_epoch": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"),
                                "supplied_hb_epoch": ("DENY", "HB_EPOCH_MISMATCH"),
                                "supplied_hb_epoch[UNKNOWN]": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED")})
-        self.assertEqual(self.CORPUS[-1]["scenario_id"], CID + "/supplied_hb_epoch[UNKNOWN]")  # appended last; no id moved
+        # appended after every earlier scenario; only later classes' scenarios follow it, so no id moved
+        ids = [s["scenario_id"] for s in self.CORPUS]
+        at = ids.index(CID + "/supplied_hb_epoch[UNKNOWN]")
+        later = {c["class_id"] for c in self.CLASSES[-1 - len(fx.BOOTSTRAP_SEEDS):]}
+        self.assertNotIn(CID, later)
+        self.assertTrue(all(s["scenario_class"] in later for s in self.CORPUS[at + 1:]))
         for s in self.CORPUS:
             if s["scenario_class"] == CID:
                 out = wi.admit(s["observed_inputs"], fixture_mode=True)
@@ -334,9 +340,9 @@ class CorpusTests(unittest.TestCase):
 
     def test_gate_refuses_a_wrong_expected_code(self):
         classes, scenarios, _ = fx.corpus()
-        n = 1  # the epoch class v2 is appended after epoch v1
+        n = len(fx.BOOTSTRAP_SEEDS) + 2  # epoch class v2, the bootstrap classes and the native-UNKNOWN class follow epoch v1
         later = {c["class_sha256"] for c in classes[len(classes) - n:]}
-        later_ids = {c["class_id"] for c in classes[len(classes) - n:-1]}
+        later_ids = {c["class_id"] for c in classes[len(classes) - n:] if c["class_id"] != CID}
         classes = classes[:len(classes) - n]
         scenarios = [s for s in scenarios if s["scenario_class"] not in later_ids and s["source"].get("class_sha256") not in later]
         self.assertEqual(classes[-1]["class_id"], CID)
@@ -355,8 +361,8 @@ class CorpusTests(unittest.TestCase):
                              cwd=ROOT, capture_output=True, text=True)
         if old.returncode != 0:
             self.skipTest("fc19b532 not in the local clone")
-        # fc19b532's classes are a prefix: the epoch class v1 and v2 are appended after them
-        self.assertEqual([json.loads(l) for l in old.stdout.splitlines()], self.CLASSES[:-2])
+        # fc19b532's classes are a prefix: epoch v1, epoch v2, the 5 bootstrap classes and the native-UNKNOWN class follow
+        self.assertEqual([json.loads(l) for l in old.stdout.splitlines()], self.CLASSES[:-3 - len(fx.BOOTSTRAP_SEEDS)])
 
 
 

@@ -233,7 +233,9 @@ class CheckReceiptInvariantTests(unittest.TestCase):
                              {"minter": "NWI-S1-verifier (SV-LLM/.github#46)", "appender": "org-ledger-writer (Labs#3255)"})
         self.assertIn("REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIER_OUTPUTS_APPENDED_BY_ORG_WRITER",
                       (ROOT / "docs/NWI_S0_NATIVE_WORK_ITEMS_MIRROR_HANDOFF.md").read_text())
-        self.assertEqual(SCHEMAS["sv-check-receipt.v1"]["properties"]["check_id"]["enum"], ids)
+        # the receipt schema's closed enum: the row's checks plus each stage manifest's exit_gate_check (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE)
+        self.assertEqual(SCHEMAS["sv-check-receipt.v1"]["properties"]["check_id"]["enum"], sorted(ids + list(wi.GATE_CHECKS)))
+        self.assertEqual(wi.declared_check_ids(), sorted(ids + list(wi.GATE_CHECKS)))
 
     def test_real_row_fails_closed_until_appended(self):
         st = wi.row_receipt_status()
@@ -255,7 +257,7 @@ class CheckReceiptInvariantTests(unittest.TestCase):
         bad["request_digest"] = wi.request_digest(bad)
         errs, c = rm.both(bad, SCHEMAS["sv-change.v1"], wi.validate_change)
         self.assertTrue(errs); self.assertEqual(c, "CHECK_ID_UNDECLARED")
-        obs = wi.admission_inputs(ch, ch["base_ref"])
+        obs = wi.admission_inputs(ch, ch["base_ref"], resolved_issues=fx.fixture_resolved_issues(ch))
         obs["validation_receipts"].append(fx.ledger_receipt("ci-green", ch["head"]["change_digest"]))
         out = fx_admit(obs)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "CHECK_ID_UNDECLARED"))
@@ -304,7 +306,8 @@ class TVCReplayTests(unittest.TestCase):
             self.assertEqual(m["expected_failure_code"], sc["expected_failure_code"])
             if m["mutation"] is None:
                 rcpts = {r["receipt_sha256"]: r for r in base.jsonl("data/admission-scenarios/tvc-replay/signoff-receipts.jsonl")}
-                self.assertEqual(wi.admission_inputs(ch, m["current_base"], [rcpts[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"]),
+                self.assertEqual(wi.admission_inputs(ch, m["current_base"], [rcpts[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"],
+                                                    m["resolved_issues"]),
                                  sc["observed_inputs"])
                 self.assertEqual(fx_admit(sc["observed_inputs"])["disposition"], "ALLOW")
             else:
