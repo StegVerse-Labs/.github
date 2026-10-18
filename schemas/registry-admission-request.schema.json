@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/registry-admission-request.schema.json",
+  "title": "Registry admission request (manifest for the registry admission transition)",
+  "type": "object",
+  "required": ["schema", "request_id", "task_id", "task_row", "shard_path", "proposed_generation", "observed_live_generation", "owning_existing_goal"],
+  "properties": {
+    "schema": {"const": "stegverse.registry-admission-request/v1"},
+    "request_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9-]{2,127}$"},
+    "task_row": {"type": "object", "required": ["schema", "task_id"], "properties": {"schema": {"const": "stegverse.canonical-task-record/v1"}}},
+    "shard_path": {"type": "string", "pattern": "^data/canonical-task-records/[A-Z0-9][A-Z0-9-]{2,127}\\.json$"},
+    "proposed_generation": {"type": "integer", "minimum": 0},
+    "observed_live_generation": {"type": "integer", "minimum": 0},
+    "owning_existing_goal": {"type": "string", "minLength": 1},
+    "admission_decision_ref": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}
