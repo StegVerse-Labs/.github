@@ -47,9 +47,22 @@ def resolved_human_action_ref(task: dict[str, Any], component_profile: dict[str,
     return action
 
 
+def normalize_dependency(dep: Any) -> dict[str, Any]:
+    """Registry dependencies are objects or bare task-id references.
+
+    A bare reference carries no observed state, so it projects as UNKNOWN (fail closed)
+    instead of being dropped or crashing the projection.
+    """
+    if isinstance(dep, dict):
+        return dep
+    if isinstance(dep, str):
+        return {"task_id": dep, "state": "UNKNOWN", "dependency_form": "TASK_ID_REFERENCE"}
+    return {"state": "UNKNOWN", "dependency_form": "MALFORMED"}
+
+
 def build_projection(task: dict[str, Any], component_profile: dict[str, Any] | None = None) -> dict[str, Any]:
     unresolved_dependencies = [
-        dep for dep in task.get("dependencies", [])
+        dep for dep in map(normalize_dependency, task.get("dependencies", []))
         if dep.get("state") in {"UNKNOWN", "UNRESOLVED"}
     ]
     human_action = resolved_human_action_ref(task, component_profile)

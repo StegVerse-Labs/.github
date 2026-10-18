@@ -10,7 +10,22 @@ TERMINAL_RECONCILIATION_STATES = {
     "SUPERSEDED",
     "SATISFIED_BY_EXISTING_STATE",
     "CANCELLED_BY_AUTHORITY",
+    # Canonical Task Registry terminal coordination states.
+    "RETIRED",
+    "CLOSED",
 }
+# Registry coordination states that mean work is live and must never be rewritten or
+# superseded by reconciliation without escalation.
+ACTIVE_STATES = {"ACTIVE", "IN_PROGRESS", "ACTIVE_SOURCE_WORK"}
+
+
+def _lifecycle_state(task: dict[str, Any]) -> Any:
+    """Handoff tasks carry ``state``; canonical Registry tasks carry ``coordination_state``."""
+    return task.get("state") if "state" in task else task.get("coordination_state")
+
+
+def _is_live(task: dict[str, Any]) -> bool:
+    return _lifecycle_state(task) in ACTIVE_STATES or bool(task.get("claim_id") or task.get("worker_id"))
 
 
 def _authority_signature(task: dict[str, Any]) -> tuple[Any, Any]:
@@ -81,7 +96,7 @@ def reconcile_tasks(
             effects.append({"task_id": task_id, "disposition": "UNCHANGED"})
             continue
 
-        if current.get("state") == "ACTIVE" or current.get("claim_id") or current.get("worker_id"):
+        if _is_live(current):
             current["reconciliation_disposition"] = "ESCALATION_REQUIRED"
             current["reconciliation_reason"] = "ACTIVE_CLAIM_REQUIRES_PRECLAIM_OR_SUCCESSOR_RECONCILIATION"
             effects.append({"task_id": task_id, "disposition": "ESCALATION_REQUIRED", "reason": current["reconciliation_reason"]})
@@ -113,9 +128,14 @@ def reconcile_tasks(
     for task_id, current in sorted(existing.items()):
         if task_id in desired:
             continue
-        if current.get("state") in TERMINAL_RECONCILIATION_STATES:
+        # A handoff's desired projection only speaks for the tasks that handoff produced.
+        # Absence from a partial bundle never supersedes tasks owned by another handoff
+        # or recorded directly in the canonical Registry.
+        if current.get("source_handoff_ref") != source_handoff_ref:
             continue
-        if current.get("state") == "ACTIVE" or current.get("claim_id") or current.get("worker_id"):
+        if _lifecycle_state(current) in TERMINAL_RECONCILIATION_STATES:
+            continue
+        if _is_live(current):
             current["reconciliation_disposition"] = "ESCALATION_REQUIRED"
             current["reconciliation_reason"] = "TASK_NO_LONGER_DESIRED_BUT_ACTIVE_CLAIM_EXISTS"
             effects.append({"task_id": task_id, "disposition": "ESCALATION_REQUIRED", "reason": current["reconciliation_reason"]})
