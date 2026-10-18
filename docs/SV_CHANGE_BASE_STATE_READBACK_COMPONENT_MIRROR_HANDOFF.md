@@ -14,7 +14,14 @@ SV_CHANGE admission binds a base `{registry_generation, ledger_head}` (TVC `sv_c
 
 `resident-runtime/sv_change_base_state_readback.py::evaluate(repository, bound_main_commit, *, hb_epoch=None, main_ref="refs/heads/main")`
 
-- **registry_generation**: `generation` of `data/canonical-task-registry.json` at exactly `bound_main_commit`, read with `git cat-file`. It never reads a working tree. The commit must be `main_ref` or in its history.
+- **registry_generation**: `generation` of the repository's own registry file at exactly `bound_main_commit`, read with `git cat-file`. It never reads a working tree. The commit must be `main_ref` or in its history. The path comes from the pinned `REGISTRY_PATHS` map, keyed by the caller's `repository_name`:
+
+  | repository | registry path |
+  |---|---|
+  | StegVerse-Labs/.github | `data/canonical-task-registry.json` (integer `generation`) |
+  | StegVerse-org/.github | `orchestration/task-registry.json` (`orchestration_task_registry`; declares no `generation` at main 40a5d235) |
+
+  There is no default path. An unmapped repository is FAIL_CLOSED `REGISTRY_PATH_NOT_DECLARED`. A registry that declares no `generation` is FAIL_CLOSED `REGISTRY_GENERATION_NOT_DECLARED` (failed_predicate `REGISTRY_DECLARES_GENERATION`, `joint_item` and next_attempt naming joint item **Q-ORG-REGISTRY-GENERATION**, owning_existing_goal #164). A declared but malformed generation, or a missing file, stays `REGISTRY_GENERATION_UNREADABLE`. The component proposes and makes no registry edit.
 - **ledger_head**: the commit of `refs/stegverse/organization-ledger` in the same local repository. The chain is verified first by the existing `resident-runtime/organization_ledger_readback.py::readback`, so there is no second verifier. The ref must not move during the read.
 
 Sealed receipt `stegverse.sv-change-base-state-readback/v1`:
@@ -75,3 +82,7 @@ Composing the component is a `data/canonical-task-registry.json` mutation. Main 
 ## Local observation (not CI evidence)
 
 On 2026-10-18, run on the box against a local clone (main `978b8880`, ref fetched read-only), the readback returned ALLOW with `base_ref {registry_generation: 319, ledger_head: a5bb54d81893b392a3ce28182986fc39857807e1}`, a ledger chain of 7, and `hb_epoch` null (JD-P4-3 open). This is a local run only.
+
+## Run against StegVerse-org/.github main 40a5d235 (read-only, local bare clone)
+
+Before this fix the producer hard-coded `data/canonical-task-registry.json`, which org/.github does not have, so it returned FAIL_CLOSED `REGISTRY_GENERATION_UNREADABLE`. With `--repository-name StegVerse-org/.github` it reads `orchestration/task-registry.json` (blob `de0f66b1`) and returns FAIL_CLOSED `REGISTRY_GENERATION_NOT_DECLARED`, failed_predicate `REGISTRY_DECLARES_GENERATION`, next_attempt "after joint item Q-ORG-REGISTRY-GENERATION decides how this registry declares its generation", `hb_epoch` null (JD-P4-3), sealed `sha256:6324f1bb432b21de3a357faf902b0ff437fb0c51dd1a0a019600d03382094913`. The clone's refs were unchanged. Local run only, not CI evidence.

@@ -70,19 +70,22 @@
       "capability_provided": "read_back_sv_change_base_state",
       "inputs": {
         "repository": "local git repository (clone) holding the bound main commit and refs/stegverse/organization-ledger, fetched by the caller's existing transport",
-        "bound_main_commit": "40-hex main commit the caller binds; data/canonical-task-registry.json is read at exactly this commit",
+        "bound_main_commit": "40-hex main commit the caller binds; the repository's own registry file (REGISTRY_PATHS) is read at exactly this commit",
         "main_ref": "ref whose history must contain bound_main_commit (default refs/heads/main)",
-        "hb_epoch": "optional, supplied by the caller (ASCII digits >= 32); absent -> null, open as JD-P4-3, never derived"
+        "hb_epoch": "optional, supplied by the caller (ASCII digits >= 32); absent -> null, open as JD-P4-3, never derived",
+        "repository_name": "the repository the clone is of (e.g. StegVerse-org/.github); selects its registry path from the pinned REGISTRY_PATHS map; unmapped -> REGISTRY_PATH_NOT_DECLARED (no default path)"
       },
       "outputs": {
         "base_ref": "{registry_generation, ledger_head}: the registry generation at bound_main_commit and the organization-ledger ref commit",
-        "sources": "[{file, blob_sha}] for data/canonical-task-registry.json at bound_main_commit and refs/stegverse/organization-ledger:HEAD.json",
+        "sources": "[{file, blob_sha}] for the repository's registry file at bound_main_commit and refs/stegverse/organization-ledger:HEAD.json",
         "disposition": "ALLOW, or FAIL_CLOSED carrying failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal (StegVerse-org/.github#164) and next_attempt",
         "result_sha256": "sha256 seal over the canonical receipt"
       },
       "preconditions": [
         "bound_main_commit_well_formed_and_present",
         "bound_main_commit_on_main_ref",
+        "registry_path_declared_for_repository",
+        "registry_declares_generation",
         "registry_parses_with_integer_generation_at_bound_commit",
         "organization_ledger_ref_present",
         "organization_ledger_reads_back_via_organization_ledger_readback",
@@ -100,6 +103,8 @@
       "authority_effect": "NONE_READBACK_ONLY",
       "failure_classes": [
         "BASE_STATE_NOT_OBSERVED",
+        "REGISTRY_PATH_NOT_DECLARED",
+        "REGISTRY_GENERATION_NOT_DECLARED",
         "REGISTRY_GENERATION_UNREADABLE"
       ],
       "retry_or_reentry_semantics": "Deterministic for an identical repository state, bound commit and supplied hb_epoch. No schedule, loop, clock or retry: the admission caller invokes it when it needs a base binding and re-invokes after the refusal's next_attempt is satisfied.",
