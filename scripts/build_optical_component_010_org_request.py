@@ -11,7 +11,9 @@ scripts/build_capability_boundary_experiment_org_request.py (SDK#553, 5dd0f25)
 writes for StegVerse-org/.github.
 
 The manifest is not composed here. It is taken from a declaration in the
-canonical records only, and the canonical digest is the one this organization's
+canonical records only, with no input empty or a placeholder. It is checked by
+the ingress's own stegverse.manifest_contract.validate_ingress_manifest before
+any digest is taken, and the canonical digest is the one this organization's
 ingress recomputes: resident-runtime/organization_manifest_ingress.py
 `derive_execution_request(manifest, boundary())`, not the wire digest. When the
 records declare no manifest for the transition, nothing is written and the
@@ -24,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import functools
 import importlib.util
 import json
 import sys
@@ -62,10 +65,15 @@ SDK_MANIFEST_INPUTS = (
     "manifest.extensions.stegverse_route",
 )
 STANDING_INPUTS = ("standing.mode", "standing.node_ref", "standing.predecessor")
+NULLABLE_INPUTS = ("standing.predecessor",)
+# A value that only stands in for one is not a declaration of it.
+PLACEHOLDER_PREFIXES = ("OWNER_PLACEHOLDER", "<")
 
 INPUTS_UNDECLARED = "COMPONENT_010_MANIFEST_INPUTS_UNDECLARED"
 DIGEST_NOT_PINNED = "COMPONENT_010_REQUEST_DIGEST_NOT_PINNED"
 DIGEST_MISMATCH = "COMPONENT_010_REQUEST_DIGEST_MISMATCH"
+CONTRACT_INVALID = "COMPONENT_010_MANIFEST_CONTRACT_INVALID"
+SDK_UNAVAILABLE = "COMPONENT_010_INGRESS_SDK_UNAVAILABLE"
 RETRY_ENTRYPOINT = "scripts/build_optical_component_010_org_request.py --organization-root ."
 
 
@@ -127,41 +135,77 @@ def component_inputs(profile: dict[str, Any]) -> list[str]:
     return list(rows[0].get("inputs") or [])
 
 
+def _placeholder(value: Any, *, nested: bool = False) -> bool:
+    """An empty value, or a sentinel standing in for one anywhere within it.
+
+    Emptiness counts only for the declared value itself: a real manifest may
+    carry an empty list or string inside it, but never a sentinel.
+    """
+    if isinstance(value, str):
+        text = value.strip()
+        return text.startswith(PLACEHOLDER_PREFIXES) or (not nested and not text)
+    if isinstance(value, (dict, list)):
+        children = value.values() if isinstance(value, dict) else value
+        return (not nested and not value) or any(_placeholder(v, nested=True) for v in children)
+    return False
+
+
 def _present(declaration: dict[str, Any] | None, dotted: str) -> bool:
+    """The input is declared with a real value: not absent, empty or a placeholder."""
     if declaration is None:
         return False
     head, _, rest = dotted.partition(".")
     node: Any = declaration.get(head)
     if rest == "payload_or_payload_commitment":
-        return isinstance(node, dict) and ("payload" in node or "payload_commitment" in node)
+        if not isinstance(node, dict):
+            return False
+        value = node.get("payload", node.get("payload_commitment"))
+        return value is not None and not _placeholder(value)
     for key in rest.split(".") if rest else ():
         if not isinstance(node, dict) or key not in node:
             return False
         node = node[key]
-    return True
+    if node is None:
+        # A null predecessor is the declared genesis standing, not an absent one.
+        return dotted in NULLABLE_INPUTS
+    return not _placeholder(node)
 
 
 def missing_inputs(record: dict[str, Any], profile: dict[str, Any],
                    declaration: dict[str, Any] | None) -> list[str]:
     """The inputs a valid request needs that no canonical record declares."""
     missing = []
-    payload = (declaration or {}).get("manifest", {}).get("payload") if declaration else None
+    manifest = (declaration or {}).get("manifest")
+    payload = manifest.get("payload") if isinstance(manifest, dict) else None
     for name in component_inputs(profile):
         # task_id is the canonical goal itself; every other component-010 input
         # is a fact of a session event, which only a declaration can supply.
         if name == "task_id" and record.get("task_id") == GOAL:
             continue
-        if not (isinstance(payload, dict) and name in payload):
+        if not (isinstance(payload, dict) and payload.get(name) is not None
+                and not _placeholder(payload[name])):
             missing.append(f"{COMPONENT}.{name}")
     missing += [n for n in SDK_MANIFEST_INPUTS + STANDING_INPUTS if not _present(declaration, n)]
     return missing
 
 
-def ingress_canonical(manifest: dict[str, Any]) -> str:
-    """The canonical projection exactly as this organization's ingress derives it."""
+@functools.lru_cache(maxsize=1)
+def ingress_module() -> Any:
+    """This organization's ingress, which imports the SDK it validates and derives with."""
     spec = importlib.util.spec_from_file_location("organization_manifest_ingress", ROOT / INGRESS)
     ingress = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(ingress)
+    return ingress
+
+
+def ingress_validate(manifest: dict[str, Any]) -> None:
+    """The ingress's own envelope check, stegverse.manifest_contract.validate_ingress_manifest."""
+    ingress_module().validate_ingress_manifest(manifest)
+
+
+def ingress_canonical(manifest: dict[str, Any]) -> str:
+    """The canonical projection exactly as this organization's ingress derives it."""
+    ingress = ingress_module()
     return ingress.derive_execution_request(manifest, ingress.boundary())["canonical_manifest_sha256"]
 
 
@@ -184,6 +228,7 @@ def _held_to(name: str, pinned: str | None, actual: str) -> None:
 
 
 def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]], str] = ingress_canonical,
+                  validate_of: Callable[[dict[str, Any]], None] = ingress_validate,
                   pins: dict[str, str | None] | None = None) -> tuple[dict[str, Any], bytes]:
     """Return the request and its file bytes, or raise Refusal with six fields."""
     pins = pins if pins is not None else {
@@ -208,6 +253,20 @@ def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]],
             satisfying_edge=edge.get("satisfying_edge"),
             inputs_read=[TASK_RECORD, COMPONENT_PROFILE])
     manifest = json.loads(manifest_file_bytes(declaration["manifest"]))
+    # The check the ingress applies on receipt runs here first, so no digest is
+    # computed, or pinned, for a manifest the ingress would refuse.
+    try:
+        validate_of(manifest)
+    except ImportError as exc:
+        raise refusal(SDK_UNAVAILABLE,
+                      f"the SDK {INGRESS} imports is installed where the request is built",
+                      "install the StegVerse-SDK commit the organization workflows pin, then rebuild",
+                      detail=str(exc)) from exc
+    except ValueError as exc:
+        raise refusal(CONTRACT_INVALID,
+                      "the declared manifest passes stegverse.manifest_contract.validate_ingress_manifest",
+                      f"correct the declared {TRANSITION} manifest in {TASK_RECORD}",
+                      detail=str(exc)) from exc
     _held_to("MANIFEST_FILE_SHA256", pins["MANIFEST_FILE_SHA256"],
              hashlib.sha256(manifest_file_bytes(manifest)).hexdigest())
     canonical = canonical_of(manifest)
