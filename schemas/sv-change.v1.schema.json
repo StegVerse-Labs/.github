@@ -168,6 +168,7 @@
     },
     "content": {
       "items": {
+        "additionalProperties": false,
         "allOf": [
           {
             "if": {
@@ -220,6 +221,7 @@
             ]
           },
           "deleted": {
+            "description": "required (TVC#519); true exactly when blob_digest is null. Migration derives it as (blob_digest is null) when the history records none.",
             "type": "boolean"
           },
           "path": {
@@ -292,6 +294,7 @@
         "required": [
           "path",
           "blob_digest",
+          "deleted",
           "writer_session"
         ],
         "type": "object"
@@ -322,6 +325,7 @@
       "description": "supplied; SF-1: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL"
     },
     "head": {
+      "additionalProperties": false,
       "properties": {
         "change_digest": {
           "description": "sha256: + lowercase hex sha256 over the same canonical bytes as change_id (x-canonical-serialization of {target_repository, base_ref, content}); change_digest[7:] equals change_id[4:]. Helper: sv_work_items.change_digest.",
@@ -540,11 +544,13 @@
       "type": "string"
     },
     "touched_paths": {
+      "description": "Equals the set of content[].path, no duplicates (SV_CHANGE_TOUCHED_PATHS_MISMATCH).",
       "items": {
         "minLength": 1,
         "type": "string"
       },
-      "type": "array"
+      "type": "array",
+      "uniqueItems": true
     },
     "unknown_fields": {
       "items": {
@@ -578,11 +584,20 @@
         "description": "SF-5. Only LEDGER_RECEIPT (ref under refs/) counts toward VERIFIED; OBSERVED_ARTIFACT is cited evidence and leaves the check unobserved.",
         "properties": {
           "change_digest": {
-            "description": "must equal head.change_digest of the change it validates; otherwise VALIDATION_NOT_AT_EXACT_HEAD",
+            "description": "must equal head.change_digest of the change it validates; otherwise CHECK_SKIPPED_OR_UNOBSERVED with failed check RECEIPT_CHANGE_DIGEST_EQUALS_HEAD (TVC#519)",
             "pattern": "^sha256:[0-9a-f]{64}$",
             "type": "string"
           },
           "check_id": {
+            "description": "one of the ids in data/sv-work-items/required-checks.json#checks (emitted by the NWI-S1 verifier); any other is CHECK_ID_UNDECLARED",
+            "enum": [
+              "mutation-negative-suite",
+              "registry-generation-fence",
+              "schema-validate",
+              "supplied-epoch-binder-check",
+              "unit-tests",
+              "workflow-surface-registered"
+            ],
             "minLength": 1,
             "type": "string"
           },

@@ -5,7 +5,14 @@ listed in unknown_fields, and permitted only where the schema's x-migrated-unkno
 other field is copied or derived by a published rule:
   surface        <- resolve_surface(retry_entrypoint) through the pinned data/sv-work-items/surface-aliases.json:
                     patch entrypoints, repository paths, lane aliases, bare names (RF-2); box-local paths and paths
-                    outside every supplied repository tree are NON_REPOSITORY_EVIDENCE (RF-3); otherwise UNKNOWN
+                    outside every supplied repository tree are NON_REPOSITORY_EVIDENCE (RF-3); an alias declared in
+                    unresolved_declarations (target exists only at another PR head) stays UNKNOWN and its
+                    alias_disposition is FAIL_CLOSED, never ALLOW (FB-1); otherwise UNKNOWN
+  surface (class column) <- derive_surface_with_class_column: only when the entrypoint resolves to UNKNOWN, the same
+                    resolver runs on the lane table's Class column; the result carries migration_flags
+                    SURFACE_DERIVED_FROM_CLASS_COLUMN (derived, not observed). Builders supply the cells only (FB-2)
+  content.deleted <- recorded value; when the history records none, deleted = (blob_digest is null), the schema's
+                    "null exactly when deleted" rule read backwards (TVC#519 makes deleted required)
   issue_id       <- sv_work_items.issue_identity; reworded restatements merge into one record (restatements[])
   change_id      <- sv_work_items.change_identity over {target_repository, base_ref, content}
   writer_session <- {session, DECLARED} when the history names a session, else {null, UNKNOWN}
@@ -29,7 +36,7 @@ EXT = r"(?:py|json|jsonl|yml|yaml|md|sh|diff|patch|js|cjs|mjs|ts|toml|txt)"
 PATH = re.compile(r"(?<![\w.-])((?:[/~]|\.{1,2}/)?(?:[\w.*-]+/)+[\w.*-]+\." + EXT + r")")
 BARE = re.compile(r"(?<![\w/.-])([\w-][\w.-]*\." + EXT + r")(?![\w/])")
 SURFACE_ALIASES_PATH = wi.ROOT / "data/sv-work-items/surface-aliases.json"
-SURFACE_ALIASES_BLOB = "125083bc84edb97f6132c37e467055410cd7c005"  # git blob sha of surface-aliases.json; the lifter refuses any other table
+SURFACE_ALIASES_BLOB = "debd7d7b0544b11bc1ac87d0b82bb21c22247c55"  # git blob sha of surface-aliases.json; the lifter refuses any other table
 
 
 def git_blob(raw: bytes) -> str:
@@ -75,14 +82,51 @@ def resolve_surface(text: Any, repo_paths: Collection[str] | None = None, table:
     m = PATH.search(text)
     if m:
         return _surface(m.group(1), repo_paths)
-    for e in sorted(table["lane_aliases"], key=lambda e: -len(e["alias"])):
-        if re.search(r"(?<![\w/.-])" + re.escape(e["alias"]) + r"(?![\w/-])", text):
-            return _resolved(e, e["alias"], repo_paths)
+    e = _alias_match(text, table)
+    if e is not None:
+        return U if e.get("disposition") == "FAIL_CLOSED" else _resolved(e, e["alias"], repo_paths)
     for m in BARE.finditer(text):
         for e in table["bare_names"]:
             if e["name"] == m.group(1):
                 return _resolved(e, e["name"], repo_paths)
     return U
+
+
+def _alias_match(text: str, table: Mapping[str, Any]) -> Mapping[str, Any] | None:
+    """Longest whole-token alias among lane_aliases and unresolved_declarations."""
+    entries = list(table["lane_aliases"]) + list(table.get("unresolved_declarations") or [])
+    for e in sorted(entries, key=lambda e: (-len(e["alias"]), e["alias"])):
+        if re.search(r"(?<![\w/.-])" + re.escape(e["alias"]) + r"(?![\w/-])", text):
+            return e
+    return None
+
+
+def alias_disposition(token: str, table: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """ALLOW with the surface only for an alias whose target was verified in a declared repository tree. An unresolved
+    declaration returns its recorded six-field FAIL_CLOSED (its evidence is a PR head, not the base); an UNKNOWN or
+    undeclared alias fails closed too. Nothing here can turn an unresolved declaration into ALLOW."""
+    table = table if table is not None else load_aliases()
+    e = _alias_match(token, table) if isinstance(token, str) else None
+    if e is not None and e.get("disposition") == "FAIL_CLOSED":
+        return {k: e[k] for k in ("disposition",) + tuple(wi.SIX_FIELDS)} | {"alias": e["alias"], "evidence": dict(e["evidence"])}
+    if e is not None and e["path"] not in (U, NRE) and "verified" in e:
+        return {"disposition": "ALLOW", "alias": e["alias"], "surface": _resolved(e, e["alias"], None)}
+    return {"disposition": "FAIL_CLOSED", "failure_code": "SURFACE_ALIAS_UNRESOLVED", "failed_predicate": "SURFACE_ALIASES_ARE_DECLARED_AND_PINNED",
+            "required_evidence_or_repair": "declare the alias in data/sv-work-items/surface-aliases.json with a target verified in a declared tree",
+            "retry_entrypoint": "resident-runtime/sv_migration.py::alias_disposition", "owning_existing_goal": "StegVerse-org/.github#163",
+            "next_attempt": "after the alias table is re-pinned (SURFACE_ALIASES_BLOB)", "alias": token}
+
+
+def derive_surface_with_class_column(retry_entrypoint: Any, class_cell: Any,
+                                     repo_paths: Collection[str] | None = None) -> tuple[Any, list[str]]:
+    """FB-2 (from Lane D's builder): resolve the entrypoint; only if that is UNKNOWN, resolve the row's Class column by
+    the same rules. Returns (surface, migration_flags); a class-column surface is flagged as derived, never observed."""
+    s = resolve_surface(retry_entrypoint, repo_paths)
+    if s == U and isinstance(class_cell, str) and class_cell.strip():
+        c = resolve_surface(class_cell, repo_paths)
+        if c != U:
+            return c, [wi.MIGRATION_FLAG_SURFACE_FROM_CLASS]
+    return s, []
 
 
 def derive_surface(retry_entrypoint: Any, repo_paths: Collection[str] | None = None) -> Any:
@@ -106,6 +150,10 @@ def provenance(base: Mapping[str, Any], original: Mapping[str, Any] | None = Non
 def finish_issue(body: Mapping[str, Any]) -> dict[str, Any]:
     rec = {k: v for k, v in body.items() if k not in ("issue_id", "issue_sha256", "unknown_fields")}
     rec["record_mode"] = "MIGRATED_HISTORICAL"
+    if "migration_flags" in rec:
+        rec["migration_flags"] = sorted(set(rec["migration_flags"]))
+        if not rec["migration_flags"]:
+            del rec["migration_flags"]
     rec["unknown_fields"] = sorted(wi.sentinel_pointers(rec))
     rec["issue_id"] = wi.issue_identity(rec)
     return wi.seal(rec, "issue_sha256")
@@ -122,6 +170,11 @@ def merge_issues(records: Iterable[Mapping[str, Any]]) -> tuple[list[dict[str, A
             keep = {k: v for k, v in out[r["issue_id"]].items() if k != "issue_sha256"}
             six = {f: r["disposition"][f] for f in wi.SIX_FIELDS}
             first = {f: keep["disposition"][f] for f in wi.SIX_FIELDS}
+            if str(r.get("owning_goal")).strip() == U and six != first:
+                # FB-3: without an observed goal two bodies under one id are not provably one issue; never merge them
+                raise wi._fail("SV_ISSUE_ID_COLLISION", "ISSUE_ID_IS_UNIQUE_IN_RECORD_SET",
+                               "name source_receipt.evidence_locator for each UNKNOWN-goal entry so each keeps its own identity",
+                               "merge_issues", issue_id=r["issue_id"])
             if six != first and six not in keep.get("restatements", []):
                 keep["restatements"] = keep.get("restatements", []) + [six]
                 keep["unknown_fields"] = sorted(wi.sentinel_pointers(keep))
@@ -133,9 +186,16 @@ def merge_issues(records: Iterable[Mapping[str, Any]]) -> tuple[list[dict[str, A
     return sorted(out.values(), key=lambda x: x["issue_id"]), remap
 
 
+def content_entry(c: Mapping[str, Any]) -> dict[str, Any]:
+    """{path, blob_digest, deleted, writer_session}; deleted keeps its recorded value, else (blob_digest is null)."""
+    return {"path": c.get("path"), "blob_digest": c.get("blob_digest"),
+            "deleted": c["deleted"] if "deleted" in c else c.get("blob_digest") is None, "writer_session": c.get("writer_session")}
+
+
 def finish_change(body: Mapping[str, Any]) -> dict[str, Any]:
     rec = {k: v for k, v in body.items() if k not in ("change_id", "request_digest", "unknown_fields", "migration_flags")}
     rec["record_mode"] = "MIGRATED_HISTORICAL"
+    rec["content"] = [content_entry(c) for c in rec.get("content") or []]
     old_head = (rec.get("head") or {}).get("change_digest")
     rec["head"] = {"change_digest": wi.change_digest(rec)}
     legacy = legacy_change_digest(rec["content"])

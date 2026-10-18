@@ -289,7 +289,8 @@ class LifecycleTests(unittest.TestCase):
 
 def al_known_good_change(issue_id):
     path = "resident-runtime/example_transition.py"
-    content = [{"path": path, "blob_digest": "sha256:" + "a" * 64, "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
+    content = [{"path": path, "blob_digest": "sha256:" + "a" * 64, "deleted": False,
+                "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
     digest = wi.change_digest({"target_repository": "StegVerse-Labs/.github", "base_ref": dict(BASE), "content": content})
     checks, _ = wi.required_for([path])
     ch = {"schema": wi.CHANGE_SCHEMA, "record_mode": "NATIVE", "target_repository": "StegVerse-Labs/.github", "resolves": [issue_id],
