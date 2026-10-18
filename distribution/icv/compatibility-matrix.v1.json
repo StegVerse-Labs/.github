@@ -1,0 +1,154 @@
+{
+  "schema": "stegverse.icv.compatibility-matrix/v1",
+  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "pins": "distribution/icv/package-pins.v1.json",
+  "evidence_classes": {
+    "DECLARED": "what the package's own manifest at the pinned commit says",
+    "CI_CONFIGURED": "what this repository's CI runs on every pull request; observed results are the run ids recorded on the PR and the Lane A checkpoint, not in this file",
+    "LOCAL_BOX": "runs on the Lane A box; not CI and not customer evidence"
+  },
+  "rows": [
+    {
+      "package": "stegverse-sdk",
+      "version": "1.3.0",
+      "source": "StegVerse-org/StegVerse-SDK@291ad15b0382971f2e56c393ceb59c26862e3257",
+      "license_declared": "MIT",
+      "rights_clearance": "CLEARED_AS_DECLARED_MIT_NOT_A_LEGAL_DETERMINATION",
+      "requires_python_declared": ">=3.9",
+      "python_classifiers_declared": [
+        "3.9",
+        "3.10",
+        "3.11",
+        "3.12",
+        "3.13"
+      ],
+      "operating_system_declared": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (no OS classifier or platform constraint in the manifest)",
+      "runtime_dependencies_declared": [],
+      "offline_lifecycle": "EXERCISED",
+      "import_smoke": "EXERCISED"
+    },
+    {
+      "package": "stegverse-sdk",
+      "version": "1.0.12",
+      "source": "StegVerse-org/StegVerse-SDK@04f774731dc438b1585d1040e17dc708f705447a",
+      "license_declared": "MIT",
+      "rights_clearance": "CLEARED_AS_DECLARED_MIT_NOT_A_LEGAL_DETERMINATION",
+      "requires_python_declared": ">=3.9",
+      "python_classifiers_declared": [
+        "3.9",
+        "3.10",
+        "3.11"
+      ],
+      "operating_system_declared": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (no OS classifier or platform constraint in the manifest)",
+      "runtime_dependencies_declared": [
+        "requests>=2.28.0",
+        "pyyaml>=6.0",
+        "python-dotenv>=0.19.0"
+      ],
+      "offline_lifecycle": "EXERCISED",
+      "import_smoke": "NOT_EXERCISED: declares three third-party runtime dependencies; this offline lane installs no third-party bytes, so the 1.0.12 file set is installed only as the upgrade-from state"
+    },
+    {
+      "package": "stegcore",
+      "version": "0.3.0",
+      "source": "StegVerse-Labs/StegCore@2f7f426c546f8b39c10a5d20bbc341bc5a4b8544",
+      "license_declared": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "rights_clearance": "NOT_CLEARED",
+      "requires_python_declared": ">=3.11",
+      "python_classifiers_declared": [],
+      "operating_system_declared": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (no OS classifier or platform constraint in the manifest)",
+      "runtime_dependencies_declared": [
+        "pydantic>=2.7.0",
+        "fastapi>=0.115.0",
+        "uvicorn>=0.30.0",
+        "jsonschema>=4.23.0"
+      ],
+      "offline_lifecycle": "REFUSED_FAIL_CLOSED (ICV_PIN_STEGCORE_LICENSE_UNDECLARED)"
+    },
+    {
+      "package": "stegverse-core-lite",
+      "version": "0.9.0",
+      "source": "Data-Continuation/core-lite@72bdb0f110031ccc2cd98b8ebb7c22b1ab7326f8",
+      "license_declared": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "rights_clearance": "NOT_CLEARED",
+      "requires_python_declared": ">=3.11",
+      "python_classifiers_declared": [],
+      "operating_system_declared": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (no OS classifier or platform constraint in the manifest)",
+      "runtime_dependencies_declared": [],
+      "offline_lifecycle": "REFUSED_FAIL_CLOSED (ICV_PIN_CORE_LITE_LICENSE_UNDECLARED)"
+    },
+    {
+      "package": "governance-observatory",
+      "version": "0.1.0",
+      "source": "StegVerse-Labs/governance-observatory@11eae39aee34f5d2338ca347a69d25ef2b00fc41",
+      "license_declared": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "rights_clearance": "NOT_CLEARED",
+      "requires_python_declared": "not applicable (node scripts)",
+      "python_classifiers_declared": [],
+      "operating_system_declared": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (no OS classifier or platform constraint in the manifest)",
+      "runtime_dependencies_declared": [],
+      "offline_lifecycle": "REFUSED_FAIL_CLOSED (ICV_PIN_OBSERVATORY_LICENSE_UNDECLARED)"
+    }
+  ],
+  "ci_configured": [
+    {
+      "job": "test-suite-ratchet.yml / ratchet",
+      "runner": "ubuntu-latest",
+      "python": "3.11",
+      "runs": "tests/test_icv_distribution_offline_install.py: hermetic install/upgrade/uninstall/refusal/acquire tests on synthetic bytes, plus pins and matrix consistency; no network"
+    }
+  ],
+  "ci_not_configured": {
+    "what": "the pinned-bytes lifecycle (scripts/icv_distribution_offline_install.py --lifecycle) in CI",
+    "why": "control/workflow-surface-registry.json (#3039 H6b): an external fetch must not be folded into a dispatcher, and every new workflow file must be registered first",
+    "disposition": "FAIL_CLOSED ICV_LIFECYCLE_CI_SURFACE_UNDECIDED, joint discovery entry (class C)"
+  },
+  "local_box_observed": {
+    "evidence_class": "LOCAL_BOX",
+    "os": "Linux x86_64",
+    "interpreters": "CPython from uv-managed builds",
+    "by_python": {
+      "3.9": {
+        "python": "3.9.25",
+        "platform": "Linux-x86_64",
+        "receipts": 17,
+        "pass": 13,
+        "fail_closed": 4
+      },
+      "3.10": {
+        "python": "3.10.22",
+        "platform": "Linux-x86_64",
+        "receipts": 17,
+        "pass": 13,
+        "fail_closed": 4
+      },
+      "3.11": {
+        "python": "3.11.17",
+        "platform": "Linux-x86_64",
+        "receipts": 17,
+        "pass": 13,
+        "fail_closed": 4
+      },
+      "3.12": {
+        "python": "3.12.15",
+        "platform": "Linux-x86_64",
+        "receipts": 17,
+        "pass": 13,
+        "fail_closed": 4
+      },
+      "3.13": {
+        "python": "3.13.16",
+        "platform": "Linux-x86_64",
+        "receipts": 17,
+        "pass": 13,
+        "fail_closed": 4
+      }
+    },
+    "note": "every run: 13 PASS (stegverse-sdk 1.3.0 and 1.0.12 acquire/verify/install/uninstall, 1.0.12->1.3.0 upgrade, import smoke) and 4 expected FAIL_CLOSED (three license refusals, ICV repo bytes)"
+  },
+  "not_observed": [
+    "macOS and Windows: no CI or local run",
+    "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED: PyPy and other implementations",
+    "stegcore, stegverse-core-lite, governance-observatory: refused before install (no declared license)"
+  ]
+}
