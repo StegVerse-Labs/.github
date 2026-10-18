@@ -1,0 +1,598 @@
+{
+  "schema": "stegverse.icv.distribution-pins/v1",
+  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "non_claims": [
+    "Not a legal determination: a license recorded here is what the cited file declares, nothing more.",
+    "Not a release, publication, entitlement or execution authorization.",
+    "A PASS lifecycle receipt is source/CI evidence, not authentic runtime or customer installation evidence."
+  ],
+  "observed_at": "2026-10-18T05:20Z",
+  "observed_via": "GitHub connector (cursor-github get_branch/get_tag/get_git_tree/get_file_contents/list_releases), Grok Bot lane A",
+  "workstream": "StegVerse-Labs/.github#3183 workstream B (ICV commercial distribution); Lane A goal StegVerse-org/.github#165",
+  "package_naming_rule": "package names are taken only from #3183, the repo-standards ICV census, the Site ICV catalog mirror and readable manifests",
+  "packages": [
+    {
+      "package": "stegverse-sdk",
+      "import_name": "stegverse",
+      "named_by": [
+        "StegVerse-Labs/.github#3183 body: 'pinned, rights-cleared SDK/StegGate components'",
+        "StegVerse-Labs/.github#3183 body: 'SDK customer-local route: StegVerse-org/StegVerse-SDK#334'"
+      ],
+      "source_repository": "StegVerse-org/StegVerse-SDK",
+      "repository_visibility_observed": "public",
+      "license_declared": {
+        "spdx": "MIT",
+        "evidence": [
+          {
+            "path": "LICENSE",
+            "blob": "b5b623afb77d40e5673d4075cfd4591251b802f0",
+            "text": "MIT License, Copyright (c) 2026 StegVerse"
+          },
+          {
+            "path": "pyproject.toml",
+            "blob": "69a2dc2dc0d608003d4fd096ed51a3bc1e56eea8",
+            "field": "project.license.text = MIT; classifier 'License :: OSI Approved :: MIT License'"
+          },
+          {
+            "source": "GitHub repository license detection",
+            "value": "MIT"
+          }
+        ]
+      },
+      "rights_clearance": "CLEARED_AS_DECLARED_MIT_NOT_A_LEGAL_DETERMINATION",
+      "lifecycle_test": true,
+      "version": "1.3.0",
+      "source_ref": "main",
+      "commit": "291ad15b0382971f2e56c393ceb59c26862e3257",
+      "commit_tree": "8fb34eb5b9cca11eac93f9bc466d75214fe75502",
+      "package_roots": [
+        {
+          "path": "stegverse",
+          "tree": "19f4e46ad5c61facba7cba02ff1515819af63c35"
+        },
+        {
+          "path": "stegverse_sdk",
+          "tree": "631aabf6551ecad2173085d0dbcb3cd7cdd054f7"
+        }
+      ],
+      "manifest_blobs": {
+        "pyproject.toml": "69a2dc2dc0d608003d4fd096ed51a3bc1e56eea8",
+        "LICENSE": "b5b623afb77d40e5673d4075cfd4591251b802f0",
+        "setup.py": "4a7cf815073c3c682468c7435389e2abc51eefbc",
+        "VERSION.json": "9dc528409ad83d069daa30e2c26b9902179ec329"
+      },
+      "requires_python": ">=3.9",
+      "python_classifiers": [
+        "3.9",
+        "3.10",
+        "3.11",
+        "3.12",
+        "3.13"
+      ],
+      "runtime_dependencies": [],
+      "optional_dependencies_declared": {
+        "dev": [
+          "pytest>=7.0",
+          "jsonschema>=4.18"
+        ],
+        "governed-test": [
+          "stegcore @ StegVerse-Labs/StegCore@ef38410505b0ef3e84148892b1d6e3cdef20f300",
+          "stegverse-core-lite @ Data-Continuation/core-lite@72bdb0f110031ccc2cd98b8ebb7c22b1ab7326f8"
+        ],
+        "manifold-test": [
+          "stegcore @ StegVerse-Labs/StegCore@99397392462b8e39a510ec6d9e543551270bd402"
+        ]
+      },
+      "package_data": {
+        "stegverse.demo_data": [
+          "*.json"
+        ],
+        "stegverse": [
+          "pinned_sources/*.json"
+        ]
+      },
+      "console_scripts_declared": 13,
+      "import_smoke": true,
+      "install_files": {
+        "stegverse/__init__.py": "9248b39bc8e53c54c56a9979ca7a99c0a1cea4e8",
+        "stegverse/__main__.py": "a78814f07e83bbf774945532729c033def99c477",
+        "stegverse/_stdlib_http.py": "00bbddb59e7fb9f154a0b1da702f75cc0b5ec252",
+        "stegverse/activation_evidence.py": "da1782fb61189ede24348837199e521ce6b14737",
+        "stegverse/active_probe_execution.py": "34b6a99641c194cf807701b5ffb15e84e5a8c6cc",
+        "stegverse/admissibility.py": "914886e6ce6b26eba3bbbdcc35e7da0904895be6",
+        "stegverse/admissibility_bundle.py": "7e189821ed12079a376d08f91174fa6bc7752b67",
+        "stegverse/admissibility_composition.py": "dfe0af8ecd366da735b6f2f63e1bc439b584c568",
+        "stegverse/admissibility_exchange.py": "49ff28fa639c1d8db063f853558586ca8d2908fb",
+        "stegverse/admissibility_receipts.py": "cf3c475a9a34a4e2b0b67a93a47490aec71109de",
+        "stegverse/admissibility_replay.py": "2c30a3c4bc64e0b287a75ceb307ad0ad4357a9fa",
+        "stegverse/admittedcode_receipt.py": "0abee6ad66d1adfd7e10679fe875315cce0fd51f",
+        "stegverse/ai_entry_receipt_capture.py": "d7668a9f3b23972aabf0ec62df3946123ca4d8b8",
+        "stegverse/atomic_task_worker_binding.py": "28d11a901b868c2179cd2c5656f9f288a8ee8e25",
+        "stegverse/atomic_task_worker_processor.py": "157c7c851f1106f0a888c40618c0cc1ccad0a2e1",
+        "stegverse/authority_basis_bridge.py": "748badbd0b7bb02ec0cd5e0afa254eff6093f839",
+        "stegverse/bridge_registry.py": "8f229647acf64858a80ec7d1c162b72795ceeece",
+        "stegverse/canonical_source_collector.py": "b98c9adca405fd7ed15f90f3b815fb0ce205c637",
+        "stegverse/capability_graph.py": "c69b414c37f62a70e66eb958e11ee2530c0894f7",
+        "stegverse/capability_inventory.py": "51a9863d192750051616811d7cbd14dc91f20085",
+        "stegverse/capability_map.py": "99dd9a6da16608f18510dc539034e5b96579cdf4",
+        "stegverse/capability_resolution.py": "3c0951789b30775d340c521009bf583ed4009788",
+        "stegverse/cli.py": "41bd5f1de4b49c4ac39820340be74723e2db030e",
+        "stegverse/client.py": "e5a0ddfaf3eae2bfbf14fe43515b9563bed76284",
+        "stegverse/collab_ingress_processor.py": "c0598a7ab9d393920e8cfbbc0e32a99a084dc5c4",
+        "stegverse/communication_edge_cli.py": "d50c5f4fe2188920eafe8b842e903f5101f69a55",
+        "stegverse/communication_edge_demo.py": "2186827e057cd2144defb7dc500bb6f14fa4e38e",
+        "stegverse/comparison_orchestrator.py": "c16b5e163c44e4ae78b0d64ef5cb82309b48ee1d",
+        "stegverse/comparison_transport.py": "7f734126e0e4ae760c0e6c289a93d097293d4665",
+        "stegverse/component011_receipt_compatibility.py": "784bb4c24fd7cddc4ba19fc4eff30c9af250c642",
+        "stegverse/connector_capability_overlay.py": "41cb68657468fd964c4a6548199c7116abd21ad3",
+        "stegverse/coordinate_navigation.py": "ae2914baa4c91478eeadf0abd7c686c53fc2ef22",
+        "stegverse/cost_registry.py": "d82ef29b93c3dca43b1028ffdb63e0048babd074",
+        "stegverse/current_basis.py": "5971a050d94fc237cad65d23ba5ac873ee6900b4",
+        "stegverse/customer_local_governance.py": "a9be6f18963116c6b42ae1d0f9d01b2ecc61300f",
+        "stegverse/demo_data/__init__.py": "d7257365d51ae4d032fd12b5c09c1981a81a8d75",
+        "stegverse/demo_data/admittedcode_allow.json": "1f8171dfbaa7980e47706c92f132b61ce80d6c3d",
+        "stegverse/demo_data/admittedcode_deny.json": "46220d483c89a738f76934c1e2a9df75e016c945",
+        "stegverse/demo_data/communication_edge_demo.json": "d52a02400435a117fb77b09e29799c6823111189",
+        "stegverse/demo_data/manifest_000_governance_outcomes.json": "3981f5f8430dad7f7cbfa531eaa5d4f36fb11c2e",
+        "stegverse/demo_data/manifold_governance_reviewable.json": "0202bc8e452b74559f6dd5797037faf543efd900",
+        "stegverse/demo_terms.py": "55b734b36f2963f2b9ca5cb2a9ac02752ac3337b",
+        "stegverse/ecosystem_catalog.py": "0d55f7d5dc647c8244ac86c8b0fba1a2abf5fc60",
+        "stegverse/ecosystem_chat_ask.py": "6ecd01bc57c39f4e4eebe48c263e92606c5b6a6b",
+        "stegverse/ecosystem_chat_backend.py": "62149189b71a4cdae6b084446e37032c94e8ddf2",
+        "stegverse/ecosystem_chat_bound_write_adapter.py": "494f0d3892627035f1feec8d58a2790c0cdaf954",
+        "stegverse/ecosystem_chat_destination_binding.py": "1e02f89586951f309c44dd3f2d3848c43e1da91c",
+        "stegverse/ecosystem_chat_entry.py": "5be326c7556e2ba3c0a061590314916496bf8868",
+        "stegverse/ecosystem_chat_http.py": "b4738529420c1c23481d9a3188b36bc2a4b56dc0",
+        "stegverse/ecosystem_chat_intake.py": "21258ba317a87b2b18a3c055ecfca1f09fb2a46a",
+        "stegverse/ecosystem_chat_issuer.py": "ae814b38b6e41da2caf16602e58096481c103edb",
+        "stegverse/ecosystem_chat_local_issuer.py": "e2f228b8c359d11db04da14fa905092dee4723a7",
+        "stegverse/ecosystem_chat_local_write_adapter.py": "11479054f72affb049fbe12a76c800a84a53655b",
+        "stegverse/ecosystem_chat_operations.py": "1db80cd3687cd249a672f4529de93936d01adf34",
+        "stegverse/ecosystem_chat_persistence_plan.py": "0190c14cb808154ee86d2a732726b492604cca6a",
+        "stegverse/ecosystem_chat_pipeline.py": "d56a8736c42d3577726447d0dcf69b35c0969696",
+        "stegverse/ecosystem_chat_pipeline_http.py": "5446550e9807ce685e1f17946d46e891fafc165b",
+        "stegverse/ecosystem_chat_receipt_authority.py": "b16f32407682cd484cb79d6a443b0709643ab765",
+        "stegverse/ecosystem_chat_receipt_engine.py": "b691bf5b725f62d781d7edd15568ec1f1925182e",
+        "stegverse/ecosystem_chat_receipt_request.py": "11f9f02a744b23a750df61f0bff26326faac7679",
+        "stegverse/ecosystem_chat_record_export.py": "76f7fd283b31a8578e1feb30334f597cc34468b4",
+        "stegverse/ecosystem_chat_write_adapter.py": "90a3a1efd535dc58c57aabb6208248c2d973f8e3",
+        "stegverse/ecosystem_chat_wsgi.py": "d2b3ddca4c03bbbcc55575a3db3e6def6a5fd8a0",
+        "stegverse/ecosystem_diagnostic_cli.py": "ea2fb7507c10fa21688a08b9d3ea0b5d1efede85",
+        "stegverse/ecosystem_diagnostic_runtime.py": "de4309b7474adf0fee8356d6a0144ff12f1c9591",
+        "stegverse/ecosystem_projection.py": "ff2875506d8c16c989b54e0ce9fd1b1f6e869a2a",
+        "stegverse/ecosystem_records.py": "118042e1134b99cb846b1de6e278336cf807b96e",
+        "stegverse/edge_cell_consumer.py": "ca5a308997315d1fcded918046a10aeab30f571d",
+        "stegverse/elyria_framework_adapter.py": "425db4ded97d653be15ac672204d65a7380f8f52",
+        "stegverse/entry_point_parity.py": "47c0d6704de6c505ce9c0b8ad1ba2baf78d3dcfd",
+        "stegverse/entry_point_roles.py": "387bd6aefe92dc5772faf722343297b892ba9749",
+        "stegverse/evaluation_boundary_verifier.py": "98e8672cebb936569f4ef05974d15789b29876d1",
+        "stegverse/evaluation_relationship.py": "569d3fb676038455912914d63afffd4bce0500c6",
+        "stegverse/evaluator_console.py": "947c427550a020915aadffd45338d0e4a3205e77",
+        "stegverse/evaluator_contract.py": "999c693caace45032fe9cc8bada1cc1704c5b0ab",
+        "stegverse/evaluator_governance_runtime.py": "f7b6e5b47c5320db769582a7f675690ba72aa83b",
+        "stegverse/evaluator_llm_entry.py": "b8050347ee7b31e2e9c20a8cf4a4f7e86e3f085b",
+        "stegverse/evaluator_manifest_builder.py": "1fec58e1f6e49e3c383e11b85b91520a71e202db",
+        "stegverse/evaluator_review_intr.py": "130e9680e435c909681c7cde481fd135081a926f",
+        "stegverse/execution_boundary.py": "b93a63033fe3c4fdeea05de862e8c297226474c1",
+        "stegverse/external_framework_runner.py": "13c77e9da185ca923217df2422792aaca7f06217",
+        "stegverse/external_interlock_bootstrap.py": "c45484799ef7a95f62f73de29a60101e93ce4c12",
+        "stegverse/external_interlock_ingress_binding.py": "9ff13080278e7363a15995216781be7db393c5ce",
+        "stegverse/framework_naming_guard.py": "59ae1155fe431a6f8c333b5001c22ce6a5be660c",
+        "stegverse/free_tier_metadata.py": "c9ebfd35a2ed2f636198d98ca948f45b63d792d3",
+        "stegverse/github_repository_fetcher.py": "6dba2acfa058f8eaa0e60a17f2b3b8180cf922b3",
+        "stegverse/governance_fallback.py": "8a49b3b146742516ee51379171e0398091fd9c6b",
+        "stegverse/governance_gate.py": "f8c6f3089300d274a84e57b094a779f1a3125fc7",
+        "stegverse/governance_ingress_cli.py": "1e16ffdfd20158d3c4f77a6c8efad7204683f369",
+        "stegverse/governance_ingress_runtime.py": "64bc29380f2e6775139fc0edf966f4e5e3f2c31f",
+        "stegverse/governance_navigation.py": "cfa14ceb855998f2d35fc3f92c888f573b8d0615",
+        "stegverse/governance_reference_graph.py": "41efbe56d659be50a2af01c95f4ab2f14cb19aa6",
+        "stegverse/governance_reference_projection.py": "10871b06c7fad43b60ae01fcd5a32e6f515b0cd2",
+        "stegverse/governance_return_evidence.py": "2573786116f61fedb655b7750282df958d090fd3",
+        "stegverse/governance_tightness.py": "a78fa7bafc5d3763cc53644ed873ff7b84e65234",
+        "stegverse/governed_application_spine.py": "4e3c09fef9a37fb7114bb7ca881f17bc0332f366",
+        "stegverse/governed_composite_response.py": "64087e5bea86e9d25a8ec8cf2945743f1e10121e",
+        "stegverse/governed_conversation.py": "a2c2aaaa3b0116a57fbc7355992f2f8a0fc6b3ea",
+        "stegverse/governed_llm.py": "dc1ab1e0e9ae060dc8305501ceaae360b8f9e1e2",
+        "stegverse/governed_llm_fan.py": "350078b2605f08df363949e911f919ed30a2ce04",
+        "stegverse/governed_llm_manifest.py": "63aab706decade946d39dfc49079cb5815fbfefc",
+        "stegverse/governed_llm_receipt.py": "7b5b9c98c14326e86a88afe964575c73d7179cb9",
+        "stegverse/governed_llm_session.py": "60fe4c118d68ed74b984820a55af8879e4779600",
+        "stegverse/governed_llm_session_intake.py": "1afe82734d250dd9b61256ec0e783c0c75694311",
+        "stegverse/governed_operations.py": "bb92db898a5a905b2b0955f0c714567e7cb3a1d8",
+        "stegverse/governed_remediation.py": "07848e9cb18561ac2bbe1d2cb7591de783ed72e1",
+        "stegverse/http_transport.py": "f3c86cef54afc63e6f25d5285520f6641a2a12aa",
+        "stegverse/integration_config.py": "5ac6e062c09e7d234f626048ed60fba6f529b64c",
+        "stegverse/interlock_return.py": "01e2024b6f20f48297cda28763dad315e5a3e2b2",
+        "stegverse/interlock_transition.py": "2590cd9b2bca0c1299b9b205b409e39c9a5c5a1b",
+        "stegverse/intr_destination_hop_lane.py": "3d547b82ceb4d925fad3b7631da366120975cdf7",
+        "stegverse/intr_epistemic_readiness_adapter.py": "e3949c1c36798b576bcde71dc08c8ffcab5b91c8",
+        "stegverse/intr_posture_runtime_bridge.py": "f8e90548a6754533711bdecfec6ec9d2e9680ae4",
+        "stegverse/iw_matrix_falsifier.py": "97446ec0bdd7ffc9819a9cfd5c4f0b723c73943c",
+        "stegverse/joint_relation.py": "d9bbf70fe3fd839f30fb78a155f0a9fa58f6a2f8",
+        "stegverse/kernel_api.py": "178e36d04122d2a8a3298a44ef345f36f84479d3",
+        "stegverse/llm_adapter_bridge.py": "70f28e2f2e85cc0381b6d58781565ae2f45041b2",
+        "stegverse/llm_adapter_dual.py": "c506dde001e76d8f3ac39af64739e63399d6cfd4",
+        "stegverse/llm_admissibility.py": "0b6a20fa4fb84b7bcd3d73513e3e031e83216ab7",
+        "stegverse/llm_connect_cli.py": "2a74ab5fa15876bb9c97af2c1bf8fc8b62187579",
+        "stegverse/llm_connection.py": "c2e212981fd6ac35d975521168dab5c2ed13a0e9",
+        "stegverse/llm_route_comparison.py": "db0223ec3ce193363d276d5e1417953fb143d835",
+        "stegverse/local_governance_boundary.py": "151fff64d182443d9e43a082acb9df160ea2e139",
+        "stegverse/local_governance_experiment.py": "ab0bd90ec9a4b526928daaec04d3279dd4279aa7",
+        "stegverse/local_run_record.py": "eed1f7cee1fec7cfc4ea0b4abe86287f72b74125",
+        "stegverse/machine_contract.py": "664894278d48fefaca8f316d13d0e806e49bb1c8",
+        "stegverse/manifest_builder.py": "28fce8fdab571e5df8990eaa55691b1623eae9fa",
+        "stegverse/manifest_contract.py": "0a45c590b4d5ae18fa81b89a8b93c3c2c4351110",
+        "stegverse/manifest_execution.py": "957a6ad78eb259a4c68e4f1eef94ad221ac0e2e8",
+        "stegverse/manifest_plan.py": "e38e07c2ee4036aac1804458c31c53c49ed44554",
+        "stegverse/manifest_state_transition_adapters.py": "e7df66106011585ae743d184946a355c4390f627",
+        "stegverse/manifest_state_transition_runtime.py": "1205a1188b91b1094b9622f0b59329e2db911df4",
+        "stegverse/manifold_governance.py": "b2da0e08aa60325870ffa5095b91eae7402f7aa7",
+        "stegverse/master_records_custody.py": "9187174671bdf7b1247be93eea6d76e50f659a28",
+        "stegverse/master_records_http.py": "85bd885a457dad1500b76a9deaaa310734b34ca1",
+        "stegverse/master_records_organization_record.py": "002532d3382a6f4ff4ab7374f7031800fc12ce8f",
+        "stegverse/math_admissibility.py": "a957b9748c91ea44691a81d69a8061f1f5933dfc",
+        "stegverse/mcp_cli.py": "c26c86ab3956d779dc36fef41503d9c756fce402",
+        "stegverse/mcp_governance.py": "8a9bfdf2c40032ef96bab303d45c8d275d3a10ed",
+        "stegverse/mcp_navigation.py": "32394b0b634aef39443b696125c020b090470020",
+        "stegverse/mcp_reference_server.py": "9f88b980b29987e42e818ebb9d4fdde10956bcec",
+        "stegverse/mcp_transport.py": "388f58ab294277fded78f35a36ca0a1e5b936734",
+        "stegverse/mhia_capability_graph.py": "570bd1ab1e90e21f9de53714d7242c004d6e860f",
+        "stegverse/mhia_procurement_gate.py": "717032e5ef9793fbdb344b3fcf46859a34bd702f",
+        "stegverse/mhia_reference_firmware.py": "8044754778cd5f85fb0361e794c508e230a9080c",
+        "stegverse/mhia_reference_hal.py": "ad17ebb3337f202950ce00b6ef5a26e50f0a15f2",
+        "stegverse/micro_node_commit_time_experiment.py": "64d22701dd0a97d355c33ff027d660c95b5401bc",
+        "stegverse/micro_node_return_path.py": "a4c9d7654cf77c2e338329e5a485a089641f9837",
+        "stegverse/mir_historical_accounting_delta.py": "9f2a79e900172e5f4e05a0eddde72c597fdd076f",
+        "stegverse/mir_leaf_v3.py": "4d7c1e8a95f4b08506554f61778624caed511395",
+        "stegverse/mir_run2_replay_reconstruction.py": "8efc0a09039a907ea6db397b51ea39c0c2ffcae0",
+        "stegverse/native_source_math.py": "33eab0dbd76da64d5a0fa93e40beec82a75a7aa7",
+        "stegverse/negative_conformance.py": "80621286f2c7e34bb3116d169d6b6764a346db37",
+        "stegverse/organization_ledger_evidence.py": "cee85cf4b96c4f9a5125f6d30f2bfca483787dfc",
+        "stegverse/organization_record_names.py": "2fe1f95aaf57622f339cb0554954096fa0643d33",
+        "stegverse/organization_role_conformance_processor.py": "caedf5a99e2d923c34f1c0bc5ed5ccfef4f3a431",
+        "stegverse/output_boundary_cli.py": "026112aaecb0b53575c8e683ad0e274cd61b4da9",
+        "stegverse/output_boundary_proof.py": "3185f1ea7273ca36e9f65103f262ebbfe70347c5",
+        "stegverse/pinned_sources/interlock-intr.json": "a1f61d82a38a817a1dd2749505d8802dd09a22f8",
+        "stegverse/portable_governance_exchange.py": "427231f83c2b4152cf7d14e60baf55836718bb28",
+        "stegverse/portable_governance_exchange_cli.py": "df998a7b3427fe4ab0a962b2b80d091fb57da492",
+        "stegverse/portable_governance_verifier.py": "a651817f95c8672b8de8b2b436cb04128acafab4",
+        "stegverse/portable_governance_verifier_cli.py": "2d25f97072beffc2e984c16cbd55e245283247bf",
+        "stegverse/portable_packages.py": "7600843fa4aad29625c036c32bbf6ab09ab2fcd5",
+        "stegverse/post_return_evidence.py": "03528b7913abc7ac335421b2cc85be9261fc9c5b",
+        "stegverse/post_return_production_runner.py": "695a74764d5536a30784183c9d2c877c412bedb1",
+        "stegverse/principal_class_conformance.py": "63fe27148d291054c1c148ecadf8af2d22d61539",
+        "stegverse/product_processing.py": "02457484f5c32d5d677810b4d0cedbc584393a35",
+        "stegverse/production_release_set.py": "4b8b13f864b9881738304bbaf5cd341563ca5f6b",
+        "stegverse/production_validation_runtime.py": "81fc7819ac8594edae0e13e9dcd6522d3543701e",
+        "stegverse/proof_release_gate.py": "ddbc530fd2d8b212a8dce2e51d2fe16e17ea43c6",
+        "stegverse/provider_usage_ingest.py": "4b2909ee71f0b328d5418370a20407eb6bf51d0c",
+        "stegverse/public_inspection.py": "e68f732804013b9a8574ed1d964336fdd9b4bbc4",
+        "stegverse/public_inspection_runtime.py": "07aab10791af10ea30c0aed69a6fc58b4046a0f8",
+        "stegverse/publisher_paper_publication.py": "10b9dbfbbfddb1c39474254d1673efacbf3a38c5",
+        "stegverse/publisher_return_binding.py": "fba813af7084a76da2f55bcce2af3736087b1e5e",
+        "stegverse/publisher_return_materialization.py": "fdf9234d21d6e17cee19d28854576885a6e4196d",
+        "stegverse/purpose_bound_worker.py": "df610eb5894fca11b63ab530f4ddc82de2e363ad",
+        "stegverse/purpose_bound_worker_cost_demo.py": "efba270ccf885c24be501ea4cd02421b83e8f9c8",
+        "stegverse/purpose_bound_worker_processor.py": "5cd68998f961b2d6bb999d2bd9963db920ae1564",
+        "stegverse/readiness.py": "272a04d89776b7b328c5872bf1f063b725be6145",
+        "stegverse/receipts.py": "df95c7b61f41a445fb693f80886d60f310f215aa",
+        "stegverse/reference_bounded_consequence.py": "b286c0f5751a497396cb207e4849f2493d6ea232",
+        "stegverse/reference_interlock_participant.py": "859df1af49c089f8902c7a94bb4bc4bd6fff4e60",
+        "stegverse/release_dependency_alignment.py": "17d16b30d75bc3bed4025ae550858ef6786ea861",
+        "stegverse/release_index.py": "1f9f07a9f379fbe24f7fbcc86f640f350f3303f3",
+        "stegverse/remediation_fork.py": "1160a30716c2c47c492dc87e38d7ce15165275d0",
+        "stegverse/remediation_return.py": "23c663b8c0f971c3d06cfa612d98306a5cf3e587",
+        "stegverse/repo_standards_gate_record.py": "3017930a8f6489f193ed4d706dcf0dac3f1b709f",
+        "stegverse/repository_source_reader.py": "2c32821afc66e65d852e78463dc38f8d43028b28",
+        "stegverse/review_authority.py": "7232e757e8d1ed10b393e2d28c7c6a5cf4847c79",
+        "stegverse/review_publisher_transfer.py": "98e429a5487d6a9c11b01d67ec5711273ac24e02",
+        "stegverse/route_resolution.py": "5cc5c1a9408b8ca9e7bbff95b177833cdd8d7c87",
+        "stegverse/safety_stack.py": "8c244dd475ce82248ddcfe2320084ead53650007",
+        "stegverse/sdk_surfaces.py": "ea54b96d960d37ad9b5f6e3c0e65c2c7f8a3d42d",
+        "stegverse/sdk_usage_observability.py": "732a137050734680974c039c1e9647e6f9f0a920",
+        "stegverse/security_posture.py": "778980b2167a184d45f9c68fb39f3f888b04b53d",
+        "stegverse/security_posture_binding.py": "6fa370d1eaa03c0f7470e23488f2c4e0b7fdc996",
+        "stegverse/security_posture_request.py": "7aa82a6e63bcdb1c66e509a4a26de5ef4c269410",
+        "stegverse/security_posture_stack.py": "15fabc0dc8573777457d9a1f7034ce053446e643",
+        "stegverse/self_characterization_cli.py": "c9892562e52949c2ab74cd5496ae61ba7560f1d8",
+        "stegverse/self_characterization_lane.py": "4be74e3ff96357e6eec1c8137519de7e2c93465a",
+        "stegverse/served_surface_assertion.py": "d277fd915368f52686db8b27b85e78579a914a25",
+        "stegverse/session_usage_receipt.py": "c4844347156363959fdd3d70828a29e60698fc3c",
+        "stegverse/shared_docs_freeze.py": "78d08c04a01914177008aa8d997f8ff15dc90b59",
+        "stegverse/shared_docs_provider_freeze.py": "9e26754940540f1ea7cdb2390b00791920438b94",
+        "stegverse/site_sdk_processing_handoff.py": "bd1987e43f982953abc1e0b01ef90f3340798fda",
+        "stegverse/source_evidence_packet.py": "b9426330bf57f70befff33fdab6ef5a7260939ad",
+        "stegverse/source_observation.py": "e91f417db56267467245c378c4e90eaf6da676ea",
+        "stegverse/sovereign_validation_runtime.py": "c2a57aca12d5b492ae7b29c4214e9f2bc378a7be",
+        "stegverse/spe_allow_consumer.py": "c797e7a92ded95b5d15387a2cd02eb525712904c",
+        "stegverse/spe_commitment_intake.py": "518dde0787e4981f647090b242a35a4a1723b826",
+        "stegverse/spe_steggate_bridge.py": "f60565b3561767c1b6980860f28bbdd2c1cdd108",
+        "stegverse/stage1_capability_discovery.py": "ce1fa99de9e82e20dc872c5e71dd3c37ce2379d3",
+        "stegverse/stage1_org_receipt_review.py": "45b7c53db1d30d342b66d899de65f4615edd7837",
+        "stegverse/standing_execution_context.py": "b6866a91b7c5adf9b3f494a2029efdd6afbc0670",
+        "stegverse/state_transition_evidence.py": "9d3c7d5b6221f59ca21749b6c6df80ec0e09845e",
+        "stegverse/stegbrowser_processor.py": "4530edff5a1a33608a821b70936025a4c6524215",
+        "stegverse/structural_validator_candidate.py": "e88f85666f60d5508c70ef0d61daf3f3ede3bdf4",
+        "stegverse/svg_governance_cycle_processor.py": "9a2d0f530530dd59825c6dde486e044e7681adda",
+        "stegverse/system_boundary.py": "9f8317f8bea27f2c1837011ffb1f6220eeb7d801",
+        "stegverse/system_boundary_activation.py": "f6d8f90133c7d28c4325cf15746754826ad0ac47",
+        "stegverse/system_boundary_downstream_status.py": "4cab4d80df358b5121db6e0a0520fcc1cc0a3d8a",
+        "stegverse/system_boundary_round_trip.py": "8fffe5514843f0b1e10f1578de0c17114899d36e",
+        "stegverse/system_boundary_workflow_evidence.py": "19b92da90914fde2611ee769d1aea043f750e9dc",
+        "stegverse/test_procedure.py": "6c53fe57d4becce970ad946f21f0cf87f95f8fbe",
+        "stegverse/tier_pricing.py": "e690dcaf67d5bae894b92ca5df9a0c8be1d4baa9",
+        "stegverse/transition_candidate.py": "82576c8b4d5ff9b721fb5fd46bdb89e733333315",
+        "stegverse/transition_usage.py": "fe6c9f483b8c6c919f8ce401763fcc44071cf4ec",
+        "stegverse/tvc_provider_probe_bridge.py": "0ba7fb452d2304590f62d719de4fe1f80ba5bf65",
+        "stegverse/universal_entry.py": "abd1d2a88310fe803e9df6848ca80a780cbb2660",
+        "stegverse/universal_entry_dispatch.py": "e2d34a5faf2f2832be3388c216b7235f955756c2",
+        "stegverse/universal_entry_events.py": "81a44b79f1e16146ba5a7c18e3b458facbb0c2a8",
+        "stegverse/universal_entry_handlers.py": "e082419d4d821149c49d98eaea35505a0282a8f5",
+        "stegverse/universal_entry_runtime.py": "79393e607286a105ed709f35e8d6ece54b7443b5",
+        "stegverse/universal_entry_server_runtime.py": "16d4c0251b214ef281983c489a1119288e19cff0",
+        "stegverse/universal_transition_table_cli.py": "c41a90f409f9a397f0c007e94f6c91e1412f6276",
+        "stegverse/universal_transition_table_intake.py": "714399aed97589ff380891fb59035dc865298fe3",
+        "stegverse/untrusted_dependency_review.py": "73aec29d530af32a6c47ed20a4b074f1ad4d0701",
+        "stegverse/versioned_sovereign_runtime.py": "092059c5899e1d102660c93fd56c00f11bfda63e",
+        "stegverse/viewer_bound_operations.py": "70253b0d5e6343b1afc34f641246b99fdeb97888",
+        "stegverse/wiki_publication_transition.py": "c3d48c173f2a2cd72236a97da2d4dc3370f6e0a4",
+        "stegverse/worker_cost_evidence.py": "1263af0b7f7f289b3db3808b0cc6ed12df98fe8e",
+        "stegverse/worker_lifecycle_qualifier.py": "426a6d343388965ca92b93d42d2314e6f09c3380",
+        "stegverse/worker_participation_history.py": "e6b95954fe7a6f5b65bacb52505fc76867349aad",
+        "stegverse/workspace_resource_consumer.py": "c5f71db0c3fa4a578c7b01712cd26ac4fbbbe4bc",
+        "stegverse_sdk/elan_intr_bridge.py": "fe7619e6e23999a40d01f8fb64c794c9c028a536"
+      }
+    },
+    {
+      "package": "stegverse-sdk",
+      "import_name": "stegverse",
+      "named_by": [
+        "StegVerse-Labs/.github#3183 body: 'pinned, rights-cleared SDK/StegGate components'",
+        "StegVerse-Labs/.github#3183 body: 'SDK customer-local route: StegVerse-org/StegVerse-SDK#334'"
+      ],
+      "source_repository": "StegVerse-org/StegVerse-SDK",
+      "repository_visibility_observed": "public",
+      "license_declared": {
+        "spdx": "MIT",
+        "evidence": [
+          {
+            "path": "LICENSE",
+            "blob": "b5b623afb77d40e5673d4075cfd4591251b802f0"
+          },
+          {
+            "path": "pyproject.toml",
+            "blob": "538d5dd9c0de8f9e6c6108646d5e7cbde5e5add2",
+            "field": "project.license.text = MIT"
+          }
+        ]
+      },
+      "rights_clearance": "CLEARED_AS_DECLARED_MIT_NOT_A_LEGAL_DETERMINATION",
+      "lifecycle_test": true,
+      "version": "1.0.12",
+      "source_ref": "tag v1.0.12 (annotated tag 9e1a11f71d9339430a74939038c2dfbc982e7e5c, unsigned)",
+      "commit": "04f774731dc438b1585d1040e17dc708f705447a",
+      "package_roots": [
+        {
+          "path": "stegverse",
+          "tree": "c879d07b746bc3990bf8d29a09691df2eceff37e"
+        }
+      ],
+      "manifest_blobs": {
+        "pyproject.toml": "538d5dd9c0de8f9e6c6108646d5e7cbde5e5add2",
+        "LICENSE": "b5b623afb77d40e5673d4075cfd4591251b802f0",
+        "setup.py": "4435e9e113fa57eab1a06a7b93df6ec580d6fe4e"
+      },
+      "requires_python": ">=3.9",
+      "python_classifiers": [
+        "3.9",
+        "3.10",
+        "3.11"
+      ],
+      "runtime_dependencies": [
+        "requests>=2.28.0",
+        "pyyaml>=6.0",
+        "python-dotenv>=0.19.0"
+      ],
+      "package_data": {},
+      "import_smoke": false,
+      "import_smoke_not_exercised_reason": "declares three third-party runtime dependencies; this offline lane installs no third-party bytes, so the 1.0.12 file set is installed only as the upgrade-from state",
+      "release_artifacts": [
+        {
+          "name": "stegverse_sdk-1.0.12-py3-none-any.whl",
+          "size": 13664,
+          "digest": "sha256:40b6c962428348f50f6f37aeed1e4adb13eed77cc7bbc061280587c0ed7afe8d"
+        },
+        {
+          "name": "stegverse_sdk-1.0.12.tar.gz",
+          "size": 15529,
+          "digest": "sha256:3493a7d638c25cc8b4ef9351b83255184c6d94d3935977d974c97fe41c17ef26"
+        }
+      ],
+      "release_artifacts_note": "digests as reported by the GitHub release API for release v1.0.12; recorded, not installed",
+      "install_files": {
+        "stegverse/__init__.py": "2f690bc47a5543912858da10e96c7def5da3d3fe",
+        "stegverse/client.py": "e5a0ddfaf3eae2bfbf14fe43515b9563bed76284",
+        "stegverse/kernel_api.py": "178e36d04122d2a8a3298a44ef345f36f84479d3",
+        "stegverse/llm_adapter_dual.py": "c506dde001e76d8f3ac39af64739e63399d6cfd4",
+        "stegverse/receipts.py": "f0c5b622309d9b8d38fc7b5e6ab256f69cf815f6",
+        "stegverse/safety_stack.py": "8c244dd475ce82248ddcfe2320084ead53650007"
+      }
+    },
+    {
+      "package": "stegcore",
+      "version": "0.3.0",
+      "import_name": "stegcore",
+      "console_script": "steggate = stegcore.cli:main",
+      "named_by": [
+        "StegVerse-Labs/.github#3183 body: 'SDK/StegGate components'",
+        "StegVerse-Labs/Site data/icv-commercial-catalog-public.json: offering icv.steggate.v1 'StegGate 0.3.0', DEVELOPMENT_PREVIEW, 'source-validated and not released'"
+      ],
+      "source_repository": "StegVerse-Labs/StegCore",
+      "repository_visibility_observed": "public",
+      "source_ref": "main",
+      "commit": "2f7f426c546f8b39c10a5d20bbc341bc5a4b8544",
+      "manifest_blobs": {
+        "pyproject.toml": "240b48d086f80fe134c920b297588d2a63f8170f",
+        "VERSION.json": "16cfa413e55489fb901a0a1cdc68739a01423bc3",
+        "RELEASE_NOTES_0_3_0.md": "1b62e9a5c316c8a45ca1192869a9e2ebe3f1e111",
+        "docs/licensing/DUAL_LICENSE_DECISION_CANDIDATE.md": "ed08406e71f88dcf3393e78356ad6bfd71a61db1"
+      },
+      "requires_python": ">=3.11",
+      "runtime_dependencies": [
+        "pydantic>=2.7.0",
+        "fastapi>=0.115.0",
+        "uvicorn>=0.30.0",
+        "jsonschema>=4.23.0"
+      ],
+      "license_declared": {
+        "spdx": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "evidence": [
+          {
+            "path": "pyproject.toml",
+            "blob": "240b48d086f80fe134c920b297588d2a63f8170f",
+            "field": "no project.license"
+          },
+          {
+            "path": "(root)",
+            "observation": "no LICENSE/NOTICE/COPYING blob anywhere in the tree at this commit"
+          },
+          {
+            "path": "docs/licensing/DUAL_LICENSE_DECISION_CANDIDATE.md",
+            "blob": "ed08406e71f88dcf3393e78356ad6bfd71a61db1",
+            "text": "'CANDIDATE / RIGHTS_REVIEW_REQUIRED / NO GRANT'; 'StegCore root LICENSE and LICENSE.md: not found'"
+          }
+        ]
+      },
+      "rights_clearance": "NOT_CLEARED",
+      "lifecycle_test": false,
+      "fail_closed": {
+        "failure_code": "ICV_PIN_STEGCORE_LICENSE_UNDECLARED",
+        "failed_predicate": "the StegCore source at 2f7f426c declares an operative license",
+        "required_evidence_or_repair": "an operative root LICENSE (and project.license) adopted by the StegCore rights holder through ECOSYSTEM-OPEN-SOURCE-STRATEGY-001; the candidate doc says no grant",
+        "retry_entrypoint": "re-run scripts/icv_distribution_offline_install.py --lifecycle after a pins refresh",
+        "owning_existing_goal": "ECOSYSTEM-OPEN-SOURCE-STRATEGY-001 (StegCore docs/licensing/DUAL_LICENSE_DECISION_CANDIDATE.md); Labs#3183 workstream B",
+        "next_attempt": "when a StegCore commit with an operative LICENSE is observed"
+      },
+      "secondary_blocker": "four third-party runtime dependencies; an offline install would also need their pinned, rights-cleared bytes (none pinned here)"
+    },
+    {
+      "package": "stegverse-core-lite",
+      "version": "0.9.0",
+      "import_name": "core_lite",
+      "named_by": [
+        "StegVerse-org/StegVerse-SDK pyproject.toml@291ad15b optional-dependencies.governed-test"
+      ],
+      "source_repository": "Data-Continuation/core-lite",
+      "repository_visibility_observed": "public",
+      "source_ref": "commit pinned by the SDK manifest",
+      "commit": "72bdb0f110031ccc2cd98b8ebb7c22b1ab7326f8",
+      "manifest_blobs": {
+        "pyproject.toml": "3ba3dcc4f89f56613147ceae66bc1cc3695ca729",
+        "CORE_LITE_MIRROR_HANDOFF.md": "5c506096fffd5450772c8393830ebda587f29068"
+      },
+      "requires_python": ">=3.11",
+      "runtime_dependencies": [],
+      "license_declared": {
+        "spdx": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "evidence": [
+          {
+            "path": "pyproject.toml",
+            "blob": "3ba3dcc4f89f56613147ceae66bc1cc3695ca729",
+            "field": "no project.license"
+          },
+          {
+            "path": "(root)",
+            "observation": "no LICENSE/NOTICE/COPYING blob in the tree at this commit; GitHub license detection: none"
+          }
+        ]
+      },
+      "rights_clearance": "NOT_CLEARED",
+      "lifecycle_test": false,
+      "relation_to_icv_core_lite": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (the ICV repo infrastructure-continuity-core-lite is not readable; no upstream relation is claimed)",
+      "fail_closed": {
+        "failure_code": "ICV_PIN_CORE_LITE_LICENSE_UNDECLARED",
+        "failed_predicate": "Data-Continuation/core-lite at 72bdb0f1 declares an operative license",
+        "required_evidence_or_repair": "an operative LICENSE adopted by the core-lite rights holder",
+        "retry_entrypoint": "re-run --lifecycle after a pins refresh",
+        "owning_existing_goal": "Labs#3183 workstream B (core-lite owner: Data-Continuation)",
+        "next_attempt": "when a core-lite commit with an operative LICENSE is observed"
+      }
+    },
+    {
+      "package": "governance-observatory",
+      "version": "0.1.0",
+      "import_name": null,
+      "named_by": [
+        "StegVerse-Labs/Site data/icv-commercial-catalog-public.json: offering icv.governance-observatory.v1 'Governance Observatory 0.1.0', RELEASED_PRODUCT"
+      ],
+      "source_repository": "StegVerse-Labs/governance-observatory",
+      "repository_visibility_observed": "private",
+      "source_ref": "main",
+      "commit": "11eae39aee34f5d2338ca347a69d25ef2b00fc41",
+      "release": {
+        "tag": "v0.1.0",
+        "release_commit": "277556adefb09900e7e889e4d919aeaf79ee6923",
+        "source": "VERSION.json"
+      },
+      "manifest_blobs": {
+        "package.json": "da26a787d907dc38d6ccf8baef3cd21298e2c52f",
+        "VERSION.json": "afa930c3b8eb72042ad9a4095d98eec75ecf7b44"
+      },
+      "runtime_declared": "node scripts (package.json); no engines field",
+      "runtime_dependencies": [],
+      "license_declared": {
+        "spdx": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "evidence": [
+          {
+            "path": "package.json",
+            "blob": "da26a787d907dc38d6ccf8baef3cd21298e2c52f",
+            "field": "no license field"
+          },
+          {
+            "path": "(root)",
+            "observation": "no LICENSE/NOTICE/COPYING blob in the tree at this commit"
+          }
+        ]
+      },
+      "rights_clearance": "NOT_CLEARED",
+      "lifecycle_test": false,
+      "fail_closed": {
+        "failure_code": "ICV_PIN_OBSERVATORY_LICENSE_UNDECLARED",
+        "failed_predicate": "governance-observatory at 11eae39a declares an operative license, and its bytes are fetchable without a credential",
+        "required_evidence_or_repair": "an operative LICENSE from the rights holder; a credential-free or TV/TVC-declared byte route for the private repo",
+        "retry_entrypoint": "re-run --lifecycle after a pins refresh",
+        "owning_existing_goal": "Labs#3183 workstream B; TVC-PRIVATE-SOURCE-READ-001 for the private-byte route",
+        "next_attempt": "when both are observed"
+      }
+    }
+  ],
+  "upgrade_paths": [
+    {
+      "package": "stegverse-sdk",
+      "from": "1.0.12",
+      "to": "1.3.0"
+    }
+  ],
+  "icv_repositories": {
+    "census": "StegVerse-Labs/repo-standards reports/organization-census/Infrastructure-Continuity-Ventures.json (observed 2026-10-04, total 7)",
+    "repositories": [
+      "Infrastructure-Continuity-Ventures/.github",
+      "Infrastructure-Continuity-Ventures/infrastructure-continuity-core-lite",
+      "Infrastructure-Continuity-Ventures/infrastructure-continuity-demo",
+      "Infrastructure-Continuity-Ventures/infrastructure-continuity-docs",
+      "Infrastructure-Continuity-Ventures/infrastructure-continuity-engine",
+      "Infrastructure-Continuity-Ventures/infrastructure-continuity-jurisdictions",
+      "Infrastructure-Continuity-Ventures/infrastructure-continuity-workflows"
+    ],
+    "bytes_observed": false,
+    "fail_closed": {
+      "failure_code": "ICV_REPO_BYTES_NOT_AUTHENTICALLY_READABLE",
+      "failed_predicate": "the 7 ICV repos' package/source bytes are readable through the declared read path (TVC read grant)",
+      "required_evidence_or_repair": "TVC builds an ICV census consumer in TVC-PRIVATE-SOURCE-READ-001 and emits a per-repo execution receipt (class B, StegVerse-Labs/TVC#520)",
+      "retry_entrypoint": "pins refresh from the TVC receipts, then re-run --lifecycle",
+      "owning_existing_goal": "TVC-PRIVATE-SOURCE-READ-001 (StegVerse-Labs/TVC#520); Labs#3183 workstream B",
+      "next_attempt": "when a TVC execution receipt for an ICV repo is observed"
+    },
+    "classification": "B"
+  }
+}
