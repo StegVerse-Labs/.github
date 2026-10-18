@@ -81,6 +81,9 @@ on:
       - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
       - 'scripts/check_registry_generation_fence.py'
       - 'tests/test_registry_generation_fence.py'
+      - 'scripts/evaluate_registry_admission_request.py'
+      - 'schemas/registry-admission-request.schema.json'
+      - 'tests/test_registry_admission_request.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
@@ -167,6 +170,9 @@ on:
       - 'data/canonical-task-records/EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001.json'
       - 'scripts/check_registry_generation_fence.py'
       - 'tests/test_registry_generation_fence.py'
+      - 'scripts/evaluate_registry_admission_request.py'
+      - 'schemas/registry-admission-request.schema.json'
+      - 'tests/test_registry_admission_request.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
 permissions: {}
@@ -225,7 +231,8 @@ jobs:
             tests.test_ungoverned_ai_defensive_envelope_consumer \
             tests.test_ephemeral_external_ai_org_first_components \
             tests.test_ecosystem_chat_reusable_composition \
-            tests.test_registry_generation_fence
+            tests.test_registry_generation_fence \
+            tests.test_registry_admission_request
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
           python scripts/validate_four_missing_cosv_tracking.py
           python scripts/validate_task_registration_substrate_resolution.py
