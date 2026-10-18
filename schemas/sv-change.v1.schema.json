@@ -168,10 +168,56 @@
     },
     "content": {
       "items": {
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "deleted": {
+                  "const": true
+                }
+              },
+              "required": [
+                "deleted"
+              ]
+            },
+            "then": {
+              "properties": {
+                "blob_digest": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "not": {
+                "properties": {
+                  "deleted": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "deleted"
+                ]
+              }
+            },
+            "then": {
+              "properties": {
+                "blob_digest": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
         "properties": {
           "blob_digest": {
+            "description": "sha256 of the new blob; null exactly when deleted is true",
             "pattern": "^sha256:[0-9a-f]{64}$",
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "deleted": {
             "type": "boolean"
@@ -278,8 +324,10 @@
     "head": {
       "properties": {
         "change_digest": {
+          "description": "sha256: + lowercase hex sha256 over the same canonical bytes as change_id (x-canonical-serialization of {target_repository, base_ref, content}); change_digest[7:] equals change_id[4:]. Helper: sv_work_items.change_digest.",
           "pattern": "^sha256:[0-9a-f]{64}$",
-          "type": "string"
+          "type": "string",
+          "x-derivation": "identical bytes to change_id; see /properties/change_id/x-derivation"
         }
       },
       "required": [
@@ -530,6 +578,7 @@
         "description": "SF-5. Only LEDGER_RECEIPT (ref under refs/) counts toward VERIFIED; OBSERVED_ARTIFACT is cited evidence and leaves the check unobserved.",
         "properties": {
           "change_digest": {
+            "description": "must equal head.change_digest of the change it validates; otherwise VALIDATION_NOT_AT_EXACT_HEAD",
             "pattern": "^sha256:[0-9a-f]{64}$",
             "type": "string"
           },

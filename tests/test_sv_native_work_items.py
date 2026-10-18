@@ -68,7 +68,10 @@ def reseal_issue(rec):
 
 def reseal_change(rec):
     rec = dict(rec)
-    rec["head"] = {"change_digest": wi.change_digest(rec["content"])}
+    try:
+        rec["head"] = {"change_digest": wi.change_digest(rec)}
+    except wi.Refusal:
+        pass
     rec["touched_paths"] = [c["path"] for c in rec["content"]]
     try:
         rec["change_id"] = wi.change_identity(rec)
@@ -287,7 +290,7 @@ class LifecycleTests(unittest.TestCase):
 def al_known_good_change(issue_id):
     path = "resident-runtime/example_transition.py"
     content = [{"path": path, "blob_digest": "sha256:" + "a" * 64, "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
-    digest = wi.change_digest(content)
+    digest = wi.change_digest({"target_repository": "StegVerse-Labs/.github", "base_ref": dict(BASE), "content": content})
     checks, _ = wi.required_for([path])
     ch = {"schema": wi.CHANGE_SCHEMA, "record_mode": "NATIVE", "target_repository": "StegVerse-Labs/.github", "resolves": [issue_id],
           "owning_goal": "StegVerse-org/.github#163", "declared_session": SESSION, "base_ref": dict(BASE), "head": {"change_digest": digest},

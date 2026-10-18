@@ -88,6 +88,13 @@ Author session: P1 Ecosystem AI Lane (d8cbc58c). Invariants: WORK_ITEMS_ARE_TASK
   - change_id: `svc:b1f56ebe998a4a0896e8f3f18ef76abe65f6f6bd0c613fa04e50291025300239`
 - **OBSERVED_ARTIFACT** counts as UNKNOWN for VERIFIED. A check with only artifact evidence is FAIL_CLOSED CHECK_SKIPPED_OR_UNOBSERVED. It is never a pass, and it never hides a ledger refusal.
 
+## head.change_digest and deleted entries
+- **head.change_digest** = `"sha256:" + sha256` over the same canonical bytes as `change_id` (`sv_work_items.change_digest(record)`). So `head.change_digest[7:] == change_id[4:]`, and the digest now moves with `target_repository` and `base_ref` as well as content. For the known-answer vector it is `sha256:b1f56ebe998a4a0896e8f3f18ef76abe65f6f6bd0c613fa04e50291025300239`.
+  - A record whose head digest differs from this is FAIL_CLOSED SV_CHANGE_DIGEST_MISMATCH.
+  - Every `validation_receipts[].change_digest` must equal `head.change_digest`. Otherwise admission is FAIL_CLOSED VALIDATION_NOT_AT_EXACT_HEAD.
+  - The earlier form (sha over sorted `{path, blob_digest}`) is kept only as `sv_migration.legacy_change_digest`. When lifting, a receipt is re-expressed in the new form only if the source head digest was the legacy digest of the same content and the receipt bound that value. Every other receipt digest is left as observed.
+- **Deleted entries:** the schema and `validate_change` require `blob_digest: null` when `deleted` is true, and a sha256 `blob_digest` otherwise. Any other combination is DENY SV_CHANGE_CONTENT_ENTRY_INVALID. This is the same null that the hashed form already used.
+
 ## RF-1..RF-3 (Lane D @1b53fb05)
 - **RF-1:** `owning_goal` (stripped) is now part of `issue_id`, so one predicate under two goals stays two issues and both goals appear in `goal_index`. **Known limit:** records whose `owning_goal` is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED all share that one value, so they can still collide.
 - **RF-2:** `data/sv-work-items/surface-aliases.json` (stegverse.sv-surface-aliases/v1) is pinned by git blob in `sv_migration.SURFACE_ALIASES_BLOB`. `load_aliases` refuses any other blob with FAIL_CLOSED SURFACE_ALIAS_TABLE_UNPINNED.

@@ -276,7 +276,7 @@ KAT_RECORD = {
     "content": [
         {"path": "schemas/\u00e9.json", "blob_digest": "sha256:" + "b" * 64,
          "writer_session": {"session": "P1", "evidence_class": "DECLARED"}},
-        {"path": "docs/old.md", "blob_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "deleted": True,
+        {"path": "docs/old.md", "blob_digest": None, "deleted": True,
          "writer_session": {"session": None, "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"}},
     ],
 }
@@ -311,7 +311,7 @@ class ChangeIdCanonicalTests(unittest.TestCase):
         hashed = wi.change_identity_input(KAT_RECORD)["content"][0]
         self.assertEqual(hashed, {"path": "docs/old.md", "blob_digest": None, "deleted": True})
         other = copy.deepcopy(KAT_RECORD); other["content"][1]["blob_digest"] = "sha256:" + "0" * 64
-        self.assertEqual(wi.change_identity(other), KAT_CHANGE_ID)  # a deleted path's stored digest is not identity
+        self.assertEqual(wi.change_identity(other), KAT_CHANGE_ID)  # hashed form is null either way; the validator refuses it (below)
         undeleted = copy.deepcopy(KAT_RECORD); undeleted["content"][1]["deleted"] = False
         self.assertNotEqual(wi.change_identity(undeleted), KAT_CHANGE_ID)
         truthy = copy.deepcopy(KAT_RECORD); truthy["content"][1]["deleted"] = "yes"
@@ -442,3 +442,62 @@ class RemainingFeedbackTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def sealed(**over):
+    """A NATIVE known-good change with overrides, resealed (change_id, head.change_digest, receipts at that head)."""
+    ch = copy.deepcopy(base.al_known_good_change("svi:" + "1" * 64))
+    ch.update(over)
+    ch["touched_paths"] = sorted(c["path"] for c in ch["content"])
+    ch = base.reseal_change(ch)
+    ch["validation_receipts"] = [{**v, "change_digest": ch["head"]["change_digest"]} for v in ch["validation_receipts"]]
+    return base.reseal_change(ch)
+
+
+class ChangeDigestTests(unittest.TestCase):
+    """head.change_digest is sha256 over the same canonical bytes as change_id; deleted entries store blob_digest null."""
+
+    def test_change_digest_equals_change_id_hex(self):
+        self.assertEqual(wi.change_digest(KAT_RECORD), "sha256:" + hashlib.sha256(KAT_BYTES).hexdigest())
+        self.assertEqual(wi.change_digest(KAT_RECORD)[len("sha256:"):], KAT_CHANGE_ID[len("svc:"):])
+        built = [json.loads(l) for l in (ROOT / "data/sv-work-items/migration/sv-changes.jsonl").read_text().splitlines() if l.strip()]
+        for ch in built + [base.al_known_good_change("svi:" + "1" * 64)]:
+            self.assertEqual(ch["head"]["change_digest"][7:], ch["change_id"][4:], ch["change_id"])
+            self.assertEqual(ch["head"]["change_digest"], wi.change_digest(ch))
+
+    def test_change_digest_moves_with_base_and_target(self):
+        ch = base.al_known_good_change("svi:" + "1" * 64)
+        for k, v in (("base_ref", dict(ch["base_ref"], registry_generation=ch["base_ref"]["registry_generation"] + 1)),
+                     ("target_repository", "StegVerse-org/.github")):
+            self.assertNotEqual(wi.change_digest(dict(ch, **{k: v})), ch["head"]["change_digest"], k)
+
+    def test_stale_head_digest_refused_and_receipts_must_match(self):
+        ch = base.al_known_good_change("svi:" + "1" * 64)
+        legacy = mg.legacy_change_digest(ch["content"])
+        bad = dict(ch, head={"change_digest": legacy})
+        self.assertEqual(code(wi.validate_change, bad), "SV_CHANGE_DIGEST_MISMATCH")
+        stale = base.reseal_change(dict(ch, validation_receipts=[dict(v, change_digest=legacy) for v in ch["validation_receipts"]]))
+        out = wi.admit({**wi.admission_inputs(stale, stale["base_ref"]), "required_signoff_roles": []})
+        self.assertEqual(out["failure_code"], "VALIDATION_NOT_AT_EXACT_HEAD")
+
+    def test_lift_reexpresses_only_receipts_bound_to_same_content(self):
+        src = copy.deepcopy(base.CHANGES[2])
+        legacy = mg.legacy_change_digest(src["content"])
+        src["head"] = {"change_digest": legacy}
+        src["validation_receipts"] = [
+            {"check_id": "a", "disposition": "ALLOW", "change_digest": legacy, "evidence_class": "OBSERVED_ARTIFACT", "ref": "x", "digest": None},
+            {"check_id": "b", "disposition": "ALLOW", "change_digest": "sha256:" + "9" * 64, "evidence_class": "OBSERVED_ARTIFACT", "ref": "x", "digest": None}]
+        out = mg.finish_change(src)
+        self.assertEqual([v["change_digest"] for v in out["validation_receipts"]], [out["head"]["change_digest"], "sha256:" + "9" * 64])
+
+    def test_deleted_entry_requires_null_blob_digest(self):
+        ws = {"session": SESSION, "evidence_class": "DECLARED"}
+        keep = base.al_known_good_change("svi:" + "1" * 64)["content"][0]
+        good = sealed(content=[keep, {"path": "docs/old.md", "blob_digest": None, "deleted": True, "writer_session": ws}])
+        self.assertEqual(both(good, CHANGE_SCHEMA, wi.validate_change), ([], "ALLOW"))
+        bad = sealed(content=[keep, {"path": "docs/old.md", "blob_digest": "sha256:" + "0" * 64, "deleted": True, "writer_session": ws}])
+        errs, c = both(bad, CHANGE_SCHEMA, wi.validate_change)
+        self.assertTrue(errs); self.assertEqual(c, "SV_CHANGE_CONTENT_ENTRY_INVALID")
+        live_null = sealed(content=[keep, {"path": "docs/new.md", "blob_digest": None, "writer_session": ws}])
+        errs, c = both(live_null, CHANGE_SCHEMA, wi.validate_change)
+        self.assertTrue(errs); self.assertEqual(c, "SV_CHANGE_CONTENT_ENTRY_INVALID")

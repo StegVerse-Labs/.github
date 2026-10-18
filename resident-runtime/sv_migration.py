@@ -136,7 +136,13 @@ def merge_issues(records: Iterable[Mapping[str, Any]]) -> tuple[list[dict[str, A
 def finish_change(body: Mapping[str, Any]) -> dict[str, Any]:
     rec = {k: v for k, v in body.items() if k not in ("change_id", "request_digest", "unknown_fields", "migration_flags")}
     rec["record_mode"] = "MIGRATED_HISTORICAL"
-    rec["head"] = {"change_digest": wi.change_digest(rec["content"])}
+    old_head = (rec.get("head") or {}).get("change_digest")
+    rec["head"] = {"change_digest": wi.change_digest(rec)}
+    legacy = legacy_change_digest(rec["content"])
+    # a receipt that bound this exact content in the pre-fa4dc6d2 digest form is re-expressed in the current form
+    rec["validation_receipts"] = [{**v, "change_digest": rec["head"]["change_digest"]}
+                                  if v.get("change_digest") in (legacy, old_head) and old_head == legacy else v
+                                  for v in rec.get("validation_receipts") or []]
     rec["touched_paths"] = sorted(c["path"] for c in rec["content"])
     if not rec.get("resolves"):
         rec["migration_flags"] = [wi.MIGRATION_FLAG_RESOLVES]
@@ -144,6 +150,11 @@ def finish_change(body: Mapping[str, Any]) -> dict[str, Any]:
     rec["change_id"] = wi.change_identity(rec)
     rec["request_digest"] = wi.request_digest(rec)
     return rec
+
+
+def legacy_change_digest(content: Iterable[Mapping[str, Any]]) -> str:
+    """The 1673cb5f..fa4dc6d2 head digest (sha over sorted {path, blob_digest}); read only to re-express old receipts."""
+    return wi.sha(sorted(({"path": c["path"], "blob_digest": c["blob_digest"]} for c in content), key=lambda c: c["path"]))
 
 
 def _writer(w: Any) -> dict[str, Any]:

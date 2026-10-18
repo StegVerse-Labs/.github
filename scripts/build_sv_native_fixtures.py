@@ -128,7 +128,7 @@ def changes(issue_rows: list[dict]) -> list[dict]:
 def known_good(kind_path: str) -> dict:
     """A known-good SV_CHANGE observation touching one surface kind (positive control)."""
     content = [{"path": kind_path, "blob_digest": "sha256:" + "a" * 64, "writer_session": {"session": SESSION, "evidence_class": "DECLARED"}}]
-    digest = wi.change_digest(content)
+    digest = wi.change_digest({"target_repository": "StegVerse-Labs/.github", "base_ref": dict(LABS_BASE), "content": content})
     checks, signoffs = wi.required_for([kind_path])
     ch = {"schema": wi.CHANGE_SCHEMA, "record_mode": "NATIVE", "target_repository": "StegVerse-Labs/.github", "resolves": ["svi:" + "0" * 64],
           "owning_goal": "StegVerse-org/.github#163", "declared_session": SESSION, "base_ref": dict(LABS_BASE),

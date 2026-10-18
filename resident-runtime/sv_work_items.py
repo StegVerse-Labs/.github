@@ -271,8 +271,10 @@ def validate_issue(rec: Any) -> dict[str, Any]:
 
 
 # ------------------------------------------------------------------ SV_CHANGE
-def change_digest(content: Iterable[Mapping[str, Any]]) -> str:
-    return sha(sorted(({"path": c["path"], "blob_digest": c["blob_digest"]} for c in content), key=lambda c: c["path"]))
+def change_digest(rec: Mapping[str, Any]) -> str:
+    """head.change_digest = "sha256:" + sha256 over the same canonical bytes as change_id
+    (canon(change_identity_input(rec))), so change_digest[7:] == change_id[4:]. Validation receipts bind it."""
+    return "sha256:" + hashlib.sha256(canon(change_identity_input(rec))).hexdigest()
 
 
 CANONICAL_SERIALIZATION = {"format": "JSON", "sort_keys": True, "separators": [",", ":"], "encoding": "UTF-8",
@@ -336,15 +338,19 @@ def validate_change(rec: Any) -> dict[str, Any]:
     if not isinstance(content, list) or not content:
         raise _deny("SV_CHANGE_CONTENT_EMPTY", "CHANGE_DIGEST_COVERS_CONTENT", "content lists every changed path", e)
     for c in content:
-        if not isinstance(c, Mapping) or not _str(c.get("path")) or not (isinstance(c.get("blob_digest"), str) and DIGEST.match(c["blob_digest"])) \
+        deleted = isinstance(c, Mapping) and c.get("deleted", False)
+        blob_ok = isinstance(c, Mapping) and (c.get("blob_digest") is None if deleted is True
+                                              else isinstance(c.get("blob_digest"), str) and DIGEST.match(c["blob_digest"]) is not None)
+        if not isinstance(c, Mapping) or not _str(c.get("path")) or deleted not in (True, False) or not blob_ok \
                 or not _writer_ok(c.get("writer_session")):
             raise _deny("SV_CHANGE_CONTENT_ENTRY_INVALID", "CHANGE_DIGEST_COVERS_CONTENT",
-                        "each entry has path, sha256 blob_digest, writer_session{session|null, evidence_class}", e)
+                        "each entry has path, writer_session{session|null, evidence_class}, deleted bool, and blob_digest "
+                        "sha256 (null exactly when deleted)", e)
     if len({c["path"] for c in content}) != len(content):
         raise _deny("SV_CHANGE_CONTENT_DUPLICATE_PATH", "CHANGE_DIGEST_COVERS_CONTENT", "one entry per path", e)
-    if (rec.get("head") or {}).get("change_digest") != change_digest(content):
-        raise _fail("SV_CHANGE_DIGEST_MISMATCH", "CHANGE_DIGEST_COVERS_CONTENT", "head.change_digest = change_digest(content)", e,
-                    expected=change_digest(content))
+    if (rec.get("head") or {}).get("change_digest") != change_digest(rec):
+        raise _fail("SV_CHANGE_DIGEST_MISMATCH", "CHANGE_DIGEST_COVERS_CONTENT",
+                    "head.change_digest = change_digest(record) (same canonical bytes as change_id)", e, expected=change_digest(rec))
     if sorted(rec.get("touched_paths") or []) != sorted(c["path"] for c in content):
         raise _deny("SV_CHANGE_TOUCHED_PATHS_MISMATCH", "TOUCHED_PATHS_EQUAL_CONTENT_PATHS", "touched_paths equals the content paths", e)
     if rec.get("lifecycle_state") not in CHANGE_STATES:
