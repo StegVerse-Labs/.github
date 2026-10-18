@@ -16,7 +16,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REF = "refs/stegverse/organization-ledger"
 NAMESPACE = "repository-ledger/StegVerse-Labs/.github"
-WORKFLOW = ROOT / ".github" / "workflows" / "organization-ledger-transition.yml"
+# The publishing steps live in the writer-only workflow; the PR-facing
+# organization-ledger-transition.yml holds no write permission.
+WORKFLOW = ROOT / ".github" / "workflows" / "organization-ledger-transition-writer.yml"
 
 
 def _module(name, relative):
@@ -271,6 +273,7 @@ class WriterContract(unittest.TestCase):
             ROOT / ".stegverse" / "transition-ledger" / "emit.py",
             ROOT / ".stegverse" / "transition-ledger" / "contract.json",
             ROOT / ".github" / "workflows" / "organization-ledger-transition.yml",
+            ROOT / ".github" / "workflows" / "organization-ledger-transition-writer.yml",
             ROOT / "tests" / "test_intr_destination_capability.py",
             ROOT / "tests" / "test_organization_ledger_transition_writer.py",
         ]

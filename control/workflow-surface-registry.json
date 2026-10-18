@@ -120,7 +120,13 @@
       "path": ".github/workflows/organization-ledger-transition.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001 / StegVerse-Labs/.github#3202",
-      "reason": "organization ledger writer: on pull_request (path-filtered) the validate job only compiles and unit-tests the writer and the intr-destination self-closure against temporary ledgers with contents: read; on workflow_dispatch (communication_id, supplied hb_epoch, packet_id) the transition job appends the diagnostic self-closure onto the existing refs/stegverse/organization-ledger, pushes that ref fast-forward only, and reads it back from a fresh fetch, refusing FAIL_CLOSED if the ref is absent. Needs job-scoped contents: write and the shared organization-ledger concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
+      "reason": "PR-facing half of the organization ledger writer (split by Lane D under SHWP-ORG-CLAIM-ALLOCATOR-001; publishing moved to .github/workflows/organization-ledger-transition-writer.yml): triggered by pull_request only (path-filtered); workflow and every job hold permissions contents: read and checkout uses persist-credentials false. The validate job compiles and unit-tests the writer and the intr-destination self-closure against temporary ledgers; the transition job is the PR-safe verify: it binds the designated ref and repository subtree, copies the published refs/stegverse/organization-ledger anonymously into a temporary ledger, reads it back through organization_ledger_readback.py, and requires the published ref unchanged. No append, no push, no credential, no synthesized hb_epoch; per-PR concurrency group outside ORGANIZATION_LEDGER_LOCK. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-transition-writer.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001 / StegVerse-Labs/.github#3202 / SHWP-ORG-CLAIM-ALLOCATOR-001 (writer split, Lane D)",
+      "reason": "writer-only half of the organization ledger writer: never triggers on pull_request (workflow_dispatch only: communication_id, supplied hb_epoch, packet_id); workflow permissions contents: read with job-scoped contents: write on the publish job only; under the shared organization-ledger concurrency group (ORGANIZATION_LEDGER_LOCK) it appends the diagnostic self-closure onto the existing refs/stegverse/organization-ledger, pushes that ref fast-forward only, and reads it back from a fresh fetch, refusing FAIL_CLOSED if the ref is absent. Split out so that no pull_request run is issued a write-scoped token; the PR-facing checks stay in .github/workflows/organization-ledger-transition.yml. Registration grants no authority."
     },
     {
       "path": ".github/workflows/reverse-intr-inter-org-route-validation.yml",
