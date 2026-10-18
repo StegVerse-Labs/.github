@@ -63,6 +63,74 @@
         "raw_selected_record_output": false,
         "secret_material_output": false
       }
+    },
+    {
+      "component_id": "RTC-REPOSITORY-LEDGER-GENESIS-READBACK-013",
+      "name": "Repository Ledger Genesis Readback",
+      "capability_provided": "read_back_repository_ledger_genesis_on_organization_ledger",
+      "inputs": {
+        "organization": "organization whose refs/stegverse/organization-ledger holds the repository subtree; also selects the fetch source https://github.com/<organization>/.github.git",
+        "repository": "repository whose chain is kept in repository-ledger/<organization>/<repository> of that ref",
+        "expected_organization_ledger_head": "40-hex organization-ledger commit the repository's genesis manifest is bound to",
+        "owning_existing_goal": "existing Goal Task the six fields name"
+      },
+      "outputs": {
+        "disposition": "ALLOW, or FAIL_CLOSED carrying failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal and next_attempt",
+        "observed_organization_ledger_head": "head of the fresh fetch",
+        "repository_chain_evidence": "on ALLOW: genesis and head receipt digests, chain length, and that every receipt verifies and is retained in the organization ledger",
+        "decision_sha256": "digest of the sealed answer"
+      },
+      "preconditions": [
+        "request_schema_is_stegverse.repository-ledger-genesis-readback-request/v1",
+        "request_names_this_component",
+        "organization_repository_head_and_goal_well_formed",
+        "organization_ledger_ref_fresh_fetched_anonymously"
+      ],
+      "expected_evidence": [
+        "observed_organization_ledger_head",
+        "repository_head_receipt_sha256",
+        "genesis_receipt_sha256",
+        "repository_chain_length",
+        "decision_sha256"
+      ],
+      "authority_owner": "The organization (runtime reality custody) for the ledger ref; its organization ledger writer for any append. This component only reads.",
+      "authority_effect": "NONE_READBACK_ONLY",
+      "failure_classes": [
+        "REPOSITORY_LEDGER_GENESIS_NOT_RETAINED",
+        "EXPECTED_ORG_LEDGER_HEAD_MOVED",
+        "EXPECTED_ORG_LEDGER_HEAD_NOT_AN_ANCESTOR",
+        "ORGANIZATION_LEDGER_REF_NOT_FETCHED",
+        "ORGANIZATION_LEDGER_READBACK_REFUSED",
+        "READBACK_REQUEST_INVALID"
+      ],
+      "retry_or_reentry_semantics": "Deterministic for an identical request and fetched head. Re-entered only when a manifest transition visits it again (the existing resident request dispatcher, consumer repository_ledger_genesis_readback); it owns no schedule, loop, clock or retry. The answer for a (request, observed head) pair is retained once.",
+      "version_or_schema_binding": [
+        "stegverse.repository-ledger-genesis-readback-request/v1",
+        "stegverse.repository-ledger-genesis-readback-result/v1",
+        "stegverse.organization-ledger-readback/v1"
+      ],
+      "implementation": {
+        "component": "resident-runtime/repository_ledger_genesis_readback.py::evaluate",
+        "reuses": [
+          "resident-runtime/organization_ledger_readback.py::readback",
+          "resident-runtime/organization_ledger_readback.py::repository_readback"
+        ],
+        "manifest_invocation": {
+          "request_location": "control/resident-execution-request.d/repository-ledger-genesis-readback-*.json",
+          "carrier": "scripts/dispatch_resident_execution_requests.py consumer repository_ledger_genesis_readback",
+          "consumer": "scripts/consume_repository_ledger_genesis_readback_request.py",
+          "retained_answer": "receipts/sovereign-host/repository-ledger-genesis-readback/<request digest>-<observed head>.json"
+        }
+      },
+      "invariants": {
+        "writes_ledger_or_ref": false,
+        "reads_clock": false,
+        "polls_or_retries": false,
+        "uses_credential": false,
+        "request_selects_fetch_source": false,
+        "new_dependency": false,
+        "moved_head_masks_retained_genesis": false
+      }
     }
   ]
 }
