@@ -35,14 +35,25 @@ def reseal(rb, **change):
 
 
 def lane_c_refusal(why):
-    """The FAIL_CLOSED receipt Lane C's readback emits when the head receipt's epoch is invalid (labs-3266 worktree,
-    sv_change_base_state_readback.py: _refuse(base, 'HB_EPOCH_SOURCE_UNOBSERVED', ...), hb_epoch null)."""
+    """The FAIL_CLOSED receipt Lane C's readback emits when the head receipt's epoch is invalid (Labs#3266 @641f4b03,
+    sv_change_base_state_readback.py blob fbd453e5: _refuse(base, 'HB_EPOCH_SOURCE_UNOBSERVED', ...)): hb_epoch and
+    hb_epoch_source are both present and null on every FAIL_CLOSED."""
     rb = fx.fixture_base_state_readback()
-    body = {k: v for k, v in rb.items() if k not in ("result_sha256", "hb_epoch_source")}
-    body.update({"hb_epoch": None, "disposition": "FAIL_CLOSED", "failure_code": "HB_EPOCH_SOURCE_UNOBSERVED", "failed_predicate": INV,
+    body = {k: v for k, v in rb.items() if k != "result_sha256"}
+    body.update({"hb_epoch": None, "hb_epoch_source": None, "disposition": "FAIL_CLOSED", "failure_code": "HB_EPOCH_SOURCE_UNOBSERVED",
+                 "failed_predicate": INV,
                  "required_evidence_or_repair": "the org-ledger head receipt at " + HEAD + " carries a valid $.hb_reference.epoch (" + why + ")",
                  "retry_entrypoint": "resident-runtime/sv_change_base_state_readback.py::evaluate", "owning_existing_goal": "StegVerse-org/.github#164",
                  "next_attempt": "after the org writer appends a head receipt carrying a supplied epoch; no epoch is minted here"})
+    return wi.seal(body, "result_sha256")
+
+
+def lane_c_mismatch(expected, observed="1024"):
+    """Lane C's DENY HB_EPOCH_MISMATCH (a contradicting --hb-epoch): the epoch and its source are still sealed."""
+    rb = fx.fixture_base_state_readback(hb_epoch=observed)
+    body = {k: v for k, v in rb.items() if k != "result_sha256"}
+    body.update({"disposition": "DENY", "failure_code": "HB_EPOCH_MISMATCH", "failed_predicate": INV, "expected_hb_epoch": expected,
+                 "flag_failure_code": "HB_EPOCH_FLAG_MISMATCH"})
     return wi.seal(body, "result_sha256")
 
 
@@ -71,6 +82,14 @@ class PredicateTests(unittest.TestCase):
             "source other head": reseal(rb, hb_epoch_source={**src, "ledger_head": "f" * 40}),
             "source other field": reseal(rb, hb_epoch_source={**src, "field": "$.hb_epoch"}),
             "no source": reseal(rb, hb_epoch_source=None),
+            "Lane C FAIL_CLOSED (both null)": reseal(rb, disposition="FAIL_CLOSED", failure_code="BASE_STATE_NOT_OBSERVED",
+                                                     hb_epoch=None, hb_epoch_source=None),
+            "FAIL_CLOSED carrying an epoch anyway": reseal(rb, disposition="FAIL_CLOSED", failure_code="BASE_STATE_NOT_OBSERVED"),
+            "DENY other than HB_EPOCH_MISMATCH": reseal(rb, disposition="DENY", failure_code="BASE_STALE"),
+            "old source key receipt_sha256": reseal(rb, hb_epoch_source={"ledger_head": HEAD, "field": src["field"],
+                                                                         "receipt_sha256": "sha256:" + "3" * 64}),
+            "receipt not the ledger path": reseal(rb, hb_epoch_source={**src, "receipt": "sha256:" + "3" * 64}),
+            "receipt under source-receipts/": reseal(rb, hb_epoch_source={**src, "receipt": "source-receipts/" + "3" * 64 + ".json"}),
             "slot null": reseal(rb, hb_epoch=None), "slot float": reseal(rb, hb_epoch=1024.0), "slot bool": reseal(rb, hb_epoch=True),
             "slot coerced": reseal(rb, hb_epoch=" 1024"), "slot below anchor": reseal(rb, hb_epoch="31"),
             "derived_from_clock": reseal(rb, hb_epoch_source={**src, "derived_from_clock": True}),
@@ -86,19 +105,83 @@ class PredicateTests(unittest.TestCase):
 
     def test_fixture_readback_counts_only_in_fixture_mode(self):
         self.assertEqual(self.verify(fixture_mode=False)["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
-        real = reseal(self.RB, fixture_only=False)
+        real = reseal(self.RB, fixture_only=False, hb_epoch_source={**self.RB["hb_epoch_source"], "receipt": "receipts/" + "3" * 64 + ".json"})
         self.assertEqual(self.verify(rb=real, fixture_mode=False)["disposition"], "ALLOW")
 
+    def test_lane_c_producer_semantics(self):
+        """Labs#3266 @641f4b03: sealed on ALLOW and on DENY HB_EPOCH_MISMATCH; null on FAIL_CLOSED; receipt is a ledger path."""
+        self.assertEqual(set(self.RB["hb_epoch_source"]), {"ledger_head", "receipt", "field"})
+        self.assertEqual(self.verify("1024", lane_c_mismatch("1025"))["disposition"], "ALLOW")  # the epoch was observed
+        out = self.verify("1025", lane_c_mismatch("1025"))
+        self.assertEqual((out["disposition"], out["failure_code"], out["expected"]), ("DENY", "HB_EPOCH_MISMATCH", "1024"))
+        real = reseal(self.RB, fixture_only=False, hb_epoch_source={**self.RB["hb_epoch_source"], "receipt": "receipts/" + "3" * 64 + ".json"})
+        self.assertEqual(self.verify(rb=real, fixture_mode=False)["disposition"], "ALLOW")
+        out = self.verify(rb=reseal(self.RB, fixture_only=False), fixture_mode=False)  # UNKNOWN receipt outside a fixture
+        self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
+        rc = lane_c_refusal("HB_EPOCH_INVALID")
+        self.assertIn("hb_epoch_source", rc)
+        self.assertIsNone(rc["hb_epoch_source"])
+        self.assertIsNone(rc["hb_epoch"])
+
+    def test_readback_pin(self):
+        self.assertEqual(wi.BASE_STATE_READBACK_PIN["blob"], "fbd453e531fc8d8f62261d2a72bc7a596798a445")
+        entry = next(i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"] if i["invariant_id"] == INV)
+        self.assertEqual(entry["readback_pin"], wi.BASE_STATE_READBACK_PIN)
+
     def test_mismatch_is_deny(self):
-        for supplied in ("1025", "32", "1024x", " 1024", 1024, None, U):
+        for supplied in ("1025", "32", "1024x", " 1024", 1024):
             out = self.verify(supplied)
             self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]), ("DENY", "HB_EPOCH_MISMATCH", INV), supplied)
             self.assertTrue(six(out))
             self.assertEqual(out["expected"], "1024")
 
+    def test_unknown_supplied_epoch_is_fail_closed_never_deny(self):
+        """Contract invariant (narrowed): where the supplied value is the epoch source, absent, JSON null, "", "null" and the
+        UNKNOWN sentinel are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED, before 726248a5; an optional cross-check left out proceeds
+        on the sealed epoch; malformed values are DENY HB_EPOCH_MISMATCH, and so is a well-formed mismatch."""
+        for name, supplied in (("JSON null", None), ("empty string", ""), ("string null", "null"), ("sentinel", U)):
+            out = self.verify(supplied)
+            self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
+                             ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED", INV), name)
+            self.assertTrue(six(out))
+            self.assertNotIn("supplied_epoch_rule", out)
+        # an optional cross-check left out is not a failure: nothing to compare, the sealed epoch stands
+        out = self.verify(wi.HB_EPOCH_NOT_CROSS_CHECKED)
+        self.assertEqual((out["disposition"], out["hb_epoch"], out["cross_checked"]), ("ALLOW", "1024", False))
+        out = self.verify(wi.HB_EPOCH_NOT_CROSS_CHECKED, rb=None)  # ...but the sealed source must still be observed
+        self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
+        # the sentinel's case variants, "NULL" and whitespace are not the sentinel: malformed -> DENY
+        for supplied in ("unknown_not_authentically_observed", "NULL", " ", "None"):
+            self.assertEqual(self.verify(supplied)["failure_code"], "HB_EPOCH_MISMATCH", supplied)
+        # absent: a change with no hb_epoch (the record field is the epoch source) reaches admission as supplied_hb_epoch None
+        ch = fx.known_good_change(fx.SURFACE_PATH["ledger_writer"])
+        ch = base.reseal_change({k: v for k, v in ch.items() if k != "hb_epoch"})
+        obs = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback())
+        self.assertIsNone(obs["supplied_hb_epoch"])
+        out = wi.admit(obs, fixture_mode=True)
+        self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
+        # the divergence from the kernel function is deliberate and recorded (precedence), the pin unchanged
+        self.assertEqual(wi.kernel.supplied_epoch_failure(None)[0], "HB_EPOCH_NOT_SUPPLIED")
+        for v in (U, "", "null"):
+            self.assertEqual(wi.kernel.supplied_epoch_failure(v)[0], "HB_EPOCH_INVALID", v)
+        self.assertEqual(wi.KERNEL_RULE_SHA256, PIN)
+        pin = wi.REQUIRED_CHECKS["checks"]["supplied-epoch-binder-check"]["predicate_pins"]["726248a5"]
+        self.assertEqual(pin["sha256"], PIN)
+        self.assertIn("FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED", pin["precedence"])
+        entry = next(i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"] if i["invariant_id"] == INV)
+        self.assertEqual(entry["supplied_epoch_rule"]["precedence"], pin["precedence"])
+        self.assertIn("never DENY", entry["supplied_epoch_ruling"]["statement"])
+        # malformed -> DENY; well-formed mismatch -> DENY
+        for supplied in ("abc", "31", True):
+            self.assertEqual(self.verify(supplied)["failure_code"], "HB_EPOCH_MISMATCH", supplied)
+        self.assertEqual((self.verify("1025")["disposition"], self.verify("1025")["failure_code"]), ("DENY", "HB_EPOCH_MISMATCH"))
+        # with an unobserved sealed source the outcome is FAIL_CLOSED whatever is supplied
+        for supplied in (None, "", "null", U, "abc", "1025"):
+            self.assertEqual(self.verify(supplied, rb=None)["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
+
     def test_supplied_epoch_failing_726248a5_is_deny_mismatch(self):
         """Orchestrator ruling: the supplied side is DENY HB_EPOCH_MISMATCH; only the sealed side is FAIL_CLOSED."""
-        for supplied in ("abc", "+33", "31", "0031", "1024.0", " 1024", "", None, 1024, True):
+        for supplied in ("abc", "+33", "31", "0031", "1024.0", " 1024", 1024, True, False, "unknown_not_authentically_observed"):
             if supplied != 1024 or supplied is True:  # an int 1024 passes 726248a5 but is not ASCII text, so it is still refused
                 self.assertIsNotNone(wi.kernel.supplied_epoch_failure(supplied), supplied)
             out = self.verify(supplied)
@@ -179,7 +262,7 @@ class AdmissionTests(unittest.TestCase):
                 rb = s["observed_inputs"]["hb_epoch_readback"]
                 self.assertEqual(rb["result_sha256"], wi.sha({k: v for k, v in rb.items() if k != "result_sha256"}), s["scenario_id"])
                 self.assertIs(rb["fixture_only"], True)
-                self.assertEqual(rb["unobserved_fields"], ["bound_main_commit", "hb_epoch", "hb_epoch_source/receipt_sha256", "sources"])
+                self.assertEqual(rb["unobserved_fields"], ["bound_main_commit", "hb_epoch", "hb_epoch_source/receipt", "sources"])
                 self.assertEqual(rb["hb_epoch"], s["observed_inputs"]["supplied_hb_epoch"])
 
     def test_inputs_carry_the_supplied_epoch_and_readback(self):
@@ -231,7 +314,7 @@ class CorpusTests(unittest.TestCase):
         latest = al.latest_classes(self.CLASSES)
         c = latest[CID]
         self.assertEqual((c["class_version"], c["predicate"], c["surfaces"], c["expected_failure_code"], c["expected_disposition"]),
-                         (1, INV, [{"kind": "ledger_writer"}], "HB_EPOCH_SOURCE_UNOBSERVED", "FAIL_CLOSED"))
+                         (2, INV, [{"kind": "ledger_writer"}], "HB_EPOCH_SOURCE_UNOBSERVED", "FAIL_CLOSED"))  # v2: the UNKNOWN axis
         self.assertEqual([x for x in latest if latest[x]["predicate"] == INV], [CID])  # no other class carries this predicate
         got = {s["generated_from"]["axis"]: (s["expected_disposition"], s["expected_failure_code"]) for s in self.CORPUS if s["scenario_class"] == CID}
         self.assertEqual(got, {None: ("ALLOW", None),
@@ -239,7 +322,9 @@ class CorpusTests(unittest.TestCase):
                                "hb_epoch_readback.result_sha256": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"),
                                "hb_epoch_readback.hb_epoch_source.derived_from_clock": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"),
                                "hb_epoch_readback.hb_epoch": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"),
-                               "supplied_hb_epoch": ("DENY", "HB_EPOCH_MISMATCH")})
+                               "supplied_hb_epoch": ("DENY", "HB_EPOCH_MISMATCH"),
+                               "supplied_hb_epoch[UNKNOWN]": ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED")})
+        self.assertEqual(self.CORPUS[-1]["scenario_id"], CID + "/supplied_hb_epoch[UNKNOWN]")  # appended last; no id moved
         for s in self.CORPUS:
             if s["scenario_class"] == CID:
                 out = wi.admit(s["observed_inputs"], fixture_mode=True)
@@ -249,6 +334,11 @@ class CorpusTests(unittest.TestCase):
 
     def test_gate_refuses_a_wrong_expected_code(self):
         classes, scenarios, _ = fx.corpus()
+        n = 1  # the epoch class v2 is appended after epoch v1
+        later = {c["class_sha256"] for c in classes[len(classes) - n:]}
+        later_ids = {c["class_id"] for c in classes[len(classes) - n:-1]}
+        classes = classes[:len(classes) - n]
+        scenarios = [s for s in scenarios if s["scenario_class"] not in later_ids and s["source"].get("class_sha256") not in later]
         self.assertEqual(classes[-1]["class_id"], CID)
         pre = [s for s in scenarios if s["scenario_class"] != CID]
         mine = [s for s in scenarios if s["scenario_class"] == CID]
@@ -265,7 +355,35 @@ class CorpusTests(unittest.TestCase):
                              cwd=ROOT, capture_output=True, text=True)
         if old.returncode != 0:
             self.skipTest("fc19b532 not in the local clone")
-        self.assertEqual([json.loads(l) for l in old.stdout.splitlines()], self.CLASSES[:-1])
+        # fc19b532's classes are a prefix: the epoch class v1 and v2 are appended after them
+        self.assertEqual([json.loads(l) for l in old.stdout.splitlines()], self.CLASSES[:-2])
+
+
+
+class KnownAnswerTests(unittest.TestCase):
+    """StegVerse-Labs/.github refs/stegverse/organization-ledger @a5bb54d8: HEAD.json names receipt 35810b65, whose sealed
+    $.hb_reference.epoch is 469411750 (bytes as read, tests/fixtures/org-ledger-StegVerse-Labs-a5bb54d8)."""
+    LH = "a5bb54d81893b392a3ce28182986fc39857807e1"
+    RX = "35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d"
+
+    def objects(self):
+        d = ROOT / "tests/fixtures/org-ledger-StegVerse-Labs-a5bb54d8"
+        return {self.LH + ":HEAD.json": (d / "HEAD.json").read_bytes(),
+                self.LH + ":receipts/" + self.RX + ".json": (d / "receipts" / (self.RX + ".json")).read_bytes()}
+
+    def test_head_a5bb54d8_receipt_35810b65_is_469411750(self):
+        objs = self.objects()
+        self.assertEqual(json.loads(objs[self.LH + ":HEAD.json"])["receipt_sha256"], "sha256:" + self.RX)
+        self.assertEqual(wi.base_ledger_head_epoch(self.LH, objs), 469411750)
+        self.assertEqual(self.LH, fx.LABS_BASE["ledger_head"])
+
+    def test_readback_shaped_like_lane_c_yields_469411750(self):
+        rb = reseal(fx.fixture_base_state_readback(hb_epoch="469411750"), fixture_only=False,
+                    hb_epoch_source={"ledger_head": self.LH, "receipt": "receipts/" + self.RX + ".json", "field": "$.hb_reference.epoch"})
+        out = wi.verify_admission_hb_epoch("469411750", rb, self.LH)
+        self.assertEqual((out["disposition"], out["hb_epoch"]), ("ALLOW", "469411750"))
+        out = refusal(wi.verify_admission_hb_epoch, "469411751", rb, self.LH)
+        self.assertEqual((out["disposition"], out["failure_code"]), ("DENY", "HB_EPOCH_MISMATCH"))
 
 
 if __name__ == "__main__":

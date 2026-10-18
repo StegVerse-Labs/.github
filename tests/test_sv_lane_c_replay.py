@@ -242,7 +242,7 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_maps_onto_existing_class_as_alias_not_duplicate(self):
         latest = al.latest_classes(self.CLASSES)
-        self.assertEqual(len(latest), 11)
+        self.assertEqual(len(latest), 11)  # epoch v2 supersedes v1 under the same class id
         self.assertNotIn("ASC-WRITER_EVIDENCE_LOST_BY_SNAPSHOT_RESTORE@transition", latest)
         c = latest[self.CID]
         self.assertEqual((c["class_version"], c["predicate"]), (2, "BRANCH_WRITER_IS_BRANCH_OWNER"))
@@ -274,14 +274,16 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_appended_through_the_gate(self):
         classes, scenarios, receipts = fx.corpus()
-        self.assertEqual(receipts[-2]["class_id"], self.CID)  # the JD-P4-3 epoch class is appended after the harvest
-        self.assertEqual(receipts[-2]["disposition"], "ALLOW")
-        self.assertEqual(receipts[-1]["class_id"], EPOCH_CID)
+        n = 1  # epoch class v2 (UNKNOWN axis) follows epoch v1
+        self.assertEqual(receipts[-2 - n]["class_id"], self.CID)  # the JD-P4-3 epoch class is appended after the harvest
+        self.assertEqual(receipts[-2 - n]["disposition"], "ALLOW")
+        self.assertEqual(receipts[-1 - n]["class_id"], EPOCH_CID)
         self.assertEqual([s["scenario_id"] for s in scenarios], [s["scenario_id"] for s in self.CORPUS])
         # the gate refuses the harvest when the harvested scenario expects the wrong code
-        self.assertEqual(classes[-2]["class_id"], self.CID)
-        classes = classes[:-1]
-        scenarios = [s for s in scenarios if s["scenario_class"] != EPOCH_CID]
+        later = {c["class_id"] for c in classes[-1 - n:]}
+        classes = classes[:-1 - n]
+        self.assertEqual(classes[-1]["class_id"], self.CID)
+        scenarios = [s for s in scenarios if s["scenario_class"] not in later]
         pre_c, pre_s = classes[:-1], [s for s in scenarios if s["scenario_class"] != self.CID or "content[*]" not in s["scenario_id"]]
         bad = [wi.seal({**{k: v for k, v in s.items() if k != "scenario_sha256"}, "expected_failure_code": "BRANCH_HAS_FOREIGN_WRITER"},
                        "scenario_sha256") for s in scenarios if s["scenario_class"] == self.CID and "content[*]" in s["scenario_id"]]
@@ -348,8 +350,11 @@ class CheckCommandRowTests(unittest.TestCase):
                 self.assertEqual(wi.check_command(cid, self.HEAD_PATHS)["disposition"], "ALLOW")
         self.assertEqual(self.ROW["checks"]["supplied-epoch-binder-check"]["offline_command"],
                          {"verifier_builtin": "supplied-epoch-binder-check", "verifier_ref": "SV-LLM/.github#46",
-                          "predicate": "the supplied hb_epoch equals the epoch on the readback receipt sealed by Labs#3266 at "
-                                       "base_ref.ledger_head, and passes 726248a5 validation"})
+                          "predicate": "the readback receipt sealed by Labs#3266 at base_ref.ledger_head carries an observed epoch "
+                                       "(else FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED); the SV_CHANGE's hb_epoch that is absent, null, \"\", "
+                                       "\"null\" or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (checked "
+                                       "before 726248a5); any other value must pass 726248a5 validation and equal the sealed epoch by "
+                                       "integer value (else DENY HB_EPOCH_MISMATCH)"})
         self.assertFalse([cid for cid, c in self.ROW["checks"].items() if c["offline_command"] == U])  # none undeclared now
 
     def test_command_absent_at_older_heads(self):

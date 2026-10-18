@@ -86,6 +86,7 @@ def _unsealed_readback(o): o["hb_epoch_readback"] = {**o["hb_epoch_readback"], "
 def _clock_epoch(o): _reseal_readback(o, hb_epoch_source={**o["hb_epoch_readback"]["hb_epoch_source"], "derived_from_clock": True})
 def _non_int_epoch(o): _reseal_readback(o, hb_epoch=float(o["hb_epoch_readback"]["hb_epoch"]))
 def _other_epoch(o): o["supplied_hb_epoch"] = str(int(o["supplied_hb_epoch"]) + 1)
+def _unknown_epoch(o): o["supplied_hb_epoch"] = wi.UNKNOWN
 
 
 PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
@@ -135,8 +136,17 @@ CLASS_ALIASES: dict[str, str] = {
     "WRITER_EVIDENCE_LOST_BY_SNAPSHOT_RESTORE": "ASC-BRANCH_WRITER_IS_BRANCH_OWNER@transition"}
 
 
+# Axes a later ruling adds to an existing class (generalize(ruling=...) -> the next class version, appended through
+# SCENARIO_CORPUS_APPEND; earlier versions and their scenarios are never rewritten).
+RULING_AXES: dict[tuple[str, str], list[tuple]] = {
+    ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "UNKNOWN_IS_FAIL_CLOSED_NEVER_DENY"): [
+        ("supplied_hb_epoch[UNKNOWN]", "the SV_CHANGE's hb_epoch is the UNKNOWN_NOT_AUTHENTICALLY_OBSERVED sentinel (FAIL_CLOSED, "
+         "never DENY; precedes 726248a5)", _unknown_epoch, "HB_EPOCH_SOURCE_UNOBSERVED")]}
+
+
 def _axis_mutator(pred: str, field: str) -> Callable:
-    for (p, _), axes in [((pred, None), PREDICATE_BINDINGS[pred][1])] + [(k, v) for k, v in SECONDARY_AXES.items() if k[0] == pred]:
+    for (p, _), axes in [((pred, None), PREDICATE_BINDINGS[pred][1])] + [(k, v) for k, v in SECONDARY_AXES.items() if k[0] == pred] \
+            + [(k, v) for k, v in RULING_AXES.items() if k[0] == pred]:
         for f, _, fn, *_ in axes:
             if f == field:
                 return fn
@@ -181,7 +191,7 @@ def class_id_for(predicate: str, surface: str) -> str:
 def generalize(candidate: Mapping[str, Any], *, surface: str, origin_scenarios: list[str], rule_refs: list[dict],
                declared_by_session: str, harvest_receipt_ref: str | None, hb_epoch: Any,
                class_version: int = 1, supersedes: str | None = None, prior: Mapping[str, Any] | None = None,
-               provenance_unobserved: list[str] | None = None) -> dict[str, Any]:
+               provenance_unobserved: list[str] | None = None, ruling: str | None = None) -> dict[str, Any]:
     """Class rule: failed predicate + surface kind. A candidate whose code is a declared secondary code of the predicate
     adds that code's axes; with `prior` (the current version) the axes and provenance are carried forward."""
     pred = candidate.get("failed_predicate")
@@ -199,6 +209,10 @@ def generalize(candidate: Mapping[str, Any], *, surface: str, origin_scenarios: 
     for a in (prior or {}).get("mutation_axes") or []:
         if a["field"] not in {x["field"] for x in mutation_axes}:
             mutation_axes.append(dict(a))
+    for a in RULING_AXES.get((pred, ruling), []) if ruling else []:
+        if a[0] not in {x["field"] for x in mutation_axes}:
+            mutation_axes.append({"field": a[0], "bound_value_source": "positive_control", "mutation": a[1],
+                                  "expected_failure_code": a[3], "expected_disposition": disposition_of(a[3])})
     code2 = candidate.get("failure_code")
     for f, m, _ in SECONDARY_AXES.get((pred, code2), []) if code2 != code else []:
         if f not in {x["field"] for x in mutation_axes}:

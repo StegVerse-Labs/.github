@@ -206,7 +206,7 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - The round-3 fixtures (top-level hb_epoch, `evidence` on the org receipt) were removed.
 
 ## Round 5: ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH (JD-P4-3, part-decided by invariant, orchestrator 15:09Z)
-- **Invariant (decided, partial).** For admission, hb_epoch is observed state: the epoch on the org-ledger head receipt the SV_CHANGE base is bound to (`$.hb_reference.epoch`), read and sealed by Lane C's base-state readback (Labs#3266, `stegverse.sv-change-base-state-readback/v1`: `hb_epoch` slot plus `hb_epoch_source`, sealed by `result_sha256`). The shared supplied-epoch rule (726248a5) still applies to the read value.
+- **Invariant (decided, partial).** For admission, hb_epoch is observed state: the epoch on the org-ledger head receipt the SV_CHANGE base is bound to (`$.hb_reference.epoch`), read and sealed by Lane C's base-state readback (Labs#3266 @641f4b03, readback blob `fbd453e531fc8d8f62261d2a72bc7a596798a445`, sha256 `c78026fd…45ed`, `stegverse.sv-change-base-state-readback/v1`: `hb_epoch` slot plus `hb_epoch_source`, sealed by `result_sha256`). The shared supplied-epoch rule (726248a5) still applies to the read value.
   - NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH is its native-record application and is no longer provisional. The two invariants cross-reference each other in `invariants.json`.
   - Still escalated, and not touched here: minting an epoch for a new ledger append.
 - **726248a5.** This is the sha256 of the source segment of `org-kernel/kernel.py::supplied_epoch_failure` (lines 236-269; file blob ffec5d648d7fa4aead1f44f76df936a2da21bb96 at fc19b532). It is not a git object.
@@ -264,3 +264,18 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
     - required_checks_ref = the row blob at the head.
   - The record goes to the PR body (projection) and to Lane B.
 
+## Round 7 (epoch part): the readback pin, and UNKNOWN is FAIL_CLOSED
+- **Readback alignment (Labs#3266 @641f4b03, readback blob fbd453e5, tests blob 234867df):**
+  - `hb_epoch_source` is `{ledger_head, receipt: "receipts/<hex>.json", field}`. It is sealed with the epoch on ALLOW and on DENY HB_EPOCH_MISMATCH, and present but null on FAIL_CLOSED.
+  - The reader accepts both observed dispositions and requires the receipt path; UNKNOWN is allowed only for a fixture in fixture_mode. The fixture key `receipt_sha256` is renamed `receipt`.
+  - Pinned in `invariants.json` (`readback_pin`, `readback_semantics`) and `sv_work_items.BASE_STATE_READBACK_PIN`.
+  - Known answer: ledger head a5bb54d8 → receipts/35810b65… → "469411750". The bytes are in `tests/fixtures/org-ledger-StegVerse-Labs-a5bb54d8`, and Lane C's own reader agrees.
+- **UNKNOWN is FAIL_CLOSED, never DENY** (contract invariant 15:59Z, narrowed 16:03Z):
+  - Where the supplied value is the epoch source (an SV_CHANGE record's hb_epoch), absent (read as null), JSON null, `""`, `"null"` or `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` gives FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. This is checked before 726248a5, a deliberate divergence from `kernel.py::supplied_epoch_failure`, which alone gives HB_EPOCH_NOT_SUPPLIED / HB_EPOCH_INVALID.
+  - An optional cross-check left out (`HB_EPOCH_NOT_CROSS_CHECKED`) is not a failure: nothing to compare, so it proceeds on the sealed epoch (ALLOW, `cross_checked: false`). The sealed source must still be observed.
+  - The pin is unchanged and the precedence is recorded in the row (`predicate_pins.726248a5.precedence`) and in invariants.json.
+  - Other malformed values (non-digits, below 32, bool, int, case variants of the sentinel) and a well-formed mismatch stay DENY HB_EPOCH_MISMATCH.
+  - The epoch class v2 adds the sentinel scenario (`…@ledger_writer/supplied_hb_epoch[UNKNOWN]`, appended last; no id moved).
+  - Open item: Lane B's binder_check @64b90721 predates the precedence (null/sentinel are DENY there).
+- **Caveat:** Q-P1-EPOCH-PROVENANCE is still open.
+- The stage-gate part of round 7 (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE) follows in a separate commit.

@@ -162,16 +162,15 @@ def signoff_receipts_for(ch: dict) -> list[dict]:
 
 def fixture_base_state_readback(base: dict = LABS_BASE, hb_epoch: str = FIXTURE_HB_EPOCH) -> dict:
     """FIXTURE ONLY: a sealed ALLOW base-state readback receipt in the shape of Lane C's RTC-SV-CHANGE-BASE-STATE-
-    READBACK-014 (Labs#3266; the epoch slot as in its working tree after JD-P4-3) for the positive controls. Nothing
+    READBACK-014 (Labs#3266 @641f4b03, readback blob fbd453e5: hb_epoch_source {ledger_head, receipt, field}) for the positive controls. Nothing
     was read: fixture_only is true, the values no readback observed are UNKNOWN and listed in unobserved_fields, and
     sv_work_items.verify_admission_hb_epoch counts it only in fixture_mode."""
     return wi.seal({"schema": wi.BASE_STATE_READBACK_SCHEMA, "component_id": "RTC-SV-CHANGE-BASE-STATE-READBACK-014",
                     "repository": "StegVerse-Labs/.github", "base_ref": dict(base), "bound_main_commit": wi.UNKNOWN,
                     "sources": [], "hb_epoch": hb_epoch,
-                    "hb_epoch_source": {"ledger_head": base["ledger_head"], "receipt_sha256": wi.UNKNOWN, "field": wi.HB_EPOCH_SOURCE_FIELD,
-                                        "validated_by": "org-kernel/kernel.py::supplied_epoch_failure sha256:" + wi.SUPPLIED_EPOCH_RULE_SHA256},
+                    "hb_epoch_source": {"ledger_head": base["ledger_head"], "receipt": wi.UNKNOWN, "field": wi.HB_EPOCH_SOURCE_FIELD},
                     "disposition": "ALLOW", "authority_effect": "NONE_READBACK_ONLY", "readback_writes": False, "fixture_only": True,
-                    "unobserved_fields": ["bound_main_commit", "hb_epoch", "hb_epoch_source/receipt_sha256", "sources"]}, "result_sha256")
+                    "unobserved_fields": ["bound_main_commit", "hb_epoch", "hb_epoch_source/receipt", "sources"]}, "result_sha256")
 
 
 def known_good(kind_path: str) -> dict:
@@ -202,6 +201,7 @@ AXIS_TARGET = {
                                                              "the sealed epoch's source reference is derived from a clock (resealed)"),
     "hb_epoch_readback.hb_epoch": ("REPLAY_INPUT", "/hb_epoch_readback/hb_epoch", "the sealed epoch slot is a JSON float (resealed)"),
     "supplied_hb_epoch": ("SV_CHANGE", "/hb_epoch", "the SV_CHANGE's hb_epoch is the sealed epoch + 1"),
+    "supplied_hb_epoch[UNKNOWN]": ("SV_CHANGE", "/hb_epoch", "the SV_CHANGE's hb_epoch is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"),
 }
 FOREIGN_SESSION = "FOREIGN-SESSION"  # fixture: the session admission_learning._foreign adds
 
@@ -214,7 +214,7 @@ def axis_value(axis: str, expected_code: str | None):
             "declared_session": "", "signoffs": [], "signoffs[*].receipt_ref": "",
             "content[*].writer_session.evidence_class": {"session": None, "evidence_class": wi.UNKNOWN},
             "validation_receipts[0].disposition": "DENY" if expected_code == "REQUIRED_CHECK_DENIED" else "FAIL_CLOSED",
-            "supplied_hb_epoch": str(int(FIXTURE_HB_EPOCH) + 1)}.get(axis)
+            "supplied_hb_epoch": str(int(FIXTURE_HB_EPOCH) + 1), "supplied_hb_epoch[UNKNOWN]": wi.UNKNOWN}.get(axis)
 
 
 def apply_replay_mutation(ch: dict, m: dict | None) -> dict:
@@ -244,7 +244,7 @@ def apply_replay_mutation(ch: dict, m: dict | None) -> dict:
         ch["signoffs"] = list(v)
     elif axis == "signoffs[*].receipt_ref":
         ch["signoffs"] = [{**s, "receipt_ref": v} for s in ch["signoffs"]]
-    elif axis == "supplied_hb_epoch":
+    elif axis in ("supplied_hb_epoch", "supplied_hb_epoch[UNKNOWN]"):
         ch["hb_epoch"] = v
     else:
         raise SystemExit(json.dumps({"disposition": "FAIL_CLOSED", "failure_code": "REPLAY_AXIS_UNDECLARED", "axis": axis}))
@@ -386,6 +386,32 @@ def epoch_binding_append(classes: list[dict], scenarios: list[dict]) -> list[dic
     return [{k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]}]
 
 
+# Contract invariant (orchestrator 2026-10-18T15:59Z, narrowed 16:03Z): anything not observed is
+# UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, which is FAIL_CLOSED, never DENY. The epoch class gains the sentinel axis as version 2
+# (supersedes v1) through SCENARIO_CORPUS_APPEND, appended last so no existing scenario id moves; only the new scenario is appended.
+EPOCH_UNKNOWN_RULING = "UNKNOWN_IS_FAIL_CLOSED_NEVER_DENY"
+EPOCH_UNKNOWN_ORIGINS = ["orchestrator 2026-10-18T15:59Z contract invariant (narrowed 16:03Z): UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is "
+                         "FAIL_CLOSED, never DENY (the SV_CHANGE's hb_epoch null, '', 'null' or the sentinel -> FAIL_CLOSED "
+                         "HB_EPOCH_SOURCE_UNOBSERVED, before 726248a5)"]
+
+
+def epoch_unknown_append(classes: list[dict], scenarios: list[dict]) -> list[dict]:
+    pred, surface, origins = EPOCH_BINDING_SEED
+    prior = al.latest_classes(classes)[al.class_id_for(pred, surface)]
+    cls = al.generalize({"failed_predicate": pred}, surface=surface, origin_scenarios=origins + EPOCH_UNKNOWN_ORIGINS,
+                        rule_refs=EPOCH_RULE_REFS, declared_by_session=SESSION, harvest_receipt_ref=None, hb_epoch=FIXTURE_HB_EPOCH,
+                        prior=prior, class_version=prior["class_version"] + 1, supersedes=prior["class_sha256"], ruling=EPOCH_UNKNOWN_RULING)
+    have = {s["scenario_id"] for s in scenarios}
+    gen = [s for s in al.generate(cls, known_good(SURFACE_PATH[surface]), hb_epoch=FIXTURE_HB_EPOCH) if s["scenario_id"] not in have]
+    gen = [wi.seal({**{k: v for k, v in s.items() if k != "scenario_sha256"},
+                    "source": {**s["source"], "origin_scenarios": EPOCH_UNKNOWN_ORIGINS}}, "scenario_sha256") for s in gen]
+    out = al.corpus_append(classes, scenarios, cls, gen, hb_epoch=FIXTURE_HB_EPOCH)
+    if out["disposition"] != "ALLOW":
+        raise SystemExit(json.dumps(out, sort_keys=True))
+    classes += out["append_classes"]; scenarios += out["append_scenarios"]
+    return [{k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]}]
+
+
 def corpus() -> tuple[list[dict], list[dict], list[dict]]:
     classes, scenarios, receipts = [], [], []
     for pred, surface, origins in SEEDS:
@@ -402,6 +428,7 @@ def corpus() -> tuple[list[dict], list[dict], list[dict]]:
         receipts.append({k: out[k] for k in ("disposition", "transition_class", "corpus_head")} | {"class_id": cls["class_id"]})
     receipts += harvest_append(classes, scenarios)
     receipts += epoch_binding_append(classes, scenarios)
+    receipts += epoch_unknown_append(classes, scenarios)
     return classes, scenarios, receipts
 
 

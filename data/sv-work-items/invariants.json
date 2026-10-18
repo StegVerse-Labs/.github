@@ -15,13 +15,30 @@
       ],
       "mismatch": {
         "disposition": "DENY",
-        "disposition_source": "no orchestrator or orchestration file names a disposition for HB_EPOCH_MISMATCH (searched /workspace/orch INDEX.md/GROK_STATUS.md and the lane clones); DENY kept. Open alignment item: Lane C's uncommitted Labs#3266 working tree (sv_change_base_state_readback.py, worktree mtime 15:12Z, after 78a0c78e) refuses its own caller-expected-epoch mismatch as FAIL_CLOSED, under the retired code name with alias HB_EPOCH_MISMATCH",
+        "disposition_source": "orchestrator ruling 2026-10-18 (both verifiers, 60 cases) and the contract invariant refinement 15:59Z (narrowed 16:03Z); Lane C's Labs#3266 @641f4b03 (readback blob fbd453e5) emits DENY HB_EPOCH_MISMATCH for a contradicting --hb-epoch (alignment item closed)",
         "failure_code": "HB_EPOCH_MISMATCH",
         "why_deny": "a sealed epoch that contradicts the record is an observed contradiction, not an unobservation"
       },
       "native_record_application": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
+      "readback_pin": {
+        "blob": "fbd453e531fc8d8f62261d2a72bc7a596798a445",
+        "file": "resident-runtime/sv_change_base_state_readback.py",
+        "head": "641f4b03e612d07047e15f2384d24780e2af86c0",
+        "pull_request": 3266,
+        "repository": "StegVerse-Labs/.github",
+        "sha256": "c78026fdab4450c953f8cb475f3b20052acce818258340ad8031863ab0fb45ed",
+        "tests_blob": "234867df6cbeb68ab82d9c346761d96e80e56167",
+        "tests_file": "tests/test_sv_change_base_state_readback_component.py"
+      },
+      "readback_semantics": {
+        "fail_closed": "on every FAIL_CLOSED both are present and null; the reader treats any readback that is neither ALLOW nor DENY HB_EPOCH_MISMATCH as HB_EPOCH_SOURCE_UNOBSERVED",
+        "fixture": "the seed fixture readback carries receipt UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (listed in unobserved_fields as hb_epoch_source/receipt), counted only in fixture_mode",
+        "known_answer": "StegVerse-Labs/.github ledger head a5bb54d81893b392a3ce28182986fc39857807e1 -> receipts/35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d.json -> \"469411750\" (tests/test_sv_admission_hb_epoch.py::KnownAnswerTests; Lane C's ledger_head_epoch agrees)",
+        "sealed": "hb_epoch and hb_epoch_source {ledger_head, receipt: 'receipts/<hex>.json' (ledger_store.receipt_key of the head receipt, relative to refs/stegverse/organization-ledger), field: '$.hb_reference.epoch'} are sealed on ALLOW and on DENY HB_EPOCH_MISMATCH (the epoch was observed; only the producer's --hb-epoch cross-check disagreed)",
+        "source": "Labs#3266 @641f4b03 (readback blob fbd453e5), as the producer declares it"
+      },
       "scope": "every admission (decision 2026-10-18 15:23Z): supplied-epoch-binder-check is on surface_kinds.all",
-      "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
+      "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266 @641f4b03, readback blob fbd453e5, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
       "status": "DECIDED_BY_INVARIANT (JD-P4-3, partial)",
       "supplied_epoch_rule": {
         "file_blob_at_fc19b532": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
@@ -29,23 +46,31 @@
         "lines_at_fc19b532": "236-269",
         "note": "726248a5 is the sha256 of the function's source segment, not a git object id",
         "path": "org-kernel/kernel.py",
+        "precedence": "UNKNOWN precedence (contract invariant, orchestrator 2026-10-18T15:59Z, narrowed 16:03Z): before 726248a5 is applied, a supplied hb_epoch that is the epoch source (an SV_CHANGE record's hb_epoch; an absent field reads as null) and is JSON null, \"\", \"null\" or the literal UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (UNKNOWN is FAIL_CLOSED, never DENY). An optional cross-check that is left out (sv_work_items.HB_EPOCH_NOT_CROSS_CHECKED) is not a failure: the sealed epoch stands. Here the verifier deliberately diverges from kernel.py::supplied_epoch_failure, which alone would return HB_EPOCH_NOT_SUPPLIED for null and HB_EPOCH_INVALID (malformed, DENY here) for \"\", \"null\" and the sentinel. The pin is unchanged: it still describes the rule applied to every other supplied value and to the sealed slot.",
         "repository": "StegVerse-Labs/.github",
         "sha256": "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
       },
       "supplied_epoch_ruling": {
+        "corpus": "ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer v2 adds supplied_hb_epoch[UNKNOWN] -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (SCENARIO_CORPUS_APPEND)",
         "examples": {
+          "''": "FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED",
           "'+33'": "DENY HB_EPOCH_MISMATCH",
           "'0031'": "DENY HB_EPOCH_MISMATCH (726248a5: value 31 < 32)",
           "'01024' vs sealed 1024": "ALLOW (726248a5 accepts leading zeros; equal by integer value)",
+          "'1025' vs sealed 1024": "DENY HB_EPOCH_MISMATCH",
           "'31'": "DENY HB_EPOCH_MISMATCH",
+          "'UNKNOWN_NOT_AUTHENTICALLY_OBSERVED'": "FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (precedes 726248a5, which alone would say HB_EPOCH_INVALID)",
           "'abc'": "DENY HB_EPOCH_MISMATCH",
+          "'null' (string)": "FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED",
           "1024 (int)": "DENY HB_EPOCH_MISMATCH (not ASCII text)",
-          "null": "DENY HB_EPOCH_MISMATCH (726248a5: HB_EPOCH_NOT_SUPPLIED)"
+          "null / absent record field": "FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (precedes 726248a5, which alone would say HB_EPOCH_NOT_SUPPLIED)",
+          "optional cross-check left out": "ALLOW on the sealed epoch (cross_checked false)",
+          "true (bool)": "DENY HB_EPOCH_MISMATCH"
         },
-        "order": "the sealed source is checked first; with an unobserved source the outcome is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED whatever the supplied value",
-        "parity": "SV-LLM/.github#46 sandbox/s1_supplied_epoch_binder.py::binder_check @64b90721",
-        "ruling": "orchestrator standard 2026-10-18 (both verifiers agree on 60 cases)",
-        "statement": "a SUPPLIED epoch (the SV_CHANGE's hb_epoch) that fails 726248a5 validation is DENY HB_EPOCH_MISMATCH; FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is only the sealed-source side (readback absent, unsealed, not ALLOW, other head, no hb_epoch_source, or a clock-derived, non-int or otherwise invalid readback epoch)"
+        "order": "(1) the sealed source: unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED whatever the supplied value; (2) no cross-check supplied (HB_EPOCH_NOT_CROSS_CHECKED) -> ALLOW on the sealed epoch; (3) null/\"\"/\"null\"/sentinel -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (before the kernel rule); (4) 726248a5 on the supplied value, then integer equality -> DENY HB_EPOCH_MISMATCH",
+        "parity": "SV-LLM/.github#46 sandbox/s1_supplied_epoch_binder.py::binder_check @64b90721 agrees on every malformed and mismatched value; it predates the UNKNOWN precedence (null/''/'null'/sentinel are DENY there): open alignment item for Lane B",
+        "ruling": "orchestrator standard 2026-10-18 (both verifiers agree on 60 cases), refined by contract invariant 2026-10-18T15:59Z and narrowed 16:03Z",
+        "statement": "anything not observed is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, which is FAIL_CLOSED, never DENY. Where the supplied value is the epoch source (an SV_CHANGE record's hb_epoch), absent (read as null), JSON null, \"\", \"null\" or the literal UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; an optional cross-check left out (HB_EPOCH_NOT_CROSS_CHECKED) is not a failure and proceeds on the sealed epoch; any other supplied value that fails 726248a5 (non-digits, below 32, a bool, an int rather than ASCII text, coerced such as '+33') is DENY HB_EPOCH_MISMATCH, and so is a well-formed value that differs from the sealed epoch; the sealed-source-unobserved cases (readback absent, unsealed, neither ALLOW nor DENY HB_EPOCH_MISMATCH, other head, no hb_epoch_source or receipt path, or a clock-derived, non-int or otherwise invalid readback epoch) stay FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED"
       },
       "unobserved": {
         "disposition": "FAIL_CLOSED",
@@ -56,7 +81,7 @@
         "required_evidence_or_repair": "a sealed ALLOW stegverse.sv-change-base-state-readback/v1 receipt (Labs#3266) for base_ref.ledger_head whose hb_epoch slot was read from $.hb_reference.epoch of the head receipt and passes org-kernel/kernel.py::supplied_epoch_failure (sha256 726248a5)",
         "retry_entrypoint": "resident-runtime/sv_work_items.py::verify_admission_hb_epoch"
       },
-      "unobserved_cases": "no readback receipt, not that schema, broken seal (result_sha256), not ALLOW, fixture_only outside fixture_mode, bound to another ledger head, no hb_epoch_source naming $.hb_reference.epoch at that head, an hb_epoch slot failing 726248a5 (non-digits / non-int such as a float, < 32, derived_from_clock not false), or kernel.py's rule not the pinned 726248a5"
+      "unobserved_cases": "no readback receipt, not that schema, broken seal (result_sha256), neither ALLOW nor DENY HB_EPOCH_MISMATCH (a FAIL_CLOSED readback seals hb_epoch and hb_epoch_source as null), hb_epoch_source.receipt not receipts/<hex>.json, fixture_only outside fixture_mode, bound to another ledger head, no hb_epoch_source naming $.hb_reference.epoch at that head, an hb_epoch slot failing 726248a5 (non-digits / non-int such as a float, < 32, derived_from_clock not false), or kernel.py's rule not the pinned 726248a5"
     },
     {
       "application_of": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH",
