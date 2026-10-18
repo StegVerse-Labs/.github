@@ -116,7 +116,7 @@ class LedgerLocatorRefused(LedgerLocatorInvalid):
     def __init__(self, locator, detail):
         super().__init__(locator, detail)
         self.next_attempt = ("fetch the ledger ref into a local clone (git fetch <remote> "
-                             "+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger) and pass "
+                             "+<ledger ref>:<ledger ref>) and pass "
                              "git+<local clone>#<ref>; nothing was opened, read or written")
         self.refusal = {
             "schema": "stegverse.organization-ledger-locator-refusal/v1",

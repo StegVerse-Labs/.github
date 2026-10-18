@@ -925,6 +925,13 @@ class LocatorRetryEntrypointFromFile(unittest.TestCase):
                          "org-kernel/organization-ledger/ledger_store.py::parse_locator")
         self.assertEqual(self.load_copy("tools/ledger/ledger_store.py"), "tools/ledger/ledger_store.py::parse_locator")
 
+    def test_the_module_names_no_ledger_location_of_its_own(self):
+        """Mirrors org tests/test_git_ledger_store.py::test_the_module_names_no_ledger_location_of_its_own (Lane B BC1),
+        so the org resident-runtime/ledger_store.py byte copy passes the org guard."""
+        text = (COMPONENT / "ledger_store.py").read_text()
+        for forbidden in ("refs/stegverse", "refs/heads/", "refs/ledger", "DEFAULT_REF", "DEFAULT_LOCATOR"):
+            self.assertNotIn(forbidden, text)
+
     def test_no_path_is_hard_coded(self):
         text = (COMPONENT / "ledger_store.py").read_text()
         self.assertNotIn('"org-kernel/organization-ledger/ledger_store.py', text)
