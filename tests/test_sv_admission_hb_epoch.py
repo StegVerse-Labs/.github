@@ -96,6 +96,30 @@ class PredicateTests(unittest.TestCase):
             self.assertTrue(six(out))
             self.assertEqual(out["expected"], "1024")
 
+    def test_supplied_epoch_failing_726248a5_is_deny_mismatch(self):
+        """Orchestrator ruling: the supplied side is DENY HB_EPOCH_MISMATCH; only the sealed side is FAIL_CLOSED."""
+        for supplied in ("abc", "+33", "31", "0031", "1024.0", " 1024", "", None, 1024, True):
+            if supplied != 1024 or supplied is True:  # an int 1024 passes 726248a5 but is not ASCII text, so it is still refused
+                self.assertIsNotNone(wi.kernel.supplied_epoch_failure(supplied), supplied)
+            out = self.verify(supplied)
+            self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]), ("DENY", "HB_EPOCH_MISMATCH", INV), supplied)
+            self.assertTrue(six(out))
+        self.assertIn("HB_EPOCH_INVALID", self.verify("+33")["supplied_epoch_rule"])
+        self.assertIn("below the HB32 anchor", self.verify("31")["supplied_epoch_rule"])
+        # a sealed epoch of 33 does not rescue a coerced '+33'
+        self.assertEqual(self.verify("+33", reseal(self.RB, hb_epoch="33"))["failure_code"], "HB_EPOCH_MISMATCH")
+        self.assertEqual(self.verify("33", reseal(self.RB, hb_epoch="33"))["disposition"], "ALLOW")
+        # leading zeros: 726248a5 accepts them, so equality is by integer value
+        self.assertIsNone(wi.kernel.supplied_epoch_failure("01024"))
+        self.assertEqual(self.verify("01024")["disposition"], "ALLOW")
+        self.assertEqual(self.verify("00033", reseal(self.RB, hb_epoch="33"))["disposition"], "ALLOW")
+        # with an unobserved source the supplied value is never reached
+        for supplied in ("+33", "31", "1024"):
+            self.assertEqual(self.verify(supplied, rb=None)["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
+        inv = json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())
+        ruling = {i["invariant_id"]: i for i in inv["invariants"]}[INV]["supplied_epoch_ruling"]
+        self.assertIn("DENY HB_EPOCH_MISMATCH", ruling["statement"])
+
     def test_rule_pin_resolves_and_is_enforced(self):
         src = (ROOT / "org-kernel/kernel.py").read_text(encoding="utf-8")
         self.assertEqual(wi.supplied_epoch_rule_sha256(src), PIN)

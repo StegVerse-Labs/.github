@@ -32,6 +32,21 @@
         "repository": "StegVerse-Labs/.github",
         "sha256": "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
       },
+      "supplied_epoch_ruling": {
+        "examples": {
+          "'+33'": "DENY HB_EPOCH_MISMATCH",
+          "'0031'": "DENY HB_EPOCH_MISMATCH (726248a5: value 31 < 32)",
+          "'01024' vs sealed 1024": "ALLOW (726248a5 accepts leading zeros; equal by integer value)",
+          "'31'": "DENY HB_EPOCH_MISMATCH",
+          "'abc'": "DENY HB_EPOCH_MISMATCH",
+          "1024 (int)": "DENY HB_EPOCH_MISMATCH (not ASCII text)",
+          "null": "DENY HB_EPOCH_MISMATCH (726248a5: HB_EPOCH_NOT_SUPPLIED)"
+        },
+        "order": "the sealed source is checked first; with an unobserved source the outcome is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED whatever the supplied value",
+        "parity": "SV-LLM/.github#46 sandbox/s1_supplied_epoch_binder.py::binder_check @64b90721",
+        "ruling": "orchestrator standard 2026-10-18 (both verifiers agree on 60 cases)",
+        "statement": "a SUPPLIED epoch (the SV_CHANGE's hb_epoch) that fails 726248a5 validation is DENY HB_EPOCH_MISMATCH; FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is only the sealed-source side (readback absent, unsealed, not ALLOW, other head, no hb_epoch_source, or a clock-derived, non-int or otherwise invalid readback epoch)"
+      },
       "unobserved": {
         "disposition": "FAIL_CLOSED",
         "failed_predicate": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH",

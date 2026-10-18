@@ -387,7 +387,7 @@ def request_digest(rec: Mapping[str, Any]) -> str:
 def validate_change(rec: Any, ledger_objects: Mapping[str, bytes] | None = None) -> dict[str, Any]:
     """Without ledger_objects the behavior is unchanged (UNKNOWN in a NATIVE record is DENY). With the bytes a read of
     refs/stegverse/organization-ledger returned, a NATIVE record's hb_epoch is also bound to the base ledger head
-    (NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH, provisional until JD-P4-3)."""
+    (NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH, decided with JD-P4-3, partial)."""
     e = "validate_change"
     if not isinstance(rec, Mapping) or rec.get("schema") != CHANGE_SCHEMA:
         raise _deny("SV_CHANGE_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + CHANGE_SCHEMA, "supply a stegverse.sv_change.v1 record", e)
@@ -782,7 +782,8 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
         a fixture_only receipt outside fixture_mode, bound to another ledger head, no hb_epoch_source naming
         $.hb_reference.epoch at that head, or an hb_epoch slot that fails the shared supplied-epoch rule (726248a5:
         ASCII digits, >= 32, the source reference's derived_from_clock exactly false), or that rule is not the pinned one.
-      DENY HB_EPOCH_MISMATCH: the SV_CHANGE's hb_epoch is not ASCII digits equal by integer value to the sealed epoch."""
+      DENY HB_EPOCH_MISMATCH: the SV_CHANGE's (supplied) hb_epoch fails 726248a5 (absent, non-digit, coerced such as '+33',
+        below 32, an int or bool rather than ASCII text) or is not equal by integer value to the sealed epoch."""
     if KERNEL_RULE_SHA256 != SUPPLIED_EPOCH_RULE_SHA256:
         raise _readback_epoch_unobserved("org-kernel/kernel.py::supplied_epoch_failure is not the pinned rule "
                                          + SUPPLIED_EPOCH_RULE_SHA256[:8], ledger_head)
@@ -807,11 +808,15 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
         raise _readback_epoch_unobserved("the sealed hb_epoch slot fails the shared supplied-epoch rule: "
                                          + (bad[0] + ": " + bad[1] if bad else "absent"), ledger_head)
     want = int(str(rb["hb_epoch"]))
-    if not (isinstance(supplied, str) and re.fullmatch(r"[0-9]+", supplied) and int(supplied) == want):
+    # Ruling (orchestrator, both verifiers, 60 cases): a SUPPLIED epoch that fails 726248a5 is DENY HB_EPOCH_MISMATCH;
+    # HB_EPOCH_SOURCE_UNOBSERVED is only the sealed-source side above.
+    supplied_failure = kernel.supplied_epoch_failure(supplied)
+    if supplied_failure is not None or not (isinstance(supplied, str) and re.fullmatch(r"[0-9]+", supplied) and int(supplied) == want):
         raise _deny(HB_EPOCH_MISMATCH, ADMISSION_HB_EPOCH_INVARIANT,
                     "the SV_CHANGE's hb_epoch equals the epoch the base-state readback sealed at base_ref.ledger_head",
                     "verify_admission_hb_epoch", "propose a successor SV_CHANGE at the observed epoch; nothing was admitted",
-                    ledger_head=ledger_head, expected=str(want), hb_epoch=supplied)
+                    ledger_head=ledger_head, expected=str(want), hb_epoch=supplied,
+                    **({"supplied_epoch_rule": supplied_failure[0] + ": " + supplied_failure[1]} if supplied_failure else {}))
     return {"disposition": "ALLOW", "failed_predicate": None, "hb_epoch": str(want), "ledger_head": ledger_head}
 
 

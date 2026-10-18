@@ -248,3 +248,19 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
 - Corpus and replay regenerated through the existing paths (`build_sv_native_fixtures.py`, SCENARIO_CORPUS_APPEND): every positive control carries the sealed fixture readback (`fixture_only`, `unobserved_fields` as for the fixture sign-offs). Scenario ids unchanged (the 32 earlier ids plus the 6 of round 5); `classes.jsonl` is byte-identical.
 - The class stays `ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer`: the class rule keys on (failed predicate, surface kind) of the first observation (org#189 epoch binder gaps, ledger_writer), and `all` is not a surface kind (`sv_work_items.SURFACE_KINDS`). A harvested outcome on another surface would derive a sibling class.
 - HB_EPOCH_MISMATCH stays DENY: a sealed epoch that contradicts the record is an observed contradiction, not an unobservation.
+
+## Round 6: the supplied-epoch ruling, and #3264's own SV_CHANGE record
+- **Ruling, now the standard** (orchestrator; both verifiers agree on 60 cases): a supplied epoch (the SV_CHANGE's hb_epoch) that fails 726248a5 is DENY HB_EPOCH_MISMATCH. FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED is only for the sealed-source side.
+  - `verify_admission_hb_epoch` checks the sealed source first. It then applies `kernel.supplied_epoch_failure` to the supplied value explicitly (the failure is carried in `supplied_epoch_rule`) and compares by integer value.
+  - Examples: 'abc', '+33', '31' and '0031' are DENY. '01024' against a sealed 1024 is ALLOW, because 726248a5 accepts leading zeros. An int is DENY because it is not ASCII text.
+  - This matches SV-LLM/.github#46 `s1_supplied_epoch_binder.binder_check` @64b90721. The ruling is recorded in invariants.json (`supplied_epoch_ruling`).
+- **#3264's own SV_CHANGE record.** No such record is committed in this repository, and none is embedded in the PR body.
+  - The record #46 checked is Lane B's verifier-derived `SV-LLM/.github:sandbox/s1-sv-changes/StegVerse-Labs-3264-9338e3e7.json`. Its base_ref is `{git_merge_base_with_main}`, with no ledger_head.
+  - A record cannot be committed inside the head it describes: `projection.head_sha` and the content digests would have to include the record itself. So P1 derives it outside the tree, from the local clone, for each pushed head.
+  - The derivation:
+    - content = `git diff --no-renames <base>..<head>` (blob_digest = sha256 of the head bytes; deleted -> null), every writer_session DECLARED as the author session;
+    - base_ref {registry_generation read at the base commit, ledger_head = the observed `refs/stegverse/organization-ledger` of the target repository};
+    - hb_epoch = `$.hb_reference.epoch` of the sealed org receipt at that head (HEAD.json -> receipts/<hex>.json, seal verified);
+    - required_checks_ref = the row blob at the head.
+  - The record goes to the PR body (projection) and to Lane B.
+
