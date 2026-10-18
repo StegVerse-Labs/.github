@@ -18,12 +18,12 @@
       "role": "FACT_INDEX",
       "work_unit": "WU-R15",
       "owner_repository": "StegVerse-org/LLM-adapter",
-      "source_ref": "StegVerse-org/LLM-adapter#426@578e922c5ed32f6b420add2e0b4a3d982c9e244a:llm_adapter/ecosystem_fact_index.py",
-      "source_blob": "742823b2a7f496ca02c1700821552537844197bd",
+      "source_ref": "StegVerse-org/LLM-adapter#426@1e4593da3db0179cd415b3680954eb7938190ea2:llm_adapter/ecosystem_fact_index.py",
+      "source_blob": "2f79116d0b9742198f6f68f9602016a563c0817b",
       "state": "OWNER_GATED_PENDING_MERGE_FAIL_CLOSED",
-      "observed": "present at LLM-adapter#426 @ 578e922c (blob 742823b2); #426 has since moved, blob unchanged; absent from main@4fbbfff40dbf920662c6a5416ea576253163c105 at 2026-10-18",
+      "observed": "present at LLM-adapter#426 @ 1e4593da (blob 2f79116d), re-pinned 2026-10-18T22:45Z from 578e922c (blob 742823b2) after the module changed; absent from main@4fbbfff40dbf920662c6a5416ea576253163c105 at 2026-10-18",
       "review_refs": [
-        "StegVerse-org/LLM-adapter#426 comment 6255890731 (WU-B24): 2 defects found in the fact index before merge; the dependency stays FAIL_CLOSED until #426 merges"
+        "StegVerse-org/LLM-adapter#426 comment 6255890731 (WU-B24): 2 defects found in the fact index at 4966266 before merge; #426 @ 1e4593da is titled as hardening in response and is not re-reviewed here; the dependency stays FAIL_CLOSED until #426 merges"
       ],
       "vendored": false,
       "failure_code": "FACT_INDEX_DEPENDENCY_NOT_ON_MAIN"
@@ -32,8 +32,8 @@
       "role": "INVARIANT_EVALUATOR",
       "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
       "owner_repository": "SV-LLM/sandbox",
-      "source_ref": "SV-LLM/sandbox#38@0a3e69df773a34f9496f1e5829e3be45ac051c52:runtime/invariant_evaluation.py",
-      "source_blob": "25190ff8fe163c3c3005f94d7417d1d2768201fb",
+      "source_ref": "SV-LLM/sandbox#38@a7a4907121977bd13176385e27238cea86b3df6a:runtime/invariant_evaluation.py",
+      "source_blob": "1dd0bb5f230d0b20970816aac39cef60c57db00b",
       "labs_port": "OQ-C13",
       "state": "OWNER_GATED_PENDING_LABS_PORT",
       "vendored": false,
