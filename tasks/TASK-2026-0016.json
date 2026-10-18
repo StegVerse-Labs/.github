@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0016",
+  "organization": "StegVerse-Labs",
+  "goal": "Allocator projection of canonical task SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001 (COSV 71000000101000) for StegVerse-org/StegVerse-SDK#533 (draft, head bb2b7afdb88eeee1f16f10636e41103cbb4fb5f1): manifest-path differential source regressions and the StegHealth#51 governed-deny negative control, reusing SDK#539's classifier. Requested by Lane B (InTr and Mesh Destinations, StegVerse-org/.github#162) so WorkerCoordinator, not a session, decides the claim that clears SDK#533's R2 (TASK_CLAIM_ABSENT). Coordination: StegVerse-org/.github#162 comment 6245552151. Not a second goal.",
+  "status": "queued",
+  "requested_at": "2026-10-18T04:45:00Z",
+  "priority_class": "normal",
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-org",
+          "name": "StegVerse-SDK",
+          "full_name": "StegVerse-org/StegVerse-SDK",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegverse/manifest_path_differential.py",
+            "tests/fixtures/ecosystem-diagnostic/steghealth-51-governed-deny-negative-control.json",
+            "tests/test_manifest_path_differential.py"
+          ],
+          "contracts": [],
+          "release_surfaces": [],
+          "capabilities": [
+            "manifest-path-differential-source-regressions"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "stegverse-org:sdk-ecosystem-diagnostic-processor-mpdv-regressions"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "feat/sdk-diagnostic-mpdv-source-regressions-20261016",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "canonical_task_record": "data/canonical-task-records/SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001.json",
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "runtime_execution_inferred": false
+  }
+}
