@@ -182,34 +182,51 @@ def locator_refusal(exc: Any, retry_entrypoint: str) -> "LedgerRefusal":
     return refusal
 
 
+#: The shared supplied-epoch predicate (org-kernel/kernel.py HB_EPOCH_PREDICATE; StegVerse-org/.github#185).
+HB_EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+
+
+def supplied_epoch_failure(hb_epoch: Any) -> tuple[str, str] | None:
+    """The shared rule, decision for decision as org-kernel/kernel.py::supplied_epoch_failure (no reference).
+
+    None is HB_EPOCH_NOT_SUPPLIED. Otherwise ASCII [0-9]+ only (an int is read as its decimal text; a bool,
+    a float or anything coerced -- '+33', ' 33', '3_3', '' -- is refused), value >= 32 (the HB32 anchor).
+    Any failure is HB_EPOCH_INVALID. No clock is read. Kept local (no import) so a fork without
+    org-kernel/kernel.py decides identically; the parity test pins the two together.
+    """
+    if hb_epoch is None:
+        return "HB_EPOCH_NOT_SUPPLIED", "no hb_epoch was supplied and no clock is read"
+    if isinstance(hb_epoch, bool):
+        text = None
+    elif isinstance(hb_epoch, int):
+        text = str(hb_epoch)
+    elif isinstance(hb_epoch, str):
+        text = hb_epoch
+    else:
+        text = None
+    if text is None or not text.isascii() or not text.isdigit():
+        return "HB_EPOCH_INVALID", "hb_epoch " + repr(hb_epoch) + " is not ASCII [0-9]+"
+    if int(text) < HB_ANCHOR_EPOCH:
+        return "HB_EPOCH_INVALID", "hb_epoch " + text + " is below the HB32 anchor (32)"
+    return None
+
+
 def require_supplied_epoch(hb_epoch: Any, retry_entrypoint: str) -> int:
     """The shared epoch rule. Returns the epoch or raises six-field FAIL_CLOSED. Never reads a clock."""
-    if hb_epoch is None or hb_epoch == "":
-        raise LedgerRefusal(
-            "HB_EPOCH_NOT_SUPPLIED", failure_code="HB_EPOCH_NOT_SUPPLIED",
-            failed_predicate="HB_EPOCH_IS_SUPPLIED_BY_THE_MANIFEST_OR_DISPATCH",
-            required_evidence_or_repair="supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read",
-            retry_entrypoint=retry_entrypoint,
-            next_attempt="re-dispatch the same transition with hb_epoch supplied; nothing was appended")
-    # ASCII digits only (TVC#517 require_hb_epoch): '+33', ' 33', '3_3', '٣٣' are not accepted,
-    # although int() would accept them. CLIs therefore pass the epoch through as text.
-    if isinstance(hb_epoch, str):
-        if not re.fullmatch(r"[0-9]+", hb_epoch, flags=re.ASCII):
-            raise LedgerRefusal(
-                "HB_EPOCH_INVALID", failure_code="HB_EPOCH_INVALID",
-                failed_predicate="HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR",
-                required_evidence_or_repair="supply hb_epoch as ASCII digits only, >= 32; no clock is read",
-                retry_entrypoint=retry_entrypoint,
-                next_attempt="re-dispatch the same transition with a valid hb_epoch; nothing was appended")
-        hb_epoch = int(hb_epoch)
-    if isinstance(hb_epoch, bool) or not isinstance(hb_epoch, int) or hb_epoch < HB_ANCHOR_EPOCH:
-        raise LedgerRefusal(
-            "HB_EPOCH_INVALID", failure_code="HB_EPOCH_INVALID",
-            failed_predicate="HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR",
-            required_evidence_or_repair="supply hb_epoch as digits only, >= 32; no clock is read",
-            retry_entrypoint=retry_entrypoint,
-            next_attempt="re-dispatch the same transition with a valid hb_epoch; nothing was appended")
-    return hb_epoch
+    failure = supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return int(str(hb_epoch))
+    code, detail = failure
+    if code == "HB_EPOCH_NOT_SUPPLIED":
+        repair = "supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read"
+        retry = "re-dispatch the same transition with hb_epoch supplied; nothing was appended"
+    else:
+        repair = detail + "; supply hb_epoch as ASCII digits only, >= 32; no clock is read"
+        retry = "re-dispatch the same transition with a valid hb_epoch; nothing was appended"
+    refusal = LedgerRefusal(code, failure_code=code, failed_predicate=HB_EPOCH_PREDICATE,
+                            required_evidence_or_repair=repair, retry_entrypoint=retry_entrypoint, next_attempt=retry)
+    refusal.refusal["derived_from_clock"] = False
+    raise refusal
 
 
 def supplied_hb_reference(kernel: Any, hb_epoch: Any, retry_entrypoint: str) -> dict[str, Any]:

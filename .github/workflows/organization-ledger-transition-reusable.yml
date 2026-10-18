@@ -62,9 +62,9 @@ jobs:
             echo "HB_EPOCH=$HB_EPOCH" >> "$GITHUB_ENV"
           fi
           # Shared epoch rule (agreed with InTr; same as TVC validate_warrant): supplied, digits, >= 32; no clock.
-          [ -n "$HB_EPOCH" ] || fail HB_EPOCH_NOT_SUPPLIED HB_EPOCH_IS_SUPPLIED_BY_THE_MANIFEST_OR_DISPATCH "supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read" "re-dispatch the same transition with hb_epoch supplied; nothing was appended"
-          case "$HB_EPOCH" in *[!0123456789]*) fail HB_EPOCH_INVALID HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR "supply hb_epoch as digits only, >= 32; no clock is read" "re-dispatch with a valid hb_epoch; nothing was appended";; esac
-          [ "$HB_EPOCH" -ge 32 ] || fail HB_EPOCH_INVALID HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR "hb_epoch precedes the HB32 anchor; no clock is read" "re-dispatch with hb_epoch >= 32; nothing was appended"
+          [ -n "$HB_EPOCH" ] || fail HB_EPOCH_NOT_SUPPLIED SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read" "re-dispatch the same transition with hb_epoch supplied; nothing was appended"
+          case "$HB_EPOCH" in *[!0123456789]*) fail HB_EPOCH_INVALID SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "supply hb_epoch as digits only, >= 32; no clock is read" "re-dispatch with a valid hb_epoch; nothing was appended";; esac
+          [ "$HB_EPOCH" -ge 32 ] || fail HB_EPOCH_INVALID SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "hb_epoch precedes the HB32 anchor; no clock is read" "re-dispatch with hb_epoch >= 32; nothing was appended"
           # The parameter file is at a fixed path (the Python modules read the same path).
           # owning_existing_goal is read by the Python modules from the committed parameter file;
           # the dispatch input must equal it, so the two sources cannot disagree.
@@ -329,7 +329,7 @@ jobs:
           # (the first step already refused an absent epoch as HB_EPOCH_NOT_SUPPLIED; this is defence in depth)
           case "$HB_EPOCH" in
             ''|*[!0123456789]*)
-              python3 -c 'import json,os; print(json.dumps({"disposition":"FAIL_CLOSED","failure_code":"HB_EPOCH_INVALID","failed_predicate":"HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR","required_evidence_or_repair":"supply hb_epoch as digits only, >= 32; no clock is read","retry_entrypoint":os.environ["RETRY"],"owning_existing_goal":os.environ["GOAL"],"next_attempt":"re-dispatch with a valid hb_epoch; nothing was appended","consequence_committed":False},sort_keys=True))'
+              python3 -c 'import json,os; print(json.dumps({"disposition":"FAIL_CLOSED","failure_code":"HB_EPOCH_INVALID","failed_predicate":"SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH","required_evidence_or_repair":"supply hb_epoch as digits only, >= 32; no clock is read","retry_entrypoint":os.environ["RETRY"],"owning_existing_goal":os.environ["GOAL"],"next_attempt":"re-dispatch with a valid hb_epoch; nothing was appended","consequence_committed":False,"derived_from_clock":False},sort_keys=True))'
               exit 1 ;;
           esac
           # A refusal is recorded too; the publish step below carries it, and

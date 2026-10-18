@@ -116,7 +116,7 @@ class SuppliedEpochRule(unittest.TestCase):
         self.assertNotEqual(out.returncode, 0)
         refusal = json.loads(out.stdout.splitlines()[-1])
         self.assertSixFieldRefusal(refusal, "HB_EPOCH_NOT_SUPPLIED")
-        self.assertEqual(refusal["failed_predicate"], "HB_EPOCH_IS_SUPPLIED_BY_THE_MANIFEST_OR_DISPATCH")
+        self.assertEqual(refusal["failed_predicate"], "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
         self.assertEqual(refusal["retry_entrypoint"], "org-kernel/organization-ledger/emit.py::append")
         self.assertEqual(self.c.written("repo"), [], "nothing is written on refusal")
 
@@ -140,11 +140,12 @@ class SuppliedEpochRule(unittest.TestCase):
             r = self.c.py('common = load("ledger_common.py")\n'
                           'print(json.dumps(refusal(lambda: common.require_supplied_epoch(%r, "x"))))' % (bad,))
             self.assertEqual(r["refused"]["failure_code"], "HB_EPOCH_INVALID", bad)
-            self.assertEqual(r["refused"]["failed_predicate"], "HB_EPOCH_IS_AN_INTEGER_AT_OR_AFTER_THE_HB32_ANCHOR")
-        for absent in (None, ""):
+            self.assertEqual(r["refused"]["failed_predicate"], "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
+        # Shared rule (org-kernel/kernel.py::supplied_epoch_failure): only None is absent; "" is not ASCII [0-9]+.
+        for absent, code in ((None, "HB_EPOCH_NOT_SUPPLIED"), ("", "HB_EPOCH_INVALID")):
             r = self.c.py('common = load("ledger_common.py")\n'
                           'print(json.dumps(refusal(lambda: common.require_supplied_epoch(%r, "x"))))' % (absent,))
-            self.assertEqual(r["refused"]["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
+            self.assertEqual(r["refused"]["failure_code"], code, absent)
         for good, value in (("32", 32), (32, 32), ("417798851", 417798851)):
             r = self.c.py('common = load("ledger_common.py")\n'
                           'print(json.dumps(refusal(lambda: common.require_supplied_epoch(%r, "x"))))' % (good,))
@@ -1018,6 +1019,68 @@ class RequiredRepairIsNeverEmpty(unittest.TestCase):
                  'for v in (None, "", "None", " None ")]))')
         for value in r:
             self.assertNotIn(value.strip(), ("", "None"))
+
+
+
+class LocatorRetryEntrypointFromFile(unittest.TestCase):
+    """Lane B #162: the locator refusal names its own path, so the org resident-runtime byte copy stays identical."""
+
+    def load_copy(self, relative):
+        import importlib.util
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        target = Path(tmp.name) / "checkout" / relative
+        target.parent.mkdir(parents=True)
+        shutil.copyfile(COMPONENT / "ledger_store.py", target)
+        if not relative.startswith(("org-kernel/", "resident-runtime/")):
+            (Path(tmp.name) / "checkout" / ".git").mkdir()
+        spec = importlib.util.spec_from_file_location("ledger_store_copy_" + relative.replace("/", "_").replace(".", "_"), target)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with self.assertRaises(module.LedgerLocatorRefused) as caught:
+            module.parse_locator("https://github.com/StegVerse-org/.github")
+        return caught.exception.refusal["retry_entrypoint"]
+
+    def test_the_component_names_its_component_path(self):
+        self.assertEqual(_load_store()._locator_retry_entrypoint(), "org-kernel/organization-ledger/ledger_store.py::parse_locator")
+
+    def test_a_byte_copy_names_where_it_is(self):
+        self.assertEqual(self.load_copy("resident-runtime/ledger_store.py"), "resident-runtime/ledger_store.py::parse_locator")
+        self.assertEqual(self.load_copy("org-kernel/organization-ledger/ledger_store.py"),
+                         "org-kernel/organization-ledger/ledger_store.py::parse_locator")
+        self.assertEqual(self.load_copy("tools/ledger/ledger_store.py"), "tools/ledger/ledger_store.py::parse_locator")
+
+    def test_no_path_is_hard_coded(self):
+        text = (COMPONENT / "ledger_store.py").read_text()
+        self.assertNotIn('"org-kernel/organization-ledger/ledger_store.py', text)
+
+
+class SharedSuppliedEpochRule(unittest.TestCase):
+    """Lane B #162 N2: the same decisions, codes and predicate as org-kernel/kernel.py::supplied_epoch_failure."""
+
+    CASES = (None, "", "33", "32", "31", "0", "+33", " 33", "33 ", "3_3", "33.0", "\u0663\u0663", "1e3", 33, 32, 31, 0, -40,
+             True, False, 33.0, [33], {"epoch": 33}, "0033", "999999999999")
+
+    def test_decisions_match_the_kernel(self):
+        c = Consumer()
+        self.addCleanup(c.close)
+        r = c.py('import ast\n'
+                 'k = load("../kernel.py"); lc = load("ledger_common.py")\n'
+                 'cases = ' + repr(self.CASES) + '\n'
+                 'out = []\n'
+                 'for v in cases:\n'
+                 '    kf = k.supplied_epoch_failure(v); lf = lc.supplied_epoch_failure(v)\n'
+                 '    got = refusal(lambda: lc.require_supplied_epoch(v, "t"))\n'
+                 '    out.append([repr(v), kf and kf[0], lf and lf[0], (got.get("refused") or {}).get("failed_predicate"), '
+                 '(got.get("refused") or {}).get("derived_from_clock"), got.get("returned")])\n'
+                 'print(json.dumps({"rows": out, "predicate": k.HB_EPOCH_PREDICATE}))')
+        for value, kernel_code, local_code, predicate, derived, returned in r["rows"]:
+            self.assertEqual(kernel_code, local_code, value)
+            if kernel_code is None:
+                self.assertIsNotNone(returned, value)
+            else:
+                self.assertEqual(predicate, r["predicate"], value)
+                self.assertIs(derived, False, value)
 
 
 if __name__ == "__main__":
