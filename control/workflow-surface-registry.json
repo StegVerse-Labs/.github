@@ -109,6 +109,18 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SDK-MR-A-VALIDATION-CUSTODY-001 / StegVerse-Labs/.github#3099",
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/intr-destination-capability-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162",
+      "reason": "validation-only check (StegVerse-Labs/.github#3200) for the intr-destination universal InTr diagnostic capability: runs org-runtime/runtime_boundary.py validate and tests.test_intr_destination_capability on pull_request/push to main path filters and workflow_dispatch, with permissions contents: read, checkout persist-credentials=false, and both ledger roots redirected to runner.temp; it appends to no operator ledger, proves emit and close only against this repository's own kernel receipt rather than a live peer, and this registration grants no runtime, admission, credential, or transition authority"
+    },
+    {
+      "path": ".github/workflows/reverse-intr-inter-org-route-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162",
+      "reason": "validation-only unittest (StegVerse-Labs/.github#3198, #3199) for the reverse Labs-to-StegVerse-org governance InTr route: runs tests.test_reverse_intr_inter_org_route on pull_request/push to main path filters and workflow_dispatch, with permissions contents: read, checkout persist-credentials=false, and both ledger roots and the mesh redirected by the tests; a green run is not a production demonstration or an authentic receipt, no remediation-to-org leg is validated, and this registration grants no runtime, admission, credential, or transition authority"
     }
   ],
   "removed_in_hygiene_batch_1": [
