@@ -19,8 +19,8 @@ Layout. These are the existing receipts, unchanged:
     ``hb_epoch`` must both pass the shared rule org-kernel/kernel.py::supplied_epoch_failure (L236-269, blob
     ffec5d64, SHARED_RULE_SHA256 726248a5...) and must be equal. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED,
     different -> DENY HB_EPOCH_MISMATCH, in both cases before anything is written. A clock epoch is never written.
-  * Command: a check whose command data/sv-work-items/required-checks.json (P1, row SV-CHANGE-REQUIRED-CHECKS-001)
-    does not declare is FAIL_CLOSED CHECK_COMMAND_UNDECLARED before any append. The one exception is the verifier's
+  * Command: a check whose command P1's row SV-CHANGE-REQUIRED-CHECKS-001 (vendored at
+    tests/vendor/p1_7d940851/required-checks.json, blob 42405012) does not declare is FAIL_CLOSED CHECK_COMMAND_UNDECLARED before any append. The one exception is the verifier's
     own FAIL_CLOSED CHECK_COMMAND_UNDECLARED receipt, which is P1's rule (sv_work_items.validate_check_receipt).
 
 The append path is intr_destination_ingress._append (repository append, then
@@ -53,7 +53,11 @@ READBACK_SCHEMA = "stegverse.org-sv-check-receipt-readback/v1"
 OWNING_GOAL = "StegVerse-org/.github#163 (REQUIRED_CHECK_RECEIPTS_ARE_S1_VERIFIER_OUTPUTS_APPENDED_BY_ORG_WRITER)"
 RETRY = "resident-runtime/sv_check_receipt_append.py::append_check_receipt"
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py HB_ANCHOR_EPOCH
-REQUIRED_CHECKS_PATH = ROOT / "data" / "sv-work-items" / "required-checks.json"
+# P1's row SV-CHANGE-REQUIRED-CHECKS-001 (data/sv-work-items/required-checks.json), single-sourced as a Lane D vendored
+# copy pinned to P1 #3264 head 7d940851, blob 42405012; this PR does not touch P1's path or depend on #3264 landing.
+REQUIRED_CHECKS_PATH = ROOT / "tests" / "vendor" / "p1_7d940851" / "required-checks.json"
+REQUIRED_CHECKS_BLOB = "424050129f4ddfa7e14aac61c68c7037f075a709"
+P1_REQUIRED_CHECKS_PATH = "data/sv-work-items/required-checks.json"
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 EPOCH_SOURCE_PREDICATE = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 EPOCH_TIE_PREDICATE = "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH"
@@ -187,7 +191,7 @@ def _command_refusal(receipt: Mapping[str, Any]) -> dict[str, Any] | None:
     if receipt["disposition"] == "FAIL_CLOSED" and receipt.get("failure_code") == "CHECK_COMMAND_UNDECLARED":
         return None  # the verifier's own six-field refusal for an undeclared command is the receipt to ledger
     return refusal("CHECK_COMMAND_UNDECLARED", CHECK_COMMAND_PREDICATE,
-                   "the row data/sv-work-items/required-checks.json#checks." + receipt["check_id"] + " declares no offline "
+                   "the row " + P1_REQUIRED_CHECKS_PATH + "#checks." + receipt["check_id"] + " (vendored blob 42405012)" + " declares no offline "
                    "command; the only receipt that can be appended for it is the verifier's FAIL_CLOSED CHECK_COMMAND_UNDECLARED",
                    "after the row declares the command, or the verifier emits CHECK_COMMAND_UNDECLARED; nothing was written",
                    check_id=receipt["check_id"], receipt_disposition=receipt["disposition"])

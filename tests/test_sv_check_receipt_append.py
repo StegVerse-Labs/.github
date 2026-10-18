@@ -7,8 +7,9 @@ Oracle: P1's readers at StegVerse-Labs/.github#3264 head
 7d940851034697c019684ec073ea676f27d7ac37, vendored test-only under
 tests/vendor/p1_7d940851/ (sv_work_items.py blob 20b03916, required-checks.json
 42405012, lifecycle-transitions.json c66de6e8), with P1's tests/sv_ledger_fixtures.py
-(blob 30a9fe89) byte-identical. data/sv-work-items/required-checks.json is the
-same 42405012 blob (the row the operation's undeclared-command rule reads).
+(blob 30a9fe89) byte-identical. The vendored required-checks.json (42405012) is
+also the row the operation's undeclared-command rule reads; this PR does not
+touch P1's data/sv-work-items/required-checks.json.
 Shared epoch rule: org-kernel/kernel.py::supplied_epoch_failure L236-269 (blob
 ffec5d64), SHARED_RULE_SHA256 726248a5...; storage location kernel.py:68-74. org-kernel/kernel.py (ffec5d64) and
 scripts/project_worker_claim_into_canonical_task.py (9573c5bb) are the same blobs
@@ -375,7 +376,23 @@ class Declarations(unittest.TestCase):
         self.assertEqual(svc.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
         self.assertEqual(wi.SUPPLIED_EPOCH_RULE_SHA256, svc.SHARED_RULE_SHA256)
         self.assertEqual(wi.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
-        self.assertEqual((ROOT / "data/sv-work-items/required-checks.json").read_bytes(), (VENDOR / "required-checks.json").read_bytes())
+        self.assertEqual(svc.REQUIRED_CHECKS_PATH, VENDOR / "required-checks.json")
+
+    def test_required_checks_row_does_not_drift_from_p1(self):
+        """The vendored row is pinned to blob 42405012. If P1's file is in the checkout it must be byte-identical;
+        if it is absent (before #3264 lands) the pin alone is verified and the comparison is UNKNOWN. No network."""
+        import subprocess
+        vendored = (VENDOR / "required-checks.json").read_bytes()
+        blob = subprocess.run(["git", "hash-object", "--stdin"], input=vendored, capture_output=True, check=True).stdout.decode().strip()
+        self.assertEqual(blob, svc.REQUIRED_CHECKS_BLOB)
+        p1 = ROOT / svc.P1_REQUIRED_CHECKS_PATH
+        if p1.is_file():
+            comparison = "IDENTICAL" if p1.read_bytes() == vendored else "DRIFT"
+            self.assertEqual(comparison, "IDENTICAL", "P1's " + svc.P1_REQUIRED_CHECKS_PATH + " drifted from vendored blob 42405012; re-vendor")
+        else:
+            comparison = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"  # P1's file is not in this checkout; only the pin is verified
+        print("required-checks drift comparison:", comparison)
+        self.assertIn(comparison, ("IDENTICAL", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"))
 
     def test_the_operation_is_declared_and_the_schema_is_pinned(self):
         boundary = json.loads((ROOT / "org-runtime" / "interlock-intr.json").read_text(encoding="utf-8"))
