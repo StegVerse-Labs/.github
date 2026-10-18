@@ -46,7 +46,7 @@
     "sdk_generic_manifest_execution"
   ],
   "richard_dispatch_master_records": null,
-  "runtime_root": "/workspace/lane-d/r15/repo",
+  "runtime_root": "/home/user/.github",
   "schema": "stegverse.resident-request-dispatch/v1",
   "sdk_evaluator_dispatch_master_records": null,
   "second_machine_required": false,
@@ -55,6 +55,6 @@
   ],
   "selected_request_id": "test5-a",
   "selection_scope": "EXACT_SELECTOR",
-  "source_root": "/workspace/lane-d/r15/repo",
+  "source_root": "/home/user/.github",
   "state": "DISPATCH_INCOMPLETE"
 }
