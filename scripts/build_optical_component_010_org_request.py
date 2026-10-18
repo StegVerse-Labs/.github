@@ -11,9 +11,13 @@ scripts/build_capability_boundary_experiment_org_request.py (SDK#553, 5dd0f25)
 writes for StegVerse-org/.github.
 
 The manifest is not composed here. It is taken from a declaration in the
-canonical records only, with no input empty or a placeholder. It is checked by
-the ingress's own stegverse.manifest_contract.validate_ingress_manifest before
-any digest is taken, and the canonical digest is the one this organization's
+canonical records only, with no input empty or a placeholder. The declaration
+must conform to schemas/component-010-session-event-input.schema.json, which
+fixes each input's type and the values it may take: the published SDK routes,
+the standing modes, an HB-epoch created_at and the permitted acting parties,
+none of them an AI session. It is then checked by the ingress's own
+stegverse.manifest_contract.validate_ingress_manifest. Both run before any
+digest is taken, and the canonical digest is the one this organization's
 ingress recomputes: resident-runtime/organization_manifest_ingress.py
 `derive_execution_request(manifest, boundary())`, not the wire digest. When the
 records declare no manifest for the transition, nothing is written and the
@@ -32,11 +36,16 @@ import hashlib
 import functools
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+# The repository's stdlib schema checker, the one hil_explanation_experiment.py
+# also validates with; no third-party validator.
+from user_facing_explanation import ExplanationError, schema_check  # noqa: E402
 
 GOAL = "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001"
 TRANSITION = "COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION"
@@ -48,6 +57,7 @@ REQUEST_PATH = f".stegverse/transition-requests/{REQUEST_ID}.json"
 TASK_RECORD = f"data/canonical-task-records/{GOAL}.json"
 COMPONENT_PROFILE = "data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
 INGRESS = "resident-runtime/organization_manifest_ingress.py"
+DECLARATION_SCHEMA = "schemas/component-010-session-event-input.schema.json"
 
 # Pinned when a declared manifest exists and its request has been built once and
 # reviewed. Unpinned, the builder refuses to write: a digest it has never been
@@ -77,6 +87,7 @@ INPUTS_UNDECLARED = "COMPONENT_010_MANIFEST_INPUTS_UNDECLARED"
 DIGEST_NOT_PINNED = "COMPONENT_010_REQUEST_DIGEST_NOT_PINNED"
 DIGEST_MISMATCH = "COMPONENT_010_REQUEST_DIGEST_MISMATCH"
 CONTRACT_INVALID = "COMPONENT_010_MANIFEST_CONTRACT_INVALID"
+SCHEMA_INVALID = "COMPONENT_010_DECLARATION_SCHEMA_INVALID"
 SDK_UNAVAILABLE = "COMPONENT_010_INGRESS_SDK_UNAVAILABLE"
 CANONICAL_REFUSED = "COMPONENT_010_MANIFEST_INGRESS_CANONICAL_REFUSED"
 RECORDS_UNREADABLE = "COMPONENT_010_CANONICAL_RECORDS_UNREADABLE"
@@ -219,6 +230,29 @@ def missing_inputs(record: dict[str, Any], profile: dict[str, Any],
     return missing
 
 
+def schema_violation(declaration: dict[str, Any], schema: dict[str, Any]) -> str | None:
+    """None when the declaration conforms to the schema; else the checker's code, e.g. schema:enum:$.x."""
+    try:
+        schema_check(declaration, schema)
+    except ExplanationError as exc:
+        return str(exc)
+    return None
+
+
+def validate_declaration(declaration: dict[str, Any], root: Path = ROOT) -> None:
+    """Refuse, with six fields, a declaration that does not conform to the input schema."""
+    violation = schema_violation(declaration, _read(root, DECLARATION_SCHEMA))
+    if violation is None:
+        return
+    raise refusal(
+        SCHEMA_INVALID, f"the declared {TRANSITION} manifest conforms to {DECLARATION_SCHEMA}",
+        f"correct the declaration in {TASK_RECORD} so it conforms to {DECLARATION_SCHEMA}; "
+        "a value the schema does not list (an acting party, a route, a standing mode) "
+        "is added by the owner's merge of the schema, never by the declaration",
+        detail=violation, schema_path=re.sub(r"^schema:[A-Za-z]+:", "", violation),
+        inputs_read=[TASK_RECORD, COMPONENT_PROFILE, DECLARATION_SCHEMA])
+
+
 @functools.lru_cache(maxsize=None)
 def ingress_module(root: Path = ROOT) -> Any:
     """The organization root's ingress, which imports the SDK it validates and derives with."""
@@ -289,8 +323,11 @@ def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]],
             missing_inputs=missing, declarations_found=len(found),
             satisfying_edge=edge.get("satisfying_edge"),
             inputs_read=[TASK_RECORD, COMPONENT_PROFILE])
+    # The declared inputs are held to their schema first: an acting party, route,
+    # standing mode or created_at the schema does not admit is refused here.
+    validate_declaration(declaration, root)
     manifest = json.loads(manifest_file_bytes(declaration["manifest"]))
-    # The check the ingress applies on receipt runs here first, so no digest is
+    # The check the ingress applies on receipt runs here next, so no digest is
     # computed, or pinned, for a manifest the ingress would refuse.
     try:
         validate_of(manifest)

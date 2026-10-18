@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.component-010-session-event-input/v1",
+  "title": "COMPONENT_010 session-event manifest declaration",
+  "description": "The declaration scripts/build_optical_component_010_org_request.py builds its organization transition request from: every input the COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION manifest needs, with its type and constraint. The builder refuses a declaration that does not conform, with six fields and failure code COMPONENT_010_DECLARATION_SCHEMA_INVALID, before the SDK envelope check and before any digest. Conforming grants nothing: the ingress decides the disposition. A value this schema does not list (an acting party, a route, a standing mode) is added by the owner's merge of this schema, never by a declaration.",
+  "x-stegverse-sources": {
+    "component_contract": "data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json selected_components[RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010]",
+    "sdk_commit": "StegVerse-org/StegVerse-SDK d6873d84dddc91ef6b26774336b05c8e1f4042c0, the SDK commit .github/workflows/org-runtime-boundary.yml pins",
+    "routes": "stegverse/route_resolution.py PUBLISHED_ROUTES at sdk_commit",
+    "standing_modes": "stegverse/machine_contract.py standing_modes at sdk_commit",
+    "manifest_profile": "stegverse/governance_navigation.py INGRESS_PROFILE and stegverse/manifest_contract.py validate_ingress_manifest at sdk_commit",
+    "created_at": "the SDK requires created_at as text (validate_ingress_manifest); the HB epoch is an integer throughout this repository (hb_epoch); a clock is never read"
+  },
+  "x-stegverse-actor-kind": {
+    "records_allowed_actor_kinds": "data/task-registry-ai-ingress-policy.json allowed_actor_kinds: CHATGPT_SESSION, HUMAN_OPERATOR, NON_AI_SYSTEM_COORDINATOR",
+    "permitted": [
+      "HUMAN_OPERATOR",
+      "NON_AI_SYSTEM_COORDINATOR"
+    ],
+    "excluded": [
+      {
+        "actor_kind": "CHATGPT_SESSION",
+        "reason": "an AI session is not the acting party of this session event: AI-session gate check-ins are forbidden",
+        "source": "owner directive 2026-10-18T22:58Z (relayed to unit B-P3 by lead session_017bDUxLHMn1cgscX3WNw5qy); StegVerse-Labs/.github#3183 standing invariant: no AI_SESSION_GATE prerequisite"
+      },
+      {
+        "actor_kind": "NON_CHATGPT_AI, AI_MODEL, AI_AGENT, EXTERNAL_MODEL",
+        "reason": "denied AI actor kinds",
+        "source": "data/task-registry-ai-ingress-policy.json denied_ai_actor_kinds"
+      }
+    ],
+    "default": null,
+    "change": "a party is added only by the owner's merge of this schema"
+  },
+  "type": "object",
+  "required": [
+    "transition_id",
+    "manifest",
+    "standing"
+  ],
+  "properties": {
+    "transition_id": {
+      "const": "COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION"
+    },
+    "manifest": {
+      "type": "object",
+      "required": [
+        "manifest_profile",
+        "manifest_profile_version",
+        "source_framework",
+        "source_output_id",
+        "created_at",
+        "declared_intent",
+        "requested_consequence",
+        "payload",
+        "extensions"
+      ],
+      "not": {
+        "required": [
+          "payload_commitment"
+        ]
+      },
+      "properties": {
+        "manifest_profile": {
+          "const": "stegverse.ingress-manifest.v1"
+        },
+        "manifest_profile_version": {
+          "const": "1"
+        },
+        "source_framework": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "derivable: the component contract's canonical_implementation_or_owner"
+        },
+        "source_output_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "a fact of the session event"
+        },
+        "created_at": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "description": "the decimal text of the supplied HB epoch; never a clock reading"
+        },
+        "declared_intent": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "derivable: blockers[0].required_evidence_or_repair of the canonical task record"
+        },
+        "requested_consequence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S",
+          "description": "derivable: blockers[0].satisfying_edge of the canonical task record"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "task_id",
+            "session_id",
+            "actor_kind",
+            "checkin_context_or_exact_registry_disposition"
+          ],
+          "properties": {
+            "task_id": {
+              "const": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001"
+            },
+            "session_id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S",
+              "description": "a fact of the session event"
+            },
+            "actor_kind": {
+              "enum": [
+                "HUMAN_OPERATOR",
+                "NON_AI_SYSTEM_COORDINATOR"
+              ],
+              "description": "the acting party; see x-stegverse-actor-kind. No default."
+            },
+            "checkin_context_or_exact_registry_disposition": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                {
+                  "type": "object"
+                }
+              ],
+              "description": "the session event's check-in context, or the exact Registry disposition"
+            }
+          }
+        },
+        "extensions": {
+          "type": "object",
+          "required": [
+            "stegverse_route"
+          ],
+          "properties": {
+            "stegverse_route": {
+              "type": "object",
+              "required": [
+                "route_id"
+              ],
+              "properties": {
+                "route_id": {
+                  "enum": [
+                    "stegverse.route.atomic-task-worker.v1",
+                    "stegverse.route.canonical-governed.v1",
+                    "stegverse.route.customer-local-governed.v1",
+                    "stegverse.route.ecosystem-chat.v1",
+                    "stegverse.route.ecosystem-diagnostic.v1",
+                    "stegverse.route.hil-intake.v1",
+                    "stegverse.route.organization-role-conformance.v1",
+                    "stegverse.route.purpose-bound-worker.v1",
+                    "stegverse.route.shwp-sovereign-inference.v1",
+                    "stegverse.route.source-native-math.v1",
+                    "stegverse.route.stegbrowser.v1",
+                    "stegverse.route.svg-governance-cycle.v1",
+                    "stegverse.route.va-scoped-chat.v1"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "standing": {
+      "type": "object",
+      "required": [
+        "mode",
+        "node_ref",
+        "predecessor"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "ESTABLISH_GENESIS",
+            "VERIFY_EXISTING"
+          ]
+        },
+        "node_ref": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "predecessor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "ESTABLISH_GENESIS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "predecessor": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "VERIFY_EXISTING"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "predecessor": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
