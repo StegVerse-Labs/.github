@@ -5,6 +5,7 @@ import copy
 import hashlib
 import importlib.util
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -37,6 +38,7 @@ def _declaration() -> dict:
                "checkin_context_or_exact_registry_disposition": "c"}
     return {
         "transition_id": builder.TRANSITION,
+        "hb_epoch": "40",
         "manifest": {"manifest_profile": "stegverse.ingress-manifest.v1", "manifest_profile_version": "1",
                      "source_framework": "f", "source_output_id": "o", "created_at": "40",
                      "declared_intent": "i", "requested_consequence": "q", "payload": payload,
@@ -64,7 +66,7 @@ def test_current_records_fail_closed_naming_every_undeclared_input():
     assert set(record["missing_inputs"]) == {
         component + "session_id", component + "actor_kind",
         component + "checkin_context_or_exact_registry_disposition",
-        *builder.SDK_MANIFEST_INPUTS, *builder.STANDING_INPUTS}
+        *builder.SDK_MANIFEST_INPUTS, *builder.STANDING_INPUTS, *builder.EPOCH_INPUTS}
     # The task id is the canonical goal, so it is never reported missing.
     assert component + "task_id" not in record["missing_inputs"]
     assert "ORGANIZATION_LEDGER_LOCK" in record["satisfying_edge"]
@@ -134,6 +136,7 @@ def test_a_pinned_declaration_builds_a_deterministic_request_bound_to_the_canoni
     assert request["expected_canonical_manifest_sha256"] == canonical
     assert ("manifest" in request) and ("build_manifest" not in request)
     assert request["owning_existing_goal"] and "predecessor" in request["standing"]
+    assert request["hb_epoch"] == "40"
     assert builder.REQUEST_PATH.startswith(".stegverse/transition-requests/")
 
 
@@ -166,7 +169,7 @@ def test_an_all_placeholder_declaration_is_refused_before_any_digest(tmp_path, s
     expected = {
         "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010." + n
         for n in ("session_id", "actor_kind", "checkin_context_or_exact_registry_disposition")
-    } | set(builder.SDK_MANIFEST_INPUTS) | set(builder.STANDING_INPUTS)
+    } | set(builder.SDK_MANIFEST_INPUTS) | set(builder.STANDING_INPUTS) | set(builder.EPOCH_INPUTS)
     if not sentinel.strip():
         # Emptiness nested inside an object is not itself a placeholder; the
         # empty session fields inside the payload are still each reported.
@@ -265,8 +268,8 @@ def _sdk_declaration() -> dict:
     # a supplied HB epoch, which is not part of any hash the SDK checks.
     manifest["created_at"] = _declaration()["manifest"]["created_at"]
     manifest["hashes"]["payload_sha256"] = canonical_sha256(manifest["payload"])
-    return {"transition_id": builder.TRANSITION, "manifest": manifest,
-            "standing": _declaration()["standing"]}
+    return {"transition_id": builder.TRANSITION, "hb_epoch": _declaration()["hb_epoch"],
+            "manifest": manifest, "standing": _declaration()["standing"]}
 
 
 def _sdk_root(tmp_path: Path, declaration: dict) -> Path:
@@ -332,7 +335,7 @@ REQUIRED = _required_paths(SCHEMA)
 
 def test_the_schema_declares_every_input_the_builder_requires():
     dotted = {".".join(p) for p in REQUIRED}
-    for name in builder.SDK_MANIFEST_INPUTS + builder.STANDING_INPUTS:
+    for name in builder.SDK_MANIFEST_INPUTS + builder.STANDING_INPUTS + builder.EPOCH_INPUTS:
         if name == "manifest.payload_or_payload_commitment":
             name = "manifest.payload"
         assert name in dotted, name
@@ -403,7 +406,7 @@ def test_the_acting_parties_are_the_records_non_ai_kinds_with_no_default():
 
 
 @pytest.mark.parametrize("created_at", ["2026-10-18T22:58:00Z", "2026-10-18", "1792364421.5",
-                                        "Sun Oct 18 22:58:00 2026", "-1", "040", "", 40])
+                                        "Sun Oct 18 22:58:00 2026", "-1", "040", "31", "", 40])
 def test_a_clock_derived_created_at_is_refused(tmp_path, created_at):
     declaration = _declaration()
     declaration["manifest"]["created_at"] = created_at
@@ -464,3 +467,66 @@ def test_a_root_without_the_schema_refuses_rather_than_skipping_it(tmp_path):
     record = _refusal(root=root, canonical_of=_never, validate_of=_never)
     assert record["failure_code"] == "COMPONENT_010_CANONICAL_RECORDS_UNREADABLE"
     assert builder.DECLARATION_SCHEMA in record["detail"]
+
+
+# --- the supplied hb_epoch the committed-request intake requires on the request ---
+
+def test_an_absent_hb_epoch_is_an_undeclared_input(tmp_path):
+    declaration = _declaration()
+    del declaration["hb_epoch"]
+    record = _refusal(root=_records(tmp_path, declaration), canonical_of=_never, validate_of=_never)
+    assert record["failure_code"] == "COMPONENT_010_MANIFEST_INPUTS_UNDECLARED"
+    assert record["missing_inputs"] == ["hb_epoch"]
+
+
+@pytest.mark.parametrize("hb_epoch", ["31", "0", "033", " 33", "+33", "3_3", "33.0", "2026-10-18T22:58:00Z",
+                                      33, True, None])
+def test_an_hb_epoch_the_kernel_rule_refuses_is_refused_before_any_digest(tmp_path, hb_epoch):
+    declaration = _declaration()
+    declaration["hb_epoch"] = hb_epoch
+    record = _refusal(root=_records(tmp_path, declaration), canonical_of=_never, validate_of=_never)
+    for field in SIX_FIELDS:
+        assert record[field], field
+    if hb_epoch is None:
+        assert record["failure_code"] == "COMPONENT_010_MANIFEST_INPUTS_UNDECLARED"
+    else:
+        assert record["failure_code"] == "COMPONENT_010_DECLARATION_SCHEMA_INVALID"
+        assert record["schema_path"] == "$.hb_epoch"
+
+
+def test_a_created_at_that_is_not_the_supplied_hb_epoch_is_refused(tmp_path):
+    declaration = _declaration()
+    declaration["manifest"]["created_at"] = "41"
+    record = _refusal(root=_records(tmp_path, declaration), canonical_of=_never, validate_of=_never)
+    for field in SIX_FIELDS:
+        assert record[field], field
+    assert record["failure_code"] == "COMPONENT_010_HB_EPOCH_INVALID"
+    assert record["failed_predicate"] == "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+
+
+def test_every_hb_epoch_the_schema_admits_the_kernel_rule_admits():
+    kernel = builder._kernel()
+    pattern = re.compile(SCHEMA["properties"]["hb_epoch"]["pattern"])
+    for value in ("32", "39", "40", "99", "100", "123456789"):
+        assert pattern.search(value) and kernel.supplied_epoch_failure(value) is None, value
+    for value in ("31", "0", "033", "3_3"):
+        assert not pattern.search(value), value
+
+
+def test_the_request_carries_the_supplied_hb_epoch_the_intake_requires(tmp_path):
+    declaration = _declaration()
+    declaration["hb_epoch"] = declaration["manifest"]["created_at"] = "57"
+    root = _records(tmp_path, declaration)
+    unpinned = _refusal(root=root, canonical_of=lambda m: "c" * 64, validate_of=lambda m: None,
+                        pins={"MANIFEST_FILE_SHA256": None, "CANONICAL_MANIFEST_SHA256": None,
+                              "REQUEST_FILE_SHA256": None})
+    manifest_sha = unpinned["observed_sha256"]
+    pins = {"MANIFEST_FILE_SHA256": manifest_sha, "CANONICAL_MANIFEST_SHA256": "c" * 64,
+            "REQUEST_FILE_SHA256": None}
+    pins["REQUEST_FILE_SHA256"] = _refusal(root=root, canonical_of=lambda m: "c" * 64,
+                                           validate_of=lambda m: None, pins=dict(pins))["observed_sha256"]
+    request, data = builder.build_request(root=root, canonical_of=lambda m: "c" * 64,
+                                          validate_of=lambda m: None, pins=pins)
+    assert request["hb_epoch"] == "57"
+    assert json.loads(data)["hb_epoch"] == "57"
+    assert builder._kernel().supplied_epoch_failure(request["hb_epoch"]) is None

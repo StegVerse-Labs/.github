@@ -9,7 +9,8 @@
     "routes": "stegverse/route_resolution.py PUBLISHED_ROUTES at sdk_commit",
     "standing_modes": "stegverse/machine_contract.py standing_modes at sdk_commit",
     "manifest_profile": "stegverse/governance_navigation.py INGRESS_PROFILE and stegverse/manifest_contract.py validate_ingress_manifest at sdk_commit",
-    "created_at": "the SDK requires created_at as text (validate_ingress_manifest); the HB epoch is an integer throughout this repository (hb_epoch); a clock is never read"
+    "created_at": "the SDK requires created_at as text (validate_ingress_manifest); it is the supplied hb_epoch's decimal text, and the builder refuses a created_at that differs from hb_epoch",
+    "hb_epoch": "the committed-request intake (WU-B21, stacked on #3241/#3207) requires a top-level hb_epoch on every stegverse.organization-transition-request/v1 it receives, checked by org-kernel/kernel.py supplied_epoch_failure: ASCII digits, value >= 32 (the HB32 anchor), never a clock"
   },
   "x-stegverse-actor-kind": {
     "records_allowed_actor_kinds": "data/task-registry-ai-ingress-policy.json allowed_actor_kinds: CHATGPT_SESSION, HUMAN_OPERATOR, NON_AI_SYSTEM_COORDINATOR",
@@ -35,12 +36,18 @@
   "type": "object",
   "required": [
     "transition_id",
+    "hb_epoch",
     "manifest",
     "standing"
   ],
   "properties": {
     "transition_id": {
       "const": "COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION"
+    },
+    "hb_epoch": {
+      "type": "string",
+      "pattern": "^(3[2-9]|[4-9][0-9]|[1-9][0-9]{2,})$",
+      "description": "the supplied HB epoch, as ASCII decimal text without leading zeros, >= 32; never derived from a clock. The builder carries it on the request and requires created_at to equal it."
     },
     "manifest": {
       "type": "object",
@@ -81,8 +88,8 @@
         },
         "created_at": {
           "type": "string",
-          "pattern": "^(0|[1-9][0-9]*)$",
-          "description": "the decimal text of the supplied HB epoch; never a clock reading"
+          "pattern": "^(3[2-9]|[4-9][0-9]|[1-9][0-9]{2,})$",
+          "description": "the supplied HB epoch's decimal text, equal to hb_epoch; never a clock reading"
         },
         "declared_intent": {
           "type": "string",
