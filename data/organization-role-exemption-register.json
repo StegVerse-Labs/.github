@@ -349,6 +349,20 @@
       "current_disposition": "FAIL_CLOSED",
       "consequence_committed": false,
       "authority_effect": "NONE_REGISTER_ONLY"
+    },
+    {
+      "surface": "StegVerse-Labs/.github:scripts/repair_resident_worker_presence.py::_wait_for_tick (via ensure_worker_presence)",
+      "owning_existing_goal": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "failure_code": "WORKER_TICK_POLL_GATES_SUPERVISION_RECEIPT",
+      "failed_predicate": "WORKER_SUPERVISION_RESULT_GATED_ON_SPAWNED_PROCESS_TICK_WITHIN_TIMEOUT",
+      "why_manifest_bound_state_transition_is_not_yet_possible": "ensure_worker_presence spawns the WorkerCoordinator process and then polls control/worker-runtime-state.json every 20 ms until its runtime_tick advances or the timeout elapses; the supervision receipt is WORKER_REPAIR_FAILED with TASK_CAPABLE_WORKER_RUNTIME_TICK_TIMEOUT when the spawned process has not ticked inside that window, so the recorded outcome depends on another process's timing rather than on a manifested transition. The record CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001 names this function as its native_resident_initiation.worker_supervision_ref. Source review only (SOURCE_IMPLEMENTED, StegVerse-Labs/.github@978b8880, scripts/repair_resident_worker_presence.py at 84f850de); no runtime attempt was made or is claimed.",
+      "required_evidence_or_repair": "Record the spawn as one manifested transition and let the worker's own first tick append its receipt as a separate transition, instead of a bounded poll in the supervising process; or retire the surface with caller and manifest-route equivalence evidence.",
+      "retry_entrypoint": "StegVerse-Labs/.github:scripts/repair_resident_worker_presence.py::ensure_worker_presence",
+      "next_attempt": "WU-RM22 R-P3 follow-up on StegVerse-Labs/.github#3183: the owning goal's next native_resident_initiation change replaces the poll with the worker's own tick receipt, or retires the surface with equivalence evidence.",
+      "expires_or_review_on": "2026-11-18",
+      "current_disposition": "FAIL_CLOSED",
+      "consequence_committed": false,
+      "authority_effect": "NONE_REGISTER_ONLY"
     }
   ],
   "authority_effect": "NONE_REGISTER_ONLY"
