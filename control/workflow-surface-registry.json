@@ -109,6 +109,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SDK-MR-A-VALIDATION-CUSTODY-001 / StegVerse-Labs/.github#3099",
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/canonical-work-projection-trigger.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / StegVerse-org/.github#162 (Lane B, class-B build per #162 comment 6245552151)",
+      "reason": "Manifest-directed resident trigger for scripts/apply_admitted_canonical_work_projection.py: a request committed under .stegverse/canonical-work-projection-requests/ (stegverse.canonical-work-projection-request/v1) starts the run on push, the same way organization-governance-decision.yml consumes .stegverse/governance-decision-requests/**. The projection's own generation + 1 must pass scripts/check_registry_generation_fence.py (pull_request semantics before writing, push mode on the commit) before the commit is pushed to main fast-forward only; every decision is appended to refs/stegverse/organization-ledger and read back. Needs contents: write and the organization-ledger concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
     }
   ],
   "removed_in_hygiene_batch_1": [
