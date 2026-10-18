@@ -63,6 +63,70 @@
         "raw_selected_record_output": false,
         "secret_material_output": false
       }
+    },
+    {
+      "component_id": "RTC-SV-CHANGE-BASE-STATE-READBACK-014",
+      "name": "SV_CHANGE Base-State Readback (B1)",
+      "capability_provided": "read_back_sv_change_base_state",
+      "inputs": {
+        "repository": "local git repository (clone) holding the bound main commit and refs/stegverse/organization-ledger, fetched by the caller's existing transport",
+        "bound_main_commit": "40-hex main commit the caller binds; data/canonical-task-registry.json is read at exactly this commit",
+        "main_ref": "ref whose history must contain bound_main_commit (default refs/heads/main)",
+        "hb_epoch": "optional, supplied by the caller (ASCII digits >= 32); absent -> null, open as JD-P4-3, never derived"
+      },
+      "outputs": {
+        "base_ref": "{registry_generation, ledger_head}: the registry generation at bound_main_commit and the organization-ledger ref commit",
+        "sources": "[{file, blob_sha}] for data/canonical-task-registry.json at bound_main_commit and refs/stegverse/organization-ledger:HEAD.json",
+        "disposition": "ALLOW, or FAIL_CLOSED carrying failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal (StegVerse-org/.github#164) and next_attempt",
+        "result_sha256": "sha256 seal over the canonical receipt"
+      },
+      "preconditions": [
+        "bound_main_commit_well_formed_and_present",
+        "bound_main_commit_on_main_ref",
+        "registry_parses_with_integer_generation_at_bound_commit",
+        "organization_ledger_ref_present",
+        "organization_ledger_reads_back_via_organization_ledger_readback",
+        "ledger_head_stable_during_readback",
+        "hb_epoch_supplied_well_formed_or_absent"
+      ],
+      "expected_evidence": [
+        "base_ref.registry_generation",
+        "base_ref.ledger_head",
+        "sources[].blob_sha",
+        "ledger_head_receipt_sha256",
+        "result_sha256"
+      ],
+      "authority_owner": "The Task Registry (generation, via the main branch) and the organization ledger writer (ref) own the state; this component only reads it.",
+      "authority_effect": "NONE_READBACK_ONLY",
+      "failure_classes": [
+        "BASE_STATE_NOT_OBSERVED",
+        "REGISTRY_GENERATION_UNREADABLE"
+      ],
+      "retry_or_reentry_semantics": "Deterministic for an identical repository state, bound commit and supplied hb_epoch. No schedule, loop, clock or retry: the admission caller invokes it when it needs a base binding and re-invokes after the refusal's next_attempt is satisfied.",
+      "version_or_schema_binding": [
+        "stegverse.sv-change-base-state-readback/v1",
+        "stegverse.organization-ledger-readback/v1"
+      ],
+      "implementation": {
+        "component": "resident-runtime/sv_change_base_state_readback.py::evaluate",
+        "reuses": [
+          "resident-runtime/organization_ledger_readback.py::readback"
+        ],
+        "consumers": [
+          "StegVerse-Labs/TVC sv_change_admission (base_ref input, PR 519)",
+          "StegVerse-org/.github#192 admission_predicate (base gen/ledger head)"
+        ]
+      },
+      "invariants": {
+        "writes_ledger_or_ref": false,
+        "writes_registry": false,
+        "bumps_registry_generation": false,
+        "reads_clock": false,
+        "uses_network": false,
+        "uses_credential": false,
+        "derives_hb_epoch": false,
+        "new_dependency": false
+      }
     }
   ]
 }
