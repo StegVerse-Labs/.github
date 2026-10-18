@@ -134,7 +134,9 @@ class MalformedFieldFailClosedTest(unittest.TestCase):
         task = copy.deepcopy(VALID_TASK)
         del task["runtime_requirements"]
         code, _ = self.run_with_tasks([task])
-        self.assertEqual(code, "FAIL_CLOSED: FIXTURE-TASK-001: runtime requirements missing")
+        # First line unchanged; Q-R-k discrepancy record follows (schema-required source).
+        self.assertEqual(code.splitlines()[0], "FAIL_CLOSED: FIXTURE-TASK-001: runtime requirements missing")
+        self.assertIn("failure_code: CANONICAL_WORK_SCHEMA_VALIDATOR_REQUIRED_FIELD_DISCREPANCY", code)
 
 
 if __name__ == "__main__":

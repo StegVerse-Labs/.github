@@ -71,6 +71,69 @@ def require_type(value: object, expected: type, source: str, field: str, row_own
         fail_malformed(source, field, _TYPE_NAMES[expected], _json_type(value), row_owner)
 
 
+# Row fields this validator requires. Single source: the canonical task schema
+# ``required`` list (schemas/canonical-task-record.schema.json). A field required
+# here but absent from that list is allowed only as a declared discrepancy; it
+# stays FAIL_CLOSED and is reported with its joint-discovery question until the
+# question is answered (by amending the schema or this validator).
+VALIDATOR_ROW_REQUIRED_FIELDS = ("task_id", "correlation_id", "worker_claim", "runtime_requirements")
+DECLARED_SCHEMA_VALIDATOR_DISCREPANCIES = {
+    "runtime_requirements": "Q-R-k",
+}
+DISCREPANCY_FAILURE_CODE = "CANONICAL_WORK_SCHEMA_VALIDATOR_REQUIRED_FIELD_DISCREPANCY"
+
+
+def schema_row_required(task_schema: dict) -> tuple[set[str], dict[str, str]]:
+    """Return (schema-required fields, active discrepancies) or fail closed."""
+    schema_required = task_schema.get("required")
+    require_type(schema_required, list, _rel(TASK_SCHEMA), "required")
+    require(all(isinstance(f, str) for f in schema_required), "task schema required list must contain field names")
+    required = set(schema_required)
+    undeclared = [
+        field for field in VALIDATOR_ROW_REQUIRED_FIELDS
+        if field not in required and field not in DECLARED_SCHEMA_VALIDATOR_DISCREPANCIES
+    ]
+    require(not undeclared, f"validator requires row fields absent from task schema required list without a declared discrepancy: {undeclared}")
+    active = {
+        field: question for field, question in DECLARED_SCHEMA_VALIDATOR_DISCREPANCIES.items()
+        if field not in required
+    }
+    return required, active
+
+
+def schema_nested_required(task_props: dict, field: str) -> list[str]:
+    """Nested required list for an object-typed row field, from the schema."""
+    nested = task_props.get(field, {})
+    require_type(nested, dict, _rel(TASK_SCHEMA), f"properties.{field}")
+    nested_required = nested.get("required")
+    require_type(nested_required, list, _rel(TASK_SCHEMA), f"properties.{field}.required")
+    return list(nested_required)
+
+
+def fail_discrepancy(task_id: str, field: str, question: str, message: str) -> None:
+    """Schema/validator required-field discrepancy: FAIL_CLOSED with six fields."""
+    raise SystemExit(
+        "\n".join(
+            [
+                f"FAIL_CLOSED: {message}",
+                f"failure_code: {DISCREPANCY_FAILURE_CODE}",
+                (
+                    f"failed_predicate: {field} is required by scripts/validate_canonical_work_coordination.py "
+                    f"(VALIDATOR_ROW_REQUIRED_FIELDS) but not by schemas/canonical-task-record.schema.json required; row {task_id} lacks it"
+                ),
+                (
+                    f"required_evidence_or_repair: answer {question}: either add {field} to the schema required list "
+                    f"(with row values sourced from task owners) or remove it from VALIDATOR_ROW_REQUIRED_FIELDS; "
+                    "this validator modifies neither data nor schema"
+                ),
+                f"retry_entrypoint: {RETRY_ENTRYPOINT}",
+                f"owning_existing_goal: {OWNING_GOAL} (row owner: {task_id}); joint discovery question {question}",
+                f"next_attempt: after {question} is answered, re-run retry_entrypoint",
+            ]
+        )
+    )
+
+
 def _rel(path: Path) -> str:
     try:
         return str(path.relative_to(ROOT))
@@ -111,6 +174,16 @@ def _main() -> int:
     require(registry.get("authoritative_roles", {}).get("governed_task_ingress_egress") == "INTERLOCK_INTR", "Interlock/InTr ingress-egress authority missing")
 
     task_props = task_schema.get("properties", {})
+    _schema_required, active_discrepancies = schema_row_required(task_schema)
+    runtime_requirement_fields = schema_nested_required(task_props, "runtime_requirements")
+    runtime_requirement_props = task_props["runtime_requirements"].get("properties", {})
+    for field in runtime_requirement_fields:
+        if field == "capabilities":
+            continue
+        require(
+            runtime_requirement_props.get(field, {}).get("type") == "boolean",
+            f"task schema runtime_requirements.{field} type is not supported by this validator",
+        )
     authority_props = task_props.get("authority_model", {}).get("properties", {})
     require(authority_props.get("task_registry_mints_execution_authority", {}).get("const") is False, "task schema must deny registry execution authority")
     require(authority_props.get("worker_claim_authority", {}).get("const") == "WORKERCOORDINATOR", "task schema must bind WorkerCoordinator claim authority")
@@ -170,9 +243,15 @@ def _main() -> int:
         require(claim.get("projection_only") is True, f"{task_id}: registry claim must be projection-only")
 
         requirements = task.get("runtime_requirements")
+        if not isinstance(requirements, dict) and "runtime_requirements" in active_discrepancies:
+            fail_discrepancy(task_id, "runtime_requirements", active_discrepancies["runtime_requirements"],
+                             f"{task_id}: runtime requirements missing")
         require(isinstance(requirements, dict), f"{task_id}: runtime requirements missing")
-        require(isinstance(requirements.get("capabilities"), list), f"{task_id}: runtime capabilities missing")
-        for flag in ("mutation_required", "deployment_required", "current_observation_required"):
+        if "capabilities" in runtime_requirement_fields:
+            require(isinstance(requirements.get("capabilities"), list), f"{task_id}: runtime capabilities missing")
+        for flag in runtime_requirement_fields:
+            if flag == "capabilities":
+                continue
             require(isinstance(requirements.get(flag), bool), f"{task_id}: runtime requirement {flag} must be boolean")
 
         resolution = task.get("runtime_resolution")
