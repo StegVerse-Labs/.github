@@ -219,3 +219,94 @@ Site stegOS-node allocator bootstrap
 ```
 
 No claim/runtime predicate is promoted by this cleanup.
+
+
+## Event-ephemeral materialization — 2026-10-17 (PR #3211, source only, not merged)
+
+This section supersedes the earlier statements that only the resident dispatcher
+may consume `control/resident-execution-request.d/org-claim-allocator-*.json`.
+Under `data/task-registry-global-invariants.json`
+(`external_machine_awaiting_allowed=false`,
+`receiver_unavailable_disposition=DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION`)
+a receiver's liveness is not a transition predicate, so a durably queued request
+no longer waits on a resident machine. The resident path stays valid; it is no
+longer the only one.
+
+### Materialization path
+
+- **Trigger:** `.github/workflows/organization-claim-allocator-transition.yml`
+  runs on a push to `main` that touches `org-claim-allocator-*.json` (the commit
+  carrying the durable queue entry), and on `workflow_dispatch`. A
+  `pull_request` run only validates against temporary ledgers.
+- **Declared git-ref store:** the workflow asserts that `org-contract.json`
+  declares `organization_ledger` as `store=git`,
+  `ref=refs/stegverse/organization-ledger`, and that `contract.json`
+  `repository_ledger_location` is on the same ref with `new_ledger_root=false`.
+  It fetches that ref (FAIL_CLOSED `ORGANIZATION_LEDGER_REF_ABSENT` if it is not
+  published) and runs the **existing** consumer, which runs the **existing**
+  `scripts/allocate_claims.py`, with no `--org-ledger-root` and
+  `--repo-ledger-root git+<checkout>#refs/stegverse/organization-ledger:<namespace>`.
+- **Concurrency:** `concurrency: group: organization-ledger`,
+  `cancel-in-progress: false`, shared with every other writer of the ref. Only
+  the transition job has `contents: write`.
+- **Compare-and-swap push:** the run requires the local ref to fast-forward the
+  fetched tip (else FAIL_CLOSED `ORGANIZATION_LEDGER_HISTORY_REWRITTEN`, nothing
+  pushed), then publishes with a non-forced push, which the remote accepts only
+  as a fast-forward of its current tip. A lost race is FAIL_CLOSED
+  `ORGANIZATION_LEDGER_PUBLISH_RACE` and publishes nothing.
+- **Fresh-fetch readback:** a new bare repository fetches the published ref with
+  the checkout's own credential, checks that its tip equals the pushed tip, and
+  runs `consume_org_claim_allocator_request.py --readback-result`, which reads
+  every appended Organization receipt back through the existing
+  `organization_readback` verifier. Any receipt that does not read back makes the
+  readback FAIL_CLOSED.
+- A run passes only if every attempt is typed `ORGANIZATION_WORKER_CLAIM_GRANTED`,
+  `_REFUSED` or `_FAIL_CLOSED`. No new secret, PAT, credential, scheduler, host or
+  dependency is used. The run is not claim authority; the ledger receipts are
+  the evidence.
+
+### HOSTED_ENV relaxation and the refusals that remain
+
+`clean_env` still refuses every `HOSTED_ENV` marker, except when
+`event_ephemeral_materialization()` holds. That requires all three of the
+following:
+
+1. no explicit `--org-ledger-root`;
+2. the manifest-declared Organization store is non-posix and declares a ref;
+3. `--repo-ledger-root` is a `git+…#<that declared ref>:…` locator.
+
+Even then, `ledger_custody` refuses
+(`EVENT_EPHEMERAL_REPOSITORY_LEDGER_NOT_ON_DECLARED_REF`) unless the repository
+store shares the Organization store's git dir and ref. Still refused in a hosted
+environment: an explicit POSIX Organization root, a POSIX repository root, a
+repository chain on another ref, and a repository store in a different git dir.
+The relaxed environment carries no hosted markers into the allocator.
+
+### Defects fixed
+
+- **`git+` locator:** `ledger_custody` used to wrap every `--repo-ledger-root` in
+  `PosixLedgerStore`, so a `git+…` locator silently became a POSIX directory
+  named after the locator. `repository_ledger_store()` now opens a `git+` locator
+  as that ref, and the CLI keeps the argument as a string so that it is not
+  path-normalized.
+- **Shared-ref compare-and-swap pin:** the Organization store pins the ref tip
+  while it computes the fence. Because the repository receipt is written to the
+  same ref, that write moved the tip, and every ALLOW failed with
+  `ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP`. `adopt_repository_append()` now
+  advances the pin only to the pinned snapshot itself, or past exactly one
+  commit whose sole parent is the pinned snapshot and whose repository HEAD is
+  the receipt just appended. Any other move is FAIL_CLOSED
+  `ORGANIZATION_LEDGER_SNAPSHOT_MOVED` through the existing retry path, and the
+  repository receipt is retained.
+
+### Expected first live run and its repair
+
+The committed `control/claims-active.json` is at generation 2, while issued
+fences reach 7 (`TASK-2026-0012` `allocator_fence=7`, the provenance floor). The
+first run on `main` is therefore expected to record, for each queued request,
+`ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED` with
+`FENCE_GENERATION_BEHIND_ISSUED_FENCES`. That is a typed terminal disposition,
+not a wait. Its repair is to rematerialize the runtime claim registry at or
+beyond the issued fences. PR #3211 does not touch the claim registry (fence
+authority), and no machine is awaited. Until a run is observed and read back,
+none of this is runtime evidence.
