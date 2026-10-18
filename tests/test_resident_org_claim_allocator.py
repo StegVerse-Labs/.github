@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.machinery
 import importlib.util
 import json
 import os
@@ -7,6 +8,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,6 +24,8 @@ def load_module(name: str, rel: str):
 allocator = load_module("resident_org_allocator_test", "scripts/allocate_claims.py")
 consumer = load_module("resident_org_allocator_consumer_test", "scripts/consume_org_claim_allocator_request.py")
 LEDGER_EMITTER = ".stegverse/transition-ledger/emit.py"
+# A carrier heartbeat epoch (kernel HB32 anchor is 32); supplied, never derived from a clock.
+CARRIER_HB_EPOCH = 4096
 
 
 class ResidentOrgClaimAllocatorTests(unittest.TestCase):
@@ -93,6 +97,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
                 {"disposition": "DENY", "task_id": "NONE", "request_sha256": "0" * 64,
                  "failed_predicate": "NO_ELIGIBLE_TASK", "fencing_token": None, "consequence_committed": False},
                 organization=True, identity=("task_id", "request_sha256", "failed_predicate"))
+        kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
         return consumer.consume(source, runtime, repo_ledger_root=ledgers / "repo",
                                 org_ledger_root=ledgers / "org", **kwargs)
 
@@ -414,6 +419,324 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
         request8 = task8["requirements"]["mandatory"][0]
         self.assertFalse(allocator.conflicts(request8, request7))
         self.assertTrue(allocator.dependency_surfaces(request7).isdisjoint(allocator.dependency_surfaces(request8)))
+
+
+LEDGER_REF = "refs/stegverse/organization-ledger"
+REPO_NAMESPACE = "repository-ledger/StegVerse-Labs/.github"
+HOSTED = {"GITHUB_ACTIONS": "true", "CI": "true"}
+LOCUS_VARIABLES = ("STEGVERSE_ORG_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_STORE", "STEGVERSE_ORG_LEDGER_GIT_REF",
+                   "STEGVERSE_ORG_LEDGER_GIT_REMOTE", "STEGVERSE_ORG_LEDGER_GIT_CUSTODY")
+# The repository's own Organization ledger declaration (store git), which the
+# suite-wide POSIX test locus (tests/conftest.py, tests/__init__.py) replaces.
+DECLARED_LOCUS = json.loads((ROOT / ".stegverse/transition-ledger/org-contract.json").read_text(
+    encoding="utf-8"))["organization_ledger"]
+custody_tests = load_module("resident_org_allocator_custody_fixtures", "tests/test_org_claim_custody.py")
+
+
+def bare_repository(path: Path) -> Path:
+    subprocess.run(["git", "init", "--bare", "-q", str(path)], check=True)
+    return path
+
+
+def ref_tip(node: Path, ref: str = LEDGER_REF) -> str | None:
+    found = subprocess.run(["git", "--git-dir", str(node), "rev-parse", "-q", "--verify", ref],
+                           capture_output=True, text=True)
+    return found.stdout.strip() if found.returncode == 0 else None
+
+
+def locator(node: Path, ref: str = LEDGER_REF) -> str:
+    return "git+" + str(node) + "#" + ref + ":" + REPO_NAMESPACE
+
+
+class EventEphemeralClaimMaterializationTests(unittest.TestCase):
+    """The hosted event-ephemeral consumer, against the repository's own declared git store.
+
+    No resident machine is awaited: the consumer runs where the request event
+    lands, appends to the declared ref only, and leaves no chain on the host.
+    The HOSTED_ENV refusal still holds for a POSIX repository root, an
+    explicit Organization root, and a repository chain off the declared ref.
+    """
+
+    def setUp(self):
+        loader = importlib.machinery.SourceFileLoader
+        exec_module = loader.exec_module
+
+        def exec_and_declare(loader_self, module):
+            # Every aggregator copy loaded during the test carries the repository's declaration.
+            exec_module(loader_self, module)
+            contract = getattr(module, "C", None)
+            if callable(getattr(module, "declared_ledger_locus", None)) and isinstance(contract, dict):
+                contract["organization_ledger"] = dict(DECLARED_LOCUS)
+
+        declared = mock.patch.object(loader, "exec_module", exec_and_declare)
+        declared.start()
+        self.addCleanup(declared.stop)
+        self._td = tempfile.TemporaryDirectory()
+        self.base = Path(self._td.name)
+        self.node = bare_repository(self.base / "node.git")
+        environment = {key: value for key, value in os.environ.items() if key not in LOCUS_VARIABLES}
+        environment["STEGVERSE_ORG_LEDGER_GIT_DIR"] = str(self.node)
+        patcher = mock.patch.dict(os.environ, environment, clear=True)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.addCleanup(self._td.cleanup)
+        self.env = custody_tests.Env(self.base / "claim", org_ledger=self.base / "unused-org-root")
+        # Root the declared chain through the existing emitters; no genesis is synthesized.
+        custody_tests.seed_rooted_chain(self.env.source, None, self.base / "seed-repo-ledger")
+        self.seeded = ref_tip(self.node)
+        self.assertIsNotNone(self.seeded)
+        self.calls = []
+
+    def runner(self, command, **kwargs):
+        self.calls.append((command, kwargs))
+        return subprocess.run(command, **kwargs)
+
+    def hosted(self, **kwargs):
+        kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
+        return consumer.consume(self.env.source, self.env.runtime, runner=self.runner,
+                                env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), **HOSTED}, **kwargs)
+
+    def assert_refused_before_anything(self, **kwargs):
+        with self.assertRaisesRegex(RuntimeError, "hosted environment"):
+            self.hosted(**kwargs)
+        self.assertEqual(self.calls, [])
+        self.assertEqual(ref_tip(self.node), self.seeded)
+        self.assertFalse((self.env.runtime / "tasks").exists())
+
+    def test_hosted_event_ephemeral_consumption_grants_on_the_declared_ref(self):
+        self.assertTrue(consumer.event_ephemeral_materialization(self.env.source, locator(self.node), None))
+        result = self.hosted(repo_ledger_root=locator(self.node))
+        self.assertEqual(result["transition_class"], consumer.GRANTED, result)
+        self.assertEqual(result["disposition"], "ALLOW")
+        self.assertEqual(result["fencing_token"], 8)
+        self.assertEqual(result["organization_readback"], "VERIFIED")
+        self.assertTrue(result["allocator_remains_claim_authority"])
+        self.assertFalse(result["request_granted_claim_authority"])
+        # The existing allocator ran, without the hosted markers in its environment.
+        self.assertEqual([c[0][2:] for c in self.calls], [["--plan", "--task", "TASK-2026-0013"],
+                                                           ["--task", "TASK-2026-0013", "--fencing-token", "8"]])
+        for _, kwargs in self.calls:
+            self.assertFalse(set(HOSTED) & set(kwargs["env"]))
+        # Both receipts are on the declared ref: the Organization HEAD at the
+        # root, the repository HEAD in its declared subtree. No host chain.
+        custody = consumer.ledger_custody(self.env.source, locator(self.node), None, event_ephemeral=True)
+        self.assertTrue(custody["shared_ref"])
+        keys = custody["emitter"].ledger_store
+        self.assertEqual(custody["organization_store"].get(keys.HEAD_KEY)["receipt_sha256"],
+                         result["organization_receipt_sha256"])
+        self.assertEqual(custody["repository_store"].get(keys.HEAD_KEY)["receipt_sha256"],
+                         result["repository_receipt_sha256"])
+        self.assertFalse(self.env.repo.exists())
+        self.assertFalse(any(path.name.startswith("git+") for path in (Path.cwd(), self.base) for path in path.iterdir()))
+        # Read back from a fresh fetch of the published ref.
+        fresh = bare_repository(self.base / "fresh.git")
+        subprocess.run(["git", "--git-dir", str(fresh), "fetch", "-q", str(self.node),
+                        "+" + LEDGER_REF + ":" + LEDGER_REF], check=True)
+        with mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_GIT_DIR": str(fresh)}):
+            verdict = consumer.readback(self.env.source, locator(fresh), result)
+        self.assertEqual(verdict["disposition"], "VERIFIED", verdict)
+        self.assertEqual([row["organization_readback"] for row in verdict["attempts"]], ["VERIFIED"])
+        self.assertEqual(verdict["authority_effect"], "NONE_READBACK_ONLY")
+        # A second event replays the retained grant; no fence is reissued, nothing is appended.
+        tip = ref_tip(self.node)
+        again = self.hosted(repo_ledger_root=locator(self.node))
+        self.assertEqual(again["fencing_token"], 8)
+        self.assertEqual(again["organization_receipt_sha256"], result["organization_receipt_sha256"])
+        self.assertEqual(ref_tip(self.node), tip)
+
+    def test_readback_refuses_a_receipt_absent_from_the_fetched_ref(self):
+        result = self.hosted(repo_ledger_root=locator(self.node))
+        stale = bare_repository(self.base / "stale.git")
+        subprocess.run(["git", "--git-dir", str(stale), "fetch", "-q", str(self.node),
+                        "+" + self.seeded + ":" + LEDGER_REF], check=True)
+        with mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_GIT_DIR": str(stale)}):
+            verdict = consumer.readback(self.env.source, locator(stale), result)
+        self.assertEqual(verdict["disposition"], "FAIL_CLOSED")
+        self.assertTrue(verdict["attempts"][0]["organization_readback"].startswith("REFUSED:"))
+        self.assertEqual(verdict["retry_entrypoint"], consumer.EVENT_EPHEMERAL_ENTRYPOINT)
+
+    def test_hosted_refusal_holds_for_an_explicit_posix_root(self):
+        self.assertFalse(consumer.event_ephemeral_materialization(
+            self.env.source, locator(self.node), self.base / "explicit-org"))
+        self.assert_refused_before_anything(repo_ledger_root=locator(self.node),
+                                            org_ledger_root=self.base / "explicit-org")
+
+    def test_hosted_refusal_holds_for_a_posix_repository_root(self):
+        self.assertFalse(consumer.event_ephemeral_materialization(self.env.source, self.env.repo, None))
+        self.assert_refused_before_anything(repo_ledger_root=self.env.repo)
+        self.assertFalse(self.env.repo.exists())
+
+    def test_hosted_refusal_holds_for_a_repository_chain_off_the_declared_ref(self):
+        other = locator(self.node, "refs/stegverse/another-ledger")
+        self.assertFalse(consumer.event_ephemeral_materialization(self.env.source, other, None))
+        self.assert_refused_before_anything(repo_ledger_root=other)
+
+    # H46 fence-floor repair (Lane D, STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 D1).
+    def fresh_runtime(self, name: str, *, source_claims: list | None = None):
+        """A runtime with no preserved claim registry, as the hosted workflow materializes it."""
+        env = custody_tests.Env(self.base / name, generation=None, seed=False,
+                                org_ledger=self.base / "unused-org-root")
+        if source_claims is not None:
+            path = env.source / "control/claims-active.json"
+            state = json.loads(path.read_text(encoding="utf-8"))
+            state["claims"] = source_claims
+            path.write_text(json.dumps(state), encoding="utf-8")
+        return env
+
+    def consume_hosted(self, env, **kwargs):
+        kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
+        return consumer.consume(env.source, env.runtime, repo_ledger_root=locator(self.node), runner=self.runner,
+                                env={"PATH": os.environ.get("PATH", "/usr/bin:/bin"), **HOSTED}, **kwargs)
+
+    def test_committed_claims_registry_is_behind_the_issued_fences(self):
+        committed = json.loads((ROOT / "control/claims-active.json").read_text(encoding="utf-8"))
+        floor = consumer.provenance_floor(ROOT)
+        self.assertLess(committed["generation"], floor["fence"])
+        self.assertEqual(committed.get("claims") or [], [])
+
+    def test_event_ephemeral_rematerializes_a_stale_empty_source_registry_from_the_chain(self):
+        env = self.fresh_runtime("fresh")
+        source_bytes = (env.source / "control/claims-active.json").read_bytes()
+        result = self.consume_hosted(env)
+        self.assertEqual(result["transition_class"], consumer.GRANTED, result)
+        self.assertEqual(result["fencing_token"], 8)
+        self.assertEqual(result["organization_readback"], "VERIFIED")
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        keys = custody["emitter"].ledger_store
+        receipt = custody["repository_store"].get(keys.receipt_key(result["repository_receipt_sha256"]))
+        evidence = receipt["evidence"]
+        basis = evidence["runtime_claims_generation_rematerialized"]
+        self.assertEqual(basis["basis"], consumer.FENCE_FLOOR_REMATERIALIZATION_BASIS)
+        self.assertEqual((basis["source_generation"], basis["rematerialized_generation"]), (2, 7))
+        self.assertEqual((basis["chain_max_fence"], basis["provenance_floor_fence"]), (0, 7))
+        self.assertEqual(evidence["runtime_claims_generation_observed"], 7)
+        # The committed source registry is never edited; only the ephemeral runtime projection moved.
+        self.assertEqual((env.source / "control/claims-active.json").read_bytes(), source_bytes)
+        # A later event derives the generation from the chain again: no fence is reissued.
+        again = self.consume_hosted(self.fresh_runtime("fresh-again"))
+        self.assertEqual(again["fencing_token"], 8)
+        self.assertEqual(again["organization_receipt_sha256"], result["organization_receipt_sha256"])
+
+    def test_source_registry_holding_claims_is_not_rematerialized(self):
+        held = {"task_id": "TASK-2026-0007", "lease": {"fencing_token": 2}}
+        env = self.fresh_runtime("held", source_claims=[held])
+        result = self.consume_hosted(env)
+        self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
+        self.assertNotIn("generation_basis", env.claims())
+        self.assertEqual(env.claims()["generation"], 2)
+
+    def test_every_event_ephemeral_non_allow_carries_the_six_fields(self):
+        result = self.consume_hosted(self.fresh_runtime("held6", source_claims=[{"task_id": "TASK-2026-0007"}]))
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result.get(field), field)
+        self.assertEqual(result["retry_entrypoint"], consumer.EVENT_EPHEMERAL_ENTRYPOINT)
+
+    def test_preserved_runtime_registry_behind_the_fences_still_fails_closed(self):
+        env = custody_tests.Env(self.base / "preserved", generation=2, seed=False,
+                                org_ledger=self.base / "unused-org-root")
+        result = self.consume_hosted(env)
+        self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
+        self.assertEqual(result["failed_predicate"], "FENCE_GENERATION_BEHIND_ISSUED_FENCES")
+
+    def test_event_ephemeral_grant_without_carrier_epoch_fails_closed(self):
+        env = self.fresh_runtime("no-epoch")
+        result = self.consume_hosted(env, hb_epoch=None)
+        self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
+        self.assertEqual(result["failed_predicate"], consumer.GRANT_EPOCH_NOT_CARRIER_SUPPLIED)
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result.get(field), field)
+        self.assertEqual(result["retry_entrypoint"], consumer.EVENT_EPHEMERAL_ENTRYPOINT)
+        self.assertFalse(result["fence_issued"])
+        self.assertIsNone(result["fencing_token"])
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        self.assertEqual(consumer.chain_grants(consumer.verify_organization_chain(custody)), [])
+        # The ephemeral runtime projection is restored; nothing was issued.
+        self.assertEqual(env.claims()["generation"], 2)
+
+    def test_event_ephemeral_grant_carries_the_carrier_epoch_not_a_clock_reference(self):
+        env = self.fresh_runtime("carrier")
+        result = self.consume_hosted(env, hb_epoch=CARRIER_HB_EPOCH)
+        self.assertEqual(result["transition_class"], consumer.GRANTED, result)
+        self.assertEqual(result["fencing_token"], 8)
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        org_keys = custody["organization_ledger"].ledger_store
+        grant = custody["organization_store"].get(org_keys.receipt_key(result["organization_receipt_sha256"]))
+        repository = custody["repository_store"].get(
+            custody["emitter"].ledger_store.receipt_key(result["repository_receipt_sha256"]))
+        for receipt in (grant, repository):
+            self.assertEqual(receipt["hb_reference"]["epoch"], CARRIER_HB_EPOCH)
+            self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
+
+    def test_hosted_workflow_synthesizes_no_heartbeat_epoch(self):
+        # The hosted path has no carrier, so it supplies no epoch and derives none;
+        # its grants are FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED until a carrier does.
+        text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
+        for forbidden in ("--hb-epoch", "date +%s", "hb_reference(", "time.time", "datetime.now"):
+            self.assertNotIn(forbidden, text)
+
+    def test_workflow_refusals_carry_the_six_fields(self):
+        text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
+        refusals = [json.loads(line.strip()[len("echo '"):-1]) for line in text.splitlines()
+                    if line.strip().startswith("echo '{\"disposition\":\"FAIL_CLOSED\"")]
+        # 4 publishing-path refusals + 2 pull_request dry-run refusals.
+        self.assertEqual(len(refusals), 6)
+        for refusal in refusals:
+            for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                          "owning_existing_goal", "next_attempt"):
+                self.assertIn(field, refusal)
+
+    def test_event_ephemeral_requires_the_repository_chain_on_the_declared_store(self):
+        elsewhere = bare_repository(self.base / "elsewhere.git")
+        with self.assertRaises(consumer.OrganizationLedgerNotAdmitted) as raised:
+            consumer.ledger_custody(self.env.source, locator(elsewhere), None, event_ephemeral=True)
+        self.assertEqual(raised.exception.predicate, "EVENT_EPHEMERAL_REPOSITORY_LEDGER_NOT_ON_DECLARED_REF")
+        result = self.hosted(repo_ledger_root=locator(elsewhere))
+        self.assertEqual(result["failed_predicate"], "EVENT_EPHEMERAL_REPOSITORY_LEDGER_NOT_ON_DECLARED_REF")
+        self.assertEqual(self.calls, [])
+        self.assertIsNone(ref_tip(elsewhere))
+        self.assertEqual(ref_tip(self.node), self.seeded)
+
+    def test_organization_pin_is_not_carried_over_a_foreign_move(self):
+        custody = consumer.ledger_custody(self.env.source, locator(self.node), None, event_ephemeral=True)
+        store = custody["organization_store"]
+        tree = subprocess.run(["git", "--git-dir", str(self.node), "rev-parse", self.seeded + "^{tree}"],
+                              capture_output=True, text=True, check=True).stdout.strip()
+        foreign = subprocess.run(
+            ["git", "--git-dir", str(self.node), "-c", "user.name=f", "-c", "user.email=f@f.invalid",
+             "commit-tree", tree, "-p", self.seeded, "-m", "foreign"],
+            capture_output=True, text=True, check=True).stdout.strip()
+        with store.exclusive():
+            subprocess.run(["git", "--git-dir", str(self.node), "update-ref", LEDGER_REF, foreign, self.seeded],
+                           check=True)
+            # One parent, the pinned snapshot, but not this transition's repository receipt.
+            self.assertFalse(consumer.adopt_repository_append(custody, self.seeded, {"receipt_sha256": "sha256:" + "f" * 64}))
+            self.assertEqual(store._snapshot(), self.seeded)
+
+    def test_clean_env_relaxes_only_the_event_ephemeral_materialization(self):
+        with self.assertRaisesRegex(RuntimeError, "hosted environment"):
+            consumer.clean_env({"PATH": "/bin", **HOSTED})
+        env = consumer.clean_env({"PATH": "/bin", "SECRET": "x", **HOSTED}, event_ephemeral=True)
+        self.assertEqual(env, {"PATH": "/bin", "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
+                               "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE"})
+
+    def test_event_ephemeral_workflow_is_wired_to_the_declared_ref(self):
+        rel = ".github/workflows/organization-claim-allocator-transition.yml"
+        workflow = (ROOT / rel).read_text(encoding="utf-8")
+        for needle in ("control/resident-execution-request.d/org-claim-allocator-*.json", "workflow_dispatch",
+                       "group: organization-ledger", "cancel-in-progress: false", "contents: write",
+                       "LEDGER_REF: refs/stegverse/organization-ledger",
+                       "scripts/consume_org_claim_allocator_request.py",
+                       '--repo-ledger-root "git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"',
+                       "git merge-base --is-ancestor", 'git push origin "$LEDGER_REF:$LEDGER_REF"',
+                       "--readback-result"):
+            self.assertIn(needle, workflow)
+        # No explicit Organization root, no secret, no added credential.
+        self.assertNotIn("--org-ledger-root", workflow)
+        self.assertNotIn("secrets.", workflow)
+        registry = json.loads((ROOT / "control/workflow-surface-registry.json").read_text(encoding="utf-8"))
+        self.assertIn(rel, [entry["path"] for entry in registry["surfaces"]])
 
 
 if __name__ == "__main__":

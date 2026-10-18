@@ -52,6 +52,8 @@ LEDGER_FILES = (
     "control/queue.json",
 )
 PROTECTED = [f"TASK-2026-00{n:02d}" for n in range(7, 13)]
+# A carrier heartbeat epoch (kernel HB32 anchor is 32); supplied, never derived from a clock.
+CARRIER_HB_EPOCH = 4096
 GENERATION_0_BASIS = "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY"
 
 
@@ -108,9 +110,11 @@ class Env:
             seed_rooted_chain(self.source, self.org, base / f"{runtime_name}-seed-repo-ledger")
 
     def consume(self, runner=subprocess.run, env=None, **kwargs):
+        # The carrier supplies the heartbeat epoch; hb_epoch=None models a carrier that supplied none.
         return consumer.consume(self.source, self.runtime, repo_ledger_root=kwargs.pop("repo", self.repo),
                                 org_ledger_root=kwargs.pop("org", self.org), runner=runner,
-                                env=env or {"PATH": os.environ.get("PATH", "/usr/bin:/bin")})
+                                env=env or {"PATH": os.environ.get("PATH", "/usr/bin:/bin")},
+                                hb_epoch=kwargs.pop("hb_epoch", CARRIER_HB_EPOCH))
 
     def custody(self):
         return consumer.ledger_custody(self.source, self.repo, self.org)
@@ -1342,20 +1346,60 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(env.grants(), [])
 
     def test_claim_receipt_hb_reference_declares_clock_source(self):
-        # The consumer supplies no frame epoch, so every repository receipt it
-        # appends derives its heartbeat from the host clock and must say so.
-        granted = Env(self.base / "granted")
-        self.assertEqual(granted.consume()["disposition"], "ALLOW")
+        # A refusal recorded without a carrier epoch derives its heartbeat from
+        # the host clock and must say so; it grants nothing.
         empty = Env(self.base / "empty", seed=False)
-        self.assertEqual(empty.consume()["disposition"], "FAIL_CLOSED")
-        receipts = [receipt for root in sorted(self.base.glob("*/*repo-ledger"))
-                    for receipt in self._repository_receipts(root)]
-        self.assertGreaterEqual(len(receipts), 3)
+        self.assertEqual(empty.consume(hb_epoch=None)["disposition"], "FAIL_CLOSED")
+        receipts = self._repository_receipts(empty.repo)
+        self.assertGreaterEqual(len(receipts), 1)
         for receipt in receipts:
             reference = receipt["hb_reference"]
-            self.assertIn("derived_from_clock", reference, receipt["transition_id"])
             self.assertIs(reference["derived_from_clock"], True, receipt["transition_id"])
             self.assertIn("sampled_unix_ns", reference, receipt["transition_id"])
+
+    def test_grant_receipts_carry_the_carrier_supplied_hb_epoch(self):
+        granted = Env(self.base / "granted")
+        result = granted.consume(hb_epoch=CARRIER_HB_EPOCH)
+        self.assertEqual(result["disposition"], "ALLOW")
+        grant = granted.grants()[0]
+        # The organization receipt is not clock-derived (aggregate_repo_transition hb_reference).
+        self.assertEqual(grant["hb_reference"]["epoch"], CARRIER_HB_EPOCH)
+        self.assertIs(grant["hb_reference"]["derived_from_clock"], False)
+        self.assertNotIn("sampled_unix_ns", grant["hb_reference"])
+        repository = [r for r in self._repository_receipts(granted.repo)
+                      if r["transition_id"] == result["transition_id"]]
+        self.assertEqual(len(repository), 1)
+        self.assertEqual(repository[0]["hb_reference"]["epoch"], CARRIER_HB_EPOCH)
+        self.assertIs(repository[0]["hb_reference"]["derived_from_clock"], False)
+
+    def test_grant_without_carrier_epoch_fails_closed_and_synthesizes_none(self):
+        env = Env(self.base / "no-epoch")
+        before = (env.runtime / "control/claims-active.json").read_bytes()
+        result = env.consume(hb_epoch=None)
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["failed_predicate"], "GRANT_EPOCH_NOT_CARRIER_SUPPLIED")
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertIsNotNone(result[field], field)
+        self.assertFalse(result["fence_issued"])
+        self.assertIsNone(result["fencing_token"])
+        self.assertFalse(result["claim_grant_occurred"])
+        self.assertEqual(env.grants(), [])
+        self.assertEqual((env.runtime / "control/claims-active.json").read_bytes(), before)
+        # Supplied on the next event, the same request grants the next fence once.
+        granted = env.consume(hb_epoch=CARRIER_HB_EPOCH)
+        self.assertEqual(granted["disposition"], "ALLOW")
+        self.assertEqual(len(env.grants()), 1)
+
+    def test_invalid_carrier_epoch_is_refused_before_anything_is_appended(self):
+        env = Env(self.base / "bad-epoch")
+        for bad in (0, 31, True):
+            result = env.consume(hb_epoch=bad)
+            self.assertEqual(result["disposition"], "FAIL_CLOSED")
+            self.assertEqual(result["failed_predicate"], "GRANT_EPOCH_INVALID")
+            self.assertFalse(result["runtime_execution_attempted"])
+        self.assertEqual(env.grants(), [])
+        self.assertEqual(self._repository_receipts(env.repo), [])
 
 if __name__ == "__main__":
     unittest.main()

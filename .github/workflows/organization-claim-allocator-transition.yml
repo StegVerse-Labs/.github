@@ -1,0 +1,361 @@
+name: Organization Claim Allocator Transition
+
+# Event-ephemeral materialization of the durably queued organization claim
+# allocator requests (control/resident-execution-request.d/org-claim-allocator-*.json).
+# No resident machine is awaited: the request's arrival on main is the event.
+#
+# The EXISTING consumer (scripts/consume_org_claim_allocator_request.py) runs
+# the EXISTING allocator (scripts/allocate_claims.py) in an ephemeral runtime
+# against the manifest-declared Organization store (org-contract.json
+# organization_ledger, store git, refs/stegverse/organization-ledger), with
+# the repository chain on that same ref's declared subtree and no explicit
+# Organization root. Each attempt appends its typed disposition --
+# ORGANIZATION_WORKER_CLAIM_GRANTED (ALLOW), _REFUSED (DENY) or _FAIL_CLOSED --
+# which is published fast-forward only and read back from a fresh fetch.
+#
+# Claim and fence authority stay with the allocator and the Organization
+# chain. This run is not authority; the ledger receipts are the evidence.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/organization-claim-allocator-transition.yml'
+      - 'scripts/consume_org_claim_allocator_request.py'
+      - 'scripts/allocate_claims.py'
+      - 'tests/test_resident_org_claim_allocator.py'
+      - 'tests/test_org_claim_custody.py'
+      - 'tests/test_organization_ledger_explicit_root_guard.py'
+      - 'tests/test_transition_job_runs_on_pull_request.py'
+  push:
+    branches: [main]
+    paths:
+      - 'control/resident-execution-request.d/org-claim-allocator-*.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# ORGANIZATION_LEDGER_LOCK: one appender at a time, shared with every other
+# writer of this same ref. The push below is the compare-and-swap against the
+# published ref, so a writer that lost a race fails closed instead of
+# overwriting. A pull_request run appends only to a temporary copy and never
+# publishes, so it takes a per-PR group and cannot displace a pending writer.
+concurrency:
+  group: organization-ledger${{ github.event_name == 'pull_request' && format('-pr-dry-run-{0}', github.event.pull_request.number) || '' }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout organization boundary
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate the consumer and allocator against temporary ledgers
+        run: |
+          python -m py_compile scripts/consume_org_claim_allocator_request.py scripts/allocate_claims.py
+          python -m pip install pytest
+          python -m pytest -q --tb=short \
+            tests/test_resident_org_claim_allocator.py \
+            tests/test_org_claim_custody.py \
+            tests/test_organization_ledger_explicit_root_guard.py
+          python scripts/validate_task_registry_global_invariants.py
+
+  # On push and workflow_dispatch this job appends to the published
+  # Organization ledger and pushes the ref (contents: write). On pull_request
+  # the same job runs a PR-SAFE DRY RUN instead of being skipped: the same
+  # consumer and allocator against a TEMPORARY copy of the published ledger,
+  # fetched anonymously; no credential is persisted or used, nothing is pushed,
+  # and the published ref is required to be unchanged at the end. Every
+  # publishing step is gated on github.event_name != 'pull_request'.
+  transition:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      LEDGER_REF: refs/stegverse/organization-ledger
+    steps:
+      - name: Checkout organization boundary (pull_request dry run, no persisted credential)
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout organization boundary
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 'PR dry run: copy the published ledger into a temporary ledger (anonymous, read-only)'
+        if: github.event_name == 'pull_request'
+        env:
+          GIT_TERMINAL_PROMPT: '0'
+        run: |
+          set -euo pipefail
+          if git config --local --get-regexp '^http\..*\.extraheader$' >/dev/null; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"PR_DRY_RUN_CREDENTIAL_PERSISTED","failed_predicate":"PULL_REQUEST_RUN_HOLDS_NO_PERSISTED_CREDENTIAL","required_evidence_or_repair":"the pull_request checkout must use persist-credentials: false","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next pull_request event after the repair","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+          python -m py_compile scripts/consume_org_claim_allocator_request.py scripts/allocate_claims.py
+          namespace=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          org = json.loads(Path(".stegverse/transition-ledger/org-contract.json").read_text())
+          repo = json.loads(Path(".stegverse/transition-ledger/contract.json").read_text())
+          locus = org["organization_ledger"]
+          assert locus["store"] == "git" and locus["ref"] == "refs/stegverse/organization-ledger"
+          location = repo["repository_ledger_location"]
+          assert location["ref"] == locus["ref"] and location["new_ledger_root"] is False and location["namespace"]
+          print(location["namespace"])
+          PY
+          )
+          echo "REPO_LEDGER_NAMESPACE=$namespace" >> "$GITHUB_ENV"
+          published="https://github.com/${GITHUB_REPOSITORY}.git"
+          before=$(git -c credential.helper= ls-remote --exit-code "$published" "$LEDGER_REF" | cut -f1) || {
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger is not readable anonymously; the dry run copies it and does not open a replacement","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next pull_request event after the repair","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1; }
+          dry="$RUNNER_TEMP/dry-run-ledger.git"
+          git init -q --bare "$dry"
+          git --git-dir="$dry" -c credential.helper= fetch -q --no-tags "$published" "+$LEDGER_REF:$LEDGER_REF"
+          test "$(git --git-dir="$dry" rev-parse "$LEDGER_REF")" = "$before"
+          echo "$before" > "$RUNNER_TEMP/ledger-before"
+          echo "DRY_RUN_LEDGER=$dry" >> "$GITHUB_ENV"
+          echo "published ledger tip (read-only): $before"
+
+      - name: 'PR dry run: materialize the ephemeral runtime from the queued requests'
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import importlib.util, os, shutil
+          from pathlib import Path
+          spec = importlib.util.spec_from_file_location("consumer", "scripts/consume_org_claim_allocator_request.py")
+          consumer = importlib.util.module_from_spec(spec); spec.loader.exec_module(consumer)
+          runtime = Path(os.environ["RUNNER_TEMP"]) / "runtime"
+          (runtime / consumer.ALLOCATOR_REL).parent.mkdir(parents=True)
+          shutil.copy(consumer.ALLOCATOR_REL, runtime / consumer.ALLOCATOR_REL)
+          for rel in consumer.REQUEST_RELS:
+              if rel.is_file():
+                  (runtime / rel).parent.mkdir(parents=True, exist_ok=True)
+                  shutil.copy(rel, runtime / rel)
+                  print("queued:", rel)
+          PY
+
+      - name: 'PR dry run: consume the requests against the temporary ledger and read them back'
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          export STEGVERSE_ORG_LEDGER_GIT_DIR="$DRY_RUN_LEDGER"
+          mkdir -p "$RUNNER_TEMP/results"
+          status=0
+          python scripts/consume_org_claim_allocator_request.py \
+            --source-root "$GITHUB_WORKSPACE" \
+            --runtime-root "$RUNNER_TEMP/runtime" \
+            --repo-ledger-root "git+$DRY_RUN_LEDGER#$LEDGER_REF:$REPO_LEDGER_NAMESPACE" \
+            > "$RUNNER_TEMP/results/consumption.json" || status=$?
+          cat "$RUNNER_TEMP/results/consumption.json"
+          python - <<'PY'
+          import json, os
+          result = json.load(open(os.environ["RUNNER_TEMP"] + "/results/consumption.json"))
+          attempts = result.get("attempts") if isinstance(result.get("attempts"), list) else [result]
+          typed = {"ORGANIZATION_WORKER_CLAIM_GRANTED", "ORGANIZATION_WORKER_CLAIM_REFUSED",
+                   "ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED"}
+          if result.get("state") == "NO_REQUEST":
+              raise SystemExit(0)
+          if not attempts or any(a.get("transition_class") not in typed for a in attempts):
+              raise SystemExit(1)
+          for a in attempts:
+              print(json.dumps({k: a.get(k) for k in ("request_ref", "transition_class", "disposition",
+                                "failed_predicate", "fencing_token", "organization_receipt_sha256")}, sort_keys=True))
+          PY
+          echo "consumer exit status: $status"
+          before=$(cat "$RUNNER_TEMP/ledger-before")
+          after=$(git --git-dir="$DRY_RUN_LEDGER" rev-parse "$LEDGER_REF")
+          git --git-dir="$DRY_RUN_LEDGER" merge-base --is-ancestor "$before" "$after"
+          echo "temporary ledger tip after append: $after (ancestor $before)"
+          if [ "$before" != "$after" ]; then
+            STEGVERSE_ORG_LEDGER_GIT_DIR="$DRY_RUN_LEDGER" python scripts/consume_org_claim_allocator_request.py \
+              --source-root "$GITHUB_WORKSPACE" \
+              --runtime-root "$RUNNER_TEMP/runtime" \
+              --repo-ledger-root "git+$DRY_RUN_LEDGER#$LEDGER_REF:$REPO_LEDGER_NAMESPACE" \
+              --readback-result "$RUNNER_TEMP/results/consumption.json" \
+              > "$RUNNER_TEMP/results/readback.json"
+          fi
+
+      - name: 'PR dry run: require the published ledger unchanged (nothing published)'
+        if: github.event_name == 'pull_request'
+        env:
+          GIT_TERMINAL_PROMPT: '0'
+        run: |
+          set -euo pipefail
+          before=$(cat "$RUNNER_TEMP/ledger-before")
+          now=$(git -c credential.helper= ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" "$LEDGER_REF" | cut -f1)
+          # Another writer may legitimately have appended meanwhile; a dry run
+          # cannot move the ref, so only a non-descendant tip is a failure.
+          if [ "$now" != "$before" ]; then
+            git --git-dir="$DRY_RUN_LEDGER" -c credential.helper= fetch -q --no-tags \
+              "https://github.com/${GITHUB_REPOSITORY}.git" "+$LEDGER_REF:refs/published/now"
+            git --git-dir="$DRY_RUN_LEDGER" merge-base --is-ancestor "$before" refs/published/now
+          fi
+          python - <<'PY'
+          import json, os
+          print(json.dumps({"mode": "PULL_REQUEST_DRY_RUN", "ledger": "TEMPORARY_COPY",
+                            "published": False, "consequence_committed": False,
+                            "credential_persisted": False, "authority_effect": "NONE_DRY_RUN_ONLY"}, sort_keys=True))
+          PY
+          {
+            echo "### organization claim allocator PR dry run (temporary ledger; nothing published)"
+            echo '```json'
+            cat "$RUNNER_TEMP/results/consumption.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Bind the declared organization ledger ref and repository subtree
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/consume_org_claim_allocator_request.py scripts/allocate_claims.py
+          namespace=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          org = json.loads(Path(".stegverse/transition-ledger/org-contract.json").read_text())
+          repo = json.loads(Path(".stegverse/transition-ledger/contract.json").read_text())
+          locus = org["organization_ledger"]
+          assert locus["store"] == "git" and locus["ref"] == "refs/stegverse/organization-ledger"
+          location = repo["repository_ledger_location"]
+          assert location["ref"] == locus["ref"] and location["new_ledger_root"] is False and location["namespace"]
+          print(location["namespace"])
+          PY
+          )
+          echo "REPO_LEDGER_NAMESPACE=$namespace" >> "$GITHUB_ENV"
+          if git ls-remote --exit-code origin "$LEDGER_REF" >/dev/null; then
+            git fetch --no-tags origin "+$LEDGER_REF:$LEDGER_REF"
+            echo "ledger tip before append: $(git rev-parse "$LEDGER_REF")"
+          else
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger already exists; this writer appends to it and does not open a replacement","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next request event after the repair is recorded","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+          git rev-parse "$LEDGER_REF" > "$RUNNER_TEMP/ledger-before"
+
+      - name: Materialize the ephemeral runtime from the queued requests
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import importlib.util, os, shutil
+          from pathlib import Path
+          spec = importlib.util.spec_from_file_location("consumer", "scripts/consume_org_claim_allocator_request.py")
+          consumer = importlib.util.module_from_spec(spec); spec.loader.exec_module(consumer)
+          runtime = Path(os.environ["RUNNER_TEMP"]) / "runtime"
+          (runtime / consumer.ALLOCATOR_REL).parent.mkdir(parents=True)
+          shutil.copy(consumer.ALLOCATOR_REL, runtime / consumer.ALLOCATOR_REL)
+          for rel in consumer.REQUEST_RELS:
+              if rel.is_file():
+                  (runtime / rel).parent.mkdir(parents=True, exist_ok=True)
+                  shutil.copy(rel, runtime / rel)
+                  print("queued:", rel)
+          PY
+
+      - name: Consume the requests through the existing consumer and allocator
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
+          mkdir -p "$RUNNER_TEMP/results"
+          # No explicit Organization root: the Organization ledger is the declared store.
+          status=0
+          python scripts/consume_org_claim_allocator_request.py \
+            --source-root "$GITHUB_WORKSPACE" \
+            --runtime-root "$RUNNER_TEMP/runtime" \
+            --repo-ledger-root "git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE" \
+            > "$RUNNER_TEMP/results/consumption.json" || status=$?
+          cat "$RUNNER_TEMP/results/consumption.json"
+          # ALLOW, DENY and FAIL_CLOSED are all terminal dispositions; only a
+          # consumption that recorded none of them fails this step.
+          python - <<'PY'
+          import json, os
+          result = json.load(open(os.environ["RUNNER_TEMP"] + "/results/consumption.json"))
+          attempts = result.get("attempts") if isinstance(result.get("attempts"), list) else [result]
+          typed = {"ORGANIZATION_WORKER_CLAIM_GRANTED", "ORGANIZATION_WORKER_CLAIM_REFUSED",
+                   "ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED"}
+          if result.get("state") == "NO_REQUEST":
+              raise SystemExit(0)
+          if not attempts or any(a.get("transition_class") not in typed for a in attempts):
+              raise SystemExit(1)
+          for a in attempts:
+              print(json.dumps({k: a.get(k) for k in ("request_ref", "transition_class", "disposition",
+                                "failed_predicate", "fencing_token", "organization_receipt_sha256")}, sort_keys=True))
+          PY
+          echo "consumer exit status: $status"
+
+      - name: Require the append to fast-forward the existing ref
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          before=$(cat "$RUNNER_TEMP/ledger-before")
+          after=$(git rev-parse "$LEDGER_REF")
+          if ! git merge-base --is-ancestor "$before" "$after"; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_HISTORY_REWRITTEN","failed_predicate":"APPEND_FAST_FORWARDS_THE_EXISTING_REF","required_evidence_or_repair":"the local ref is not a descendant of the fetched tip; nothing is pushed","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next request event after the repair is recorded","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+          echo "ledger tip after append: $after (ancestor $before)"
+
+      - name: Publish the ledger ref (fast-forward only)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          if [ "$(cat "$RUNNER_TEMP/ledger-before")" = "$(git rev-parse "$LEDGER_REF")" ]; then
+            echo "every disposition was already recorded; nothing to publish"
+            exit 0
+          fi
+          if ! git push origin "$LEDGER_REF:$LEDGER_REF"; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_PUBLISH_RACE","failed_predicate":"PUBLISHED_REF_FAST_FORWARDS","required_evidence_or_repair":"another append moved the ref first; this run published nothing","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next request event after the repair is recorded","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+
+      - name: Read the claim dispositions back from a fresh fetch
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/readback.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          if [ -z "$auth_header" ]; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-claim-allocator-transition.yml","owning_existing_goal":"SHWP-ORG-CLAIM-ALLOCATOR-001","next_attempt":"on the next request event after the repair is recorded","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            exit 1
+          fi
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+            fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
+          test "$(git --git-dir="$fresh" rev-parse "$LEDGER_REF")" = "$(git rev-parse "$LEDGER_REF")"
+          STEGVERSE_ORG_LEDGER_GIT_DIR="$fresh" python scripts/consume_org_claim_allocator_request.py \
+            --source-root "$GITHUB_WORKSPACE" \
+            --runtime-root "$RUNNER_TEMP/runtime" \
+            --repo-ledger-root "git+$fresh#$LEDGER_REF:$REPO_LEDGER_NAMESPACE" \
+            --readback-result "$RUNNER_TEMP/results/consumption.json" \
+            > "$RUNNER_TEMP/results/readback.json"
+          {
+            echo "### organization claim allocator dispositions"
+            echo '```json'
+            cat "$RUNNER_TEMP/results/readback.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain the run's evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: organization-claim-allocator-transition
+          path: ${{ runner.temp }}/results
+          if-no-files-found: ignore
