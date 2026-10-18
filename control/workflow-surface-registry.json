@@ -115,6 +115,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / StegVerse-org/.github#162 (Lane B, class-B build per #162 comment 6245552151)",
       "reason": "Manifest-directed resident trigger for scripts/apply_admitted_canonical_work_projection.py: a request committed under .stegverse/canonical-work-projection-requests/ (stegverse.canonical-work-projection-request/v1) starts the run on push, the same way organization-governance-decision.yml consumes .stegverse/governance-decision-requests/**. The projection's own generation + 1 must pass scripts/check_registry_generation_fence.py (pull_request semantics before writing, push mode on the commit) before the commit is pushed to main fast-forward only; every decision is appended to refs/stegverse/organization-ledger and read back. Needs contents: write and the organization-ledger concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/canonical-work-projection-trigger-evaluate.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / StegVerse-org/.github#162 (Lane B; pull-request side of canonical-work-projection-trigger.yml per StegVerse-Labs/.github#160 comment 6249634336)",
+      "reason": "Evaluate-only pull-request counterpart of canonical-work-projection-trigger.yml, which is push-only so none of its jobs is skipped on a pull request. Its validate job runs the trigger tests; its apply job runs the same generation fence (scripts/check_registry_generation_fence.py, pull_request mode, and push mode on a local-only projection commit) and the same scripts/canonical_work_projection_trigger.py evaluate / project() decision against the pull request's request files or the empty set, emits the decision JSON, fails on FAIL_CLOSED with the six fields and proves the refusal path is live. contents: read, no persisted credential, no commit to a remote, no ledger append, no push. Kept beside its writer so the pair is reviewed together. Registration grants no authority."
     }
   ],
   "removed_in_hygiene_batch_1": [

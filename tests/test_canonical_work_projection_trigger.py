@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "canonical_work_projection_trigger.py"
 PROJECTION = ROOT / "scripts" / "apply_admitted_canonical_work_projection.py"
 WORKFLOW = ROOT / ".github" / "workflows" / "canonical-work-projection-trigger.yml"
+EVALUATE_WORKFLOW = ROOT / ".github" / "workflows" / "canonical-work-projection-trigger-evaluate.yml"
 GOVERNANCE = ROOT / ".github" / "workflows" / "organization-governance-decision.yml"
 MAIN_REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 
@@ -396,6 +397,57 @@ class WorkflowShapeTests(unittest.TestCase):
         registry = json.loads((ROOT / "control" / "workflow-surface-registry.json").read_text())
         paths = {s["path"] for s in registry["surfaces"]}
         self.assertIn(".github/workflows/canonical-work-projection-trigger.yml", paths)
+        self.assertIn(".github/workflows/canonical-work-projection-trigger-evaluate.yml", paths)
+
+    def test_the_writer_is_push_only_so_no_job_is_skipped_on_a_pull_request(self):
+        text = WORKFLOW.read_text()
+        triggers = text[text.index("\non:\n"):text.index("\nconcurrency:")]
+        self.assertNotIn("pull_request", triggers)
+        self.assertNotIn("\n  validate:\n", text)
+
+    def test_the_pull_request_apply_job_evaluates_and_writes_nothing(self):
+        text = EVALUATE_WORKFLOW.read_text()
+        triggers = text[text.index("\non:\n"):text.index("\nconcurrency:")]
+        self.assertIn("  pull_request:\n", triggers)
+        self.assertNotIn("push:", triggers)
+        self.assertNotIn("workflow_dispatch", text)
+        jobs = text[text.index("\njobs:\n"):]
+        apply_job = jobs[jobs.index("\n  apply:\n"):]
+        # Every job runs on every pull request: none is gated, so none is skipped.
+        self.assertNotIn("\n    if:", jobs)
+        self.assertNotIn("contents: write", text)
+        self.assertNotIn("persist-credentials: true", text)
+        self.assertEqual(text.count("persist-credentials: false"), 2)
+        for forbidden in ("git push", "secrets.", " record ", "readback", "--force", "ledger_ref", "LEDGER_REF"):
+            self.assertNotIn(forbidden, text)
+        # The same fence and project() evaluation the writer runs, failing on FAIL_CLOSED.
+        self.assertIn("check_registry_generation_fence.py --mode pull_request", apply_job)
+        self.assertIn("check_registry_generation_fence.py --mode push", apply_job)
+        self.assertIn("canonical_work_projection_trigger.py evaluate --mode plan --allow-none", apply_job)
+        self.assertIn("set -euo pipefail", apply_job)
+        # Not a no-op: the refusal path is proven live on every run.
+        self.assertIn("CANONICAL_WORK_PROJECTION_MANIFEST_ABSENT", apply_job)
+        self.assertIn('test "$status" -eq 1', apply_job)
+
+    def test_the_evaluate_only_refusal_probe_fails_closed_with_six_fields(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            empty = Path(tmp) / "empty.txt"
+            empty.write_text("")
+            done = subprocess.run([sys.executable, str(ROOT / "scripts" / "canonical_work_projection_trigger.py"),
+                                   "evaluate", "--mode", "plan", "--changed", str(empty)],
+                                  capture_output=True, text=True)
+            self.assertEqual(done.returncode, 1)
+            out = json.loads(done.stdout)
+            self.assertEqual(out["failure_code"], "CANONICAL_WORK_PROJECTION_MANIFEST_ABSENT")
+            for key in trigger.SIX_FIELDS:
+                self.assertTrue(out.get(key))
+                self.assertIn(key + "=", done.stderr)
+            allowed = subprocess.run([sys.executable, str(ROOT / "scripts" / "canonical_work_projection_trigger.py"),
+                                      "evaluate", "--mode", "plan", "--allow-none", "--changed", str(empty)],
+                                     capture_output=True, text=True)
+            self.assertEqual(allowed.returncode, 0)
+            self.assertEqual(json.loads(allowed.stdout)["applicability"], "NOT_APPLICABLE")
+            self.assertFalse(json.loads(allowed.stdout)["written"])
 
 
 if __name__ == "__main__":

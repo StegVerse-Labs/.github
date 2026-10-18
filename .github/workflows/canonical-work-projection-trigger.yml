@@ -29,19 +29,17 @@ name: Canonical work projection trigger
 # read. The projection is written in the target file's existing layout, so a
 # row projection changes only that row and the header fields the projection
 # sets; a layout it cannot reproduce is refused, never rewritten.
+#
+# This file is push-only, so no job here is ever skipped on a pull request.
+# The pull-request side is canonical-work-projection-trigger-evaluate.yml: its
+# `apply` job runs the same fence and project() evaluation against the pull
+# request's request files (or the empty set) with contents: read and no
+# persisted credential, and writes nothing.
 on:
   push:
     branches: [main]
     paths:
       - '.stegverse/canonical-work-projection-requests/*.json'
-  pull_request:
-    paths:
-      - '.github/workflows/canonical-work-projection-trigger.yml'
-      - '.stegverse/canonical-work-projection-requests/*.json'
-      - 'scripts/canonical_work_projection_trigger.py'
-      - 'scripts/apply_admitted_canonical_work_projection.py'
-      - 'scripts/check_registry_generation_fence.py'
-      - 'tests/test_canonical_work_projection_trigger.py'
 
 concurrency:
   group: ${{ github.event_name == 'push' && 'organization-ledger' || format('canonical-work-projection-pr-{0}', github.ref) }}
@@ -51,32 +49,6 @@ permissions:
   contents: read
 
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Test the trigger against temporary registries and ledgers
-        run: |
-          python -m py_compile scripts/canonical_work_projection_trigger.py \
-            scripts/apply_admitted_canonical_work_projection.py scripts/check_registry_generation_fence.py
-          python -m pip install pytest
-          python -m pytest -q --tb=short tests/test_canonical_work_projection_trigger.py
-      - name: Dry-run (plan) every request this pull request adds or changes
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: |
-          set -euo pipefail
-          git diff --name-only --diff-filter=AM "$BASE_SHA...HEAD" -- '.stegverse/canonical-work-projection-requests/*.json' > "$RUNNER_TEMP/changed.txt"
-          python scripts/canonical_work_projection_trigger.py evaluate --mode plan --allow-none \
-            --changed "$RUNNER_TEMP/changed.txt" --out "$RUNNER_TEMP/plan.json"
-
   apply:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
