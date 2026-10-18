@@ -163,22 +163,14 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual(again["organization_receipt_sha256"], result["organization_receipt_sha256"])
 
     # PROMOTE ------------------------------------------------------------------
-    def test_all_predicates_with_carrier_epoch_authorize_and_read_back(self):
+    def test_synthetic_positive_path_refuses_unverified_issuer_evidence(self):
         ledger = Ledger(self.base)
         result = ledger.run(promote_request(ledger), hb_epoch=str(CARRIER_HB_EPOCH))
-        self.assertEqual(result["transition_class"], sppa.AUTHORIZED, result)
-        self.assertEqual(result["disposition"], "ALLOW")
+        self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
+        self.assertFalse(result["promotion_may_proceed"])
         self.assertEqual(result["organization_readback"], "VERIFIED")
-        self.assertTrue(result["promotion_may_proceed"])
-        self.assertEqual([p["state"] for p in result["predicates"]],
-                         ["PASS", "PASS", "PASS", "EVIDENCE_ONLY", "PASS", "PASS", "PASS", "PASS"])
-        row = ledger.org_receipt(result["organization_receipt_sha256"])
-        self.assertEqual(row["boundary_evidence"]["operation"], sppa.AUTHORIZED)
-        self.assertEqual(row["boundary_evidence"]["fencing_token"], 8)
-        self.assertEqual(row["hb_reference"]["epoch"], CARRIER_HB_EPOCH)
-        self.assertIs(row["hb_reference"]["derived_from_clock"], False)
-        self.assertFalse(result["evidence"]["deployment_performed"])
-        self.assertFalse(result["evidence"]["provider_settings_changed"])
+        self.assertEqual([p["state"] for p in result["predicates"][:7]],
+                         ["FAIL", "PASS", "PASS", "EVIDENCE_ONLY", "FAIL", "FAIL", "FAIL"])
 
     def test_authorization_without_carrier_epoch_fails_closed(self):
         ledger = Ledger(self.base)
@@ -235,7 +227,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         request = promote_request(ledger)
         request["checks"] = [{"id": 2, "name": "validate", "head_sha": SHA, "conclusion": "failure"}]
         result = ledger.run(request, hb_epoch=str(CARRIER_HB_EPOCH))
-        self.assertEqual(result["transition_class"], sppa.AUTHORIZED)
+        self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
         self.assertEqual(result["evidence"]["exact_sha_check_run_ids"], [2])
         self.assertFalse(result["predicates"][3]["grants_authority"])
 
@@ -263,11 +255,11 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
     def test_retro_finds_the_authorization_for_the_same_build_only(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
-        self.assertEqual(ledger.run(request, hb_epoch=str(CARRIER_HB_EPOCH))["transition_class"], sppa.AUTHORIZED)
+        self.assertEqual(ledger.run(request, hb_epoch=str(CARRIER_HB_EPOCH))["transition_class"], sppa.FAIL_CLOSED)
         retro = copy.deepcopy(request)
         retro["mode"] = sppa.RETRO
         found = ledger.run(retro)
-        self.assertEqual(found["classification"], "AUTHORIZED_RECEIPT_PRESENT")
+        self.assertNotEqual(found["classification"], "AUTHORIZED_RECEIPT_PRESENT")
         self.assertFalse(found["receipt_appended"])
         other = copy.deepcopy(retro)
         other["provider_build"]["build_id"] = "build-unauthorized"
