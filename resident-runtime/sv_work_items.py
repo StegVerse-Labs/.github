@@ -256,12 +256,30 @@ def change_digest(content: Iterable[Mapping[str, Any]]) -> str:
     return sha(sorted(({"path": c["path"], "blob_digest": c["blob_digest"]} for c in content), key=lambda c: c["path"]))
 
 
+CANONICAL_SERIALIZATION = {"format": "JSON", "sort_keys": True, "separators": [",", ":"], "encoding": "UTF-8",
+                           "ensure_ascii": False, "trailing_newline": False}  # == canon()
+
+
+def change_identity_input(rec: Mapping[str, Any]) -> dict[str, Any]:
+    """The hashed form: {target_repository, base_ref (registry_generation and ledger_head kept, as recorded),
+    content: [{path, blob_digest (null when deleted), deleted}] sorted by path}."""
+    base = rec.get("base_ref")
+    if not _base_ok(base):
+        raise _deny("SV_CHANGE_BASE_UNBOUND", "BASE_BOUND_TO_REGISTRY_GENERATION_AND_LEDGER_HEAD",
+                    "base_ref keeps registry_generation (int) and ledger_head (40-hex); change_id hashes both", "change_identity")
+    content = []
+    for c in rec.get("content") or []:
+        if isinstance(c, Mapping):
+            deleted = c.get("deleted", False) is True
+            content.append({"path": c.get("path"), "blob_digest": None if deleted else c.get("blob_digest"), "deleted": deleted})
+    return {"target_repository": rec.get("target_repository"), "base_ref": dict(base),
+            "content": sorted(content, key=lambda c: str(c["path"]))}
+
+
 def change_identity(rec: Mapping[str, Any]) -> str:
-    """change_id = "svc:" + sha256(canon({target_repository, base_ref, content: sorted by path of
-    {path, blob_digest, deleted}})). Writer evidence is not identity: the same content on the same base is one change."""
-    content = sorted(({"path": c.get("path"), "blob_digest": c.get("blob_digest"), "deleted": bool(c.get("deleted", False))}
-                      for c in rec.get("content") or [] if isinstance(c, Mapping)), key=lambda c: str(c["path"]))
-    return "svc:" + sha({"target_repository": rec.get("target_repository"), "base_ref": rec.get("base_ref"), "content": content})[7:]
+    """change_id = "svc:" + hex sha256(canon(change_identity_input(rec))). canon() is the pinned serialization
+    (CANONICAL_SERIALIZATION). Writer evidence is not identity: the same content on the same base is one change."""
+    return "svc:" + hashlib.sha256(canon(change_identity_input(rec))).hexdigest()
 
 
 def request_digest(rec: Mapping[str, Any]) -> str:
@@ -275,6 +293,9 @@ def validate_change(rec: Any) -> dict[str, Any]:
     if not _str(rec.get("declared_session")):
         raise _fail("AUTHOR_SESSION_NOT_DECLARED", "PR_AUTHOR_SESSION_DECLARED", "declared_session names the authoring session", e)
     mode = mode_check(rec, "SV_CHANGE", "base_ref", e)
+    if not _base_ok(rec.get("base_ref")):
+        raise _deny("SV_CHANGE_BASE_UNBOUND", "BASE_BOUND_TO_REGISTRY_GENERATION_AND_LEDGER_HEAD",
+                    "base_ref{registry_generation int, ledger_head 40-hex}", e)
     if not _str(rec.get("target_repository")) or rec.get("change_id") != change_identity(rec):
         raise _deny("SV_CHANGE_IDENTITY_INVALID", "CHANGE_IDENTITY_IS_CONTENT_ADDRESSED",
                     "change_id = change_identity(record) over {target_repository, base_ref, content}", e, expected=change_identity(rec))

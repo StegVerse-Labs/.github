@@ -270,5 +270,83 @@ class LiftTests(unittest.TestCase):
         self.assertEqual(mg.derive_surface("on merge"), U)
 
 
+KAT_RECORD = {
+    "target_repository": "StegVerse-Labs/.github",
+    "base_ref": {"registry_generation": 319, "ledger_head": "a5bb54d81893b392a3ce28182986fc39857807e1"},
+    "content": [
+        {"path": "schemas/\u00e9.json", "blob_digest": "sha256:" + "b" * 64,
+         "writer_session": {"session": "P1", "evidence_class": "DECLARED"}},
+        {"path": "docs/old.md", "blob_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "deleted": True,
+         "writer_session": {"session": None, "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"}},
+    ],
+}
+KAT_BYTES = ('{"base_ref":{"ledger_head":"a5bb54d81893b392a3ce28182986fc39857807e1","registry_generation":319},'
+             '"content":[{"blob_digest":null,"deleted":true,"path":"docs/old.md"},'
+             '{"blob_digest":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","deleted":false,"path":"schemas/\u00e9.json"}],'
+             '"target_repository":"StegVerse-Labs/.github"}').encode("utf-8")
+KAT_CHANGE_ID = "svc:b1f56ebe998a4a0896e8f3f18ef76abe65f6f6bd0c613fa04e50291025300239"
+
+
+class ChangeIdCanonicalTests(unittest.TestCase):
+    """Lane C amendment: pinned canonical serialization, deleted entries, base_ref, OBSERVED_ARTIFACT never passes."""
+
+    def test_change_id_known_answer(self):
+        self.assertEqual(wi.canon(wi.change_identity_input(KAT_RECORD)), KAT_BYTES)
+        self.assertEqual(len(KAT_BYTES), 342)
+        self.assertFalse(KAT_BYTES.endswith(b"\n"))
+        self.assertIn("\u00e9".encode("utf-8"), KAT_BYTES)  # ensure_ascii false: raw UTF-8, no \\u escape
+        self.assertEqual("svc:" + hashlib.sha256(KAT_BYTES).hexdigest(), KAT_CHANGE_ID)
+        self.assertEqual(wi.change_identity(KAT_RECORD), KAT_CHANGE_ID)
+
+    def test_serialization_is_pinned_in_schema_and_code(self):
+        pinned = CHANGE_SCHEMA["properties"]["change_id"]["x-canonical-serialization"]
+        self.assertEqual(pinned, {"format": "JSON", "sort_keys": True, "separators": [",", ":"], "encoding": "UTF-8",
+                                  "ensure_ascii": False, "trailing_newline": False})
+        self.assertEqual(pinned, wi.CANONICAL_SERIALIZATION)
+        v = {"b": "\u00e9", "a": [1, None]}
+        self.assertEqual(wi.canon(v), json.dumps(v, sort_keys=pinned["sort_keys"], separators=tuple(pinned["separators"]),
+                                                 ensure_ascii=pinned["ensure_ascii"]).encode(pinned["encoding"].lower().replace("-", "")))
+
+    def test_deleted_entry_hashes_null_blob_digest(self):
+        hashed = wi.change_identity_input(KAT_RECORD)["content"][0]
+        self.assertEqual(hashed, {"path": "docs/old.md", "blob_digest": None, "deleted": True})
+        other = copy.deepcopy(KAT_RECORD); other["content"][1]["blob_digest"] = "sha256:" + "0" * 64
+        self.assertEqual(wi.change_identity(other), KAT_CHANGE_ID)  # a deleted path's stored digest is not identity
+        undeleted = copy.deepcopy(KAT_RECORD); undeleted["content"][1]["deleted"] = False
+        self.assertNotEqual(wi.change_identity(undeleted), KAT_CHANGE_ID)
+        truthy = copy.deepcopy(KAT_RECORD); truthy["content"][1]["deleted"] = "yes"
+        self.assertEqual(wi.change_identity_input(truthy)["content"][0]["deleted"], False)  # only boolean true deletes
+
+    def test_base_ref_keeps_registry_generation_and_ledger_head(self):
+        self.assertEqual(set(wi.change_identity_input(KAT_RECORD)["base_ref"]), {"registry_generation", "ledger_head"})
+        for drop in ("registry_generation", "ledger_head"):
+            rec = copy.deepcopy(KAT_RECORD); del rec["base_ref"][drop]
+            self.assertEqual(code(wi.change_identity, rec), "SV_CHANGE_BASE_UNBOUND", drop)
+            ch = copy.deepcopy(base.nativize_change(base.CHANGES[2])); del ch["base_ref"][drop]
+            self.assertEqual(code(wi.validate_change, ch), "SV_CHANGE_BASE_UNBOUND", drop)
+        for k, v in (("registry_generation", 320), ("ledger_head", "f" * 40)):
+            rec = copy.deepcopy(KAT_RECORD); rec["base_ref"][k] = v
+            self.assertNotEqual(wi.change_identity(rec), KAT_CHANGE_ID, k)
+
+    def test_observed_artifact_is_unknown_for_verified_never_a_pass(self):
+        ch = base.al_known_good_change("svi:" + "1" * 64)
+        first = ch["validation_receipts"][0]["check_id"]
+        art = base.reseal_change(dict(ch, validation_receipts=[
+            {**v, "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/evidence.md"} if v["check_id"] == first else v
+            for v in ch["validation_receipts"]]))
+        out = wi.transition("SV_CHANGE_VERIFY", art, hb_epoch=EPOCH)
+        self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
+                         ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED", "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED"))
+        self.assertEqual(out["record"]["lifecycle_state"], art["lifecycle_state"])
+        res = wi.admit(wi.admission_inputs(art, art["base_ref"]))
+        self.assertEqual((res["unobserved"], res["artifact_only"]), ([first], [first]))
+        # an artifact never upgrades or overrides: alongside a ledger DENY it does not hide the refusal
+        mixed = base.reseal_change(dict(ch, validation_receipts=[
+            {**v, "disposition": "DENY"} if v["check_id"] == first else v for v in ch["validation_receipts"]] +
+            [{**ch["validation_receipts"][0], "evidence_class": "OBSERVED_ARTIFACT", "ref": "docs/evidence.md"}]))
+        self.assertEqual(wi.admit({**wi.admission_inputs(mixed, mixed["base_ref"]), "required_signoff_roles": []})["failure_code"],
+                         "CHECK_NOT_PASSING")
+
+
 if __name__ == "__main__":
     unittest.main()

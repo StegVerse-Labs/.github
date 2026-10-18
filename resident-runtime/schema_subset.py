@@ -8,7 +8,8 @@ from __future__ import annotations
 import re
 from typing import Any, Iterator
 
-ANNOTATIONS = {"$id", "$schema", "title", "description", "$comment", "x-derivation", "x-migrated-unknown-allowed", "x-carrier"}
+ANNOTATIONS = {"$id", "$schema", "title", "description", "$comment", "x-derivation", "x-migrated-unknown-allowed", "x-carrier",
+               "x-canonical-serialization"}
 KEYWORDS = {"type", "properties", "required", "additionalProperties", "items", "enum", "const", "pattern", "minLength",
             "minItems", "minimum", "uniqueItems", "anyOf", "allOf", "not", "if", "then", "propertyNames"}
 _TYPES = {"object": dict, "array": list, "string": str, "boolean": bool, "null": type(None)}

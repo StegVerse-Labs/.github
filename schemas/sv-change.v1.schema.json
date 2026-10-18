@@ -140,9 +140,21 @@
       "type": "object"
     },
     "change_id": {
+      "description": "Content-addressed change identity. Canonical serialization (pinned, x-canonical-serialization): JSON with sort_keys, separators (',',':'), UTF-8, ensure_ascii false, no trailing newline; i.e. json.dumps(v, sort_keys=True, separators=(',',':'), ensure_ascii=False).encode('utf-8') (sv_work_items.canon). Known-answer vector: tests/test_sv_record_modes.py::test_change_id_known_answer.",
       "pattern": "^svc:[0-9a-f]{64}$",
       "type": "string",
-      "x-derivation": "svc: + sha256(canonical JSON {target_repository, base_ref, content: [{path, blob_digest, deleted: bool (default false)}] sorted by path}). writer_session is evidence, not identity. Canonical JSON = sorted keys, separators (',',':'), UTF-8. Helper: sv_work_items.change_identity (SF-2)."
+      "x-canonical-serialization": {
+        "encoding": "UTF-8",
+        "ensure_ascii": false,
+        "format": "JSON",
+        "separators": [
+          ",",
+          ":"
+        ],
+        "sort_keys": true,
+        "trailing_newline": false
+      },
+      "x-derivation": "svc: + lowercase hex sha256 over the canonical serialization of {target_repository, base_ref, content}. base_ref is hashed as recorded and must keep registry_generation and ledger_head. content = [{path, blob_digest, deleted}] sorted by path, deleted a boolean (default false), blob_digest null when deleted. writer_session is evidence, not identity. Helper: sv_work_items.change_identity (SF-2)."
     },
     "co_author_grants": {
       "items": {

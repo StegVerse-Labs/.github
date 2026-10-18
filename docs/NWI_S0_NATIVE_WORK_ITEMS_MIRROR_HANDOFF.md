@@ -75,3 +75,15 @@ Author session: P1 Ecosystem AI Lane (d8cbc58c). Invariants: WORK_ITEMS_ARE_TASK
   - `resident-runtime/schema_subset.py` is a stdlib JSON-schema subset validator. It refuses any keyword it does not implement.
   - `resident-runtime/sv_migration.py` holds the published lift rules.
   - `scripts/evaluate_migration_fixtures.py --fixtures DIR` lifts a fixture set written against 1673cb5f and reports each listed gap as CLEARED or REMAINS.
+
+## change_id canonical serialization (Lane C amendment)
+- **Pinned serialization.** It is set in `sv-change.v1#/properties/change_id/x-canonical-serialization` and in `sv_work_items.CANONICAL_SERIALIZATION` / `canon()`: JSON with sort_keys, separators `(',', ':')`, UTF-8, ensure_ascii false, and no trailing newline.
+- **Hashed form** (`change_identity_input`): `{target_repository, base_ref, content}`.
+  - `base_ref` is hashed as recorded and must keep both `registry_generation` and `ledger_head`. If either is missing, the result is DENY SV_CHANGE_BASE_UNBOUND.
+  - `content` is `[{path, blob_digest, deleted}]` sorted by path. `deleted` counts only when it is boolean true, and a deleted entry hashes `blob_digest: null`.
+- **change_id** = `"svc:" + lowercase hex sha256(serialized bytes)`.
+- **Known-answer vector** (`tests/test_sv_record_modes.py::test_change_id_known_answer`):
+  - Input: target `StegVerse-Labs/.github`; base `{registry_generation 319, ledger_head a5bb54d81893b392a3ce28182986fc39857807e1}`; content `schemas/é.json` with digest `sha256:b…b` (64×b), plus `docs/old.md` deleted.
+  - Serialized form: 342 bytes, starting `{"base_ref":{"ledger_head":"a5bb54d8…","registry_generation":319},"content":[{"blob_digest":null,"deleted":true,"path":"docs/old.md"},…`
+  - change_id: `svc:b1f56ebe998a4a0896e8f3f18ef76abe65f6f6bd0c613fa04e50291025300239`
+- **OBSERVED_ARTIFACT** counts as UNKNOWN for VERIFIED. A check with only artifact evidence is FAIL_CLOSED CHECK_SKIPPED_OR_UNOBSERVED. It is never a pass, and it never hides a ledger refusal.

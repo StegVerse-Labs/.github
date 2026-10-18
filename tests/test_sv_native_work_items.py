@@ -70,7 +70,10 @@ def reseal_change(rec):
     rec = dict(rec)
     rec["head"] = {"change_digest": wi.change_digest(rec["content"])}
     rec["touched_paths"] = [c["path"] for c in rec["content"]]
-    rec["change_id"] = wi.change_identity(rec)
+    try:
+        rec["change_id"] = wi.change_identity(rec)
+    except wi.Refusal:
+        pass  # an unbound base has no identity; the validator refuses it
     rec["request_digest"] = wi.request_digest(rec)
     return rec
 
