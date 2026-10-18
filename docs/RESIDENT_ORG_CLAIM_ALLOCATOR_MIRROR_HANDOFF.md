@@ -234,7 +234,7 @@ longer the only one.
 
 ### Materialization path
 
-- **Trigger:** `.github/workflows/organization-claim-allocator-transition.yml`
+- **Trigger:** `.github/workflows/organization-claim-allocator-transition-writer.yml` (writer-only; push to main / workflow_dispatch). PR checks: `.github/workflows/organization-claim-allocator-transition.yml` (pull_request only, contents: read, PR-safe dry run)
   runs on a push to `main` that touches `org-claim-allocator-*.json` (the commit
   carrying the durable queue entry), and on `workflow_dispatch`. A
   `pull_request` run only validates against temporary ledgers.
