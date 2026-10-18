@@ -1,0 +1,12 @@
+{
+  "schema": "stegverse.lane-branch-map.v1",
+  "note": "Lanes whose CI runs are measured from a committed run export. Lanes absent here report E themselves in data/lane-session-usage.csv (LANE_REPORTED).",
+  "lanes": {
+    "roadmap": [
+      {"repo": "StegVerse-Labs/.github", "head_branch": "claude/stegverse-roadmap-execution-9zq18t"},
+      {"repo": "GCAT-BCAT-Engine/Publisher", "head_branch": "claude/stegverse-roadmap-execution-9zq18t"},
+      {"repo": "StegVerse-org/StegVerse-SDK", "head_branch": "claude/stegverse-roadmap-execution-9zq18t"},
+      {"repo": "StegVerse-Labs/Site", "head_branch": "claude/stegverse-roadmap-execution-9zq18t"}
+    ]
+  }
+}

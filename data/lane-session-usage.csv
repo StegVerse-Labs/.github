@@ -1,0 +1,59 @@
+date,lane,unit_id,e_minutes,l_minutes,source
+2026-10-18,roadmap,RM1-RM16,0,86,"L estimate (RM11 method, 12:20-13:33Z); E for this lane is the committed CI run export, local runs not counted"
+2026-10-18,roadmap,RM17,0,10,"L estimate (owner-queue and coordinator notes, 13:35-17:30Z)"
+2026-10-18,roadmap,WU-RM18,2,30,"L estimate; E estimate: local scratch applies and the 7 validators"
+2026-10-18,roadmap,WU-RM19,2.5,15,"L estimate; E estimate: local test-suite ratchet"
+2026-10-18,roadmap,WU-RM18-v3-WU-B23,1,10,"L estimate; E estimate: local apply and 17 tests"
+2026-10-18,roadmap,WU-RM20,0,15,"L estimate; this table and the run export"
+2026-10-18,coordinator,C1-C2,6,45,"relayed by Coordinator session_017bDUxLHMn1cgscX3WNw5qy: sandbox run on 0a3e69df, Ecosystem_Chat run on fa4bff48; estimate"
+2026-10-18,VALIDATOR,SDK484-ITEM1-CM-GOV-1,4,20,estimate; SDK#547 CI runs 39127254834 (ratchet) + 6 parallel jobs
+2026-10-18,VALIDATOR,SDK484-ITEM2-SIX-FIELD-CHECK,2,6,estimate; child agent ~3 min; SDK#547 same runs
+2026-10-18,VALIDATOR,SDK484-ITEM3-QC7,0,3,estimate
+2026-10-18,VALIDATOR,SDK484-ITEM4-MERGE-ORDER-READBACK,0,4,estimate
+2026-10-18,VALIDATOR,SDK484-a-534-SDK-REF,2,6,estimate; local reproduction of #534 at 3dd6c80b and e8ae308a
+2026-10-18,VALIDATOR,SDK484-b-WORKFLOW-SIX-FIELDS,1,8,estimate; SDK#552 CI run 39128689695 (ratchet) + 6 parallel jobs
+2026-10-18,VALIDATOR,WU-V3-LABS-RT-INVARIANT-EVALUATION-PORT,7,15,estimate; two local Labs ratchet runs + invariants validator
+2026-10-18,VALIDATOR,WU-V5-534-SUPERSEDED-CHECK,1,3,estimate
+2026-10-18,VALIDATOR,WU-V6-STATUS-TABLE,0,5,estimate; child agent ~1 min
+2026-10-18,VALIDATOR,WU-V7-STALE-BASE,0,2,estimate
+2026-10-18,VALIDATOR,WU-V8-537-SUPERSEDED-CHECK,0,3,estimate
+2026-10-18,VALIDATOR,WU-V9-JSONSCHEMA-RETIREMENT,8,25,estimate; SDK#552 CI run 39151315324 (ratchet) + 26 parallel jobs; two local ratchet runs
+2026-10-18,VALIDATOR,WU-V10-STATUS-EOR,1,5,estimate
+2026-10-17,remediation,LLMA-368-handoff-review-425-118-117,6,45,estimate
+2026-10-17,remediation,LLMA-368-Q8-healer-six-fields-119,2,35,estimate
+2026-10-17,remediation,SDK-539-exp3-negative-conformance,5,40,estimate
+2026-10-18,remediation,LLMA-368-Q7-tunnel-uv-426,8,50,"runs 39127119218 39128166764 39128166760; L estimate"
+2026-10-18,remediation,H36-SDK-546,4,20,estimate
+2026-10-18,remediation,WU-R3-R4-537-analysis,0,10,estimate
+2026-10-18,remediation,WU-R5-dependency-inventory,1,15,estimate
+2026-10-18,remediation,WU-R9-exp3-org-request-dryrun,3,25,estimate
+2026-10-18,remediation,WU-R11-SDK-553,3,15,"run 39129312951; L estimate"
+2026-10-18,remediation,WU-R13-Q10-healer-119,2,20,estimate
+2026-10-18,remediation,healer-audit-schedules-script-119,2,10,estimate
+2026-10-18,remediation,WU-R14-drive-request-bytes,0,5,estimate
+2026-10-18,remediation,WU-R15-R16-fact-index-426,4,30,estimate
+2026-10-18,remediation,fact-index-precedence-426,3,10,estimate
+2026-10-18,remediation,coordination-surfaces,0,35,estimate
+2026-10-18,B,WU-B3,0,3.2,estimate (child 01CC5uxt + amendment 015QfRBE)
+2026-10-18,B,WU-B4,0,3.4,estimate (child 01F2eZbE)
+2026-10-18,B,WU-B5,0,5.8,estimate (child 01U4je8b + 4 H36 check readers + poster 01Pm3Y27)
+2026-10-18,B,WU-B6a,0,1.7,estimate (child 0143QwAK; shared with B6c)
+2026-10-18,B,WU-B6c,0,1.7,estimate (child 0143QwAK; shared with B6a)
+2026-10-18,B,WU-B6b,9.2,13.4,estimate (child 01JzLTRe; Labs#3260 CI 3 checks + local ratchet/35 tests)
+2026-10-18,B,WU-B7,0,4.8,estimate (poster 01JF1qx9 + 4 hop-head readers)
+2026-10-18,B,WU-B8,0,2.0,estimate (child 013nfEoE)
+2026-10-18,B,WU-B9,0,13.0,estimate (child 01Cy4kuW; FAIL_CLOSED classifier denial)
+2026-10-18,B,WU-B10,0,3.9,estimate (poster 014CyGzT + 4 readers)
+2026-10-18,B,WU-B11,1.6,22.0,estimate (child 012h5yRS + coordinator generator/53 ingress tests/temp-ledger dry run; org#198 CI)
+2026-10-18,B,WU-B12,0,2.0,estimate (poster 019nTCeC share)
+2026-10-18,B,WU-B13,4.0,22.7,estimate (child 01UMfu8Z ratchet main+patched; retry 01YXNNDK; posters)
+2026-10-18,B,WU-B14,0,4.0,estimate (coordinator EOR table)
+2026-10-18,B,WU-B15,0,12.5,estimate (coordinator review drafting + posters 01LgqKfQ/011ahnzu)
+2026-10-18,B,WU-B16,2.0,10.0,estimate (coordinator apply plan + --apply 7 validators in worktree)
+2026-10-18,B,WU-B17,6.0,16.0,estimate (child 01KQEKEr; Labs#3272 CI ratchet/csv/validate + local ratchet)
+2026-10-18,B,WU-B18,0,4.0,estimate (child 01CBC7Cg; FAIL_CLOSED intake absent)
+2026-10-18,B,WU-B19,6.0,15.0,estimate (child 011qQ2A5; Labs#3274 CI + 246 local tests + ratchet)
+2026-10-18,B,WU-B20,6.0,14.0,estimate (child 01UhW2BL; Labs#3273 CI + local validators/ratchet)
+2026-10-18,B,WU-B21,0,0.5,estimate (stacked; record only)
+2026-10-18,B,WU-B22,6.5,26.0,run 39152717370 (Labs#3275 exact-head CI) + estimate (child 011jDTMb incl. placeholder fix)
+2026-10-18,B,WU-B23,1.0,18.0,estimate (coordinator builder/apply probes in discarded worktrees + poster 01JFr93t)

@@ -93,6 +93,27 @@ class OffloadRatioTests(unittest.TestCase):
             eor.compute(runs(run(1, "2026-10-18T12:00:00Z", "2026-10-18T12:01:00Z"),
                              run(1, "2026-10-18T12:00:00Z", "2026-10-18T12:01:00Z")), SESSIONS, lanes())
 
+    def test_lane_reported_usage_is_kept_apart_and_labelled(self):
+        usage = ("date,lane,unit_id,e_minutes,l_minutes,source\n"
+                 "2026-10-18,coordinator,C1,3,20,sandbox run (SYNTHETIC)\n"
+                 "2026-10-18,coordinator,C2,3,25,chat run (SYNTHETIC)\n"
+                 "2026-10-18,roadmap,RM18,0.5,10,local apply (SYNTHETIC)\n")
+        out = eor.compute(runs(run(1, "2026-10-18T12:00:00Z", "2026-10-18T12:06:00Z")), SESSIONS, lanes(), usage)
+        keyed = {r["lane"]: r for r in out["rows"]}
+        self.assertEqual((keyed["coordinator"]["E_minutes"], keyed["coordinator"]["L_minutes"],
+                          keyed["coordinator"]["EOR"], keyed["coordinator"]["units"]), ("6.00", "45.00", "2/17", ["C1", "C2"]))
+        self.assertEqual(keyed["coordinator"]["measurement"], "LANE_REPORTED")
+        roadmap = keyed["roadmap"]
+        self.assertEqual((roadmap["E_ci_minutes"], roadmap["E_reported_minutes"], roadmap["E_minutes"], roadmap["L_minutes"]),
+                         ("6.00", "0.50", "6.50", "96.00"))
+        self.assertEqual((roadmap["EOR"], roadmap["measurement"]), ("13/205", "LANE_REPORTED"))
+        for bad in ("date,lane,unit\n", "date,lane,unit_id,e_minutes,l_minutes,source\n2026-10-18,x,U,1,-1,s\n",
+                    "date,lane,unit_id,e_minutes,l_minutes,source\n2026-10-18,x,U,1,1,\n",
+                    "date,lane,unit_id,e_minutes,l_minutes,source\n2026-10-18,x,U,1,1,s\n2026-10-18,x,U,2,2,s\n"):
+            with self.subTest(table=bad):
+                with self.assertRaises(eor.Refused):
+                    eor.compute(runs(), SESSIONS, lanes(), bad)
+
     def test_cli_names_each_missing_input_and_reads_no_network(self):
         with tempfile.TemporaryDirectory() as directory:
             d = Path(directory)

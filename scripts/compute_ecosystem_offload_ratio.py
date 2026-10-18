@@ -11,7 +11,12 @@ LLM session: ``EOR = E / (E + L)``, where
 * ``L`` is the lane's LLM session time, taken from a session-usage table (CSV with header
   ``date,lane,session_id,llm_minutes``; ``llm_minutes`` is a non-negative decimal);
 * a lane map (``stegverse.lane-branch-map.v1``) assigns runs to lanes by exact
-  ``repo`` and ``head_branch``.
+  ``repo`` and ``head_branch``;
+* optionally, a lane-usage table (CSV with header
+  ``date,lane,unit_id,e_minutes,l_minutes,source``) in which a lane reports both E and L
+  per work unit. Its E is kept apart from CI-measured E (``E_reported_minutes``) and every
+  row it touches is labelled ``LANE_REPORTED``, because a lane's own figure is not a
+  measurement.
 
 This is the RM11 method (E and L in minutes, EOR = E / (E + L)) computed from files
 instead of estimated. A run is attributed to the UTC day it started. Runs without
@@ -41,9 +46,10 @@ RUNS_SCHEMA = "stegverse.ci-run-duration-export.v1"
 LANES_SCHEMA = "stegverse.lane-branch-map.v1"
 RESULT_SCHEMA = "stegverse.ecosystem-offload-ratio.v1"
 SESSION_HEADER = ["date", "lane", "session_id", "llm_minutes"]
+USAGE_HEADER = ["date", "lane", "unit_id", "e_minutes", "l_minutes", "source"]
 OWNING_GOAL = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
 RETRY_ENTRYPOINT = ("python scripts/compute_ecosystem_offload_ratio.py --ci-runs <export.json> "
-                    "--sessions <usage.csv> --lanes <lane-map.json>")
+                    "--sessions <usage.csv> --lanes <lane-map.json> [--lane-usage <lane-usage.csv>]")
 TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -134,14 +140,45 @@ def load_sessions(text: str) -> list[dict[str, Any]]:
     return sessions
 
 
+def _decimal_minutes(value: str) -> Fraction | None:
+    try:
+        number = Decimal(value)
+    except InvalidOperation:
+        return None
+    return Fraction(number) if number.is_finite() and number >= 0 else None
+
+
+def load_usage(text: str) -> list[dict[str, Any]]:
+    rows = list(csv.reader(io.StringIO(text)))
+    if not rows or rows[0] != USAGE_HEADER:
+        raise Refused("INPUT_SCHEMA", f"lane-usage table header == {','.join(USAGE_HEADER)}", "supply the lane-usage table")
+    usage, seen = [], set()
+    for number, row in enumerate(rows[1:], start=2):
+        if not row:
+            continue
+        if len(row) != len(USAGE_HEADER):
+            raise _invalid(f"lane-usage line {number} has {len(USAGE_HEADER)} fields", "correct the lane-usage table")
+        day, lane, unit_id, e_text, l_text, source = row
+        e, l_ = _decimal_minutes(e_text), _decimal_minutes(l_text)
+        if not DATE.match(day) or not lane or not unit_id or not source or e is None or l_ is None:
+            raise _invalid(f"lane-usage line {number} has a UTC date, lane, unit_id, e_minutes and l_minutes >= 0 "
+                           "and a source", "correct the lane-usage table", line=number)
+        if (lane, unit_id) in seen:
+            raise _invalid("each lane and unit_id appears once", "remove the duplicate unit", lane=lane, unit_id=unit_id)
+        seen.add((lane, unit_id))
+        usage.append({"date": day, "lane": lane, "unit_id": unit_id, "e": e, "l": l_})
+    return usage
+
+
 def _minutes(value: Fraction) -> str:
     return str((Decimal(value.numerator) / Decimal(value.denominator)).quantize(Decimal("0.01"), ROUND_HALF_EVEN))
 
 
-def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any) -> dict[str, Any]:
+def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str | None = None) -> dict[str, Any]:
     owner = load_lanes(lanes_doc)
     runs = load_runs(runs_doc)
     sessions = load_sessions(sessions_text)
+    usage = load_usage(usage_text) if usage_text is not None else []
     e_seconds: dict[tuple[str, str], int] = {}
     run_ids: dict[tuple[str, str], list[str]] = {}
     unattributed, incomplete = [], []
@@ -165,19 +202,37 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any) -> dict[str, Any]
     for session in sessions:
         key = (session["lane"], session["date"])
         l_minutes[key] = l_minutes.get(key, Fraction(0)) + session["llm_minutes"]
+    e_reported: dict[tuple[str, str], Fraction] = {}
+    l_reported: dict[tuple[str, str], Fraction] = {}
+    units: dict[tuple[str, str], list[str]] = {}
+    for unit in usage:
+        key = (unit["lane"], unit["date"])
+        e_reported[key] = e_reported.get(key, Fraction(0)) + unit["e"]
+        l_reported[key] = l_reported.get(key, Fraction(0)) + unit["l"]
+        units.setdefault(key, []).append(unit["unit_id"])
     rows = []
-    for lane, day in sorted(set(e_seconds) | set(l_minutes)):
-        e = Fraction(e_seconds.get((lane, day), 0), 60)
-        l_ = l_minutes.get((lane, day), Fraction(0))
+    for lane, day in sorted(set(e_seconds) | set(l_minutes) | set(e_reported)):
+        key = (lane, day)
+        e_ci = Fraction(e_seconds.get(key, 0), 60)
+        e = e_ci + e_reported.get(key, Fraction(0))
+        l_ = l_minutes.get(key, Fraction(0)) + l_reported.get(key, Fraction(0))
+        if key in e_reported:
+            measurement = "LANE_REPORTED"
+        elif key in l_minutes:
+            measurement = "E_AND_L_FROM_FILES"
+        else:
+            measurement = "L_NOT_SUPPLIED_FOR_LANE_DAY"
         total = e + l_
         eor = e / total if total else None
         rows.append({
             "lane": lane, "date": day,
-            "E_seconds": e_seconds.get((lane, day), 0), "E_minutes": _minutes(e), "L_minutes": _minutes(l_),
+            "E_seconds": e_seconds.get(key, 0), "E_ci_minutes": _minutes(e_ci),
+            "E_reported_minutes": _minutes(e_reported.get(key, Fraction(0))),
+            "E_minutes": _minutes(e), "L_minutes": _minutes(l_),
             "EOR": None if eor is None else f"{eor.numerator}/{eor.denominator}",
             "EOR_percent": None if eor is None else _minutes(eor * 100),
-            "runs": sorted(run_ids.get((lane, day), [])),
-            "measurement": "E_AND_L_FROM_FILES" if (lane, day) in l_minutes else "L_NOT_SUPPLIED_FOR_LANE_DAY",
+            "runs": sorted(run_ids.get(key, [])), "units": sorted(units.get(key, [])),
+            "measurement": measurement,
         })
     return {"schema": RESULT_SCHEMA, "disposition": "COMPUTED", "rows": rows,
             "unattributed_runs": sorted(unattributed), "incomplete_runs": sorted(incomplete),
@@ -189,16 +244,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--ci-runs", type=Path)
     parser.add_argument("--sessions", type=Path)
     parser.add_argument("--lanes", type=Path)
+    parser.add_argument("--lane-usage", type=Path)
     args = parser.parse_args(argv)
     try:
         for name in ("ci_runs", "sessions", "lanes"):
-            if getattr(args, name) is None:
+            if getattr(args, name) is None and not (name == "sessions" and args.lane_usage is not None):
                 flag = "--" + name.replace("_", "-")
                 raise Refused("INPUT_NOT_SUPPLIED", f"{flag} names a committed input file", f"supply {flag}", input=flag)
         try:
             result = compute(json.loads(args.ci_runs.read_text(encoding="utf-8")),
-                             args.sessions.read_text(encoding="utf-8"),
-                             json.loads(args.lanes.read_text(encoding="utf-8")))
+                             args.sessions.read_text(encoding="utf-8") if args.sessions else ",".join(SESSION_HEADER) + "\n",
+                             json.loads(args.lanes.read_text(encoding="utf-8")),
+                             args.lane_usage.read_text(encoding="utf-8") if args.lane_usage else None)
         except (OSError, ValueError) as exc:
             raise Refused("INPUT_UNREADABLE", "every input file is readable UTF-8 (JSON where declared)",
                           "supply readable files", detail=f"{type(exc).__name__}: {exc}") from None
