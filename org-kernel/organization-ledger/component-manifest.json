@@ -21,7 +21,7 @@
     "emit.py": "905daa0818aed5158f070f22bb13e128812253a5",
     "generate_ledger_contracts.py": "5f6f0f331039074fd80626182419cc780b4faa39",
     "ledger_common.py": "e1eed94145678543bf3e1ced34a053191749332a",
-    "ledger_store.py": "a1825c712d0b8a66d6ea0dc886ca3613e3015e66",
+    "ledger_store.py": "9c50cd200db1496c6820616262bbc1ae4b23879a",
     "organization_ledger_readback.py": "da7d4b2c9181c506e1bd5bf306987101609c990d",
     "propagate_after_append.py": "b4f55183ae2a2f1a45d7aa2c7ce001f49579211c",
     "propagate_repository_receipts.py": "c4500ea238a3fb1088993fc50e7ce7ed0776ad40",
