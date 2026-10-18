@@ -52,7 +52,6 @@
     "tests/test_neutral_reusable_task_scheduler.py::test_reusable_registry_resolves_scheduler_shard_once",
     "tests/test_packet_tunnel_reusable_component_reconciliation.py::test_host_activation_source_is_resolved_but_runtime_is_not_upgraded",
     "tests/test_packet_tunnel_reusable_component_reconciliation.py::test_profile_reuses_existing_owners_and_does_not_force_maximal_transport_chain",
-    "tests/test_portable_org_claim_allocator_iphone.py::test_bootstrap_deadlock_is_not_hidden",
     "tests/test_portable_resident_request_dispatch.py::test_refresh_then_dispatch_targets_only_org_claim_allocator",
     "tests/test_resident_rendezvous_native_integration.py::test_native_worker_service_receives_non_secret_rendezvous_config",
     "tests/test_resident_worker_presence_self_heal.py::ResidentWorkerPresenceSelfHealTests::test_subsignal_supervision_preserves_periodic_fallback_and_authority_boundary",
