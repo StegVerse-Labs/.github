@@ -1,0 +1,12 @@
+{
+  "schema": "stegverse.repository-ledger-genesis-readback-request/v1",
+  "component_id": "RTC-REPOSITORY-LEDGER-GENESIS-READBACK-013",
+  "request_id": "REPOSITORY-LEDGER-GENESIS-READBACK-STEGVERSE-ORG-STEGVERSE-SDK-001",
+  "organization": "StegVerse-org",
+  "repository": "StegVerse-SDK",
+  "expected_organization_ledger_head": "2acec0e1cfd158a6a3313ad422737caf41badda3",
+  "expected_organization_ledger_head_source": "StegVerse-org/StegVerse-SDK .stegverse/transition-ledger/initialization-manifest.v1.json at main c138cad4",
+  "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+  "authority_effect": "NONE_READBACK_ONLY",
+  "request_grants_authority": false
+}

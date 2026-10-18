@@ -159,6 +159,7 @@ CONSUMERS = (
     ("sdk_workspace_external_collab_client_secret_reseal", "control/resident-execution-request.d/consume-sdk-workspace-external-collab-client-secret-reseal.py"),
     ("sdk_workspace_external_collab_consent_listener", "control/resident-execution-request.d/consume-sdk-workspace-external-collab-consent-listener.py"),
     ("stegsocials_bounded_intr_admission", "scripts/consume_stegsocials_bounded_intr_admission_request.py"),
+    ("repository_ledger_genesis_readback", "scripts/consume_repository_ledger_genesis_readback_request.py"),
 )
 
 
