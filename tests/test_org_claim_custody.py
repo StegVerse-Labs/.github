@@ -213,7 +213,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(list(plain), ["selected", "queued", "blocked_missing_dependency_declaration", "state",
                                        "authority_effect"])
         self.assertEqual(plain["selected"], "TASK-2026-0007")
-        self.assertEqual(plain["queued"][-2:], ["TASK-2026-0013", "TASK-2026-0014"])
+        self.assertEqual(plain["queued"][-3:], ["TASK-2026-0013", "TASK-2026-0014", "TASK-2026-0016"])
         claims = json.loads((roots[0] / "control/claims-active.json").read_text(encoding="utf-8"))
         self.assertEqual(claims["generation"], 3)
         # Targeting the task the ranking picked writes byte-identical state.

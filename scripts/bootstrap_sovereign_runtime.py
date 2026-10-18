@@ -54,6 +54,7 @@ REQUIRED_SOURCE_FILES = (
     Path("control/resident-execution-request.d/org-claim-allocator-001.json"),
     Path("control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json"),
     Path("control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json"),
+    Path("control/resident-execution-request.d/org-claim-allocator-sdk-ecosystem-diagnostic-processor-001.json"),
     Path("scripts/consume_resident_execution_request.py"),
     Path("scripts/consume_g18_resident_execution_request.py"),
     Path("scripts/consume_hil_resident_execution_request.py"),
