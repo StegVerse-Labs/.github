@@ -4,7 +4,7 @@
   "authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse",
   "base": {
     "branch": "p1/sv-native-work-items",
-    "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0",
+    "commit": "f4080202d8fc3057516978f143cd23732681a9e0",
     "pr": "StegVerse-Labs/.github#3264"
   },
   "status": "MIGRATED_HISTORICAL fixtures only. Never admissible (ADMIT -> FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE); nothing is admitted, applied or ledger-receipted.",
@@ -13,61 +13,61 @@
       "path": "schemas/sv-issue.v1.schema.json",
       "git_blob": "62ee530793a2aab6c87542d82e525e90b46d31fb",
       "sha256": "sha256:ff2f4804cb1b603294f189e7a2351aee6f0a74957614be637bd0df2fe202946d",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "schemas/sv-change.v1.schema.json",
-      "git_blob": "fb94a2169ca5b6ea7210424e1f7b4ce68d57ddda",
-      "sha256": "sha256:df3a5fa5dbcf278fd7cd16f5d9d693f77ac5c57f81d801ead5e6822344fd5721",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "git_blob": "734968c00d112a97a58bcb647c7d33f76fae9d17",
+      "sha256": "sha256:7b3c3eea489758db318be952960175547ed4fd793a7b39bf5da32e67ad499046",
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "schemas/canonical-task-work-items.v1.schema.json",
       "git_blob": "92adebe15cbae5671b55bc30d89fc715fa288d51",
       "sha256": "sha256:439c6819c17c409149fb0cd65b89ebd131b394a24f38b4b6ceb247e79c04f69c",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "schemas/admission-corpus.v1.schema.json",
       "git_blob": "5aa5322c7c2b7cff5613996e5e5d33281ad3d53c",
       "sha256": "sha256:4777b54dfe591d9d8eff99d6f0b827aa9c62b6cd700cc12528e1c3b839537052",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "data/sv-work-items/surface-aliases.json",
       "git_blob": "debd7d7b0544b11bc1ac87d0b82bb21c22247c55",
       "sha256": "sha256:00387d39d713942365248d628c4f4fff2715041c6e6c28eb0669a44dbb4e65e1",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "schemas/sv-surface-aliases.v1.schema.json",
       "git_blob": "930261dfc23cb75607e3db55e6a1db3d3357647f",
       "sha256": "sha256:38b4d32032cb96566f890906d2baa396913ff45c95c7bc7ae5f3ec4a1e0a805a",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "data/sv-work-items/lifecycle-transitions.json",
       "git_blob": "c66de6e86c9ec7d167f0e5edf74e717af0688224",
       "sha256": "sha256:853c5545bf306eea48c66150ca42d323f130531519112d69e19c4f472556675f",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "data/sv-work-items/required-checks.json",
-      "git_blob": "acbe80611369681c2a3af9dd13edf10c5cc2dca2",
-      "sha256": "sha256:ecc59b94b6b360a7cacb669c0bd311a796b63e76836ee81dfe74fd3ee61727de",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "git_blob": "11f023411624ce5daf26fc342d4af9a39fd0614e",
+      "sha256": "sha256:42ca5394c4dc799a66cb2c88190786d416ef731b3896efb600c4b536981e415d",
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "resident-runtime/sv_work_items.py",
-      "git_blob": "b749e2255670c175e9b35b589039ce15370072d1",
-      "sha256": "sha256:b9f75169ca159f11ff414be21dc000fb626fa360f4946d1e59d99dac099aa9a4",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "git_blob": "bb2d02348dc41bbf3b1c13a763bcc018a896a1a3",
+      "sha256": "sha256:21dab6701a1ce9734fdb97f0af396366f0cd74f85c2b5e1e03c6ff255030b5b3",
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     },
     {
       "path": "resident-runtime/sv_migration.py",
-      "git_blob": "d98c40c0ba3d0de72fbbf4a96a8d2594d99ee904",
-      "sha256": "sha256:7fed03d5760bb30953bae62c0660b1812c5404fa2515c866ad350b645509a0d8",
-      "commit": "d2ba0957c203f5b67cdec77d7ed41d1daf52cbb0"
+      "git_blob": "508ebf15b6882efa5a5420849773151f241e8cfe",
+      "sha256": "sha256:b3c56d21180e9a1bd749f9165072a757d765773c4dad384687f5c23abe84292b",
+      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
     }
   ],
   "inputs": [
