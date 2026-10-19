@@ -256,30 +256,22 @@ class GovernanceCarrierEpochTests(unittest.TestCase):
                         if r.get("repo_receipt_sha256") == decision["receipt_sha256"]]
         self.assertEqual(organization[0]["hb_reference"]["epoch"], 1000)
 
-    def test_a_clock_derived_frame_is_refused_and_stored_as_returned(self):
+    def test_a_clock_derived_frame_stays_pending_with_nothing_written(self):
+        """NARROW (08:10Z): a CLOCK frame lends no epoch. With no cycle epoch it is
+        refused HB_EPOCH_NOT_SUPPLIED, non-terminal: no receipt, no answer, no marker."""
         self.with_stegcore()
-        refused, = self.consume(now_ns=K.HB_ANCHOR_UNIX_NS + 7 * K.HB_PERIOD_NS)
-        result = refused["result"]
-        self.assertEqual(result["status"], "REFUSED")
-        self.assertEqual(result["disposition"], "FAIL_CLOSED")
-        self.assertEqual(result["failure_code"], "HB_EPOCH_INVALID")
+        pending, = self.consume(now_ns=K.HB_ANCHOR_UNIX_NS + 7 * K.HB_PERIOD_NS)
+        result = pending["result"]
+        self.assertEqual(result["status"], "PENDING")
+        self.assertEqual(result["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
+        self.assertIs(result["terminal"], False)
         self.assertEqual(result["owning_existing_goal"], GOAL)
         for key in SIX:
             self.assertTrue(str(result.get(key) or "").strip(), key)
-        # FAIL_CLOSED: recorded, not answered, not marked seen.
-        self.assertIsNone(refused["response_publication"])
-        self.assertIsNone(refused["seen_marker"])
-        repository = self.receipts("STEGVERSE_REPO_LEDGER_ROOT")
-        self.assertEqual([r["transition_class"] for r in repository], ["ORGANIZATION_FEDERATION_CROSSING_REFUSED"])
-        stored = repository[0]["evidence"]
-        self.assertEqual(stored["disposition"], result["disposition"])
-        organization, = self.receipts("STEGVERSE_ORG_LEDGER_ROOT")
-        carried = organization["boundary_evidence"]
-        self.assertEqual(carried["disposition"], result["disposition"])
-        for key in SIX:
-            self.assertEqual(stored[key], result[key], key)
-            self.assertEqual(carried[key], result[key], key)
-
+        self.assertIsNone(pending["response_publication"])
+        self.assertIsNone(pending["seen_marker"])
+        self.assertEqual(self.receipts("STEGVERSE_REPO_LEDGER_ROOT"), [])
+        self.assertEqual(self.receipts("STEGVERSE_ORG_LEDGER_ROOT"), [])
 
 if __name__ == "__main__":
     unittest.main()

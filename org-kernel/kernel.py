@@ -480,7 +480,7 @@ def persist_outbox(root:Path, frame:dict[str,Any], *, store:Any|None=None)->Path
     return Path(target.locator(key))
 
 def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None,
-                 carried_head_verified:bool=False)->dict[str,Any]:
+                 carried_head_verified:bool=False, crossing_reference:dict[str,Any]|None=None)->dict[str,Any]:
     # The shared epoch rule first: an absent or invalid carrier epoch is the
     # six-field CarrierEpochRefusal, not a bare heartbeat_* error from recovery.
     failure=_frame_epoch_failure(frame)
@@ -503,8 +503,10 @@ def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, no
     registry=load_registry(root)
     if frame["destination_org"]!=registry["organization"]:
         return {"status":"IGNORED_NOT_ADDRESSED","packet_id":frame["packet_id"]}
+    # A cycle at a supplied epoch hands the crossing that epoch's reference; the
+    # frame's own reference is then provenance only.
     result=dispatch(root,packet,mesh_root=mesh_root,node_state=node_state,
-                    heartbeat_reference=frame.get("heartbeat_reference"))
+                    heartbeat_reference=crossing_reference or frame.get("heartbeat_reference"))
     return {"status":"CONSUMED","packet":packet,"execution_result":result}
 
 __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame","recover_packet","dispatch",
@@ -1084,13 +1086,41 @@ def _ingest_failure_quarantine(frame:dict[str,Any], exc:Exception)->dict[str,Any
                                                                               HB_REFERENCE_INVALID)
                                                 else "FRAME_IS_INGESTED_AS_PUBLISHED:"+type(exc).__name__))
 
+CYCLE_EPOCH_RETRY_ENTRYPOINT="org-kernel/kernel.py::consume_and_respond (hb_epoch=, or federation_cycle --hb-epoch)"
+HB_EPOCH_CONFLICT="HB_EPOCH_CONFLICT"
+
+def _pending_epoch(frame:Any, code:str, detail:str)->dict[str,Any]:
+    """A non-terminal six-field refusal: nothing written, no marker, offered again next cycle."""
+    return {"status":"PENDING","disposition":"FAIL_CLOSED","failure_code":code,"terminal":False,
+            "failed_predicate":HB_EPOCH_PREDICATE,"detail":detail,
+            "required_evidence_or_repair":"a consume cycle that supplies hb_epoch (federation_cycle --hb-epoch)",
+            "retry_entrypoint":CYCLE_EPOCH_RETRY_ENTRYPOINT,"owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"the next cycle that carries a supplied epoch consumes the frame; nothing was written",
+            "packet_id":frame.get("packet_id") if isinstance(frame,dict) else None,
+            "derived_from_clock":False,"consequence_committed":False}
+
+def _answered(organization:str, request_packet_id:str, mesh_root:Path|None)->dict[str,Any]|None:
+    """The answer this organization already published to `request_packet_id`, if any."""
+    target=mesh_store(mesh_root)
+    for key in target.list_prefix(node_store_module.MESH_FRAME_PREFIX):
+        try:
+            frame=_read_frame(target,key)
+            if not frame or frame.get("origin_org")!=organization:
+                continue
+            body=(recover_packet(frame).get("payload") or {}).get("body") or {}
+        except Exception:  # noqa: BLE001 -- an unreadable frame answers nothing
+            continue
+        if body.get("request_packet_id")==request_packet_id:
+            return {"frame":frame,"path":str(target.locator(key)),"already_published":True}
+    return None
+
 FRAME_DISPATCH_IO_FAILED="FRAME_DISPATCH_IO_FAILED"
 FRAME_DISPATCH_FAILED="FRAME_DISPATCH_FAILED"
 
 def _dispatch_failure(frame:Any, exc:Exception)->dict[str,Any]:
     """A non-terminal six-field record of this node's own failure on a frame; it stays pending."""
     code=FRAME_DISPATCH_IO_FAILED if isinstance(exc,OSError) else FRAME_DISPATCH_FAILED
-    return {"status":"PENDING","disposition":"FAIL_CLOSED","failure_code":code,
+    return {"status":"PENDING","disposition":"FAIL_CLOSED","failure_code":code,"terminal":False,
             "failed_predicate":"FRAME_IS_RECORDED_AND_ANSWERED:"+type(exc).__name__,
             "detail":str(exc) or type(exc).__name__,
             "required_evidence_or_repair":"this node's own state or ledger write completes",
@@ -1102,7 +1132,7 @@ def _dispatch_failure(frame:Any, exc:Exception)->dict[str,Any]:
 
 def _quarantine_record(frame:Any, code:str, detail:str, *, failed_predicate:str=HB_EPOCH_PREDICATE)->dict[str,Any]:
     return {"status":"REFUSED","disposition":"FAIL_CLOSED","failure_code":FRAME_REFUSED_QUARANTINED,
-            "frame_failure_code":code,"failed_predicate":failed_predicate,"detail":detail,
+            "terminal":True,"frame_failure_code":code,"failed_predicate":failed_predicate,"detail":detail,
             "required_evidence_or_repair":("the sender re-publishes the packet in a frame whose heartbeat_reference "
                                            "is SUPPLIED (digits >= 32, derived_from_clock false) or a verified CARRIED"),
             "retry_entrypoint":HB_EPOCH_RETRY_ENTRYPOINT,"owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
@@ -1132,7 +1162,8 @@ def _frame_epoch(frame:Any)->int|None:
     return int(str(ref["epoch"]))
 
 def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], registry:dict[str,Any], *,
-                    mesh_root:Path|None=None, node_state:Any|None, epoch:int|None)->tuple[dict[str,Any],dict[str,Any]|None]:
+                    mesh_root:Path|None=None, node_state:Any|None, epoch:int|None,
+                    crossing_reference:dict[str,Any]|None=None)->tuple[dict[str,Any],dict[str,Any]|None]:
     """Ingest one frame and record its disposition, admitted or refused.
 
     A refusal used to leave the consuming pass by exception, recorded nowhere
@@ -1148,7 +1179,8 @@ def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], r
     try:
         result=ingest_frame(repo_root,item["frame"],mesh_root=mesh_root,node_state=node_state,
                             carried_head_verified=_claims_carried(item["frame"])
-                                                  and _carried_head_verified(item["frame"],custody))
+                                                  and _carried_head_verified(item["frame"],custody),
+                            crossing_reference=crossing_reference)
     except ValueError as exc:
         reason=str(exc)
         if (any(marker in reason for marker in CUSTODY_REFUSALS)
@@ -1167,8 +1199,18 @@ def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], r
 
 def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_root:Path|None=None,
                         repo_ledger_root:Path|None=None, org_ledger_root:Path|None=None,
-                        seen:set[str]|None=None, now_ns:int|None=None)->list[dict[str,Any]]:
+                        seen:set[str]|None=None, now_ns:int|None=None,
+                        hb_epoch:Any=None)->list[dict[str,Any]]:
     """Consume frames addressed to this organization, answer them, and mark them seen.
+
+    `hb_epoch` is the cycle's own supplied epoch. Invalid, nothing is consumed
+    (SuppliedEpochRefused, whatever the frames). Supplied, every receipt and
+    answer of the cycle is stamped with it and a frame's SUPPLIED epoch is
+    provenance only; a frame whose SUPPLIED epoch differs is HB_EPOCH_CONFLICT
+    and stays pending. Without it a frame's SUPPLIED epoch is used, and a frame
+    that lends none (CLOCK) is refused HB_EPOCH_NOT_SUPPLIED and stays pending,
+    with nothing written, for the next cycle that carries an epoch. `now_ns`
+    no longer stamps anything.
 
     Consumption markers and work intake are this node's own state, written to
     the `node_state_root` its materializer supplied -- never into `repo_root`,
@@ -1184,6 +1226,8 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
     is consumed. A refused crossing is recorded too: DENY is marked, while
     FAIL_CLOSED is left unmarked and offered again on the next pass.
     """
+    cycle_epoch=(None if hb_epoch is None else
+                 int(supplied_hb_reference(hb_epoch,retry_entrypoint=CYCLE_EPOCH_RETRY_ENTRYPOINT)["epoch"]))
     node_state=addressed_node_state_store(node_state_root)
     custody=crossing_custody(repo_root,repo_ledger_root=repo_ledger_root,org_ledger_root=org_ledger_root)
     registry=load_registry(repo_root)
@@ -1208,10 +1252,23 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
         # The guard is total: whatever this one frame raises, it is quarantined
         # and the loop continues (B-P36o, F-TYPE).
         try:
-            epoch=None if now_ns is not None else _frame_epoch(item["frame"])
+            frame_epoch=_frame_epoch(item["frame"])
             quarantined=_frame_quarantine(item["frame"],custody)
         except Exception as exc:  # noqa: BLE001 -- a frame defect is that frame's quarantine
-            epoch,quarantined=None,_ingest_failure_quarantine(item["frame"],exc)
+            frame_epoch,quarantined=None,_ingest_failure_quarantine(item["frame"],exc)
+        epoch=cycle_epoch if cycle_epoch is not None else frame_epoch
+        if quarantined is None and (cycle_epoch is not None and frame_epoch is not None
+                                    and frame_epoch!=cycle_epoch):
+            out.append({"path":item["path"],"result":_pending_epoch(item["frame"],HB_EPOCH_CONFLICT,
+                        "the cycle's supplied epoch "+str(cycle_epoch)+" differs from the frame's "+str(frame_epoch)),
+                        "response_publication":None,"organization_record":None,"seen_marker":None})
+            continue
+        if quarantined is None and epoch is None:
+            out.append({"path":item["path"],"result":_pending_epoch(item["frame"],HB_EPOCH_NOT_SUPPLIED,
+                        "the frame lends no epoch (CLOCK) and the cycle supplies none; nothing is stamped"),
+                        "response_publication":None,"organization_record":None,"seen_marker":None})
+            continue
+        crossing_reference=hb_reference(epoch=epoch) if cycle_epoch is not None else None
         if quarantined is None:
             # Any error the frame itself causes -- recovery, integrity, its
             # heartbeat reference, a six-field carrier refusal -- quarantines it
@@ -1229,7 +1286,8 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
             # next pass offers it again and the idempotent append completes it.
             try:
                 result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
-                                                node_state=node_state,epoch=epoch)
+                                                node_state=node_state,epoch=epoch,
+                                                crossing_reference=crossing_reference)
             except CarrierEpochRefusal as exc:
                 quarantined=_ingest_failure_quarantine(item["frame"],exc)
             except Exception as exc:  # noqa: BLE001 -- this node's own failure: the frame stays pending
@@ -1256,10 +1314,20 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
         payload=packet.get("payload") or {}
         message_class=payload.get("message_class")
         response_publication=None
-        if result.get("status")=="CONSUMED" and message_class in RESPONDED_REQUEST_CLASSES:
-            response=build_control_response(packet,result["execution_result"])
-            response_publication=publish_packet(response,root=mesh_root,now_ns=now_ns,epoch=epoch)
-        marker=mark_federation_frame_seen(repo_root,item["path"],item["frame"],result,store=node_state)
+        try:
+            if result.get("status")=="CONSUMED" and message_class in RESPONDED_REQUEST_CLASSES:
+                # One answer per request: a pass that published and then failed to
+                # mark the frame does not publish a second one (F-REPUB).
+                response_publication=_answered(organization,packet["packet_id"],mesh_root)
+                if response_publication is None:
+                    response=build_control_response(packet,result["execution_result"])
+                    response_publication=publish_packet(response,root=mesh_root,epoch=epoch)
+            marker=mark_federation_frame_seen(repo_root,item["path"],item["frame"],result,store=node_state)
+        except Exception as exc:  # noqa: BLE001 -- this node's own write failed: the frame stays pending
+            out.append({"path":item["path"],"result":_dispatch_failure(item["frame"],exc),
+                        "response_publication":response_publication,"organization_record":recorded,
+                        "seen_marker":None})
+            continue
         out.append({"path":item["path"],"result":result,"response_publication":response_publication,
                     "organization_record":recorded,"seen_marker":str(marker)})
     return out

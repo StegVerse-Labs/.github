@@ -215,6 +215,51 @@ class FrameQuarantineTests(unittest.TestCase):
         self.assertEqual(self.receipts("STEGVERSE_REPO_LEDGER_ROOT"), [])
 
 
+class CycleEpochTests(FrameQuarantineTests):
+    """B-P36l and NARROW: a cycle's own supplied epoch against a frame's."""
+
+    def cycle(self, **options):
+        return K.consume_and_respond(base.ROOT, mesh_root=self.work / "mesh",
+                                     node_state_root=self.work / "node-state", seen=set(),
+                                     repo_ledger_root=self.work / "repo-ledger",
+                                     org_ledger_root=self.work / "org-ledger", **options)
+
+    def test_an_explicit_epoch_that_differs_from_the_frame_is_a_conflict_and_writes_nothing(self):
+        self.publish("conflict", epoch=77)
+        pending, = self.cycle(hb_epoch=4096)
+        self.assertEqual(pending["result"]["failure_code"], "HB_EPOCH_CONFLICT")
+        self.assertIs(pending["result"]["terminal"], False)
+        for field in SIX:
+            self.assertTrue(str(pending["result"].get(field) or "").strip(), field)
+        self.assertIsNone(pending["seen_marker"])
+        self.assertEqual(self.receipts("STEGVERSE_REPO_LEDGER_ROOT"), [])
+        self.assertEqual(len(self.cycle(hb_epoch=4096)), 1)
+
+    def test_an_invalid_explicit_epoch_is_refused_whatever_the_frame(self):
+        self.publish("explicit-invalid", epoch=4096)
+        for epoch in ("+4096", " 4096", "4096.0", True, 31, "abc"):
+            with self.subTest(epoch=epoch):
+                with self.assertRaises(K.SuppliedEpochRefused) as raised:
+                    self.cycle(hb_epoch=epoch)
+                self.assertEqual(raised.exception.refusal["failure_code"], "HB_EPOCH_INVALID")
+        self.assertEqual(self.receipts("STEGVERSE_REPO_LEDGER_ROOT"), [])
+
+    def test_a_clock_frame_is_consumed_at_the_cycle_epoch_with_no_clock_read(self):
+        self.with_stegcore()
+        packet = {**base.packet(base.work_request({"signal": {}})), "packet_id": "clock-frame"}
+        K.publish_frame(K.carrier_frame(packet, now_ns=K.HB_ANCHOR_UNIX_NS + 3 * K.HB_PERIOD_NS),
+                        root=self.work / "mesh")
+        self.assertEqual(self.cycle()[0]["result"]["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
+        with mock.patch.object(K, "datetime", _ClockRead):
+            consumed, = self.cycle(hb_epoch=4096)
+        self.assertEqual(consumed["result"]["status"], "CONSUMED")
+        receipts = self.receipts("STEGVERSE_REPO_LEDGER_ROOT") + self.receipts("STEGVERSE_ORG_LEDGER_ROOT")
+        self.assertTrue(receipts)
+        for receipt in receipts:
+            self.assertEqual(receipt["hb_reference"]["epoch"], 4096)
+            self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
+
+
 class MonitorAnswerEpochTests(unittest.TestCase):
     def test_a_monitor_answer_takes_the_frame_epoch_with_no_clock_read(self):
         packet = {"packet_id": "monitor-4096", "transition": {"authority_effect": "NONE"},

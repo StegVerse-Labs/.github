@@ -215,7 +215,8 @@ class FederationCycleCustodyTests(unittest.TestCase):
             standing=GENESIS)
         kernel.publish_packet(packet, root=mesh, epoch=kernel.HB_ANCHOR_EPOCH + 10)
         report = self.cycle.cycle(mesh_root=mesh, node_state_root=node,
-                                  repo_ledger_root=ledgers / "repo", org_ledger_root=ledgers / "org")
+                                  repo_ledger_root=ledgers / "repo", org_ledger_root=ledgers / "org",
+                                  hb_epoch=kernel.HB_ANCHOR_EPOCH + 10)
         self.assertEqual(report["frames_consumed"], 1)
         self.assertEqual(report["frames_refused"], 0)
         self.assertEqual(report["organization_receipts_recorded"], 1)
