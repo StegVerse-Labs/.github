@@ -6,7 +6,6 @@
   "parent_task_id": null,
   "goal": "Implement StegApp non-authorizing ephemeral composition: permitted SV-LLM Sandbox StegBrowser tool observations for governed Ecosystem Chat, and independent fictional LDC continuity; repair existing StegApp PR #1 without new runtime or authority.",
   "coordination_state": "PROPOSED",
-  "checkout_state": "UNCLAIMED",
   "source_refs": [
     "https://github.com/StegVerse-Labs/.github/issues/3291",
     "https://github.com/StegVerse-Labs/StegApp/pull/1"
@@ -59,6 +58,5 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true
-  },
-  "cosv_task_vector": "10300000011000"
+  }
 }
