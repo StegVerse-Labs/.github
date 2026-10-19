@@ -111,7 +111,8 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaisesRegex(mod.DiagnosticAdmissionError,
                                         "AUTHENTIC_EVENT_EPHEMERAL_BINDING_LOCATOR_REQUIRED"):
-                mod.consume(Path(td), Path(td), request(), hb_epoch=4096)
+                # No epoch: the admission refusal, which writes nothing, still comes first.
+                mod.consume(Path(td), Path(td), request())
             self.assertFalse((Path(td) / "receipts/sdk-manifest-state-transition").exists())
 
     def test_reconstructed_wrong_runtime_class_rejected_before_processor(self):

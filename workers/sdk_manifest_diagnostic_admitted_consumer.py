@@ -586,7 +586,7 @@ def consume(
 
     Injected callbacks in unit tests are SOURCE TEST DOUBLES, never runtime proof.
     Production read_source/submit use the existing Organization ledger, and
-    record with the supplied `hb_epoch`; without one the production path is
+    record with the supplied `hb_epoch`; without one an admitted request is
     refused NO_EPOCH_CALLER_FAILS_CLOSED before anything runs or is written.
     """
     from workers.canonical_state_transition_custody import (
@@ -594,11 +594,6 @@ def consume(
         submit_state_receipt, sha256_uri,
     )
     source_test_doubles = any(x is not None for x in (read_source, runner, submit))
-    if submit is None and hb_epoch is None:
-        from workers.canonical_state_transition_custody import no_epoch_caller_boundary
-        refusal = no_epoch_caller_boundary("workers/sdk_manifest_diagnostic_admitted_consumer.py::consume")
-        raise DiagnosticExecutionFailClosed(refusal["failure_code"],
-                                            refusal={k: v for k, v in refusal.items() if k != "state"})
     submit = submit or submit_state_receipt
     runner = runner or subprocess.run
     require(request.get("processing_capability") == "ecosystem_diagnostic"
@@ -666,6 +661,14 @@ def consume(
     if not source_test_doubles:
         _verify_current_native_lease(control_root, ephemeral_root, binding, ingress_digest=ingress_digest)
         _require_current_organization_lease_status(control_root, binding_digest, binding)
+    # Admitted, but nothing can be recorded without a supplied epoch: refused
+    # here, before anything is written, run or read from a clock (WU-B13 slice g).
+    # The admission refusals above write nothing and still take precedence.
+    if submit is None and hb_epoch is None:
+        from workers.canonical_state_transition_custody import no_epoch_caller_boundary
+        refusal = no_epoch_caller_boundary("workers/sdk_manifest_diagnostic_admitted_consumer.py::consume")
+        raise DiagnosticExecutionFailClosed(refusal["failure_code"],
+                                            refusal={k: v for k, v in refusal.items() if k != "state"})
     # Fixed installed processor only: never load a callable or command from a
     # manifest payload, review document, untrusted binding or provider response.
     sdk_root = _installed_sdk_root(control_root)
