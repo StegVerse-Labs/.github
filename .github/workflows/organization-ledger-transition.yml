@@ -13,17 +13,10 @@ name: Organization Ledger Transition
 #
 # The federation directory is not an input. Governance and remediation routes
 # are not selected here.
+# Writer only (workflow_dispatch). The pull_request checks of this writer run in
+# .github/workflows/organization-ledger-transition-validation.yml, so a pull request
+# never shows this dispatch-only job as skipped and no PR run holds contents: write.
 on:
-  pull_request:
-    paths:
-      - '.github/workflows/organization-ledger-transition.yml'
-      - '.stegverse/transition-ledger/contract.json'
-      - '.stegverse/transition-ledger/emit.py'
-      - 'resident-runtime/intr_destination_ingress.py'
-      - 'resident-runtime/ledger_store.py'
-      - 'resident-runtime/organization_ledger_readback.py'
-      - 'tests/test_intr_destination_capability.py'
-      - 'tests/test_organization_ledger_transition_writer.py'
   workflow_dispatch:
     inputs:
       communication_id:
@@ -52,33 +45,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout organization boundary
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Validate the writer and the self-closure against temporary ledgers
-        run: |
-          python -m py_compile \
-            resident-runtime/organization_ledger_readback.py \
-            resident-runtime/intr_destination_ingress.py \
-            resident-runtime/ledger_store.py \
-            .stegverse/transition-ledger/emit.py
-          python -m pip install pytest
-          python -m pytest -q --tb=short \
-            tests/test_organization_ledger_transition_writer.py \
-            tests/test_intr_destination_capability.py
-
   transition:
-    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
