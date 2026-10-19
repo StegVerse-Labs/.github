@@ -1,7 +1,8 @@
 """RT-INVARIANT-EVALUATION-001 spec guard: the B-P6 probe set as data.
 
-Each tests/fixtures/invariant_evaluation_probes/P<NN>.json holds one probe of
-the B-P6 cross-check: the question, the source bytes (a Labs data/ file named
+Each tests/fixtures/invariant_evaluation_probes/P<NN>.json holds one probe:
+P01-P15 are the B-P6 cross-check, P16-P21 the B-P14 refusal citations. A probe
+holds the question (JSON, or raw bytes for a question that does not parse), the source bytes (a Labs data/ file named
 by path, or synthetic bytes held in the fixture) and the expected answer
 fields. Every expected field cites the spec line it derives from as
 RT-INVARIANT-EVALUATION-001.json:<line> plus a quote that must appear on that
@@ -31,7 +32,9 @@ SPEC_NAME = "RT-INVARIANT-EVALUATION-001.json"
 SPEC_LINES = (ROOT / "source-bundles" / "reusable-task-registry.d" / SPEC_NAME).read_text(encoding="utf-8").splitlines()
 EVALUATOR = ROOT / "scripts" / "invariant_evaluation.py"
 PROBE_SCHEMA = "stegverse.invariant-evaluation-probe/v1"
-EXPECTED_PROBES = set(range(1, 16))
+B_P6_PROBES = set(range(1, 16))
+B_P14_PROBES = set(range(16, 22))
+EXPECTED_PROBES = B_P6_PROBES | B_P14_PROBES
 SPEC_REF = re.compile(re.escape(SPEC_NAME) + r":(\d+)")
 PLACEHOLDER = re.compile(r"^\$\{(ref|ref_full|sha256|sha256_full):([a-z0-9_]+)\}$")
 EXPECT_KEYS = {"disposition", "failure_code", "citations", "six_fields", "queue",
@@ -52,6 +55,8 @@ def source_bytes(spec: dict) -> tuple[bytes, bytes]:
         full = (ROOT / path).read_bytes()
     elif "json" in recipe:
         full = json.dumps(recipe["json"], indent=2).encode("utf-8")
+    elif "hex" in recipe:
+        full = bytes.fromhex(recipe["hex"])
     elif "text" in recipe:
         full = recipe["text"].encode("utf-8")
     else:
@@ -94,17 +99,21 @@ class ProbeRunner:
         if want.get("question"):
             return f"question@{question_sha256}:question:{want['line']}"
         spec = self.probe["sources"][want["source"]]
-        text = self.bytes[want["source"]][0].decode("utf-8")
         if "line" in want:
-            line = want["line"]
-        elif want.get("line_at_end"):
+            return f"{spec['repo']}@{spec['rev']}:{spec['path']}:{want['line']}"
+        text = self.bytes[want["source"]][0].decode("utf-8")
+        if want.get("line_at_end"):
             line = text.count("\n") + 1
         else:
             line = next(n for n, row in enumerate(text.splitlines(), 1) if want["line_of"] in row)
         return f"{spec['repo']}@{spec['rev']}:{spec['path']}:{line}"
 
     def run(self, index: int, run: dict) -> tuple[dict, bytes]:
-        question = json.dumps(self.fill(run["question"]["json"]), indent=2).encode("utf-8")
+        recipe = run["question"]
+        if "json" in recipe:
+            question = json.dumps(self.fill(recipe["json"]), indent=2).encode("utf-8")
+        else:
+            question = source_bytes({"bytes": recipe})[0]
         qfile = self.workdir / f"question-{index}.json"
         qfile.write_bytes(question)
         args = [sys.executable, "-I", str(EVALUATOR), "--question", str(qfile), "--relay-queue-dir", str(self.queue)]
@@ -128,7 +137,7 @@ class ProbeRunner:
 class SpecGuardFixtures(unittest.TestCase):
     """The fixtures themselves: complete, data only, each expectation spec-cited."""
 
-    def test_fifteen_probes_one_per_b_p6_row(self):
+    def test_one_probe_per_b_p6_row_and_b_p14_refusal(self):
         probes = load_probes()
         self.assertEqual({p["probe"] for p in probes}, EXPECTED_PROBES)
         self.assertEqual(len(probes), len(EXPECTED_PROBES))
@@ -136,7 +145,13 @@ class SpecGuardFixtures(unittest.TestCase):
             self.assertEqual(probe["schema"], PROBE_SCHEMA)
             self.assertEqual(probe["reusable_task_id"], "RT-INVARIANT-EVALUATION-001")
             self.assertEqual(probe["authority_effect"], "NONE_TEST_FIXTURE")
-            self.assertEqual(probe["derived_from"]["b_p6_row"], probe["probe"])
+            if probe["probe"] in B_P6_PROBES:
+                self.assertEqual(probe["derived_from"]["b_p6_row"], probe["probe"])
+            else:
+                self.assertIn("b_p14_refusal", probe["derived_from"])
+                # Every B-P14 run pins the refusal's exact citations.
+                for run in probe["runs"]:
+                    self.assertIn("citations", run["expect"])
 
     def test_every_expectation_cites_a_spec_line_that_carries_its_quote(self):
         for probe in load_probes():

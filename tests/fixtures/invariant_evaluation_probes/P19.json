@@ -1,0 +1,154 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 19,
+  "title": "a source the question cites but the caller does not supply is cited at that ref's line 1",
+  "derived_from": {
+    "b_p14_refusal": "SOURCE_NOT_SUPPLIED",
+    "b_p10_record": "https://github.com/StegVerse-Labs/.github/issues/3204#issuecomment-6257030360"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "canon": {
+      "repo": "StegVerse-Labs/.github",
+      "rev": "main",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "labs_file": "data/task-registry-global-invariants.json"
+      }
+    },
+    "subject": {
+      "repo": "StegVerse-Labs/.github",
+      "rev": "main",
+      "path": "data/canonical-task-records/SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005.json",
+      "bytes": {
+        "labs_file": "data/canonical-task-records/SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005.json"
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-019",
+          "invariants_source": "${ref:canon}",
+          "subject": "${ref:subject}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "SOURCE_NOT_SUPPLIED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:23",
+          "spec_quote": "each ref is matched to exactly one supplied source",
+          "spec_gap": "the spec does not name this failure_code; the value is the one the Labs evaluator emits at fac10f5 and is pinned so a change is visible"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "subject",
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "Every answer cites repo@rev:path:line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        },
+        "owning_existing_goal": {
+          "value": "RT-INVARIANT-EVALUATION-PROBE-019",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:39",
+          "spec_quote": "the answer's owning_existing_goal comes from the question"
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-019",
+          "invariants_source": "${ref:canon}",
+          "subject": "${ref:subject}"
+        }
+      },
+      "supply": [
+        {
+          "source": "subject"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "SOURCE_NOT_SUPPLIED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:23",
+          "spec_quote": "each ref is matched to exactly one supplied source",
+          "spec_gap": "the spec does not name this failure_code; the value is the one the Labs evaluator emits at fac10f5 and is pinned so a change is visible"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon",
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "Every answer cites repo@rev:path:line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        },
+        "owning_existing_goal": {
+          "value": "RT-INVARIANT-EVALUATION-PROBE-019",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:39",
+          "spec_quote": "the answer's owning_existing_goal comes from the question"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 20,
+  "title": "a pointer token that isdigit() but int() rejects (superscript two) into a list cites the question root line",
+  "derived_from": {
+    "b_p14_refusal": "INPUT_VALUE_REJECTED (question)",
+    "b_p10_record": "https://github.com/StegVerse-Labs/.github/issues/3204#issuecomment-6257030360"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "canon": {
+      "repo": "StegVerse-Labs/.github",
+      "rev": "main",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "labs_file": "data/task-registry-global-invariants.json"
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "text": "\n\n{\"schema\": \"stegverse.invariant-pointer-assertion/v1\", \"question_id\": \"Q-PROBE\", \"invariant_pointer\": \"/prohibitions/\\u00b2\", \"asserted_value\": true}\n"
+      },
+      "supply": [
+        {
+          "source": "canon"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "INPUT_VALUE_REJECTED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:32",
+          "spec_quote": "RFC 6901 JSON pointer into every supplied source",
+          "spec_gap": "the spec does not name this failure_code; the value is the one the Labs evaluator emits at fac10f5 and is pinned so a change is visible"
+        },
+        "citations": {
+          "value": [
+            {
+              "question": true,
+              "line": 3
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "Every answer cites repo@rev:path:line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        },
+        "owning_existing_goal": {
+          "value": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:39",
+          "spec_quote": "Refusals before the question is well-formed"
+        }
+      }
+    }
+  ]
+}

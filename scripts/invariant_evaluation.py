@@ -243,13 +243,15 @@ def parse_json(data: bytes, label: str, limit: int, cite_prefix: str | None = No
     if not isinstance(data, (bytes, bytearray)):
         raise Refusal("INPUT_BYTES_REQUIRED", f"{label} supplied as bytes",
                       "supply the exact bytes, not a decoded or parsed value")
+    # Refused before any line is read, so the refusal cites line 1.
+    refs = [f"{cite_prefix}:1"] if cite_prefix else []
     if len(data) > limit:
         raise Refusal("INPUT_SIZE_EXCEEDED", f"{label} bytes<={limit}",
-                      "supply a smaller input or split the question")
+                      "supply a smaller input or split the question", refs)
     try:
         text = bytes(data).decode("utf-8")
     except UnicodeDecodeError:
-        raise Refusal("INPUT_NOT_UTF8", f"{label} is UTF-8", "supply UTF-8 JSON bytes") from None
+        raise Refusal("INPUT_NOT_UTF8", f"{label} is UTF-8", "supply UTF-8 JSON bytes", refs) from None
     parser = _Parser(text, label, cite_prefix)
     return parser.parse(), parser.lines
 
@@ -298,9 +300,12 @@ def _source_ref(question: Mapping[str, Any], key: str) -> dict[str, str]:
     return out
 
 
-def parse_question(question_bytes: bytes, question_sha256: str | None = None) -> dict[str, Any]:
+def parse_question(question_bytes: bytes, question_sha256: str | None = None,
+                   context: dict[str, str] | None = None) -> dict[str, Any]:
     prefix = f"question@{question_sha256}:question" if question_sha256 else None
     question, lines = parse_json(question_bytes, "question", MAX_QUESTION_BYTES, prefix)
+    if prefix and context is not None:
+        context["question_root"] = f"{prefix}:{lines.get('', 1)}"
     try:
         return _check_question(question)
     except Refusal as refusal:
@@ -480,11 +485,13 @@ def _undecidable(answer: dict[str, Any], question: Mapping[str, Any], bindings: 
     return answer
 
 
-def _bindings(sources: Any) -> list[dict[str, str]]:
+def _bindings(sources: Any, question_root: str | None = None) -> list[dict[str, str]]:
     if not isinstance(sources, (list, tuple)):
         raise Refusal("SOURCES_LIST_REQUIRED", "sources is a list", "supply the sources as a list")
     if not sources:
-        raise Refusal("SOURCES_REQUIRED", "at least one source supplied", "supply the invariant source bytes")
+        # No source to cite: the refusal cites the question root line.
+        raise Refusal("SOURCES_REQUIRED", "at least one source supplied", "supply the invariant source bytes",
+                      [question_root] if question_root else [])
     if len(sources) > MAX_SOURCES:
         raise Refusal("INPUT_SIZE_EXCEEDED", f"sources<={MAX_SOURCES}", "supply fewer sources")
     bindings = [source_binding(source, n) for n, source in enumerate(sources)]
@@ -556,7 +563,8 @@ def _load_ref(question: Mapping[str, Any], role: str, sources: Sequence[Any], bi
                               [cite(binding, 1)])
             return _Doc(sources[position], binding, position)
     raise Refusal("SOURCE_NOT_SUPPLIED", f"question.{role} {ref['repository']}@{ref['revision']}:{ref['path']} is supplied",
-                  f"supply the bytes question.{role} cites")
+                  f"supply the bytes question.{role} cites",
+                  [f"{ref['repository']}@{ref['revision']}:{ref['path']}:1"])
 
 
 def _evaluate_question(question: dict[str, Any], question_sha256: str, sources: Sequence[Any],
@@ -624,12 +632,12 @@ def _evaluate_question(question: dict[str, Any], question_sha256: str, sources: 
 
 def _evaluate(question_bytes: bytes, sources: Sequence[Any], context: dict[str, str]) -> dict[str, Any]:
     question_sha256 = sha256_hex(bytes(question_bytes)) if isinstance(question_bytes, (bytes, bytearray)) else None
-    question = parse_question(question_bytes, question_sha256)
+    question = parse_question(question_bytes, question_sha256, context)
     if question["schema"] == QUESTION_SCHEMA:
         # The question names the existing goal that owns the repair; from here on
         # every non-ALLOW, refusals included, routes to it.
         context["owner"] = question["owning_existing_goal"]
-    bindings = _bindings(sources)
+    bindings = _bindings(sources, context.get("question_root"))
     if question["schema"] == QUESTION_SCHEMA:
         return _evaluate_question(question, question_sha256, sources, bindings, context["owner"])
     return _evaluate_pointer(question, question_sha256, sources, bindings)
@@ -653,10 +661,12 @@ def evaluate(question_bytes: bytes, sources: Sequence[Mapping[str, Any]]) -> dic
     except (TypeError, ValueError, AttributeError, KeyError, IndexError, RecursionError, OverflowError) as error:
         answer = _base(question_sha256, None)
         answer["disposition"] = "FAIL_CLOSED"
+        # Once the question parsed, the rejected value is cited at the question root line.
+        answer["citations"] = [context["question_root"]] if "question_root" in context else []
         return _non_allow(answer, failure_code="INPUT_VALUE_REJECTED",
                           failed_predicate=f"input values are of the declared types ({type(error).__name__})",
                           repair="supply hashable, typed values matching the question and source shapes",
-                          evidence_refs=[], next_attempt="ON_CORRECTED_INPUT_SUPPLIED", owner=context["owner"])
+                          evidence_refs=answer["citations"], next_attempt="ON_CORRECTED_INPUT_SUPPLIED", owner=context["owner"])
 
 
 def enqueue(queue_dir: Path, entry: Mapping[str, Any]) -> tuple[Path, bool]:
