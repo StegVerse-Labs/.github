@@ -1028,6 +1028,21 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
             boundary_evidence=boundary_evidence,authority_effect=authority_effect,hb_epoch=hb_epoch,
             custody_exclusivity_verifier=custody_exclusivity_verifier)
 
+#: An append's epoch is supplied by its caller and checked by the kernel's
+#: shared rule (SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH); an absent or invalid
+#: one is refused six-field FAIL_CLOSED before anything is written, as
+#: StegVerse-org/.github#189 does for the organization ledger there.
+EPOCH_RETRY_ENTRYPOINT="resident-runtime/aggregate_repo_transition.py::aggregate_transition (hb_epoch=, or --hb-epoch)"
+OrgLedgerEpochRefused=kernel.SuppliedEpochRefused
+
+def epoch_refusal(hb_epoch):
+    """The six-field FAIL_CLOSED refusal of an append's epoch, or None."""
+    return kernel.writer_epoch_refusal(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+
+def require_supplied_epoch(hb_epoch):
+    """The heartbeat reference of the supplied epoch, or OrgLedgerEpochRefused."""
+    return kernel.supplied_hb_reference(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+
 def _retained_in_store(store, receipt, source):
     """The exact source receipt an earlier append committed beside its receipt."""
     stored=store.get(ledger_store.source_key(source["source_transition_sha256"]))

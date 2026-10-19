@@ -268,6 +268,46 @@ def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, s
                                     "a clock-derived epoch is not a supplied one")
     return None
 
+class SuppliedEpochRefused(ValueError):
+    """A receipt writer's refusal of an absent or invalid supplied epoch.
+
+    `refusal` is the six-field FAIL_CLOSED from `writer_epoch_refusal`. Raised
+    before anything is written; no clock is read to stand in for the epoch.
+    """
+    def __init__(self, refusal:dict[str,Any])->None:
+        super().__init__(refusal["failure_code"]+": "+refusal["detail"])
+        self.disposition=refusal["disposition"]
+        self.failed_predicate=refusal["failed_predicate"]
+        self.refusal=dict(refusal)
+
+def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]|None:
+    """The six-field FAIL_CLOSED of a receipt writer's epoch, or None when it is supplied.
+
+    The shape StegVerse-org/.github#189 gave the organization ledger
+    (`epoch_refusal`): a receipt references the heartbeat epoch its caller
+    supplies, checked by `supplied_epoch_failure`; an absent one is
+    HB_EPOCH_NOT_SUPPLIED and is never derived from a clock.
+    """
+    failure=supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return None
+    code,detail=failure
+    return {"disposition":"FAIL_CLOSED","failure_code":code,"failed_predicate":HB_EPOCH_PREDICATE,
+            "detail":detail,
+            "required_evidence_or_repair":("the caller supplies hb_epoch= (or --hb-epoch): ASCII digits with "
+                                           "value >= "+str(HB_ANCHOR_EPOCH)+"; it is never derived from a clock"),
+            "retry_entrypoint":retry_entrypoint,
+            "owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"call again with the supplied epoch; nothing was written",
+            "derived_from_clock":False,"consequence_committed":False}
+
+def supplied_hb_reference(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]:
+    """The heartbeat reference of a supplied epoch, or SuppliedEpochRefused. No clock is read."""
+    refusal=writer_epoch_refusal(hb_epoch,retry_entrypoint=retry_entrypoint)
+    if refusal is not None:
+        raise SuppliedEpochRefused(refusal)
+    return hb_reference(epoch=int(str(hb_epoch)))
+
 def carrier_epoch(heartbeat_reference:Any)->int:
     """Return the epoch the carrier supplied, or refuse FAIL_CLOSED. No clock is read."""
     epoch=heartbeat_reference.get("epoch") if isinstance(heartbeat_reference,dict) else None
@@ -413,7 +453,8 @@ __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame"
          "record_federation_cycle","federation_cycles","manifest_selection","capability_ingress",
          "CAPABILITY_INGRESS_ROLE","crossing_custody",
          "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS",
-         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID"]
+         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID",
+         "SuppliedEpochRefused","writer_epoch_refusal","supplied_hb_reference"]
 
 
 # --- Federation mesh v1.1 additions ---
