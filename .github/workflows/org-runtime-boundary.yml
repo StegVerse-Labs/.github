@@ -86,8 +86,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.12'
       # The ingress admits an organization-role conformance manifest with the
@@ -97,10 +97,15 @@ jobs:
       - name: Install the pinned StegVerse SDK
         run: |
           set -eu
-          SDK_SHA=d6873d84dddc91ef6b26774336b05c8e1f4042c0
+          SDK_SHA=080ea4b275c2207268b24314109e8c4f47298405
           curl -fsSL "https://github.com/StegVerse-org/StegVerse-SDK/archive/${SDK_SHA}.tar.gz" -o /tmp/stegverse-sdk.tgz
           mkdir /tmp/stegverse-sdk
           tar -xzf /tmp/stegverse-sdk.tgz -C /tmp/stegverse-sdk --strip-components=1
+          # The SDK's own exact transitive set at the installed commit (SDK V-P5), read from
+          # the same archive, so the build backend and every dependency are pinned and
+          # nothing extra is fetched. tests/test_sdk_install_constraints_guard.py enforces it.
+          export PIP_CONSTRAINT=/tmp/stegverse-sdk/constraints/sdk-install.txt
+          test -f "$PIP_CONSTRAINT"
           python -m pip install --quiet /tmp/stegverse-sdk
           python -c 'import stegverse.organization_role_conformance_processor'
       # From the retired validate-purpose-bound-worker-derived-lifetime.yml (#3039 H6b),

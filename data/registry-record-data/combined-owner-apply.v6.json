@@ -1,0 +1,394 @@
+{
+  "schema": "stegverse.registry-record-data-proposal/v1",
+  "registry_generation_base": 319,
+  "authority_effect": "NONE",
+  "note": "Combined owner apply data: RM9 work items and owner questions (Drive 1hNkkNH1TnXatdaOXzziH1_1z1Up7pdyO) plus Lane B WU-B16 v1 (sha256 d90a8ea2...05d3b3) plus RM17 row_fields and register_from_record. One apply = one generation bump. v2 (WU-RM18): adds INDEX-row work items for H5, H16, H17, H22-H25, H28, H40-H44, H46, H51, binds Labs#3212 (H34b, whose INDEX row names no ref) and cites StegVerse-Labs/.github#3208 on OQ-C5 (H48); states read from GitHub 2026-10-18. v3: adds owner question WU-B23-COMPONENT-010-SESSION-EVENT-INPUTS (Lanes A/B, Drive 1ny-QqAxraiIyLg1htxxotybptlanLrlL); no declaration row_fields entry. v4 (R-P4): also registers HEALER-ORCHESTRATOR-TARGET-OWNERSHIP-001 from its record (Healer#119 owning-goal gaps); #3257 head refreshed. v5 (R-P4 fold-in): also registers AWAIT-SURFACE-TRANSITION-OWNERSHIP-001 from its record (owner of the six R-P3 NO_OWNING_TASK await surfaces and their exemption entries); #3257 head refreshed. v6 (R-P6): the #3257 work item carries head and ci null, because this file is committed on #3257 for the CI apply rehearsal and naming its own head would go stale on every push; the apply records head null and the merge commit of #3257 identifies the merged head.",
+  "work_items": {
+    "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001": [
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-Labs/.github",
+        "number": 3107,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-Labs/.github",
+        "number": 3183,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "GCAT-BCAT-Engine/Publisher",
+        "number": 113,
+        "state": "MERGED",
+        "head": "9a305548fd624c85c56294a255cf949be22a7ab9",
+        "ci": "GREEN",
+        "owner_approved": true
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "GCAT-BCAT-Engine/Publisher",
+        "number": 114,
+        "state": "MERGED",
+        "head": "3041241c03ba6924a66dc215a97974f3b7c0d8a4",
+        "ci": "GREEN",
+        "owner_approved": true
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/Site",
+        "number": 1605,
+        "state": "MERGED",
+        "head": "9d850607377a884caf0a1b9b9805a14eb26245ca",
+        "ci": "GREEN",
+        "owner_approved": true
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/Site",
+        "number": 1606,
+        "state": "MERGED",
+        "head": "009beda7b14257ade0ef6dce0dede9644ef6271a",
+        "ci": "GREEN",
+        "owner_approved": true
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/Site",
+        "number": 1608,
+        "state": "OPEN",
+        "head": "20b04c5943a1d34f7a828ecec67f20b6c1f4e089",
+        "ci": "GREEN",
+        "owner_approved": false
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/.github",
+        "number": 3257,
+        "state": "DRAFT",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001": [
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-org/.github",
+        "number": 160,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-org/.github",
+        "number": 165,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-org/.github",
+        "number": 163,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-org/.github",
+        "number": 166,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002": [
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-org/.github",
+        "number": 162,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001": [
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-org/.github",
+        "number": 164,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/.github",
+        "number": 3211,
+        "state": "DRAFT",
+        "head": "6bbce8c28d44119eab4be5a4a38b7d364b689f70",
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001": [
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-org/.github",
+        "number": 167,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/Site",
+        "number": 1604,
+        "state": "MERGED",
+        "head": "36ab2637b9aed7fd74310877359de83a7fde2eea",
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003": [
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-Labs/.github",
+        "number": 3183,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-org/StegVerse-SDK",
+        "number": 539,
+        "state": "MERGED",
+        "head": "55ff65bb96d43fea133faa295a7c9e048393997a",
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001": [
+      {
+        "kind": "ISSUE",
+        "repo": "StegVerse-Labs/.github",
+        "number": 2897,
+        "state": "OPEN",
+        "head": null,
+        "ci": null,
+        "owner_approved": false
+      },
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/.github",
+        "number": 3212,
+        "state": "MERGED",
+        "head": "a2830741cd975098c755e1311ebf828249214da4",
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "TVC-PROVIDER-OPERATION-BROKER-003": [
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/TVC",
+        "number": 517,
+        "state": "MERGED",
+        "head": "d057546dfede278e805ad41a68b6190361a4a2d7",
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026": [
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/.github",
+        "number": 3208,
+        "state": "MERGED",
+        "head": "3290acd2c755a641103429433373c70dc5b063d7",
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "SDK-COST-DERIVED-TIER-PRICING-001": [
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-org/StegVerse-SDK",
+        "number": 538,
+        "state": "MERGED",
+        "head": "e9461279b48bb481b743bba64d5e089049fd6740",
+        "ci": null,
+        "owner_approved": false
+      }
+    ],
+    "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001": [
+      {
+        "kind": "PULL_REQUEST",
+        "repo": "StegVerse-Labs/.github",
+        "number": 3216,
+        "state": "MERGED",
+        "head": "4ae9f2fe1bb3ba1fdfa7c3c1ae93a9a2014cc203",
+        "ci": null,
+        "owner_approved": false
+      }
+    ]
+  },
+  "human_actions": [
+    {
+      "id": "OQ-C1",
+      "task_id": null,
+      "question": "Delete the duplicate H36 comment 6235782137 (duplicates 6234941194) on StegVerse-org/.github#162?",
+      "default_until_answered": "Keep both; no deletion",
+      "source_ref": "StegVerse-org/.github#162",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C2",
+      "task_id": null,
+      "question": "Who owns Workstream C (StegOps CRM) under Labs#3183?",
+      "default_until_answered": "Unassigned; no work started",
+      "source_ref": "StegVerse-Labs/.github#3183 comment 6238396275",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C3",
+      "task_id": null,
+      "question": "Admit the product Goal Task GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (ID, COSV, handoff)?",
+      "default_until_answered": "NOT_REGISTERED; lane C proceeds as proposals only",
+      "source_ref": "StegVerse-Labs/.github#3183, #3012",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C4",
+      "task_id": "SDK-COST-DERIVED-TIER-PRICING-001",
+      "question": "Approve Labs#3214 (registry gen 317 to 318 repair plus SDK-COST-DERIVED-TIER-PRICING-001)?",
+      "default_until_answered": "Held",
+      "source_ref": "StegVerse-Labs/.github#3214",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C5",
+      "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "question": "Make evaluate_task_registry_collision_checkin.py a required status check on Labs main, with require-up-to-date?",
+      "default_until_answered": "Unchanged",
+      "source_ref": "INDEX H48; StegVerse-Labs/.github#3208",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C6",
+      "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "question": "Make the coordination INDEX a generated projection (render_task_handoff_projection.py / reconcile_handoff_state.py) instead of a hand-maintained file?",
+      "default_until_answered": "Hand-maintained by Grok",
+      "source_ref": "StegVerse-org/.github#160 comment 6249905378",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C7",
+      "task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "question": "Who applies branches: [main] to Site tidc-task-coordinator.yml?",
+      "default_until_answered": "TIDC lane or owner; Claude can open it with a pre-work claim if assigned",
+      "source_ref": "StegVerse-Labs/Site#1606 comment 6245055371",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C8",
+      "task_id": null,
+      "question": "H14: is the parent for the four lanes StegVerse-org/.github#160 or Labs#3183?",
+      "default_until_answered": "#160 parent, #3183 as a linked child",
+      "source_ref": "INDEX H14",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C9",
+      "task_id": null,
+      "question": "Was relay session session_01T9aim9x3CmEgpaJ95tYSFY's out-of-scope output owner-directed?",
+      "default_until_answered": "Treat its outputs as unverified duplicates; Labs#3216 waits for owner review",
+      "source_ref": "Drive CLAUDE_STATUS__UPDATE__2026-10-18__01.md",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C10",
+      "task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "question": "WP-02 go-ahead (#3107 Q1) and T6-002 approval?",
+      "default_until_answered": "Held; no runtime transition attempted",
+      "source_ref": "StegVerse-Labs/.github#3107, StegVerse-org/StegVerse-SDK#484",
+      "state": "OPEN"
+    },
+    {
+      "id": "OQ-C11",
+      "task_id": "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "question": "#3107 Q2: build the S1 InTr binding now, or keep it under exemption until review?",
+      "default_until_answered": "Exemption StegVerse-org/.github#170 until 2026-11-14; source preparation continues; no runtime ALLOW",
+      "source_ref": "StegVerse-Labs/.github#3107 comment 6236578978",
+      "state": "OPEN"
+    },
+    {
+      "id": "WU-B16-OPTICAL-AI-SESSION-GATE-TRANSITION",
+      "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "question": "Replace allowed_next_transitions[1] AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN (forbidden by the owner directive: no AI-session gate check-in) with the record's own blocker-1 next attempt NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION (the manifest-directed Organization-ledger append of COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION under ORGANIZATION_LEDGER_LOCK), in both the aggregate row and data/canonical-task-records/OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001.json; expected_evidence_predicates[1] EXACT_GENERATION_AUTHENTIC_AI_SESSION_GATE_DISPOSITION_HASH_LINKED_EVENT carries the same gate and is restated with it.",
+      "default_until_answered": "FAIL_CLOSED: the row keeps its current transitions and no AI-session gate check-in is attempted; blocker 1 (ORGANIZATION_RECEIPT_NOT_APPENDED) remains the only admissible next edge.",
+      "source_ref": "StegVerse-Labs/.github#3183 (WU-B16); Drive 2026-10-17_PAT-003_deficiencies_and_next_actions.md D4; Labs#3204",
+      "state": "OPEN"
+    },
+    {
+      "id": "WU-B16-INTR-PROTOCOL-AGGREGATE-ROW",
+      "task_id": null,
+      "question": "Insert an aggregate Registry row for INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 projected from data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json (coordination_state ACTIVE). The record exists and kernel.HB_EPOCH_OWNING_EXISTING_GOAL cites it, but the task is absent from data/canonical-task-registry.json, so apply_task_record_data.py refuses it (RECORD_DATA_UNKNOWN_TASK_ID / RECORD_DATA_TASK_NOT_IN_AGGREGATE_REGISTRY). Row insertion needs the registration path with a generation bump, not this data file.",
+      "default_until_answered": "FAIL_CLOSED: the task stays record-only; work-item and owner-question data for it are refused by apply_task_record_data.py until the row exists.",
+      "source_ref": "StegVerse-Labs/.github#3183 (WU-B16); RM9 6250232386 REGISTRY_GENERATION_BUMP_REQUIRED_FOR_RECORD_DATA",
+      "state": "OPEN"
+    },
+    {
+      "id": "WU-B23-COMPONENT-010-SESSION-EVENT-INPUTS",
+      "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "question": "Supply or designate the authentic session event for COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION. Needed: session_id, actor_kind, checkin_context_or_exact_registry_disposition (RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010); source_output_id; a supplied created_at (no clock); payload or payload_commitment; the published stegverse_route; and the Labs standing (mode, node_ref, predecessor). Derivable inputs already resolved: task_id, manifest_profile/version, declared_intent (record blockers[0].required_evidence_or_repair), requested_consequence (blockers[0].satisfying_edge), source_framework (component contract owner). The owner directive forbids AI-session gate check-ins, so the acting party is the owner's call.",
+      "default_until_answered": "FAIL_CLOSED: no declaration is written; scripts/build_optical_component_010_org_request.py keeps refusing with COMPONENT_010_MANIFEST_INPUTS_UNDECLARED; blocker 1 stays ORGANIZATION_RECEIPT_NOT_APPENDED.",
+      "source_ref": "StegVerse-Labs/.github#3204 (WU-B23); #3275 fe37ee8; Drive WU-B23 file",
+      "state": "OPEN"
+    }
+  ],
+  "register_from_record": [
+    "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+    "HEALER-ORCHESTRATOR-TARGET-OWNERSHIP-001",
+    "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001"
+  ],
+  "row_fields": [
+    {
+      "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "path": [
+        "allowed_next_transitions",
+        1
+      ],
+      "before": "AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+      "after": "NEXT_MANIFEST_DIRECTED_ATTEMPT_OF_COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION"
+    },
+    {
+      "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "path": [
+        "expected_evidence_predicates",
+        1
+      ],
+      "before": "EXACT_GENERATION_AUTHENTIC_AI_SESSION_GATE_DISPOSITION_HASH_LINKED_EVENT",
+      "after": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION"
+    }
+  ]
+}

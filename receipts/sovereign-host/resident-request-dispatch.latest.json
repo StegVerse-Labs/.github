@@ -46,7 +46,7 @@
     "sdk_generic_manifest_execution"
   ],
   "richard_dispatch_master_records": null,
-  "runtime_root": "/home/user/.github",
+  "runtime_root": "/tmp/claude-0/-home-user/4ab21030-8282-59ff-a1e2-a47e64f64355/scratchpad/labs-fix",
   "schema": "stegverse.resident-request-dispatch/v1",
   "sdk_evaluator_dispatch_master_records": null,
   "second_machine_required": false,
@@ -55,6 +55,6 @@
   ],
   "selected_request_id": "test5-a",
   "selection_scope": "EXACT_SELECTOR",
-  "source_root": "/home/user/.github",
+  "source_root": "/tmp/claude-0/-home-user/4ab21030-8282-59ff-a1e2-a47e64f64355/scratchpad/labs-fix",
   "state": "DISPATCH_INCOMPLETE"
 }

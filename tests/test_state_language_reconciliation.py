@@ -59,7 +59,8 @@ class StateLanguageReconciliationTests(unittest.TestCase):
         state_hash = canonical_hash(normalize_vector(state))
         registry = {
             "tasks": [
-                {"task_id": "old", "state": "HANDOFF_READY", "goal": "obsolete", "authority": {"domain": "TEST", "ceiling_ref": "A"}},
+                {"task_id": "old", "state": "HANDOFF_READY", "goal": "obsolete", "authority": {"domain": "TEST", "ceiling_ref": "A"},
+                 "source_handoff_ref": "docs/TEST_MIRROR_HANDOFF.md"},
                 {"task_id": "keep", "state": "HANDOFF_READY", "goal": "old wording", "authority": {"domain": "TEST", "ceiling_ref": "A"}},
             ]
         }
@@ -101,6 +102,47 @@ class StateLanguageReconciliationTests(unittest.TestCase):
         self.assertEqual(reconciled["tasks"][0]["goal"], "old")
         self.assertEqual(reconciled["tasks"][0]["reconciliation_disposition"], "ESCALATION_REQUIRED")
         self.assertEqual(effects[0]["reason"], "ACTIVE_CLAIM_REQUIRES_PRECLAIM_OR_SUCCESSOR_RECONCILIATION")
+
+    def test_partial_bundle_against_live_registry_supersedes_nothing(self):
+        # Regression: one desired task against the canonical Registry previously yielded
+        # 1 CREATED and 117 SUPERSEDED, ACTIVE tasks included (org#160 D-P2).
+        registry = json.loads((Path(__file__).resolve().parents[1] / "data/canonical-task-registry.json").read_text(encoding="utf-8"))
+        before = {task["task_id"]: (task.get("state"), task.get("coordination_state")) for task in registry["tasks"]}
+        desired = [{"task_id": "PARTIAL-BUNDLE-ONLY-001", "state": "HANDOFF_READY", "goal": "one task",
+                    "authority": {"domain": "TEST", "ceiling_ref": "A"}}]
+        reconciled, effects = reconcile_tasks(registry, desired, source_state_hash="h", source_handoff_ref="docs/TEST_MIRROR_HANDOFF.md")
+        self.assertEqual(effects, [{"task_id": "PARTIAL-BUNDLE-ONLY-001", "disposition": "CREATED"}])
+        after = {task["task_id"]: (task.get("state"), task.get("coordination_state")) for task in reconciled["tasks"]}
+        self.assertEqual({k: v for k, v in after.items() if k in before}, before)
+
+    def test_coordination_state_active_task_from_same_handoff_escalates(self):
+        ref = "docs/TEST_MIRROR_HANDOFF.md"
+        registry = {"tasks": [
+            {"task_id": live, "coordination_state": live_state, "goal": "g", "source_handoff_ref": ref}
+            for live, live_state in (("a", "ACTIVE"), ("b", "IN_PROGRESS"), ("c", "ACTIVE_SOURCE_WORK"))
+        ] + [
+            {"task_id": "r", "coordination_state": "RETIRED", "goal": "g", "source_handoff_ref": ref},
+            {"task_id": "p", "coordination_state": "PROPOSED", "goal": "g", "source_handoff_ref": ref},
+        ]}
+        reconciled, effects = reconcile_tasks(registry, [], source_state_hash="h", source_handoff_ref=ref)
+        by_effect = {e["task_id"]: e["disposition"] for e in effects}
+        self.assertEqual(by_effect, {"a": "ESCALATION_REQUIRED", "b": "ESCALATION_REQUIRED",
+                                     "c": "ESCALATION_REQUIRED", "p": "SUPERSEDED"})
+        states = {t["task_id"]: t.get("coordination_state") for t in reconciled["tasks"]}
+        self.assertEqual(states["a"], "ACTIVE")
+
+    def test_coordination_state_active_task_is_not_amended(self):
+        registry = {"tasks": [{"task_id": "t", "coordination_state": "ACTIVE", "goal": "old", "authority": {"domain": "TEST", "ceiling_ref": "A"}}]}
+        desired = [{"task_id": "t", "state": "HANDOFF_READY", "goal": "new", "authority": {"domain": "TEST", "ceiling_ref": "A"}}]
+        reconciled, effects = reconcile_tasks(registry, desired, source_state_hash="h", source_handoff_ref="docs/TEST_MIRROR_HANDOFF.md")
+        self.assertEqual(reconciled["tasks"][0]["goal"], "old")
+        self.assertEqual(effects[0]["disposition"], "ESCALATION_REQUIRED")
+
+    def test_absent_task_from_other_handoff_is_untouched(self):
+        registry = {"tasks": [{"task_id": "other", "state": "HANDOFF_READY", "goal": "g", "source_handoff_ref": "docs/OTHER_MIRROR_HANDOFF.md"}]}
+        reconciled, effects = reconcile_tasks(registry, [], source_state_hash="h", source_handoff_ref="docs/TEST_MIRROR_HANDOFF.md")
+        self.assertEqual(effects, [])
+        self.assertEqual(reconciled["tasks"][0]["state"], "HANDOFF_READY")
 
     def test_preclaim_fails_closed_on_stale_state(self):
         current = vector(runtime="ACTIVE")
