@@ -145,13 +145,13 @@ class CarrierEpochForwardingTests(unittest.TestCase):
                                  "HB_EPOCH_INVALID")
         unstated = dict(supplied(1000)); unstated.pop("derived_from_clock")
         self.assertEqual(self.refused(unstated)["failure_code"], "HB_EPOCH_PROVENANCE_UNMARKED")
-        for extra in ({"source": "ORGANIZATION_LEDGER_HEAD", "head_receipt_sha": "f" * 64},
-                      {"sampled_unix_ns": K.HB_ANCHOR_UNIX_NS}):
-            with self.subTest(extra=extra):
-                self.assertEqual(self.refused(dict(unstated, **extra))["failure_code"],
-                                 "HB_EPOCH_PROVENANCE_UNMARKED")
-        self.assertEqual(self.refused(dict(supplied(1000), sampled_unix_ns=K.HB_ANCHOR_UNIX_NS))["failure_code"],
-                         "HB_EPOCH_INVALID")
+        self.assertEqual(self.refused(dict(unstated, source="ORGANIZATION_LEDGER_HEAD",
+                                           head_receipt_sha="f" * 64))["failure_code"],
+                         "HB_EPOCH_PROVENANCE_UNMARKED")
+        for reference in (dict(unstated, sampled_unix_ns=K.HB_ANCHOR_UNIX_NS),
+                          dict(supplied(1000), sampled_unix_ns=K.HB_ANCHOR_UNIX_NS)):
+            with self.subTest(reference=reference):
+                self.assertEqual(self.refused(reference)["failure_code"], "HB_EPOCH_INVALID")
         carried = dict(supplied(1000), source="StegVerse-Labs/.github", head_receipt_sha="ab" * 32)
         argv = self.run_adapter(carried)["argv"]
         self.assertEqual(argv[argv.index("--hb-epoch") + 1], "1000")
@@ -178,7 +178,7 @@ class SharedEpochValidatorTests(unittest.TestCase):
 
     #: sha256 of the function's source text; the same pin is asserted in each PR.
     #: B-P36h: re-pinned after the one-line HB_EPOCH_PROVENANCE_UNMARKED tightening.
-    SHARED_VALIDATOR_SHA256 = "a3f6b9ab79a8ac587404b40e08131cf11f481dc13c48570bfaca0643db05e16b"
+    SHARED_VALIDATOR_SHA256 = "ad8ff52936d5bcd9a2ad6caceb2d9a637a099518989b34bbb3370301c7a4cce2"
 
     def test_the_validator_text_is_the_shared_one(self):
         source = inspect.getsource(K.supplied_epoch_failure)
@@ -201,7 +201,12 @@ class SharedEpochValidatorTests(unittest.TestCase):
             33, {"derived_from_clock": False, "source": "s", "head_receipt_sha": "ab"}))
         self.assertEqual(K.supplied_epoch_failure(33, {"derived_from_clock": False, "sampled_unix_ns": 1})[0],
                          "HB_EPOCH_INVALID")
-        self.assertEqual(K.supplied_epoch_failure(33, {"sampled_unix_ns": 1})[0], "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertEqual(K.supplied_epoch_failure(33, {"source": "s", "source_sha": "ab"})[0],
+                         "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertEqual(K.supplied_epoch_failure(
+            33, {"source": "ORGANIZATION_LEDGER_HEAD", "head_receipt_sha": "ff" * 32})[0],
+            "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertEqual(K.supplied_epoch_failure(33, {"sampled_unix_ns": 1})[0], "HB_EPOCH_INVALID")
         self.assertEqual(K.supplied_epoch_failure(33, {"derived_from_clock": True})[0], "HB_EPOCH_INVALID")
         self.assertEqual(K.supplied_epoch_failure(33, "HB:33")[0], "HB_EPOCH_INVALID")
 

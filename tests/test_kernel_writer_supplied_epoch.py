@@ -7,9 +7,10 @@ shared rule (`supplied_epoch_failure`):
 
 - no epoch supplied  -> FAIL_CLOSED HB_EPOCH_NOT_SUPPLIED
 - malformed or < 32  -> FAIL_CLOSED HB_EPOCH_INVALID
-- a reference with no derived_from_clock (whatever else it carries)
+- a CLOCK reference (flag present and not false, or sampled_unix_ns)
+                     -> FAIL_CLOSED HB_EPOCH_INVALID
+- otherwise no derived_from_clock (whatever else it carries)
                      -> FAIL_CLOSED HB_EPOCH_PROVENANCE_UNMARKED
-- a CLOCK reference (flag true, or sampled_unix_ns) -> FAIL_CLOSED HB_EPOCH_INVALID
 
 and neither reads a clock. The slice defines the helper only; no caller is
 required to pass an epoch yet, so existing writers behave as before.
@@ -108,8 +109,8 @@ class WriterEpochRefusalTest(NoClockCase):
 
 
 class UnmarkedReferenceTest(NoClockCase):
-    """SUPPLIED: flag false, no sampled_unix_ns. CARRIED: false + source + head_receipt_sha.
-    CLOCK (flag true, or sampled_unix_ns) is INVALID; no flag at all is UNMARKED."""
+    """Ruled order: (1) flag present and not False -> INVALID; (2) sampled_unix_ns -> INVALID;
+    (3) flag absent -> UNMARKED. No source/sha exemption; CARRIED is verified at the writer."""
 
     assert_refusal = WriterEpochRefusalTest.assert_refusal
 
@@ -118,7 +119,7 @@ class UnmarkedReferenceTest(NoClockCase):
 
     def test_reference_without_the_flag_is_unmarked(self):
         for reference in ({"epoch": 40}, {}, self.FABRICATED, dict(self.FABRICATED, source_sha="ab"),
-                          {"epoch": 40, "sampled_unix_ns": 1}):
+                          {"epoch": 40, "source": "s", "source_sha": "ab"}):
             with self.subTest(reference=reference):
                 code, detail = K.supplied_epoch_failure(40, reference)
                 self.assertEqual(code, K.HB_EPOCH_PROVENANCE_UNMARKED)
@@ -135,6 +136,7 @@ class UnmarkedReferenceTest(NoClockCase):
         for reference in ({"epoch": 40, "derived_from_clock": True}, dict(self.CARRIED, derived_from_clock=True),
                           {"epoch": 40, "derived_from_clock": None},
                           {"epoch": 40, "derived_from_clock": False, "sampled_unix_ns": 1},
+                          {"epoch": 40, "sampled_unix_ns": 1}, dict(self.FABRICATED, sampled_unix_ns=1),
                           dict(self.CARRIED, sampled_unix_ns=1)):
             with self.subTest(reference=reference):
                 self.assertEqual(K.supplied_epoch_failure(40, reference)[0], K.HB_EPOCH_INVALID)

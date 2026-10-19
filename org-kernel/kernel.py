@@ -228,12 +228,15 @@ HB_EPOCH_NOT_SUPPLIED="HB_EPOCH_NOT_SUPPLIED"
 HB_EPOCH_INVALID="HB_EPOCH_INVALID"
 #: The marker vocabulary of a heartbeat reference. SUPPLIED: derived_from_clock
 #: explicitly false, with no sampled_unix_ns. CARRIED: false, plus `source` (e.g.
-#: ORGANIZATION_LEDGER_HEAD) and `head_receipt_sha`; the shared rule passes it and
-#: the writer verifies the sha is the current verified head
-#: (CARRIED_PROVENANCE_UNVERIFIED otherwise). CLOCK: derived_from_clock true, or
-#: sampled_unix_ns, which is HB_EPOCH_INVALID. A reference with no
-#: derived_from_clock is unmarked whatever else it carries: an unmarked clock value
-#: is laundering, and a carrier cannot self-assert CARRIED provenance.
+#: ORGANIZATION_LEDGER_HEAD) and `head_receipt_sha`; the shared rule treats it as
+#: SUPPLIED and only the writer verifies the sha is the current verified head
+#: (CARRIED_PROVENANCE_UNVERIFIED otherwise). CLOCK: derived_from_clock true, or a
+#: bare sampled_unix_ns (legacy CLOCK, never SUPPLIED). supplied_epoch_failure
+#: checks a reference in this order, with no source/sha exemption:
+#: (1) derived_from_clock present and not exactly False -> HB_EPOCH_INVALID;
+#: (2) sampled_unix_ns present -> HB_EPOCH_INVALID;
+#: (3) derived_from_clock absent -> HB_EPOCH_PROVENANCE_UNMARKED (an unmarked
+#: clock value is laundering, and a carrier cannot self-assert CARRIED).
 HB_EPOCH_PROVENANCE_UNMARKED="HB_EPOCH_PROVENANCE_UNMARKED"
 HB_EPOCH_PREDICATE="SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 HB_EPOCH_OWNING_EXISTING_GOAL="INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
@@ -290,8 +293,8 @@ def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, s
             and reference["derived_from_clock"] is not False:
         return "HB_EPOCH_INVALID", ("the carrier's derived_from_clock is not exactly false; "
                                     "a clock-derived epoch is not a supplied one")
-    if reference is not None and "derived_from_clock" not in reference: return "HB_EPOCH_PROVENANCE_UNMARKED", "the carrier's heartbeat reference carries no derived_from_clock; an unmarked clock value is laundering, and a carrier cannot self-assert CARRIED provenance"
     if reference is not None and "sampled_unix_ns" in reference: return "HB_EPOCH_INVALID", "the carrier's heartbeat reference carries sampled_unix_ns; a sampled clock value is CLOCK, never a supplied epoch"
+    if reference is not None and "derived_from_clock" not in reference: return "HB_EPOCH_PROVENANCE_UNMARKED", "the carrier's heartbeat reference carries no derived_from_clock; an unmarked clock value is laundering, and a carrier cannot self-assert CARRIED provenance"
     return None
 
 class SuppliedEpochRefused(ValueError):
