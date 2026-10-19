@@ -69,9 +69,12 @@ def endpoint_result(env,svc,envelope_path,node_state_root=None):
                 detail=(completed.stderr or completed.stdout or "").strip().splitlines()
                 raise SystemExit("endpoint-adapter-execution-failed"
                                  + (": "+detail[-1] if detail else ""))
-            result=load(out)
+            try:
+                result=load(out)
+            except (OSError,UnicodeDecodeError,ValueError,RecursionError,MemoryError) as exc:
+                content_fault("endpoint-adapter-result-invalid: "+type(exc).__name__)
             if not isinstance(result,dict):
-                raise SystemExit("endpoint-adapter-result-invalid")
+                content_fault("endpoint-adapter-result-invalid")
             return result
     if role=="BOUNDARY_LOCAL_DIAGNOSTIC":
         return {"echo":env["payload"]}
@@ -99,7 +102,9 @@ def read_input(path,argument):
     """One JSON object input, or the terminal PROCESS_BOUNDARY_INPUT_FAULT (exit 65). Writes nothing."""
     try:
         value=json.loads(Path(path).read_text(encoding="utf-8"))
-    except (OSError,UnicodeDecodeError,ValueError) as exc:
+    # RecursionError / MemoryError: a deeply nested or oversized document is a
+    # bad input like any other, never a traceback (F-SCAN-RECURSION).
+    except (OSError,UnicodeDecodeError,ValueError,RecursionError,MemoryError) as exc:
         value,detail=None,argument+": "+type(exc).__name__+": "+str(exc)
     else:
         detail=None if isinstance(value,dict) else argument+": top-level "+type(value).__name__+", expected dict"

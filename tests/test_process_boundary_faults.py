@@ -119,6 +119,41 @@ class ProcessBoundaryFaultTests(unittest.TestCase):
                 self.assertIs(record["terminal"], True)
                 self.assertFalse((self.work / "content").exists())
 
+    def test_a_deeply_nested_input_is_terminal_with_exit_65_never_a_traceback(self):
+        # F-SCAN-RECURSION: about 400 KB, nested past the parser's recursion limit.
+        deep = self.work / "deep.json"
+        deep.write_text('{"a":' + "[" * 200000)
+        out = self.work / "deep-out" / "execution.json"
+        for argument in ("--envelope", "--registry"):
+            with self.subTest(argument=argument):
+                completed = self.run_boundary(deep if argument == "--envelope" else self.envelope,
+                                              deep if argument == "--registry" else self.registry, out)
+                self.assertEqual(completed.returncode, 65, completed.stdout + completed.stderr)
+                record = self.record(completed)
+                self.assertEqual(record["failure_code"], "PROCESS_BOUNDARY_INPUT_FAULT")
+                self.assertIn("RecursionError", record["detail"])
+                self.assertIs(record["terminal"], True)
+                self.assertFalse((self.work / "deep-out").exists())
+
+    def test_a_deeply_nested_adapter_result_is_terminal_with_exit_65(self):
+        adapter = self.root / "deep_adapter.py"
+        adapter.write_text(
+            "import sys\n"
+            "out = sys.argv[sys.argv.index('--out') + 1]\n"
+            "open(out, 'w').write('{\"a\":' + '[' * 200000)\n")
+        registry = self.work / "internal-registry.json"
+        registry.write_text(json.dumps({"organization": "Target-Org", "services": [{
+            "service_id": "target.diag", "boundary_role": "INTERNAL_ENDPOINT",
+            "endpoint_adapter": str(adapter), "endpoint_adapter_disposition": "ALLOW_DECLARED_ADAPTER",
+            "admits_processing": [{"capability": "governance", "route_id": fixture.GOVERNANCE_ROUTE}]}]}))
+        out = self.work / "adapter-out" / "execution.json"
+        completed = self.run_boundary(self.envelope, registry, out)
+        self.assertEqual(completed.returncode, 65, completed.stdout + completed.stderr)
+        record = self.record(completed)
+        self.assertEqual(record["failure_code"], "PROCESS_BOUNDARY_INPUT_FAULT")
+        self.assertTrue(record["detail"].startswith("endpoint-adapter-result-invalid"), record["detail"])
+        self.assertFalse((self.work / "adapter-out").exists())
+
     def test_an_unwritable_out_is_a_non_terminal_fault_with_exit_75_and_no_partial_file(self):
         cases = {"out-is-a-directory": self.work / "taken",
                  "parent-is-a-file": self.work / "a-file" / "execution.json"}

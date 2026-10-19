@@ -220,7 +220,14 @@ def main() -> int:
     # Read before, and outside, the own-state fault handling: an unreadable packet
     # is the terminal six-field CLI_INPUT_INVALID (F-INPUT-TRACE), nothing written.
     kernel = _module("org_kernel_cli_input", ROOT / "org-kernel/kernel.py")
-    packet = kernel.cli_input_json(args.packet, "--packet", retry_entrypoint="resident-runtime/remediation_endpoint.py")
+    try:
+        packet = kernel.cli_input_json(args.packet, "--packet", retry_entrypoint="resident-runtime/remediation_endpoint.py")
+    except (RecursionError, MemoryError) as exc:
+        # A deeply nested or oversized packet is the caller's bad input too:
+        # terminal six fields, nothing written (F-SCAN-RECURSION).
+        print(json.dumps(kernel._cli_input_refused(exc, "--packet", "resident-runtime/remediation_endpoint.py").record,
+                         sort_keys=True))
+        return 2
     outcome = classify(packet)
     receipts = record(packet, outcome, hb_epoch=hb_epoch)
     result = {**outcome, **receipts, "records_authority": "ORGANIZATION_RECORDS_ONLY"}

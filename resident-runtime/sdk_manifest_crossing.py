@@ -201,7 +201,7 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
             if completed.returncode in (65, 75):
                 try:
                     fault = json.loads((completed.stdout or "").strip().splitlines()[-1])
-                except (IndexError, ValueError):
+                except (IndexError, ValueError, RecursionError):
                     fault = None
             return {
                 "schema": "stegverse.sdk-manifest-crossing-result/v1",
