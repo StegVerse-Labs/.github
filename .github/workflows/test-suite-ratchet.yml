@@ -236,3 +236,16 @@ jobs:
             scripts/project_task_registry_event_to_sovereign_kv.py \
             scripts/task_registry_checkin_event_history.py \
             scripts/repository_hygiene_retire_merged_refs.py
+
+      # Rehearse the owner's one-command Registry apply (StegVerse-Labs/.github#3183 R-P6):
+      # the digest check, the plan, the apply and the NO_CHANGE re-run, on a throwaway
+      # worktree. The data file is committed and its digest is declared here, so changing
+      # either alone fails closed. Nothing is written to the checkout or pushed.
+      - name: Rehearse the owner Registry apply against the declared digest
+        if: ${{ !cancelled() }}
+        env:
+          OWNER_APPLY_DATA: data/registry-record-data/combined-owner-apply.v6.json
+          OWNER_APPLY_SHA256: 187e0f129fd49de29a6eef23cae3d6fc7fc40b1e804712b1dd00b38b0d08f775
+        run: |
+          git fetch --no-tags --depth=1 origin main:refs/remotes/origin/main
+          python scripts/rehearse_owner_apply.py --data "$OWNER_APPLY_DATA" --sha256 "$OWNER_APPLY_SHA256" --tip-ref origin/main
