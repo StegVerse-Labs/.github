@@ -217,7 +217,10 @@ def main() -> int:
         # Nothing is classified, appended or written (no --out); the exit is 1.
         print(json.dumps(epoch_refused, sort_keys=True))
         return 1
-    packet = json.loads(args.packet.read_text(encoding="utf-8"))
+    # Read before, and outside, the own-state fault handling: an unreadable packet
+    # is the terminal six-field CLI_INPUT_INVALID (F-INPUT-TRACE), nothing written.
+    kernel = _module("org_kernel_cli_input", ROOT / "org-kernel/kernel.py")
+    packet = kernel.cli_input_json(args.packet, "--packet", retry_entrypoint="resident-runtime/remediation_endpoint.py")
     outcome = classify(packet)
     receipts = record(packet, outcome, hb_epoch=hb_epoch)
     result = {**outcome, **receipts, "records_authority": "ORGANIZATION_RECORDS_ONLY"}
@@ -227,4 +230,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Every failure is six fields on stdout, never a traceback (F-WRITER-TRACE).
+    sys.exit(_module("org_kernel_writer_cli", ROOT / "org-kernel/kernel.py").run_writer_cli(
+        main, retry_entrypoint="resident-runtime/remediation_endpoint.py"))

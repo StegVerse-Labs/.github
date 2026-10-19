@@ -124,5 +124,12 @@ def main() -> int:
     return 0
 
 
+def _kernel():
+    spec = importlib.util.spec_from_file_location("org_kernel_subsignal_cli", ROOT / "org-kernel" / "kernel.py")
+    kernel = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kernel)
+    return kernel
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(_kernel().run_writer_cli(main, retry_entrypoint="scripts/manage_heartbeat_subsignal.py"))

@@ -1169,8 +1169,6 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         raise ledger_store.lost_race("HEAD no longer equals the expected head")
     return record
 
-CLI_RETRY_ENTRYPOINT="resident-runtime/aggregate_repo_transition.py (command line)"
-
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--repo-receipt")
@@ -1191,20 +1189,12 @@ def main():
     if refused is not None:
         print(json.dumps(refused,sort_keys=True)); raise SystemExit(1)
     hb_epoch=int(a.hb_epoch)
-    # Every input is read and parsed here, before any writer is called: an
-    # unreadable one is the caller's fault, refused terminal six-field (F-INPUT-TRACE).
-    try:
-        parent_manifest=(kernel.read_cli_json(a.parent_manifest,argument="--parent-manifest",
-                                              retry_entrypoint=CLI_RETRY_ENTRYPOINT)
-                         if a.parent_manifest else None)
-        source_path=a.transition_receipt or a.repo_receipt
-        receipt=(kernel.read_cli_json(source_path,argument="--transition-receipt" if a.transition_receipt
-                                      else "--repo-receipt",retry_entrypoint=CLI_RETRY_ENTRYPOINT)
-                 if source_path and not (a.release_custody or a.assume_custody_as) else None)
-        boundary_evidence=kernel.parse_cli_json(a.boundary_evidence_json,argument="--boundary-evidence-json",
-                                                retry_entrypoint=CLI_RETRY_ENTRYPOINT)
-    except kernel.CliInputRefused as exc:
-        print(json.dumps(exc.record,sort_keys=True)); raise SystemExit(1)
+    # Inputs are read with #3290's kernel.cli_input_json / cli_json_text before
+    # any writer is called; an unreadable one is CLI_INPUT_INVALID (F-INPUT-TRACE),
+    # reported by kernel.run_writer_cli in __main__.
+    entry="resident-runtime/aggregate_repo_transition.py"
+    boundary_evidence=kernel.cli_json_text(a.boundary_evidence_json,"--boundary-evidence-json",retry_entrypoint=entry)
+    parent_manifest=kernel.cli_input_json(a.parent_manifest,"--parent-manifest",retry_entrypoint=entry) if a.parent_manifest else None
     if a.release_custody or a.assume_custody_as:
         if not a.parent_manifest: raise SystemExit("governing parent manifest required")
         try:
@@ -1219,7 +1209,9 @@ def main():
         except OrgLedgerEpochRefused as exc:
             print(json.dumps(exc.refusal,sort_keys=True)); raise SystemExit(1)
         print(json.dumps(record,sort_keys=True)); return
-    if receipt is None: raise SystemExit("transition receipt required")
+    source_path=a.transition_receipt or a.repo_receipt
+    if not source_path: raise SystemExit("transition receipt required")
+    receipt=kernel.cli_input_json(source_path,"--transition-receipt/--repo-receipt",retry_entrypoint=entry)
     default_class="REPO_STATE_PROPAGATION" if receipt.get("schema")=="stegverse.repo-transition-receipt/v1" else "ORGANIZATION_STATE_TRANSITION"
     try:
         record=aggregate_transition(
@@ -1249,4 +1241,4 @@ def main():
         raise SystemExit(str(exc))
     print(json.dumps(record,sort_keys=True))
 
-if __name__=="__main__": main()
+if __name__=="__main__": raise SystemExit(kernel.run_writer_cli(lambda: main() or 0, retry_entrypoint="resident-runtime/aggregate_repo_transition.py"))

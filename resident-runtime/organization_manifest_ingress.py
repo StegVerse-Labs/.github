@@ -1390,7 +1390,7 @@ def main() -> int:
     if args.outbox_root is not None:
         try:
             consumed = consume_outbox(args.outbox_root,
-                                      registry=json.loads(args.registry.read_text(encoding="utf-8")),
+                                      registry=repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
                                       mesh_root=args.mesh_root)
         except RuntimeError as exc:
             consumed = {"schema": OUTBOX_CONSUMPTION_SCHEMA, "state": "FAIL_CLOSED",
@@ -1403,9 +1403,9 @@ def main() -> int:
         return 0 if consumed["state"] in {"NO_EVENT", "CONSUMED"} else 1
     try:
         result = receive(
-            json.loads(args.manifest.read_text(encoding="utf-8")),
-            registry=json.loads(args.registry.read_text(encoding="utf-8")),
-            standing=(json.loads(args.standing.read_text(encoding="utf-8"))
+            repository_ledger.kernel.cli_input_json(args.manifest, "--manifest", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
+            registry=repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
+            standing=(repository_ledger.kernel.cli_input_json(args.standing, "--standing", retry_entrypoint="resident-runtime/organization_manifest_ingress.py")
                       if args.standing else None),
             packet_id=args.packet_id, hb_epoch=args.hb_epoch, mesh_root=args.mesh_root)
     except RuntimeError as exc:
@@ -1439,4 +1439,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(repository_ledger.kernel.run_writer_cli(main, retry_entrypoint="resident-runtime/organization_manifest_ingress.py"))

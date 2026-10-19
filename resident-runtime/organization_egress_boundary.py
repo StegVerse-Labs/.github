@@ -701,24 +701,6 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
     }
 
 
-CLI_RETRY_ENTRYPOINT = "resident-runtime/organization_egress_boundary.py (command line)"
-EGRESS_WRITE_FAILED = "EGRESS_WRITE_FAILED"
-
-
-def write_fault_record(exc: BaseException) -> dict[str, Any]:
-    """The non-terminal six-field record of this node's own write fault during an emission or closure."""
-    return {"schema": RESULT_SCHEMA, "operation": OPERATION_ID, "disposition": "FAIL_CLOSED",
-            "failure_code": EGRESS_WRITE_FAILED,
-            "failed_predicate": "THIS_NODE_WRITES_THE_EMISSION_FRAME_AND_ITS_RECEIPTS",
-            "detail": type(exc).__name__ + ": " + str(exc),
-            "required_evidence_or_repair": ("restore this node's writable mesh and ledger roots; a partial "
-                                            "write is completed or returned by the idempotent retry"),
-            "retry_entrypoint": CLI_RETRY_ENTRYPOINT,
-            "owning_existing_goal": kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
-            "next_attempt": "run the same command again with the same --hb-epoch",
-            "terminal": False, "authority_effect": "NONE_REFUSAL_ONLY"}
-
-
 def no_epoch_result(caller: str) -> dict[str, Any]:
     """The unrecorded six-field refusal of an emission or closure with no supplied epoch.
 
@@ -960,42 +942,27 @@ def main() -> int:
         print(json.dumps(refused, sort_keys=True))
         return 1
 
-    # Inputs are read before, and outside, the write-fault handling below: an
-    # unreadable one is the caller's fault, refused terminal six-field (F-INPUT-TRACE).
-    try:
-        standing = kernel.read_cli_json(args.standing, argument="--standing",
-                                        retry_entrypoint=CLI_RETRY_ENTRYPOINT)
-        payload = (None if args.close else
-                   kernel.read_cli_json(args.payload, argument="--payload",
-                                        retry_entrypoint=CLI_RETRY_ENTRYPOINT))
-    except kernel.CliInputRefused as exc:
-        print(json.dumps(exc.record, sort_keys=True))
-        return 1
-    if "predecessor" not in standing:
+    standing = kernel.cli_input_json(args.standing, "--standing", retry_entrypoint="resident-runtime/organization_egress_boundary.py")
+    if not isinstance(standing, dict) or "predecessor" not in standing:
         raise SystemExit("standing must declare the predecessor key; null is explicit genesis")
 
-    try:
-        if args.close:
-            if not args.packet_id or not args.communication_id:
-                raise SystemExit("--close requires --packet-id and --communication-id")
-            result = close(args.destination_organization, args.packet_id, args.communication_id,
-                           hb_epoch=args.hb_epoch)
-        else:
-            result = emit(args.destination_organization, payload, standing=standing,
-                          capability=args.capability,
-                          transition_reference=args.transition_reference, hb_epoch=args.hb_epoch)
-        rendered = json.dumps(result, indent=2, sort_keys=True)
-        if args.out:
-            Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-            Path(args.out).write_text(rendered + "\n", encoding="utf-8")
-    except OSError as exc:
-        # This node's own write faulted (F-WRITER-TRACE): non-terminal, six
-        # fields, exit 1, no traceback. The emission is retried as given.
-        print(json.dumps(write_fault_record(exc), sort_keys=True))
-        return 1
+    if args.close:
+        if not args.packet_id or not args.communication_id:
+            raise SystemExit("--close requires --packet-id and --communication-id")
+        result = close(args.destination_organization, args.packet_id, args.communication_id,
+                       hb_epoch=args.hb_epoch)
+    else:
+        payload = kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/organization_egress_boundary.py")
+        result = emit(args.destination_organization, payload, standing=standing,
+                      capability=args.capability,
+                      transition_reference=args.transition_reference, hb_epoch=args.hb_epoch)
+    rendered = json.dumps(result, indent=2, sort_keys=True)
+    if args.out:
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.out).write_text(rendered + "\n", encoding="utf-8")
     print(rendered)
     return 0 if result["disposition"] in (ALLOW, PENDING) else 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(kernel.run_writer_cli(main, retry_entrypoint="resident-runtime/organization_egress_boundary.py"))
