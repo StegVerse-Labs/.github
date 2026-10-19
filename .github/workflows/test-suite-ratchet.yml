@@ -245,7 +245,7 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           OWNER_APPLY_DATA: data/registry-record-data/combined-owner-apply.v6.json
-          OWNER_APPLY_SHA256: 187e0f129fd49de29a6eef23cae3d6fc7fc40b1e804712b1dd00b38b0d08f775
+          OWNER_APPLY_SHA256: 127dc1aa69811fa4fbe372d67ac0b94cb118c8d6dcd036887874f8f0a7af74f9
         run: |
           git fetch --no-tags --depth=1 origin main:refs/remotes/origin/main
           python scripts/rehearse_owner_apply.py --data "$OWNER_APPLY_DATA" --sha256 "$OWNER_APPLY_SHA256" --tip-ref origin/main
