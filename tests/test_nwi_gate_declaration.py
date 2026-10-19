@@ -34,7 +34,8 @@ def subject(**over):
     return s
 
 
-def gate_receipt(subj, check_id="nwi-s0-exit-gate", disposition="FAIL_CLOSED", hb="1024"):
+def gate_receipt(subj, check_id="nwi-s0-exit-gate", disposition="FAIL_CLOSED", hb=None):
+    hb = fx.FIXTURE_HB_EPOCH if hb is None else hb
     r = {"schema": wi.CHECK_RECEIPT_SCHEMA, "check_id": check_id, "disposition": disposition, "change_digest": wi.stage_evaluation_digest(subj),
          "head_sha": subj["evaluated_commit"], "hb_epoch": hb, "verifier_ref": "SV-LLM/.github#46@9fbc2e92"}
     if disposition != "ALLOW":
@@ -131,7 +132,7 @@ class StageEvaluationSubjectTests(unittest.TestCase):
         self.assertEqual(refusal(wi.validate_gate_receipt, r, subject(), rb, fixture_mode=True)["failed_predicate"], "STAGE_EVALUATION_SUBJECT_BINDS_RECEIPT")
         r = dict(gate_receipt(subject()), head_sha="f" * 40)
         self.assertEqual(refusal(wi.validate_gate_receipt, r, subject(), rb, fixture_mode=True)["failure_code"], "CHECK_SKIPPED_OR_UNOBSERVED")
-        out = refusal(wi.validate_gate_receipt, gate_receipt(subject(), hb="1025"), subject(), rb, fixture_mode=True)
+        out = refusal(wi.validate_gate_receipt, gate_receipt(subject(), hb=E1), subject(), rb, fixture_mode=True)
         self.assertEqual((out["disposition"], out["failure_code"]), ("DENY", "HB_EPOCH_MISMATCH"))
         out = refusal(wi.validate_gate_receipt, gate_receipt(subject()), subject(), None, fixture_mode=True)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
@@ -172,7 +173,21 @@ def resealed(**over):
 
 
 DROP = object()
-CROSS_CHECKED_ALLOW = dict(cross_checked=True, detail=DROP, supplied_hb_epoch="1024")  # over the fixture (hb_epoch "1024")
+SHARED_DIR = ROOT / "tests/fixtures/base-state-readback"
+SHARED_BLOBS = {"labs-main-978b8880-producer-7ad6d81f.json": "cfaaec20bbf05e12826be99a89b3befa1c3e30a7",
+                "labs-main-978b8880-producer-7ad6d81f-hb-epoch-469411750-cross-checked.json": "8198608bab67ef88ed52df98f24ef9bcb6223335",
+                "labs-main-978b8880-producer-7ad6d81f-hb-epoch-469411751-mismatch.json": "5adff78869c158e95a1457ffa77e2d19494a998f",
+                "labs-main-978b8880-producer-7ad6d81f-hb-epoch-null-string.json": "f1090adab56890c3bb8a30f4519b67640256620b"}
+
+
+def producer(suffix):
+    """A Labs#3266 @7ad6d81f receipt from the shared fixture directory, checked against its TVC#519 blob first."""
+    name = "labs-main-978b8880-producer-7ad6d81f%s.json" % suffix
+    data = (SHARED_DIR / name).read_bytes()
+    assert fx.git_blob_sha(data) == SHARED_BLOBS[name], name
+    return json.loads(data)
+E, E1 = fx.FIXTURE_HB_EPOCH, str(int(fx.FIXTURE_HB_EPOCH) + 1)  # commit 5: the shared fixture's observed epoch
+CROSS_CHECKED_ALLOW = dict(cross_checked=True, detail=DROP, supplied_hb_epoch=E)  # over the shared fixture
 
 
 class ReadbackRepinTests(unittest.TestCase):
@@ -198,29 +213,37 @@ class ReadbackRepinTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(data).hexdigest(), PIN["sha256"])
 
     def test_producer_shapes_are_observed(self):
-        """Ruling ~17:15Z: the producer always emits cross_checked. Omitted flag: {cross_checked: false, detail:
-        HB_EPOCH_NOT_CROSS_CHECKED}; cross-checked: cross_checked true plus the supplied value; mismatch: DENY with cross_checked true."""
-        omitted = fx.fixture_base_state_readback()
-        self.assertEqual((omitted["cross_checked"], omitted["detail"]), (False, "HB_EPOCH_NOT_CROSS_CHECKED"))  # our fixture follows it
-        crossed = resealed(**CROSS_CHECKED_ALLOW)
-        for rb in (omitted, crossed):
+        """Labs#3266 @7ad6d81f (ruling ~17:15Z: the producer always emits cross_checked), over the producer's own receipts at
+        Labs main 978b8880 / ledger a5bb54d8, carried byte-for-byte from TVC#519 (tests/fixtures/base-state-readback/)."""
+        omitted, crossed, mismatch, null = (producer(n) for n in ("", "-hb-epoch-469411750-cross-checked",
+                                                                  "-hb-epoch-469411751-mismatch", "-hb-epoch-null-string"))
+        self.assertEqual(omitted, fx.fixture_base_state_readback())  # the shared fixture is the default readback
+        self.assertEqual((omitted["cross_checked"], omitted["detail"]), (False, "HB_EPOCH_NOT_CROSS_CHECKED"))
+        self.assertNotIn("supplied_hb_epoch", omitted)
+        self.assertEqual((crossed["cross_checked"], crossed["supplied_hb_epoch"]), (True, E))
+        self.assertNotIn("detail", crossed)
+        self.assertEqual((mismatch["disposition"], mismatch["cross_checked"], mismatch["supplied_hb_epoch"]), ("DENY", True, E1))
+        self.assertEqual((null["disposition"], null["cross_checked"], null["supplied_hb_epoch"]), ("FAIL_CLOSED", False, "null"))
+        for rb in (omitted, crossed, mismatch, null):
             self.assertIsNone(wi.readback_shape_violation(rb))
             self.assertNotIn("hb_epoch_cross_check", rb)
-            for supplied in ("1024", wi.HB_EPOCH_NOT_CROSS_CHECKED):
-                self.assertEqual(wi.verify_admission_hb_epoch(supplied, rb, HEAD, fixture_mode=True)["disposition"], "ALLOW")
-            self.assertEqual(refusal(wi.verify_admission_hb_epoch, "1025", rb, HEAD, fixture_mode=True)["failure_code"], "HB_EPOCH_MISMATCH")
-        mismatch = resealed(disposition="DENY", failure_code="HB_EPOCH_MISMATCH", cross_checked=True, detail=DROP)
-        self.assertIsNone(wi.readback_shape_violation(mismatch))
-        # explicit '' / 'null' / sentinel at the producer: FAIL_CLOSED, both slots null -> unobserved here
-        out = refusal(wi.verify_admission_hb_epoch, "1024", resealed(disposition="FAIL_CLOSED", failure_code="HB_EPOCH_SOURCE_UNOBSERVED",
-                                                                     hb_epoch=None, hb_epoch_source=None, detail=DROP), HEAD, fixture_mode=True)
-        self.assertEqual(out["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
+            self.assertEqual(rb["result_sha256"], wi.sha({k: v for k, v in rb.items() if k != "result_sha256"}))
+        for rb in (omitted, crossed, mismatch):  # the epoch was observed (DENY HB_EPOCH_MISMATCH binds it, as before)
+            for supplied in (E, wi.HB_EPOCH_NOT_CROSS_CHECKED):
+                self.assertEqual(wi.verify_admission_hb_epoch(supplied, rb, HEAD)["disposition"], "ALLOW")  # real receipts: no fixture_mode
+            self.assertEqual(refusal(wi.verify_admission_hb_epoch, E1, rb, HEAD)["failure_code"], "HB_EPOCH_MISMATCH")
+        out = refusal(wi.verify_admission_hb_epoch, E, null, HEAD)
+        self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
+                         ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED", "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"))
+        # 7ad6d81f's "equal-int" cross-checked ALLOW carries the supplied value as a JSON integer: accepted
+        self.assertIsNone(wi.readback_shape_violation(resealed(supplied_hb_epoch=int(E), **{k: v for k, v in CROSS_CHECKED_ALLOW.items()
+                                                                                          if k != "supplied_hb_epoch"})))
         # our own output always carries cross_checked
-        out = wi.verify_admission_hb_epoch("1024", omitted, HEAD, fixture_mode=True)
-        self.assertEqual((out["cross_checked"], out["supplied_hb_epoch"]), (True, "1024"))
+        out = wi.verify_admission_hb_epoch(E, omitted, HEAD)
+        self.assertEqual((out["cross_checked"], out["supplied_hb_epoch"]), (True, E))
 
     def assert_void(self, rb, name):
-        for supplied in ("1024", "1025", wi.HB_EPOCH_NOT_CROSS_CHECKED):
+        for supplied in (E, E1, wi.HB_EPOCH_NOT_CROSS_CHECKED):
             out = refusal(wi.verify_admission_hb_epoch, supplied, rb, HEAD, fixture_mode=True)
             self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]),
                              ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED", "READBACK_SHAPE_MATCHES_PINNED_PRODUCER"), (name, supplied))
@@ -238,9 +261,10 @@ class ReadbackRepinTests(unittest.TestCase):
             "detail, no cross_checked": resealed(cross_checked=DROP),
             "cross_checked true with the marker": resealed(cross_checked=True),
             "cross_checked true, no supplied value": resealed(cross_checked=True, detail=DROP),
-            "cross_checked true, other supplied value": resealed(cross_checked=True, detail=DROP, supplied_hb_epoch="1025"),
-            "cross_checked true, int supplied value": resealed(cross_checked=True, detail=DROP, supplied_hb_epoch=1024),
-            "cross_checked false with a supplied value": resealed(supplied_hb_epoch="1024"),
+            "cross_checked true, other supplied value": resealed(cross_checked=True, detail=DROP, supplied_hb_epoch=E1),
+            "cross_checked true, other int supplied value": resealed(cross_checked=True, detail=DROP, supplied_hb_epoch=int(E1)),
+            "cross_checked true, bool supplied value": resealed(cross_checked=True, detail=DROP, supplied_hb_epoch=True),
+            "cross_checked false with a supplied value": resealed(supplied_hb_epoch=E),
             "cross_checked 'false'": resealed(cross_checked="false"),
             "DENY without cross_checked": resealed(disposition="DENY", failure_code="HB_EPOCH_MISMATCH", cross_checked=DROP, detail=DROP),
             "marker on a DENY": resealed(disposition="DENY", failure_code="HB_EPOCH_MISMATCH"),
@@ -294,8 +318,8 @@ class MarkerTests(unittest.TestCase):
         self.assertNotIn("hb_epoch_cross_check", out)
         inv = {i["invariant_id"]: i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"]}
         self.assertEqual(inv["NOT_CROSS_CHECKED_MARKER"]["canonical"], {"cross_checked": False, "detail": "HB_EPOCH_NOT_CROSS_CHECKED"})
-        self.assertEqual(inv["NOT_CROSS_CHECKED_MARKER"]["producers_to_align"][0], "P4 #192 (detail)")
-        self.assertTrue(inv["NOT_CROSS_CHECKED_MARKER"]["producers_to_align"][1].startswith("Labs#3266: next head"))
+        self.assertTrue(inv["NOT_CROSS_CHECKED_MARKER"]["producers_to_align"][0].startswith("P4 #192 (detail"))
+        self.assertTrue(any(p.startswith("Labs#3266 @7ad6d81f") for p in inv["NOT_CROSS_CHECKED_MARKER"]["producers_aligned"]))
 
 
 class ResolvedIssueFactsTests(unittest.TestCase):

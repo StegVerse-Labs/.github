@@ -199,5 +199,40 @@ class IntegerEpochTests(unittest.TestCase):
         self.assertNotEqual(out.get("rule"), "NATIVE_RECORD_HB_EPOCH_IS_A_STRING")
 
 
+class MalformedEpochStringTests(unittest.TestCase):
+    """Commit 5 (NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED): validate_change agrees with admission on hb_epoch strings."""
+
+    def admitted(self, ch):
+        o = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), fx.fixture_resolved_issues(ch))
+        return refusal(wi.admit, o, fixture_mode=True)
+
+    def test_malformed_string_is_deny_in_both(self):
+        ok = fx.known_good_change(fx.SURFACE_PATH["transition"])
+        for bad in ("abc", "+33", "31", "0031", " 469411750", "469411750 ", "-44", "4.6e8", "0x1c"):
+            ch = base.reseal_change(dict(ok, hb_epoch=bad))
+            out = refusal(wi.validate_change, ch)
+            self.assertEqual((out["disposition"], out["failure_code"], out.get("rule")),
+                             ("DENY", "HB_EPOCH_MISMATCH", "NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED"), repr(bad))
+            for k in ("failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt"):
+                self.assertTrue(out.get(k), k)
+            adm = self.admitted(ch)
+            self.assertEqual((adm["disposition"], adm["failure_code"]), ("DENY", "HB_EPOCH_MISMATCH"), repr(bad))
+
+    def test_unobserved_strings_stay_fail_closed_in_both(self):
+        ok = fx.known_good_change(fx.SURFACE_PATH["transition"])
+        for v in ("", "null"):
+            ch = base.reseal_change(dict(ok, hb_epoch=v))
+            out = refusal(wi.validate_change, ch)
+            self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"), repr(v))
+            adm = self.admitted(ch)
+            self.assertEqual((adm["disposition"], adm["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"), repr(v))
+
+    def test_well_formed_string_passes(self):
+        ok = fx.known_good_change(fx.SURFACE_PATH["transition"])
+        self.assertEqual(ok["hb_epoch"], "469411750")
+        self.assertEqual(wi.validate_change(ok)["hb_epoch"], "469411750")
+        self.assertEqual(self.admitted(ok)["disposition"], "ALLOW")
+
+
 if __name__ == "__main__":
     unittest.main()

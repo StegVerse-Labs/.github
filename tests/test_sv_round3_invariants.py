@@ -129,7 +129,7 @@ class NativeHbEpochTests(unittest.TestCase):
         self.assertIsInstance(org["hb_reference"]["epoch"], int)
         self.assertNotIn("hb_epoch", org)
         self.assertEqual(wi.validate_change(ch, objs)["hb_epoch"], ch["hb_epoch"])
-        self.assertEqual(wi.verify_native_hb_epoch(ch, objs)["hb_epoch"], "1024")
+        self.assertEqual(wi.verify_native_hb_epoch(ch, objs)["hb_epoch"], str(int(ch["hb_epoch"])))
 
     def test_mismatch_is_deny(self):
         ch = self.change()

@@ -17,6 +17,12 @@ PIN = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
 HEAD = fx.LABS_BASE["ledger_head"]
 
 
+def SYN():
+    """Commit 5: the synthetic fixture_only readback at epoch 1024 (these predicate tests' own values); the default
+    fx.fixture_base_state_readback() is now the shared producer fixture (SharedFixtureTests)."""
+    return fx.fixture_base_state_readback(hb_epoch="1024")
+
+
 def refusal(fn, *a, **k):
     try:
         return fn(*a, **k)
@@ -38,7 +44,7 @@ def lane_c_refusal(why):
     """The FAIL_CLOSED receipt Lane C's readback emits when the head receipt's epoch is invalid (Labs#3266 @2ba0e329,
     sv_change_base_state_readback.py blob 2c730142: _refuse(base, 'HB_EPOCH_SOURCE_UNOBSERVED', ...)): hb_epoch and
     hb_epoch_source are both present and null on every FAIL_CLOSED."""
-    rb = fx.fixture_base_state_readback()
+    rb = SYN()
     body = {k: v for k, v in rb.items() if k != "result_sha256"}
     body.update({"hb_epoch": None, "hb_epoch_source": None, "disposition": "FAIL_CLOSED", "failure_code": "HB_EPOCH_SOURCE_UNOBSERVED",
                  "failed_predicate": INV,
@@ -53,13 +59,13 @@ def lane_c_mismatch(expected, observed="1024"):
     rb = fx.fixture_base_state_readback(hb_epoch=observed)
     body = {k: v for k, v in rb.items() if k != "result_sha256"}
     body.update({"disposition": "DENY", "failure_code": "HB_EPOCH_MISMATCH", "failed_predicate": INV, "expected_hb_epoch": expected,
-                 "flag_failure_code": "HB_EPOCH_FLAG_MISMATCH", "cross_checked": True})  # ruling ~17:15Z: always emitted
+                 "flag_failure_code": "HB_EPOCH_FLAG_MISMATCH", "cross_checked": True, "supplied_hb_epoch": expected})  # ruling ~17:15Z: always emitted
     body.pop("detail", None)
     return wi.seal(body, "result_sha256")
 
 
 class PredicateTests(unittest.TestCase):
-    RB = fx.fixture_base_state_readback()
+    RB = SYN()
 
     def verify(self, supplied="1024", rb="fixture", head=HEAD, fixture_mode=True):
         return refusal(wi.verify_admission_hb_epoch, supplied, self.RB if rb == "fixture" else rb, head, fixture_mode=fixture_mode)
@@ -160,7 +166,7 @@ class PredicateTests(unittest.TestCase):
         # absent: a change with no hb_epoch (the record field is the epoch source) reaches admission as supplied_hb_epoch None
         ch = fx.known_good_change(fx.SURFACE_PATH["ledger_writer"])
         ch = base.reseal_change({k: v for k, v in ch.items() if k != "hb_epoch"})
-        obs = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), fx.fixture_resolved_issues(ch))
+        obs = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), SYN(), fx.fixture_resolved_issues(ch))
         self.assertIsNone(obs["supplied_hb_epoch"])
         out = wi.admit(obs, fixture_mode=True)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
@@ -231,9 +237,9 @@ class PredicateTests(unittest.TestCase):
 
 
 class AdmissionTests(unittest.TestCase):
-    def obs(self, path=fx.SURFACE_PATH["ledger_writer"], rb="fixture", hb="1024"):
+    def obs(self, path=fx.SURFACE_PATH["ledger_writer"], rb="fixture", hb=fx.FIXTURE_HB_EPOCH):
         ch = fx.known_good_change(path)
-        if hb != "1024":
+        if hb != fx.FIXTURE_HB_EPOCH:
             ch = base.reseal_change(dict(ch, hb_epoch=hb))
         return wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback() if rb == "fixture" else rb,
                                    fx.fixture_resolved_issues(ch))
@@ -261,19 +267,21 @@ class AdmissionTests(unittest.TestCase):
             out = wi.admit(self.obs(path, hb="2048"), fixture_mode=True)
             self.assertEqual((out["disposition"], out["failure_code"]), ("DENY", "HB_EPOCH_MISMATCH"), kind)
 
-    def test_every_positive_control_carries_a_sealed_fixture_readback(self):
+    def test_every_positive_control_carries_the_shared_readback(self):
+        # commit 5: every positive control carries the shared producer fixture (blob cfaaec20, TVC#519 / P4 org#192), unmodified
+        shared = fx.shared_readback()
+        self.assertEqual(fx.git_blob_sha(fx.SHARED_READBACK.read_bytes()), "cfaaec20bbf05e12826be99a89b3befa1c3e30a7")
         for s in base.jsonl("data/admission-scenarios/corpus.jsonl"):
             if s["expected_disposition"] == "ALLOW":
                 rb = s["observed_inputs"]["hb_epoch_readback"]
-                self.assertEqual(rb["result_sha256"], wi.sha({k: v for k, v in rb.items() if k != "result_sha256"}), s["scenario_id"])
-                self.assertIs(rb["fixture_only"], True)
-                self.assertEqual(rb["unobserved_fields"], ["bound_main_commit", "hb_epoch", "hb_epoch_source/receipt", "sources"])
+                self.assertEqual(rb, shared, s["scenario_id"])
+                self.assertNotIn("fixture_only", rb)
                 self.assertEqual(rb["hb_epoch"], s["observed_inputs"]["supplied_hb_epoch"])
 
     def test_inputs_carry_the_supplied_epoch_and_readback(self):
         o = self.obs()
-        self.assertEqual(o["supplied_hb_epoch"], "1024")
-        self.assertEqual(o["hb_epoch_readback"], fx.fixture_base_state_readback())
+        self.assertEqual(o["supplied_hb_epoch"], "469411750")
+        self.assertEqual(o["hb_epoch_readback"], fx.shared_readback())
         self.assertIsNone(self.obs(rb=None)["hb_epoch_readback"])
 
 
@@ -371,9 +379,12 @@ class CorpusTests(unittest.TestCase):
                              cwd=ROOT, capture_output=True, text=True)
         if old.returncode != 0:
             self.skipTest("fc19b532 not in the local clone")
-        # fc19b532's classes are a prefix: epoch v1, epoch v2, the 5 bootstrap classes, the native-UNKNOWN class, epoch v3 and the
-        # gate-pair class (commit 4) follow
-        self.assertEqual([json.loads(l) for l in old.stdout.splitlines()], self.CLASSES[:-6 - len(fx.BOOTSTRAP_SEEDS)])  # + epoch v4
+        # fc19b532's classes are a prefix BY ID AND ORDER: epoch v1, epoch v2, the 5 bootstrap classes, the native-UNKNOWN class, epoch
+        # v3, the gate-pair class and epoch v4 (commit 4) follow. Commit 5 re-derived every class from the shared readback fixture
+        # (observed epoch 469411750 instead of the fixture value 1024), so content is re-derived, ids never move.
+        prefix = self.CLASSES[:-6 - len(fx.BOOTSTRAP_SEEDS)]
+        self.assertEqual([(c["class_id"], c["class_version"]) for c in map(json.loads, old.stdout.splitlines())],
+                         [(c["class_id"], c["class_version"]) for c in prefix])
 
 
 

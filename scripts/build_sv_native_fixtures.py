@@ -24,7 +24,15 @@ al = _load("admission_learning", "resident-runtime/admission_learning.py")
 mg = _load("sv_migration", "resident-runtime/sv_migration.py")
 ss = _load("schema_subset", "resident-runtime/schema_subset.py")
 
-FIXTURE_HB_EPOCH = "1024"
+# Commit 5: the epoch the shared #3266 readback fixture observed at ledger head a5bb54d8 (receipt 35810b65), so the corpus
+# and the positive controls carry the observed epoch, not a fixture value
+FIXTURE_HB_EPOCH = "469411750"
+# The shared base-state readback fixture TVC#519 and P4 org#192 adopt, byte-for-byte (blob cfaaec20; TVC#519 @fe768899
+# tests/fixtures/base-state-readback/, = P4 org#192 @be38e05c labs-main-978b8880-producer-9c9b9f51.json): the unmodified
+# Labs#3266 producer's omitted-flag ALLOW at Labs main 978b8880 / ledger a5bb54d8 (result_sha256 0653c219)
+SHARED_READBACK_DIR = ROOT / "tests/fixtures/base-state-readback"
+SHARED_READBACK = SHARED_READBACK_DIR / "labs-main-978b8880-producer-7ad6d81f.json"
+SHARED_READBACK_BLOB = "cfaaec20bbf05e12826be99a89b3befa1c3e30a7"
 SESSION = "P1 Ecosystem AI Lane (d8cbc58c)"
 LABS_BASE = {"registry_generation": 319, "ledger_head": "a5bb54d81893b392a3ce28182986fc39857807e1"}
 MIG = ROOT / "data/sv-work-items/migration"
@@ -161,11 +169,21 @@ def signoff_receipts_for(ch: dict) -> list[dict]:
     return [fixture_signoff_receipt(s["role"], ch["change_id"], ch["head"]["change_digest"]) for s in ch.get("signoffs") or []]
 
 
+def shared_readback() -> dict:
+    """The shared fixture (SHARED_READBACK), parsed from its exact bytes; refuses if the bytes are not blob cfaaec20."""
+    data = SHARED_READBACK.read_bytes()
+    if git_blob_sha(data) != SHARED_READBACK_BLOB:
+        raise SystemExit("shared readback fixture drifted from blob " + SHARED_READBACK_BLOB)
+    return json.loads(data)
+
+
 def fixture_base_state_readback(base: dict = LABS_BASE, hb_epoch: str = FIXTURE_HB_EPOCH) -> dict:
-    """FIXTURE ONLY: a sealed ALLOW base-state readback receipt in the shape of Lane C's RTC-SV-CHANGE-BASE-STATE-
-    READBACK-014 (Labs#3266 @9c9b9f51, readback blob 035352f6: hb_epoch_source {ledger_head, receipt, field}) for the positive controls. Nothing
-    was read: fixture_only is true, the values no readback observed are UNKNOWN and listed in unobserved_fields, and
-    sv_work_items.verify_admission_hb_epoch counts it only in fixture_mode."""
+    """The base-state readback for the positive controls and the corpus. With the defaults (LABS_BASE, the observed epoch)
+    this is the SHARED fixture, the unmodified Labs#3266 producer's sealed omitted-flag ALLOW at ledger head a5bb54d8 that
+    TVC#519 and P4 org#192 adopt (commit 5), byte-for-byte. Any other base or epoch is a FIXTURE ONLY synthetic receipt in
+    the producer's shape: fixture_only true, unobserved values UNKNOWN and listed, counted only in fixture_mode."""
+    if dict(base) == LABS_BASE and hb_epoch == FIXTURE_HB_EPOCH:
+        return shared_readback()
     return wi.seal({"schema": wi.BASE_STATE_READBACK_SCHEMA, "component_id": "RTC-SV-CHANGE-BASE-STATE-READBACK-014",
                     "repository": "StegVerse-Labs/.github", "base_ref": dict(base), "bound_main_commit": wi.UNKNOWN,
                     "sources": [], "hb_epoch": hb_epoch,
@@ -697,6 +715,7 @@ CONTRACT_FILES = sorted([
     "resident-runtime/sv_work_items.py", "resident-runtime/admission_learning.py", "resident-runtime/stage_gate.py",
     "resident-runtime/sv_migration.py", "resident-runtime/schema_subset.py", "scripts/build_sv_native_fixtures.py",
     "tests/sv_ledger_fixtures.py",  # orchestrator 16:58Z: Lane D pins it (blob 30a9fe89)
+    "tests/fixtures/base-state-readback/labs-main-978b8880-producer-7ad6d81f.json",  # commit 5: shared readback (blob cfaaec20)
     *IMPORT_CLOSURE_FILES])
 
 

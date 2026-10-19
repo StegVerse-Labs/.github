@@ -265,7 +265,7 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - The record goes to the PR body (projection) and to Lane B.
 
 ## Round 7 (epoch part): the readback pin, and UNKNOWN is FAIL_CLOSED
-- **Readback alignment (Labs#3266, now pinned @9c9b9f51, readback blob 035352f6, tests blob c7228fca; see Round 9):**
+- **Readback alignment (Labs#3266, now pinned @7ad6d81f, readback blob 17ef4401, tests blob 81cf78b9; see Round 10):**
   - `hb_epoch_source` is `{ledger_head, receipt: "receipts/<hex>.json", field}`. It is sealed with the epoch on ALLOW and on DENY HB_EPOCH_MISMATCH, and present but null on FAIL_CLOSED.
   - The reader accepts both observed dispositions and requires the receipt path; UNKNOWN is allowed only for a fixture in fixture_mode. The fixture key `receipt_sha256` is renamed `receipt`.
   - Pinned in `invariants.json` (`readback_pin`, `readback_semantics`) and `sv_work_items.BASE_STATE_READBACK_PIN`.
@@ -308,7 +308,7 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - **Evidence producers:** SV_WORK_ITEM_SCHEMAS_VALIDATE is produced by `schema-validate` (`python3 scripts/build_sv_native_fixtures.py --check`, which now really validates the migration records against the sv-issue and sv-change schemas; a failure gives FAIL_CLOSED SV_WORK_ITEM_SCHEMA_INVALID). EVERY_MIGRATION_FIXTURE_LOADS is produced by `unit-tests` (MigrationFixtureTests). The argv, command_paths and expected values are copied from the row; required-checks.json is unchanged.
   - **Receipt form:** sv-check-receipt.v1 is unchanged. The receipt is appended to the evaluated repository's own ledger (`receipts/<org hex>.json`, `source-receipts/<repo hex>.json`) and validated by `validate_gate_receipt`.
   - **Subject:** `stegverse.nwi-stage-evaluation-subject/v1` {repository, stage_id, manifest_blob, evaluated_commit, base_ref}. Every gate or producer receipt carries `change_digest = stage_evaluation_digest(subject)` ("sha256:" + sha256 of the change_id canonical serialization) and `head_sha = evaluated_commit`. The STAGE_GATE outcome carries the subject (`evaluate_gate(..., subject=)`). An unobserved subject gives FAIL_CLOSED STAGE_EVALUATION_SUBJECT_UNOBSERVED.
-  - **hb_epoch:** comes from the Labs#3266 readback (pinned at 9c9b9f51 since commit 4) at subject.base_ref.ledger_head, checked with `verify_admission_hb_epoch(target_repository=subject.repository)`. When the epoch is unobserved, no receipt is emitted and the evaluation is FAIL_CLOSED.
+  - **hb_epoch:** comes from the Labs#3266 readback (pinned at 7ad6d81f since commit 5) at subject.base_ref.ledger_head, checked with `verify_admission_hb_epoch(target_repository=subject.repository)`. When the epoch is unobserved, no receipt is emitted and the evaluation is FAIL_CLOSED.
   - **Cadence:** one evaluation per STAGE_GATE transition request (not per head, and not a required-checks row). One failing receipt derives exactly one issue (STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE).
   - **Corpus:** no scenario was added. The admission corpus holds SV_CHANGE scenarios evaluated by `admit()`, while a gate declaration is a property of a stage manifest; the unit tests cover it instead.
 - **Repin #3266 to 2ba0e329** (readback blob 2c730142, tests blob 31550f4d), replacing 641f4b03/fbd453e5. Delta: a malformed flag now gives DENY HB_EPOCH_MISMATCH; `""`, `"null"` or the sentinel gives FAIL_CLOSED with both slots null; an omitted-flag ALLOW adds `cross_checked: false` and `hb_epoch_cross_check`. Our reader needed no change.
@@ -351,4 +351,26 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
 - A readback missing `cross_checked`, or carrying `hb_epoch_cross_check`, is void: FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (READBACK_SHAPE_MATCHES_PINNED_PRODUCER, six fields). A self-seal cannot prove which producer path ran, so a stripped-and-resealed readback is void (tests: `test_stripped_and_resealed_is_void`; corpus axis `hb_epoch_readback.cross_checked[stripped]`, appended last).
 - P1's own output (`verify_admission_hb_epoch` ALLOW: `cross_checked: true` plus `supplied_hb_epoch`) and the fixture readback (omitted-flag form) follow this. Because the fixture readback changed, earlier corpus lines were resealed: their scenario ids and order are unchanged, but their `observed_inputs.hb_epoch_readback` bytes changed.
 - **The #3266 pin is one constant:** `sv_work_items.BASE_STATE_READBACK_PIN`. The build copies it into invariants.json and NWI-S0.json (`--check` flags drift). It is still 9c9b9f51 and is PENDING Lane C's next head.
+
+## Round 10 (commit 5): #3266 @7ad6d81f, the shared readback fixture, and well-formed epoch strings
+
+- **Repin #3266 to 7ad6d81f** (7ad6d81fb6715b68b79dac6c3cbc2f484004ab2d). The readback blob is 17ef4401 (sha256 c0365226…d5c637) and the tests blob is 81cf78b9. Only `BASE_STATE_READBACK_PIN` was edited; the build synced invariants.json and NWI-S0.json. 9c9b9f51 is added to `readback_pin_history`.
+- **Output shapes at 7ad6d81f** match the always-emitted cross_checked rule:
+  - omitted-flag ALLOW: `cross_checked: false` + `detail: HB_EPOCH_NOT_CROSS_CHECKED`, with no `supplied_hb_epoch`;
+  - cross-checked ALLOW: `cross_checked: true` + `supplied_hb_epoch`;
+  - DENY HB_EPOCH_MISMATCH: `cross_checked: true` + `supplied_hb_epoch`;
+  - FAIL_CLOSED: `cross_checked: false`, plus `supplied_hb_epoch` when the flag was given.
+- **The field name `supplied_hb_epoch` is confirmed.** The producer emits it verbatim, so a JSON integer equal by value (its "equal-int" ALLOW) is accepted.
+- The reader now also requires:
+  - `supplied_hb_epoch` on a DENY HB_EPOCH_MISMATCH;
+  - `cross_checked: false` on every other non-ALLOW readback.
+- **Shared fixture, adopted byte-for-byte:** `tests/fixtures/base-state-readback/labs-main-978b8880-producer-7ad6d81f.json`, blob cfaaec20.
+  - It is the unmodified producer's omitted-flag ALLOW at Labs main 978b8880 / ledger a5bb54d8, epoch 469411750, result_sha256 0653c219.
+  - It is identical to TVC#519 @fe768899 and to P4 org#192 @be38e05c (`labs-main-978b8880-producer-9c9b9f51.json`).
+  - TVC's three 7ad6d81f variants (cross-checked, mismatch, null-string) are carried too, byte-for-byte, for the shape tests.
+  - `fx.fixture_base_state_readback()` now returns the shared fixture. `FIXTURE_HB_EPOCH` is the observed epoch 469411750 (was the fixture value 1024).
+  - The corpus was re-derived from it: scenario ids and order are unchanged, and every line's content changed (the epoch and the readback).
+- **NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED:** validate_change now agrees with admission on epoch strings.
+  - A NATIVE hb_epoch string failing 726248a5 is DENY HB_EPOCH_MISMATCH.
+  - `""` and `"null"` are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
 

@@ -85,15 +85,15 @@ READBACK_RECEIPT_PATH = re.compile(r"^receipts/[0-9a-f]{64}\.json$")
 # field}, sealed on ALLOW and DENY HB_EPOCH_MISMATCH, present and null on every FAIL_CLOSED.
 # SINGLE SOURCE for the #3266 pin: data/sv-work-items/invariants.json (ADMISSION_HB_EPOCH...readback_pin) and
 # data/sv-work-items/stages/NWI-S0.json (exit_gate_check.hb_epoch.readback_pin) are synced from this constant by
-# scripts/build_sv_native_fixtures.py (--check flags drift). PENDING: Lane C's next #3266 head (always-emitted cross_checked)
-# replaces 9c9b9f51 here.
+# scripts/build_sv_native_fixtures.py (--check flags drift). Commit 5: Labs#3266 @7ad6d81f (always-emitted cross_checked;
+# supersedes 9c9b9f51, whose cross-checked ALLOW carried no cross_checked key).
 BASE_STATE_READBACK_PIN = {"repository": "StegVerse-Labs/.github", "pull_request": 3266,
-                           "head": "9c9b9f51ba658d94c8998985d4bf3783edb45f52",
+                           "head": "7ad6d81fb6715b68b79dac6c3cbc2f484004ab2d",
                            "file": "resident-runtime/sv_change_base_state_readback.py",
-                           "blob": "035352f6dd729724b095c0dcf320b8c1b559f235",
-                           "sha256": "de5f8b5a7c5da09759f387ff511793c9681e78e60f49ec2f972c72c4fd3667ef",
+                           "blob": "17ef44016411852dde7c142e3faaa803f4ee63bd",
+                           "sha256": "c0365226ddc4fa2bf97ad2ebd1c089b2c8b51034df27783d99164e5f26d5c637",
                            "tests_file": "tests/test_sv_change_base_state_readback_component.py",
-                           "tests_blob": "c7228fcac8a82d8a1756edb6d5e61de4d4b25d2c"}
+                           "tests_blob": "81cf78b9dff646859b3f017e83966ac25b8fc222"}
 
 
 class _NotCrossChecked:
@@ -105,8 +105,8 @@ class _NotCrossChecked:
 HB_EPOCH_NOT_CROSS_CHECKED = _NotCrossChecked()
 NOT_CROSS_CHECKED_DETAIL = "HB_EPOCH_NOT_CROSS_CHECKED"  # the canonical marker's detail value
 # Ruling ~17:15Z (NOT_CROSS_CHECKED_MARKER): the producer always emits cross_checked; a cross-checked ALLOW carries the
-# supplied value under this key (the name the producer already uses for the supplied --hb-epoch in its refusal details;
-# to be confirmed against the next Labs#3266 head)
+# supplied value under this key (confirmed at Labs#3266 @7ad6d81f: "supplied_hb_epoch", verbatim if JSON-scalar; also on
+# DENY HB_EPOCH_MISMATCH and on a FAIL_CLOSED whose flag was given)
 READBACK_SUPPLIED_FIELD = "supplied_hb_epoch"
 # Explicit unobserved values: FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY)
 SUPPLIED_EPOCH_UNOBSERVED_VALUES = (None, "", "null", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
@@ -567,9 +567,30 @@ def native_epoch_type_check(rec: Mapping[str, Any], e: str) -> None:
     """NATIVE_RECORD_HB_EPOCH_IS_A_STRING (commit 4; orchestrator 16:55Z): a NATIVE SV_CHANGE's hb_epoch is a string
     (schemas/sv-change.v1.schema.json 6b43b6ec). An observed value of another JSON type (an int such as 1024, a float, a
     bool, an array or object) is malformed and is DENY HB_EPOCH_MISMATCH, as admission's supplied-epoch rule already gives
-    for bools and non-digits (verify_admission_hb_epoch). Absent / null stays unobserved (FAIL_CLOSED, unchanged)."""
-    if rec.get("record_mode") != "NATIVE" or "hb_epoch" not in rec or rec["hb_epoch"] is None or isinstance(rec["hb_epoch"], str):
+    for bools and non-digits (verify_admission_hb_epoch). Absent / null stays unobserved (FAIL_CLOSED, unchanged).
+    NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED (commit 5): a string that fails 726248a5 ('abc', '+33', '31', ' 44') is DENY
+    HB_EPOCH_MISMATCH, as in admission; "" and "null" are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED, as in admission."""
+    if rec.get("record_mode") != "NATIVE" or "hb_epoch" not in rec or rec["hb_epoch"] is None:
         return
+    v = rec["hb_epoch"]
+    if isinstance(v, str):
+        # commit 5 (open item closed): a malformed epoch STRING is DENY HB_EPOCH_MISMATCH here too, as admission gives
+        # (verify_admission_hb_epoch: 726248a5 failures other than the unobserved values are DENY); "", "null" and the
+        # UNKNOWN sentinel stay unobserved (FAIL_CLOSED, never DENY), checked first, as in admission
+        if v == UNKNOWN:
+            return  # mode_check: UNKNOWN_IN_NATIVE_RECORD (FAIL_CLOSED)
+        if v in SUPPLIED_EPOCH_UNOBSERVED_VALUES:
+            raise _fail("HB_EPOCH_SOURCE_UNOBSERVED", ADMISSION_HB_EPOCH_INVARIANT,
+                        "a NATIVE SV_CHANGE carries the observed base ledger head epoch as ASCII digits", e,
+                        "after the epoch is observed at base_ref.ledger_head; nothing was recorded", hb_epoch=v,
+                        rule="UNKNOWN_IS_FAIL_CLOSED_NEVER_DENY")
+        bad = kernel.supplied_epoch_failure(v)
+        if bad is None:
+            return
+        raise _deny(HB_EPOCH_MISMATCH, ADMISSION_HB_EPOCH_INVARIANT,
+                    "a NATIVE SV_CHANGE carries hb_epoch as ASCII digits >= 32 in a JSON string (the base ledger head's epoch)",
+                    e, "propose a successor SV_CHANGE whose hb_epoch is the epoch string; nothing was recorded",
+                    hb_epoch=v, supplied_epoch_rule=bad[0] + ": " + bad[1], rule="NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED")
     raise _deny(HB_EPOCH_MISMATCH, ADMISSION_HB_EPOCH_INVARIANT,
                 "a NATIVE SV_CHANGE carries hb_epoch as ASCII digits in a JSON string (the base ledger head's epoch, e.g. \"469411750\")",
                 e, "propose a successor SV_CHANGE whose hb_epoch is the epoch string; nothing was recorded",
@@ -1063,11 +1084,15 @@ def readback_shape_violation(rb: Mapping[str, Any]) -> str | None:
     if not isinstance(cc, bool):
         return "cross_checked is not a JSON boolean"
     if rb.get("disposition") == "DENY" and rb.get("failure_code") == HB_EPOCH_MISMATCH:
-        # the producer's cross-check ran and disagreed: only the cross-checked path yields this DENY
-        if cc is not True or rb.get("detail") == NOT_CROSS_CHECKED_DETAIL:
-            return "a DENY HB_EPOCH_MISMATCH readback that does not carry cross_checked true (only a cross-check can mismatch)"
+        # the producer's cross-check ran and disagreed (7ad6d81f: cross_checked true, supplied_hb_epoch, no detail)
+        if cc is not True or rb.get("detail") == NOT_CROSS_CHECKED_DETAIL or READBACK_SUPPLIED_FIELD not in rb:
+            return ("a DENY HB_EPOCH_MISMATCH readback that does not carry cross_checked true and " + READBACK_SUPPLIED_FIELD
+                    + " (only a cross-check can mismatch)")
         return None
     if rb.get("disposition") != "ALLOW":
+        # 7ad6d81f FAIL_CLOSED: cross_checked false (no comparison with a sealed epoch was made)
+        if cc is not False:
+            return "a non-ALLOW readback other than DENY HB_EPOCH_MISMATCH carries cross_checked false (no comparison was made)"
         return None
     if cc is False:
         if rb.get("detail") != NOT_CROSS_CHECKED_DETAIL or READBACK_SUPPLIED_FIELD in rb:
@@ -1075,10 +1100,12 @@ def readback_shape_violation(rb: Mapping[str, Any]) -> str | None:
                     "{cross_checked: false, detail: HB_EPOCH_NOT_CROSS_CHECKED}")
         return None
     sv, ep = rb.get(READBACK_SUPPLIED_FIELD), rb.get("hb_epoch")
-    if rb.get("detail") == NOT_CROSS_CHECKED_DETAIL or not (isinstance(sv, str) and re.fullmatch(r"[0-9]+", sv)) \
+    # 7ad6d81f emits the supplied value verbatim: ASCII digits, or a JSON integer equal by value ("equal-int" is ALLOW there)
+    sv_ok = (isinstance(sv, str) and re.fullmatch(r"[0-9]+", sv) is not None) or (isinstance(sv, int) and not isinstance(sv, bool))
+    if rb.get("detail") == NOT_CROSS_CHECKED_DETAIL or not sv_ok \
             or not (isinstance(ep, str) and re.fullmatch(r"[0-9]+", ep)) or int(sv) != int(ep):
         return ("a cross-checked ALLOW that does not carry cross_checked true with the supplied value (" + READBACK_SUPPLIED_FIELD
-                + ", ASCII digits equal to the sealed hb_epoch) and no not-cross-checked detail")
+                + ", ASCII digits or a JSON integer equal to the sealed hb_epoch) and no not-cross-checked detail")
     return None
 
 
@@ -1125,7 +1152,7 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
         raise _readback_epoch_unobserved("not a " + BASE_STATE_READBACK_SCHEMA + " receipt", ledger_head)
     if not isinstance(rb.get("result_sha256"), str) or rb["result_sha256"] != sha({k: v for k, v in rb.items() if k != "result_sha256"}):
         raise _readback_epoch_unobserved("the readback receipt does not verify against its own body (result_sha256)", ledger_head)
-    # Labs#3266 @9c9b9f51 producer semantics (unchanged since 2ba0e329): the epoch and its source are sealed on ALLOW and on DENY HB_EPOCH_MISMATCH (the
+    # Labs#3266 @7ad6d81f producer semantics (epoch slots unchanged since 2ba0e329): the epoch and its source are sealed on ALLOW and on DENY HB_EPOCH_MISMATCH (the
     # epoch was observed; only the producer's --hb-epoch cross-check disagreed); on every FAIL_CLOSED both are present and null.
     shape = readback_shape_violation(rb)
     if shape is not None:

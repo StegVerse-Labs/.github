@@ -81,19 +81,19 @@
       ],
       "mismatch": {
         "disposition": "DENY",
-        "disposition_source": "orchestrator ruling 2026-10-18 (both verifiers, 60 cases) and the contract invariant refinement 15:59Z (narrowed 16:03Z); Lane C's Labs#3266 @9c9b9f51 (readback blob 035352f6; DENY semantics unchanged since 2ba0e329) emits DENY HB_EPOCH_MISMATCH for a contradicting --hb-epoch (alignment item closed)",
+        "disposition_source": "orchestrator ruling 2026-10-18 (both verifiers, 60 cases) and the contract invariant refinement 15:59Z (narrowed 16:03Z); Lane C's Labs#3266 @7ad6d81f (readback blob 17ef4401; DENY semantics unchanged since 2ba0e329, cross_checked true since 7ad6d81f) emits DENY HB_EPOCH_MISMATCH for a contradicting --hb-epoch (alignment item closed)",
         "failure_code": "HB_EPOCH_MISMATCH",
         "why_deny": "a sealed epoch that contradicts the record is an observed contradiction, not an unobservation"
       },
       "native_record_application": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
       "readback_pin": {
-        "blob": "035352f6dd729724b095c0dcf320b8c1b559f235",
+        "blob": "17ef44016411852dde7c142e3faaa803f4ee63bd",
         "file": "resident-runtime/sv_change_base_state_readback.py",
-        "head": "9c9b9f51ba658d94c8998985d4bf3783edb45f52",
+        "head": "7ad6d81fb6715b68b79dac6c3cbc2f484004ab2d",
         "pull_request": 3266,
         "repository": "StegVerse-Labs/.github",
-        "sha256": "de5f8b5a7c5da09759f387ff511793c9681e78e60f49ec2f972c72c4fd3667ef",
-        "tests_blob": "c7228fcac8a82d8a1756edb6d5e61de4d4b25d2c",
+        "sha256": "c0365226ddc4fa2bf97ad2ebd1c089b2c8b51034df27783d99164e5f26d5c637",
+        "tests_blob": "81cf78b9dff646859b3f017e83966ac25b8fc222",
         "tests_file": "tests/test_sv_change_base_state_readback_component.py"
       },
       "readback_pin_history": [
@@ -110,19 +110,27 @@
           "replaced_by": "9c9b9f51ba658d94c8998985d4bf3783edb45f52 (commit 4; #3266 emits the canonical NOT_CROSS_CHECKED_MARKER at top level)",
           "sha256": "88d3b72b3915c71b191b71a0dd7c607dfc675f0490acfe87ec92f808f17eaefe",
           "tests_blob": "31550f4d54555df4683b37401da39067b71cee60"
+        },
+        {
+          "blob": "035352f6dd729724b095c0dcf320b8c1b559f235",
+          "head": "9c9b9f51ba658d94c8998985d4bf3783edb45f52",
+          "replaced_by": "7ad6d81fb6715b68b79dac6c3cbc2f484004ab2d (commit 5; #3266 always emits cross_checked: cross-checked ALLOW true + supplied_hb_epoch, DENY HB_EPOCH_MISMATCH true + supplied_hb_epoch, omitted flag false + detail HB_EPOCH_NOT_CROSS_CHECKED, FAIL_CLOSED false; 9c9b9f51's cross-checked ALLOW (no cross_checked key) is void; its omitted-flag ALLOW is byte-identical to 7ad6d81f's)",
+          "sha256": "de5f8b5a7c5da09759f387ff511793c9681e78e60f49ec2f972c72c4fd3667ef",
+          "tests_blob": "c7228fcac8a82d8a1756edb6d5e61de4d4b25d2c"
         }
       ],
       "readback_semantics": {
         "delta_2ba0e329_to_9c9b9f51": "diffed git objects 2ba0e329..9c9b9f51 (5ffd8d68, 9c9b9f51): only the omitted --hb-epoch ALLOW changed; it now carries the canonical marker at top level, cross_checked false plus detail HB_EPOCH_NOT_CROSS_CHECKED, with no hb_epoch_cross_check key (NOT_CROSS_CHECKED_MARKER). Dispositions, failure codes, the sealed slots and the FAIL_CLOSED shape are unchanged. The reader now refuses the void 2ba0e329 shape (NOT_CROSS_CHECKED_MARKER ruling ~17:05Z: FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED, READBACK_SHAPE_MATCHES_PINNED_PRODUCER); otherwise unchanged",
         "delta_641f4b03_to_2ba0e329": "diffed git objects 641f4b03..2ba0e329 (415f5d02, 7a7af552, 5e536a89, 2ba0e329): a malformed --hb-epoch is now DENY HB_EPOCH_MISMATCH with hb_epoch/hb_epoch_source sealed (was FAIL_CLOSED BASE_STATE_NOT_OBSERVED); an explicit '', 'null' or the sentinel is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED with both slots null; an omitted --hb-epoch ALLOW additionally carries cross_checked false and hb_epoch_cross_check HB_EPOCH_NOT_CROSS_CHECKED. The reader needs no change: it takes the epoch from ALLOW or DENY HB_EPOCH_MISMATCH, treats every FAIL_CLOSED as unobserved, and verifies the seal over whatever fields the body carries",
+        "delta_9c9b9f51_to_7ad6d81f": "diffed git objects 9c9b9f51..7ad6d81f (one commit): cross_checked is always emitted (false on FAIL_CLOSED and on the omitted-flag ALLOW, true on the cross-checked ALLOW and DENY HB_EPOCH_MISMATCH); supplied_hb_epoch carries the supplied --hb-epoch verbatim whenever the flag was given; the omitted-flag ALLOW bytes are unchanged (shared fixture blob cfaaec20 at both heads)",
         "fail_closed": "on every FAIL_CLOSED both are present and null; the reader treats any readback that is neither ALLOW nor DENY HB_EPOCH_MISMATCH as HB_EPOCH_SOURCE_UNOBSERVED",
         "fixture": "the seed fixture readback carries receipt UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (listed in unobserved_fields as hb_epoch_source/receipt), counted only in fixture_mode",
         "known_answer": "StegVerse-Labs/.github ledger head a5bb54d81893b392a3ce28182986fc39857807e1 -> receipts/35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d.json -> \"469411750\" (tests/test_sv_admission_hb_epoch.py::KnownAnswerTests; Lane C's ledger_head_epoch agrees)",
         "sealed": "hb_epoch and hb_epoch_source {ledger_head, receipt: 'receipts/<hex>.json' (ledger_store.receipt_key of the head receipt, relative to refs/stegverse/organization-ledger), field: '$.hb_reference.epoch'} are sealed on ALLOW and on DENY HB_EPOCH_MISMATCH (the epoch was observed; only the producer's --hb-epoch cross-check disagreed)",
-        "source": "Labs#3266 @9c9b9f51 (readback blob 035352f6), as the producer declares it"
+        "source": "Labs#3266 @7ad6d81f (readback blob 17ef4401), as the producer declares it"
       },
       "scope": "every admission (decision 2026-10-18 15:23Z): supplied-epoch-binder-check is on surface_kinds.all",
-      "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266 @9c9b9f51, readback blob 035352f6, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
+      "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266 @7ad6d81f, readback blob 17ef4401, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
       "status": "DECIDED_BY_INVARIANT (JD-P4-3, partial)",
       "supplied_epoch_rule": {
         "file_blob_at_fc19b532": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
@@ -241,16 +249,17 @@
       },
       "cross_checked_form": {
         "cross_checked": true,
-        "field_name_note": "supplied_hb_epoch is the name the producer already uses for the supplied --hb-epoch in its refusal details; to be confirmed against Lane C's next #3266 head (sv_work_items.READBACK_SUPPLIED_FIELD)",
+        "field_name_note": "confirmed at Labs#3266 @7ad6d81f: supplied_hb_epoch, verbatim if JSON-scalar (a JSON integer equal by value is the producer's ALLOW too, and is accepted)",
         "supplied_hb_epoch": "<the supplied value, ASCII digits equal to the sealed hb_epoch>"
       },
       "invariant_id": "NOT_CROSS_CHECKED_MARKER",
       "producers_aligned": [
-        "P1 sv_work_items.verify_admission_hb_epoch output and scripts/build_sv_native_fixtures.py fixture readback (commit 4)"
+        "P1 sv_work_items.verify_admission_hb_epoch output (commit 4)",
+        "Labs#3266 @7ad6d81f (readback blob 17ef4401): cross_checked always emitted; supplied_hb_epoch on a cross-checked ALLOW (confirmed field name), on DENY HB_EPOCH_MISMATCH and on a FAIL_CLOSED whose flag was given; FAIL_CLOSED carries cross_checked false and no detail",
+        "shared fixture tests/fixtures/base-state-readback/labs-main-978b8880-producer-7ad6d81f.json (blob cfaaec20; TVC#519 and P4 org#192)"
       ],
       "producers_to_align": [
-        "P4 #192 (detail)",
-        "Labs#3266: next head (always-emitted cross_checked); 9c9b9f51 emits no cross_checked on a cross-checked ALLOW, so its cross-checked ALLOW is void under this amendment"
+        "P4 #192 (detail; still pinned to 9c9b9f51 at be38e05c)"
       ],
       "statement": "the canonical marker for an ALLOW whose optional hb_epoch cross-check was left out is P1's: top-level cross_checked false plus detail HB_EPOCH_NOT_CROSS_CHECKED (sv_work_items.verify_admission_hb_epoch(HB_EPOCH_NOT_CROSS_CHECKED, ...)); it is not moved into hb_epoch_cross_check. AMENDMENT (orchestrator ~17:15Z, accepted): the producer ALWAYS emits cross_checked. A cross-checked ALLOW carries cross_checked true and the supplied value; an omitted-flag ALLOW carries cross_checked false and detail HB_EPOCH_NOT_CROSS_CHECKED; a DENY HB_EPOCH_MISMATCH carries cross_checked true. RULING (decided by invariant, ~17:05Z, extended ~17:15Z): a readback that is missing cross_checked, or that carries hb_epoch_cross_check (the Labs#3266 2ba0e329 shape), is VOID: a self-seal (result_sha256) cannot prove which producer path ran, so a stripped-and-resealed readback verifies as a seal yet is not authentically observed. verify_admission_hb_epoch gives FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (failed_predicate READBACK_SHAPE_MATCHES_PINNED_PRODUCER, all six fields), never DENY, for every void shape. P1's own outputs and fixtures follow this",
       "status": "DECIDED (orchestrator 2026-10-18T16:30Z; amended ~17:05Z and ~17:15Z)",
@@ -266,8 +275,9 @@
         "any readback carrying hb_epoch_cross_check (Labs#3266 2ba0e329 shape)",
         "any readback with no cross_checked key (including one stripped and resealed), or cross_checked not a JSON boolean",
         "an ALLOW with cross_checked false whose detail is not exactly HB_EPOCH_NOT_CROSS_CHECKED, or that carries supplied_hb_epoch",
-        "an ALLOW with cross_checked true that lacks supplied_hb_epoch equal (ASCII digits, integer value) to the sealed hb_epoch, or carries the not-cross-checked detail",
-        "a DENY HB_EPOCH_MISMATCH without cross_checked true, or with the not-cross-checked detail"
+        "an ALLOW with cross_checked true that lacks supplied_hb_epoch equal (ASCII digits or a JSON integer, by value) to the sealed hb_epoch, or carries the not-cross-checked detail",
+        "a DENY HB_EPOCH_MISMATCH without cross_checked true and supplied_hb_epoch, or with the not-cross-checked detail",
+        "any other non-ALLOW readback with cross_checked true (7ad6d81f FAIL_CLOSED: cross_checked false)"
       ]
     },
     {
@@ -317,7 +327,8 @@
       "invariant_id": "NATIVE_RECORD_HB_EPOCH_IS_A_STRING",
       "open": "a malformed epoch STRING ('31', 'abc') in validate_change is still FAIL_CLOSED HB_EPOCH_INVALID (kernel rule), while admission gives DENY HB_EPOCH_MISMATCH; not changed here",
       "statement": "a NATIVE SV_CHANGE's hb_epoch is a JSON string of ASCII digits (schemas/sv-change.v1.schema.json 6b43b6ec). An observed value of any other JSON type (an integer such as 1024, a float, a bool, an array, an object) is malformed: validate_change gives DENY HB_EPOCH_MISMATCH (native_epoch_type_check), as admission's supplied-epoch rule gives for bools and non-digits. Absent or null stays unobserved (FAIL_CLOSED)",
-      "status": "DECIDED (orchestrator 2026-10-18T16:55Z)"
+      "status": "DECIDED (orchestrator 2026-10-18T16:55Z)",
+      "well_formed": "commit 5 (NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED, open item closed): validate_change gives DENY HB_EPOCH_MISMATCH for a NATIVE hb_epoch string that fails 726248a5 ('abc', '+33', '31'), as admission does; \"\" and \"null\" give FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED, as admission does"
     },
     {
       "3264": "stays DENY SV_CHANGE_RESOLVES_NOTHING on the real path (it cites nothing) until both receipts are ledgered and it is re-proposed on that ledger head citing the derived issue",

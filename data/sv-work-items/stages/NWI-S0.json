@@ -109,12 +109,12 @@
       "check": "sv_work_items.verify_admission_hb_epoch(receipt.hb_epoch, readback, ledger_head, target_repository=evaluation_subject.repository)",
       "field": "$.hb_reference.epoch",
       "readback_pin": {
-        "blob": "035352f6dd729724b095c0dcf320b8c1b559f235",
+        "blob": "17ef44016411852dde7c142e3faaa803f4ee63bd",
         "file": "resident-runtime/sv_change_base_state_readback.py",
-        "head": "9c9b9f51ba658d94c8998985d4bf3783edb45f52",
+        "head": "7ad6d81fb6715b68b79dac6c3cbc2f484004ab2d",
         "pull_request": 3266,
         "repository": "StegVerse-Labs/.github",
-        "sha256": "de5f8b5a7c5da09759f387ff511793c9681e78e60f49ec2f972c72c4fd3667ef"
+        "sha256": "c0365226ddc4fa2bf97ad2ebd1c089b2c8b51034df27783d99164e5f26d5c637"
       },
       "source": "the Labs#3266 base-state readback (stegverse.sv-change-base-state-readback/v1) of evaluation_subject.repository",
       "unobserved": "no receipt is emitted (sv-check-receipt.v1 requires a well-formed hb_epoch and none is minted); the stage evaluation is FAIL_CLOSED STAGE_EVIDENCE_UNOBSERVED with no stage move"
