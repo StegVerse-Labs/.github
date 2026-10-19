@@ -117,6 +117,10 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
             dispatcher.parent.mkdir(parents=True)
             dispatcher.write_text("# dispatcher\n", encoding="utf-8")
+            (runtime / "control").mkdir(parents=True)
+            (runtime / "control/heartbeat-carrier-runtime-state.json").write_text(
+                json.dumps({"epoch": 32}) + "\n", encoding="utf-8"
+            )
             receipt_path = runtime / "receipts/sovereign-host/resident-request-dispatch.latest.json"
             calls = []
 

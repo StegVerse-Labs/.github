@@ -27,6 +27,12 @@ THIRD_PARTY_ENV_VARS = (
 )
 CREDENTIAL_ENV_VARS = ("GITHUB_TOKEN", "GH_TOKEN", "STEGVERSE_GITHUB_TOKEN", "TVC_TOKEN")
 CARRIER_ACTIVATION_REL = Path("receipts/sovereign-host/carrier-activation.latest.json")
+CARRIER_STATE_REL = Path("control/heartbeat-carrier-runtime-state.json")
+RESIDENT_CYCLE_REL = Path("resident-runtime/resident_cycle.py")
+HB_EPOCH_FLAG_DECLARATION = '"--hb-epoch"'
+# Same predicate and goal as org-kernel/kernel.py's CarrierEpochRefusal.
+HB_EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+HB_EPOCH_OWNING_EXISTING_GOAL = "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
 REQUIRED_SOURCE_FILES = (
     Path("heartbeat_runtime/engine_v13.py"),
     Path("heartbeat_runtime/independent_oscillator.py"),
@@ -504,11 +510,11 @@ def _prime_resident_worker_runtime(source_root: Path, runtime_root: Path, *, pro
             break
 
     worker_state = load_json(runtime_root / "control" / "worker-runtime-state.json") or {}
-    carrier = load_json(runtime_root / "control" / "heartbeat-carrier-runtime-state.json") or {}
+    carrier_epoch = recorded_carrier_epoch(runtime_root)
     task_capable = bool(
         completed.returncode == 0
         and isinstance(result, dict)
-        and carrier.get("epoch") is not None
+        and carrier_epoch is not None
         and worker_state.get("observation_mode") != "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
     )
     return {
@@ -516,13 +522,58 @@ def _prime_resident_worker_runtime(source_root: Path, runtime_root: Path, *, pro
         "state": "TASK_CAPABLE_CYCLE_OBSERVED" if task_capable else "TASK_CAPABLE_CYCLE_NOT_YET_OBSERVED",
         "returncode": completed.returncode,
         "cycle_result": result,
-        "carrier_epoch": carrier.get("epoch"),
+        "carrier_epoch": carrier_epoch,
         "worker_observation_mode": worker_state.get("observation_mode"),
         "task_capable_cycle_observed": task_capable,
         "github_token_required": False,
         "credential_authority": "TV/TVC",
         "heartbeat_grants_execution_authority": False,
         "authority_effect": "NONE_EXECUTION_PRIME_ONLY",
+    }
+
+
+def recorded_carrier_epoch(runtime_root: Path) -> int | None:
+    """Return the epoch the resident heartbeat carrier recorded, or None.
+
+    The one bootstrap reader of control/heartbeat-carrier-runtime-state.json
+    `epoch`. Only the heartbeat engine writes that file; this reads the recorded
+    value and never reads a clock. A missing file, or an epoch that is not a
+    non-negative int (a bool included), is reported as not recorded.
+    """
+    carrier = load_json(runtime_root / CARRIER_STATE_REL) or {}
+    epoch = carrier.get("epoch")
+    if isinstance(epoch, bool) or not isinstance(epoch, int) or epoch < 0:
+        return None
+    return epoch
+
+
+def declares_hb_epoch_flag(entrypoint: Path) -> bool:
+    """True when the materialized entrypoint source declares `--hb-epoch`."""
+    try:
+        return HB_EPOCH_FLAG_DECLARATION in entrypoint.read_text(encoding="utf-8")
+    except OSError:
+        return False
+
+
+def _carrier_epoch_not_recorded(retry_entrypoint: str, *, consumer: str) -> dict[str, Any]:
+    return {
+        "attempted": False,
+        "state": "FAIL_CLOSED",
+        "reason": "CARRIER_EPOCH_NOT_RECORDED",
+        "failure_code": "CARRIER_EPOCH_NOT_RECORDED",
+        "failed_predicate": HB_EPOCH_PREDICATE,
+        "required_evidence_or_repair": (
+            "the resident heartbeat carrier records `epoch` in "
+            f"{CARRIER_STATE_REL.as_posix()}; {consumer} is run only with that recorded "
+            "epoch as --hb-epoch and no clock is read"
+        ),
+        "retry_entrypoint": retry_entrypoint,
+        "owning_existing_goal": HB_EPOCH_OWNING_EXISTING_GOAL,
+        "next_attempt": "re-run the sovereign bootstrap once the heartbeat carrier has recorded an epoch",
+        "derived_from_clock": False,
+        "appended": False,
+        "returncode": None,
+        "authority_effect": "NONE",
     }
 
 
@@ -536,6 +587,27 @@ def _dispatch_resident_requests(source_root: Path, runtime_root: Path, *, proof_
             "returncode": None,
             "authority_effect": "NONE",
         }
+    # The dispatcher appends the frame epoch to the Organization ledger, so it
+    # runs only under the epoch the carrier recorded; with none, nothing runs.
+    hb_epoch = recorded_carrier_epoch(runtime_root)
+    if hb_epoch is None:
+        return _carrier_epoch_not_recorded(
+            "scripts/bootstrap_sovereign_runtime.py::_dispatch_resident_requests",
+            consumer="the resident request dispatcher",
+        )
+    command = [
+        sys.executable,
+        str(dispatcher),
+        "--source-root",
+        str(source_root),
+        "--runtime-root",
+        str(runtime_root),
+    ]
+    # Older materialized dispatchers do not declare --hb-epoch; argparse would
+    # reject the flag there, so it is passed only where it is declared.
+    hb_epoch_forwarded = declares_hb_epoch_flag(dispatcher)
+    if hb_epoch_forwarded:
+        command += ["--hb-epoch", str(hb_epoch)]
     child_env = scrubbed_child_env(
         env,
         source_root=source_root,
@@ -543,14 +615,7 @@ def _dispatch_resident_requests(source_root: Path, runtime_root: Path, *, proof_
         proof_path=proof_path,
     )
     completed = runner(
-        [
-            sys.executable,
-            str(dispatcher),
-            "--source-root",
-            str(source_root),
-            "--runtime-root",
-            str(runtime_root),
-        ],
+        command,
         cwd=runtime_root,
         check=False,
         capture_output=True,
@@ -571,6 +636,93 @@ def _dispatch_resident_requests(source_root: Path, runtime_root: Path, *, proof_
         "credential_authority": receipt.get("credential_authority", "TV/TVC"),
         "github_token_required": receipt.get("github_token_required", False),
         "request_dispatch_grants_authority": receipt.get("request_dispatch_grants_authority", False),
+        "carrier_epoch": hb_epoch,
+        "hb_epoch_forwarded": hb_epoch_forwarded,
+        "derived_from_clock": False,
+        "authority_effect": "NONE",
+    }
+
+
+def _run_resident_federation_cycle(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
+    """Run the federation cycle from the resident runtime under the carrier epoch.
+
+    There is no outside launcher: the resident runtime runs
+    resident-runtime/resident_cycle.py itself, with --hb-epoch from the same
+    recorded carrier epoch the request dispatch uses. No clock is read.
+    """
+    resident_cycle = runtime_root / RESIDENT_CYCLE_REL
+    if not resident_cycle.is_file():
+        resident_cycle = source_root / RESIDENT_CYCLE_REL
+    if not resident_cycle.is_file():
+        return {
+            "attempted": False,
+            "state": "NOT_AVAILABLE",
+            "reason": "RESIDENT_CYCLE_NOT_MATERIALIZED",
+            "returncode": None,
+            "authority_effect": "NONE",
+        }
+    hb_epoch = recorded_carrier_epoch(runtime_root)
+    if hb_epoch is None:
+        return _carrier_epoch_not_recorded(
+            "scripts/bootstrap_sovereign_runtime.py::_run_resident_federation_cycle",
+            consumer="resident-runtime/resident_cycle.py",
+        )
+    # resident_cycle.py hands its argv to federation_cycle.main(), which owns
+    # the flag declaration.
+    federation_cycle = resident_cycle.parent / "federation_cycle.py"
+    if not declares_hb_epoch_flag(federation_cycle):
+        return {
+            "attempted": False,
+            "state": "FAIL_CLOSED",
+            "reason": "FEDERATION_CYCLE_EPOCH_FLAG_NOT_ON_MAIN",
+            "failure_code": "FEDERATION_CYCLE_EPOCH_FLAG_NOT_ON_MAIN",
+            "failed_predicate": "FEDERATION_CYCLE_DECLARES_HB_EPOCH",
+            "required_evidence_or_repair": (
+                "resident-runtime/federation_cycle.py declares --hb-epoch (the WU-B13 "
+                "federation hunks); until it does, the cycle is not run without the "
+                "carrier epoch and no clock is read"
+            ),
+            "retry_entrypoint": "scripts/bootstrap_sovereign_runtime.py::_run_resident_federation_cycle",
+            "owning_existing_goal": HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt": "re-run the sovereign bootstrap after the WU-B13 federation hunks land on main",
+            "carrier_epoch": hb_epoch,
+            "derived_from_clock": False,
+            "returncode": None,
+            "authority_effect": "NONE",
+        }
+    child_env = scrubbed_child_env(
+        env,
+        source_root=source_root,
+        runtime_root=runtime_root,
+        proof_path=proof_path,
+    )
+    completed = runner(
+        [sys.executable, str(resident_cycle), "--hb-epoch", str(hb_epoch)],
+        cwd=runtime_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=1800,
+        env=child_env,
+    )
+    result = None
+    for line in reversed([line.strip() for line in (completed.stdout or "").splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            result = value
+            break
+    disposition = result.get("disposition") if isinstance(result, dict) else None
+    return {
+        "attempted": True,
+        "state": "CYCLE_COMPLETE" if completed.returncode == 0 else (disposition or "CYCLE_INCOMPLETE"),
+        "returncode": completed.returncode,
+        "cycle_result": result,
+        "carrier_epoch": hb_epoch,
+        "hb_epoch_forwarded": True,
+        "derived_from_clock": False,
         "authority_effect": "NONE",
     }
 
@@ -682,6 +834,7 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         "post_install_source_refresh_watcher": {"attempted": False, "state": "NOT_ELIGIBLE", "activated": False, "authority_effect": "NONE"},
         "post_install_worker_prime": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "CARRIER_ONLY_INSTALLATION_NOT_COMPLETE", "returncode": None, "task_capable_cycle_observed": False, "authority_effect": "NONE"},
         "post_bootstrap_resident_request_dispatch": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
+        "post_bootstrap_resident_federation_cycle": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
         "post_bootstrap_tvc_skap_successor": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "RESIDENT_RUNTIME_NOT_MATERIALIZED", "returncode": None, "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001", "authority_effect": "NONE"},
         "post_bootstrap_stegfin": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "executor_service_active": False, "wallet_handoff_ready_claimed": False},
         "state": "FAIL_CLOSED",
@@ -742,6 +895,16 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
     # removes the former bootstrap race where dispatch could happen before the
     # carrier reference existed and then never be retried.
     body["post_bootstrap_resident_request_dispatch"] = _dispatch_resident_requests(
+        source_root,
+        runtime_root,
+        proof_path=proof_path,
+        env=env,
+        runner=runner,
+    )
+
+    # The resident runtime runs the federation cycle itself, under the same
+    # recorded carrier epoch; there is no outside launcher.
+    body["post_bootstrap_resident_federation_cycle"] = _run_resident_federation_cycle(
         source_root,
         runtime_root,
         proof_path=proof_path,
