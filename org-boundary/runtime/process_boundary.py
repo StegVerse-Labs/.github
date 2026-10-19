@@ -75,7 +75,7 @@ def endpoint_result(env,svc,envelope_path,node_state_root=None):
             return result
     if role=="BOUNDARY_LOCAL_DIAGNOSTIC":
         return {"echo":env["payload"]}
-    raise SystemExit("endpoint-adapter-not-installed")
+    content_fault("endpoint-adapter-not-installed")
 # Fault semantics aligned to Data-Continuation/.github#10 (Labs#3296 follow-on),
 # without changing the processing above. An input that cannot be read or parsed
 # is the caller's fault: a TERMINAL six-field record, exit 65 (EX_DATAERR). This
@@ -109,6 +109,16 @@ def read_input(path,argument):
                           next_attempt="a corrected "+argument+"; this input is refused as given"),EXIT_INPUT_FAULT)
     return value
 
+def content_fault(detail):
+    """A readable input whose content this boundary refuses: terminal six fields, exit 65, nothing written.
+
+    The detail is the boundary's own refusal string (missing:<keys>,
+    wrong-destination-org, unknown-service, endpoint-adapter-not-installed).
+    """
+    fail(fault_record("PROCESS_BOUNDARY_INPUT_FAULT","PROCESS_BOUNDARY_ENVELOPE_AND_REGISTRY_ARE_ADMISSIBLE",detail,
+                      terminal=True,repair="correct the envelope or registry content named in detail; nothing was written",
+                      next_attempt="a corrected envelope or registry; this crossing is refused as given"),EXIT_INPUT_FAULT)
+
 def write_result(out,text):
     """Replace --out atomically, or the non-terminal PROCESS_BOUNDARY_WRITE_FAULT (exit 75); no partial file."""
     out=Path(out); tmp=None
@@ -134,10 +144,10 @@ def main():
  ap=argparse.ArgumentParser(); ap.add_argument("--envelope",required=True); ap.add_argument("--registry",required=True); ap.add_argument("--out",required=True); ap.add_argument("--node-state-root",default=None); a=ap.parse_args()
  env=read_input(a.envelope,"--envelope"); reg=read_input(a.registry,"--registry")
  req=["schema_version","packet_id","direction","origin","destination","carrier","intr_profile","transition","payload","evidence"]; miss=[k for k in req if k not in env]
- if miss: raise SystemExit("missing:"+",".join(miss))
- if env["destination"]["org"]!=reg["organization"]: raise SystemExit("wrong-destination-org")
+ if miss: content_fault("missing:"+",".join(miss))
+ if env["destination"]["org"]!=reg["organization"]: content_fault("wrong-destination-org")
  svc=next((s for s in reg["services"] if s["service_id"]==env["destination"]["service"]),None)
- if not svc: raise SystemExit("unknown-service")
+ if not svc: content_fault("unknown-service")
  # Standing first, then selection. The contract covers ingress, and selection
  # is processing: a crossing that has not established standing must not reach
  # the question of what processing it selected.

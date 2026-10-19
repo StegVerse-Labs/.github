@@ -93,6 +93,32 @@ class ProcessBoundaryFaultTests(unittest.TestCase):
                     self.assertTrue(record["detail"].startswith(argument + ": "), record["detail"])
                     self.assertFalse((self.work / "out").exists())
 
+    def test_each_content_fault_is_terminal_with_exit_65_and_nothing_written(self):
+        packet = json.loads(self.envelope.read_text())
+        missing = {k: v for k, v in packet.items() if k != "evidence"}
+        elsewhere = {**packet, "destination": {**packet["destination"], "org": "Another-Org"}}
+        unknown = {**packet, "destination": {**packet["destination"], "service": "target.unknown"}}
+        uninstalled = {"organization": "Target-Org",
+                       "services": [{"service_id": "target.diag", "boundary_role": "SOMETHING_ELSE"}]}
+        cases = {"missing:evidence": (missing, None), "wrong-destination-org": (elsewhere, None),
+                 "unknown-service": (unknown, None), "endpoint-adapter-not-installed": (packet, uninstalled)}
+        out = self.work / "content" / "execution.json"
+        for detail, (envelope, registry) in cases.items():
+            with self.subTest(fault=detail):
+                envelope_path = self.work / "content-envelope.json"
+                envelope_path.write_text(json.dumps(envelope))
+                registry_path = self.registry
+                if registry is not None:
+                    registry_path = self.work / "content-registry.json"
+                    registry_path.write_text(json.dumps(registry))
+                completed = self.run_boundary(envelope_path, registry_path, out)
+                self.assertEqual(completed.returncode, 65, completed.stdout + completed.stderr)
+                record = self.record(completed)
+                self.assertEqual(record["failure_code"], "PROCESS_BOUNDARY_INPUT_FAULT")
+                self.assertEqual(record["detail"], detail)
+                self.assertIs(record["terminal"], True)
+                self.assertFalse((self.work / "content").exists())
+
     def test_an_unwritable_out_is_a_non_terminal_fault_with_exit_75_and_no_partial_file(self):
         cases = {"out-is-a-directory": self.work / "taken",
                  "parent-is-a-file": self.work / "a-file" / "execution.json"}
