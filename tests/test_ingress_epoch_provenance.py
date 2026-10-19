@@ -74,18 +74,12 @@ class IngressEpochProvenanceTests(unittest.TestCase):
         self.assertIn("stegverse.repo-transition-receipt/v1", schemas)
         self.assertIn("stegverse.organization-transition-receipt/v1", schemas)
 
-    def test_only_a_supplied_receipt_epoch_is_forwarded(self):
-        supplied = {"hb_reference": emit.kernel.hb_reference(epoch=40)}
+    def test_a_read_back_epoch_is_never_forwarded(self):
+        supplied = {"hb_reference": emit.kernel.hb_reference(epoch=5000)}
         clock = {"hb_reference": emit.kernel.hb_reference(now_ns=FIXED_NS)}
-        unmarked = {"hb_reference": {k: v for k, v in supplied["hb_reference"].items()
-                                     if k != "derived_from_clock"}}
-        self.assertEqual(emit.forwarded_epoch(supplied, None), 40)
+        self.assertEqual(emit.forwarded_epoch(supplied, 4096), 4096)
+        self.assertIsNone(emit.forwarded_epoch(supplied, None))
         self.assertIsNone(emit.forwarded_epoch(clock, None))
-        self.assertEqual(emit.forwarded_epoch(clock, 77), 77)
-        self.assertIsNone(emit.forwarded_epoch(unmarked, None))
-        self.assertIsNone(emit.forwarded_epoch({"hb_reference": {**supplied["hb_reference"], "epoch": "+40"}},
-                                               None))
-
 
 if __name__ == "__main__":
     unittest.main()

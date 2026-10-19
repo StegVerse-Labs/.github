@@ -985,6 +985,10 @@ def record_refusal(custody:dict[str,Any], item:dict[str,Any], reason:str, dispos
 
 FRAME_REFUSED_QUARANTINED="FRAME_REFUSED_QUARANTINED"
 CARRIED_PROVENANCE_UNVERIFIED="CARRIED_PROVENANCE_UNVERIFIED"
+CARRIED_PROVENANCE_NOT_PROPAGATED="CARRIED_PROVENANCE_NOT_PROPAGATED"
+HB_REFERENCE_INVALID="HB_REFERENCE_INVALID"
+FRAME_INTEGRITY_INVALID="FRAME_INTEGRITY_INVALID"
+FRAME_INGEST_FAILED="FRAME_INGEST_FAILED"
 
 def _claims_carried(frame:Any)->bool:
     ref=frame.get("heartbeat_reference") if isinstance(frame,dict) else None
@@ -1003,26 +1007,60 @@ def _carried_head_verified(frame:dict[str,Any], custody:dict[str,Any])->bool:
     recorded=receipt.get("hb_reference") if isinstance(receipt.get("hb_reference"),dict) else {}
     return recorded.get("derived_from_clock") is False and supplied_epoch_failure(recorded.get("epoch"),recorded) is None
 
+def _is_clock_reference(ref:Any)->bool:
+    """CLOCK: derived_from_clock true, or a bare sampled_unix_ns with no flag (legacy CLOCK)."""
+    return isinstance(ref,dict) and (ref.get("derived_from_clock") is True
+                                     or ("derived_from_clock" not in ref and "sampled_unix_ns" in ref))
+
 def _frame_quarantine(frame:dict[str,Any], custody:dict[str,Any])->dict[str,Any]|None:
     """The six-field quarantine of a frame that can never be consumed, or None. No clock is read.
 
-    Refused and terminal: an absent or invalid epoch, an unmarked reference or a
-    SUPPLIED-looking one carrying sampled_unix_ns, and an unverified CARRIED
-    claim. A frame its sender marked derived_from_clock true is still consumed;
-    it lends no epoch (_frame_epoch).
+    Every carrier epoch passes the digit/anchor check first, whatever the
+    frame's flag. A CLOCK frame (flag true, or a bare sampled_unix_ns) is then
+    consumed and lends no epoch (_frame_epoch); its receipts take the marked
+    clock fallback until WU-B13 gives the publishers an epoch
+    (CLOCK_FLAGGED_FRAMES_CONSUMED_PENDING_WU_B13). An UNMARKED reference, or
+    one marked false that still carries sampled_unix_ns, is refused by the
+    shared rule; a CARRIED claim must name this organization's verified head. A verified
+    CARRIED claim is held too until the writers can record its provenance
+    downstream (B-P36m): stamping it as {epoch, false} would read as SUPPLIED.
     """
     ref=frame.get("heartbeat_reference") if isinstance(frame,dict) else None
     failure=_frame_epoch_failure(frame)
-    if failure is None and isinstance(ref,dict) and ref.get("derived_from_clock") is not True:
+    if failure is None and _is_clock_reference(ref):
+        return None
+    if failure is None and isinstance(ref,dict):
         failure=supplied_epoch_failure(ref.get("epoch"),ref)
-    if failure is None and _claims_carried(frame) and not _carried_head_verified(frame,custody):
-        failure=(CARRIED_PROVENANCE_UNVERIFIED,"head_receipt_sha is not this organization's current verified "
-                 "ledger head recorded derived_from_clock false")
+    if failure is None and _claims_carried(frame):
+        if not _carried_head_verified(frame,custody):
+            failure=(CARRIED_PROVENANCE_UNVERIFIED,"head_receipt_sha is not this organization's current verified "
+                     "ledger head recorded derived_from_clock false")
+        else:
+            failure=(CARRIED_PROVENANCE_NOT_PROPAGATED,"the repository and organization writers cannot yet record "
+                     "source/head_receipt_sha downstream; a receipt stamped {epoch, false} would read as SUPPLIED")
     if failure is None:
         return None
-    code,detail=failure
+    return _quarantine_record(frame,*failure)
+
+def _ingest_failure_quarantine(frame:dict[str,Any], exc:Exception)->dict[str,Any]:
+    """Any error ingesting one frame, as its six-field quarantine (B-P36o)."""
+    reason=str(exc)
+    if isinstance(exc,CarrierEpochRefusal):
+        code=str(exc)
+    elif "hash_mismatch" in reason:
+        code=FRAME_INTEGRITY_INVALID
+    elif reason.startswith("heartbeat_"):
+        code=HB_EPOCH_INVALID if reason=="heartbeat_epoch_invalid" else HB_REFERENCE_INVALID
+    else:
+        code=FRAME_INGEST_FAILED
+    return _quarantine_record(frame,code,reason or type(exc).__name__,
+                              failed_predicate=(HB_EPOCH_PREDICATE if code in (HB_EPOCH_INVALID,HB_EPOCH_NOT_SUPPLIED,
+                                                                              HB_REFERENCE_INVALID)
+                                                else "FRAME_IS_INGESTED_AS_PUBLISHED:"+type(exc).__name__))
+
+def _quarantine_record(frame:Any, code:str, detail:str, *, failed_predicate:str=HB_EPOCH_PREDICATE)->dict[str,Any]:
     return {"status":"REFUSED","disposition":"FAIL_CLOSED","failure_code":FRAME_REFUSED_QUARANTINED,
-            "frame_failure_code":code,"failed_predicate":HB_EPOCH_PREDICATE,"detail":detail,
+            "frame_failure_code":code,"failed_predicate":failed_predicate,"detail":detail,
             "required_evidence_or_repair":("the sender re-publishes the packet in a frame whose heartbeat_reference "
                                            "is SUPPLIED (digits >= 32, derived_from_clock false) or a verified CARRIED"),
             "retry_entrypoint":HB_EPOCH_RETRY_ENTRYPOINT,"owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
@@ -1120,6 +1158,26 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
         # before recovery, and that refusal is recorded below.
         epoch=None if now_ns is not None else _frame_epoch(item["frame"])
         quarantined=_frame_quarantine(item["frame"],custody)
+        if quarantined is None:
+            # Any error the frame itself causes -- recovery, integrity, its
+            # heartbeat reference, a six-field carrier refusal -- quarantines it
+            # rather than stopping the frames behind it (B-P36o). A failure of
+            # this node's own ledgers still raises and leaves the frame
+            # unmarked, so the next pass completes it.
+            try:
+                recover_packet(item["frame"])
+            except Exception as exc:  # noqa: BLE001 -- a frame that cannot be recovered is quarantined
+                quarantined=_ingest_failure_quarantine(item["frame"],exc)
+        if quarantined is None:
+            # Recorded before anything leaves this node: no answer is published
+            # and no consumption marker written for a crossing the organization
+            # has not recorded. A failed append leaves the frame unmarked, so the
+            # next pass offers it again and the idempotent append completes it.
+            try:
+                result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
+                                                node_state=node_state,epoch=epoch)
+            except CarrierEpochRefusal as exc:
+                quarantined=_ingest_failure_quarantine(item["frame"],exc)
         if quarantined is not None:
             # Terminal: nothing is recorded or answered, no clock is read, and the
             # marker keeps the frame from being offered again (B-P36j).
@@ -1127,12 +1185,6 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
             out.append({"path":item["path"],"result":quarantined,"response_publication":None,
                         "organization_record":None,"seen_marker":str(marker)})
             continue
-        # Recorded before anything leaves this node: no answer is published and
-        # no consumption marker written for a crossing the organization has not
-        # recorded. A failed append leaves the frame unmarked, so the next pass
-        # offers it again and the idempotent append completes it.
-        result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
-                                        node_state=node_state,epoch=epoch)
         if result.get("status")=="REFUSED" and result["disposition"]!="DENY":
             # FAIL_CLOSED: recorded, not marked, offered again on the next pass.
             out.append({"path":item["path"],"result":result,"response_publication":None,

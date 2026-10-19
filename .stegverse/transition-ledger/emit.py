@@ -133,16 +133,13 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
  raise SystemExit("REPO_LEDGER_APPEND_CONTENTION_EXHAUSTED")
 
 def forwarded_epoch(receipt,hb_epoch):
- """The epoch an organization append consuming `receipt` is handed.
+ """The epoch an organization append consuming `receipt` is handed: the caller's.
 
- The receipt's own epoch is carried only when it was supplied: derived_from_clock
- exactly false and passing the shared rule (a replay completing a partial commit
- keeps the first attempt's epoch). A clock-derived epoch is never forwarded as
- if supplied; the caller's own `hb_epoch` (possibly None) is forwarded instead.
+ Never one read back from `receipt`. A read-back epoch is not supplied (absent,
+ it is a clock reading), and carrying it would need CARRIED provenance the
+ organization receipt does not record, so it would read as SUPPLIED. A replay
+ completing a partial commit therefore takes the epoch its own caller supplies.
  """
- ref=receipt.get("hb_reference") if isinstance(receipt,dict) else None
- if isinstance(ref,dict) and ref.get("derived_from_clock") is False and kernel.supplied_epoch_failure(ref.get("epoch"),ref) is None:
-  return int(str(ref["epoch"]))
  return hb_epoch
 
 def cli_epoch(text,retry_entrypoint):
