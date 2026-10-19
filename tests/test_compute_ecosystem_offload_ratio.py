@@ -124,6 +124,34 @@ class OffloadRatioTests(unittest.TestCase):
                 with self.assertRaises(eor.Refused):
                     eor.compute(runs(), SESSIONS, lanes(), bad)
 
+    def test_committed_l_ratio_uses_measured_e_only_and_moves_the_right_way(self):
+        usage = ("date,lane,unit_id,e_minutes,l_minutes,source\n"
+                 "2026-10-18,roadmap,RM1,50,20,estimate (SYNTHETIC)\n"
+                 "2026-10-18,roadmap,RM2,0,10,estimate (SYNTHETIC)\n"
+                 "2026-10-18,coordinator,C1,6,45,estimate (SYNTHETIC)\n")
+
+        def committed(minutes_of_ci, usage_text=usage):
+            out = eor.compute(runs(run(1, "2026-10-18T12:00:00Z", f"2026-10-18T12:{minutes_of_ci:02d}:00Z")),
+                              "date,lane,session_id,llm_minutes\n", lanes(), usage_text)
+            return {r["lane"]: r for r in out["rows"]}
+
+        keyed = committed(10)
+        roadmap = keyed["roadmap"]
+        # E is the 10 measured CI minutes, never the lane's own 50; L is the committed 30.
+        self.assertEqual((roadmap["L_committed_minutes"], roadmap["EOR_committed"], roadmap["EOR_committed_percent"],
+                          roadmap["committed"]), ("30.00", "1/4", "25.00", "E_CI_MEASURED_L_LANE_COMMITTED"))
+        self.assertEqual((roadmap["EOR_measured"], roadmap["measured"]), (None, "L_NOT_SUPPLIED_FOR_LANE_DAY"))
+        coordinator = keyed["coordinator"]
+        self.assertEqual((coordinator["EOR_committed"], coordinator["committed"]), (None, "E_NOT_MEASURED_FOR_LANE"))
+        no_usage = committed(10, "date,lane,unit_id,e_minutes,l_minutes,source\n")["roadmap"]
+        self.assertEqual((no_usage["EOR_committed"], no_usage["L_committed_minutes"], no_usage["committed"]),
+                         (None, None, "L_NOT_COMMITTED_FOR_LANE_DAY"))
+        # More ecosystem work raises the ratio; more committed LLM time lowers it.
+        more_e = committed(30)["roadmap"]
+        self.assertEqual(more_e["EOR_committed"], "1/2")
+        more_l = committed(10, usage + "2026-10-18,roadmap,RM3,0,30,estimate (SYNTHETIC)\n")["roadmap"]
+        self.assertEqual(more_l["EOR_committed"], "1/7")
+
     def test_rounding_is_exact_half_even_and_large_values_do_not_crash(self):
         # WU-V12 defect c: e=0.0050000000000000000000000000000001, l=99.995... is 0.01 exactly, not 0.00.
         usage = ("date,lane,unit_id,e_minutes,l_minutes,source\n"

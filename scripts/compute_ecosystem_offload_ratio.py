@@ -21,6 +21,13 @@ LLM session: ``EOR = E / (E + L)``, where
   (``EOR_reported = E_reported / (E_reported + L_reported)``, from the lane-usage table).
   A ratio whose pair is not supplied is null with its reason.
 
+A third ratio uses the committed L where no measured L exists:
+``EOR_committed = E_ci / (E_ci + L_committed)``, where ``L_committed`` is the lane's
+``l_minutes`` from the lane-usage table. That L is lane-reported (mostly an estimate) but
+committed and digest-bound by git; it is labelled as such and is computed only for lanes
+whose E is measured (a lane in the lane map), never from reported E. Every ratio rises as
+E rises and falls as L rises.
+
 This is the RM11 method (E and L in minutes, EOR = E / (E + L)) computed from files
 instead of estimated. A run is attributed to the UTC day it started. Runs without
 ``completed_at`` and runs on no mapped branch are reported, never counted. Arithmetic
@@ -243,6 +250,7 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str |
         e_reported[key] = e_reported.get(key, Fraction(0)) + unit["e"]
         l_reported[key] = l_reported.get(key, Fraction(0)) + unit["l"]
         units.setdefault(key, []).append(unit["unit_id"])
+    measured_lanes = set(owner.values())
     rows = []
     for lane, day in sorted(set(e_seconds) | set(l_minutes) | set(e_reported)):
         key = (lane, day)
@@ -250,6 +258,14 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str |
         e_rep, l_rep = e_reported.get(key, Fraction(0)), l_reported.get(key, Fraction(0))
         measured, measured_percent = _ratio(e_ci, l_measured) if key in l_minutes else (None, None)
         reported, reported_percent = _ratio(e_rep, l_rep) if key in e_reported else (None, None)
+        if lane not in measured_lanes:
+            committed_state = "E_NOT_MEASURED_FOR_LANE"
+        elif key not in l_reported:
+            committed_state = "L_NOT_COMMITTED_FOR_LANE_DAY"
+        else:
+            committed_state = "E_CI_MEASURED_L_LANE_COMMITTED"
+        committed, committed_percent = (_ratio(e_ci, l_rep) if committed_state == "E_CI_MEASURED_L_LANE_COMMITTED"
+                                        else (None, None))
         rows.append({
             "lane": lane, "date": day,
             "E_seconds": e_seconds.get(key, 0), "E_ci_minutes": _minutes(e_ci), "L_measured_minutes": _minutes(l_measured),
@@ -258,6 +274,8 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str |
             "E_reported_minutes": _minutes(e_rep), "L_reported_minutes": _minutes(l_rep),
             "EOR_reported": reported, "EOR_reported_percent": reported_percent,
             "reported": "LANE_REPORTED" if key in e_reported else "NONE",
+            "L_committed_minutes": _minutes(l_rep) if key in l_reported else None,
+            "EOR_committed": committed, "EOR_committed_percent": committed_percent, "committed": committed_state,
             "runs": sorted(run_ids.get(key, [])), "units": sorted(units.get(key, [])),
         })
     return {"schema": RESULT_SCHEMA, "disposition": "COMPUTED", "rows": rows,
