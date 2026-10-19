@@ -193,10 +193,10 @@ def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
             hb_epoch: int | None) -> tuple[dict[str, Any], bool]:
     """Append at both levels. A replay of the same packet returns the recorded pair.
 
-    The organization append owner is ``aggregate_transition``. It takes the
-    repository receipt's epoch only when that epoch was supplied
-    (``forwarded_epoch``), so a replay rebuilds the same organization receipt;
-    a clock-derived epoch is never forwarded as if supplied.
+    The organization append owner is ``aggregate_transition``. It is handed the
+    epoch this call was supplied (``forwarded_epoch``), never one read back
+    from the repository receipt. A replay still returns the recorded
+    organization receipt (its heartbeat reference is not compared).
     """
     predecessor = evidence["payload_sha256"]
     successor = sha({"disposition": evidence["disposition"], "packet_id": packet_id,

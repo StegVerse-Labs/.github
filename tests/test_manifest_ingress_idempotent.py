@@ -248,13 +248,15 @@ class IdempotentReceiveTests(IngressLedgerCase):
         self.assertEqual(organization["repo_receipt_sha256"], repository["receipt_sha256"])
         self.assertEqual(completed["organization_receipt_sha256"], organization["receipt_sha256"])
 
-    def test_replay_completion_takes_its_epoch_from_the_retained_receipt(self):
-        """A retry carrying a different epoch still rebuilds the first attempt's records."""
+    def test_replay_completion_takes_the_epoch_its_caller_supplies(self):
+        """A retry completes the first attempt's repository receipt, and the
+        organization receipt takes the retry's own supplied epoch: an epoch read
+        back from the repository receipt is never forwarded as supplied (B-P36f/m)."""
         self.fail_next_org_append = True
         partial = self.receive(hb_epoch=32)
         self.assertEqual(partial["failure_code"], "ORGANIZATION_APPEND_NOT_COMMITTED")
         self.receive(hb_epoch=99)
-        self.assertEqual(self.org_epochs, [32, 32])
+        self.assertEqual(self.org_epochs, [32, 99])
         repository, = self.receipts(self.repo_root)
         self.assertEqual(repository["hb_reference"]["epoch"], 32)
 

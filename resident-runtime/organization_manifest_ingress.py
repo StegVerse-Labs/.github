@@ -406,12 +406,11 @@ def _append_both_levels(transition_id: str, transition_class: str, predecessor: 
     `aggregate_transition`, under its own lock. With `idempotent_on` a
     transition the repository chain already records is returned rather than
     minted again (a mismatch raises `ledger_receipt_collision` before anything
-    is written). The organization receipt takes its epoch from the repository
-    receipt it consumes when that epoch was supplied (`forwarded_epoch`), so one
-    ingress carries one heartbeat epoch at both levels and a replay completing a
-    partial commit carries the first attempt's; a clock-derived epoch is never
-    forwarded as if supplied. If the organization append raises, the result is
-    the typed partial-commit record.
+    is written). The organization receipt is handed the epoch this ingress was
+    supplied (`forwarded_epoch`), never one read back from the repository
+    receipt, so a replay completing a partial commit takes the epoch its own
+    caller supplies. If the organization append raises, the result is the typed
+    partial-commit record.
     """
     repository_receipt = repository_ledger.append(
         transition_id, transition_class, predecessor, successor, dict(evidence),
@@ -1171,10 +1170,8 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
                 "delivery_attempt": delivery}
     repository_receipt = appended["repository_receipt"]
     organization_receipt = appended["organization_receipt"]
-    # Everything after the repository receipt takes its epoch from that receipt
-    # when it was supplied, so a replay rebuilds the same organization receipt
-    # and the same outbound frame rather than ones stamped with whatever epoch
-    # this attempt carried. A clock-derived epoch is never forwarded as supplied.
+    # Everything after the repository receipt takes the epoch this ingress was
+    # supplied, never one read back from that receipt (B-P36f/m).
     hb_epoch = repository_ledger.forwarded_epoch(repository_receipt, hb_epoch)
 
     if conformance is not None:

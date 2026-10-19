@@ -109,6 +109,59 @@ class FrameQuarantineTests(unittest.TestCase):
             self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
         self.assertEqual(self.cycle(), [])
 
+    def test_any_per_frame_failure_is_quarantined_and_the_valid_frame_proceeds(self):
+        self.with_stegcore()
+        supplied = K.hb_reference(epoch=1000)
+        clock = K.hb_reference(now_ns=K.HB_ANCHOR_UNIX_NS + 5 * K.HB_PERIOD_NS)
+        self.publish("bad-generation", {**supplied, "generation": 7})
+        self.publish("bad-id", {**supplied, "heartbeat_id": "HB:7"})
+        K.publish_frame({**K.carrier_frame({**base.packet(base.work_request({"signal": {}})),
+                                            "packet_id": "bad-integrity"}, epoch=1000),
+                         "frame_sha256": "sha256:" + "1" * 64}, root=self.work / "mesh")
+        self.publish("clock-abc", {**clock, "epoch": "abc"})
+        self.publish("clock-no-epoch", {k: v for k, v in clock.items() if k != "epoch"})
+        K.publish_frame({**K.carrier_frame({**base.packet(base.work_request({"signal": {}})),
+                                            "packet_id": "bad-packet-hash"}, epoch=1000),
+                         "packet_sha256": "sha256:" + "0" * 64}, root=self.work / "mesh")
+        self.publish("valid")
+        entries = self.cycle()
+        by_status = {}
+        for entry in entries:
+            by_status.setdefault(entry["result"]["status"], []).append(entry)
+        self.assertEqual(len(by_status.get("CONSUMED", [])), 1)
+        codes = sorted(entry["result"]["frame_failure_code"] for entry in by_status["REFUSED"])
+        self.assertIn("HB_REFERENCE_INVALID", codes)
+        self.assertIn("HB_EPOCH_INVALID", codes)
+        self.assertIn("HB_EPOCH_NOT_SUPPLIED", codes)
+        self.assertIn("FRAME_INTEGRITY_INVALID", codes)
+        for entry in by_status["REFUSED"]:
+            for field in SIX:
+                self.assertTrue(str(entry["result"].get(field) or "").strip(), field)
+            self.assertIsNone(entry["organization_record"])
+        for receipt in self.receipts("STEGVERSE_REPO_LEDGER_ROOT"):
+            self.assertEqual(receipt["hb_reference"]["epoch"], 1000)
+        self.assertEqual(self.cycle(), [])
+
+    def test_a_bare_sampled_frame_is_clock_consumed_and_lends_no_epoch(self):
+        supplied = K.hb_reference(epoch=1000)
+        bare = {k: v for k, v in supplied.items() if k != "derived_from_clock"}
+        bare["sampled_unix_ns"] = K.HB_ANCHOR_UNIX_NS
+        self.assertIsNone(K._frame_epoch({"heartbeat_reference": bare}))
+        self.assertTrue(K._is_clock_reference(bare))
+
+    def test_a_verified_carried_claim_is_held_until_its_provenance_can_be_recorded(self):
+        self.with_stegcore()
+        self.publish("seed")
+        self.cycle()
+        org = self.receipts("STEGVERSE_ORG_LEDGER_ROOT")
+        head = json.loads((Path(base.os.environ["STEGVERSE_ORG_LEDGER_ROOT"]) / "HEAD.json").read_text())
+        carried = {**K.hb_reference(epoch=1000), "source": "ORGANIZATION_LEDGER_HEAD",
+                   "head_receipt_sha": head["receipt_sha256"]}
+        self.assertTrue(org)
+        self.publish("carried-verified", carried)
+        entry, = self.cycle()
+        self.assertQuarantined(entry, "CARRIED_PROVENANCE_NOT_PROPAGATED")
+
     def test_ingest_frame_refuses_an_unverified_carried_claim(self):
         frame = altered(K.carrier_frame(base.packet(base.work_request({"signal": {}})), epoch=1000),
                         **{**K.hb_reference(epoch=1000), "source": "ORGANIZATION_LEDGER_HEAD",
