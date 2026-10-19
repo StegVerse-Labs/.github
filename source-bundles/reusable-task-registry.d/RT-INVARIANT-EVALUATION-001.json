@@ -29,7 +29,7 @@
       "fields": {
         "schema": "the string stegverse.invariant-pointer-assertion/v1",
         "question_id": "non-empty string",
-        "invariant_pointer": "RFC 6901 JSON pointer into every supplied source, at most 32 tokens",
+        "invariant_pointer": "RFC 6901 JSON pointer into every supplied source, at most 32 tokens; a token applied to an array is an index and must match ^(0|[1-9][0-9]*)$ in ASCII (no leading zero, no -, no other Unicode digit), else FAIL_CLOSED with QUESTION_POINTER_INVALID, failed_predicate invariant_pointer array index tokens match ^(0|[1-9][0-9]*)$, cited at question@<question_sha256>:question:<question root line>; an index past the array's end is undeclared",
         "asserted_value": "any JSON value, compared by strictly typed JSON equality"
       },
       "predicate": "every supplied source is canonical for the pointer; equal declared value is ALLOW, a different one is DENY, disagreeing sources are FAIL_CLOSED, no source declaring the pointer is UNDECIDABLE",
@@ -43,7 +43,7 @@
     "rule": "at most 64 containers ({ or [) may be open at once; the 65th opening bracket is FAIL_CLOSED with INPUT_DEPTH_EXCEEDED, never a RecursionError",
     "rationale": "the deepest Labs canonical invariant and task-record documents nest well under 16 containers, so 64 leaves four times that headroom; a recursive-descent parser spends about two stack frames per level, so 64 keeps every implementation far inside the default 1000-frame interpreter recursion limit whatever its caller's stack depth, which 256 levels would not",
     "byte_bound_measurement": "a byte bound counts the exact bytes the evaluator receives, before UTF-8 decoding and before any line is read: more than value bytes is FAIL_CLOSED, exactly value bytes is within the bound. The CLI reads at most value+1 bytes of each file, so a file of value+1 or more bytes arrives as exactly value+1 bytes; question_sha256 is the sha256 of the bytes received, those value+1 bytes for an over-size question file. For a source the digest is checked first (SOURCE_DIGESTS_VERIFIED_BEFORE_PARSE): bytes received whose sha256 is not the declared sha256 answer SOURCE_DIGEST_MISMATCH at the source's line 1, so a file over value+1 bytes declared by its whole-file digest answers SOURCE_DIGEST_MISMATCH, and INPUT_SIZE_EXCEEDED is answered when the declared sha256 is that of the bytes received",
-    "max_question_bytes": {
+    "max_input_bytes": {
       "value": 65536,
       "applies_to": "the question bytes",
       "measured_as": "len(question bytes) per byte_bound_measurement, checked before the digest of any source and before parse",

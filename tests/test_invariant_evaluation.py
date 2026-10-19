@@ -354,14 +354,28 @@ class CrossCheckFindings(unittest.TestCase):
 
     def test_every_code_bound_is_declared_in_the_spec_with_its_value(self):
         bounds = json.loads(SPEC_PATH.read_text(encoding="utf-8"))["bounds"]
+        names = {"max_json_nesting": "MAX_DEPTH", "max_input_bytes": "MAX_QUESTION_BYTES"}
         declared = {"MAX_DEPTH": bounds["max_json_nesting"]}
-        declared.update({"MAX_" + key[4:].upper(): row["value"] for key, row in bounds.items()
+        declared.update({names.get(key, key.upper()): row["value"] for key, row in bounds.items()
                          if key.startswith("max_") and isinstance(row, dict)})
         # A MAX_* constant added, dropped or changed without the spec fails here.
         self.assertEqual({name: getattr(ie, name) for name in dir(ie) if name.startswith("MAX_")}, declared)
         for key, row in bounds.items():
             if isinstance(row, dict):
                 self.assertIn(str(row["value"]), row["refusal"]["failed_predicate"], key)
+
+    def test_array_index_tokens_are_ascii_without_leading_zero(self):
+        doc = fixture({"items": [10, 11, 12]})
+        for token, answer in (("0", "ALLOW"), ("2", "DENY"), ("3", "UNDECIDABLE")):
+            self.assertEqual(ie.evaluate(question("/items/" + token, 10), [source(doc, "a.json")])["disposition"], answer)
+        for token in ("01", "00", "-", "+1", "1e0", " 1", "\u00b2", "\u0661", "\uff11", "a"):
+            body = json.loads('"' + token + '"')
+            answer = ie.evaluate(question("/items/" + body, 10), [source(doc, "a.json")])
+            self.assertEqual((answer["disposition"], answer["failure_code"]), ("FAIL_CLOSED", "QUESTION_POINTER_INVALID"), token)
+            self.assertEqual(len(answer["citations"]), 1, token)
+            self.assertTrue(answer["citations"][0].startswith("question@"), token)
+        # An object member named like an index is a key, not an index.
+        self.assertEqual(ie.evaluate(question("/m/01", 1), [source(fixture({"m": {"01": 1}}), "o.json")])["disposition"], "ALLOW")
 
     def test_container_item_bound_applies_to_objects_and_arrays(self):
         n = ie.MAX_CONTAINER_ITEMS

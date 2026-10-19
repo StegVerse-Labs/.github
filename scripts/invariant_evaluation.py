@@ -90,6 +90,8 @@ _WS = re.compile(r"[ \t\n\r]*")
 _NUMBER = re.compile(r"-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][-+]?\d+)?")
 _HEX64 = re.compile(r"[0-9a-f]{64}")
 _BAD_POINTER_ESCAPE = re.compile(r"~(?![01])")
+# An array index token: ASCII 0, or ASCII digits without a leading zero (RFC 6901).
+_ARRAY_INDEX = re.compile(r"0|[1-9][0-9]*")
 _LITERALS = (("true", True), ("false", False), ("null", None))
 
 
@@ -367,10 +369,15 @@ def resolve(document: Any, tokens: Sequence[str]) -> tuple[bool, Any, int]:
     """(present, value, number of leading tokens that resolve)."""
     node = document
     for depth, token in enumerate(tokens):
-        if isinstance(node, dict) and token in node:
-            node = node[token]
-        elif isinstance(node, list) and token.isdigit() and int(token) < len(node) and (token == "0" or not token.startswith("0")):
+        if isinstance(node, list):
+            if not _ARRAY_INDEX.fullmatch(token):
+                raise Refusal("QUESTION_POINTER_INVALID", "invariant_pointer array index tokens match ^(0|[1-9][0-9]*)$",
+                              "supply each array index as 0 or ASCII digits without a leading zero")
+            if int(token) >= len(node):
+                return False, None, depth
             node = node[int(token)]
+        elif isinstance(node, dict) and token in node:
+            node = node[token]
         else:
             return False, None, depth
     return True, node, len(tokens)
@@ -517,7 +524,7 @@ def _check_bindings(sources: Any, question_root: str | None) -> list[dict[str, s
 
 
 def _evaluate_pointer(question: dict[str, Any], question_sha256: str, sources: Sequence[Any],
-                      bindings: list[dict[str, str]]) -> dict[str, Any]:
+                      bindings: list[dict[str, str]], question_root: str | None = None) -> dict[str, Any]:
     key = evaluation_key(question_sha256, bindings)
     tokens = pointer_tokens(question["invariant_pointer"])
     expected = canonical(question["asserted_value"])
@@ -528,7 +535,12 @@ def _evaluate_pointer(question: dict[str, Any], question_sha256: str, sources: S
         doc = _Doc(source, binding, position)
         # Every source of a pointer assertion is canonical for it.
         doc.require_non_authorizing()
-        present, value, depth = resolve(doc.doc, tokens)
+        try:
+            present, value, depth = resolve(doc.doc, tokens)
+        except Refusal as refusal:
+            # A malformed index is the question's fault: cite the question root line.
+            refusal.refs = [question_root] if question_root else []
+            raise
         if present:
             found.append((value, doc.cite(question["invariant_pointer"])))
         else:
@@ -652,7 +664,7 @@ def _evaluate(question_bytes: bytes, sources: Sequence[Any], context: dict[str, 
     bindings = _bindings(sources, context.get("question_root"))
     if question["schema"] == QUESTION_SCHEMA:
         return _evaluate_question(question, question_sha256, sources, bindings, context["owner"])
-    return _evaluate_pointer(question, question_sha256, sources, bindings)
+    return _evaluate_pointer(question, question_sha256, sources, bindings, context.get("question_root"))
 
 
 def evaluate(question_bytes: bytes, sources: Sequence[Mapping[str, Any]]) -> dict[str, Any]:

@@ -1,8 +1,8 @@
 """RT-INVARIANT-EVALUATION-001 spec guard: the B-P6 probe set as data.
 
 Each tests/fixtures/invariant_evaluation_probes/P<NN>.json holds one probe:
-P01-P15 are the B-P6 cross-check, P16-P21 the B-P14 refusal citations, P22-P26
-the B-P16 declared bounds. A probe
+P01-P15 are the B-P6 cross-check, P16-P21 the B-P14 refusal citations, P22-P27
+the B-P16 declared bounds and array index rule. A probe
 holds the question (JSON, or raw bytes for a question that does not parse), the source bytes (a Labs data/ file named
 by path, or synthetic bytes held in the fixture) and the expected answer
 fields. Every expected field cites the spec line it derives from as
@@ -35,7 +35,7 @@ EVALUATOR = ROOT / "scripts" / "invariant_evaluation.py"
 PROBE_SCHEMA = "stegverse.invariant-evaluation-probe/v1"
 B_P6_PROBES = set(range(1, 16))
 B_P14_PROBES = set(range(16, 22))
-B_P16_PROBES = set(range(22, 27))
+B_P16_PROBES = set(range(22, 28))
 EXPECTED_PROBES = B_P6_PROBES | B_P14_PROBES | B_P16_PROBES
 SPEC_BOUNDS = json.loads("\n".join(SPEC_LINES))["bounds"]
 SPEC_REF = re.compile(re.escape(SPEC_NAME) + r":(\d+)")
@@ -151,8 +151,11 @@ class SpecGuardFixtures(unittest.TestCase):
             if probe["probe"] in B_P6_PROBES:
                 self.assertEqual(probe["derived_from"]["b_p6_row"], probe["probe"])
             elif probe["probe"] in B_P16_PROBES:
-                # Every B-P16 probe names the declared bound it pins, and every refusal its citations.
-                self.assertIsInstance(SPEC_BOUNDS[probe["derived_from"]["b_p16_bound"]], dict)
+                # Every B-P16 probe names the declared bound or rule it pins, and every refusal its citations.
+                if "b_p16_bound" in probe["derived_from"]:
+                    self.assertIsInstance(SPEC_BOUNDS[probe["derived_from"]["b_p16_bound"]], dict)
+                else:
+                    self.assertIn("^(0|[1-9][0-9]*)$", probe["derived_from"]["b_p16_rule"])
                 for run in probe["runs"]:
                     if run["expect"]["disposition"]["value"] == "FAIL_CLOSED":
                         self.assertIn("citations", run["expect"])
