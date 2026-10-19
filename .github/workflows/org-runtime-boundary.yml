@@ -97,7 +97,7 @@ jobs:
       - name: Install the pinned StegVerse SDK
         run: |
           set -eu
-          SDK_SHA=4f6aba776d7d0879d9423d0922ce1b081470bd5e
+          SDK_SHA=080ea4b275c2207268b24314109e8c4f47298405
           curl -fsSL "https://github.com/StegVerse-org/StegVerse-SDK/archive/${SDK_SHA}.tar.gz" -o /tmp/stegverse-sdk.tgz
           mkdir /tmp/stegverse-sdk
           tar -xzf /tmp/stegverse-sdk.tgz -C /tmp/stegverse-sdk --strip-components=1
