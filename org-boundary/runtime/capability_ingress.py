@@ -256,13 +256,12 @@ def declared_manifest(payload: Any) -> dict[str, Any]:
 
 
 def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *, registry: Mapping[str, Any],
-            mesh_root: Path | None = None, hb_epoch: int | None = None) -> dict[str, Any]:
+            mesh_root: Path | None = None) -> dict[str, Any]:
     """Hand an addressed submission to the receiving operation the overlay binds.
 
     The operation records its own dispositions at both ledger levels; this
     returns what it reported. A refusal is returned as the operation stated it,
-    not retried into an admission. `hb_epoch` is the carrier frame's supplied
-    epoch, handed on as given; absent, the operation is called as before.
+    not retried into an admission.
     """
     resolved = resolve(root, service)
     # The overlay says how this capability's submission is read. A payload the
@@ -272,10 +271,9 @@ def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *
     binding = binding_for_service(root, service.get("service_id"))
     submission = submission_for(binding, packet.get("payload"))
     module = load_operation(resolved)
-    epoch = {} if hb_epoch is None else {"hb_epoch": hb_epoch}
     result = module.receive(submission, registry=registry, standing=packet.get("standing"),
                             packet_id=str(packet.get("packet_id") or resolved["receiving_operation_id"]),
-                            mesh_root=mesh_root, **epoch)
+                            mesh_root=mesh_root)
     return {
         "capability_received": True,
         "capability_profile_id": resolved["capability_profile_id"],
