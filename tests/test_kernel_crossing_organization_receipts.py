@@ -131,8 +131,12 @@ class CrossingReceiptTests(unittest.TestCase):
 
         organization_ledger.aggregate_transition = fails_once
         self.addCleanup(setattr, organization_ledger, "aggregate_transition", original)
-        with self.assertRaises(SimulatedAppendFailure):
-            self.consume()
+        # The pass does not abort: the frame is reported non-terminal and stays pending.
+        pending, = self.consume()
+        self.assertEqual(pending["result"]["status"], "PENDING")
+        self.assertEqual(pending["result"]["failure_code"], "FRAME_DISPATCH_FAILED")
+        self.assertIn("SimulatedAppendFailure", pending["result"]["failed_predicate"])
+        self.assertIsNone(pending["seen_marker"])
         self.assertEqual(len(receipts(self.repo_ledger)), 1)
         self.assertEqual(receipts(self.org_ledger), [])
         self.assertEqual(self.answers(), [])

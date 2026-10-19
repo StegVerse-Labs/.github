@@ -1039,8 +1039,13 @@ def _oscillator():
     return independent_oscillator
 
 
-def current_heartbeat_epoch(*, now_ns: int | None = None) -> int:
-    """Present heartbeat epoch. Requires no scheduler, sampler or live process."""
+def current_heartbeat_epoch(*, now_ns: int | None = None, epoch: int | None = None) -> int:
+    """Present heartbeat epoch. Requires no scheduler, sampler or live process.
+
+    A supplied `epoch` is the present epoch: no clock is read when one is in hand.
+    """
+    if epoch is not None:
+        return int(epoch)
     osc = _oscillator()
     if now_ns is None:
         now_ns = time.time_ns()
@@ -1114,7 +1119,8 @@ def _packet_establishment(rows: list[dict]) -> dict | None:
     return record
 
 
-def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = None) -> dict:
+def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = None,
+                      epoch: int | None = None) -> dict:
     """Return open-packet accounting: count, declared establishment and expiry."""
     release_count = _manifest_release_count(parent_manifest)
     declared = _manifest_establishment(parent_manifest)
@@ -1136,7 +1142,7 @@ def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = 
     if established is not None:
         osc = _oscillator()
         expiry_heartbeat_id = established["expiry_heartbeat_id"]
-        expired = current_heartbeat_epoch(now_ns=now_ns) >= osc.decode_heartbeat_id(expiry_heartbeat_id)
+        expired = current_heartbeat_epoch(now_ns=now_ns, epoch=epoch) >= osc.decode_heartbeat_id(expiry_heartbeat_id)
     return {
         "receipt_count": len(rows),
         "release_count": release_count,
@@ -1148,14 +1154,15 @@ def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = 
 
 
 def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root=None, now_ns: int | None = None,
-                                                   custody_exclusivity_verifier=None) -> dict | None:
+                                                   custody_exclusivity_verifier=None,
+                                                   epoch: int | None = None) -> dict | None:
     """Release the satisfied packet immediately before the next receipt append.
 
     Release is authorized once, at establishment, by the governing manifest.
     Nothing decides anything here: the condition fires, it is not adjudicated.
     """
     root = _ledger(root)
-    state = open_packet_state(parent_manifest, root=root, now_ns=now_ns)
+    state = open_packet_state(parent_manifest, root=root, now_ns=now_ns, epoch=epoch)
     if not state["release_condition_satisfied"]:
         return None
     reason = "MANIFEST_RELEASE_DELTA_EXPIRY" if (

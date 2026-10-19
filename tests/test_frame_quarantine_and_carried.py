@@ -142,6 +142,49 @@ class FrameQuarantineTests(unittest.TestCase):
             self.assertEqual(receipt["hb_reference"]["epoch"], 1000)
         self.assertEqual(self.cycle(), [])
 
+    def test_unreadable_frame_files_are_quarantined_by_name_and_the_scan_continues(self):
+        self.with_stegcore()
+        frames = self.work / "mesh" / "frames.d"
+        frames.mkdir(parents=True, exist_ok=True)
+        (frames / "000-not-json.json").write_text("{not json", encoding="utf-8")
+        (frames / "001-a-list.json").write_text("[1,2,3]", encoding="utf-8")
+        (frames / "002-not-utf8.json").write_bytes(b"\xff\xfe\x00garbage")
+        (frames / "003-oversized.json").write_text(
+            json.dumps({"pad": "x" * (K.FRAME_SIZE_CAP_BYTES + 1)}), encoding="utf-8")
+        (frames / "004-read-error.json").mkdir()
+        self.publish("after-the-corrupt-files")
+        with mock.patch.object(K, "datetime", _ClockRead):
+            entries = self.cycle()
+        refused = [e for e in entries if e["result"]["status"] == "REFUSED"]
+        consumed = [e for e in entries if e["result"]["status"] == "CONSUMED"]
+        self.assertEqual(len(consumed), 1)
+        self.assertEqual(len(refused), 5)
+        for entry in refused:
+            self.assertEqual(entry["result"]["frame_failure_code"], "FRAME_INGEST_FAILED")
+            for field in SIX:
+                self.assertTrue(str(entry["result"].get(field) or "").strip(), field)
+            self.assertIsNone(entry["organization_record"])
+        self.assertEqual(self.cycle(), [])
+
+    def test_a_wrong_typed_field_is_quarantined_before_and_after_a_valid_frame(self):
+        self.with_stegcore()
+        for name in ("typed-before", "valid", "typed-after"):
+            frame = K.carrier_frame({**base.packet(base.work_request({"signal": {}})), "packet_id": name},
+                                    epoch=1000)
+            if name != "valid":
+                body = {k: v for k, v in frame.items() if k != "frame_sha256"}
+                body["packet_base64"] = 123
+                frame = {**body, "frame_sha256": K.sha(body)}
+            K.publish_frame(frame, root=self.work / "mesh")
+        entries = self.cycle()
+        statuses = sorted(e["result"]["status"] for e in entries)
+        self.assertEqual(statuses, ["CONSUMED", "REFUSED", "REFUSED"])
+        for entry in entries:
+            if entry["result"]["status"] == "REFUSED":
+                self.assertEqual(entry["result"]["frame_failure_code"], "FRAME_INGEST_FAILED")
+                self.assertIn("Error", entry["result"]["failed_predicate"])
+        self.assertEqual(self.cycle(), [])
+
     def test_a_bare_sampled_frame_is_clock_consumed_and_lends_no_epoch(self):
         supplied = K.hb_reference(epoch=1000)
         bare = {k: v for k, v in supplied.items() if k != "derived_from_clock"}

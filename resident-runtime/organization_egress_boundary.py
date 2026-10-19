@@ -526,6 +526,37 @@ def closure_record(resolved: Mapping[str, Any], origin: str, packet_id: str,
     }
 
 
+def _supplied_epoch(hb_epoch: Any, retry_entrypoint: str) -> int | None:
+    """The supplied epoch as an int, or the six-field SuppliedEpochRefused. Absent stays None."""
+    if hb_epoch is None:
+        return None
+    return int(kernel.supplied_hb_reference(hb_epoch, retry_entrypoint=retry_entrypoint)["epoch"])
+
+
+def _refuse_emission_collision(packet: Mapping[str, Any], payload: Mapping[str, Any],
+                               hb_epoch: int | None) -> None:
+    """Refuse, before anything is published, an emission its packet id already records otherwise.
+
+    With a supplied epoch the frame is reproducible, so the recorded emission
+    of this packet id must carry this frame and payload digest; a different
+    one would be a `ledger_receipt_collision` only after publishing.
+    """
+    if hb_epoch is None:
+        return
+    store = repository_ledger.repository_store()
+    prior = repository_ledger.recorded(store, store.get(repository_ledger.ledger_store.HEAD_KEY),
+                                       EMITTED_CLASS + ":" + packet["packet_id"], EMITTED_CLASS)
+    if prior is None:
+        return
+    recorded = prior.get("evidence") or {}
+    frame = kernel.carrier_frame(dict(packet), epoch=hb_epoch)
+    if (recorded.get("frame_sha256") != frame["frame_sha256"]
+            or recorded.get("payload_sha256") != sha(dict(payload))):
+        raise EgressRefused("ONE_PACKET_ID_BINDS_ONE_EMISSION",
+                            "ledger_receipt_collision: packet " + str(packet["packet_id"])
+                            + " already records another emission; nothing was published")
+
+
 def _record(transition_id: str, transition_class: str, predecessor: str, successor: str,
             record: Mapping[str, Any], hb_epoch: int | None) -> dict[str, Any]:
     """Append at both levels: the repository first, the organization consuming it.
@@ -582,7 +613,12 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
     The record is appended *after* the frame is published, because the record is
     of an emission and carries the frame's digest. Minting it first would be a
     receipt claiming a crossing that had not happened yet.
+
+    A supplied `hb_epoch` is checked by the shared rule as given ("4096" is
+    4096); an invalid one raises the six-field SuppliedEpochRefused before
+    anything is built, published or recorded.
     """
+    hb_epoch = _supplied_epoch(hb_epoch, "resident-runtime/organization_egress_boundary.py::emit (hb_epoch=)")
     origin = this_organization(root)
     try:
         unclosable = closability_refusal(payload or {})
@@ -619,6 +655,7 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
                 raise EgressRefused(refused.failed_predicate, refused.reason) from None
             attested = attestation_module.record(declared, signature, receipt)
             packet = {**packet, "attestation": signature}
+        _refuse_emission_collision(packet, payload, hb_epoch)
         published = kernel.publish_packet(packet, root=mesh_root, epoch=hb_epoch)
     except EgressRefused as exc:
         record = emit_refusal_record(exc.failed_predicate, exc.reason,
@@ -807,6 +844,7 @@ def close(destination_organization: str, packet_id: str, communication_id: str, 
     disposition to record, and appending a refusal per poll would record the
     polling rather than the crossing.
     """
+    hb_epoch = _supplied_epoch(hb_epoch, "resident-runtime/organization_egress_boundary.py::close (hb_epoch=)")
     origin = this_organization(root)
     resolved = resolve_destination(destination_organization, root=root)
     collected = kernel.collect_ecosystem_responses(origin, communication_id,

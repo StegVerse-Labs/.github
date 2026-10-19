@@ -864,9 +864,11 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
         retained = batches.retained_submission_evidence(store)
         if retained is not None:
             effective_boundary_evidence[batches.RELEASED_BATCH_SUBMISSION_KEY] = retained
+        # Expiry and release read the supplied epoch when one is in hand, never a clock.
         released = batches.release_satisfied_packet_before_next_transition(
             parent_manifest, root=store, now_ns=now_ns,
             custody_exclusivity_verifier=custody_exclusivity_verifier,
+            epoch=int(str(hb_epoch)) if hb_epoch is not None else None,
         )
         if released is not None:
             if establishes_packet:
@@ -903,7 +905,8 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
         hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
     )
     if released is not None:
-        state = batches.open_packet_state(parent_manifest, root=store, now_ns=now_ns)
+        state = batches.open_packet_state(parent_manifest, root=store, now_ns=now_ns,
+                                          epoch=int(str(hb_epoch)) if hb_epoch is not None else None)
         if state["receipt_count"] != (2 if manifest_establishes else 1):
             raise ValueError("successor organization receipt packet did not initialize correctly")
     return record

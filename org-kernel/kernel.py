@@ -567,16 +567,42 @@ def publish_frame(frame:dict[str,Any], *, root:Path|None=None, store:Any|None=No
         raise ValueError("federation_frame_write_once_collision")
     return Path(target.locator(key))
 
+#: Reference cap on one frames.d file; a larger one is never parsed (B-P36p).
+FRAME_SIZE_CAP_BYTES=1024*1024
+
+def _read_frame(target:Any, key:str)->Any:
+    path=Path(target.locator(key))
+    if path.exists() and not path.is_file():
+        raise OSError("frame_unreadable: "+path.name+" is not a regular file")
+    if path.is_file() and path.stat().st_size>FRAME_SIZE_CAP_BYTES:
+        raise ValueError("frame_oversized: more than "+str(FRAME_SIZE_CAP_BYTES)+" bytes")
+    frame=target.get(key)
+    if frame is not None and not isinstance(frame,dict):
+        raise ValueError("frame_not_an_object: "+type(frame).__name__)
+    return frame
+
 def scan_addressed_frames(organization:str, *, root:Path|None=None, store:Any|None=None,
-                          seen:set[str]|None=None)->list[dict[str,Any]]:
-    """Frames in the mesh addressed to `organization` and not already consumed."""
+                          seen:set[str]|None=None, include_unreadable:bool=False)->list[dict[str,Any]]:
+    """Frames in the mesh addressed to `organization` and not already consumed.
+
+    Each file is read on its own guard: an unreadable, non-UTF-8, non-JSON,
+    non-object or oversized file never stops the scan. It is skipped, or, with
+    `include_unreadable`, returned with `scan_failure` so the consumer can
+    quarantine it by name.
+    """
     target=store or mesh_store(root)
     consumed=seen or set()
     out=[]
     for key in target.list_prefix(node_store_module.MESH_FRAME_PREFIX):
         if node_store_module.frame_name(key) in consumed:
             continue
-        frame=target.get(key)
+        try:
+            frame=_read_frame(target,key)
+        except Exception as exc:  # noqa: BLE001 -- one bad file never stops the scan
+            if include_unreadable:
+                out.append({"key":key,"name":node_store_module.frame_name(key),"path":target.locator(key),
+                            "frame":None,"scan_failure":exc})
+            continue
         if frame is not None and frame.get("destination_org")==organization:
             out.append({"key":key,"name":node_store_module.frame_name(key),
                         "path":target.locator(key),"frame":frame})
@@ -1058,6 +1084,22 @@ def _ingest_failure_quarantine(frame:dict[str,Any], exc:Exception)->dict[str,Any
                                                                               HB_REFERENCE_INVALID)
                                                 else "FRAME_IS_INGESTED_AS_PUBLISHED:"+type(exc).__name__))
 
+FRAME_DISPATCH_IO_FAILED="FRAME_DISPATCH_IO_FAILED"
+FRAME_DISPATCH_FAILED="FRAME_DISPATCH_FAILED"
+
+def _dispatch_failure(frame:Any, exc:Exception)->dict[str,Any]:
+    """A non-terminal six-field record of this node's own failure on a frame; it stays pending."""
+    code=FRAME_DISPATCH_IO_FAILED if isinstance(exc,OSError) else FRAME_DISPATCH_FAILED
+    return {"status":"PENDING","disposition":"FAIL_CLOSED","failure_code":code,
+            "failed_predicate":"FRAME_IS_RECORDED_AND_ANSWERED:"+type(exc).__name__,
+            "detail":str(exc) or type(exc).__name__,
+            "required_evidence_or_repair":"this node's own state or ledger write completes",
+            "retry_entrypoint":"org-kernel/kernel.py::consume_and_respond (next pass)",
+            "owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"the next pass offers the frame again; the idempotent append completes it",
+            "packet_id":frame.get("packet_id") if isinstance(frame,dict) else None,
+            "consequence_committed":False}
+
 def _quarantine_record(frame:Any, code:str, detail:str, *, failed_predicate:str=HB_EPOCH_PREDICATE)->dict[str,Any]:
     return {"status":"REFUSED","disposition":"FAIL_CLOSED","failure_code":FRAME_REFUSED_QUARANTINED,
             "frame_failure_code":code,"failed_predicate":failed_predicate,"detail":detail,
@@ -1149,15 +1191,27 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
     durable_seen=federation_seen_frame_names(repo_root,store=node_state)
     effective_seen=set(seen or set())|durable_seen
     out=[]
-    for item in scan_addressed_frames(organization,root=mesh_root,seen=effective_seen):
+    for item in scan_addressed_frames(organization,root=mesh_root,seen=effective_seen,include_unreadable=True):
+        if item.get("scan_failure") is not None:
+            # A file that cannot be read as a frame is quarantined by its name.
+            refused=_ingest_failure_quarantine({},item["scan_failure"])
+            marker=mark_federation_frame_seen(repo_root,item["path"],{},refused,store=node_state)
+            out.append({"path":item["path"],"result":refused,"response_publication":None,
+                        "organization_record":None,"seen_marker":str(marker)})
+            continue
         # An answer is stamped with the epoch of the frame it answers, checked
         # by the shared rule. Consuming the same frame again then builds the
         # same answer frame, and publishing it is a write-once no-op rather
         # than a second answer stamped by whatever clock this pass read. A
         # frame whose epoch fails the rule is refused six-field by ingest_frame
         # before recovery, and that refusal is recorded below.
-        epoch=None if now_ns is not None else _frame_epoch(item["frame"])
-        quarantined=_frame_quarantine(item["frame"],custody)
+        # The guard is total: whatever this one frame raises, it is quarantined
+        # and the loop continues (B-P36o, F-TYPE).
+        try:
+            epoch=None if now_ns is not None else _frame_epoch(item["frame"])
+            quarantined=_frame_quarantine(item["frame"],custody)
+        except Exception as exc:  # noqa: BLE001 -- a frame defect is that frame's quarantine
+            epoch,quarantined=None,_ingest_failure_quarantine(item["frame"],exc)
         if quarantined is None:
             # Any error the frame itself causes -- recovery, integrity, its
             # heartbeat reference, a six-field carrier refusal -- quarantines it
@@ -1178,6 +1232,14 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
                                                 node_state=node_state,epoch=epoch)
             except CarrierEpochRefusal as exc:
                 quarantined=_ingest_failure_quarantine(item["frame"],exc)
+            except Exception as exc:  # noqa: BLE001 -- this node's own failure: the frame stays pending
+                if any(marker in str(exc) for marker in CUSTODY_REFUSALS):
+                    raise
+                # Not terminal: no marker, nothing answered; the next pass offers
+                # the frame again and the idempotent append completes it.
+                out.append({"path":item["path"],"result":_dispatch_failure(item["frame"],exc),
+                            "response_publication":None,"organization_record":None,"seen_marker":None})
+                continue
         if quarantined is not None:
             # Terminal: nothing is recorded or answered, no clock is read, and the
             # marker keeps the frame from being offered again (B-P36j).
