@@ -354,6 +354,11 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
     # Also before any receipt: an adapter that takes the carrier epoch is not
     # run, and no chain implies it was, without one the carrier supplied.
     if endpoint and adapter_takes_carrier_epoch(service): carrier_epoch(heartbeat_reference)
+    # Also before any receipt: a capability address hands the submission to an
+    # operation that appends at both ledger levels. Without the carrier's epoch
+    # that append fell back to the host clock, so it is refused here instead,
+    # before the operation is loaded and before any store is opened.
+    capability_epoch=carrier_epoch(heartbeat_reference) if role==CAPABILITY_INGRESS_ROLE else None
     # Also before any receipt: a work request is recorded in node state, so a
     # node materialized without one cannot consume it.
     if (role=="BOUNDARY_LOCAL_CONTROL" and node_state is None
@@ -377,7 +382,7 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
         # defective for having no capability resolver.
         try:
             application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
-                                                                mesh_root=mesh_root)
+                                                                mesh_root=mesh_root,hb_epoch=capability_epoch)
         except SystemExit as refused:
             raise ValueError("capability_ingress_refused:"+str(refused)) from None
     else:
