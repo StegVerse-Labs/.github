@@ -22,6 +22,8 @@ on:
       - 'resident-runtime/intr_destination_ingress.py'
       - 'resident-runtime/ledger_store.py'
       - 'resident-runtime/organization_ledger_readback.py'
+      - 'scripts/check_dispatch_hb_epoch.py'
+      - 'tests/test_dispatch_hb_epoch_gate.py'
       - 'tests/test_intr_destination_capability.py'
       - 'tests/test_organization_ledger_transition_writer.py'
   workflow_dispatch:
@@ -31,7 +33,7 @@ on:
         required: true
         type: string
       hb_epoch:
-        description: 'supplied heartbeat epoch the receipts carry (non-negative integer); no clock is read for it'
+        description: 'supplied heartbeat epoch the receipts carry (ASCII digits, value >= 32); no clock is read for it'
         required: true
         type: string
       packet_id:
@@ -71,9 +73,11 @@ jobs:
             resident-runtime/organization_ledger_readback.py \
             resident-runtime/intr_destination_ingress.py \
             resident-runtime/ledger_store.py \
-            .stegverse/transition-ledger/emit.py
+            .stegverse/transition-ledger/emit.py \
+            scripts/check_dispatch_hb_epoch.py
           python -m pip install pytest
           python -m pytest -q --tb=short \
+            tests/test_dispatch_hb_epoch_gate.py \
             tests/test_organization_ledger_transition_writer.py \
             tests/test_intr_destination_capability.py
 
@@ -159,11 +163,9 @@ jobs:
           export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
           mkdir -p "$RUNNER_TEMP/results"
           # Time is supplied with the dispatch. It is not sampled from a clock.
-          case "$HB_EPOCH" in
-            ''|*[!0-9]*)
-              echo '{"disposition":"FAIL_CLOSED","failure_code":"DISPATCH_HB_EPOCH_INVALID","failed_predicate":"HB_EPOCH_IS_SUPPLIED_AS_A_NON_NEGATIVE_INTEGER","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false}'
-              exit 1 ;;
-          esac
+          # The kernel's shared rule decides it, six-field, before any append.
+          python scripts/check_dispatch_hb_epoch.py HB_EPOCH \
+            ".github/workflows/organization-ledger-transition.yml (workflow_dispatch input hb_epoch)"
           python resident-runtime/intr_destination_ingress.py \
             --self-close \
             --hb-epoch "$HB_EPOCH" \

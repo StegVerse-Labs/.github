@@ -263,13 +263,10 @@ class AbsentEpochTests(unittest.TestCase):
                 endpoint = _load("absent_epoch_" + Path(relative).stem, relative)
                 before = snapshot(self.work)
                 with mock.patch.object(subprocess, "run", side_effect=AssertionError("emit.py invoked")):
-                    # The endpoint loads its own kernel, so its refusal class is that kernel's.
-                    with self.assertRaises(ValueError) as raised:
+                    with self.assertRaises(SystemExit) as raised:
                         endpoint.record({"packet_id": "p"}, {})
-                self.assertEqual(type(raised.exception).__name__, "SuppliedEpochRefused")
-                self.assertEqual(raised.exception.refusal["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
-                for field in SIX_FIELDS:
-                    self.assertTrue(raised.exception.refusal[field], field)
+                refusal = json.loads(str(raised.exception))
+                self.assertSharedRule(refusal, relative + "::record (hb_epoch=)")
                 self.assertEqual(snapshot(self.work), before)
 
     def test_a_supplied_4096_still_records_as_given(self):

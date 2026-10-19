@@ -137,6 +137,22 @@ class WriterEpochRefusalOrderTests(unittest.TestCase):
                                  "HB_EPOCH_NOT_SUPPLIED" if epoch is None else "HB_EPOCH_INVALID")
                 self.assertNothingCreated()
 
+    def test_an_unmarked_reference_is_refused_by_the_shared_rule(self):
+        unmarked = {k: v for k, v in org.kernel.hb_reference(epoch=40).items() if k != "derived_from_clock"}
+        self.assertEqual(org.kernel.supplied_epoch_failure(40, unmarked)[0], "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertIsNone(org.kernel.supplied_epoch_failure(40, org.kernel.hb_reference(epoch=40)))
+
+    def test_only_a_supplied_frame_epoch_stamps_receipts(self):
+        packet = {"packet_id": "p-stamp", "origin": {"org": "StegVerse-org"},
+                  "destination": {"org": "StegVerse-Labs", "service": "s"}, "intr_profile": "x", "payload": {}}
+        supplied = org.kernel.carrier_frame(packet, epoch=4096)
+        clock = org.kernel.carrier_frame(packet, now_ns=org.kernel.HB_ANCHOR_UNIX_NS + 9 * org.kernel.HB_PERIOD_NS)
+        unmarked = {**supplied, "heartbeat_reference": {k: v for k, v in supplied["heartbeat_reference"].items()
+                                                        if k != "derived_from_clock"}}
+        self.assertEqual(org.kernel._frame_epoch(supplied), 4096)
+        self.assertIsNone(org.kernel._frame_epoch(clock))
+        self.assertIsNone(org.kernel._frame_epoch(unmarked))
+
     def test_a_supplied_4096_is_recorded_as_given_with_no_clock_read(self):
         with no_clock():
             repository = emit.append("t-order-4096", "TEST", SHA_A, SHA_B, hb_epoch="4096")

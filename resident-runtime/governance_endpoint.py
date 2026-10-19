@@ -158,14 +158,15 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
 
     `hb_epoch` is the carrier's heartbeat epoch, supplied by the caller; both
     receipts carry that exact reference, as every other boundary writer does.
-    Absent or invalid, kernel.SuppliedEpochRefused (six-field FAIL_CLOSED) is
-    raised before either ledger is touched; no clock is read.
+    It is checked by the shared rule as given, never coerced: absent, '+33',
+    ' 33', 33.7 or True is the six-field refusal (HB_EPOCH_NOT_SUPPLIED when
+    absent), raised before either ledger is touched; no clock is read.
     """
     kernel = _module("org_kernel_record_epoch", "org-kernel/kernel.py")
     refused = kernel.writer_epoch_refusal(
-        hb_epoch, retry_entrypoint="resident-runtime/governance_endpoint.py::record (hb_epoch=, or --hb-epoch)")
+        hb_epoch, retry_entrypoint="resident-runtime/governance_endpoint.py::record (hb_epoch=)")
     if refused is not None:
-        raise kernel.SuppliedEpochRefused(refused)
+        raise SystemExit(json.dumps(refused, sort_keys=True))
     transition_id = TRANSITION_CLASS + ":" + hashlib.sha256(
         str(packet.get("packet_id")).encode()).hexdigest()[:24]
     predecessor = "sha256:" + str(decision.get("governance_request_sha256"))
@@ -178,7 +179,7 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
          "--transition-id", transition_id, "--transition-class", TRANSITION_CLASS,
          "--predecessor-state-sha256", predecessor, "--successor-state-sha256", successor,
          "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE"]
-        + ["--hb-epoch", str(int(str(hb_epoch)))],
+        + ["--hb-epoch", str(hb_epoch)],
         cwd=ROOT, capture_output=True, text=True, check=False)
     if completed.returncode != 0:
         raise SystemExit("governance-decision-repository-receipt-failed:"

@@ -380,11 +380,11 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     if custody is None or chain_refusal is not None:
         result["organization_readback"] = "NOT_PERFORMED"
         return result
-    epoch = int(str(hb_epoch)) if hb_epoch is not None and epoch_failure is None else None
-    if epoch is None:
+    if hb_epoch is None or epoch_failure is not None:
         # No supplied epoch in scope: the disposition is returned, not recorded,
-        # and no clock is read to stamp a receipt (WU-B13 slice g).
-        result["organization_readback"] = "NOT_PERFORMED"
+        # and no clock is read to stamp a receipt (WU-B13 slice g). The six
+        # fields are in the result; record_refusal says why nothing was written.
+        result.update({"receipt_appended": False, "organization_readback": "NOT_PERFORMED"})
         result["record_refusal"] = kernel.no_epoch_caller_refusal(
             "scripts/authorize_site_production_promotion.py::authorize",
             retry_entrypoint=RETRY_ENTRYPOINT + " (hb_epoch=, or --hb-epoch)")
@@ -399,6 +399,7 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     prior = emitter.recorded(store, store.get(emitter.ledger_store.HEAD_KEY), transition_id, cls)
     if prior is not None:
         successor = prior["successor_state_sha256"]
+    epoch = int(str(hb_epoch))
     repository_receipt = emitter.append(transition_id, cls, predecessor, successor, evidence, "NONE",
                                         hb_epoch=epoch, store=store, idempotent_on=identity)
     # Carried from the RECORDED repository evidence, so a retry consumes the same source with the same context.

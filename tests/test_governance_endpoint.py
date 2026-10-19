@@ -249,7 +249,7 @@ class GovernanceEndpointTests(unittest.TestCase):
     def test_an_undeclared_request_crossing_is_recorded_as_deny_and_not_decided(self):
         self.with_stegcore()
         mesh = self.work / "mesh"
-        K.publish_packet(packet(work_request({"signal": {}}, processing=None)), root=mesh)
+        K.publish_packet(packet(work_request({"signal": {}}, processing=None)), root=mesh, epoch=4096)
         refused, = K.consume_and_respond(ROOT, mesh_root=mesh, node_state_root=self.work / "node-state",
                                          repo_ledger_root=self.work / "repo-ledger",
                                          org_ledger_root=self.work / "org-ledger")

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 from pathlib import Path
 
@@ -10,6 +11,19 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PATH = ROOT / "control" / "heartbeat-subsignals.json"
 TERMINAL_ACTIONS = {"NONE", "OPEN", "EXTEND", "CLOSE"}
 STATES = {"IDLE", "OPEN_REQUESTED", "OPEN", "EXTENDING", "HANDOFF_READY", "CLOSE_REQUESTED", "CLOSED"}
+
+
+def epoch_refusal(text: str | None) -> dict | None:
+    """The kernel's six-field refusal of --epoch as typed, or None when it is supplied.
+
+    argparse hands over the raw text, so '+33', ' 33', fullwidth digits and
+    values below 32 reach supplied_epoch_failure uncoerced.
+    """
+    spec = importlib.util.spec_from_file_location("org_kernel_subsignal", ROOT / "org-kernel" / "kernel.py")
+    kernel = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kernel)
+    return kernel.writer_epoch_refusal(
+        text, retry_entrypoint="scripts/manage_heartbeat_subsignal.py open (--epoch)")
 
 
 def load(path: Path) -> dict:
@@ -41,7 +55,8 @@ def main() -> int:
     parser.add_argument("--task-id")
     parser.add_argument("--lease-id")
     parser.add_argument("--successor-lease-id")
-    parser.add_argument("--epoch", type=int)
+    parser.add_argument("--epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; never coerced")
     parser.add_argument("--path", default=str(DEFAULT_PATH))
     args = parser.parse_args()
 
@@ -51,8 +66,14 @@ def main() -> int:
 
     if args.action in {"register", "unregister"} and not args.task_id:
         raise SystemExit("--task-id is required")
-    if args.action == "open" and (not args.lease_id or args.epoch is None):
+    if args.action == "open" and not args.lease_id:
         raise SystemExit("open requires --lease-id and --epoch")
+    if args.action == "open":
+        refused = epoch_refusal(args.epoch)
+        if refused is not None:
+            # Nothing is written to the lease file.
+            print(json.dumps(refused, sort_keys=True))
+            return 1
     if args.action == "handoff" and not args.successor_lease_id:
         raise SystemExit("handoff requires --successor-lease-id")
 
@@ -68,7 +89,7 @@ def main() -> int:
         lease["lease_id"] = args.lease_id
         lease["state"] = "OPEN_REQUESTED"
         lease["lease_action"] = "OPEN"
-        lease["opened_epoch"] = args.epoch
+        lease["opened_epoch"] = int(args.epoch)
         lease["successor_lease_id"] = None
     elif args.action == "extend":
         if lease.get("state") not in {"OPEN", "EXTENDING", "OPEN_REQUESTED"}:

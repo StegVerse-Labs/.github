@@ -56,7 +56,7 @@ with tempfile.TemporaryDirectory() as td:
     packet=k.build_packet(origin_org="Org-A",origin_service="org-a.boundary-diagnostic",
                           destination_org="Org-B",destination_service="org-b.boundary-diagnostic",
                           payload={"probe":"mesh"},standing=STANDING,packet_id="mesh-a-to-b-001")
-    pub=k.publish_packet(packet,root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+2_000_000_000)
+    pub=k.publish_packet(packet,root=mesh,epoch=4096)
     assert Path(pub["path"]).exists()
     assert a.consume_addressed(mesh_root=mesh)==[]
     consumed=b.consume_addressed(mesh_root=mesh)
@@ -85,7 +85,7 @@ with tempfile.TemporaryDirectory() as td:
         requested_action="REPORT_STATUS",
         communication_id="ecosystem-broadcast-001",
         root=mesh,
-        now_ns=k.HB_ANCHOR_UNIX_NS+3_000_000_000
+        epoch=4096
     )
     assert pub["published_count"]==14
     results={org:peer.consume_addressed(mesh_root=mesh) for org,peer in roots.items()}
@@ -119,7 +119,7 @@ with tempfile.TemporaryDirectory() as td:
         requested_action="REPORT_STATUS",
         communication_id="ecosystem-monitor-response-001",
         mesh_root=mesh,
-        now_ns=k.HB_ANCHOR_UNIX_NS+4_000_000_000
+        epoch=4096
     )
     assert pub["published_count"]==14
     for org,peer in roots.items():
@@ -150,7 +150,7 @@ with tempfile.TemporaryDirectory() as td:
         requested_action="RECONCILE_LOCAL_STATUS",
         communication_id="ecosystem-work-intake-001",
         mesh_root=mesh,
-        now_ns=k.HB_ANCHOR_UNIX_NS+5_000_000_000
+        epoch=4096
     )
     assert pub["published_count"]==14
     for org,peer in roots.items():
@@ -184,7 +184,7 @@ with tempfile.TemporaryDirectory() as td:
         body={"value":1},
         communication_id="ecosystem-dedup-001",
         mesh_root=mesh,
-        now_ns=k.HB_ANCHOR_UNIX_NS+6_000_000_000
+        epoch=4096
     )
     state=Path(td)/"node-state"
     first=node.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_100_000_000)

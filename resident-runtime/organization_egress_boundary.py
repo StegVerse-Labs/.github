@@ -554,7 +554,7 @@ def _record(transition_id: str, transition_class: str, predecessor: str, success
                            "crossed_an_organization_boundary":
                                record["crossed_an_organization_boundary"]},
         authority_effect="NONE",
-        hb_epoch=repository_receipt["hb_reference"]["epoch"] if idempotent else hb_epoch)
+        hb_epoch=repository_ledger.forwarded_epoch(repository_receipt, hb_epoch))
     return {"repository_receipt": repository_receipt,
             "organization_receipt": organization_receipt}
 
@@ -582,7 +582,11 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
     The record is appended *after* the frame is published, because the record is
     of an emission and carries the frame's digest. Minting it first would be a
     receipt claiming a crossing that had not happened yet.
+
+    Without a supplied `hb_epoch` nothing is published or recorded.
     """
+    if hb_epoch is None:
+        return no_epoch_result("emit")
     origin = this_organization(root)
     try:
         unclosable = closability_refusal(payload or {})
@@ -659,6 +663,18 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
         "emission_organization_receipt_sha256": appended["organization_receipt"]["receipt_sha256"],
         "authority_effect": "NONE_EGRESS_RECORD_ONLY",
     }
+
+
+def no_epoch_result(caller: str) -> dict[str, Any]:
+    """The unrecorded six-field refusal of an emission or closure with no supplied epoch.
+
+    Nothing is published, recorded or derived from a clock (WU-B13 slice g).
+    """
+    refusal = kernel.no_epoch_caller_refusal(
+        "resident-runtime/organization_egress_boundary.py::" + caller,
+        retry_entrypoint="resident-runtime/organization_egress_boundary.py::" + caller + " (hb_epoch=, or --hb-epoch)")
+    return {"schema": RESULT_SCHEMA, "operation": OPERATION_ID, **refusal, "emitted": False,
+            "refusal_recorded": False, "authority_effect": "NONE_REFUSAL_ONLY"}
 
 
 def _refusal_result(record: Mapping[str, Any], appended: Mapping[str, Any]) -> dict[str, Any]:
@@ -806,7 +822,11 @@ def close(destination_organization: str, packet_id: str, communication_id: str, 
     absence is not an arrival: nothing crossed the boundary, so there is no
     disposition to record, and appending a refusal per poll would record the
     polling rather than the crossing.
+
+    Without a supplied `hb_epoch` nothing is collected or recorded.
     """
+    if hb_epoch is None:
+        return no_epoch_result("close")
     origin = this_organization(root)
     resolved = resolve_destination(destination_organization, root=root)
     collected = kernel.collect_ecosystem_responses(origin, communication_id,
