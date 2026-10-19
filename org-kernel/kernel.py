@@ -375,9 +375,14 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
         # crossing with a refusal buried in its application result. Loaded only
         # for this role: a root that never serves a capability address is not
         # defective for having no capability resolver.
+        # The operation's receipts reference the carrier frame's epoch. A frame
+        # without a supplied one hands None, as before; no clock is read here.
+        frame_epoch=heartbeat_reference.get("epoch") if isinstance(heartbeat_reference,dict) else None
+        hb_epoch=(carrier_epoch(heartbeat_reference)
+                  if supplied_epoch_failure(frame_epoch,heartbeat_reference) is None else None)
         try:
             application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
-                                                                mesh_root=mesh_root)
+                                                                mesh_root=mesh_root,hb_epoch=hb_epoch)
         except SystemExit as refused:
             raise ValueError("capability_ingress_refused:"+str(refused)) from None
     else:

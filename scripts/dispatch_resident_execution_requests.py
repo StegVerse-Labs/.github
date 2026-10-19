@@ -21,7 +21,6 @@ import os
 import uuid
 import subprocess
 import sys
-from time import time_ns
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -580,7 +579,9 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         "machine_result_sha256": sha256_uri(machine_result),
         "machine_result": machine_result,
     }
-    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}:{time_ns()}"
+    # Keyed on the request's own identity (task, request id, request digest),
+    # as the claim consumer keys its records; no clock is read.
+    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}:{sha256_uri(request)}"
     required_evidence = [{
         "evidence_id": f"{transition_id}:selector-visit",
         "evidence_type": "RESIDENT_REQUEST_DISPATCH_SELECTOR_VISIT",
