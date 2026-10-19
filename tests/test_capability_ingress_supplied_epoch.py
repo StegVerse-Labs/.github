@@ -142,6 +142,29 @@ class CapabilityCrossingEpochTests(unittest.TestCase):
         self.assertEqual(loaded, [])
         self.assertFalse(self.ledger_opened())
 
+    def test_the_capability_surface_refuses_an_invalid_or_absent_epoch_with_nothing_written(self):
+        service = next(s for s in REGISTRY["services"] if s["service_id"] == ADDRESS)
+        loaded = []
+        original = capability.load_operation
+        capability.load_operation = lambda resolved: loaded.append(resolved) or original(resolved)
+        self.addCleanup(setattr, capability, "load_operation", original)
+        cases = (("33.0", "HB_EPOCH_INVALID"), (True, "HB_EPOCH_INVALID"), (31, "HB_EPOCH_INVALID"),
+                 ("+33", "HB_EPOCH_INVALID"), (None, "HB_EPOCH_NOT_SUPPLIED"))
+        for value, failure_code in cases:
+            with self.subTest(hb_epoch=value):
+                with self.assertRaises(SystemExit) as refused:
+                    capability.receive(ROOT, service, packet("direct-invalid-epoch"), registry=REGISTRY,
+                                       hb_epoch=value)
+                record = refused.exception.record
+                self.assertEqual(record["disposition"], "FAIL_CLOSED")
+                self.assertEqual(record["failure_code"], failure_code)
+                self.assertEqual(record["failed_predicate"], "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
+                for field in SIX_FIELDS:
+                    self.assertTrue(record[field], field)
+                self.assertIs(record["derived_from_clock"], False)
+                self.assertEqual(loaded, [])
+                self.assertFalse(self.ledger_opened(), "a refused epoch opened a ledger store")
+
 
 if __name__ == "__main__":
     unittest.main()
