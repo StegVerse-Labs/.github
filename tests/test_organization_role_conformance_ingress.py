@@ -956,7 +956,8 @@ class MainTests(ConformanceIngressCase):
         registry.write_text(json.dumps(REGISTRY))
         with mock.patch.dict(os.environ):
             os.environ.pop("STEGVERSE_REPO_LEDGER_ROOT")
-            code, printed = self.main("--manifest", str(manifest), "--registry", str(registry))
+            code, printed = self.main("--manifest", str(manifest), "--registry", str(registry),
+                                      "--hb-epoch", "4096")
         self.assertEqual(code, 1)
         self.assertEqual(printed["disposition"], "FAIL_CLOSED")
         self.assertEqual(printed["failed_predicate"], "ledger_location_required_from_materializer")
