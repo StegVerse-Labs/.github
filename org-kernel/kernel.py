@@ -211,6 +211,12 @@ NODE_STATE_WRITE_ONCE="NODE_STATE_WRITE_ONCE"
 ENDPOINT_ADAPTER_HB_EPOCH_CARRIER_SUPPLIED="CARRIER_SUPPLIED"
 HB_EPOCH_NOT_SUPPLIED="HB_EPOCH_NOT_SUPPLIED"
 HB_EPOCH_INVALID="HB_EPOCH_INVALID"
+#: The marker vocabulary of a heartbeat reference. SUPPLIED: derived_from_clock
+#: explicitly false, with no sampled_unix_ns. CARRIED: false, plus a non-empty
+#: `source` and `head_receipt_sha`. CLOCK: derived_from_clock true (refused as
+#: HB_EPOCH_INVALID); a bare sampled_unix_ns is only legacy CLOCK, never SUPPLIED.
+#: Anything else is unmarked, and an unmarked clock value counts as laundering.
+HB_EPOCH_PROVENANCE_UNMARKED="HB_EPOCH_PROVENANCE_UNMARKED"
 HB_EPOCH_PREDICATE="SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 HB_EPOCH_OWNING_EXISTING_GOAL="INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
 HB_EPOCH_RETRY_ENTRYPOINT=("org-kernel/kernel.py::consume_and_respond: the sender re-publishes the packet in a "
@@ -266,6 +272,7 @@ def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, s
             and reference["derived_from_clock"] is not False:
         return "HB_EPOCH_INVALID", ("the carrier's derived_from_clock is not exactly false; "
                                     "a clock-derived epoch is not a supplied one")
+    if reference is not None and (reference.get("derived_from_clock") is not False or ("sampled_unix_ns" in reference and not (reference.get("source") and reference.get("head_receipt_sha")))): return "HB_EPOCH_PROVENANCE_UNMARKED", "the carrier's heartbeat reference is neither SUPPLIED (derived_from_clock false, no sampled_unix_ns) nor CARRIED (derived_from_clock false, source and head_receipt_sha); an unmarked clock value is laundering"
     return None
 
 class SuppliedEpochRefused(ValueError):
@@ -280,7 +287,7 @@ class SuppliedEpochRefused(ValueError):
         self.failed_predicate=refusal["failed_predicate"]
         self.refusal=dict(refusal)
 
-def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]|None:
+def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str, reference:Any=None)->dict[str,Any]|None:
     """The six-field FAIL_CLOSED of a receipt writer's epoch, or None when it is supplied.
 
     The shape StegVerse-org/.github#189 gave the organization ledger
@@ -288,7 +295,7 @@ def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]|N
     supplies, checked by `supplied_epoch_failure`; an absent one is
     HB_EPOCH_NOT_SUPPLIED and is never derived from a clock.
     """
-    failure=supplied_epoch_failure(hb_epoch)
+    failure=supplied_epoch_failure(hb_epoch,reference)
     if failure is None:
         return None
     code,detail=failure
@@ -467,7 +474,7 @@ __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame"
          "record_federation_cycle","federation_cycles","manifest_selection","capability_ingress",
          "CAPABILITY_INGRESS_ROLE","crossing_custody",
          "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS",
-         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID",
+         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID","HB_EPOCH_PROVENANCE_UNMARKED",
          "SuppliedEpochRefused","writer_epoch_refusal","supplied_hb_reference"]
 
 
@@ -581,7 +588,7 @@ def consume_addressed_frames(repo_root:Path, *, mesh_root:Path|None=None, seen:s
     organization=registry["organization"]
     results=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=seen):
-        epoch=(item["frame"].get("heartbeat_reference") or {}).get("epoch")
+        epoch=_frame_epoch(item["frame"])
         result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
                                         node_state=node_state,epoch=epoch)
         results.append({"path":item["path"],"result":result,"organization_record":recorded})
@@ -945,10 +952,16 @@ def _frame_epoch_failure(frame:Any)->tuple[str,str]|None:
     return supplied_epoch_failure(ref.get("epoch") if isinstance(ref,dict) else None)
 
 def _frame_epoch(frame:Any)->int|None:
-    """The frame's carrier epoch when it passes the shared rule, else None. No clock is read."""
-    if _frame_epoch_failure(frame) is not None:
+    """The frame's carrier epoch to stamp receipts with, else None. No clock is read.
+
+    Only a SUPPLIED reference qualifies (the shared rule with the reference, so
+    derived_from_clock must be exactly false): a frame its sender stamped from
+    a clock is never forwarded as if supplied, and its receipts say clock.
+    """
+    ref=frame.get("heartbeat_reference") if isinstance(frame,dict) else None
+    if not isinstance(ref,dict) or supplied_epoch_failure(ref.get("epoch"),ref) is not None:
         return None
-    return int(str(frame["heartbeat_reference"]["epoch"]))
+    return int(str(ref["epoch"]))
 
 def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], registry:dict[str,Any], *,
                     mesh_root:Path|None=None, node_state:Any|None, epoch:int|None)->tuple[dict[str,Any],dict[str,Any]|None]:
@@ -961,7 +974,7 @@ def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], r
     """
     # A frame whose epoch fails the shared rule is not recovered here: ingest_frame
     # refuses it six-field (CarrierEpochRefusal) and the refusal is recorded.
-    destination=(None if _frame_epoch(item["frame"]) is None
+    destination=(None if _frame_epoch_failure(item["frame"]) is not None
                  else (recover_packet(item["frame"]).get("destination") or {}).get("service"))
     service=next((svc for svc in registry["services"] if svc.get("service_id")==destination),None)
     try:
