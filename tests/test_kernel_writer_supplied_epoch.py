@@ -111,11 +111,15 @@ class UnmarkedReferenceTest(NoClockCase):
 
     assert_refusal = WriterEpochRefusalTest.assert_refusal
 
-    CARRIED = {"epoch": 40, "source": "StegVerse-Labs/.github", "head_receipt_sha": "ab" * 32}
+    CARRIED = {"epoch": 40, "derived_from_clock": False, "source": "StegVerse-Labs/.github",
+               "head_receipt_sha": "ab" * 32}
 
     def test_reference_without_the_key_is_refused(self):
         for reference in ({"epoch": 40}, {}, {"epoch": 40, "source": "x"}, {"epoch": 40, "head_receipt_sha": "ab"},
-                          {"epoch": 40, "source": "", "source_sha": "ab"}):
+                          {"epoch": 40, "source": "s", "head_receipt_sha": "ab"},
+                          {"epoch": 40, "derived_from_clock": False, "sampled_unix_ns": 1},
+                          {"epoch": 40, "derived_from_clock": False, "sampled_unix_ns": 1, "source": "s"},
+                          {"epoch": 40, "sampled_unix_ns": 1}):
             with self.subTest(reference=reference):
                 code, detail = K.supplied_epoch_failure(40, reference)
                 self.assertEqual(code, K.HB_EPOCH_PROVENANCE_UNMARKED)
@@ -134,12 +138,22 @@ class UnmarkedReferenceTest(NoClockCase):
                 self.assertEqual(K.supplied_epoch_failure(40, reference)[0], K.HB_EPOCH_INVALID)
 
     def test_marked_references_are_accepted(self):
-        for reference in (self.CARRIED, {"epoch": 40, "source": "s", "source_sha": "cd" * 32},
+        for reference in (self.CARRIED, dict(self.CARRIED, sampled_unix_ns=1),
                           {"epoch": 40, "derived_from_clock": False}, K.hb_reference(epoch=40)):
             with self.subTest(reference=reference):
                 self.assertIsNone(K.supplied_epoch_failure(40, reference))
                 self.assertIsNone(K.writer_epoch_refusal(40, retry_entrypoint=ENTRY, reference=reference))
         self.assertEqual(K.carrier_epoch(self.CARRIED), 40)
+
+    def test_the_kernel_emits_the_marker_shapes(self):
+        """supplied_hb_reference and hb_reference(epoch=) emit SUPPLIED; the clock path emits CLOCK."""
+        for ref in (K.supplied_hb_reference(40, retry_entrypoint=ENTRY), K.hb_reference(epoch=40)):
+            self.assertIs(ref["derived_from_clock"], False)
+            self.assertNotIn("sampled_unix_ns", ref)
+        clock = K.hb_reference(K.HB_ANCHOR_UNIX_NS + 8 * K.HB_PERIOD_NS)
+        self.assertIn("sampled_unix_ns", clock)
+        self.assertIs(clock["derived_from_clock"], True)
+        self.assertEqual(K.supplied_epoch_failure(clock["epoch"], clock)[0], K.HB_EPOCH_INVALID)
 
     def test_no_reference_is_unchanged(self):
         self.assertIsNone(K.supplied_epoch_failure(40))
