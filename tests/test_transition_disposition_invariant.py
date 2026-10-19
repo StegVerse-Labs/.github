@@ -282,6 +282,19 @@ class TestDisposition(unittest.TestCase):
         self.assertIn("FINDING_UNPERFORMED_TEST_CANNOT_CLAIM_EXECUTION",
                       validate_external_framework_finding(finding))
 
+    def test_undecidable_is_non_allow_with_repair_fields(self):
+        self.assertEqual(validate_transition_disposition(baseline("UNDECIDABLE")), [])
+        for key in ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                    "retry_entrypoint", "owning_existing_goal", "next_attempt"):
+            with self.subTest(missing=key):
+                value = baseline("UNDECIDABLE")
+                value.pop(key)
+                self.assertIn(f"NON_ALLOW_REPAIR_REQUIRED:{key}",
+                              validate_transition_disposition(value))
+        value = baseline("UNDECIDABLE")
+        value["consequence_committed"] = True
+        self.assertIn("NON_ALLOW_MUST_NOT_COMMIT", validate_transition_disposition(value))
+
     def test_external_source_finding_same_validator(self):
         finding = dict(source_url="https://example.test/source", source_version="v1",
                        claim="X", test_input_sha256=D,
