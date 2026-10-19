@@ -11,5 +11,18 @@
   "subject_module_blob": "2f79116d0b9742198f6f68f9602016a563c0817b",
   "consumer": "RT-ECOSYSTEM-CHAT-LOCAL-ANSWER-001",
   "contents": "data only: the manifest, its README, sources/ and refusal/, byte-identical to the source commit; no LLM-adapter code is vendored",
+  "execution": "EXECUTED_IN_DECLARED_RUNTIME_CI_LABS_HOLDS_DATA_ONLY",
+  "execution_evidence_ref": {
+    "repository": "StegVerse-org/LLM-adapter",
+    "pr": 426,
+    "commit": "a01a5ca71a5e875a0c26d7a79eef8572b650e011",
+    "workflow": "validate",
+    "workflow_file_line": ".github/workflows/validate.yml:155",
+    "run_id": 39181009354,
+    "run_url": "https://github.com/StegVerse-org/LLM-adapter/actions/runs/39181009354",
+    "conclusion": "success",
+    "vector_manifest_sha256": "b5929144b5384805edaedd774b378edbed74205b70188d726d693532125520d6",
+    "case_count": 23
+  },
   "authority_effect": "NONE"
 }

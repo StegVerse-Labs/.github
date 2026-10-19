@@ -2,9 +2,11 @@
 
 RT-ECOSYSTEM-CHAT-LOCAL-ANSWER-001 is a definition with no runner, and its fact
 index is referenced from LLM-adapter#426 rather than vendored, so no case is
-executed here. These tests pin the vector, verify every file it pins, check the
-cases against the vector's own rules and bind it to the shard's FACT_INDEX
-dependency. Nothing here is runtime evidence or authority.
+executed here: the cases execute in the declared runtime's CI, which the
+execution_evidence_ref cites. These tests pin the vector, verify every file it
+pins, check the cases against the vector's own rules, bind it to the shard's
+FACT_INDEX dependency and check that the cited execution covers this vector.
+Nothing here is runtime evidence or authority.
 """
 import hashlib
 import json
@@ -17,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VECTOR_DIR = ROOT / "tests/fixtures/ecosystem_fact_index_conformance"
 MANIFEST_SHA256 = "b5929144b5384805edaedd774b378edbed74205b70188d726d693532125520d6"
 TASK_ID = "RT-ECOSYSTEM-CHAT-LOCAL-ANSWER-001"
+EXECUTED_IN_DECLARED_RUNTIME_CI = "EXECUTED_IN_DECLARED_RUNTIME_CI_LABS_HOLDS_DATA_ONLY"
 
 
 def sha256(path):
@@ -115,12 +118,28 @@ class LocalAnswerBindingTests(unittest.TestCase):
         self.assertEqual(ref["source_commit"], vendor["source_commit"])
 
     def test_cases_stay_unexecuted_while_the_fact_index_is_unresolved(self):
-        # No runner and an unvendored fact index: every case stops at
-        # NO_EXECUTABLE_RUNNER_DECLARED. When the dependency resolves this test
-        # fails, and the 23 cases must then run through the registered runner.
+        # No runner and an unvendored fact index: no case runs in Labs, and the
+        # cases execute only in the declared runtime's CI, cited by the evidence
+        # ref. When the dependency resolves this test fails, and the 23 cases
+        # must then run through the registered runner.
         self.assertEqual(self.definition["runner_templates"], [])
         self.assertFalse(self.fact_index["vendored"])
         self.assertEqual(self.fact_index["failure_code"], "FACT_INDEX_DEPENDENCY_NOT_ON_MAIN")
+        self.assertEqual(self.fact_index["conformance_vector_ref"]["execution"], EXECUTED_IN_DECLARED_RUNTIME_CI)
+
+    def test_execution_evidence_ref_covers_the_vendored_vector(self):
+        vendor = load(VECTOR_DIR / "VENDOR.json")
+        ref = vendor["execution_evidence_ref"]
+        self.assertEqual(vendor["execution"], EXECUTED_IN_DECLARED_RUNTIME_CI)
+        self.assertEqual(self.fact_index["conformance_vector_ref"]["execution_evidence_ref"], ref)
+        self.assertEqual(ref["vector_manifest_sha256"], sha256(VECTOR_DIR / "conformance-vector.json"))
+        self.assertEqual(ref["vector_manifest_sha256"], vendor["manifest_sha256"])
+        self.assertEqual(ref["case_count"], len(self.manifest["cases"]))
+        self.assertEqual(ref["repository"], vendor["source_repository"])
+        self.assertEqual(f"{ref['repository']}#{ref['pr']}", vendor["source_pr"])
+        self.assertRegex(ref["commit"], r"^[0-9a-f]{40}$")
+        self.assertEqual(ref["conclusion"], "success")
+        self.assertEqual(ref["run_url"], f"https://github.com/{ref['repository']}/actions/runs/{ref['run_id']}")
 
 
 if __name__ == "__main__":
