@@ -124,9 +124,24 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
    return r
  raise SystemExit("REPO_LEDGER_APPEND_CONTENTION_EXHAUSTED")
 
+def cli_epoch(text,retry_entrypoint):
+ """--hb-epoch as typed, checked by the kernel's supplied-epoch rule: (epoch, None) or (None, refusal).
+
+ argparse hands over the raw text (type=str), so '+33', '\uff13\uff13', ' 33', 'True', '33.7'
+ and '' reach supplied_epoch_failure uncoerced and are refused; nothing is
+ appended. An omitted --hb-epoch stays None, as before.
+ """
+ if text is None:return None,None
+ failure=kernel.supplied_epoch_failure(text)
+ if failure is None:return int(text),None
+ code,detail=failure
+ return None,{"disposition":"FAIL_CLOSED","failure_code":code,"failed_predicate":kernel.HB_EPOCH_PREDICATE,"detail":detail,"required_evidence_or_repair":"pass --hb-epoch as the carrier supplied it: ASCII digits with value >= "+str(kernel.HB_ANCHOR_EPOCH)+"; it is never coerced","retry_entrypoint":retry_entrypoint+" (--hb-epoch)","owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,"next_attempt":"run again with the supplied epoch; nothing was appended or written","consequence_committed":False,"authority_effect":"NONE_REFUSAL_ONLY"}
+
 def main():
- p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=int,default=None,help="heartbeat epoch; derived from the host clock, and marked as derived, when absent");a=p.parse_args()
- try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,json.loads(a.evidence_json),a.authority_effect,a.hb_epoch)
+ p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=str,default=None,help="carrier-supplied heartbeat epoch, ASCII digits >= 32; never coerced");a=p.parse_args()
+ hb_epoch,refused=cli_epoch(a.hb_epoch,".stegverse/transition-ledger/emit.py")
+ if refused is not None:print(json.dumps(refused,sort_keys=True));raise SystemExit(1)
+ try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,json.loads(a.evidence_json),a.authority_effect,hb_epoch)
  except RepoLedgerChainBreak as exc:
   print(json.dumps(chain_break_refusal(exc),sort_keys=True));raise SystemExit(1)
  print(json.dumps(r,sort_keys=True))

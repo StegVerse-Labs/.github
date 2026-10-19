@@ -1361,14 +1361,18 @@ def main() -> int:
                         help="JSON declaring mode, node_ref and the predecessor key; "
                              "required unless the manifest declares its own chain position")
     parser.add_argument("--packet-id", default="organization-sdk-manifest-ingress")
-    parser.add_argument("--hb-epoch", type=int, default=None,
-                        help="heartbeat epoch; derived from the host clock, and marked as "
-                             "derived, when absent")
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; never coerced")
     parser.add_argument("--mesh-root", type=Path, default=None,
                         help="federation mesh this node was materialized with; a governance "
                              "request leaves on it")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
+    args.hb_epoch, refused = repository_ledger.cli_epoch(
+        args.hb_epoch, "resident-runtime/organization_manifest_ingress.py")
+    if refused is not None:
+        print(json.dumps(refused, sort_keys=True))
+        return 1
 
     if args.outbox_root is not None:
         try:

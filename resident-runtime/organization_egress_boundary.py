@@ -868,7 +868,8 @@ def main() -> int:
     parser.add_argument("--standing", required=True,
                         help="JSON file declaring mode, node_ref and the predecessor key")
     parser.add_argument("--transition-reference", default="ecosystem.transition.interorg.v1")
-    parser.add_argument("--hb-epoch", type=int, default=None)
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; never coerced")
     parser.add_argument("--close", action="store_true",
                         help="observe the far side's closure of --packet-id instead of emitting")
     parser.add_argument("--packet-id")
@@ -878,6 +879,11 @@ def main() -> int:
                              "selects the peer address the crossing is sent to")
     parser.add_argument("--out")
     args = parser.parse_args()
+    args.hb_epoch, refused = repository_ledger.cli_epoch(
+        args.hb_epoch, "resident-runtime/organization_egress_boundary.py")
+    if refused is not None:
+        print(json.dumps(refused, sort_keys=True))
+        return 1
 
     standing = json.loads(Path(args.standing).read_text(encoding="utf-8"))
     if not isinstance(standing, dict) or "predecessor" not in standing:

@@ -315,13 +315,19 @@ def main() -> int:
     parser.add_argument("--payload", type=Path)
     parser.add_argument("--registry", type=Path, required=True)
     parser.add_argument("--packet-id", default="organization-intr-destination")
-    parser.add_argument("--hb-epoch", type=int, default=None)
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; never coerced")
     parser.add_argument("--self-close", action="store_true",
                         help="record a diagnostic self-closure; no peer is named")
     parser.add_argument("--communication-id",
                         help="communication_id the self-closure correlates on")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
+    args.hb_epoch, refused = repository_ledger.cli_epoch(
+        args.hb_epoch, "resident-runtime/intr_destination_ingress.py")
+    if refused is not None:
+        print(json.dumps(refused, sort_keys=True))
+        return 1
     registry = json.loads(args.registry.read_text(encoding="utf-8"))
     if args.self_close:
         if args.communication_id:
