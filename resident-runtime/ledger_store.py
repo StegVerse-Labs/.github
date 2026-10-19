@@ -198,9 +198,22 @@ class PosixLedgerStore:
                     raise ValueError("ledger_receipt_collision")
                 if existing is None:
                     missing.append(key)
-            for key in missing:
-                self.put(key, documents[key])
-            self.put(HEAD_KEY, new_head)
+            written = []
+            try:
+                for key in missing:
+                    self.put(key, documents[key])
+                    written.append(key)
+                self.put(HEAD_KEY, new_head)
+            except BaseException:
+                # A torn write: HEAD did not advance, so the documents this
+                # attempt wrote are removed and no orphan is left for a later
+                # chain walk to read as a fork. The caller's retry rebuilds them.
+                for key in written:
+                    try:
+                        self._path(key).unlink()
+                    except FileNotFoundError:
+                        pass
+                raise
             return True
 
     @staticmethod
