@@ -207,6 +207,10 @@ class SharedEpochValidatorTests(unittest.TestCase):
             33, {"source": "ORGANIZATION_LEDGER_HEAD", "head_receipt_sha": "ff" * 32})[0],
             "HB_EPOCH_PROVENANCE_UNMARKED")
         self.assertEqual(K.supplied_epoch_failure(33, {"sampled_unix_ns": 1})[0], "HB_EPOCH_INVALID")
+        self.assertEqual(K.supplied_epoch_failure(
+            33, {"derived_from_clock": False, "sampled_unix_ns": 1, "source": "S", "head_receipt_sha": "ab"})[0],
+            "HB_EPOCH_INVALID")
+        self.assertIsNone(K.supplied_epoch_failure(33, {"derived_from_clock": False, "source": "X"}))
         self.assertEqual(K.supplied_epoch_failure(33, {"derived_from_clock": True})[0], "HB_EPOCH_INVALID")
         self.assertEqual(K.supplied_epoch_failure(33, "HB:33")[0], "HB_EPOCH_INVALID")
 
