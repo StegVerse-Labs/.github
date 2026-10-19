@@ -32,7 +32,19 @@
       "scripts/check_evaluator_review_public.py::fetch",
       ".github/workflows/verify-nvidia-hf-publication.yml",
       ".github/workflows/verify-thought-experiments-publication.yml"
-    ]
+    ],
+    "repository_components": {
+      "StegVerse-Labs/.github": [
+        "scripts/restart_sovereign_ephemeral_node.py::_wait_for_worker_tick"
+      ],
+      "StegVerse-Labs/Site": [
+        ".github/workflows/hil-live-probe.yml",
+        "scripts/check_hil_deployed_controlled_cycle_evidence.py::valid_https_origin",
+        "scripts/check_evaluator_review_public.py::fetch",
+        ".github/workflows/verify-nvidia-hf-publication.yml",
+        ".github/workflows/verify-thought-experiments-publication.yml"
+      ]
+    }
   },
   "dependencies": [
     "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
