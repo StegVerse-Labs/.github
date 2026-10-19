@@ -149,7 +149,7 @@ class MeshIsSuppliedTests(HostIsolated):
             origin_org="Org-A", origin_service="org-a.org-control", organizations=["Org-B"],
             standing=STANDING, message_class="ecosystem.communication", subject="supplied",
             body={"x": 1}, communication_id="supplied-mesh-roundtrip", root=mesh,
-            epoch=4096)
+            now_ns=K.HB_ANCHOR_UNIX_NS + 1_000_000_000)
         self.assertEqual(sent["published_count"], 1)
         state = self.scratch / "node-b"
         # The broadcast frame is CLOCK and lends no epoch: the cycle supplies one.

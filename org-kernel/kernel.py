@@ -664,16 +664,21 @@ def publish_packet(packet:dict[str,Any], *, root:Path|None=None, now_ns:int|None
 
 def consume_addressed_frames(repo_root:Path, *, mesh_root:Path|None=None, seen:set[str]|None=None,
                              node_state_root:Path|None=None, repo_ledger_root:Path|None=None,
-                             org_ledger_root:Path|None=None)->list[dict[str,Any]]:
+                             org_ledger_root:Path|None=None, hb_epoch:Any=None)->list[dict[str,Any]]:
     # The same custody as consume_and_respond: a crossing consumed here is a
     # transition within the organization and is recorded before it is returned.
+    # `hb_epoch` is the pass's own supplied epoch, as in consume_and_respond; a
+    # frame that lends none is recorded under it, and with neither nothing is
+    # recorded (ingest_recorded refuses NO_EPOCH_CALLER_FAILS_CLOSED).
+    cycle_epoch=(None if hb_epoch is None else
+                 int(supplied_hb_reference(hb_epoch,retry_entrypoint=CYCLE_EPOCH_RETRY_ENTRYPOINT)["epoch"]))
     custody=crossing_custody(repo_root,repo_ledger_root=repo_ledger_root,org_ledger_root=org_ledger_root)
     node_state=addressed_node_state_store(node_state_root) if node_state_root is not None else None
     registry=load_registry(repo_root)
     organization=registry["organization"]
     results=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=seen):
-        epoch=_frame_epoch(item["frame"])
+        epoch=cycle_epoch if cycle_epoch is not None else _frame_epoch(item["frame"])
         result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
                                         node_state=node_state,epoch=epoch)
         results.append({"path":item["path"],"result":result,"organization_record":recorded})
@@ -727,14 +732,14 @@ def publish_ecosystem_message(*, origin_org:str, origin_service:str, organizatio
                               standing:dict[str,Any], message_class:str, subject:str, body:dict[str,Any],
                               requested_action:str|None=None, transition_reference:str="ecosystem.communication.v1",
                               authority_effect:str="NONE", communication_id:str|None=None,
-                              root:Path|None=None, now_ns:int|None=None, epoch:int|None=None)->dict[str,Any]:
+                              root:Path|None=None, now_ns:int|None=None)->dict[str,Any]:
     built=build_ecosystem_packets(
       origin_org=origin_org,origin_service=origin_service,organizations=organizations,standing=standing,
       message_class=message_class,subject=subject,body=body,requested_action=requested_action,
       transition_reference=transition_reference,authority_effect=authority_effect,
       communication_id=communication_id
     )
-    publications=[publish_packet(packet,root=root,now_ns=now_ns,epoch=epoch) for packet in built["packets"]]
+    publications=[publish_packet(packet,root=root,now_ns=now_ns) for packet in built["packets"]]
     return {"communication_id":built["communication_id"],"organization_count":built["organization_count"],
             "published_count":len(publications),"publications":publications}
 
@@ -1392,7 +1397,7 @@ def collect_ecosystem_responses(origin_org:str, communication_id:str, *, mesh_ro
 def publish_ecosystem_from_directory(repo_root:Path, *, standing:dict[str,Any], message_class:str, subject:str, body:dict[str,Any],
                                      requested_action:str|None=None, authority_effect:str="NONE",
                                      communication_id:str|None=None, mesh_root:Path|None=None,
-                                     now_ns:int|None=None, epoch:int|None=None)->dict[str,Any]:
+                                     now_ns:int|None=None)->dict[str,Any]:
     registry=load_registry(repo_root)
     directory=load_federation_directory(repo_root)
     organizations=[row["organization"] for row in directory["organizations"]]
@@ -1409,8 +1414,7 @@ def publish_ecosystem_from_directory(repo_root:Path, *, standing:dict[str,Any], 
       authority_effect=authority_effect,
       communication_id=communication_id,
       root=mesh_root,
-      now_ns=now_ns,
-      epoch=epoch
+      now_ns=now_ns
     )
 
 
