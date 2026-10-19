@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import argparse,base64,hashlib,importlib.util,json,os,tempfile
-from datetime import datetime,timezone
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -754,14 +753,17 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     execution. Either way it is supplied, never derived.
 
     `hb_epoch` is the carrier's heartbeat epoch. Supplied, every receipt this
-    call writes carries that exact reference; absent, the reference is derived
-    from the host clock and says so. An exact retry returns the original
-    receipt whatever epoch it arrives at.
+    call writes carries that exact reference; an invalid one raises
+    OrgLedgerEpochRefused (six-field FAIL_CLOSED) before the store is resolved
+    or created. Absent, the reference is still derived from the host clock and
+    says so (WU-B13 slice g removes that fallback). An exact retry returns the
+    original receipt whatever epoch it arrives at.
 
     `custody_exclusivity_verifier` is the only way an existing authority's
     attestation of unique custody reaches a successor's consequential append
     (require_custody_exclusivity); a root never released does not need it.
     """
+    _refuse_invalid_epoch(hb_epoch)
     store = organization_store(ledger)
     if _is_posix(store):
         store.root.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -916,6 +918,7 @@ def release_custody(parent_manifest, *, ledger=None, hb_epoch=None, custody_excl
     root taken before the release from being written elsewhere: that copy is
     detected where its receipts meet this release, not prevented.
     """
+    _refuse_invalid_epoch(hb_epoch)
     transfer = custody_transfer(parent_manifest)
     store = organization_store(ledger)
     record = {
@@ -946,6 +949,7 @@ def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch
     materialization, the manifest's HEAD and generation, and this manifest.
     """
     import organization_batch_custody as batches
+    _refuse_invalid_epoch(hb_epoch)
     transfer = custody_transfer(parent_manifest)
     store = organization_store(ledger)
     root = store.root if _is_posix(store) else None
@@ -1015,6 +1019,7 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
     a networked store it is the store's own compare-and-swap, and a lost race
     is a typed FAIL_CLOSED with nothing published.
     """
+    _refuse_invalid_epoch(hb_epoch)
     source=verify_source(receipt)
     if store is None:
         store=organization_store(root)
@@ -1028,6 +1033,33 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
             boundary_evidence=boundary_evidence,authority_effect=authority_effect,hb_epoch=hb_epoch,
             custody_exclusivity_verifier=custody_exclusivity_verifier)
 
+#: An append's epoch is supplied by its caller and checked by the kernel's
+#: shared rule (SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH); an absent or invalid
+#: one is refused six-field FAIL_CLOSED before anything is written, as
+#: StegVerse-org/.github#189 does for the organization ledger there.
+EPOCH_RETRY_ENTRYPOINT="resident-runtime/aggregate_repo_transition.py::aggregate_transition (hb_epoch=, or --hb-epoch)"
+OrgLedgerEpochRefused=kernel.SuppliedEpochRefused
+
+def epoch_refusal(hb_epoch):
+    """The six-field FAIL_CLOSED refusal of an append's epoch, or None."""
+    return kernel.writer_epoch_refusal(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+
+def require_supplied_epoch(hb_epoch):
+    """The heartbeat reference of the supplied epoch, or OrgLedgerEpochRefused."""
+    return kernel.supplied_hb_reference(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+
+def _refuse_invalid_epoch(hb_epoch):
+    """OrgLedgerEpochRefused for a supplied but invalid epoch, before any store opens.
+
+    An absent epoch still takes the clock fallback in _append_reference until
+    WU-B13 slice g moves every writer onto require_supplied_epoch.
+    """
+    if hb_epoch is not None:
+        require_supplied_epoch(hb_epoch)
+
+def _append_reference(hb_epoch):
+    return require_supplied_epoch(hb_epoch) if hb_epoch is not None else kernel.hb_reference()
+
 def _retained_in_store(store, receipt, source):
     """The exact source receipt an earlier append committed beside its receipt."""
     stored=store.get(ledger_store.source_key(source["source_transition_sha256"]))
@@ -1036,6 +1068,7 @@ def _retained_in_store(store, receipt, source):
         raise ValueError("retained organization source receipt conflict")
 
 def _append_locked(receipt, source, store, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect, hb_epoch, custody_exclusivity_verifier=None):
+    reference=_append_reference(hb_epoch)
     posix=_is_posix(store)
     store.initialize()
     rows=verify_custody_lineage(store)
@@ -1079,8 +1112,9 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         "successor_org_state_sha256":successor,
         "boundary_evidence":dict(boundary_evidence or {}),
         "authority_effect":authority_effect,
-        "hb_reference":kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference(),
-        "observed_at":datetime.now(timezone.utc).isoformat(),
+        "hb_reference":reference,
+        # The supplied heartbeat, not a host clock reading.
+        "observed_at":reference["heartbeat_id"],
         "previous_receipt_sha256":prev,
         "custody_generation":generation,
     }

@@ -871,7 +871,19 @@ def submit_pending_released_batch(root, *, hb_epoch=None) -> dict:
     NOT_ATTEMPTED -- is recorded as an immutable submission receipt and is
     never a predicate of any transition: FAILED does not block, and a failure
     to record is reported here, not raised into the committed append.
+
+    `hb_epoch` is the epoch the caller supplies; an invalid one is reported as
+    the six-field FAIL_CLOSED before the outbox is read. Absent, the reference
+    is still derived from the host clock and says so (WU-B13 slice g).
     """
+    refusal = (org.kernel.writer_epoch_refusal(hb_epoch, retry_entrypoint=SUBMISSION_RETRY_ENTRYPOINT
+                                               + " (hb_epoch=, or --hb-epoch)")
+               if hb_epoch is not None else None)
+    if refusal is not None:
+        return {**refusal, "submission_receipts": [], "submission_receipt": None,
+                "authority_effect": "NONE"}
+    reference = (org.kernel.hb_reference(epoch=int(str(hb_epoch))) if hb_epoch is not None
+                 else org.kernel.hb_reference())
     try:
         pending = pending_released_batches(root)
     except Exception as exc:  # noqa: BLE001 -- the committed append is never undone by this step
@@ -895,8 +907,9 @@ def submit_pending_released_batch(root, *, hb_epoch=None) -> dict:
             "governance_disposition": None,
             "submitted_after_commit": True,
             "external_machine_wait_in_transition": False,
-            "hb_reference": org.kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else org.kernel.hb_reference(),
-            "observed_at": org.datetime.now(org.timezone.utc).isoformat(),
+            "hb_reference": reference,
+            # The supplied heartbeat, not a host clock reading.
+            "observed_at": reference["heartbeat_id"],
         }
         receipt = {**body, "receipt_sha256": org.sha(body)}
         try:
@@ -1246,6 +1259,9 @@ def main() -> None:
     parser.add_argument("--submit-pending-released-batch", action="store_true",
                         help="retry entrypoint: carry the released batch whose post-commit submission is not yet recorded")
     parser.add_argument("--root")
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch for --submit-pending-released-batch, "
+                             "ASCII digits >= 32; never coerced")
     args = parser.parse_args()
     root = Path(args.root) if args.root else org.organization_store()
     if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.export_batch_record,
@@ -1260,7 +1276,7 @@ def main() -> None:
     elif args.export_batch_record:
         result=export_batch_record(root,args.export_batch_record)
     elif args.submit_pending_released_batch:
-        result=submit_pending_released_batch(root)
+        result=submit_pending_released_batch(root,hb_epoch=args.hb_epoch)
     else:
         result=submit_released_batch(root,args.submit_released_batch)
     print(json.dumps(result, sort_keys=True))

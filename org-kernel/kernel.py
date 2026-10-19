@@ -268,6 +268,46 @@ def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, s
                                     "a clock-derived epoch is not a supplied one")
     return None
 
+class SuppliedEpochRefused(ValueError):
+    """A receipt writer's refusal of an absent or invalid supplied epoch.
+
+    `refusal` is the six-field FAIL_CLOSED from `writer_epoch_refusal`. Raised
+    before anything is written; no clock is read to stand in for the epoch.
+    """
+    def __init__(self, refusal:dict[str,Any])->None:
+        super().__init__(refusal["failure_code"]+": "+refusal["detail"])
+        self.disposition=refusal["disposition"]
+        self.failed_predicate=refusal["failed_predicate"]
+        self.refusal=dict(refusal)
+
+def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]|None:
+    """The six-field FAIL_CLOSED of a receipt writer's epoch, or None when it is supplied.
+
+    The shape StegVerse-org/.github#189 gave the organization ledger
+    (`epoch_refusal`): a receipt references the heartbeat epoch its caller
+    supplies, checked by `supplied_epoch_failure`; an absent one is
+    HB_EPOCH_NOT_SUPPLIED and is never derived from a clock.
+    """
+    failure=supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return None
+    code,detail=failure
+    return {"disposition":"FAIL_CLOSED","failure_code":code,"failed_predicate":HB_EPOCH_PREDICATE,
+            "detail":detail,
+            "required_evidence_or_repair":("the caller supplies hb_epoch= (or --hb-epoch): ASCII digits with "
+                                           "value >= "+str(HB_ANCHOR_EPOCH)+"; it is never derived from a clock"),
+            "retry_entrypoint":retry_entrypoint,
+            "owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"call again with the supplied epoch; nothing was written",
+            "derived_from_clock":False,"consequence_committed":False}
+
+def supplied_hb_reference(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]:
+    """The heartbeat reference of a supplied epoch, or SuppliedEpochRefused. No clock is read."""
+    refusal=writer_epoch_refusal(hb_epoch,retry_entrypoint=retry_entrypoint)
+    if refusal is not None:
+        raise SuppliedEpochRefused(refusal)
+    return hb_reference(epoch=int(str(hb_epoch)))
+
 def carrier_epoch(heartbeat_reference:Any)->int:
     """Return the epoch the carrier supplied, or refuse FAIL_CLOSED. No clock is read."""
     epoch=heartbeat_reference.get("epoch") if isinstance(heartbeat_reference,dict) else None
@@ -404,6 +444,15 @@ def persist_outbox(root:Path, frame:dict[str,Any], *, store:Any|None=None)->Path
     return Path(target.locator(key))
 
 def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None)->dict[str,Any]:
+    # The shared epoch rule first: an absent or invalid carrier epoch is the
+    # six-field CarrierEpochRefusal, not a bare heartbeat_* error from recovery.
+    failure=_frame_epoch_failure(frame)
+    if failure is not None:
+        code,detail=failure
+        raise CarrierEpochRefusal(code,
+            required_evidence_or_repair=(detail+"; the carrier frame supplies heartbeat_reference.epoch as "
+                                         "ASCII digits with value >= 32 (the HB32 anchor); no clock is read"),
+            next_attempt="re-publish the packet in a frame stamped with a supplied epoch >= 32")
     packet=recover_packet(frame)
     registry=load_registry(root)
     if frame["destination_org"]!=registry["organization"]:
@@ -418,7 +467,8 @@ __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame"
          "record_federation_cycle","federation_cycles","manifest_selection","capability_ingress",
          "CAPABILITY_INGRESS_ROLE","crossing_custody",
          "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS",
-         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID"]
+         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID",
+         "SuppliedEpochRefused","writer_epoch_refusal","supplied_hb_reference"]
 
 
 # --- Federation mesh v1.1 additions ---
@@ -822,7 +872,7 @@ def _record_both(custody:dict[str,Any], name:str, transition_class:str, predeces
         successor_org_state_sha256=repository_receipt["successor_state_sha256"],
         boundary_evidence={"operation":repository_receipt["transition_class"],
                            **{key:recorded.get(key) for key in carried}},
-        authority_effect="NONE",ledger=custody["organization_root"])
+        authority_effect="NONE",ledger=custody["organization_root"],hb_epoch=epoch)
     return {"repository_receipt_sha256":repository_receipt["receipt_sha256"],
             "organization_receipt_sha256":organization_receipt["receipt_sha256"]}
 
@@ -885,6 +935,21 @@ def record_refusal(custody:dict[str,Any], item:dict[str,Any], reason:str, dispos
     recorded=_record_both(custody,name,CROSSING_REFUSED_CLASS,predecessor,successor,evidence,carried,epoch)
     return {**recorded,"disposition":disposition}
 
+def _frame_epoch_failure(frame:Any)->tuple[str,str]|None:
+    """supplied_epoch_failure of the frame's heartbeat_reference.epoch. No clock is read.
+
+    Only the epoch is checked here; whether a frame derived from its sender's
+    clock may cross stays where it is decided (dispatch, carrier_epoch).
+    """
+    ref=frame.get("heartbeat_reference") if isinstance(frame,dict) else None
+    return supplied_epoch_failure(ref.get("epoch") if isinstance(ref,dict) else None)
+
+def _frame_epoch(frame:Any)->int|None:
+    """The frame's carrier epoch when it passes the shared rule, else None. No clock is read."""
+    if _frame_epoch_failure(frame) is not None:
+        return None
+    return int(str(frame["heartbeat_reference"]["epoch"]))
+
 def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], registry:dict[str,Any], *,
                     mesh_root:Path|None=None, node_state:Any|None, epoch:int|None)->tuple[dict[str,Any],dict[str,Any]|None]:
     """Ingest one frame and record its disposition, admitted or refused.
@@ -894,7 +959,10 @@ def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], r
     raises: without it nothing can be recorded. A capability-address crossing
     still raises: its receiving operation records its own refusal at both levels.
     """
-    destination=((recover_packet(item["frame"]).get("destination") or {}).get("service"))
+    # A frame whose epoch fails the shared rule is not recovered here: ingest_frame
+    # refuses it six-field (CarrierEpochRefusal) and the refusal is recorded.
+    destination=(None if _frame_epoch(item["frame"]) is None
+                 else (recover_packet(item["frame"]).get("destination") or {}).get("service"))
     service=next((svc for svc in registry["services"] if svc.get("service_id")==destination),None)
     try:
         result=ingest_frame(repo_root,item["frame"],mesh_root=mesh_root,node_state=node_state)
@@ -941,14 +1009,13 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
     effective_seen=set(seen or set())|durable_seen
     out=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=effective_seen):
-        packet=recover_packet(item["frame"])
-        # An answer is stamped with the epoch of the frame it answers, which
-        # recovery has already validated. Consuming the same frame again then
-        # builds the same answer frame, and publishing it is a write-once no-op
-        # rather than a second answer stamped by whatever clock this pass read.
-        epoch=None if now_ns is not None else (item["frame"].get("heartbeat_reference") or {}).get("epoch")
-        payload=packet.get("payload") or {}
-        message_class=payload.get("message_class")
+        # An answer is stamped with the epoch of the frame it answers, checked
+        # by the shared rule. Consuming the same frame again then builds the
+        # same answer frame, and publishing it is a write-once no-op rather
+        # than a second answer stamped by whatever clock this pass read. A
+        # frame whose epoch fails the rule is refused six-field by ingest_frame
+        # before recovery, and that refusal is recorded below.
+        epoch=None if now_ns is not None else _frame_epoch(item["frame"])
         # Recorded before anything leaves this node: no answer is published and
         # no consumption marker written for a crossing the organization has not
         # recorded. A failed append leaves the frame unmarked, so the next pass
@@ -960,6 +1027,9 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
             out.append({"path":item["path"],"result":result,"response_publication":None,
                         "organization_record":recorded,"seen_marker":None})
             continue
+        packet=recover_packet(item["frame"])
+        payload=packet.get("payload") or {}
+        message_class=payload.get("message_class")
         response_publication=None
         if result.get("status")=="CONSUMED" and message_class in RESPONDED_REQUEST_CLASSES:
             response=build_control_response(packet,result["execution_result"])
