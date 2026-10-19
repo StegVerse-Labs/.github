@@ -211,6 +211,10 @@ NODE_STATE_WRITE_ONCE="NODE_STATE_WRITE_ONCE"
 ENDPOINT_ADAPTER_HB_EPOCH_CARRIER_SUPPLIED="CARRIER_SUPPLIED"
 HB_EPOCH_NOT_SUPPLIED="HB_EPOCH_NOT_SUPPLIED"
 HB_EPOCH_INVALID="HB_EPOCH_INVALID"
+#: A reference with no derived_from_clock exactly false and no CARRIED provenance
+#: (a non-empty `source` plus `head_receipt_sha` or `source_sha`) is unmarked:
+#: under the marker rule an unmarked clock value counts as laundering.
+HB_EPOCH_PROVENANCE_UNMARKED="HB_EPOCH_PROVENANCE_UNMARKED"
 HB_EPOCH_PREDICATE="SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 HB_EPOCH_OWNING_EXISTING_GOAL="INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
 HB_EPOCH_RETRY_ENTRYPOINT=("org-kernel/kernel.py::consume_and_respond: the sender re-publishes the packet in a "
@@ -266,6 +270,7 @@ def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, s
             and reference["derived_from_clock"] is not False:
         return "HB_EPOCH_INVALID", ("the carrier's derived_from_clock is not exactly false; "
                                     "a clock-derived epoch is not a supplied one")
+    if reference is not None and reference.get("derived_from_clock") is not False and not (reference.get("source") and (reference.get("head_receipt_sha") or reference.get("source_sha"))): return "HB_EPOCH_PROVENANCE_UNMARKED", "the carrier's heartbeat reference carries neither derived_from_clock false nor a CARRIED provenance (source plus head_receipt_sha or source_sha); an unmarked clock value is laundering"
     return None
 
 class SuppliedEpochRefused(ValueError):
@@ -280,7 +285,7 @@ class SuppliedEpochRefused(ValueError):
         self.failed_predicate=refusal["failed_predicate"]
         self.refusal=dict(refusal)
 
-def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]|None:
+def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str, reference:Any=None)->dict[str,Any]|None:
     """The six-field FAIL_CLOSED of a receipt writer's epoch, or None when it is supplied.
 
     The shape StegVerse-org/.github#189 gave the organization ledger
@@ -288,7 +293,7 @@ def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]|N
     supplies, checked by `supplied_epoch_failure`; an absent one is
     HB_EPOCH_NOT_SUPPLIED and is never derived from a clock.
     """
-    failure=supplied_epoch_failure(hb_epoch)
+    failure=supplied_epoch_failure(hb_epoch,reference)
     if failure is None:
         return None
     code,detail=failure
@@ -453,7 +458,7 @@ __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame"
          "record_federation_cycle","federation_cycles","manifest_selection","capability_ingress",
          "CAPABILITY_INGRESS_ROLE","crossing_custody",
          "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS",
-         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID",
+         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID","HB_EPOCH_PROVENANCE_UNMARKED",
          "SuppliedEpochRefused","writer_epoch_refusal","supplied_hb_reference"]
 
 

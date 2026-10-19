@@ -7,6 +7,8 @@ shared rule (`supplied_epoch_failure`):
 
 - no epoch supplied  -> FAIL_CLOSED HB_EPOCH_NOT_SUPPLIED
 - malformed or < 32  -> FAIL_CLOSED HB_EPOCH_INVALID
+- a reference neither marked derived_from_clock false nor CARRIED
+                     -> FAIL_CLOSED HB_EPOCH_PROVENANCE_UNMARKED
 
 and neither reads a clock. The slice defines the helper only; no caller is
 required to pass an epoch yet, so existing writers behave as before.
@@ -102,6 +104,46 @@ class WriterEpochRefusalTest(NoClockCase):
     def test_retry_entrypoint_is_required(self):
         with self.assertRaises(TypeError):
             K.writer_epoch_refusal(None)
+
+
+class UnmarkedReferenceTest(NoClockCase):
+    """A reference must be marked: derived_from_clock exactly false, or a CARRIED provenance."""
+
+    assert_refusal = WriterEpochRefusalTest.assert_refusal
+
+    CARRIED = {"epoch": 40, "source": "StegVerse-Labs/.github", "head_receipt_sha": "ab" * 32}
+
+    def test_reference_without_the_key_is_refused(self):
+        for reference in ({"epoch": 40}, {}, {"epoch": 40, "source": "x"}, {"epoch": 40, "head_receipt_sha": "ab"},
+                          {"epoch": 40, "source": "", "source_sha": "ab"}):
+            with self.subTest(reference=reference):
+                code, detail = K.supplied_epoch_failure(40, reference)
+                self.assertEqual(code, K.HB_EPOCH_PROVENANCE_UNMARKED)
+                self.assertTrue(detail)
+                self.assert_refusal(K.writer_epoch_refusal(40, retry_entrypoint=ENTRY, reference=reference),
+                                    K.HB_EPOCH_PROVENANCE_UNMARKED)
+        with self.assertRaises(K.CarrierEpochRefusal) as raised:
+            K.carrier_epoch({"epoch": 40})
+        self.assertEqual(raised.exception.record["failure_code"], K.HB_EPOCH_PROVENANCE_UNMARKED)
+        self.assertEqual(raised.exception.record["failed_predicate"], K.HB_EPOCH_PREDICATE)
+
+    def test_clock_derived_reference_is_still_invalid(self):
+        for reference in ({"epoch": 40, "derived_from_clock": True}, dict(self.CARRIED, derived_from_clock=True),
+                          {"epoch": 40, "derived_from_clock": None}):
+            with self.subTest(reference=reference):
+                self.assertEqual(K.supplied_epoch_failure(40, reference)[0], K.HB_EPOCH_INVALID)
+
+    def test_marked_references_are_accepted(self):
+        for reference in (self.CARRIED, {"epoch": 40, "source": "s", "source_sha": "cd" * 32},
+                          {"epoch": 40, "derived_from_clock": False}, K.hb_reference(epoch=40)):
+            with self.subTest(reference=reference):
+                self.assertIsNone(K.supplied_epoch_failure(40, reference))
+                self.assertIsNone(K.writer_epoch_refusal(40, retry_entrypoint=ENTRY, reference=reference))
+        self.assertEqual(K.carrier_epoch(self.CARRIED), 40)
+
+    def test_no_reference_is_unchanged(self):
+        self.assertIsNone(K.supplied_epoch_failure(40))
+        self.assertIn("HB_EPOCH_PROVENANCE_UNMARKED", K.__all__)
 
 
 class SuppliedHbReferenceTest(NoClockCase):
