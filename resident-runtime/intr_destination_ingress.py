@@ -190,8 +190,15 @@ def _result(evidence: Mapping[str, Any], appended: Mapping[str, Any] | None, *,
 
 
 def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
-            hb_epoch: int | None) -> tuple[dict[str, Any], bool]:
+            hb_epoch: int | None, *, operation: str = OPERATION_ID, profile_id: str = PROFILE_ID,
+            boundary_extra: Mapping[str, Any] | None = None) -> tuple[dict[str, Any], bool]:
     """Append at both levels. A replay of the same packet returns the recorded pair.
+
+    ``operation``, ``profile_id`` and ``boundary_extra`` name another operation on
+    the same two-level append (resident-runtime/ledger_gitstore.py, the InTr path
+    transfer); their defaults are this ingress, so its receipts are unchanged. The
+    organization receipt goes through aggregate_transition on the declared
+    {store: git} locus, never through ledger_root().
 
     The organization append owner is ``aggregate_transition``. It takes the
     repository receipt's epoch, so a replay rebuilds the same organization
@@ -215,9 +222,10 @@ def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
         org_transition_class="REPO_STATE_PROPAGATION",
         predecessor_org_state_sha256=predecessor,
         successor_org_state_sha256=successor,
-        boundary_evidence={"operation": OPERATION_ID, "profile_id": PROFILE_ID,
+        boundary_evidence={"operation": operation, "profile_id": profile_id,
                            "disposition": evidence["disposition"],
-                           "communication_id": evidence.get("communication_id")},
+                           "communication_id": evidence.get("communication_id"),
+                           **dict(boundary_extra or {})},
         authority_effect="NONE",
         hb_epoch=epoch)
     return ({"repository_receipt": repository_receipt,
