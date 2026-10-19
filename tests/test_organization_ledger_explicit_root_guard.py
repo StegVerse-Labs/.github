@@ -187,7 +187,7 @@ def test_federation_cycle_without_an_explicit_root_appends_to_the_declared_store
     node, posix, before = git_declared
     mesh, state, repo = tmp_path / "mesh", tmp_path / "node-state", tmp_path / "repo-ledger"
     publish(mesh, "ol3-declared")
-    report = cycle.cycle(mesh_root=mesh, node_state_root=state, repo_ledger_root=repo)
+    report = cycle.cycle(mesh_root=mesh, node_state_root=state, repo_ledger_root=repo, hb_epoch=kernel.HB_ANCHOR_EPOCH + 700)
     assert report["frames_consumed"] == 1
     assert report["organization_receipts_recorded"] == 1
     head = git_store(node).get(org.ledger_store.HEAD_KEY)
@@ -218,7 +218,7 @@ def test_federation_cycle_explicit_root_under_posix_is_unchanged(tmp_path):
     mesh, ledgers = tmp_path / "mesh", tmp_path / "ledgers"
     publish(mesh, "ol3-posix")
     report = cycle.cycle(mesh_root=mesh, node_state_root=tmp_path / "node-state",
-                         repo_ledger_root=ledgers / "repo", org_ledger_root=ledgers / "org")
+                         repo_ledger_root=ledgers / "repo", org_ledger_root=ledgers / "org", hb_epoch=kernel.HB_ANCHOR_EPOCH + 700)
     assert report["frames_consumed"] == 1
     assert report["organization_receipts_recorded"] == 1
     assert len(list((ledgers / "org" / "receipts").glob("*.json"))) == 1

@@ -249,10 +249,11 @@ class GovernanceEndpointTests(unittest.TestCase):
     def test_an_undeclared_request_crossing_is_recorded_as_deny_and_not_decided(self):
         self.with_stegcore()
         mesh = self.work / "mesh"
-        K.publish_packet(packet(work_request({"signal": {}}, processing=None)), root=mesh, epoch=4096)
+        K.publish_packet(packet(work_request({"signal": {}}, processing=None)), root=mesh)
+        # The frame is CLOCK and lends no epoch: the cycle supplies one.
         refused, = K.consume_and_respond(ROOT, mesh_root=mesh, node_state_root=self.work / "node-state",
                                          repo_ledger_root=self.work / "repo-ledger",
-                                         org_ledger_root=self.work / "org-ledger")
+                                         org_ledger_root=self.work / "org-ledger", hb_epoch=4096)
         self.assertEqual(refused["result"]["status"], "REFUSED")
         self.assertEqual(refused["result"]["disposition"], "DENY")
         self.assertIsNone(refused["response_publication"])

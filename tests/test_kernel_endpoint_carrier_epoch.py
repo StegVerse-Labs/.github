@@ -256,25 +256,22 @@ class GovernanceCarrierEpochTests(unittest.TestCase):
                         if r.get("repo_receipt_sha256") == decision["receipt_sha256"]]
         self.assertEqual(organization[0]["hb_reference"]["epoch"], 1000)
 
-    def test_a_clock_derived_frame_is_refused_and_nothing_is_stored(self):
-        # A clock-derived frame lends no epoch, and without one nothing can be
-        # recorded (WU-B13 slice g): refused six-field, not answered, not marked
-        # seen, and neither ledger is written.
+    def test_a_clock_derived_frame_stays_pending_with_nothing_written(self):
+        """NARROW (08:10Z): a CLOCK frame lends no epoch. With no cycle epoch it is
+        refused HB_EPOCH_NOT_SUPPLIED, non-terminal: no receipt, no answer, no marker."""
         self.with_stegcore()
-        refused, = self.consume(now_ns=K.HB_ANCHOR_UNIX_NS + 7 * K.HB_PERIOD_NS)
-        result = refused["result"]
-        self.assertEqual(result["status"], "REFUSED")
-        self.assertEqual(result["disposition"], "FAIL_CLOSED")
-        self.assertEqual(result["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
+        pending, = self.consume(now_ns=K.HB_ANCHOR_UNIX_NS + 7 * K.HB_PERIOD_NS)
+        result = pending["result"]
+        self.assertEqual(result["status"], "PENDING")
+        self.assertEqual(result["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
+        self.assertIs(result["terminal"], False)
         self.assertEqual(result["owning_existing_goal"], GOAL)
         for key in SIX:
             self.assertTrue(str(result.get(key) or "").strip(), key)
-        self.assertIsNone(refused["organization_record"])
-        self.assertIsNone(refused["response_publication"])
-        self.assertIsNone(refused["seen_marker"])
+        self.assertIsNone(pending["response_publication"])
+        self.assertIsNone(pending["seen_marker"])
         self.assertEqual(self.receipts("STEGVERSE_REPO_LEDGER_ROOT"), [])
         self.assertEqual(self.receipts("STEGVERSE_ORG_LEDGER_ROOT"), [])
-
 
 if __name__ == "__main__":
     unittest.main()
