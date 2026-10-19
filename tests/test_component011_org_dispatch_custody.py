@@ -43,7 +43,7 @@ def test_attempt_creates_exact_org_receipt_and_immediate_predecessor(tmp_path, m
     _request_at(runtime)
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
 
-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
+    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(), hb_epoch=4096)
     assert first["state"] == "RECORDED", first
     assert first["classification"] == "RESIDENT_REQUEST_DISPATCH_OBSERVATION_ONLY"
     assert first["exact_receipt_readback"] == "PASS"
@@ -60,7 +60,7 @@ def test_attempt_creates_exact_org_receipt_and_immediate_predecessor(tmp_path, m
     assert source["required_evidence_manifest"][0]["content"]["request_id"] == dispatch.COMPONENT011_REQUEST_ID
 
     second = dispatch.retain_component011_dispatch_in_organization(
-        ROOT, runtime, _outcome(state="FAIL_CLOSED")
+        ROOT, runtime, _outcome(state="FAIL_CLOSED"), hb_epoch=4096
     )
     assert second["state"] == "RECORDED", second
     assert second["immediate_predecessor_sha256"] == first["organization_receipt_sha256"]
@@ -72,7 +72,7 @@ def test_missing_runtime_request_and_consumer_still_retains_exact_source_bound_o
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
     record = dispatch.retain_component011_dispatch_in_organization(
-        ROOT, tmp_path / "runtime", _outcome(attempted=False, state="CONSUMER_NOT_MATERIALIZED")
+        ROOT, tmp_path / "runtime", _outcome(attempted=False, state="CONSUMER_NOT_MATERIALIZED"), hb_epoch=4096
     )
     assert record["state"] == "RECORDED", record
     assert record["runtime_request_present"] is False
@@ -92,7 +92,7 @@ def test_mismatched_runtime_request_fails_before_org_append(tmp_path, monkeypatc
     forged["request_id"] = "FORGED_COMPONENT011_REQUEST"
     path.write_text(json.dumps(forged))
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
+    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(), hb_epoch=4096)
     assert result["state"] == "BOUNDARY"
     assert result["reason"] == "COMPONENT011_REQUEST_IDENTITY_MISMATCH"
     assert not (ledger / "HEAD.json").exists()
@@ -103,13 +103,13 @@ def test_corrupted_org_predecessor_fails_before_appending(tmp_path, monkeypatch)
     runtime = tmp_path / "runtime"
     _request_at(runtime)
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
+    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(), hb_epoch=4096)
     assert first["state"] == "RECORDED", first
     path = ledger / "receipts" / (first["organization_receipt_sha256"][7:] + ".json")
     row = json.loads(path.read_text())
     row["source_transition_id"] = "FORGED_RECORDED_TRANSITION"
     path.write_text(json.dumps(row))
-    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
+    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(), hb_epoch=4096)
     assert result["state"] == "BOUNDARY", result
     assert result["reason"] == "COMPONENT011_ORGANIZATION_DISPATCH_CUSTODY_FAILED"
     assert len(list((ledger / "receipts").glob("*.json"))) == 1
@@ -132,7 +132,7 @@ def test_dispatch_same_existing_path_retains_component011_org_outcome(tmp_path, 
         )
     result = dispatch.dispatch(
         ROOT, runtime, only_consumers=(dispatch.COMPONENT011_SELECTOR,),
-        runner=runner, env={"PATH": "/bin"},
+        runner=runner, env={"PATH": "/bin"}, hb_epoch=4096,
     )
     assert result["state"] == "DISPATCH_COMPLETE", result
     proof = result["component011_organization_dispatch"]
@@ -155,7 +155,7 @@ def test_dispatch_org_custody_failure_is_explicit_without_claiming_transition(tm
         return SimpleNamespace(returncode=0, stdout='{"state":"ATTEMPT_RECORDED"}\n', stderr="")
     result = dispatch.dispatch(
         source, runtime, only_consumers=(dispatch.COMPONENT011_SELECTOR,),
-        runner=runner, env={"PATH": "/bin"},
+        runner=runner, env={"PATH": "/bin"}, hb_epoch=4096,
     )
     assert result["state"] == "DISPATCH_INCOMPLETE"
     assert result["component011_organization_custody_failure"] is True
@@ -169,11 +169,11 @@ def test_orphaned_existing_org_receipt_prevents_new_observation(tmp_path, monkey
     runtime = tmp_path / "runtime"
     _request_at(runtime)
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
+    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(), hb_epoch=4096)
     assert first["state"] == "RECORDED", first
     orphan = ledger / "receipts" / ("f" * 64 + ".json")
     orphan.write_text(json.dumps({"schema": "forged-orphan"}))
-    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
+    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(), hb_epoch=4096)
     assert result["state"] == "BOUNDARY", result
     assert result["reason"] == "COMPONENT011_ORGANIZATION_DISPATCH_CUSTODY_FAILED"
     assert len(list((ledger / "receipts").glob("*.json"))) == 2

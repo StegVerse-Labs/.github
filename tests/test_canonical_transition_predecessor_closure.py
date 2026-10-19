@@ -57,7 +57,7 @@ def recorded(digest: str) -> dict:
 
 class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
     def test_successor_consumes_immediately_preceding_organization_recorded_transition(self) -> None:
-        custody = CanonicalTransitionCustody("subject-1")
+        custody = CanonicalTransitionCustody("subject-1", hb_epoch=4096)
         results = [recorded("a" * 64), recorded("b" * 64)]
         with patch(
             "canonical_state_transition_custody_under_test.submit_state_receipt",
@@ -94,7 +94,7 @@ class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
         self.assertEqual(custody.last_state_ref, "sha256:" + "b" * 64)
 
     def test_incomplete_organization_record_cannot_advance_successor_predecessor(self) -> None:
-        custody = CanonicalTransitionCustody("subject-2")
+        custody = CanonicalTransitionCustody("subject-2", hb_epoch=4096)
         incomplete = {
             "state": "RECORDED",
             "receipt_sha256": "c" * 64,
@@ -113,7 +113,7 @@ class CanonicalTransitionPredecessorClosureTests(unittest.TestCase):
         self.assertIsNone(custody.last_state_ref)
 
     def test_resulting_domain_state_never_replaces_prior_recorded_transition_digest(self) -> None:
-        custody = CanonicalTransitionCustody("subject-3")
+        custody = CanonicalTransitionCustody("subject-3", hb_epoch=4096)
         with patch(
             "canonical_state_transition_custody_under_test.submit_state_receipt",
             side_effect=[recorded("d" * 64), recorded("e" * 64)],

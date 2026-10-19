@@ -112,8 +112,8 @@ def test_ledger_root_without_a_declaration_fails_closed(monkeypatch, tmp_path):
 def test_current_chain_reads_the_declared_git_store(git_declared):
     node, posix, before = git_declared
     assert custody.current_chain() == (None, [])
-    first = org.aggregate_transition(receipt("CLAIM"))
-    second = org.aggregate_transition(receipt("WORK"))
+    first = org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
+    second = org.aggregate_transition(receipt("WORK"), hb_epoch=4096)
     head, rows = custody.current_chain()
     assert head["receipt_sha256"] == second["receipt_sha256"]
     assert [row["receipt_sha256"] for row in rows] == [first["receipt_sha256"], second["receipt_sha256"]]
@@ -123,7 +123,7 @@ def test_current_chain_reads_the_declared_git_store(git_declared):
 
 def test_current_chain_on_posix_is_unchanged_and_refuses_receipts_without_head(tmp_path, monkeypatch):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "org"))
-    record = org.aggregate_transition(receipt("CLAIM"))
+    record = org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     head, rows = custody.current_chain()
     assert head == json.loads((tmp_path / "org" / "HEAD.json").read_text())
     assert rows == [record]
@@ -148,11 +148,11 @@ def _outcome(dispatch, state="ATTEMPT_RECORDED"):
 def test_dispatcher_append_and_readback_use_the_same_declared_git_store(git_declared, tmp_path):
     node, posix, before = git_declared
     dispatch = _dispatch()
-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, tmp_path / "runtime", _outcome(dispatch))
+    first = dispatch.retain_component011_dispatch_in_organization(ROOT, tmp_path / "runtime", _outcome(dispatch), hb_epoch=4096)
     assert first["state"] == "RECORDED", first
     assert first["exact_receipt_readback"] == "PASS"
     second = dispatch.retain_component011_dispatch_in_organization(
-        ROOT, tmp_path / "runtime", _outcome(dispatch, "FAIL_CLOSED"))
+        ROOT, tmp_path / "runtime", _outcome(dispatch, "FAIL_CLOSED"), hb_epoch=4096)
     assert second["state"] == "RECORDED", second
     assert second["immediate_predecessor_sha256"] == first["organization_receipt_sha256"]
     assert second["immediate_predecessor_readback"] == "PASS"
@@ -169,7 +169,7 @@ def test_dispatcher_without_the_git_materialization_path_appends_nothing(git_dec
     _, posix, before = git_declared
     monkeypatch.delenv("STEGVERSE_ORG_LEDGER_GIT_DIR")
     dispatch = _dispatch()
-    result = dispatch.retain_component011_dispatch_in_organization(ROOT, tmp_path / "runtime", _outcome(dispatch))
+    result = dispatch.retain_component011_dispatch_in_organization(ROOT, tmp_path / "runtime", _outcome(dispatch), hb_epoch=4096)
     assert result["state"] == "BOUNDARY"
     assert result["reason"] == "COMPONENT011_ORGANIZATION_DISPATCH_CUSTODY_FAILED"
     assert result["error_type"] == "LedgerLocationRequired"
@@ -202,7 +202,7 @@ def test_ingress_readback_reads_the_declared_git_store(git_declared):
 
     _, posix, before = git_declared
     ledger = ingress.organization_ledger
-    record = ledger.aggregate_transition(receipt("INGRESS"))
+    record = ledger.aggregate_transition(receipt("INGRESS"), hb_epoch=4096)
     assert ingress._organization_receipt_read_back(record["source_transition_sha256"]) == (
         True, record["receipt_sha256"])
     assert ingress._organization_receipt_read_back("sha256:" + "f" * 64) == (False, None)
@@ -233,10 +233,10 @@ def test_refusal_record_is_appended_and_found_again_on_the_declared_git_store(gi
     node, posix, before = git_declared
     refusal = {"disposition": "FAIL_CLOSED", "failed_predicate": "OL2_FIXTURE", "retry_entrypoint": "r",
                "consequence_committed": False}
-    first = record_organization_receipt_refusal(refusal, gated_transition_id="OL2", state_receipt_sha256="e" * 64)
+    first = record_organization_receipt_refusal(refusal, gated_transition_id="OL2", state_receipt_sha256="e" * 64, hb_epoch=4096)
     assert first["refusal_recorded"] is True, first
     head = git_store(node).get(org.ledger_store.HEAD_KEY)
-    again = record_organization_receipt_refusal(refusal, gated_transition_id="OL2", state_receipt_sha256="e" * 64)
+    again = record_organization_receipt_refusal(refusal, gated_transition_id="OL2", state_receipt_sha256="e" * 64, hb_epoch=4096)
     assert again["refusal_organization_receipt_sha256"] == first["refusal_organization_receipt_sha256"]
     assert git_store(node).get(org.ledger_store.HEAD_KEY) == head
     assert snapshot(posix) == before

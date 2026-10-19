@@ -480,6 +480,16 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
         idempotent_on=("failed_predicate", "detail"))
 
 
+def no_epoch_refusal(caller: str) -> dict[str, Any]:
+    """The unrecorded six-field FAIL_CLOSED of a receipt with no supplied epoch (WU-B13 slice g)."""
+    refusal = organization_ledger.kernel.no_epoch_caller_refusal(
+        caller, retry_entrypoint="resident-runtime/organization_manifest_ingress.py::receive (hb_epoch=, or --hb-epoch)")
+    return {"schema": RESULT_SCHEMA_ORG, "organization": "StegVerse-Labs",
+            "receiving_operation": OPERATION_ID, "received": False,
+            "organization_receipt_observed": False, "refusal_recorded": False,
+            **refusal, "authority_effect": "NONE_REFUSAL_ONLY"}
+
+
 def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str,
              hb_epoch: int | None = None, parent_manifest: Mapping[str, Any] | None = None,
              organization_evidence: Mapping[str, Any] | None = None,
@@ -989,7 +999,11 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
 
     `mesh_root` is the federation mesh the node was materialized with. Only a
     capability another organization decides needs it: the request leaves on it.
+    `hb_epoch` is the epoch the carrier supplied; without one nothing is
+    received or appended, and no clock is read to stand in for it.
     """
+    if hb_epoch is None:
+        return no_epoch_refusal("resident-runtime/organization_manifest_ingress.py::receive")
     # Resolved before anything is appended: an unresolvable revision fails
     # closed here, with no receipt written that could not name its rule.
     rule_ref = recomputation_rule_ref()

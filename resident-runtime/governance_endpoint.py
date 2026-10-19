@@ -156,10 +156,16 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
            hb_epoch: int | None = None) -> dict[str, str]:
     """Append the decision at both ledger levels: repository first, organization consuming it.
 
-    `hb_epoch` is the carrier's heartbeat epoch, supplied by the caller; when
-    supplied both receipts carry that exact reference, as every other boundary
-    writer does. Absent, emit.py and aggregate_transition derive it and say so.
+    `hb_epoch` is the carrier's heartbeat epoch, supplied by the caller; both
+    receipts carry that exact reference, as every other boundary writer does.
+    Absent or invalid, kernel.SuppliedEpochRefused (six-field FAIL_CLOSED) is
+    raised before either ledger is touched; no clock is read.
     """
+    kernel = _module("org_kernel_record_epoch", "org-kernel/kernel.py")
+    refused = kernel.writer_epoch_refusal(
+        hb_epoch, retry_entrypoint="resident-runtime/governance_endpoint.py::record (hb_epoch=, or --hb-epoch)")
+    if refused is not None:
+        raise kernel.SuppliedEpochRefused(refused)
     transition_id = TRANSITION_CLASS + ":" + hashlib.sha256(
         str(packet.get("packet_id")).encode()).hexdigest()[:24]
     predecessor = "sha256:" + str(decision.get("governance_request_sha256"))
@@ -172,7 +178,7 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
          "--transition-id", transition_id, "--transition-class", TRANSITION_CLASS,
          "--predecessor-state-sha256", predecessor, "--successor-state-sha256", successor,
          "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE"]
-        + (["--hb-epoch", str(int(hb_epoch))] if hb_epoch is not None else []),
+        + ["--hb-epoch", str(int(str(hb_epoch)))],
         cwd=ROOT, capture_output=True, text=True, check=False)
     if completed.returncode != 0:
         raise SystemExit("governance-decision-repository-receipt-failed:"
@@ -197,12 +203,14 @@ def cli_hb_epoch(text: str | None) -> tuple[int | None, dict[str, Any] | None]:
 
     argparse hands over the raw text (type=str), so the shared validator (the
     kernel's supplied_epoch_failure) sees it uncoerced: '+33', ' 33' and '3_3'
-    are HB_EPOCH_INVALID, and '0033' is 33. An absent --hb-epoch stays None,
-    as before.
+    are HB_EPOCH_INVALID, and '0033' is 33. An absent --hb-epoch is refused
+    HB_EPOCH_NOT_SUPPLIED with the shared rule's own six-field dict
+    (writer_epoch_refusal); no clock is read.
     """
-    if text is None:
-        return None, None
     kernel = _module("org_kernel_cli_epoch", "org-kernel/kernel.py")
+    if text is None:
+        return None, kernel.writer_epoch_refusal(
+            None, retry_entrypoint="resident-runtime/governance_endpoint.py (--hb-epoch)")
     failure = kernel.supplied_epoch_failure(text)
     if failure is None:
         return int(text), None  # admitted as ASCII digits
@@ -227,7 +235,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--hb-epoch", type=str, default=None,
                         help="carrier heartbeat epoch, supplied by the caller as ASCII digits; "
-                             "never sampled here")
+                             "required, never sampled here")
     args = parser.parse_args()
     hb_epoch, epoch_refused = cli_hb_epoch(args.hb_epoch)
     if epoch_refused is not None:

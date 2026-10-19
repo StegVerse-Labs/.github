@@ -753,11 +753,11 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     execution. Either way it is supplied, never derived.
 
     `hb_epoch` is the carrier's heartbeat epoch. Supplied, every receipt this
-    call writes carries that exact reference; an invalid one raises
-    OrgLedgerEpochRefused (six-field FAIL_CLOSED) before the store is resolved
-    or created. Absent, the reference is still derived from the host clock and
-    says so (WU-B13 slice g removes that fallback). An exact retry returns the
-    original receipt whatever epoch it arrives at.
+    call writes carries that exact reference; an absent or invalid one raises
+    OrgLedgerEpochRefused (six-field FAIL_CLOSED; HB_EPOCH_NOT_SUPPLIED when
+    absent) before the store is resolved or created, and no clock is read to
+    stand in for it. An exact retry returns the original receipt whatever
+    epoch it arrives at.
 
     `custody_exclusivity_verifier` is the only way an existing authority's
     attestation of unique custody reaches a successor's consequential append
@@ -1056,16 +1056,11 @@ def _retained_in_store(store, receipt, source):
         raise ValueError("retained organization source receipt conflict")
 
 def _refuse_invalid_epoch(hb_epoch):
-    """OrgLedgerEpochRefused for a supplied but invalid epoch, before any store opens.
-
-    An absent epoch still takes the clock fallback in _append_reference until
-    WU-B13 slice g moves every writer onto require_supplied_epoch.
-    """
-    if hb_epoch is not None:
-        require_supplied_epoch(hb_epoch)
+    """OrgLedgerEpochRefused for an absent or invalid epoch, before any store opens. No clock is read."""
+    require_supplied_epoch(hb_epoch)
 
 def _append_reference(hb_epoch):
-    return require_supplied_epoch(hb_epoch) if hb_epoch is not None else kernel.hb_reference()
+    return require_supplied_epoch(hb_epoch)
 
 def _append_locked(receipt, source, store, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect, hb_epoch, custody_exclusivity_verifier=None):
     reference=_append_reference(hb_epoch)
@@ -1140,12 +1135,19 @@ def main():
     p.add_argument("--parent-manifest")
     p.add_argument("--release-custody",action="store_true")
     p.add_argument("--assume-custody-as")
+    p.add_argument("--hb-epoch",type=str,default=None,
+                   help="carrier-supplied heartbeat epoch, ASCII digits >= 32; required, never coerced")
     a=p.parse_args()
+    # The epoch is checked as typed, before any receipt is read or store opened.
+    refused=epoch_refusal(a.hb_epoch)
+    if refused is not None:
+        print(json.dumps(refused,sort_keys=True)); raise SystemExit(1)
+    hb_epoch=int(a.hb_epoch)
     if a.release_custody or a.assume_custody_as:
         if not a.parent_manifest: raise SystemExit("governing parent manifest required")
         try:
-            if a.release_custody: record=release_custody(load(a.parent_manifest))
-            else: record=assume_custody(load(a.parent_manifest),materialization_id=a.assume_custody_as)
+            if a.release_custody: record=release_custody(load(a.parent_manifest),hb_epoch=hb_epoch)
+            else: record=assume_custody(load(a.parent_manifest),materialization_id=a.assume_custody_as,hb_epoch=hb_epoch)
         except LedgerLocationRequired as exc:
             print(json.dumps(location_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except ledger_store.LedgerStoreRefused as exc:
@@ -1166,6 +1168,7 @@ def main():
             boundary_evidence=json.loads(a.boundary_evidence_json),
             authority_effect=a.authority_effect,
             parent_manifest=load(a.parent_manifest) if a.parent_manifest else None,
+            hb_epoch=hb_epoch,
         )
     except LedgerLocationRequired as exc:
         print(json.dumps(location_refusal(exc),sort_keys=True))

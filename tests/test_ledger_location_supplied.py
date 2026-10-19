@@ -97,7 +97,7 @@ class LedgerLocationIsSuppliedTests(unittest.TestCase):
             completed = subprocess.run(
                 [sys.executable, "-B", str(ROOT / "resident-runtime/aggregate_repo_transition.py"),
                  "--repo-receipt", str(receipt), "--predecessor-org-state-sha256", "GENESIS",
-                 "--successor-org-state-sha256", "sha256:" + "b" * 64],
+                 "--successor-org-state-sha256", "sha256:" + "b" * 64, "--hb-epoch", "4096"],
                 capture_output=True, text=True, env=unsupplied(self.home, self.state), cwd=work, timeout=120)
         self.assertEqual(completed.returncode, 1, completed.stderr)
         refusal = json.loads(completed.stdout)

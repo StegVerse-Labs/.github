@@ -118,7 +118,8 @@ class KVOrganizationReceiptRefused(KVPublisherReturnError):
 READBACK_CUSTODY_BASES:dict[str,str]={}
 
 
-def _organization_receipt_gate(result:Any, *, transition_id:str, message:str, record_refusal:bool=False)->str:
+def _organization_receipt_gate(result:Any, *, transition_id:str, message:str, record_refusal:bool=False,
+                               hb_epoch:int|None=None)->str:
     """Verified Organization receipt digest for this exact state receipt, else a typed refusal.
 
     The Organization ledger append is the transition's runtime reality.
@@ -140,11 +141,20 @@ def _organization_receipt_gate(result:Any, *, transition_id:str, message:str, re
             from canonical_state_transition_custody import record_organization_receipt_refusal
             refusal=record_organization_receipt_refusal(
                 refusal,gated_transition_id=transition_id,
-                state_receipt_sha256=result.get("receipt_sha256") if isinstance(result,Mapping) else None)
+                state_receipt_sha256=result.get("receipt_sha256") if isinstance(result,Mapping) else None,
+                hb_epoch=hb_epoch)
         raise KVOrganizationReceiptRefused(message,refusal) from exc
     # The readback is never custody authority; its basis is kept for the report.
     READBACK_CUSTODY_BASES[row["receipt_sha256"]]=custody.readback_custody_basis(row)
     return row["receipt_sha256"]
+
+
+def _require_supplied_epoch(hb_epoch:int|None, *, caller:str, message:str)->None:
+    """NO_EPOCH_CALLER_FAILS_CLOSED before a receipt is built: nothing written, no clock read."""
+    if hb_epoch is None:
+        from canonical_state_transition_custody import no_epoch_caller_boundary
+        refusal=no_epoch_caller_boundary("scripts/consume_kv_publisher_return_materialization_request.py::"+caller)
+        raise KVOrganizationReceiptRefused(message,{k:v for k,v in refusal.items() if k!="state"})
 
 
 def require_organization_recorded_predecessor(predecessor:Any, *, predecessor_transition_id:str, successor_transition_id:str)->str:
@@ -254,6 +264,8 @@ def _record_sdk_return_binding_custody(
     terminal:str,
     output_path:Path,
     materialization:dict[str,Any],
+    *,
+    hb_epoch:int|None=None,
 )->dict[str,Any]:
     try:
         binding=load(output_path)
@@ -299,6 +311,7 @@ def _record_sdk_return_binding_custody(
     if prior_ref is None:
         raise KVPublisherReturnError("RTC-SDK-RETURN-006 canonical predecessor Master Records organization record required")
     required_evidence=list(predecessor_evidence)+required_evidence
+    _require_supplied_epoch(hb_epoch,caller="_record_sdk_return_binding_custody",message="_record_sdk_return_binding_custody has no supplied epoch")
     state_receipt=build_state_receipt(
       transition_id=transition_id,
       transition_sequence=1,
@@ -321,12 +334,12 @@ def _record_sdk_return_binding_custody(
       proof_scope="RTC_SDK_RETURN_006_ONLY",
       proof_ceiling="ORGANIZATION_RECORDED_SDK_RETURN_BINDING_ONLY",
     )
-    mr=submit_state_receipt(state_receipt)
+    mr=submit_state_receipt(state_receipt,hb_epoch=hb_epoch)
     # Organization ledger record is the transition's reality; Master Records
     # reconstruction fields are evidence only and never gate it.
     organization_receipt_sha256=_organization_receipt_gate(
         mr,transition_id=transition_id,message="SDK return binding Organization record not recorded",
-        record_refusal=True)
+        record_refusal=True,hb_epoch=hb_epoch)
     return {
       "state":mr.get("state"),
       "organization_receipt_sha256":organization_receipt_sha256,
@@ -426,6 +439,8 @@ def _prepare_rtc007_continuation(
     output_path:Path,
     sdk_binding_sha256:str,
     rtc006_master_records:dict[str,Any],
+    *,
+    hb_epoch:int|None=None,
 )->dict[str,Any]:
     binding_bytes=output_path.read_bytes()
     if sha(binding_bytes)!=sdk_binding_sha256:
@@ -479,6 +494,7 @@ def _prepare_rtc007_continuation(
         "content":load(output_path),
       },
     ]
+    _require_supplied_epoch(hb_epoch,caller="_prepare_rtc007_continuation",message="_prepare_rtc007_continuation has no supplied epoch")
     state_receipt=build_state_receipt(
       transition_id="RTC-STEGVERSE-EGRESS-007",
       transition_sequence=2,
@@ -498,12 +514,12 @@ def _prepare_rtc007_continuation(
       proof_scope="RTC_STEGVERSE_EGRESS_007_ONLY",
       proof_ceiling="ORGANIZATION_RECORDED_FINAL_STEGVERSE_EGRESS_PREPARATION_ONLY",
     )
-    mr=submit_state_receipt(state_receipt)
+    mr=submit_state_receipt(state_receipt,hb_epoch=hb_epoch)
     # Organization ledger record is the transition's reality; Master Records
     # reconstruction fields are evidence only and never gate it.
     organization_receipt_sha256=_organization_receipt_gate(
         mr,transition_id="RTC-STEGVERSE-EGRESS-007",message="RTC-STEGVERSE-EGRESS-007 Organization record not recorded",
-        record_refusal=True)
+        record_refusal=True,hb_epoch=hb_epoch)
 
     stegos=source_root("STEGVERSE_STEGOS_ROOT","StegOS","stegos/mir_southbound_intr_consumer.py")
     if stegos is None:
@@ -563,7 +579,8 @@ def _prepare_rtc007_continuation(
       "authority_effect":"NONE_CONTINUATION_REQUEST_ONLY",
     }
 
-def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any],raw:bytes,terminal:str)->dict[str,Any]:
+def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any],raw:bytes,terminal:str,*,
+                       hb_epoch:int|None=None)->dict[str,Any]:
     try: returned=json.loads(raw.decode("utf-8"))
     except Exception as exc: raise KVPublisherReturnError("Publisher return JSON invalid") from exc
     manifest,manifest_receipt_id,capsule=extract_sdk_materialization_inputs(returned)
@@ -583,10 +600,11 @@ def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any]
     if materialization.get("sdk_return_binding_observed") is not True:
         raise KVPublisherReturnError("SDK return binding materialization not observed")
     master_records=_record_sdk_return_binding_custody(
-        runtime,materialization_id,request,terminal,output_path,materialization
+        runtime,materialization_id,request,terminal,output_path,materialization,hb_epoch=hb_epoch
     )
     continuation=_prepare_rtc007_continuation(
-        runtime,materialization_id,request,output_path,materialization["output_sha256"],master_records
+        runtime,materialization_id,request,output_path,materialization["output_sha256"],master_records,
+        hb_epoch=hb_epoch
     )
     for field in ("final_stegverse_transition_observed","interlock_intr_egress_observed","far_side_transition_observed","authentic_external_mir_endpoint_substitution_observed","communication_complete"):
         if materialization.get(field) is not False:
@@ -676,12 +694,12 @@ def _consume_kv_owner(runtime:Path,materialization_id:str,request:dict[str,Any],
     latest=out/"latest.json"; latest.write_text(json.dumps(result,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return result
 
-def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
+def consume(runtime:Path,materialization_id:str,*,hb_epoch:int|None=None)->dict[str,Any]:
     request=load(runtime/REQUEST_DIR/f"{materialization_id}.json"); validate_request(request)
     raw,_intent,_receipts,terminal=_verify_common_return_transport(runtime,materialization_id,request)
     owner=request["downstream_owner_ref"]
     if owner==SDK_DOWNSTREAM_OWNER:
-        return _consume_sdk_owner(runtime,materialization_id,request,raw,terminal)
+        return _consume_sdk_owner(runtime,materialization_id,request,raw,terminal,hb_epoch=hb_epoch)
     if owner==KV_DOWNSTREAM_OWNER:
         return _consume_kv_owner(runtime,materialization_id,request,raw,terminal)
     raise KVPublisherReturnError("unsupported Publisher return owner")
@@ -743,10 +761,12 @@ def retain_blocked_consumption(runtime:Path,materialization_id:str,exc:Exception
 
 
 def main()->int:
-    parser=argparse.ArgumentParser(); parser.add_argument("--runtime-root",type=Path,required=True); parser.add_argument("--materialization-id",required=True); args=parser.parse_args()
+    parser=argparse.ArgumentParser(); parser.add_argument("--runtime-root",type=Path,required=True); parser.add_argument("--materialization-id",required=True)
+    parser.add_argument("--hb-epoch",type=int,default=None,help="carrier-supplied heartbeat epoch; without it no receipt is recorded")
+    args=parser.parse_args()
     runtime=args.runtime_root.expanduser().resolve()
     try:
-        result=consume(runtime,args.materialization_id)
+        result=consume(runtime,args.materialization_id,hb_epoch=args.hb_epoch)
     except Exception as exc:
         try:
             result=retain_blocked_consumption(runtime,args.materialization_id,exc)

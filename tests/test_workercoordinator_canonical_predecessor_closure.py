@@ -56,7 +56,7 @@ class WorkerCoordinatorCanonicalPredecessorTests(unittest.TestCase):
                 record=record,
                 claim_id="CLAIM-1",
                 fencing_token=7,
-                worker_instance_id="WORKER-1",
+                worker_instance_id="WORKER-1", hb_epoch=4096,
             )
 
         require_predecessor.assert_called_once_with(
@@ -87,7 +87,7 @@ class WorkerCoordinatorCanonicalPredecessorTests(unittest.TestCase):
                 record={},
                 claim_id="CLAIM-2",
                 fencing_token=8,
-                worker_instance_id="WORKER-2",
+                worker_instance_id="WORKER-2", hb_epoch=4096,
             )
         require_predecessor.assert_called_once_with(
             None,

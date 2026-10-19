@@ -171,7 +171,8 @@ def _prove_ancestry(read_source, leaf: str, ancestor: str) -> tuple[dict[str, An
     raise DiagnosticAdmissionError("CANONICAL_PREDECESSOR_DEPTH_EXCEEDED")
 
 
-def _closure_refused(closure: Any, refusal: Mapping[str, Any]) -> DiagnosticExecutionFailClosed:
+def _closure_refused(closure: Any, refusal: Mapping[str, Any], *,
+                     hb_epoch: int | None = None) -> DiagnosticExecutionFailClosed:
     """The typed refusal of this attempted transition, appended to the Organization ledger.
 
     The gate sits inside the diagnostic execution transition this consumer
@@ -181,13 +182,14 @@ def _closure_refused(closure: Any, refusal: Mapping[str, Any]) -> DiagnosticExec
     from workers.canonical_state_transition_custody import record_organization_receipt_refusal
     recorded = record_organization_receipt_refusal(
         refusal, gated_transition_id=EXECUTION_TRANSITION,
-        state_receipt_sha256=closure.get("receipt_sha256") if isinstance(closure, Mapping) else None)
+        state_receipt_sha256=closure.get("receipt_sha256") if isinstance(closure, Mapping) else None,
+        hb_epoch=hb_epoch)
     return DiagnosticExecutionFailClosed(
         "ORGANIZATION_EXACT_CLOSURE_REQUIRED:" + recorded["disposition"] + ":" + recorded["failed_predicate"],
         refusal=recorded)
 
 
-def _verified_organization_closure(closure: Any) -> dict[str, Any]:
+def _verified_organization_closure(closure: Any, *, hb_epoch: int | None = None) -> dict[str, Any]:
     """Read back the Organization receipt that closes the diagnostic execution.
 
     Uses the existing Organization ledger verifier; a refusal is terminal for
@@ -199,7 +201,7 @@ def _verified_organization_closure(closure: Any) -> dict[str, Any]:
             None, dict(closure) if isinstance(closure, Mapping) else closure,
             expected_transition_id=EXECUTION_TRANSITION)
     except custody.OrganizationReceiptRefused as exc:
-        raise _closure_refused(closure, exc.refusal()) from exc
+        raise _closure_refused(closure, exc.refusal(), hb_epoch=hb_epoch) from exc
     if row.get("previous_receipt_sha256") is None:
         raise _closure_refused(closure, {
             "disposition": "DENY",
@@ -207,7 +209,7 @@ def _verified_organization_closure(closure: Any) -> dict[str, Any]:
             "retry_entrypoint": None,
             "consequence_committed": False,
             "authority_effect": "NONE_REFUSAL_ONLY",
-        })
+        }, hb_epoch=hb_epoch)
     return row
 
 
@@ -578,17 +580,25 @@ def consume(
     read_source=None,
     runner=None,
     submit=None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     """Execute only inside the existing, authentically bound ephemeral lease.
 
     Injected callbacks in unit tests are SOURCE TEST DOUBLES, never runtime proof.
-    Production read_source/submit use the existing Organization ledger.
+    Production read_source/submit use the existing Organization ledger, and
+    record with the supplied `hb_epoch`; without one the production path is
+    refused NO_EPOCH_CALLER_FAILS_CLOSED before anything runs or is written.
     """
     from workers.canonical_state_transition_custody import (
         build_state_receipt, require_predecessor_master_records_organization_record,
         submit_state_receipt, sha256_uri,
     )
     source_test_doubles = any(x is not None for x in (read_source, runner, submit))
+    if submit is None and hb_epoch is None:
+        from workers.canonical_state_transition_custody import no_epoch_caller_boundary
+        refusal = no_epoch_caller_boundary("workers/sdk_manifest_diagnostic_admitted_consumer.py::consume")
+        raise DiagnosticExecutionFailClosed(refusal["failure_code"],
+                                            refusal={k: v for k, v in refusal.items() if k != "state"})
     submit = submit or submit_state_receipt
     runner = runner or subprocess.run
     require(request.get("processing_capability") == "ecosystem_diagnostic"
@@ -738,13 +748,14 @@ def consume(
         proof_ceiling="AUTHENTIC_PROCESSING_ONLY_IF_EXISTING_MASTER_RECORDS_ORGANIZATION_RECORD_PASS",
     )
     try:
-        closure = submit(transition)
+        closure = (submit_state_receipt(transition, hb_epoch=hb_epoch) if submit is submit_state_receipt
+                   else submit(transition))
     except Exception as exc:
         raise DiagnosticExecutionFailClosed(
             "ORGANIZATION_AND_MASTER_RECORDS_ORGANIZATION_RECORD_SUBMISSION_FAILED:" + type(exc).__name__) from exc
     # The verified Organization receipt of this exact state receipt closes the
     # transition; Master Records reconstruction fields are evidence only.
-    organization_receipt = _verified_organization_closure(closure)
+    organization_receipt = _verified_organization_closure(closure, hb_epoch=hb_epoch)
     # A verified readback is never custody authority; its basis is reported beside it.
     readback_custody_basis = _resident_modules(Path(__file__).resolve().parents[1])[1].readback_custody_basis(
         organization_receipt)

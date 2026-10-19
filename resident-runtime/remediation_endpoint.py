@@ -148,8 +148,20 @@ def classify(packet: Mapping[str, Any], *, loader=load_classifier) -> dict[str, 
             "classification": None, "reason": refusal}
 
 
-def record(packet: Mapping[str, Any], outcome: Mapping[str, Any]) -> dict[str, str]:
-    """Append the classification at both ledger levels: repository first, organization consuming it."""
+def record(packet: Mapping[str, Any], outcome: Mapping[str, Any], *,
+           hb_epoch: int | None = None) -> dict[str, str]:
+    """Append the classification at both ledger levels: repository first, organization consuming it.
+
+    `hb_epoch` is the carrier's heartbeat epoch, supplied by the caller; both
+    receipts carry that exact reference. Absent or invalid,
+    kernel.SuppliedEpochRefused (six-field FAIL_CLOSED) is raised before either
+    ledger is touched; no clock is read.
+    """
+    kernel = _module("org_kernel_record_epoch", ROOT / "org-kernel/kernel.py")
+    refused = kernel.writer_epoch_refusal(
+        hb_epoch, retry_entrypoint="resident-runtime/remediation_endpoint.py::record (hb_epoch=, or --hb-epoch)")
+    if refused is not None:
+        raise kernel.SuppliedEpochRefused(refused)
     transition_id = TRANSITION_CLASS + ":" + hashlib.sha256(str(packet.get("packet_id")).encode()).hexdigest()[:24]
     predecessor = "sha256:" + str(outcome.get("remediation_request_sha256"))
     successor = sha(dict(outcome))
@@ -160,7 +172,8 @@ def record(packet: Mapping[str, Any], outcome: Mapping[str, Any]) -> dict[str, s
         [sys.executable, str(ROOT / ".stegverse/transition-ledger/emit.py"),
          "--transition-id", transition_id, "--transition-class", TRANSITION_CLASS,
          "--predecessor-state-sha256", predecessor, "--successor-state-sha256", successor,
-         "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE"],
+         "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE",
+         "--hb-epoch", str(int(str(hb_epoch)))],
         cwd=ROOT, capture_output=True, text=True, check=False)
     if completed.returncode != 0:
         raise SystemExit("remediation-classification-repository-receipt-failed:"
@@ -173,19 +186,40 @@ def record(packet: Mapping[str, Any], outcome: Mapping[str, Any]) -> dict[str, s
         boundary_evidence={"service_id": SERVICE_ID, "transition_class": TRANSITION_CLASS,
                            "disposition": outcome.get("disposition"),
                            "request_packet_id": packet.get("packet_id")},
-        authority_effect="NONE")
+        authority_effect="NONE", hb_epoch=hb_epoch)
     return {"repository_receipt_sha256": repository_receipt["receipt_sha256"],
             "organization_receipt_sha256": organization_receipt["receipt_sha256"]}
+
+
+def cli_hb_epoch(text: str | None) -> tuple[int | None, dict[str, Any] | None]:
+    """--hb-epoch as typed, checked by the kernel's shared rule: (epoch, None) or (None, refusal).
+
+    Absent is HB_EPOCH_NOT_SUPPLIED and anything coerced is HB_EPOCH_INVALID,
+    as writer_epoch_refusal states them; no clock is read.
+    """
+    kernel = _module("org_kernel_cli_epoch", ROOT / "org-kernel/kernel.py")
+    refused = kernel.writer_epoch_refusal(text, retry_entrypoint="resident-runtime/remediation_endpoint.py (--hb-epoch)")
+    if refused is not None:
+        return None, refused
+    return int(text), None  # admitted as ASCII digits
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--packet", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier heartbeat epoch, supplied by the caller as ASCII digits; "
+                             "required, never sampled here")
     args = parser.parse_args()
+    hb_epoch, epoch_refused = cli_hb_epoch(args.hb_epoch)
+    if epoch_refused is not None:
+        # Nothing is classified, appended or written (no --out); the exit is 1.
+        print(json.dumps(epoch_refused, sort_keys=True))
+        return 1
     packet = json.loads(args.packet.read_text(encoding="utf-8"))
     outcome = classify(packet)
-    receipts = record(packet, outcome)
+    receipts = record(packet, outcome, hb_epoch=hb_epoch)
     result = {**outcome, **receipts, "records_authority": "ORGANIZATION_RECORDS_ONLY"}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
