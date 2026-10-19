@@ -545,9 +545,9 @@ def carried(monkeypatch):
 def open_packet(writer, parent, count=2):
     """Establish a packet at t(0) and fill it to its COUNT, one commit per append."""
     t0 = org.aggregate_transition(receipt("FOUR-PART-ASSIGNMENT"), ledger=writer, parent_manifest=parent,
-                                  establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH), hb_epoch=4096)
+                                  establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH), hb_epoch=T0_EPOCH)
     work = [org.aggregate_transition(receipt("WORK-1" + "b" * index), ledger=writer, parent_manifest=parent,
-                                     now_ns=hb_now_ns(T0_EPOCH + 1), hb_epoch=4096) for index in range(count - 1)]
+                                     now_ns=hb_now_ns(T0_EPOCH + 1), hb_epoch=T0_EPOCH + 1) for index in range(count - 1)]
     return (t0, *work)
 
 
@@ -571,7 +571,7 @@ def test_manifested_release_and_establishment_publish_as_one_commit_and_read_bac
     # The next transition releases the satisfied packet, from a node sharing no filesystem.
     following = node(tmp_path, "next.git", origin)
     work2 = org.aggregate_transition(receipt("WORK-2"), ledger=following,
-                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
+                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     assert len(carried) == 1
     assert remote_tip(origin) == before, "the release completed locally without awaiting the remote"
     propagated(following)
@@ -646,14 +646,14 @@ def test_release_lost_race_is_typed_fail_closed_with_no_orphan_batch(tmp_path, o
         if not raced:
             raced["started"] = True
             raced["won"] = org.aggregate_transition(receipt("FAST"), ledger=fast, parent_manifest=parent,
-                                                    now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
+                                                    now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
             raced["files"] = remote_files(local)
             raced["tip"] = remote_tip(local)
         return close(reason, root=root, custody_exclusivity_verifier=custody_exclusivity_verifier)
 
     monkeypatch.setattr(custody, "close_batch", race)
     with pytest.raises(store_module.LedgerStoreRefused) as lost:
-        org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
+        org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     refusal = org.store_refusal(lost.value)
     assert refusal["disposition"] == "FAIL_CLOSED"
     assert refusal["failed_predicate"] == "ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP"
@@ -667,7 +667,7 @@ def test_release_lost_race_is_typed_fail_closed_with_no_orphan_batch(tmp_path, o
     assert slow_source not in raced["files"]
     # The retry re-reads the ref: the packet is already released, so it appends on the winner.
     retried = org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent,
-                                       now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
+                                       now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     assert retried["previous_receipt_sha256"] == raced["won"]["receipt_sha256"]
     assert "parent_manifest_released_batch" not in retried["boundary_evidence"]
     assert len(carried) == 1, "the winner carried the batch once, after its commit; the loser carried nothing"
@@ -680,7 +680,7 @@ def test_release_replay_is_idempotent_on_the_git_store(tmp_path, origin, carried
     writer = node(tmp_path, "writer.git", origin)
     open_packet(writer, parent, count=3)
     work2 = org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent,
-                                     now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
+                                     now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     propagated(writer)
     tip = remote_tip(origin)
     two = node(tmp_path, "two.git", origin)
@@ -730,7 +730,7 @@ def test_tampered_batch_or_batch_head_on_the_ref_is_refused(tmp_path, origin, ca
     parent = manifest()
     writer = node(tmp_path, "writer.git", origin)
     open_packet(writer, parent)
-    org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
+    org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     propagated(writer)
     reader = node(tmp_path, "reader.git", origin, custody_class=None)
     batch_id = reader.get(custody.BATCH_HEAD_KEY)["batch_id"]
@@ -747,7 +747,7 @@ def test_tampered_batch_or_batch_head_on_the_ref_is_refused(tmp_path, origin, ca
     tip = remote_tip(origin)
     with pytest.raises(ValueError):
         org.aggregate_transition(receipt("WORK-3"), ledger=node(tmp_path, "next.git", origin),
-                                 parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 3), hb_epoch=4096)
+                                 parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 3), hb_epoch=T0_EPOCH + 3)
     assert remote_tip(origin) == tip
 
     tamper(tmp_path, origin, custody._batch_key(batch_id), released)
@@ -777,7 +777,7 @@ def test_manifested_packet_on_a_non_private_surface_is_refused_before_carriage(t
     for declared in (None, "PUBLIC"):
         with pytest.raises(store_module.LedgerStoreRefused) as refused:
             org.aggregate_transition(receipt("WORK-2"), ledger=node(tmp_path, f"n{declared}.git", origin, declared),
-                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
+                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
         assert refused.value.failed_predicate == "ORGANIZATION_LEDGER_PRIVATE_CUSTODY_SURFACE_REQUIRED"
     assert carried == [], "the released batch is not carried from a surface not declared private"
     assert remote_tip(origin) == tip
@@ -804,7 +804,7 @@ def test_released_batch_is_submitted_after_the_cas_commit_with_no_snapshot_pinne
 
     monkeypatch.setattr(custody, "submit_released_batch", submit)
     work2 = org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent,
-                                     now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
+                                     now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     assert observed, "the released batch was carried"
     assert observed["held"] == 0 and observed["pinned"] is None, "no exclusive section or pinned snapshot at submission"
     assert observed["head"] == work2["receipt_sha256"], "the ref already held the committed transition"
@@ -820,7 +820,7 @@ def test_released_batch_is_submitted_after_the_cas_commit_with_no_snapshot_pinne
     assert writer.get(store_module.HEAD_KEY)["receipt_sha256"] == work2["receipt_sha256"]
     # The retained outcome rides the next manifest-directed append, read back from the ref.
     work3 = org.aggregate_transition(receipt("WORK-3"), ledger=writer, parent_manifest=parent,
-                                     now_ns=hb_now_ns(T0_EPOCH + 3), hb_epoch=4096)
+                                     now_ns=hb_now_ns(T0_EPOCH + 3), hb_epoch=T0_EPOCH + 3)
     retained = work3["boundary_evidence"][custody.RELEASED_BATCH_SUBMISSION_KEY]
     assert retained["batch_id"] == batch_id
     assert retained["submission_receipt_sha256"] == submission["receipt_sha256"]

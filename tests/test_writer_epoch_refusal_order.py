@@ -165,5 +165,33 @@ class WriterEpochRefusalOrderTests(unittest.TestCase):
         self.assertEqual(organization["observed_at"], "HB:4096")
 
 
+class PacketExpiryEpochTests(unittest.TestCase):
+    """N1: packet expiry and release read the supplied epoch, never a clock, when one is in hand."""
+
+    def test_the_present_epoch_is_the_supplied_one(self):
+        with no_clock():
+            self.assertEqual(batches.current_heartbeat_epoch(epoch=4096), 4096)
+
+    def test_a_manifested_append_at_4096_hands_expiry_that_epoch_and_reads_no_clock(self):
+        manifest = {"schema": "test.parent-manifest/v1",
+                    "receipt_batch": {"release_condition": {"type": "COUNT", "count": 2}}}
+        source = {"schema": "stegverse.canonical-state-transition-receipt/v1", "transition_id": "N1",
+                  "transition_sequence": 1, "subject_or_correlation_id": "n1", "transition_outcome": "OBSERVED",
+                  "required_evidence_manifest": []}
+        seen = []
+        original = batches.release_satisfied_packet_before_next_transition
+
+        def records(*args, **kwargs):
+            seen.append(kwargs.get("epoch"))
+            return original(*args, **kwargs)
+
+        with tempfile.TemporaryDirectory() as work, no_clock(), \
+                mock.patch.object(batches, "release_satisfied_packet_before_next_transition", records):
+            receipt = org.aggregate_transition(source, parent_manifest=manifest, hb_epoch=4096,
+                                               ledger=Path(work) / "org")
+        self.assertEqual(seen, [4096])
+        self.assertEqual(receipt["hb_reference"]["epoch"], 4096)
+
+
 if __name__ == "__main__":
     unittest.main()
