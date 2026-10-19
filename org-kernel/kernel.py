@@ -53,7 +53,8 @@ def validate_hb_reference(ref:dict[str,Any])->dict[str,Any]:
         raise ValueError("heartbeat_progression_not_oscillator")
     return ref
 
-def hb_reference(now_ns:int|None=None, *, epoch:int|None=None)->dict[str,Any]:
+def hb_reference(now_ns:int|None=None, *, epoch:int|None=None, source:str|None=None,
+                 head_receipt_sha:str|None=None)->dict[str,Any]:
     """Build the heartbeat reference for a crossing.
 
     Progression is OSCILLATOR_ONLY: the epoch is a count of heartbeat periods,
@@ -64,14 +65,28 @@ def hb_reference(now_ns:int|None=None, *, epoch:int|None=None)->dict[str,Any]:
     Deriving the epoch from a host clock instead makes the reference depend on
     that host's clock discipline, so a derived reference says so and carries
     the sample it was derived from.
+
+    `source` and `head_receipt_sha` are optional and go together: with a
+    supplied epoch they mark the reference CARRIED (e.g. source
+    ORGANIZATION_LEDGER_HEAD and that head's receipt sha). Without them the
+    reference is SUPPLIED or CLOCK, unchanged.
     """
+    if (source is None)!=(head_receipt_sha is None):
+        raise ValueError("carried_provenance_needs_source_and_head_receipt_sha")
+    if source is not None:
+        if epoch is None: raise ValueError("carried_provenance_needs_a_supplied_epoch")
+        if not isinstance(source,str) or not source or not isinstance(head_receipt_sha,str) or not head_receipt_sha:
+            raise ValueError("carried_provenance_invalid")
     if epoch is not None:
         if now_ns is not None: raise ValueError("supply_epoch_or_sample_not_both")
         if not isinstance(epoch,int) or isinstance(epoch,bool) or epoch<HB_ANCHOR_EPOCH:
             raise ValueError("epoch_precedes_hb32_anchor")
-        return validate_hb_reference({"epoch":epoch,"generation":epoch,"heartbeat_id":f"HB:{epoch}",
-                "phase_offset_ns":0,"frequency_hz":HB_HZ,"progression_dependency":"OSCILLATOR_ONLY",
-                "derived_from_clock":False,"authority_effect":"NONE"})
+        ref={"epoch":epoch,"generation":epoch,"heartbeat_id":f"HB:{epoch}",
+             "phase_offset_ns":0,"frequency_hz":HB_HZ,"progression_dependency":"OSCILLATOR_ONLY",
+             "derived_from_clock":False,"authority_effect":"NONE"}
+        if source is not None:
+            ref["source"]=source; ref["head_receipt_sha"]=head_receipt_sha
+        return validate_hb_reference(ref)
     if now_ns is None:
         now_ns=int(datetime.now(timezone.utc).timestamp()*1_000_000_000)
     if now_ns<HB_ANCHOR_UNIX_NS:
@@ -212,10 +227,16 @@ ENDPOINT_ADAPTER_HB_EPOCH_CARRIER_SUPPLIED="CARRIER_SUPPLIED"
 HB_EPOCH_NOT_SUPPLIED="HB_EPOCH_NOT_SUPPLIED"
 HB_EPOCH_INVALID="HB_EPOCH_INVALID"
 #: The marker vocabulary of a heartbeat reference. SUPPLIED: derived_from_clock
-#: explicitly false, with no sampled_unix_ns. CARRIED: false, plus a non-empty
-#: `source` and `head_receipt_sha`. CLOCK: derived_from_clock true (refused as
-#: HB_EPOCH_INVALID); a bare sampled_unix_ns is only legacy CLOCK, never SUPPLIED.
-#: Anything else is unmarked, and an unmarked clock value counts as laundering.
+#: explicitly false, with no sampled_unix_ns. CARRIED: false, plus `source` (e.g.
+#: ORGANIZATION_LEDGER_HEAD) and `head_receipt_sha`; the shared rule treats it as
+#: SUPPLIED and only the writer verifies the sha is the current verified head
+#: (CARRIED_PROVENANCE_UNVERIFIED otherwise). CLOCK: derived_from_clock true, or a
+#: bare sampled_unix_ns (legacy CLOCK, never SUPPLIED). supplied_epoch_failure
+#: checks a reference in this order, with no source/sha exemption:
+#: (1) derived_from_clock present and not exactly False -> HB_EPOCH_INVALID;
+#: (2) sampled_unix_ns present -> HB_EPOCH_INVALID;
+#: (3) derived_from_clock absent -> HB_EPOCH_PROVENANCE_UNMARKED (an unmarked
+#: clock value is laundering, and a carrier cannot self-assert CARRIED).
 HB_EPOCH_PROVENANCE_UNMARKED="HB_EPOCH_PROVENANCE_UNMARKED"
 HB_EPOCH_PREDICATE="SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 HB_EPOCH_OWNING_EXISTING_GOAL="INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
@@ -272,7 +293,8 @@ def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, s
             and reference["derived_from_clock"] is not False:
         return "HB_EPOCH_INVALID", ("the carrier's derived_from_clock is not exactly false; "
                                     "a clock-derived epoch is not a supplied one")
-    if reference is not None and (reference.get("derived_from_clock") is not False or ("sampled_unix_ns" in reference and not (reference.get("source") and reference.get("head_receipt_sha")))): return "HB_EPOCH_PROVENANCE_UNMARKED", "the carrier's heartbeat reference is neither SUPPLIED (derived_from_clock false, no sampled_unix_ns) nor CARRIED (derived_from_clock false, source and head_receipt_sha); an unmarked clock value is laundering"
+    if reference is not None and "sampled_unix_ns" in reference: return "HB_EPOCH_INVALID", "the carrier's heartbeat reference carries sampled_unix_ns; a sampled clock value is CLOCK, never a supplied epoch"
+    if reference is not None and "derived_from_clock" not in reference: return "HB_EPOCH_PROVENANCE_UNMARKED", "the carrier's heartbeat reference carries no derived_from_clock; an unmarked clock value is laundering, and a carrier cannot self-assert CARRIED provenance"
     return None
 
 class SuppliedEpochRefused(ValueError):
@@ -308,12 +330,17 @@ def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str, reference:Any=No
             "next_attempt":"call again with the supplied epoch; nothing was written",
             "derived_from_clock":False,"consequence_committed":False}
 
-def supplied_hb_reference(hb_epoch:Any, *, retry_entrypoint:str)->dict[str,Any]:
-    """The heartbeat reference of a supplied epoch, or SuppliedEpochRefused. No clock is read."""
+def supplied_hb_reference(hb_epoch:Any, *, retry_entrypoint:str, source:str|None=None,
+                          head_receipt_sha:str|None=None)->dict[str,Any]:
+    """The heartbeat reference of a supplied epoch, or SuppliedEpochRefused. No clock is read.
+
+    With `source` and `head_receipt_sha` the reference is CARRIED; the caller
+    has verified that sha is the current verified head.
+    """
     refusal=writer_epoch_refusal(hb_epoch,retry_entrypoint=retry_entrypoint)
     if refusal is not None:
         raise SuppliedEpochRefused(refusal)
-    return hb_reference(epoch=int(str(hb_epoch)))
+    return hb_reference(epoch=int(str(hb_epoch)),source=source,head_receipt_sha=head_receipt_sha)
 
 def carrier_epoch(heartbeat_reference:Any)->int:
     """Return the epoch the carrier supplied, or refuse FAIL_CLOSED. No clock is read."""
