@@ -384,5 +384,38 @@ class CrossCheckFindings(unittest.TestCase):
         self.assertEqual(answer["citations"], [f"question@{hashlib.sha256(q).hexdigest()}:question:3"])
 
 
+class IndependentVerificationFindings(unittest.TestCase):
+    """Independent verification of d728eb3 (B-P2). Each test fails on d728eb3."""
+
+    def subject_answer(self, subject: bytes) -> dict:
+        path = "fixtures/verification-subject.json"
+        return ie.evaluate(v1_question(subject_path=path, subject=subject), v1_sources(subject_path=path, subject=subject))
+
+    def test_f2_over_long_integer_refusal_cites_its_line(self):
+        subject = b'{\n  "external_machine_awaiting_allowed":\n    ' + b"9" * 5000 + b"\n}"
+        answer = self.subject_answer(subject)
+        self.assertEqual((answer["disposition"], answer["failure_code"]), ("FAIL_CLOSED", "JSON_NUMBER_OUT_OF_RANGE"))
+        self.assertEqual(answer["citations"], [f"{REPO}@{REV}:fixtures/verification-subject.json:3"])
+        self.assertEqual(non_allow_missing(answer), [])
+
+    def test_f2_lone_surrogate_refusal_cites_its_line(self):
+        for subject in (b'{\n  "external_machine_awaiting_allowed": "\\ud800"\n}',
+                        b'{\n  "\\udfff": false\n}'):
+            answer = self.subject_answer(subject)
+            self.assertEqual((answer["disposition"], answer["failure_code"]), ("FAIL_CLOSED", "JSON_MALFORMED"), subject)
+            self.assertEqual(answer["citations"], [f"{REPO}@{REV}:fixtures/verification-subject.json:2"], subject)
+        # A valid surrogate pair is still one scalar value and parses.
+        answer = self.subject_answer(b'{"note": "\\ud83d\\ude00", "external_machine_awaiting_allowed": false}')
+        self.assertEqual(answer["disposition"], "ALLOW", answer)
+
+    def test_f3_invalid_pointer_escape_is_refused_not_relayed(self):
+        for pointer in ("/invariants/~2x", "/invariants/x~", "/~"):
+            answer = ie.evaluate(question(pointer=pointer), [source()])
+            self.assertEqual((answer["disposition"], answer["failure_code"]), ("FAIL_CLOSED", "QUESTION_POINTER_INVALID"), pointer)
+            self.assertNotIn("relay_queue_entry", answer)
+        # ~0 and ~1 remain the RFC 6901 escapes.
+        self.assertEqual(ie.pointer_tokens("/a~1b/c~0d"), ["a/b", "c~d"])
+
+
 if __name__ == "__main__":
     unittest.main()

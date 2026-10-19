@@ -87,6 +87,7 @@ MAX_FIELD_CHARS = 512
 _WS = re.compile(r"[ \t\n\r]*")
 _NUMBER = re.compile(r"-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][-+]?\d+)?")
 _HEX64 = re.compile(r"[0-9a-f]{64}")
+_BAD_POINTER_ESCAPE = re.compile(r"~(?![01])")
 _LITERALS = (("true", True), ("false", False), ("null", None))
 
 
@@ -165,7 +166,11 @@ class _Parser:
         match = _NUMBER.match(self.text, idx)
         if match:
             raw = match.group()
-            number = float(raw) if any(c in raw for c in ".eE") else int(raw)
+            try:
+                number = float(raw) if any(c in raw for c in ".eE") else int(raw)
+            except ValueError:
+                # int() refuses more digits than the interpreter's conversion limit.
+                raise self.refuse("JSON_NUMBER_OUT_OF_RANGE", "JSON_FINITE_NUMBER", idx) from None
             if number != number or number in (float("inf"), float("-inf")):
                 raise self.refuse("JSON_NUMBER_OUT_OF_RANGE", "JSON_FINITE_NUMBER", idx)
             return number, match.end()
@@ -173,10 +178,16 @@ class _Parser:
 
     def string(self, idx: int) -> tuple[str, int]:
         try:
-            return scanstring(self.text, idx, True)
+            value, end = scanstring(self.text, idx, True)
         except (ValueError, IndexError):
             raise self.refuse("JSON_TRUNCATED" if '"' not in self.text[idx:] else "JSON_MALFORMED",
                               "JSON_STRING", idx) from None
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError:
+            # A \ud800-style escape decodes to a lone surrogate, which no UTF-8 text can carry.
+            raise self.refuse("JSON_MALFORMED", "JSON_STRING_UNICODE_SCALAR_VALUES", idx) from None
+        return value, end
 
     def obj(self, idx: int, pointer: str, depth: int) -> tuple[dict[str, Any], int]:
         out: dict[str, Any] = {}
@@ -260,6 +271,9 @@ def pointer_tokens(pointer: str) -> list[str]:
     if not pointer.startswith("/"):
         raise Refusal("QUESTION_POINTER_INVALID", "invariant_pointer is an RFC 6901 JSON pointer",
                       "supply a pointer such as /invariants/<key>")
+    if _BAD_POINTER_ESCAPE.search(pointer):
+        raise Refusal("QUESTION_POINTER_INVALID", "invariant_pointer escapes ~ only as ~0 or ~1 (RFC 6901)",
+                      "escape ~ as ~0 and / as ~1")
     tokens = pointer[1:].split("/")
     if len(tokens) > MAX_POINTER_TOKENS:
         raise Refusal("INPUT_DEPTH_EXCEEDED", f"invariant_pointer tokens<={MAX_POINTER_TOKENS}",
