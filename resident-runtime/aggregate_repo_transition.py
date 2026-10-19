@@ -668,6 +668,9 @@ def _caller_context(boundary_evidence):
     """
     evidence=dict(boundary_evidence or {})
     evidence.pop(RETAINED_SUBMISSION_KEY,None)
+    # Which batch this append released is ledger state too: an exact retry after
+    # the release committed derives no release of its own (B-P36q).
+    evidence.pop("parent_manifest_released_batch",None)
     return evidence
 
 def _existing_exact_source(store, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
@@ -862,15 +865,22 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
         # this store before any release moves BATCH_HEAD, is retained on this
         # receipt once (#3012). Read-only and derived from the ledger, so an
         # exact retry derives the same value and it is not caller context.
+        # An unindexed batch a faulted release wrote is indexed first (B-P36q).
+        batches.adopt_unindexed_batch(store)
         retained = batches.retained_submission_evidence(store)
         if retained is not None:
             effective_boundary_evidence[batches.RELEASED_BATCH_SUBMISSION_KEY] = retained
-        # Expiry and release read the supplied epoch when one is in hand, never a clock.
-        released = batches.release_satisfied_packet_before_next_transition(
-            parent_manifest, root=store, now_ns=now_ns,
-            custody_exclusivity_verifier=custody_exclusivity_verifier,
-            epoch=int(str(hb_epoch)) if hb_epoch is not None else None,
-        )
+        # A release a faulted attempt committed is resumed, not repeated: a
+        # released batch whose carrying receipt never landed is carried by
+        # this one (B-P36q).
+        released = batches.pending_manifest_release(store)
+        if released is None:
+            # Expiry and release read the supplied epoch when one is in hand, never a clock.
+            released = batches.release_satisfied_packet_before_next_transition(
+                parent_manifest, root=store, now_ns=now_ns,
+                custody_exclusivity_verifier=custody_exclusivity_verifier,
+                epoch=int(str(hb_epoch)) if hb_epoch is not None else None,
+            )
         if released is not None:
             if establishes_packet:
                 raise ValueError("t(0) establishment cannot also release a prior packet")

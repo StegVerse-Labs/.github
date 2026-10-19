@@ -406,6 +406,50 @@ def _verified_batch(root, digest: str) -> dict:
     return batch
 
 
+MANIFEST_RELEASE_REASONS = {"MANIFEST_RELEASE_CONDITION", "MANIFEST_RELEASE_DELTA_EXPIRY"}
+
+
+def adopt_unindexed_batch(store) -> dict | None:
+    """Index a batch a faulted release wrote but never published to BATCH_HEAD (B-P36q).
+
+    Only a batch that extends the current BATCH_HEAD (or opens the first one)
+    and ends at the current HEAD is adopted: it is exactly the batch the
+    interrupted release built, so the retry resumes it instead of refusing.
+    Run by the appender under its exclusive hold.
+    """
+    head = _get(store, org.ledger_store.HEAD_KEY)
+    if head is None:
+        return None
+    indexed = _get(store, BATCH_HEAD_KEY)
+    current = indexed.get("batch_id") if indexed else None
+    for key in sorted(store.list_prefix(BATCH_PREFIX)):
+        batch = _get(store, key)
+        if (not isinstance(batch, dict) or batch.get("batch_id") == current
+                or batch.get("previous_batch_commitment") != current
+                or batch.get("last_org_receipt_sha256") != head.get("receipt_sha256")):
+            continue
+        _verify_batch(store, batch["batch_id"])
+        store.put(BATCH_HEAD_KEY, {"organization": org.C["organization"], "batch_id": batch["batch_id"],
+                                   "last_org_receipt_sha256": batch["last_org_receipt_sha256"]})
+        return batch
+    return None
+
+
+def pending_manifest_release(store) -> dict | None:
+    """The manifest-released batch whose releasing receipt never landed, if any (B-P36q).
+
+    BATCH_HEAD names a batch closed for a manifest release condition and ends
+    at the current HEAD: the release committed and the transition that carries
+    it did not. The retry carries that batch rather than releasing again.
+    """
+    head = _get(store, org.ledger_store.HEAD_KEY)
+    _, batch = _batch_head(store)
+    if (head is None or batch is None or batch.get("closure_reason") not in MANIFEST_RELEASE_REASONS
+            or batch.get("last_org_receipt_sha256") != head.get("receipt_sha256")):
+        return None
+    return batch
+
+
 def _batch_head(root) -> tuple[str | None, dict | None]:
     store = _ledger(root)
     head = _get(store, BATCH_HEAD_KEY)
@@ -1130,7 +1174,9 @@ def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = 
             tip = head.get("receipt_sha256")
             _verified_receipt(store, tip)
             _, prior = _batch_head(store)
-            rows = _segment(store, tip, prior["last_org_receipt_sha256"] if prior else None)
+            predecessor = prior["last_org_receipt_sha256"] if prior else None
+            # A packet released at HEAD and not yet followed by a receipt is empty.
+            rows = [] if tip == predecessor else _segment(store, tip, predecessor)
     established = _packet_establishment(rows)
     if declared is not None and rows and established is None:
         raise ValueError("manifested receipt packet has no t(0) establishment record")
