@@ -260,6 +260,54 @@ class CycleEpochTests(FrameQuarantineTests):
             self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
 
 
+class TornWriteTests(FrameQuarantineTests):
+    """A fault on the HEAD write leaves the frame pending; the next cycle rolls the
+    orphan receipt forward exactly once (POSIX append_transaction writes HEAD last,
+    and a receipt at a supplied epoch is rebuilt byte-identically)."""
+
+    def test_a_head_write_fault_on_either_ledger_is_completed_once_by_the_next_cycle(self):
+        for which in ("crossing_repository_ledger", "crossing_organization_ledger"):
+            with self.subTest(ledger=which):
+                self.setUp()
+                for name in ("torn-" + which, "torn-later-" + which):
+                    packet = K.build_packet(
+                        origin_org="Origin", origin_service="origin.org-control",
+                        destination_org="StegVerse-Labs", destination_service="stegverse-labs.org-control",
+                        payload={"communication_id": name, "message_class": "ecosystem.communication",
+                                 "subject": "s", "body": {}},
+                        standing={"mode": "ESTABLISH_GENESIS", "node_ref": "torn", "predecessor": None},
+                        packet_id=name)
+                    K.publish_packet(packet, root=self.work / "mesh", epoch=1000)
+                module = K._own_module(which, ".stegverse/transition-ledger/emit.py"
+                                       if which == "crossing_repository_ledger"
+                                       else "resident-runtime/aggregate_repo_transition.py")
+                store_class = module.ledger_store.PosixLedgerStore
+                original, faults = store_class.put, {"n": 0}
+
+                def put(store, key, value):
+                    if key == module.ledger_store.HEAD_KEY and faults["n"] == 0:
+                        faults["n"] += 1
+                        raise OSError("simulated HEAD write fault")
+                    return original(store, key, value)
+
+                with mock.patch.object(store_class, "put", put):
+                    first = self.cycle()
+                statuses = sorted(e["result"]["status"] for e in first)
+                self.assertIn("PENDING", statuses)
+                for entry in first:
+                    if entry["result"]["status"] == "PENDING":
+                        self.assertIs(entry["result"]["terminal"], False)
+                        self.assertIsNone(entry["seen_marker"])
+                second = self.cycle()
+                self.assertEqual([e["result"]["status"] for e in second], ["CONSUMED"])
+                self.assertEqual(self.cycle(), [])
+                for variable in ("STEGVERSE_REPO_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_ROOT"):
+                    rows = self.receipts(variable)
+                    self.assertEqual(len(rows), len({r["receipt_sha256"] for r in rows}))
+                    self.assertEqual(len({r.get("transition_id") or r.get("repo_receipt_sha256")
+                                          for r in rows}), len(rows))
+
+
 class MonitorAnswerEpochTests(unittest.TestCase):
     def test_a_monitor_answer_takes_the_frame_epoch_with_no_clock_read(self):
         packet = {"packet_id": "monitor-4096", "transition": {"authority_effect": "NONE"},
