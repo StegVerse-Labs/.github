@@ -28,6 +28,12 @@ committed and digest-bound by git; it is labelled as such and is computed only f
 whose E is measured (a lane in the lane map), never from reported E. Every ratio rises as
 E rises and falls as L rises.
 
+Across repositories the result also carries a ``repositories`` table (per repository: run
+count and measured E, split into lane-attributed and unattributed minutes, with each
+lane's share) and a ``cumulative`` row over every lane-day: measured E attributed to lanes,
+``EOR_measured`` from the session table (null while no session is supplied), and
+``EOR_committed`` over the lanes whose E is measured.
+
 This is the RM11 method (E and L in minutes, EOR = E / (E + L)) computed from files
 instead of estimated. A run is attributed to the UTC day it started. Runs without
 ``completed_at`` and runs on no mapped branch are reported, never counted. Arithmetic
@@ -220,6 +226,7 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str |
     sessions = load_sessions(sessions_text)
     usage = load_usage(usage_text) if usage_text is not None else []
     e_seconds: dict[tuple[str, str], int] = {}
+    repos: dict[str, dict[str, Any]] = {}
     run_ids: dict[tuple[str, str], list[str]] = {}
     unattributed, incomplete = [], []
     for index, run in enumerate(runs):
@@ -232,11 +239,17 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str |
         if completed < started:
             raise _invalid(f"runs[{index}].completed_at >= run_started_at", "correct the run export", run=ref)
         lane = owner.get((run["repo"], run["head_branch"]))
+        seconds = int((completed - started).total_seconds())
+        repo = repos.setdefault(run["repo"], {"runs": 0, "seconds": 0, "unattributed_seconds": 0, "lanes": {}})
+        repo["runs"] += 1
+        repo["seconds"] += seconds
         if lane is None:
+            repo["unattributed_seconds"] += seconds
             unattributed.append(ref)
             continue
         key = (lane, started.strftime("%Y-%m-%d"))
-        e_seconds[key] = e_seconds.get(key, 0) + int((completed - started).total_seconds())
+        e_seconds[key] = e_seconds.get(key, 0) + seconds
+        repo["lanes"][lane] = repo["lanes"].get(lane, 0) + seconds
         run_ids.setdefault(key, []).append(ref)
     l_minutes: dict[tuple[str, str], Fraction] = {}
     for session in sessions:
@@ -251,6 +264,10 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str |
         l_reported[key] = l_reported.get(key, Fraction(0)) + unit["l"]
         units.setdefault(key, []).append(unit["unit_id"])
     measured_lanes = set(owner.values())
+    # A run export that names its "date" covers that UTC day in full; otherwise the days its
+    # runs started on. Committed L on any other day has no measured E to pair with.
+    covered_days = ({runs_doc["date"]} if isinstance(runs_doc.get("date"), str)
+                    else {day for _, day in e_seconds})
     rows = []
     for lane, day in sorted(set(e_seconds) | set(l_minutes) | set(e_reported)):
         key = (lane, day)
@@ -260,6 +277,8 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str |
         reported, reported_percent = _ratio(e_rep, l_rep) if key in e_reported else (None, None)
         if lane not in measured_lanes:
             committed_state = "E_NOT_MEASURED_FOR_LANE"
+        elif day not in covered_days:
+            committed_state = "E_NOT_MEASURED_FOR_DAY"
         elif key not in l_reported:
             committed_state = "L_NOT_COMMITTED_FOR_LANE_DAY"
         else:
@@ -278,7 +297,30 @@ def compute(runs_doc: Any, sessions_text: str, lanes_doc: Any, usage_text: str |
             "EOR_committed": committed, "EOR_committed_percent": committed_percent, "committed": committed_state,
             "runs": sorted(run_ids.get(key, [])), "units": sorted(units.get(key, [])),
         })
+    repositories = [{
+        "repo": name, "runs": value["runs"], "E_ci_minutes": _minutes(Fraction(value["seconds"], 60)),
+        "E_attributed_minutes": _minutes(Fraction(value["seconds"] - value["unattributed_seconds"], 60)),
+        "E_unattributed_minutes": _minutes(Fraction(value["unattributed_seconds"], 60)),
+        "lanes": {lane: _minutes(Fraction(seconds, 60)) for lane, seconds in sorted(value["lanes"].items())},
+    } for name, value in sorted(repos.items())]
+    e_all = Fraction(sum(e_seconds.values()), 60)
+    l_measured_all = sum(l_minutes.values(), Fraction(0))
+    committed_keys = [k for k in l_reported if k[0] in measured_lanes and k[1] in covered_days]
+    e_committed = Fraction(sum(e_seconds.get(k, 0) for k in committed_keys), 60)
+    l_committed_all = sum((l_reported[k] for k in committed_keys), Fraction(0))
+    measured_all, measured_all_percent = _ratio(e_all, l_measured_all) if l_minutes else (None, None)
+    committed_all, committed_all_percent = _ratio(e_committed, l_committed_all) if committed_keys else (None, None)
+    cumulative = {
+        "E_ci_minutes": _minutes(e_all), "L_measured_minutes": _minutes(l_measured_all),
+        "EOR_measured": measured_all, "EOR_measured_percent": measured_all_percent,
+        "measured": "COMPUTED" if l_minutes else "L_NOT_SUPPLIED",
+        "E_ci_committed_lanes_minutes": _minutes(e_committed), "L_committed_minutes": _minutes(l_committed_all),
+        "EOR_committed": committed_all, "EOR_committed_percent": committed_all_percent,
+        "committed": "E_CI_MEASURED_L_LANE_COMMITTED" if committed_keys else "NO_MEASURED_LANE_WITH_COMMITTED_L",
+        "committed_lane_days": [f"{lane}:{day}" for lane, day in sorted(committed_keys)],
+    }
     return {"schema": RESULT_SCHEMA, "disposition": "COMPUTED", "rows": rows,
+            "repositories": repositories, "cumulative": cumulative,
             "unattributed_runs": sorted(unattributed), "incomplete_runs": sorted(incomplete),
             "authority": {"benchmark_completion_granted": False, "runtime_observation_claimed": False}}
 

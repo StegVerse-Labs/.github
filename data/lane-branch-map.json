@@ -1,12 +1,98 @@
 {
   "schema": "stegverse.lane-branch-map.v1",
-  "note": "Lanes whose CI runs are measured from a committed run export. Lanes absent here report E themselves in data/lane-session-usage.csv (LANE_REPORTED).",
+  "note": "Lanes whose CI runs are measured from a committed run export. A branch is attributed to a lane only on evidence: the lane's own session branch (roadmap, VALIDATOR, remediation), or the head branch of a pull request that the lane's rows in data/lane-session-usage.csv cite (B: Labs#3260, #3272-#3275, #3280, org#198; D: Site#1609-#1613; relay: org#199). Branch-name prefixes are not used. Every other branch, main included, is reported per repository as unattributed E. Lanes absent here report E themselves in data/lane-session-usage.csv (LANE_REPORTED).",
   "lanes": {
     "roadmap": [
-      {"repo": "StegVerse-Labs/.github", "head_branch": "claude/stegverse-roadmap-execution-9zq18t"},
-      {"repo": "GCAT-BCAT-Engine/Publisher", "head_branch": "claude/stegverse-roadmap-execution-9zq18t"},
-      {"repo": "StegVerse-org/StegVerse-SDK", "head_branch": "claude/stegverse-roadmap-execution-9zq18t"},
-      {"repo": "StegVerse-Labs/Site", "head_branch": "claude/stegverse-roadmap-execution-9zq18t"}
+      {
+        "repo": "GCAT-BCAT-Engine/Publisher",
+        "head_branch": "claude/stegverse-roadmap-execution-9zq18t"
+      },
+      {
+        "repo": "StegVerse-Labs/.github",
+        "head_branch": "claude/stegverse-roadmap-execution-9zq18t"
+      },
+      {
+        "repo": "StegVerse-Labs/Site",
+        "head_branch": "claude/stegverse-roadmap-execution-9zq18t"
+      },
+      {
+        "repo": "StegVerse-org/StegVerse-SDK",
+        "head_branch": "claude/stegverse-roadmap-execution-9zq18t"
+      }
+    ],
+    "VALIDATOR": [
+      {
+        "repo": "StegVerse-org/StegVerse-SDK",
+        "head_branch": "claude/stegverse-validator-consolidation-kb1tx3"
+      }
+    ],
+    "remediation": [
+      {
+        "repo": "StegVerse-Labs/StegVerse-Healer",
+        "head_branch": "claude/stegverse-remediation-execution-jpn0o0"
+      },
+      {
+        "repo": "StegVerse-org/LLM-adapter",
+        "head_branch": "claude/stegverse-remediation-execution-jpn0o0"
+      },
+      {
+        "repo": "StegVerse-org/StegVerse-SDK",
+        "head_branch": "claude/stegverse-remediation-execution-jpn0o0"
+      }
+    ],
+    "B": [
+      {
+        "repo": "StegVerse-Labs/.github",
+        "head_branch": "intr/self-close-deny-six-fields-test"
+      },
+      {
+        "repo": "StegVerse-Labs/.github",
+        "head_branch": "wu-b17/labs-readback-refused-manifest-binding"
+      },
+      {
+        "repo": "StegVerse-Labs/.github",
+        "head_branch": "wu-b19/rt-ecosystem-chat-local-answer"
+      },
+      {
+        "repo": "StegVerse-Labs/.github",
+        "head_branch": "wu-b20/exp3-org-ledger-observation-path"
+      },
+      {
+        "repo": "StegVerse-Labs/.github",
+        "head_branch": "wu-b22/optical-component-010-request-builder"
+      },
+      {
+        "repo": "StegVerse-org/.github",
+        "head_branch": "wu-b11/exp3-org-transition-request"
+      }
+    ],
+    "D": [
+      {
+        "repo": "StegVerse-Labs/Site",
+        "head_branch": "claude/1509-b6-mykv-form-profile-worker-test"
+      },
+      {
+        "repo": "StegVerse-Labs/Site",
+        "head_branch": "claude/1509-triage-fail-closed-harness-repairs"
+      },
+      {
+        "repo": "StegVerse-Labs/Site",
+        "head_branch": "claude/1509-wu2-rehydration-six-fields"
+      },
+      {
+        "repo": "StegVerse-Labs/Site",
+        "head_branch": "claude/1606-tidc-push-branches-main"
+      },
+      {
+        "repo": "StegVerse-Labs/Site",
+        "head_branch": "claude/3106-mykv-outcome-explanation"
+      }
+    ],
+    "relay": [
+      {
+        "repo": "StegVerse-org/.github",
+        "head_branch": "claude/handoff-surface-drift"
+      }
     ]
   }
 }

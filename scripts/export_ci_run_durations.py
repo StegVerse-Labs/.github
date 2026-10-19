@@ -9,7 +9,9 @@ the ecosystem's own run records instead of a lane's report.
 
 Output: ``stegverse.ci-run-duration-export.v1`` (the input of
 ``compute_ecosystem_offload_ratio.py --ci-runs``), keeping only completed runs on the
-named head branches, optionally for one UTC date. ``completed_at`` is the run record's
+named head branches (``--branch``, or every branch a ``--lanes`` lane map names), or on every
+branch with ``--all-branches`` so per-repository totals include unattributed work, optionally
+for one UTC date. ``completed_at`` is the run record's
 ``updated_at``, the time GitHub last changed the completed run. Runs are de-duplicated by
 repo and run id and sorted, so the output is deterministic.
 
@@ -26,8 +28,8 @@ from typing import Any
 
 EXPORT_SCHEMA = "stegverse.ci-run-duration-export.v1"
 OWNING_GOAL = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
-RETRY_ENTRYPOINT = ("python scripts/export_ci_run_durations.py --runs <actions-runs.json> ... --branch <head_branch> "
-                    "[--date YYYY-MM-DD] --source <text>")
+RETRY_ENTRYPOINT = ("python scripts/export_ci_run_durations.py --runs <actions-runs.json> ... "
+                    "(--branch <head_branch> ... | --lanes <lane-map.json> | --all-branches) [--date YYYY-MM-DD] --source <text>")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -51,7 +53,8 @@ def _pages(document: Any, name: str) -> list[dict[str, Any]]:
     return runs
 
 
-def convert(documents: dict[str, Any], branches: set[str], day: str | None, source: str) -> dict[str, Any]:
+def convert(documents: dict[str, Any], branches: set[str] | None, day: str | None, source: str) -> dict[str, Any]:
+    """Keep completed runs on ``branches`` (every branch when ``branches`` is None)."""
     seen: dict[tuple[str, str], dict[str, Any]] = {}
     for name, document in documents.items():
         for index, run in enumerate(_pages(document, name)):
@@ -62,7 +65,7 @@ def convert(documents: dict[str, Any], branches: set[str], day: str | None, sour
                 raise Refused("INPUT_VALUE_INVALID",
                               f"{name} run {index} carries repository.full_name, id, head_branch, path, status and "
                               "run_started_at", "save the unmodified API response", input=name, index=index)
-            if run["head_branch"] not in branches or run["status"] != "completed":
+            if (branches is not None and run["head_branch"] not in branches) or run["status"] != "completed":
                 continue
             if day is not None and not run["run_started_at"].startswith(day):
                 continue
@@ -73,20 +76,37 @@ def convert(documents: dict[str, Any], branches: set[str], day: str | None, sour
                 "conclusion": run.get("conclusion"),
             }
     runs = sorted(seen.values(), key=lambda r: (r["repo"], r["run_started_at"], r["run_id"]))
-    return {"schema": EXPORT_SCHEMA, "source": source, "runs": runs}
+    result = {"schema": EXPORT_SCHEMA, "source": source, "runs": runs}
+    if day is not None:
+        result["date"] = day  # the UTC day the export covers in full
+    return result
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--runs", type=Path, action="append", default=[])
     parser.add_argument("--branch", action="append", default=[])
+    parser.add_argument("--lanes", type=Path, help="take the branch list from a lane-branch map")
+    parser.add_argument("--all-branches", action="store_true", help="keep completed runs on every branch")
     parser.add_argument("--date")
     parser.add_argument("--source")
     args = parser.parse_args(argv)
     try:
-        for flag, value in (("--runs", args.runs), ("--branch", args.branch), ("--source", args.source)):
+        for flag, value in (("--runs", args.runs), ("--source", args.source)):
             if not value:
                 raise Refused("INPUT_NOT_SUPPLIED", f"{flag} is supplied", f"supply {flag}", input=flag)
+        selectors = [bool(args.branch), args.lanes is not None, args.all_branches]
+        if sum(selectors) != 1:
+            raise Refused("INPUT_NOT_SUPPLIED", "exactly one of --branch, --lanes or --all-branches is supplied",
+                          "name the branches to keep", input="--branch|--lanes|--all-branches")
+        branches: set[str] | None = set(args.branch) if args.branch else None
+        if args.lanes is not None:
+            try:
+                lane_map = json.loads(args.lanes.read_text(encoding="utf-8"))
+                branches = {entry["head_branch"] for entries in lane_map["lanes"].values() for entry in entries}
+            except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+                raise Refused("INPUT_UNREADABLE", "--lanes is a lane-branch map with lanes of {repo, head_branch}",
+                              "supply the lane map", detail=f"{type(exc).__name__}: {exc}") from None
         if args.date is not None and not DATE.match(args.date):
             raise Refused("INPUT_VALUE_INVALID", "--date is YYYY-MM-DD", "pass a UTC date", input="--date")
         try:
@@ -94,7 +114,7 @@ def main(argv: list[str] | None = None) -> int:
         except (OSError, ValueError) as exc:
             raise Refused("INPUT_UNREADABLE", "every --runs file is readable JSON", "supply readable files",
                           detail=f"{type(exc).__name__}: {exc}") from None
-        result = convert(documents, set(args.branch), args.date, args.source)
+        result = convert(documents, branches, args.date, args.source)
     except Refused as refusal:
         print(json.dumps(refusal.result, indent=2, sort_keys=True))
         return 1
