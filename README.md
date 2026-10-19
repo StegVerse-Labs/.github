@@ -2169,3 +2169,8 @@ not approved. The earlier `-002` answer (FAIL_CLOSED
 recorded. StegCore is public by the owner's decision and fetched anonymously at
 the pin (#3151), and Master Records never gates. See
 [the registration handoff](docs/SDK_MR_A_VALIDATION_CUSTODY_REGISTRATION_MIRROR_HANDOFF.md).
+
+
+## StegApp registration proposal
+
+Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COMPOSITION-001` record. See [the handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md). Registration is coordination only; source tests, WorkerCoordinator admission and authentic runtime evidence remain separate.
