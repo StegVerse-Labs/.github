@@ -764,6 +764,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     (require_custody_exclusivity); a root never released does not need it.
     """
     _refuse_invalid_epoch(hb_epoch)
+    _refuse_clock_source(receipt)
     store = organization_store(ledger)
     if _is_posix(store):
         store.root.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -1023,6 +1024,7 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
     is a typed FAIL_CLOSED with nothing published.
     """
     _refuse_invalid_epoch(hb_epoch)
+    _refuse_clock_source(receipt)
     source=verify_source(receipt)
     if store is None:
         store=organization_store(root)
@@ -1061,6 +1063,47 @@ def _retained_in_store(store, receipt, source):
 def _refuse_invalid_epoch(hb_epoch):
     """OrgLedgerEpochRefused for an absent or invalid epoch, before any store opens. No clock is read."""
     require_supplied_epoch(hb_epoch)
+
+#: O-1: a repository source receipt is consumed only when its own heartbeat
+#: reference is SUPPLIED (or CARRIED), never CLOCK or unmarked. Checked by the
+#: kernel's shared rule on the receipt's reference, before any store opens.
+SOURCE_CLOCK_PROVENANCE="SOURCE_RECEIPT_IS_CLOCK_PROVENANCE"
+SOURCE_PROVENANCE_RETRY_ENTRYPOINT=(".stegverse/transition-ledger/emit.py::append (hb_epoch=, or --hb-epoch), "
+                                    "then resident-runtime/aggregate_repo_transition.py::aggregate_transition")
+
+def source_provenance_refusal(receipt):
+    """The six-field FAIL_CLOSED of a repository source receipt stamped from a clock, or None.
+
+    Only a repo-transition receipt carries an hb_reference. A CLOCK reference
+    (derived_from_clock not False, or a sampled_unix_ns) and an unmarked one
+    are refused; nothing is written and no clock is read. A legacy CLOCK
+    receipt is never mutated: its transition is re-emitted under a supplied epoch.
+    """
+    if not isinstance(receipt,dict) or receipt.get("schema")!="stegverse.repo-transition-receipt/v1":
+        return None
+    reference=receipt.get("hb_reference")
+    epoch=reference.get("epoch") if isinstance(reference,dict) else None
+    failure=kernel.supplied_epoch_failure(epoch,reference if reference is not None else {})
+    if failure is None:
+        return None
+    code,detail=failure
+    return {"disposition":"FAIL_CLOSED","failure_code":SOURCE_CLOCK_PROVENANCE,
+            "failed_predicate":kernel.HB_EPOCH_PREDICATE,
+            "detail":"source receipt "+str(receipt.get("receipt_sha256"))+": "+code+": "+detail,
+            "required_evidence_or_repair":("the repository receipt this append consumes carries a SUPPLIED "
+                                           "hb_reference (digits >= "+str(kernel.HB_ANCHOR_EPOCH)+", "
+                                           "derived_from_clock false); a CLOCK or unmarked one is re-emitted "
+                                           "under a supplied epoch, never mutated"),
+            "retry_entrypoint":SOURCE_PROVENANCE_RETRY_ENTRYPOINT,
+            "owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"append again consuming a receipt minted with the supplied epoch; nothing was written",
+            "derived_from_clock":False,"consequence_committed":False}
+
+def _refuse_clock_source(receipt):
+    """OrgLedgerEpochRefused (SOURCE_RECEIPT_IS_CLOCK_PROVENANCE) before any store opens."""
+    refusal=source_provenance_refusal(receipt)
+    if refusal is not None:
+        raise OrgLedgerEpochRefused(refusal)
 
 def _append_reference(hb_epoch):
     return require_supplied_epoch(hb_epoch)
@@ -1157,6 +1200,8 @@ def main():
             print(json.dumps(store_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except CustodyRefused as exc:
             print(json.dumps(exc.refusal(),sort_keys=True)); raise SystemExit(1)
+        except OrgLedgerEpochRefused as exc:
+            print(json.dumps(exc.refusal,sort_keys=True)); raise SystemExit(1)
         print(json.dumps(record,sort_keys=True)); return
     source_path=a.transition_receipt or a.repo_receipt
     if not source_path: raise SystemExit("transition receipt required")
@@ -1181,6 +1226,10 @@ def main():
         raise SystemExit(1)
     except CustodyRefused as exc:
         print(json.dumps(exc.refusal(),sort_keys=True))
+        raise SystemExit(1)
+    except OrgLedgerEpochRefused as exc:
+        # The six fields of a refused epoch or a CLOCK source (O-1); nothing was written.
+        print(json.dumps(exc.refusal,sort_keys=True))
         raise SystemExit(1)
     except ValueError as exc:
         raise SystemExit(str(exc))

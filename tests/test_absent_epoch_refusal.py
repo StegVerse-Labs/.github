@@ -280,6 +280,54 @@ class AbsentEpochTests(unittest.TestCase):
             self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
         self.assertEqual(self.clock.calls, 0)
 
+    # --- O-1: a CLOCK or unmarked source receipt is refused before any write ---
+
+    def source(self, transition_id, **reference):
+        body = {"schema": "stegverse.repo-transition-receipt/v1", "repository": "StegVerse-Labs/.github",
+                "transition_id": transition_id, "transition_class": "TEST",
+                "predecessor_state_sha256": SHA_A, "successor_state_sha256": SHA_B, **reference}
+        return {**body, "receipt_sha256": org.sha(body)}
+
+    def test_a_clock_or_unmarked_source_receipt_is_refused_before_any_write(self):
+        # A sampled reference, made here from a fixed sample; no clock is read.
+        sampled = org.kernel.hb_reference(now_ns=org.kernel.HB_ANCHOR_UNIX_NS + 7 * org.kernel.HB_PERIOD_NS)
+        self.assertIs(sampled["derived_from_clock"], True)
+        unmarked = {k: v for k, v in org.kernel.hb_reference(epoch=4096).items() if k != "derived_from_clock"}
+        cases = {"clock": self.source("o1-clock", hb_reference=sampled),
+                 "unmarked": self.source("o1-unmarked", hb_reference=unmarked),
+                 "absent": self.source("o1-absent")}
+        calls = {"aggregate_transition": lambda r: org.aggregate_transition(
+                     r, predecessor_org_state_sha256=SHA_A, successor_org_state_sha256=SHA_B,
+                     hb_epoch=4096, ledger=self.org_root),
+                 "_aggregate_transition_locked": lambda r: org._aggregate_transition_locked(
+                     r, root=self.org_root, hb_epoch=4096)}
+        for label, receipt in cases.items():
+            for name, call in calls.items():
+                with self.subTest(source=label, writer=name):
+                    before = snapshot(self.work)
+                    with self.clock.patches(emit.kernel, org.kernel), \
+                         mock.patch.object(org, "organization_store", side_effect=AssertionError("store resolved")):
+                        with self.assertRaises(org.OrgLedgerEpochRefused) as raised:
+                            call(receipt)
+                    refusal = raised.exception.refusal
+                    self.assertEqual(refusal["failure_code"], "SOURCE_RECEIPT_IS_CLOCK_PROVENANCE")
+                    self.assertEqual(refusal["failed_predicate"], PREDICATE)
+                    self.assertEqual(refusal["owning_existing_goal"], GOAL)
+                    for field in SIX_FIELDS:
+                        self.assertTrue(str(refusal.get(field) or "").strip(), field)
+                    self.assertIs(refusal["consequence_committed"], False)
+                    self.assertNothingWrittenNoClock(before)
+
+    def test_a_supplied_source_receipt_is_accepted(self):
+        receipt = self.source("o1-supplied", hb_reference=org.kernel.hb_reference(epoch=4096))
+        self.assertIsNone(org.source_provenance_refusal(receipt))
+        with self.clock.patches(emit.kernel, org.kernel):
+            record = org.aggregate_transition(
+                receipt, predecessor_org_state_sha256=SHA_A, successor_org_state_sha256=SHA_B,
+                hb_epoch=4096, ledger=self.org_root)
+        self.assertEqual(record["repo_receipt_sha256"], receipt["receipt_sha256"])
+        self.assertEqual(self.clock.calls, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
