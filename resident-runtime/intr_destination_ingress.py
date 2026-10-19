@@ -328,12 +328,12 @@ def main() -> int:
     if refused is not None:
         print(json.dumps(refused, sort_keys=True))
         return 1
-    registry = json.loads(args.registry.read_text(encoding="utf-8"))
+    registry = repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
     if args.self_close:
         if args.communication_id:
             payload = diagnostic_payload(args.communication_id)
         elif args.payload is not None:
-            payload = json.loads(args.payload.read_text(encoding="utf-8"))
+            payload = repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
         else:
             raise SystemExit("self-close requires --communication-id or --payload")
         result = self_close(payload, registry=registry, packet_id=args.packet_id,
@@ -342,7 +342,7 @@ def main() -> int:
         if args.payload is None:
             raise SystemExit("--payload is required unless --self-close is set")
         result = receive(
-            json.loads(args.payload.read_text(encoding="utf-8")),
+            repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py"),
             registry=registry, packet_id=args.packet_id, hb_epoch=args.hb_epoch)
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.out:
@@ -353,4 +353,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(repository_ledger.kernel.run_writer_cli(main, retry_entrypoint="resident-runtime/intr_destination_ingress.py"))

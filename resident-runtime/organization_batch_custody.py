@@ -1290,4 +1290,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(org.kernel.run_writer_cli(lambda: main() or 0, retry_entrypoint="resident-runtime/organization_batch_custody.py"))

@@ -159,8 +159,8 @@ def main():
  p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=str,default=None,help="carrier-supplied heartbeat epoch, ASCII digits >= 32; never coerced");p.add_argument("--idempotent-on",default=None,help="comma-separated evidence keys: an exact retry returns the recorded receipt");a=p.parse_args()
  hb_epoch,refused=cli_epoch(a.hb_epoch,".stegverse/transition-ledger/emit.py")
  if refused is not None:print(json.dumps(refused,sort_keys=True));raise SystemExit(1)
- try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,json.loads(a.evidence_json),a.authority_effect,hb_epoch,idempotent_on=None if a.idempotent_on is None else tuple(k for k in a.idempotent_on.split(",") if k))
+ try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,kernel.cli_json_text(a.evidence_json,"--evidence-json",retry_entrypoint=".stegverse/transition-ledger/emit.py"),a.authority_effect,hb_epoch,idempotent_on=None if a.idempotent_on is None else tuple(k for k in a.idempotent_on.split(",") if k))
  except RepoLedgerChainBreak as exc:
   print(json.dumps(chain_break_refusal(exc),sort_keys=True));raise SystemExit(1)
  print(json.dumps(r,sort_keys=True))
-if __name__=="__main__":main()
+if __name__=="__main__":raise SystemExit(kernel.run_writer_cli(lambda:main() or 0,retry_entrypoint=".stegverse/transition-ledger/emit.py"))

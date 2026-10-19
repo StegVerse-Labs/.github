@@ -923,7 +923,7 @@ def main() -> int:
         print(json.dumps(refused, sort_keys=True))
         return 1
 
-    standing = json.loads(Path(args.standing).read_text(encoding="utf-8"))
+    standing = kernel.cli_input_json(args.standing, "--standing", retry_entrypoint="resident-runtime/organization_egress_boundary.py")
     if not isinstance(standing, dict) or "predecessor" not in standing:
         raise SystemExit("standing must declare the predecessor key; null is explicit genesis")
 
@@ -933,7 +933,7 @@ def main() -> int:
         result = close(args.destination_organization, args.packet_id, args.communication_id,
                        hb_epoch=args.hb_epoch)
     else:
-        payload = json.loads(Path(args.payload).read_text(encoding="utf-8"))
+        payload = kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/organization_egress_boundary.py")
         result = emit(args.destination_organization, payload, standing=standing,
                       capability=args.capability,
                       transition_reference=args.transition_reference, hb_epoch=args.hb_epoch)
@@ -946,4 +946,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(kernel.run_writer_cli(main, retry_entrypoint="resident-runtime/organization_egress_boundary.py"))

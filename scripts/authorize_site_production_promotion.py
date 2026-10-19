@@ -440,7 +440,8 @@ def main() -> int:
     parser.add_argument("--org-ledger-root", type=Path, default=None)
     parser.add_argument("--hb-epoch", type=str, default=None, help="carrier-supplied heartbeat epoch; never sampled")
     args = parser.parse_args()
-    request = json.loads(args.request.read_text(encoding="utf-8"))
+    request = _load("sppa_cli_kernel", ROOT / "org-kernel/kernel.py").cli_input_json(
+        args.request, "--request", retry_entrypoint="scripts/authorize_site_production_promotion.py")
     result = authorize(request, source=args.source_root.resolve(), repo_ledger_root=args.repo_ledger_root,
                        org_ledger_root=args.org_ledger_root, hb_epoch=args.hb_epoch)
     print(json.dumps(result, sort_keys=True))
@@ -448,4 +449,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(_load("sppa_cli_kernel", ROOT / "org-kernel/kernel.py").run_writer_cli(
+        main, retry_entrypoint="scripts/authorize_site_production_promotion.py"))

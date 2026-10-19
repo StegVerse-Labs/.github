@@ -245,7 +245,8 @@ def main() -> int:
         # Nothing is decided, appended or written (no --out); the exit is 1.
         print(json.dumps(epoch_refused, sort_keys=True))
         return 1
-    packet = json.loads(args.packet.read_text(encoding="utf-8"))
+    kernel = _module("org_kernel_cli_input", "org-kernel/kernel.py")
+    packet = kernel.cli_input_json(args.packet, "--packet", retry_entrypoint="resident-runtime/governance_endpoint.py")
     decision = decide(packet)
     receipts = record(packet, decision, hb_epoch=hb_epoch)
     result = {**decision, **receipts, "records_authority": "ORGANIZATION_RECORDS_ONLY"}
@@ -255,4 +256,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(_module("org_kernel_cli", "org-kernel/kernel.py").run_writer_cli(
+        main, retry_entrypoint="resident-runtime/governance_endpoint.py"))

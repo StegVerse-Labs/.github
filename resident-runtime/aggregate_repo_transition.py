@@ -1147,8 +1147,8 @@ def main():
     if a.release_custody or a.assume_custody_as:
         if not a.parent_manifest: raise SystemExit("governing parent manifest required")
         try:
-            if a.release_custody: record=release_custody(load(a.parent_manifest))
-            else: record=assume_custody(load(a.parent_manifest),materialization_id=a.assume_custody_as)
+            if a.release_custody: record=release_custody(kernel.cli_input_json(a.parent_manifest,"--parent-manifest",retry_entrypoint="resident-runtime/aggregate_repo_transition.py"))
+            else: record=assume_custody(kernel.cli_input_json(a.parent_manifest,"--parent-manifest",retry_entrypoint="resident-runtime/aggregate_repo_transition.py"),materialization_id=a.assume_custody_as)
         except LedgerLocationRequired as exc:
             print(json.dumps(location_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except ledger_store.LedgerStoreRefused as exc:
@@ -1158,7 +1158,7 @@ def main():
         print(json.dumps(record,sort_keys=True)); return
     source_path=a.transition_receipt or a.repo_receipt
     if not source_path: raise SystemExit("transition receipt required")
-    receipt=load(source_path)
+    receipt=kernel.cli_input_json(source_path,"--transition-receipt/--repo-receipt",retry_entrypoint="resident-runtime/aggregate_repo_transition.py")
     default_class="REPO_STATE_PROPAGATION" if receipt.get("schema")=="stegverse.repo-transition-receipt/v1" else "ORGANIZATION_STATE_TRANSITION"
     try:
         record=aggregate_transition(
@@ -1168,7 +1168,7 @@ def main():
             successor_org_state_sha256=a.successor_org_state_sha256,
             boundary_evidence=json.loads(a.boundary_evidence_json),
             authority_effect=a.authority_effect,
-            parent_manifest=load(a.parent_manifest) if a.parent_manifest else None,
+            parent_manifest=kernel.cli_input_json(a.parent_manifest,"--parent-manifest",retry_entrypoint="resident-runtime/aggregate_repo_transition.py") if a.parent_manifest else None,
         )
     except LedgerLocationRequired as exc:
         print(json.dumps(location_refusal(exc),sort_keys=True))
@@ -1183,4 +1183,4 @@ def main():
         raise SystemExit(str(exc))
     print(json.dumps(record,sort_keys=True))
 
-if __name__=="__main__": main()
+if __name__=="__main__": raise SystemExit(kernel.run_writer_cli(lambda: main() or 0, retry_entrypoint="resident-runtime/aggregate_repo_transition.py"))

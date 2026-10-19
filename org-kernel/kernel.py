@@ -345,6 +345,74 @@ def supplied_hb_reference(hb_epoch:Any, *, retry_entrypoint:str, source:str|None
         raise SuppliedEpochRefused(refusal)
     return hb_reference(epoch=int(str(hb_epoch)),source=source,head_receipt_sha=head_receipt_sha)
 
+class CliInputRefused(ValueError):
+    """A writer CLI's input file could not be read as declared: the caller's fault, terminal."""
+    def __init__(self, record:dict[str,Any])->None:
+        super().__init__(record["failure_code"]+": "+record["detail"])
+        self.record=dict(record)
+
+def cli_input_json(path:Any, argument:str, *, retry_entrypoint:str, expect:type|tuple[type,...]=dict)->Any:
+    """Read one CLI input file as JSON, before and outside the own-state fault handling.
+
+    A missing, unreadable, non-UTF-8, non-JSON or wrongly typed file is the
+    terminal six-field CLI_INPUT_INVALID (F-INPUT-TRACE); nothing is written.
+    """
+    try:
+        text=Path(path).read_text(encoding="utf-8")
+    except (OSError,ValueError) as exc:
+        raise _cli_input_refused(exc,argument,retry_entrypoint) from None
+    return cli_json_text(text,argument,retry_entrypoint=retry_entrypoint,expect=expect)
+
+def cli_json_text(text:str, argument:str, *, retry_entrypoint:str, expect:type|tuple[type,...]=dict)->Any:
+    """Parse one CLI argument's JSON text, as cli_input_json does a file's."""
+    try:
+        value=json.loads(text)
+        if expect is not None and not isinstance(value,expect):
+            raise ValueError("top-level value is "+type(value).__name__)
+    except ValueError as exc:
+        raise _cli_input_refused(exc,argument,retry_entrypoint) from None
+    return value
+
+def _cli_input_refused(exc:Exception, argument:str, retry_entrypoint:str)->CliInputRefused:
+    return CliInputRefused({
+        "disposition":"FAIL_CLOSED","failure_code":"CLI_INPUT_INVALID","terminal":True,
+        "failed_predicate":"CLI_INPUT_IS_READABLE_JSON_OF_THE_DECLARED_TYPE:"+argument,
+        "detail":type(exc).__name__+": "+str(exc),
+        "required_evidence_or_repair":"pass "+argument+" as a readable UTF-8 JSON file of the declared type",
+        "retry_entrypoint":retry_entrypoint,"owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+        "next_attempt":"run again with a valid "+argument+"; nothing was written",
+        "consequence_committed":False})
+
+def writer_fault_record(exc:BaseException, retry_entrypoint:str)->dict[str,Any]:
+    """A fault in a writer's own state, as a non-terminal six-field record (F-WRITER-TRACE)."""
+    committed="HEAD committed" in str(exc)
+    return {"disposition":"FAIL_CLOSED",
+            "failure_code":"WRITER_IO_FAILED" if isinstance(exc,OSError) else "WRITER_FAILED","terminal":False,
+            "failed_predicate":"WRITER_COMPLETES_ITS_OWN_WRITES:"+type(exc).__name__,
+            "detail":str(exc) or type(exc).__name__,
+            "required_evidence_or_repair":"this writer's own state or ledger write completes",
+            "retry_entrypoint":retry_entrypoint,"owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":("retry: HEAD is committed and the retry returns the recorded receipt" if committed else
+                            "retry: an append whose HEAD did not advance left nothing behind"),
+            "consequence_committed":committed}
+
+def run_writer_cli(main:Any, *, retry_entrypoint:str)->int:
+    """Run a writer CLI so that every failure is six fields on stdout, never a traceback."""
+    try:
+        return main()
+    except (SystemExit,KeyboardInterrupt):
+        raise
+    except Exception as exc:  # noqa: BLE001 -- a writer CLI reports, it does not trace back
+        # Matched by name: a CLI may load more than one copy of this kernel.
+        name=type(exc).__name__
+        if name=="CliInputRefused":
+            print(json.dumps(exc.record,sort_keys=True)); return 2
+        if name in ("SuppliedEpochRefused","RepoLedgerEpochRefused","OrgLedgerEpochRefused"):
+            print(json.dumps(exc.refusal,sort_keys=True)); return 1
+        if name=="CarrierEpochRefusal":
+            print(json.dumps(exc.record,sort_keys=True)); return 1
+        print(json.dumps(writer_fault_record(exc,retry_entrypoint),sort_keys=True)); return 1
+
 def carrier_epoch(heartbeat_reference:Any)->int:
     """Return the epoch the carrier supplied, or refuse FAIL_CLOSED. No clock is read."""
     epoch=heartbeat_reference.get("epoch") if isinstance(heartbeat_reference,dict) else None
