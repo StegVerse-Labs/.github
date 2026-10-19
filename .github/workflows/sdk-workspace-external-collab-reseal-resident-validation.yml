@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install test dependency
-        run: python -m pip install --no-deps -r .github/ci-requirements.txt
+        run: python -m pip install pytest
       - name: Validate request, consumer, and dispatcher binding
         run: |
           set -eu

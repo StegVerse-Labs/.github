@@ -100,7 +100,7 @@ jobs:
         working-directory: source
         run: |
           set -euo pipefail
-          python3 -m pip install --user --no-deps -r .github/ci-requirements.txt
+          python3 -m pip install --user pytest
           python3 -m pytest -q tests/test_deepseek_intr_resident_bridge.py
 
       - name: Validate exact control bindings

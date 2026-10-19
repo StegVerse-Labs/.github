@@ -1,8 +1,0 @@
-# Exact test-runner set for Labs workflows, installed with --no-deps so pip resolves
-# nothing from the index beyond these files. Versions are the set CI resolved on
-# 2026-10-19 (StegVerse-Labs/.github job 117828619218). Change them together.
-iniconfig==2.3.1
-packaging==26.3
-pluggy==1.7.0
-pygments==2.21.0
-pytest==9.1.1
