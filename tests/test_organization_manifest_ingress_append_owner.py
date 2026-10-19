@@ -500,14 +500,15 @@ class HeartbeatReferenceTest(LedgerRoots):
         self.assertEqual(org["hb_reference"], repo["hb_reference"])
         self.assertEqual(org["hb_reference"]["epoch"], 4243)
 
-    def test_absent_epoch_is_derived_and_shared(self):
+    def test_absent_epoch_is_derived_and_never_forwarded_as_supplied(self):
         """Absent, the repository receipt derives the epoch and says so; the
-        organization receipt consuming it carries that same epoch."""
+        organization receipt is not handed that clock epoch as if supplied
+        (B-P36f), so it says so too."""
         result, _ = self.receive(_plain_request())
         repo = self.repo_receipt(result["repository_receipt_sha256"])["hb_reference"]
         org = self.org_receipt(result["organization_receipt_sha256"])["hb_reference"]
         self.assertIs(repo["derived_from_clock"], True)
-        self.assertEqual(org["epoch"], repo["epoch"])
+        self.assertIs(org["derived_from_clock"], True)
         self.assertEqual(kernel.validate_hb_reference(repo), repo)
         self.assertEqual(kernel.validate_hb_reference(org), org)
 

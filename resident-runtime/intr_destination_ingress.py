@@ -194,8 +194,9 @@ def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
     """Append at both levels. A replay of the same packet returns the recorded pair.
 
     The organization append owner is ``aggregate_transition``. It takes the
-    repository receipt's epoch, so a replay rebuilds the same organization
-    receipt rather than one stamped later.
+    repository receipt's epoch only when that epoch was supplied
+    (``forwarded_epoch``), so a replay rebuilds the same organization receipt;
+    a clock-derived epoch is never forwarded as if supplied.
     """
     predecessor = evidence["payload_sha256"]
     successor = sha({"disposition": evidence["disposition"], "packet_id": packet_id,
@@ -209,7 +210,6 @@ def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
         transition_id, transition_class, predecessor, successor, dict(evidence),
         "NONE", hb_epoch=hb_epoch,
         idempotent_on=("communication_id", "payload_sha256", "disposition"))
-    epoch = repository_receipt["hb_reference"]["epoch"]
     organization_receipt = organization_ledger.aggregate_transition(
         receipt=repository_receipt,
         org_transition_class="REPO_STATE_PROPAGATION",
@@ -219,7 +219,7 @@ def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
                            "disposition": evidence["disposition"],
                            "communication_id": evidence.get("communication_id")},
         authority_effect="NONE",
-        hb_epoch=epoch)
+        hb_epoch=repository_ledger.forwarded_epoch(repository_receipt, hb_epoch))
     return ({"repository_receipt": repository_receipt,
              "organization_receipt": organization_receipt}, prior is not None)
 

@@ -554,7 +554,7 @@ def _record(transition_id: str, transition_class: str, predecessor: str, success
                            "crossed_an_organization_boundary":
                                record["crossed_an_organization_boundary"]},
         authority_effect="NONE",
-        hb_epoch=repository_receipt["hb_reference"]["epoch"] if idempotent else hb_epoch)
+        hb_epoch=repository_ledger.forwarded_epoch(repository_receipt, hb_epoch))
     return {"repository_receipt": repository_receipt,
             "organization_receipt": organization_receipt}
 

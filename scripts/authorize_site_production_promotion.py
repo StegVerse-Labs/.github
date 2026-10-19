@@ -378,6 +378,11 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     if custody is None or chain_refusal is not None:
         result["organization_readback"] = "NOT_PERFORMED"
         return result
+    if hb_epoch is None or epoch_failure is not None:
+        # A refusal without a supplied epoch writes nothing: a receipt is never
+        # stamped from a clock here. The six fields are in the result.
+        result.update({"receipt_appended": False, "organization_readback": "NOT_PERFORMED"})
+        return result
     transition_id = f"{cls}-{request['sha'][:12]}-" + stable_hash(
         {"mode": request["mode"], "sha": request["sha"], "build": build.get("build_id"),
          "manifest": evidence["manifest_sha256"], "failure_code": evidence.get("failure_code")})[:16]
@@ -388,7 +393,7 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     prior = emitter.recorded(store, store.get(emitter.ledger_store.HEAD_KEY), transition_id, cls)
     if prior is not None:
         successor = prior["successor_state_sha256"]
-    epoch = int(str(hb_epoch)) if hb_epoch is not None and epoch_failure is None else None
+    epoch = int(str(hb_epoch))
     repository_receipt = emitter.append(transition_id, cls, predecessor, successor, evidence, "NONE",
                                         hb_epoch=epoch, store=store, idempotent_on=identity)
     # Carried from the RECORDED repository evidence, so a retry consumes the same source with the same context.

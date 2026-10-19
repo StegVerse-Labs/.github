@@ -144,7 +144,11 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
 
     def test_site_1607_retro_receipt_is_appended_and_reads_back(self):
         ledger = Ledger(self.base)
-        result = ledger.run(fixture())
+        # Without a supplied epoch the refusal is returned and nothing is written.
+        unstamped = ledger.run(fixture())
+        self.assertEqual(unstamped["failure_code"], "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF")
+        self.assertFalse(unstamped["receipt_appended"])
+        result = ledger.run(fixture(), hb_epoch=str(CARRIER_HB_EPOCH))
         self.assertEqual(result["failure_code"], "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF")
         self.assertTrue(result["receipt_appended"])
         self.assertEqual(result["organization_readback"], "VERIFIED")
@@ -159,7 +163,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
             self.assertTrue(evidence.get(field), field)
         self.assertEqual(row["authority_effect"], "NONE")
         # A retry of the same classification returns the same receipt.
-        again = ledger.run(fixture())
+        again = ledger.run(fixture(), hb_epoch=str(CARRIER_HB_EPOCH))
         self.assertEqual(again["organization_receipt_sha256"], result["organization_receipt_sha256"])
 
     # PROMOTE ------------------------------------------------------------------

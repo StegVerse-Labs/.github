@@ -159,7 +159,15 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
     `hb_epoch` is the carrier's heartbeat epoch, supplied by the caller; when
     supplied both receipts carry that exact reference, as every other boundary
     writer does. Absent, emit.py and aggregate_transition derive it and say so.
+    A supplied value is checked by the shared rule as given, never coerced:
+    '+33', ' 33', 33.7 or True is the six-field refusal and nothing is written.
     """
+    if hb_epoch is not None:
+        kernel = _module("org_kernel_record_epoch", "org-kernel/kernel.py")
+        refused = kernel.writer_epoch_refusal(
+            hb_epoch, retry_entrypoint="resident-runtime/governance_endpoint.py::record (hb_epoch=)")
+        if refused is not None:
+            raise SystemExit(json.dumps(refused, sort_keys=True))
     transition_id = TRANSITION_CLASS + ":" + hashlib.sha256(
         str(packet.get("packet_id")).encode()).hexdigest()[:24]
     predecessor = "sha256:" + str(decision.get("governance_request_sha256"))
@@ -172,7 +180,7 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
          "--transition-id", transition_id, "--transition-class", TRANSITION_CLASS,
          "--predecessor-state-sha256", predecessor, "--successor-state-sha256", successor,
          "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE"]
-        + (["--hb-epoch", str(int(hb_epoch))] if hb_epoch is not None else []),
+        + (["--hb-epoch", str(hb_epoch)] if hb_epoch is not None else []),
         cwd=ROOT, capture_output=True, text=True, check=False)
     if completed.returncode != 0:
         raise SystemExit("governance-decision-repository-receipt-failed:"

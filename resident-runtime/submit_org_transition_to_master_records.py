@@ -25,10 +25,15 @@ def main():
  payload={"operation":"ORGANIZATION_RECORD_ORGANIZATION_TRANSITION","organization_receipt":receipt,"predecessor_ecosystem_state_sha256":a.predecessor_ecosystem_state_sha256,"successor_ecosystem_state_sha256":a.successor_ecosystem_state_sha256,"relation_evidence":json.loads(a.relation_evidence_json),"authority_transfer":False}
  standing=load(a.standing)
  if not isinstance(standing,dict) or "predecessor" not in standing:raise SystemExit("standing must declare the predecessor key; null is explicit genesis")
+ # Stamped with the epoch of the receipt it carries when that epoch is CARRIED
+ # (derived_from_clock false and passing the shared rule), so submitting the
+ # same receipt again publishes the same frame -- a write-once no-op. A
+ # clock-derived receipt epoch is never re-stamped as supplied: the frame then
+ # takes the kernel's marked default (derived_from_clock true).
+ ref=receipt.get("hb_reference") if isinstance(receipt.get("hb_reference"),dict) else {}
+ carried=ref.get("derived_from_clock") is False and K.supplied_epoch_failure(ref.get("epoch"),ref) is None
+ if carried:payload["hb_provenance"]={"source":"CARRIED:ORGANIZATION_RECEIPT","receipt_sha256":receipt.get("receipt_sha256"),"derived_from_clock":False}
  packet=K.build_packet(origin_org="StegVerse-Labs",origin_service="stegverse-labs.org-control",destination_org="master-records",destination_service="organization.ecosystem-transition-ledger",payload=payload,standing=standing,transition_reference="ecosystem.transition.organization-record.v1",authority_effect="NONE")
- # Stamped with the epoch of the receipt it carries when it carries one, so
- # submitting the same receipt again publishes the same frame -- a write-once
- # no-op -- instead of a second record request stamped by the host clock.
- published=K.publish_packet(packet,root=a.mesh_root,epoch=(receipt.get("hb_reference") or {}).get("epoch"))
+ published=K.publish_packet(packet,root=a.mesh_root,epoch=int(str(ref["epoch"])) if carried else None)
  print(json.dumps({"status":"PUBLISHED_FOR_ORGANIZATION_RECORD","packet_id":packet["packet_id"],"frame_sha256":published["frame"]["frame_sha256"],"authority_effect":"NONE"},sort_keys=True))
 if __name__=="__main__":main()
