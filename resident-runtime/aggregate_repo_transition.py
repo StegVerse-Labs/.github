@@ -1048,6 +1048,13 @@ def require_supplied_epoch(hb_epoch):
     """The heartbeat reference of the supplied epoch, or OrgLedgerEpochRefused."""
     return kernel.supplied_hb_reference(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
 
+def _retained_in_store(store, receipt, source):
+    """The exact source receipt an earlier append committed beside its receipt."""
+    stored=store.get(ledger_store.source_key(source["source_transition_sha256"]))
+    if stored is None: raise ValueError("retained organization source receipt missing")
+    if stored!=receipt or verify_source(stored)["source_transition_sha256"]!=source["source_transition_sha256"]:
+        raise ValueError("retained organization source receipt conflict")
+
 def _refuse_invalid_epoch(hb_epoch):
     """OrgLedgerEpochRefused for a supplied but invalid epoch, before any store opens.
 
@@ -1059,13 +1066,6 @@ def _refuse_invalid_epoch(hb_epoch):
 
 def _append_reference(hb_epoch):
     return require_supplied_epoch(hb_epoch) if hb_epoch is not None else kernel.hb_reference()
-
-def _retained_in_store(store, receipt, source):
-    """The exact source receipt an earlier append committed beside its receipt."""
-    stored=store.get(ledger_store.source_key(source["source_transition_sha256"]))
-    if stored is None: raise ValueError("retained organization source receipt missing")
-    if stored!=receipt or verify_source(stored)["source_transition_sha256"]!=source["source_transition_sha256"]:
-        raise ValueError("retained organization source receipt conflict")
 
 def _append_locked(receipt, source, store, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect, hb_epoch, custody_exclusivity_verifier=None):
     reference=_append_reference(hb_epoch)
