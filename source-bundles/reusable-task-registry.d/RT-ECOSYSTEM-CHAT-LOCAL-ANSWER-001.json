@@ -23,9 +23,18 @@
       "state": "OWNER_GATED_PENDING_MERGE_FAIL_CLOSED",
       "observed": "present at LLM-adapter#426 @ 1e4593da (blob 2f79116d), re-pinned 2026-10-18T22:45Z from 578e922c (blob 742823b2) after the module changed; absent from main@4fbbfff40dbf920662c6a5416ea576253163c105 at 2026-10-18",
       "review_refs": [
-        "StegVerse-org/LLM-adapter#426 comment 6255890731 (WU-B24): 2 defects found in the fact index at 4966266 before merge; #426 @ 1e4593da is titled as hardening in response and is not re-reviewed here; the dependency stays FAIL_CLOSED until #426 merges"
+        "StegVerse-org/LLM-adapter#426 comment 6255890731 (WU-B24): 2 defects found in the fact index at 4966266 before merge; #426 @ 1e4593da is titled as hardening in response and is not re-reviewed here; the dependency stays FAIL_CLOSED until #426 merges",
+        "StegVerse-org/LLM-adapter#426 comment 6256120012: re-review at 1e4593da reports both defects fixed"
       ],
       "vendored": false,
+      "conformance_vector_ref": {
+        "source_ref": "StegVerse-org/LLM-adapter#426@f161eefd3b5899a3fcd16a9fab5e26544e15ca91:tests/fixtures/ecosystem_fact_index/conformance/conformance-vector.json",
+        "source_commit": "f161eefd3b5899a3fcd16a9fab5e26544e15ca91",
+        "path": "tests/fixtures/ecosystem_fact_index_conformance/conformance-vector.json",
+        "sha256": "b5929144b5384805edaedd774b378edbed74205b70188d726d693532125520d6",
+        "cases": 23,
+        "executed": false
+      },
       "failure_code": "FACT_INDEX_DEPENDENCY_NOT_ON_MAIN"
     },
     {
