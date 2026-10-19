@@ -1169,6 +1169,8 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         raise ledger_store.lost_race("HEAD no longer equals the expected head")
     return record
 
+CLI_RETRY_ENTRYPOINT="resident-runtime/aggregate_repo_transition.py (command line)"
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--repo-receipt")
@@ -1189,11 +1191,25 @@ def main():
     if refused is not None:
         print(json.dumps(refused,sort_keys=True)); raise SystemExit(1)
     hb_epoch=int(a.hb_epoch)
+    # Every input is read and parsed here, before any writer is called: an
+    # unreadable one is the caller's fault, refused terminal six-field (F-INPUT-TRACE).
+    try:
+        parent_manifest=(kernel.read_cli_json(a.parent_manifest,argument="--parent-manifest",
+                                              retry_entrypoint=CLI_RETRY_ENTRYPOINT)
+                         if a.parent_manifest else None)
+        source_path=a.transition_receipt or a.repo_receipt
+        receipt=(kernel.read_cli_json(source_path,argument="--transition-receipt" if a.transition_receipt
+                                      else "--repo-receipt",retry_entrypoint=CLI_RETRY_ENTRYPOINT)
+                 if source_path and not (a.release_custody or a.assume_custody_as) else None)
+        boundary_evidence=kernel.parse_cli_json(a.boundary_evidence_json,argument="--boundary-evidence-json",
+                                                retry_entrypoint=CLI_RETRY_ENTRYPOINT)
+    except kernel.CliInputRefused as exc:
+        print(json.dumps(exc.record,sort_keys=True)); raise SystemExit(1)
     if a.release_custody or a.assume_custody_as:
         if not a.parent_manifest: raise SystemExit("governing parent manifest required")
         try:
-            if a.release_custody: record=release_custody(load(a.parent_manifest),hb_epoch=hb_epoch)
-            else: record=assume_custody(load(a.parent_manifest),materialization_id=a.assume_custody_as,hb_epoch=hb_epoch)
+            if a.release_custody: record=release_custody(parent_manifest,hb_epoch=hb_epoch)
+            else: record=assume_custody(parent_manifest,materialization_id=a.assume_custody_as,hb_epoch=hb_epoch)
         except LedgerLocationRequired as exc:
             print(json.dumps(location_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except ledger_store.LedgerStoreRefused as exc:
@@ -1203,9 +1219,7 @@ def main():
         except OrgLedgerEpochRefused as exc:
             print(json.dumps(exc.refusal,sort_keys=True)); raise SystemExit(1)
         print(json.dumps(record,sort_keys=True)); return
-    source_path=a.transition_receipt or a.repo_receipt
-    if not source_path: raise SystemExit("transition receipt required")
-    receipt=load(source_path)
+    if receipt is None: raise SystemExit("transition receipt required")
     default_class="REPO_STATE_PROPAGATION" if receipt.get("schema")=="stegverse.repo-transition-receipt/v1" else "ORGANIZATION_STATE_TRANSITION"
     try:
         record=aggregate_transition(
@@ -1213,9 +1227,9 @@ def main():
             org_transition_class=a.org_transition_class or default_class,
             predecessor_org_state_sha256=a.predecessor_org_state_sha256,
             successor_org_state_sha256=a.successor_org_state_sha256,
-            boundary_evidence=json.loads(a.boundary_evidence_json),
+            boundary_evidence=boundary_evidence,
             authority_effect=a.authority_effect,
-            parent_manifest=load(a.parent_manifest) if a.parent_manifest else None,
+            parent_manifest=parent_manifest,
             hb_epoch=hb_epoch,
         )
     except LedgerLocationRequired as exc:

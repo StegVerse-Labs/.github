@@ -561,11 +561,11 @@ def _record(transition_id: str, transition_class: str, predecessor: str, success
             record: Mapping[str, Any], hb_epoch: int | None) -> dict[str, Any]:
     """Append at both levels: the repository first, the organization consuming it.
 
-    With a supplied epoch the frame and the record are reproducible, so a replay
-    of the same emission returns the receipts already recorded instead of
-    minting a second pair; the frame and payload digests must match or it is a
-    collision. Without one the frame carries a
-    clock-derived epoch, a replay is a different frame, and each is recorded.
+    The epoch is the one the caller supplied (emit and close refuse an absent
+    one), so the frame and the record are reproducible: a replay of the same
+    emission returns the receipts already recorded instead of minting a second
+    pair, and the frame and payload digests must match or it is a collision.
+    The organization append takes the caller's epoch, never one read back.
     """
     idempotent = hb_epoch is not None
     repository_receipt = repository_ledger.append(
@@ -701,14 +701,32 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
     }
 
 
+CLI_RETRY_ENTRYPOINT = "resident-runtime/organization_egress_boundary.py (command line)"
+EGRESS_WRITE_FAILED = "EGRESS_WRITE_FAILED"
+
+
+def write_fault_record(exc: BaseException) -> dict[str, Any]:
+    """The non-terminal six-field record of this node's own write fault during an emission or closure."""
+    return {"schema": RESULT_SCHEMA, "operation": OPERATION_ID, "disposition": "FAIL_CLOSED",
+            "failure_code": EGRESS_WRITE_FAILED,
+            "failed_predicate": "THIS_NODE_WRITES_THE_EMISSION_FRAME_AND_ITS_RECEIPTS",
+            "detail": type(exc).__name__ + ": " + str(exc),
+            "required_evidence_or_repair": ("restore this node's writable mesh and ledger roots; a partial "
+                                            "write is completed or returned by the idempotent retry"),
+            "retry_entrypoint": CLI_RETRY_ENTRYPOINT,
+            "owning_existing_goal": kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt": "run the same command again with the same --hb-epoch",
+            "terminal": False, "authority_effect": "NONE_REFUSAL_ONLY"}
+
+
 def no_epoch_result(caller: str) -> dict[str, Any]:
     """The unrecorded six-field refusal of an emission or closure with no supplied epoch.
 
-    Nothing is published, recorded or derived from a clock (WU-B13 slice g).
+    Emit writes receipts, so this is the writer rule's own HB_EPOCH_NOT_SUPPLIED
+    (G-a). Nothing is published, recorded or derived from a clock (WU-B13 slice g).
     """
-    refusal = kernel.no_epoch_caller_refusal(
-        "resident-runtime/organization_egress_boundary.py::" + caller,
-        retry_entrypoint="resident-runtime/organization_egress_boundary.py::" + caller + " (hb_epoch=, or --hb-epoch)")
+    refusal = kernel.writer_epoch_refusal(
+        None, retry_entrypoint="resident-runtime/organization_egress_boundary.py::" + caller + " (hb_epoch=, or --hb-epoch)")
     return {"schema": RESULT_SCHEMA, "operation": OPERATION_ID, **refusal, "emitted": False,
             "refusal_recorded": False, "authority_effect": "NONE_REFUSAL_ONLY"}
 
@@ -942,24 +960,39 @@ def main() -> int:
         print(json.dumps(refused, sort_keys=True))
         return 1
 
-    standing = json.loads(Path(args.standing).read_text(encoding="utf-8"))
-    if not isinstance(standing, dict) or "predecessor" not in standing:
+    # Inputs are read before, and outside, the write-fault handling below: an
+    # unreadable one is the caller's fault, refused terminal six-field (F-INPUT-TRACE).
+    try:
+        standing = kernel.read_cli_json(args.standing, argument="--standing",
+                                        retry_entrypoint=CLI_RETRY_ENTRYPOINT)
+        payload = (None if args.close else
+                   kernel.read_cli_json(args.payload, argument="--payload",
+                                        retry_entrypoint=CLI_RETRY_ENTRYPOINT))
+    except kernel.CliInputRefused as exc:
+        print(json.dumps(exc.record, sort_keys=True))
+        return 1
+    if "predecessor" not in standing:
         raise SystemExit("standing must declare the predecessor key; null is explicit genesis")
 
-    if args.close:
-        if not args.packet_id or not args.communication_id:
-            raise SystemExit("--close requires --packet-id and --communication-id")
-        result = close(args.destination_organization, args.packet_id, args.communication_id,
-                       hb_epoch=args.hb_epoch)
-    else:
-        payload = json.loads(Path(args.payload).read_text(encoding="utf-8"))
-        result = emit(args.destination_organization, payload, standing=standing,
-                      capability=args.capability,
-                      transition_reference=args.transition_reference, hb_epoch=args.hb_epoch)
-    rendered = json.dumps(result, indent=2, sort_keys=True)
-    if args.out:
-        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-        Path(args.out).write_text(rendered + "\n", encoding="utf-8")
+    try:
+        if args.close:
+            if not args.packet_id or not args.communication_id:
+                raise SystemExit("--close requires --packet-id and --communication-id")
+            result = close(args.destination_organization, args.packet_id, args.communication_id,
+                           hb_epoch=args.hb_epoch)
+        else:
+            result = emit(args.destination_organization, payload, standing=standing,
+                          capability=args.capability,
+                          transition_reference=args.transition_reference, hb_epoch=args.hb_epoch)
+        rendered = json.dumps(result, indent=2, sort_keys=True)
+        if args.out:
+            Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+            Path(args.out).write_text(rendered + "\n", encoding="utf-8")
+    except OSError as exc:
+        # This node's own write faulted (F-WRITER-TRACE): non-terminal, six
+        # fields, exit 1, no traceback. The emission is retried as given.
+        print(json.dumps(write_fault_record(exc), sort_keys=True))
+        return 1
     print(rendered)
     return 0 if result["disposition"] in (ALLOW, PENDING) else 1
 

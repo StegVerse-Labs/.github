@@ -160,7 +160,11 @@ def main():
  p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=str,default=None,help="carrier-supplied heartbeat epoch, ASCII digits >= 32; required, never coerced");a=p.parse_args()
  hb_epoch,refused=cli_epoch(a.hb_epoch,".stegverse/transition-ledger/emit.py")
  if refused is not None:print(json.dumps(refused,sort_keys=True));raise SystemExit(1)
- try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,json.loads(a.evidence_json),a.authority_effect,hb_epoch)
+ # The inline evidence is input, parsed before anything is appended: unparsable,
+ # or not an object, it is the caller's fault, refused terminal six-field (F-INPUT-TRACE).
+ try:evidence=kernel.parse_cli_json(a.evidence_json,argument="--evidence-json",retry_entrypoint=".stegverse/transition-ledger/emit.py (command line)")
+ except kernel.CliInputRefused as exc:print(json.dumps(exc.record,sort_keys=True));raise SystemExit(1)
+ try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,evidence,a.authority_effect,hb_epoch)
  except RepoLedgerChainBreak as exc:
   print(json.dumps(chain_break_refusal(exc),sort_keys=True));raise SystemExit(1)
  print(json.dumps(r,sort_keys=True))

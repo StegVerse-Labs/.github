@@ -359,6 +359,48 @@ def no_epoch_caller_refusal(caller:str, *, retry_entrypoint:str)->dict[str,Any]:
             "next_attempt":"call again once the caller carries the supplied epoch; nothing was written",
             "derived_from_clock":False,"consequence_committed":False}
 
+#: F-INPUT-TRACE: an input a command line cannot read or parse is the caller's
+#: fault, refused TERMINAL six-field before anything is written -- never a
+#: traceback, and never classified as this node's own write fault.
+CLI_INPUT_UNREADABLE="CLI_INPUT_UNREADABLE"
+CLI_INPUT_PREDICATE="CLI_INPUT_IS_A_READABLE_JSON_DOCUMENT_OF_THE_DECLARED_TYPE"
+
+class CliInputRefused(ValueError):
+    """A command-line input that cannot be read or parsed; `record` is the terminal six fields."""
+    def __init__(self, record:dict[str,Any])->None:
+        super().__init__(record["detail"])
+        self.record=dict(record)
+
+def cli_input_refusal(argument:str, detail:str, *, retry_entrypoint:str)->dict[str,Any]:
+    return {"disposition":"FAIL_CLOSED","failure_code":CLI_INPUT_UNREADABLE,"failed_predicate":CLI_INPUT_PREDICATE,
+            "detail":argument+": "+detail,
+            "required_evidence_or_repair":("supply "+argument+" as a readable UTF-8 JSON document of the declared "
+                                           "type; nothing was read past it and nothing was written"),
+            "retry_entrypoint":retry_entrypoint,"owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"run again with a corrected "+argument+"; this input is refused as given",
+            "terminal":True,"consequence_committed":False,"authority_effect":"NONE_REFUSAL_ONLY"}
+
+def read_cli_json(path:Any, *, argument:str, retry_entrypoint:str, expect:type=dict)->Any:
+    """Read one command-line JSON input, or raise CliInputRefused (terminal, six fields). Writes nothing."""
+    try:
+        text=Path(path).read_text(encoding="utf-8")
+    except (OSError,UnicodeDecodeError) as exc:
+        raise CliInputRefused(cli_input_refusal(argument,type(exc).__name__+": "+str(exc),
+                                                retry_entrypoint=retry_entrypoint)) from None
+    return parse_cli_json(text,argument=argument,retry_entrypoint=retry_entrypoint,expect=expect)
+
+def parse_cli_json(text:str, *, argument:str, retry_entrypoint:str, expect:type=dict)->Any:
+    """Parse one inline command-line JSON input, or raise CliInputRefused (terminal, six fields)."""
+    try:
+        value=json.loads(text)
+    except ValueError as exc:
+        raise CliInputRefused(cli_input_refusal(argument,type(exc).__name__+": "+str(exc),
+                                                retry_entrypoint=retry_entrypoint)) from None
+    if not isinstance(value,expect):
+        raise CliInputRefused(cli_input_refusal(argument,"top-level "+type(value).__name__+", expected "
+                                                +expect.__name__,retry_entrypoint=retry_entrypoint))
+    return value
+
 def carrier_epoch(heartbeat_reference:Any)->int:
     """Return the epoch the carrier supplied, or refuse FAIL_CLOSED. No clock is read."""
     epoch=heartbeat_reference.get("epoch") if isinstance(heartbeat_reference,dict) else None
@@ -534,7 +576,8 @@ __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame"
          "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS",
          "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID","HB_EPOCH_PROVENANCE_UNMARKED",
          "SuppliedEpochRefused","writer_epoch_refusal","supplied_hb_reference",
-         "NO_EPOCH_CALLER_FAILS_CLOSED","no_epoch_caller_refusal"]
+         "NO_EPOCH_CALLER_FAILS_CLOSED","no_epoch_caller_refusal",
+         "CLI_INPUT_UNREADABLE","CliInputRefused","read_cli_json","parse_cli_json"]
 
 
 # --- Federation mesh v1.1 additions ---

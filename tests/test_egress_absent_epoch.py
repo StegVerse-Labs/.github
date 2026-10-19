@@ -2,7 +2,7 @@
 
 `organization_egress_boundary.emit` writes receipts (one repository, one
 organization) as well as the frame. Without a supplied epoch it is the
-unrecorded six-field NO_EPOCH_CALLER_FAILS_CLOSED before anything is built,
+unrecorded six-field HB_EPOCH_NOT_SUPPLIED (the writer rule) before anything is built,
 published or recorded: no file under the mesh or either ledger root, and no
 clock read. With 4096 the frame and both receipts carry 4096, marked
 derived_from_clock false. `close` refuses an absent epoch the same way.
@@ -56,7 +56,7 @@ class EgressAbsentEpochTests(route.ReverseIntrRouteCase):
 
     def assertNoEpochRefusal(self, result):
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
-        self.assertEqual(result["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
+        self.assertEqual(result["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
         self.assertEqual(result["failed_predicate"], "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
         self.assertIs(result["refusal_recorded"], False)
         for field in SIX_FIELDS:
