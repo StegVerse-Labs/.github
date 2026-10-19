@@ -446,7 +446,9 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
         application_result=run_endpoint_adapter(root,adapter,packet,service=service,node_state=node_state,
                                                 heartbeat_reference=heartbeat_reference)
     elif role=="BOUNDARY_LOCAL_CONTROL":
-        application_result=handle_control_message(root,packet,registry,node_state=node_state)
+        application_result=handle_control_message(
+            root,packet,registry,node_state=node_state,
+            epoch=_frame_epoch({"heartbeat_reference":heartbeat_reference}))
     elif role==CAPABILITY_INGRESS_ROLE:
         # The address resolves to the receiving operation the overlay binds,
         # which records its own dispositions at both ledger levels. Its refusal
@@ -477,7 +479,8 @@ def persist_outbox(root:Path, frame:dict[str,Any], *, store:Any|None=None)->Path
         raise ValueError("write_once_collision")
     return Path(target.locator(key))
 
-def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None)->dict[str,Any]:
+def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None,
+                 carried_head_verified:bool=False)->dict[str,Any]:
     # The shared epoch rule first: an absent or invalid carrier epoch is the
     # six-field CarrierEpochRefusal, not a bare heartbeat_* error from recovery.
     failure=_frame_epoch_failure(frame)
@@ -487,6 +490,15 @@ def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, no
             required_evidence_or_repair=(detail+"; the carrier frame supplies heartbeat_reference.epoch as "
                                          "ASCII digits with value >= 32 (the HB32 anchor); no clock is read"),
             next_attempt="re-publish the packet in a frame stamped with a supplied epoch >= 32")
+    # A self-asserted CARRIED claim is verified against this organization's
+    # verified head (ingest_recorded does, holding custody) or refused; it is
+    # never stripped and accepted as SUPPLIED (B-P36k).
+    if _claims_carried(frame) and not carried_head_verified:
+        raise CarrierEpochRefusal(CARRIED_PROVENANCE_UNVERIFIED,
+            required_evidence_or_repair=("the frame's heartbeat_reference asserts source/head_receipt_sha; "
+                                         "it is admitted only when head_receipt_sha is this organization's "
+                                         "current verified ledger head, recorded derived_from_clock false"),
+            next_attempt="re-publish with a SUPPLIED reference, or a CARRIED one naming the verified head")
     packet=recover_packet(frame)
     registry=load_registry(root)
     if frame["destination_org"]!=registry["organization"]:
@@ -710,7 +722,7 @@ def load_federation_directory(root:Path)->dict[str,Any]:
         raise ValueError("federation_directory_denominator_mismatch")
     return value
 
-def resident_status(root:Path, registry:dict[str,Any]|None=None)->dict[str,Any]:
+def resident_status(root:Path, registry:dict[str,Any]|None=None, *, epoch:int|None=None)->dict[str,Any]:
     reg=registry or load_registry(root)
     activation_path=root/"resident-runtime/activation-manifest.json"
     activation=json.loads(activation_path.read_text()) if activation_path.exists() else {}
@@ -722,7 +734,7 @@ def resident_status(root:Path, registry:dict[str,Any]|None=None)->dict[str,Any]:
       "registered_service_count":len(reg.get("services") or []),
       "registered_services":[s.get("service_id") for s in reg.get("services") or []],
       "org_control_service":organization_slug(reg["organization"])+".org-control",
-      "heartbeat_reference":hb_reference(),
+      "heartbeat_reference":hb_reference(epoch=epoch) if epoch is not None else hb_reference(),
       "runtime_observation_claimed":False
     }
 
@@ -754,7 +766,7 @@ def persist_work_request(root:Path, packet:dict[str,Any], *, store:Any|None=None
             "execution_authority_inferred":False}
 
 def handle_control_message(root:Path, packet:dict[str,Any], registry:dict[str,Any], *,
-                           node_state:Any|None=None)->dict[str,Any]:
+                           node_state:Any|None=None, epoch:int|None=None)->dict[str,Any]:
     payload=packet.get("payload") or {}
     message_class=payload.get("message_class")
     result={
@@ -766,7 +778,9 @@ def handle_control_message(root:Path, packet:dict[str,Any], registry:dict[str,An
       "execution_authority_effect":packet["transition"]["authority_effect"]
     }
     if message_class=="ecosystem.monitor.request":
-        result["monitor_status"]=resident_status(root,registry)
+        # Stamped with the delivering frame's SUPPLIED epoch when it has one,
+        # so a monitor answer never reaches the clock default for it.
+        result["monitor_status"]=resident_status(root,registry,epoch=epoch)
     elif message_class=="ecosystem.work.request":
         result["work_intake"]=persist_work_request(root,packet,store=node_state)
     elif message_class=="ecosystem.communication":
@@ -969,6 +983,53 @@ def record_refusal(custody:dict[str,Any], item:dict[str,Any], reason:str, dispos
     recorded=_record_both(custody,name,CROSSING_REFUSED_CLASS,predecessor,successor,evidence,carried,epoch)
     return {**recorded,"disposition":disposition}
 
+FRAME_REFUSED_QUARANTINED="FRAME_REFUSED_QUARANTINED"
+CARRIED_PROVENANCE_UNVERIFIED="CARRIED_PROVENANCE_UNVERIFIED"
+
+def _claims_carried(frame:Any)->bool:
+    ref=frame.get("heartbeat_reference") if isinstance(frame,dict) else None
+    return isinstance(ref,dict) and ("source" in ref or "head_receipt_sha" in ref)
+
+def _carried_head_verified(frame:dict[str,Any], custody:dict[str,Any])->bool:
+    """head_receipt_sha is this organization's current ledger head, recorded derived_from_clock false."""
+    ref=frame["heartbeat_reference"]
+    ledger=custody["organization_ledger"]
+    store=ledger.organization_store(custody["organization_root"])
+    head=store.get(ledger.ledger_store.HEAD_KEY) or {}
+    sha=head.get("receipt_sha256")
+    if not sha or ref.get("head_receipt_sha")!=sha:
+        return False
+    receipt=store.get(ledger.ledger_store.receipt_key(sha)) or {}
+    recorded=receipt.get("hb_reference") if isinstance(receipt.get("hb_reference"),dict) else {}
+    return recorded.get("derived_from_clock") is False and supplied_epoch_failure(recorded.get("epoch"),recorded) is None
+
+def _frame_quarantine(frame:dict[str,Any], custody:dict[str,Any])->dict[str,Any]|None:
+    """The six-field quarantine of a frame that can never be consumed, or None. No clock is read.
+
+    Refused and terminal: an absent or invalid epoch, an unmarked reference or a
+    SUPPLIED-looking one carrying sampled_unix_ns, and an unverified CARRIED
+    claim. A frame its sender marked derived_from_clock true is still consumed;
+    it lends no epoch (_frame_epoch).
+    """
+    ref=frame.get("heartbeat_reference") if isinstance(frame,dict) else None
+    failure=_frame_epoch_failure(frame)
+    if failure is None and isinstance(ref,dict) and ref.get("derived_from_clock") is not True:
+        failure=supplied_epoch_failure(ref.get("epoch"),ref)
+    if failure is None and _claims_carried(frame) and not _carried_head_verified(frame,custody):
+        failure=(CARRIED_PROVENANCE_UNVERIFIED,"head_receipt_sha is not this organization's current verified "
+                 "ledger head recorded derived_from_clock false")
+    if failure is None:
+        return None
+    code,detail=failure
+    return {"status":"REFUSED","disposition":"FAIL_CLOSED","failure_code":FRAME_REFUSED_QUARANTINED,
+            "frame_failure_code":code,"failed_predicate":HB_EPOCH_PREDICATE,"detail":detail,
+            "required_evidence_or_repair":("the sender re-publishes the packet in a frame whose heartbeat_reference "
+                                           "is SUPPLIED (digits >= 32, derived_from_clock false) or a verified CARRIED"),
+            "retry_entrypoint":HB_EPOCH_RETRY_ENTRYPOINT,"owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"a new frame; this one is quarantined and never offered again",
+            "packet_id":frame.get("packet_id") if isinstance(frame,dict) else None,
+            "derived_from_clock":False,"consequence_committed":False}
+
 def _frame_epoch_failure(frame:Any)->tuple[str,str]|None:
     """supplied_epoch_failure of the frame's heartbeat_reference.epoch. No clock is read.
 
@@ -1005,7 +1066,9 @@ def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], r
                  else (recover_packet(item["frame"]).get("destination") or {}).get("service"))
     service=next((svc for svc in registry["services"] if svc.get("service_id")==destination),None)
     try:
-        result=ingest_frame(repo_root,item["frame"],mesh_root=mesh_root,node_state=node_state)
+        result=ingest_frame(repo_root,item["frame"],mesh_root=mesh_root,node_state=node_state,
+                            carried_head_verified=_claims_carried(item["frame"])
+                                                  and _carried_head_verified(item["frame"],custody))
     except ValueError as exc:
         reason=str(exc)
         if (any(marker in reason for marker in CUSTODY_REFUSALS)
@@ -1056,6 +1119,14 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
         # frame whose epoch fails the rule is refused six-field by ingest_frame
         # before recovery, and that refusal is recorded below.
         epoch=None if now_ns is not None else _frame_epoch(item["frame"])
+        quarantined=_frame_quarantine(item["frame"],custody)
+        if quarantined is not None:
+            # Terminal: nothing is recorded or answered, no clock is read, and the
+            # marker keeps the frame from being offered again (B-P36j).
+            marker=mark_federation_frame_seen(repo_root,item["path"],item["frame"],quarantined,store=node_state)
+            out.append({"path":item["path"],"result":quarantined,"response_publication":None,
+                        "organization_record":None,"seen_marker":str(marker)})
+            continue
         # Recorded before anything leaves this node: no answer is published and
         # no consumption marker written for a crossing the organization has not
         # recorded. A failed append leaves the frame unmarked, so the next pass
@@ -1153,7 +1224,11 @@ def federation_seen_frame_names(repo_root:Path, *, store:Any|None=None)->set[str
 
 def mark_federation_frame_seen(repo_root:Path, frame_path:str, frame:dict[str,Any], result:dict[str,Any],
                                *, store:Any|None=None)->Path:
-    """Record that this node consumed a frame, once and atomically."""
+    """Record that this node consumed a frame, once and atomically.
+
+    A quarantined frame's marker also carries its six-field refusal, so the
+    refusal is terminal and the frame is never offered again (B-P36j).
+    """
     target=store or node_state_store(repo_root)
     frame_name=node_store_module.frame_name(str(frame_path))
     marker={
@@ -1165,6 +1240,8 @@ def mark_federation_frame_seen(repo_root:Path, frame_path:str, frame:dict[str,An
       "status":result.get("status"),
       "authority_effect":"NONE_CARRIER_ONLY"
     }
+    if result.get("failure_code")==FRAME_REFUSED_QUARANTINED:
+        marker.update({key:result[key] for key in ("disposition","frame_failure_code",*SIX_FIELDS)})
     key=node_store_module.seen_key(frame_name)
     try:
         target.put_once(key,marker)
