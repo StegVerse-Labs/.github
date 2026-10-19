@@ -192,7 +192,7 @@ class FrameQuarantineTests(unittest.TestCase):
         self.assertIsNone(K._frame_epoch({"heartbeat_reference": bare}))
         self.assertTrue(K._is_clock_reference(bare))
 
-    def test_a_verified_carried_claim_is_held_until_its_provenance_can_be_recorded(self):
+    def test_a_verified_carried_claim_is_not_accepted_by_this_destination(self):
         self.with_stegcore()
         self.publish("seed")
         self.cycle()
@@ -203,7 +203,8 @@ class FrameQuarantineTests(unittest.TestCase):
         self.assertTrue(org)
         self.publish("carried-verified", carried)
         entry, = self.cycle()
-        self.assertQuarantined(entry, "CARRIED_PROVENANCE_NOT_PROPAGATED")
+        self.assertQuarantined(entry, "CARRIED_NOT_ACCEPTED_BY_DESTINATION")
+        self.assertIs(K.load_registry(base.ROOT)["accepts_carried_crossings"], False)
 
     def test_ingest_frame_refuses_an_unverified_carried_claim(self):
         frame = altered(K.carrier_frame(base.packet(base.work_request({"signal": {}})), epoch=1000),
@@ -306,6 +307,77 @@ class TornWriteTests(FrameQuarantineTests):
                     self.assertEqual(len(rows), len({r["receipt_sha256"] for r in rows}))
                     self.assertEqual(len({r.get("transition_id") or r.get("repo_receipt_sha256")
                                           for r in rows}), len(rows))
+
+
+class ResponseOnceTests(FrameQuarantineTests):
+    """F-REPUB keying: one response id answers one request."""
+
+    def control(self, packet_id, subject):
+        return K.build_packet(
+            origin_org="Origin", origin_service="origin.org-control",
+            destination_org="StegVerse-Labs", destination_service="stegverse-labs.org-control",
+            payload={"communication_id": "once", "message_class": "ecosystem.communication",
+                     "subject": subject, "body": {}},
+            standing={"mode": "ESTABLISH_GENESIS", "node_ref": "once", "predecessor": None},
+            packet_id=packet_id)
+
+    def answers(self):
+        frames = [json.loads(p.read_text()) for p in (self.work / "mesh" / "frames.d").glob("*.json")]
+        return [f for f in frames if f.get("origin_org") == "StegVerse-Labs"]
+
+    def test_a_different_request_under_an_answered_response_id_is_a_collision(self):
+        K.publish_packet(self.control("request-a", "a"), root=self.work / "mesh", epoch=1000)
+        first, = self.cycle()
+        self.assertEqual(first["result"]["status"], "CONSUMED")
+        self.assertEqual(len(self.answers()), 1)
+        K.publish_packet(self.control("request-b", "b"), root=self.work / "mesh", epoch=1000)
+        second, = self.cycle()
+        self.assertQuarantined(second, "RESPONSE_ID_COLLISION")
+        self.assertEqual(len(self.answers()), 1)
+
+    def test_a_marker_fault_after_publishing_does_not_publish_a_second_answer(self):
+        K.publish_packet(self.control("request-once", "x"), root=self.work / "mesh", epoch=1000)
+        original = K.mark_federation_frame_seen
+        faults = {"n": 0}
+
+        def faulty(*args, **kwargs):
+            if faults["n"] == 0:
+                faults["n"] += 1
+                raise OSError("simulated marker write fault")
+            return original(*args, **kwargs)
+
+        with mock.patch.object(K, "mark_federation_frame_seen", faulty):
+            pending, = self.cycle()
+        self.assertEqual(pending["result"]["failure_code"], "FRAME_DISPATCH_IO_FAILED")
+        self.assertIs(pending["result"]["terminal"], False)
+        again, = self.cycle()
+        self.assertEqual(again["result"]["status"], "CONSUMED")
+        self.assertEqual(len(self.answers()), 1)
+
+
+class IngestFrameReferenceTests(unittest.TestCase):
+    """Rows 5/12/15: ingest_frame is six-field on an incoherent reference; "4096" is 4096."""
+
+    def frame(self, **reference):
+        frame = K.carrier_frame(base.packet(base.work_request({"signal": {}})), epoch=4096)
+        return altered(frame, **{**frame["heartbeat_reference"], **reference})
+
+    def test_an_incoherent_generation_or_id_is_six_field(self):
+        for change in ({"generation": 7}, {"heartbeat_id": "HB:7"}):
+            with self.subTest(change=change):
+                with self.assertRaises(K.CarrierEpochRefusal) as raised:
+                    K.ingest_frame(base.ROOT, self.frame(**change))
+                self.assertEqual(raised.exception.record["failure_code"], "HB_REFERENCE_INVALID")
+                for field in SIX:
+                    self.assertTrue(raised.exception.record[field], field)
+
+    def test_a_digit_string_epoch_is_that_epoch(self):
+        reference = {**K.hb_reference(epoch=4096), "epoch": "4096"}
+        self.assertIs(K.validate_hb_reference(reference), reference)
+        self.assertEqual(K._frame_epoch({"heartbeat_reference": reference}), 4096)
+        for bad in ("+4096", " 4096", "\uff14\uff10\uff19\uff16"):
+            with self.subTest(epoch=bad), self.assertRaises(ValueError):
+                K.validate_hb_reference({**reference, "epoch": bad})
 
 
 class MonitorAnswerEpochTests(unittest.TestCase):

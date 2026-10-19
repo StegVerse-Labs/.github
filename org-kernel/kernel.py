@@ -43,10 +43,13 @@ def validate_hb_reference(ref:dict[str,Any])->dict[str,Any]:
     hashed frame unchallenged.
     """
     if not isinstance(ref,dict): raise ValueError("heartbeat_reference_invalid")
-    epoch=ref.get("epoch")
+    given=epoch=ref.get("epoch")
+    # The shared rule's digits: "4096" is 4096; "+4096", " 4096" and 4096.0 are not.
+    if isinstance(epoch,str) and supplied_epoch_failure(epoch) is None: epoch=int(epoch)
     if not isinstance(epoch,int) or isinstance(epoch,bool) or epoch<HB_ANCHOR_EPOCH:
         raise ValueError("heartbeat_epoch_invalid")
-    if ref.get("generation")!=epoch: raise ValueError("heartbeat_generation_mismatch")
+    if ref.get("generation") not in (epoch,given) or isinstance(ref.get("generation"),bool):
+        raise ValueError("heartbeat_generation_mismatch")
     if ref.get("heartbeat_id")!=f"HB:{epoch}": raise ValueError("heartbeat_id_mismatch")
     if ref.get("frequency_hz")!=HB_HZ: raise ValueError("heartbeat_frequency_mismatch")
     if ref.get("progression_dependency")!="OSCILLATOR_ONLY":
@@ -493,13 +496,23 @@ def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, no
     # A self-asserted CARRIED claim is verified against this organization's
     # verified head (ingest_recorded does, holding custody) or refused; it is
     # never stripped and accepted as SUPPLIED (B-P36k).
+    try:
+        packet=recover_packet(frame)
+    except ValueError as exc:
+        # A reference inconsistent with its epoch is six-field, as in consume.
+        reason=str(exc)
+        if not reason.startswith("heartbeat_"):
+            raise
+        raise CarrierEpochRefusal(HB_EPOCH_INVALID if reason=="heartbeat_epoch_invalid" else HB_REFERENCE_INVALID,
+            required_evidence_or_repair=(reason+"; the carrier frame's heartbeat_reference carries generation "
+                                         "and heartbeat_id consistent with its epoch"),
+            next_attempt="re-publish the packet in a coherent carrier frame") from None
     if _claims_carried(frame) and not carried_head_verified:
         raise CarrierEpochRefusal(CARRIED_PROVENANCE_UNVERIFIED,
             required_evidence_or_repair=("the frame's heartbeat_reference asserts source/head_receipt_sha; "
                                          "it is admitted only when head_receipt_sha is this organization's "
                                          "current verified ledger head, recorded derived_from_clock false"),
             next_attempt="re-publish with a SUPPLIED reference, or a CARRIED one naming the verified head")
-    packet=recover_packet(frame)
     registry=load_registry(root)
     if frame["destination_org"]!=registry["organization"]:
         return {"status":"IGNORED_NOT_ADDRESSED","packet_id":frame["packet_id"]}
@@ -841,6 +854,7 @@ def build_control_response(request_packet:dict[str,Any], execution_result:dict[s
       "subject":"response:"+str(req_payload.get("subject") or ""),
       "body":{
         "request_packet_id":request_packet["packet_id"],
+        "request_sha256":sha(request_packet),
         "responding_organization":local_org,
         "application_result":execution_result.get("application_result"),
         "receipt_terminal":(execution_result.get("reconstruction") or {}).get("terminal_receipt_id")
@@ -1013,7 +1027,7 @@ def record_refusal(custody:dict[str,Any], item:dict[str,Any], reason:str, dispos
 
 FRAME_REFUSED_QUARANTINED="FRAME_REFUSED_QUARANTINED"
 CARRIED_PROVENANCE_UNVERIFIED="CARRIED_PROVENANCE_UNVERIFIED"
-CARRIED_PROVENANCE_NOT_PROPAGATED="CARRIED_PROVENANCE_NOT_PROPAGATED"
+CARRIED_NOT_ACCEPTED_BY_DESTINATION="CARRIED_NOT_ACCEPTED_BY_DESTINATION"
 HB_REFERENCE_INVALID="HB_REFERENCE_INVALID"
 FRAME_INTEGRITY_INVALID="FRAME_INTEGRITY_INVALID"
 FRAME_INGEST_FAILED="FRAME_INGEST_FAILED"
@@ -1040,7 +1054,8 @@ def _is_clock_reference(ref:Any)->bool:
     return isinstance(ref,dict) and (ref.get("derived_from_clock") is True
                                      or ("derived_from_clock" not in ref and "sampled_unix_ns" in ref))
 
-def _frame_quarantine(frame:dict[str,Any], custody:dict[str,Any])->dict[str,Any]|None:
+def _frame_quarantine(frame:dict[str,Any], custody:dict[str,Any],
+                      registry:dict[str,Any]|None=None)->dict[str,Any]|None:
     """The six-field quarantine of a frame that can never be consumed, or None. No clock is read.
 
     Every carrier epoch passes the digit/anchor check first, whatever the
@@ -1050,8 +1065,9 @@ def _frame_quarantine(frame:dict[str,Any], custody:dict[str,Any])->dict[str,Any]
     (CLOCK_FLAGGED_FRAMES_CONSUMED_PENDING_WU_B13). An UNMARKED reference, or
     one marked false that still carries sampled_unix_ns, is refused by the
     shared rule; a CARRIED claim must name this organization's verified head. A verified
-    CARRIED claim is held too until the writers can record its provenance
-    downstream (B-P36m): stamping it as {epoch, false} would read as SUPPLIED.
+    one is refused CARRIED_NOT_ACCEPTED_BY_DESTINATION while the registry declares
+    accepts_carried_crossings false (B-P36m option 1): the writers cannot yet
+    record source/head_receipt_sha downstream, and {epoch, false} reads as SUPPLIED.
     """
     ref=frame.get("heartbeat_reference") if isinstance(frame,dict) else None
     failure=_frame_epoch_failure(frame)
@@ -1063,9 +1079,9 @@ def _frame_quarantine(frame:dict[str,Any], custody:dict[str,Any])->dict[str,Any]
         if not _carried_head_verified(frame,custody):
             failure=(CARRIED_PROVENANCE_UNVERIFIED,"head_receipt_sha is not this organization's current verified "
                      "ledger head recorded derived_from_clock false")
-        else:
-            failure=(CARRIED_PROVENANCE_NOT_PROPAGATED,"the repository and organization writers cannot yet record "
-                     "source/head_receipt_sha downstream; a receipt stamped {epoch, false} would read as SUPPLIED")
+        elif not (registry or {}).get("accepts_carried_crossings",False):
+            failure=(CARRIED_NOT_ACCEPTED_BY_DESTINATION,"this organization's registry declares "
+                     "accepts_carried_crossings false; a CARRIED crossing is not accepted here")
     if failure is None:
         return None
     return _quarantine_record(frame,*failure)
@@ -1099,19 +1115,33 @@ def _pending_epoch(frame:Any, code:str, detail:str)->dict[str,Any]:
             "packet_id":frame.get("packet_id") if isinstance(frame,dict) else None,
             "derived_from_clock":False,"consequence_committed":False}
 
-def _answered(organization:str, request_packet_id:str, mesh_root:Path|None)->dict[str,Any]|None:
-    """The answer this organization already published to `request_packet_id`, if any."""
+RESPONSE_ID_COLLISION="RESPONSE_ID_COLLISION"
+
+def _answered(organization:str, request:dict[str,Any], mesh_root:Path|None)->dict[str,Any]|None:
+    """The answer this organization already published for this response id, if any.
+
+    Keyed by the response id (communication_id:response:<organization>) and by
+    request packet id; `same_request` says whether it answered this exact
+    request (its recorded request_sha256, or, for an answer recorded before
+    that field, the same request packet id).
+    """
+    response_id=str((request.get("payload") or {}).get("communication_id"))+":response:"+organization_slug(organization)
+    digest=sha(request)
     target=mesh_store(mesh_root)
     for key in target.list_prefix(node_store_module.MESH_FRAME_PREFIX):
         try:
             frame=_read_frame(target,key)
             if not frame or frame.get("origin_org")!=organization:
                 continue
-            body=(recover_packet(frame).get("payload") or {}).get("body") or {}
+            answer=recover_packet(frame)
+            body=(answer.get("payload") or {}).get("body") or {}
         except Exception:  # noqa: BLE001 -- an unreadable frame answers nothing
             continue
-        if body.get("request_packet_id")==request_packet_id:
-            return {"frame":frame,"path":str(target.locator(key)),"already_published":True}
+        if answer.get("packet_id")!=response_id and body.get("request_packet_id")!=request.get("packet_id"):
+            continue
+        recorded=body.get("request_sha256")
+        same=(recorded==digest) if recorded is not None else body.get("request_packet_id")==request.get("packet_id")
+        return {"frame":frame,"path":str(target.locator(key)),"already_published":True,"same_request":same}
     return None
 
 FRAME_DISPATCH_IO_FAILED="FRAME_DISPATCH_IO_FAILED"
@@ -1253,7 +1283,7 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
         # and the loop continues (B-P36o, F-TYPE).
         try:
             frame_epoch=_frame_epoch(item["frame"])
-            quarantined=_frame_quarantine(item["frame"],custody)
+            quarantined=_frame_quarantine(item["frame"],custody,registry)
         except Exception as exc:  # noqa: BLE001 -- a frame defect is that frame's quarantine
             frame_epoch,quarantined=None,_ingest_failure_quarantine(item["frame"],exc)
         epoch=cycle_epoch if cycle_epoch is not None else frame_epoch
@@ -1276,9 +1306,19 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
             # this node's own ledgers still raises and leaves the frame
             # unmarked, so the next pass completes it.
             try:
-                recover_packet(item["frame"])
+                request=recover_packet(item["frame"])
             except Exception as exc:  # noqa: BLE001 -- a frame that cannot be recovered is quarantined
-                quarantined=_ingest_failure_quarantine(item["frame"],exc)
+                request,quarantined=None,_ingest_failure_quarantine(item["frame"],exc)
+            if (request is not None
+                    and (request.get("payload") or {}).get("message_class") in RESPONDED_REQUEST_CLASSES):
+                # A different request under a response id already answered is
+                # refused before it is consumed; it is never handed that answer.
+                prior=_answered(organization,request,mesh_root)
+                if prior is not None and not prior["same_request"]:
+                    quarantined=_quarantine_record(
+                        item["frame"],RESPONSE_ID_COLLISION,
+                        "response id "+str(prior["frame"].get("packet_id"))+" already answers another request",
+                        failed_predicate="ONE_RESPONSE_ID_ANSWERS_ONE_REQUEST")
         if quarantined is None:
             # Recorded before anything leaves this node: no answer is published
             # and no consumption marker written for a crossing the organization
@@ -1318,7 +1358,7 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
             if result.get("status")=="CONSUMED" and message_class in RESPONDED_REQUEST_CLASSES:
                 # One answer per request: a pass that published and then failed to
                 # mark the frame does not publish a second one (F-REPUB).
-                response_publication=_answered(organization,packet["packet_id"],mesh_root)
+                response_publication=_answered(organization,packet,mesh_root)
                 if response_publication is None:
                     response=build_control_response(packet,result["execution_result"])
                     response_publication=publish_packet(response,root=mesh_root,epoch=epoch)
