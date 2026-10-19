@@ -72,7 +72,7 @@ jobs:
             resident-runtime/intr_destination_ingress.py \
             resident-runtime/ledger_store.py \
             .stegverse/transition-ledger/emit.py
-          python -m pip install pytest
+          python -m pip install --no-deps -r .github/ci-requirements.txt
           python -m pytest -q --tb=short \
             tests/test_organization_ledger_transition_writer.py \
             tests/test_intr_destination_capability.py
