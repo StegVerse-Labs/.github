@@ -67,12 +67,12 @@
               "line_of": "\"invariants\": {"
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "the declaring container (/invariants, /prohibitions, or the deepest existing container of the pointer) when the invariant is undeclared"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "owning_existing_goal": {
@@ -82,12 +82,12 @@
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         },
         "queue": {
           "value": "created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 1,
           "relay_to": "RT-INVARIANT-EVALUATION-PROBE-001"
@@ -132,12 +132,12 @@
               "line_of": "\"invariants\": {"
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "the declaring container (/invariants, /prohibitions, or the deepest existing container of the pointer) when the invariant is undeclared"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "owning_existing_goal": {
@@ -147,12 +147,12 @@
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         },
         "queue": {
           "value": "write_once_repeat",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:58",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:131",
           "spec_quote": "UNDECIDABLE_RELAY_ENTRY_WRITTEN_ONCE",
           "files_after": 1
         }

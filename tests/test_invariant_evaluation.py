@@ -352,6 +352,27 @@ class CrossCheckFindings(unittest.TestCase):
         self.assertEqual(ie.evaluate(v1_question(subject_path="deep.json", subject=deep),
                                      v1_sources("deep.json", deep))["failure_code"], "INPUT_DEPTH_EXCEEDED")
 
+    def test_every_code_bound_is_declared_in_the_spec_with_its_value(self):
+        bounds = json.loads(SPEC_PATH.read_text(encoding="utf-8"))["bounds"]
+        declared = {"MAX_DEPTH": bounds["max_json_nesting"]}
+        declared.update({"MAX_" + key[4:].upper(): row["value"] for key, row in bounds.items()
+                         if key.startswith("max_") and isinstance(row, dict)})
+        # A MAX_* constant added, dropped or changed without the spec fails here.
+        self.assertEqual({name: getattr(ie, name) for name in dir(ie) if name.startswith("MAX_")}, declared)
+        for key, row in bounds.items():
+            if isinstance(row, dict):
+                self.assertIn(str(row["value"]), row["refusal"]["failed_predicate"], key)
+
+    def test_container_item_bound_applies_to_objects_and_arrays(self):
+        n = ie.MAX_CONTAINER_ITEMS
+        self.assertEqual(len(ie.parse_json(b"[" + b"0," * (n - 1) + b"0]", "x", ie.MAX_SOURCE_BYTES)[0]), n)
+        members = ",".join(f'"k{i}":0' for i in range(n + 1)).encode()
+        for over in (b"[" + b"0," * n + b"0]", b"{" + members + b"}"):
+            with self.assertRaises(ie.Refusal) as refused:
+                ie.parse_json(over, "x", ie.MAX_SOURCE_BYTES)
+            self.assertEqual(refused.exception.failure_code, "INPUT_SIZE_EXCEEDED")
+            self.assertTrue(refused.exception.failed_predicate.startswith(f"JSON_CONTAINER_ITEMS<={n} at x line 1"))
+
     def test_d8b_canonical_source_claiming_authority_fails_closed(self):
         canon = json.loads(INVARIANTS)
         for effect in ({"grants": "ALLOW"}, 0, None, "AUTHORIZES_TRANSITION"):

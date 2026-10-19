@@ -37,7 +37,7 @@
         },
         "failure_code": {
           "value": "INPUT_NOT_UTF8",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "A parse refusal cites the line it stopped on",
           "spec_gap": "the spec does not name this failure_code; the value is the one the Labs evaluator emits at fac10f5 and is pinned so a change is visible"
         },
@@ -48,23 +48,23 @@
               "line": 1
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "repo@rev:path:line for a source"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         },
         "owning_existing_goal": {

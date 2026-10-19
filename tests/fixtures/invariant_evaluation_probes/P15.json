@@ -69,12 +69,12 @@
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "retry_entrypoint": {
           "value": "scripts/invariant_evaluation.py --question <question.json> --source <repo> <rev> <path> <sha256> <file>",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "scripts/invariant_evaluation.py --question <question.json> --source <repo> <rev> <path> <sha256> <file>"
         },
         "owning_existing_goal": {
@@ -84,13 +84,13 @@
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }
@@ -122,12 +122,12 @@
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "retry_entrypoint": {
           "value": "scripts/invariant_evaluation.py --question <question.json> --source <repo> <rev> <path> <sha256> <file>",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "scripts/invariant_evaluation.py --question <question.json> --source <repo> <rev> <path> <sha256> <file>"
         },
         "owning_existing_goal": {
@@ -144,7 +144,7 @@
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }
@@ -176,12 +176,12 @@
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "retry_entrypoint": {
           "value": "scripts/invariant_evaluation.py --question <question.json> --source <repo> <rev> <path> <sha256> <file>",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "scripts/invariant_evaluation.py --question <question.json> --source <repo> <rev> <path> <sha256> <file>"
         },
         "owning_existing_goal": {
@@ -191,13 +191,13 @@
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 1
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }

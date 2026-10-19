@@ -122,12 +122,12 @@
       "expect": {
         "disposition": {
           "value": "FAIL_CLOSED",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "An absent, non-string or other authority_effect is FAIL_CLOSED"
         },
         "failure_code": {
           "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
         },
         "citations": {
@@ -137,12 +137,12 @@
               "line_of": "\"authority_effect\":"
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "cited at that member's line"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "owning_existing_goal": {
@@ -152,13 +152,13 @@
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }
@@ -185,12 +185,12 @@
       "expect": {
         "disposition": {
           "value": "FAIL_CLOSED",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "An absent, non-string or other authority_effect is FAIL_CLOSED"
         },
         "failure_code": {
           "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
         },
         "citations": {
@@ -200,12 +200,12 @@
               "line_of": "\"authority_effect\":"
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "cited at that member's line"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "owning_existing_goal": {
@@ -215,13 +215,13 @@
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }
@@ -248,12 +248,12 @@
       "expect": {
         "disposition": {
           "value": "FAIL_CLOSED",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "An absent, non-string or other authority_effect is FAIL_CLOSED"
         },
         "failure_code": {
           "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
         },
         "citations": {
@@ -263,12 +263,12 @@
               "line_of": "\"authority_effect\":"
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "cited at that member's line"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "owning_existing_goal": {
@@ -278,13 +278,13 @@
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }
@@ -311,12 +311,12 @@
       "expect": {
         "disposition": {
           "value": "FAIL_CLOSED",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "An absent, non-string or other authority_effect is FAIL_CLOSED"
         },
         "failure_code": {
           "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
         },
         "citations": {
@@ -326,23 +326,23 @@
               "line": 1
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "Every answer cites repo@rev:path:line."
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }
@@ -369,7 +369,7 @@
       "expect": {
         "disposition": {
           "value": "ALLOW",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
           "spec_quote": "must be a JSON object whose own top-level authority_effect is a string in [NONE, NONE_ANSWER_ONLY, NONE_REGISTRY_INVARIANT_ONLY, NONE_TEST_FIXTURE]"
         },
         "citations": {
@@ -383,18 +383,18 @@
               "line_of": "\"external_machine_awaiting_allowed\":"
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "ALLOW and DENY cite the declaring line and each subject assertion line"
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }

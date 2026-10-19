@@ -79,17 +79,17 @@
               "line": 1
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "the declaring line and the subject root when the subject is silent"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         },
         "queue": {
@@ -142,17 +142,17 @@
               "line": 1
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "the declaring line and the subject root when the subject is silent"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         },
         "queue": {
@@ -205,22 +205,22 @@
               "line": 1
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "the declaring line and the subject root when the subject is silent"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         },
         "queue": {
           "value": "write_once_repeat",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:58",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:131",
           "spec_quote": "UNDECIDABLE_RELAY_ENTRY_WRITTEN_ONCE",
           "files_after": 2
         }

@@ -74,6 +74,8 @@ RELAY_CONVENTION_REF = "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json#recei
 
 DISPOSITIONS = ("ALLOW", "DENY", "FAIL_CLOSED", "UNDECIDABLE")
 
+# Every MAX_* bound is declared, with the same value, in the spec's bounds
+# (tests/test_invariant_evaluation.py asserts the two agree).
 MAX_QUESTION_BYTES = 64 * 1024
 MAX_SOURCE_BYTES = 4 * 1024 * 1024
 MAX_SOURCES = 16
@@ -486,6 +488,16 @@ def _undecidable(answer: dict[str, Any], question: Mapping[str, Any], bindings: 
 
 
 def _bindings(sources: Any, question_root: str | None = None) -> list[dict[str, str]]:
+    try:
+        return _check_bindings(sources, question_root)
+    except Refusal as refusal:
+        # No source binding to cite yet: the refusal cites the question root line.
+        if question_root and not refusal.refs:
+            refusal.refs = [question_root]
+        raise
+
+
+def _check_bindings(sources: Any, question_root: str | None) -> list[dict[str, str]]:
     if not isinstance(sources, (list, tuple)):
         raise Refusal("SOURCES_LIST_REQUIRED", "sources is a list", "supply the sources as a list")
     if not sources:

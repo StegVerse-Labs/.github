@@ -62,12 +62,12 @@
               "line": 1
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "question@<question_sha256>:question:line for the question bytes"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "owning_existing_goal": {
@@ -77,13 +77,13 @@
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }
@@ -126,12 +126,12 @@
               "line": 1
             }
           ],
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
           "spec_quote": "question@<question_sha256>:question:line for the question bytes"
         },
         "six_fields": {
           "value": true,
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
           "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
         },
         "owning_existing_goal": {
@@ -141,13 +141,13 @@
         },
         "queue": {
           "value": "not_created",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
           "spec_quote": "UNDECIDABLE writes one write-once relay entry",
           "files_after": 0
         },
         "authority_effect": {
           "value": "NONE_ANSWER_ONLY",
-          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
           "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
         }
       }
