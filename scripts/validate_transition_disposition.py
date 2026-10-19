@@ -13,7 +13,10 @@ reported by master_records_evidence() and never produce a validation error.
 from __future__ import annotations
 from typing import Any, Mapping
 
-NON_ALLOW = {"DENY", "FAIL_CLOSED", "STOP", "DEFER"}
+# UNDECIDABLE: the evaluator could not decide (subject silent, invariant not
+# declared). It is a refusal to admit, never conformance, and carries the same
+# repair fields as every other non-ALLOW.
+NON_ALLOW = {"DENY", "FAIL_CLOSED", "STOP", "DEFER", "UNDECIDABLE"}
 DISPOSITIONS = NON_ALLOW | {"ALLOW"}
 EVIDENCE_CLASSES = {
     "SOURCE_VALIDATION", "SYNTHETIC_TEST", "ATTEMPTED_INGRESS",
