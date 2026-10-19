@@ -178,7 +178,10 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
         [sys.executable, str(ROOT / ".stegverse/transition-ledger/emit.py"),
          "--transition-id", transition_id, "--transition-class", TRANSITION_CLASS,
          "--predecessor-state-sha256", predecessor, "--successor-state-sha256", successor,
-         "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE"]
+         "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE",
+         # A crossing retried after a later fault records its decision once:
+         # the retry returns the receipt already recorded.
+         "--idempotent-on", "request_packet_id"]
         + ["--hb-epoch", str(hb_epoch)],
         cwd=ROOT, capture_output=True, text=True, check=False)
     if completed.returncode != 0:

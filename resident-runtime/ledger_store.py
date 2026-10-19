@@ -61,6 +61,10 @@ def source_key(digest):
     return SOURCE_PREFIX + digest.split(":", 1)[1] + ".json"
 
 
+class HeadCommittedDurabilityFault(OSError):
+    """HEAD was published; a durability step after it failed. The append is committed."""
+
+
 class PosixLedgerStore:
     """A ledger store on one POSIX filesystem.
 
@@ -204,7 +208,14 @@ class PosixLedgerStore:
                     self.put(key, documents[key])
                     written.append(key)
                 self.put(HEAD_KEY, new_head)
-            except BaseException:
+            except BaseException as exc:
+                if self.get(HEAD_KEY) == new_head:
+                    # HEAD was replaced and only a durability step after it
+                    # failed: the append is committed and nothing is removed.
+                    # A retry returns the recorded receipt.
+                    raise HeadCommittedDurabilityFault(
+                        "HEAD committed; durability step failed; retry is idempotent: "
+                        + type(exc).__name__ + ": " + str(exc)) from exc
                 # A torn write: HEAD did not advance, so the documents this
                 # attempt wrote are removed and no orphan is left for a later
                 # chain walk to read as a fork. The caller's retry rebuilds them.

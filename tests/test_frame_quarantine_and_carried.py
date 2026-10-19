@@ -205,6 +205,10 @@ class FrameQuarantineTests(unittest.TestCase):
         entry, = self.cycle()
         self.assertQuarantined(entry, "CARRIED_NOT_ACCEPTED_BY_DESTINATION")
         self.assertIs(K.load_registry(base.ROOT)["accepts_carried_crossings"], False)
+        self.assertEqual(entry["result"]["failed_predicate"], "DESTINATION_ACCEPTS_CARRIED_CROSSINGS")
+        self.assertEqual(entry["result"]["required_evidence_or_repair"], "re-send with the SUPPLIED epoch")
+        self.assertIn("sender", entry["result"]["retry_entrypoint"])
+        self.assertEqual(self.receipts("STEGVERSE_ORG_LEDGER_ROOT"), org)
 
     def test_ingest_frame_refuses_an_unverified_carried_claim(self):
         frame = altered(K.carrier_frame(base.packet(base.work_request({"signal": {}})), epoch=1000),
@@ -378,6 +382,45 @@ class IngestFrameReferenceTests(unittest.TestCase):
         for bad in ("+4096", " 4096", "\uff14\uff10\uff19\uff16"):
             with self.subTest(epoch=bad), self.assertRaises(ValueError):
                 K.validate_hb_reference({**reference, "epoch": bad})
+
+
+class PostHeadFaultTests(TornWriteTests):
+    """F-POST-HEAD: a fault after HEAD's replace (its directory fsync) leaves the
+    append committed; the retry returns the recorded receipt and appends none."""
+
+    def test_a_durability_fault_after_head_is_retried_without_a_second_receipt(self):
+        for which in ("crossing_repository_ledger", "crossing_organization_ledger"):
+            with self.subTest(ledger=which):
+                self.setUp()
+                packet = K.build_packet(
+                    origin_org="Origin", origin_service="origin.org-control",
+                    destination_org="StegVerse-Labs", destination_service="stegverse-labs.org-control",
+                    payload={"communication_id": "post-head-" + which, "message_class": "ecosystem.communication",
+                             "subject": "s", "body": {}},
+                    standing={"mode": "ESTABLISH_GENESIS", "node_ref": "post-head", "predecessor": None},
+                    packet_id="post-head-" + which)
+                K.publish_packet(packet, root=self.work / "mesh", epoch=1000)
+                module = K._own_module(which, ".stegverse/transition-ledger/emit.py"
+                                       if which == "crossing_repository_ledger"
+                                       else "resident-runtime/aggregate_repo_transition.py")
+                store_class = module.ledger_store.PosixLedgerStore
+                original, faults = store_class._sync_directory, {"n": 0}
+
+                def sync(store, directory):
+                    if Path(directory) == Path(store.root) and faults["n"] == 0:
+                        faults["n"] += 1
+                        raise OSError("simulated directory fsync fault after HEAD replace")
+                    return original(directory)
+
+                with mock.patch.object(store_class, "_sync_directory", sync):
+                    first, = self.cycle()
+                self.assertEqual(first["result"]["failure_code"], "FRAME_DISPATCH_IO_FAILED")
+                self.assertIn("HEAD committed", first["result"]["detail"])
+                self.assertIs(first["result"]["terminal"], False)
+                again, = self.cycle()
+                self.assertEqual(again["result"]["status"], "CONSUMED")
+                for variable in ("STEGVERSE_REPO_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_ROOT"):
+                    self.assertEqual(len(self.receipts(variable)), 1, variable)
 
 
 class MonitorAnswerEpochTests(unittest.TestCase):

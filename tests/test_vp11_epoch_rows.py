@@ -49,6 +49,19 @@ class GovernanceRecordTests(unittest.TestCase):
                 self.assertIn("SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH", str(raised.exception))
                 self.assertEqual(list(Path(work).iterdir()), [])
 
+    def test_a_retried_decision_is_recorded_once(self):
+        with tempfile.TemporaryDirectory() as work:
+            roots = {"STEGVERSE_REPO_LEDGER_ROOT": str(Path(work) / "repo"),
+                     "STEGVERSE_ORG_LEDGER_ROOT": str(Path(work) / "org")}
+            with mock.patch.dict(os.environ, roots):
+                first = governance.record({"packet_id": "retried"}, {"governance_request_sha256": "0" * 64,
+                                                                    "disposition": "ALLOW"}, hb_epoch=4096)
+                again = governance.record({"packet_id": "retried"}, {"governance_request_sha256": "0" * 64,
+                                                                    "disposition": "ALLOW"}, hb_epoch=4096)
+            receipts = list((Path(work) / "repo" / "receipts").glob("*.json"))
+        self.assertEqual(first, again)
+        self.assertEqual(len(receipts), 1)
+
 
 class HeartbeatSubsignalEpochTests(unittest.TestCase):
     def open_lease(self, epoch):

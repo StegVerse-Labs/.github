@@ -1150,6 +1150,14 @@ def _frame_quarantine(frame:dict[str,Any], custody:dict[str,Any],
                      "accepts_carried_crossings false; a CARRIED crossing is not accepted here")
     if failure is None:
         return None
+    if failure[0]==CARRIED_NOT_ACCEPTED_BY_DESTINATION:
+        # Refused at admission, before any write, so no receipt is ever written
+        # for a crossing this destination's writers cannot carry.
+        record=_quarantine_record(frame,*failure,failed_predicate="DESTINATION_ACCEPTS_CARRIED_CROSSINGS")
+        record.update({"required_evidence_or_repair":"re-send with the SUPPLIED epoch",
+                       "retry_entrypoint":"the sender's hop: the origin re-publishes the packet in a SUPPLIED frame",
+                       "owning_existing_goal":"INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 (WU-B13, #3183)"})
+        return record
     return _quarantine_record(frame,*failure)
 
 def _ingest_failure_quarantine(frame:dict[str,Any], exc:Exception)->dict[str,Any]:
