@@ -1,0 +1,103 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 5,
+  "title": "Nesting: 5000 containers in the subject fail closed without a RecursionError",
+  "derived_from": {
+    "b_p6_row": 5,
+    "b_p6_probe_set": "https://github.com/StegVerse-Labs/.github/pull/3278#issuecomment-6256480367",
+    "b_p7_changes": "https://github.com/StegVerse-Labs/.github/issues/3204#issuecomment-6256635575"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "canon": {
+      "repo": "StegVerse-Labs/.github",
+      "rev": "main",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "labs_file": "data/task-registry-global-invariants.json"
+      }
+    },
+    "deep5000": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "subject/nested-5000.json",
+      "bytes": {
+        "parts": [
+          {
+            "text": "[",
+            "times": 5000
+          },
+          {
+            "text": "false"
+          },
+          {
+            "text": "]",
+            "times": 5000
+          }
+        ]
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon}",
+          "subject": "${ref:deep5000}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        },
+        {
+          "source": "deep5000"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:43",
+          "spec_quote": "the 65th opening bracket is FAIL_CLOSED with INPUT_DEPTH_EXCEEDED"
+        },
+        "failure_code": {
+          "value": "INPUT_DEPTH_EXCEEDED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:43",
+          "spec_quote": "the 65th opening bracket is FAIL_CLOSED with INPUT_DEPTH_EXCEEDED"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "deep5000",
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "A parse refusal cites the line it stopped on: repo@rev:path:line for a source"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    }
+  ]
+}

@@ -286,7 +286,17 @@ def _source_ref(question: Mapping[str, Any], key: str) -> dict[str, str]:
 
 def parse_question(question_bytes: bytes, question_sha256: str | None = None) -> dict[str, Any]:
     prefix = f"question@{question_sha256}:question" if question_sha256 else None
-    question, _ = parse_json(question_bytes, "question", MAX_QUESTION_BYTES, prefix)
+    question, lines = parse_json(question_bytes, "question", MAX_QUESTION_BYTES, prefix)
+    try:
+        return _check_question(question)
+    except Refusal as refusal:
+        # A shape refusal of parsed question bytes cites the question root line.
+        if prefix and not refusal.refs:
+            refusal.refs = [f"{prefix}:{lines.get('', 1)}"]
+        raise
+
+
+def _check_question(question: Any) -> dict[str, Any]:
     if not isinstance(question, dict):
         raise Refusal("QUESTION_OBJECT_REQUIRED", "question is a JSON object", "supply a question object")
     schema = question.get("schema")

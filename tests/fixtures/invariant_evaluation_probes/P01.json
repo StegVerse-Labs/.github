@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 1,
+  "title": "Labs fixture ALLOW: external_machine_awaiting_allowed is false in SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005",
+  "derived_from": {
+    "b_p6_row": 1,
+    "b_p6_probe_set": "https://github.com/StegVerse-Labs/.github/pull/3278#issuecomment-6256480367",
+    "b_p7_changes": "https://github.com/StegVerse-Labs/.github/issues/3204#issuecomment-6256635575"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "canon": {
+      "repo": "StegVerse-Labs/.github",
+      "rev": "main",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "labs_file": "data/task-registry-global-invariants.json"
+      }
+    },
+    "subject": {
+      "repo": "StegVerse-Labs/.github",
+      "rev": "main",
+      "path": "data/canonical-task-records/SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005.json",
+      "bytes": {
+        "labs_file": "data/canonical-task-records/SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005.json"
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon}",
+          "subject": "${ref:subject}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        },
+        {
+          "source": "subject"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "ALLOW",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "otherwise any conforming assertion is ALLOW"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            },
+            {
+              "source": "subject",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "ALLOW and DENY cite the declaring line and each subject assertion line"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    }
+  ]
+}

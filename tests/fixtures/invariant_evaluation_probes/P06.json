@@ -1,0 +1,321 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 6,
+  "title": "Type-loose values: 0, \"false\" and null against false, and 1 against true, are all DENY",
+  "derived_from": {
+    "b_p6_row": 6,
+    "b_p6_probe_set": "https://github.com/StegVerse-Labs/.github/pull/3278#issuecomment-6256480367",
+    "b_p7_changes": "https://github.com/StegVerse-Labs/.github/issues/3204#issuecomment-6256635575"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "canon": {
+      "repo": "StegVerse-Labs/.github",
+      "rev": "main",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "labs_file": "data/task-registry-global-invariants.json"
+      }
+    },
+    "zero": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "subject/type-loose-zero.json",
+      "bytes": {
+        "json": {
+          "authority_effect": "NONE_TEST_FIXTURE",
+          "external_machine_awaiting_allowed": 0
+        }
+      }
+    },
+    "string": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "subject/type-loose-string.json",
+      "bytes": {
+        "json": {
+          "authority_effect": "NONE_TEST_FIXTURE",
+          "external_machine_awaiting_allowed": "false"
+        }
+      }
+    },
+    "null": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "subject/type-loose-null.json",
+      "bytes": {
+        "json": {
+          "authority_effect": "NONE_TEST_FIXTURE",
+          "external_machine_awaiting_allowed": null
+        }
+      }
+    },
+    "one": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "subject/type-loose-one.json",
+      "bytes": {
+        "json": {
+          "authority_effect": "NONE_TEST_FIXTURE",
+          "actions_by_manifest_required": 1
+        }
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon}",
+          "subject": "${ref:zero}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        },
+        {
+          "source": "zero"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "DENY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "compared to the declared value by strictly typed JSON equality"
+        },
+        "failure_code": {
+          "value": "INVARIANT_ASSERTION_CONTRADICTED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "Any contradiction is DENY",
+          "spec_gap": "the spec does not name this failure_code; the value is the one the Labs evaluator emits at d728eb3 and is pinned so a change is visible"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            },
+            {
+              "source": "zero",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "ALLOW and DENY cite the declaring line and each subject assertion line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon}",
+          "subject": "${ref:string}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        },
+        {
+          "source": "string"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "DENY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "compared to the declared value by strictly typed JSON equality"
+        },
+        "failure_code": {
+          "value": "INVARIANT_ASSERTION_CONTRADICTED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "Any contradiction is DENY",
+          "spec_gap": "the spec does not name this failure_code; the value is the one the Labs evaluator emits at d728eb3 and is pinned so a change is visible"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            },
+            {
+              "source": "string",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "ALLOW and DENY cite the declaring line and each subject assertion line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon}",
+          "subject": "${ref:null}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        },
+        {
+          "source": "null"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "DENY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "compared to the declared value by strictly typed JSON equality"
+        },
+        "failure_code": {
+          "value": "INVARIANT_ASSERTION_CONTRADICTED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "Any contradiction is DENY",
+          "spec_gap": "the spec does not name this failure_code; the value is the one the Labs evaluator emits at d728eb3 and is pinned so a change is visible"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            },
+            {
+              "source": "null",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "ALLOW and DENY cite the declaring line and each subject assertion line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:actions_by_manifest_required",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon}",
+          "subject": "${ref:one}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        },
+        {
+          "source": "one"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "DENY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "compared to the declared value by strictly typed JSON equality"
+        },
+        "failure_code": {
+          "value": "INVARIANT_ASSERTION_CONTRADICTED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:24",
+          "spec_quote": "Any contradiction is DENY",
+          "spec_gap": "the spec does not name this failure_code; the value is the one the Labs evaluator emits at d728eb3 and is pinned so a change is visible"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon",
+              "line_of": "\"actions_by_manifest_required\":"
+            },
+            {
+              "source": "one",
+              "line_of": "\"actions_by_manifest_required\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "ALLOW and DENY cite the declaring line and each subject assertion line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,403 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 9,
+  "title": "Canonical source claiming authority (object, 0, null, absent) fails closed; NONE_TEST_FIXTURE is the control",
+  "derived_from": {
+    "b_p6_row": 9,
+    "b_p6_probe_set": "https://github.com/StegVerse-Labs/.github/pull/3278#issuecomment-6256480367",
+    "b_p7_changes": "https://github.com/StegVerse-Labs/.github/issues/3204#issuecomment-6256635575"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "subject": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "subject/external-machine-false.json",
+      "bytes": {
+        "json": {
+          "authority_effect": "NONE_TEST_FIXTURE",
+          "external_machine_awaiting_allowed": false
+        }
+      }
+    },
+    "canon_object": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "json": {
+          "schema": "stegverse.task-registry-global-invariants/v1",
+          "invariants": {
+            "external_machine_awaiting_allowed": false
+          },
+          "prohibitions": [],
+          "authority_effect": {
+            "grants": "ALLOW"
+          }
+        }
+      }
+    },
+    "canon_zero": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "json": {
+          "schema": "stegverse.task-registry-global-invariants/v1",
+          "invariants": {
+            "external_machine_awaiting_allowed": false
+          },
+          "prohibitions": [],
+          "authority_effect": 0
+        }
+      }
+    },
+    "canon_null": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "json": {
+          "schema": "stegverse.task-registry-global-invariants/v1",
+          "invariants": {
+            "external_machine_awaiting_allowed": false
+          },
+          "prohibitions": [],
+          "authority_effect": null
+        }
+      }
+    },
+    "canon_absent": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "json": {
+          "schema": "stegverse.task-registry-global-invariants/v1",
+          "invariants": {
+            "external_machine_awaiting_allowed": false
+          },
+          "prohibitions": []
+        }
+      }
+    },
+    "canon_none": {
+      "repo": "synthetic/invariant-evaluation-probes",
+      "rev": "fixture",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "json": {
+          "schema": "stegverse.task-registry-global-invariants/v1",
+          "invariants": {
+            "external_machine_awaiting_allowed": false
+          },
+          "prohibitions": [],
+          "authority_effect": "NONE_TEST_FIXTURE"
+        }
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon_object}",
+          "subject": "${ref:subject}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon_object"
+        },
+        {
+          "source": "subject"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "An absent, non-string or other authority_effect is FAIL_CLOSED"
+        },
+        "failure_code": {
+          "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon_object",
+              "line_of": "\"authority_effect\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "cited at that member's line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "owning_existing_goal": {
+          "value": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:39",
+          "spec_quote": "the answer's owning_existing_goal comes from the question"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon_zero}",
+          "subject": "${ref:subject}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon_zero"
+        },
+        {
+          "source": "subject"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "An absent, non-string or other authority_effect is FAIL_CLOSED"
+        },
+        "failure_code": {
+          "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon_zero",
+              "line_of": "\"authority_effect\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "cited at that member's line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "owning_existing_goal": {
+          "value": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:39",
+          "spec_quote": "the answer's owning_existing_goal comes from the question"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon_null}",
+          "subject": "${ref:subject}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon_null"
+        },
+        {
+          "source": "subject"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "An absent, non-string or other authority_effect is FAIL_CLOSED"
+        },
+        "failure_code": {
+          "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon_null",
+              "line_of": "\"authority_effect\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "cited at that member's line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "owning_existing_goal": {
+          "value": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:39",
+          "spec_quote": "the answer's owning_existing_goal comes from the question"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon_absent}",
+          "subject": "${ref:subject}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon_absent"
+        },
+        {
+          "source": "subject"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "An absent, non-string or other authority_effect is FAIL_CLOSED"
+        },
+        "failure_code": {
+          "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon_absent",
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "Every answer cites repo@rev:path:line."
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:57",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-question/v1",
+          "question_id": "Q-PROBE",
+          "invariant_id": "invariant:external_machine_awaiting_allowed",
+          "owning_existing_goal": "RT-INVARIANT-EVALUATION-PROBE-001",
+          "invariants_source": "${ref:canon_none}",
+          "subject": "${ref:subject}"
+        }
+      },
+      "supply": [
+        {
+          "source": "canon_none"
+        },
+        {
+          "source": "subject"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "ALLOW",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:46",
+          "spec_quote": "must be a JSON object whose own top-level authority_effect is a string in [NONE, NONE_ANSWER_ONLY, NONE_REGISTRY_INVARIANT_ONLY, NONE_TEST_FIXTURE]"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "canon_none",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            },
+            {
+              "source": "subject",
+              "line_of": "\"external_machine_awaiting_allowed\":"
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:47",
+          "spec_quote": "ALLOW and DENY cite the declaring line and each subject assertion line"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:64",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:63",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    }
+  ]
+}
