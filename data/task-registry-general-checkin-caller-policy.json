@@ -3,11 +3,6 @@
   "goal_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
   "general_evaluator": "scripts/evaluate_task_registry_collision_checkin.py",
   "admitted_production_caller_surfaces": {
-    "AI_SESSION_GATE": {
-      "path": "scripts/evaluate_task_registry_ai_session_checkin.py",
-      "component_id": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
-      "classification": "AI_SESSION_COORDINATION_GATE"
-    },
     "INTERNAL_CANONICAL_WORK_BOOTSTRAP": {
       "path": "scripts/install_and_run_canonical_work_event_bootstrap.py",
       "classification": "NON_AI_INTERNAL_CANONICAL_WORK_PREFLIGHT"
@@ -44,5 +39,8 @@
       "NEW_HANDOFF_CLAIM"
     ],
     "reconciliation_source": "CURRENT_GITHUB_MAIN_CANONICAL_TASK_REGISTRY_AND_APPLICABLE_MIRROR_HANDOFF"
-  }
+  },
+  "prohibited_caller_surfaces": [
+    "AI_SESSION_GATE"
+  ]
 }
