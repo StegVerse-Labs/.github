@@ -22,8 +22,9 @@ REVIEW_ORDER = [
 # admission state transition rather than on evidence. It is distinct from
 # PENDING_EVIDENCE, which asserts an unresolved evidence/reachability gap, and
 # from NOT_APPLICABLE, which excludes the substrate from the transition space.
-# It never satisfies the external_device_required exhaustion rule below, because
-# a substrate that becomes eligible on admission is not exhausted.
+# An ADMITTED-EPHEMERAL-STEGOS-NODE becomes eligible only through its
+# admitted state transition. External machines are not an exhaustion fallback
+# and cannot be selected, regardless of earlier review dispositions.
 DISPOSITIONS = {
     "SELECTED",
     "SUITABLE",
