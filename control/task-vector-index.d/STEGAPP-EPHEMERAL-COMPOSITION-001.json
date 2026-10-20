@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/STEGAPP-EPHEMERAL-COMPOSITION-001.json",
+  "source_state_vector_ref": "control/task-vectors/STEGAPP-EPHEMERAL-COMPOSITION-001.json",
+  "vector": "10300000011000",
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md"
+}
