@@ -3,6 +3,10 @@
 name: Validate organization control plane - No GitHub Token Authority
 
 on:
+  # Every pull request, any base, so workflow-surface hygiene and the control-plane
+  # invariants fail closed before merge. No secrets, permissions: {} and an
+  # anonymous public checkout, so the job runs identically for fork PRs.
+  pull_request:
   workflow_dispatch:
 
 permissions: {}
