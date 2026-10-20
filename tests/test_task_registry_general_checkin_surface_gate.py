@@ -29,7 +29,8 @@ def run_eval(payload: dict, strip_pytest: bool = False):
 
 def test_policy_surface_set_and_nonclaims():
     policy = json.loads(POLICY.read_text())
-    assert set(policy["admitted_production_caller_surfaces"]) == {"AI_SESSION_GATE", "INTERNAL_CANONICAL_WORK_BOOTSTRAP", "CI_PULL_REQUEST_COLLISION_VALIDATION"}
+    assert set(policy["admitted_production_caller_surfaces"]) == {"INTERNAL_CANONICAL_WORK_BOOTSTRAP", "CI_PULL_REQUEST_COLLISION_VALIDATION"}
+    assert "AI_SESSION_GATE" not in policy["admitted_production_caller_surfaces"]
     assert policy["missing_or_unknown_surface"] == "FAIL_CLOSED"
     assert policy["declaration_is_authentic_origin_attestation"] is False
     assert policy["runtime_external_ai_reachability_proven_absent"] is False
@@ -57,8 +58,11 @@ def test_internal_surface_is_preserved_without_attestation_claim():
 
 
 def test_production_callers_bind_expected_surfaces():
+    # Preserve the legacy wrapper as history; it is no longer an admitted production caller.
     assert 'CALLER_SURFACE = "AI_SESSION_GATE"' in AI_GATE.read_text()
-    assert 'request["caller_surface"] = CALLER_SURFACE' in AI_GATE.read_text()
+    proc = run_eval({"task_id": TASK_ID, "caller_surface": "AI_SESSION_GATE", "observed_registry_generation": current_generation()}, strip_pytest=True)
+    assert proc.returncode != 0
+    assert "caller_surface not admitted" in proc.stderr
     assert 'CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"' in BOOTSTRAP.read_text()
     assert '"caller_surface": CALLER_SURFACE' in BOOTSTRAP.read_text()
     assert 'CALLER_SURFACE = "CI_PULL_REQUEST_COLLISION_VALIDATION"' in CI_GATE.read_text()
