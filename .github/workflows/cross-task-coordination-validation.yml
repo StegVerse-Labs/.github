@@ -85,6 +85,9 @@ on:
       - 'tests/test_steghealth_kv_interlock_canonical_work_ingress.py'
       - 'scripts/check_registry_generation_fence.py'
       - 'tests/test_registry_generation_fence.py'
+      - 'scripts/validate_canonical_work_coordination.py'
+      - 'scripts/report_canonical_work_coordination_validation.py'
+      - 'tests/test_report_canonical_work_coordination_validation.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
@@ -175,6 +178,9 @@ on:
       - 'data/canonical-task-records/EPHEMERAL-STEGBROWSER-EXTERNAL-AI-ACTIVATION-001.json'
       - 'scripts/check_registry_generation_fence.py'
       - 'tests/test_registry_generation_fence.py'
+      - 'scripts/validate_canonical_work_coordination.py'
+      - 'scripts/report_canonical_work_coordination_validation.py'
+      - 'tests/test_report_canonical_work_coordination_validation.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
 permissions: {}
@@ -233,7 +239,8 @@ jobs:
             tests.test_ungoverned_ai_defensive_envelope_consumer \
             tests.test_ephemeral_external_ai_org_first_components \
             tests.test_ecosystem_chat_reusable_composition \
-            tests.test_registry_generation_fence
+            tests.test_registry_generation_fence \
+            tests.test_report_canonical_work_coordination_validation
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
           python scripts/validate_four_missing_cosv_tracking.py
           python scripts/validate_task_registration_substrate_resolution.py
@@ -335,3 +342,13 @@ jobs:
             python scripts/check_registry_generation_fence.py --mode push \
               --repo "$fence_repo" --before "${PUSH_BEFORE:-}" --after "${GITHUB_SHA}"
           fi
+      - name: Canonical work coordination validator - observation report (non-blocking, read-only)
+        # validate_canonical_work_coordination.py had no CI caller. This runs it
+        # exactly as scripts/finalize_runtime_profile_map_cycle.py does and
+        # reports PASS or FAIL_CLOSED (six fields) to the job summary. The
+        # registry currently fails it (StegVerse-org/.github#165 H-C), so the
+        # observed FAIL_CLOSED is reported, not enforced; the wrapper itself
+        # fails closed if the validator cannot be run. No event ledger is
+        # written and no admission is conferred.
+        if: ${{ !cancelled() }}
+        run: python scripts/report_canonical_work_coordination_validation.py
