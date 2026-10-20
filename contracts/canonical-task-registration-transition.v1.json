@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.transition-contract/v1",
+  "contract_id": "CANONICAL-TASK-REGISTRATION-TRANSITION-001",
+  "status": "SOURCE_IMPLEMENTED_PROPOSED",
+  "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "proposed_by": "Lane D (STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001), StegVerse-org/.github#167",
+  "purpose": "Replace hand-edited Goal Task registration with one manifest-directed transition whose receipt is the observation.",
+  "manifest": {
+    "location": "control/canonical-task-registration-requests/<request_id>.json",
+    "schema": "stegverse.canonical-task-registration-request/v1",
+    "schema_ref": "schemas/canonical-task-registration-request.schema.json"
+  },
+  "transition": {
+    "entrypoint": "scripts/canonical_task_registration_transition.py",
+    "modes": ["plan", "apply", "verify"],
+    "workflow": ".github/workflows/canonical-task-registration-transition.yml",
+    "predecessor": "live base tip of data/canonical-task-registry.json (generation N)",
+    "successor": "generation N + 1 with exactly one appended row equal to the derived record",
+    "derived_paths": [
+      "data/canonical-task-registry.json",
+      "data/canonical-task-records/<task_id>.json",
+      "control/task-vectors/<task_id>.json",
+      "control/task-vector-index.d/<task_id>.json"
+    ]
+  },
+  "receipt": {
+    "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
+    "schema_ref": "schemas/canonical-task-registration-transition-receipt.schema.json",
+    "organization_ledger_entrypoint": ".stegverse/transition-ledger/emit.py via .github/workflows/organization-ledger-transition.yml",
+    "organization_ledger_appended_by_this_transition": false
+  },
+  "governing_invariants": [
+    "data/task-coordination-policy.json#session_mutation_generation_fence",
+    "data/task-coordination-policy.json#adjacent_task_derivation_contract.duplicate_task_creation_prohibited",
+    "data/task-coordination-policy.json#invariants:TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY",
+    "data/task-coordination-policy.json#invariants:WORKERCOORDINATOR_OWNS_EXECUTION_CLAIM_AND_FENCE",
+    "TASK_REGISTRY_CANONICAL_INVARIANTS.md#worker-claim-field-invariant",
+    "data/task-registry-global-invariants.json#completion_language_requires_evidence_class",
+    "data/task-registry-global-invariants.json#actions_by_manifest_required",
+    "docs/ECOSYSTEM_ECONOMIC_WHITEPAPER_GATED_ROADMAP_MIRROR_HANDOFF.md:19 (COSV emitted by the Registry path; no manual vector)",
+    "StegVerse-org/.github:docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md#conformance-standard"
+  ],
+  "predicates": [
+    "REGISTRATION_REQUEST_SCHEMA_INVALID",
+    "REGISTRY_GENERATION_NOT_OBSERVED_TIP",
+    "TASK_IDENTITY_NOT_UNIQUE",
+    "CANONICAL_RECORD_SCHEMA_INVALID",
+    "WORKER_CLAIM_NOT_PROJECTION_ONLY",
+    "UNQUALIFIED_COMPLETION_PROHIBITED",
+    "COSV_NOT_DERIVABLE",
+    "REGISTRATION_NOT_APPLIED",
+    "REGISTRATION_BYTES_DIVERGE"
+  ],
+  "non_allow_fields": ["failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt"],
+  "clock_free": true,
+  "external_machine_required": false,
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "nonclaims": [
+    "Registration is not admission, claim, fence or execution authority.",
+    "A green verify run is source validation, not runtime reality.",
+    "This contract does not amend schemas/canonical-task-record.schema.json; the derived record adds the registry's existing cosv_task_vector and source_state_vector_ref binding fields."
+  ]
+}
