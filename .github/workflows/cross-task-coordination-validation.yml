@@ -88,6 +88,8 @@ on:
       - 'scripts/validate_canonical_work_coordination.py'
       - 'scripts/report_canonical_work_coordination_validation.py'
       - 'tests/test_report_canonical_work_coordination_validation.py'
+      - 'scripts/normalize_canonical_task_rows.py'
+      - 'tests/test_normalize_canonical_task_rows.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
@@ -181,6 +183,8 @@ on:
       - 'scripts/validate_canonical_work_coordination.py'
       - 'scripts/report_canonical_work_coordination_validation.py'
       - 'tests/test_report_canonical_work_coordination_validation.py'
+      - 'scripts/normalize_canonical_task_rows.py'
+      - 'tests/test_normalize_canonical_task_rows.py'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
 permissions: {}
@@ -240,7 +244,8 @@ jobs:
             tests.test_ephemeral_external_ai_org_first_components \
             tests.test_ecosystem_chat_reusable_composition \
             tests.test_registry_generation_fence \
-            tests.test_report_canonical_work_coordination_validation
+            tests.test_report_canonical_work_coordination_validation \
+            tests.test_normalize_canonical_task_rows
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
           python scripts/validate_four_missing_cosv_tracking.py
           python scripts/validate_task_registration_substrate_resolution.py
@@ -352,3 +357,11 @@ jobs:
         # written and no admission is conferred.
         if: ${{ !cancelled() }}
         run: python scripts/report_canonical_work_coordination_validation.py
+      - name: Canonical task row normalization check (non-blocking, read-only, Q-R-j)
+        # Reports, per row, the worker_claim / runtime_resolution delta against
+        # the schema constants and TASK_REGISTRY_CANONICAL_INVARIANTS.md L46-L53
+        # (precedent dfcb305f), plus runtime_requirements rows pending Q-R-k.
+        # --check only: never writes the registry or any source; deltas are
+        # reported, not enforced; an unreadable source fails the step closed.
+        if: ${{ !cancelled() }}
+        run: python scripts/normalize_canonical_task_rows.py --check --report "$RUNNER_TEMP/canonical-task-row-normalization-check.json"
