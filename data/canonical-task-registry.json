@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 319,
+  "generation": 320,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -18691,7 +18691,7 @@
         {
           "work_unit_id": "WU2-REGISTRATION-RECOVERY-ON-A-NEW-DEVICE",
           "statement": "A principal's node registration must be recoverable on a device that has never held one, without minting a new identity.",
-          "current_state": "Absent. Site:assets/workspace-kv-bridge.js requires node.status().registered === true and otherwise fails closed with 'Register this device before opening Personal Workspace KV context'. Without recovery, node_id is a physical-device identity gate in effect, which the global invariant prohibits.",
+          "current_state": "Consumer present, producer absent. At Site main 6255d59, assets/workspace-kv-bridge.js resolves the node through assets/workspace-node-binding.js: a directly observed registration binds, or an admitted stegos.device_continuity_recovery_result.v1 rehydrates the retained node through node.rehydrateRegistration(recovery). assets/stegverse-node-continuity-impl.js does not define rehydrateRegistration, so the recovery path fails closed with LOCAL_REHYDRATION_INTERFACE_NOT_AVAILABLE (six actionable fields in draft Site#1609). Until the StegOS node-continuity producer exists, node_id remains a physical-device identity gate in effect, which the global invariant prohibits.",
           "assigned_owner": null
         },
         {
@@ -18709,7 +18709,7 @@
         {
           "work_unit_id": "WU5-WORKSPACE-STORAGE-PERSISTENCE-REQUEST",
           "statement": "The WorkSpace path must request storage persistence where the platform offers it, as a mitigation that does not discharge WU1.",
-          "current_state": "Absent. The single navigator.storage.persist() call in Site is in assets/device-local-kv-installer.js, loaded only by device-kv-install.html and cloud-kv-peers.html. WorkSpace's script chain never reaches it. Persistence is advisory and may be refused, so this mitigates eviction without satisfying WU1.",
+          "current_state": "Source-implemented, runtime not observed. At Site main 6255d59, assets/workspace.js defines requestStoragePersistence(), which calls navigator.storage.persist() on every WorkSpace load and records requested, granted, refused or PERSISTENCE_API_UNAVAILABLE. No authentic runtime observation of a grant is recorded. Persistence is advisory and may be refused, so this mitigates eviction without satisfying WU1.",
           "assigned_owner": null
         }
       ],
