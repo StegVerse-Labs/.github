@@ -31,7 +31,63 @@ def require(condition: bool, message: str) -> None:
         raise SystemExit(f"FAIL_CLOSED: {message}")
 
 
+OWNING_GOAL = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+RETRY_ENTRYPOINT = "python scripts/validate_canonical_work_coordination.py"
+_TYPE_NAMES = {dict: "object", list: "array"}
+
+
+def _json_type(value: object) -> str:
+    if value is None:
+        return "null"
+    if isinstance(value, bool):
+        return "boolean"
+    if isinstance(value, (int, float)):
+        return "number"
+    if isinstance(value, str):
+        return "string"
+    return _TYPE_NAMES.get(type(value), type(value).__name__)
+
+
+def fail_malformed(source: str, field: str, expected: str, actual: str, row_owner: str | None = None) -> None:
+    """Fail closed with the six-field record instead of raising a traceback."""
+    owner = OWNING_GOAL if row_owner is None else f"{OWNING_GOAL} (row owner: {row_owner})"
+    raise SystemExit(
+        "\n".join(
+            [
+                f"FAIL_CLOSED: malformed field {field}: expected {expected}, got {actual}",
+                "failure_code: CANONICAL_WORK_COORDINATION_MALFORMED_FIELD",
+                f"failed_predicate: {field} must be a JSON {expected} ({source})",
+                f"required_evidence_or_repair: repair {field} in {source} to a JSON {expected}; this validator does not modify data",
+                f"retry_entrypoint: {RETRY_ENTRYPOINT}",
+                f"owning_existing_goal: {owner}",
+                "next_attempt: after the owning record is repaired, re-run retry_entrypoint",
+            ]
+        )
+    )
+
+
+def require_type(value: object, expected: type, source: str, field: str, row_owner: str | None = None) -> None:
+    if not isinstance(value, expected):
+        fail_malformed(source, field, _TYPE_NAMES[expected], _json_type(value), row_owner)
+
+
+def _rel(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 def main() -> int:
+    try:
+        return _main()
+    except (AttributeError, TypeError, KeyError) as exc:
+        # Backstop: any remaining malformed shape fails closed, never a traceback.
+        fail_malformed("canonical work coordination sources", "unclassified field", "expected shape", f"{type(exc).__name__}: {exc}")
+    return 1
+
+
+def _main() -> int:
     task_schema = load_json(TASK_SCHEMA)
     recon_schema = load_json(RECON_SCHEMA)
     registry = load_json(REGISTRY)
@@ -39,6 +95,15 @@ def main() -> int:
     worker_registry = load_json(WORKER_REGISTRY)
     runtime_map = load_json(RUNTIME_MAP)
     handoff = HANDOFF.read_text(encoding="utf-8")
+    for path, document in (
+        (TASK_SCHEMA, task_schema),
+        (RECON_SCHEMA, recon_schema),
+        (REGISTRY, registry),
+        (POLICY, policy),
+        (WORKER_REGISTRY, worker_registry),
+        (RUNTIME_MAP, runtime_map),
+    ):
+        require_type(document, dict, _rel(path), "<document root>")
 
     require(registry.get("schema") == "stegverse.canonical-task-registry/v1", "canonical registry schema missing")
     require(registry.get("authoritative_roles", {}).get("execution_claim_and_fence") == "control/worker-registry.json / WorkerCoordinator", "registry must reference WorkerCoordinator for claim/fence authority")
@@ -87,7 +152,10 @@ def main() -> int:
 
     task_ids: set[str] = set()
     correlation_ids: set[str] = set()
-    for task in registry.get("tasks", []):
+    tasks = registry.get("tasks", [])
+    require_type(tasks, list, _rel(REGISTRY), "tasks")
+    for index, task in enumerate(tasks):
+        require_type(task, dict, _rel(REGISTRY), f"tasks[{index}]")
         task_id = task.get("task_id")
         correlation_id = task.get("correlation_id")
         require(isinstance(task_id, str) and task_id, "task_id missing")
@@ -97,6 +165,7 @@ def main() -> int:
         correlation_ids.add(correlation_id)
 
         claim = task.get("worker_claim", {})
+        require_type(claim, dict, _rel(REGISTRY), f"tasks[{task_id}].worker_claim", task_id)
         require(claim.get("authority") == "WORKERCOORDINATOR", f"{task_id}: claim authority drift")
         require(claim.get("projection_only") is True, f"{task_id}: registry claim must be projection-only")
 
@@ -108,19 +177,32 @@ def main() -> int:
 
         resolution = task.get("runtime_resolution")
         if resolution is not None:
+            require_type(resolution, dict, _rel(REGISTRY), f"tasks[{task_id}].runtime_resolution", task_id)
             require(resolution.get("projection_only") is True, f"{task_id}: runtime resolution not projection-only")
             require(resolution.get("selection_grants_authority") is False, f"{task_id}: runtime resolution grants authority")
             require(resolution.get("map_generation") == runtime_map.get("generation"), f"{task_id}: stale runtime-map generation projection")
-            known_profiles = {p.get("profile_id") for p in runtime_map.get("profiles", [])}
-            require(set(resolution.get("candidate_profile_ids", [])).issubset(known_profiles), f"{task_id}: runtime resolution references unknown profile")
+            profiles = runtime_map.get("profiles", [])
+            require_type(profiles, list, _rel(RUNTIME_MAP), "profiles")
+            for p_index, profile in enumerate(profiles):
+                require_type(profile, dict, _rel(RUNTIME_MAP), f"profiles[{p_index}]")
+            known_profiles = {p.get("profile_id") for p in profiles}
+            candidate_ids = resolution.get("candidate_profile_ids", [])
+            require_type(candidate_ids, list, _rel(REGISTRY), f"tasks[{task_id}].runtime_resolution.candidate_profile_ids", task_id)
+            require(set(candidate_ids).issubset(known_profiles), f"{task_id}: runtime resolution references unknown profile")
 
         completion = task.get("completion", {})
+        require_type(completion, dict, _rel(REGISTRY), f"tasks[{task_id}].completion", task_id)
         state = task.get("coordination_state")
         if state == "CLOSED":
             require(completion.get("claimed") is True, f"{task_id}: CLOSED without completion claim")
             require(completion.get("validated") is True, f"{task_id}: CLOSED without validated completion")
             require(bool(completion.get("reconciliation_ref")), f"{task_id}: CLOSED without reconciliation reference")
 
+        for list_field in ("blockers", "dependencies"):
+            items = task.get(list_field, [])
+            require_type(items, list, _rel(REGISTRY), f"tasks[{task_id}].{list_field}", task_id)
+            for i_index, item in enumerate(items):
+                require_type(item, dict, _rel(REGISTRY), f"tasks[{task_id}].{list_field}[{i_index}]", task_id)
         blocker_dependency_ids = {item.get("dependency_id") for item in task.get("blockers", [])}
         dependency_ids = {item.get("dependency_id") for item in task.get("dependencies", [])}
         require(blocker_dependency_ids.issubset(dependency_ids), f"{task_id}: blocker references non-existent dependency")
