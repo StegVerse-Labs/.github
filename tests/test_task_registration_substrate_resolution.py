@@ -82,7 +82,7 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "EXTERNAL_MACHINE_DEPENDENCY_PROHIBITED"):
             module.validate_resolution(record_with_resolution(reviews, module.REVIEW_ORDER[5], external=True))
 
-    def test_external_device_allowed_only_after_evidenced_exhaustion(self):
+    def test_external_device_rejected_even_after_evidenced_exhaustion(self):
         reviews = [
             review(module.REVIEW_ORDER[0], "UNSUITABLE", "ARCHITECTURAL", ["evidence:a"]),
             review(module.REVIEW_ORDER[1], "UNSUITABLE", "PLATFORM", ["evidence:b"]),
