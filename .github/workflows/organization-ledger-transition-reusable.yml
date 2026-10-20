@@ -19,7 +19,7 @@ on:
       intr_interface_repository: {type: string, required: false, default: "StegVerse-org/.github", description: "InTr & Mesh-owned ingress/self-closure interface (agreed home)"}
       intr_interface_ref:      {type: string, required: false, default: "0f9481af324fc0cf8e46c2446ad69de07f9a8a9d", description: "40-hex InTr & Mesh interface commit: StegVerse-org/.github main merge commit of #185 (head 78ae1f8e, same tree; C7/C8 signatures on #163 issuecomment-6235428412); flat --ledger-component accepted"}
       sdk_ref:                 {type: string, required: false, default: "74d9b473aa415b06a9d550c28b2779a691b4ba32", description: "request mode only; existing pinned dependency"}
-      mode:                    {type: string, required: false, default: "request", description: "request | self-closure"}
+      mode:                    {type: string, required: false, default: "request", description: "request | self-closure | readback (P1-FC-11: read the designated ledger back under this run id; appends and publishes nothing)"}
       request:                 {type: string, required: false, default: ""}
       mesh_root:               {type: string, required: false, default: ""}
       communication_id:        {type: string, required: false, default: "", description: "H29 #16"}
@@ -56,15 +56,20 @@ jobs:
           for r in "${{ inputs.component_ref }}" "${{ inputs.intr_interface_ref }}"; do
             [[ "$r" =~ ^[0-9a-f]{40}$ ]] || fail COMPONENT_REF_NOT_PINNED REF_IS_A_40_HEX_COMMIT "pass the published commit SHA, not a branch or tag" "re-dispatch with the pinned SHA"
           done
+          case "$MODE" in request|self-closure|readback) ;; *) fail MODE_INVALID MODE_IS_REQUEST_SELF_CLOSURE_OR_READBACK "mode must be request, self-closure or readback" "re-dispatch with a declared mode; nothing was appended";; esac
+          if [ "$MODE" = readback ]; then
+            # P1-FC-11: a readback appends nothing, so it carries no epoch; nothing below writes.
+            echo "mode readback: no epoch is required because nothing is appended"
+          fi
           if [ -z "$HB_EPOCH" ] && [ "$MODE" = request ]; then
             # push-triggered request mode: the committed request carries the epoch (schema hb_epoch)
             HB_EPOCH=$(git diff --name-only --diff-filter=AM "${{ github.event.before }}" "$GITHUB_SHA" -- '.stegverse/transition-requests/*.json' | head -1 | xargs -r python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("hb_epoch",""))')
             echo "HB_EPOCH=$HB_EPOCH" >> "$GITHUB_ENV"
           fi
           # Shared epoch rule (agreed with InTr; same as TVC validate_warrant): supplied, digits, >= 32; no clock.
-          [ -n "$HB_EPOCH" ] || fail HB_EPOCH_NOT_SUPPLIED SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read" "re-dispatch the same transition with hb_epoch supplied; nothing was appended"
-          case "$HB_EPOCH" in *[!0123456789]*) fail HB_EPOCH_INVALID SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "supply hb_epoch as digits only, >= 32; no clock is read" "re-dispatch with a valid hb_epoch; nothing was appended";; esac
-          [ "$HB_EPOCH" -ge 32 ] || fail HB_EPOCH_INVALID SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "hb_epoch precedes the HB32 anchor; no clock is read" "re-dispatch with hb_epoch >= 32; nothing was appended"
+          [ "$MODE" = readback ] || [ -n "$HB_EPOCH" ] || fail HB_EPOCH_NOT_SUPPLIED SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read" "re-dispatch the same transition with hb_epoch supplied; nothing was appended"
+          [ "$MODE" = readback ] || case "$HB_EPOCH" in *[!0123456789]*) fail HB_EPOCH_INVALID SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "supply hb_epoch as digits only, >= 32; no clock is read" "re-dispatch with a valid hb_epoch; nothing was appended";; esac
+          [ "$MODE" = readback ] || [ "$HB_EPOCH" -ge 32 ] || fail HB_EPOCH_INVALID SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "hb_epoch precedes the HB32 anchor; no clock is read" "re-dispatch with hb_epoch >= 32; nothing was appended"
           # The parameter file is at a fixed path (the Python modules read the same path).
           # owning_existing_goal is read by the Python modules from the committed parameter file;
           # the dispatch input must equal it, so the two sources cannot disagree.
@@ -102,16 +107,16 @@ jobs:
           fi
 
       - name: Checkout the pinned SDK (request mode; existing dependency, not a new one)
-        if: inputs.mode != 'self-closure'
+        if: inputs.mode == 'request'
         uses: actions/checkout@v4
         with: {repository: StegVerse-org/StegVerse-SDK, ref: "${{ inputs.sdk_ref }}", path: sdk, persist-credentials: false}
 
       - name: Install SDK (request mode)
-        if: inputs.mode != 'self-closure'
+        if: inputs.mode == 'request'
         run: python -m pip install --no-deps -e ./sdk
 
       - name: Validate committed requests against stegverse.organization-transition-request/v1
-        if: inputs.mode != 'self-closure'
+        if: inputs.mode == 'request'
         run: |
           python3 - <<'PY'
           import json, os
@@ -127,7 +132,7 @@ jobs:
           PY
 
       - name: Select committed transition requests
-        if: inputs.mode != 'self-closure'
+        if: inputs.mode == 'request'
         env:
           INPUT_REQUEST: ${{ inputs.request }}
           BEFORE: ${{ github.event.before }}
@@ -163,7 +168,7 @@ jobs:
           cat "$RUNNER_TEMP/requests.txt"
 
       - name: Receive each request and append to the repository and organization ledgers
-        if: inputs.mode != 'self-closure'
+        if: inputs.mode == 'request'
         env:
           INPUT_MESH_ROOT: ${{ inputs.mesh_root }}
         run: |
@@ -380,7 +385,7 @@ jobs:
       # the ledger that says they were emitted: a receipt never claims an
       # emission whose frame did not outlive this run.
       - name: Publish the designated mesh ref (fast-forward only)
-        if: inputs.mode != 'self-closure'
+        if: inputs.mode == 'request'
         run: |
           if [ -z "${MESH_PUBLISH_REF:-}" ]; then
             echo "no mesh ref bound by this run; nothing to publish"; exit 0
@@ -395,6 +400,7 @@ jobs:
           echo "mesh ref published: $MESH_PUBLISH_REF $(git rev-parse "$MESH_PUBLISH_REF")"
 
       - name: Publish the ledger ref (fast-forward only)
+        if: inputs.mode != 'readback'
         run: |
           if ! git rev-parse --verify --quiet "$LEDGER_REF" >/dev/null; then
             echo "nothing appended; ledger ref not materialized"; exit 0
@@ -405,7 +411,7 @@ jobs:
           fi
 
       - name: Read the organization and repository ledgers back from a fresh fetch
-        if: inputs.mode != 'self-closure'
+        if: inputs.mode == 'request'
         run: |
           set -euo pipefail
           fresh="$RUNNER_TEMP/readback.git"
@@ -460,10 +466,43 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # P1-FC-11 (INDEX H51): the readback sweep as an ecosystem step. The designated ref is
+      # fetched fresh and the component's readback runs on it unchanged; readback_only.py records
+      # the command, ref SHA, exit and output sha256 under this run id. Nothing is appended or published.
+      - name: Read the designated ledger back (readback mode, nothing appended)
+        if: inputs.mode == 'readback'
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/results/readback"
+          fresh="$RUNNER_TEMP/readback-only.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          if [ -z "$auth_header" ]; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"AUTHENTICATED_LEDGER_READBACK_UNAVAILABLE","failed_predicate":"FRESH_FETCH_AUTHENTICATED","required_evidence_or_repair":"checkout credentials unavailable for independent sovereign ref fetch","retry_entrypoint":"'"$RETRY"'","owning_existing_goal":"'"$GOAL"'","next_attempt":"retry with authorized existing repository contents token"}'
+            exit 1
+          fi
+          # An absent ref is fetched as nothing; the readback then reports ORGANIZATION_LEDGER_HEAD_ABSENT.
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF" || true
+          sha=$(git --git-dir="$fresh" rev-parse --verify -q "$LEDGER_REF" || true)
+          status=0
+          python3 "$COMPONENT/readback_only.py" \
+            --location "git+$fresh#$LEDGER_REF" --out-dir "$out" \
+            --run-id "${{ github.run_id }}" --component-ref "${{ inputs.component_ref }}" \
+            --ledger-ref "$LEDGER_REF" --ledger-ref-sha "$sha" --organization "${{ inputs.organization }}" \
+            --org-contract "$GITHUB_WORKSPACE/.stegverse/transition-ledger/org-contract.json" \
+            --repository-namespace "$REPO_LEDGER_NAMESPACE" > "$out.stdout.json" || status=1
+          {
+            echo "### readback (run ${{ github.run_id }})"
+            echo '```json'
+            cat "$out/invocation.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit $status
+
       # What the designated mesh holds after this run, read from a fresh fetch
       # the way a peer that materializes later would read it.
       - name: Read the designated mesh ref back from a fresh fetch
-        if: inputs.mode != 'self-closure' && env.MESH_PUBLISH_REF != ''
+        if: inputs.mode == 'request' && env.MESH_PUBLISH_REF != ''
         run: |
           set -euo pipefail
           fresh="$RUNNER_TEMP/mesh-readback.git"
@@ -499,7 +538,8 @@ jobs:
 
       # Propagation refusals fail the run here, after the appended receipts were published and read back.
       - name: Fail on a recorded propagation refusal (six fields)
-        if: always()
+        # mode readback appends nothing (step 1 admits it with no epoch and no append step runs), so there is no propagation to gate.
+        if: always() && inputs.mode != 'readback'
         run: |
           set -euo pipefail
           # Lane B #162 G1/G2: absence, a non-ALLOW disposition, an unreadable record or a nonzero exit all fail

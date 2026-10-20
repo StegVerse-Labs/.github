@@ -17,6 +17,7 @@ Registration and CI never stand for runtime. Runtime counts only when a manifest
 | `propagate_repository_receipts.py` | intra-org repository→organization propagation (blob 2369d68e) |
 | `ledger_common.py` | new; holds the three shared rules below |
 | `generate_ledger_contracts.py` | `contract.json` / `org-contract.json` from one parameter file; `--check` |
+| `readback_only.py` | new (P1-FC-11); `mode: readback`: runs the readback unchanged on a fresh fetch and records the invocation under the run id |
 | `verify_component_manifest.py`, `component-manifest.json` | git blob digests of every module and schema |
 | `schemas/` | transition-request v1 (optional `hb_epoch`), parameter file v1 (InTr #163 names) |
 | `../../.github/workflows/organization-ledger-transition-reusable.yml` | `workflow_call`; callers pin it by 40-hex SHA |
@@ -93,3 +94,11 @@ That module is wiring only. It calls the existing `propagate_repository_receipts
   - A request-mode run that received no request writes `results/NO_REQUESTS.json` (requests listed, those deferred, received 0). Only then is an empty run ALLOW (`applicability: NO_REQUEST_RECEIVED`), because nothing was appended. An empty `results/` without the marker is `PROPAGATION_NO_REQUEST_RECORDED`. A marker that is invalid or contradicted is `PROPAGATION_NO_REQUESTS_MARKER_INVALID` (N3).
 - **Normal result:** after a normal append the repository receipt is already carried, so propagation is a no-op (`skipped`). It appends `REPO_STATE_PROPAGATION` receipts only for repository receipts the organization chain does not yet carry. A rerun skips them.
 
+## Readback-only mode (P1-FC-11, INDEX H51)
+
+`mode: readback` reads this organization's designated ledger ref back from a fresh fetch. It runs the component's `organization_ledger_readback.py` unchanged, through `readback_only.py`, which writes `results/readback/invocation.json` (`stegverse.organization-ledger-readback-invocation/v1`). That record holds:
+- the run id, the ledger ref and the SHA it was read at, and the component commit;
+- the exact command, the exit code and the sha256 of the readback output;
+- the readback's own disposition, with its six fields copied as they are.
+
+The mode appends, publishes and propagates nothing, so step 1 admits it with no epoch, and the propagation gate does not run. An undeclared mode is FAIL_CLOSED `MODE_INVALID`; before this change it fell into request mode. An absent run id is FAIL_CLOSED `READBACK_RUN_ID_ABSENT`, and an unpinned component is `COMPONENT_REF_NOT_PINNED`. The run passes only on readback ALLOW with exit 0. A federation sweep is each organization's caller dispatching this mode; the lane script `build/evidence/ecosystem-readback/run.sh` is no longer needed.
