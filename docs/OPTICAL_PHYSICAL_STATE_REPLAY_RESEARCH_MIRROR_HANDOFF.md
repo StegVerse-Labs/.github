@@ -1,5 +1,13 @@
 # Optical Physical-State and Replay Research — Source Registration Handoff
 
+## H31a — Optical-specific admission and evidence boundary (2026-10-17)
+
+**Scope:** Source documentation only for Goal Task ID `OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001`, COSV `10111110114000`. This paragraph neither edits the canonical Task Registry nor executes or authorizes an optical transition.
+
+Optical physical-state replay is **not admitted** merely because source registration, synthetic replay, generic Organization diagnostics, or receipt-chain validation succeeded. Admission requires an **authentic manifest-bound transition** that binds the optical Goal Task ID and COSV, the applicable **H31a optical-specific admission predicate**, an authoritative `ALLOW`, `DENY`, or `FAIL_CLOSED` disposition, and **matching sovereign Organization ledger readback** proving the same transition identity and receipt integrity/provenance. An `ALLOW` must be demonstrated by that evidence, never inferred from CI or generic receipt validation. Preserve the original six-field non-ALLOW evidence and failed predicate when a transition is refused. If authenticated runtime evidence cannot be accessed, record `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` as an observation limit, **not** as a substitute runtime disposition.
+
+Until optical-specific admission and sovereign readback are verified, **STOP_FAIL_CLOSED** applies to optical promotion and patent filing. No resident machine, device inventory, `AI_SESSION_GATE`, or additional post-closure observer gate is a prerequisite. Existing owner authority, manifest-directed execution, expected-head CI, and sovereign readback requirements remain unchanged.
+
 ## 2026-10-17 conformance reconciliation (read this first)
 
 Read at `StegVerse-Labs/.github` main `5b3fc476`, Registry generation 317. Coordination: StegVerse-org/.github#165 (P3), [#3204](https://github.com/StegVerse-Labs/.github/issues/3204), [Patents #16](https://github.com/StegVerse-Labs/Patents/issues/16). Evidence class: source reading only. This section changes no record, Registry row, claim or ledger.
