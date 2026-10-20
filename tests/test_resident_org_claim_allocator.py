@@ -672,15 +672,19 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
     def test_hosted_workflow_synthesizes_no_heartbeat_epoch(self):
         # The hosted path has no carrier, so it supplies no epoch and derives none;
         # its grants are FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED until a carrier does.
-        text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
+        text = "".join((ROOT / rel).read_text(encoding="utf-8") for rel in (
+            ".github/workflows/organization-claim-allocator-transition.yml",
+            ".github/workflows/organization-claim-allocator-transition-writer.yml"))
         for forbidden in ("--hb-epoch", "date +%s", "hb_reference(", "time.time", "datetime.now"):
             self.assertNotIn(forbidden, text)
 
     def test_workflow_refusals_carry_the_six_fields(self):
-        text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
+        text = "".join((ROOT / rel).read_text(encoding="utf-8") for rel in (
+            ".github/workflows/organization-claim-allocator-transition.yml",
+            ".github/workflows/organization-claim-allocator-transition-writer.yml"))
         refusals = [json.loads(line.strip()[len("echo '"):-1]) for line in text.splitlines()
                     if line.strip().startswith("echo '{\"disposition\":\"FAIL_CLOSED\"")]
-        # 4 publishing-path refusals + 2 pull_request dry-run refusals.
+        # 4 publishing refusals (writer-only workflow) + 2 pull_request dry-run refusals (PR-facing).
         self.assertEqual(len(refusals), 6)
         for refusal in refusals:
             for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
@@ -722,7 +726,8 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
                                "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE"})
 
     def test_event_ephemeral_workflow_is_wired_to_the_declared_ref(self):
-        rel = ".github/workflows/organization-claim-allocator-transition.yml"
+        # The publishing steps live in the writer-only workflow (never pull_request).
+        rel = ".github/workflows/organization-claim-allocator-transition-writer.yml"
         workflow = (ROOT / rel).read_text(encoding="utf-8")
         for needle in ("control/resident-execution-request.d/org-claim-allocator-*.json", "workflow_dispatch",
                        "group: organization-ledger", "cancel-in-progress: false", "contents: write",

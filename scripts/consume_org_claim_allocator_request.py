@@ -70,7 +70,7 @@ HOSTED_ENV = (
 )
 ORG_CONTRACT_REL = Path(".stegverse/transition-ledger/org-contract.json")
 GIT_SCHEME = "git+"
-EVENT_EPHEMERAL_ENTRYPOINT = ".github/workflows/organization-claim-allocator-transition.yml"
+EVENT_EPHEMERAL_ENTRYPOINT = ".github/workflows/organization-claim-allocator-transition-writer.yml"
 
 
 def load_json(path: Path) -> dict[str, Any]:
