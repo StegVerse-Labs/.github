@@ -24,9 +24,12 @@ Read at `StegVerse-Labs/.github` main `5b3fc476`, Registry generation 317. Coord
   - `failure_code`: `RESIDENT_EXECUTION_CONTEXT_PREREQUISITE`
   - `failed_predicate`: `NO_EXTERNAL_MACHINE_OR_RESIDENT_PREREQUISITE`
   - `required_evidence_or_repair`: route the COMPONENT_010 append through an on-request organization-ledger transition (`.github/workflows/organization-ledger-transition.yml` is the candidate) and name that route as the retry entrypoint
+    - Caveat: for optical evidence this candidate route is itself FAIL_CLOSED on H31 (`GOVERNANCE_FORM_LEAVES_ORG_AND_NEEDS_MESH_ROOT`) and H31a (`GOVERNANCE_PATH_HAS_NO_OPTICAL_REPLAY_PREDICATE`); see StegVerse-org/.github#165 comments 6234619352 and 6234772058. It is a candidate only and has produced no receipt.
+    - [OWNER-DECISION-OPEN C3: this route targets the StegVerse-org ledger; the record's `satisfying_edge` (`data/canonical-task-registry.json` L12436) requires readback through `organization_batch_custody.py::verified_organization_receipt`. Which ledger (StegVerse-org or StegVerse-Labs) is an open owner decision (N3). Not resolved here.]
   - `retry_entrypoint`: this record's blocker 1
   - `owning_existing_goal`: `OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001`
-  - `next_attempt`: the Registry owner's edit of blocker 1 (#3204, StegVerse-org/.github#165 H9)
+  - `next_attempt`: the Registry owner's edit of blocker 1 (#3204, StegVerse-org/.github#165 H7/H8; INDEX H9)
+  - [OWNER-DECISION-OPEN C5: this route leaves the AI_SESSION_GATE family, but the component-010 dependency (`RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010`, `data/canonical-task-registry.json` L12411-L12414) and the `AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN` transition (L12478) remain. Option A (remove) or B (restate) is open owner decision 15. Not resolved here.]
 - **Blockers 2–4 are bare strings.** `PAT_003_RECONSTRUCTION_OWNER_DISPOSITION_NOT_AUTHENTICATED`, `INDEPENDENT_CALIBRATED_PHYSICAL_REFERENCE_NOT_AVAILABLE` and `ADAPTIVE_PROCESSING_BENEFIT_NOT_DEMONSTRATED_WITH_REQUIRED_CONTEXT` each need the six fields in the record (conformance item 5). Their owners, already named below: the PAT-003 native owner (blocker 2); rights clearance for an independent reference, with Amezquita et al. as the current candidate (blocker 3); a frozen-original v0.12 replay (blocker 4).
 - **Patent-registry PR #5 head** is `3d4b1a4367cc6c80d33a46fb6c262de19ba2638b` (`ea6f5eef` was an earlier head). `registry-tests` passes. `validate-and-sync` fails on a pre-existing approved-source snapshot mismatch, which also fails on `main`.
 
@@ -34,7 +37,7 @@ Read at `StegVerse-Labs/.github` main `5b3fc476`, Registry generation 317. Coord
 
 | Work | Owner | Depends on |
 |---|---|---|
-| Shard edit: drop or restate the AI_SESSION_GATE transition; six fields on blockers 2–4; conforming retry entrypoint for blocker 1 | Registry owner (Lane A drafts ready) | nothing |
+| Shard edit: drop or restate the AI_SESSION_GATE transition; six fields on blockers 2–4; conforming retry entrypoint for blocker 1 | Registry owner (Lane A option A/B drafts exist, RECOMMENDED_NOT_ADOPTED, pending owner choice, decision 15; option B is FAIL_CLOSED on H31a) | owner choice of option A or B |
 | Approved-source snapshot refresh for patent-registry PR #5 | patent-registry owner | nothing |
 | Claim-to-implementation trace of the 10 limitation rows (Drive IDs only) | Claude, review | nothing |
 | Standards-alignment table: keep undefined operators UNDEFINED, map the conflicts | #3204 lanes | owner/inventor definitions, for the undefined rows only |
