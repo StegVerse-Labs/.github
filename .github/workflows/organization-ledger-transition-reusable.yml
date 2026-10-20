@@ -218,8 +218,13 @@ jobs:
           else
             echo "no mesh declared by the committed requests or dispatched; an emission is refused at egress and the refusal is recorded (SVORG-MESH-LOCATION-BINDING-001)"
           fi
+          # N3 (Lane B #162): count what this run received, so a run that received no request records that
+          # (results/NO_REQUESTS.json) instead of leaving an empty results/ the last step cannot tell from a loss.
+          mkdir -p "$RUNNER_TEMP/results"
+          listed=0; received=0; deferred=()
           while IFS= read -r request; do
             [ -n "$request" ] || continue
+            listed=$((listed + 1))
             name=$(basename "$request" .json)
             # A request whose process the boundary binds to egress leaves this
             # organization, and a run without a supplied mesh can
@@ -240,10 +245,12 @@ jobs:
           PY
             then
               echo "deferred $name: its process leaves this organization; commit a successor request declaring mesh_root, or dispatch with request=$request and mesh_root, to receive it"
+              deferred+=("$name")
               continue
             fi
             out="$RUNNER_TEMP/results/$name"
             mkdir -p "$out"
+            received=$((received + 1))
             python - "$request" "$out" <<'PY'
           import importlib.util, json, os, sys
           from pathlib import Path
@@ -286,7 +293,26 @@ jobs:
               --manifest "$out/manifest.json" --standing "$out/standing.json" \
               --packet-id "$name" --hb-epoch "$HB_EPOCH" ${mesh_args[@]+"${mesh_args[@]}"} --out "$out/ingress.json" || true
             python -c 'import json,sys; x=json.load(open(sys.argv[1])); print("ingress disposition:", x["disposition"], x.get("failed_predicate"), x.get("organization_receipt_sha256"))' "$out/ingress.json"
+            # Item (5), INDEX H51: right after the append, carry this repository's receipts onto the organization
+            # chain with the component's propagate_repository_receipts.propagate() (digest-pinned), handed the
+            # already-validated epoch as text through the shared validator. A refusal is six-field FAIL_CLOSED in
+            # $out/propagation.json; it never rolls back or blocks the receipt just appended (publish and
+            # readback still run), and the last step fails the run on it.
+            home="$RUNNER_TEMP/repository-ledger-home"; rm -rf "$home"; mkdir -p "$home"
+            if git cat-file -e "$LEDGER_REF:$REPO_LEDGER_NAMESPACE/HEAD.json" 2>/dev/null; then
+              git archive "$LEDGER_REF" "$REPO_LEDGER_NAMESPACE" | tar -x -C "$home"
+            fi
+            # Not `|| true`: the exit status is recorded next to the record, and the last step requires 0 and ALLOW.
+            rc=0
+            python "$COMPONENT/propagate_after_append.py" --repository "$GITHUB_REPOSITORY" \
+              --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?
+            echo "$rc" > "$out/propagation.exit"
           done < "$RUNNER_TEMP/requests.txt"
+          if [ "$received" -eq 0 ]; then
+            python3 -c 'import json,sys; json.dump({"schema":"stegverse.organization-ledger-no-requests/v1","requests_listed":int(sys.argv[2]),"received":0,"deferred":sys.argv[3:]}, open(sys.argv[1],"w"), sort_keys=True)' \
+              "$RUNNER_TEMP/results/NO_REQUESTS.json" "$listed" ${deferred[@]+"${deferred[@]}"}
+            echo "no request received ($listed listed, ${#deferred[@]} deferred); recorded results/NO_REQUESTS.json"
+          fi
 
       # mode=self-closure: this organization's own intr-destination, at the
       # supplied epoch. No peer is named; the address is derived from this
@@ -335,6 +361,20 @@ jobs:
             --out "$out/closure.json" || true
           test -f "$out/closure.json"
           python -c 'import json,sys; x=json.load(open(sys.argv[1])); print("closure disposition:", x["disposition"], x.get("communication_id"), x.get("organization_receipt_sha256"))' "$out/closure.json"
+          # Item (5), INDEX H51: right after the append, carry this repository's receipts onto the organization
+          # chain with the component's propagate_repository_receipts.propagate() (digest-pinned), handed the
+          # already-validated epoch as text through the shared validator. A refusal is six-field FAIL_CLOSED in
+          # $out/propagation.json; it never rolls back or blocks the receipt just appended (publish and
+          # readback still run), and the last step fails the run on it.
+          home="$RUNNER_TEMP/repository-ledger-home"; rm -rf "$home"; mkdir -p "$home"
+          if git cat-file -e "$LEDGER_REF:$REPO_LEDGER_NAMESPACE/HEAD.json" 2>/dev/null; then
+            git archive "$LEDGER_REF" "$REPO_LEDGER_NAMESPACE" | tar -x -C "$home"
+          fi
+          # Not `|| true`: the exit status is recorded next to the record, and the last step requires 0 and ALLOW.
+          rc=0
+          python "$COMPONENT/propagate_after_append.py" --repository "$GITHUB_REPOSITORY" \
+            --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?
+          echo "$rc" > "$out/propagation.exit"
 
       # The frames a request left on the designated mesh are published before
       # the ledger that says they were emitted: a receipt never claims an
@@ -456,3 +496,17 @@ jobs:
           name: organization-ledger-transition
           path: ${{ runner.temp }}/results
           if-no-files-found: ignore
+
+      # Propagation refusals fail the run here, after the appended receipts were published and read back.
+      - name: Fail on a recorded propagation refusal (six fields)
+        if: always()
+        run: |
+          set -euo pipefail
+          # Lane B #162 G1/G2: absence, a non-ALLOW disposition, an unreadable record or a nonzero exit all fail
+          # closed in six fields (PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS for absence); only ALLOW passes.
+          if [ -f "$COMPONENT/propagation_gate.py" ]; then
+            python3 "$COMPONENT/propagation_gate.py" "$RUNNER_TEMP/results"
+          else
+            python3 -c 'import json,os; print(json.dumps({"disposition":"FAIL_CLOSED","failure_code":"PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS","failed_predicate":"EVERY_APPENDED_REQUEST_HAS_A_PROPAGATION_RECORD_AND_ONLY_A_RECOGNIZED_SUCCESS_PASSES","required_evidence_or_repair":"the pinned component has no propagation_gate.py, so no propagation outcome can be checked; absence is not a pass","retry_entrypoint":"organization-ledger-transition-reusable.yml step Fail on a recorded propagation refusal (six fields)","owning_existing_goal":"StegVerse-org/.github#163","next_attempt":"re-run with a component_ref that carries propagation_gate.py","consequence_committed":False},sort_keys=True))'
+            exit 1
+          fi

@@ -785,6 +785,133 @@ class NamespaceAndEmptyLedger(unittest.TestCase):
         self.assertEqual((out.returncode, out.stdout), (0, "\n"))
 
 
+
+class PropagateAfterAppend(unittest.TestCase):
+    """Item (5), INDEX H51: the existing propagate() runs after each append, through propagate_after_append.py."""
+    REPO = "formalism-tests/.github"
+
+    def setUp(self):
+        self.c = Consumer()
+        self.addCleanup(self.c.close)
+        self.repo_root = self.c.ledgers / "repo"
+
+    def emit(self, transition_id="t-1"):
+        out = self.c.cli("emit.py", "--transition-id", transition_id, "--transition-class", "TEST",
+                         "--predecessor-state-sha256", A, "--successor-state-sha256", B, "--hb-epoch", str(EPOCH))
+        self.assertEqual(out.returncode, 0, out.stderr)
+        return json.loads(out.stdout.splitlines()[-1])
+
+    def propagate(self, epoch=str(EPOCH)):
+        args = ["--repository", self.REPO, "--repository-ledger-root", str(self.repo_root)]
+        if epoch is not None:
+            args.append("--hb-epoch=" + epoch)
+        out = self.c.cli("propagate_after_append.py", *args)
+        return out.returncode, json.loads(out.stdout.splitlines()[-1])
+
+    def org_head(self):
+        head = self.c.ledgers / "org" / "HEAD.json"
+        return head.read_text() if head.exists() else None
+
+    def assertSix(self, refusal, code):
+        self.assertEqual(refusal["disposition"], "FAIL_CLOSED")
+        self.assertEqual(refusal["failure_code"], code)
+        for field in SIX:
+            self.assertTrue(isinstance(refusal.get(field), str) and refusal[field].strip(), field)
+
+    def test_plus_33_is_refused_before_propagation_is_reached(self):
+        self.emit()
+        for bad in ("+33", " 33", "3_3", "31"):
+            code, out = self.propagate(bad)
+            self.assertEqual(code, 1, bad)
+            self.assertSix(out, "HB_EPOCH_INVALID")
+            self.assertEqual(out["retry_entrypoint"], "org-kernel/organization-ledger/propagate_after_append.py::main")
+            self.assertEqual(self.c.written("org"), [], bad)
+        code, out = self.propagate(None)
+        self.assertEqual((code, out["failure_code"]), (1, "HB_EPOCH_NOT_SUPPLIED"))
+        # in-process: the propagation module is never loaded when the epoch is refused
+        r = self.c.py('w = load("propagate_after_append.py")\nloaded = []\nreal = w._load\n'
+                      'w._load = lambda name: (loaded.append(name), real(name))[1]\n'
+                      'res = refusal(lambda: w.run(%r, Path(%r), "+33"))\n'
+                      'print(json.dumps({"res": res, "loaded": loaded}))' % (self.REPO, str(self.repo_root)))
+        self.assertEqual(r["res"]["refused"]["failure_code"], "HB_EPOCH_INVALID")
+        self.assertEqual(r["loaded"], [], "propagate_repository_receipts must not be reached")
+
+    def test_the_validated_epoch_is_handed_over_in_process_not_re_coerced(self):
+        self.emit()
+        r = self.c.py('w = load("propagate_after_append.py")\nseen = {}\nreal = w._load\n'
+                      'def spy(name):\n    m = real(name)\n    orig = m.propagate\n'
+                      '    m.propagate = lambda *a, **k: (seen.update(epoch=k["hb_epoch"], type=type(k["hb_epoch"]).__name__), orig(*a, **k))[1]\n'
+                      '    return m\n'
+                      'w._load = spy\nw.run(%r, Path(%r), "0033")\nprint(json.dumps(seen))' % (self.REPO, str(self.repo_root)))
+        self.assertEqual(r, {"epoch": 33, "type": "int"})
+
+    def test_an_orphan_repository_receipt_is_carried_once(self):
+        receipt = self.emit()
+        code, out = self.propagate()
+        self.assertEqual(code, 0, out)
+        self.assertEqual([p["repository_receipt_sha256"] for p in out["propagated"]], [receipt["receipt_sha256"]])
+        before = self.c.written("org")
+        code, again = self.propagate()
+        self.assertEqual((code, again["propagated"], again["skipped"]), (0, [], [receipt["receipt_sha256"]]))
+        self.assertEqual(self.c.written("org"), before, "a second run is a no-op")
+
+    def test_after_a_normal_append_it_is_a_no_op(self):
+        receipt = self.emit()
+        self.c.py('agg = load("aggregate_repo_transition.py")\nsrc = json.loads(%r)\n'
+                  'print(json.dumps(agg.append(src, "REPO_STATE_PROPAGATION", agg.GENESIS, src["receipt_sha256"], {}, "NONE", hb_epoch=%d)))'
+                  % (json.dumps(receipt), EPOCH))
+        before = self.c.written("org")
+        code, out = self.propagate()
+        self.assertEqual((code, out["propagated"], out["skipped"]), (0, [], [receipt["receipt_sha256"]]))
+        self.assertEqual(self.c.written("org"), before)
+
+    def test_a_refusal_is_printed_unchanged_and_the_appended_receipt_stands(self):
+        receipt = self.emit()
+        self.c.py('agg = load("aggregate_repo_transition.py")\nsrc = json.loads(%r)\n'
+                  'print(json.dumps(agg.append(src, "REPO_STATE_PROPAGATION", agg.GENESIS, src["receipt_sha256"], {}, "NONE", hb_epoch=%d)))'
+                  % (json.dumps(receipt), EPOCH))
+        head, files = self.org_head(), self.c.written("org")
+        path = self.repo_root / "receipts" / (receipt["receipt_sha256"].split(":", 1)[1] + ".json")
+        tampered = json.loads(path.read_text()); tampered["transition_id"] = "edited"
+        path.write_text(json.dumps(tampered))
+        code, out = self.propagate()
+        self.assertEqual(code, 1)
+        self.assertSix(out, "REPOSITORY_LEDGER_RECEIPT_HASH_MISMATCH")
+        self.assertEqual(out["schema"], "stegverse.organization-ledger-append-refusal/v1", "the LedgerRefusal, unchanged")
+        self.assertEqual(out["retry_entrypoint"], "org-kernel/organization-ledger/propagate_repository_receipts.py::propagate")
+        self.assertEqual((self.org_head(), self.c.written("org")), (head, files), "nothing rolled back, nothing added")
+
+    def test_a_plain_systemexit_and_a_missing_location_get_six_fields(self):
+        r = self.c.py('w = load("propagate_after_append.py")\nimport io, contextlib\n'
+                      'def boom(*a): raise SystemExit("SOMETHING_REFUSED: plain message")\n'
+                      'w.run = boom\nbuf = io.StringIO()\n'
+                      'with contextlib.redirect_stdout(buf): code = w.main(["--repository", "x/y", "--repository-ledger-root", "/nonexistent"])\n'
+                      'print(json.dumps({"code": code, "out": json.loads(buf.getvalue())}))')
+        self.assertEqual(r["code"], 1)
+        self.assertSix(r["out"], "SOMETHING_REFUSED")
+        self.assertEqual(r["out"]["failed_predicate"], "REPOSITORY_RECEIPTS_PROPAGATE_AFTER_THE_APPEND")
+        self.emit()
+        env = {k: v for k, v in self.c.env.items() if k != "STEGVERSE_ORG_LEDGER_ROOT"}
+        out = subprocess.run([sys.executable, str(COMPONENT / "propagate_after_append.py"), "--repository", self.REPO,
+                              "--repository-ledger-root", str(self.repo_root), "--hb-epoch", str(EPOCH)],
+                             cwd=self.c.root, env=env, capture_output=True, text=True)
+        self.assertEqual(out.returncode, 1, out.stderr)
+        self.assertSix(json.loads(out.stdout.splitlines()[-1]), "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
+
+    def test_the_workflow_propagates_after_each_append_and_fails_after_publish(self):
+        wf = (COMPONENT.parents[1] / ".github/workflows/organization-ledger-transition-reusable.yml").read_text()
+        self.assertEqual(wf.count('python "$COMPONENT/propagate_after_append.py"'), 2)
+        self.assertLess(wf.index("organization_manifest_ingress.py\" \\"), wf.index('propagate_after_append.py"'))
+        self.assertLess(wf.index("--self-close \\"), wf.rindex('propagate_after_append.py"'))
+        self.assertNotIn('--out "$out/propagation.json" || true', wf)
+        self.assertEqual(wf.count('--hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?'), 2)
+        self.assertEqual(wf.count('echo "$rc" > "$out/propagation.exit"'), 2)
+        gate = wf.index("Fail on a recorded propagation refusal")
+        self.assertLess(wf.index("Publish the ledger ref (fast-forward only)"), gate)
+        self.assertLess(wf.index("Read the organization and repository ledgers back from a fresh fetch"), gate)
+        self.assertNotIn("type=int", (COMPONENT / "propagate_repository_receipts.py").read_text())
+
+
 def _load_store():
     import importlib.util
     spec = importlib.util.spec_from_file_location("ledger_store_fc12", COMPONENT / "ledger_store.py")
@@ -963,6 +1090,225 @@ class SharedSuppliedEpochRule(unittest.TestCase):
             else:
                 self.assertEqual(predicate, r["predicate"], value)
                 self.assertIs(derived, False, value)
+
+
+
+class PropagationAlwaysRecorded(unittest.TestCase):
+    """Lane B #162 W1 and N1: every outcome is recorded in six fields and --out is always written."""
+    REPO = PropagateAfterAppend.REPO
+    setUp, emit, propagate = PropagateAfterAppend.setUp, PropagateAfterAppend.emit, PropagateAfterAppend.propagate
+    assertSix = PropagateAfterAppend.assertSix
+
+    def test_any_exception_is_recorded_and_out_is_written(self):
+        out_dir = Path(self.c.tmp.name) / "outs"
+        r = self.c.py('w = load("propagate_after_append.py")\nimport io, contextlib\n'
+                      'cases = {"runtime": RuntimeError("LEDGER_STORE_CAS_CONTENTION_EXHAUSTED"), "notfound": FileNotFoundError("HEAD.json"),\n'
+                      '         "key": KeyError("receipt_sha256"), "exit_int": SystemExit(2), "exit_none": SystemExit(None),\n'
+                      '         "exit_empty": SystemExit(""), "type": TypeError("bad"), "no_allow": None}\n'
+                      'res = {}\n'
+                      'for name, exc in cases.items():\n'
+                      '    def boom(*a, _e=exc):\n'
+                      '        if _e is None: return {"schema": "x", "propagated": []}\n'
+                      '        raise _e\n'
+                      '    w.run = boom\n'
+                      '    out = Path(%r) / (name + ".json")\n'
+                      '    buf = io.StringIO()\n'
+                      '    with contextlib.redirect_stdout(buf): code = w.main(["--repository", "x/y", "--repository-ledger-root", "/nonexistent", "--out", str(out)])\n'
+                      '    res[name] = {"code": code, "out": json.loads(out.read_text()) if out.exists() else None}\n'
+                      'print(json.dumps(res))' % str(out_dir))
+        for name, got in r.items():
+            self.assertEqual(got["code"], 1, name)
+            self.assertIsNotNone(got["out"], name + ": --out must be written")
+            expected = "PROPAGATION_REFUSAL_NOT_RECORDED"
+            self.assertSix(got["out"], expected)
+            self.assertEqual(got["out"]["failed_predicate"], "EVERY_NON_ALLOW_PROPAGATION_IS_RECORDED_IN_SIX_FIELDS", name)
+            self.assertNotIn(got["out"]["required_evidence_or_repair"].strip(), ("", "None"))
+        self.assertIn("RuntimeError: LEDGER_STORE_CAS_CONTENTION_EXHAUSTED", r["runtime"]["out"]["detail"])
+
+    def test_a_success_carries_disposition_allow(self):
+        self.emit()
+        code, out = self.propagate()
+        self.assertEqual((code, out["disposition"], out["schema"]), (0, "ALLOW", "stegverse.organization-repository-propagation/v1"))
+        absent = self.c.cli("propagate_after_append.py", "--repository", "absent/repo", "--repository-ledger-root",
+                            str(Path(self.c.tmp.name) / "nothing-here"), "--hb-epoch", str(EPOCH))
+        self.assertEqual((absent.returncode, json.loads(absent.stdout.splitlines()[-1])["disposition"]), (0, "ALLOW"))
+
+    def test_a_partial_append_by_any_exception_lists_what_was_committed(self):
+        """N1 (Lane B re-review): RuntimeError, ValueError and other exceptions part-way are recorded the same way."""
+        out_dir = Path(self.c.tmp.name) / "partial"
+        for kind in ("RuntimeError('LEDGER_STORE_CAS_CONTENTION_EXHAUSTED')", "ValueError('LEDGER_RECEIPT_COLLISION')",
+                     "KeyError('x')"):
+            c = Consumer()
+            self.addCleanup(c.close)
+            self.c, self.repo_root = c, c.ledgers / "repo"
+            self.emit("t-1")
+            self.emit("t-2")
+            out = out_dir / (kind.split("(")[0] + ".json")
+            r = self.c.py('w = load("propagate_after_append.py")\nreal = w._load\ncalls = []\nimport io, contextlib\n'
+                          'def spy(name):\n    m = real(name)\n    orig = m.organization_ledger.append\n'
+                          '    def flaky(*a, **k):\n'
+                          '        calls.append(1)\n'
+                          '        if len(calls) == 2:\n'
+                          '            raise %s\n'
+                          '        return orig(*a, **k)\n'
+                          '    m.organization_ledger.append = flaky\n    return m\n'
+                          'w._load = spy\nbuf = io.StringIO()\n'
+                          'with contextlib.redirect_stdout(buf): code = w.main(["--repository", %r, "--repository-ledger-root", %r, "--hb-epoch", "%d", "--out", %r])\n'
+                          'print(json.dumps({"code": code, "out": json.loads(Path(%r).read_text())}))'
+                          % (kind, self.REPO, str(self.repo_root), EPOCH, str(out), str(out)))
+            self.assertEqual(r["code"], 1, kind)
+            rec = r["out"]
+            self.assertEqual(rec["disposition"], "FAIL_CLOSED", kind)
+            self.assertIs(rec["consequence_committed"], True, kind)
+            self.assertEqual(len(rec["propagated_before_refusal"]), 1, kind)
+            for field in SIX:
+                self.assertTrue(isinstance(rec.get(field), str) and rec[field].strip(), (kind, field))
+            self.assertEqual(len([p for p in self.c.written("org") if p.startswith("receipts/")]), 1, kind)
+
+    def test_a_partial_append_lists_what_was_committed(self):
+        self.emit("t-1")
+        self.emit("t-2")
+        r = self.c.py('w = load("propagate_after_append.py")\nreal = w._load\ncalls = []\n'
+                      'def spy(name):\n    m = real(name)\n    orig = m.organization_ledger.append\n'
+                      '    def flaky(*a, **k):\n'
+                      '        calls.append(1)\n'
+                      '        if len(calls) == 2:\n'
+                      '            raise m.common.LedgerRefusal("ORG_LEDGER_APPEND_CONTENTION_EXHAUSTED", retry_entrypoint="t")\n'
+                      '        return orig(*a, **k)\n'
+                      '    m.organization_ledger.append = flaky\n    return m\n'
+                      'w._load = spy\n'
+                      'print(json.dumps(refusal(lambda: w.run(%r, Path(%r), "%d"))))' % (self.REPO, str(self.repo_root), EPOCH))
+        refused = r["refused"]
+        self.assertIs(refused["consequence_committed"], True)
+        self.assertEqual(len(refused["propagated_before_refusal"]), 1)
+        self.assertEqual(len([p for p in self.c.written("org") if p.startswith("receipts/")]), 1)
+
+
+class PropagationGate(unittest.TestCase):
+    """Lane B #162 G1/G2: the run's last step passes only a recorded ALLOW for every appended request."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.results = Path(self.tmp.name) / "results"
+
+    def request(self, name, marker="ingress.json", marker_doc=None, propagation=None, exit_code=None):
+        d = self.results / name
+        d.mkdir(parents=True)
+        (d / marker).write_text(json.dumps(marker_doc or {"disposition": "ALLOW"}))
+        if propagation is not None:
+            (d / "propagation.json").write_text(propagation if isinstance(propagation, str) else json.dumps(propagation))
+        if exit_code is not None:
+            (d / "propagation.exit").write_text(str(exit_code) + "\n")
+
+    def gate(self):
+        out = subprocess.run([sys.executable, str(COMPONENT / "propagation_gate.py"), str(self.results)],
+                             capture_output=True, text=True)
+        findings = [json.loads(l) for l in out.stdout.splitlines() if l.startswith("{")]
+        return out.returncode, findings
+
+    def assertRefused(self, code):
+        rc, findings = self.gate()
+        self.assertEqual(rc, 1)
+        refused = [f for f in findings if f.get("disposition") == "FAIL_CLOSED"]
+        self.assertTrue(refused)
+        for f in refused:
+            for field in SIX:
+                self.assertTrue(isinstance(f.get(field), str) and f[field].strip(), field)
+        self.assertIn(code, [f["failure_code"] for f in refused])
+        return refused
+
+    OK = {"schema": "stegverse.organization-repository-propagation/v1", "disposition": "ALLOW", "propagated": []}
+
+    def test_missing_or_empty_results_fail_closed(self):
+        self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
+        self.results.mkdir()
+        # N3: an empty results/ with no NO_REQUESTS.json is its own code: whether any request ran is unrecorded
+        self.assertRefused("PROPAGATION_NO_REQUEST_RECORDED")
+
+    def marker(self, **override):
+        self.results.mkdir(parents=True, exist_ok=True)
+        doc = {"schema": "stegverse.organization-ledger-no-requests/v1", "requests_listed": 0, "received": 0, "deferred": []}
+        doc.update(override)
+        (self.results / "NO_REQUESTS.json").write_text(json.dumps(doc))
+
+    def test_a_recorded_run_with_no_request_received_is_allow(self):
+        for listed, deferred in ((0, []), (2, ["req-a", "req-b"])):
+            self.results = Path(self.tmp.name) / ("nr-%d" % listed)
+            self.marker(requests_listed=listed, deferred=deferred)
+            rc, findings = self.gate()
+            self.assertEqual(rc, 0, findings)
+            self.assertEqual((findings[-1]["disposition"], findings[-1]["applicability"]), ("ALLOW", "NO_REQUEST_RECEIVED"))
+
+    def test_an_invalid_or_contradicted_no_requests_marker_fails(self):
+        for i, override in enumerate(({"received": 1}, {"requests_listed": 2, "deferred": ["one"]}, {"schema": "x"},
+                                      {"deferred": "req"}, {"requests_listed": True})):
+            self.results = Path(self.tmp.name) / ("bad-%d" % i)
+            self.marker(**override)
+            self.assertRefused("PROPAGATION_NO_REQUESTS_MARKER_INVALID")
+        self.results = Path(self.tmp.name) / "bad-json"
+        self.results.mkdir()
+        (self.results / "NO_REQUESTS.json").write_text("{trunc")
+        self.assertRefused("PROPAGATION_NO_REQUESTS_MARKER_INVALID")
+        self.results = Path(self.tmp.name) / "contradicted"
+        self.marker()
+        self.request("req-1", propagation=self.OK, exit_code=0)
+        self.assertRefused("PROPAGATION_NO_REQUESTS_MARKER_INVALID")
+
+    def test_a_missing_exit_status_fails_closed(self):
+        """G3: both call sites write propagation.exit, so a missing one is absence, not exit 0."""
+        self.request("req", propagation=self.OK)
+        refused = self.assertRefused("PROPAGATION_EXIT_STATUS_ABSENT")
+        self.assertEqual(refused[0]["failed_predicate"],
+                         "EVERY_APPENDED_REQUEST_HAS_A_PROPAGATION_RECORD_AND_ONLY_A_RECOGNIZED_SUCCESS_PASSES")
+
+    def test_an_appended_request_without_a_record_fails_closed(self):
+        self.request("req-1")
+        self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
+        self.results = Path(self.tmp.name) / "results2"
+        self.request("self-closure", marker="closure.json")
+        self.assertRefused("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS")
+
+    def test_only_allow_passes(self):
+        for i, record in enumerate(({"schema": self.OK["schema"], "disposition": "DENY", "failure_code": "X_DENIED"},
+                                    {"schema": self.OK["schema"], "disposition": "PENDING"},
+                                    {"schema": self.OK["schema"], "propagated": []},
+                                    {"error": "boom"},
+                                    {"schema": "other/v1", "disposition": "ALLOW"},
+                                    {"schema": self.OK["schema"], "disposition": "FAIL_CLOSED", "failure_code": "HB_EPOCH_INVALID"})):
+            self.results = Path(self.tmp.name) / ("r%d" % i)
+            self.request("req", propagation=record, exit_code=0)
+            refused = self.assertRefused(record.get("failure_code") or "PROPAGATION_NOT_ALLOW")
+            self.assertEqual(refused[0]["failed_predicate"],
+                             "EVERY_APPENDED_REQUEST_HAS_A_PROPAGATION_RECORD_AND_ONLY_A_RECOGNIZED_SUCCESS_PASSES")
+
+    def test_unreadable_record_or_nonzero_exit_fails(self):
+        self.request("req", propagation="{truncated", exit_code=0)
+        self.assertRefused("PROPAGATION_RECORD_UNREADABLE")
+        self.results = Path(self.tmp.name) / "r-exit"
+        self.request("req", propagation=self.OK, exit_code=1)
+        self.assertRefused("PROPAGATION_NOT_ALLOW")
+
+    def test_allow_and_already_recorded_pass(self):
+        self.request("req-1", propagation=self.OK, exit_code=0)
+        self.request("req-2", marker_doc={"disposition": "ALREADY_RECORDED"})
+        self.request("self-closure", marker="closure.json", propagation=self.OK, exit_code=0)
+        rc, findings = self.gate()
+        self.assertEqual(rc, 0, findings)
+        self.assertEqual(findings[-1]["disposition"], "ALLOW")
+
+    def test_the_workflow_runs_this_gate_last_and_always(self):
+        wf = (COMPONENT.parents[1] / ".github/workflows/organization-ledger-transition-reusable.yml").read_text()
+        step = wf[wf.index("- name: Fail on a recorded propagation refusal (six fields)"):]
+        self.assertIn("if: always()", step.split("run: |")[0])
+        self.assertIn('python3 "$COMPONENT/propagation_gate.py" "$RUNNER_TEMP/results"', step)
+        self.assertIn("PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS", step)
+        self.assertNotIn('result.get("disposition") == "FAIL_CLOSED"', wf)
+        self.assertNotIn("\n      - name:", step[1:], "it is the last step")
+        # N3: the request loop records a run that received no request
+        self.assertIn('"$RUNNER_TEMP/results/NO_REQUESTS.json" "$listed"', wf)
+        self.assertIn('received=$((received + 1))', wf)
+        self.assertLess(wf.index('mkdir -p "$out"\n            received=$((received + 1))'), wf.index('if [ "$received" -eq 0 ]; then'))
 
 
 if __name__ == "__main__":

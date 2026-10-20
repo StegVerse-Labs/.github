@@ -117,16 +117,16 @@ def repository_chain(root: Path) -> list[dict[str, Any]]:
     seen: set[str] = set()
     while cursor:
         if cursor in seen:
-            raise common.LedgerRefusal("REPOSITORY_LEDGER_CHAIN_CYCLE:" + cursor)
+            raise common.LedgerRefusal("REPOSITORY_LEDGER_CHAIN_CYCLE:" + cursor, retry_entrypoint=RETRY)
         seen.add(cursor)
         receipt = store.get(RECEIPT_PREFIX + cursor.split(":", 1)[1] + ".json")
         if receipt is None:
-            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_MISSING:" + cursor)
+            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_MISSING:" + cursor, retry_entrypoint=RETRY)
         if receipt.get("schema") != REPOSITORY_RECEIPT_SCHEMA:
-            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_SCHEMA_MISMATCH:" + cursor)
+            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_SCHEMA_MISMATCH:" + cursor, retry_entrypoint=RETRY)
         body = {key: value for key, value in receipt.items() if key != "receipt_sha256"}
         if receipt.get("receipt_sha256") != organization_ledger.sha(body):
-            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_HASH_MISMATCH:" + cursor)
+            raise common.LedgerRefusal("REPOSITORY_LEDGER_RECEIPT_HASH_MISMATCH:" + cursor, retry_entrypoint=RETRY)
         chain.append(receipt)
         cursor = receipt.get("previous_receipt_sha256")
     chain.reverse()
@@ -166,7 +166,7 @@ def propagate(repository: str, *, repository_root: Path | None = None,
     if not (root / HEAD_KEY).is_file():
         # The capability holding that ledger did not materialize on this node.
         # Nothing is missing; there is nothing of it here to carry.
-        return {"schema": RESULT_SCHEMA, "repository": repository,
+        return {"schema": RESULT_SCHEMA, "disposition": "ALLOW", "repository": repository,
                 "repository_ledger_present": False, "propagated": [], "skipped": [],
                 "authority_effect": "NONE_PROPAGATION_ONLY"}
 
@@ -182,14 +182,31 @@ def propagate(repository: str, *, repository_root: Path | None = None,
         # P1-FC-4: refuse before the first append when no epoch was supplied; no clock is read.
         hb_epoch = common.require_supplied_epoch(hb_epoch, RETRY)
         predecessor = receipt.get("previous_receipt_sha256") or _no_prior_repository_receipt(repository)
-        organization_receipt = organization_ledger.append(
-            receipt, ORG_TRANSITION_CLASS, predecessor, digest,
-            {"propagated_by": common.entrypoint(__file__),
-             "repository_ledger_address": str(root),
-             "repository_transition_class": receipt.get("transition_class"),
-             "crossed_an_organization_boundary": False,
-             "interlock_intr_involved": False},
-            "NONE", hb_epoch=hb_epoch)
+        try:
+            organization_receipt = organization_ledger.append(
+                receipt, ORG_TRANSITION_CLASS, predecessor, digest,
+                {"propagated_by": common.entrypoint(__file__),
+                 "repository_ledger_address": str(root),
+                 "repository_transition_class": receipt.get("transition_class"),
+                 "crossed_an_organization_boundary": False,
+                 "interlock_intr_involved": False},
+                "NONE", hb_epoch=hb_epoch)
+        except SystemExit as exc:
+            # Lane B #162 N1: each append is its own committed receipt, so receipts carried earlier in this call
+            # stand. The refusal says so instead of claiming nothing was committed.
+            refusal = getattr(exc, "refusal", None)
+            if isinstance(refusal, dict):
+                refusal["propagated_before_refusal"] = list(propagated)
+                refusal["consequence_committed"] = bool(propagated)
+            raise
+        except Exception as exc:
+            # The same for a RuntimeError (store contention, git failure), a ValueError or anything else raised
+            # part-way: the exception carries what was already committed, and the wrapper records it.
+            try:
+                exc.propagated_before_refusal = list(propagated)
+            except Exception:   # an exception type that takes no attributes still propagates unchanged
+                pass
+            raise
         propagated.append({
             "repository_receipt_sha256": digest,
             "repository_transition_id": receipt.get("transition_id"),
@@ -199,6 +216,7 @@ def propagate(repository: str, *, repository_root: Path | None = None,
         carried.add(digest)
     return {
         "schema": RESULT_SCHEMA,
+        "disposition": "ALLOW",
         "repository": repository,
         "repository_ledger_present": True,
         "repository_ledger_address": str(root),
@@ -258,7 +276,7 @@ def _main(args) -> int:
                            hb_epoch=args.hb_epoch)
     else:
         if args.repository_ledger_root is not None:
-            raise common.LedgerRefusal("--repository-ledger-root names one repository's ledger; pass --repository")
+            raise common.LedgerRefusal("--repository-ledger-root names one repository's ledger; pass --repository", retry_entrypoint=RETRY)
         result = propagate_all(hb_epoch=args.hb_epoch)
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.out:

@@ -69,3 +69,27 @@ A ledger can declare the receipts it wrote before source retention began in `org
 - `declaration_sha256`
 
 The readback still self-hashes and chain-links every receipt, and it verifies every receipt after the segment in full. It waives only source retention, and only for the declared contiguous prefix from genesis. The whole-ledger result is still `FAIL_CLOSED` `DECLARED_LEGACY_SEGMENT_NOT_SOURCE_RETAINED`, never ALLOW, with one six-field finding per declared receipt. Nothing is re-minted. Undeclared failures, declarations that waive integrity checks, segments that are not a prefix, segments that overlap retention, and edited declarations are each refused six-field. Component consumers put the declaration in the parameter file. The generator carries it into `org-contract.json` and validates it.
+
+## Propagation after each append (item 5, INDEX H51)
+
+Right after each C7 ingress and each C8 self-close, the reusable workflow does two things:
+
+1. Materializes the repository subtree of the appended ref with `git archive`.
+2. Runs `propagate_after_append.py`.
+
+That module is wiring only. It calls the existing `propagate_repository_receipts.propagate()` in-process; that script is digest-pinned in `component-manifest.json` like every other module.
+
+- **Epoch:** the run's `--hb-epoch` text goes through `ledger_common.require_supplied_epoch` before propagation is loaded, so `+33` is refused there. The validated int is handed over and never re-coerced.
+- **Refusals:**
+  - A `LedgerRefusal` is printed as `json.dumps(exc.refusal)`, unchanged.
+  - A plain `SystemExit(str)` or `LedgerLocationRequired` gets the six fields (`REPOSITORY_RECEIPTS_PROPAGATE_AFTER_THE_APPEND`).
+  - Any other exception (`RuntimeError`, `FileNotFoundError`, `KeyError`, a non-str `SystemExit`, ...) is six-field FAIL_CLOSED `PROPAGATION_REFUSAL_NOT_RECORDED`. `--out` is always written (Lane B #162 W1).
+  - If an append refuses or raises part-way through (a `LedgerRefusal`, `RuntimeError`, `ValueError` or anything else), the record lists `propagated_before_refusal`, and `consequence_committed` is true when any receipt was carried (N1).
+  - A success carries `disposition: ALLOW`.
+- **No rollback, no block:** this follows the existing contract. Each organization append is its own committed receipt under the ledger lock, and a refused propagation writes nothing.
+  - The appended receipt is published and read back as usual.
+  - The workflow records the wrapper's exit status in `propagation.exit` (no `|| true`).
+  - The final step "Fail on a recorded propagation refusal" runs `propagation_gate.py`. Every request that appended must have a `propagation.json` with `disposition: ALLOW` under the result schema and exit 0. Absence (no `results/`, no request directory, no record) is FAIL_CLOSED `PROPAGATION_GATE_TREATS_ABSENCE_AS_PASS`. DENY, PENDING, a missing disposition or an unreadable record fail too, all in six fields (G1/G2). A missing `propagation.exit` is `PROPAGATION_EXIT_STATUS_ABSENT` (G3).
+  - A request-mode run that received no request writes `results/NO_REQUESTS.json` (requests listed, those deferred, received 0). Only then is an empty run ALLOW (`applicability: NO_REQUEST_RECEIVED`), because nothing was appended. An empty `results/` without the marker is `PROPAGATION_NO_REQUEST_RECORDED`. A marker that is invalid or contradicted is `PROPAGATION_NO_REQUESTS_MARKER_INVALID` (N3).
+- **Normal result:** after a normal append the repository receipt is already carried, so propagation is a no-op (`skipped`). It appends `REPO_STATE_PROPAGATION` receipts only for repository receipts the organization chain does not yet carry. A rerun skips them.
+
