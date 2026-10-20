@@ -390,8 +390,8 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
     """Dispatch a recovered packet. `node_state` is this node's supplied state store.
 
     `heartbeat_reference` is the reference of the carrier frame that delivered
-    the packet; an endpoint adapter declared to take the carrier epoch is handed
-    its epoch and is refused without a supplied one.
+    the packet; an endpoint adapter and a capability-ingress operation requiring
+    the carrier epoch are handed its supplied epoch and refused without one.
 
     `root` is the organization's materialized source: it is read, never written.
     Anything the crossing records (work intake) goes to `node_state`.
@@ -428,6 +428,9 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
     # Also before any receipt: an adapter that takes the carrier epoch is not
     # run, and no chain implies it was, without one the carrier supplied.
     if endpoint and adapter_takes_carrier_epoch(service): carrier_epoch(heartbeat_reference)
+    # Validate the carried frame epoch before creating any dispatch receipts.
+    # No clock fallback is permitted for capability-address operations.
+    frame_epoch=carrier_epoch(heartbeat_reference) if role==CAPABILITY_INGRESS_ROLE else None
     # Also before any receipt: a work request is recorded in node state, so a
     # node materialized without one cannot consume it.
     if (role=="BOUNDARY_LOCAL_CONTROL" and node_state is None
@@ -451,7 +454,7 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
         # defective for having no capability resolver.
         try:
             application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
-                                                                mesh_root=mesh_root)
+                                                                mesh_root=mesh_root,hb_epoch=frame_epoch)
         except SystemExit as refused:
             raise ValueError("capability_ingress_refused:"+str(refused)) from None
     else:
