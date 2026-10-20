@@ -1,0 +1,45 @@
+{
+  "authority_effect": "NONE",
+  "evidence": {
+    "capability": "intr-destination",
+    "communication_id": "intr-path-v1:StegVerse-Labs->StegVerse-002",
+    "destination_address": "stegverse-002.intr-destination",
+    "destination_organization": "StegVerse-002",
+    "disposition": "ALLOW",
+    "merge_transfer_organization_receipt_sha256": "sha256:23906e93dae2bf71b943f4c2ff0f8d8da211a2d3a052e27194d36b442aeab12d",
+    "message": {
+      "body": {
+        "path_id": "StegVerse-Labs->StegVerse-002:intr-destination",
+        "schema": "stegverse.org-intr-destination-diagnostic/v1",
+        "transfer_commit": "ee934df1e1909d964ac36caffe65b8a02287d989"
+      },
+      "communication_id": "intr-path-v1:StegVerse-Labs->StegVerse-002",
+      "message_class": "ecosystem.communication"
+    },
+    "message_sha256": "sha256:33ff8905fa246b4ecc5663d17dc2e54bfc43724f7559bdf1603f00c190e5606a",
+    "path_id": "StegVerse-Labs->StegVerse-002:intr-destination",
+    "payload_sha256": "sha256:f5ee70614f51fd19f8f691f291dfbcf41868877cd73906c05e803b3fe5a5e435",
+    "repository": "StegVerse-Labs/.github",
+    "schema": "stegverse.intr-path-transfer-evidence/v1",
+    "source_organization": "StegVerse-Labs",
+    "transfer_commit": "ee934df1e1909d964ac36caffe65b8a02287d989"
+  },
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 469411750,
+    "frequency_hz": 100,
+    "generation": 469411750,
+    "heartbeat_id": "HB:469411750",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "predecessor_state_sha256": "sha256:f5ee70614f51fd19f8f691f291dfbcf41868877cd73906c05e803b3fe5a5e435",
+  "previous_receipt_sha256": "sha256:07ecaa97c91727cb70d939069da14b404db7a84940ee978bfb466d5349efc1bc",
+  "receipt_sha256": "sha256:df28d143cde92d6836a0d268e524bcdaca6813cfc54ee9541334e61213ab6e61",
+  "repository": "StegVerse-Labs/.github",
+  "schema": "stegverse.repo-transition-receipt/v1",
+  "successor_state_sha256": "sha256:87c49306af0d21d8d7d25be5d0868d433356fcfb8feda9dcb37d211ddd821328",
+  "transition_class": "INTR_MESH_PATH_TRANSFER",
+  "transition_id": "INTR_MESH_PATH_TRANSFER:StegVerse-Labs->StegVerse-002:intr-destination@intr-path-v1:StegVerse-Labs->StegVerse-002"
+}
