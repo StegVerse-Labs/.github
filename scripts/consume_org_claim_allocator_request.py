@@ -1480,7 +1480,7 @@ def main() -> int:
     # A POSIX root, or git+<checkout>#<ref>:<namespace>; kept as given so a locator is not path-normalized.
     parser.add_argument("--repo-ledger-root", type=str, default=None)
     parser.add_argument("--org-ledger-root", type=Path, default=None)
-    parser.add_argument("--hb-epoch", type=int, default=None,
+    parser.add_argument("--hb-epoch", type=str, default=None,
                         help="the carrier's heartbeat epoch; a grant without one is FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED")
     parser.add_argument("--readback-result", type=Path, default=None,
                         help="read back the Organization receipts a prior consumption result reports")
@@ -1495,10 +1495,30 @@ def main() -> int:
                        "authority_effect": "NONE_READBACK_ONLY"}
         print(json.dumps(verdict, sort_keys=True))
         return 0 if verdict["disposition"] == "VERIFIED" else 1
+    hb_epoch = None
+    if args.hb_epoch is not None:
+        # The kernel's shared supplied-epoch rule sees the raw text: '+33', ' 33', '3_3' are refused.
+        spec = importlib.util.spec_from_file_location("consumer_org_kernel_epoch",
+                                                      args.source_root / "org-kernel/kernel.py")
+        kernel = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(kernel)
+        failure = kernel.supplied_epoch_failure(args.hb_epoch)
+        if failure is not None:
+            print(json.dumps({"schema": "stegverse.resident-execution-request-consumption/v1",
+                              "state": "FAIL_CLOSED", "task_id": TASK_ID, "disposition": "FAIL_CLOSED",
+                              "failure_code": GRANT_EPOCH_INVALID, "failed_predicate": GRANT_EPOCH_INVALID,
+                              "detail": failure[1],
+                              "required_evidence_or_repair": "pass --hb-epoch as the carrier supplied it: ASCII digits >= 32",
+                              "retry_entrypoint": RETRY_ENTRYPOINT, "owning_existing_goal": TASK_ID,
+                              "next_attempt": "run again with the supplied epoch; nothing was read or appended",
+                              "runtime_execution_attempted": False, "fence_issued": False,
+                              "consequence_committed": False, "authority_effect": "NONE_REFUSAL_ONLY"}, sort_keys=True))
+            return 1
+        hb_epoch = int(args.hb_epoch)
     try:
         receipt = consume(args.source_root, args.runtime_root,
                           repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root,
-                          hb_epoch=args.hb_epoch)
+                          hb_epoch=hb_epoch)
     except Exception as exc:
         receipt = {
             "schema": "stegverse.resident-execution-request-consumption/v1",
