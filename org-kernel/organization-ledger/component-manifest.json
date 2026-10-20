@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.organization-ledger-component-manifest/v1",
+  "component": "org-kernel/organization-ledger",
+  "derived_from": "StegVerse-org/.github@10d141041fd0fa3b8bd696f6c6236bef199845b8",
+  "source_blobs": {
+    "emit.py": "f30c02e8b145c850a02b3c6770c183bec0b6235f",
+    "aggregate_repo_transition.py": "3ed69e292b0874836f05c2a92cdd625fc58dc696",
+    "ledger_store.py": "3937db5292ba36a30e220e283269523154e89f5c",
+    "organization_ledger_readback.py": "e3cd9d1e9b5d69451d4f484ba5f74e7a19618bcf",
+    "propagate_repository_receipts.py": "2369d68e2ec6c9d866d9db05228f669b0c5c6cfc"
+  },
+  "repairs": [
+    "P1-FC-4 supplied epoch required (HB_EPOCH_NOT_SUPPLIED / HB_EPOCH_INVALID), no clock read",
+    "P1-FC-5 six fields on every non-ALLOW; owning_existing_goal from the consumer parameter file",
+    "component-relative sibling and kernel loading; consumer contracts from the working directory"
+  ],
+  "source_commit": null,
+  "source_commit_note": "the published Labs commit is the component_ref the caller pins; it cannot be named inside the tree it identifies",
+  "modules": {
+    "aggregate_repo_transition.py": "fbe616ef0bc6bee379dbc662beb012ccf55b153d",
+    "emit.py": "905daa0818aed5158f070f22bb13e128812253a5",
+    "generate_ledger_contracts.py": "5f6f0f331039074fd80626182419cc780b4faa39",
+    "ledger_common.py": "e1eed94145678543bf3e1ced34a053191749332a",
+    "ledger_store.py": "9c50cd200db1496c6820616262bbc1ae4b23879a",
+    "organization_ledger_readback.py": "da7d4b2c9181c506e1bd5bf306987101609c990d",
+    "propagate_repository_receipts.py": "d97eb05bb570db614a1e4947c81c17075b255aee",
+    "schemas/stegverse.organization-ledger-parameters.v1.schema.json": "bf3808f13f351870f9c207375db15d11e9e7e8fb",
+    "schemas/stegverse.organization-transition-request.v1.schema.json": "7a3f53f8230bc0a203c3092492fbab14d8432d90",
+    "verify_component_manifest.py": "a901b775104a305d09f3d229487f1470f36bfd02"
+  }
+}

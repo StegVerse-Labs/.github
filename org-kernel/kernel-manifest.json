@@ -21,7 +21,8 @@
     "governed request-response frames",
     "federation directory consumption",
     "durable federation frame deduplication",
-    "node standing admission gate"
+    "node standing admission gate",
+    "organization ledger (org-kernel/organization-ledger/; component-manifest.json digests; supplied-epoch receipts)"
   ],
   "authority": {
     "heartbeat": "NONE",
