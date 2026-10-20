@@ -11,9 +11,14 @@ scripts/build_capability_boundary_experiment_org_request.py (SDK#553, 5dd0f25)
 writes for StegVerse-org/.github.
 
 The manifest is not composed here. It is taken from a declaration in the
-canonical records only, with no input empty or a placeholder. It is checked by
-the ingress's own stegverse.manifest_contract.validate_ingress_manifest before
-any digest is taken, and the canonical digest is the one this organization's
+canonical records only, with no input empty or a placeholder. The declaration
+must conform to schemas/component-010-session-event-input.schema.json, which
+fixes each input's type and the values it may take: the published SDK routes,
+the standing modes, the supplied hb_epoch (which created_at must equal, and
+which the request carries for the committed-request intake) and the permitted
+acting parties, none of them an AI session. It is then checked by the ingress's own
+stegverse.manifest_contract.validate_ingress_manifest. Both run before any
+digest is taken, and the canonical digest is the one this organization's
 ingress recomputes: resident-runtime/organization_manifest_ingress.py
 `derive_execution_request(manifest, boundary())`, not the wire digest. When the
 records declare no manifest for the transition, nothing is written and the
@@ -32,11 +37,16 @@ import hashlib
 import functools
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+# The repository's stdlib schema checker, the one hil_explanation_experiment.py
+# also validates with; no third-party validator.
+from user_facing_explanation import ExplanationError, schema_check  # noqa: E402
 
 GOAL = "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001"
 TRANSITION = "COMPONENT_010_SESSION_EVENT_FOR_GOVERNED_EXECUTION"
@@ -48,6 +58,7 @@ REQUEST_PATH = f".stegverse/transition-requests/{REQUEST_ID}.json"
 TASK_RECORD = f"data/canonical-task-records/{GOAL}.json"
 COMPONENT_PROFILE = "data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json"
 INGRESS = "resident-runtime/organization_manifest_ingress.py"
+DECLARATION_SCHEMA = "schemas/component-010-session-event-input.schema.json"
 
 # Pinned when a declared manifest exists and its request has been built once and
 # reviewed. Unpinned, the builder refuses to write: a digest it has never been
@@ -68,6 +79,8 @@ SDK_MANIFEST_INPUTS = (
     "manifest.extensions.stegverse_route",
 )
 STANDING_INPUTS = ("standing.mode", "standing.node_ref", "standing.predecessor")
+# The supplied HB epoch the committed-request intake requires on the request.
+EPOCH_INPUTS = ("hb_epoch",)
 NULLABLE_INPUTS = ("standing.predecessor",)
 # A value that only stands in for one is not a declaration of it. Matched
 # against the upper-cased string, anywhere in the declared manifest or standing.
@@ -77,6 +90,8 @@ INPUTS_UNDECLARED = "COMPONENT_010_MANIFEST_INPUTS_UNDECLARED"
 DIGEST_NOT_PINNED = "COMPONENT_010_REQUEST_DIGEST_NOT_PINNED"
 DIGEST_MISMATCH = "COMPONENT_010_REQUEST_DIGEST_MISMATCH"
 CONTRACT_INVALID = "COMPONENT_010_MANIFEST_CONTRACT_INVALID"
+SCHEMA_INVALID = "COMPONENT_010_DECLARATION_SCHEMA_INVALID"
+HB_EPOCH_INVALID = "COMPONENT_010_HB_EPOCH_INVALID"
 SDK_UNAVAILABLE = "COMPONENT_010_INGRESS_SDK_UNAVAILABLE"
 CANONICAL_REFUSED = "COMPONENT_010_MANIFEST_INGRESS_CANONICAL_REFUSED"
 RECORDS_UNREADABLE = "COMPONENT_010_CANONICAL_RECORDS_UNREADABLE"
@@ -207,7 +222,8 @@ def missing_inputs(record: dict[str, Any], profile: dict[str, Any],
         if not (isinstance(payload, dict) and payload.get(name) is not None
                 and not _placeholder(payload[name])):
             missing.append(f"{COMPONENT}.{name}")
-    missing += [n for n in SDK_MANIFEST_INPUTS + STANDING_INPUTS if not _present(declaration, n)]
+    missing += [n for n in SDK_MANIFEST_INPUTS + STANDING_INPUTS + EPOCH_INPUTS
+                if not _present(declaration, n)]
     # A placeholder anywhere else, source_instance or context_refs included, is
     # missing too: only the listed inputs are required, but none may be faked.
     covered = [c for m in missing for c in (
@@ -217,6 +233,56 @@ def missing_inputs(record: dict[str, Any], profile: dict[str, Any],
         missing += [p for p in placeholder_paths((declaration or {}).get(head), head)
                     if not any(p == c or p.startswith((c + ".", c + "[")) for c in covered)]
     return missing
+
+
+def schema_violation(declaration: dict[str, Any], schema: dict[str, Any]) -> str | None:
+    """None when the declaration conforms to the schema; else the checker's code, e.g. schema:enum:$.x."""
+    try:
+        schema_check(declaration, schema)
+    except ExplanationError as exc:
+        return str(exc)
+    return None
+
+
+def validate_declaration(declaration: dict[str, Any], root: Path = ROOT) -> None:
+    """Refuse, with six fields, a declaration that does not conform to the input schema."""
+    violation = schema_violation(declaration, _read(root, DECLARATION_SCHEMA))
+    if violation is None:
+        return
+    raise refusal(
+        SCHEMA_INVALID, f"the declared {TRANSITION} manifest conforms to {DECLARATION_SCHEMA}",
+        f"correct the declaration in {TASK_RECORD} so it conforms to {DECLARATION_SCHEMA}; "
+        "a value the schema does not list (an acting party, a route, a standing mode) "
+        "is added by the owner's merge of the schema, never by the declaration",
+        detail=violation, schema_path=re.sub(r"^schema:[A-Za-z]+:", "", violation),
+        inputs_read=[TASK_RECORD, COMPONENT_PROFILE, DECLARATION_SCHEMA])
+
+
+@functools.lru_cache(maxsize=None)
+def _kernel() -> Any:
+    spec = importlib.util.spec_from_file_location("org_kernel_component_010", ROOT / "org-kernel" / "kernel.py")
+    kernel = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kernel)
+    return kernel
+
+
+def validate_epoch(declaration: dict[str, Any]) -> None:
+    """The supplied hb_epoch passes the kernel's shared rule, and created_at is its text.
+
+    The rule is org-kernel/kernel.py supplied_epoch_failure, the one the
+    committed-request intake applies on receipt; no clock is read.
+    """
+    hb_epoch = declaration.get("hb_epoch")
+    failure = _kernel().supplied_epoch_failure(hb_epoch)
+    if failure is None and declaration["manifest"].get("created_at") != str(hb_epoch):
+        failure = (HB_EPOCH_INVALID, f"created_at {declaration['manifest'].get('created_at')!r} "
+                                     f"is not the supplied hb_epoch {hb_epoch!r}")
+    if failure is None:
+        return
+    raise refusal(HB_EPOCH_INVALID, "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH",
+                  f"declare hb_epoch in {TASK_RECORD} as ASCII digits with value >= 32, and created_at "
+                  "as its decimal text; no clock is read for either",
+                  detail=f"{failure[0]}: {failure[1]}")
 
 
 @functools.lru_cache(maxsize=None)
@@ -289,8 +355,12 @@ def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]],
             missing_inputs=missing, declarations_found=len(found),
             satisfying_edge=edge.get("satisfying_edge"),
             inputs_read=[TASK_RECORD, COMPONENT_PROFILE])
+    # The declared inputs are held to their schema first: an acting party, route,
+    # standing mode or created_at the schema does not admit is refused here.
+    validate_declaration(declaration, root)
+    validate_epoch(declaration)
     manifest = json.loads(manifest_file_bytes(declaration["manifest"]))
-    # The check the ingress applies on receipt runs here first, so no digest is
+    # The check the ingress applies on receipt runs here next, so no digest is
     # computed, or pinned, for a manifest the ingress would refuse.
     try:
         validate_of(manifest)
@@ -325,6 +395,7 @@ def build_request(root: Path = ROOT, *, canonical_of: Callable[[dict[str, Any]],
         "manifest": manifest,
         "expected_canonical_manifest_sha256": canonical,
         "standing": declaration["standing"],
+        "hb_epoch": declaration["hb_epoch"],
     }
     data = request_file_bytes(request)
     _held_to("MANIFEST_FILE_SHA256", pins["MANIFEST_FILE_SHA256"],
