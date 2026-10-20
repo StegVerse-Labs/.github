@@ -146,6 +146,7 @@ CONSUMERS = (
     ("ungoverned_ai_defensive_envelope", "scripts/consume_ungoverned_ai_defensive_envelope_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
+    ("site_production_promotion", "scripts/consume_site_production_promotion_request.py"),
     ("native_email_action_monitor", "scripts/consume_native_email_action_monitor_request.py"),
     ("governed_multilane_manifold_activation", "control/resident-execution-request.d/consume-governed-multilane-manifold-activation.py"),
     ("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"),
@@ -675,7 +676,7 @@ def dispatch(
             command.extend(["--request-id", request_id])
         if name == "canonical_work_coordination" and execution_attempt_id:
             command.extend(["--execution-attempt-id", execution_attempt_id])
-        if name == "org_claim_allocator":
+        if name in {"org_claim_allocator", "site_production_promotion"}:
             # The ledger roots are supplied to this execution; without them the
             # consumer refuses rather than deriving a location.
             for flag, variable in (("--repo-ledger-root", "STEGVERSE_REPO_LEDGER_ROOT"),
