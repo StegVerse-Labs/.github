@@ -190,17 +190,31 @@ def _result(evidence: Mapping[str, Any], appended: Mapping[str, Any] | None, *,
 
 
 def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
-            hb_epoch: int | None) -> tuple[dict[str, Any], bool]:
+            hb_epoch: int | None, *, predecessor: str | None = None, successor: str | None = None,
+            boundary_evidence: Mapping[str, Any] | None = None,
+            idempotent_on: tuple[str, ...] = ("communication_id", "payload_sha256", "disposition"),
+            ) -> tuple[dict[str, Any], bool]:
     """Append at both levels. A replay of the same packet returns the recorded pair.
 
     The organization append owner is ``aggregate_transition``. It takes the
     repository receipt's epoch, so a replay rebuilds the same organization
     receipt rather than one stamped later.
+
+    The keyword arguments let another writer operation on this same ref (for
+    example ``sv_check_receipt_append``) reuse this one append path: it names
+    its own state digests, boundary evidence and idempotency keys. Defaults
+    are this operation's own, so the self-closure is unchanged.
     """
-    predecessor = evidence["payload_sha256"]
-    successor = sha({"disposition": evidence["disposition"], "packet_id": packet_id,
-                     "communication_id": evidence.get("communication_id"),
-                     "payload_sha256": evidence["payload_sha256"]})
+    if predecessor is None:
+        predecessor = evidence["payload_sha256"]
+    if successor is None:
+        successor = sha({"disposition": evidence["disposition"], "packet_id": packet_id,
+                         "communication_id": evidence.get("communication_id"),
+                         "payload_sha256": evidence["payload_sha256"]})
+    if boundary_evidence is None:
+        boundary_evidence = {"operation": OPERATION_ID, "profile_id": PROFILE_ID,
+                             "disposition": evidence["disposition"],
+                             "communication_id": evidence.get("communication_id")}
     transition_id = transition_class + ":" + packet_id
     store = repository_ledger.repository_store()
     head = store.get(repository_ledger.ledger_store.HEAD_KEY)
@@ -208,16 +222,14 @@ def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
     repository_receipt = repository_ledger.append(
         transition_id, transition_class, predecessor, successor, dict(evidence),
         "NONE", hb_epoch=hb_epoch,
-        idempotent_on=("communication_id", "payload_sha256", "disposition"))
+        idempotent_on=idempotent_on)
     epoch = repository_receipt["hb_reference"]["epoch"]
     organization_receipt = organization_ledger.aggregate_transition(
         receipt=repository_receipt,
         org_transition_class="REPO_STATE_PROPAGATION",
         predecessor_org_state_sha256=predecessor,
         successor_org_state_sha256=successor,
-        boundary_evidence={"operation": OPERATION_ID, "profile_id": PROFILE_ID,
-                           "disposition": evidence["disposition"],
-                           "communication_id": evidence.get("communication_id")},
+        boundary_evidence=dict(boundary_evidence),
         authority_effect="NONE",
         hb_epoch=epoch)
     return ({"repository_receipt": repository_receipt,

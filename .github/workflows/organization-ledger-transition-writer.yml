@@ -16,14 +16,41 @@ name: Organization Ledger Transition Writer
 # subtree of that same ref. Existing commits on the ref are parents of any
 # new commit; this workflow does not rewrite them.
 #
+# workflow_dispatch with operation sv_check_receipt instead appends one NWI-S1
+# check receipt (stegverse.sv_check_receipt.v1, SV-LLM/.github#46) through
+# resident-runtime/sv_check_receipt_append.py: the receipt is the repository
+# receipt's $.evidence, the organization receipt's boundary_evidence.operation is
+# sv_check_receipt, and both carry the supplied hb_epoch. An invalid receipt or
+# epoch is a six-field FAIL_CLOSED before anything is written or pushed.
+#
 # The federation directory is not an input. Governance and remediation routes
 # are not selected here.
 on:
   workflow_dispatch:
     inputs:
+      operation:
+        description: 'self-closure (intr-destination diagnostic) or sv_check_receipt (append one NWI-S1 check receipt)'
+        required: false
+        default: self-closure
+        type: choice
+        options:
+          - self-closure
+          - sv_check_receipt
       communication_id:
-        description: 'communication_id the diagnostic self-closure correlates on'
-        required: true
+        description: 'communication_id the diagnostic self-closure correlates on (self-closure only)'
+        required: false
+        type: string
+      check_receipt:
+        description: 'sv_check_receipt only: the verifier receipt, one stegverse.sv_check_receipt.v1 JSON object'
+        required: false
+        type: string
+      evaluation_subject:
+        description: 'sv_check_receipt stage-gate receipts only (e.g. nwi-s0-exit-gate): the stage-evaluation subject JSON'
+        required: false
+        type: string
+      base_state_readback:
+        description: 'sv_check_receipt stage-gate receipts only: the sealed Labs#3266 base-state readback JSON of this repository'
+        required: false
         type: string
       hb_epoch:
         description: 'supplied heartbeat epoch the receipts carry (non-negative integer); no clock is read for it'
@@ -54,6 +81,7 @@ jobs:
     env:
       LEDGER_REF: refs/stegverse/organization-ledger
       HB_EPOCH: ${{ github.event.inputs.hb_epoch }}
+      WRITER_OPERATION: ${{ github.event.inputs.operation || 'self-closure' }}
     steps:
       - name: Checkout organization boundary
         uses: actions/checkout@v4
@@ -68,7 +96,13 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile resident-runtime/organization_ledger_readback.py \
-            resident-runtime/intr_destination_ingress.py
+            resident-runtime/intr_destination_ingress.py \
+            resident-runtime/sv_check_receipt_append.py
+          case "$WRITER_OPERATION" in
+            self-closure|sv_check_receipt) ;;
+            *) echo '{"disposition":"FAIL_CLOSED","failure_code":"WRITER_OPERATION_UNDECLARED","failed_predicate":"WRITER_OPERATION_IS_DECLARED","required_evidence_or_repair":"dispatch operation self-closure or sv_check_receipt","retry_entrypoint":".github/workflows/organization-ledger-transition-writer.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+               exit 1 ;;
+          esac
           python - <<'PY'
           import json
           from pathlib import Path
@@ -100,6 +134,7 @@ jobs:
           git rev-parse "$LEDGER_REF" > "$RUNNER_TEMP/ledger-before"
 
       - name: Accept the self-closure inputs
+        if: env.WRITER_OPERATION == 'self-closure'
         env:
           INPUT_COMMUNICATION_ID: ${{ github.event.inputs.communication_id }}
           INPUT_PACKET_ID: ${{ github.event.inputs.packet_id }}
@@ -122,6 +157,7 @@ jobs:
           echo "CLOSURE_PACKET_ID=${inputs[1]}" >> "$GITHUB_ENV"
 
       - name: Append the diagnostic self-closure to the repository and organization ledgers
+        if: env.WRITER_OPERATION == 'self-closure'
         run: |
           set -euo pipefail
           export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
@@ -157,6 +193,55 @@ jobs:
               raise SystemExit(1)
           PY
 
+      - name: Accept the sv_check_receipt input
+        if: env.WRITER_OPERATION == 'sv_check_receipt'
+        env:
+          INPUT_CHECK_RECEIPT: ${{ github.event.inputs.check_receipt }}
+          INPUT_EVALUATION_SUBJECT: ${{ github.event.inputs.evaluation_subject }}
+          INPUT_BASE_STATE_READBACK: ${{ github.event.inputs.base_state_readback }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/results"
+          python - <<'PY'
+          import json, os, sys
+          raw = os.environ.get("INPUT_CHECK_RECEIPT", "")
+          try:
+              receipt = json.loads(raw)
+          except ValueError:
+              receipt = None
+          if not isinstance(receipt, dict):
+              print('{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT","failed_predicate":"ORGANIZATION_LEDGER_EVIDENCE_IS_A_SELF_IDENTIFYING_CHECK_RECEIPT","required_evidence_or_repair":"dispatch check_receipt as one stegverse.sv_check_receipt.v1 JSON object","retry_entrypoint":".github/workflows/organization-ledger-transition-writer.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}')
+              sys.exit(1)
+          open(os.environ["RUNNER_TEMP"] + "/check-receipt.json", "w", encoding="utf-8").write(json.dumps(receipt))
+          # stage-gate receipts: the subject and readback are passed through as given (the operation validates them
+          # with P1's validate_gate_receipt and refuses, six fields, before any write)
+          for name, var in (("evaluation-subject", "INPUT_EVALUATION_SUBJECT"), ("base-state-readback", "INPUT_BASE_STATE_READBACK")):
+              raw = os.environ.get(var, "")
+              if raw.strip():
+                  open(os.environ["RUNNER_TEMP"] + "/" + name + ".json", "w", encoding="utf-8").write(raw)
+          PY
+
+      - name: Append the check receipt to the repository and organization ledgers (operation sv_check_receipt)
+        if: env.WRITER_OPERATION == 'sv_check_receipt'
+        run: |
+          set -euo pipefail
+          export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
+          export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
+          # Time is supplied with the dispatch. It is not sampled from a clock; the
+          # operation refuses anything but an integer epoch >= 32 that passes
+          # kernel.py::supplied_epoch_failure and equals the receipt's own hb_epoch.
+          # A stage-gate receipt is appended only into the subject repository's own
+          # ledger: --ledger-repository is this repository.
+          gate_args=()
+          if [ -f "$RUNNER_TEMP/evaluation-subject.json" ]; then gate_args+=(--subject "$RUNNER_TEMP/evaluation-subject.json"); fi
+          if [ -f "$RUNNER_TEMP/base-state-readback.json" ]; then gate_args+=(--readback "$RUNNER_TEMP/base-state-readback.json"); fi
+          python resident-runtime/sv_check_receipt_append.py append \
+            --check-receipt "$RUNNER_TEMP/check-receipt.json" \
+            --hb-epoch "$HB_EPOCH" \
+            --ledger-repository "$GITHUB_REPOSITORY" \
+            "${gate_args[@]}" \
+            --out "$RUNNER_TEMP/results/check-receipt-append.json"
+
       - name: Require the append to fast-forward the existing ref
         run: |
           set -euo pipefail
@@ -177,6 +262,7 @@ jobs:
           fi
 
       - name: Read the organization and repository ledgers back from a fresh fetch
+        if: env.WRITER_OPERATION == 'self-closure'
         run: |
           set -euo pipefail
           fresh="$RUNNER_TEMP/readback.git"
@@ -197,6 +283,34 @@ jobs:
             echo "### intr-destination diagnostic self-closure"
             echo '```json'
             cat "$RUNNER_TEMP/results/readback.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Read the appended check receipt back from a fresh fetch
+        if: env.WRITER_OPERATION == 'sv_check_receipt'
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/readback.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          if [ -z "$auth_header" ]; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition-writer.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            exit 1
+          fi
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+            fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
+          python resident-runtime/organization_ledger_readback.py \
+            --location "git+$fresh#$LEDGER_REF" \
+            --repository-namespace "$REPO_LEDGER_NAMESPACE" \
+            --out "$RUNNER_TEMP/results/readback.json"
+          python resident-runtime/sv_check_receipt_append.py readback \
+            --location "git+$fresh#$LEDGER_REF" \
+            --result "$RUNNER_TEMP/results/check-receipt-append.json" \
+            --out "$RUNNER_TEMP/results/check-receipt-readback.json"
+          {
+            echo "### sv_check_receipt append"
+            echo '```json'
+            cat "$RUNNER_TEMP/results/check-receipt-readback.json"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
