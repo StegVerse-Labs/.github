@@ -1,0 +1,10 @@
+{
+  "base_ref": {
+    "ledger_head": "a5bb54d81893b392a3ce28182986fc39857807e1",
+    "registry_generation": 319
+  },
+  "evaluated_commit": "7898cedba1400c8545cebcb463fd26deb25f7d5a",
+  "manifest_blob": "20b37917e1454ec788e8f1b8c75d1562ba76d1b3",
+  "repository": "StegVerse-Labs/.github",
+  "stage_id": "NWI-S0"
+}
