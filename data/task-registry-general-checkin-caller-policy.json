@@ -11,6 +11,13 @@
     "INTERNAL_CANONICAL_WORK_BOOTSTRAP": {
       "path": "scripts/install_and_run_canonical_work_event_bootstrap.py",
       "classification": "NON_AI_INTERNAL_CANONICAL_WORK_PREFLIGHT"
+    },
+    "CI_PULL_REQUEST_COLLISION_VALIDATION": {
+      "path": "scripts/check_registry_collision_checkin.py",
+      "classification": "NON_AUTHORIZING_CI_PULL_REQUEST_VALIDATION",
+      "session_id_sent": false,
+      "event_ledger_append": false,
+      "transition_predicate": false
     }
   },
   "test_harness": {
