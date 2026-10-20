@@ -140,7 +140,7 @@ class LedgerRoots(unittest.TestCase):
         self._env.stop()
         self._temp.cleanup()
 
-    def receive(self, request: dict, *, hb_epoch=None, seed="0"):
+    def receive(self, request: dict, *, hb_epoch=4096, seed="0"):
         cross = mock.MagicMock(return_value=_crossing(seed))
         with mock.patch.object(ingress, "derive_execution_request", return_value=request), \
              mock.patch.object(ingress.crossing_module, "cross", cross), \
@@ -317,7 +317,7 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
             for request in requests:
                 with tempfile.TemporaryDirectory() as runtime, \
                      mock.patch.object(worker, "_custody_transition", side_effect=custody_rows()):
-                    result = worker.execute(Path(runtime), request, transport=transport)
+                    result = worker.execute(Path(runtime), request, transport=transport, hb_epoch=4096)
                 action = result["manifest_directed_action"]
                 self.assertEqual(action["execution_result"], "COMPLETED", action)
                 released.append(action["released_batch"])
@@ -345,7 +345,7 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                                        return_value=_ingress_request(request)), \
                      mock.patch.object(ingress.crossing_module, "cross",
                                        return_value=_crossing(str(index))):
-                    result = ingress.receive({"n": index}, registry={})
+                    result = ingress.receive({"n": index}, registry={}, hb_epoch=4096)
                 self.assertEqual(result["disposition"], "ALLOW", result)
                 row = json.loads((root / "receipts" / (
                     result["organization_receipt_sha256"].split(":", 1)[1] + ".json")).read_text())
@@ -500,17 +500,18 @@ class HeartbeatReferenceTest(LedgerRoots):
         self.assertEqual(org["hb_reference"], repo["hb_reference"])
         self.assertEqual(org["hb_reference"]["epoch"], 4243)
 
-    def test_absent_epoch_is_derived_and_never_forwarded_as_supplied(self):
-        """Absent, the repository receipt derives the epoch and says so; the
-        organization receipt is not handed that clock epoch as if supplied
-        (B-P36f), so it says so too."""
-        result, _ = self.receive(_plain_request())
-        repo = self.repo_receipt(result["repository_receipt_sha256"])["hb_reference"]
-        org = self.org_receipt(result["organization_receipt_sha256"])["hb_reference"]
-        self.assertIs(repo["derived_from_clock"], True)
-        self.assertIs(org["derived_from_clock"], True)
-        self.assertEqual(kernel.validate_hb_reference(repo), repo)
-        self.assertEqual(kernel.validate_hb_reference(org), org)
+    def test_absent_epoch_is_refused_and_nothing_is_appended(self):
+        """Absent, nothing is received or appended and no clock stands in for the
+        epoch: the result is the unrecorded six-field NO_EPOCH_CALLER_FAILS_CLOSED."""
+        result, cross = self.receive(_plain_request(), hb_epoch=None)
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
+        self.assertIs(result["refusal_recorded"], False)
+        for field in ("failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result[field], field)
+        cross.assert_not_called()
+        self.assertFalse((self.org_root / "receipts").exists())
 
     def test_invalid_reference_is_rejected_by_the_kernel(self):
         result, _ = self.receive(_plain_request(), hb_epoch=4244)
@@ -531,7 +532,7 @@ class HeartbeatReferenceTest(LedgerRoots):
         source = self._canonical_source("EXACT-RETRY")
         first = organization_ledger.aggregate_transition(source, hb_epoch=5000)
         again = organization_ledger.aggregate_transition(source, hb_epoch=5001)
-        derived = organization_ledger.aggregate_transition(source)
+        derived = organization_ledger.aggregate_transition(source, hb_epoch=4096)
         self.assertEqual(first, again)
         self.assertEqual(first, derived)
         self.assertEqual(again["hb_reference"]["epoch"], 5000)
@@ -539,7 +540,7 @@ class HeartbeatReferenceTest(LedgerRoots):
 
     def _historical(self, source: dict) -> dict:
         """A v1 receipt as written before receipts carried `hb_reference`."""
-        current = organization_ledger.aggregate_transition(source)
+        current = organization_ledger.aggregate_transition(source, hb_epoch=4096)
         body = {k: v for k, v in current.items() if k not in ("receipt_sha256", "hb_reference")}
         historical = {**body, "receipt_sha256": organization_ledger.sha(body)}
         (self.org_root / "receipts" / (current["receipt_sha256"][7:] + ".json")).unlink()
@@ -573,7 +574,7 @@ class HeartbeatReferenceTest(LedgerRoots):
 
         # Consumer: workers/canonical_state_transition_custody (exact source reuse).
         from workers import canonical_state_transition_custody as custody
-        recorded = custody._record_organization_transition(self._canonical_source("CUSTODY"))
+        recorded = custody._record_organization_transition(self._canonical_source("CUSTODY"), hb_epoch=4096)
         self.assertEqual(recorded["state"], "RECORDED", recorded)
         row = recorded["organization_receipt"]
         body = {k: v for k, v in row.items() if k not in ("receipt_sha256", "hb_reference")}
@@ -581,7 +582,7 @@ class HeartbeatReferenceTest(LedgerRoots):
         (self.org_root / "receipts" / (row["receipt_sha256"][7:] + ".json")).unlink()
         (self.org_root / "receipts" / (legacy["receipt_sha256"][7:] + ".json")).write_text(
             json.dumps(legacy, indent=2, sort_keys=True) + "\n")
-        again = custody._record_organization_transition(self._canonical_source("CUSTODY"))
+        again = custody._record_organization_transition(self._canonical_source("CUSTODY"), hb_epoch=4096)
         self.assertEqual(again["state"], "RECORDED", again)
         self.assertEqual(again["organization_receipt"], legacy)
 

@@ -257,7 +257,8 @@ def select_consumers(only_consumers: tuple[str, ...] | None) -> tuple[tuple[str,
     return tuple((name, rel) for name, rel in CONSUMERS if name in requested)
 
 
-def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]]) -> dict[str, Any] | None:
+def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]], *,
+                                                         hb_epoch: int | None = None) -> dict[str, Any] | None:
     """Retain the existing SDK evaluator selector visit through canonical Master Records organization record."""
     row = next((item for item in outcomes if item.get("consumer") == SDK_EVALUATOR_SELECTOR), None)
     if not isinstance(row, dict) or row.get("attempted") is not True:
@@ -273,6 +274,11 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
     if str(workers_root) not in sys.path:
         sys.path.insert(0, str(workers_root))
     from canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
+    if hb_epoch is None:
+        # No supplied epoch in scope: refused before a receipt is built, so
+        # nothing is written and no clock is read (WU-B13 slice g).
+        from canonical_state_transition_custody import no_epoch_caller_boundary
+        return no_epoch_caller_boundary("scripts/dispatch_resident_execution_requests.py::retain_sdk_evaluator_dispatch_visit_in_master_records")
     machine_result = row.get("result")
     evidence_content = {
         "selector": SDK_EVALUATOR_SELECTOR,
@@ -316,7 +322,7 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
         proof_scope="SDK_EVALUATOR_GOVERNANCE_POSTURE_DISPATCH_VISIT_ONLY",
         proof_ceiling="ORGANIZATION_RECORDED_DISPATCH_VISIT_EVIDENCE_ONLY",
     )
-    result = submit_state_receipt(state_receipt)
+    result = submit_state_receipt(state_receipt, hb_epoch=hb_epoch)
     return {
         "transition_id": transition_id,
         "selector": SDK_EVALUATOR_SELECTOR,
@@ -336,7 +342,7 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
 
 
 def retain_component011_dispatch_in_organization(
-    source: Path, runtime: Path, outcomes: list[dict[str, Any]],
+    source: Path, runtime: Path, outcomes: list[dict[str, Any]], *, hb_epoch: int | None = None,
 ) -> dict[str, Any] | None:
     """Record the exact component-011 selector outcome in the EXISTING org ledger.
 
@@ -382,7 +388,12 @@ def retain_component011_dispatch_in_organization(
         workers_root = source / "workers"
         if str(workers_root) not in sys.path:
             sys.path.insert(0, str(workers_root))
-        from canonical_state_transition_custody import build_state_receipt, sha256_uri
+        from canonical_state_transition_custody import build_state_receipt, no_epoch_caller_boundary, sha256_uri
+        if hb_epoch is None:
+            # No supplied epoch in scope: refused before any store is opened or
+            # receipt built; nothing is written and no clock is read.
+            return no_epoch_caller_boundary(
+                "scripts/dispatch_resident_execution_requests.py::retain_component011_dispatch_in_organization")
 
         spec = importlib.util.spec_from_file_location("component011_existing_org_ledger", ledger_path)
         if spec is None or spec.loader is None:
@@ -461,6 +472,7 @@ def retain_component011_dispatch_in_organization(
             },
             authority_effect="NONE",
             ledger=store,
+            hb_epoch=hb_epoch,
         )
         digest = recorded["receipt_sha256"]
         stored = store.get(org.ledger_store.receipt_key(digest))
@@ -507,7 +519,8 @@ def retain_component011_dispatch_in_organization(
             "authority_effect": "NONE",
         }
 
-def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]]) -> dict[str, Any] | None:
+def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]], *,
+                                                    hb_epoch: int | None = None) -> dict[str, Any] | None:
     """Record actual Richard dispatch observation, not WorkerCoordinator execution."""
     row = next((item for item in outcomes if item.get("consumer") == RICHARD_SELECTOR), None)
     if not isinstance(row, dict):
@@ -527,6 +540,11 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
     if str(workers_root) not in sys.path:
         sys.path.insert(0, str(workers_root))
     from canonical_state_transition_custody import build_state_receipt, organization_receipt_gate, sha256_uri, submit_state_receipt
+    if hb_epoch is None:
+        # No supplied epoch in scope: refused before a receipt is built, so
+        # nothing is written and no clock is read (WU-B13 slice g).
+        from canonical_state_transition_custody import no_epoch_caller_boundary
+        return no_epoch_caller_boundary("scripts/dispatch_resident_execution_requests.py::retain_richard_dispatch_visit_in_master_records")
     machine_result = row.get("result")
     first_failed_cycle = machine_result.get("first_failed_cycle") if isinstance(machine_result, dict) else None
     evidence_content = {
@@ -573,10 +591,11 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         proof_scope="RICHARD_TEST3_DISPATCH_VISIT_ONLY",
         proof_ceiling="ORGANIZATION_RECORDED_DISPATCH_VISIT_EVIDENCE_ONLY",
     )
-    result = submit_state_receipt(state_receipt)
+    result = submit_state_receipt(state_receipt, hb_epoch=hb_epoch)
     # Organization ledger record closes the transition; Master Records
     # reconstruction fields are evidence only and never gate it.
-    gate = organization_receipt_gate(result, expected_transition_id=transition_id, record_refusal=True)
+    gate = organization_receipt_gate(result, expected_transition_id=transition_id, record_refusal=True,
+                                     hb_epoch=hb_epoch)
     closed = gate["verified"]
     return {
         "transition_id": transition_id,
@@ -634,7 +653,11 @@ def dispatch(
     goal_task_id: str | None = None,
     request_id: str | None = None,
     execution_attempt_id: str | None = None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
+    """Dispatch the selected consumers. `hb_epoch` is the epoch this execution was
+    supplied; it is forwarded to every receipt this dispatch records or has a
+    consumer record, and without it none is recorded (NO_EPOCH_CALLER_FAILS_CLOSED)."""
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     source_env = dict(os.environ if env is None else env)
@@ -682,6 +705,9 @@ def dispatch(
                                    ("--org-ledger-root", "STEGVERSE_ORG_LEDGER_ROOT")):
                 if str(source_env.get(variable) or "").strip():
                     command.extend([flag, str(source_env[variable])])
+        if name in {"org_claim_allocator", SDK_EVALUATOR_SELECTOR} and hb_epoch is not None:
+            # Only the consumers that record a receipt take the supplied epoch.
+            command.extend(["--hb-epoch", str(hb_epoch)])
         try:
             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
             result = parse_last_json(completed.stdout)
@@ -708,9 +734,9 @@ def dispatch(
     readback_selected_failure = bool(only_consumers is not None and "organization_custody_readback" in only_consumers
                                     and (not readback_row or readback_row["state"] not in {"RECORDED_LOCAL_READBACK", "ALREADY_CONSUMED"}))
     exact_selector_failure = (only_consumers is not None and bool(request_failures)) or readback_selected_failure
-    sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes)
+    sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes, hb_epoch=hb_epoch)
     try:
-        richard_dispatch_master_records = retain_richard_dispatch_visit_in_master_records(source, runtime, outcomes)
+        richard_dispatch_master_records = retain_richard_dispatch_visit_in_master_records(source, runtime, outcomes, hb_epoch=hb_epoch)
     except Exception as exc:
         # A canonical-custody exception must not erase the actual consumer
         # observation before this existing dispatch snapshot is persisted.
@@ -734,7 +760,7 @@ def dispatch(
         or richard_dispatch_master_records.get("state") != "RECORDED"
     ):
         exact_selector_failure = True
-    component011_organization_dispatch = retain_component011_dispatch_in_organization(source, runtime, outcomes)
+    component011_organization_dispatch = retain_component011_dispatch_in_organization(source, runtime, outcomes, hb_epoch=hb_epoch)
     component011_custody_failure = bool(
         component011_organization_dispatch is not None
         and component011_organization_dispatch.get("state") != "RECORDED"
@@ -781,7 +807,20 @@ def main() -> int:
     parser.add_argument("--goal-task-id")
     parser.add_argument("--request-id")
     parser.add_argument("--execution-attempt-id")
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; without it nothing is recorded")
     args = parser.parse_args()
+    if args.hb_epoch is not None:
+        # Checked as typed by the kernel's shared rule, before anything is dispatched.
+        spec = importlib.util.spec_from_file_location(
+            "dispatch_cli_kernel", args.source_root.expanduser().resolve() / "org-kernel/kernel.py")
+        kernel = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(kernel)
+        refused = kernel.writer_epoch_refusal(
+            args.hb_epoch, retry_entrypoint="scripts/dispatch_resident_execution_requests.py (--hb-epoch)")
+        if refused is not None:
+            print(json.dumps(refused, sort_keys=True))
+            return 1
     receipt = dispatch(
         args.source_root,
         args.runtime_root,
@@ -789,6 +828,7 @@ def main() -> int:
         goal_task_id=args.goal_task_id,
         request_id=args.request_id,
         execution_attempt_id=args.execution_attempt_id,
+        hb_epoch=int(args.hb_epoch) if args.hb_epoch is not None else None,
     )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "DISPATCH_COMPLETE" else 1

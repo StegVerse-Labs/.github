@@ -58,7 +58,7 @@ class Ledger:
         self.repo, self.org = base / "repo-ledger", base / "org-ledger"
         (self.org / "receipts").mkdir(parents=True)
         self.consumer = load("sppa_test_consumer", "scripts/consume_org_claim_allocator_request.py")
-        custody = self.consumer.ledger_custody(self.source, base / "seed-repo-ledger", self.org)
+        custody = self.consumer.ledger_custody(self.source, base / "seed-repo-ledger", self.org, hb_epoch=4096)
         evidence = {"disposition": "ALLOW", "task_id": CLAIM_TASK, "fencing_token": fence,
                     "claim_scope_sha256": sppa.stable_hash(SCOPE), "request_sha256": "0" * 64,
                     "failed_predicate": None, "organization_head_sha256": None,
@@ -71,11 +71,12 @@ class Ledger:
         self.fence = fence
 
     def run(self, request: dict, **kwargs) -> dict:
+        kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
         return sppa.authorize(request, source=self.source, repo_ledger_root=self.repo,
                               org_ledger_root=self.org, **kwargs)
 
     def org_receipt(self, digest: str) -> dict:
-        custody = self.consumer.ledger_custody(self.source, self.repo, self.org)
+        custody = self.consumer.ledger_custody(self.source, self.repo, self.org, hb_epoch=4096)
         rows = self.consumer.verify_organization_chain(custody)["receipts"]
         return next(row for row in rows if row["receipt_sha256"] == digest)
 
@@ -145,7 +146,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
     def test_site_1607_retro_receipt_is_appended_and_reads_back(self):
         ledger = Ledger(self.base)
         # Without a supplied epoch the refusal is returned and nothing is written.
-        unstamped = ledger.run(fixture())
+        unstamped = ledger.run(fixture(), hb_epoch=None)
         self.assertEqual(unstamped["failure_code"], "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF")
         self.assertFalse(unstamped["receipt_appended"])
         result = ledger.run(fixture(), hb_epoch=str(CARRIER_HB_EPOCH))
@@ -191,6 +192,9 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
             self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED, epoch)
             self.assertIn(result["failure_code"], ("HB_EPOCH_NOT_SUPPLIED", "HB_EPOCH_INVALID"))
             self.assertFalse(result["promotion_may_proceed"])
+            # Without a supplied epoch nothing is recorded and no clock stands in for it.
+            self.assertFalse(result["receipt_appended"], epoch)
+            self.assertEqual(result["record_refusal"]["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED", epoch)
 
     def test_each_refusal_code_and_disposition(self):
         ledger = Ledger(self.base)

@@ -195,16 +195,27 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
             # The far side refused or could not be reached. Say which, and say
             # it as a disposition rather than as a crossing that happened.
             detail = (completed.stderr or completed.stdout or "").strip().splitlines()
+            # The processor's own six-field fault (aligned to Data-Continuation#10):
+            # exit 65 is a terminal input fault, exit 75 a retryable write fault.
+            fault = None
+            if completed.returncode in (65, 75):
+                try:
+                    fault = json.loads((completed.stdout or "").strip().splitlines()[-1])
+                except (IndexError, ValueError, RecursionError):
+                    fault = None
             return {
                 "schema": "stegverse.sdk-manifest-crossing-result/v1",
                 "declared_transition_surface": destination["surface"],
                 "resolved_service_id": service["service_id"],
                 "crossing_completed": False,
                 "manifest_sha256": ingress["payload"]["manifest_sha256"],
-                "far_side_disposition": detail[-1] if detail else "FAR_SIDE_UNREACHABLE",
+                "far_side_disposition": (str(fault.get("detail")) if isinstance(fault, dict)
+                                         else detail[-1] if detail else "FAR_SIDE_UNREACHABLE"),
                 "profile_status": service.get("profile_status"),
                 "endpoint_adapter_installed": bool(service.get("endpoint_adapter")),
                 "ingress_packet_id": ingress["packet_id"],
+                **({"far_side_fault": fault, "retry_permitted": fault.get("terminal") is False}
+                   if isinstance(fault, dict) else {}),
                 "authority_effect": "NONE_CROSSING_ATTEMPT_ONLY",
             }
         result = json.loads(execution.read_text())

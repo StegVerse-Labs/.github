@@ -227,6 +227,14 @@ def _append(transition_class: str, packet_id: str, evidence: Mapping[str, Any],
 def _recorded(disposition: str, payload: Any, packet_id: str, hb_epoch: int | None, *,
               failed_predicate: str | None = None, detail: str | None = None,
               closure: str | None = None) -> dict[str, Any]:
+    if hb_epoch is None:
+        # No supplied epoch in scope: nothing is recorded, before any store is
+        # opened, and no clock stands in for the epoch (WU-B13 slice g).
+        refusal = organization_ledger.kernel.no_epoch_caller_refusal(
+            "resident-runtime/intr_destination_ingress.py::_recorded",
+            retry_entrypoint="resident-runtime/intr_destination_ingress.py::receive (hb_epoch=, or --hb-epoch)")
+        return {**refusal, "operation": OPERATION_ID, "packet_id": packet_id, "received": False,
+                "refusal_recorded": False, "authority_effect": "NONE_REFUSAL_ONLY"}
     evidence = _evidence(payload, packet_id, disposition,
                          failed_predicate=failed_predicate, detail=detail, closure=closure)
     if closure is None:

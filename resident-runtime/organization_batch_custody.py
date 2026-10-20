@@ -916,18 +916,16 @@ def submit_pending_released_batch(root, *, hb_epoch=None) -> dict:
     never a predicate of any transition: FAILED does not block, and a failure
     to record is reported here, not raised into the committed append.
 
-    `hb_epoch` is the epoch the caller supplies; an invalid one is reported as
-    the six-field FAIL_CLOSED before the outbox is read. Absent, the reference
-    is still derived from the host clock and says so (WU-B13 slice g).
+    `hb_epoch` is the epoch the caller supplies; an absent or invalid one is
+    reported as the six-field FAIL_CLOSED (HB_EPOCH_NOT_SUPPLIED when absent)
+    before the outbox is read. No clock is read to stand in for it.
     """
-    refusal = (org.kernel.writer_epoch_refusal(hb_epoch, retry_entrypoint=SUBMISSION_RETRY_ENTRYPOINT
-                                               + " (hb_epoch=, or --hb-epoch)")
-               if hb_epoch is not None else None)
+    refusal = org.kernel.writer_epoch_refusal(hb_epoch, retry_entrypoint=SUBMISSION_RETRY_ENTRYPOINT
+                                              + " (hb_epoch=, or --hb-epoch)")
     if refusal is not None:
         return {**refusal, "submission_receipts": [], "submission_receipt": None,
                 "authority_effect": "NONE"}
-    reference = (org.kernel.hb_reference(epoch=int(str(hb_epoch))) if hb_epoch is not None
-                 else org.kernel.hb_reference())
+    reference = org.kernel.hb_reference(epoch=int(str(hb_epoch)))
     try:
         pending = pending_released_batches(root)
     except Exception as exc:  # noqa: BLE001 -- the committed append is never undone by this step
@@ -1314,8 +1312,15 @@ def main() -> None:
     parser.add_argument("--root")
     parser.add_argument("--hb-epoch", type=str, default=None,
                         help="carrier-supplied heartbeat epoch for --submit-pending-released-batch, "
-                             "ASCII digits >= 32; never coerced")
+                             "ASCII digits >= 32; required there, never coerced")
     args = parser.parse_args()
+    if args.submit_pending_released_batch:
+        # Checked as typed, before the organization store is resolved or opened.
+        refusal = org.kernel.writer_epoch_refusal(args.hb_epoch, retry_entrypoint=SUBMISSION_RETRY_ENTRYPOINT
+                                                  + " (hb_epoch=, or --hb-epoch)")
+        if refusal is not None:
+            print(json.dumps(refusal, sort_keys=True))
+            raise SystemExit(1)
     root = Path(args.root) if args.root else org.organization_store()
     if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.export_batch_record,
                                      args.submit_released_batch,args.submit_pending_released_batch)) != 1:

@@ -121,11 +121,23 @@ class GovernanceSixFieldTests(unittest.TestCase):
         self.assertEqual(organization[0]["hb_reference"]["epoch"], 1000)
         self.assertIs(organization[0]["hb_reference"]["derived_from_clock"], False)
 
-    def test_without_hb_epoch_the_receipts_say_the_reference_was_derived(self):
+    def test_without_hb_epoch_nothing_is_decided_or_appended(self):
+        # No flag: refused six-field HB_EPOCH_NOT_SUPPLIED before anything is
+        # decided, appended or written; no clock stands in for the epoch.
         self.use_stub(MATRIX_STUB)
-        self.run_adapter()
-        repository = self.ledger("STEGVERSE_REPO_LEDGER_ROOT")
-        self.assertIs(repository[0]["hb_reference"]["derived_from_clock"], True)
+        envelope = self.work / "packet.json"
+        envelope.write_text(json.dumps(base.packet(base.work_request({"signal": {}}))))
+        out = self.work / "out.json"
+        completed = subprocess.run([sys.executable, str(base.ROOT / "resident-runtime/governance_endpoint.py"),
+                                    "--packet", str(envelope), "--out", str(out)],
+                                   cwd=base.ROOT, capture_output=True, text=True, check=False)
+        self.assertEqual(completed.returncode, 1, completed.stderr)
+        refused = json.loads(completed.stdout)
+        self.assertEqual(refused["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
+        self.assert_six(refused)
+        self.assertFalse(out.exists())
+        self.assertEqual(self.ledger("STEGVERSE_REPO_LEDGER_ROOT"), [])
+        self.assertEqual(self.ledger("STEGVERSE_ORG_LEDGER_ROOT"), [])
 
     def run_adapter_raw(self, epoch):
         envelope = self.work / "packet.json"

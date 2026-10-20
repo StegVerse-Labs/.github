@@ -309,7 +309,9 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     chain_rows: list[dict[str, Any]] = []
     chain_refusal = None
     if repo_ledger_root is not None:
-        custody = consumer.ledger_custody(source, repo_ledger_root, org_ledger_root)
+        custody = consumer.ledger_custody(source, repo_ledger_root, org_ledger_root,
+                                          hb_epoch=int(str(hb_epoch)) if hb_epoch is not None
+                                          and kernel.supplied_epoch_failure(hb_epoch) is None else None)
         try:
             chain = consumer.verify_organization_chain(custody)
             chain_rows = list(chain["receipts"])
@@ -379,9 +381,13 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
         result["organization_readback"] = "NOT_PERFORMED"
         return result
     if hb_epoch is None or epoch_failure is not None:
-        # A refusal without a supplied epoch writes nothing: a receipt is never
-        # stamped from a clock here. The six fields are in the result.
+        # No supplied epoch in scope: the disposition is returned, not recorded,
+        # and no clock is read to stamp a receipt (WU-B13 slice g). The six
+        # fields are in the result; record_refusal says why nothing was written.
         result.update({"receipt_appended": False, "organization_readback": "NOT_PERFORMED"})
+        result["record_refusal"] = kernel.no_epoch_caller_refusal(
+            "scripts/authorize_site_production_promotion.py::authorize",
+            retry_entrypoint=RETRY_ENTRYPOINT + " (hb_epoch=, or --hb-epoch)")
         return result
     transition_id = f"{cls}-{request['sha'][:12]}-" + stable_hash(
         {"mode": request["mode"], "sha": request["sha"], "build": build.get("build_id"),

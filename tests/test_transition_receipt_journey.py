@@ -103,7 +103,7 @@ class TransitionReceiptJourneyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as work:
             store = emit.ledger_store.PosixLedgerStore(Path(work) / "repo-ledger")
             receipts = [emit.append(f"JOURNEY-001-{index}", "ENDPOINT_TRANSITION", OUTBOUND, RETURN,
-                                    row["evidence"], store=store) for index, row in enumerate(rows)]
+                                    row["evidence"], store=store, hb_epoch=4096) for index, row in enumerate(rows)]
         self.assertEqual(receipts[1]["evidence"]["disposition"], "FAIL_CLOSED")
         result = validate(receipts)
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
