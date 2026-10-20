@@ -10,6 +10,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Least privilege: nothing at workflow scope. Each job declares the only scope
+# it uses (contents: read, for actions/checkout); artifact upload uses the
+# runner's ACTIONS_RUNTIME_TOKEN, not GITHUB_TOKEN.
+permissions: {}
+
 jobs:
   ratchet:
     runs-on: ubuntu-latest
