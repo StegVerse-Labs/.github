@@ -82,11 +82,24 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
             return _fail("UNAUTHENTICATED_WORKER_OWNERSHIP_CONFLICT",
                          "NO_SYNTHETIC_WORKER_CLAIM_OR_FENCE",
                          "reconcile original WorkerCoordinator evidence")
+        # Canonical task-record/v1 does NOT embed cosv_task_vector.
+        # The source of truth is the separately registered COSV task vector,
+        # bound by its full task identity and invariant schema. Do not infer
+        # one from a row field that is not in this schema.
+        expected_vector_identity = "StegVerse-Labs/.github:task:" + TASK_ID
         if (not isinstance(vector, dict)
-                or vector.get("vector") != row.get("cosv_task_vector")
-                or vector.get("exact_metrics", {}).get("lifecycle") != "UNCLAIMED"):
+                or vector.get("schema") != "stegverse.cosv-task-vector/v0.1"
+                or vector.get("identity") != expected_vector_identity
+                or vector.get("profile") != "task.v1"
+                or vector.get("level") != "task"
+                or not isinstance(vector.get("vector"), str)
+                or len(vector["vector"]) != 14
+                or not vector["vector"].isdigit()
+                or not isinstance(vector.get("exact_metrics"), dict)
+                or vector["exact_metrics"].get("lifecycle") != "UNCLAIMED"
+                or vector.get("authority_effect") != "NONE"):
             return _fail("COSV_PROJECTION_MISMATCH", "CANONICAL_COSV_UNCHANGED",
-                         "read original task COSV from current canonical vector")
+                         "read the identity-bound original task COSV vector from current Registry")
         if not isinstance(owner_receipt, dict):
             return result
         expected = {
