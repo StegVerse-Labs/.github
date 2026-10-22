@@ -14,6 +14,9 @@ import json
 from typing import Any, Callable
 
 TASK_ID = "STEGAPP-EPHEMERAL-COMPOSITION-001"
+# Exact value read back from the already-registered original task vector;
+# this preflight is scoped to its PROPOSED/UNCLAIMED predecessor state.
+REGISTERED_PROPOSED_COSV = "10300000011000"
 SCHEMA = "stegverse.existing-task-admission-preflight/v1"
 GOAL = "STEGAPP-EPHEMERAL-COMPOSITION-001"
 RETRY = "StegVerse-Labs/.github#3291 / original Registry owner transition"
@@ -98,6 +101,7 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
                 or not isinstance(vector.get("vector"), str)
                 or len(vector["vector"]) != 14
                 or not vector["vector"].isdigit()
+                or vector["vector"] != REGISTERED_PROPOSED_COSV
                 or not isinstance(vector.get("exact_metrics"), dict)
                 or vector["exact_metrics"].get("lifecycle") != "UNCLAIMED"
                 or vector.get("authority_effect") != "NONE"):
