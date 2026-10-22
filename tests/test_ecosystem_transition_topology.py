@@ -1,7 +1,7 @@
 """Conformance vectors for topology #3299. Mock readback is not sovereign proof."""
 import unittest
 from unittest.mock import patch
-from scripts.ecosystem_transition_topology import evaluate, verify_organization_readback, canonical_digest, verify_native_organization_transition
+from scripts.ecosystem_transition_topology import evaluate, verify_organization_readback, canonical_digest, verify_native_organization_transition, verify_published_organization_chain
 
 
 class TransitionTopologyTests(unittest.TestCase):
@@ -55,6 +55,22 @@ class TransitionTopologyTests(unittest.TestCase):
             result = verify_native_organization_transition(
                 {"receipt_sha256": "sha256:fixture"}, expected_transition_id="transition-1")
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
+
+    def test_published_chain_missing_binding_fails_closed(self):
+        result = verify_published_organization_chain("", expected_receipt_sha256="")
+        self.assertEqual(result["predicate"], "FRESH_REF_OR_RECEIPT_NOT_BOUND")
+
+    def test_published_chain_missing_ref_fails_closed(self):
+        result = verify_published_organization_chain(
+            "git+/nonexistent/topology.git#refs/stegverse/organization-ledger",
+            expected_receipt_sha256="sha256:nonexistent")
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+
+    def test_published_chain_cannot_accept_wrong_receipt(self):
+        result = verify_published_organization_chain(
+            "git+/nonexistent/topology.git#refs/stegverse/organization-ledger",
+            expected_receipt_sha256="sha256:wrong")
+        self.assertNotEqual(result["disposition"], "ALLOW")
 
     def test_allow(self):
         self.assertEqual(evaluate(self.state, self.manifest, self.evidence)["disposition"], "ALLOW")
