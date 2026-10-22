@@ -110,3 +110,42 @@ def verify_native_organization_transition(
     return {"disposition": "ALLOW", "predicate": "NATIVE_ORGANIZATION_READBACK_VERIFIED",
             "organization_receipt_sha256": digest,
             "verification_scope": "ORGANIZATION_RECORDING_ONLY_NOT_GOVERNANCE_ADMISSIBILITY"}
+
+
+def verify_published_organization_chain(
+    fresh_ref_location: str, *, expected_receipt_sha256: str
+) -> dict[str, Any]:
+    """Read an already-published sovereign ref using the existing native chain reader.
+
+    A caller must independently fetch the designated Git ref into a separate
+    repository before invoking this read-only function. No new transition occurs.
+    """
+    if not fresh_ref_location or not expected_receipt_sha256:
+        return {"disposition": "FAIL_CLOSED", "predicate": "FRESH_REF_OR_RECEIPT_NOT_BOUND"}
+    try:
+        import importlib.util
+        from pathlib import Path
+        module_path = Path(__file__).resolve().parents[1] / "resident-runtime" / "organization_ledger_readback.py"
+        spec = importlib.util.spec_from_file_location("stegverse_native_org_readback", module_path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("native reader unavailable")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        observed = module.readback(fresh_ref_location)
+    except Exception as exc:
+        return {"disposition": "FAIL_CLOSED", "predicate": "PUBLISHED_ORGANIZATION_CHAIN_READBACK_FAILED",
+                "error_type": type(exc).__name__}
+    if observed.get("disposition") != "ALLOW" or not all(
+        observed.get(key) is True for key in
+        ("every_receipt_verifies_against_its_body", "every_source_receipt_retained_and_verifies")
+    ):
+        return {"disposition": "FAIL_CLOSED", "predicate": "ORGANIZATION_CHAIN_INTEGRITY_UNVERIFIED"}
+    matches = [row for row in observed.get("chain", [])
+               if row.get("receipt_sha256") == expected_receipt_sha256]
+    if len(matches) != 1:
+        return {"disposition": "FAIL_CLOSED", "predicate": "EXPECTED_SOVEREIGN_RECEIPT_NOT_IN_CHAIN"}
+    return {"disposition": "ALLOW", "predicate": "PUBLISHED_ORGANIZATION_CHAIN_AND_RECEIPT_VERIFIED",
+            "verification_scope": "ORGANIZATION_RECORDING_ONLY_NOT_GOVERNANCE_ADMISSIBILITY",
+            "receipt_sha256": expected_receipt_sha256,
+            "head_receipt_sha256": observed["head_receipt_sha256"],
+            "chain_length": observed["chain_length"]}
