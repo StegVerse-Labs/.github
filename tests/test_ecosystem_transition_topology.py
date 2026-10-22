@@ -32,6 +32,28 @@ class TransitionTopologyTests(unittest.TestCase):
         transition = {"id": "x"}
         self.assertEqual(verify_organization_readback(transition, {"transition_digest": canonical_digest(transition)})["disposition"], "FAIL_CLOSED")
 
+    def test_self_attestation_cannot_authenticate_ledger(self):
+        transition = {"id": "x"}
+        claimed = {"authenticated": True, "recording_confirmed": True,
+                   "transition_digest": canonical_digest(transition), "continuity_verified": True}
+        result = verify_organization_readback(transition, claimed)
+        self.assertEqual(result["predicate"], "AUTHENTIC_SOVEREIGN_VERIFIER_UNAVAILABLE")
+
+    def test_authenticator_rejection_fails_closed(self):
+        transition = {"id": "x"}
+        claimed = {"authenticated": True, "recording_confirmed": True,
+                   "transition_digest": canonical_digest(transition), "continuity_verified": True}
+        result = verify_organization_readback(transition, claimed, authenticate=lambda _: False)
+        self.assertEqual(result["predicate"], "SOVEREIGN_READBACK_NOT_AUTHENTICATED")
+
+    def test_authenticated_fixture_structural_consistency(self):
+        # Fixture proves structural behavior, NOT a production sovereign record.
+        transition = {"id": "x"}
+        claimed = {"recording_confirmed": True,
+                   "transition_digest": canonical_digest(transition), "continuity_verified": True}
+        result = verify_organization_readback(transition, claimed, authenticate=lambda _: True)
+        self.assertEqual(result["predicate"], "SUPPLIED_SOVEREIGN_READBACK_CONSISTENT")
+
     def test_digest_mismatch_fails_closed(self):
         transition = {"id": "x"}
         readback = {"authenticated": True, "recording_confirmed": True,
