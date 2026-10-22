@@ -72,6 +72,46 @@ class TransitionTopologyTests(unittest.TestCase):
             expected_receipt_sha256="sha256:wrong")
         self.assertNotEqual(result["disposition"], "ALLOW")
 
+    def test_published_chain_binds_transition_and_predecessor_without_granting_authority(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        import importlib.util
+
+        observed = {
+            "disposition": "ALLOW",
+            "every_receipt_verifies_against_its_body": True,
+            "every_source_receipt_retained_and_verifies": True,
+            "chain": [{"receipt_sha256": "sha256:receipt",
+                       "source_transition_id": "transition-1",
+                       "previous_receipt_sha256": "sha256:predecessor"}],
+            "head_receipt_sha256": "sha256:receipt",
+            "chain_length": 1,
+        }
+        fake_spec = SimpleNamespace(loader=SimpleNamespace(exec_module=lambda _: None))
+        with patch.object(importlib.util, "spec_from_file_location", return_value=fake_spec), \
+             patch.object(importlib.util, "module_from_spec",
+                          return_value=SimpleNamespace(readback=lambda _: observed)):
+            kwargs = {"expected_receipt_sha256": "sha256:receipt",
+                      "expected_transition_id": "transition-1",
+                      "expected_predecessor_sha256": "sha256:predecessor"}
+            allowed = verify_published_organization_chain("fixture-ref", **kwargs)
+            self.assertEqual(allowed["disposition"], "ALLOW")
+            self.assertEqual(allowed["verification_scope"],
+                             "ORGANIZATION_RECORDING_ONLY_NOT_GOVERNANCE_ADMISSIBILITY")
+            wrong_id = verify_published_organization_chain(
+                "fixture-ref", **{**kwargs, "expected_transition_id": "wrong"})
+            self.assertEqual(wrong_id["predicate"], "EXPECTED_TRANSITION_ID_MISMATCH")
+            wrong_parent = verify_published_organization_chain(
+                "fixture-ref", **{**kwargs, "expected_predecessor_sha256": "sha256:wrong"})
+            self.assertEqual(wrong_parent["predicate"], "EXPECTED_PREDECESSOR_MISMATCH")
+            missing = verify_published_organization_chain(
+                "fixture-ref", **{**kwargs, "expected_receipt_sha256": "sha256:absent"})
+            self.assertEqual(missing["predicate"], "EXPECTED_SOVEREIGN_RECEIPT_NOT_IN_CHAIN")
+            duplicate = {**observed, "chain": observed["chain"] * 2}
+            observed.update(duplicate)
+            self.assertEqual(verify_published_organization_chain("fixture-ref", **kwargs)["disposition"],
+                             "FAIL_CLOSED")
+
     def test_allow(self):
         self.assertEqual(evaluate(self.state, self.manifest, self.evidence)["disposition"], "ALLOW")
 
