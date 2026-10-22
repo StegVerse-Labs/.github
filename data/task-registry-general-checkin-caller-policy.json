@@ -39,5 +39,8 @@
       "NEW_HANDOFF_CLAIM"
     ],
     "reconciliation_source": "CURRENT_GITHUB_MAIN_CANONICAL_TASK_REGISTRY_AND_APPLICABLE_MIRROR_HANDOFF"
-  }
+  },
+  "prohibited_caller_surfaces": [
+    "AI_SESSION_GATE"
+  ]
 }
