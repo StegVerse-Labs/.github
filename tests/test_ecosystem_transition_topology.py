@@ -1,5 +1,6 @@
 """Conformance vectors for topology #3299. Mock readback is not sovereign proof."""
 import unittest
+from unittest.mock import patch
 from scripts.ecosystem_transition_topology import evaluate, verify_organization_readback, canonical_digest, verify_native_organization_transition
 
 
@@ -23,6 +24,36 @@ class TransitionTopologyTests(unittest.TestCase):
             {"receipt_sha256": "not-a-real-receipt"},
             expected_transition_id="not-a-real-transition",
         )
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+
+    def test_native_verified_receipt_uses_existing_gate(self):
+        from workers import canonical_state_transition_custody as custody
+        receipt = {"receipt_sha256": "sha256:fixture"}
+        native = {"verified": True, "organization_receipt_sha256": "sha256:org-fixture",
+                  "refusal": None}
+        with patch.object(custody, "organization_receipt_gate", return_value=native) as gate:
+            result = verify_native_organization_transition(
+                receipt, expected_transition_id="transition-1",
+                expected_predecessor="sha256:predecessor")
+        self.assertEqual(result["predicate"], "NATIVE_ORGANIZATION_READBACK_VERIFIED")
+        gate.assert_called_once_with(receipt, root=None,
+                                     expected_transition_id="transition-1",
+                                     expected_predecessor="sha256:predecessor",
+                                     record_refusal=False)
+
+    def test_native_exception_fails_closed(self):
+        from workers import canonical_state_transition_custody as custody
+        with patch.object(custody, "organization_receipt_gate", side_effect=Exception("readback unavailable")):
+            result = verify_native_organization_transition(
+                {"receipt_sha256": "sha256:fixture"}, expected_transition_id="transition-1")
+        self.assertEqual(result["predicate"], "NATIVE_ORGANIZATION_READBACK_UNAVAILABLE")
+
+    def test_native_refusal_is_not_promoted(self):
+        from workers import canonical_state_transition_custody as custody
+        with patch.object(custody, "organization_receipt_gate",
+                          return_value={"verified": False, "refusal": {"disposition": "DENY"}}):
+            result = verify_native_organization_transition(
+                {"receipt_sha256": "sha256:fixture"}, expected_transition_id="transition-1")
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
 
     def test_allow(self):
