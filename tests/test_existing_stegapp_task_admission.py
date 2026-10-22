@@ -124,6 +124,17 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
         self.vector["identity"] = "StegVerse-Labs/.github:task:ANOTHER-TASK"
         self.assertEqual(self.verdict()["failed_predicate"], "CANONICAL_COSV_UNCHANGED")
 
+    def test_malformed_sovereign_digest_is_not_original_owner_receipt(self):
+        for bogus in ("sha256:", "sha256:bad", "sha256:" + "g"*64,
+                      "sha256:" + "A"*64, "invalid"):
+            with self.subTest(bogus=bogus):
+                fake = copy.deepcopy(self.decision)
+                fake["organization_receipt_sha256"] = bogus
+                result = self.verdict(decision=fake)
+                self.assertEqual(result["disposition"], "FAIL_CLOSED")
+                self.assertEqual(result["failed_predicate"],
+                                 "OWNER_ALLOW_AND_SOVEREIGN_RECORDING_PRESENT")
+
     def test_owner_claim_cannot_be_minted_with_admission(self):
         forged = copy.deepcopy(self.decision)
         forged["claim_or_fence_minted"] = True
