@@ -36,9 +36,8 @@ GATE = "TEST_SUITE_RATCHET"
 BASELINE = Path("data/test-suite-baseline.json")
 # pytest prints one of these per failing or erroring test in -q output.
 OUTCOME = re.compile(r"^(?:FAILED|ERROR)\s+(\S+)")
-REPAIR = ("fix the newly failing test, or - when the failure is genuinely "
-          "pre-existing and newly surfaced - add it to the baseline in the same "
-          "change, where a reviewer sees it")
+REPAIR = ("repair the actual failing test in its owning source lane; "
+          "do not add failures or exclusions to the ratchet baseline")
 
 
 def run_suite(target: str) -> set[str]:
@@ -136,7 +135,7 @@ def main() -> int:
     parser.add_argument("--target", default="tests")
     parser.add_argument("--baseline", default=str(BASELINE))
     parser.add_argument("--write-baseline", action="store_true",
-                        help="record the current failing set as the baseline")
+                        help="deprecated and prohibited: cannot regenerate the failure baseline")
     parser.add_argument("--findings", action="store_true",
                         help="emit Healer-intake findings instead of prose")
     args = parser.parse_args()
@@ -151,20 +150,9 @@ def main() -> int:
     observed = run_suite(args.target)
 
     if args.write_baseline:
-        existing = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({
-            "schema": "stegverse.test-suite-baseline/v1",
-            "target": args.target,
-            "known_failing": sorted(x for x in observed
-                                    if x not in {r["test"] for r in (existing.get("excluded") or [])}),
-            # Preserved across regeneration: an exclusion and its reason survive.
-            "excluded": existing.get("excluded") or [],
-            "baseline_is_a_ceiling_not_an_endorsement": True,
-            "authority_effect": "NONE",
-        }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"{GATE}: wrote baseline of {len(observed)} failing tests to {path}")
-        return 0
+        print(f"{GATE}: FAIL_CLOSED automatic baseline regeneration is prohibited; "
+              "repair the actual tests and separately review any baseline reduction")
+        return 1
 
     report = compare(observed, load_baseline(path))
 
