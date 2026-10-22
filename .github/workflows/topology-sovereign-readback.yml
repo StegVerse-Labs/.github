@@ -1,0 +1,45 @@
+name: Topology Sovereign Readback Conformance
+on:
+  pull_request:
+    paths:
+      - 'scripts/ecosystem_transition_topology.py'
+      - 'tests/test_ecosystem_transition_topology.py'
+      - '.github/workflows/topology-sovereign-readback.yml'
+permissions:
+  contents: read
+jobs:
+  verify-published-ledger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Exercise topology verifier against independently fetched sovereign ref
+        env:
+          LEDGER_REF: refs/stegverse/organization-ledger
+          EXPECTED_RECEIPT: sha256:273ffa70d766e003d7c649d4b7b5fd83c95a532f58c0c79fd13bf5617ca094da
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/topology-sovereign-readback.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          test -n "$auth_header" || { echo 'FAIL_CLOSED: no authenticated fresh-fetch credential'; exit 1; }
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+            fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
+          export FRESH_LEDGER_LOCATION="git+$fresh#$LEDGER_REF"
+          python - <<'PY'
+          import json, os
+          from scripts.ecosystem_transition_topology import verify_published_organization_chain
+          result = verify_published_organization_chain(
+              os.environ["FRESH_LEDGER_LOCATION"],
+              expected_receipt_sha256=os.environ["EXPECTED_RECEIPT"])
+          print(json.dumps(result, sort_keys=True))
+          if result["disposition"] != "ALLOW":
+              raise SystemExit(1)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write("### Published sovereign ledger verification (read-only)\n\n")
+              f.write("```json\n" + json.dumps(result, indent=2) + "\n```\n")
+          PY
