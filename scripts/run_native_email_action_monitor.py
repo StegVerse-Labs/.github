@@ -324,7 +324,13 @@ def load_archive_authorization(continuation_path: Path | None) -> frozenset[str]
     proposed = state.get("archive_proposed") if isinstance(state, dict) else None
     if not isinstance(proposed, list):
         return frozenset()
-    return frozenset(v for v in proposed if isinstance(v, str) and v)
+    # Never treat a malformed or duplicate archive proposal as authority.
+    # A single invalid identity invalidates the entire batch, not just that row.
+    if not all(isinstance(v, str) and v and v.strip() == v for v in proposed):
+        return frozenset()
+    if len(proposed) != len(set(proposed)):
+        return frozenset()
+    return frozenset(proposed)
 
 
 def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: frozenset[str] = frozenset()) -> dict[str, Any]:
