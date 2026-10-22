@@ -125,7 +125,9 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
                          "original manifest decision bound to the current Registry row")
         if (owner_receipt.get("disposition") != "ALLOW"
                 or not isinstance(owner_receipt.get("organization_receipt_sha256"), str)
-                or not owner_receipt["organization_receipt_sha256"].startswith(SHA)):
+                or len(owner_receipt["organization_receipt_sha256"]) != 71
+                or any(c not in "0123456789abcdef"
+                       for c in owner_receipt["organization_receipt_sha256"][7:])):
             return _fail("ORIGINAL_OWNER_ALLOW_OR_LEDGER_RECEIPT_MISSING",
                          "OWNER_ALLOW_AND_SOVEREIGN_RECORDING_PRESENT",
                          "native manifest ALLOW and its original organization receipt")
