@@ -67,6 +67,16 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
                          "EXACTLY_ONE_CANONICAL_EXISTING_TASK",
                          "canonical aggregate row plus matching shard for existing task")
         row = rows[0]
+        # Refuse a forged claim/fence as an explicit authority violation
+        # before reporting general shard drift. No claim is ever minted here.
+        claims = (row.get("worker_claim"), shard.get("worker_claim"))
+        if any(not isinstance(c, dict) or c.get("claim_ref") is not None
+               or c.get("fence_ref") is not None or c.get("projection_only") is not True
+               or c.get("authority") not in (None, "WORKERCOORDINATOR")
+               for c in claims):
+            return _fail("UNAUTHENTICATED_WORKER_OWNERSHIP_CONFLICT",
+                         "NO_SYNTHETIC_WORKER_CLAIM_OR_FENCE",
+                         "reconcile original WorkerCoordinator evidence")
         if any(row.get(k) != shard.get(k) for k in SHA_KEYS):
             return _fail("AGGREGATE_SHARD_OWNER_DRIFT",
                          "EXISTING_TASK_IDENTITY_AND_SCOPE_AGREE",
@@ -75,13 +85,6 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
             return _fail("EXISTING_TASK_STATE_EDGE_CHANGED",
                          "ORIGINAL_STATE_PROPOSED",
                          "use owner transition matching actual source-state edge")
-        claims = (row.get("worker_claim"), shard.get("worker_claim"))
-        if any(not isinstance(c, dict) or c.get("claim_ref") is not None
-               or c.get("fence_ref") is not None or c.get("projection_only") is not True
-               for c in claims):
-            return _fail("UNAUTHENTICATED_WORKER_OWNERSHIP_CONFLICT",
-                         "NO_SYNTHETIC_WORKER_CLAIM_OR_FENCE",
-                         "reconcile original WorkerCoordinator evidence")
         # Canonical task-record/v1 does NOT embed cosv_task_vector.
         # The source of truth is the separately registered COSV task vector,
         # bound by its full task identity and invariant schema. Do not infer
