@@ -64,6 +64,17 @@ def test_incomplete_first_page_never_archives_even_authorized_ids(tmp_path):
     assert receipt["incident_proposals_require_canonical_task_ingress"] is True
 
 
+def test_duplicate_visible_gmail_rows_fail_before_archive(tmp_path):
+    row = {"id": "m1", "from": "notifications@github.com", "subject": "CI failed"}
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[row, dict(row)]),
+    ])
+    import pytest
+    with pytest.raises(RuntimeError, match="LIVE_INBOX_DUPLICATE_VISIBLE_MESSAGE_IDS"):
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES"]
+
+
 def test_incident_clustering_reuses_non_authorizing_email_signature_semantics():
     rows = [
         {"id": "1", "from": "notifications@github.com", "repository": "x/y", "workflow": "Build", "snippet": "failed abcdef1"},
