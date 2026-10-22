@@ -137,6 +137,8 @@ def verify_published_organization_chain(
     except Exception as exc:
         return {"disposition": "FAIL_CLOSED", "predicate": "PUBLISHED_ORGANIZATION_CHAIN_READBACK_FAILED",
                 "error_type": type(exc).__name__}
+    if not isinstance(observed, Mapping):
+        return {"disposition": "FAIL_CLOSED", "predicate": "MALFORMED_NATIVE_ORGANIZATION_READBACK"}
     if observed.get("disposition") != "ALLOW" or not all(
         observed.get(key) is True for key in
         ("every_receipt_verifies_against_its_body", "every_source_receipt_retained_and_verifies")
