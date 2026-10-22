@@ -1,0 +1,142 @@
+{
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "name": "Invariant evaluation answer",
+  "purpose": "Answer one stegverse.invariant-question/v1 (or one stegverse.invariant-pointer-assertion/v1) against caller-supplied, digest-bound invariant source bytes with ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line.",
+  "trigger": "an existing canonical task selects this reusable scenario in its invocation manifest",
+  "scope": "one manifest-bound question over the source bytes the caller supplies; nothing is fetched",
+  "parameter_keys": [
+    "question_sha256",
+    "source_bindings",
+    "relay_queue_dir"
+  ],
+  "question_schemas": {
+    "stegverse.invariant-question/v1": {
+      "shape": "the converged question body; both RT-INVARIANT-EVALUATION-001 implementations accept exactly this shape under this schema string",
+      "fields": {
+        "schema": "the string stegverse.invariant-question/v1",
+        "question_id": "non-empty string chosen by the caller; it names the question, it does not key the relay entry",
+        "invariant_id": "invariant:<key> for a member of /invariants, or prohibition:<NAME> for an entry of /prohibitions, of the canonical invariants document",
+        "owning_existing_goal": "canonical task id ([A-Z0-9][A-Z0-9-]{2,127}) of the existing goal that owns the repair",
+        "invariants_source": "{repository, path, revision, digest}: the canonical invariants document; path is data/task-registry-global-invariants.json, its schema is stegverse.task-registry-global-invariants/v1, digest is sha256:<64 lowercase hex> of the supplied bytes",
+        "subject": "{repository, path, revision, digest}: the document whose assertions are evaluated, digest as above"
+      },
+      "source_resolution": "each ref is matched to exactly one supplied source by repository, revision and path; the ref digest, the supplied binding digest and the sha256 of the supplied bytes must all agree before any byte is parsed",
+      "predicate": "invariant:<key>: every subject object member named <key>, at any depth, is compared to the declared value by strictly typed JSON equality. prohibition:<NAME>: NAME listed under prohibitions, honoured_prohibitions or prohibitions_applied conforms; listed under violated_prohibitions, violations or prohibition_violations contradicts. Any contradiction is DENY; otherwise any conforming assertion is ALLOW; a subject silent on the invariant is UNDECIDABLE; an invariant_id not declared in the supplied canonical document is UNDECIDABLE",
+      "question_binding": "question_sha256 is the sha256 of the exact question bytes; evaluation_key is the sha256 of the canonical JSON of question_sha256 and the sorted source bindings, and keys the write-once relay entry"
+    },
+    "stegverse.invariant-pointer-assertion/v1": {
+      "shape": "a separate, explicitly versioned alternative accepted only by the Labs evaluator; it is not the invariant-question/v1 body",
+      "fields": {
+        "schema": "the string stegverse.invariant-pointer-assertion/v1",
+        "question_id": "non-empty string",
+        "invariant_pointer": "RFC 6901 JSON pointer into every supplied source, at most 32 tokens; a token applied to an array is an index and must match ^(0|[1-9][0-9]*)$ in ASCII (no leading zero, no -, no other Unicode digit), else FAIL_CLOSED with QUESTION_POINTER_INVALID, failed_predicate invariant_pointer array index tokens match ^(0|[1-9][0-9]*)$, cited at question@<question_sha256>:question:<question root line>; an index past the array's end is undeclared",
+        "asserted_value": "any JSON value, compared by strictly typed JSON equality"
+      },
+      "predicate": "every supplied source is canonical for the pointer; equal declared value is ALLOW, a different one is DENY, disagreeing sources are FAIL_CLOSED, no source declaring the pointer is UNDECIDABLE",
+      "question_binding": "as stegverse.invariant-question/v1"
+    }
+  },
+  "owner_resolution": "Decision: for stegverse.invariant-question/v1 the answer's owning_existing_goal comes from the question, as side A does, so the repair routes to the goal that asked; the evaluator checks only its form and grants it no authority. Every non-ALLOW after the question is well-formed, refusals and the relay entry's relay_to included, carries it. Refusals before the question is well-formed, and every stegverse.invariant-pointer-assertion/v1 answer, keep the fixed owner STEGVERSE-CANONICAL-WORK-COORDINATION-001, the first of existing_owner_refs (this shard at 6f3c42389db52cfa7ed68e65295ae2e4e7c33722, lines 27-30), which owns the evaluator itself.",
+  "bounds": {
+    "max_json_nesting": 64,
+    "applies_to": "question, invariants_source and subject bytes alike",
+    "rule": "at most 64 containers ({ or [) may be open at once; the 65th opening bracket is FAIL_CLOSED with INPUT_DEPTH_EXCEEDED, never a RecursionError",
+    "rationale": "the deepest Labs canonical invariant and task-record documents nest well under 16 containers, so 64 leaves four times that headroom; a recursive-descent parser spends about two stack frames per level, so 64 keeps every implementation far inside the default 1000-frame interpreter recursion limit whatever its caller's stack depth, which 256 levels would not",
+    "byte_bound_measurement": "a byte bound counts the exact bytes the evaluator receives, before UTF-8 decoding and before any line is read: more than value bytes is FAIL_CLOSED, exactly value bytes is within the bound. The CLI reads at most value+1 bytes of each file, so a file of value+1 or more bytes arrives as exactly value+1 bytes; question_sha256 is the sha256 of the bytes received, those value+1 bytes for an over-size question file. For a source the digest is checked first (SOURCE_DIGESTS_VERIFIED_BEFORE_PARSE): bytes received whose sha256 is not the declared sha256 answer SOURCE_DIGEST_MISMATCH at the source's line 1, so a file over value+1 bytes declared by its whole-file digest answers SOURCE_DIGEST_MISMATCH, and INPUT_SIZE_EXCEEDED is answered when the declared sha256 is that of the bytes received",
+    "max_input_bytes": {
+      "value": 65536,
+      "applies_to": "the question bytes",
+      "measured_as": "len(question bytes) per byte_bound_measurement, checked before the digest of any source and before parse",
+      "refusal": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "INPUT_SIZE_EXCEEDED",
+        "failed_predicate": "question bytes<=65536"
+      },
+      "citation": "question@<question_sha256>:question:1",
+      "rationale": "an invariant-question/v1 body holds 11 string fields of at most 512 code points each, under 24 KiB even with every field at its bound in 4-byte UTF-8; 64 KiB covers that with room for a pointer assertion's asserted_value, and bounds the hashing and parsing of a question before it is known to be well-formed"
+    },
+    "max_source_bytes": {
+      "value": 4194304,
+      "applies_to": "the bytes of each supplied source, separately",
+      "measured_as": "len(source bytes) per byte_bound_measurement, checked after the source digest matches and before parse",
+      "refusal": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "INPUT_SIZE_EXCEEDED",
+        "failed_predicate": "<repo>@<rev>:<path> bytes<=4194304"
+      },
+      "citation": "<repo>@<rev>:<path>:1",
+      "rationale": "the largest JSON file under data/ at 4256cb6 is 1437821 bytes (data/native-email-action-monitor/continuation.json) and the canonical invariants document is 13566 bytes; 4 MiB per source covers the largest with almost three times that headroom"
+    },
+    "max_sources": {
+      "value": 16,
+      "applies_to": "the number of entries in the supplied sources list",
+      "measured_as": "len(sources), counted after the question parses and before any source binding is checked",
+      "refusal": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "INPUT_SIZE_EXCEEDED",
+        "failed_predicate": "sources<=16"
+      },
+      "citation": "question@<question_sha256>:question:<question root line>",
+      "rationale": "invariant-question/v1 needs exactly two sources and a pointer assertion is answered over a few; 16 bounds the bytes one answer reads to 16 x max_source_bytes = 64 MiB"
+    },
+    "max_container_items": {
+      "value": 100000,
+      "applies_to": "the members of one JSON object or the elements of one JSON array, each container counted separately, in the question and in every source",
+      "measured_as": "the 100001st member or element is refused when parsing reaches it",
+      "refusal": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "INPUT_SIZE_EXCEEDED",
+        "failed_predicate": "JSON_CONTAINER_ITEMS<=100000 at <label> line <line>"
+      },
+      "citation": "<repo>@<rev>:<path>:<line> for a source, question@<question_sha256>:question:<line> for the question, where line is the line of the first non-whitespace byte after the 100000th separating comma, and label is the source's <repo>@<rev>:<path> or question",
+      "rationale": "the largest container in any JSON file under data/ at 4256cb6 holds 1672 items; 100000 leaves sixty times that and bounds per-container work; a question cannot reach it, since 100001 items need more than 200000 bytes"
+    },
+    "max_pointer_tokens": {
+      "value": 32,
+      "applies_to": "question.invariant_pointer of stegverse.invariant-pointer-assertion/v1",
+      "measured_as": "the number of RFC 6901 reference tokens: the empty pointer has 0, otherwise one more than the number of / after the leading /, counted after the ~ escape check and before unescaping",
+      "refusal": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "INPUT_DEPTH_EXCEEDED",
+        "failed_predicate": "invariant_pointer tokens<=32"
+      },
+      "citation": "question@<question_sha256>:question:<question root line>",
+      "rationale": "the deepest JSON file under data/ at 4256cb6 nests 10 containers, so no pointer into it needs more than 10 tokens; 32 is three times that and half of max_json_nesting"
+    },
+    "max_field_chars": {
+      "value": 512,
+      "applies_to": "each string field of the question (question_id, invariant_id, owning_existing_goal, the repository, path, revision and digest of each ref, invariant_pointer) and of each supplied source binding (repo, rev, path, sha256)",
+      "measured_as": "the number of Unicode code points of the string, not its UTF-8 bytes; every field but invariant_pointer is also refused when empty or whitespace only",
+      "refusal": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "INPUT_FIELD_INVALID",
+        "failed_predicate": "<label>.<key> is a non-empty string of <= 512 chars (question.invariant_pointer is a string for the pointer)"
+      },
+      "citation": "question@<question_sha256>:question:<question root line>",
+      "rationale": "a canonical task id is at most 128 characters (the owning_existing_goal pattern) and a sha256:<hex> digest is 71; 512 is four times the task-id bound and bounds every field that is echoed into an answer or a relay entry"
+    }
+  },
+  "canonical_source_authority_rule": "A canonical source (the invariants_source of invariant-question/v1, or every source of invariant-pointer-assertion/v1) must be a JSON object whose own top-level authority_effect is a string in [NONE, NONE_ANSWER_ONLY, NONE_REGISTRY_INVARIANT_ONLY, NONE_TEST_FIXTURE]. An absent, non-string or other authority_effect is FAIL_CLOSED with SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED, cited at that member's line. A subject is not canonical and is not checked.",
+  "citation_rule": "Every answer cites repo@rev:path:line. ALLOW and DENY cite the declaring line and each subject assertion line. UNDECIDABLE cites at least one line: the declaring line and the subject root when the subject is silent, or the declaring container (/invariants, /prohibitions, or the deepest existing container of the pointer) when the invariant is undeclared. A parse refusal cites the line it stopped on: repo@rev:path:line for a source, question@<question_sha256>:question:line for the question bytes.",
+  "composes": [],
+  "runner_templates": [],
+  "recording_levels": [
+    "operation",
+    "task"
+  ],
+  "completion_predicates": [
+    "SOURCE_DIGESTS_VERIFIED_BEFORE_PARSE",
+    "ANSWER_CITES_REPO_REV_PATH_LINE",
+    "NON_ALLOW_CARRIES_SIX_FIELDS",
+    "UNDECIDABLE_RELAY_ENTRY_WRITTEN_ONCE",
+    "NO_ANSWER_AUTHORITY",
+    "CANONICAL_SOURCE_CLAIMS_NO_AUTHORITY",
+    "JSON_NESTING_BOUNDED"
+  ],
+  "authority_effect": "NONE_ANSWER_ONLY",
+  "reuse_instructions": "Evaluate with scripts/invariant_evaluation.py --question <question.json> --source <repo> <rev> <path> <sha256> <file> [--relay-queue-dir <dir>]. The answer is evidence only: it admits, authorizes and commits nothing. UNDECIDABLE writes one write-once relay entry under the DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION convention (management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json); the invariant owner answers it on the next event, never by a poll. No runner template is declared: the generic trigger passes no question or source bytes, so it stops at NO_EXECUTABLE_RUNNER_DECLARED until an existing owner binds an entrypoint that supplies them.",
+  "existing_owner_refs": [
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "TASK-REGISTRY-KV-SKAP-VERIFIER-NODE-INVARIANT-001"
+  ]
+}

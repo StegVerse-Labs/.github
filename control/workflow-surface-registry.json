@@ -45,6 +45,12 @@
       "reason": "dedicated non-authorizing source validator for the released cross-task coordination handoff projection; coordination truth is not runtime truth and this registration grants no execution, transition, credential, claim/fence, custody, receiving, or publication authority"
     },
     {
+      "path": ".github/workflows/task-registry-collision-checkin.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001 / coordination item H48 / StegVerse-Labs/.github#3183",
+      "reason": "DRAFT non-authorizing pull_request gate that runs the existing collision check-in evaluator for each canonical task row or shard a PR changes, PR merge ref versus live base tip; permissions remain empty, no GitHub token, no event ledger append, never a transition predicate; making it a required check is owner-only"
+    },
+    {
       "path": ".github/workflows/validate-deepseek-resident.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SHWP-DEEPSEEK-INTR-RUNTIME-001 / .github#1122",
@@ -109,6 +115,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SDK-MR-A-VALIDATION-CUSTODY-001 / StegVerse-Labs/.github#3099",
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/canonical-task-registration-transition.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",
+      "reason": "Validation-only verify of manifest-directed Goal Task registration (contracts/canonical-task-registration-transition.v1.json): for each registration manifest a PR adds, re-derives record, Registry row, generation bump and COSV vector/index entry from the live base tip and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
     },
     {
       "path": ".github/workflows/universal-intr-route-installation.yml",
@@ -298,7 +310,7 @@
     {
       "path": ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
       "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
-      "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK (now d6873d84dddc91ef6b26774336b05c8e1f4042c0), with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
+      "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK (now c138cad4c37db0bb675bc2c66515b5558cc5fa7b, which carries stegverse.universal_intr_route_installer), with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
     }
   ]
 }

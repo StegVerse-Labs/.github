@@ -1,0 +1,24 @@
+{
+  "ledger_ref": "refs/stegverse/organization-ledger",
+  "ledger_tip": "a5bb54d81893b392a3ce28182986fc39857807e1",
+  "ledger_tree": "9bb45d7d3cbd4e9854948c9520ffe6be72b89476",
+  "real_commit": {
+    "merge_commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+    "parents": [
+      "a9a2b9b058fc2049f43d3fd45ad6c614b161254e",
+      "3b78bd9d4e1a77e54c8c0f092ee5011e12491958"
+    ],
+    "subject": "Merge pull request #3246 from StegVerse-Labs/grok/lane-c-sdk-eval-posture-import-isolation",
+    "tree": "aa03459f7ead08113a08692aea279ec05a0ea195"
+  },
+  "real_state_at_ledger_tip": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "MERGE_TRANSFER_RECEIPT_NOT_LEDGERED"
+  },
+  "repository": "StegVerse-Labs/.github",
+  "repository_ledger_namespace": "repository-ledger/StegVerse-Labs/.github",
+  "schema": "stegverse.merge-transfer-gitstore-test-pin/v1",
+  "snapshot": "ledger-snapshot.json",
+  "snapshot_note": "the pinned ledger tip's tree, blob for blob (its git tree id is ledger_tree); copied from the published ref, not authored here",
+  "writer_surface": "AGGREGATE_TRANSITION"
+}
