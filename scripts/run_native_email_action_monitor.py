@@ -330,6 +330,10 @@ def load_archive_authorization(continuation_path: Path | None) -> frozenset[str]
 def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: frozenset[str] = frozenset()) -> dict[str, Any]:
     inspected = broker.call("SEARCH_MESSAGES", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
     messages = stable_rows(inspected, "messages")
+    # Duplicate provider message rows cannot count as independent observations.
+    # Refuse ambiguous coverage before any archive consequence is considered.
+    visible_ids = [message_id(row) for row in messages]
+    require(len(visible_ids) == len(set(visible_ids)), "LIVE_INBOX_DUPLICATE_VISIBLE_MESSAGE_IDS")
     exact = broker.call("SEARCH_IDS", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
     ids = exact.get("message_ids")
     require(isinstance(ids, list) and all(isinstance(v, str) and v for v in ids), "broker message_ids invalid")
