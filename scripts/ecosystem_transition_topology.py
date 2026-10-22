@@ -66,3 +66,41 @@ def verify_organization_readback(transition: Mapping[str, Any],
     if ledger_readback.get("continuity_verified") is not True:
         return {"disposition": "FAIL_CLOSED", "predicate": "SOVEREIGN_CONTINUITY_UNVERIFIED"}
     return {"disposition": "ALLOW", "predicate": "SUPPLIED_SOVEREIGN_READBACK_CONSISTENT"}
+
+
+def verify_native_organization_transition(
+    state_receipt_result: Mapping[str, Any],
+    *,
+    expected_transition_id: str,
+    expected_predecessor: str | None = None,
+    root: Any = None,
+) -> dict[str, Any]:
+    """Use the installed sovereign Organization receipt readback gate.
+
+    The caller must supply the actual receipt result of a canonical transition.
+    No synthetic transition or ledger append is performed by this verifier.
+    The native gate independently checks the organization ledger's record,
+    state-receipt digest and expected transition/predecessor.
+    """
+    if not isinstance(state_receipt_result, Mapping) or not expected_transition_id:
+        return {"disposition": "FAIL_CLOSED", "predicate": "STATE_RECEIPT_OR_TRANSITION_ID_MISSING"}
+    try:
+        from workers.canonical_state_transition_custody import organization_receipt_gate
+        gate = organization_receipt_gate(
+            state_receipt_result, root=root,
+            expected_transition_id=expected_transition_id,
+            expected_predecessor=expected_predecessor,
+            record_refusal=False,
+        )
+    except (ImportError, OSError, RuntimeError, ValueError, TypeError, KeyError) as exc:
+        return {"disposition": "FAIL_CLOSED", "predicate": "NATIVE_ORGANIZATION_READBACK_UNAVAILABLE",
+                "error_type": type(exc).__name__}
+    if not isinstance(gate, Mapping) or gate.get("verified") is not True:
+        refusal = gate.get("refusal") if isinstance(gate, Mapping) else None
+        return {"disposition": "FAIL_CLOSED", "predicate": "NATIVE_ORGANIZATION_RECEIPT_NOT_VERIFIED",
+                "native_refusal": refusal}
+    digest = gate.get("organization_receipt_sha256")
+    if not isinstance(digest, str) or not digest:
+        return {"disposition": "FAIL_CLOSED", "predicate": "NATIVE_ORGANIZATION_RECEIPT_DIGEST_MISSING"}
+    return {"disposition": "ALLOW", "predicate": "NATIVE_ORGANIZATION_READBACK_VERIFIED",
+            "organization_receipt_sha256": digest}
