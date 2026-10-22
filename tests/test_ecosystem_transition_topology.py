@@ -138,6 +138,20 @@ class TransitionTopologyTests(unittest.TestCase):
                 "fixture-ref", expected_receipt_sha256="sha256:receipt")
             self.assertEqual(result["predicate"], "ORGANIZATION_CHAIN_INTEGRITY_UNVERIFIED")
 
+    def test_malformed_native_chain_payload_fails_closed(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        import importlib.util
+
+        fake_spec = SimpleNamespace(loader=SimpleNamespace(exec_module=lambda _: None))
+        with patch.object(importlib.util, "spec_from_file_location", return_value=fake_spec), \
+             patch.object(importlib.util, "module_from_spec",
+                          return_value=SimpleNamespace(readback=lambda _: None)):
+            result = verify_published_organization_chain(
+                "fixture-ref", expected_receipt_sha256="sha256:receipt")
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["predicate"], "MALFORMED_NATIVE_ORGANIZATION_READBACK")
+
     def test_allow(self):
         self.assertEqual(evaluate(self.state, self.manifest, self.evidence)["disposition"], "ALLOW")
 
