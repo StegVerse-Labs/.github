@@ -108,4 +108,5 @@ def verify_native_organization_transition(
     if not isinstance(digest, str) or not digest:
         return {"disposition": "FAIL_CLOSED", "predicate": "NATIVE_ORGANIZATION_RECEIPT_DIGEST_MISSING"}
     return {"disposition": "ALLOW", "predicate": "NATIVE_ORGANIZATION_READBACK_VERIFIED",
-            "organization_receipt_sha256": digest}
+            "organization_receipt_sha256": digest,
+            "verification_scope": "ORGANIZATION_RECORDING_ONLY_NOT_GOVERNANCE_ADMISSIBILITY"}
