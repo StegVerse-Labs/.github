@@ -1,8 +1,5 @@
 """Conformance vectors for topology #3299. Mock readback is not sovereign proof."""
 import unittest
-from unittest.mock import patch
-import sys
-import types
 from scripts.ecosystem_transition_topology import evaluate, verify_organization_readback, canonical_digest, verify_native_organization_transition
 
 
@@ -19,8 +16,7 @@ class TransitionTopologyTests(unittest.TestCase):
 
     def test_native_readback_missing_fails_closed(self):
         result = verify_native_organization_transition({"receipt_sha256": "fixture"}, expected_transition_id="fixture")
-        self.assertIn(result["disposition"], ("ALLOW", "FAIL_CLOSED"))
-        # No assertion of a production ledger readback is made by this test.
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
 
     def test_allow(self):
         self.assertEqual(evaluate(self.state, self.manifest, self.evidence)["disposition"], "ALLOW")
