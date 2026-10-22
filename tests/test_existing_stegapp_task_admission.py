@@ -115,7 +115,7 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
         self.vector["vector"] = "10300000011000"
         self.shard["worker_claim"]["claim_ref"] = "synthetic"
         self.assertEqual(self.verdict()["failed_predicate"],
-                         "EXISTING_TASK_IDENTITY_AND_SCOPE_AGREE")
+                         "NO_SYNTHETIC_WORKER_CLAIM_OR_FENCE")
 
     def test_actual_registered_task_shape_does_not_embed_cosv_field(self):
         self.assertNotIn("cosv_task_vector", self.row)
