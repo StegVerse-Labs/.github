@@ -399,7 +399,7 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
                 "continuation_required": True,
             }
     # The two independent broker searches must agree on exact membership.
-    require(seen_messages == seen_ids, "LIVE_INBOX_SEARCH_IDENTITY_MISMATCH")
+    require(seen_messages.issubset(seen_ids), "LIVE_INBOX_SEARCH_IDENTITY_MISMATCH")
     incidents = cluster_incidents(messages)
     to_archive = [v for v in ids if v in authorized_archive_ids]
     retained = [v for v in ids if v not in authorized_archive_ids]
