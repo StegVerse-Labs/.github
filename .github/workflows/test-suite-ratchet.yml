@@ -22,6 +22,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -36,6 +38,12 @@ jobs:
       # Run directly so a spec-guard failure is never absorbed into the baseline.
       - name: RT-INVARIANT-EVALUATION-001 spec guard, the B-P6 probe set as data
         run: python -m unittest -v tests/test_invariant_evaluation_probes.py
+
+      - name: Reject PR expansion of known failures or exclusions against exact base
+        if: github.event_name == 'pull_request'
+        env:
+          RATCHET_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: python scripts/check_test_suite_ratchet.py --base-sha "$RAT_CHET_BASE_SHA"
 
       - name: No pull request may add a test failure the baseline does not hold
         run: python scripts/check_test_suite_ratchet.py
