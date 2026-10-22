@@ -1,0 +1,140 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 24,
+  "title": "an array of 100001 elements is refused at the line of its 100001st element; 100000 parse",
+  "derived_from": {
+    "b_p16_bound": "max_container_items",
+    "behaviour_at_4256cb6": "both runs answer the same at 4256cb6; the spec-quote check fails there because bounds.max_container_items is not declared"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "at": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "at-bound.json",
+      "bytes": {
+        "parts": [
+          {
+            "text": "{\"authority_effect\": \"NONE_TEST_FIXTURE\", \"items\": [\n"
+          },
+          {
+            "text": "0,\n",
+            "times": 99999
+          },
+          {
+            "text": "0\n]}\n"
+          }
+        ]
+      }
+    },
+    "over": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "over.json",
+      "bytes": {
+        "parts": [
+          {
+            "text": "{\"authority_effect\": \"NONE_TEST_FIXTURE\", \"items\": [\n"
+          },
+          {
+            "text": "0,\n",
+            "times": 100000
+          },
+          {
+            "text": "0\n]}\n"
+          }
+        ]
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "Q-PROBE",
+          "invariant_pointer": "/items/99999",
+          "asserted_value": 0
+        }
+      },
+      "supply": [
+        {
+          "source": "at"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "ALLOW",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "Q-PROBE",
+          "invariant_pointer": "/items/0",
+          "asserted_value": 0
+        }
+      },
+      "supply": [
+        {
+          "source": "over"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "INPUT_SIZE_EXCEEDED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:89",
+          "spec_quote": "\"failed_predicate\": \"JSON_CONTAINER_ITEMS<=100000 at <label> line <line>\""
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "over",
+              "line": 100002
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
+          "spec_quote": "repo@rev:path:line for a source"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "SDK-484-COST-DERIVED-TIER-PRICING-OWNER-ALLOCATION-REQUEST-20261017",
+  "state": "REGISTERED",
+  "issue": "StegVerse-org/StegVerse-SDK#484",
+  "proposed_task_id": "SDK-COST-DERIVED-TIER-PRICING-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "cosv_task_vector": "10300000011002",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 317,
+  "observed_registry_tasks": 117,
+  "owning_task_found": false,
+  "non_owner_collision": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (parent lane; structural validator scope) and WORKER-TASK-RESOURCE-COST-LINKAGE-001 (task-native cost linkage, not commercial pricing) do not own pricing; not reusable",
+  "scope": "Cost-derived tiered pricing basis for the StegVerse governance product: versioned extensible cost-component registry; C_pricing = max(C_estimated, C_authentically_observed) with UNKNOWN never zero and incomplete evidence provisional only; five-lane foundation and eleven-lane expansion; internal-first execution preference",
+  "requested_action": "Register a canonical Goal Task distinct from structural-validator task ownership, bind task.v1 COSV, persist canonical registry and vector",
+  "required_evidence": [
+    "canonical registry new goal entry",
+    "control/task-vectors/<allocated-id>.json",
+    "owner-authorized allocation evidence",
+    "exact-head checks"
+  ],
+  "prohibited_shortcuts": [
+    "no reuse of existing unrelated COSV",
+    "no fabricated allocation",
+    "no pricing-issued TV/TVC entitlement",
+    "no runtime ALLOW from GitHub source or CI"
+  ],
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "disposition": "FAIL_CLOSED",
+  "failed_predicate": "CANONICAL_OWNER_GOAL_TASK_ID_AND_COSV_REGISTERED",
+  "owner_authorization": {
+    "status": "EXPLICITLY_APPROVED_IN_ISSUE_COMMENT",
+    "source_ref": "https://github.com/StegVerse-org/StegVerse-SDK/issues/484#issuecomment-6235730818",
+    "scope": "Distinguish this pricing workstream from structural-validator task ownership; register/reconcile a separate canonical task if required",
+    "date": "2026-10-17",
+    "authority_limit": "OWNER_INTENT_ONLY"
+  },
+  "registration": {
+    "task_id": "SDK-COST-DERIVED-TIER-PRICING-001",
+    "canonical_task_record_ref": "data/canonical-task-records/SDK-COST-DERIVED-TIER-PRICING-001.json",
+    "cosv_task_vector_ref": "control/task-vectors/SDK-COST-DERIVED-TIER-PRICING-001.json",
+    "cosv_task_vector_index_ref": "control/task-vector-index.json",
+    "canonical_registry_ref": "data/canonical-task-registry.json",
+    "registry_generation": 318,
+    "cosv_encoder_ref": "scripts/cosv.py encode_task",
+    "vector": "10300000011002",
+    "handoff_ref": "docs/SDK_COST_DERIVED_TIER_PRICING_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+    "date": "2026-10-17",
+    "authority_effect": "NONE_REGISTRATION_ONLY"
+  }
+}

@@ -138,6 +138,8 @@ STATIC_FILES = (
     Path("scripts/apply_admitted_canonical_work_projection.py"),
     Path("scripts/consume_org_claim_allocator_request.py"),
     Path("scripts/allocate_claims.py"),
+    Path("scripts/consume_site_production_promotion_request.py"),
+    Path("scripts/authorize_site_production_promotion.py"),
     Path("control/resident-execution-request.d/org-claim-allocator-001.json"),
     Path("control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json"),
     Path("control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json"),

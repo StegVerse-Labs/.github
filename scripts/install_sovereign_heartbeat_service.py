@@ -93,6 +93,8 @@ COPY_FILES = (
     "scripts/consume_ecosystem_receipt_hb_checkpoint.py",
     "scripts/consume_org_claim_allocator_request.py",
     "scripts/allocate_claims.py",
+    "scripts/consume_site_production_promotion_request.py",
+    "scripts/authorize_site_production_promotion.py",
     "control/resident-execution-request.d/org-claim-allocator-001.json",
     "control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json",
     "control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json",

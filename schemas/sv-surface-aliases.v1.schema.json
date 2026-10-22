@@ -1,0 +1,264 @@
+{
+  "$id": "stegverse.sv-surface-aliases/v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Minimal shape of the pinned alias table used by sv_migration.resolve_surface (RF-2, RF-3, FB-1).",
+  "properties": {
+    "bare_names": {
+      "type": "array"
+    },
+    "box_local_prefixes": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "lane_aliases": {
+      "items": {
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "path": {
+                  "enum": [
+                    "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+                    "NON_REPOSITORY_EVIDENCE"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "not": {
+                "required": [
+                  "verified"
+                ]
+              },
+              "required": [
+                "reason"
+              ]
+            }
+          },
+          {
+            "if": {
+              "not": {
+                "properties": {
+                  "path": {
+                    "enum": [
+                      "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+                      "NON_REPOSITORY_EVIDENCE"
+                    ]
+                  }
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "verified"
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "alias": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "declared_in": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "proposed_by": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "verified": {
+            "properties": {
+              "commit": {
+                "pattern": "^[0-9a-f]{40}$",
+                "type": "string"
+              },
+              "object": {
+                "enum": [
+                  "blob",
+                  "tree"
+                ]
+              },
+              "object_sha": {
+                "pattern": "^[0-9a-f]{40}$",
+                "type": "string"
+              },
+              "repository": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "tree": {
+                "pattern": "^[0-9a-f]{40}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "repository",
+              "commit",
+              "object",
+              "object_sha"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "alias",
+          "path",
+          "declared_in"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "patch_entrypoints": {
+      "type": "array"
+    },
+    "repositories": {
+      "type": "array"
+    },
+    "resolution_order": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "schema": {
+      "const": "stegverse.sv-surface-aliases/v1"
+    },
+    "unresolved_declarations": {
+      "items": {
+        "additionalProperties": false,
+        "description": "FB-1: an alias whose target exists only at another PR head. path stays UNKNOWN; sv_migration.alias_disposition returns this six-field FAIL_CLOSED and never ALLOW.",
+        "properties": {
+          "alias": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "candidate_path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "declared_in": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "disposition": {
+            "const": "FAIL_CLOSED"
+          },
+          "evidence": {
+            "additionalProperties": false,
+            "properties": {
+              "commit": {
+                "pattern": "^[0-9a-f]{40}$",
+                "type": "string"
+              },
+              "object": {
+                "const": "blob"
+              },
+              "object_sha": {
+                "pattern": "^[0-9a-f]{40}$",
+                "type": "string"
+              },
+              "on_base": {
+                "const": false
+              },
+              "path": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "pull_request": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "repository": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "repository",
+              "pull_request",
+              "commit",
+              "object",
+              "object_sha",
+              "path",
+              "on_base"
+            ],
+            "type": "object"
+          },
+          "failed_predicate": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "failure_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "next_attempt": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "owning_existing_goal": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "path": {
+            "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+          },
+          "proposed_by": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "required_evidence_or_repair": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "retry_entrypoint": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "alias",
+          "declared_in",
+          "path",
+          "candidate_path",
+          "evidence",
+          "disposition",
+          "failure_code",
+          "failed_predicate",
+          "required_evidence_or_repair",
+          "retry_entrypoint",
+          "owning_existing_goal",
+          "next_attempt"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "repositories",
+    "lane_aliases",
+    "bare_names",
+    "patch_entrypoints",
+    "box_local_prefixes",
+    "resolution_order"
+  ],
+  "title": "SV surface alias table (data/sv-work-items/surface-aliases.json)",
+  "type": "object"
+}

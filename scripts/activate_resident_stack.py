@@ -483,7 +483,7 @@ def activate(
             "state": state,
             "source_root": str(source),
             "llm_adapter_root": str(llm),
-            "gateway_runtime": "HOST_NATIVE_PYTHON_UVICORN",
+            "gateway_runtime": "HOST_NATIVE_PYTHON_STDLIB",
             "container_framework_required": False,
             "control_bundle_packaged": True,
             "stegos_source_bundled": True,

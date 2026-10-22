@@ -1,0 +1,891 @@
+{
+  "main_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+  "main_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
+  "note": "one read of GitHub on 2026-10-18 ~13:0xZ (gh pr view / gh pr checks); blob digests computed from the fetched head commits; GitHub CI is projection only, never a validation receipt",
+  "organization_ledger_head_observed": {
+    "source": "git ls-remote https://github.com/StegVerse-Labs/.github refs/stegverse/organization-ledger",
+    "value": "a5bb54d81893b392a3ce28182986fc39857807e1"
+  },
+  "prs": [
+    {
+      "base_ref": "main",
+      "base_sha": "bfcf031811caaa65bc44a48c894fce19800b5d90",
+      "base_tree_sha": "f0a2c1a7225d3f9b9218b1b55b2779e448af1f21",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Workspace DEVICE_KV Validation Only"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Workspace DEVICE_KV Validation Only"
+        }
+      ],
+      "ci_counts": {
+        "pass": 5
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:f63d35956e655bcd4db476df0cf195694555331d322683af1aa1fa4d5d64e449",
+          "blob_sha": "1072a5a1473c557c8df2061287af2e8a9dc332a9",
+          "change_type": "ADDED",
+          "path": "control/resident-execution-request.d/org-claim-allocator-workspace-kv-site-001.json"
+        },
+        {
+          "blob_digest": "sha256:fa363b48df3549ca6e8fd320a821f7e30e2f2801d127d22fbe4a29f9a70cac63",
+          "blob_sha": "8c4bf5159bd06e6a3316a62b6c2b4bd48ca9c031",
+          "change_type": "MODIFIED",
+          "path": "scripts/bootstrap_sovereign_runtime.py"
+        },
+        {
+          "blob_digest": "sha256:d8b83464610b95b1c9d8eda00ea1f358e3a30681a9c7584c4ac490436def7463",
+          "blob_sha": "0ab547fce92818ff1a176e7f7bf6803e0b6aeb47",
+          "change_type": "MODIFIED",
+          "path": "scripts/consume_org_claim_allocator_request.py"
+        },
+        {
+          "blob_digest": "sha256:d37e61441ba69de09f2ce156c649b4a8aa0640942d356b0638df7267f1564438",
+          "blob_sha": "39e94ac527fbf7f7ae40172742fa9451427c9537",
+          "change_type": "ADDED",
+          "path": "tasks/TASK-2026-0015.json"
+        },
+        {
+          "blob_digest": "sha256:f79057d344d553ff231fce9539c6015467ba1f08331ec606ef219f82c677df70",
+          "blob_sha": "6d982f42f68cf675c07d17d1d37928f3cc1d39f4",
+          "change_type": "ADDED",
+          "path": "tests/test_org_claim_allocator_workspace_kv_site_request.py"
+        },
+        {
+          "blob_digest": "sha256:52a2dd91a8ad76e4b8465ee0409975a4188fd50d4e08778575cf03774394dfd5",
+          "blob_sha": "777ebff929a6576538459623e0a54f5938f9fa3a",
+          "change_type": "MODIFIED",
+          "path": "tests/test_org_claim_custody.py"
+        }
+      ],
+      "head_ref": "laned/org-claim-allocator-workspace-kv-site",
+      "head_sha": "9671ee7a4ef0d86fe816cc18b2f40d2a71d7cd9f",
+      "is_draft": true,
+      "pr": 3231,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "main",
+      "base_sha": "bfcf031811caaa65bc44a48c894fce19800b5d90",
+      "base_tree_sha": "f0a2c1a7225d3f9b9218b1b55b2779e448af1f21",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "verify",
+          "workflow": "Canonical Task Registration Transition - Non-Authorizing"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        }
+      ],
+      "ci_counts": {
+        "pass": 3
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:a0762646575f4c07f80ebbc4705670fd9b51f9b286bdcaf542c12b50062f48b4",
+          "blob_sha": "fcc79f871b56fa654a6a2175b9a904f755b8f9a6",
+          "change_type": "ADDED",
+          "path": ".github/workflows/canonical-task-registration-transition.yml"
+        },
+        {
+          "blob_digest": "sha256:888828b7a21407d83318e5488040a8e851b280f3457bfa8a3702b039addcbf16",
+          "blob_sha": "8818a0cfe4d9722ec90a5a57413ca2fe8e97e40e",
+          "change_type": "ADDED",
+          "path": "contracts/canonical-task-registration-transition.v1.json"
+        },
+        {
+          "blob_digest": "sha256:2f6edba953e34c9c355652a945b22e2ab5def53a28d4ff95b08b62f8dfc30b3c",
+          "blob_sha": "b39d7e353a5e8d79ad44ffeeab1f2a976bfb07d1",
+          "change_type": "ADDED",
+          "path": "control/canonical-task-registration-requests/README.md"
+        },
+        {
+          "blob_digest": "sha256:ab27fa2fc2415326241b7c3a6ecf34cacf8bc68b32ac9d3997be4e39354cf4f6",
+          "blob_sha": "7ce214221f030e2cb28517cd7ee870368e1f656b",
+          "change_type": "MODIFIED",
+          "path": "control/workflow-surface-registry.json"
+        },
+        {
+          "blob_digest": "sha256:d3af93284a3797d3fe9ffcd8446793bd3673982476f2b562a28eaa935ce3e2b9",
+          "blob_sha": "f7683117862735f116d073964e69d2101ac6ee9d",
+          "change_type": "ADDED",
+          "path": "schemas/canonical-task-registration-request.schema.json"
+        },
+        {
+          "blob_digest": "sha256:993fb918a34cb9bfc7f13e63336797c8b40ecb9dbc03d2f6e31e2252a096e1ff",
+          "blob_sha": "99f6df26a69149f0f2a5277fe62156117b29f98b",
+          "change_type": "ADDED",
+          "path": "schemas/canonical-task-registration-transition-receipt.schema.json"
+        },
+        {
+          "blob_digest": "sha256:a7e8c86ab42df15720b0de7b1b4a445baba4dc643dcf1baa4c17d45cc50f219f",
+          "blob_sha": "c59a4e69dbb3d792793ead093c56032fc336bb39",
+          "change_type": "ADDED",
+          "path": "scripts/canonical_task_registration_transition.py"
+        },
+        {
+          "blob_digest": "sha256:685abbebfb149271e9debeaaec3f6a9b4126f81323bf3ddbd0dde20bd8ebedc6",
+          "blob_sha": "69b94359643f950f2b74dc85e02ce9913467d1b9",
+          "change_type": "ADDED",
+          "path": "tests/fixtures/canonical_task_registration/fixture.request.json"
+        },
+        {
+          "blob_digest": "sha256:344fa234ecbdf7818c4566ba5c8ad083b971ec593e11cd77cd026849de140c83",
+          "blob_sha": "eab0ddc2698af86a86f53eed304826332daf338a",
+          "change_type": "ADDED",
+          "path": "tests/test_canonical_task_registration_transition.py"
+        }
+      ],
+      "head_ref": "laned/canonical-task-registration-transition",
+      "head_sha": "abdc51f2ff51a751ba5f4b77e93b8bae106ada95",
+      "is_draft": true,
+      "pr": 3232,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "main",
+      "base_sha": "bfcf031811caaa65bc44a48c894fce19800b5d90",
+      "base_tree_sha": "f0a2c1a7225d3f9b9218b1b55b2779e448af1f21",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "verify",
+          "workflow": "Worker Claim Grant Projection Transition - Non-Authorizing"
+        }
+      ],
+      "ci_counts": {
+        "pass": 3
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:58dc33fc35a496b02720ef0458a52abd40e02c13ddc94533861fee7f1cfed9ac",
+          "blob_sha": "9fa318915334ab6d3e9f2bf75ee5815195ab261d",
+          "change_type": "ADDED",
+          "path": ".github/workflows/worker-claim-grant-projection-transition.yml"
+        },
+        {
+          "blob_digest": "sha256:8fbf50ed16521c8b856959d8979b39c2be67bfce511aa701c2e06a14f251a528",
+          "blob_sha": "77b58ce2ce126713fd8599f2f3b5a746a1203fcb",
+          "change_type": "ADDED",
+          "path": "contracts/worker-claim-grant-projection-transition.v1.json"
+        },
+        {
+          "blob_digest": "sha256:a828b34081fd880c26911a10073b00760adcc25c789d98a29beea9e0a8b61ce7",
+          "blob_sha": "d5e6dda8ceadbddb5fee78ed43743cada6471a86",
+          "change_type": "ADDED",
+          "path": "control/worker-claim-grant-projection-requests/README.md"
+        },
+        {
+          "blob_digest": "sha256:409eb075e47deaa5600579c439451555532e92a83388fd721c7360e94cbc4ae2",
+          "blob_sha": "9d4e1a13b1b3ff8fe4c5d57bfc5b3c8f2fd7b923",
+          "change_type": "MODIFIED",
+          "path": "control/workflow-surface-registry.json"
+        },
+        {
+          "blob_digest": "sha256:8a17e58421d219f1fa90038740c0e8d517ac90c951c4e0300d66f03039493f5e",
+          "blob_sha": "d73806bc58b2b198144b8ac1356658a750cccfbd",
+          "change_type": "ADDED",
+          "path": "schemas/worker-claim-grant-projection-request.schema.json"
+        },
+        {
+          "blob_digest": "sha256:5cbf2e523bfdf761b50949515eb9e39c0831186a7bb1edf2b21f0b21fbfb9c67",
+          "blob_sha": "3244d2d915e5bcb2344ada27aef82f03a9812b58",
+          "change_type": "ADDED",
+          "path": "schemas/worker-claim-grant-projection-transition-receipt.schema.json"
+        },
+        {
+          "blob_digest": "sha256:c70a2f3f8f1d383507c4e0a1836c0a71520a985a06ae73ab7a1065a6aa9ac68e",
+          "blob_sha": "4b66e3b3e6a0077168ffdbcf9ceddefb7064f5e0",
+          "change_type": "ADDED",
+          "path": "scripts/worker_claim_grant_projection_transition.py"
+        },
+        {
+          "blob_digest": "sha256:dd91dae5f43a552ecdcd5bd32ec9d8f3d499c5d924ebcea617165e3d78c64649",
+          "blob_sha": "1e9f479cf80ce0852251ea244f1b34bd0ec059ac",
+          "change_type": "ADDED",
+          "path": "tests/test_worker_claim_grant_projection_transition.py"
+        }
+      ],
+      "head_ref": "laned/worker-claim-grant-projection-transition",
+      "head_sha": "5052569970dc05f3932ad640f9ea296b555d038a",
+      "is_draft": true,
+      "pr": 3235,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "main",
+      "base_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+      "base_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "transition",
+          "workflow": "Organization Claim Allocator Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Organization Claim Allocator Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "transition",
+          "workflow": "Organization Ledger Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Organization Ledger Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        }
+      ],
+      "ci_counts": {
+        "pass": 6
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:ca453b3ad649a79ab92c6d097be843eeb63db9db0094ba3668780f55ff1d07c7",
+          "blob_sha": "d6848de380686c4752e4d7e7c47dd48f6b1605b3",
+          "change_type": "ADDED",
+          "path": ".github/workflows/organization-claim-allocator-transition.yml"
+        },
+        {
+          "blob_digest": "sha256:1b18a65808ea972163efaf641dff41b232e2a670d089ed6ad3e7167c16077ced",
+          "blob_sha": "16c1f93b0b419f12a4ce3987733ee0784a9c339a",
+          "change_type": "MODIFIED",
+          "path": ".github/workflows/organization-ledger-transition.yml"
+        },
+        {
+          "blob_digest": "sha256:6d27fddf4d9c3fdfa4355c67cc8c1b242ae0cebe4cf862e38298fb241caedd5b",
+          "blob_sha": "4d94841d7ce490ee1667e6685fabbf2871a37078",
+          "change_type": "MODIFIED",
+          "path": "control/workflow-surface-registry.json"
+        },
+        {
+          "blob_digest": "sha256:1f31062afcd948b407e49d336b47a55275da3e7b3b60092ee9885c84d99e4eb1",
+          "blob_sha": "9a2a9760c9337e787cdd2f3c69026de62540c5f9",
+          "change_type": "MODIFIED",
+          "path": "docs/RESIDENT_ORG_CLAIM_ALLOCATOR_MIRROR_HANDOFF.md"
+        },
+        {
+          "blob_digest": "sha256:d152791869a4a77ca3c9d176d4f23be6d294eb0a2012c95ad473f13df0d5322a",
+          "blob_sha": "22af4e76b9ab82846eb596581603d8a61a55e957",
+          "change_type": "MODIFIED",
+          "path": "receipts/sovereign-host/resident-request-dispatch.latest.json"
+        },
+        {
+          "blob_digest": "sha256:43764f3d60a85c225a53bdc93c02bbbb06c18f8764cae6c92ae7165256fa40eb",
+          "blob_sha": "b4f889562a2af90ec62dd5c4598c698e697e86a1",
+          "change_type": "MODIFIED",
+          "path": "scripts/consume_org_claim_allocator_request.py"
+        },
+        {
+          "blob_digest": "sha256:0d5b6576f0a899eeb8b74e7bdfe5fc49f4a2ac86ebe6bdfa7aef15a66be1b95a",
+          "blob_sha": "942c58a885ca00c0216df75664b09e3a5daec7ca",
+          "change_type": "MODIFIED",
+          "path": "tests/test_org_claim_custody.py"
+        },
+        {
+          "blob_digest": "sha256:482ba9f8dc10a068dab920480615ef4eb8563f7eae7f907dc3a2b429e1f44b45",
+          "blob_sha": "45c70674078a70513cc58210dcc502b04e397225",
+          "change_type": "MODIFIED",
+          "path": "tests/test_resident_org_claim_allocator.py"
+        },
+        {
+          "blob_digest": "sha256:1646f81e16280164747648f6fb3cb94a0b77012a758dbae41f8b1e7a8def7336",
+          "blob_sha": "7f146b6a3faf9413f4bfd27b7dea524af5d2245a",
+          "change_type": "ADDED",
+          "path": "tests/test_transition_job_runs_on_pull_request.py"
+        }
+      ],
+      "head_ref": "laned/h46-fence-floor-repair-hb-epoch",
+      "head_sha": "e5ba67b26403bef2207638161fcc9cc28e7d8036",
+      "is_draft": true,
+      "pr": 3241,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "laned/h46-fence-floor-repair-hb-epoch",
+      "base_sha": "e5ba67b26403bef2207638161fcc9cc28e7d8036",
+      "base_tree_sha": "89b7738877e3cadd0a4123d6d3874263b71cceda",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Cross-Task Coordination Validation - Non-Authorizing"
+        },
+        {
+          "bucket": "pass",
+          "name": "transition",
+          "workflow": "Organization Claim Allocator Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Organization Claim Allocator Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Validate KV AI Memory Resident Binding"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Validate Organization Resident Runtime and Interlock-InTr Boundary"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate-deepseek-resident",
+          "workflow": "validate-deepseek-resident"
+        }
+      ],
+      "ci_counts": {
+        "pass": 8
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:aa4b32ce0ddbc91d73fdacf961643752053d654b94c74f219a43b8dd005049e9",
+          "blob_sha": "4a0190f3fa75b8a8ce3f01d1851955ddd42ec163",
+          "change_type": "MODIFIED",
+          "path": "scripts/consume_org_claim_allocator_request.py"
+        },
+        {
+          "blob_digest": "sha256:4017fa35700629f85a31b503812f4a34d33e7468a3cb0cba41f6482ba8d9e956",
+          "blob_sha": "76b1cb8e3adee06821ceadd30c4cfa120678fc55",
+          "change_type": "MODIFIED",
+          "path": "scripts/dispatch_resident_execution_requests.py"
+        },
+        {
+          "blob_digest": "sha256:4c556f721b4cd397006a060422f204ab728de0f4b88d397b1e3ab9a5e597aa45",
+          "blob_sha": "0b2e417edd0676382351e65e8f8b31a51d258462",
+          "change_type": "ADDED",
+          "path": "tests/test_carrier_hb_epoch_forwarder.py"
+        }
+      ],
+      "head_ref": "laned/carrier-hb-epoch-forwarder",
+      "head_sha": "9bbb3eae573d0f57f56a513c7dae797734b68868",
+      "is_draft": true,
+      "pr": 3243,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "main",
+      "base_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+      "base_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Cross-Task Coordination Validation - Non-Authorizing"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate-resident-carrier",
+          "workflow": "SDK WorkSpace External Collaboration Consent Listener Resident Validation"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate-resident-carrier",
+          "workflow": "SDK WorkSpace External Collaboration Reseal Resident Validation"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Validate KV AI Memory Resident Binding"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Validate Organization Resident Runtime and Interlock-InTr Boundary"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Workspace DEVICE_KV Validation Only"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate-deepseek-resident",
+          "workflow": "validate-deepseek-resident"
+        }
+      ],
+      "ci_counts": {
+        "pass": 10
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:685ea64d3d593255ae8a18a5a28ac74adeac2746e81696b6dfe937543c42ac48",
+          "blob_sha": "f30cbf1ad6a1e2dbf661a80b5a2cfdcac4f95740",
+          "change_type": "ADDED",
+          "path": "schemas/site-production-promotion-resident-request.schema.json"
+        },
+        {
+          "blob_digest": "sha256:1db63cfc737c0930f8e3cecbdbad3a1b423fa63b05904b574f3c9f88a8bc1e02",
+          "blob_sha": "8565ed6031d377ff62ffac6cc00837ec49333c2f",
+          "change_type": "MODIFIED",
+          "path": "scripts/authorize_site_production_promotion.py"
+        },
+        {
+          "blob_digest": "sha256:be6a1d2a1e784d9be2f3512fe32137f680c1adc4cc3bdb557fe1592cd0756e08",
+          "blob_sha": "75a4fee0209c3bcf9a3c02a1b7c7256c1f04323d",
+          "change_type": "MODIFIED",
+          "path": "scripts/bootstrap_sovereign_runtime.py"
+        },
+        {
+          "blob_digest": "sha256:f05231ce0670f52f6f35ffea72f390ad24bfbd4eb3e3336c86c46b0d263dbb3e",
+          "blob_sha": "404bb13f4f3b829957f0207a4c30bd8275c715c1",
+          "change_type": "ADDED",
+          "path": "scripts/consume_site_production_promotion_request.py"
+        },
+        {
+          "blob_digest": "sha256:b053b7bf9df4b48f3556b0d917d3a96a721ab53f2a09dac7cbeaf0a78eb97864",
+          "blob_sha": "9cf2008f7389f627fae35ec9e90abf2919aa19fb",
+          "change_type": "MODIFIED",
+          "path": "scripts/dispatch_resident_execution_requests.py"
+        },
+        {
+          "blob_digest": "sha256:0aa5e96ae09553cfbdf4edc7624636e5ecdd7e428ff9b0f6b89ec3f7e4f4ce1b",
+          "blob_sha": "b28dc3113ae00aacbb0864b6c377e2944d5936dc",
+          "change_type": "MODIFIED",
+          "path": "scripts/install_sovereign_heartbeat_service.py"
+        },
+        {
+          "blob_digest": "sha256:6660ea2d60d68cdaf680880073cc1ccfedb679c019448fb05a7a6bb18c94db15",
+          "blob_sha": "624529e81fd510c0f385f80b67414da1456f571c",
+          "change_type": "MODIFIED",
+          "path": "scripts/refresh_sovereign_worker_runtime_source.py"
+        },
+        {
+          "blob_digest": "sha256:6ac73ade7c3ae77688aecb77fa4e3ead5538b76e557cdef9b8db86828bc9dfbe",
+          "blob_sha": "5b7e5c0d3b50a92484ee9994100a55d930a2cd44",
+          "change_type": "MODIFIED",
+          "path": "tests/test_site_production_promotion_authorization.py"
+        },
+        {
+          "blob_digest": "sha256:0c1b05964bb7a5afa1490d8cc021d8c2aaba81c9a30580527fb6659aa2280582",
+          "blob_sha": "a07f9a690056b123a55e5dcd738d4c2348724de8",
+          "change_type": "ADDED",
+          "path": "tests/test_site_production_promotion_dispatched_run.py"
+        }
+      ],
+      "head_ref": "laned/sppa-manifest-dispatched-run",
+      "head_sha": "6d974c92682a0771ad7f4f07abbfc80bd9465a27",
+      "is_draft": true,
+      "pr": 3245,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "main",
+      "base_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+      "base_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "transition",
+          "workflow": "Organization Ledger Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Organization Ledger Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        }
+      ],
+      "ci_counts": {
+        "pass": 4
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:1b18a65808ea972163efaf641dff41b232e2a670d089ed6ad3e7167c16077ced",
+          "blob_sha": "16c1f93b0b419f12a4ce3987733ee0784a9c339a",
+          "change_type": "MODIFIED",
+          "path": ".github/workflows/organization-ledger-transition.yml"
+        },
+        {
+          "blob_digest": "sha256:1646f81e16280164747648f6fb3cb94a0b77012a758dbae41f8b1e7a8def7336",
+          "blob_sha": "7f146b6a3faf9413f4bfd27b7dea524af5d2245a",
+          "change_type": "ADDED",
+          "path": "tests/test_transition_job_runs_on_pull_request.py"
+        }
+      ],
+      "head_ref": "laned/transition-job-runs-on-pr",
+      "head_sha": "0721e170eed3dabce4144bd5cdef6b5eb1bd176a",
+      "is_draft": true,
+      "pr": 3251,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "main",
+      "base_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+      "base_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        }
+      ],
+      "ci_counts": {
+        "pass": 2
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:1db63cfc737c0930f8e3cecbdbad3a1b423fa63b05904b574f3c9f88a8bc1e02",
+          "blob_sha": "8565ed6031d377ff62ffac6cc00837ec49333c2f",
+          "change_type": "MODIFIED",
+          "path": "scripts/authorize_site_production_promotion.py"
+        },
+        {
+          "blob_digest": "sha256:66ed3de197820dd0488447715b315237271d0353ee6586eb67baebc4aefafc74",
+          "blob_sha": "809ce63d82bf6e171b63742461731b89f36d39ae",
+          "change_type": "MODIFIED",
+          "path": "tests/test_site_production_promotion_authorization.py"
+        }
+      ],
+      "head_ref": "laned/sppa-fail-open-correction",
+      "head_sha": "c9703e3ee176019c96ea5a08131bb625f6caa60b",
+      "is_draft": true,
+      "pr": 3253,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "grok/lane-c-workflow-surface-registration",
+      "base_sha": "74ba229cccb12c864652dc64634e9ddf591ab14a",
+      "base_tree_sha": "e1f1af8197658f7edc57c45ef41aba2f4ce659e7",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "transition",
+          "workflow": "Organization Ledger Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Organization Ledger Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        }
+      ],
+      "ci_counts": {
+        "pass": 4
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:ac40d70fce978764eb1f6787abd635975408bd0c4414c88b7c6e2ca888d6a79e",
+          "blob_sha": "70403f00dd3b2dd4302bb4d401247b78e61fa895",
+          "change_type": "ADDED",
+          "path": ".github/workflows/organization-ledger-transition-writer.yml"
+        },
+        {
+          "blob_digest": "sha256:f32b5742de113e6a8a88ac3cfd2faa4cc0cd0570baec7c2b3b8cb69e2f53ed37",
+          "blob_sha": "04cbb680cb8383b3c10cc19c854b7357e2106feb",
+          "change_type": "MODIFIED",
+          "path": ".github/workflows/organization-ledger-transition.yml"
+        },
+        {
+          "blob_digest": "sha256:d06c87928b66ce5c92c280d47b901294b69248aeb95b8914be781440b23741ae",
+          "blob_sha": "10f186d98b203f375a400926dd07c8229265b6e1",
+          "change_type": "MODIFIED",
+          "path": "control/workflow-surface-registry.json"
+        },
+        {
+          "blob_digest": "sha256:dc8338ac49ac6dcf9620ebc9ee6d217ccca05a267953488ffc896ee4dbff4c81",
+          "blob_sha": "d0a9ee3937905910028949ca2e855562c7501c55",
+          "change_type": "MODIFIED",
+          "path": "tests/test_organization_ledger_transition_writer.py"
+        },
+        {
+          "blob_digest": "sha256:52d74509ac6e333fe5a65df20062e146a6dee2c664e50b418e222328a86b6f3e",
+          "blob_sha": "57e67aa72c6fe5251a09f7e375d23dd3f31bc1bd",
+          "change_type": "ADDED",
+          "path": "tests/test_transition_job_runs_on_pull_request.py"
+        }
+      ],
+      "head_ref": "laned/ledger-writer-workflow-split",
+      "head_sha": "75fc4dddffe57e3ad05d87e55a1d6ddffcdec4a0",
+      "is_draft": true,
+      "pr": 3255,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "laned/h46-fence-floor-repair-hb-epoch",
+      "base_sha": "e5ba67b26403bef2207638161fcc9cc28e7d8036",
+      "base_tree_sha": "89b7738877e3cadd0a4123d6d3874263b71cceda",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "transition",
+          "workflow": "Organization Claim Allocator Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Organization Claim Allocator Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "transition",
+          "workflow": "Organization Ledger Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "Organization Ledger Transition"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        }
+      ],
+      "ci_counts": {
+        "pass": 6
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:53dcfbdf2e4c2029a4fa6d18f32e8fae026d62d735d4c01f35f3c5f78b6f2448",
+          "blob_sha": "60c51e43e58dd9927ec8ead2873a0800085ca509",
+          "change_type": "ADDED",
+          "path": ".github/workflows/organization-claim-allocator-transition-writer.yml"
+        },
+        {
+          "blob_digest": "sha256:6b575bcf1c03e6d226f59f2e5453743b1bb37b88303979b27abbd53c59d71ad8",
+          "blob_sha": "1880d32ac939a457ded1724870fb038db40a8de5",
+          "change_type": "MODIFIED",
+          "path": ".github/workflows/organization-claim-allocator-transition.yml"
+        },
+        {
+          "blob_digest": "sha256:ac40d70fce978764eb1f6787abd635975408bd0c4414c88b7c6e2ca888d6a79e",
+          "blob_sha": "70403f00dd3b2dd4302bb4d401247b78e61fa895",
+          "change_type": "ADDED",
+          "path": ".github/workflows/organization-ledger-transition-writer.yml"
+        },
+        {
+          "blob_digest": "sha256:f32b5742de113e6a8a88ac3cfd2faa4cc0cd0570baec7c2b3b8cb69e2f53ed37",
+          "blob_sha": "04cbb680cb8383b3c10cc19c854b7357e2106feb",
+          "change_type": "MODIFIED",
+          "path": ".github/workflows/organization-ledger-transition.yml"
+        },
+        {
+          "blob_digest": "sha256:ce36a3d0287edf2dcdd590c3d9d189b89fbf51e1cd12641c5f8a4e6fe0f4a8e4",
+          "blob_sha": "9a705b018073ed9edd0f4da76b70b2ebd6dcb070",
+          "change_type": "MODIFIED",
+          "path": "control/workflow-surface-registry.json"
+        },
+        {
+          "blob_digest": "sha256:bddebeda1162aacdd81c43950238044528f3a9a0a093414cf49689ec188d30ca",
+          "blob_sha": "2b8ba515f20f5f5e7b79987871b61ebac9db6103",
+          "change_type": "MODIFIED",
+          "path": "docs/RESIDENT_ORG_CLAIM_ALLOCATOR_MIRROR_HANDOFF.md"
+        },
+        {
+          "blob_digest": "sha256:150ee886bed298b90a9f6ef7f6889e948c4605db34d14271a312d05aa3ba54db",
+          "blob_sha": "51d2e3ae0203fc5c92c771afde5cdcf923b693a1",
+          "change_type": "MODIFIED",
+          "path": "scripts/consume_org_claim_allocator_request.py"
+        },
+        {
+          "blob_digest": "sha256:dc8338ac49ac6dcf9620ebc9ee6d217ccca05a267953488ffc896ee4dbff4c81",
+          "blob_sha": "d0a9ee3937905910028949ca2e855562c7501c55",
+          "change_type": "MODIFIED",
+          "path": "tests/test_organization_ledger_transition_writer.py"
+        },
+        {
+          "blob_digest": "sha256:c310857fe5500f7afe009f3f11a6df97dafa40fb7dc62ac7ac8e9ae8b5929dd1",
+          "blob_sha": "76b8f0f338c3d15b2ce003a39366a0f72650e447",
+          "change_type": "MODIFIED",
+          "path": "tests/test_resident_org_claim_allocator.py"
+        },
+        {
+          "blob_digest": "sha256:52d74509ac6e333fe5a65df20062e146a6dee2c664e50b418e222328a86b6f3e",
+          "blob_sha": "57e67aa72c6fe5251a09f7e375d23dd3f31bc1bd",
+          "change_type": "MODIFIED",
+          "path": "tests/test_transition_job_runs_on_pull_request.py"
+        }
+      ],
+      "head_ref": "laned/allocator-writer-workflow-split",
+      "head_sha": "361f35bfb31b6fd72f420cec3eb106962f275e9f",
+      "is_draft": true,
+      "pr": 3258,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    },
+    {
+      "base_ref": "main",
+      "base_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+      "base_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
+      "ci_check_runs": [
+        {
+          "bucket": "pass",
+          "name": "validate",
+          "workflow": "GADI Resident Execution Preflight Validation"
+        },
+        {
+          "bucket": "pass",
+          "name": "consolidated-source-validators",
+          "workflow": "Test suite ratchet"
+        },
+        {
+          "bucket": "pass",
+          "name": "ratchet",
+          "workflow": "Test suite ratchet"
+        }
+      ],
+      "ci_counts": {
+        "pass": 3
+      },
+      "declared_authoring_session": "Lane D \"KV and WorkSpace\" Grok bot, agent b699e0c0-3b4e-4a24-945f-6f521c282268, pushing as GitHub account StegVerse.",
+      "files": [
+        {
+          "blob_digest": "sha256:8a2bd3b8d7dd5862c970c882a3f218bbf0763839c586161dddbe2d995ee04da2",
+          "blob_sha": "fed9e4dd5db64f79d44d109c6f995f01d2307b31",
+          "change_type": "MODIFIED",
+          "path": ".github/workflows/gadi-resident-execution-preflight-validation.yml"
+        },
+        {
+          "blob_digest": "sha256:9a1364f3de88c5dff69135d9992f153c3fc1608f85810a7f7788cdbf1ab77b47",
+          "blob_sha": "ffcccdb6152cc16a850dbe69a112e503c130a5c1",
+          "change_type": "MODIFIED",
+          "path": ".github/workflows/test-suite-ratchet.yml"
+        },
+        {
+          "blob_digest": "sha256:07756a0a8a3393bf24b5b9af3979605a9fc56b79aaccce02a9ecc451f9ad93a9",
+          "blob_sha": "47acafeca4b7f9a77a7c3e5127653f6f7d00aa67",
+          "change_type": "ADDED",
+          "path": "tests/test_workflow_top_level_permissions.py"
+        }
+      ],
+      "head_ref": "laned/workflow-least-privilege-permissions",
+      "head_sha": "de8e3eb992d81582a48e300e1702d91dec0f77df",
+      "is_draft": true,
+      "pr": 3261,
+      "repo": "StegVerse-Labs/.github",
+      "state": "OPEN"
+    }
+  ],
+  "registry_generation_observed": {
+    "source": "data/canonical-task-registry.json#generation @ main 978b8880",
+    "value": 319
+  },
+  "schema": "stegverse.lane-d.s0-github-pr-snapshot/v1"
+}

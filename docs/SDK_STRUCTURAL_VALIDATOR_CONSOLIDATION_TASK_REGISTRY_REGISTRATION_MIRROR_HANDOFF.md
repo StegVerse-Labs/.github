@@ -94,3 +94,36 @@ StegCore DENY of `SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-T6-001` (packet `pkt-bc
 - Canonical record: `allocator_projection` added. `checkout_state` stays `UNCLAIMED` and `worker_claim.claim_ref` stays null. Only the allocator's own output may change them.
 
 The request grants no claim, fence, delegation, credential or ALLOW. The canonical allocator (`scripts/allocate_claims.py` via `scripts/consume_org_claim_allocator_request.py::consume`) is the sole claim authority. It refuses hosted environments (GitHub Actions/CI), so merge and CI here prove source only, not allocation.
+
+## 2026-10-17 reconciliation
+
+This section supersedes the stale lines named below. Earlier sections stay as history. Authority effect: NONE.
+
+### Record corrections (registry generation 317 -> 318)
+
+- `worker_claim` was `{authority: NONE_TASK_REGISTRY_PROJECTION_ONLY, claim_ref: null, projection_only: true}`. That violates the "Worker-claim field invariant" in `TASK_REGISTRY_CANONICAL_INVARIANTS.md`; it was flagged on SDK#484 on 2026-10-14 (comment 6167450542). Record and registry row now read `{authority: WORKERCOORDINATOR, claim_ref: null, fence_ref: null, projection_only: true}`. No claim or fence was observed or minted.
+- `APPLICABLE_MASTER_RECORDS_RECONSTRUCTION_EVIDENCE_RETAINED` is removed from `remaining_predicates` and moved to `non_gating_downstream_evidence` (`completion_predicate=false`, `gating=false`). `authority_model.master_records_role` is `ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY_NON_GATING`, the shape the SDK-MANIFEST-* records use. Basis: `master_records_may_gate_organization_runtime_reality=false` in `data/task-registry-global-invariants.json`.
+- COSV is unchanged at `60200000013002`. The exact metrics already counted three blockers, the three gating predicates; no metric changes.
+
+### Superseded lines
+
+- **"Remediation order" step (5)** and **"Remaining predicates" item 4**: Master Records reconstruction is now optional, non-gating downstream evidence. It is neither a completion predicate nor a retry precondition. The remaining predicates are the three gating items 1–3.
+- **Final section, "It refuses hosted environments (GitHub Actions/CI)"**: superseded by open PR StegVerse-Labs/.github#3211 (not merged). It adds event-ephemeral materialization of the allocator: `.github/workflows/organization-claim-allocator-transition.yml` runs on the commit carrying the durable queue entry and appends to `refs/stegverse/organization-ledger`. No machine is awaited. The expected first live run is a typed `ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED` `FENCE_GENERATION_BEHIND_ISSUED_FENCES`: `control/claims-active.json` is at generation 2 while issued fences are at 7. The repair is to rematerialize the claim registry at or beyond the issued fences. That disposition is terminal and typed, not a wait.
+- **Resident-node predicate in SDK#484 RESPONSE-043**: withdrawn. See SDK#484 RESPONSE-044 (comment 6234849742) and RESPONSE-045 (comment 6235007594).
+
+### T5 status
+
+TVC `process-service-request.yml` answers `BLOCKED_DEPENDENCY` instead of creating a durable queue entry. The repair is proposed as item A5 on StegVerse-Labs/TVC#488 (comment 6234847097). It is not yet decided.
+
+### Pricing workstream
+
+Pricing is split off into `SDK-COST-DERIVED-TIER-PRICING-001` (open PR StegVerse-Labs/.github#3214, COSV `10300000011002`). This task no longer owns pricing.
+
+### SDK source state (as of 2026-10-17, reported by the SDK lane)
+
+- #523 (governance gate) merged at `c0ef2db`.
+- #527 (tier pricing) merged at `376512c`.
+- #538 (six-field dispositions, cost-component registry, `C_pricing = max(estimated, observed)`) is open at head `00fc13a`, all checks green, and awaits the owner.
+- LLM-adapter#420, the first adoption of the gate outside the SDK, was merged by the owner.
+
+Source merges prove source only, not runtime. This reconciliation mints no claim, credential, admission or ALLOW.

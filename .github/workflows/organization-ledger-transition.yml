@@ -4,7 +4,9 @@ name: Organization Ledger Transition
 # fast-forward only, and read it back from a fresh fetch. The ledger is the
 # evidence; this run's success is not.
 #
-# workflow_dispatch performs one intr-destination diagnostic self-closure:
+# A push to main that changes .stegverse/intr-destination/self-closure-packet.json (the committed state
+# transition; resident-runtime/self_closure_packet.py reads it) performs one
+# intr-destination diagnostic self-closure:
 # resident-runtime/intr_destination_ingress.py records repository and
 # organization receipts, both carrying communication_id, on
 # refs/stegverse/organization-ledger. The repository chain is the declared
@@ -13,28 +15,14 @@ name: Organization Ledger Transition
 #
 # The federation directory is not an input. Governance and remediation routes
 # are not selected here.
+# Writer only, on push to main. Its pull_request checks run in
+# .github/workflows/organization-ledger-transition-validation.yml (read-only); no
+# pull_request event reaches this file, so no PR shows this job as skipped.
 on:
-  pull_request:
+  push:
+    branches: [main]
     paths:
-      - '.github/workflows/organization-ledger-transition.yml'
-      - '.stegverse/transition-ledger/contract.json'
-      - '.stegverse/transition-ledger/emit.py'
-      - 'resident-runtime/intr_destination_ingress.py'
-      - 'resident-runtime/ledger_store.py'
-      - 'resident-runtime/organization_ledger_readback.py'
-      - 'tests/test_intr_destination_capability.py'
-      - 'tests/test_organization_ledger_transition_writer.py'
-  workflow_dispatch:
-    inputs:
-      communication_id:
-        description: 'communication_id the diagnostic self-closure correlates on'
-        required: true
-        type: string
-      packet_id:
-        description: 'packet id bound to this one diagnostic'
-        required: false
-        default: intr-destination-self-closure
-        type: string
+      - '.stegverse/intr-destination/self-closure-packet.json'
 
 permissions:
   contents: read
@@ -48,33 +36,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  validate:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout organization boundary
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Validate the writer and the self-closure against temporary ledgers
-        run: |
-          python -m py_compile \
-            resident-runtime/organization_ledger_readback.py \
-            resident-runtime/intr_destination_ingress.py \
-            resident-runtime/ledger_store.py \
-            .stegverse/transition-ledger/emit.py
-          python -m pip install pytest
-          python -m pytest -q --tb=short \
-            tests/test_organization_ledger_transition_writer.py \
-            tests/test_intr_destination_capability.py
-
   transition:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -125,27 +88,11 @@ jobs:
           fi
           git rev-parse "$LEDGER_REF" > "$RUNNER_TEMP/ledger-before"
 
-      - name: Accept the self-closure inputs
-        env:
-          INPUT_COMMUNICATION_ID: ${{ github.event.inputs.communication_id }}
-          INPUT_PACKET_ID: ${{ github.event.inputs.packet_id }}
+      - name: Read the self-closure inputs from the pushed commit's packet
         run: |
           set -euo pipefail
-          python - <<'PY'
-          import os, sys
-          communication = os.environ.get("INPUT_COMMUNICATION_ID", "")
-          packet = os.environ.get("INPUT_PACKET_ID") or "intr-destination-self-closure"
-          def visible(value):
-              return bool(value) and all(33 <= ord(character) <= 126 for character in value)
-          if not visible(communication) or not visible(packet):
-              print('{"disposition":"FAIL_CLOSED","failure_code":"SELF_CLOSURE_INPUT_INVALID","failed_predicate":"COMMUNICATION_ID_AND_PACKET_ID_ARE_SINGLE_VISIBLE_TOKENS","required_evidence_or_repair":"dispatch communication_id as one visible token","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}')
-              sys.exit(1)
-          path = os.environ["RUNNER_TEMP"] + "/closure-inputs"
-          open(path, "w", encoding="utf-8").write(communication + "\n" + packet + "\n")
-          PY
-          mapfile -t inputs < "$RUNNER_TEMP/closure-inputs"
-          echo "CLOSURE_COMMUNICATION_ID=${inputs[0]}" >> "$GITHUB_ENV"
-          echo "CLOSURE_PACKET_ID=${inputs[1]}" >> "$GITHUB_ENV"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python resident-runtime/self_closure_packet.py --packet .stegverse/intr-destination/self-closure-packet.json --require-hb-epoch --github-env "$GITHUB_ENV"
 
       - name: Append the diagnostic self-closure to the repository and organization ledgers
         run: |
@@ -153,10 +100,17 @@ jobs:
           export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
           export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
           mkdir -p "$RUNNER_TEMP/results"
+          # Time is supplied in the committed packet. It is not sampled from a clock.
+          case "$HB_EPOCH" in
+            ''|*[!0-9]*)
+              echo '{"disposition":"FAIL_CLOSED","failure_code":"SELF_CLOSURE_HB_EPOCH_INVALID","failed_predicate":"HB_EPOCH_IS_SUPPLIED_AS_A_NON_NEGATIVE_INTEGER","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false}'
+              exit 1 ;;
+          esac
           python resident-runtime/intr_destination_ingress.py \
             --self-close \
+            --hb-epoch "$HB_EPOCH" \
             --communication-id "$CLOSURE_COMMUNICATION_ID" \
-            --packet-id "$CLOSURE_PACKET_ID" \
+            --packet-id "${CLOSURE_PACKET_ID:-intr-destination-self-closure}" \
             --registry org-boundary/registry/services.json \
             --out "$RUNNER_TEMP/results/closure.json"
           python - <<'PY'
