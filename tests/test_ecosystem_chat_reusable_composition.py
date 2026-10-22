@@ -127,7 +127,12 @@ class LocalAnswerDefinitionTests(unittest.TestCase):
         ids = {t["reusable_task_id"] for t in constructor.load_registry()["tasks"]}
         self.assertTrue(set(d["composes"]) <= ids)
         for dep in d["dependency_refs"]:
-            # Registration of a reusable identity is not native owner admission.\n            # A pending Labs port may be discoverable without being composable.\n            if dep.get("reusable_task_id") in ids:\n                self.assertEqual(dep["state"], "OWNER_GATED_PENDING_LABS_PORT")\n                self.assertNotIn(dep["reusable_task_id"], d["composes"])\n            self.assertTrue(dep["failure_code"])
+            # Registration of a reusable identity is not native owner admission.
+            # A pending Labs port may be discoverable without being composable.
+            if dep.get("reusable_task_id") in ids:
+                self.assertEqual(dep["state"], "OWNER_GATED_PENDING_LABS_PORT")
+                self.assertNotIn(dep["reusable_task_id"], d["composes"])
+            self.assertTrue(dep["failure_code"])
             self.assertIn(dep["state"], {"OWNER_GATED_PENDING_MERGE_FAIL_CLOSED", "OWNER_GATED_PENDING_LABS_PORT"})
             self.assertRegex(dep["source_ref"], r"^[\w.-]+/[\w.-]+#\d+@[0-9a-f]{40}:\S+\.py$")
             self.assertFalse(dep["vendored"])
