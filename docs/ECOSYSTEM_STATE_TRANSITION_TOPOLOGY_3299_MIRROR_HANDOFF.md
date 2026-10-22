@@ -24,3 +24,11 @@ First converge repo contracts, then wire reusable flows, then evaluate Fieldy or
 - https://github.com/StegVerse-Labs/.github/issues/3291
 - https://github.com/StegVerse-Labs/.github/issues/3204
 - https://github.com/StegVerse-Labs/Patents/issues/16
+
+## Reconciliation of already-completed SDK-MR-A lifecycle (2026-10-22)
+
+The existing canonical record `data/canonical-task-records/SDK-MR-A-VALIDATION-CUSTODY-001.json` is `COMPLETED_VALIDATED / RETIRED`, COSV `71000000100110`, `end_to_end_complete=true`. The recorded receiving-organization governance disposition for request `SDK-MR-A-ORGANIZATION-LEDGER-RECEIPT-004`, packet `pkt-c64077b3c2b188aabf176050`, is **DENY / signal.inputs_incomplete**, not ALLOW. Decision receipt: `sha256:273ffa70d766e003d7c649d4b7b5fd83c95a532f58c0c79fd13bf5617ca094da`; sender closure receipt: `sha256:f3156e28ee4aa4fdcd4af475dbd21aaea56d5f0c1d151187583f5ca97ba85c4b`. Historical independently verified ledger tips were Labs `9f0a53e5029a2587d2b4ac24e93f557c99238099` and Org `ab3cbc14058d296d9e9e4dbed8bbebfda81cf3c9`. Owner closure: https://github.com/StegVerse-Labs/.github/issues/3099#issuecomment-6119932050 and https://github.com/StegVerse-org/StegVerse-SDK/issues/452#issuecomment-6119934544 .
+
+**No replay:** These historical receipts establish that SDK-MR-A's decision return and closure occurred, not that topology PR #3300's newly written verifier has executed against those records. PR #3300 is source integration plus negative tests, with its own exact-head CI/review obligations. A separate, newly authorized manifest would be required for any new runtime transition; do not reactivate retired SDK-MR-A simply to exercise this verifier.
+
+**Semantics:** A governance DENY is an authentic resulting-state decision; successful delivery/receipt/return is not a grant of the requested custody change. Organization ledger readback ALLOW refers to recording/readback integrity, not admissibility of the denied operation.
