@@ -127,11 +127,36 @@ class LocalAnswerDefinitionTests(unittest.TestCase):
         ids = {t["reusable_task_id"] for t in constructor.load_registry()["tasks"]}
         self.assertTrue(set(d["composes"]) <= ids)
         for dep in d["dependency_refs"]:
-            self.assertNotIn(dep.get("reusable_task_id"), ids)
+            dependency_id = dep.get("reusable_task_id")
+            # Registration is not admission: a source shard can exist before
+            # its original owner-gated Labs port is admitted for composition.
+            self.assertNotIn(dependency_id, d["composes"])
             self.assertTrue(dep["failure_code"])
             self.assertIn(dep["state"], {"OWNER_GATED_PENDING_MERGE_FAIL_CLOSED", "OWNER_GATED_PENDING_LABS_PORT"})
+            if dependency_id in ids:
+                self.assertEqual(dep["state"], "OWNER_GATED_PENDING_LABS_PORT")
+                self.assertEqual(dep["failure_code"], "INVARIANT_EVALUATOR_LABS_PORT_OWNER_GATED")
             self.assertRegex(dep["source_ref"], r"^[\w.-]+/[\w.-]+#\d+@[0-9a-f]{40}:\S+\.py$")
             self.assertFalse(dep["vendored"])
+        self.assertEqual(d["runner_templates"], [])
+        self.assertIn("UNRESOLVED_DEPENDENCY_FAIL_CLOSED_SIX_FIELDS", d["failure_semantics"])
+
+    def test_registered_evaluator_cannot_silently_activate_pending_local_answer(self):
+        registry = constructor.load_registry()
+        ids = {task["reusable_task_id"] for task in registry["tasks"]}
+        evaluator = "RT-INVARIANT-EVALUATION-001"
+        self.assertIn(evaluator, ids)  # Registration is observable; admission is not.
+        definition = self.definition()
+        pending = [dep for dep in definition["dependency_refs"]
+                   if dep.get("reusable_task_id") == evaluator]
+        self.assertEqual(len(pending), 1)
+        self.assertEqual(pending[0]["state"], "OWNER_GATED_PENDING_LABS_PORT")
+        self.assertEqual(pending[0]["failure_code"], "INVARIANT_EVALUATOR_LABS_PORT_OWNER_GATED")
+        self.assertNotIn(evaluator, definition["composes"])
+        self.assertEqual(definition["runner_templates"], [])
+        self.assertFalse(pending[0]["vendored"])
+        self.assertIn("UNRESOLVED_DEPENDENCY_FAIL_CLOSED_SIX_FIELDS",
+                      definition["failure_semantics"])
 
     def test_local_answer_manifest_materializes_without_runner(self):
         manifest = constructor.build_manifest(argparse.Namespace(
