@@ -32,3 +32,19 @@ The existing canonical record `data/canonical-task-records/SDK-MR-A-VALIDATION-C
 **No replay:** These historical receipts establish that SDK-MR-A's decision return and closure occurred, not that topology PR #3300's newly written verifier has executed against those records. PR #3300 is source integration plus negative tests, with its own exact-head CI/review obligations. A separate, newly authorized manifest would be required for any new runtime transition; do not reactivate retired SDK-MR-A simply to exercise this verifier.
 
 **Semantics:** A governance DENY is an authentic resulting-state decision; successful delivery/receipt/return is not a grant of the requested custody change. Organization ledger readback ALLOW refers to recording/readback integrity, not admissibility of the denied operation.
+
+## Reusable-task capability inventory and ownership (2026-10-22)
+
+This inventory is source-backed, not a request for a new Goal or an alternate execution framework.
+
+| Capability | Existing implementation | Disposition |
+|---|---|---|
+| Organization chain walk, body digest, predecessor links, source-retention verification | `resident-runtime/organization_ledger_readback.py::readback` | REUSE, no duplicate |
+| Transition-ID/predecessor-specific native receipt binding | `workers/canonical_state_transition_custody.py::organization_receipt_gate` | REUSE, no duplicate |
+| Existing designated ref writer, fast-forward CAS and fresh fetch | `.github/workflows/organization-ledger-transition.yml` | REUSE; do not invoke for a read-only check |
+| Read-only fresh-fetch conformance proof with expected receipt membership | `.github/workflows/topology-sovereign-readback.yml` + `scripts/ecosystem_transition_topology.py::verify_published_organization_chain` | IMPLEMENTED here, no new runtime |
+| Reusable cross-Goal parameter contract and native Task Library registration | Not established by this bounded inventory | Candidate only; inventory the canonical library and register via existing owner if no equivalent |
+
+Actual exact-head proof: `477593c43bf4fe3fc58a95f57f40a40031fc2082`, https://github.com/StegVerse-Labs/.github/actions/runs/39734902386 SUCCESS; published 56-receipt chain, expected receipt `sha256:273ffa70d766e003d7c649d4b7b5fd83c95a532f58c0c79fd13bf5617ca094da`. Readback ALLOW is recording integrity only, not governance admission. Existing library registration is not inferred from this proof.
+
+Exact-head ratchet https://github.com/StegVerse-Labs/.github/actions/runs/39734902382 FAILED with six tests unrelated by filename to the four PR-changed files (three component-010, Ecosystem Chat, Lane D fixture, Registry check-in). Filename disjointness does not prove causality or absence of a regression. Do not skip these tests or silently add them to the baseline. Reconcile against current main and route source repairs through existing owners. Independent review and protected merge remain outstanding.
