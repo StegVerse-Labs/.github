@@ -37,6 +37,13 @@ def write_continuation(tmp_path, proposed):
     return path
 
 
+def test_invalid_archive_proposal_fails_closed_as_whole_batch(tmp_path):
+    path = tmp_path / "continuation.json"
+    for proposals in (["m1", ""], ["m1", "m1"], ["m1", " m2"], ["m1", 7]):
+        path.write_text(json.dumps({"archive_proposed": proposals}), encoding="utf-8")
+        assert M.load_archive_authorization(path) == frozenset()
+
+
 def test_operational_queries_never_select_archived_messages():
     assert "in:inbox" in M.INBOX_QUERY.split()
     assert "in:inbox" in M.ACTIONABLE_QUERY.split()
