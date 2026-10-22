@@ -348,6 +348,7 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
         inspected = broker.call("SEARCH_MESSAGES", query=INBOX_QUERY, label_ids=["INBOX"],
                                 max_results=batch_limit, **({"next_page_token": message_cursor} if message_cursor else {}))
         page = stable_rows(inspected, "messages")
+        require(len(page) <= batch_limit, "LIVE_INBOX_MESSAGE_BATCH_LIMIT_EXCEEDED")
         page_ids = [message_id(row) for row in page]
         require(not (seen_messages & set(page_ids)), "LIVE_INBOX_DUPLICATE_VISIBLE_MESSAGE_IDS")
         require(len(page_ids) == len(set(page_ids)), "LIVE_INBOX_DUPLICATE_VISIBLE_MESSAGE_IDS")
