@@ -68,18 +68,19 @@
     "stegbrowser": {
       "disposition": "ALLOW",
       "evaluated_by": ".github/workflows/universal-intr-route-installation.yml (exact-head run of the reusable workflow)",
-      "installer_retained": "scripts/install_stegbrowser_universal_intr_route.py",
       "installer_retirement": {
         "disposition": "FAIL_CLOSED",
-        "failed_predicate": "INSTALLER_RETIREMENT_PRESERVES_THIS_ORGANIZATIONS_RUNTIME_ADMISSION_PATH",
-        "failure_code": "ORG_SPECIFIC_BEHAVIOUR_UNRECONCILED",
-        "next_attempt": "the draft that rewires run_stegbrowser_universal_intr_materialization.py; then delete the installer and its test loader in the same generation",
+        "failed_predicate": "AUTHENTIC_SUCCESSOR_MATERIALIZATION_AND_ORGANIZATION_RECEIPT_NOT_YET_ESTABLISHED",
+        "failure_code": "NATIVE_REPLACEMENT_CUSTODY_UNVERIFIED",
+        "next_attempt": "replay current exact manifest and read back same-transition Organization ledger receipt; no listener or external machine required",
         "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
-        "required_evidence_or_repair": "scripts/run_stegbrowser_universal_intr_materialization.py L88-96 runs this installer (write then --check) so the shared listener and the in-process path admit through the same Labs profile admit (workers/stegbrowser_intr_materialization_ingress.admit); tests/test_stegbrowser_universal_intr_materialization.py L24 loads it. The SDK successor routes StegBrowser to sdk_admit_edge_submission (SUBMIT_MANIFEST to sdk-manifest-ingress) instead, and the Labs runtime does not load the SDK. A separate manifest-bound source transition under STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001 must move that runtime path onto the SDK-evaluated successor, preserving this organization's own valid behaviour (Labs organization_role_conformance.py L276-279)",
-        "retry_entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation via .github/workflows/universal-intr-route-installation.yml"
+        "required_evidence_or_repair": "Source successor now imports stegverse.universal_intr_route_installer.evaluate_installation and its tests prohibit the retired script; source replacement alone is not authentic manifest-bound admission or Organization receipt; verify current SDK route materialization plus predecessor-bound InTr/Organization closure before claiming authorized retirement.",
+        "retry_entrypoint": "scripts/run_stegbrowser_universal_intr_materialization.py via original manifest-bound SDK/InTr ingress"
       },
       "route_declaration_hash": "db36dde96bf309dea28a3774931cbffb925428d49c22d327067330622160503f",
-      "route_id": "stegverse.route.stegbrowser.v1"
+      "route_id": "stegverse.route.stegbrowser.v1",
+      "retired_installer": "scripts/install_stegbrowser_universal_intr_route.py",
+      "materialization_successor": "scripts/run_stegbrowser_universal_intr_materialization.py"
     },
     "stegsocials_bounded": {
       "disposition": "FAIL_CLOSED",

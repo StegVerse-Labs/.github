@@ -86,8 +86,21 @@ class RequestAndAdoptionTests(unittest.TestCase):
 
     def test_no_installer_is_retired_while_its_runtime_path_is_unreconciled(self):
         adoption = json.loads(ADOPTION.read_text(encoding="utf-8"))
-        for row in adoption["consumers"].values():
-            self.assertTrue((ROOT / row["installer_retained"]).is_file(), row["installer_retained"])
+        for consumer_id, row in adoption["consumers"].items():
+            retained = row.get("installer_retained")
+            if retained is not None:
+                self.assertTrue((ROOT / retained).is_file(), retained)
+                continue
+            self.assertEqual(consumer_id, "stegbrowser")
+            self.assertEqual(row["disposition"], "ALLOW")  # non-authorizing SDK fixture assessment
+            self.assertEqual(row["installer_retirement"]["disposition"], "FAIL_CLOSED")
+            retired = ROOT / row["retired_installer"]
+            successor = ROOT / row["materialization_successor"]
+            self.assertFalse(retired.exists(), retired)
+            self.assertTrue(successor.is_file(), successor)
+            source = successor.read_text(encoding="utf-8")
+            self.assertIn("from stegverse.universal_intr_route_installer import evaluate_installation", source)
+            self.assertNotIn("from install_stegbrowser_universal_intr_route", source)
 
 
 if __name__ == "__main__":
