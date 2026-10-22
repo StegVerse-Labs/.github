@@ -82,7 +82,9 @@ def verify_native_organization_transition(
     The native gate independently checks the organization ledger's record,
     state-receipt digest and expected transition/predecessor.
     """
-    if not isinstance(state_receipt_result, Mapping) or not expected_transition_id:
+    if (not isinstance(state_receipt_result, Mapping) or not expected_transition_id
+            or not isinstance(state_receipt_result.get("receipt_sha256"), str)
+            or not state_receipt_result.get("receipt_sha256")):
         return {"disposition": "FAIL_CLOSED", "predicate": "STATE_RECEIPT_OR_TRANSITION_ID_MISSING"}
     try:
         from workers.canonical_state_transition_custody import organization_receipt_gate
@@ -92,13 +94,16 @@ def verify_native_organization_transition(
             expected_predecessor=expected_predecessor,
             record_refusal=False,
         )
-    except (ImportError, OSError, RuntimeError, ValueError, TypeError, KeyError) as exc:
+    except Exception as exc:
+        # A native verifier failure cannot propagate as an accidental success.
         return {"disposition": "FAIL_CLOSED", "predicate": "NATIVE_ORGANIZATION_READBACK_UNAVAILABLE",
                 "error_type": type(exc).__name__}
     if not isinstance(gate, Mapping) or gate.get("verified") is not True:
         refusal = gate.get("refusal") if isinstance(gate, Mapping) else None
         return {"disposition": "FAIL_CLOSED", "predicate": "NATIVE_ORGANIZATION_RECEIPT_NOT_VERIFIED",
                 "native_refusal": refusal}
+    # Only the native ledger gate may attest the readback. This is NOT the
+    # governance decision disposition; a recorded DENY remains DENY.
     digest = gate.get("organization_receipt_sha256")
     if not isinstance(digest, str) or not digest:
         return {"disposition": "FAIL_CLOSED", "predicate": "NATIVE_ORGANIZATION_RECEIPT_DIGEST_MISSING"}
