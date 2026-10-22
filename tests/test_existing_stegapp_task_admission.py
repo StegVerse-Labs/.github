@@ -25,12 +25,15 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
             "worker_claim": {"claim_ref": None, "fence_ref": None,
                              "projection_only": True},
             "coordination_state": "PROPOSED",
-            "cosv_task_vector": "10300000011000",
         }
         self.registry = {"generation": 320, "tasks": [self.row]}
         self.shard = {k: copy.deepcopy(v) for k, v in self.row.items()
                       if k != "cosv_task_vector"}
-        self.vector = {"vector": "10300000011000",
+        self.vector = {"schema": "stegverse.cosv-task-vector/v0.1",
+                       "identity": "StegVerse-Labs/.github:task:" + mod.TASK_ID,
+                       "profile": "task.v1", "level": "task",
+                       "vector": "10300000011000",
+                       "authority_effect": "NONE",
                        "exact_metrics": {"lifecycle": "UNCLAIMED"}}
         self.decision = dict(task_id=mod.TASK_ID, from_state="PROPOSED",
                              to_state="HANDOFF_READY", observed_registry_generation=320,
@@ -113,6 +116,13 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
         self.shard["worker_claim"]["claim_ref"] = "synthetic"
         self.assertEqual(self.verdict()["failed_predicate"],
                          "EXISTING_TASK_IDENTITY_AND_SCOPE_AGREE")
+
+    def test_actual_registered_task_shape_does_not_embed_cosv_field(self):
+        self.assertNotIn("cosv_task_vector", self.row)
+        self.assertNotIn("cosv_task_vector", self.shard)
+        self.assertEqual(self.verdict()["disposition"], "ALLOW")
+        self.vector["identity"] = "StegVerse-Labs/.github:task:ANOTHER-TASK"
+        self.assertEqual(self.verdict()["failed_predicate"], "CANONICAL_COSV_UNCHANGED")
 
     def test_owner_claim_cannot_be_minted_with_admission(self):
         forged = copy.deepcopy(self.decision)
