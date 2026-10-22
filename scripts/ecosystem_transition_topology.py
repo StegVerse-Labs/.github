@@ -7,7 +7,7 @@ authenticated owner-controlled interface, never manufactured here.
 from __future__ import annotations
 import hashlib
 import json
-from typing import Mapping, Any
+from typing import Mapping, Any, Callable
 
 DISPOSITIONS = frozenset({"ALLOW", "DENY", "FAIL_CLOSED"})
 CLASSIFICATION = ("PUBLIC", "INTERNAL", "CONFIDENTIAL", "SECRET", "TOP_SECRET")
@@ -44,11 +44,20 @@ def evaluate(resulting_state: Mapping[str, Any], manifest: Mapping[str, Any],
 
 
 def verify_organization_readback(transition: Mapping[str, Any],
-                                 ledger_readback: Mapping[str, Any] | None) -> dict[str, str]:
+                                 ledger_readback: Mapping[str, Any] | None,
+                                 authenticate: Callable[[Mapping[str, Any]], bool] | None = None) -> dict[str, str]:
     """Verify supplied authenticated ledger evidence, not a local receipt alone."""
     if not isinstance(ledger_readback, Mapping):
         return {"disposition": "FAIL_CLOSED", "predicate": "SOVEREIGN_LEDGER_READBACK_MISSING"}
-    if ledger_readback.get("authenticated") is not True:
+    # A JSON boolean is NOT authentication. Require a caller-supplied trusted
+    # verification interface; absent interface is always non-ALLOW.
+    if authenticate is None:
+        return {"disposition": "FAIL_CLOSED", "predicate": "AUTHENTIC_SOVEREIGN_VERIFIER_UNAVAILABLE"}
+    try:
+        verified = authenticate(ledger_readback) is True
+    except Exception:
+        verified = False
+    if not verified:
         return {"disposition": "FAIL_CLOSED", "predicate": "SOVEREIGN_READBACK_NOT_AUTHENTICATED"}
     if ledger_readback.get("recording_confirmed") is not True:
         return {"disposition": "FAIL_CLOSED", "predicate": "SOVEREIGN_RECORDING_UNVERIFIED"}
