@@ -141,6 +141,23 @@ class LocalAnswerDefinitionTests(unittest.TestCase):
         self.assertEqual(d["runner_templates"], [])
         self.assertIn("UNRESOLVED_DEPENDENCY_FAIL_CLOSED_SIX_FIELDS", d["failure_semantics"])
 
+    def test_registered_evaluator_cannot_silently_activate_pending_local_answer(self):
+        registry = constructor.load_registry()
+        ids = {task["reusable_task_id"] for task in registry["tasks"]}
+        evaluator = "RT-INVARIANT-EVALUATION-001"
+        self.assertIn(evaluator, ids)  # Registration is observable; admission is not.
+        definition = self.definition()
+        pending = [dep for dep in definition["dependency_refs"]
+                   if dep.get("reusable_task_id") == evaluator]
+        self.assertEqual(len(pending), 1)
+        self.assertEqual(pending[0]["state"], "OWNER_GATED_PENDING_LABS_PORT")
+        self.assertEqual(pending[0]["failure_code"], "INVARIANT_EVALUATOR_LABS_PORT_OWNER_GATED")
+        self.assertNotIn(evaluator, definition["composes"])
+        self.assertEqual(definition["runner_templates"], [])
+        self.assertFalse(pending[0]["vendored"])
+        self.assertIn("UNRESOLVED_DEPENDENCY_FAIL_CLOSED_SIX_FIELDS",
+                      definition["failure_semantics"])
+
     def test_local_answer_manifest_materializes_without_runner(self):
         manifest = constructor.build_manifest(argparse.Namespace(
             reusable_task_id=self.ID, invocation_id="offline-local-answer-fixture", task_id=None,
