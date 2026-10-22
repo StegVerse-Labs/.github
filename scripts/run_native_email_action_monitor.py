@@ -373,6 +373,7 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
             if cursor is not None:
                 visited.add(cursor)
         page_count += 1
+        require(bool(next_messages) == bool(next_ids), "LIVE_INBOX_PAGINATION_COVERAGE_MISMATCH")
         message_cursor, id_cursor = next_messages, next_ids
         if not message_cursor and not id_cursor:
             break
