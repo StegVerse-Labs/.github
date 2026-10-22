@@ -112,6 +112,32 @@ class TransitionTopologyTests(unittest.TestCase):
             self.assertEqual(verify_published_organization_chain("fixture-ref", **kwargs)["disposition"],
                              "FAIL_CLOSED")
 
+    def test_published_chain_fails_closed_on_native_integrity_rejection(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        import importlib.util
+
+        observed = {
+            "disposition": "DENY",
+            "every_receipt_verifies_against_its_body": True,
+            "every_source_receipt_retained_and_verifies": True,
+            "chain": [{"receipt_sha256": "sha256:receipt"}],
+            "head_receipt_sha256": "sha256:receipt",
+            "chain_length": 1,
+        }
+        fake_spec = SimpleNamespace(loader=SimpleNamespace(exec_module=lambda _: None))
+        with patch.object(importlib.util, "spec_from_file_location", return_value=fake_spec), \
+             patch.object(importlib.util, "module_from_spec",
+                          return_value=SimpleNamespace(readback=lambda _: observed)):
+            result = verify_published_organization_chain(
+                "fixture-ref", expected_receipt_sha256="sha256:receipt")
+            self.assertEqual(result["predicate"], "ORGANIZATION_CHAIN_INTEGRITY_UNVERIFIED")
+            observed["disposition"] = "ALLOW"
+            observed["every_source_receipt_retained_and_verifies"] = False
+            result = verify_published_organization_chain(
+                "fixture-ref", expected_receipt_sha256="sha256:receipt")
+            self.assertEqual(result["predicate"], "ORGANIZATION_CHAIN_INTEGRITY_UNVERIFIED")
+
     def test_allow(self):
         self.assertEqual(evaluate(self.state, self.manifest, self.evidence)["disposition"], "ALLOW")
 
