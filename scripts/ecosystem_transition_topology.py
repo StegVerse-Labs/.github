@@ -113,7 +113,9 @@ def verify_native_organization_transition(
 
 
 def verify_published_organization_chain(
-    fresh_ref_location: str, *, expected_receipt_sha256: str
+    fresh_ref_location: str, *, expected_receipt_sha256: str,
+    expected_transition_id: str | None = None,
+    expected_predecessor_sha256: str | None = None
 ) -> dict[str, Any]:
     """Read an already-published sovereign ref using the existing native chain reader.
 
@@ -144,6 +146,11 @@ def verify_published_organization_chain(
                if row.get("receipt_sha256") == expected_receipt_sha256]
     if len(matches) != 1:
         return {"disposition": "FAIL_CLOSED", "predicate": "EXPECTED_SOVEREIGN_RECEIPT_NOT_IN_CHAIN"}
+    row = matches[0]
+    if expected_transition_id is not None and row.get("source_transition_id") != expected_transition_id:
+        return {"disposition": "FAIL_CLOSED", "predicate": "EXPECTED_TRANSITION_ID_MISMATCH"}
+    if expected_predecessor_sha256 is not None and row.get("previous_receipt_sha256") != expected_predecessor_sha256:
+        return {"disposition": "FAIL_CLOSED", "predicate": "EXPECTED_PREDECESSOR_MISMATCH"}
     return {"disposition": "ALLOW", "predicate": "PUBLISHED_ORGANIZATION_CHAIN_AND_RECEIPT_VERIFIED",
             "verification_scope": "ORGANIZATION_RECORDING_ONLY_NOT_GOVERNANCE_ADMISSIBILITY",
             "receipt_sha256": expected_receipt_sha256,
