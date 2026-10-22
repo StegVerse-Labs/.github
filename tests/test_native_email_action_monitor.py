@@ -64,6 +64,17 @@ def test_incomplete_first_page_never_archives_even_authorized_ids(tmp_path):
     assert "ARCHIVE_IDS" not in [name for name, _ in broker.calls]
 
 
+def test_oversized_gmail_summary_page_fails_before_archive(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL",
+                 messages=[{"id": f"m{i}"} for i in range(101)]),
+    ])
+    import pytest
+    with pytest.raises(RuntimeError, match="LIVE_INBOX_MESSAGE_BATCH_LIMIT_EXCEEDED"):
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES"]
+
+
 def test_duplicate_visible_gmail_rows_fail_before_archive(tmp_path):
     row = {"id": "m1", "from": "notifications@github.com", "subject": "CI failed"}
     broker = FakeBroker([
