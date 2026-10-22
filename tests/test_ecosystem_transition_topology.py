@@ -18,6 +18,13 @@ class TransitionTopologyTests(unittest.TestCase):
         result = verify_native_organization_transition({"receipt_sha256": "fixture"}, expected_transition_id="fixture")
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
 
+    def test_native_gate_rejects_missing_receipt_even_with_expected_id(self):
+        result = verify_native_organization_transition(
+            {"receipt_sha256": "not-a-real-receipt"},
+            expected_transition_id="not-a-real-transition",
+        )
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+
     def test_allow(self):
         self.assertEqual(evaluate(self.state, self.manifest, self.evidence)["disposition"], "ALLOW")
 
