@@ -1,0 +1,252 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "lane-c-tvc-signed-receipt-form-2026-10-23",
+  "task_id": "TVC-SIGNED-RECEIPT-FORM-001",
+  "observed_registry_generation": 320,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-org/.github#164",
+  "allocation_request_ref": "control/goal-task-allocation-requests/lane-c-tvc-signed-receipt-form-2026-10-23.json",
+  "collision_analysis": [
+    "no canonical Registry row, shard, task-vector or index entry for TVC-SIGNED-RECEIPT-FORM-001 at StegVerse-Labs/.github main 86382e60 (generation 320); no TVC task file at StegVerse-Labs/TVC main c4845bea matches signed-receipt",
+    "collision check-in decided mechanically in plan"
+  ],
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "SCOPE ONLY (not built by this request): a signed-receipt form for TVC. A TVC-emitted receipt (for example stegverse.tvc.labs-conformance-receipt/v1 from StegVerse-Labs/TVC#539, TVC_SKAP_CUSTODY_REFERENCE_ISSUE from TVC#537, TVC_NODE_LEDGER_OPENED_SIGNER_PUBLISH from TVC#540) gains a detached Ed25519 signature envelope over its canonical body under a declared domain, by a signer whose key is generated and held in TV/TVC custody only and whose public-key reference is published by a TV/TVC transition with a publication receipt. A consumer (LLM-adapter#432, the Labs ratchet's TVC conformance consumer) may then cite a TVC receipt ref in place of a separate signature. No key material in any repository; no new dependency; verification is E0 (standard library, pinned public key); non-authorizing.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/TVC"
+        ],
+        "components": [
+          "tvc-signed-receipt-envelope",
+          "tvc-receipt-signer-public-key-reference",
+          "tvc-signed-receipt-verifier"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "TVC_SIGNED_RECEIPT_ENVELOPE_SCHEMA_DECLARED",
+        "TVC_RECEIPT_SIGNATURE_VERIFIES_UNDER_PUBLISHED_TV_TVC_KEY_AT_E0",
+        "TVC_RECEIPT_SIGNER_KEY_HELD_IN_TV_TVC_CUSTODY_ONLY",
+        "NO_KEY_MATERIAL_IN_ANY_REPOSITORY",
+        "UNSIGNED_OR_UNPUBLISHED_SIGNER_RECEIPT_FAILS_CLOSED_WITH_SIX_FIELDS",
+        "CONSUMER_CITES_TVC_RECEIPT_REF_IN_PLACE_OF_SEPARATE_SIGNATURE"
+      ],
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/TVC:tests/test_tvc_signed_receipt_form.py::TvcSignedReceiptFormFinishPoint::test_finish_point_verdict (to be authored by this task; not present at TVC main c4845bea)",
+        "predicate": "a TVC receipt signed through the TV/TVC custody signer verifies at E0 under the published public-key reference, and an unsigned, edited or unpublished-signer receipt is FAIL_CLOSED with six fields",
+        "verifier_entrypoint": "StegVerse-Labs/TVC: python -m unittest tests.test_tvc_signed_receipt_form",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:808509693f419bfb7a570607ef3faf0723d8e76ed35655b7cc6376b26f9a21e3",
+    "supersedes_scope_digest": null
+  },
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "TVC-SIGNED-RECEIPT-FORM-001",
+    "correlation_id": "TVC-SIGNED-RECEIPT-FORM-001",
+    "root_correlation_id": "TVC-SIGNED-RECEIPT-FORM-001",
+    "parent_task_id": null,
+    "goal": "SCOPE ONLY (not built by this request): a signed-receipt form for TVC. A TVC-emitted receipt (for example stegverse.tvc.labs-conformance-receipt/v1 from StegVerse-Labs/TVC#539, TVC_SKAP_CUSTODY_REFERENCE_ISSUE from TVC#537, TVC_NODE_LEDGER_OPENED_SIGNER_PUBLISH from TVC#540) gains a detached Ed25519 signature envelope over its canonical body under a declared domain, by a signer whose key is generated and held in TV/TVC custody only and whose public-key reference is published by a TV/TVC transition with a publication receipt. A consumer (LLM-adapter#432, the Labs ratchet's TVC conformance consumer) may then cite a TVC receipt ref in place of a separate signature. No key material in any repository; no new dependency; verification is E0 (standard library, pinned public key); non-authorizing.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "StegVerse-org/.github#162 comment 6370314312",
+      "StegVerse-org/LLM-adapter#432",
+      "StegVerse-org/.github#164",
+      "StegVerse-Labs/TVC#539",
+      "StegVerse-Labs/TVC#537",
+      "StegVerse-Labs/TVC#540",
+      "StegVerse-org/LLM-adapter@1cbad77eaff3254ea30fb9d3377d40abcf6728df:.stegverse/node-ledger/node-ledger-opened-signers.v1.json"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/TVC"
+      ],
+      "components": [
+        "tvc-signed-receipt-envelope",
+        "tvc-receipt-signer-public-key-reference",
+        "tvc-signed-receipt-verifier"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "CAPABILITY-TVC-SKAP-CUSTODY-REFERENCE-ISSUE",
+        "kind": "CAPABILITY",
+        "state": "UNRESOLVED",
+        "ref": "StegVerse-Labs/TVC#537 (Lane D, draft, head c87272cf)"
+      },
+      {
+        "dependency_id": "CAPABILITY-SKAP-VAULT-INTR-READ-CLIENT",
+        "kind": "CAPABILITY",
+        "state": "UNRESOLVED",
+        "ref": "SKAP_VAULT_INTR_READ_CLIENT_NOT_BOUND (KV-SKAP-VAULT-FUNCTIONAL-001, StegVerse-Labs/.github#3324)"
+      },
+      {
+        "dependency_id": "CAPABILITY-TVC-SIGNER-PUBLIC-KEY-PUBLICATION",
+        "kind": "CAPABILITY",
+        "state": "UNRESOLVED",
+        "ref": "StegVerse-Labs/TVC#540 (TVC_NODE_LEDGER_OPENED_SIGNER_PUBLISH pattern, Lane C, draft)"
+      },
+      {
+        "dependency_id": "PARENT-GOAL-GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (NEW_IDENTITY request StegVerse-Labs/.github#3326, unregistered)"
+      }
+    ],
+    "blockers": [
+      {
+        "blocker_id": "BLOCKER-TVC-SKAP-CUSTODY-REFERENCE-ISSUE",
+        "dependency_id": "CAPABILITY-TVC-SKAP-CUSTODY-REFERENCE-ISSUE",
+        "reason": "No TV/TVC custody-key reference is issued for a receipt signer; TVC#537 is open (draft). Class A once landed."
+      },
+      {
+        "blocker_id": "BLOCKER-SKAP-VAULT-INTR-READ-CLIENT",
+        "dependency_id": "CAPABILITY-SKAP-VAULT-INTR-READ-CLIENT",
+        "reason": "The public half of a custody slot cannot be read back: SKAP_VAULT_INTR_READ_CLIENT_NOT_BOUND. Class B."
+      }
+    ],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+      "KV-SKAP-VAULT-FUNCTIONAL-001"
+    ],
+    "existing_evidence_refs": [
+      "StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df)"
+    ],
+    "expected_evidence_predicates": [
+      "TVC_SIGNED_RECEIPT_ENVELOPE_SCHEMA_DECLARED",
+      "TVC_RECEIPT_SIGNATURE_VERIFIES_UNDER_PUBLISHED_TV_TVC_KEY_AT_E0",
+      "TVC_RECEIPT_SIGNER_KEY_HELD_IN_TV_TVC_CUSTODY_ONLY",
+      "NO_KEY_MATERIAL_IN_ANY_REPOSITORY",
+      "UNSIGNED_OR_UNPUBLISHED_SIGNER_RECEIPT_FAILS_CLOSED_WITH_SIX_FIELDS",
+      "CONSUMER_CITES_TVC_RECEIPT_REF_IN_PLACE_OF_SEPARATE_SIGNATURE"
+    ],
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "authority_effect": "NONE",
+      "second_user_operated_device_allowed": false,
+      "external_device_required": false,
+      "selected_substrate_id": null,
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        }
+      ]
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+      "PROPOSED_TO_SUPERSEDED_IF_MERGED_INTO_AN_EXISTING_OWNER",
+      "SCOPE_CHANGE_ONLY_BY_GOAL_SCOPE_SUPERSEDE_REQUEST"
+    ],
+    "handoff_projection_refs": [],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 3,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": false,
+      "thread_required": false,
+      "blocker_count": 2,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "UNCLAIMED. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "archive_ready": "False: nothing built or validated. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "unassigned_work": "3 workstreams (envelope schema and verifier; custody signer issuance and public-key publication; consumer citation in LLM-adapter#432 and the Labs TVC conformance consumer). proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "chat_owned_implementation": "0: no chat lane holds implementation. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "chat_owned_validation": "0. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "chat_owned_integration": "0. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "chat_owned_observation": "0. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "chat_owned_credentials": "0: credentials are a TV/TVC transition, never an owner or chat task. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "canonical_owner_installed": "False: no installed machine owner observed for this scope (UNKNOWN_NOT_AUTHENTICALLY_OBSERVED otherwise). proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "thread_required": "False. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "blocker_count": "2 (BLOCKER-TVC-SKAP-CUSTODY-REFERENCE-ISSUE, BLOCKER-SKAP-VAULT-INTR-READ-CLIENT). proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "evidence_complete": "False. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "activated": "False. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created",
+      "propagated": "False. proposed by this request; source StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df); no WorkerCoordinator claim or fence observed or created"
+    },
+    "evidence_refs": [
+      "StegVerse-org/.github#162 comment 6370314312",
+      "StegVerse-org/LLM-adapter#432",
+      "StegVerse-org/.github#164"
+    ],
+    "observed_at": "2026-10-23T17:02:39Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}
