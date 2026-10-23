@@ -1,0 +1,47 @@
+{
+  "schema": "stegverse.test-suite-skip-items/v1",
+  "authority_effect": "NONE",
+  "note": "Every skip the full suite still has in CI, classified. An item here never hides, converts or deselects a skip: test_suite_skip_receipt.py still counts it and still fails closed with TEST_SUITE_SKIPPED_ON_HEAD. It only names who owns making the skip go away. Skips that CI can satisfy from an existing StegVerse source are satisfied in test-suite-ratchet.yml instead (pinned StegVerse-SDK c138cad4, the same pin org-runtime-boundary.yml installs; a clone of this public repository holding refs/stegverse/organization-ledger for the RTC014 KAT).",
+  "items": [
+    {
+      "test_prefix": "tests.test_origin_attestation_tvc_conformance.",
+      "classification": "NOT_SATISFIABLE_WITHOUT_A_CREDENTIAL",
+      "failure_code": "TEST_SUITE_SKIP_TVC_SOURCE_PRIVATE",
+      "failed_predicate": "STEGVERSE_TVC_ROOT_PROVIDED_IN_CI",
+      "required_evidence_or_repair": "a read of StegVerse-Labs/TVC (private) supplied to CI through TV/TVC custody; this job's GITHUB_TOKEN cannot read another private repository and a bot may not hold a token for it",
+      "retry_entrypoint": "StegVerse-Labs/TVC#532 / #535 (TV/TVC custody read), then this job on the next head",
+      "owning_existing_goal": "StegVerse-org/.github#162 D2 (TV/TVC custody) / A4 TV/TVC origin attestation",
+      "next_attempt": "the next push to a pull request head after the custody read lands reruns this job; nothing is dispatched"
+    },
+    {
+      "test_prefix": "tests.test_canonical_work_in_process_admission.",
+      "classification": "NOT_SATISFIABLE_WITHOUT_A_CREDENTIAL",
+      "failure_code": "TEST_SUITE_SKIP_TVC_SOURCE_PRIVATE",
+      "failed_predicate": "STEGVERSE_TVC_ROOT_PROVIDED_IN_CI",
+      "required_evidence_or_repair": "a read of StegVerse-Labs/TVC (private) supplied to CI through TV/TVC custody; this job's GITHUB_TOKEN cannot read another private repository and a bot may not hold a token for it",
+      "retry_entrypoint": "StegVerse-Labs/TVC#532 / #535 (TV/TVC custody read), then this job on the next head",
+      "owning_existing_goal": "StegVerse-org/.github#162 D2 (TV/TVC custody) / StegVerse-Labs/.github#3012 ECO-08",
+      "next_attempt": "the next push to a pull request head after the custody read lands reruns this job; nothing is dispatched"
+    },
+    {
+      "test_prefix": "tests.test_hil_explanation_experiment.",
+      "classification": "NOT_SATISFIABLE_WITHOUT_A_NEW_THIRD_PARTY_DEPENDENCY",
+      "failure_code": "TEST_SUITE_SKIP_JSONSCHEMA_NOT_A_CI_DEPENDENCY",
+      "failed_predicate": "JSONSCHEMA_IMPORTABLE_IN_CI",
+      "required_evidence_or_repair": "jsonschema is a third-party package no workflow here installs; the owner either admits it as a CI dependency (a dependency decision, not made here) or replaces the check with a standard-library one",
+      "retry_entrypoint": "StegVerse-Labs/.github#3106 (universal user-facing explanation contract)",
+      "owning_existing_goal": "StegVerse-Labs/.github#3106",
+      "next_attempt": "the next push to a pull request head after the owner's change reruns this job; nothing is dispatched"
+    },
+    {
+      "test_prefix": "tests.test_user_facing_explanation.",
+      "classification": "NOT_SATISFIABLE_WITHOUT_A_NEW_THIRD_PARTY_DEPENDENCY",
+      "failure_code": "TEST_SUITE_SKIP_JSONSCHEMA_NOT_A_CI_DEPENDENCY",
+      "failed_predicate": "JSONSCHEMA_IMPORTABLE_IN_CI",
+      "required_evidence_or_repair": "jsonschema is a third-party package no workflow here installs; the owner either admits it as a CI dependency (a dependency decision, not made here) or replaces the check with a standard-library one",
+      "retry_entrypoint": "StegVerse-Labs/.github#3106 (universal user-facing explanation contract)",
+      "owning_existing_goal": "StegVerse-Labs/.github#3106",
+      "next_attempt": "the next push to a pull request head after the owner's change reruns this job; nothing is dispatched"
+    }
+  ]
+}

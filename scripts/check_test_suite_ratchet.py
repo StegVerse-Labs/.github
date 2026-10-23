@@ -41,12 +41,17 @@ REPAIR = ("fix the newly failing test, or - when the failure is genuinely "
           "change, where a reviewer sees it")
 
 
-def run_suite(target: str) -> set[str]:
-    """Return the set of failing test ids, by running the suite."""
-    completed = subprocess.run(
-        [sys.executable, "-m", "pytest", target, "-q", "--tb=no", "-p", "no:cacheprovider"],
-        capture_output=True, text=True,
-    )
+def run_suite(target: str, junit_out: str | None = None) -> set[str]:
+    """Return the set of failing test ids, by running the suite.
+
+    With junit_out, pytest's own built-in --junitxml also records the run, so
+    test_suite_skip_receipt.py can list every skipped test with its reason.
+    That changes nothing about which tests run or how a failure is read here.
+    """
+    command = [sys.executable, "-m", "pytest", target, "-q", "--tb=no", "-p", "no:cacheprovider"]
+    if junit_out:
+        command.append(f"--junitxml={junit_out}")
+    completed = subprocess.run(command, capture_output=True, text=True)
     return {
         match.group(1)
         for line in completed.stdout.splitlines()
@@ -93,10 +98,12 @@ def main() -> int:
                         help="record the current failing set as the baseline")
     parser.add_argument("--findings", action="store_true",
                         help="emit Healer-intake findings instead of prose")
+    parser.add_argument("--junit-out",
+                        help="also write pytest's JUnit XML of this same run here, for the skip receipt")
     args = parser.parse_args()
     path = Path(args.baseline)
 
-    observed = run_suite(args.target)
+    observed = run_suite(args.target, args.junit_out)
 
     if args.write_baseline:
         existing = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
