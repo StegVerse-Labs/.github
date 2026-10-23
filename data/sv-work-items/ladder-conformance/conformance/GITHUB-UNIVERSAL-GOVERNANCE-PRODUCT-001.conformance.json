@@ -1108,8 +1108,8 @@
   },
   {
    "failure_class": {
-    "class": "C",
-    "reason": "waits on Coordination's ruling whether a GitHub App installation or a release token counts as endpoint membership; then a class B check the GitHub Product lane builds"
+    "class": "B",
+    "reason": "revision 11, under Coordination's provisional ruling (#167 comment 6373412055, C-review pending): a COSV App installation carrying endpoint data only via InTr is not membership and a TV/TVC release token is not membership; the token's principal is unobserved, a class B evidence gap the GitHub Product lane closes with a deterministic E0 check on the release path (enforcing the given rule is class A once the evidence exists)"
    },
    "id": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
    "kind": "CONSTRAINT",
@@ -1139,7 +1139,7 @@
      "failed_predicate": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
      "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
      "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
-     "next_attempt": "on Coordination's ruling on app installations and release tokens, then on the next push to the TV/TVC release publisher",
+     "next_attempt": "on the next push to the TV/TVC release publisher that records the publishing principal as an observed, receipted state",
      "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
      "required_evidence_or_repair": "a deterministic E0 check on the release path that refuses six-field when the publishing principal is an org member, collaborator or app installation, and a release route that crosses into StegVerse-org through InTr instead (after Coordination rules whether a GitHub App installation or a release token is membership)",
      "retry_entrypoint": "StegVerse-Labs/TVC: tasks/tvc_portable_github_release_publisher.py validate_authorization, then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)"
@@ -1218,11 +1218,11 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:75667abe77dddf731b8ec34e448b69cf3dae261954829d4850edac9e7a86d6b8",
+  "document_sha256": "sha256:5405a1c850ae1649da271c0c099130eeff565357be86f0175f835695752b2042",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:c3ed64287b7af76f13af5753180a51d3adc02e4a2cea7a17fbcb7611d2557da5",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:a038b186ef2c264c7b0910e5f25f0daa788ae28c9fbec084c59598960ea90745",
+   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:f11d8b97286182dd7861578bf9c57e4cccf02111793a24b2611d579b075aa2f0",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0549b08e54f5a8e02d179e3bf709cea998a9514b11212ff73f64d18e058269ca",
    "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:8e8bd49341ffa92be7973a44ee7d9746f82fc6302ba6269b655910dfe3a5481f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:becdc08760762e5398c5512bcc86b7290687878b4dafd617b13a325b5fdbdb0b",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-02.json": "sha256:5dc38459690343e8a49759bcdc7ca8e8d1afdfca18f0705127733560fcadb51e",
@@ -1233,7 +1233,7 @@
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-07.json": "sha256:d0f727d3b3e50425554ec2b90babd176d823503bc45ccb4c95106c054497dd24",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-08.json": "sha256:3bd80a55940865b8d1317a6ae165fdffb3ce9f20541292b58896d23095070aa8",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-09.json": "sha256:34a33301f47f4bdb18215cb68695aa276428c21d09ef8daada5365a508662176",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-10.json": "sha256:bd052d92b78a98d507a0fa3bfeb41090f1a2d27d089fa2f7d4b33e09a4d72191"
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-10.json": "sha256:1a8a51a72266bfc819cb006a7e71ee348aafe3dacc378d7e9905a5a957a6abff"
   },
   "note": "not a ledger receipt: runtime counts only when a manifest-directed transition appends a receipt to refs/stegverse/organization-ledger",
   "runtime_completion": false,

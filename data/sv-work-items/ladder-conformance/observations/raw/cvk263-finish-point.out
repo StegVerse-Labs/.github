@@ -210,7 +210,8 @@ $ {python} -m runtime.kv_skap_vault finish-point
   ],
   "receipt_ledger_prerequisites": [
     {
-      "contract_sha256": "sha256:98651155f0b97cf22f2fb7c0f6fc96900e48c920f13e8d31d965ae84800baf86",
+      "contract_path": ".stegverse/receipt-chains/stegverse-kv-receipts.contract.json",
+      "contract_sha256": "sha256:610377f21f7ae6e4953fd2324473c00bbe37cc7896f99e35ea572ead035dfaf2",
       "disposition": "FAIL_CLOSED",
       "fail_closed": [
         {
@@ -264,7 +265,8 @@ $ {python} -m runtime.kv_skap_vault finish-point
       "tracked_by": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)"
     },
     {
-      "contract_sha256": "sha256:3890351860f5df61c89b298b1a4dbf800e3897bab3841ed890cd49d864b23b21",
+      "contract_path": ".stegverse/receipt-chains/skap-receipts.contract.json",
+      "contract_sha256": "sha256:83e30008addc557875f9cadf7f587a852e262d09ac50be9ecc041e9863d0b822",
       "disposition": "FAIL_CLOSED",
       "fail_closed": [
         {

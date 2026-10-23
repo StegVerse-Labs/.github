@@ -2,6 +2,9 @@ $ {python} -c import os,sys,tempfile,unittest; os.environ['STEGVERSE_REPO_LEDGER
 --- exit 0
 --- stdout
 --- stderr
+test_a_message_copying_org_record_is_refused (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_a_message_copying_org_record_is_refused)
+Rule (1): an Org record on the node's path that carries the endpoint's message is not digest-only. ... ok
+test_anchor_naming_another_genesis (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_anchor_naming_another_genesis) ... ok
 test_ephemeral_needs_the_stegos_record (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_ephemeral_needs_the_stegos_record) ... ok
 test_foreign_producer_receipts (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_foreign_producer_receipts) ... ok
 test_kind_names (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_kind_names) ... ok
@@ -14,9 +17,15 @@ test_pinned_code_digests (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.t
 test_report_that_does_not_re_derive_is_foreign (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_report_that_does_not_re_derive_is_foreign) ... ok
 test_unanchored_scratch_ledger (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_unanchored_scratch_ledger) ... ok
 test_unsealed_node_ledger_opened (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_unsealed_node_ledger_opened) ... ok
+test_431_designation_suite_passes_against_432_anchors (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_431_designation_suite_passes_against_432_anchors)
+Rerun #431's designation tests here (byte-identical module), with #431's contract designation. ... ok
+test_a_valid_both_sides_crossing_fires_neither_endpoint_code (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_a_valid_both_sides_crossing_fires_neither_endpoint_code)
+Coordination ruling (crossings): the endpoint's side is on its own chain, the Org records only its own ... ok
 test_ephemeral_node_anchored_by_stegos_node_ledger_opened_reaches_layer1_allow (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_ephemeral_node_anchored_by_stegos_node_ledger_opened_reaches_layer1_allow) ... ok
-test_gateway_node_reaches_layer1_allow_on_its_org_carried_location (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_gateway_node_reaches_layer1_allow_on_its_org_carried_location) ... ok
-test_permanent_kv_and_skap_vault_own_ledgers_reach_layer1_allow (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_permanent_kv_and_skap_vault_own_ledgers_reach_layer1_allow) ... ok
+test_gateway_chain_is_never_anchored_on_the_org_ledger (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_gateway_chain_is_never_anchored_on_the_org_ledger)
+Rule (1): no gateway location is opened inside the org ledger; six fields, nothing written. ... ok
+test_kv_and_skap_name_stegverse_kv_and_never_anchor_on_the_org_ledger (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_kv_and_skap_name_stegverse_kv_and_never_anchor_on_the_org_ledger) ... ok
+test_permanent_own_ledger_reaches_layer1_allow (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_permanent_own_ledger_reaches_layer1_allow) ... ok
 test_the_lc_kv_15_hole_is_closed (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_the_lc_kv_15_hole_is_closed) ... ok
 test_a_carrier_older_than_the_anchor_does_not_count (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_a_carrier_older_than_the_anchor_does_not_count) ... ok
 test_a_permanent_root_on_a_caller_created_store_is_refused (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_a_permanent_root_on_a_caller_created_store_is_refused)
@@ -72,6 +81,6 @@ test_unsigned_anchor_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAs
 test_wrong_org_ledger_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_wrong_org_ledger_is_refused) ... ok
 
 ----------------------------------------------------------------------
-Ran 60 tests in <t>s
+Ran 65 tests in <t>s
 
 OK

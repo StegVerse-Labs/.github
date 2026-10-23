@@ -95,7 +95,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
-        self.assertIn("0eaa1de05320bc72ebb7db16a46431b4133b1b3d", anc["e0_terminal"]["by"])
+        self.assertIn("8e87c6b0c96d0728883e6945383514b06588f68c", anc["e0_terminal"]["by"])  # revision 11 pin
         # revision 7: the null genesis pin (Lane B) and the EPHEMERAL signer (TV/TVC) are separate blockers of one item;
         # the org-ledger head signer is an external registered task (ORG-LEDGER-HEAD-SIGNER-001), not a scoped task here
         self.assertEqual([b["id"] for b in anc["allow_path"]["blockers"]],
@@ -114,7 +114,8 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertEqual(anc["required_outcomes"][s_], ["FAIL_CLOSED"], s_)
         # revision 8: #431's genesis pin planner and pre-pin receiver are witnessed on the anchor item
         self.assertIn("genesis-pin-probe", anc["observed_by"])
-        for s_ in ("SAME_SIGNAL_REPLAYED_AFTER_THE_PIN", "NODE_SIGNAL_GENUINELY_CARRIED_WHILE_PIN_NULL",
+        # revision 11: the same-signal replay is an idempotent read-back at #431 @e9d45e6c (recorded, not required)
+        for s_ in ("REAL_SHAPED_SIGNAL_FROM_ANOTHER_LEDGER_COPY_AFTER_THE_PIN", "NODE_SIGNAL_GENUINELY_CARRIED_WHILE_PIN_NULL",
                    "FORGED_CARRIER_BODY_IS_ANOTHER_SIGNAL", "PLANNER_DIRECT_AFTER_THE_PIN_OTHER_GENESIS"):
             self.assertEqual(anc["required_outcomes"][s_], ["FAIL_CLOSED"], s_)
         self.assertEqual(anc["required_outcomes"]["PLANNER_DIRECT_AFTER_THE_PIN_SAME_GENESIS"], ["ALLOW"])
@@ -143,16 +144,17 @@ class CommittedArtifacts(unittest.TestCase):
         # revision 9: at TVC#541 @63705c86 the caller-minted rows are FAIL_CLOSED (no designated receipt ledger), so required
         self.assertEqual(decl[l2]["required_outcomes"]["CHAIN_CALLER_MINTED_LAYERS_WITH_TVC537_ISSUED_RECEIPT_AND_CALLER_CLIENT"],
                          ["DENY", "FAIL_CLOSED"])
-        self.assertIn("f75e3e7c8115eb535a3b2d388b36c391c4fb38d1", decl[l2]["bypass_paths"][0])
-        self.assertIn("11 tracked files", decl[l2]["bypass_paths"][0])
+        self.assertIn("72decca1c0e1d0d60b5801cb01f0fab70ea038dc", decl[l2]["bypass_paths"][0])  # revision 11: narrowed 11 files to 3
+        self.assertIn("from 11 files to 3", decl[l2]["bypass_paths"][0])
         # revision 9: TVC#541 @63705c86 takes no caller-minted layer receipts (mint-both tests witnessed as ALLOW = passed);
         # the systemd units naming the legacy root are an external machine on layer 2 (LC-KV-22)
         for s_ in ("TVC541_TEST_P1_MINT_BOTH_IS_FAIL_CLOSED_ON_GATE_READ_THROUGH_AND_PLACE",
                    "TVC541_TEST_P1_MINT_BOTH_BUILD_AND_VALIDATE_FAIL_CLOSED"):
             self.assertEqual(decl[l2]["required_outcomes"][s_], ["ALLOW"], s_)
         self.assertIn("tvc541-mint-both-tests", decl[l2]["observed_by"])
-        self.assertIn("LADDER_EXTERNAL_MACHINE_REQUIRED", _codes(d, l2))
-        self.assertIn("6 systemd units", decl[l2]["external_requirements"][0])
+        # revision 11: TVC#541 @72decca1 ships no unit naming the legacy root (LC-KV-22 closed)
+        self.assertNotIn("LADDER_EXTERNAL_MACHINE_REQUIRED", _codes(d, l2))
+        self.assertFalse(decl[l2].get("external_requirements"))
         self.assertIn("LADDER_ACCESS_LAYERS_COLLAPSED", _codes(d, seq))
         self.assertTrue(set(decl[l1]["required_outcomes"]) and "e0_terminal" in decl[l1])
         # layer 2 now has its own E0 gate (SkapLayer2Gate), witnessed by required refusals, not a class_b record
@@ -184,25 +186,19 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(m["blocker"], "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED")
         self.assertEqual(m["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
         self.assertEqual(m["failure_code"], "LADDER_ALLOW_PATH_UNBOUND")
-        self.assertEqual(m["failure_class"]["class"], "B")
-        # revision 10: Lane D's part conforms at cvk#263 @543e8c32; the readers (Lane B, TV/TVC) own what remains
+        # revision 11: enforcing a given rule is class A; TVC#540/#542 do not bind to cvk#263 @bf684aad
+        self.assertEqual(m["failure_class"]["class"], "A")
         self.assertTrue(m["owning_lane"].startswith("InTr and Mesh Destinations lane (Lane B"))
-        self.assertIn("GitHub Product lane as TV/TVC owner", m["owning_lane"])
-        self.assertIn("Lane D's part conforms", m["owning_lane"])
-        self.assertIn("543e8c32", m["required_repair"])
+        self.assertIn("bf684aad", m["required_repair"])
+        self.assertIn("bf684aad", m["proposed_resolution"])
         self.assertIn("accepted existing dependency", m["required_repair"])
         self.assertIn("storage endpoint / access adapter", m["required_repair"])
         for t in tasks.values():  # withdrawn names and ledger-wide encryption are gone from every proposal
             self.assertNotIn("gateway node", t["proposed_resolution"], t["task_id"])
             self.assertNotIn("encrypted contents", t["proposed_resolution"], t["task_id"])
         self.assertNotIn("merge-ready", json.dumps(m))
-        x = tasks["LC-KV-22"]  # systemd units on TVC#541: an external machine
-        self.assertEqual((x["disposition"], x["failure_code"], x["failed_check"]),
-                         ("DENY", "LADDER_EXTERNAL_MACHINE_REQUIRED", "NO_EXTERNAL_MACHINE"))
-        self.assertEqual(x["items"], ["SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV"])
-        self.assertEqual(x["failure_class"]["class"], "A")
-        self.assertTrue(x["owning_lane"].startswith("GitHub Product lane as TV/TVC owner"))
-        for t in (m, x):
+        self.assertNotIn("LC-KV-22", tasks)  # closed in revision 11: TVC#541 @72decca1 ships no unit naming the legacy root
+        for t in (m,):
             for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
                 self.assertTrue(str(t.get(k) or "").strip(), k)
         f = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-13")
@@ -231,13 +227,14 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(g["failure_class"]["class"], "A")
         self.assertIn("genesis-observed record", g["next_attempt"])
         self.assertIn("REPOSITORY_LEDGER_GENESIS_PIN", g["next_attempt"])
-        self.assertIn("a2237bc38316f3abe362bcf7f06a2356ac3a0abd", g["required_repair"])
+        self.assertIn("e9d45e6c", g["required_repair"])  # revision 11: code repair verified, the pin is still null
+        self.assertIn("the contract pin is still null", g["required_repair"])
         self.assertIn("#162 comment 6371352606", g["required_repair"])
         self.assertNotIn("6371144164", g["required_repair"])
         self.assertNotIn("Observation, not a verdict", g["required_repair"])
         # revision 10: item 6 of #167 comment 6372442705 supersedes 'no clock conflict': align with SUPPLIED_HB_EPOCH
         self.assertIn("6372442705 item 6", g["required_repair"])
-        self.assertIn("SUPPLIED_HB_EPOCH", g["proposed_resolution"])
+        self.assertIn("SUPPLIED_HB_EPOCH", g["required_repair"])
         self.assertIn("every forged copy stays six-field ORG_LEDGER_HEAD_NOT_AUTHENTICATED", g["required_repair"])
         e = tasks["LC-KV-20"]  # the org emitter cannot carry the genesis-observed signal
         self.assertEqual(e["blocker"], "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER")
@@ -248,7 +245,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("intr_path_transfer.py:119", e["required_repair"])
         self.assertEqual(e["failure_class"]["class"], "C")
         self.assertIn("907f4305", e["required_repair"])
-        self.assertIn("f84b97c19d4f5948c6f0fe1d26accbf2bd45eb6a", e["required_repair"])
+        self.assertIn("1f973485", e["required_repair"])
         for x in (g, e):
             for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
                 self.assertTrue(str(x.get(k) or "").strip(), k)
@@ -258,60 +255,80 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("LC-KV-17", tasks)  # closed in revision 6: cvk#258 @b93b06a4 refuses the unsigned anchor
         for tid in ("LC-KV-07", "LC-KV-08"):
             self.assertTrue(tasks[tid]["owning_lane"].startswith("GitHub Product lane as TV/TVC owner"), tid)
-        self.assertIn("f75e3e7c8115eb535a3b2d388b36c391c4fb38d1", tasks["LC-KV-07"]["required_repair"])
-        self.assertIn("not landed", tasks["LC-KV-08"]["required_repair"])
+        self.assertIn("72decca1", tasks["LC-KV-07"]["required_repair"])
+        self.assertIn("app_store_connect_skap_custody", tasks["LC-KV-08"]["proposed_resolution"])
 
-    def test_rev10_membership_replay_and_runtime_rule(self):
+    def test_rev11_membership_ruling_watermark_and_bindings(self):
         tasks = {t["task_id"]: t for t in _inputs()["tasks"]}
         d = json.loads(cli.build()[KV])
         g = json.loads(cli.build()[GOV])
         decl = {i["id"]: i for i in _inputs()["declarations"][KV]["items"]}
         gdecl = {i["id"]: i for i in _inputs()["declarations"][GOV]["items"]}
         mem = "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
-        # the membership rule is checked on both goals
+        # the membership rule is checked on both goals; at cvk#263 @bf684aad the closed schema refuses every form (LC-KV-24 closed)
         self.assertEqual(decl[mem]["kind"], "CONSTRAINT")
         self.assertEqual(gdecl[mem]["kind"], "CONSTRAINT")
         self.assertIn("cvk263-chain-probe", decl[mem]["observed_by"])
-        for f_ in ("TOP_LEVEL_ORGANIZATION_KEY", "TOP_LEVEL_GITHUB_APP_INSTALLATION_ID", "TOP_LEVEL_ORG_PERMISSIONS", "TOP_LEVEL_OWNER_ORG"):
+        for f_ in ("TOP_LEVEL_ORGANIZATION_KEY", "TOP_LEVEL_GITHUB_APP_INSTALLATION_ID", "TOP_LEVEL_ORG_PERMISSIONS", "TOP_LEVEL_OWNER_ORG",
+                   "WATERMARK_SOURCE_VALUE_ORG_LINKED", "WATERMARK_SOURCE_VALUE_OTHER"):
             for w_ in ("KV", "SKAP_VAULT"):
                 self.assertEqual(decl[mem]["required_outcomes"]["MEMBERSHIP_%s_%s" % (f_, w_)], ["DENY", "FAIL_CLOSED"])
         self.assertEqual(decl[mem]["required_outcomes"]["PROD_ORG_MEMBERSHIP_KV"], ["ALLOW"])
-        self.assertEqual(sorted(set(_codes(d, mem))), sorted({"OPERATING_MODE_E0_WITNESS_FAILED", "LADDER_ACCESS_PATH_BYPASSES_LAYER",
-                                                        "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE"}))
+        self.assertEqual(sorted(set(_codes(d, mem))), ["LADDER_ACCESS_PATH_BYPASSES_LAYER", "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE"])
         self.assertEqual(sorted(set(_codes(g, mem))), ["LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE", "OPERATING_MODE_E0_TERMINAL_MISSING"])
-        exp = {"LC-KV-23": ("H-KV-ENDPOINT-LEDGER-ANCHOR", "OPERATING_MODE_E0_WITNESS_FAILED", "A", "Lane D"),
-               "LC-KV-24": (mem, "OPERATING_MODE_E0_WITNESS_FAILED", "A", "Lane D"),
-               "LC-KV-25": (mem, "LADDER_ACCESS_PATH_BYPASSES_LAYER", "C", "InTr and Mesh Destinations lane"),
+        self.assertNotIn("LC-KV-24", tasks)
+        self.assertNotIn("LC-KV-22", tasks)
+        exp = {"LC-KV-23": ("H-KV-ENDPOINT-LEDGER-ANCHOR", "OPERATING_MODE_E0_WITNESS_FAILED", "C", "Lane D"),
+               "LC-KV-25": (mem, "LADDER_ACCESS_PATH_BYPASSES_LAYER", "A", "InTr and Mesh Destinations lane"),
                "LC-GOV-09": (mem, "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE", "C", "GitHub Product lane"),
-               "LC-GOV-10": (mem, "OPERATING_MODE_E0_TERMINAL_MISSING", "C", "GitHub Product lane")}
+               "LC-GOV-10": (mem, "OPERATING_MODE_E0_TERMINAL_MISSING", "B", "GitHub Product lane")}
         for tid, (item, code, cls, lane) in exp.items():
             t = tasks[tid]
             self.assertEqual((t["items"], t["failure_code"], t["failure_class"]["class"]), ([item], code, cls), tid)
             self.assertTrue(t["owning_lane"].startswith(lane), tid)
             for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
                 self.assertTrue(str(t.get(k) or "").strip(), (tid, k))
+            self.assertNotIn("merge-ready", json.dumps(t))
         self.assertIn(mem, tasks["LC-KV-09"]["items"])
-        # replay without the watermark must refuse (LC-KV-23); with it, DENY already
+        self.assertEqual(tasks["LC-KV-09"]["failure_class"]["class"], "A")
+        # the provisional membership ruling is quoted where it is applied; LC-KV-25 is not closed (disagreement with Lane B)
+        for tid in ("LC-KV-25", "LC-GOV-10"):
+            self.assertIn("6373412055", tasks[tid]["required_repair"], tid)
+        self.assertIn("ENDPOINT_NOT_AN_ORG_LEDGER_SOURCE", tasks["LC-KV-25"]["required_repair"])
+        self.assertIn("ENDPOINT_ORG_MEMBERSHIP_REFUSED", tasks["LC-KV-25"]["proposed_resolution"])
+        # the watermark: required and KV-sourced; a regressed self-watermark still gets ALLOW, so LC-KV-23 goes to C-review
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
         self.assertIn("cvk263-chain-probe", anc["observed_by"])
-        for s_ in ("REPLAY_OLDER_SIGNED_HEAD_WITHOUT_WATERMARK_KV", "REPLAY_OLDER_SIGNED_HEAD_WITHOUT_WATERMARK_SKAP_VIA_GATE",
-                   "REPLAY_OLDER_SIGNED_HEAD_WITH_ORG_WATERMARK_KV", "FORGED_HEAD_SIGNATURE_CALLER_SEED"):
-            self.assertEqual(anc["required_outcomes"][s_], ["DENY", "FAIL_CLOSED"], s_)
-        self.assertEqual(anc["required_outcomes"]["E0_SKAP_READ_BACK_VIA_SKAPLAYER2GATE"], ["ALLOW"])
-        # the provisional runtime rule replaces 'appended to refs/stegverse/organization-ledger'
+        self.assertIn("carrier-shared-sha", anc["observed_by"])
+        ro = anc["required_outcomes"]
+        for w_ in ("KV", "SKAP_VAULT_VIA_GATE".replace("_VAULT", "")):
+            for f_ in ("NONE", "BARE_STRING_NEWEST", "MALFORMED_SHORT", "MALFORMED_UPPERCASE", "ORG_SOURCED", "EXTRA_KEY"):
+                self.assertEqual(ro["REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s" % (f_, w_)], ["FAIL_CLOSED"], (f_, w_))
+            for f_ in ("KV_OWN_NEWEST", "FOREIGN_DIGEST", "REGRESSED_TO_PRESENTED_HEAD", "ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD"):
+                self.assertEqual(ro["REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s" % (f_, w_)], ["DENY", "FAIL_CLOSED"], (f_, w_))
+        self.assertEqual(ro["E0_SKAP_READ_BACK_VIA_SKAPLAYER2GATE"], ["ALLOW"])
+        self.assertNotIn("SAME_SIGNAL_REPLAYED_AFTER_THE_PIN", ro)  # an idempotent read-back at #431 @e9d45e6c, recorded
+        wf = {r.get("probe") for r in next(i for i in d["items"] if i["id"] == "H-KV-ENDPOINT-LEDGER-ANCHOR")["refusals"]
+              if r["failure_code"] == "OPERATING_MODE_E0_WITNESS_FAILED"}
+        self.assertEqual(wf, {"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s" % (f_, w_)
+                              for f_ in ("REGRESSED_TO_PRESENTED_HEAD", "ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD")
+                              for w_ in ("KV", "SKAP_VIA_GATE")})
+        self.assertIn("6373694285", tasks["LC-KV-23"]["required_repair"])
+        self.assertIn("C-review", tasks["LC-KV-23"]["proposed_resolution"])
+        # Lane B: the shared carrier is byte-identical and destination_evidence refuses six-field
+        for n_ in ("431", "432", "433"):
+            self.assertEqual(ro["CARRIER_SHA_" + n_], ["ALLOW"])
+        for t_ in ("EMPTY", "NO_EVIDENCE_OBJECT", "EVIDENCE_MISSING_FIELDS"):
+            self.assertEqual(ro["DESTINATION_EVIDENCE_" + t_], ["FAIL_CLOSED"])
+        # GitHub Product: TVC#540/#542 do not bind to bf684aad (LC-KV-21 A); LC-KV-08 narrowed to one residual, class A
+        self.assertEqual(tasks["LC-KV-08"]["failure_class"]["class"], "A")
+        self.assertEqual(tasks["LC-KV-07"]["failure_class"]["class"], "B")
+        for h_ in ("7802ddb3", "5b70bf01"):
+            self.assertIn(h_, tasks["LC-KV-18"]["required_repair"])
+        # the provisional runtime rule still replaces 'appended to refs/stegverse/organization-ledger'
         f = tasks["LC-KV-13"]
         self.assertIn("6372680042", f["finish_point_model_conflict_note"])
-        self.assertIn("KV-internal transitions need no Org record", f["finish_point_model_conflict_note"])
         self.assertIn("6372680042", tasks["LC-KV-06"]["required_repair"])
-        self.assertNotIn("no clock conflict", anc["observed_state"].split("Earlier:")[0])
-        # LC-KV-22 is class A with 6 units, still open (the promised push did not land)
-        self.assertIn("6 systemd units", tasks["LC-KV-22"]["required_repair"])
-        self.assertIn("has not landed", tasks["LC-KV-22"]["required_repair"])
-        self.assertEqual(tasks["LC-KV-07"]["failure_class"]["class"], "B")
-        self.assertIn("b0ba93e3c5f32bb5f565779b29d81251ecaee96a", tasks["LC-KV-18"]["required_repair"])
-        self.assertIn("4c2504da3ef759fcf382d494e4a625aca46b1f55", tasks["LC-KV-18"]["required_repair"])
-        self.assertEqual(len(tasks), 26)
-        self.assertNotIn("merge-ready", json.dumps(list(tasks.values())))
 
     def test_withdrawn_git_ref_custody_adapter_is_not_proposed(self):
         t = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-03")
@@ -524,7 +541,7 @@ class Refusals(unittest.TestCase):
         d = self.run_()
         prov = next(r for r in d["items"] if r["id"] == "H-KV-DURABLE-CUSTODY-PROVIDER")
         self.assertEqual(prov["failure_class"]["class"], "B")
-        self.assertEqual(next(t for t in self.tasks if t["task_id"] == "LC-KV-09")["failure_class"]["class"], "C")
+        self.assertEqual(next(t for t in self.tasks if t["task_id"] == "LC-KV-09")["failure_class"]["class"], "A")
         self.assertEqual(d["consistency"], "ALLOW")
         it = self.item(self.allowed)
         it["failure_class"] = {"class": "B", "reason": "recorded only"}

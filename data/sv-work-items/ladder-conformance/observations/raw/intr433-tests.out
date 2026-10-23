@@ -12,9 +12,11 @@ test_http_admits_without_a_carrier_and_records_no_carrier (tests.test_intr_trans
 test_http_ignores_a_cited_carrier (tests.test_intr_transport_enablement.HttpIsUnchangedTests.test_http_ignores_a_cited_carrier) ... ok
 test_http_refusal_keeps_the_health_six (tests.test_intr_transport_enablement.HttpIsUnchangedTests.test_http_refusal_keeps_the_health_six) ... ok
 test_a_source_half_missing_endpoint_kind_fails_closed_not_keyerror (tests.test_intr_transport_enablement.InvariantTests.test_a_source_half_missing_endpoint_kind_fails_closed_not_keyerror)
-LC-KV-20 (carrier 5c410dd3): an incomplete retained source half is refused, never a KeyError. ... ok
+LC-KV-20 (carrier 81ad9d3b): an incomplete retained source half is refused, never a KeyError. ... ok
 test_carrier_core_reads_no_clock_network_or_process (tests.test_intr_transport_enablement.InvariantTests.test_carrier_core_reads_no_clock_network_or_process) ... ok
 test_classes_are_the_existing_intr_classes (tests.test_intr_transport_enablement.InvariantTests.test_classes_are_the_existing_intr_classes) ... ok
+test_destination_evidence_refuses_with_six_fields_never_keyerror (tests.test_intr_transport_enablement.InvariantTests.test_destination_evidence_refuses_with_six_fields_never_keyerror)
+Carrier 81ad9d3b: destination_evidence() on an incomplete source half returns the six-field FAIL_CLOSED. ... ok
 test_evaluator_is_pinned (tests.test_intr_transport_enablement.InvariantTests.test_evaluator_is_pinned) ... ok
 test_shared_modules_are_432s_copies (tests.test_intr_transport_enablement.InvariantTests.test_shared_modules_are_432s_copies) ... ok
 test_transport_table (tests.test_intr_transport_enablement.InvariantTests.test_transport_table) ... ok
@@ -39,6 +41,6 @@ test_verified_carrier_does_not_bypass_health (tests.test_intr_transport_enableme
 test_verified_pair_is_admitted (tests.test_intr_transport_enablement.VerifiedInTrIsAdmittedTests.test_verified_pair_is_admitted) ... ok
 
 ----------------------------------------------------------------------
-Ran 32 tests in <t>s
+Ran 33 tests in <t>s
 
 OK

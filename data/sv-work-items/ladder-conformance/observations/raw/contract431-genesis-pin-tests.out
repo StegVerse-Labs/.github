@@ -1,21 +1,44 @@
 $ {python} -c import sys,unittest; sys.path.insert(0,'.'); sys.argv=[sys.argv[0],'-v','tests.test_llm_adapter_ledger_merge_transfer']; unittest.main(module=None)
 --- exit 0
 --- stdout
+{
+  "authority_effect": "NONE_PLAN_ONLY",
+  "contract_written": false,
+  "disposition": "FAIL_CLOSED",
+  "expected_genesis_receipt_sha256": null,
+  "failed_predicate": "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH",
+  "failure_code": "HB_EPOCH_NOT_SUPPLIED",
+  "ledger_written": false,
+  "next_attempt": "supply the epoch the genesis append carries (ASCII digits, >= 32, derived_from_clock false) and run again; nothing was computed or written",
+  "owning_existing_goal": "StegVerse-org/LLM-adapter#431 (organization-ledger onboarding; governed element), StegVerse-org/.github#162",
+  "required_evidence_or_repair": "no hb_epoch was supplied and no clock is read: the genesis is byte-deterministic only at a supplied epoch, so none is precomputed without one",
+  "retry_entrypoint": "scripts/llm_adapter_repository_ledger_genesis_pin.py precompute --hb-epoch <supplied epoch> --predecessor-state-sha256 <sha256> --successor-state-sha256 <sha256> --evidence-json <json>",
+  "schema": "stegverse.repository-ledger-expected-genesis/v1"
+}
 --- stderr
 test_production_refuses_the_caller_copy_merge_append_path_not_admitted (tests.test_llm_adapter_ledger_merge_transfer.CallerWrittenLedgerCopyTests.test_production_refuses_the_caller_copy_merge_append_path_not_admitted) ... ok
 test_the_head_check_is_network_free_and_reuses_432s_module_byte_identically (tests.test_llm_adapter_ledger_merge_transfer.CallerWrittenLedgerCopyTests.test_the_head_check_is_network_free_and_reuses_432s_module_byte_identically) ... ok
 test_with_a_published_signer_only_its_attestation_of_this_copy_counts (tests.test_llm_adapter_ledger_merge_transfer.CallerWrittenLedgerCopyTests.test_with_a_published_signer_only_its_attestation_of_this_copy_counts) ... ok
-test_contract_pin_is_null_with_a_note_not_an_invented_digest (tests.test_llm_adapter_ledger_merge_transfer.ExpectedGenesisPinTests.test_contract_pin_is_null_with_a_note_not_an_invented_digest) ... ok
-test_genesis_digest_is_not_computable_before_observation (tests.test_llm_adapter_ledger_merge_transfer.ExpectedGenesisPinTests.test_genesis_digest_is_not_computable_before_observation) ... ok
-test_both_cvk_contracts_are_planned_through_the_allowlisted_path (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinContractPathTests.test_both_cvk_contracts_are_planned_through_the_allowlisted_path) ... ok
+test_contract_pin_is_null_until_inputs_are_supplied_and_says_how_it_is_computed (tests.test_llm_adapter_ledger_merge_transfer.ExpectedGenesisPinTests.test_contract_pin_is_null_until_inputs_are_supplied_and_says_how_it_is_computed) ... ok
+test_genesis_is_byte_deterministic_and_precomputable_at_a_supplied_epoch (tests.test_llm_adapter_ledger_merge_transfer.ExpectedGenesisPinTests.test_genesis_is_byte_deterministic_and_precomputable_at_a_supplied_epoch) ... ok
+test_precompute_refuses_an_absent_or_invalid_epoch_with_six_fields (tests.test_llm_adapter_ledger_merge_transfer.ExpectedGenesisPinTests.test_precompute_refuses_an_absent_or_invalid_epoch_with_six_fields) ... ok
+test_supplied_epoch_rule_is_the_shared_byte_copy (tests.test_llm_adapter_ledger_merge_transfer.ExpectedGenesisPinTests.test_supplied_epoch_rule_is_the_shared_byte_copy) ... ok
+test_cvk_receipt_chain_contracts_are_endpoint_contracts_never_org_ledger_contracts (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinContractPathTests.test_cvk_receipt_chain_contracts_are_endpoint_contracts_never_org_ledger_contracts) ... ok
+test_the_withdrawn_cvk_endpoint_contracts_are_refused_with_six_fields (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinContractPathTests.test_the_withdrawn_cvk_endpoint_contracts_are_refused_with_six_fields) ... ok
 test_traversal_and_unlisted_contract_paths_are_refused_with_six_fields (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinContractPathTests.test_traversal_and_unlisted_contract_paths_are_refused_with_six_fields) ... ok
+test_a_genesis_pointer_originated_by_an_endpoint_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_a_genesis_pointer_originated_by_an_endpoint_is_refused) ... ok
+test_a_one_sided_crossing_is_refused_with_six_fields (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_a_one_sided_crossing_is_refused_with_six_fields) ... ok
 test_a_source_half_missing_endpoint_kind_fails_closed_not_keyerror (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_a_source_half_missing_endpoint_kind_fails_closed_not_keyerror) ... ok
 test_forged_or_off_chain_genesis_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_forged_or_off_chain_genesis_is_refused) ... ok
 test_once_pinned_the_exception_closes_and_normal_gates_apply (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_once_pinned_the_exception_closes_and_normal_gates_apply) ... ok
 test_pre_pin_any_other_signal_class_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_pre_pin_any_other_signal_class_is_refused) ... ok
 test_pre_pin_genesis_signal_is_accepted_and_planned (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_pre_pin_genesis_signal_is_accepted_and_planned) ... ok
 test_receiver_reuses_the_carrier_unchanged_and_is_wired_declaratively (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_receiver_reuses_the_carrier_unchanged_and_is_wired_declaratively) ... ok
+test_records_that_do_not_point_at_each_other_are_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_records_that_do_not_point_at_each_other_are_refused) ... ok
+test_the_destination_half_is_planned_from_the_egress_record_but_not_wired (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_the_destination_half_is_planned_from_the_egress_record_but_not_wired) ... ok
 test_the_org_emitters_typed_output_is_accepted_by_the_receiver (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_the_org_emitters_typed_output_is_accepted_by_the_receiver) ... ok
+test_a_clock_stamped_or_unsupplied_genesis_is_refused_not_pinned (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_a_clock_stamped_or_unsupplied_genesis_is_refused_not_pinned) ... ok
+test_a_precomputed_pin_is_only_read_back (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_a_precomputed_pin_is_only_read_back) ... ok
 test_conflicting_pin_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_conflicting_pin_is_refused) ... ok
 test_forged_or_non_chain_genesis_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_forged_or_non_chain_genesis_is_refused) ... ok
 test_idempotent_re_run (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_idempotent_re_run) ... ok
@@ -37,6 +60,6 @@ test_workflows_have_no_schedule_dispatch_write_or_secret (tests.test_llm_adapter
 test_writer_pin_mismatch_fails_closed (tests.test_llm_adapter_ledger_merge_transfer.LlmAdapterLedgerMergeTransferTests.test_writer_pin_mismatch_fails_closed) ... ok
 
 ----------------------------------------------------------------------
-Ran 33 tests in <t>s
+Ran 42 tests in <t>s
 
 OK

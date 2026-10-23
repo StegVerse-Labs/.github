@@ -567,7 +567,7 @@
     "disposition": "FAIL_CLOSED",
     "failed_predicate": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
-    "next_attempt": "on Coordination's ruling on app installations and release tokens, then on the next push to the TV/TVC release publisher",
+    "next_attempt": "on the next push to the TV/TVC release publisher that records the publishing principal as an observed, receipted state",
     "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
     "required_evidence_or_repair": "a deterministic E0 check on the release path that refuses six-field when the publishing principal is an org member, collaborator or app installation, and a release route that crosses into StegVerse-org through InTr instead (after Coordination rules whether a GitHub App installation or a release token is membership)",
     "retry_entrypoint": "StegVerse-Labs/TVC: tasks/tvc_portable_github_release_publisher.py validate_authorization, then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)"
@@ -579,8 +579,8 @@
     "E3": "three LLM lanes may author repairs to the governance path's endpoint boundary and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "failure_class": {
-    "class": "C",
-    "reason": "waits on Coordination's ruling whether a GitHub App installation or a release token counts as endpoint membership; then a class B check the GitHub Product lane builds"
+    "class": "B",
+    "reason": "revision 11, under Coordination's provisional ruling (#167 comment 6373412055, C-review pending): a COSV App installation carrying endpoint data only via InTr is not membership and a TV/TVC release token is not membership; the token's principal is unobserved, a class B evidence gap the GitHub Product lane closes with a deterministic E0 check on the release path (enforcing the given rule is class A once the evidence exists)"
    },
    "id": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
    "kind": "CONSTRAINT",
