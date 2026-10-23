@@ -175,6 +175,14 @@ class AdjacencyRulingTests(unittest.TestCase):
         req = request()
         self.refused(ar.verify(ruling(commit, req, [cand]), req, self.base, root), "ADJACENCY_CONDITION_A_NOT_HELD")
 
+    def test_a_candidate_without_declared_components_is_not_vacuously_adjacent(self) -> None:
+        cand = candidate(components=())
+        self.put(cand)
+        root, commit = self.fp()
+        req = request()
+        self.refused(ar.verify(ruling(commit, req, [cand]), req, self.base, root),
+                     "ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED")
+
     # -- (c) --------------------------------------------------------------------------------------------------
     def test_c_fails_when_the_consumes_dependency_is_not_recorded(self) -> None:
         cand = candidate()

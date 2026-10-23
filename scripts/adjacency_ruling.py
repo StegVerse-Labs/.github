@@ -302,6 +302,10 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
         _require(sorted(cand.get("components") or []) == comps, "ADJACENCY_RULING_COMPONENTS_DIVERGE",
                  "RULING_COMPONENTS_EQUAL_OBSERVED", f"candidates[{cid}].components must equal its observed record",
                  {"ruling": sorted(cand.get("components") or []), "observed": comps})
+        _require(bool(comps), "ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED", "CANDIDATE_DECLARES_COMPONENTS",
+                 f"{cid}'s observed record declares no targets.components, so (a) and (b) would hold vacuously; "
+                 f"{cid}'s owner records its components (a record change through its own Goal), or the overlap is "
+                 "resolved by Coordination without this input", {"candidate": cid})
         footprint = sorted(_footprint(observed, repository))
         listed = cand.get("finish_point_paths")
         _require(isinstance(listed, list), "ADJACENCY_RULING_SCHEMA_INVALID", "RULING_LISTS_FINISH_POINT_PATHS",
