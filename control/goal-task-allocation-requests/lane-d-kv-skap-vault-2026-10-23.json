@@ -11,7 +11,7 @@
   "observed_registry_generation": 320,
   "owning_task_found": false,
   "scope": "Make KnowledgeVault (KV) functional with a SKAP Vault inside KV: a principal's KV projection is written, read back exactly and revoked only through governed Interlock/InTr transitions; the SKAP Vault inside KV holds custody-key references (never credential or key material) while TV/TVC remains the credential authority and the sole SKAP ciphertext custody writer; every write and read is preceded by a consent receipt and every revoke produces a revocation receipt that ends read access, all on one continuous receipt-hash lineage; the same principal's projection reconstructs exactly on any eligible device with no connected device, second user-operated device or external machine required; and no governance, credential, verifier, claim or KV authority is duplicated. Done is decided by the acceptance test named in the sealed finish point, which must reach its verdict at E0 (ecosystem only, no LLM) and degrade gracefully down the operating-mode ladder.",
-  "scope_digest": "sha256:d68e239bd1eeabe6558b52928632e9e1df35656e55b3f899755924e66b862ada",
+  "scope_digest": "sha256:d4a98dc0c0ff9db7dbc05b1b97d93573dda7b59dcd2a7628e2cf6620e26c7ef2",
   "requested_action": "Check the proposed identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition; then WorkerCoordinator evaluates its claim request.",
   "authority_effect": "NONE_REQUEST_ONLY",
   "owner_authorization": {

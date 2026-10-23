@@ -5,7 +5,8 @@ This file projects a **request**. It is not the Task Registry, it mints no autho
 - Request: `tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json` (NEW_IDENTITY)
 - Allocation request: `control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json` (cosv_task_vector null; the transition derives the vector from the declared exact metrics)
 - Source: the owner's priority for after the operating-mode ladder, a functional KV with a SKAP Vault inside KV, relayed by Coordination on 2026-10-23 under StegVerse-org/.github#160
-- Sealed scope (GOAL_SCOPE_SEALED): `sha256:d68e239bd1eeabe6558b52928632e9e1df35656e55b3f899755924e66b862ada`. Changing the goal, the targets, the predicates or the finish point needs a new digest and a `control/goal-scope-supersede-requests/` entry.
+- Sealed scope (GOAL_SCOPE_SEALED): `sha256:d4a98dc0c0ff9db7dbc05b1b97d93573dda7b59dcd2a7628e2cf6620e26c7ef2`. Changing the goal, the targets, the predicates or the finish point needs a new digest and a `control/goal-scope-supersede-requests/` entry.
+- Resealed for LC-KV-09 (class A; StegVerse-Labs/.github#3330 `scoped-tasks/LC-KV-09.json` @7fb472a2). Four constraints are now sealed predicates, placed before `FINISH_POINT_VERDICT_REACHED_AT_E0_WITHOUT_LLM`: `KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE`, `SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV`, `SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT` and `ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER`. The previous digest was `sha256:d68e239bd1eeabe6558b52928632e9e1df35656e55b3f899755924e66b862ada`. No seal exists on main, so `supersedes_scope_digest` stays null. The paired `runtime.kv_skap_vault` `SCOPE_DIGEST`/`PREDICATES` change is in StegVerse-Labs/continuity-vault-kit#263.
 
 ## Finish point (test-verifiable)
 
