@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "75c3a4b0faa8de07dee9913e493295417150cd9c35257d0b1e0ed61aa069cd65"
+  "spec_sha256": "f5e6dcdc6fbf512377d2527706d1da6f62f590a48100a3b4e623f979fc993aed"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -46,9 +46,9 @@
     "env": "STEGVERSE_TVC_ROOT",
     "kind": "env_path"
    },
-   "finish_point": "STEGVERSE_TVC_ROOT names a TVC checkout in the job and the conformance exchange tests run and pass at the exact head",
+   "finish_point": "a TVC_LABS_CONFORMANCE_TEST_RECEIPT sealed by StegVerse-Labs/TVC's own CI (StegVerse-Labs/TVC#539) is retained on refs/stegverse/organization-ledger and matches this head's consumed surface (scripts/tvc_conformance_receipt.py consume: ALLOW)",
    "owner": "GitHub Product, Lane C (StegVerse-org/.github#164)",
-   "repair": "a TV/TVC checkout supplied as STEGVERSE_TVC_ROOT to the job that runs this set"
+   "repair": "TVC CI runs both conformance tests with 0 skipped and seals the receipt on every push to TVC main; the organization ledger writer appends it (never this job, which reads no TVC source and holds no TVC credential). Until a matching receipt is readable on the chain, the ratchet prints the six-field REQUIRED_VERIFICATION_INPUT_UNAVAILABLE for changes that select a [tvc] set only"
   }
  },
  "repository": "StegVerse-Labs/.github",
@@ -9065,6 +9065,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_tvc_conformance_receipt.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_tvc_conformance_receipt.py"
+   ],
+   "tests": [
+    "tests/test_tvc_conformance_receipt.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_tvc_pr92_private_source_bootstrap.py",
    "inputs": [],
    "surfaces": [
@@ -11708,6 +11720,13 @@
    "source-bundles/reusable-task-registry.d/**",
    "workers/reusable_task_lifecycle.py",
    "workers/reusable_task_master_records_roundtrip.py"
+  ],
+  "scripts/tvc_conformance_receipt.py": [
+   ".github/workflows/test-suite-ratchet.yml",
+   ".stegverse/verification-inputs/**",
+   ".stegverse/verification-inputs/tvc-conformance-receipt.json",
+   "resident-runtime/ledger_store.py",
+   "resident-runtime/organization_ledger_readback.py"
   ],
   "scripts/user_facing_explanation.py": [
    "schemas/user-facing-explanation.v1.schema.json"
@@ -16321,6 +16340,14 @@
    "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
    "scripts/cosv.py"
+  ],
+  "tests/test_tvc_conformance_receipt.py": [
+   ".github/workflows/**",
+   ".github/workflows/test-suite-ratchet.yml",
+   ".stegverse/verification-inputs/**",
+   ".stegverse/verification-inputs/tvc-conformance-receipt.json",
+   "org-kernel/kernel.py",
+   "scripts/tvc_conformance_receipt.py"
   ],
   "tests/test_tvc_pr92_private_source_bootstrap.py": [
    "control/resident-execution-request.d/tvc-repository-broker-validation-001.json",

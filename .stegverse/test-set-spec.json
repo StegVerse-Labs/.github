@@ -67,9 +67,9 @@
     "env": "STEGVERSE_TVC_ROOT",
     "kind": "env_path"
    },
-   "finish_point": "STEGVERSE_TVC_ROOT names a TVC checkout in the job and the conformance exchange tests run and pass at the exact head",
+   "finish_point": "a TVC_LABS_CONFORMANCE_TEST_RECEIPT sealed by StegVerse-Labs/TVC's own CI (StegVerse-Labs/TVC#539) is retained on refs/stegverse/organization-ledger and matches this head's consumed surface (scripts/tvc_conformance_receipt.py consume: ALLOW)",
    "owner": "GitHub Product, Lane C (StegVerse-org/.github#164)",
-   "repair": "a TV/TVC checkout supplied as STEGVERSE_TVC_ROOT to the job that runs this set"
+   "repair": "TVC CI runs both conformance tests with 0 skipped and seals the receipt on every push to TVC main; the organization ledger writer appends it (never this job, which reads no TVC source and holds no TVC credential). Until a matching receipt is readable on the chain, the ratchet prints the six-field REQUIRED_VERIFICATION_INPUT_UNAVAILABLE for changes that select a [tvc] set only"
   }
  },
  "manifest": ".stegverse/test-sets.json",

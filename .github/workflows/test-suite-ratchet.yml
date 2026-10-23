@@ -146,6 +146,21 @@ jobs:
             --writer-sha256 884168399f8ac54309aac86af6ab34481635de54426f635bb2229eb5073e2ebf \
             --out-dir /tmp/baseline-drift
 
+      # TVC conformance receipt (StegVerse-org/.github#164, Lane C; Coordination class D ruling, option 2): the [tvc]
+      # sets' tests run in StegVerse-Labs/TVC's own CI, which seals a test receipt; the organization ledger writer
+      # appends it to refs/stegverse/organization-ledger (fetched above, anonymously). This job never reads TVC source
+      # and holds no TVC credential. Only when this change selects a [tvc] set, the receipt must be on the chain and
+      # match this head's bytes for every surface path it consumed; otherwise this prints the six-field
+      # REQUIRED_VERIFICATION_INPUT_UNAVAILABLE and fails - for those PRs only. A change that selects no [tvc] set is
+      # NOT_SELECTED and passes. Read-only: nothing is appended, dispatched or polled.
+      - name: TVC conformance receipt from the organization ledger chain, when a [tvc] set is selected
+        if: ${{ !cancelled() }}
+        run: |
+          python scripts/tvc_conformance_receipt.py consume \
+            --ledger "git+$GITHUB_WORKSPACE#refs/stegverse/organization-ledger" \
+            --head-root "$GITHUB_WORKSPACE" --selection /tmp/test-set-selection.json \
+            --out /tmp/tvc-conformance-receipt-consumption.json
+
       - name: Publish the run as Healer-intake findings
         if: always()
         run: |
