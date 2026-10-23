@@ -77,11 +77,12 @@
  "schema": "stegverse.test-set-spec/v1",
  "selects_all": [
   "*conftest.py",
+  ".github/workflows/test-suite-ratchet.yml",
+  "pyproject.toml",
   "pytest.ini",
   "setup.cfg",
-  "pyproject.toml",
-  "tox.ini",
-  "tests/*__init__.py"
+  "tests/*__init__.py",
+  "tox.ini"
  ],
  "splits": [
   {

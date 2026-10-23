@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "0476fb6c4c76d2d77f1b680c2c62007218638bdcc55447e84013feee5c54f2a8"
+  "spec_sha256": "62799e30be0a4cde20d355eb58754fa83d8db930b89a9dd145eae45d762efe45"
  },
  "inputs": {
   "jsonschema": {
@@ -50,6 +50,7 @@
  "schema": "stegverse.test-sets/v1",
  "selects_all": [
   "*conftest.py",
+  ".github/workflows/test-suite-ratchet.yml",
   ".stegverse/test-set-spec.json",
   ".stegverse/test-sets.json",
   "pyproject.toml",
