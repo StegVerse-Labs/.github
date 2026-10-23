@@ -608,6 +608,46 @@ def receipt_link(receipt: Mapping[str, Any], test_id: str) -> dict:
             "introducing_commit": entry.get("introducing_commit")}
 
 
+def load_selection(path: str) -> dict:
+    """scripts/test_set_selection.py's sealed selection: which sets this change selected and why, what ran, and the
+    six-field items for selected sets whose inputs are unavailable. Its seal is checked, never assumed."""
+    from test_set_selection import seal_verifies as selection_seal_verifies
+    record = json.loads(Path(path).read_text(encoding="utf-8"))
+    return {**record, "path": path, "seal_verifies": selection_seal_verifies(record)}
+
+
+def in_selection(node: str, selection: Mapping[str, Any] | None) -> bool:
+    """A test node is in scope when a runnable selected set runs it and no deselection removes it."""
+    if selection is None:
+        return True
+
+    def under(n: str, t: str) -> bool:
+        return n == t or n.startswith(t + "::") or n.startswith(t + "[") or n.startswith(t + ".")
+    run = selection.get("run", {})
+    return any(under(node, t) for t in run.get("tests", [])) and \
+        not any(under(node, d) for d in run.get("deselect", []))
+
+
+def selection_rows(selection: Mapping[str, Any], retry: str, goal: str) -> tuple[list[dict], dict]:
+    rows: list[dict] = []
+    if not selection.get("seal_verifies"):
+        rows.append(rvs_row("SELECTION_UNVERIFIED", selection.get("path"), "the test-set selection's seal does not "
+                            "verify, so it is not shown which sets this change requires; re-run the selection",
+                            retry, goal, "the next run of this job at the exact head"))
+    for u in list(selection.get("rows") or []) + list(selection.get("input_unavailable") or []):
+        rows.append({"test": f"set:{u.get('set')}" if u.get("set") else u.get("failure_code"),
+                     "kind": "INPUT_UNAVAILABLE" if u.get("set") else u.get("failure_code"),
+                     "disposition": "FAIL_CLOSED", "blocking": True,
+                     **{k: u[k] for k in SIX}, **{k: u[k] for k in ("set", "input") if k in u}})
+    info = {"path": selection.get("path"), SEAL: selection.get(SEAL), "seal_verifies": selection.get("seal_verifies"),
+            "mode": selection.get("mode"), "all_reasons": selection.get("all_reasons"),
+            "sets_total": selection.get("sets_total"), "selected_count": selection.get("selected_count"),
+            "not_selected_count": selection.get("not_selected_count"),
+            "selected": [{"id": x["id"], "runnable": x["runnable"], "reasons": x["reasons"]}
+                         for x in selection.get("selected", [])]}
+    return rows, info
+
+
 # -- required verification: nothing skipped, nothing unrun, nothing missing ------------------------------------
 #
 # Rigel's standing rule (relayed by Coordination, Oct 23): merge readiness needs the full suite run on the
@@ -619,6 +659,7 @@ def receipt_link(receipt: Mapping[str, Any], test_id: str) -> dict:
 RVS = "REQUIRED_VERIFICATION_SKIPPED"
 SKIPPED, NOT_RUN = "SKIPPED", "NOT_RUN"
 PREDICATES = {
+    "SELECTION_UNVERIFIED": "TEST_SET_SELECTION_SEAL_VERIFIES",
     "SKIPPED": "REQUIRED_TEST_IS_NOT_SKIPPED",
     "XFAIL": "REQUIRED_TEST_IS_NOT_SKIPPED",
     "XPASS": "REQUIRED_TEST_IS_NOT_SKIPPED",
@@ -1104,6 +1145,9 @@ def main(argv: list[str] | None = None) -> int:
                         "FAIL/ERROR lines are the observed set and probes (base, bisection) use unittest")
     common.add_argument("--unittest-modules", nargs="*", default=[], help="the module list the unittest run was "
                         "given; each listed test must have run, and none may be skipped")
+    common.add_argument("--selection", help="scripts/test_set_selection.py's sealed selection for this run: only "
+                        "its runnable selected sets were run, so only their tests are expected; its unavailable-input "
+                        "items block, routed to each input's owner; unselected sets are neither run nor reported")
     common.add_argument("--detect-entrypoint", help="the workflow that runs detect on main in this repository "
                         f"(default: {DEFAULT_RETRY_DETECT})")
     common.add_argument("--required-unittest-modules-from", action="append", default=[],
@@ -1134,6 +1178,11 @@ def main(argv: list[str] | None = None) -> int:
     vrows: list[dict] = []
     vinfo: dict[str, Any] = {}
     head_nodes: set[str] = set()
+    selection = load_selection(args.selection) if args.selection else None
+    if selection is not None:
+        srows, sinfo = selection_rows(selection, retry, args.owning_goal)
+        vrows += srows
+        vinfo["selection"] = sinfo
     if not getattr(args, "unittest_output", None):
         text = Path(args.pytest_output).read_text(encoding="utf-8") if args.pytest_output else ""
         if args.pytest_output or args.junit_xml:
@@ -1142,7 +1191,7 @@ def main(argv: list[str] | None = None) -> int:
             skipped_nodes = {r["test"] for r in vrows if r.get("test")}
             for wf in args.required_unittest_modules_from:
                 mods = required_modules((root / wf).read_text(encoding="utf-8"))
-                need = required_test_nodes(root, mods)
+                need = [n for n in required_test_nodes(root, mods) if in_selection(n, selection)]
                 vrows += required_nodes_rows(need, head_nodes, skipped_nodes, wf, retry, args.owning_goal)
                 vinfo.setdefault("required_by_workflows", []).append(
                     {"workflow": wf, "modules": len(mods), "tests_required": len(need)})
@@ -1213,6 +1262,8 @@ def main(argv: list[str] | None = None) -> int:
                 base_nodes = collect_pytest(prober.tree(base_sha))
             finally:
                 prober.close()
+            if base_nodes is not None and selection is not None:
+                base_nodes = {n for n in base_nodes if in_selection(n, selection)}
             vrows += missing_at_head(base_nodes, head_nodes, retry, args.owning_goal)
             vinfo["base_tests_collected"] = len(base_nodes) if base_nodes is not None else None
     if args.path_filter_check:

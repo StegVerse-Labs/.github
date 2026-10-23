@@ -63,13 +63,36 @@ jobs:
       # (interrupted, internal error, usage error, nothing collected) is not a suite result. The junit
       # record and -rfEsxX name every skipped, xfailed, xpassed and uncollected test, so the next step
       # can fail closed on each (REQUIRED_VERIFICATION_SKIPPED); a skip is never a pass.
-      - name: Run the suite once
+      # The suite is split into callable test sets (.stegverse/test-sets.json, generated from
+      # .stegverse/test-set-spec.json by scripts/test_set_selection.py). A pull request runs the core set
+      # and every set a diff path reaches; a diff path no set declares, an unreadable diff, a change to
+      # what shapes selection, or a stale manifest selects EVERY set. A push to main selects every set.
+      # Unselected sets are not run and not reported as skipped; the sealed selection names each selected
+      # set and the diff path / declared surface that selected it. A selected set whose input is
+      # unavailable is not run: it is a six-field REQUIRED_VERIFICATION_INPUT_UNAVAILABLE item routed to
+      # that input's owner, and blocks only changes that select it.
+      - name: Select the test sets this change requires
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          RTC014_LIVE_LABS_REPO: ${{ github.workspace }}
+        run: |
+          base=()
+          if [ "$EVENT_NAME" = "pull_request" ]; then base=(--base "$BASE_SHA"); fi
+          python scripts/test_set_selection.py select --manifest .stegverse/test-sets.json \
+            --spec .stegverse/test-set-spec.json "${base[@]}" --head HEAD \
+            --retry-entrypoint ".github/workflows/test-suite-ratchet.yml ratchet" \
+            --out /tmp/test-set-selection.json --args-out /tmp/test-set-args.txt || true
+          test -s /tmp/test-set-args.txt
+
+      - name: Run the selected sets once
         env:
           # the checkout holds refs/stegverse/organization-ledger (step above): the live-repo known answer runs
           RTC014_LIVE_LABS_REPO: ${{ github.workspace }}
         run: |
+          mapfile -t selected < /tmp/test-set-args.txt
           set +e
-          python -m pytest tests -q --tb=no -p no:cacheprovider -rfEsxX --junitxml=/tmp/pytest-suite.xml > /tmp/pytest-suite.txt
+          python -m pytest "${selected[@]}" -q --tb=no -p no:cacheprovider -rfEsxX --junitxml=/tmp/pytest-suite.xml > /tmp/pytest-suite.txt
           status=$?
           set -e
           tail -n 1 /tmp/pytest-suite.txt
@@ -102,6 +125,7 @@ jobs:
           python scripts/test_suite_baseline_drift.py "${mode[@]}" \
             --pytest-output /tmp/pytest-suite.txt \
             --junit-xml /tmp/pytest-suite.xml \
+            --selection /tmp/test-set-selection.json \
             --required-unittest-modules-from .github/workflows/cross-task-coordination-validation.yml \
             --writer /tmp/main_change_receipt.py \
             --writer-sha256 884168399f8ac54309aac86af6ab34481635de54426f635bb2229eb5073e2ebf \
@@ -110,11 +134,25 @@ jobs:
       - name: Publish the run as Healer-intake findings
         if: always()
         run: |
-          python scripts/check_test_suite_ratchet.py --findings > /tmp/test-suite-ratchet.json || true
+          # findings from the one run above (the selected sets); nothing is run a second time
           python - <<'PY'
-          import json
-          report = json.load(open("/tmp/test-suite-ratchet.json", encoding="utf-8"))
-          print(f"TEST_SUITE_RATCHET findings={report['finding_count']}")
+          import json, re, sys
+          sys.path.insert(0, "scripts")
+          from check_test_suite_ratchet import BASELINE, GATE, REPAIR, compare, load_baseline
+          from registry_gate_findings import evaluation, finding
+          try:
+              text = open("/tmp/pytest-suite.txt", encoding="utf-8").read()
+          except OSError:
+              text = ""
+          observed = {m.group(1) for l in text.splitlines() if (m := re.match(r"^(?:FAILED|ERROR)\s+(\S+)", l))}
+          report = compare(observed, load_baseline(BASELINE))
+          rows = [finding(gate=GATE, task_id=t, predicate_id="NO_NEW_TEST_FAILURE",
+                          detail=f"{t} fails on this head and is not in the baseline", evidence=[str(BASELINE)],
+                          repair=REPAIR, retry_entrypoint="test-suite-ratchet.yml ratchet")
+                  for t in report["newly_failing"]]
+          out = evaluation(GATE, rows)
+          open("/tmp/test-suite-ratchet.json", "w", encoding="utf-8").write(json.dumps(out, indent=2, sort_keys=True))
+          print(f"TEST_SUITE_RATCHET findings={out['finding_count']}")
           PY
 
       - uses: actions/upload-artifact@v4
@@ -123,6 +161,7 @@ jobs:
           name: test-suite-ratchet
           path: |
             /tmp/test-suite-ratchet.json
+            /tmp/test-set-selection.json
             /tmp/pytest-suite.txt
             /tmp/pytest-suite.xml
             /tmp/baseline-drift/

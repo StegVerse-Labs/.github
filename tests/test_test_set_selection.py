@@ -1,0 +1,274 @@
+"""Callable test sets and the diff-driven selector (scripts/test_set_selection.py), with the adjudication of a
+selected run (scripts/test_suite_baseline_drift.py pr --selection). StegVerse-org/.github#166."""
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+import test_set_selection as sel  # noqa: E402
+import test_suite_baseline_drift as drift  # noqa: E402
+
+ENV = {**os.environ, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@example.invalid", "GIT_COMMITTER_NAME": "t",
+       "GIT_COMMITTER_EMAIL": "t@example.invalid", "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+PASSING = "import unittest\nclass T(unittest.TestCase):\n    def test_ok(self):\n        self.assertTrue(True)\n"
+
+
+class Toy:
+    """tests/test_a.py verifies src/a.py; tests/test_b.py verifies src/b.py and needs an input; tests/test_core.py
+    is the always-run core."""
+
+    def __init__(self, base: Path):
+        self.path = base / "repo"
+        self.path.mkdir()
+        self.git("init", "-q", "-b", "main")
+        self.write("src/a.py", "A = 1\n")
+        self.write("src/b.py", "B = 1\n")
+        self.write("src/c.py", "C = 1\n")
+        self.write("tests/__init__.py", "")
+        self.write("tests/test_core.py", PASSING)
+        self.write("tests/test_a.py", 'SOURCE = "src/a.py"\n' + PASSING)
+        self.write("tests/test_b.py", 'SOURCE = "src/b.py"\n' + PASSING)
+        self.write("tests/test_c.py", 'SOURCE = "src/c.py"\n' + PASSING)
+        self.write("baseline.json", json.dumps({"known_failing": [], "excluded": []}))
+        self.spec({})
+        self.base = self.commit("base")
+
+    def spec(self, inputs: dict, module_inputs: dict | None = None) -> None:
+        self.write(".stegverse/test-set-spec.json", json.dumps({
+            "schema": sel.SPEC_SCHEMA, "repository": "toy/repo", "runner": "unittest",
+            "manifest": ".stegverse/test-sets.json", "test_globs": ["tests/**"], "import_roots": ["src"],
+            "core": {"tests": ["tests/test_core.py"], "surfaces": [], "inputs": []},
+            "selects_all": ["tests/*__init__.py"], "inputs": inputs, "module_inputs": module_inputs or {}}))
+        self.generate()
+
+    def generate(self) -> None:
+        self.assertok(sel.main(["generate", "--root", str(self.path), "--spec", ".stegverse/test-set-spec.json",
+                                "--out", ".stegverse/test-sets.json"]))
+
+    @staticmethod
+    def assertok(code: int) -> None:
+        assert code == 0, code
+
+    def git(self, *args: str) -> str:
+        return subprocess.run(["git", *args], cwd=self.path, env=ENV, check=True, capture_output=True,
+                              text=True).stdout.strip()
+
+    def write(self, rel: str, text: str) -> None:
+        p = self.path / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text, encoding="utf-8")
+
+    def commit(self, message: str) -> str:
+        self.git("add", "-A")
+        self.git("commit", "-q", "-m", message)
+        return self.git("rev-parse", "HEAD")
+
+
+class SelectorTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.toy = Toy(Path(self.tmp.name))
+
+    def select(self, base: str | None = None, env: dict | None = None) -> tuple[int, dict]:
+        out = Path(self.tmp.name) / "selection.json"
+        argv = ["select", "--root", str(self.toy.path), "--manifest", ".stegverse/test-sets.json",
+                "--spec", ".stegverse/test-set-spec.json", "--head", "HEAD", "--retry-entrypoint", "toy.yml",
+                "--out", str(out), "--args-out", str(Path(self.tmp.name) / "args.txt")]
+        if base:
+            argv[argv.index("--head"):argv.index("--head")] = ["--base", base]
+        old = dict(os.environ)
+        os.environ.update(env or {})
+        try:
+            code = sel.main(argv)
+        finally:
+            os.environ.clear()
+            os.environ.update(old)
+        record = json.loads(out.read_text())
+        self.assertTrue(sel.seal_verifies(record))
+        return code, record
+
+    def ids(self, record: dict) -> list[str]:
+        return [x["id"] for x in record["selected"]]
+
+    def test_a_diff_path_selects_the_set_that_declares_it_and_the_core_set_always_runs(self) -> None:
+        self.toy.write("src/a.py", "A = 2\n")
+        self.toy.commit("change a")
+        code, record = self.select(self.toy.base)
+        self.assertEqual((code, record["mode"], self.ids(record)), (0, "DIFF", ["core", "tests/test_a.py"]))
+        self.assertEqual(record["selected"][0]["reasons"], [{"reason": "ALWAYS_RUN_CORE"}])
+        self.assertEqual(record["selected"][1]["reasons"], [{"reason": "DIFF_PATH_MATCHES_SURFACE", "path": "src/a.py",
+                                                             "surface": "src/a.py",
+                                                             "declared_surface": "tests/test_a.py"}])
+        self.assertEqual(record["run"]["tests"], ["tests.test_core", "tests.test_a"])
+
+    def test_the_core_set_runs_on_a_change_that_reaches_no_other_set(self) -> None:
+        self.toy.write("tests/test_core.py", PASSING + "# touched\n")
+        self.toy.commit("touch core")
+        _, record = self.select(self.toy.base)
+        self.assertEqual((record["mode"], self.ids(record)), ("DIFF", ["core"]))
+
+    def test_an_unmapped_path_selects_every_set(self) -> None:
+        self.toy.write("docs/NOTES.md", "nothing declares this\n")
+        self.toy.commit("unmapped")
+        _, record = self.select(self.toy.base)
+        self.assertEqual(record["mode"], "ALL")
+        self.assertEqual(record["unmapped_paths"], ["docs/NOTES.md"])
+        self.assertEqual(sorted(self.ids(record)), ["core", "tests/test_a.py", "tests/test_b.py", "tests/test_c.py"])
+        self.assertEqual(record["not_selected_count"], 0)
+
+    def test_an_unavailable_diff_selects_every_set(self) -> None:
+        _, record = self.select(None)
+        self.assertEqual((record["mode"], record["all_reasons"][0]["reason"]), ("ALL", "DIFF_UNAVAILABLE"))
+        _, record = self.select("0" * 40)                     # a base this clone does not hold
+        self.assertEqual((record["mode"], record["diff_available"]), ("ALL", False))
+
+    def test_a_path_that_shapes_selection_and_a_stale_manifest_select_every_set(self) -> None:
+        self.toy.write("tests/__init__.py", "# shared\n")
+        self.toy.commit("shared fixture")
+        _, record = self.select(self.toy.base)
+        self.assertEqual((record["mode"], record["all_reasons"][0]["reason"]), ("ALL", "PATH_SHAPES_SELECTION"))
+        base = self.toy.git("rev-parse", "HEAD")
+        manifest = json.loads((self.toy.path / ".stegverse/test-sets.json").read_text())
+        manifest["sets"][1]["surfaces"] = []                  # a hand-narrowed manifest
+        self.toy.write(".stegverse/test-sets.json", json.dumps(manifest))
+        self.toy.write("src/a.py", "A = 3\n")
+        self.toy.commit("narrow")
+        code, record = self.select(base)
+        self.assertEqual((code, record["mode"], record["disposition"]), (1, "ALL", "FAIL_CLOSED"))
+        self.assertEqual(record["failure_code"], "TEST_SET_MANIFEST_STALE")
+
+    def test_an_unselected_set_is_absent_rather_than_reported_as_skipped(self) -> None:
+        self.toy.write("src/a.py", "A = 2\n")
+        self.toy.commit("change a")
+        _, record = self.select(self.toy.base)
+        text = json.dumps(record)
+        self.assertNotIn("tests/test_b.py", text)
+        self.assertNotIn("tests.test_b", text)
+        self.assertNotIn("skipped", text.replace("not reported as skipped", ""))
+        self.assertEqual(record["not_selected_count"], 2)
+
+    def test_an_unavailable_input_is_routed_to_its_owner_and_blocks_only_changes_that_select_its_set(self) -> None:
+        inputs = {"toy-sdk": {"check": {"kind": "env_path", "env": "TOY_SDK_ROOT"}, "owner": "P1 (toy#163)",
+                              "finish_point": "TOY_SDK_ROOT is supplied and test_b passes", "repair": "supply it"}}
+        self.toy.spec(inputs, {"tests/test_b.py": ["toy-sdk"]})
+        base = self.toy.commit("declare the input")
+        self.toy.write("src/a.py", "A = 2\n")
+        self.toy.commit("change a")
+        code, record = self.select(base)
+        self.assertEqual((code, record["disposition"], record["input_unavailable"]), (0, "SELECTED", []))
+        self.toy.write("src/b.py", "B = 2\n")
+        self.toy.commit("change b")
+        code, record = self.select(base)
+        self.assertEqual((code, record["disposition"]), (1, "FAIL_CLOSED"))
+        [item] = record["input_unavailable"]
+        self.assertEqual((item["failure_code"], item["owning_existing_goal"], item["set"], item["input"]),
+                         (sel.INPUT_UNAVAILABLE, "P1 (toy#163)", "tests/test_b.py", "toy-sdk"))
+        self.assertTrue(all(item[k] for k in sel.SIX))
+        self.assertNotIn("tests.test_b", record["run"]["tests"])          # an unavailable set is not run
+        code, record = self.select(base, {"TOY_SDK_ROOT": str(self.toy.path)})
+        self.assertEqual((code, record["disposition"]), (0, "SELECTED"))
+        self.assertIn("tests.test_b", record["run"]["tests"])
+
+    def test_a_set_is_callable_by_id(self) -> None:
+        out = subprocess.run([sys.executable, str(ROOT / "scripts/test_set_selection.py"), "set", "--root",
+                              str(self.toy.path), "--manifest", ".stegverse/test-sets.json", "--id", "tests/test_a.py"],
+                             capture_output=True, text=True, check=True).stdout.split()
+        self.assertEqual(out, ["tests.test_a"])
+
+    # -- the adjudicated run of the selection ------------------------------------------------------------------
+
+    def adjudicate(self, base: str) -> tuple[int, dict]:
+        sel_path = Path(self.tmp.name) / "selection.json"
+        args = (Path(self.tmp.name) / "args.txt").read_text().split()
+        done = subprocess.run([sys.executable, "-m", "unittest", "-v", *args], cwd=self.toy.path, env=ENV,
+                              capture_output=True, text=True)
+        out = Path(self.tmp.name) / "unittest.txt"
+        out.write_text(done.stdout + done.stderr)
+        out_dir = Path(self.tmp.name) / "adjudication"
+        code = drift.main(["pr", "--root", str(self.toy.path), "--base", base, "--baseline", "baseline.json",
+                           "--unittest-output", str(out), "--unittest-modules", *args, "--suite-status",
+                           str(done.returncode), "--selection", str(sel_path), "--hb-epoch", "469411750",
+                           "--repository", "toy/repo", "--retry-entrypoint", "toy.yml", "--out-dir", str(out_dir)])
+        return code, json.loads((out_dir / "pr-disposition.json").read_text())
+
+    def test_a_skip_inside_a_selected_set_fails_closed_and_an_unselected_skip_is_not_run(self) -> None:
+        skipping = ("import unittest\nclass T(unittest.TestCase):\n    @unittest.skip('needs an input')\n"
+                    "    def test_ok(self):\n        pass\n")
+        self.toy.write("tests/test_c.py", 'SOURCE = "src/c.py"\n' + skipping)
+        base = self.toy.commit("test_c skips (not selected below)")
+        self.toy.write("src/a.py", "A = 2\n")
+        self.toy.commit("change a")
+        self.select(base)
+        code, record = self.adjudicate(base)
+        self.assertEqual((code, record["disposition"]), (0, "ALLOW"), record)
+        self.assertEqual(record["verification"]["selection"]["selected_count"], 2)
+        self.assertNotIn("tests.test_c", json.dumps(record))
+        self.toy.write("tests/test_a.py", 'SOURCE = "src/a.py"\n' + skipping)
+        self.toy.commit("a selected test skips")
+        self.select(base)
+        code, record = self.adjudicate(base)
+        self.assertEqual((code, record["disposition"], record["failure_code"]),
+                         (1, "FAIL_CLOSED", "REQUIRED_VERIFICATION_SKIPPED"))
+        row = next(r for r in record["tests"] if r.get("kind") == "SKIPPED")
+        self.assertEqual(row["test"], "tests.test_a.T.test_ok")
+        self.assertTrue(all(row[k] for k in drift.SIX))
+
+    def test_an_unavailable_input_item_blocks_the_adjudicated_run_with_its_owner(self) -> None:
+        self.toy.spec({"toy-sdk": {"check": {"kind": "unavailable", "reason": "not here"}, "owner": "P1 (toy#163)"}},
+                      {"tests/test_b.py": ["toy-sdk"]})
+        base = self.toy.commit("declare")
+        self.toy.write("src/b.py", "B = 2\n")
+        self.toy.commit("change b")
+        self.select(base)
+        code, record = self.adjudicate(base)
+        self.assertEqual((code, record["failure_code"], record["owning_existing_goal"]),
+                         (1, sel.INPUT_UNAVAILABLE, "P1 (toy#163)"))
+
+    def test_a_tampered_selection_fails_closed(self) -> None:
+        self.toy.write("src/a.py", "A = 2\n")
+        self.toy.commit("change a")
+        self.select(self.toy.base)
+        path = Path(self.tmp.name) / "selection.json"
+        record = json.loads(path.read_text())
+        record["run"]["tests"] = ["tests.test_core"]
+        path.write_text(json.dumps(record))
+        (Path(self.tmp.name) / "args.txt").write_text("tests.test_core\n")
+        code, out = self.adjudicate(self.toy.base)
+        self.assertEqual(code, 1)
+        self.assertTrue(any(r.get("kind") == "SELECTION_UNVERIFIED" for r in out["tests"]))
+
+
+class ThisRepositoryTests(unittest.TestCase):
+    def test_the_committed_manifest_is_generated_from_the_spec(self) -> None:
+        spec = json.loads((ROOT / ".stegverse/test-set-spec.json").read_text(encoding="utf-8"))
+        manifest = json.loads((ROOT / ".stegverse/test-sets.json").read_text(encoding="utf-8"))
+        self.assertEqual(sel.canonical(sel.generate(ROOT, spec, ".stegverse/test-set-spec.json")),
+                         sel.canonical(manifest))
+        listed = {t.split("::")[0] for s in manifest["sets"] for t in s["tests"]}
+        self.assertEqual(listed, set(sel.test_files(ROOT, sel.repo_files(ROOT), spec["test_globs"])))
+        for s in manifest["sets"]:
+            for name in s["inputs"]:
+                decl = manifest["inputs"][name]
+                self.assertTrue(decl["owner"] and decl["finish_point"] and decl["check"]["kind"], name)
+
+    def test_the_ratchet_runs_the_selection_and_nothing_else(self) -> None:
+        text = (ROOT / ".github/workflows/test-suite-ratchet.yml").read_text(encoding="utf-8")
+        self.assertIn("scripts/test_set_selection.py select", text)
+        self.assertIn('python -m pytest "${selected[@]}"', text)
+        self.assertIn("--selection /tmp/test-set-selection.json", text)
+        self.assertNotIn("python -m pytest tests ", text)
+        self.assertNotIn("check_test_suite_ratchet.py --findings", text)   # no second, unselected run
+        for word in ("schedule:", "cron", "contents: write"):
+            self.assertNotIn(word, text)
+
+
+if __name__ == "__main__":
+    unittest.main()
