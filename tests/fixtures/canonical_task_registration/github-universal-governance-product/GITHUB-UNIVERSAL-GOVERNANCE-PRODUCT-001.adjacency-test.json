@@ -1,0 +1,60 @@
+{
+  "rule": "adjacent only if (a) components are disjoint, (b) the finish-point tests exercise none of the other Goal's components, (c) any reliance is a consumes-dependency; otherwise the overlap folds into the existing Goal",
+  "evaluated_on": "StegVerse-Labs/.github grok/lane-c-goal-github-universal-governance-product merge of laned/tvc-new-identity-requests @e48885c0",
+  "lowest_supported_mode": "E0",
+  "degraded_form": "E0: committed shards and registry rows plus SDK main daca828a sources read by path; no clock, no network beyond the read",
+  "finish_point_test_import_closure_read": [
+    "tests/test_governance_gate.py -> stegverse.governance_gate (L105, L193 _sdk_module('structural_validator_candidate')), tests.test_portable_governance_verifier, and an AST import check over governance_gate, portable_governance_verifier, interlock_transition, interlock_return, spe_steggate_bridge, organization_record_names, structural_validator_candidate",
+    "tests/test_package_version_identity.py -> stdlib only (pathlib, ast, json, re, unittest)"
+  ],
+  "results": {
+    "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001": {
+      "a_components_disjoint": false,
+      "a_evidence": "declared components {structural-validator, validator-inventory, schema-migration} do not intersect by name, but this Goal's adjacency note (Lane C 2026-10-18 draft) records GATE_SOURCE_OWNER: governance_gate.py and the reusable workflow sit under that task, so the component sdk-reusable-governance-gate-workflow is that Goal's surface",
+      "b_finish_point_exercises_none": false,
+      "b_evidence": "the earlier finish point ran tests/test_governance_gate.py, which loads stegverse/structural_validator_candidate.py",
+      "c_reliance_is_consumes_dependency": true,
+      "outcome": "NOT_ADJACENT_OVERLAP_FOLDED",
+      "folded_into_existing_goal": [
+        "component sdk-reusable-governance-gate-workflow",
+        "predicates REUSABLE_GOVERNANCE_GATE_PINNED_TO_IMMUTABLE_TV_TVC_PUBLISHED_REF, NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN, REPLAY_TAMPER_STALE_HEAD_REFUSAL_TESTED, ROUTE_SHA256_PRESERVED_ACROSS_CLASSIFIER_ALIAS_MIGRATION",
+        "the gate conformance run (finish point moved to tests/test_package_version_identity.py)"
+      ],
+      "kept_as": "dependency CONSUMES-SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (the published gate at the released ref)"
+    },
+    "SDK-COST-DERIVED-TIER-PRICING-001": {
+      "a_components_disjoint": false,
+      "a_evidence": "its components {tier-pricing, cost-component-registry} (paths stegverse/tier_pricing.py, stegverse/cost_registry.py) are the surface of this Goal's tier-pricing-candidate; its adjacency note: pricing ownership moves here per owner directive",
+      "b_finish_point_exercises_none": true,
+      "b_evidence": "no finish-point test imports tier_pricing or cost_registry",
+      "c_reliance_is_consumes_dependency": true,
+      "outcome": "NOT_ADJACENT_OVERLAP_FOLDED",
+      "folded_into_existing_goal": [
+        "component tier-pricing-candidate",
+        "predicate TIER_PRICING_OWNER_APPROVED_AND_ENTITLEMENT_SEPARATE_FROM_DISPOSITION (pricing half)",
+        "dependency DECISION-PRICING-TIERS and its blocker"
+      ],
+      "kept_as": "dependency CONSUMES-SDK-COST-DERIVED-TIER-PRICING-001 and predicate ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT"
+    },
+    "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001": {
+      "a_components_disjoint": true,
+      "a_evidence": "neither its shard nor its registry row declares targets.components; its goal is read-only Stripe/GoDaddy provider ingress in StegVerse-Labs/TVC with entitlement_authority false, which none of this Goal's components claim",
+      "b_finish_point_exercises_none": true,
+      "b_evidence": "no finish-point test imports a payment or provider-ingress module",
+      "c_reliance_is_consumes_dependency": true,
+      "outcome": "ADJACENT",
+      "kept_as": "adjacent_task_refs entry and dependency CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (revenue-ops input)"
+    },
+    "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001": {
+      "a_components_disjoint": true,
+      "a_evidence": "neither its shard nor its registry row declares targets.components; its scope is StegHealth corrective-task routing in StegVerse-Labs/StegHealth, which none of this Goal's components claim",
+      "b_finish_point_exercises_none": true,
+      "b_evidence": "no finish-point test imports a StegHealth module",
+      "c_reliance_is_consumes_dependency": true,
+      "c_evidence": "no reliance; nothing to record",
+      "outcome": "ADJACENT",
+      "kept_as": "adjacent_task_refs entry"
+    }
+  },
+  "authority_effect": "NONE_EVIDENCE_ONLY"
+}

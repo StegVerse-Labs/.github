@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "canonical_task_registration_transition.py"
 TASK_ID = "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001"
 REQUEST = f"tests/fixtures/canonical_task_registration/github-universal-governance-product/{TASK_ID}.request.json"
-SCOPE_DIGEST = "sha256:27909085ddc6d08f35d5ebb58cfaf6ed8152f2f3c2826b015a932c28334ed764"
+ADJACENCY = f"tests/fixtures/canonical_task_registration/github-universal-governance-product/{TASK_ID}.adjacency-test.json"
+SCOPE_DIGEST = "sha256:af91ec48f3fdeaf0233777a2b798829a4544622bd342ddaf8ffdc72252d5f3b5"
 SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
        "owning_existing_goal", "next_attempt")
 EXPECTED_PLAN = {
@@ -27,9 +28,8 @@ EXPECTED_PLAN = {
     "failure_code": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
     "failed_predicate": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
     "required_evidence_or_repair": (
-        f"coordinate {TASK_ID} with ['PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001', 'SDK-COST-DERIVED-TIER-PRICING-001', "
-        "'SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001', 'STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001'] "
-        "(COORDINATE_BEFORE_MUTATION) or narrow its targets before merge"),
+        f"coordinate {TASK_ID} with ['PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001', "
+        "'STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001'] (COORDINATE_BEFORE_MUTATION) or narrow its targets before merge"),
     "retry_entrypoint": (".github/workflows/canonical-task-registration-transition.yml / "
                          "python scripts/canonical_task_registration_transition.py plan"),
     "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
@@ -74,6 +74,30 @@ class GovernanceProductGoalRequestTests(unittest.TestCase):
         self.assertEqual(allocation["proposed_task_id_authority"], "NONE_PROPOSAL_ONLY")
         self.assertIsNone(allocation["cosv_task_vector"])
         self.assertEqual(allocation["scope_digest"], SCOPE_DIGEST)
+
+    def test_adjacency_test_folds_overlap_and_records_consumes_dependencies(self) -> None:
+        adjacency = load(ADJACENCY)
+        record = self.request["record"]
+        components = set(record["targets"]["components"])
+        consumes = {d["ref"] for d in record["dependencies"] if d["dependency_id"].startswith("CONSUMES-")}
+        registry = {row["task_id"]: row for row in load("data/canonical-task-registry.json")["tasks"]}
+        for task_id, result in adjacency["results"].items():
+            adjacent = all(result[k] for k in ("a_components_disjoint", "b_finish_point_exercises_none",
+                                                "c_reliance_is_consumes_dependency"))
+            self.assertEqual(result["outcome"], "ADJACENT" if adjacent else "NOT_ADJACENT_OVERLAP_FOLDED", task_id)
+            shard = ROOT / "data" / "canonical-task-records" / f"{task_id}.json"
+            other = json.loads(shard.read_text(encoding="utf-8")) if shard.exists() else registry[task_id]
+            self.assertFalse(components & set((other.get("targets") or {}).get("components") or []), task_id)
+            if adjacent:
+                self.assertIn(task_id, record["adjacent_task_refs"])
+            else:
+                self.assertNotIn(task_id, record["adjacent_task_refs"])
+                self.assertIn(task_id, consumes)
+        for folded in ("sdk-reusable-governance-gate-workflow", "tier-pricing-candidate"):
+            self.assertNotIn(folded, components)
+        finish = self.request["sealed_scope"]["scope"]["finish_point"]
+        self.assertNotIn("test_governance_gate.py", finish["acceptance_test"])
+        self.assertTrue(any(ADJACENCY in line for line in self.request["collision_analysis"]))
 
     def test_plan_resolves_to_the_recorded_six_field_outcome(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

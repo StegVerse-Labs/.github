@@ -8,7 +8,8 @@
   "allocation_request_ref": "control/goal-task-allocation-requests/lane-c-github-universal-governance-product-2026-10-23.json",
   "collision_analysis": [
     "no canonical Registry row, shard, task-vector or index entry for GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 at StegVerse-Labs/.github main 86382e60 (generation 320); the identity is the one proposed in StegVerse-Labs/.github#3012 and named in StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md",
-    "collision check-in decided mechanically in plan"
+    "collision check-in decided mechanically in plan",
+    "adjacency test (structured evidence: tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.adjacency-test.json): SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001: NOT_ADJACENT_OVERLAP_FOLDED (a=False, b=False, c=True; kept as dependency CONSUMES-SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (the published gate at the released ref)); SDK-COST-DERIVED-TIER-PRICING-001: NOT_ADJACENT_OVERLAP_FOLDED (a=False, b=True, c=True; kept as dependency CONSUMES-SDK-COST-DERIVED-TIER-PRICING-001 and predicate ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT); PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001: ADJACENT (a=True, b=True, c=True; kept as adjacent_task_refs entry and dependency CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (revenue-ops input)); STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001: ADJACENT (a=True, b=True, c=True; kept as adjacent_task_refs entry)"
   ],
   "sealed_scope": {
     "schema": "stegverse.goal-scope-seal/v1",
@@ -27,43 +28,37 @@
           "StegVerse-org/.github"
         ],
         "components": [
-          "sdk-reusable-governance-gate-workflow",
           "sdk-governance-gate-free-tier",
           "sdk-portable-governance-verification-bundle",
           "sdk-package-version-identity",
           "customer-quickstart-and-release-notes",
           "tvc-sdk-1.3.0-publication",
           "icv-commercial-distribution",
-          "tier-pricing-candidate",
           "entitlement-separation"
         ]
       },
       "expected_evidence_predicates": [
         "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN_ON_CUSTOMER_SUPPLIED_MANIFEST_CONSTRAINTS",
         "PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON",
-        "REUSABLE_GOVERNANCE_GATE_PINNED_TO_IMMUTABLE_TV_TVC_PUBLISHED_REF",
         "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE",
         "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY",
         "RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM",
         "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED",
         "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
-        "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
-        "REPLAY_TAMPER_STALE_HEAD_REFUSAL_TESTED",
         "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
-        "ROUTE_SHA256_PRESERVED_ACROSS_CLASSIFIER_ALIAS_MIGRATION",
         "LICENSE_AND_TERMS_OWNER_APPROVED",
-        "TIER_PRICING_OWNER_APPROVED_AND_ENTITLEMENT_SEPARATE_FROM_DISPOSITION",
         "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
-        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE"
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE",
+        "ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT"
       ],
       "finish_point": {
-        "acceptance_test": "StegVerse-org/StegVerse-SDK tests/test_governance_gate.py and tests/test_governance_gate_pin_reproduction.py (present at SDK main daca828a), run in a customer repository against the immutable ref named by the TV/TVC release receipt: valid bundle -> ALLOW; tampered, over-limit and empty-glob bundles -> FAIL_CLOSED with the six fields; no effect on non-ALLOW",
-        "predicate": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN at REUSABLE_GOVERNANCE_GATE_PINNED_TO_IMMUTABLE_TV_TVC_PUBLISHED_REF",
-        "verifier_entrypoint": "StegVerse-org/StegVerse-SDK: .github/workflows/governance-gate-selftest.yml",
+        "acceptance_test": "StegVerse-org/StegVerse-SDK tests/test_package_version_identity.py (present at SDK main daca828a), run at the immutable ref named by the TV/TVC release receipt: __version__, pyproject.toml and VERSION.json agree on the released version; the governance gate workflow and module at that ref are consumed as published by SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (its .github/workflows/governance-gate-selftest.yml receipt) and are not exercised by this finish point",
+        "predicate": "PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON at IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY",
+        "verifier_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_package_version_identity at the released ref",
         "lowest_supported_mode": "E0"
       }
     },
-    "scope_digest": "sha256:27909085ddc6d08f35d5ebb58cfaf6ed8152f2f3c2826b015a932c28334ed764",
+    "scope_digest": "sha256:af91ec48f3fdeaf0233777a2b798829a4544622bd342ddaf8ffdc72252d5f3b5",
     "supersedes_scope_digest": null
   },
   "record": {
@@ -107,14 +102,12 @@
         "StegVerse-org/.github"
       ],
       "components": [
-        "sdk-reusable-governance-gate-workflow",
         "sdk-governance-gate-free-tier",
         "sdk-portable-governance-verification-bundle",
         "sdk-package-version-identity",
         "customer-quickstart-and-release-notes",
         "tvc-sdk-1.3.0-publication",
         "icv-commercial-distribution",
-        "tier-pricing-candidate",
         "entitlement-separation"
       ]
     },
@@ -127,12 +120,6 @@
       },
       {
         "dependency_id": "DECISION-LICENSE",
-        "kind": "HUMAN_ACTION",
-        "state": "UNRESOLVED",
-        "ref": "decision owner: OWNER"
-      },
-      {
-        "dependency_id": "DECISION-PRICING-TIERS",
         "kind": "HUMAN_ACTION",
         "state": "UNRESOLVED",
         "ref": "decision owner: OWNER"
@@ -162,10 +149,22 @@
         "ref": "TVC-SDK-1.3.0-CREDENTIAL-AUTHORIZATION-001"
       },
       {
-        "dependency_id": "TASK-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+        "dependency_id": "CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
         "kind": "TASK",
         "state": "UNRESOLVED",
         "ref": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001"
+      },
+      {
+        "dependency_id": "CONSUMES-SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001"
+      },
+      {
+        "dependency_id": "CONSUMES-SDK-COST-DERIVED-TIER-PRICING-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "SDK-COST-DERIVED-TIER-PRICING-001"
       }
     ],
     "blockers": [
@@ -178,11 +177,6 @@
         "blocker_id": "BLOCKER-DECISION-LICENSE",
         "dependency_id": "DECISION-LICENSE",
         "reason": "SDK LICENSE is MIT; legal/demo terms cover only the Demo surface. Decide product license/terms."
-      },
-      {
-        "blocker_id": "BLOCKER-DECISION-PRICING-TIERS",
-        "dependency_id": "DECISION-PRICING-TIERS",
-        "reason": "Approve or reject candidate tiers; no prices are presumed (#3183)."
       },
       {
         "blocker_id": "BLOCKER-DECISION-DISTRIBUTION-SURFACE",
@@ -203,8 +197,6 @@
     "systemic_incident_ref": null,
     "adjacent_task_refs": [
       "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
-      "SDK-COST-DERIVED-TIER-PRICING-001",
-      "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
       "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
       "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
       "GOVERNANCE-METERED-POLICY-RECOVERY-001",
@@ -222,20 +214,16 @@
     "expected_evidence_predicates": [
       "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN_ON_CUSTOMER_SUPPLIED_MANIFEST_CONSTRAINTS",
       "PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON",
-      "REUSABLE_GOVERNANCE_GATE_PINNED_TO_IMMUTABLE_TV_TVC_PUBLISHED_REF",
       "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE",
       "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY",
       "RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM",
       "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED",
       "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
-      "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
-      "REPLAY_TAMPER_STALE_HEAD_REFUSAL_TESTED",
       "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
-      "ROUTE_SHA256_PRESERVED_ACROSS_CLASSIFIER_ALIAS_MIGRATION",
       "LICENSE_AND_TERMS_OWNER_APPROVED",
-      "TIER_PRICING_OWNER_APPROVED_AND_ENTITLEMENT_SEPARATE_FROM_DISPOSITION",
       "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
-      "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE"
+      "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE",
+      "ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT"
     ],
     "execution_substrate_resolution": {
       "schema": "stegverse.execution-substrate-resolution/v1",
