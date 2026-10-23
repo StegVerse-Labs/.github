@@ -64,7 +64,7 @@ class Registration(unittest.TestCase):
         components = [set(request(t)["record"]["targets"]["components"]) for t in TASKS]
         self.assertFalse(components[0] & components[1] or components[0] & components[2] or components[1] & components[2])
 
-    def test_plan_fails_closed_on_cosv_as_recorded(self):
+    def test_plan_derives_cosv_as_recorded_and_applies_nothing(self):
         for goal in MANIFEST["goals"]:
             with tempfile.TemporaryDirectory() as tmp:
                 out = Path(tmp) / "receipt.json"
@@ -73,13 +73,45 @@ class Registration(unittest.TestCase):
                                cwd=ROOT, capture_output=True, text=True, check=False)
                 receipt = json.loads(out.read_text(encoding="utf-8"))
             expected = goal["expected_plan"]
-            self.assertEqual(receipt["disposition"], "FAIL_CLOSED", goal["task_id"])
-            for field in SIX + ("detail",):
-                self.assertEqual(receipt[field], expected[field], (goal["task_id"], field))
-            self.assertEqual(receipt["failure_code"], "COSV_NOT_DERIVABLE")
+            self.assertEqual(receipt["disposition"], "ALLOW", (goal["task_id"], receipt))
+            evidence = receipt["evidence"]
+            for field in ("cosv_task_vector", "scope_digest", "successor_registry_generation", "collision_checkin"):
+                self.assertEqual(evidence[field], expected[field], (goal["task_id"], field))
+            self.assertEqual(receipt["derived_files"], expected["derived_files"], goal["task_id"])
+            self.assertEqual(receipt["request_sha256"], expected["request_sha256"], goal["task_id"])
+            self.assertFalse(evidence["allocation"]["proposal_adopted"])
+            self.assertIsNone(evidence["allocation"]["proposed_cosv_task_vector"])
+            claim = evidence["workercoordinator_claim_request"]
+            self.assertIsNone(claim["claim_ref"])
+            self.assertIsNone(claim["fence_ref"])
             for flag in ("consequence_committed", "organization_ledger_appended", "execution_authority_minted",
                          "workercoordinator_claim_or_fence_minted", "intr_admission_minted"):
-                self.assertFalse(receipt[flag], (goal["task_id"], flag))
+                self.assertFalse(receipt.get(flag, False), (goal["task_id"], flag))
+        registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
+        self.assertEqual(registry["generation"], MANIFEST["observed_registry_generation"])  # nothing applied
+
+    def test_metrics_carry_evidence_and_derive_only_in_the_planner(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        cosv = load_module("cosv_pat003", "scripts/cosv.py")
+        for goal in MANIFEST["goals"]:
+            vector = request(goal["task_id"])["vector"]
+            self.assertNotIn("vector", vector)
+            self.assertEqual(set(vector["exact_metrics"]) - {"symbol_order"}, set(cosv.TASK_FIELDS))
+            self.assertEqual(set(vector["metric_evidence"]), set(cosv.TASK_FIELDS))
+            for field, text in vector["metric_evidence"].items():
+                self.assertIn("Lane D", text, (goal["task_id"], field))
+            self.assertIn(goal["metrics_source"]["ref"], vector["evidence_refs"])
+
+    def test_finish_points_are_lane_a_replacements_with_handoffs_outside(self):
+        for goal in MANIFEST["goals"]:
+            rec = request(goal["task_id"])
+            fp = rec["sealed_scope"]["scope"]["finish_point"]
+            self.assertNotIn("unresolved_items no longer lists", fp["predicate"])
+            self.assertIn("never READY_TO_FILE", fp["predicate"])
+            self.assertTrue(fp["verifier_entrypoint"].startswith("STRUCTURAL_VERIFIER_NOT_IMPLEMENTED"))
+            kinds = {(d["dependency_id"], d["kind"], d["state"]) for d in rec["record"]["dependencies"]}
+            self.assertIn(("PAT_003_OWNER_OR_PRACTITIONER_CHECK_OFF", "HUMAN_ACTION", "UNRESOLVED"), kinds)
+            self.assertIn(("PAT_003_STRUCTURAL_VERIFIER", "CAPABILITY", "UNRESOLVED"), kinds)
 
     def test_scope_seal_holds_for_the_record(self):
         gss = load_module("goal_scope_seal_pat003", "scripts/goal_scope_seal.py")

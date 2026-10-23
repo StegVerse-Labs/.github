@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.lane-d.pat-003-claim-fence-manifest/v1",
   "authority_effect": "NONE_DRAFT_MANIFEST",
-  "label": "admission-input-ready DRAFT. Every identity here is PROPOSED_BY_LANE_A; nothing is registered, claimed or fenced.",
+  "label": "admission-input-ready DRAFT. Every identity here is PROPOSED_BY_LANE_A; the plans are scratch ALLOW (successor generation 321 is derived, never applied); nothing is registered, claimed or fenced.",
   "issue": "StegVerse-org/.github#165 (Goal of PAT-003); StegVerse-Labs/patent-registry#19 (parent #16)",
   "owner_citation": "LLM_Coordination INDEX.md (Drive file 1_dOuehS567PuLUzqvxHj9JaGYYPX2uA_), lane-to-Goal map line: '- PAT-003 (19d95368), Lane A: #165 (P3)'",
   "registry_edit": false,
@@ -27,18 +27,30 @@
       "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-EVIDENCE.request.json",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-evidence-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-EVIDENCE.claim-draft.json",
-      "scope_digest": "sha256:d7c3e99471d847d7184bc8872ca230c43f690efe0e62a74a57538c442c10dba2",
+      "scope_digest": "sha256:748ae675bf601d4ca727bed342a8c6677f3c126891c99405f552675faad9097c",
       "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "metrics_source": {
+        "supplied_by": "Lane A",
+        "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
+        "file_sha256": "a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea",
+        "lane_d_rederivation": "every field re-derived read-only by Lane D (index blob 48996386, validator stdout 2eba982e, registry gen 320, claims gen 2, Patents#21 @63be4ccf); chat attribution UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, counts observed"
+      },
+      "finish_point_source": "Lane A replacement (FE/FC/FP), same comment",
+      "lane_a_scratch_plan_sha256": "db7c8ed8289d51d70b4398f56e5618eace948584fb2c80e23135f873b1add939",
       "expected_plan": {
-        "disposition": "FAIL_CLOSED",
-        "failure_class": "B",
-        "failure_code": "COSV_NOT_DERIVABLE",
-        "failed_predicate": "COSV_NOT_DERIVABLE",
-        "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS)",
-        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
-        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-        "next_attempt": "on the next registration request event after the repair is recorded",
-        "detail": "encode_task failed: KeyError('lifecycle')"
+        "disposition": "ALLOW",
+        "cosv_task_vector": "10110010012000",
+        "scope_digest": "sha256:748ae675bf601d4ca727bed342a8c6677f3c126891c99405f552675faad9097c",
+        "successor_registry_generation": 321,
+        "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
+        "derived_files": {
+          "control/goal-scope-seals/PAT-003-EVIDENCE.json": "sha256:988f86220ca7d7301c2b2e91f21c2d4fb69bd3c3c75a6b4a3e090c58de2c1da1",
+          "control/task-vector-index.d/PAT-003-EVIDENCE.json": "sha256:0ac67cf6772cc94c8f7586aebdbb377ff38724416046d889af92d894dfb5f5e7",
+          "control/task-vectors/PAT-003-EVIDENCE.json": "sha256:f2446a2e6d7f52e8579e7488c93637e68c6593bb51b8cf84e6e329044c238e54",
+          "data/canonical-task-records/PAT-003-EVIDENCE.json": "sha256:446961e7bc2cf98c83342299fc309eeac9ca7c7e6804fd7f0224c129b637f733",
+          "data/canonical-task-registry.json": "sha256:20aaabe04d1df3c8ea3c7718cbb20ef8077e41c2665d31b52554b8680381ef2a"
+        },
+        "request_sha256": "sha256:8b9c6d3be9eca8828459ab2e355df9372558fabf409eda95b0aaaea09f5b8e02"
       }
     },
     {
@@ -49,18 +61,30 @@
       "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-CHRONOLOGY.request.json",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-chronology-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-CHRONOLOGY.claim-draft.json",
-      "scope_digest": "sha256:fed52b45316009923b0d4752329d3dccad0a1192e5916d9c4cedb3ac00035e9e",
+      "scope_digest": "sha256:2504daf54448ea61e279717f05e861ebc8ea92f78f046a00b7f85cdcaf71972e",
       "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "metrics_source": {
+        "supplied_by": "Lane A",
+        "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
+        "file_sha256": "a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea",
+        "lane_d_rederivation": "every field re-derived read-only by Lane D (index blob 48996386, validator stdout 2eba982e, registry gen 320, claims gen 2, Patents#21 @63be4ccf); chat attribution UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, counts observed"
+      },
+      "finish_point_source": "Lane A replacement (FE/FC/FP), same comment",
+      "lane_a_scratch_plan_sha256": "34044fe360a07054a7ff1fa80c6c370418ae3bfe9796da424bcf61b25fc5beb6",
       "expected_plan": {
-        "disposition": "FAIL_CLOSED",
-        "failure_class": "B",
-        "failure_code": "COSV_NOT_DERIVABLE",
-        "failed_predicate": "COSV_NOT_DERIVABLE",
-        "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS)",
-        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
-        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-        "next_attempt": "on the next registration request event after the repair is recorded",
-        "detail": "encode_task failed: KeyError('lifecycle')"
+        "disposition": "ALLOW",
+        "cosv_task_vector": "10100000012000",
+        "scope_digest": "sha256:2504daf54448ea61e279717f05e861ebc8ea92f78f046a00b7f85cdcaf71972e",
+        "successor_registry_generation": 321,
+        "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
+        "derived_files": {
+          "control/goal-scope-seals/PAT-003-CHRONOLOGY.json": "sha256:3a6a3bda6d6e896f9be78f804b19d83490724652283fcc71dee13d8dc0d8a5b9",
+          "control/task-vector-index.d/PAT-003-CHRONOLOGY.json": "sha256:bbf9ad8ededeca384ee944af19a03a77b5c88eaa7d8bf93a2fcb067c68ac2a8e",
+          "control/task-vectors/PAT-003-CHRONOLOGY.json": "sha256:84c84987539f50ffdcf5c3441e12f146dab0dd3739793af018bcda04f7ba4916",
+          "data/canonical-task-records/PAT-003-CHRONOLOGY.json": "sha256:bef79ab583c379f1617eb8b5d8ce7816b44532a3cb7c908a3778d89ecdda2792",
+          "data/canonical-task-registry.json": "sha256:dd9b38c5addd7438abb92283cc07064af4b0f52ba94ca1a3510f4fec7c2c632e"
+        },
+        "request_sha256": "sha256:7ab890566e06b7b78a798446dfc9bc526abd9b5c4a3954117596957e32e7e277"
       }
     },
     {
@@ -71,18 +95,30 @@
       "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-PRIOR-ART.request.json",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-prior-art-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-PRIOR-ART.claim-draft.json",
-      "scope_digest": "sha256:8d1da1c50335780ce07abd08d8675d86e160ab9335a33658b8adb47ba656ca0e",
+      "scope_digest": "sha256:fa38d9f6683dd4528346cf0cb45d63c5656ed959cc34899eaef5e2edb0ce9fe4",
       "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "metrics_source": {
+        "supplied_by": "Lane A",
+        "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
+        "file_sha256": "a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea",
+        "lane_d_rederivation": "every field re-derived read-only by Lane D (index blob 48996386, validator stdout 2eba982e, registry gen 320, claims gen 2, Patents#21 @63be4ccf); chat attribution UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, counts observed"
+      },
+      "finish_point_source": "Lane A replacement (FE/FC/FP), same comment",
+      "lane_a_scratch_plan_sha256": "fe50042bdc33f81e9ed26883aeb48e6bede094ca161a4e940a8996c85bfcaf3a",
       "expected_plan": {
-        "disposition": "FAIL_CLOSED",
-        "failure_class": "B",
-        "failure_code": "COSV_NOT_DERIVABLE",
-        "failed_predicate": "COSV_NOT_DERIVABLE",
-        "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS)",
-        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
-        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-        "next_attempt": "on the next registration request event after the repair is recorded",
-        "detail": "encode_task failed: KeyError('lifecycle')"
+        "disposition": "ALLOW",
+        "cosv_task_vector": "10100000011000",
+        "scope_digest": "sha256:fa38d9f6683dd4528346cf0cb45d63c5656ed959cc34899eaef5e2edb0ce9fe4",
+        "successor_registry_generation": 321,
+        "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
+        "derived_files": {
+          "control/goal-scope-seals/PAT-003-PRIOR-ART.json": "sha256:16e6b64b9f4361c6e884e52a4891e2e8b04900dde1871e871acf6f23cf78e752",
+          "control/task-vector-index.d/PAT-003-PRIOR-ART.json": "sha256:eb3591c01df2817bf8b14a977126e1a1c6f6d6043c6ef4ca5e0c4cfa95ec5208",
+          "control/task-vectors/PAT-003-PRIOR-ART.json": "sha256:f894d1e1732d6f2ef8dc7c63f6d610dc812148a8086bb8c87cd6763c226af35c",
+          "data/canonical-task-records/PAT-003-PRIOR-ART.json": "sha256:983364a058dab65c226e820bdf170fee7397ce09eea40fa7b9c65f7f9b4333cd",
+          "data/canonical-task-registry.json": "sha256:bdbcba3c3c69fb4974fd15512d5c05db1105832af89e06384d7f2c47ba018e9f"
+        },
+        "request_sha256": "sha256:ec278ddfed5373c8e587129bcab3091b07a4919be03ce2585e79bd85111c2e07"
       }
     }
   ],
