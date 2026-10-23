@@ -27,6 +27,12 @@ MODULE = ROOT / "scripts" / "registration_parent_existence.py"
 FIXTURE = ROOT / "tests" / "fixtures" / "canonical_task_registration" / "fixture.request.json"
 SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
        "owning_existing_goal", "next_attempt")
+# Predecessor-tree inputs later planner revisions read (the collision check-in, #3324's stack);
+# copied into the scratch base when this tree carries them, so the ALLOW path stays reachable.
+PREDECESSOR_INPUTS = ("scripts/check_registry_collision_checkin.py", "scripts/evaluate_task_registry_collision_checkin.py",
+                      "scripts/task_registry_checkin_event_history.py",
+                      "scripts/validate_task_registration_substrate_resolution.py",
+                      "data/task-registry-global-invariants.json", "data/task-registry-general-checkin-caller-policy.json")
 PARENT = "KV-SKAP-VAULT-FUNCTIONAL-001"
 CHILD = "SKAP-UNDECLARED-CRYPTOGRAPHY-001"
 
@@ -69,6 +75,10 @@ class Base(unittest.TestCase):
         self.base = self.tmp / "base"
         (self.base / "schemas").mkdir(parents=True)
         shutil.copy(ROOT / crt.RECORD_SCHEMA_PATH, self.base / crt.RECORD_SCHEMA_PATH)
+        for rel in PREDECESSOR_INPUTS:
+            if (ROOT / rel).is_file():
+                (self.base / rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(ROOT / rel, self.base / rel)
         self.set_registry(["EXISTING-001"])
         self.request = child_request(self.GENERATION)
 
