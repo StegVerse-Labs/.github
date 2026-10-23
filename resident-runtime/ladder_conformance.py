@@ -22,7 +22,8 @@ also run through its _item_problems. This module adds only what a cross-reposito
 * an observed run whose outcome for a named probe differs from what the item requires is OPERATING_MODE_E0_WITNESS_FAILED
   (or LADDER_E0_TERMINAL_NOT_SIX_FIELD when the component raised or returned a non-ALLOW without the six fields);
 * every non-ALLOW item is covered by a six-field scoped task naming the owning lane, and every scoped task covers only
-  non-ALLOW items carrying its failure code (LADDER_SCOPED_TASK_MISMATCH otherwise).
+  non-ALLOW items carrying its failure code (LADDER_SCOPED_TASK_MISMATCH otherwise); a scoped task may carry an optional
+  fixed finish_point (a non-empty string that bounds the task; anything beyond it is a new registered task).
 
 Pure over the supplied documents: stdlib, no clock, no network, no LLM. Verdicts: ALLOW, DENY, FAIL_CLOSED.
 """
@@ -287,6 +288,7 @@ def evaluate(decl: Mapping[str, Any], obs: Mapping[str, Any], tasks: list[Mappin
               and t.get("disposition") in ("DENY", "FAIL_CLOSED") and isinstance(t.get("owning_lane"), str)
               and t["owning_lane"].strip() and isinstance(t.get("items"), list) and t["items"]
               and isinstance(t.get("proposed_resolution"), str) and t["proposed_resolution"].strip()
+              and ("finish_point" not in t or (isinstance(t["finish_point"], str) and t["finish_point"].strip()))
               and t.get("task_id") not in ids_seen)
         if ok:
             ids_seen.add(t["task_id"])
@@ -294,8 +296,9 @@ def evaluate(decl: Mapping[str, Any], obs: Mapping[str, Any], tasks: list[Mappin
             ok = not (others & set(t["items"]))
         if not ok:
             problems.append(refusal("FAIL_CLOSED", "LADDER_SCOPED_TASK_MISMATCH", "SCOPED_TASK_HAS_SIX_FIELDS_AND_LANE",
-                                    "scoped tasks carry the six fields, owning lane, items and proposed resolution; tasks "
-                                    "sharing a failure code cover disjoint items", CHECK_GOAL, "re-run check",
+                                    "scoped tasks carry the six fields, owning lane, items and proposed resolution; a "
+                                    "finish_point, when present, is a non-empty string; tasks sharing a failure code "
+                                    "cover disjoint items", CHECK_GOAL, "re-run check",
                                     task=t.get("task_id")))
             continue
         by_code.setdefault(t["failure_code"], []).append(t)

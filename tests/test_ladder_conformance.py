@@ -91,6 +91,15 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("class_b", decl[l2])  # no E0 gate exists on the SKAP boundary inside KV: recorded, not invented
         self.assertIn("REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", decl[l1]["what"])
 
+    def test_lc_kv_13_has_the_fixed_finish_point(self):
+        t = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-13")
+        self.assertEqual(t["finish_point"], "Ends when one live node goes from a receipted registration to layer-1 ALLOW, "
+                         "end to end, on real ledger inputs. Anything beyond that is a new registered task.")
+        self.assertIn("LLM-adapter#428", t["finish_point_cross_reference"])
+        self.assertIn("#429", t["finish_point_cross_reference"])
+        self.assertIn("confirmed by Coordination", t["owning_lane_mapping"])
+        self.assertTrue(t["owning_lane"].startswith("InTr and Mesh Destinations lane (Lane B"))
+
     def test_withdrawn_git_ref_custody_adapter_is_not_proposed(self):
         t = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-03")
         self.assertNotIn("refs/stegverse/kv-custody", t["proposed_resolution"])
@@ -233,6 +242,13 @@ class Refusals(unittest.TestCase):
 
     def test_gap_without_task_is_a_mismatch(self):
         self.tasks = [t for t in self.tasks if t["failure_code"] != "LADDER_FINISH_NOT_LEDGER_BOUND" or t["goal"] != KV]
+        d = self.run_()
+        self.assertEqual(d["consistency"], "FAIL_CLOSED")
+        self.assertIn("LADDER_SCOPED_TASK_MISMATCH", [f["failure_code"] for f in d["consistency_refusals"]])
+
+    def test_empty_finish_point_is_a_mismatch(self):
+        t = next(t for t in self.tasks if t["task_id"] == "LC-KV-13")
+        t["finish_point"] = "  "
         d = self.run_()
         self.assertEqual(d["consistency"], "FAIL_CLOSED")
         self.assertIn("LADDER_SCOPED_TASK_MISMATCH", [f["failure_code"] for f in d["consistency_refusals"]])

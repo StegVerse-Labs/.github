@@ -1158,7 +1158,7 @@
  "owning_lane": "GitHub Product lane (Lane C)",
  "receipt": {
   "code": {
-   "resident-runtime/ladder_conformance.py": "sha256:6b8a52ce7456aec60448f38438f39aeb39b13e2763950063aecd61b0e43eca79",
+   "resident-runtime/ladder_conformance.py": "sha256:eac5d4e34b19ae07e13677a99d3dceae54bf56aae2393db5f412271674dbae7b",
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },

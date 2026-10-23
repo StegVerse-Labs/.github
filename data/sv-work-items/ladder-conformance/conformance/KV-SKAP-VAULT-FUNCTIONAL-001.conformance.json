@@ -1308,7 +1308,7 @@
  "owning_lane": "Lane D (KV and WorkSpace)",
  "receipt": {
   "code": {
-   "resident-runtime/ladder_conformance.py": "sha256:6b8a52ce7456aec60448f38438f39aeb39b13e2763950063aecd61b0e43eca79",
+   "resident-runtime/ladder_conformance.py": "sha256:eac5d4e34b19ae07e13677a99d3dceae54bf56aae2393db5f412271674dbae7b",
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
@@ -1330,7 +1330,7 @@
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-10.json": "sha256:636e9210bd4537cdc4b72ee321fb0ef1fa4be079a666eaaf2f93668e7308748a",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-11.json": "sha256:d5a857dc478f3d172a860b1924880271107de65ed416768a58daf84d878c9d5d",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-12.json": "sha256:d5d3cd4dad2267b94886bfe31090c9921a9a9f445d6c4e520babf8588f6ff219",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-13.json": "sha256:e1c20d07c24b7efd978bb99f98b713f31e5431e52f04b04f98abfbd876cdd702",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-13.json": "sha256:72d362e93c8937c6cae1bc0cffc28a537d679da7920bfb7094b0cd95992a95e4",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-14.json": "sha256:9bbce1b5d45f786995f95a5f6c3ff7f4e688ac62cd6722b1864f76fd0c066da8"
   },
   "note": "not a ledger receipt: runtime counts only when a manifest-directed transition appends a receipt to refs/stegverse/organization-ledger",

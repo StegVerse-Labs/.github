@@ -3,6 +3,8 @@
  "disposition": "FAIL_CLOSED",
  "failed_check": "E0_TERMINAL_DECIDES_AS_REQUIRED",
  "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+ "finish_point": "Ends when one live node goes from a receipted registration to layer-1 ALLOW, end to end, on real ledger inputs. Anything beyond that is a new registered task.",
+ "finish_point_cross_reference": "Lane B recorded the same finish point in StegVerse-org/LLM-adapter#428 (head 0b37fe3b786a2de687235f5d9d146af49ffee9cd) and #429 (head 5f5f7bbeea96d5f313effaa02f86b01196465247), PR bodies read only; their wording says 'on real inputs' where this record says 'on real ledger inputs'",
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "items": [
   "H-KV-HEALTHY-NODE-DETERMINATION"
@@ -10,6 +12,7 @@
  "next_attempt": "on the next push to StegVerse-org/LLM-adapter main touching llm_adapter/node_ingress_boundary.py",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
  "owning_lane": "InTr and Mesh Destinations lane (Lane B, InTr; StegVerse-org/.github#162); consuming lane: Lane D (KV and WorkSpace)",
+ "owning_lane_mapping": "confirmed by Coordination (Oct 23): the InTr lane is InTr and Mesh Destinations (Lane B, StegVerse-org/.github#162)",
  "proposed_resolution": "implement REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE as a deterministic evaluator (gate CURRENT_NODE_HEALTH, after AUTHENTICATED_RECIPROCAL_NODE_EXISTENCE -> NODE_IDENTITY_BINDING, on_unknown FAIL_CLOSED, per Labs data/node-exchange) that evaluates the health observation instead of recording it, sets healthy_node_established only on ALLOW, refuses any transport whose state is not INSTALLED, and emits a healthy-node receipt that layer 1 consumes; E0 path: the evaluator alone decides, E1-E3 lanes only author repairs",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
  "required_repair": "the healthy-node determination must refuse an unhealthy, unreported or not-via-InTr requester: LLM-adapter admit() returned ALLOW with healthy_node_established true for an UNHEALTHY report, for no report, and over INTERLOCK_INTR while NOT_YET_ENABLED; REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE has no evaluator (Labs specimen only, runtime UNOBSERVED)",
