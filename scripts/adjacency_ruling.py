@@ -31,14 +31,30 @@ is never trusted: its digest is re-derived, and its conditions are re-computed f
       finish-point commit, or in check-change) is FAIL_CLOSED ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT owned by the
       routing Goal STEGVERSE-CANONICAL-WORK-COORDINATION-001 until an owner is assigned. It is not a candidate, adds
       no component, takes no protected_paths entry and is outside (c).
+  (E) consumes-edit (Rigel, Oct 23: every editable surface is governed, not strictly blocked): an edit to a (U) file
+      is not a hard block. check-change ALLOWs it when the relationship is clear, the pin is moved and the edit is
+      receipted: a stegverse.consumes-edit-receipt/v1 (built by `consumes-edit`, sealed, scratch only, never the
+      real ledger) whose writer is the ruling's subject, whose ruling_digest is the re-pinned ruling's own digest,
+      and whose from/to sha256s equal the file at base and head, with the ruling's (U) pin now naming the head bytes.
+      Missing, stale or mismatched receipt -> FAIL_CLOSED ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT (as before) or
+      ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID, both with this repair path. verify is unchanged: at the finish
+      point the (U) pin must hold (an un-moved pin is still ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT).
+  (D) hashed pin data: in the (b) closure, a path string that appears only as a key of a dict entry whose value is
+      its sha256 literal (e.g. a finish test's PIN = {"files": {"a/b.py": "<sha256>"}}) is data, not an edge, when
+      the ruling pins that same path with that same sha256 (P or U) and the pin was verified. The same path reached
+      any other way (import, path chain, another literal, a by-name load over the pin table) is still followed.
+      Recorded as finish_point.hashed_pin_data_paths.
 
 A ruling only ever clears COORDINATE_CONVERGENCE for exactly the subject task, over candidates it covers; a
 STOP_COLLISION (hard collision) is never cleared. Everything else is a six-field FAIL_CLOSED.
 
   digest  --ruling R                                   -> the evidence_digest R must carry
   verify  --ruling R --request Q [--base DIR] --finish-point-root DIR [--receipt-out F]
-  check-change --ruling R --root DIR --base REV --head REV [--receipt-out F]
-                                                       -> FAIL_CLOSED if base..head modifies a protected path
+  check-change --ruling R --root DIR --base REV --head REV [--consumes-edit-receipt F ...] [--receipt-out F]
+                                                       -> FAIL_CLOSED if base..head modifies a protected path, or a
+                                                          (U) path without a matching consumes-edit receipt
+  consumes-edit --ruling R --root DIR --base REV --head REV --path P --writer-task T [--writer-ref X] [--out F]
+                                                       -> the sealed consumes-edit receipt (scratch), or FAIL_CLOSED
 """
 from __future__ import annotations
 
@@ -301,8 +317,9 @@ class _Module:
             return self.name_values(e.id, fn, depth)
         if isinstance(e, (ast.Tuple, ast.List, ast.Set)):
             return {_Table(v for x in e.elts for v in self.values(x, fn, depth))}
-        if isinstance(e, ast.Dict):
-            return {_Table(v for x in e.values for v in self.values(x, fn, depth))}
+        if isinstance(e, ast.Dict):  # iterating a dict yields its keys, subscripting its values: a member is either
+            keys = [k for k in e.keys if isinstance(k, ast.Constant) and isinstance(k.value, str)]
+            return {_Table(v for x in keys + list(e.values) for v in self.values(x, fn, depth))}
         if isinstance(e, ast.JoinedStr):
             acc = {""}
             for part in e.values:
@@ -618,12 +635,31 @@ def dynamic_loads(root: Path, path: Path, tree: ast.Module, stubbed: list[tuple[
     return names, files, unresolved, module.private_loaders
 
 
-def _file_edges(root: Path, path: Path, tree: ast.Module, rel: str) -> dict[str, Any]:
+def _pin_data_keys(tree: ast.Module, data_pins: dict[str, str] | None) -> dict[int, str]:
+    """(D) dict keys that are only hashed pin data: {path: "<sha256>"} where the ruling pins path with that sha256."""
+    out: dict[int, str] = {}
+    if not data_pins:
+        return out
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Dict):
+            continue
+        for k, v in zip(node.keys, node.values):
+            key, value = _const_str(k), _const_str(v)
+            if key is None or value is None or not HEX64.match(value.strip()):
+                continue
+            if data_pins.get(key.strip()) == _bare(value.strip()):
+                out[id(k)] = key.strip()
+    return out
+
+
+def _file_edges(root: Path, path: Path, tree: ast.Module, rel: str,
+                data_pins: dict[str, str] | None = None) -> dict[str, Any]:
     absolute: list[str] = []
     relative: list[str] = []
     files: list[Path] = []
     aliases = _aliases(tree)
-    keys: set[int] = set()  # a string used only as a sys.modules key or a stub's name is not an import
+    pin_data = _pin_data_keys(tree, data_pins)
+    keys: set[int] = set(pin_data)  # a string used only as a sys.modules key, a stub's name or pin data is not an import
     for node in ast.walk(tree):
         if isinstance(node, ast.Subscript) and _is_sys_modules(node.value, aliases):
             keys.add(id(node.slice))
@@ -668,7 +704,7 @@ def _file_edges(root: Path, path: Path, tree: ast.Module, rel: str) -> dict[str,
         if target.is_file() and root in target.parents:
             files.append(target)
     return {"absolute": absolute + dyn_names, "relative": relative, "stubbed": stubbed, "files": files,
-            "unresolved": dyn_unresolved, "loaders": loaders}
+            "unresolved": dyn_unresolved, "loaders": loaders, "pin_data": sorted(set(pin_data.values()))}
 
 
 def _sys_modules_removals(tree: ast.Module) -> list[int]:
@@ -999,7 +1035,8 @@ def _preload(root: Path, test_rel: str, packages: set[str]) -> tuple[list[tuple[
     return roots, reasons, runners
 
 
-def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = None) -> dict[str, str]:
+def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = None,
+                   data_pins: dict[str, str] | None = None) -> dict[str, str]:
     """{repository path: sha256} of the test file and every repository file it reaches statically.
 
     Every reached file carries the contexts it is reached in: N (normal) or S:<package> (loaded under a package that
@@ -1009,7 +1046,8 @@ def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = N
     Stub contexts are not used at all (P's __init__ stays) if any closure file can remove a sys.modules entry, or if
     anything outside the closure that runs in the same process first can import P or cannot be read statically
     (conftest.py and package __init__ on the test's chain, pytest configuration and plugins, site hooks, the
-    workflow command that runs the finish test; see _preload). Each reason is recorded."""
+    workflow command that runs the finish test; see _preload). Each reason is recorded. With `data_pins`
+    {path: sha256} (verified pins only), a path string that is only hashed pin data is not followed (D)."""
     root = root.resolve()
     start = (root / test_rel).resolve()
     _require(start.is_file() and root in start.parents, "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
@@ -1033,7 +1071,7 @@ def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = N
                     raise RulingRefusal("ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE", "FINISH_POINT_CLOSURE_PARSES",
                                         f"{rel} must parse so its closure can be computed", str(exc))
                 trees[rel] = tree
-                edges[rel] = _file_edges(root, path, tree, rel)
+                edges[rel] = _file_edges(root, path, tree, rel, data_pins)
         return edges[rel]
 
     def walk(use_stubs: bool, starts: list[Path] | None = None) -> dict[str, set[str]]:
@@ -1103,6 +1141,7 @@ def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = N
     if receipt is not None:
         receipt["stub_contexts"] = {rel: sorted(cs) for rel, cs in sorted(contexts.items())
                                     if any(c.startswith("S:") for c in cs)}
+        receipt["hashed_pin_data_paths"] = sorted({p for rel in contexts if edges.get(rel) for p in edges[rel]["pin_data"]})
     seen = {rel: data_of[rel] for rel in contexts}
     private_loaders = {rel: edges[rel]["loaders"] for rel in contexts if edges[rel] and edges[rel]["loaders"]}
     unresolved = [u for rel in contexts if edges[rel] for u in edges[rel]["unresolved"]]
@@ -1275,10 +1314,13 @@ def _unowned_edit(pins: dict[str, dict[str, Any]], changed: Iterable[str]) -> Ru
     hit = sorted(set(changed) & set((pins.get(UNOWNED) or {}).get("files") or {}))
     if not hit:
         return None
-    return RulingRefusal("ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT", "UNOWNED_CONSUMED_SOURCE_UNMODIFIED",
-                         f"{hit} are consumed by the finish point and have no observed owner: do not edit them here; "
-                         f"{OWNING_GOAL} assigns an owner (class B), the owner publishes the change, and the pin moves "
-                         "after that", {"modified": hit, "owner": UNOWNED, "routed_to": OWNING_GOAL})
+    return RulingRefusal("ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT", "UNOWNED_CONSUMED_EDIT_IS_REPINNED_AND_RECEIPTED",
+                         f"{hit} are consumed by the finish point and have no observed owner. The edit is admitted (E) "
+                         "when the relationship is clear, the pin is moved and the edit is receipted: move the "
+                         f"{UNOWNED} pin (commit and sha256) in the ruling to the edited bytes, build the receipt with "
+                         "`python scripts/adjacency_ruling.py consumes-edit` (scratch, never the real ledger) and pass "
+                         f"it to check-change --consumes-edit-receipt; or {OWNING_GOAL} assigns an owner (class B) "
+                         "and the owner publishes the change", {"modified": hit, "owner": UNOWNED, "routed_to": OWNING_GOAL})
 
 
 def verify_pins(root: Path, head: str, test_rel: str, pins: dict[str, dict[str, Any]],
@@ -1324,8 +1366,97 @@ def verify_pins(root: Path, head: str, test_rel: str, pins: dict[str, dict[str, 
     return rows
 
 
-def check_change(ruling: Any, root: Path, base: str, head: str) -> dict[str, Any]:
-    """FAIL_CLOSED when base..head modifies a protected path (routed to its owner)."""
+CONSUMES_EDIT_SCHEMA = "stegverse.consumes-edit-receipt/v1"
+SCRATCH = "SCRATCH_NOT_A_LEDGER_RECEIPT"
+SEAL = "receipt_sha256"
+
+
+def seal(body: dict[str, Any]) -> dict[str, Any]:
+    out = {k: v for k, v in body.items() if k != SEAL}
+    out[SEAL] = sha(canon(out))
+    return out
+
+
+def _rev(root: Path, rev: str) -> str | None:
+    try:
+        out = subprocess.run(["git", "-C", str(root), "rev-parse", "--verify", f"{rev}^{{commit}}"], capture_output=True,
+                             text=True, check=False, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return out.stdout.strip() if out.returncode == 0 else None
+
+
+def _edit_refusal(code: str, predicate: str, detail: Any) -> RulingRefusal:
+    return RulingRefusal(code, predicate, _unowned_edit({UNOWNED: {"files": {detail.get("path", "?"): ""}}},
+                                                        [detail.get("path", "?")]).repair, detail)
+
+
+def consumes_edit(ruling: Any, root: Path, base: str, head: str, rel: str, writer_task: str,
+                  writer_ref: str | None = None) -> dict[str, Any]:
+    """The sealed consumes-edit receipt for one (U) file edited in base..head, or a six-field FAIL_CLOSED. Scratch:
+    it is evidence for check-change and write admission, never appended to the real ledger by this script."""
+    try:
+        _require(isinstance(ruling, dict) and isinstance(ruling.get("subject"), dict) and ruling.get("schema") == SCHEMA,
+                 "ADJACENCY_RULING_SCHEMA_INVALID", "ADJACENCY_RULING_IS_WELL_FORMED", f"a {SCHEMA} object with a subject")
+        repository = (ruling["subject"].get("finish_point") or {}).get("repository")
+        digest = ruling_digest(ruling)
+        _require(ruling.get("evidence_digest") == digest, "ADJACENCY_RULING_DIGEST_MISMATCH",
+                 "RULING_EVIDENCE_DIGEST_MATCHES", f"evidence_digest must be {digest} (re-seal the re-pinned ruling)")
+        pins, _routes = pin_structure(ruling, repository)
+        pin = pins.get(UNOWNED)
+        detail = {"path": rel}
+        if pin is None or rel not in pin["files"]:
+            raise _edit_refusal("ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID", "CONSUMES_EDIT_PATH_IS_AN_UNOWNED_PIN",
+                                dict(detail, reason=f"{rel} is not in the ruling's {UNOWNED} pinned_source"))
+        _require(writer_task == ruling.get("task_id"), "ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID",
+                 "CONSUMES_EDIT_WRITER_IS_THE_CONSUMING_SUBJECT",
+                 f"only the consuming subject {ruling.get('task_id')} has a clear relationship to {rel}; another writer "
+                 "registers its own relationship first (scripts/write_admission.py)", {"writer_task": writer_task})
+        b, h = _rev(root, base), _rev(root, head)
+        _require(bool(b and h), "ADJACENCY_RULING_CHANGE_UNREADABLE", "CHANGE_DIFF_READABLE",
+                 f"{root} must hold both {base} and {head}")
+        at_base, at_head, at_pin = _blob_sha(root, b, rel), _blob_sha(root, h, rel), _blob_sha(root, pin["commit"], rel)
+        if at_head != pin["files"][rel] or at_pin != pin["files"][rel]:
+            raise _edit_refusal("ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT", "UNOWNED_CONSUMED_EDIT_IS_REPINNED",
+                                dict(detail, pinned=pin["files"][rel], at_pin=at_pin, at_head=at_head,
+                                     reason="the ruling's pin does not name the edited bytes"))
+        body = {"schema": CONSUMES_EDIT_SCHEMA, "ledger_status": SCRATCH, "subject_task_id": ruling["task_id"],
+                "writer": {"task_id": writer_task, "ref": writer_ref or "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"},
+                "relationship": {"kind": "CONSUMES_PIN", "consumes_task_id": UNOWNED, "ruling_digest": digest},
+                "repository": repository, "path": rel,
+                "from": {"commit": b, "sha256": at_base or "ABSENT"}, "to": {"commit": h, "sha256": at_head},
+                "pin": {"commit": pin["commit"], "sha256": pin["files"][rel]},
+                "owner": UNOWNED, "routed_to": OWNING_GOAL, "disposition": "ALLOW",
+                "clock_read": False, "network_used": False, "llm_used": False, "lowest_supported_mode": "E0"}
+        return seal(body)
+    except RulingRefusal as refusal:
+        return {"schema": CONSUMES_EDIT_SCHEMA, **refusal.six()}
+
+
+def check_consumes_edit(receipt: Any, ruling: dict[str, Any], root: Path, base: str, head: str, rel: str) -> None:
+    """Raise unless `receipt` admits the (U) edit of rel in base..head under this (re-pinned) ruling."""
+    detail = {"path": rel}
+    ok = isinstance(receipt, dict) and receipt.get(SEAL) == seal(receipt).get(SEAL) \
+        and receipt.get("schema") == CONSUMES_EDIT_SCHEMA and receipt.get("ledger_status") == SCRATCH \
+        and receipt.get("disposition") == "ALLOW"
+    if not ok:
+        raise _edit_refusal("ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID", "CONSUMES_EDIT_RECEIPT_IS_SEALED",
+                            dict(detail, reason="schema, ledger_status, disposition or receipt_sha256 does not verify"))
+    rebuilt = consumes_edit(ruling, root, base, head, rel, (receipt.get("writer") or {}).get("task_id"),
+                            (receipt.get("writer") or {}).get("ref"))
+    if rebuilt.get("disposition") != "ALLOW":
+        raise RulingRefusal(rebuilt["failure_code"], rebuilt["failed_predicate"], rebuilt["required_evidence_or_repair"],
+                            rebuilt.get("detail"))
+    if rebuilt[SEAL] != receipt[SEAL]:
+        raise _edit_refusal("ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID", "CONSUMES_EDIT_RECEIPT_RECOMPUTES",
+                            dict(detail, reason="the receipt is not what this ruling and base..head recompute",
+                                 recomputed=rebuilt[SEAL], supplied=receipt[SEAL]))
+
+
+def check_change(ruling: Any, root: Path, base: str, head: str,
+                 consumes_edits: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """FAIL_CLOSED when base..head modifies a protected path (routed to its owner), or a (U) path without a
+    consumes-edit receipt that recomputes (E)."""
     body: dict[str, Any] = {"schema": RECEIPT_SCHEMA, "mode": "check-change", "base": base, "head": head,
                             "clock_read": False, "network_used": False, "llm_used": False, "lowest_supported_mode": "E0"}
     try:
@@ -1340,10 +1471,20 @@ def check_change(ruling: Any, root: Path, base: str, head: str) -> dict[str, Any
             diff = subprocess.CompletedProcess([], 1, "", str(exc))
         _require(diff.returncode == 0, "ADJACENCY_RULING_CHANGE_UNREADABLE", "CHANGE_DIFF_READABLE",
                  f"{root} must hold both {base} and {head}", diff.stderr[:300])
-        refusal = _owned_edit(routes, diff.stdout.split()) or _unowned_edit(pins, diff.stdout.split())
+        changed = diff.stdout.split()
+        refusal = _owned_edit(routes, changed)
         if refusal is not None:
             raise refusal
+        admitted = []
+        for rel in sorted(set(changed) & set((pins.get(UNOWNED) or {}).get("files") or {})):
+            matching = [r for r in consumes_edits or [] if isinstance(r, dict) and r.get("path") == rel]
+            if not matching:
+                raise _unowned_edit(pins, [rel])
+            check_consumes_edit(matching[0], ruling, root, base, head, rel)
+            admitted.append({"path": rel, SEAL: matching[0][SEAL], "ledger_status": SCRATCH})
         body.update({"disposition": "ALLOW", "condition_routing": "HELD", "protected_paths": routes})
+        if admitted:
+            body["consumes_edits"] = admitted
     except RulingRefusal as refusal:
         body.update(refusal.six())
     return body
@@ -1460,7 +1601,8 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
              f"the finish-point root must be {repository} checked out at {fp['source_commit']}", {"observed_head": head})
     pin_rows = verify_pins(finish_point_root, head, test_rel, pins, routes)
     closure_notes: dict[str, Any] = {}
-    closure = static_closure(finish_point_root, test_rel, closure_notes)
+    data_pins = {rel: digest for pin in pins.values() for rel, digest in pin["files"].items()}  # verified above
+    closure = static_closure(finish_point_root, test_rel, closure_notes, data_pins)
     for row in pin_rows:
         if row["task_id"] == UNOWNED:
             row["in_finish_point_closure"] = {rel: rel in closure for rel in sorted(row["files"])}
@@ -1515,7 +1657,8 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
                              "stub_seeded_contexts": closure_notes.get("stub_contexts", {}),
                              "stub_contexts_disabled_by": closure_notes.get("stub_contexts_disabled_by", []),
                              "stub_preload_sources": closure_notes.get("stub_preload_sources", []),
-                             "finish_test_runners": closure_notes.get("finish_test_runners", [])},
+                             "finish_test_runners": closure_notes.get("finish_test_runners", []),
+                             "hashed_pin_data_paths": closure_notes.get("hashed_pin_data_paths", [])},
             "candidates": rows, "consumes_dependencies": consumes, "condition_c": "HELD",
             "consumed_pins": pin_rows, "protected_paths": routes,
             "condition_pin": "HELD" if pin_rows else "NOT_APPLICABLE",
@@ -1540,14 +1683,28 @@ def main(argv: list[str] | None = None) -> int:
     c.add_argument("--root", required=True, type=Path)
     c.add_argument("--base", required=True)
     c.add_argument("--head", required=True)
+    c.add_argument("--consumes-edit-receipt", type=Path, action="append", default=[])
     c.add_argument("--receipt-out", type=Path)
+    e = sub.add_parser("consumes-edit")
+    e.add_argument("--ruling", required=True, type=Path)
+    e.add_argument("--root", required=True, type=Path)
+    e.add_argument("--base", required=True)
+    e.add_argument("--head", required=True)
+    e.add_argument("--path", required=True)
+    e.add_argument("--writer-task", required=True)
+    e.add_argument("--writer-ref")
+    e.add_argument("--receipt-out", "--out", dest="receipt_out", type=Path)
     args = parser.parse_args(argv)
     ruling = json.loads(args.ruling.read_text(encoding="utf-8"))
     if args.cmd == "digest":
         print(ruling_digest(ruling))
         return 0
     if args.cmd == "check-change":
-        body = check_change(ruling, args.root.resolve(), args.base, args.head)
+        edits = [json.loads(p.read_text(encoding="utf-8")) for p in args.consumes_edit_receipt]
+        body = check_change(ruling, args.root.resolve(), args.base, args.head, edits)
+    elif args.cmd == "consumes-edit":
+        body = consumes_edit(ruling, args.root.resolve(), args.base, args.head, args.path, args.writer_task,
+                             args.writer_ref)
     else:
         request = json.loads(args.request.read_text(encoding="utf-8"))
         body = verify(ruling, request, args.base.resolve(),

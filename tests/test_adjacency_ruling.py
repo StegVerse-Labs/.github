@@ -498,6 +498,126 @@ class AdjacencyRulingTests(unittest.TestCase):
                 body, req = self.unowned_ruling(head, pin, pinned, mutate)
                 self.refused(ar.verify(body, req, self.base, root), code)
 
+    # -- (E) consumes-edit: an unowned consumed edit is admitted when re-pinned and receipted (scratch) -----------
+    def repinned(self, root, head, files, mutate=None):
+        new = dict(files, **{"gate/gate_reader.py": hashlib.sha256((root / "gate" / "gate_reader.py").read_bytes()).hexdigest()})
+        return self.unowned_ruling(head, head, new, mutate)
+
+    def test_unowned_consumed_edit_with_a_consumes_edit_receipt_allows(self) -> None:
+        root, pin, head, files = self.pinned_fixture(edit_consumed=True)
+        body, req = self.repinned(root, head, files)
+        receipt = ar.consumes_edit(body, root, pin, head, "gate/gate_reader.py", "SUBJ-001", "Org/fp#9")
+        self.assertEqual(receipt["disposition"], "ALLOW", receipt)
+        self.assertEqual(receipt["ledger_status"], ar.SCRATCH)
+        self.assertEqual(receipt["relationship"]["ruling_digest"], body["evidence_digest"])
+        self.assertEqual(receipt["from"]["sha256"], files["gate/gate_reader.py"])
+        self.assertEqual(receipt[ar.SEAL], ar.seal(receipt)[ar.SEAL])
+        change = ar.check_change(body, root, pin, head, [receipt])
+        self.assertEqual(change["disposition"], "ALLOW", change)
+        self.assertEqual(change["consumes_edits"][0]["path"], "gate/gate_reader.py")
+        # verify at the finish point holds on the moved pin; without the receipt check-change still fails closed
+        self.assertEqual(ar.verify(body, req, self.base, root)["disposition"], "ALLOW")
+        self.refused(ar.check_change(body, root, pin, head), "ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT")
+        self.assertIn("consumes-edit", ar.check_change(body, root, pin, head)["required_evidence_or_repair"])
+
+    def test_consumes_edit_fails_closed_without_repin_relationship_or_matching_receipt(self) -> None:
+        root, pin, head, files = self.pinned_fixture(edit_consumed=True)
+        stale, _ = self.unowned_ruling(head, pin, files)  # pin not moved
+        self.refused(ar.consumes_edit(stale, root, pin, head, "gate/gate_reader.py", "SUBJ-001"),
+                     "ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT")
+        body, _ = self.repinned(root, head, files)
+        self.refused(ar.consumes_edit(body, root, pin, head, "gate/gate_reader.py", "SOMEONE-ELSE-001"),
+                     "ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID")
+        self.refused(ar.consumes_edit(body, root, pin, head, "runtime/vault.py", "SUBJ-001"),
+                     "ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID")
+        good = ar.consumes_edit(body, root, pin, head, "gate/gate_reader.py", "SUBJ-001")
+        tampered = dict(good, path="gate/gate_reader.py", to=dict(good["to"], sha256="0" * 64))
+        self.refused(ar.check_change(body, root, pin, head, [tampered]), "ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID")
+        resealed = ar.seal(dict(good, writer={"task_id": "SOMEONE-ELSE-001", "ref": "Org/fp#9"}))
+        self.refused(ar.check_change(body, root, pin, head, [resealed]), "ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID")
+        # a receipt made under one ruling does not carry over to another (its ruling_digest no longer matches)
+        other, _ = self.repinned(root, head, files, lambda b: b.__setitem__("ruled_by", "Coordination (other)"))
+        self.refused(ar.check_change(other, root, pin, head, [good]), "ADJACENCY_RULING_CONSUMES_EDIT_RECEIPT_INVALID")
+        # the owned (routed) path stays routed to its owner whatever receipt is supplied
+        owned_root, opin, ohead, ofiles = self.pinned_fixture(edit_consumed=True)
+        owned, _ = self.pinned_ruling(ohead, opin, ofiles)
+        self.refused(ar.check_change(owned, owned_root, opin, ohead, [good]), "OWNER_OWNED_EDIT")
+
+    def test_consumes_edit_cli_round_trip(self) -> None:
+        root, pin, head, files = self.pinned_fixture(edit_consumed=True)
+        body, _ = self.repinned(root, head, files)
+        rpath, epath = root / "ruling.json", root / "edit.json"
+        rpath.write_text(json.dumps(body), encoding="utf-8")
+        self.assertEqual(ar.main(["consumes-edit", "--ruling", str(rpath), "--root", str(root), "--base", pin, "--head",
+                                  head, "--path", "gate/gate_reader.py", "--writer-task", "SUBJ-001", "--out",
+                                  str(epath)]), 0)
+        self.assertEqual(ar.main(["check-change", "--ruling", str(rpath), "--root", str(root), "--base", pin, "--head",
+                                  head, "--consumes-edit-receipt", str(epath)]), 0)
+        self.assertEqual(ar.main(["check-change", "--ruling", str(rpath), "--root", str(root), "--base", pin, "--head",
+                                  head]), 1)
+
+    # -- (D) hashed pin data is data, not a closure edge, only when the ruling pins the same bytes ---------------
+    def pin_data_repo(self, test):
+        files = {"tests/test_fp.py": test, "pkg/__init__.py": "from . import danger\n", "pkg/danger.py": "D = 1\n",
+                 "pkg/verifier.py": "X = 1\n", "pkg/other.py": "O = 1\n"}
+        root, _ = self.fp(files)
+        return root, hashlib.sha256((root / "pkg" / "verifier.py").read_bytes()).hexdigest()
+
+    def test_hashed_pin_data_is_not_a_closure_edge(self) -> None:
+        probe, digest = self.pin_data_repo("PIN = {}\n")
+        test = f"PIN = {{'commit': 'c', 'files': {{'pkg/verifier.py': '{digest}'}}}}\n"
+        root, _ = self.pin_data_repo(test)
+        notes = {}
+        closure = ar.static_closure(root, "tests/test_fp.py", notes, {"pkg/verifier.py": digest})
+        self.assertEqual(sorted(closure), ["tests/test_fp.py"])
+        self.assertEqual(notes["hashed_pin_data_paths"], ["pkg/verifier.py"])
+        # no verified pin, or a different sha256: the literal is followed as before (fail closed)
+        self.assertIn("pkg/verifier.py", ar.static_closure(root, "tests/test_fp.py"))
+        self.assertIn("pkg/verifier.py", ar.static_closure(root, "tests/test_fp.py", None, {"pkg/verifier.py": "0" * 64}))
+
+    def test_hashed_pin_path_reached_another_way_is_still_followed(self) -> None:
+        _probe, digest = self.pin_data_repo("PIN = {}\n")
+        pin = f"PIN = {{'pkg/verifier.py': '{digest}'}}\n"
+        cases = {
+            "import": pin + "from pkg import verifier\n",
+            "path chain": pin + "from pathlib import Path\nP = Path(__file__).parents[1] / 'pkg/verifier.py'\n",
+            "load over the pin table": pin + "import runpy\nfrom pathlib import Path\nfor rel in PIN:\n"
+                                       "    runpy.run_path(str(Path(__file__).parents[1] / rel))\n",
+        }
+        for name, test in cases.items():
+            with self.subTest(name):
+                root, _ = self.pin_data_repo(test)
+                self.assertIn("pkg/verifier.py", ar.static_closure(root, "tests/test_fp.py", None, {"pkg/verifier.py": digest}))
+
+    def test_finish_test_carrying_the_unowned_pin_keeps_the_stub_context(self) -> None:
+        """Lane C's case: the finish test carries the (U) pin of a module it loads only under a stub-seeded package.
+        As a path edge the pin literal would load it in context N and pull the package __init__ back in."""
+        root, pin, head, files = self.pinned_fixture()
+        verifier = "pkg/verifier.py"
+        digest = hashlib.sha256(b"from .helper import H\n").hexdigest()
+        extra = {"pkg/gate.py": self.ENSURE, "pkg/__init__.py": "from . import danger\n", "pkg/danger.py": "D = 1\n",
+                 verifier: "from .helper import H\n", "pkg/helper.py": "H = 1\n", ".github/workflows/fp.yml": self.RUNNER}
+        for rel, text in extra.items():
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (root / rel).write_text(text, encoding="utf-8")
+        git(root, "add", "-A")
+        git(root, "commit", "-qm", "gate")
+        pin2 = git(root, "rev-parse", "HEAD")
+        test = (f"UNOWNED_PIN = {{'commit': '{pin2}', 'files': {{'{verifier}': '{digest}'}}}}\n"
+                + self.BY_PATH + "from gate import gate_reader\n")
+        (root / "tests" / "test_fp.py").write_text(test, encoding="utf-8")
+        git(root, "commit", "-qam", "carry the unowned pin")
+        head2 = git(root, "rev-parse", "HEAD")
+        body, req = self.unowned_ruling(head2, pin2, {verifier: digest})
+        verdict = ar.verify(body, req, self.base, root)
+        self.assertEqual(verdict["disposition"], "ALLOW", verdict)
+        closure = verdict["finish_point"]["closure"]
+        self.assertIn(verifier, closure)
+        self.assertNotIn("pkg/__init__.py", closure)
+        self.assertEqual(verdict["finish_point"]["hashed_pin_data_paths"], [verifier])
+        row = next(r for r in verdict["consumed_pins"] if r["task_id"] == ar.UNOWNED)
+        self.assertTrue(row["enforced_by_finish_test"])
+
     def test_pinned_and_routed_consumed_paths_allow_and_are_exempt_from_b(self) -> None:
         root, pin, head, files = self.pinned_fixture()
         body, req = self.pinned_ruling(head, pin, files)

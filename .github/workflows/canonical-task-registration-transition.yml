@@ -31,6 +31,10 @@ on:
       - 'scripts/adjacency_ruling.py'
       - 'tests/test_adjacency_ruling.py'
       - 'control/adjacency-rulings/**'
+      # WRITE_ADMISSION (generalizes the adjacency ruling to every governed surface)
+      - 'scripts/write_admission.py'
+      - 'tests/test_write_admission.py'
+      - 'control/write-admission/**'
   push:
     branches: [main]
     paths:
@@ -56,7 +60,7 @@ jobs:
           python-version: '3.12'
       - name: Unit tests
         # callable set for the paths this workflow is selected by; 0 skipped
-        run: python -m unittest -v tests.test_canonical_task_registration_transition tests.test_goal_scope_seal tests.test_i1_goal_registration_manifests tests.test_adjacency_ruling
+        run: python -m unittest -v tests.test_canonical_task_registration_transition tests.test_goal_scope_seal tests.test_i1_goal_registration_manifests tests.test_adjacency_ruling tests.test_write_admission
       - name: Goal scope freeze (GOAL_SCOPE_SEALED) against the live base
         env:
           EVENT_NAME: ${{ github.event_name }}
