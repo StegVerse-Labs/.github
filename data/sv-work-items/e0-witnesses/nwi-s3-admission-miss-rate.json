@@ -1,0 +1,46 @@
+{
+ "cases": [
+  {
+   "case_id": "metric-receipted-threshold-undeclared",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "STAGE_THRESHOLD_UNDECLARED"
+   },
+   "input": {
+    "evidence": {
+     "ADMISSION_MISS_RATE": {
+      "admission_miss_rate": 0.0,
+      "receipt_ref": "fixture-ledger/receipts/miss-rate.json#fixture:miss-rate"
+     },
+     "W05_TV_TVC_HELD_INVOCATION_ADMITTED": {
+      "disposition": "ALLOW",
+      "receipt_ref": "fixture-ledger/receipts/w05.json#fixture:w05"
+     }
+    },
+    "hb_epoch": "32",
+    "stage": "NWI-S3",
+    "target": "NWI-S4"
+   }
+  },
+  {
+   "case_id": "metric-unobserved",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "STAGE_EVIDENCE_UNOBSERVED"
+   },
+   "input": {
+    "evidence": {
+     "W05_TV_TVC_HELD_INVOCATION_ADMITTED": {
+      "disposition": "ALLOW",
+      "receipt_ref": "fixture-ledger/receipts/w05.json#fixture:w05"
+     }
+    },
+    "hb_epoch": "32",
+    "stage": "NWI-S3",
+    "target": "NWI-S4"
+   }
+  }
+ ],
+ "item": "NWI-S3:ADMISSION_MISS_RATE",
+ "schema": "stegverse.nwi-e0-witness-cases/v1"
+}

@@ -38,7 +38,8 @@
     "AT_MOST_ONE_LLM": "no predicate or path may require more than one LLM (requires_llms <= 1)",
     "NO_PROVIDER_REQUIREMENT": "no item may require a specific model or provider; providers are optional manifest-declared layers",
     "NO_OWNER_MUST_ACT": "no terminal state or degraded form is an 'owner must act' / human-gated state",
-    "PROVIDER_UNAVAILABLE_IS_NORMAL": "provider unavailability degrades one rung and continues; it is never a blocker"
+    "PROVIDER_UNAVAILABLE_IS_NORMAL": "provider unavailability degrades one rung and continues; it is never a blocker",
+    "E0_TERMINAL_IS_EXERCISED_NOT_FLAGGED": "an e0_terminal is proven: validate() executes the item's witness cases (each reaching its expected E0 terminal, at least one non-ALLOW, six fields on every non-ALLOW) or the component is pinned <org>/<repo>@<40-hex commit> and exercised by that repository's own suite; every non-final stage gate is evaluated with no evidence and must terminate"
   },
   "stages": [
     {
@@ -154,7 +155,7 @@
               "ALLOW",
               "FAIL_CLOSED"
             ],
-            "by": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/work_cycle.py one pass; entities with no admitted invocation answer UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE"
+            "by": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/work_cycle.py one pass; entities with no admitted invocation answer UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE"
           },
           "note": "observed on a canonical substrate; the substrate question is not an LLM-count question"
         },
@@ -177,7 +178,7 @@
     {
       "stage_id": "NWI-S2",
       "lowest_supported_mode": "E0",
-      "exit_passable_at_e0": false,
+      "exit_passable_at_e0": true,
       "e0_terminal": {
         "dispositions": [
           "ALLOW",
@@ -193,27 +194,34 @@
       "predicates": [
         {
           "id": "SV_LLM_VERDICT_AGREEMENT_RATE",
-          "requires_llms": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-          "lowest_supported_mode": "NONE",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
           "degraded_forms": {},
-          "e0_terminal": null,
-          "class_b": {
-            "disposition": "FAIL_CLOSED",
-            "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
-            "failed_predicate": "VERIFY_ONLY_VERDICT_HAS_E0_PRODUCER",
-            "required_evidence_or_repair": "declare the verdict producer at E0 as the NWI-S1 verifier's six-field receipt per evaluated change, agreement = verdict disposition equals the ledgered admission disposition for the same change digest; LLM verdicts (E1..E3) are additive inputs counted separately; declare the threshold value in NWI-S2.json",
-            "retry_entrypoint": "resident-runtime/sv_operating_modes.py::validate",
-            "owning_existing_goal": "StegVerse-org/.github#163",
-            "next_attempt": "re-run validate after NWI-S2.json declares verdict_producer and threshold"
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "FAIL_CLOSED"
+            ],
+            "by": "resident-runtime/sv_e0_terminals.py::verdict_agreement_e0: the verdict producer at E0 is the NWI-S1 verifier's six-field check receipts per evaluated change (SV-LLM/.github#46); agreement = that verdict equals the ledgered admission disposition for the same change digest; LLM verdicts (E1..E3) are counted separately as additive and never move the metric",
+            "non_allow_codes": [
+              "VERDICT_AGREEMENT_EVIDENCE_UNOBSERVED",
+              "STAGE_THRESHOLD_UNDECLARED",
+              "STAGE_EVIDENCE_UNOBSERVED"
+            ],
+            "witness": {
+              "entrypoint": "resident-runtime/sv_e0_terminals.py::witness_verdict_agreement",
+              "cases": "data/sv-work-items/e0-witnesses/nwi-s2-verdict-agreement.json",
+              "cases_sha256": "sha256:7c9d5cedc951ffcc8a5370144d663ba17f9f792e21713156de93bd76a0643716"
+            }
           },
-          "note": "the manifest names no verdict producer and the threshold is null: the stage gate terminates (FAIL_CLOSED STAGE_THRESHOLD_UNDECLARED), but no E0 form of the verdict itself is declared"
+          "note": "the producer emits the gate's agreement_rate evidence; NWI-S2.json's threshold is still null, so the gate terminates FAIL_CLOSED STAGE_THRESHOLD_UNDECLARED (a policy value, not a missing capability)"
         }
       ]
     },
     {
       "stage_id": "NWI-S3",
       "lowest_supported_mode": "E0",
-      "exit_passable_at_e0": false,
+      "exit_passable_at_e0": true,
       "e0_terminal": {
         "dispositions": [
           "ALLOW",
@@ -230,19 +238,38 @@
         {
           "id": "W05_TV_TVC_HELD_INVOCATION_ADMITTED",
           "requires_llms": 1,
-          "lowest_supported_mode": "NONE",
-          "degraded_forms": {},
-          "e0_terminal": null,
-          "class_b": {
-            "disposition": "FAIL_CLOSED",
-            "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
-            "failed_predicate": "BOUNDED_SOLVING_HAS_E0_DEGRADED_FORM",
-            "required_evidence_or_repair": "declare degraded_forms.E0 for bounded solving: a work item whose solution is resolved from invariants, reusable components and ledger receipts (resolved_at_mode E0) satisfies the predicate; with no resolving component and no admitted provider the item terminates as a six-field FAIL_CLOSED PROVIDER_LAYER_NOT_ADMITTED (retry: the next provider-transition receipt), never as an outstanding request",
-            "retry_entrypoint": "resident-runtime/sv_operating_modes.py::validate",
-            "owning_existing_goal": "StegVerse-org/.github#163",
-            "next_attempt": "re-run validate after NWI-S3.json names the E0 form"
+          "lowest_supported_mode": "E1",
+          "degraded_forms": {
+            "E0": "bounded solving at E0: a work item whose problem class an existing deterministic component resolves (resident-runtime/sv_e0_terminals.py::E0_SOLVERS: stage-gate evaluation, sv_check_receipt validation, verdict agreement) is resolved_at_mode E0 with that component's disposition; any other item terminates as a six-field FAIL_CLOSED PROVIDER_LAYER_NOT_ADMITTED carrying a deferral record re-evaluated on the next PROVIDER_LAYER_TRANSITION receipt, never an outstanding request"
           },
-          "note": "a TV/TVC-held model invocation is an E1 requirement; no E0 degraded form is named"
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "DENY",
+              "FAIL_CLOSED"
+            ],
+            "by": "resident-runtime/sv_e0_terminals.py::bounded_solve_e0 (deterministic; no provider is contacted or awaited)",
+            "non_allow_codes": [
+              "PROVIDER_LAYER_NOT_ADMITTED",
+              "BOUNDED_SOLVING_ITEM_MALFORMED",
+              "E0_SOLVER_OUTCOME_NOT_TERMINAL",
+              "STAGE_EVIDENCE_UNOBSERVED",
+              "STAGE_THRESHOLD_UNDECLARED",
+              "STAGE_REGRESSION",
+              "SV_CHECK_RECEIPT_SCHEMA_MISMATCH",
+              "SV_CHECK_RECEIPT_INVALID",
+              "SV_CHECK_RECEIPT_SIX_FIELDS_INCOMPLETE",
+              "CHECK_ID_UNDECLARED",
+              "CHECK_COMMAND_UNDECLARED",
+              "CHECK_SKIPPED_OR_UNOBSERVED"
+            ],
+            "witness": {
+              "entrypoint": "resident-runtime/sv_e0_terminals.py::witness_bounded_solving",
+              "cases": "data/sv-work-items/e0-witnesses/nwi-s3-bounded-solving.json",
+              "cases_sha256": "sha256:765be3b63cfecf5b57e46da2460bb963cb5cac405c88645977cd36d56992d829"
+            }
+          },
+          "note": "a TV/TVC-held model invocation is the E1 form; the E0 degraded form resolves what the ecosystem can and fails closed (six fields, queued for E1) on the rest"
         },
         {
           "id": "ADMISSION_MISS_RATE",
@@ -254,10 +281,16 @@
               "ALLOW",
               "FAIL_CLOSED"
             ],
-            "by": "admission outcomes ledgered by the org writer; the metric is computed from receipts",
+            "by": "resident-runtime/stage_gate.py::evaluate_gate over the receipted admission_miss_rate metric (admission outcomes ledgered by the org writer)",
             "non_allow_codes": [
-              "STAGE_THRESHOLD_UNDECLARED"
-            ]
+              "STAGE_THRESHOLD_UNDECLARED",
+              "STAGE_EVIDENCE_UNOBSERVED"
+            ],
+            "witness": {
+              "entrypoint": "resident-runtime/sv_e0_terminals.py::stage_gate_witness",
+              "cases": "data/sv-work-items/e0-witnesses/nwi-s3-admission-miss-rate.json",
+              "cases_sha256": "sha256:3ec9f197758825f4b75bfebf5122d372482b82314ed6ccd933126df3d65902c0"
+            }
           }
         }
       ]
@@ -311,7 +344,7 @@
         ],
         "by": "every attempt is a Sandbox receipt propagated to the organization ledger"
       },
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/work_cycle.py::intake"
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/work_cycle.py::intake"
     },
     {
       "id": "CAPABILITY_ROUTING",
@@ -328,25 +361,31 @@
           "PARTICIPANTS_DERIVABLE_FROM_DECLARATIONS"
         ]
       },
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/capability_routing.py"
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/capability_routing.py"
     },
     {
       "id": "ENTITY_RESPOND",
       "requires_llms": 0,
-      "lowest_supported_mode": "NONE",
+      "lowest_supported_mode": "E0",
       "degraded_forms": {},
-      "e0_terminal": null,
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/work_cycle.py::respond",
-      "class_b": {
-        "disposition": "FAIL_CLOSED",
-        "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
-        "failed_predicate": "EVERY_CONTRIBUTION_REQUEST_REACHES_A_TERMINAL_STATE_AT_E0",
-        "required_evidence_or_repair": "in respond(), when the pass's declared entity set does not include the requested entity, the Sandbox records ENTITY_CONTRIBUTION_RECORDED status UNAVAILABLE with reason ENTITY_SURFACE_NOT_SUPPLIED bound to the pass's entity-set digest (the same receipt the entity would emit), so close() synthesizes and completes; a later pass that supplies the surface may append a CONTRIBUTED successor",
-        "retry_entrypoint": "resident-runtime/sv_operating_modes.py::validate",
-        "owning_existing_goal": "StegVerse-org/.github#163",
-        "next_attempt": "re-run validate after SV-LLM/sandbox declares the E0 terminal for respond()"
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "FAIL_CLOSED"
+        ],
+        "by": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/work_cycle.py::respond records a request whose entity surface the pass did not supply as ENTITY_CONTRIBUTION_RECORDED UNAVAILABLE ENTITY_SURFACE_NOT_SUPPLIED bound to the pass's entity-set digest, with a six-field FAIL_CLOSED, in the same pass (event-driven, nothing waits); close() completes the work. Labs re-verifies the sandbox receipts in resident-runtime/sv_e0_terminals.py::verify_respond_terminal",
+        "non_allow_codes": [
+          "ENTITY_SURFACE_NOT_SUPPLIED",
+          "RESPOND_E0_TERMINAL_NOT_EVIDENCED"
+        ],
+        "witness": {
+          "entrypoint": "resident-runtime/sv_e0_terminals.py::verify_respond_terminal",
+          "cases": "data/sv-work-items/e0-witnesses/sv-llm-entity-respond.json",
+          "cases_sha256": "sha256:679d0f274eedad1a83103c562d2031d4ea0b2f66660f3c97b593d59bf424ebe9"
+        }
       },
-      "note": "a supplied entity surface answers UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE (terminal), but a request whose entity surface is not supplied 'stays outstanding' with no terminal state"
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/work_cycle.py::respond",
+      "note": "a supplied entity surface answers UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE; an unsupplied one now terminates as UNAVAILABLE ENTITY_SURFACE_NOT_SUPPLIED (SV-LLM/sandbox p1/respond-e0-terminal); a later pass that supplies the surface takes a new manifest"
     },
     {
       "id": "CLOSE_SYNTHESIZE_EGRESS",
@@ -361,7 +400,7 @@
         ],
         "by": "synthesis preserves non-success; egress to return_to; the mesh is the durable queue"
       },
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/work_cycle.py::close"
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/work_cycle.py::close"
     },
     {
       "id": "STEGBROWSER_LLM_V1_TOOL",
@@ -378,7 +417,7 @@
         ],
         "by": "SANDBOX_TOOL_OBSERVATION_RECORDED non-success: llm.v1 never waits; an unrendered answer or unavailable provider is a recorded non-success"
       },
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/stegbrowser_tool.py"
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/stegbrowser_tool.py"
     },
     {
       "id": "PAGE_LOAD_V1_TOOL",
@@ -393,7 +432,7 @@
         ],
         "by": "SANDBOX_TOOL_OBSERVATION_RECORDED with HTTP status and lease terminal receipt"
       },
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/page_load_tool.py"
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/page_load_tool.py"
     },
     {
       "id": "PROVIDER_CAPABILITY_VALIDATOR",
@@ -408,7 +447,7 @@
         ],
         "by": "offline validator; contacts no provider"
       },
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/provider_capability.py"
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/provider_capability.py"
     },
     {
       "id": "CONFORMANCE_PROPOSAL",
@@ -423,7 +462,7 @@
         ],
         "by": "deterministic over caller-supplied canonical bytes"
       },
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/conformance_proposal.py"
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/conformance_proposal.py"
     },
     {
       "id": "INVARIANT_EVALUATION",
@@ -439,7 +478,7 @@
         ],
         "by": "every non-ALLOW answer carries six fields; UNDECIDABLE writes one write-once relay entry and nothing waits"
       },
-      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/invariant_evaluation.py",
+      "source": "SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/invariant_evaluation.py",
       "note": "UNDECIDABLE is not yet in the Labs validate_transition_disposition NON_ALLOW vocabulary (open binding owned by SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005); not an operating-mode gap"
     },
     {
@@ -452,7 +491,7 @@
           "ALLOW",
           "FAIL_CLOSED"
         ],
-        "by": "no admitted provider transition: entities answer UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE"
+        "by": "no admitted provider transition: entities answer UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE (SV-LLM/sandbox@5814d5c1626f87fd6d62ffee1a851072cb5d114a:runtime/work_cycle.py::Entity.answer)"
       },
       "source": "Labs#3291 / SV-LLM/sandbox#39 (manifest-declared provider transition; E1..E3 are optional additive layers)"
     }
