@@ -18,7 +18,7 @@
     "finish_point": {
       "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
       "repository": "StegVerse-Labs/continuity-vault-kit",
-      "source_commit": "69e62ec7793ff229e5c6bd70f291e2a769a244ff",
+      "source_commit": "61104a5743deb0ce0279ec049a908b4d08a8e10b",
       "source_ref": "StegVerse-Labs/continuity-vault-kit#258"
     }
   },
@@ -115,5 +115,5 @@
     "b": "finish-point test exercises none of the candidates' components",
     "c": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 is a consumes-dependency"
   },
-  "evidence_digest": "sha256:b95326f27dda352795386af675227ce45d3e88d31e67f2ce2ea6d3bf8e1fd78f"
+  "evidence_digest": "sha256:359e01ffaf2b00f5581ed09171653e36c14982b71d26b730fc62d53f916aa06d"
 }
