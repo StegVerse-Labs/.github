@@ -232,6 +232,26 @@ class SelectorTests(unittest.TestCase):
         self.assertEqual((code, record["failure_code"], record["owning_existing_goal"]),
                          (1, sel.INPUT_UNAVAILABLE, "P1 (toy#163)"))
 
+    def test_an_unavailable_input_item_also_blocks_a_pytest_adjudication(self) -> None:
+        self.toy.spec({"toy-sdk": {"check": {"kind": "unavailable", "reason": "not here"}, "owner": "P1 (toy#163)"}},
+                      {"tests/test_b.py": ["toy-sdk"]})
+        base = self.toy.commit("declare")
+        self.toy.write("src/b.py", "B = 2\n")
+        self.toy.commit("change b")
+        self.select(base)
+        pytest_out = Path(self.tmp.name) / "pytest.txt"
+        pytest_out.write_text("..\n\n2 passed in 0.01s\n")
+        out_dir = Path(self.tmp.name) / "adjudication-pytest"
+        code = drift.main(["pr", "--root", str(self.toy.path), "--base", base, "--baseline", "baseline.json",
+                           "--pytest-output", str(pytest_out), "--suite-status", "0", "--selection",
+                           str(Path(self.tmp.name) / "selection.json"), "--hb-epoch", "469411750",
+                           "--repository", "toy/repo", "--retry-entrypoint", "toy.yml", "--out-dir", str(out_dir)])
+        record = json.loads((out_dir / "pr-disposition.json").read_text())
+        self.assertEqual(code, 1)
+        self.assertEqual(record["disposition"], "FAIL_CLOSED")
+        rows = [r for r in record["tests"] if r.get("failure_code") == sel.INPUT_UNAVAILABLE]
+        self.assertEqual([(r["test"], r["owning_existing_goal"]) for r in rows], [("set:tests/test_b.py", "P1 (toy#163)")])
+
     def test_a_tampered_selection_fails_closed(self) -> None:
         self.toy.write("src/a.py", "A = 2\n")
         self.toy.commit("change a")
@@ -244,6 +264,19 @@ class SelectorTests(unittest.TestCase):
         code, out = self.adjudicate(self.toy.base)
         self.assertEqual(code, 1)
         self.assertTrue(any(r.get("kind") == "SELECTION_UNVERIFIED" for r in out["tests"]))
+
+
+class UnittestNamesTests(unittest.TestCase):
+    def test_fixture_bases_and_mixins_are_not_runnable_units_and_inherited_tests_are_listed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            Path(tmp, "t.py").write_text(
+                "import unittest\n"
+                "class Fixture(unittest.TestCase):\n    def setUp(self):\n        pass\n"
+                "class Mixin:\n    def test_shared(self):\n        pass\n"
+                "class A(Fixture):\n    def test_a(self):\n        pass\n"
+                "class B(Mixin, unittest.TestCase):\n    def test_b(self):\n        pass\n")
+            names = sel.unittest_names(Path(tmp), "t.py")
+        self.assertEqual(names, {"A": ["test_a"], "B": ["test_b", "test_shared"]})
 
 
 class ThisRepositoryTests(unittest.TestCase):

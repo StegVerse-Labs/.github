@@ -186,18 +186,33 @@ def test_files(root: Path, files: set[str], globs: list[str]) -> list[str]:
 
 
 def unittest_names(root: Path, path: str) -> dict[str, list[str]]:
-    """{Class: [test methods]} for the TestCase-style classes of a module, read statically."""
+    """{Class: [test methods, own and inherited from classes of the same module]} for the TestCase-style classes
+    of a module that hold at least one test, read statically. A base class with no test of its own or inherited
+    (a fixture base) and a mixin that is not a TestCase are not runnable units and are not listed."""
     out: dict[str, list[str]] = {}
     try:
         tree = ast.parse((root / path).read_text(encoding="utf-8"))
     except (OSError, SyntaxError):
         return out
-    for node in tree.body:
-        if isinstance(node, ast.ClassDef):
-            names = [n.name for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
-                     and n.name.startswith("test")]
-            if names or any(getattr(b, "attr", getattr(b, "id", "")).endswith("TestCase") for b in node.bases):
-                out[node.name] = names
+    classes = {n.name: n for n in tree.body if isinstance(n, ast.ClassDef)}
+
+    def methods(name: str, seen: frozenset = frozenset()) -> list[str]:
+        node = classes[name]
+        own = [n.name for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+               and n.name.startswith("test")]
+        inherited = [m for b in node.bases if isinstance(b, ast.Name) and b.id in classes and b.id not in seen
+                     for m in methods(b.id, seen | {name})]
+        return own + [m for m in dict.fromkeys(inherited) if m not in own]
+
+    def is_case(name: str, seen: frozenset = frozenset()) -> bool:
+        return any(getattr(b, "attr", getattr(b, "id", "")).endswith("TestCase") or
+                   (isinstance(b, ast.Name) and b.id in classes and b.id not in seen and is_case(b.id, seen | {name}))
+                   for b in classes[name].bases)
+
+    for name in classes:
+        names = methods(name)
+        if names and is_case(name):
+            out[name] = names
     return out
 
 

@@ -682,6 +682,10 @@ UNITTEST_RESULT = re.compile(r"^(\S+) \(([^)\s]+)\)(?:\n.*?)? \.\.\. (ok|FAIL|ER
 UNITTEST_HEAD = re.compile(r"^(\S+) \(([^)\s]+)\)(?: \.\.\. (.*))?$")
 UNITTEST_TAIL = re.compile(r" \.\.\. (ok|FAIL|ERROR|skipped.*|expected failure|unexpected success)$")
 UNITTEST_WORD = re.compile(r"^(ok|FAIL|ERROR|skipped '.*'|expected failure|unexpected success)$")
+# a test's own output printed without a trailing newline glues the outcome word onto its last line (`}ok`)
+UNITTEST_GLUED = re.compile(r"(?:^|[^\w'\"])(ok|FAIL|ERROR|expected failure|unexpected success)$")
+# the failure summary (`FAIL: name (id)` / `ERROR: name (id) (params)`) is authoritative for failing outcomes
+UNITTEST_SUMMARY = re.compile(r"^(FAIL|ERROR): (\S+) \(([^)\s]+)\)")
 UNITTEST_SUBTEST = re.compile(r"^\s+(\S+) \(([^)\s]+)\) \(.*\) \.\.\. (ok|FAIL|ERROR|skipped.*)$")
 UNITTEST_COUNTS = re.compile(r"^(?:OK|FAILED) \((.*)\)$|^OK$")
 UNITTEST_RAN = re.compile(r"^Ran (\d+) tests? in ")
@@ -780,6 +784,11 @@ def unittest_results(text: str) -> tuple[dict[str, str], dict[str, int], int | N
         return ident if ident.endswith("." + name) else ident + "." + name
 
     for line in text.splitlines():
+        summary = UNITTEST_SUMMARY.match(line)
+        if summary:
+            results[dotted(summary.group(2), summary.group(3))] = summary.group(1)
+            pending = None
+            continue
         # a subTest outcome (`  name (id) (params) ... ERROR`) is that test's outcome; a failing one wins
         sub = UNITTEST_SUBTEST.match(line)
         if sub:
@@ -797,7 +806,7 @@ def unittest_results(text: str) -> tuple[dict[str, str], dict[str, int], int | N
             # test's own output>`: the outcome is on a later line
             pending = dotted(m.group(1), m.group(2))
             continue
-        t = UNITTEST_TAIL.search(line) or UNITTEST_WORD.match(line)
+        t = UNITTEST_TAIL.search(line) or UNITTEST_WORD.match(line) or (UNITTEST_GLUED.search(line) if pending else None)
         if t and pending:
             if results.get(pending) not in ("FAIL", "ERROR"):
                 results[pending] = t.group(1)
@@ -1186,9 +1195,10 @@ def main(argv: list[str] | None = None) -> int:
     if not getattr(args, "unittest_output", None):
         text = Path(args.pytest_output).read_text(encoding="utf-8") if args.pytest_output else ""
         if args.pytest_output or args.junit_xml:
-            vrows, counts, head_nodes = pytest_verification(root, text, args.junit_xml, retry, args.owning_goal)
+            prows, counts, head_nodes = pytest_verification(root, text, args.junit_xml, retry, args.owning_goal)
             vinfo.update({"runner": PYTEST, "counts": counts, "tests_reported": len(head_nodes)})
-            skipped_nodes = {r["test"] for r in vrows if r.get("test")}
+            skipped_nodes = {r["test"] for r in prows if r.get("test")}
+            vrows += prows          # after the selection's rows, never in place of them
             for wf in args.required_unittest_modules_from:
                 mods = required_modules((root / wf).read_text(encoding="utf-8"))
                 need = [n for n in required_test_nodes(root, mods) if in_selection(n, selection)]

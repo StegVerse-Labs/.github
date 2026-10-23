@@ -626,11 +626,18 @@ class BaselineDriftTests(unittest.TestCase):
             "test_c (tests.test_m.C.test_c)",
             "A docstring line ... skipped 'needs an input'",
             "test_d (tests.test_m.C.test_d) ... ok",
-            "", "Ran 4 tests in 0.1s", "", "FAILED (errors=1, skipped=1)"])
+            "test_e (tests.test_m.C.test_e) ... ",
+            "{", "  \"printed\": true", "}ok",
+            "test_f (tests.test_m.C.test_f) ... ",
+            "status: ok",
+            "FAIL",
+            "", "======", "FAIL: test_f (tests.test_m.C.test_f)", "------", "AssertionError",
+            "", "Ran 6 tests in 0.1s", "", "FAILED (failures=1, errors=1, skipped=1)"])
         results, counts, ran = drift.unittest_results(text)
         self.assertEqual(results, {"tests.test_m.C.test_a": "ok", "tests.test_m.C.test_b": "ERROR",
-                                   "tests.test_m.C.test_c": "skipped 'needs an input'", "tests.test_m.C.test_d": "ok"})
-        self.assertEqual((counts, ran), ({"errors": 1, "skipped": 1}, 4))
+                                   "tests.test_m.C.test_c": "skipped 'needs an input'", "tests.test_m.C.test_d": "ok",
+                                   "tests.test_m.C.test_e": "ok", "tests.test_m.C.test_f": "FAIL"})
+        self.assertEqual((counts, ran), ({"failures": 1, "errors": 1, "skipped": 1}, 6))
 
 if __name__ == "__main__":
     unittest.main()
