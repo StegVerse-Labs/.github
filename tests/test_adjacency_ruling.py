@@ -154,6 +154,93 @@ class AdjacencyRulingTests(unittest.TestCase):
         git(root, "commit", "-qam", "drift")
         self.refused(ar.verify(good, req, self.base, root), "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE")
 
+    # -- (b) dynamic loads in the closure: resolved from constants, or FAIL_CLOSED ---------------------------
+    RUN_GATE = ("import importlib\nfrom pathlib import Path\n"
+                "def _sdk_module(name):\n    return importlib.import_module(f'pkg.{name}')\n"
+                "def run_gate(manifest):\n    validator = _sdk_module('structural_validator_candidate')\n"
+                "    return validator.check(manifest)\n")
+
+    def gate_files(self, gate=None, test="from pkg import gate\ndef test_x():\n    gate.run_gate({})\n"):
+        return dict(FILES, **{"tests/test_fp.py": test, "pkg/__init__.py": "", "pkg/gate.py": gate or self.RUN_GATE,
+                              "pkg/structural_validator_candidate.py": "def check(m):\n    return m\n",
+                              "pkg/other.py": "Z = 3\n", "pkg/tables_a.py": "", "pkg/tables_b.py": "",
+                              "scripts/loaded.py": "", "pkg/sibling.py": "", "pkg/run_me.py": "", "pkg/exec_me.py": ""})
+
+    def test_run_gate_by_name_load_is_in_the_closure_and_fails_b(self) -> None:
+        root, commit = self.fp(self.gate_files())
+        closure = ar.static_closure(root, "tests/test_fp.py")
+        self.assertIn("pkg/structural_validator_candidate.py", closure)
+        self.assertNotIn("pkg/other.py", closure)
+        cand = candidate(components=("structural-validator", "validator-inventory"))
+        self.put(cand)
+        req = request()
+        verdict = ar.verify(ruling(commit, req, [cand]), req, self.base, root)
+        self.refused(verdict, "ADJACENCY_CONDITION_B_NOT_HELD")
+        self.assertEqual(verdict["detail"][0]["path"], "pkg/structural_validator_candidate.py")
+
+    def test_run_gate_load_with_unrelated_candidate_still_allows(self) -> None:
+        cand = candidate()
+        self.put(cand)
+        root, commit = self.fp(self.gate_files())
+        req = request()
+        verdict = ar.verify(ruling(commit, req, [cand]), req, self.base, root)
+        self.assertEqual(verdict["disposition"], "ALLOW", verdict)
+        self.assertIn("pkg/structural_validator_candidate.py", verdict["finish_point"]["closure"])
+
+    def test_constant_tables_paths_runpy_exec_and_aliases_resolve(self) -> None:
+        gate = ("import importlib, importlib.util as iu, runpy\nfrom importlib import import_module as im\n"
+                "from pathlib import Path\nROOT = Path(__file__).resolve().parents[1]\n"
+                "MODULES = ('pkg.tables_a', 'pkg.tables_b')\nNAMES = {'x': 'pkg.other'}\n"
+                "def load_all():\n    for m in MODULES:\n        importlib.import_module(m)\n"
+                "    im(NAMES['x'])\n    __import__('pkg.' + 'sibling')\n"
+                "    iu.spec_from_file_location('l', ROOT / 'scripts' / 'loaded.py')\n"
+                "    runpy.run_path(str(Path(__file__).with_name('run_me.py')))\n"
+                "    exec(compile(open(ROOT / 'pkg' / 'exec_me.py').read(), 'e', 'exec'))\n"
+                "    exec('import pkg.structural_validator_candidate')\n")
+        root, _ = self.fp(self.gate_files(gate))
+        closure = ar.static_closure(root, "tests/test_fp.py")
+        for rel in ("pkg/tables_a.py", "pkg/tables_b.py", "pkg/other.py", "pkg/sibling.py", "scripts/loaded.py",
+                    "pkg/run_me.py", "pkg/exec_me.py", "pkg/structural_validator_candidate.py"):
+            self.assertIn(rel, closure, rel)
+
+    def assert_unresolved(self, gate, test=None) -> None:
+        cand = candidate()
+        self.put(cand)
+        files = self.gate_files(gate) if test is None else self.gate_files(gate, test)
+        root, commit = self.fp(files)
+        req = request()
+        verdict = ar.verify(ruling(commit, req, [cand]), req, self.base, root)
+        self.refused(verdict, "ADJACENCY_RULING_FINISH_POINT_CLOSURE_UNRESOLVED")
+        self.assertEqual(verdict["detail"][0]["path"], "pkg/gate.py")
+
+    def test_data_driven_binding_fails_closed_never_disjoint(self) -> None:
+        self.assert_unresolved("import importlib\ndef _load(binding):\n"
+                               "    module_name, fn = binding.rsplit('.', 1)\n"
+                               "    return importlib.import_module(module_name)\n"
+                               "def run_gate(route):\n    return _load(route['binding'])\n")
+
+    def test_public_loader_parameter_fails_closed(self) -> None:
+        self.assert_unresolved("import importlib\ndef load(name):\n    return importlib.import_module(name)\n"
+                               "def run_gate(m):\n    return load('pkg.other')\n")
+
+    def test_private_loader_reached_from_another_module_fails_closed(self) -> None:
+        cand = candidate()
+        self.put(cand)
+        test = "from pkg import gate\nfrom pkg.gate import _sdk_module\ndef test_x():\n    _sdk_module('other')\n"
+        root, commit = self.fp(self.gate_files(test=test))
+        req = request()
+        verdict = ar.verify(ruling(commit, req, [cand]), req, self.base, root)
+        self.refused(verdict, "ADJACENCY_RULING_FINISH_POINT_CLOSURE_UNRESOLVED")
+        self.assertEqual(verdict["detail"][0]["path"], "tests/test_fp.py")
+
+    def test_exec_of_runtime_text_and_env_paths_fail_closed(self) -> None:
+        self.assert_unresolved("import os, runpy\ndef run_gate(src):\n    exec(src)\n")
+        self.assert_unresolved("import os, runpy\ndef run_gate():\n    runpy.run_path(os.environ['P'])\n")
+
+    def test_reassigned_module_constant_fails_closed(self) -> None:
+        self.assert_unresolved("import importlib\nNAME = 'pkg.other'\ndef _f():\n    global NAME\n    NAME = input()\n"
+                               "def run_gate():\n    importlib.import_module(NAME)\n")
+
     # -- (a) recomputed ---------------------------------------------------------------------------------------
     def test_a_fails_on_a_shared_component_even_if_the_ruling_omits_it(self) -> None:
         cand = candidate(components=("task-registry", "consent-receipt"))
