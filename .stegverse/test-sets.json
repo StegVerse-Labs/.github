@@ -5261,6 +5261,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_pat003_claim_fence_registration.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_pat003_claim_fence_registration.py"
+   ],
+   "tests": [
+    "tests/test_pat003_claim_fence_registration.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_personal_kv_provider_root_resolution.py",
    "inputs": [],
    "surfaces": [
@@ -14506,6 +14518,19 @@
    "data/goal-task-component-profiles/STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001.json",
    "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md",
    "scripts/evaluate_reusable_task_componentization.py"
+  ],
+  "tests/test_pat003_claim_fence_registration.py": [
+   "control/claims-active.json",
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/allocate_claims.py",
+   "scripts/canonical_task_registration_transition.py",
+   "scripts/cosv.py",
+   "scripts/goal_scope_seal.py",
+   "scripts/write_admission.py",
+   "tests/fixtures/**",
+   "tests/fixtures/canonical_task_registration/**",
+   "tests/fixtures/canonical_task_registration/pat-003-lane-a/**"
   ],
   "tests/test_personal_kv_provider_root_resolution.py": [
    "scripts/materialize_personal_kv_provider_root.py"

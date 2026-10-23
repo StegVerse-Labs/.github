@@ -1,0 +1,248 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "lane-d-for-lane-a-pat-003-evidence-2026-10-23",
+  "task_id": "PAT-003-EVIDENCE",
+  "observed_registry_generation": 320,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-org/.github#165",
+  "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-evidence-2026-10-23.json",
+  "collision_analysis": [
+    "Identity provenance: PAT-003-EVIDENCE is PROPOSED_BY_LANE_A (Lane A (PAT-003, agent session 19d95368-7ddb-43b9-8e58-54fa330e98ec) via orchestrator New Bot c40482d9, 2026-10-23; the same key appears in the StegVerse-Labs/patent-registry#19 work register (PROPOSED / UNCLAIMED)). Lane D files the request; it does not originate the identity.",
+    "Owner: Lane A (PAT-003, 19d95368), per INDEX.md lane-to-Goal map 'PAT-003 (19d95368), Lane A: #165 (P3)'.",
+    "Not present in data/canonical-task-registry.json generation 320 (Labs main 86382e60) or in data/canonical-task-records/ (observed).",
+    "Adjacent, not equivalent: OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001 (PROPOSED/UNCLAIMED, repository StegVerse-Labs/.github, components optical-physical-state-admission-and-patent-scope-reconciliation, recorded-video-research-protocol-coordination, physical-replay-evidence-contract-review). This task targets StegVerse-Labs/Patents and patent-registry filing-readiness evidence only.",
+    "Shared status surfaces filing-readiness/PAT-003_FILING_READINESS_INDEX.md and data/PAT-003-completion-status.json are fenced to PAT-003-EVIDENCE only; PAT-003-CHRONOLOGY and PAT-003-PRIOR-ART update them only through a write-coordination with PAT-003-EVIDENCE (same owner, Lane A).",
+    "Excluded: PAT-003-FILING-PACKET stays UNCLAIMED (practitioner hand-off); no path of it is in this task's targets or fence."
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "PAT-003-EVIDENCE",
+    "correlation_id": "PAT-003-EVIDENCE",
+    "root_correlation_id": "PAT-003-EVIDENCE",
+    "parent_task_id": null,
+    "goal": "PAT-003 (Generalized Adaptive Scanner Using Dynamic Micro-Nodes) limitation-level evidence: map each claim limitation of filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md to exact repository, path, immutable commit or blob, test and gap, classified implemented / written-description-only / proposed / unsupported. Evidence work only: no filing, no legal determination, no patent-pending language, no enabling disclosure in public surfaces.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "https://github.com/StegVerse-Labs/patent-registry/issues/19",
+      "https://github.com/StegVerse-Labs/patent-registry/issues/16",
+      "https://github.com/StegVerse-Labs/Patents/issues/16",
+      "https://github.com/StegVerse-org/.github/issues/165",
+      "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304",
+      "StegVerse-Labs/Patents/filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304",
+      "StegVerse-Labs/Patents/filing-readiness/PAT-003_FILING_READINESS_INDEX.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304",
+      "StegVerse-Labs/Patents/data/PAT-003-completion-status.json@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304",
+      "StegVerse-Labs/Patents/evidence/PAT-003-source-search-receipt-2026-07-30.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/Patents",
+        "StegVerse-Labs/patent-registry"
+      ],
+      "components": [
+        "pat-003-limitation-evidence-map",
+        "pat-003-implementation-anchor-verification"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "PAT_003_FAMILY_OWNER_LANE_A",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "LLM_Coordination INDEX.md (Drive 1_dOuehS567PuLUzqvxHj9JaGYYPX2uA_) lane-to-Goal map: PAT-003 (19d95368), Lane A: StegVerse-org/.github#165 (P3)"
+      },
+      {
+        "dependency_id": "PAT_003_OWNER_OR_PRACTITIONER_CHECK_OFF",
+        "kind": "HUMAN_ACTION",
+        "state": "UNRESOLVED",
+        "ref": "class C hand-off, outside the finish point: index L77 check-off by owner or practitioner; L75 check-off after an element is admitted (none admitted today). (index L73; https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562)"
+      },
+      {
+        "dependency_id": "PAT_003_STRUCTURAL_VERIFIER_ADMISSION",
+        "kind": "CAPABILITY",
+        "state": "UNRESOLVED",
+        "ref": "verifier pending admission of StegVerse-Labs/Patents#23 (DRAFT, unadmitted) @1d6491f505899e2374b1bcdabbed9378e8a7e40f: tools/verify_pat003_finish_points.py sha256 6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74 -> research/pat003/finish_point_verifier_v1.py sha256 de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c; not on Patents main; until admitted the entrypoint is an admission input, not an ALLOW (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368815727); verifier location re-checked 2026-10-23 ~16:12Z: tools/verify_pat003_finish_points.py and research/pat003/finish_point_verifier_v1.py exist only on Patents#23 @1d6491f505899e2374b1bcdabbed9378e8a7e40f (sha256 unchanged); Patents#21 @e31f7263 changes only filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md and Patents#22 @ffaec698 only research/pat003/input_manifest_v2.json + its test, so neither carries the verifier; Lane A's 'verifier on #21' is the verifier run over #21"
+      },
+      {
+        "dependency_id": "PAT_003_PRIMARY_DEMONSTRATION_INPUT_EXPORT",
+        "kind": "HUMAN_ACTION",
+        "state": "UNRESOLVED",
+        "ref": "class C owner export. FE-2 NOT_MET only on chart row KV-8 at Patents#21 @e31f7263bb72645f2d684a95517547c930139d6a (verifier @1d6491f5 with .github, Patents and video-engine object stores; exit 2). FAIL_CLOSED: failure_code FE2_PRIMARY_CLIP_POINTER_NOT_HASHED; failed_predicate FE-2 private pointer KV-8 is one Drive id plus one 64-hex SHA-256; required_evidence_or_repair owner exports DP_free_drop_video.mp4 (481,804,387 B, ChatGPT Library file_000000001734820e8f0246055e4ac1f8) to Drive or the box, Lane D hashes it on arrival, Lane A fills KV-8 and input_manifest_v2 sha256; retry_entrypoint python tools/verify_pat003_finish_points.py --points FE-2 at the next Patents#21 head; owning_existing_goal PAT-003-EVIDENCE (PROPOSED_BY_LANE_A, StegVerse-org/.github#165); next_attempt on clip export. Pins: Patents#22 @ffaec698ba49fc2d11cabfd6cfdf73f13534f7ae input_manifest_v2.json sha256 84082669f716750bc2258e28ee58cf0865d25fdb6cd5bc3857c7577b222e096e (small clip PRIMARY_DEMONSTRATION_INPUT, publisher original 8197492b...c38d1 UPSTREAM_SOURCE_REFERENCE); Lane D scratch receipts KV_RIGHTS_DISPOSITION_RECORD 6c2ee85ca923885476731d7441cc1d6f29e06b590d8ff5fecf75d480711222ce (FAIL_CLOSED PRIMARY_CLIP_BYTES_NOT_OBSERVED) and KV_ARTIFACT_AUTHORITY_RECONCILE ed6633932e0ad2ca5392ae372ac248de61b61b1a316a5339eb65909c9d5ac304 (supersedes LD-OSR-MP4-02 repin framing)"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "PAT-003-CHRONOLOGY",
+      "PAT-003-PRIOR-ART"
+    ],
+    "existing_evidence_refs": [
+      "StegVerse-Labs/Patents/filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+    ],
+    "expected_evidence_predicates": [
+      "FE_1_EVIDENCE_MAP_30_LINES_STRUCTURALLY_COMPLETE_ROWS_CANDIDATE_NOT_ADMITTED",
+      "FE_2_NAMED_PUBLIC_OBJECTS_RESOLVE_PRIVATE_POINTERS_DRIVE_ID_PLUS_SHA256",
+      "FE_3_IMPLEMENTATION_ANCHORS_AT_IMMUTABLE_COMMIT_FOR_METHOD_L3_SYSTEM_L4",
+      "ENDS_AT_READY_FOR_FILING_REVIEW_INPUTS_NEVER_READY_TO_FILE"
+    ],
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        }
+      ],
+      "selected_substrate_id": null,
+      "external_device_required": false,
+      "second_user_operated_device_allowed": false,
+      "authority_effect": "NONE"
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+      "SCOPE_CHANGE_ONLY_BY_GOAL_SCOPE_SUPERSEDE_REQUEST"
+    ],
+    "handoff_projection_refs": [
+      "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "PAT-003 (Generalized Adaptive Scanner Using Dynamic Micro-Nodes) limitation-level evidence: map each claim limitation of filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md to exact repository, path, immutable commit or blob, test and gap, classified implemented / written-description-only / proposed / unsupported. Evidence work only: no filing, no legal determination, no patent-pending language, no enabling disclosure in public surfaces.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Patents",
+          "StegVerse-Labs/patent-registry"
+        ],
+        "components": [
+          "pat-003-limitation-evidence-map",
+          "pat-003-implementation-anchor-verification"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "FE_1_EVIDENCE_MAP_30_LINES_STRUCTURALLY_COMPLETE_ROWS_CANDIDATE_NOT_ADMITTED",
+        "FE_2_NAMED_PUBLIC_OBJECTS_RESOLVE_PRIVATE_POINTERS_DRIVE_ID_PLUS_SHA256",
+        "FE_3_IMPLEMENTATION_ANCHORS_AT_IMMUTABLE_COMMIT_FOR_METHOD_L3_SYSTEM_L4",
+        "ENDS_AT_READY_FOR_FILING_REVIEW_INPUTS_NEVER_READY_TO_FILE"
+      ],
+      "finish_point": {
+        "acceptance_test": "at a StegVerse-Labs/Patents main head H, after merge-admission and ledger readback: FE-1 AND FE-2 AND FE-3 (each MET per verifier_entrypoint at H); and python tools/validate_patent_readiness.py --family PAT-003 --root . at H still shows filing-boundary PASS, not READY_TO_FILE",
+        "predicate": "FE-1: the chart's appended evidence-map section has 10 limitation rows (method L1-L6, system L1-L4), each with 3 evidence-class lines (proofs, software tests, physical measurements), 30 lines; each line has a non-empty locator, a hash (40/64-hex, pointer, or explicit NOT_COMPUTED/none-located), conditions and a status; the 10 proposed-class values are each in {implemented, written_description_only, proposed, unsupported}; every row stays CANDIDATE_NOT_ADMITTED. FE-2: every public blob or commit the section names resolves in its repository; private pointers are a Drive ID plus a 64-hex SHA-256 only. FE-3: implementation anchors exist at an immutable commit for the rows proposed as implemented-partial (method L3, system L4). Ends at evidence-complete inputs to READY_FOR_FILING_REVIEW, never READY_TO_FILE. Owner/practitioner check-offs are class C hand-offs, not part of this finish point: index L77 check-off by owner or practitioner; L75 check-off after an element is admitted (none admitted today).",
+        "verifier_entrypoint": "StegVerse-Labs/Patents/tools/verify_pat003_finish_points.py@1d6491f505899e2374b1bcdabbed9378e8a7e40f (sha256 6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74; impl research/pat003/finish_point_verifier_v1.py sha256 de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c; DRAFT Patents#23, UNADMITTED, see dependency PAT_003_STRUCTURAL_VERIFIER_ADMISSION): python tools/verify_pat003_finish_points.py --git-dir <Patents clone> --rev H --points FE-1,FE-2,FE-3 --object-store StegVerse-Labs/.github=<clone> --object-store StegVerse-Labs/video-engine=<clone>; MET only when every requested point is MET (exit 0); exit 2 NOT_MET/UNKNOWN, exit 3 FAIL_CLOSED; human check-offs are HUMAN_ACTION_REQUIRED and never evaluated",
+        "lowest_supported_mode": "E0",
+        "finish_point_source": "Lane A replacement, https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562"
+      }
+    },
+    "scope_digest": "sha256:d2807cbe8d7a9f178dae93fecdf749449d7e769c76f0541e4c2ba7e95275fc60",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": false,
+      "thread_required": true,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 1,
+      "chat_owned_observation": 1,
+      "blocker_count": 2,
+      "symbol_order": "LRUIVGOCMTBEAP"
+    },
+    "metric_evidence": {
+      "lifecycle": "UNCLAIMED = https://github.com/StegVerse-Labs/patent-registry/issues/19 work register: PROPOSED/UNCLAIMED (observed 2026-10-23); StegVerse-Labs/.github registry gen 320 (main 86382e60): no record, no vector, no claim; control/claims-active.json gen 2, 0 claims (Labs#3331 @dfbbbb9f body) | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-read StegVerse-Labs/.github main 86382e60: registry gen 320 with no PAT-003 row; control/claims-active.json gen 2, 0 claims",
+      "archive_ready": "false = task open; validator item(s) unresolved (python tools/validate_patent_readiness.py --family PAT-003 --root . @cf30104d -> exit 2 FAIL_CLOSED_BLOCKERS, 13 unresolved_items, stdout sha256 2eba982e546d005d3ef8d2b36a4da6f8aa2324354e2560bb55864fc3e8bd9f05 (Lane A box run 2026-10-23)) | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-ran validate_patent_readiness.py --family PAT-003 --root . @cf30104d (blob 921f71c9): exit 2, stdout sha256 2eba982e546d005d3ef8d2b36a4da6f8aa2324354e2560bb55864fc3e8bd9f05 (identical)",
+      "unassigned_work": "1 = the task itself has no WorkerCoordinator claim/fence (StegVerse-Labs/.github registry gen 320 (main 86382e60): no record, no vector, no claim; control/claims-active.json gen 2, 0 claims (Labs#3331 @dfbbbb9f body)); owner Lane A named only in INDEX.md lane map | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-read StegVerse-Labs/.github main 86382e60: registry gen 320 with no PAT-003 row; control/claims-active.json gen 2, 0 claims",
+      "chat_owned_implementation": "1 = Lane A chat session 19d95368 authors the only in-scope writer: StegVerse-Labs/Patents#21 DRAFT @63be4ccf5542661449cdd601723d34c0e13c6545 (chart evidence map, +93 lines); no machine-owned writer exists | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D observed: Patents#21 head 63be4ccf, DRAFT, opened and committed by user account StegVerse (not an app or workflow); Test Readiness push+pull_request and Proof HTML runs 39973725417/39973736768/39973725777 success at 63be4ccf; comments 6367814956/6367815467/6367815884 by StegVerse. The count is observed; attribution to Lane A session 19d95368 is declared in the PR body and is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (all lanes share the StegVerse account), which does not change the count; Lane D observed (2026-10-23 ~16:12Z): open PRs in StegVerse-Labs/Patents are #21 @e31f7263 (limitation chart only), #22 @ffaec698 (research/pat003/input_manifest_v2.json + test) and #23 @1d6491f5 (verifier files); only #21 touches a fenced PAT-003 path, so the count is unchanged since #21 @63be4ccf",
+      "chat_owned_validation": "0 = validation is the repo validator + CI (machine), not chat-owned | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D observed: Patents#21 head 63be4ccf, DRAFT, opened and committed by user account StegVerse (not an app or workflow); Test Readiness push+pull_request and Proof HTML runs 39973725417/39973736768/39973725777 success at 63be4ccf; comments 6367814956/6367815467/6367815884 by StegVerse. The count is observed; attribution to Lane A session 19d95368 is declared in the PR body and is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (all lanes share the StegVerse account), which does not change the count",
+      "chat_owned_integration": "0 = integration is the merge-admission transition (machine), not chat-owned; no chat session merges | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-read StegVerse-Labs/.github main 86382e60: registry gen 320 with no PAT-003 row; control/claims-active.json gen 2, 0 claims",
+      "chat_owned_observation": "1 = Lane A session observes #21 CI (runs 39973725417, 39973736768, 39973725777: 3/3 pass) and posts pointers (Patents#16 c6367814956, #165 c6367815467, patent-registry#19 c6367815884) | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D observed: Patents#21 head 63be4ccf, DRAFT, opened and committed by user account StegVerse (not an app or workflow); Test Readiness push+pull_request and Proof HTML runs 39973725417/39973736768/39973725777 success at 63be4ccf; comments 6367814956/6367815467/6367815884 by StegVerse. The count is observed; attribution to Lane A session 19d95368 is declared in the PR body and is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (all lanes share the StegVerse account), which does not change the count",
+      "chat_owned_credentials": "0 = no credential is held or required by a chat session for this task | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D observed: Patents#21 head 63be4ccf, DRAFT, opened and committed by user account StegVerse (not an app or workflow); Test Readiness push+pull_request and Proof HTML runs 39973725417/39973736768/39973725777 success at 63be4ccf; comments 6367814956/6367815467/6367815884 by StegVerse. The count is observed; attribution to Lane A session 19d95368 is declared in the PR body and is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (all lanes share the StegVerse account), which does not change the count",
+      "canonical_owner_installed": "false = no canonical record or claim at gen 320 (StegVerse-Labs/.github registry gen 320 (main 86382e60): no record, no vector, no claim; control/claims-active.json gen 2, 0 claims (Labs#3331 @dfbbbb9f body)) | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-read StegVerse-Labs/.github main 86382e60: registry gen 320 with no PAT-003 row; control/claims-active.json gen 2, 0 claims",
+      "thread_required": "true = progress currently requires a chat-session thread (Lane A, #165) and an owner/practitioner hand-off for check-off (index L73: only the owning human or practitioner can check off an item) | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-read Patents@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304 index blob 489963865cda4b9ad4c014c4c18a2ea16c644be9: L73 owner/practitioner check-off rule, L75-L87 unchecked",
+      "blocker_count": "2 = in-scope unchecked items StegVerse-Labs/Patents@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304:filing-readiness/PAT-003_FILING_READINESS_INDEX.md (blob 489963865cda4b9ad4c014c4c18a2ea16c644be9) L75 (implementation anchors) and L77 (row classification); both appear in validator unresolved_items: python tools/validate_patent_readiness.py --family PAT-003 --root . @cf30104d -> exit 2 FAIL_CLOSED_BLOCKERS, 13 unresolved_items, stdout sha256 2eba982e546d005d3ef8d2b36a4da6f8aa2324354e2560bb55864fc3e8bd9f05 (Lane A box run 2026-10-23) | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-read Patents@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304 index blob 489963865cda4b9ad4c014c4c18a2ea16c644be9: L73 owner/practitioner check-off rule, L75-L87 unchecked; Lane D re-ran validate_patent_readiness.py --family PAT-003 --root . @cf30104d (blob 921f71c9): exit 2, stdout sha256 2eba982e546d005d3ef8d2b36a4da6f8aa2324354e2560bb55864fc3e8bd9f05 (identical)",
+      "evidence_complete": "false = in-scope validator items unresolved (python tools/validate_patent_readiness.py --family PAT-003 --root . @cf30104d -> exit 2 FAIL_CLOSED_BLOCKERS, 13 unresolved_items, stdout sha256 2eba982e546d005d3ef8d2b36a4da6f8aa2324354e2560bb55864fc3e8bd9f05 (Lane A box run 2026-10-23)) | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-ran validate_patent_readiness.py --family PAT-003 --root . @cf30104d (blob 921f71c9): exit 2, stdout sha256 2eba982e546d005d3ef8d2b36a4da6f8aa2324354e2560bb55864fc3e8bd9f05 (identical)",
+      "activated": "false = not claimed, not registered | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-read StegVerse-Labs/.github main 86382e60: registry gen 320 with no PAT-003 row; control/claims-active.json gen 2, 0 claims",
+      "propagated": "false = no admitted merge or ledger readback for this task | supplied by Lane A (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562; file sha256 a3512b332926bb5f61507c5edb87212d64e0a5e0fa4034e9ce5faa81a1e549ea) | Lane D re-read StegVerse-Labs/.github main 86382e60: registry gen 320 with no PAT-003 row; control/claims-active.json gen 2, 0 claims"
+    },
+    "evidence_refs": [
+      "https://github.com/StegVerse-Labs/patent-registry/issues/19",
+      "StegVerse-Labs/Patents@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304:filing-readiness/PAT-003_FILING_READINESS_INDEX.md",
+      "StegVerse-Labs/Patents@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304:tools/validate_patent_readiness.py (blob 921f71c911c2b7237f0efa5f2588297e50d1b19a)",
+      "https://github.com/StegVerse-Labs/Patents/pull/21 @63be4ccf5542661449cdd601723d34c0e13c6545",
+      "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562"
+    ],
+    "observed_at": "2026-10-23T15:15:00Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}
