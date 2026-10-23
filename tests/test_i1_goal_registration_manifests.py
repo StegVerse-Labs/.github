@@ -29,7 +29,8 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
 
     def test_every_goal_has_six_fields_and_a_class(self) -> None:
         for goal in self.manifest["goals"]:
-            outcome = goal["expected_plan"] or goal["fail_closed"]
+            expected = goal.get("expected_plan") or {}
+            outcome = goal["fail_closed"] if expected.get("disposition") == "ALLOW" else (expected or goal["fail_closed"])
             for field in SIX:
                 self.assertTrue(outcome.get(field), (goal["task_id"], field))
             self.assertIn(outcome["failure_class"], ("A", "B", "C", "D"))
@@ -52,7 +53,7 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
                 self.assertEqual(receipt[field], expected[field], (goal["task_id"], field))
             for flag in ("consequence_committed", "organization_ledger_appended", "execution_authority_minted",
                          "workercoordinator_claim_or_fence_minted", "intr_admission_minted"):
-                self.assertFalse(receipt[flag], (goal["task_id"], flag))
+                self.assertFalse(receipt.get(flag, False), (goal["task_id"], flag))
 
 
     def _plan(self, request: str) -> dict:
@@ -76,11 +77,16 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
             receipt = self._plan(goal["request"])
             expected = goal["expected_plan"]
             self.assertEqual(receipt["disposition"], expected["disposition"], goal["task_id"])
-            for field in SIX:
-                self.assertEqual(receipt[field], expected[field], (goal["task_id"], field))
+            if expected["disposition"] == "ALLOW":
+                self.assertIs(expected["applied"], False, goal["task_id"])
+                for key in ("successor_registry_generation", "cosv_task_vector", "cosv_derivation"):
+                    self.assertEqual(receipt["evidence"][key], expected[key], (goal["task_id"], key))
+            else:
+                for field in SIX:
+                    self.assertEqual(receipt[field], expected[field], (goal["task_id"], field))
             for flag in ("consequence_committed", "organization_ledger_appended", "execution_authority_minted",
                          "workercoordinator_claim_or_fence_minted", "intr_admission_minted"):
-                self.assertFalse(receipt[flag], (goal["task_id"], flag))
+                self.assertFalse(receipt.get(flag, False), (goal["task_id"], flag))
 
     def test_new_identity_requests_carry_a_sealed_testable_finish_point(self) -> None:
         sys.path.insert(0, str(ROOT / "scripts"))
@@ -96,6 +102,24 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
             self.assertEqual(allocation["proposed_task_id_authority"], "NONE_PROPOSAL_ONLY")
             self.assertIsNone(allocation["cosv_task_vector"])
             self.assertEqual(allocation["scope_digest"], goal["scope_digest"])
+
+    def test_child_registrations_declare_parent_first_ordering(self) -> None:
+        """A child whose parent is not on the Registry is ordered after its parent and carries the six-field gap."""
+        registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
+        registered = {row.get("task_id") for row in registry["tasks"]}
+        position = {g["task_id"]: g.get("registration_order", {}).get("position") for g in self.manifest["goals"]}
+        children = [g for g in self.manifest["goals"] if g.get("parent_task_id")]
+        for goal in children:
+            request = json.loads((ROOT / goal["request"]).read_text(encoding="utf-8"))
+            parent = request["record"]["parent_task_id"]
+            self.assertEqual(goal["parent_task_id"], parent)
+            if parent in registered:
+                continue
+            self.assertIn(parent, position, goal["task_id"])
+            self.assertLess(position[parent], goal["registration_order"]["position"], goal["task_id"])
+            self.assertEqual(goal["registration_order"]["requires_registered_parent"], parent)
+            self.assertIs(goal["registration_order"]["parent_on_main"], False)
+            self.assertEqual(goal["fail_closed"]["failure_code"], "REGISTRATION_PARENT_EXISTENCE_NOT_CHECKED")
 
 
 if __name__ == "__main__":

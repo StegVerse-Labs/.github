@@ -172,6 +172,89 @@
         "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
         "next_attempt": "on the next registration request event after the repair is recorded"
       }
+    },
+    {
+      "task_id": "ECOSYSTEM-OWN-KV-001",
+      "basis": "NEW_IDENTITY_REQUEST",
+      "registration_mode": "NEW_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/ECOSYSTEM-OWN-KV-001.request.json",
+      "request_sha256": "4f59e1883f4aa47be77f3d6308313790f47c57b5a671d419eece6056574127d1",
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-ecosystem-own-kv-2026-10-23.json",
+      "scope_digest": "sha256:23ca02bcfdded09ce1b9870e65b8e2c519a9109b6b641de9e09e985826662542",
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_ecosystem_own_kv_finish_point.py::EcosystemOwnKvFinishPoint::test_finish_point_verdict",
+        "predicate": "ECOSYSTEM_OWN_KV_FINISH_POINT: the ecosystem's WorkSpace is registered in KV, and one ecosystem credential goes from a receipted SKAP Vault custody record to a layer-2 ALLOW, end to end, on real KV ledger inputs (KV's own ledger read through KV-LEDGER-STORE-READER-001, signed head, no rollback); anything beyond that is a new registered task. Until then six-field FAIL_CLOSED naming each unmet predicate (e.g. SVKV_GATEWAY_STORAGE_NOT_PROVISIONED)",
+        "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.svkv finish-point",
+        "lowest_supported_mode": "E0"
+      },
+      "parent_task_id": null,
+      "plan_at_base": "StegVerse-Labs/.github laned/kv-skap-vault-goal-registration 32a4f344 (Labs#3324; main 86382e60, registry generation 320) with the #3311 transition and the GOAL_SCOPE_SEALED seal",
+      "lowest_supported_mode": "E0",
+      "rulings": [
+        "StegVerse-org/.github#160 issuecomment-6372009412",
+        "StegVerse-org/.github#160 issuecomment-6371986288",
+        "StegVerse-org/.github#160 issuecomment-6372045430",
+        "StegVerse-org/.github#160 issuecomment-6372216673"
+      ],
+      "registration_order": {
+        "position": 1,
+        "requires_registered_parent": null
+      },
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+        "failed_predicate": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+        "required_evidence_or_repair": "coordinate ECOSYSTEM-OWN-KV-001 with ['TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] (COORDINATE_BEFORE_MUTATION) or narrow its targets before merge",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded"
+      }
+    },
+    {
+      "task_id": "KV-LEDGER-STORE-READER-001",
+      "basis": "NEW_IDENTITY_REQUEST",
+      "registration_mode": "NEW_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-LEDGER-STORE-READER-001.request.json",
+      "request_sha256": "05393dae94bb6eac17e0b42f69d720daa4b54a12d0603d7753681a10b17f186f",
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-ledger-store-reader-2026-10-23.json",
+      "scope_digest": "sha256:1b60d37a40af738aee6a98487989a0a83266a963273d931879f28389d55af6de",
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_ledger_store_reader.py::KvLedgerStoreReaderFinishPoint::test_finish_point_verdict",
+        "predicate": "KV_LEDGER_STORE_READER_FINISH_POINT: the GATEWAY_ENCRYPTED_BLOB reader reads KV's own ledger back exactly through the gateway adapter and returns ALLOW only for a signed head not older than the newest Org-recorded KV head digest; tampered, unsigned, rolled-back, empty/missing-as-genesis, external-record and org-designated inputs each return six-field FAIL_CLOSED",
+        "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_ledger_store_reader finish-point",
+        "lowest_supported_mode": "E0"
+      },
+      "parent_task_id": "ECOSYSTEM-OWN-KV-001",
+      "plan_at_base": "StegVerse-Labs/.github laned/kv-skap-vault-goal-registration 32a4f344 (Labs#3324; main 86382e60, registry generation 320) with the #3311 transition and the GOAL_SCOPE_SEALED seal",
+      "lowest_supported_mode": "E0",
+      "rulings": [
+        "StegVerse-org/.github#160 issuecomment-6372009412",
+        "StegVerse-org/.github#160 issuecomment-6371986288",
+        "StegVerse-org/.github#160 issuecomment-6372045430",
+        "StegVerse-org/.github#160 issuecomment-6372216673"
+      ],
+      "expected_plan": {
+        "disposition": "ALLOW",
+        "successor_registry_generation": 321,
+        "cosv_task_vector": "10500000110000",
+        "cosv_derivation": "scripts/cosv.py encode_task(exact_metrics)",
+        "applied": false
+      },
+      "registration_order": {
+        "position": 2,
+        "requires_registered_parent": "ECOSYSTEM-OWN-KV-001",
+        "parent_on_main": false
+      },
+      "fail_closed": {
+        "failure_class": "B",
+        "failure_code": "REGISTRATION_PARENT_EXISTENCE_NOT_CHECKED",
+        "failed_predicate": "REGISTRATION_PARENT_EXISTENCE_NOT_CHECKED",
+        "required_evidence_or_repair": "apply ECOSYSTEM-OWN-KV-001 first; the planner at this base does not check that parent_task_id is registered (P4's predicate, StegVerse-Labs/.github#3335 on main, would refuse this child until the parent is on the Registry)",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "after ECOSYSTEM-OWN-KV-001 is applied by the transition"
+      }
     }
   ],
   "unknown": {

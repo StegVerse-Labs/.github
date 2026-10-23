@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "LANE-D-ECOSYSTEM-OWN-KV-2026-10-23-ALLOCATION",
+  "state": "PROPOSED",
+  "issue": "StegVerse-org/.github#160",
+  "proposed_task_id": "ECOSYSTEM-OWN-KV-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "proposed_task_id_source": "named by Coordination (StegVerse-org/.github#160 issuecomment-6372009412 / 6372216673); not minted by Lane D",
+  "cosv_task_vector": null,
+  "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics (scripts/cosv.py encode_task)",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 320,
+  "owning_task_found": false,
+  "parent_task_id": null,
+  "scope": "The StegVerse ecosystem maintains its own KV (SVKV) as a KV user like any other: its own WorkSpace/Org, its own ##_<name> storage locations and its own SKAP Vault inside KV, reached through KV's InTr from at minimum a healthy node. KV stays independent of the ecosystem Orgs: it keeps its own ledger behind its own InTr ingress/egress endpoint (endpoint_kind KV), never on any Org ledger ref, and Org/KV interactions are linked receipts in each side's own ledger with nothing copied across. KV is a governed layer over storage the user already owns, reached through a GATEWAY node: SVKV's storage is the StegVerse@gmail.com Google Drive, which holds only encrypted contents, and the external storage's own records never cross into KV. KV's ledger lives as encrypted, content-addressed objects in that storage, verified on KV's side; every KV ledger head is signed, each InTr exchange with an Org records the KV head digest in the Org-side linked receipt, KV refuses any head older than the newest one an Org has recorded (KV_LEDGER_HEAD_ROLLBACK_DETECTED), and an empty or missing ledger is never taken as a genesis. The SKAP root key stays in TV/TVC custody; SKAP holds only wrapped data keys and the vault never holds the credential needed to reach it. Done: the ecosystem's WorkSpace is registered in KV, and one ecosystem credential goes from a receipted SKAP Vault custody record to a layer-2 ALLOW, end to end, on real KV ledger inputs. Anything beyond that is a new registered task (multi-provider redundancy included).",
+  "scope_digest": "sha256:23ca02bcfdded09ce1b9870e65b8e2c519a9109b6b641de9e09e985826662542",
+  "requested_action": "Check the proposed identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition; then WorkerCoordinator evaluates its claim request.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "owner_authorization": {
+    "status": "OWNER_GOAL_RELAYED_BY_COORDINATION_2026-10-23",
+    "authority_limit": "OWNER_INTENT_ONLY_NOT_ALLOCATOR_OUTPUT_OR_RUNTIME_ADMISSION"
+  },
+  "handoff_ref": "docs/ECOSYSTEM_OWN_KV_MIRROR_HANDOFF.md"
+}

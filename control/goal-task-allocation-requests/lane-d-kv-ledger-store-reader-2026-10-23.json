@@ -1,0 +1,24 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "LANE-D-KV-LEDGER-STORE-READER-2026-10-23-ALLOCATION",
+  "state": "PROPOSED",
+  "issue": "StegVerse-org/.github#160",
+  "proposed_task_id": "KV-LEDGER-STORE-READER-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "proposed_task_id_source": "named by Coordination (StegVerse-org/.github#160 issuecomment-6372009412 / 6372216673); not minted by Lane D",
+  "cosv_task_vector": null,
+  "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics (scripts/cosv.py encode_task)",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 320,
+  "owning_task_found": false,
+  "parent_task_id": "ECOSYSTEM-OWN-KV-001",
+  "scope": "A non-git KV ledger store reader for store_type GATEWAY_ENCRYPTED_BLOB, built over the KV gateway storage adapter (encrypted blobs addressed by ##_<name> location), so KV's own ledger and the SKAP Vault ledger inside KV are read back from user-owned storage behind a GATEWAY node with Lane B's per-endpoint ledger designation (org#162 issuecomment-6372170864) and the InTr verifier code reused unchanged. The reader decrypts and verifies content-addressed objects on KV's side only, requires a signed KV ledger head (kv_ledger_head_signer, TVC#542 pattern), refuses any head older than the newest Org-recorded KV head digest with six-field KV_LEDGER_HEAD_ROLLBACK_DETECTED, never takes an empty or missing ledger as a genesis, never admits the external storage's own records (metadata, revisions, sharing) as ledger input, and refuses an org designation for a KV or SKAP_VAULT endpoint. Done is decided by the acceptance test named in the sealed finish point at E0 (stdlib only, no new dependencies, no LLM).",
+  "scope_digest": "sha256:1b60d37a40af738aee6a98487989a0a83266a963273d931879f28389d55af6de",
+  "requested_action": "Check the proposed identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition; then WorkerCoordinator evaluates its claim request.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "owner_authorization": {
+    "status": "OWNER_GOAL_RELAYED_BY_COORDINATION_2026-10-23",
+    "authority_limit": "OWNER_INTENT_ONLY_NOT_ALLOCATOR_OUTPUT_OR_RUNTIME_ADMISSION"
+  },
+  "handoff_ref": "docs/KV_LEDGER_STORE_READER_MIRROR_HANDOFF.md"
+}

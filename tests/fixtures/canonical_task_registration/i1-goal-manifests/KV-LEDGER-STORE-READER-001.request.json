@@ -1,0 +1,253 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "lane-d-kv-ledger-store-reader-2026-10-23",
+  "task_id": "KV-LEDGER-STORE-READER-001",
+  "observed_registry_generation": 320,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-org/.github#160",
+  "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-ledger-store-reader-2026-10-23.json",
+  "collision_analysis": [
+    "ECOSYSTEM-OWN-KV-001 (parent, proposed in this PR): this child is the store reader the parent's finish point reads KV ledger inputs through. Assigned by Coordination to Lane D (6372216673).",
+    "Lane B's git ref reader (LLM-adapter#431/#432 org_ledger_location) is reused unchanged for git stores; this child adds only the non-git store type and its reader (org#162 issuecomment-6372170864).",
+    "Decided mechanically by scripts/check_registry_collision_checkin.py in plan; this analysis is input only."
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "KV-LEDGER-STORE-READER-001",
+    "correlation_id": "KV-LEDGER-STORE-READER-001",
+    "root_correlation_id": "ECOSYSTEM-OWN-KV-001",
+    "parent_task_id": "ECOSYSTEM-OWN-KV-001",
+    "goal": "A non-git KV ledger store reader for store_type GATEWAY_ENCRYPTED_BLOB, built over the KV gateway storage adapter (encrypted blobs addressed by ##_<name> location), so KV's own ledger and the SKAP Vault ledger inside KV are read back from user-owned storage behind a GATEWAY node with Lane B's per-endpoint ledger designation (org#162 issuecomment-6372170864) and the InTr verifier code reused unchanged. The reader decrypts and verifies content-addressed objects on KV's side only, requires a signed KV ledger head (kv_ledger_head_signer, TVC#542 pattern), refuses any head older than the newest Org-recorded KV head digest with six-field KV_LEDGER_HEAD_ROLLBACK_DETECTED, never takes an empty or missing ledger as a genesis, never admits the external storage's own records (metadata, revisions, sharing) as ledger input, and refuses an org designation for a KV or SKAP_VAULT endpoint. Done is decided by the acceptance test named in the sealed finish point at E0 (stdlib only, no new dependencies, no LLM).",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "StegVerse-org/.github#160 issuecomment-6372009412 (Coordination: new goal ECOSYSTEM-OWN-KV-001 from Rigel, fixed finish point proposed, owner Lane D)",
+      "StegVerse-org/.github#160 issuecomment-6371986288 (Coordination correction from Rigel: KV is independent of the ecosystem Orgs, keeps its own ledger behind its own InTr endpoint)",
+      "StegVerse-org/.github#160 issuecomment-6372045430 (Coordination: KV rule from Rigel, governed layer over user-owned storage via a GATEWAY node, encrypted contents only; SVKV backed by the StegVerse@gmail.com Drive)",
+      "StegVerse-org/.github#160 issuecomment-6372216673 (Coordination: Rigel confirms KV ledger as encrypted content-addressed objects in the user's storage, signed heads and Org-recorded head digests against rollback; multi-provider redundancy outside this finish point)",
+      "StegVerse-org/.github#167 issuecomment-6372136062 (Coordination provisional rulings G6/G7/G8/F9/G3; bootstrap design accepted provisionally)",
+      "StegVerse-org/.github#162 issuecomment-6372170864 (Lane B org-hosted assumption audit; per-endpoint ledger designation)"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/continuity-vault-kit"
+      ],
+      "components": [
+        "kv-ledger-store-reader-gateway-encrypted-blob",
+        "kv-ledger-content-addressed-object-verification",
+        "kv-ledger-signed-head-verification",
+        "kv-ledger-head-rollback-watermark",
+        "kv-ledger-designation-refusal-of-org-ref"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "TASK-ECOSYSTEM-OWN-KV-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "ECOSYSTEM-OWN-KV-001 (parent; proposed in this PR, not on main)"
+      },
+      {
+        "dependency_id": "CAPABILITY-INTERLOCK-INTR-GOVERNED-TRANSITION",
+        "kind": "CAPABILITY",
+        "state": "UNKNOWN",
+        "ref": "Lane B per-endpoint ledger designation (org#162 issuecomment-6372170864), store_type GATEWAY_ENCRYPTED_BLOB"
+      },
+      {
+        "dependency_id": "CAPABILITY-TV-TVC-CREDENTIAL-AUTHORITY",
+        "kind": "CAPABILITY",
+        "state": "UNKNOWN",
+        "ref": "kv_ledger_head_signer (StegVerse-Labs/TVC#542 pattern), not issued"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "ECOSYSTEM-OWN-KV-001",
+      "KV-SKAP-VAULT-FUNCTIONAL-001"
+    ],
+    "existing_evidence_refs": [
+      "docs/KV_LEDGER_STORE_READER_MIRROR_HANDOFF.md"
+    ],
+    "expected_evidence_predicates": [
+      "GATEWAY_ENCRYPTED_BLOB_LEDGER_READ_BACK_EXACT",
+      "CONTENT_ADDRESSED_OBJECTS_VERIFIED_ON_KV_SIDE",
+      "KV_LEDGER_HEAD_SIGNATURE_VERIFIED",
+      "KV_LEDGER_HEAD_OLDER_THAN_ORG_RECORDED_REFUSED",
+      "EMPTY_OR_MISSING_LEDGER_NEVER_TAKEN_AS_GENESIS",
+      "EXTERNAL_STORAGE_RECORDS_NEVER_ADMITTED_AS_LEDGER_INPUT",
+      "ORG_DESIGNATION_FOR_KV_OR_SKAP_VAULT_ENDPOINT_REFUSED",
+      "FINISH_POINT_VERDICT_REACHED_AT_E0_WITHOUT_LLM"
+    ],
+    "runtime_requirements": {
+      "capabilities": [
+        "kv-own-ledger",
+        "gateway-encrypted-storage",
+        "interlock-intr-governed-transition",
+        "tv-tvc-credential-authority"
+      ],
+      "mutation_required": true,
+      "deployment_required": false,
+      "current_observation_required": true
+    },
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "NOT_APPLICABLE",
+          "limitation_class": "NOT_APPLICABLE",
+          "evidence_refs": [
+            "docs/KV_LEDGER_STORE_READER_MIRROR_HANDOFF.md"
+          ]
+        }
+      ],
+      "selected_substrate_id": null,
+      "external_device_required": false,
+      "second_user_operated_device_allowed": false,
+      "authority_effect": "NONE"
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+      "PROPOSED_TO_SUPERSEDED_IF_MERGED_INTO_AN_EXISTING_OWNER",
+      "SCOPE_CHANGE_ONLY_BY_GOAL_SCOPE_SUPERSEDE_REQUEST"
+    ],
+    "handoff_projection_refs": [
+      "docs/KV_LEDGER_STORE_READER_MIRROR_HANDOFF.md"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "A non-git KV ledger store reader for store_type GATEWAY_ENCRYPTED_BLOB, built over the KV gateway storage adapter (encrypted blobs addressed by ##_<name> location), so KV's own ledger and the SKAP Vault ledger inside KV are read back from user-owned storage behind a GATEWAY node with Lane B's per-endpoint ledger designation (org#162 issuecomment-6372170864) and the InTr verifier code reused unchanged. The reader decrypts and verifies content-addressed objects on KV's side only, requires a signed KV ledger head (kv_ledger_head_signer, TVC#542 pattern), refuses any head older than the newest Org-recorded KV head digest with six-field KV_LEDGER_HEAD_ROLLBACK_DETECTED, never takes an empty or missing ledger as a genesis, never admits the external storage's own records (metadata, revisions, sharing) as ledger input, and refuses an org designation for a KV or SKAP_VAULT endpoint. Done is decided by the acceptance test named in the sealed finish point at E0 (stdlib only, no new dependencies, no LLM).",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/continuity-vault-kit"
+        ],
+        "components": [
+          "kv-ledger-store-reader-gateway-encrypted-blob",
+          "kv-ledger-content-addressed-object-verification",
+          "kv-ledger-signed-head-verification",
+          "kv-ledger-head-rollback-watermark",
+          "kv-ledger-designation-refusal-of-org-ref"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "GATEWAY_ENCRYPTED_BLOB_LEDGER_READ_BACK_EXACT",
+        "CONTENT_ADDRESSED_OBJECTS_VERIFIED_ON_KV_SIDE",
+        "KV_LEDGER_HEAD_SIGNATURE_VERIFIED",
+        "KV_LEDGER_HEAD_OLDER_THAN_ORG_RECORDED_REFUSED",
+        "EMPTY_OR_MISSING_LEDGER_NEVER_TAKEN_AS_GENESIS",
+        "EXTERNAL_STORAGE_RECORDS_NEVER_ADMITTED_AS_LEDGER_INPUT",
+        "ORG_DESIGNATION_FOR_KV_OR_SKAP_VAULT_ENDPOINT_REFUSED",
+        "FINISH_POINT_VERDICT_REACHED_AT_E0_WITHOUT_LLM"
+      ],
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_ledger_store_reader.py::KvLedgerStoreReaderFinishPoint::test_finish_point_verdict",
+        "predicate": "KV_LEDGER_STORE_READER_FINISH_POINT: the GATEWAY_ENCRYPTED_BLOB reader reads KV's own ledger back exactly through the gateway adapter and returns ALLOW only for a signed head not older than the newest Org-recorded KV head digest; tampered, unsigned, rolled-back, empty/missing-as-genesis, external-record and org-designated inputs each return six-field FAIL_CLOSED",
+        "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_ledger_store_reader finish-point",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:1b60d37a40af738aee6a98487989a0a83266a963273d931879f28389d55af6de",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 5,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "no WorkerCoordinator claim or fence exists for this identity (record worker_claim claim_ref/fence_ref null)",
+      "archive_ready": "nonterminal: PROPOSED",
+      "unassigned_work": "5 target components (record targets.components), none admitted on StegVerse-Labs/continuity-vault-kit main bcc2d751",
+      "chat_owned_counts": "no chat-owned implementation, validation, integration, observation or credential role is asserted",
+      "canonical_owner_installed": "the Registry row this transition derives is the canonical owner (same reading as KV-SKAP-VAULT-FUNCTIONAL-001, Labs#3324)",
+      "thread_required": "durable coordination continues on StegVerse-org/.github#160 / #167",
+      "blocker_count": "record blockers [] (dependencies are UNKNOWN/UNRESOLVED, not blockers)",
+      "evidence_complete": "finish-point verdict is not ALLOW (acceptance test not yet built)",
+      "activated": "no runtime activation observed",
+      "propagated": "no downstream completion observed"
+    },
+    "evidence_refs": [
+      "docs/KV_LEDGER_STORE_READER_MIRROR_HANDOFF.md",
+      "control/goal-task-allocation-requests/lane-d-kv-ledger-store-reader-2026-10-23.json"
+    ],
+    "observed_at": "2026-10-23T18:50:00Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}
