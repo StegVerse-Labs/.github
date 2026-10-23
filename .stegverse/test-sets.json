@@ -6585,6 +6585,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_select_tests_for_change.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_select_tests_for_change.py"
+   ],
+   "tests": [
+    "tests/test_select_tests_for_change.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_self_closure_packet.py",
    "inputs": [],
    "surfaces": [
@@ -8976,6 +8988,18 @@
    ],
    "tests": [
     "tests/test_test_queue_manifold.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_test_suite_skip_receipt.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_test_suite_skip_receipt.py"
+   ],
+   "tests": [
+    "tests/test_test_suite_skip_receipt.py"
    ]
   },
   {
@@ -11655,6 +11679,9 @@
    "scripts/refresh_heartbeat_transition_receipt.py",
    "scripts/refresh_sovereign_worker_runtime_source.py",
    "scripts/verify_iphone_heartbeat_transition_receipt.py"
+  ],
+  "scripts/select_tests_for_change.py": [
+   "data/test-selection-map.json"
   ],
   "scripts/serve_hil_intr_materialization_ingress.py": [
    "heartbeat_runtime/intr_carrier_profile.py",
@@ -15010,6 +15037,11 @@
    "control/runtime-profile-map.json",
    "data/canonical-task-records/**"
   ],
+  "tests/test_select_tests_for_change.py": [
+   "README.md",
+   "data/test-selection-map.json",
+   "scripts/select_tests_for_change.py"
+  ],
   "tests/test_self_closure_packet.py": [
    ".github/workflows/organization-ledger-transition-validation.yml",
    ".github/workflows/organization-ledger-transition.yml",
@@ -16288,6 +16320,9 @@
    "data/test-suite-baseline.json",
    "scripts/test_suite_baseline_drift.py",
    "tests/__init__.py"
+  ],
+  "tests/test_test_suite_skip_receipt.py": [
+   "scripts/test_suite_skip_receipt.py"
   ],
   "tests/test_transition_disposition_invariant.py": [
    "scripts/validate_transition_disposition.py"
