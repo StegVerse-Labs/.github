@@ -620,10 +620,13 @@ def collision_checkin(base: Path, head: Path) -> None:
     module.load_evaluator = clock_free_evaluator
     result = module.check(base, head)
     failed = [r for r in result.get("results", []) if r.get("disposition") != "ALLOW"]
-    require(result.get("disposition") == "ALLOW", "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
-            json.dumps([{k: r.get(k) for k in ("task_id", "head_disposition", "failure_code", "evidence")} for r in failed])[:900],
-            "; ".join(str(r.get("required_evidence_or_repair")) for r in failed)[:600]
-            or "coordinate the colliding tasks the check-in names, then re-run plan")
+    if result.get("disposition") != "ALLOW":
+        refusal = Refusal("REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+                          json.dumps([{k: r.get(k) for k in ("task_id", "head_disposition", "failure_code", "evidence")} for r in failed])[:900],
+                          "; ".join(str(r.get("required_evidence_or_repair")) for r in failed)[:600]
+                          or "coordinate the colliding tasks the check-in names, then re-run plan")
+        refusal.checkin_rows = [{k: r.get(k) for k in ("task_id", "head_disposition", "failure_code", "evidence")} for r in failed]
+        raise refusal
 
 
 def receipt(request: dict[str, Any], request_bytes: bytes, mode: str, disposition: str,
@@ -662,7 +665,45 @@ def receipt(request: dict[str, Any], request_bytes: bytes, mode: str, dispositio
     return body
 
 
-def run(mode: str, request_path: Path, base: Path, head: Path | None = None) -> dict[str, Any]:
+ADJACENCY_RULING = "scripts/adjacency_ruling.py"
+
+
+def _adjacency_ruling() -> Any:
+    script = Path(__file__).resolve().parent / "adjacency_ruling.py"
+    spec = importlib.util.spec_from_file_location("adjacency_ruling_for_registration", script)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def checkin_with_ruling(base: Path, outputs: dict[str, bytes], request: dict[str, Any],
+                        ruling_path: Path | None, finish_point_root: Path | None, evidence: dict[str, Any]) -> str:
+    """The check-in; a COORDINATE_CONVERGENCE it returns is cleared only by a ruling whose conditions recompute."""
+    try:
+        return checkin_on_successor(base, outputs)
+    except Refusal as refusal:
+        rows = getattr(refusal, "checkin_rows", None)
+        if ruling_path is None or rows is None:
+            raise
+        try:
+            ruling = json.loads(ruling_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise Refusal("ADJACENCY_RULING_SCHEMA_INVALID", f"{ruling_path}: {exc}",
+                          "supply a readable stegverse.adjacency-ruling/v1 JSON file", "ADJACENCY_RULING_SCHEMA_INVALID")
+        verdict = _adjacency_ruling().verify(ruling, request, base, finish_point_root, rows)
+        evidence["adjacency_ruling"] = verdict
+        if verdict["disposition"] != "ALLOW":
+            raise Refusal(verdict["failed_predicate"],
+                          json.dumps({"checkin": rows, "ruling_detail": verdict.get("detail")})[:900],
+                          verdict["required_evidence_or_repair"], verdict["failure_code"])
+        return (f"CONTINUE_BY_VERIFIED_ADJACENCY_RULING ({COLLISION_CHECKIN} COORDINATE_CONVERGENCE over "
+                f"{sorted(c['task_id'] for c in verdict['candidates'])} cleared by {ADJACENCY_RULING}; "
+                f"ruling {verdict['ruling_digest']}, conditions a/b/c recomputed)")
+
+
+def run(mode: str, request_path: Path, base: Path, head: Path | None = None,
+        ruling_path: Path | None = None, finish_point_root: Path | None = None) -> dict[str, Any]:
     request_bytes = request_path.read_bytes()
     try:
         request = json.loads(request_bytes)
@@ -672,7 +713,8 @@ def run(mode: str, request_path: Path, base: Path, head: Path | None = None) -> 
     try:
         outputs, evidence = derive(base, request)
         if mode in ("plan", "apply"):
-            evidence["collision_checkin"] = checkin_on_successor(base, outputs)
+            evidence["collision_checkin"] = checkin_with_ruling(base, outputs, request, ruling_path,
+                                                                finish_point_root, evidence)
         if mode == "apply":
             target = head or base
             for rel, data in outputs.items():
@@ -699,10 +741,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--base", type=Path, default=ROOT, help="predecessor tree (live base)")
     parser.add_argument("--head", type=Path, help="successor tree (verify) or apply target")
     parser.add_argument("--receipt-out", type=Path)
+    parser.add_argument("--adjacency-ruling", type=Path,
+                        help="a stegverse.adjacency-ruling/v1 file; may clear COORDINATE_CONVERGENCE only if it recomputes")
+    parser.add_argument("--finish-point-root", type=Path,
+                        help="checkout of the subject's finish-point repository at the ruling's pinned commit")
     args = parser.parse_args(argv)
     if args.mode == "verify" and args.head is None:
         parser.error("verify needs --head")
-    body = run(args.mode, args.request, args.base.resolve(), args.head.resolve() if args.head else None)
+    body = run(args.mode, args.request, args.base.resolve(), args.head.resolve() if args.head else None,
+               args.adjacency_ruling, args.finish_point_root.resolve() if args.finish_point_root else None)
     text = json.dumps(body, indent=2, sort_keys=True) + "\n"
     if args.receipt_out:
         args.receipt_out.write_text(text, encoding="utf-8")

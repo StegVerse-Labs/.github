@@ -1,0 +1,69 @@
+{
+  "rule": "adjacent only if (a) components are disjoint, (b) the finish-point tests exercise none of the other Goal's components, (c) any reliance is a consumes-dependency; otherwise the overlap folds into the existing Goal",
+  "evaluated_on": "StegVerse-Labs/.github grok/lane-c-goal-github-universal-governance-product merge of laned/tvc-new-identity-requests @e48885c0",
+  "lowest_supported_mode": "E0",
+  "degraded_form": "E0: committed shards and registry rows plus the SDK finish-point commit read by path; no clock, no network beyond the read",
+  "finish_point": {
+    "acceptance_test": "StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py::GovernanceProductFinishPoint::test_finish_point_verdict",
+    "repository": "StegVerse-org/StegVerse-SDK",
+    "source_commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce"
+  },
+  "finish_point_static_closure": {
+    "tool": "StegVerse-Labs/.github scripts/adjacency_ruling.py static_closure (Labs#3327 @724dc816: dynamic-load resolution, guarded stub-seeded package contexts, runner and preload check)",
+    "tests/test_governance_product_finish_point.py@2db2ad2e": "9 files, 7 under stegverse/ (closure digest sha256:3ddca091dc8e38cb9164e1d1752a145e7d8799eb383e3ed8a6acbb74f375335e), resolved. stegverse/__init__.py is left out because governance_gate._sdk_module stub-seeds the package before its by-name loads and nothing outside the closure preloads it: the only preload source is tests/__init__.py, and the runner is .github/workflows/governance-product-finish-point.yml (python -m unittest tests.test_governance_product_finish_point -v). The only candidate hit is stegverse/structural_validator_candidate.py (SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001, structural-validator), pinned and routed as a STRUCTURAL file. stegverse/portable_governance_verifier.py is in the closure with no observed owner: pinned in the ruling's UNOWNED_NOT_OBSERVED consumes entry and edit-guarded there, routed to STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "tests/test_governance_product_finish_point.py@a36ee8b4": "Superseded by @2db2ad2e (same test file; adds its runner workflow). Under the @fde0fbc9 tool: FAIL_CLOSED ADJACENCY_RULING_FINISH_POINT_CLOSURE_UNRESOLVED at stegverse/manifest_state_transition_runtime.py:81. The test has no package-name literal; it loads the pinned stegverse/governance_gate.py by path. The tool reaches stegverse/__init__.py through governance_gate._sdk_module's by-name loads (stegverse.structural_validator_candidate, stegverse.portable_governance_verifier) and portable_governance_verifier's relative imports, because it adds every parent package's __init__; _sdk_module pre-seeds sys.modules['stegverse'] with a stub package, so stegverse/__init__.py never runs. Without that __init__: 9 files (closure digest sha256:3ddca091dc8e38cb9164e1d1752a145e7d8799eb383e3ed8a6acbb74f375335e); the only candidate hit is stegverse/structural_validator_candidate.py (SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001, structural-validator), which is pinned and routed as a STRUCTURAL file. At run time the test imports no module from the gate's package directory and executes only read_workflow_disposition and the gate's run step",
+    "tests/test_governance_product_finish_point.py@233d1623": "69 files under the @7976a1e2 tool (closure digest sha256:faca1d780bba977087faf0bcf8c9fde40044912b07ae32f61b9147b3fd0a1538); superseded by @a36ee8b4",
+    "tests/test_package_version_identity.py@daca828a": "71 files, 65 under stegverse/ (closure digest sha256:76b439ccf91185ad84b5a49998f86e2b4abbe489d0518f5f444ff1778f39a526); NOT standard library only as the 0cba8a50 version of this record said (Lane D's observation, confirmed). Hits against both candidates: none; superseded as the finish point because it does not test the product's finish point",
+    "tests/test_governance_gate.py@daca828a": "76 files by the static tool, which misses stegverse/structural_validator_candidate.py: governance_gate.run_gate loads it at run time by name (_sdk_module, L105 and L193, also with --no-schemas), so any run of the checker exercises SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001's structural-validator component; not usable as this Goal's finish point"
+  },
+  "results": {
+    "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001": {
+      "a_components_disjoint": false,
+      "a_evidence": "declared components {structural-validator, validator-inventory, schema-migration} do not intersect by name, but this Goal's adjacency note (Lane C 2026-10-18 draft) records GATE_SOURCE_OWNER: governance_gate.py and the reusable workflow sit under that task, so the component sdk-reusable-governance-gate-workflow is that Goal's surface",
+      "b_finish_point_exercises_none": true,
+      "b_evidence": "the 0cba8a50 finish point (tests/test_governance_gate.py) failed (b): run_gate loads structural_validator_candidate. The sealed finish point (tests/test_governance_product_finish_point.py @2db2ad2e, unchanged since a36ee8b4) does not run the checker and imports no module of the gate's package at run time; it reads the gate's run step and executes governance_gate.read_workflow_disposition, both owned by SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 per governance-gate.yml owning_existing_goal. Its static closure also reaches structural_validator_candidate.py through run_gate (never executed here). All three are sha256-pinned at 4c9dfac7 and routed to that Goal, so the reliance is a consumes-dependency",
+      "c_reliance_is_consumes_dependency": true,
+      "outcome": "NOT_ADJACENT_OVERLAP_FOLDED",
+      "folded_into_existing_goal": [
+        "component sdk-reusable-governance-gate-workflow",
+        "predicates REUSABLE_GOVERNANCE_GATE_PINNED_TO_IMMUTABLE_TV_TVC_PUBLISHED_REF, REPLAY_TAMPER_STALE_HEAD_REFUSAL_TESTED, ROUTE_SHA256_PRESERVED_ACROSS_CLASSIFIER_ALIAS_MIGRATION",
+        "the checker's production of a disposition from customer bundles (its governance-gate-selftest receipt is consumed)"
+      ],
+      "kept_as": "dependency CONSUMES-SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (the published gate at the released ref)"
+    },
+    "SDK-COST-DERIVED-TIER-PRICING-001": {
+      "a_components_disjoint": false,
+      "a_evidence": "its components {tier-pricing, cost-component-registry} (paths stegverse/tier_pricing.py, stegverse/cost_registry.py) are the surface of this Goal's tier-pricing-candidate; its adjacency note: pricing ownership moves here per owner directive",
+      "b_finish_point_exercises_none": true,
+      "b_evidence": "the sealed finish-point closure (static and run time) contains no tier_pricing or cost_registry module",
+      "c_reliance_is_consumes_dependency": true,
+      "outcome": "NOT_ADJACENT_OVERLAP_FOLDED",
+      "folded_into_existing_goal": [
+        "component tier-pricing-candidate",
+        "predicate TIER_PRICING_OWNER_APPROVED_AND_ENTITLEMENT_SEPARATE_FROM_DISPOSITION (pricing half)",
+        "dependency DECISION-PRICING-TIERS and its blocker"
+      ],
+      "kept_as": "dependency CONSUMES-SDK-COST-DERIVED-TIER-PRICING-001 and predicate ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT"
+    },
+    "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001": {
+      "a_components_disjoint": true,
+      "a_evidence": "neither its shard nor its registry row declares targets.components; its goal is read-only Stripe/GoDaddy provider ingress in StegVerse-Labs/TVC with entitlement_authority false, which none of this Goal's components claim",
+      "b_finish_point_exercises_none": true,
+      "b_evidence": "the sealed finish-point closure contains no payment or provider-ingress module; vacuous for components because none are declared",
+      "c_reliance_is_consumes_dependency": true,
+      "outcome": "ADJACENT",
+      "kept_as": "adjacent_task_refs entry and dependency CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (revenue-ops input)"
+    },
+    "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001": {
+      "a_components_disjoint": true,
+      "a_evidence": "neither its shard nor its registry row declares targets.components; its scope is StegHealth corrective-task routing in StegVerse-Labs/StegHealth, which none of this Goal's components claim",
+      "b_finish_point_exercises_none": true,
+      "b_evidence": "the sealed finish-point closure contains no StegHealth module; vacuous for components because none are declared",
+      "c_reliance_is_consumes_dependency": true,
+      "c_evidence": "no reliance; nothing to record",
+      "outcome": "ADJACENT",
+      "kept_as": "adjacent_task_refs entry"
+    }
+  },
+  "authority_effect": "NONE_EVIDENCE_ONLY"
+}
