@@ -159,18 +159,6 @@
   {
    "always": false,
    "exclude": [],
-   "id": "tests/test_adjacency_ruling_conditions.py",
-   "inputs": [],
-   "surfaces": [
-    "tests/test_adjacency_ruling_conditions.py"
-   ],
-   "tests": [
-    "tests/test_adjacency_ruling_conditions.py"
-   ]
-  },
-  {
-   "always": false,
-   "exclude": [],
    "id": "tests/test_admissible_source_generation_capability_worker.py",
    "inputs": [],
    "surfaces": [
@@ -11997,11 +11985,6 @@
    "tests/fixtures/canonical_task_registration/**",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/**",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json"
-  ],
-  "tests/test_adjacency_ruling_conditions.py": [
-   "control/adjacency-rulings/**",
-   "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json",
-   "scripts/adjacency_ruling_conditions.py"
   ],
   "tests/test_admissible_source_generation_capability_worker.py": [
    "workers/admissible_source_generation_capability_worker.py"
