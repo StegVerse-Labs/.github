@@ -99,6 +99,359 @@ def _resolve_from(root: Path, here: Path, node: ast.ImportFrom) -> list[str]:
     return [mod] + [f"{mod}.{a.name}" if mod else a.name for a in node.names]
 
 
+# --- (b) dynamic loads in the closure: resolved from literals / static constants, or FAIL_CLOSED ---------------
+# A static import closure misses modules loaded by name at run time (e.g. a gate that loads
+# stegverse.structural_validator_candidate through importlib.import_module(f"stegverse.{name}")). Every by-name
+# load in a closure file is detected; its target is resolved only from literals and statically determinable
+# constants (module/function constants, constant tables and loops over them, f-strings and path expressions
+# over __file__, and the arguments of every call site of a module-private loader function). A load whose target
+# cannot be determined fails closed: it is never treated as disjoint.
+LOADERS = {  # qualified callee -> (kind, positional index, keyword)
+    "importlib.import_module": ("module", 0, "name"),
+    "importlib.__import__": ("module", 0, "name"),
+    "__import__": ("module", 0, "name"),
+    "importlib.util.spec_from_file_location": ("path", 1, "location"),
+    "importlib.machinery.SourceFileLoader": ("path", 1, "path"),
+    "imp.load_source": ("path", 1, "pathname"),
+    "runpy.run_module": ("module", 0, "mod_name"),
+    "runpy.run_path": ("path", 0, "path_name"),
+    "exec": ("code", 0, "source"),
+    "builtins.exec": ("code", 0, "source"),
+}
+_MAX_DEPTH = 4
+
+
+class _Unknown(Exception):
+    pass
+
+
+class _Table(tuple):
+    """A constant container (tuple/list/set/dict values): subscripting or iterating it yields any member."""
+
+
+def _qual(node: ast.AST, aliases: dict[str, str]) -> str | None:
+    parts: list[str] = []
+    while isinstance(node, ast.Attribute):
+        parts.append(node.attr)
+        node = node.value
+    if not isinstance(node, ast.Name):
+        return None
+    parts.append(aliases.get(node.id, node.id))
+    return ".".join(reversed(parts))
+
+
+def _aliases(tree: ast.Module) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for a in node.names:
+                out[a.asname or a.name.split(".")[0]] = a.name if a.asname else a.name.split(".")[0]
+        elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+            for a in node.names:
+                out[a.asname or a.name] = f"{node.module}.{a.name}"
+    return out
+
+
+class _Module:
+    def __init__(self, root: Path, path: Path, tree: ast.Module):
+        self.root, self.path, self.tree = root, path, tree
+        self.aliases = _aliases(tree)
+        self.functions: dict[str, ast.AST] = {}
+        self.owner: dict[int, ast.AST | None] = {}
+        self._index(tree, None)
+        self.private_loaders: set[str] = set()
+
+    def _index(self, node: ast.AST, fn: ast.AST | None) -> None:
+        for child in ast.iter_child_nodes(node):
+            self.owner[id(child)] = fn
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                if fn is None:
+                    self.functions.setdefault(child.name, child)
+                self._index(child, child)
+            else:
+                self._index(child, fn)
+
+    # value environment ----------------------------------------------------------------------------------------
+    def _assigned(self, scope: ast.AST, name: str) -> list[ast.AST] | None:
+        """Every expression bound to `name` directly in `scope` (plain assignments, for-loops over an iterable);
+        None if the name is bound any other way there (so its value is not statically determinable)."""
+        mine = None if scope is self.tree else scope
+        found: list[ast.AST] = []
+        allowed: set[int] = set()
+        for node in ast.walk(scope):
+            if self.owner.get(id(node)) is not mine and node is not scope:
+                continue
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == name:
+                        found.append(node.value)
+                        allowed.add(id(t))
+            elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id == name \
+                    and node.value is not None:
+                found.append(node.value)
+                allowed.add(id(node.target))
+            elif isinstance(node, (ast.For, ast.comprehension)) and isinstance(node.target, ast.Name) \
+                    and node.target.id == name:
+                found.append(ast.Starred(value=node.iter))
+                allowed.add(id(node.target))
+        for node in ast.walk(scope):
+            if isinstance(node, ast.Name) and node.id == name and isinstance(node.ctx, (ast.Store, ast.Del)) \
+                    and id(node) not in allowed and (self.owner.get(id(node)) is mine):
+                return None
+            if isinstance(node, (ast.Global, ast.Nonlocal)) and name in node.names:
+                return None
+        return found
+
+    def name_values(self, name: str, fn: ast.AST | None, depth: int) -> set:
+        if name == "__file__":
+            return {self.path}
+        if name == "__name__":
+            return {".".join(self.path.relative_to(self.root).with_suffix("").parts)}
+        if fn is not None:
+            args = fn.args
+            params = [a.arg for a in args.posonlyargs + args.args + args.kwonlyargs]
+            if name in params:
+                return self.param_values(fn, name, depth)
+            bound = self._assigned(fn, name)
+            if bound is None:
+                raise _Unknown(f"{name} is not bound to a static constant")
+            if bound:
+                return self._union(bound, fn, depth)
+        bound = self._assigned(self.tree, name)
+        if not bound:
+            raise _Unknown(f"{name} is not bound to a static constant")
+        return self._union(bound, None, depth)
+
+    def _union(self, exprs: list[ast.AST], fn: ast.AST | None, depth: int) -> set:
+        out: set = set()
+        for e in exprs:
+            if isinstance(e, ast.Starred):
+                out |= self.members(e.value, fn, depth)
+            else:
+                out |= self.values(e, fn, depth)
+        return out
+
+    def members(self, expr: ast.AST, fn: ast.AST | None, depth: int) -> set:
+        out: set = set()
+        for v in self.values(expr, fn, depth):
+            if not isinstance(v, _Table):
+                raise _Unknown("iteration over a non-constant")
+            out |= set(v)
+        return out
+
+    def param_values(self, fn: ast.AST, name: str, depth: int) -> set:
+        """Values a module-private function's parameter takes at every call site in this module."""
+        if depth >= _MAX_DEPTH or not fn.name.startswith("_") or self.owner.get(id(fn)) is not None:
+            raise _Unknown(f"parameter {name} of {getattr(fn, 'name', '?')}")
+        args = fn.args
+        positional = [a.arg for a in args.posonlyargs + args.args]
+        defaults = dict(zip(positional[len(positional) - len(args.defaults):], args.defaults))
+        defaults.update({a.arg: d for a, d in zip(args.kwonlyargs, args.kw_defaults) if d is not None})
+        out: set = set()
+        calls = 0
+        callees = {id(c.func) for c in ast.walk(self.tree) if isinstance(c, ast.Call)}
+        for node in ast.walk(self.tree):
+            if isinstance(node, ast.Name) and node.id == fn.name and id(node) not in callees:
+                raise _Unknown(f"{fn.name} is referenced, not only called")
+        for call in [c for c in ast.walk(self.tree) if isinstance(c, ast.Call)
+                     and isinstance(c.func, ast.Name) and c.func.id == fn.name]:
+            calls += 1
+            if any(isinstance(a, ast.Starred) for a in call.args) or any(k.arg is None for k in call.keywords):
+                raise _Unknown(f"*args/**kwargs call of {fn.name}")
+            caller = self.owner.get(id(call))
+            expr = None
+            if name in positional and positional.index(name) < len(call.args):
+                expr = call.args[positional.index(name)]
+            for k in call.keywords:
+                if k.arg == name:
+                    expr = k.value
+            if expr is None:
+                expr = defaults.get(name)
+            if expr is None:
+                raise _Unknown(f"no value for {name}")
+            out |= self.values(expr, caller, depth + 1)
+        if not calls:
+            raise _Unknown(f"{fn.name} has no call site in its module")
+        self.private_loaders.add(fn.name)
+        return out
+
+    def values(self, e: ast.AST, fn: ast.AST | None, depth: int = 0) -> set:
+        if isinstance(e, ast.Constant) and isinstance(e.value, (str, int)) and not isinstance(e.value, bool):
+            return {e.value}
+        if isinstance(e, ast.Name):
+            return self.name_values(e.id, fn, depth)
+        if isinstance(e, (ast.Tuple, ast.List, ast.Set)):
+            return {_Table(v for x in e.elts for v in self.values(x, fn, depth))}
+        if isinstance(e, ast.Dict):
+            return {_Table(v for x in e.values for v in self.values(x, fn, depth))}
+        if isinstance(e, ast.JoinedStr):
+            acc = {""}
+            for part in e.values:
+                if isinstance(part, ast.FormattedValue):
+                    if part.format_spec is not None or part.conversion not in (-1, 115):
+                        raise _Unknown("formatted value")
+                    vals = {str(v) for v in self.values(part.value, fn, depth) if isinstance(v, (str, int, Path))}
+                else:
+                    vals = self.values(part, fn, depth)
+                acc = {a + str(b) for a in acc for b in vals}
+            return acc
+        if isinstance(e, ast.BinOp) and isinstance(e.op, (ast.Add, ast.Div)):
+            left, right = self.values(e.left, fn, depth), self.values(e.right, fn, depth)
+            out = set()
+            for a in left:
+                for b in right:
+                    if isinstance(e.op, ast.Add) and isinstance(a, str) and isinstance(b, str):
+                        out.add(a + b)
+                    elif isinstance(e.op, ast.Div) and isinstance(a, Path) and isinstance(b, (str, Path)):
+                        out.add(a / b)
+                    else:
+                        raise _Unknown("operand types")
+            return out
+        if isinstance(e, ast.Subscript):
+            if isinstance(e.value, ast.Attribute) and e.value.attr == "parents":
+                paths = self._paths(e.value.value, fn, depth)
+                return {p.parents[i] for p in paths for i in self.values(e.slice, fn, depth) if isinstance(i, int)}
+            base = self.values(e.value, fn, depth)
+            out = set()
+            for b in base:
+                if isinstance(b, _Table):
+                    out |= set(b)
+                else:
+                    raise _Unknown("subscript")
+            return out
+        if isinstance(e, ast.Attribute):
+            if e.attr == "parent":
+                return {p.parent for p in self._paths(e.value, fn, depth)}
+            raise _Unknown(f"attribute {e.attr}")
+        if isinstance(e, ast.Call):
+            return self._call_values(e, fn, depth)
+        raise _Unknown(type(e).__name__)
+
+    def _paths(self, e: ast.AST, fn: ast.AST | None, depth: int) -> set[Path]:
+        vals = self.values(e, fn, depth)
+        if not all(isinstance(v, Path) for v in vals):
+            raise _Unknown("not a path")
+        return vals
+
+    def _call_values(self, e: ast.Call, fn: ast.AST | None, depth: int) -> set:
+        q = _qual(e.func, self.aliases)
+        args = e.args
+        if q in ("pathlib.Path", "pathlib.PurePath", "pathlib.PosixPath", "Path") and len(args) >= 1:
+            acc: set = {None}
+            for a in args:
+                vals = self.values(a, fn, depth)
+                acc = {(Path(v) if x is None else x / v) for x in acc for v in vals if isinstance(v, (str, Path))}
+            return acc
+        if q in ("str", "os.fspath") and len(args) == 1:
+            return {str(v) for v in self.values(args[0], fn, depth)}
+        if q == "os.path.join" and args:
+            acc = {Path(v) for v in self.values(args[0], fn, depth)}
+            for a in args[1:]:
+                acc = {x / v for x in acc for v in self.values(a, fn, depth)}
+            return {str(p) for p in acc}
+        if q in ("os.path.dirname", "os.path.abspath", "os.path.realpath") and len(args) == 1:
+            vals = {Path(v) for v in self.values(args[0], fn, depth)}
+            return {str(p.parent) if q.endswith("dirname") else str(p) for p in vals}
+        if isinstance(e.func, ast.Attribute):
+            method, target = e.func.attr, e.func.value
+            if method in ("resolve", "absolute", "expanduser") and not args:
+                return self._paths(target, fn, depth)
+            if method == "with_name" and len(args) == 1:
+                return {p.with_name(str(v)) for p in self._paths(target, fn, depth) for v in self.values(args[0], fn, depth)}
+            if method == "joinpath":
+                acc = self._paths(target, fn, depth)
+                for a in args:
+                    acc = {p / str(v) for p in acc for v in self.values(a, fn, depth)}
+                return acc
+            if method in ("read_text", "read_bytes", "read") and not args:
+                return {_Source(p) for p in self._file_refs(target, fn, depth)}
+        raise _Unknown(f"call {q}")
+
+    def _file_refs(self, e: ast.AST, fn: ast.AST | None, depth: int) -> set[Path]:
+        if isinstance(e, ast.Call) and _qual(e.func, self.aliases) in ("open", "io.open") and e.args:
+            return {Path(str(v)) for v in self.values(e.args[0], fn, depth)}
+        return {Path(str(v)) for v in self.values(e, fn, depth)}
+
+
+class _Source(str):
+    """The text of a file (open(p).read(), Path(p).read_text()) - an exec of it loads that file."""
+    def __new__(cls, path: Path):
+        obj = super().__new__(cls, str(path))
+        obj.file = path
+        return obj
+
+
+def _abs(module: _Module, p: Any) -> Path:
+    p = Path(p)
+    return p if p.is_absolute() else (module.path.parent / p)
+
+
+def dynamic_loads(root: Path, path: Path, tree: ast.Module) -> tuple[list[str], list[Path], list[dict[str, Any]], set[str]]:
+    """(module names, files, unresolved sites, module-private loader functions) of the by-name loads in one file."""
+    module = _Module(root, path, tree)
+    rel = path.relative_to(root).as_posix()
+    names: list[str] = []
+    files: list[Path] = []
+    unresolved: list[dict[str, Any]] = []
+    for call in [n for n in ast.walk(tree) if isinstance(n, ast.Call)]:
+        q = _qual(call.func, module.aliases)
+        if q not in LOADERS:
+            continue
+        kind, index, keyword = LOADERS[q]
+        expr = call.args[index] if len(call.args) > index else next(
+            (k.value for k in call.keywords if k.arg == keyword), None)
+        fn = module.owner.get(id(call))
+        site = {"path": rel, "line": call.lineno, "call": q}
+        try:
+            if expr is None:
+                raise _Unknown("no target argument")
+            if kind == "code" and isinstance(expr, ast.Call) and _qual(expr.func, module.aliases) == "compile" and expr.args:
+                expr = expr.args[0]
+            vals = module.values(expr, fn)
+            if kind == "module":
+                package = next((k.value for k in call.keywords if k.arg == "package"), None)
+                if package is None and q.endswith("import_module") and len(call.args) > 1:
+                    package = call.args[1]
+                pkgs = module.values(package, fn) if package is not None else {None}
+                for v in vals:
+                    if not isinstance(v, str):
+                        raise _Unknown("module name is not a string")
+                    if v.startswith("."):
+                        for pkg in pkgs:
+                            if not isinstance(pkg, str):
+                                raise _Unknown("relative module without a constant package")
+                            up = len(v) - len(v.lstrip("."))
+                            base = pkg.split(".")[: len(pkg.split(".")) - (up - 1)]
+                            names.append(".".join(base + ([v.lstrip(".")] if v.lstrip(".") else [])))
+                    else:
+                        names.append(v)
+            elif kind == "path":
+                for v in vals:
+                    if not isinstance(v, (str, Path)) or isinstance(v, _Table):
+                        raise _Unknown("location is not a path")
+                    files.append(_abs(module, v))
+            else:  # exec
+                for v in vals:
+                    if isinstance(v, _Source):
+                        files.append(_abs(module, v.file))
+                    elif isinstance(v, str):
+                        inner = ast.parse(v)
+                        n2, f2, u2, _ = dynamic_loads(root, path, inner)
+                        for node in ast.walk(inner):
+                            if isinstance(node, ast.Import):
+                                n2 += [a.name for a in node.names]
+                            elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+                                n2 += [node.module] + [f"{node.module}.{a.name}" for a in node.names]
+                        names += n2
+                        files += f2
+                        unresolved += u2
+                    else:
+                        raise _Unknown("exec of a non-source value")
+        except (_Unknown, SyntaxError, ValueError, TypeError) as exc:
+            unresolved.append({**site, "reason": str(exc) or type(exc).__name__})
+    return names, files, unresolved, module.private_loaders
+
+
 def static_closure(root: Path, test_rel: str) -> dict[str, str]:
     """{repository path: sha256} of the test file and every repository file it reaches statically."""
     root = root.resolve()
@@ -107,6 +460,9 @@ def static_closure(root: Path, test_rel: str) -> dict[str, str]:
              "FINISH_POINT_TEST_PRESENT_AT_PINNED_COMMIT",
              f"the finish-point test {test_rel} must exist at the pinned commit of the finish-point repository")
     seen: dict[str, str] = {}
+    trees: dict[str, ast.Module] = {}
+    private_loaders: dict[str, set[str]] = {}
+    unresolved: list[dict[str, Any]] = []
     queue = [start]
     while queue:
         path = queue.pop()
@@ -139,10 +495,45 @@ def static_closure(root: Path, test_rel: str) -> dict[str, str]:
                         pass
                     if all(part.isidentifier() for part in text.split(".")):
                         names.append(text)
+        dyn_names, dyn_files, dyn_unresolved, loaders = dynamic_loads(root, path, tree)
+        names += dyn_names
+        unresolved += dyn_unresolved
+        if loaders:
+            private_loaders[rel] = loaders
+        trees[rel] = tree
+        for target in dyn_files:
+            try:
+                target = target.resolve()
+            except OSError:
+                continue
+            if target.is_file() and root in target.parents:
+                queue.append(target)
         for name in names:
             parts = name.split(".")
             for i in range(1, len(parts) + 1):  # a package's __init__ runs on import of anything below it
                 queue += _module_files(root, ".".join(parts[:i]))
+    # a module-private loader resolved from its own call sites must not be reachable from another closure file
+    for owner_rel, loaders in private_loaders.items():
+        for rel, tree in trees.items():
+            if rel == owner_rel:
+                continue
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Attribute):
+                    used = node.attr
+                elif isinstance(node, ast.ImportFrom):
+                    used = next((a.name for a in node.names if a.name in loaders), None)
+                else:
+                    continue
+                if used in loaders:
+                    unresolved.append({"path": rel, "line": getattr(node, "lineno", 0), "call": f"{owner_rel}:{used}",
+                                       "reason": "a module-private loader is reached from another module"})
+    _require(not unresolved, "ADJACENCY_RULING_FINISH_POINT_CLOSURE_UNRESOLVED",
+             "FINISH_POINT_CLOSURE_DYNAMIC_LOADS_RESOLVED",
+             "every by-name load reachable from the finish-point test (importlib.import_module, __import__, "
+             "spec_from_file_location, runpy, exec of a file) must name its target by a literal or a statically "
+             "determinable constant; an unresolved load is never treated as disjoint - pin a finish-point test whose "
+             "closure resolves, or make the load's target a constant",
+             sorted(unresolved, key=lambda u: (u["path"], u["line"]))[:50])
     return dict(sorted(seen.items()))
 
 
