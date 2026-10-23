@@ -120,6 +120,27 @@ class Registration(unittest.TestCase):
             self.assertIn("pending admission of StegVerse-Labs/Patents#23", dep["ref"])
             self.assertIn(verifier["commit"], dep["ref"])
             self.assertEqual(verifier["admission_state"], "UNADMITTED_DRAFT_PR_DEPENDENCY_NOT_ALLOW")
+            self.assertEqual(goal["pinned_heads"]["Patents#23"], verifier["commit"])
+
+    def test_fe2_primary_clip_is_six_field_fail_closed_class_c(self):
+        evidence = next(g for g in MANIFEST["goals"] if g["task_id"] == "PAT-003-EVIDENCE")
+        self.assertEqual(evidence["pinned_heads"]["Patents#21"], "e31f7263bb72645f2d684a95517547c930139d6a")
+        self.assertEqual(evidence["pinned_heads"]["Patents#22"], "ffaec698ba49fc2d11cabfd6cfdf73f13534f7ae")
+        [item] = evidence["fail_closed"]
+        self.assertEqual((item["class"], item["failure_code"]), ("C", "FE2_PRIMARY_CLIP_POINTER_NOT_HASHED"))
+        for field in SIX:
+            self.assertTrue(item.get(field), field)
+        self.assertIn("KV-8", item["failed_predicate"])
+        rec = request("PAT-003-EVIDENCE")["record"]
+        dep = next(d for d in rec["dependencies"] if d["dependency_id"] == "PAT_003_PRIMARY_DEMONSTRATION_INPUT_EXPORT")
+        self.assertEqual((dep["kind"], dep["state"]), ("HUMAN_ACTION", "UNRESOLVED"))
+        for pin in ("e31f7263bb72645f2d684a95517547c930139d6a", "ffaec698ba49fc2d11cabfd6cfdf73f13534f7ae"):
+            self.assertIn(pin, dep["ref"])
+        for other in ("PAT-003-CHRONOLOGY", "PAT-003-PRIOR-ART"):
+            goal = next(g for g in MANIFEST["goals"] if g["task_id"] == other)
+            self.assertEqual(goal["fail_closed"], [])
+            ids = {d["dependency_id"] for d in request(other)["record"]["dependencies"]}
+            self.assertNotIn("PAT_003_PRIMARY_DEMONSTRATION_INPUT_EXPORT", ids)
 
     def test_scope_seal_holds_for_the_record(self):
         gss = load_module("goal_scope_seal_pat003", "scripts/goal_scope_seal.py")

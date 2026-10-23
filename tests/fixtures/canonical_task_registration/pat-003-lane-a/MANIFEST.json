@@ -28,7 +28,7 @@
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-evidence-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-EVIDENCE.claim-draft.json",
       "scope_digest": "sha256:d2807cbe8d7a9f178dae93fecdf749449d7e769c76f0541e4c2ba7e95275fc60",
-      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 5f42c52c (main 86382e60, registry generation 320, plus the #3327 stack)",
       "metrics_source": {
         "supplied_by": "Lane A",
         "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
@@ -45,14 +45,33 @@
         "implementation": "research/pat003/finish_point_verifier_v1.py",
         "implementation_sha256": "de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c",
         "admission_state": "UNADMITTED_DRAFT_PR_DEPENDENCY_NOT_ALLOW",
+        "location_check": "only on Patents#23; not on #21 e31f7263 (chart only) or #22 ffaec698 (manifest v2 only)",
         "lane_d_readonly_reverification": {
           "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304": "all 7 NOT_MET (exit 2)",
           "63be4ccf5542661449cdd601723d34c0e13c6545": "FE-1 MET; FE-2,FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
+          "e31f7263bb72645f2d684a95517547c930139d6a": "FE-1 MET; FE-2 NOT_MET only on KV-8 (all three object stores usable); FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
           "human_action_dependencies": "7 x HUMAN_ACTION_REQUIRED, evaluated_by_tool false",
           "verifier_unit_tests": "56 OK, 0 skipped"
         }
       },
       "open_fail_closed": "downgraded: verifier pending admission of Patents#23 (FINISH_POINT_VERIFIER_NOT_IMPLEMENTED repaired in draft)",
+      "pinned_heads": {
+        "Patents#21": "e31f7263bb72645f2d684a95517547c930139d6a",
+        "Patents#22": "ffaec698ba49fc2d11cabfd6cfdf73f13534f7ae",
+        "Patents#23": "1d6491f505899e2374b1bcdabbed9378e8a7e40f"
+      },
+      "fail_closed": [
+        {
+          "id": "PAT003-FE2-KV8",
+          "class": "C",
+          "failure_code": "FE2_PRIMARY_CLIP_POINTER_NOT_HASHED",
+          "failed_predicate": "FE-2: chart private pointer KV-8 (primary demonstration clip, 481,804,387 B) is one Drive id plus one 64-hex SHA-256 (verifier @1d6491f5 at Patents#21 e31f7263: the only NOT_MET FE-2 check)",
+          "required_evidence_or_repair": "owner export of DP_free_drop_video.mp4 from the ChatGPT Library (file_000000001734820e8f0246055e4ac1f8) to Drive or the box; Lane D hashes it on arrival (KV_RIGHTS_DISPOSITION_RECORD 6c2ee85c... LD-OSR-RIGHTS-03); Lane A fills chart KV-8 and input_manifest_v2 sha256",
+          "retry_entrypoint": "python tools/verify_pat003_finish_points.py --git-dir <Patents clone> --rev <next #21 head> --points FE-2 (Patents#23 @1d6491f5)",
+          "owning_existing_goal": "PAT-003-EVIDENCE (PROPOSED_BY_LANE_A; StegVerse-org/.github#165)",
+          "next_attempt": "when the owner export lands"
+        }
+      ],
       "lane_a_scratch_plan_sha256": "db7c8ed8289d51d70b4398f56e5618eace948584fb2c80e23135f873b1add939",
       "expected_plan": {
         "disposition": "ALLOW",
@@ -63,11 +82,11 @@
         "derived_files": {
           "control/goal-scope-seals/PAT-003-EVIDENCE.json": "sha256:eb1a522ecd14df6e75e6955a6d45cd804f80a33c213c178a7f0d480432b29a36",
           "control/task-vector-index.d/PAT-003-EVIDENCE.json": "sha256:0ac67cf6772cc94c8f7586aebdbb377ff38724416046d889af92d894dfb5f5e7",
-          "control/task-vectors/PAT-003-EVIDENCE.json": "sha256:f2446a2e6d7f52e8579e7488c93637e68c6593bb51b8cf84e6e329044c238e54",
-          "data/canonical-task-records/PAT-003-EVIDENCE.json": "sha256:e9b5024f8f8cb508078d4f7c2755c59e2b25a7f0eb27945af5565f853c864632",
-          "data/canonical-task-registry.json": "sha256:ebb7a452f75978297f9db30688e9c4a59525aa47c94bfaab66a3951a3b84ad4d"
+          "control/task-vectors/PAT-003-EVIDENCE.json": "sha256:6989e914638ff0562bb7a0aeea17bf8022ac3a86c2e88f2a4654380157933745",
+          "data/canonical-task-records/PAT-003-EVIDENCE.json": "sha256:0613432311328b9ad6314addca116d9abe35ca5369cd0f306e5a55aa394a315e",
+          "data/canonical-task-registry.json": "sha256:d26664e989b4f37f39e95cdbc737b8ed661ec88b0c6eecc474e4564d9542fe06"
         },
-        "request_sha256": "sha256:5edfaa4331da1e6f6a4f9bd7c6d04765ddfc1fe53d39fed4fa7a4a6813375400"
+        "request_sha256": "sha256:20ce1c8069c7f7d9874e372946a4998c2c806a3e0471bc28b93dc770bdf03840"
       }
     },
     {
@@ -79,7 +98,7 @@
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-chronology-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-CHRONOLOGY.claim-draft.json",
       "scope_digest": "sha256:ae347f68961265df18e0760c24fae97bdcc801954dd491b6a3ba7276a2f9235f",
-      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 5f42c52c (main 86382e60, registry generation 320, plus the #3327 stack)",
       "metrics_source": {
         "supplied_by": "Lane A",
         "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
@@ -96,14 +115,22 @@
         "implementation": "research/pat003/finish_point_verifier_v1.py",
         "implementation_sha256": "de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c",
         "admission_state": "UNADMITTED_DRAFT_PR_DEPENDENCY_NOT_ALLOW",
+        "location_check": "only on Patents#23; not on #21 e31f7263 (chart only) or #22 ffaec698 (manifest v2 only)",
         "lane_d_readonly_reverification": {
           "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304": "all 7 NOT_MET (exit 2)",
           "63be4ccf5542661449cdd601723d34c0e13c6545": "FE-1 MET; FE-2,FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
+          "e31f7263bb72645f2d684a95517547c930139d6a": "FE-1 MET; FE-2 NOT_MET only on KV-8 (all three object stores usable); FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
           "human_action_dependencies": "7 x HUMAN_ACTION_REQUIRED, evaluated_by_tool false",
           "verifier_unit_tests": "56 OK, 0 skipped"
         }
       },
       "open_fail_closed": "downgraded: verifier pending admission of Patents#23 (FINISH_POINT_VERIFIER_NOT_IMPLEMENTED repaired in draft)",
+      "pinned_heads": {
+        "Patents#21": "e31f7263bb72645f2d684a95517547c930139d6a",
+        "Patents#22": "ffaec698ba49fc2d11cabfd6cfdf73f13534f7ae",
+        "Patents#23": "1d6491f505899e2374b1bcdabbed9378e8a7e40f"
+      },
+      "fail_closed": [],
       "lane_a_scratch_plan_sha256": "34044fe360a07054a7ff1fa80c6c370418ae3bfe9796da424bcf61b25fc5beb6",
       "expected_plan": {
         "disposition": "ALLOW",
@@ -114,11 +141,11 @@
         "derived_files": {
           "control/goal-scope-seals/PAT-003-CHRONOLOGY.json": "sha256:976247e01603e87e22a449b5e8db232fd51e3d3b401443c6bea27feb37841d98",
           "control/task-vector-index.d/PAT-003-CHRONOLOGY.json": "sha256:bbf9ad8ededeca384ee944af19a03a77b5c88eaa7d8bf93a2fcb067c68ac2a8e",
-          "control/task-vectors/PAT-003-CHRONOLOGY.json": "sha256:84c84987539f50ffdcf5c3441e12f146dab0dd3739793af018bcda04f7ba4916",
-          "data/canonical-task-records/PAT-003-CHRONOLOGY.json": "sha256:28ee1d98ad2296654ace6fa7c1f9c502fb0368d704663fc604a167b72e4523b6",
-          "data/canonical-task-registry.json": "sha256:aef502be58a767e43e5d41f74b44f3629ffc93e360c5d5f15949494a823b8582"
+          "control/task-vectors/PAT-003-CHRONOLOGY.json": "sha256:0d2ea27cf9ded97990c92ab7105d5e826f64047b2da0ef17b99260db584cfa40",
+          "data/canonical-task-records/PAT-003-CHRONOLOGY.json": "sha256:d14a004d8e5e72e6eb730dd586311297ba0d9e208d861def05251bfe60d56030",
+          "data/canonical-task-registry.json": "sha256:4cdb384b0e85304ecc333b8125eb2667f7fa1362c5e19ac3335df50f33b23970"
         },
-        "request_sha256": "sha256:b5f85495208cc6d59486ae8bca61dfcad8f20bc74114b6e3c12e08591999a63a"
+        "request_sha256": "sha256:4c87017bd465c9393581e4d67a2e3145d477986da5a9149b6f0b151473456a68"
       }
     },
     {
@@ -130,7 +157,7 @@
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-prior-art-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-PRIOR-ART.claim-draft.json",
       "scope_digest": "sha256:981e3b75df3c4cd5274bc485eeea39ea5a89f8971e8c8b3b286338c195eebf2b",
-      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 5f42c52c (main 86382e60, registry generation 320, plus the #3327 stack)",
       "metrics_source": {
         "supplied_by": "Lane A",
         "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
@@ -147,14 +174,22 @@
         "implementation": "research/pat003/finish_point_verifier_v1.py",
         "implementation_sha256": "de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c",
         "admission_state": "UNADMITTED_DRAFT_PR_DEPENDENCY_NOT_ALLOW",
+        "location_check": "only on Patents#23; not on #21 e31f7263 (chart only) or #22 ffaec698 (manifest v2 only)",
         "lane_d_readonly_reverification": {
           "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304": "all 7 NOT_MET (exit 2)",
           "63be4ccf5542661449cdd601723d34c0e13c6545": "FE-1 MET; FE-2,FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
+          "e31f7263bb72645f2d684a95517547c930139d6a": "FE-1 MET; FE-2 NOT_MET only on KV-8 (all three object stores usable); FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
           "human_action_dependencies": "7 x HUMAN_ACTION_REQUIRED, evaluated_by_tool false",
           "verifier_unit_tests": "56 OK, 0 skipped"
         }
       },
       "open_fail_closed": "downgraded: verifier pending admission of Patents#23 (FINISH_POINT_VERIFIER_NOT_IMPLEMENTED repaired in draft)",
+      "pinned_heads": {
+        "Patents#21": "e31f7263bb72645f2d684a95517547c930139d6a",
+        "Patents#22": "ffaec698ba49fc2d11cabfd6cfdf73f13534f7ae",
+        "Patents#23": "1d6491f505899e2374b1bcdabbed9378e8a7e40f"
+      },
+      "fail_closed": [],
       "lane_a_scratch_plan_sha256": "fe50042bdc33f81e9ed26883aeb48e6bede094ca161a4e940a8996c85bfcaf3a",
       "expected_plan": {
         "disposition": "ALLOW",
@@ -165,11 +200,11 @@
         "derived_files": {
           "control/goal-scope-seals/PAT-003-PRIOR-ART.json": "sha256:756b99758ced660286941052e02b140d6dce8cab0a0f867a527164675c92bec7",
           "control/task-vector-index.d/PAT-003-PRIOR-ART.json": "sha256:eb3591c01df2817bf8b14a977126e1a1c6f6d6043c6ef4ca5e0c4cfa95ec5208",
-          "control/task-vectors/PAT-003-PRIOR-ART.json": "sha256:f894d1e1732d6f2ef8dc7c63f6d610dc812148a8086bb8c87cd6763c226af35c",
-          "data/canonical-task-records/PAT-003-PRIOR-ART.json": "sha256:86c8cf4fab7a38a32675295d60459325d11d5da7391ce42e3d47b9135aa789e2",
-          "data/canonical-task-registry.json": "sha256:7587dce3a350b5dc8795e60aa18c2fac063a99ff83d3cec2e15a169e6fa5bb18"
+          "control/task-vectors/PAT-003-PRIOR-ART.json": "sha256:ea135d77a2f14f068ba55fac85bab87f7cd846656a4090250d23b2e2bb6fccb7",
+          "data/canonical-task-records/PAT-003-PRIOR-ART.json": "sha256:402679c5b285c51eb3f1c480f13f8e479c70d3cad57afe665c6a5416b08ea6d5",
+          "data/canonical-task-registry.json": "sha256:0e582b9ceaac1cc534e6249865f41c9f4b30ff878f77ad051a9ec05bd632d1ef"
         },
-        "request_sha256": "sha256:169405debb86768b652f493d094a3ebdcb28c3b0c3d1e227445f933213f4eae6"
+        "request_sha256": "sha256:886505b00fcdbfbfde302c010c98c4caef243ebb887c20162000f917f26350e6"
       }
     }
   ],

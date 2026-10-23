@@ -4,7 +4,7 @@
   "active_work": {
     "schema": "stegverse.write-admission-active-work/v1",
     "observed": {
-      "source": "gh pr list --state open: StegVerse-Labs/Patents (1 open: #21) and StegVerse-Labs/patent-registry (#30,#15,#14,#13,#11,#8,#7; none touches a PAT-003 path); StegVerse-Labs/.github control/claims-active.json on main (generation 2, 0 claims); observed 2026-10-23 by Lane D",
+      "source": "gh pr list --state open: StegVerse-Labs/Patents (3 open: #21 e31f7263, #22 ffaec698, #23 1d6491f5; observed 2026-10-23 ~16:12Z) and StegVerse-Labs/patent-registry (#30,#15,#14,#13,#11,#8,#7; none touches a PAT-003 path); StegVerse-Labs/.github control/claims-active.json on main (generation 2, 0 claims); observed 2026-10-23 by Lane D",
       "observed_at": "2026-10-23"
     },
     "items": [
@@ -15,12 +15,60 @@
         "ref": "https://github.com/StegVerse-Labs/Patents/pull/21",
         "repository": "StegVerse-Labs/Patents",
         "branch": "laneA/pat003-limitation-chart-evidence-map",
-        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "head": "e31f7263bb72645f2d684a95517547c930139d6a",
         "surfaces": [
           {
             "kind": "file",
             "repository": "StegVerse-Labs/Patents",
             "path": "filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md"
+          }
+        ]
+      },
+      {
+        "work_id": "StegVerse-Labs/Patents#22",
+        "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+        "task_id_source": "goal_task_id declared in research/pat003/input_manifest_v2.json @ffaec698",
+        "kind": "pull_request",
+        "ref": "https://github.com/StegVerse-Labs/Patents/pull/22",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/pat003-input-manifest-v2-mp4-repin",
+        "head": "ffaec698ba49fc2d11cabfd6cfdf73f13534f7ae",
+        "surfaces": [
+          {
+            "kind": "file",
+            "repository": "StegVerse-Labs/Patents",
+            "path": "research/pat003/input_manifest_v2.json"
+          },
+          {
+            "kind": "file",
+            "repository": "StegVerse-Labs/Patents",
+            "path": "tests/test_pat003_input_manifest_repin_v1.py"
+          }
+        ]
+      },
+      {
+        "work_id": "StegVerse-Labs/Patents#23",
+        "task_id": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "kind": "pull_request",
+        "ref": "https://github.com/StegVerse-Labs/Patents/pull/23",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/pat003-finish-point-verifier",
+        "head": "1d6491f505899e2374b1bcdabbed9378e8a7e40f",
+        "surfaces": [
+          {
+            "kind": "file",
+            "repository": "StegVerse-Labs/Patents",
+            "path": "research/pat003/finish_point_verifier_v1.py"
+          },
+          {
+            "kind": "file",
+            "repository": "StegVerse-Labs/Patents",
+            "path": "tests/test_pat003_finish_point_verifier_v1.py"
+          },
+          {
+            "kind": "file",
+            "repository": "StegVerse-Labs/Patents",
+            "path": "tools/verify_pat003_finish_points.py"
           }
         ]
       }
@@ -40,7 +88,7 @@
         "work_id": "StegVerse-Labs/Patents#21",
         "repository": "StegVerse-Labs/Patents",
         "branch": "laneA/pat003-limitation-chart-evidence-map",
-        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "head": "e31f7263bb72645f2d684a95517547c930139d6a",
         "pull_request": "https://github.com/StegVerse-Labs/Patents/pull/21"
       },
       "expected_disposition": "ALLOW",
@@ -59,7 +107,7 @@
         "work_id": "StegVerse-Labs/Patents#21",
         "repository": "StegVerse-Labs/Patents",
         "branch": "laneA/pat003-limitation-chart-evidence-map",
-        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "head": "e31f7263bb72645f2d684a95517547c930139d6a",
         "pull_request": "https://github.com/StegVerse-Labs/Patents/pull/21"
       },
       "expected_disposition": "ALLOW",
@@ -168,7 +216,7 @@
         "work_id": "StegVerse-Labs/Patents#21",
         "repository": "StegVerse-Labs/Patents",
         "branch": "laneA/pat003-limitation-chart-evidence-map",
-        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "head": "e31f7263bb72645f2d684a95517547c930139d6a",
         "pull_request": "https://github.com/StegVerse-Labs/Patents/pull/21"
       },
       "expected_disposition": "FAIL_CLOSED",
@@ -187,7 +235,7 @@
         "work_id": "StegVerse-Labs/Patents#21",
         "repository": "StegVerse-Labs/Patents",
         "branch": "laneA/pat003-limitation-chart-evidence-map",
-        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "head": "e31f7263bb72645f2d684a95517547c930139d6a",
         "pull_request": "https://github.com/StegVerse-Labs/Patents/pull/21"
       },
       "expected_disposition": "ALLOW",
