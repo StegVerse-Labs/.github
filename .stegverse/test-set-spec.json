@@ -13,6 +13,16 @@
    "tests/test_test_suite_baseline_drift.py"
   ]
  },
+ "extra_surfaces": {
+  "tests/test_owner_assignment_transition.py": [
+   "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.git-history.json",
+   "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.request.json",
+   "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.run.json",
+   "data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json",
+   "data/canonical-task-registry.json",
+   "scripts/owner_assignment_transition.py"
+  ]
+ },
  "import_roots": [
   "control",
   "heartbeat_runtime",

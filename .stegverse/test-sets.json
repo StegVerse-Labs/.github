@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "75c3a4b0faa8de07dee9913e493295417150cd9c35257d0b1e0ed61aa069cd65"
+  "spec_sha256": "cb12353e8358550f818e0b5318aa2db4d33bb18705566c472e3761bbe296504a"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -5196,6 +5196,24 @@
    ],
    "tests": [
     "tests/test_out_of_scope_remediation_request_contract.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_owner_assignment_transition.py",
+   "inputs": [],
+   "surfaces": [
+    "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.git-history.json",
+    "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.request.json",
+    "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.run.json",
+    "data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json",
+    "data/canonical-task-registry.json",
+    "scripts/owner_assignment_transition.py",
+    "tests/test_owner_assignment_transition.py"
+   ],
+   "tests": [
+    "tests/test_owner_assignment_transition.py"
    ]
   },
   {
@@ -11060,6 +11078,10 @@
   "scripts/organization_ledger_head_epoch.py": [
    "scripts/consume_org_claim_allocator_request.py"
   ],
+  "scripts/owner_assignment_transition.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json"
+  ],
   "scripts/package_sovereign_control_plane_bundle.py": [
    "README.md",
    "scripts/bootstrap_sovereign_runtime.py"
@@ -14377,6 +14399,11 @@
    "data/canonical-task-records/**",
    "data/canonical-task-records/STEGVERSE-OUT-OF-SCOPE-REMEDIATION-REQUEST-CONTRACT-001.json",
    "data/out-of-scope-remediation-request-contract.json"
+  ],
+  "tests/test_owner_assignment_transition.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/owner_assignment_transition.py"
   ],
   "tests/test_package_sovereign_control_plane_bundle.py": [
    "README.md",

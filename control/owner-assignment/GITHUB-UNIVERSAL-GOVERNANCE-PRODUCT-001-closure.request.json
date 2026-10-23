@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.owner-assignment-request/v1",
+  "request_id": "OWNER-ASSIGNMENT-GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-CLOSURE-1",
+  "consumer": {
+    "class_b_item": "StegVerse-org/.github#160 comment 6360723260 (Lane D)",
+    "failure_code": "ADJACENCY_RULING_UNOWNED_CONSUMED_SOURCE_OWNER_UNASSIGNED",
+    "adjacency_ruling": "StegVerse-Labs/.github#3326 control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json (head e9085315)",
+    "closure_source_commit": "2db2ad2e (StegVerse-org/StegVerse-SDK#556); all five sha256 identical at 4c9dfac7 and 2db2ad2e"
+  },
+  "source_repository": "StegVerse-org/StegVerse-SDK",
+  "pinned_commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+  "candidate_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "files": [
+    {
+      "path": "stegverse/portable_governance_verifier.py",
+      "sha256": "sha256:d1963e230e74da447f47d49440cbec41570b2a8e573c5cd5adb33274d161a0f6",
+      "observed_non_receipted_lineage": {
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#70 (merged 2026-08-23, branch feat/portable-governance-verifier-61-r2)"
+        ],
+        "pr_body_goal_reference": "SDK issue #61 slice; no Goal task id",
+        "authoring_session_line": "absent",
+        "issues": [
+          "SDK#61 (closed 2026-09-27); comments cite SDK-local tasks/SDK-POST-RETURN-PRODUCTION-PROOF-010.json, not a canonical Goal"
+        ],
+        "goal_docs_reference_path": "none (INTERLOCK source mapping v1 observes SDK bafb0937 seams, not this path)"
+      }
+    },
+    {
+      "path": "stegverse/interlock_return.py",
+      "sha256": "sha256:2ccbc8f44f869f962a990d1c13fd2308b0d4a18a8b004d4020552eeabc95f67c",
+      "observed_non_receipted_lineage": {
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#67 (branch feat/interlock-return-65)",
+          "StegVerse-org/StegVerse-SDK#434 (modification)"
+        ],
+        "pr_body_goal_reference": "SDK issue #65 slice; no Goal task id",
+        "authoring_session_line": "absent",
+        "handoff_doc": "docs/INTERLOCK_RETURN_MIRROR_HANDOFF.md (issue: #65)",
+        "goal_docs_reference_path": "none"
+      }
+    },
+    {
+      "path": "stegverse/interlock_transition.py",
+      "sha256": "sha256:cd0de91e03ea25c401a23071d4fe93505e4359f8e35857b787f56c25b6b978d0",
+      "observed_non_receipted_lineage": {
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#66 (branch feat/minimal-portable-governance-interlock-65)",
+          "StegVerse-org/StegVerse-SDK#434 (modification)"
+        ],
+        "pr_body_goal_reference": "SDK issue #65 source slice 1; no Goal task id",
+        "authoring_session_line": "absent",
+        "handoff_doc": "docs/INTERLOCK_RETURN_MIRROR_HANDOFF.md (issue: #65)",
+        "goal_docs_reference_path": "none"
+      }
+    },
+    {
+      "path": "stegverse/organization_record_names.py",
+      "sha256": "sha256:22207791b0119615c6485b59666816feab0be01ab04c7d50723674c464c9f882",
+      "observed_non_receipted_lineage": {
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#434 (branch claude/master-records-boundary-remediation; commit trailer Claude-Session session_01BhXFzVFQE21vmrBEyPpwoJ)"
+        ],
+        "pr_body_goal_reference": "Goal task MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002 (COSV 50000000100000)",
+        "names_goal": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+        "authoring_session_line": "absent (Claude-Session commit trailer only)",
+        "goal_docs_reference_path": "none"
+      }
+    },
+    {
+      "path": "stegverse/spe_steggate_bridge.py",
+      "sha256": "sha256:536856c5da0bf3729f5a0188b8d5c461f2c7fd6018fbac9818f42f07d9f31787",
+      "observed_non_receipted_lineage": {
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#69 (branch feat/spe-steggate-bridge-61-r3)",
+          "StegVerse-org/StegVerse-SDK#434 (modification)"
+        ],
+        "pr_body_goal_reference": "SDK issue #61 source slice 2; no Goal task id",
+        "authoring_session_line": "absent",
+        "handoff_doc": "docs/SPE_STEGGATE_BRIDGE_MIRROR_HANDOFF.md (issue: #61)",
+        "goal_docs_reference_path": "none"
+      }
+    }
+  ]
+}
