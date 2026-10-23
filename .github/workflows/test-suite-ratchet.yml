@@ -22,6 +22,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          # the drift bisection walks main's first-parent history back to the commit that wrote the baseline
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -37,8 +40,47 @@ jobs:
       - name: RT-INVARIANT-EVALUATION-001 spec guard, the B-P6 probe set as data
         run: python -m unittest -v tests/test_invariant_evaluation_probes.py
 
+      # One suite run feeds the comparison. 0 is all passed and 1 is some failed; any other status
+      # (interrupted, internal error, usage error, nothing collected) is not a suite result.
+      - name: Run the suite once
+        run: |
+          set +e
+          python -m pytest tests -q --tb=no -p no:cacheprovider > /tmp/pytest-suite.txt
+          status=$?
+          set -e
+          tail -n 1 /tmp/pytest-suite.txt
+          test "$status" -le 1
+
+      # Read-only inputs for the drift receipt: the organization ledger head (its hb_reference.epoch is
+      # the epoch; no clock is read) and StegVerse-org/.github's main-change receipt writer at its pin.
+      # When either is unreadable the receipt says so in six fields; it never guesses.
+      - name: Organization ledger head and the pinned main-change receipt writer, read-only
+        run: |
+          git fetch --no-tags --quiet origin '+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger' || echo "organization ledger ref not fetched"
+          if git -c 'http.https://github.com/.extraheader=' fetch --no-tags --quiet --depth=1 \
+              https://github.com/StegVerse-org/.github 7638b006ef9da2d65240576c706482b9ecc4153f; then
+            git show FETCH_HEAD:resident-runtime/main_change_receipt.py > /tmp/main_change_receipt.py
+          else
+            echo "main-change receipt writer not fetched"
+          fi
+
+      # The ratchet's own comparison (run_suite/compare), made drift-aware by
+      # scripts/test_suite_baseline_drift.py. Pull request: a failure that also fails on the exact base
+      # and that the change's diff does not touch is a receipted PRE_EXISTING_BASELINE_FAILURE and the
+      # change proceeds; a failure the change introduces or touches is FAIL_CLOSED. Push to main: the
+      # drift receipt names each drifted test and its first failing commit (bisected), with the
+      # dependency review and the scoped repair task. Nothing is appended to or dispatched at a ledger.
       - name: No pull request may add a test failure the baseline does not hold
-        run: python scripts/check_test_suite_ratchet.py
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then mode=(pr --base "$BASE_SHA"); else mode=(detect); fi
+          python scripts/test_suite_baseline_drift.py "${mode[@]}" \
+            --pytest-output /tmp/pytest-suite.txt \
+            --writer /tmp/main_change_receipt.py \
+            --writer-sha256 884168399f8ac54309aac86af6ab34481635de54426f635bb2229eb5073e2ebf \
+            --out-dir /tmp/baseline-drift
 
       - name: Publish the run as Healer-intake findings
         if: always()
@@ -54,7 +96,9 @@ jobs:
         if: always()
         with:
           name: test-suite-ratchet
-          path: /tmp/test-suite-ratchet.json
+          path: |
+            /tmp/test-suite-ratchet.json
+            /tmp/baseline-drift/
           if-no-files-found: warn
 
   # Source validators that are not tests under tests/, consolidated here from
