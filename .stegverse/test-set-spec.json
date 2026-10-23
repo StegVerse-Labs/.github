@@ -40,12 +40,27 @@
   },
   "stegverse-sdk": {
    "check": {
-    "kind": "python_module",
-    "module": "stegverse"
+    "env": "STEGVERSE_SDK_PIN_74D9B473",
+    "kind": "pinned_source",
+    "manifest": ".stegverse/verification-inputs/stegverse-sdk.json",
+    "module": "stegverse",
+    "pin": "74d9b473"
    },
-   "finish_point": "the job that runs this set imports the pinned stegverse SDK and the set's tests run and pass at the exact head",
+   "finish_point": "the job materializes pin 74d9b473 (scripts/pinned_source_input.py materialize, sha256-checked against .stegverse/verification-inputs/stegverse-sdk.json), sets STEGVERSE_SDK_PIN_74D9B473 to its tree, and the set's tests run in that pin's run group and pass at the exact head with 0 skipped",
    "owner": "P1 (StegVerse-org/.github#163)",
-   "repair": "the pinned StegVerse SDK installed in the job that runs this set (P1 decides the pin and the install; this lane adds no dependency)"
+   "repair": "materialize pin 74d9b473 with scripts/pinned_source_input.py (one anonymous git fetch of the pinned commit; no package index, no install) and export STEGVERSE_SDK_PIN_74D9B473=<dest>/tree before selection; a sha256 mismatch is FAIL_CLOSED, never loaded"
+  },
+  "stegverse-sdk@c138cad4": {
+   "check": {
+    "env": "STEGVERSE_SDK_PIN_C138CAD4",
+    "kind": "pinned_source",
+    "manifest": ".stegverse/verification-inputs/stegverse-sdk.json",
+    "module": "stegverse",
+    "pin": "c138cad4"
+   },
+   "finish_point": "the job materializes pin c138cad4 (scripts/pinned_source_input.py materialize, sha256-checked against .stegverse/verification-inputs/stegverse-sdk.json), sets STEGVERSE_SDK_PIN_C138CAD4 to its tree, and the set's tests run in that pin's run group and pass at the exact head with 0 skipped",
+   "owner": "P1 (StegVerse-org/.github#163)",
+   "repair": "materialize pin c138cad4 with scripts/pinned_source_input.py (one anonymous git fetch of the pinned commit; no package index, no install) and export STEGVERSE_SDK_PIN_C138CAD4=<dest>/tree before selection; a sha256 mismatch is FAIL_CLOSED, never loaded"
   },
   "tvc": {
    "check": {
@@ -134,7 +149,7 @@
    "file": "tests/test_stegbrowser_universal_intr_materialization.py",
    "id": "tests/test_stegbrowser_universal_intr_materialization.py[stegverse-sdk]",
    "inputs": [
-    "stegverse-sdk"
+    "stegverse-sdk@c138cad4"
    ],
    "tests": [
     "tests/test_stegbrowser_universal_intr_materialization.py::RealSdkRouteDecisionTests"

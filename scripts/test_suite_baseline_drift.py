@@ -170,7 +170,7 @@ class Prober:
                 self.cache[key] = self._unittest_status(commit, test_id)
             else:
                 done = subprocess.run([self.python, "-m", "pytest", test_id, "-q", "--tb=no", "-p", "no:cacheprovider"],
-                                      cwd=self.tree(commit), capture_output=True, text=True)
+                                      cwd=self.tree(commit), capture_output=True, text=True, env=group_env(test_id))
                 failed = any(OUTCOME.match(l) for l in done.stdout.splitlines())
                 tally = " ".join(done.stdout.splitlines()[-3:])
                 if re.search(r"\d+ (?:skipped|xfailed|xpassed)\b", tally) and not failed:
@@ -195,7 +195,7 @@ class Prober:
             return PROBE_SKIPPED
         dotted = test_file[:-3].replace("/", ".") + "." + rest.replace("::", ".")
         done = subprocess.run([self.python, "-m", "unittest", dotted], cwd=self.tree(commit),
-                              capture_output=True, text=True)
+                              capture_output=True, text=True, env=group_env(dotted))
         if re.search(r"^Ran 0 tests", done.stderr, re.M) or re.search(
                 r"(?:skipped|expected failures|unexpected successes)=\d+", done.stderr):
             return PROBE_SKIPPED
@@ -628,6 +628,48 @@ def in_selection(node: str, selection: Mapping[str, Any] | None) -> bool:
         not any(under(node, d) for d in run.get("deselect", []))
 
 
+# The selection's run groups (scripts/test_set_selection.py `run`): each group ran in its own process with only its
+# pinned source inputs' exports (StegVerse-org/.github#163). Listing and probing a test use the same environment its
+# group ran in, so a test that needs a pinned tree is never judged in a process that lacks it (or has another pin).
+RUN_GROUPS: list[dict] = []
+GROUP_MARKER = "### test-set run group "
+
+
+def _under(n: str, t: str) -> bool:
+    return n == t or n.startswith(t + "::") or n.startswith(t + "[") or n.startswith(t + ".")
+
+
+def _dotted(test: str) -> str:
+    if "::" not in test and not test.endswith(".py"):
+        return test
+    path, _, rest = test.partition("::")
+    return (path[:-3].replace("/", ".") if path.endswith(".py") else path) + "".join("." + p for p in rest.split("::") if p)
+
+
+def group_of(test: str) -> dict | None:
+    """The run group whose sets run this test (a pytest node, a dotted unittest id, or a module), else None. Groups
+    with pinned inputs are matched first: a file whose carved split needs a pin is otherwise also under the file's
+    own (unpinned) set."""
+    dotted = _dotted(test)
+    for g in sorted(RUN_GROUPS, key=lambda g: not g.get("inputs")):
+        for t in g["tests"]:
+            td = _dotted(t)
+            if _under(test, t) or _under(dotted, td) or _under(td, dotted):
+                return g
+    return None
+
+
+def group_env(test: str | None) -> dict[str, str]:
+    import os
+    g = group_of(test) if test else None
+    env = dict(os.environ)
+    if g and g.get("inputs"):
+        for k in ("PYTHONPATH", "PYTHONHOME"):
+            env.pop(k, None)
+        env.update(g.get("env", {}))
+    return env
+
+
 def selection_rows(selection: Mapping[str, Any], retry: str, goal: str, root: Path | None = None,
                    base: str | None = None) -> tuple[list[dict], dict]:
     rows: list[dict] = []
@@ -759,11 +801,16 @@ def pytest_verification(root: Path, text: str, junit_path: str | None, retry: st
     """Rows for every skipped / xfailed / xpassed / uncollected test of one pytest run, its counts, and the set
     of node ids the run reported (any outcome)."""
     counts: dict[str, int] = {}
-    for line in text.splitlines()[::-1]:
-        found = JUNIT_SUMMARY.findall(line)
-        if found and (" in " in line or "passed" in line or "failed" in line):
-            counts = {k if not k.startswith("error") else "errors": int(n) for n, k in found}
-            break
+    # one output may hold several runs (one per run group, each after a group marker): add up each run's summary
+    blocks = re.split(rf"^{re.escape(GROUP_MARKER)}.*$", text, flags=re.M)
+    for block in blocks:
+        for line in block.splitlines()[::-1]:
+            found = JUNIT_SUMMARY.findall(line)
+            if found and (" in " in line or "passed" in line or "failed" in line):
+                for n, k in found:
+                    key = k if not k.startswith("error") else "errors"
+                    counts[key] = counts.get(key, 0) + int(n)
+                break
     rows: list[dict] = []
     nodes: set[str] = set()
     nxt = "the next run of this job at the exact head"
@@ -833,12 +880,14 @@ def unittest_results(text: str) -> tuple[dict[str, str], dict[str, int], int | N
                 results[pending] = t.group(1)
             pending = None
             continue
+        # one output may hold several runs (one per run group): each run's Ran and counts are added up
         r = UNITTEST_RAN.match(line)
         if r:
-            ran = int(r.group(1))
+            ran = (ran or 0) + int(r.group(1))
         c = UNITTEST_COUNTS.match(line)
         if c:
-            counts = {k.strip(): int(v) for k, v in (p.split("=") for p in (c.group(1) or "").split(",") if "=" in p)}
+            for k, v in (p.split("=") for p in (c.group(1) or "").split(",") if "=" in p):
+                counts[k.strip()] = counts.get(k.strip(), 0) + int(v)
     return results, counts, ran
 
 
@@ -876,11 +925,20 @@ print(json.dumps(out))
 
 
 def list_unittest_tests(tree: Path, modules: list[str], python: str = sys.executable) -> dict[str, dict] | None:
-    done = subprocess.run([python, "-c", LIST_TESTS, *modules], cwd=tree, capture_output=True, text=True)
-    try:
-        return json.loads(done.stdout.strip().splitlines()[-1])
-    except (ValueError, IndexError):
-        return None
+    """Each module is listed in the environment of the run group that ran it (one listing process per group)."""
+    by_env: dict[str, list[str]] = {}
+    for mod in modules:
+        g = group_of(mod)
+        by_env.setdefault(g["id"] if g and g.get("inputs") else "", []).append(mod)
+    out: dict[str, dict] = {}
+    for gid, mods in sorted(by_env.items()):
+        done = subprocess.run([python, "-c", LIST_TESTS, *mods], cwd=tree, capture_output=True, text=True,
+                              env=group_env(mods[0]))
+        try:
+            out.update(json.loads(done.stdout.strip().splitlines()[-1]))
+        except (ValueError, IndexError):
+            return None
+    return out
 
 
 def unittest_verification(root: Path, text: str, modules: list[str], retry: str, goal: str,
@@ -1210,6 +1268,7 @@ def main(argv: list[str] | None = None) -> int:
     head_nodes: set[str] = set()
     selection = load_selection(args.selection) if args.selection else None
     if selection is not None:
+        RUN_GROUPS[:] = selection.get("run_groups") or []
         srows, sinfo = selection_rows(selection, retry, args.owning_goal, root, getattr(args, "base", None))
         vrows += srows
         vinfo["selection"] = sinfo
