@@ -3,7 +3,7 @@
   "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
   "ruling_class": "D",
   "ruling": "ADJACENT_NOT_DUPLICATE",
-  "ruled_by": "PROPOSED by Lane C (grok-lane-c) as the registration input Coordination (STEGVERSE-CANONICAL-WORK-COORDINATION-001) asked for on 2026-10-23; a Coordination ruling of ADJACENT_NOT_DUPLICATE for this task is not observed: ruling record ref UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+  "ruled_by": "Coordination (STEGVERSE-CANONICAL-WORK-COORDINATION-001), class D, relayed to Lane C 2026-10-23: SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 is a consumes-dependency with no fold, on conditions (1) sha256-pinned consumed source and (2) owner routing of edits to it; ruling record ref UNKNOWN_NOT_AUTHENTICALLY_OBSERVED. The entries for SDK-COST-DERIVED-TIER-PRICING-001, PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 are Lane C's proposal; no Coordination ruling for them is observed (UNKNOWN_NOT_AUTHENTICALLY_OBSERVED)",
   "subject": {
     "components": [
       "customer-quickstart-and-release-notes",
@@ -17,7 +17,7 @@
     "finish_point": {
       "acceptance_test": "StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py::GovernanceProductFinishPoint::test_finish_point_verdict",
       "repository": "StegVerse-org/StegVerse-SDK",
-      "source_commit": "289f727327a4b4ef8d5d392cbe0698a60c38f1b0",
+      "source_commit": "233d16231d979c5f8baebab5200a0bfdfd511ecb",
       "source_ref": "StegVerse-org/StegVerse-SDK#556"
     }
   },
@@ -34,7 +34,7 @@
         "stegverse/governance_gate.py"
       ],
       "record_finish_point": "NONE_DECLARED_IN_RECORD",
-      "relied_on_as": "the gate's run step and governance_gate.read_workflow_disposition, owned by this candidate per governance-gate.yml owning_existing_goal; read and executed, never changed; the checker (run_gate, structural_validator_candidate) is not run"
+      "relied_on_as": "the gate's run step and governance_gate.read_workflow_disposition, owned by this candidate per governance-gate.yml owning_existing_goal; read and executed at the sha256 pin, never changed; the checker (run_gate, structural_validator_candidate) is not run"
     },
     {
       "task_id": "SDK-COST-DERIVED-TIER-PRICING-001",
@@ -62,7 +62,16 @@
     {
       "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
       "failure_class": "A",
-      "consumed_by": "the gate disposition step and the checker's governance-gate-selftest receipt (sdk-governance-gate-free-tier)"
+      "consumed_by": "the gate disposition step and the checker's governance-gate-selftest receipt (sdk-governance-gate-free-tier)",
+      "pinned_source": {
+        "repository": "StegVerse-org/StegVerse-SDK",
+        "commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+        "commit_ref": "StegVerse-org/StegVerse-SDK#534 (last change to both files)",
+        "files": {
+          ".github/workflows/governance-gate.yml": "1d14c9baf363e37a5b66a33016497869206a671a2a7d29596a95c23eedb82df0",
+          "stegverse/governance_gate.py": "3db3e83c97764e912919018dcb560c011d3b499ea550aef43e3f61e64a36ee4f"
+        }
+      }
     },
     {
       "task_id": "SDK-COST-DERIVED-TIER-PRICING-001",
@@ -75,10 +84,28 @@
       "consumed_by": "authentic payment-provider ingress for icv-commercial-distribution"
     }
   ],
+  "protected_paths": [
+    {
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "owner_task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+      "paths": [
+        ".github/workflows/governance-gate.yml",
+        "stegverse/governance_gate.py"
+      ],
+      "on_modification": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "STRUCTURAL_OWNED_EDIT",
+        "routed_to": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+        "rule": "any GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 change that modifies these paths fails closed as a SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001-owned edit and is routed to it; the pin moves only to a commit that Goal publishes"
+      }
+    }
+  ],
   "conditions_claimed": {
     "a": "components disjoint (after the 0cba8a50 fold of sdk-reusable-governance-gate-workflow and tier-pricing-candidate)",
     "b": "the finish-point test imports no stegverse module at run time and its static closure (69 files) touches none of the candidates' components",
-    "c": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001, SDK-COST-DERIVED-TIER-PRICING-001 and PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 are consumes-dependencies (TASK dependencies of the record)"
+    "c": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001, SDK-COST-DERIVED-TIER-PRICING-001 and PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 are consumes-dependencies (TASK dependencies of the record)",
+    "pin": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001's two files are verified against sha256 at 4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328 by the finish test before use (scripts/adjacency_ruling_conditions.py verify)",
+    "routing": "an edit to them fails closed as STRUCTURAL_OWNED_EDIT routed to SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (scripts/adjacency_ruling_conditions.py)"
   },
-  "evidence_digest": "sha256:44b492562c70fc1cb01b6cbecbb0418fde26f7108195480bda40f08396ff449e"
+  "evidence_digest": "sha256:bc4ae473ccb0ba18d2eae7e0c5a8fe50898583d98b2a432e52968b18d89ba104"
 }

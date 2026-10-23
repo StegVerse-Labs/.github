@@ -54,14 +54,14 @@
       ],
       "finish_point": {
         "acceptance_test": "StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py::GovernanceProductFinishPoint::test_finish_point_verdict",
-        "source_commit": "289f727327a4b4ef8d5d392cbe0698a60c38f1b0",
+        "source_commit": "233d16231d979c5f8baebab5200a0bfdfd511ecb",
         "source_ref": "StegVerse-org/StegVerse-SDK#556",
         "predicate": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN at the ref the TV/TVC release receipt names",
         "verifier_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_finish_point_verdict, checked out at the TV/TVC release-receipt ref",
         "lowest_supported_mode": "E0"
       }
     },
-    "scope_digest": "sha256:44b680f9050e11c44bfb91cceff5651a11b8d1c0a681464f6b44583a87d7b47b",
+    "scope_digest": "sha256:088e015129029da435954109c6089b180e951d6196853764b71a0bcc4bbe2441",
     "supersedes_scope_digest": null
   },
   "record": {
