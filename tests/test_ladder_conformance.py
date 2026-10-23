@@ -95,21 +95,32 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
-        self.assertIn("733162978292fbc7be3a562a4fa9f5bed4ada91e", anc["e0_terminal"]["by"])
+        self.assertIn("74509feca062d5f17dbefe5730cbb1304ab6b318", anc["e0_terminal"]["by"])
         # revision 7: the null genesis pin (Lane B) and the EPHEMERAL signer (TV/TVC) are separate blockers of one item;
         # the org-ledger head signer is an external registered task (ORG-LEDGER-HEAD-SIGNER-001), not a scoped task here
         self.assertEqual([b["id"] for b in anc["allow_path"]["blockers"]],
-                         ["ORG_GENESIS_PIN_NULL", "EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED"])
+                         ["ORG_GENESIS_PIN_NULL", "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER",
+                          "EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED"])
         self.assertEqual([r["ref"] for r in anc["external_dependency_refs"]], ["ORG-LEDGER-HEAD-SIGNER-001"])
         self.assertTrue(anc["external_dependency_refs"][0]["owner"].startswith("GitHub Product lane"))
         self.assertIn("LC-KV-13 finish point (a PERMANENT node) waits on it", anc["external_dependency_refs"][0]["evidence"])
         res = next(r for r in d["items"] if r["id"] == "H-KV-ENDPOINT-LEDGER-ANCHOR")
         self.assertEqual(sorted(r.get("blocker") for r in res["refusals"] if r["failure_code"] == "LADDER_ALLOW_PATH_UNBOUND"),
-                         ["EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED", "ORG_GENESIS_PIN_NULL"])
+                         ["EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED", "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER",
+                          "ORG_GENESIS_PIN_NULL"])
         self.assertEqual([r["external_ref"] for r in res["refusals"] if r["failure_code"] == "LADDER_EXTERNAL_DEPENDENCY_PENDING"],
                          ["ORG-LEDGER-HEAD-SIGNER-001"])
         for s_ in ("CONTRACT_WITHOUT_GENESIS_PIN", "CONTRACT_GENESIS_PIN_FIELD_ABSENT"):
             self.assertEqual(anc["required_outcomes"][s_], ["FAIL_CLOSED"], s_)
+        # revision 8: #431's genesis pin planner and pre-pin receiver are witnessed on the anchor item
+        self.assertIn("genesis-pin-probe", anc["observed_by"])
+        for s_ in ("SAME_SIGNAL_REPLAYED_AFTER_THE_PIN", "NODE_SIGNAL_GENUINELY_CARRIED_WHILE_PIN_NULL",
+                   "FORGED_CARRIER_BODY_IS_ANOTHER_SIGNAL", "PLANNER_DIRECT_AFTER_THE_PIN_OTHER_GENESIS"):
+            self.assertEqual(anc["required_outcomes"][s_], ["FAIL_CLOSED"], s_)
+        self.assertEqual(anc["required_outcomes"]["PLANNER_DIRECT_AFTER_THE_PIN_SAME_GENESIS"], ["ALLOW"])
+        self.assertNotIn("CALLER_WRITTEN_GENESIS_AND_CARRIER_ON_A_CALLER_LEDGER_COPY", anc["required_outcomes"])
+        self.assertNotIn("Observation, not a verdict", anc["observed_state"])
+        self.assertIn("6371352606", anc["observed_state"])
         for s_ in ("PERMANENT_ROOT_ON_CALLER_CREATED_ORG_OBJECT_STORE", "CALLER_APPENDED_INGRESS_RECORD_CLAIMING_INSTALLED_INTR",
                    "PERMANENT_CALLER_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH", "CALLER_STORE_WITH_ITS_OWN_GENESIS",
                    "CALLER_STORE_WITH_THE_ROUTES_ATTESTATION_OF_THE_REAL_STORE_REPLAYED", "PRODUCTION_HEAD_SIGNERS_E0_POSITIVE_CONTROL"):
@@ -158,7 +169,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertTrue(t15["owning_lane"].startswith("Lane D"))
         self.assertNotIn("LC-KV-16", tasks)  # closed in revision 6: (a), (b) and (c) are FAIL_CLOSED at #432 @a2ee67e6
         self.assertIn("1cbad77eaff3254ea30fb9d3377d40abcf6728df", t15["required_repair"])
-        self.assertIn("733162978292fbc7be3a562a4fa9f5bed4ada91e", t15["required_repair"])
+        self.assertIn("74509feca062d5f17dbefe5730cbb1304ab6b318", t15["required_repair"])
         self.assertIn("clean-venv runs in their PR bodies", t15["required_repair"])
         self.assertIn("b93b06a48e679290e5ff153d1da8f42ab9627465", t15["required_repair"])
         self.assertIn("witnesses that refusal; it does not bind an ALLOW path", t15["required_repair"])
@@ -182,13 +193,27 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(g["blocker"], "ORG_GENESIS_PIN_NULL")
         self.assertEqual(g["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
         self.assertTrue(g["owning_lane"].startswith("InTr and Mesh Destinations lane (Lane B"))
-        self.assertEqual(g["failure_class"]["class"], "B")
+        # revision 8: narrowed, the ruling cited (no caveat), the clock question resolved, the copy binding remains
+        self.assertEqual(g["failure_class"]["class"], "A")
         self.assertIn("genesis-observed record", g["next_attempt"])
-        self.assertIn("27e2b9abd6956d871d5d3af390955f2a8288024c", g["required_repair"])
-        self.assertIn("Observation, not a verdict", g["required_repair"])
-        self.assertIn("LC-GOV-04", g["required_repair"])
-        for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
-            self.assertTrue(str(g.get(k) or "").strip(), k)
+        self.assertIn("REPOSITORY_LEDGER_GENESIS_PIN", g["next_attempt"])
+        self.assertIn("1541d465386d395dcd3034351b2db98e73d58b83", g["required_repair"])
+        self.assertIn("StegVerse-org/.github#162 comment 6371352606", g["required_repair"])
+        self.assertNotIn("6371144164", g["required_repair"])
+        self.assertNotIn("Observation, not a verdict", g["required_repair"])
+        self.assertIn("no conflict with LC-GOV-04", g["required_repair"])
+        self.assertIn("CALLER_WRITTEN_GENESIS_AND_CARRIER_ON_A_CALLER_LEDGER_COPY", g["required_repair"])
+        self.assertIn("bind the copy", g["proposed_resolution"])
+        e = tasks["LC-KV-20"]  # the org emitter cannot carry the genesis-observed signal
+        self.assertEqual(e["blocker"], "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER")
+        self.assertEqual(e["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
+        self.assertTrue(e["owning_lane"].startswith("pending Coordination ruling; Lane B (InTr) proposed"))
+        self.assertEqual(e["failure_class"]["class"], "C")
+        self.assertIn("907f4305ddd4f39b16d96638744304de9ef0b67d", e["required_repair"])
+        self.assertIn("CANNOT_CARRY", e["required_repair"])
+        for x in (g, e):
+            for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
+                self.assertTrue(str(x.get(k) or "").strip(), k)
         self.assertIn("ORG-LEDGER-HEAD-SIGNER-001", tasks["LC-KV-13"]["required_repair"])
         self.assertIn("mint-both case", tasks["LC-KV-07"]["proposed_resolution"])
         for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):

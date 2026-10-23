@@ -41,6 +41,7 @@ test_431s_null_genesis_pin_is_six_field_not_pinned (tests.test_endpoint_ledger_a
 test_carrier_stage_is_last_and_fails_closed (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_carrier_stage_is_last_and_fails_closed) ... ok
 test_no_health_report_is_health_report_missing_not_transport (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_no_health_report_is_health_report_missing_not_transport) ... ok
 test_not_designated_six_fields_name_431 (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_not_designated_six_fields_name_431) ... ok
+test_not_pinned_next_attempt_is_the_genesis_pin_transition (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_not_pinned_next_attempt_is_the_genesis_pin_transition) ... ok
 test_refused_at_ingress_is_node_not_admitted_not_transport (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_refused_at_ingress_is_node_not_admitted_not_transport) ... ok
 test_repository_is_passed_through_to_the_evaluator_and_ingress_read (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_repository_is_passed_through_to_the_evaluator_and_ingress_read) ... ok
 test_the_order_is_fixed_and_documented (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_the_order_is_fixed_and_documented) ... ok
@@ -62,6 +63,6 @@ test_unsigned_anchor_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAs
 test_wrong_org_ledger_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_wrong_org_ledger_is_refused) ... ok
 
 ----------------------------------------------------------------------
-Ran 53 tests in <t>s
+Ran 54 tests in <t>s
 
 OK

@@ -1,0 +1,191 @@
+$ {python} -c # LC rev 8 probe: LLM-adapter#431 REPOSITORY_LEDGER_GENESIS_PIN planner and pre-pin InTr ingress receiver.
+# Run from the #431 checkout with the org emitter root as argv[1]. Every ledger copy is a temporary bare repo built
+# with #431's own emit.py and intr_transport_carrier builders; nothing touches a real ledger.
+import json, os, sys, hashlib, importlib.util, contextlib
+from pathlib import Path
+from unittest import mock
+sys.path[:0] = ['.', 'scripts']
+import tests.test_llm_adapter_ledger_merge_transfer as T
+from tests.test_llm_adapter_ledger_merge_transfer import P, R, M, carrier, receipt, git, NS
+import types
+SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt")
+rows = []
+def row(subject, out, note=None, **extra):
+    r = {"subject": subject, "disposition": out.get("disposition")}
+    for k in SIX:
+        if isinstance(out.get(k), str):
+            r[k] = out[k]
+    for k in ("carrier_reason",):
+        if out.get(k):
+            r[k] = out[k]
+    r["six_fields_present"] = (all(isinstance(out.get(k), str) and out[k].strip() for k in SIX)
+                               if out.get("disposition") == "FAIL_CLOSED" else None)
+    r.update(extra)
+    if note:
+        r["note"] = note
+    rows.append(r)
+
+g = T.GenesisPinTransitionTests(); g.setUp()
+BEFORE = g.before
+CONTRACT = json.loads(BEFORE)
+n = [0]
+def ledger(*, genesis_evidence=None, carry=None, signal_for=None, tamper_dest=False, drop_source=False,
+           no_genesis=False):
+    """A ledger copy: (genesis), the INTR_MESH_PATH_INGRESS destination half, the retained source half."""
+    n[0] += 1
+    work = g.tmp / f"l{n[0]}-work"; work.mkdir(); store = work / NS
+    gen = None
+    if not no_genesis:
+        gen = g.append(store, "REPOSITORY_LEDGER_INITIALIZATION:StegVerse-org/LLM-adapter",
+                       "REPOSITORY_LEDGER_INITIALIZATION", "sha256:" + "0" * 64, "sha256:" + "1" * 64,
+                       evidence=genesis_evidence or {"namespace": NS}, hb_epoch=446655631)
+    gsha = signal_for or (gen["receipt_sha256"] if gen else "sha256:" + "c" * 64)
+    signal = carry if carry is not None else R.genesis_signal(gsha, CONTRACT)
+    cid = f"intr-path-v1:StegVerse-org/.github->StegVerse-org:genesis-pin:{n[0]}"
+    src = receipt({"schema": carrier.RECEIPT_SCHEMA, "repository": "StegVerse-org/.github",
+                   "transition_class": carrier.SOURCE_CLASS, "previous_receipt_sha256": None,
+                   "evidence": carrier.source_evidence(signal, cid)})
+    (store / "source-receipts").mkdir(parents=True)
+    if not drop_source:
+        (store / "source-receipts" / (src["receipt_sha256"][7:] + ".json")).write_text(json.dumps(src))
+    dest = g.append(store, "INTR_MESH_PATH_INGRESS:" + cid, carrier.DESTINATION_CLASS, "sha256:" + "1" * 64,
+                    "sha256:" + "2" * 64, evidence=carrier.destination_evidence(src), hb_epoch=446655632)
+    if tamper_dest:
+        p = store / "receipts" / (dest["receipt_sha256"][7:] + ".json")
+        d = json.loads(p.read_text()); d["evidence"]["addressed_location"] = "elsewhere"; p.write_text(json.dumps(d))
+    git(work, "init", "-q"); git(work, "add", "."); git(work, "commit", "-q", "-m", "ledger")
+    bare = g.tmp / f"l{n[0]}.git"
+    git(g.tmp, "clone", "-q", "--bare", str(work), str(bare))
+    git(g.tmp, "--git-dir", str(bare), "update-ref", M.LEDGER_REF, "HEAD")
+    cite = {"destination_receipt_sha256": dest["receipt_sha256"], "org_ledger_head_receipt_sha256": dest["receipt_sha256"]}
+    return str(bare), gen, signal, cite
+
+def recv(signal, cite, bare, contract=BEFORE):
+    return R.receive(signal, intr_carrier=cite, org_ledger=bare, contract_bytes=contract)
+
+# 1. positive control and the caller-written genesis-observed record
+bare, gen, sig, cite = ledger()
+ok = recv(sig, cite, bare)
+row("GENESIS_OBSERVED_SIGNAL_CARRIED_ON_A_LEDGER_COPY", ok,
+    "positive control: genesis, carrier pair and copy all built with #431's own emit.py and carrier builders")
+cb, cg, cs, cc = ledger(genesis_evidence={"namespace": NS, "minted_by": "caller"})
+caller = recv(cs, cc, cb)
+row("CALLER_WRITTEN_GENESIS_AND_CARRIER_ON_A_CALLER_LEDGER_COPY", caller,
+    "a caller-created bare repo with the caller's own genesis and its own self-sealed InTr pair; the receiver has no "
+    "way to tell it from StegVerse-org/.github's ref (no head attestation or copy binding is required before the pin)",
+    planned_pin_is_caller_genesis=(caller.get("genesis_pin_plan") or {}).get("genesis_receipt_sha256") == cg["receipt_sha256"])
+nb, _, ns_, nc = ledger(no_genesis=True)
+row("CALLER_SIGNAL_NAMING_A_GENESIS_NOT_ON_THE_LEDGER", recv(ns_, nc, nb))
+ob, _, os_, oc = ledger(signal_for="sha256:" + "a" * 64)
+row("CALLER_SIGNAL_NAMING_ANOTHER_GENESIS_THAN_THE_CHAIN_ROOT", recv(os_, oc, ob))
+
+# 2. replay / real-shaped signal after the pin
+pinned = P.apply_write(ok["genesis_pin_plan"], BEFORE)
+row("SAME_SIGNAL_REPLAYED_AFTER_THE_PIN", recv(sig, cite, bare, pinned))
+row("REAL_SHAPED_SIGNAL_FROM_ANOTHER_LEDGER_COPY_AFTER_THE_PIN", recv(cs, cc, cb, pinned))
+row("PLANNER_DIRECT_AFTER_THE_PIN_OTHER_GENESIS", P.plan(org_ledger=cb, contract_bytes=pinned),
+    "the planner alone, without the receiver, refuses to overwrite a pin")
+again = P.plan(org_ledger=bare, contract_bytes=pinned)
+row("PLANNER_DIRECT_AFTER_THE_PIN_SAME_GENESIS", again, "idempotent: no write, no consumes receipt",
+    already_pinned=again.get("already_pinned"), contract_write_is_none=again.get("contract_write") is None)
+
+# 3. other signal types while the pin is null
+node = {"node_ref": "n-1", "signal_class": "NODE_INGRESS_SIGNAL"}
+nb2, _, _, nc2 = ledger(carry=node)
+row("NODE_SIGNAL_GENUINELY_CARRIED_WHILE_PIN_NULL", recv(node, nc2, nb2))
+row("GENESIS_SIGNAL_WITH_AN_EXTRA_KEY_WHILE_PIN_NULL", recv({**sig, "extra": 1}, cite, bare))
+row("GENESIS_SIGNAL_OTHER_TRANSITION_CLASS_WHILE_PIN_NULL", recv({**sig, "transition_class": "OTHER"}, cite, bare))
+row("NON_OBJECT_SIGNAL_WHILE_PIN_NULL", recv("REPOSITORY_LEDGER_GENESIS_OBSERVED", cite, bare))
+
+# 4. forged carriers
+fb, _, fs, fc = ledger(tamper_dest=True)
+row("FORGED_CARRIER_DESTINATION_EDITED_AFTER_SEALING", recv(fs, fc, fb))
+db, _, ds, dc = ledger(drop_source=True)
+row("FORGED_CARRIER_SOURCE_HALF_NOT_RETAINED", recv(ds, dc, db))
+bb, bg, _, bc = ledger(carry=node)
+row("FORGED_CARRIER_BODY_IS_ANOTHER_SIGNAL", recv(R.genesis_signal(bg["receipt_sha256"], CONTRACT), bc, bb))
+row("FORGED_CARRIER_HEAD_NOT_THE_READ_BACK_HEAD", recv(sig, {**cite, "org_ledger_head_receipt_sha256": gen["receipt_sha256"]}, bare))
+row("FORGED_CARRIER_DESTINATION_NOT_ON_THE_CHAIN", recv(sig, {**cite, "destination_receipt_sha256": "sha256:" + "b" * 64}, bare))
+
+# 4b. what the existing org emitter (StegVerse-org/.github@907f4305 resident-runtime/intr_path_transfer.py) produces
+ORG = Path(sys.argv[1])
+spec = importlib.util.spec_from_file_location("lc_org_ipt", ORG / "resident-runtime/intr_path_transfer.py")
+ipt = importlib.util.module_from_spec(spec); sys.modules["lc_org_ipt"] = ipt; spec.loader.exec_module(ipt)
+paths = ipt.declared_paths()
+want_pid = carrier.path_id(R.EMITTER_REF)
+declared = [p["path_id"] for p in paths]
+row("ORG_EMITTER_DECLARES_THE_RECEIVERS_PATH", {"disposition": "DECLARED" if want_pid in declared else "UNDECLARED"},
+    "intr_path_transfer.declared_paths(): ordered pairs of distinct organizations; the receiver's carrier path is "
+    + want_pid, declared_path_count=len(paths), receiver_path_id=want_pid)
+p0 = next(p for p in paths if p["source"] == "StegVerse-org") if any(p["source"] == "StegVerse-org" for p in paths) else paths[0]
+ev = ipt.path_evidence(p0, "cid-lc", "0" * 40, "sha256:" + "a" * 64)
+body_keys = sorted(ev["message"]["body"])
+row("ORG_EMITTER_BODY_CAN_CARRY_THE_GENESIS_SIGNAL",
+    {"disposition": "CARRIES" if set(R.SIGNAL_KEYS) <= set(ev["message"]["body"]) else "CANNOT_CARRY"},
+    "intr_path_transfer.message() fixes the body", emitter_body_keys=body_keys,
+    signal_keys=sorted(R.SIGNAL_KEYS),
+    emitter_evidence_lacks=sorted({"destination_location", "endpoint_kind", "boundary_evidence"} - set(ev)))
+osrc = receipt({"schema": carrier.RECEIPT_SCHEMA, "repository": "StegVerse-org/.github",
+                "transition_class": carrier.SOURCE_CLASS, "previous_receipt_sha256": None, "evidence": ev})
+try:
+    carrier.destination_evidence(osrc); linked = {"disposition": "LINKABLE"}; why = None
+except KeyError as exc:
+    linked = {"disposition": "NOT_LINKABLE"}; why = "KeyError " + str(exc)
+row("ORG_EMITTER_SHAPED_SOURCE_HALF_LINKED_BY_THE_CARRIER", linked,
+    "intr_transport_carrier.destination_evidence over an INTR_MESH_PATH_TRANSFER receipt whose evidence is "
+    "intr_path_transfer.path_evidence's", error=why)
+
+# 5. circularity: the receiver must not reach the pin-gated read, and the planner must not reach the receiver
+boom = mock.Mock(side_effect=AssertionError("pin-gated read reached"))
+stub = types.ModuleType("llm_adapter.org_ledger_location"); stub.designated_org_ledger = boom
+with mock.patch.dict(sys.modules, {"llm_adapter.org_ledger_location": stub}), mock.patch.object(carrier, "observe", boom):
+    nocyc = recv(sig, cite, bare)
+row("RECEIVER_WITH_PIN_GATED_READS_DISABLED", nocyc,
+    "#431 carries no org_ledger_location (it is #432/#433's); a raising stub is installed for it and for "
+    "intr_transport_carrier.observe, the pin-gated read", pin_gated_read_calls=boom.call_count,
+    org_ledger_location_in_431=Path("llm_adapter/org_ledger_location.py").exists())
+import ast
+def imports(path):
+    names = set()
+    for node_ in ast.walk(ast.parse(Path(path).read_text())):
+        if isinstance(node_, ast.Import):
+            names |= {a.name for a in node_.names}
+        elif isinstance(node_, ast.ImportFrom):
+            names.add(node_.module or "")
+    return sorted(names)
+pi, ri = imports("scripts/llm_adapter_repository_ledger_genesis_pin.py"), imports("scripts/llm_adapter_genesis_pin_ingress.py")
+row("PLANNER_AND_RECEIVER_IMPORT_GRAPH",
+    {"disposition": "ACYCLIC" if "llm_adapter_genesis_pin_ingress" not in pi and "llm_adapter.org_ledger_location" not in ri
+     else "CYCLIC"}, planner_imports=pi, receiver_imports=ri)
+
+# 6. the pin written equals the digest read back
+w = ok["genesis_pin_plan"]["contract_write"]
+head = json.loads(P.M._git(bare, "show", f"{M.LEDGER_REF}:{NS}/HEAD.json"))
+cur, root_doc = head["receipt_sha256"], None
+while cur:
+    root_doc = json.loads(P.M._git(bare, "show", f"{M.LEDGER_REF}:{NS}/receipts/{cur[7:]}.json"))
+    cur = root_doc.get("previous_receipt_sha256")
+body = {k: v_ for k, v_ in root_doc.items() if k != "receipt_sha256"}
+recomputed = "sha256:" + hashlib.sha256(json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+written = json.loads(pinned)["repository_ledger_location"]["expected_genesis_receipt_sha256"]
+row("PIN_WRITTEN_EQUALS_THE_DIGEST_READ_BACK",
+    {"disposition": "EQUAL" if written == root_doc["receipt_sha256"] == recomputed == w["value"] else "DIFFERENT"},
+    "the written contract field vs the chain root read back from the copy (git show) and its re-hashed body",
+    after_sha256_matches=w["after_sha256"] == "sha256:" + hashlib.sha256(pinned).hexdigest(),
+    consumes_receipt_sha256_is_root=ok["genesis_pin_plan"]["consumes_receipt"]["emit_append"]["evidence"]["consumes_receipt_sha256"] == written)
+stale = BEFORE + b" "
+try:
+    P.apply_write(ok["genesis_pin_plan"], stale); res = {"disposition": "WRITTEN"}
+except ValueError as exc:
+    res = {"disposition": "REFUSED"}
+row("APPLY_WRITE_ON_A_CHANGED_CONTRACT", res, "apply_write checks the plan's before digest")
+
+# 7. production: the branch's own contract, no ledger copy
+row("PRODUCTION_RECEIVER_WITHOUT_A_LEDGER_COPY", R.receive(sig, intr_carrier=cite, org_ledger=None))
+g.tearDown()
+print(json.dumps({"rows": rows}, sort_keys=True))
+ {root:org}
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "ACCEPTED_FOR_GENESIS_PIN", "note": "positive control: genesis, carrier pair and copy all built with #431's own emit.py and carrier builders", "six_fields_present": null, "subject": "GENESIS_OBSERVED_SIGNAL_CARRIED_ON_A_LEDGER_COPY"}, {"disposition": "ACCEPTED_FOR_GENESIS_PIN", "note": "a caller-created bare repo with the caller's own genesis and its own self-sealed InTr pair; the receiver has no way to tell it from StegVerse-org/.github's ref (no head attestation or copy binding is required before the pin)", "planned_pin_is_caller_genesis": true, "six_fields_present": null, "subject": "CALLER_WRITTEN_GENESIS_AND_CARRIER_ON_A_CALLER_LEDGER_COPY"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REPOSITORY_LEDGER_GENESIS_IS_THIS_REPOSITORYS_INITIALIZATION", "failure_code": "REPOSITORY_LEDGER_GENESIS_MISMATCH", "next_attempt": "event-triggered: on the InTr pair the existing org path transfer (intr-path-transfer.yml) appends for the receipted genesis-observed record; no clock, no polling, no person", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "the chain root sha256:cc7c2f5ed80482552a587e1cbd2cb9c9243dcdcc5957e7a46add66014a4fb679 must be a stegverse.repo-transition-receipt/v1 REPOSITORY_LEDGER_INITIALIZATION receipt for StegVerse-org/LLM-adapter; it differs in transition_class", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "CALLER_SIGNAL_NAMING_A_GENESIS_NOT_ON_THE_LEDGER"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REPOSITORY_LEDGER_GENESIS_ON_SEALED_CHAIN", "failure_code": "REPOSITORY_LEDGER_GENESIS_NOT_ON_CHAIN", "next_attempt": "event-triggered: on the InTr pair the existing org path transfer (intr-path-transfer.yml) appends for the receipted genesis-observed record; no clock, no polling, no person", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "the triggering record names 'sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', but the chain from repository-ledger/StegVerse-org/LLM-adapter/HEAD.json is rooted at sha256:a14470888cf1843e41319c5cc3d8d87721fb0067510296285660562933869c00", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "CALLER_SIGNAL_NAMING_ANOTHER_GENESIS_THAN_THE_CHAIN_ROOT"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "EXPECTED_GENESIS_PIN_IS_NULL", "failure_code": "PRE_PIN_INGRESS_CLOSED", "next_attempt": "Event-triggered: when the carrying INTR_MESH_PATH_INGRESS is on the organization ledger at #431's location; no clock, no polling.", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "expected_genesis_receipt_sha256 is set (sha256:ef6a9c042ad325fba6263d248442cbfdf9939a462edbeeafaa70a79305ac708d); the pre-pin exception is closed and signals take the normal InTr gate: the pinned genesis and authenticated head (intr_transport_carrier.observe through org_ledger_location.designated_org_ledger, #433)", "retry_entrypoint": "llm_adapter.node_ingress_boundary.admit(signal, transport='INTERLOCK_INTR', intr_carrier={destination_receipt_sha256, org_ledger_head_receipt_sha256, org_ledger_head_attestation}, org_ledger_git_dir=<local StegVerse-org/.github object store>)", "six_fields_present": true, "subject": "SAME_SIGNAL_REPLAYED_AFTER_THE_PIN"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "EXPECTED_GENESIS_PIN_IS_NULL", "failure_code": "PRE_PIN_INGRESS_CLOSED", "next_attempt": "Event-triggered: when the carrying INTR_MESH_PATH_INGRESS is on the organization ledger at #431's location; no clock, no polling.", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "expected_genesis_receipt_sha256 is set (sha256:ef6a9c042ad325fba6263d248442cbfdf9939a462edbeeafaa70a79305ac708d); the pre-pin exception is closed and signals take the normal InTr gate: the pinned genesis and authenticated head (intr_transport_carrier.observe through org_ledger_location.designated_org_ledger, #433)", "retry_entrypoint": "llm_adapter.node_ingress_boundary.admit(signal, transport='INTERLOCK_INTR', intr_carrier={destination_receipt_sha256, org_ledger_head_receipt_sha256, org_ledger_head_attestation}, org_ledger_git_dir=<local StegVerse-org/.github object store>)", "six_fields_present": true, "subject": "REAL_SHAPED_SIGNAL_FROM_ANOTHER_LEDGER_COPY_AFTER_THE_PIN"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "EXPECTED_GENESIS_PIN_UNSET_OR_EQUAL", "failure_code": "EXPECTED_GENESIS_PIN_CONFLICT", "next_attempt": "event-triggered: re-run when the receipted REPOSITORY_LEDGER_INITIALIZATION genesis record is on the org ledger at the contract's location; no clock, no polling, no person", "note": "the planner alone, without the receiver, refuses to overwrite a pin", "owning_existing_goal": "StegVerse-org/LLM-adapter#431 (organization-ledger onboarding; governed element), StegVerse-org/.github#162", "required_evidence_or_repair": ".stegverse/transition-ledger/contract.json /repository_ledger_location/expected_genesis_receipt_sha256 is 'sha256:ef6a9c042ad325fba6263d248442cbfdf9939a462edbeeafaa70a79305ac708d', not the observed genesis sha256:5f69db3e55ed976c63b5252cabe2a0e6ce3fdbdd840581a2faf6402cecbe9c28; a pin is never overwritten by this transition, so the conflict needs its own admitted change", "retry_entrypoint": "scripts/llm_adapter_repository_ledger_genesis_pin.py plan --org-ledger <read-only copy of refs/stegverse/organization-ledger> --genesis-receipt <sha256 named by the receipted genesis record>", "six_fields_present": true, "subject": "PLANNER_DIRECT_AFTER_THE_PIN_OTHER_GENESIS"}, {"already_pinned": true, "contract_write_is_none": true, "disposition": "ALLOW", "note": "idempotent: no write, no consumes receipt", "six_fields_present": null, "subject": "PLANNER_DIRECT_AFTER_THE_PIN_SAME_GENESIS"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "PRE_PIN_SIGNAL_IS_THE_GENESIS_PIN_TRIGGER", "failure_code": "PRE_PIN_SIGNAL_CLASS_NOT_ACCEPTED", "next_attempt": "after REPOSITORY_LEDGER_GENESIS_PIN is admitted, through the normal gates (#433); event-triggered, never on a timer", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "while expected_genesis_receipt_sha256 is null only one signal is received here: REPOSITORY_LEDGER_GENESIS_OBSERVED (stegverse.repository-ledger-genesis-observed/v1, exact keys ['genesis_receipt_sha256', 'ledger_location', 'node_ref', 'repository', 'schema', 'signal_class', 'transition_class']) for StegVerse-org/LLM-adapter; got 'NODE_INGRESS_SIGNAL'. Other signals wait for the pin and then take the normal gates", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "NODE_SIGNAL_GENUINELY_CARRIED_WHILE_PIN_NULL"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "PRE_PIN_SIGNAL_IS_THE_GENESIS_PIN_TRIGGER", "failure_code": "PRE_PIN_SIGNAL_CLASS_NOT_ACCEPTED", "next_attempt": "after REPOSITORY_LEDGER_GENESIS_PIN is admitted, through the normal gates (#433); event-triggered, never on a timer", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "while expected_genesis_receipt_sha256 is null only one signal is received here: REPOSITORY_LEDGER_GENESIS_OBSERVED (stegverse.repository-ledger-genesis-observed/v1, exact keys ['genesis_receipt_sha256', 'ledger_location', 'node_ref', 'repository', 'schema', 'signal_class', 'transition_class']) for StegVerse-org/LLM-adapter; got 'REPOSITORY_LEDGER_GENESIS_OBSERVED'. Other signals wait for the pin and then take the normal gates", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "GENESIS_SIGNAL_WITH_AN_EXTRA_KEY_WHILE_PIN_NULL"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "PRE_PIN_SIGNAL_IS_THE_GENESIS_PIN_TRIGGER", "failure_code": "PRE_PIN_SIGNAL_CLASS_NOT_ACCEPTED", "next_attempt": "after REPOSITORY_LEDGER_GENESIS_PIN is admitted, through the normal gates (#433); event-triggered, never on a timer", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "while expected_genesis_receipt_sha256 is null only one signal is received here: REPOSITORY_LEDGER_GENESIS_OBSERVED (stegverse.repository-ledger-genesis-observed/v1, exact keys ['genesis_receipt_sha256', 'ledger_location', 'node_ref', 'repository', 'schema', 'signal_class', 'transition_class']) for StegVerse-org/LLM-adapter; got 'REPOSITORY_LEDGER_GENESIS_OBSERVED'. Other signals wait for the pin and then take the normal gates", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "GENESIS_SIGNAL_OTHER_TRANSITION_CLASS_WHILE_PIN_NULL"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "PRE_PIN_SIGNAL_IS_THE_GENESIS_PIN_TRIGGER", "failure_code": "PRE_PIN_SIGNAL_CLASS_NOT_ACCEPTED", "next_attempt": "after REPOSITORY_LEDGER_GENESIS_PIN is admitted, through the normal gates (#433); event-triggered, never on a timer", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "while expected_genesis_receipt_sha256 is null only one signal is received here: REPOSITORY_LEDGER_GENESIS_OBSERVED (stegverse.repository-ledger-genesis-observed/v1, exact keys ['genesis_receipt_sha256', 'ledger_location', 'node_ref', 'repository', 'schema', 'signal_class', 'transition_class']) for StegVerse-org/LLM-adapter; got 'str'. Other signals wait for the pin and then take the normal gates", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "NON_OBJECT_SIGNAL_WHILE_PIN_NULL"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REPOSITORY_LEDGER_GENESIS_ON_SEALED_CHAIN", "failure_code": "REPOSITORY_LEDGER_GENESIS_NOT_ON_CHAIN", "next_attempt": "event-triggered: on the InTr pair the existing org path transfer (intr-path-transfer.yml) appends for the receipted genesis-observed record; no clock, no polling, no person", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "an intact sealed chain from repository-ledger/StegVerse-org/LLM-adapter/HEAD.json to its genesis (receipt sha256:d53685ddc74a93f1b6e3def54b8606884ae4053a2548547533d0e03c6db92103 is absent or does not hash to its receipt_sha256)", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "FORGED_CARRIER_DESTINATION_EDITED_AFTER_SEALING"}, {"carrier_reason": "INTR_SOURCE_NOT_RETAINED", "disposition": "FAIL_CLOSED", "failed_predicate": "INSTALLED_INTR_TRANSPORT_OBSERVED_ON_RECEIPTS", "failure_code": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED", "next_attempt": "event-triggered: on the InTr pair the existing org path transfer (intr-path-transfer.yml) appends for the receipted genesis-observed record; no clock, no polling, no person", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "INTR_SOURCE_NOT_RETAINED: no sealed INTR_MESH_PATH_TRANSFER retained at source-receipts for 'sha256:36098e4bbff09c21c765b098323c69cb309a270f75b4e8d2f00fcd58cc12bdfb'. Carry the signal over InTr: retain its INTR_MESH_PATH_TRANSFER source half at source-receipts/<hex>.json and append the INTR_MESH_PATH_INGRESS (ORGANIZATION_INTR_DESTINATION_INGRESS) at refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter whose message body is the signal, then cite that destination receipt and the org ledger head.", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "FORGED_CARRIER_SOURCE_HALF_NOT_RETAINED"}, {"carrier_reason": "INTR_BODY_IS_NOT_THE_SIGNAL", "disposition": "FAIL_CLOSED", "failed_predicate": "INSTALLED_INTR_TRANSPORT_OBSERVED_ON_RECEIPTS", "failure_code": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED", "next_attempt": "event-triggered: on the InTr pair the existing org path transfer (intr-path-transfer.yml) appends for the receipted genesis-observed record; no clock, no polling, no person", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "INTR_BODY_IS_NOT_THE_SIGNAL: carried body sha256:414e86b78ff25c299d1104836124de3ba821cdf8c869c5d3d4fc054ef0213791 is not the signal sha256:1138493cb66beeaf6a045d368951e31acad5b16982328810bc877a853ffc710e. Carry the signal over InTr: retain its INTR_MESH_PATH_TRANSFER source half at source-receipts/<hex>.json and append the INTR_MESH_PATH_INGRESS (ORGANIZATION_INTR_DESTINATION_INGRESS) at refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter whose message body is the signal, then cite that destination receipt and the org ledger head.", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "FORGED_CARRIER_BODY_IS_ANOTHER_SIGNAL"}, {"carrier_reason": "ORG_LEDGER_HEAD_NOT_PINNED", "disposition": "FAIL_CLOSED", "failed_predicate": "INSTALLED_INTR_TRANSPORT_OBSERVED_ON_RECEIPTS", "failure_code": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED", "next_attempt": "event-triggered: on the InTr pair the existing org path transfer (intr-path-transfer.yml) appends for the receipted genesis-observed record; no clock, no polling, no person", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "ORG_LEDGER_HEAD_NOT_PINNED: read-back head sha256:04a46629b93873810b90ccbcb441c93a5feb184d3f8c8fc48c5dd69ab5c14a0f is not the pinned head 'sha256:ef6a9c042ad325fba6263d248442cbfdf9939a462edbeeafaa70a79305ac708d'. Carry the signal over InTr: retain its INTR_MESH_PATH_TRANSFER source half at source-receipts/<hex>.json and append the INTR_MESH_PATH_INGRESS (ORGANIZATION_INTR_DESTINATION_INGRESS) at refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter whose message body is the signal, then cite that destination receipt and the org ledger head.", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "FORGED_CARRIER_HEAD_NOT_THE_READ_BACK_HEAD"}, {"carrier_reason": "INTR_DESTINATION_NOT_ON_ORG_LEDGER", "disposition": "FAIL_CLOSED", "failed_predicate": "INSTALLED_INTR_TRANSPORT_OBSERVED_ON_RECEIPTS", "failure_code": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED", "next_attempt": "event-triggered: on the InTr pair the existing org path transfer (intr-path-transfer.yml) appends for the receipted genesis-observed record; no clock, no polling, no person", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "INTR_DESTINATION_NOT_ON_ORG_LEDGER: 'sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' is not on the org ledger chain. Carry the signal over InTr: retain its INTR_MESH_PATH_TRANSFER source half at source-receipts/<hex>.json and append the INTR_MESH_PATH_INGRESS (ORGANIZATION_INTR_DESTINATION_INGRESS) at refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter whose message body is the signal, then cite that destination receipt and the org ledger head.", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "FORGED_CARRIER_DESTINATION_NOT_ON_THE_CHAIN"}, {"declared_path_count": 56, "disposition": "UNDECLARED", "note": "intr_path_transfer.declared_paths(): ordered pairs of distinct organizations; the receiver's carrier path is StegVerse-org/.github->StegVerse-org:intr-destination", "receiver_path_id": "StegVerse-org/.github->StegVerse-org:intr-destination", "six_fields_present": null, "subject": "ORG_EMITTER_DECLARES_THE_RECEIVERS_PATH"}, {"disposition": "CANNOT_CARRY", "emitter_body_keys": ["path_id", "schema", "transfer_commit"], "emitter_evidence_lacks": ["boundary_evidence", "destination_location", "endpoint_kind"], "note": "intr_path_transfer.message() fixes the body", "signal_keys": ["genesis_receipt_sha256", "ledger_location", "node_ref", "repository", "schema", "signal_class", "transition_class"], "six_fields_present": null, "subject": "ORG_EMITTER_BODY_CAN_CARRY_THE_GENESIS_SIGNAL"}, {"disposition": "NOT_LINKABLE", "error": "KeyError 'endpoint_kind'", "note": "intr_transport_carrier.destination_evidence over an INTR_MESH_PATH_TRANSFER receipt whose evidence is intr_path_transfer.path_evidence's", "six_fields_present": null, "subject": "ORG_EMITTER_SHAPED_SOURCE_HALF_LINKED_BY_THE_CARRIER"}, {"disposition": "ACCEPTED_FOR_GENESIS_PIN", "note": "#431 carries no org_ledger_location (it is #432/#433's); a raising stub is installed for it and for intr_transport_carrier.observe, the pin-gated read", "org_ledger_location_in_431": false, "pin_gated_read_calls": 0, "six_fields_present": null, "subject": "RECEIVER_WITH_PIN_GATED_READS_DISABLED"}, {"disposition": "ACYCLIC", "planner_imports": ["__future__", "argparse", "hashlib", "json", "llm_adapter_ledger_merge_transfer", "pathlib", "sys", "typing"], "receiver_imports": ["__future__", "argparse", "json", "llm_adapter", "llm_adapter_repository_ledger_genesis_pin", "pathlib", "sys", "typing"], "six_fields_present": null, "subject": "PLANNER_AND_RECEIVER_IMPORT_GRAPH"}, {"after_sha256_matches": true, "consumes_receipt_sha256_is_root": true, "disposition": "EQUAL", "note": "the written contract field vs the chain root read back from the copy (git show) and its re-hashed body", "six_fields_present": null, "subject": "PIN_WRITTEN_EQUALS_THE_DIGEST_READ_BACK"}, {"disposition": "REFUSED", "note": "apply_write checks the plan's before digest", "six_fields_present": null, "subject": "APPLY_WRITE_ON_A_CHANGED_CONTRACT"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "ORGANIZATION_LEDGER_COPY_READ", "failure_code": "ORGANIZATION_LEDGER_COPY_UNAVAILABLE", "next_attempt": "event-triggered: on the InTr pair the existing org path transfer (intr-path-transfer.yml) appends for the receipted genesis-observed record; no clock, no polling, no person", "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431", "required_evidence_or_repair": "a local read-only copy of StegVerse-org/.github refs/stegverse/organization-ledger", "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>", "six_fields_present": true, "subject": "PRODUCTION_RECEIVER_WITHOUT_A_LEDGER_COPY"}]}
+--- stderr

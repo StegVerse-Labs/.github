@@ -1,0 +1,25 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "blocker": "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
+ "failure_class": {
+  "class": "C",
+  "reason": "waits on Coordination's ruling on the org-side emitter change and its owner"
+ },
+ "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "H-KV-ENDPOINT-LEDGER-ANCHOR"
+ ],
+ "next_attempt": "on Coordination's ruling on the org-side emitter change (requested by Lane B on StegVerse-org/.github#162), then on the admitted change to StegVerse-org/.github's path transfer that carries the genesis-observed signal; event-driven, never on a timer",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "pending Coordination ruling; Lane B (InTr) proposed (StegVerse-org/.github has no CODEOWNERS; resident-runtime/intr_path_transfer.py was authored in Lane B (91117956) commits 008d743 and 83b1917, which is authorship, not a recorded owner); consuming lane: Lane B (LLM-adapter#431 receiver) and Lane D (KV and WorkSpace)",
+ "proposed_resolution": "an admitted change to the org path transfer (owner per Coordination's ruling) that, triggered by the receipted REPOSITORY_LEDGER_INITIALIZATION genesis for StegVerse-org/LLM-adapter, carries the REPOSITORY_LEDGER_GENESIS_OBSERVED body on a declared intra-organization path to the LLM-adapter namespace, in the source/destination shape intr_transport_carrier verifies (endpoint_kind, destination_location, boundary_evidence; source half retained at source-receipts/, destination half on the namespace chain), with no dispatch, cron or new workflow trigger; until then the receiver has nothing real to receive and the pin stays null",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "new (revision 8, LLM-adapter#431 @1541d465, #432 @74509fec) (blocker GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER). Lane B's reported gap, verified: the ruled trigger route is the org's existing path transfer, but StegVerse-org/.github@907f4305ddd4f39b16d96638744304de9ef0b67d resident-runtime/intr_path_transfer.py cannot carry the genesis-observed signal: (1) message() fixes the body to {schema, path_id, transfer_commit}, while the receiver needs exactly {schema, signal_class, repository, ledger_location, genesis_receipt_sha256, transition_class, node_ref} (row ORG_EMITTER_BODY_CAN_CARRY_THE_GENESIS_SIGNAL CANNOT_CARRY); (2) declared_paths() are ordered pairs of distinct organizations (56), so the receiver's path StegVerse-org/.github->StegVerse-org:intr-destination is UNDECLARED (row ORG_EMITTER_DECLARES_THE_RECEIVERS_PATH); (3) path_evidence has no endpoint_kind, destination_location or boundary_evidence, so intr_transport_carrier.destination_evidence cannot link an org-emitted source half (row ORG_EMITTER_SHAPED_SOURCE_HALF_LINKED_BY_THE_CARRIER: KeyError endpoint_kind); (4) the writer intr-path-transfer.yml runs only after a transfers.json row lands on main (workflow_run of the main-merge transfer), not on the genesis-observed record (run org-emitter-shape). Also nothing at 907f4305 appends the INTR_MESH_PATH_INGRESS destination half into the repository-ledger/StegVerse-org/LLM-adapter namespace in the receiver's emit.py shape. #431's own declaration says the emitter change is an org-side precondition outside LLM-adapter (genesis-pin-transition.v1.json wiring_note); Lane B has asked Coordination to rule on it (Lane B's report, a claim). So real end-to-end use of the receiver waits on an org-side emitter change",
+ "retry_point": "python scripts/ladder_conformance.py observe (run genesis-pin-probe ORG_EMITTER_* rows and org-emitter-shape at the pinned StegVerse-org/.github head), then check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-20"
+}

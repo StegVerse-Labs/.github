@@ -4,6 +4,17 @@ $ {python} -c import sys,unittest; sys.path.insert(0,'.'); sys.argv=[sys.argv[0]
 --- stderr
 test_contract_pin_is_null_with_a_note_not_an_invented_digest (tests.test_llm_adapter_ledger_merge_transfer.ExpectedGenesisPinTests.test_contract_pin_is_null_with_a_note_not_an_invented_digest) ... ok
 test_genesis_digest_is_not_computable_before_observation (tests.test_llm_adapter_ledger_merge_transfer.ExpectedGenesisPinTests.test_genesis_digest_is_not_computable_before_observation) ... ok
+test_forged_or_off_chain_genesis_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_forged_or_off_chain_genesis_is_refused) ... ok
+test_once_pinned_the_exception_closes_and_normal_gates_apply (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_once_pinned_the_exception_closes_and_normal_gates_apply) ... ok
+test_pre_pin_any_other_signal_class_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_pre_pin_any_other_signal_class_is_refused) ... ok
+test_pre_pin_genesis_signal_is_accepted_and_planned (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_pre_pin_genesis_signal_is_accepted_and_planned) ... ok
+test_receiver_reuses_the_carrier_unchanged_and_is_wired_declaratively (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinPrePinIngressTests.test_receiver_reuses_the_carrier_unchanged_and_is_wired_declaratively) ... ok
+test_conflicting_pin_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_conflicting_pin_is_refused) ... ok
+test_forged_or_non_chain_genesis_is_refused (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_forged_or_non_chain_genesis_is_refused) ... ok
+test_idempotent_re_run (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_idempotent_re_run) ... ok
+test_no_genesis_refuses_with_six_fields (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_no_genesis_refuses_with_six_fields) ... ok
+test_planner_writes_nothing_and_declares_its_trigger (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_planner_writes_nothing_and_declares_its_trigger) ... ok
+test_valid_genesis_gives_the_exact_contract_write_and_consumes_receipt (tests.test_llm_adapter_ledger_merge_transfer.GenesisPinTransitionTests.test_valid_genesis_gives_the_exact_contract_write_and_consumes_receipt) ... ok
 test_absent_namespace_is_genesis_unobserved (tests.test_llm_adapter_ledger_merge_transfer.LlmAdapterLedgerMergeTransferTests.test_absent_namespace_is_genesis_unobserved) ... ok
 test_contract_location_is_the_org_ledger_subtree_not_a_new_root (tests.test_llm_adapter_ledger_merge_transfer.LlmAdapterLedgerMergeTransferTests.test_contract_location_is_the_org_ledger_subtree_not_a_new_root) ... ok
 test_copied_blocks_match_the_pinned_writer (tests.test_llm_adapter_ledger_merge_transfer.LlmAdapterLedgerMergeTransferTests.test_copied_blocks_match_the_pinned_writer) ... ok
@@ -19,6 +30,6 @@ test_workflows_have_no_schedule_dispatch_write_or_secret (tests.test_llm_adapter
 test_writer_pin_mismatch_fails_closed (tests.test_llm_adapter_ledger_merge_transfer.LlmAdapterLedgerMergeTransferTests.test_writer_pin_mismatch_fails_closed) ... ok
 
 ----------------------------------------------------------------------
-Ran 15 tests in <t>s
+Ran 26 tests in <t>s
 
 OK
