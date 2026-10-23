@@ -8,6 +8,7 @@ supported mode: E0 (stdlib, committed files, no clock, no network).
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
@@ -20,7 +21,11 @@ SCRIPT = ROOT / "scripts" / "canonical_task_registration_transition.py"
 TASK_ID = "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001"
 REQUEST = f"tests/fixtures/canonical_task_registration/github-universal-governance-product/{TASK_ID}.request.json"
 ADJACENCY = f"tests/fixtures/canonical_task_registration/github-universal-governance-product/{TASK_ID}.adjacency-test.json"
-SCOPE_DIGEST = "sha256:af91ec48f3fdeaf0233777a2b798829a4544622bd342ddaf8ffdc72252d5f3b5"
+FINISH_TEST = ("StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py"
+               "::GovernanceProductFinishPoint::test_finish_point_verdict")
+FINISH_COMMIT = "289f727327a4b4ef8d5d392cbe0698a60c38f1b0"
+RULING = "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json"
+SCOPE_DIGEST = "sha256:44b680f9050e11c44bfb91cceff5651a11b8d1c0a681464f6b44583a87d7b47b"
 SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
        "owning_existing_goal", "next_attempt")
 EXPECTED_PLAN = {
@@ -96,8 +101,32 @@ class GovernanceProductGoalRequestTests(unittest.TestCase):
         for folded in ("sdk-reusable-governance-gate-workflow", "tier-pricing-candidate"):
             self.assertNotIn(folded, components)
         finish = self.request["sealed_scope"]["scope"]["finish_point"]
-        self.assertNotIn("test_governance_gate.py", finish["acceptance_test"])
+        self.assertEqual(finish["acceptance_test"], FINISH_TEST)
+        self.assertEqual(finish["source_commit"], FINISH_COMMIT)
         self.assertTrue(any(ADJACENCY in line for line in self.request["collision_analysis"]))
+
+    def test_adjacency_ruling_input_is_consistent_with_the_sealed_scope(self) -> None:
+        """E0 consistency only; conditions a/b/c are recomputed by the workflow's ruling step at the pinned SDK commit."""
+        spec = importlib.util.spec_from_file_location("adjacency_ruling_under_test", ROOT / "scripts" / "adjacency_ruling.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        ruling = json.loads((ROOT / RULING).read_text(encoding="utf-8"))
+        self.assertEqual(ruling["evidence_digest"], module.ruling_digest(ruling))
+        self.assertIsNotNone(module.ADDRESSABLE.match(FINISH_TEST))
+        fp = ruling["subject"]["finish_point"]
+        self.assertEqual((fp["acceptance_test"], fp["repository"], fp["source_commit"]),
+                         (FINISH_TEST, "StegVerse-org/StegVerse-SDK", FINISH_COMMIT))
+        record = self.request["record"]
+        self.assertEqual(sorted(ruling["subject"]["components"]), sorted(record["targets"]["components"]))
+        deps = {d["ref"] for d in record["dependencies"] if d["kind"] == "TASK"}
+        cands = {c["task_id"] for c in ruling["candidates"]}
+        for dep in ruling["consumes_dependencies"]:
+            self.assertIn(dep["task_id"], deps)
+            self.assertIn(dep["task_id"], cands)
+        for cand in ruling["candidates"]:
+            observed = json.loads((ROOT / "data" / "canonical-task-records" / f"{cand['task_id']}.json").read_text(encoding="utf-8"))
+            self.assertEqual(sorted(cand["components"]), sorted((observed.get("targets") or {}).get("components") or []))
+        self.assertIn("UNKNOWN_NOT_AUTHENTICALLY_OBSERVED", ruling["ruled_by"])
 
     def test_plan_resolves_to_the_recorded_six_field_outcome(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

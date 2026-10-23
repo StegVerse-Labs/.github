@@ -12,7 +12,7 @@
   "observed_registry_generation": 320,
   "owning_task_found": false,
   "scope": "PROPOSED: Release StegVerse Governance as an independently installable GitHub product whose only product claim is a verifiable receipt chain built on customer-supplied manifest constraints. ALL ACTIONS BY MANIFEST and state-transition dependent; every attempted transition returns ALLOW, DENY or FAIL_CLOSED, and missing runtime observation is never converted into ALLOW. The customer retains its data, credentials, infrastructure and execution. Preserve canonical SDK manifest/route semantics, StegCore/StegGate evaluation semantics, Interlock/InTr transition authority, TV/TVC credential and release authority, Organization ledger observed reality and Master Records reconstruction. Introduce no external machine, hosted runtime, scheduler, second device or new framework/dependency, and reduce existing dependencies. Make no safety, compliance or authority claim.",
-  "scope_digest": "sha256:af91ec48f3fdeaf0233777a2b798829a4544622bd342ddaf8ffdc72252d5f3b5",
+  "scope_digest": "sha256:44b680f9050e11c44bfb91cceff5651a11b8d1c0a681464f6b44583a87d7b47b",
   "requested_action": "Check the identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition.",
   "authority_effect": "NONE_REQUEST_ONLY",
   "handoff_ref": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md"

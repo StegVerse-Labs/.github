@@ -9,7 +9,7 @@
   "collision_analysis": [
     "no canonical Registry row, shard, task-vector or index entry for GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 at StegVerse-Labs/.github main 86382e60 (generation 320); the identity is the one proposed in StegVerse-Labs/.github#3012 and named in StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md",
     "collision check-in decided mechanically in plan",
-    "adjacency test (structured evidence: tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.adjacency-test.json): SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001: NOT_ADJACENT_OVERLAP_FOLDED (a=False, b=False, c=True; kept as dependency CONSUMES-SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (the published gate at the released ref)); SDK-COST-DERIVED-TIER-PRICING-001: NOT_ADJACENT_OVERLAP_FOLDED (a=False, b=True, c=True; kept as dependency CONSUMES-SDK-COST-DERIVED-TIER-PRICING-001 and predicate ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT); PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001: ADJACENT (a=True, b=True, c=True; kept as adjacent_task_refs entry and dependency CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (revenue-ops input)); STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001: ADJACENT (a=True, b=True, c=True; kept as adjacent_task_refs entry)"
+    "adjacency test (structured evidence: tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.adjacency-test.json): SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001: NOT_ADJACENT_OVERLAP_FOLDED (a=False, b=True, c=True; kept as dependency CONSUMES-SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (the published gate at the released ref)); SDK-COST-DERIVED-TIER-PRICING-001: NOT_ADJACENT_OVERLAP_FOLDED (a=False, b=True, c=True; kept as dependency CONSUMES-SDK-COST-DERIVED-TIER-PRICING-001 and predicate ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT); PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001: ADJACENT (a=True, b=True, c=True; kept as adjacent_task_refs entry and dependency CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (revenue-ops input)); STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001: ADJACENT (a=True, b=True, c=True; kept as adjacent_task_refs entry)"
   ],
   "sealed_scope": {
     "schema": "stegverse.goal-scope-seal/v1",
@@ -45,6 +45,7 @@
         "RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM",
         "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED",
         "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+        "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
         "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
         "LICENSE_AND_TERMS_OWNER_APPROVED",
         "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
@@ -52,13 +53,15 @@
         "ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT"
       ],
       "finish_point": {
-        "acceptance_test": "StegVerse-org/StegVerse-SDK tests/test_package_version_identity.py (present at SDK main daca828a), run at the immutable ref named by the TV/TVC release receipt: __version__, pyproject.toml and VERSION.json agree on the released version; the governance gate workflow and module at that ref are consumed as published by SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (its .github/workflows/governance-gate-selftest.yml receipt) and are not exercised by this finish point",
-        "predicate": "PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON at IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY",
-        "verifier_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_package_version_identity at the released ref",
+        "acceptance_test": "StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py::GovernanceProductFinishPoint::test_finish_point_verdict",
+        "source_commit": "289f727327a4b4ef8d5d392cbe0698a60c38f1b0",
+        "source_ref": "StegVerse-org/StegVerse-SDK#556",
+        "predicate": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN at the ref the TV/TVC release receipt names",
+        "verifier_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_finish_point_verdict, checked out at the TV/TVC release-receipt ref",
         "lowest_supported_mode": "E0"
       }
     },
-    "scope_digest": "sha256:af91ec48f3fdeaf0233777a2b798829a4544622bd342ddaf8ffdc72252d5f3b5",
+    "scope_digest": "sha256:44b680f9050e11c44bfb91cceff5651a11b8d1c0a681464f6b44583a87d7b47b",
     "supersedes_scope_digest": null
   },
   "record": {
@@ -219,6 +222,7 @@
       "RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM",
       "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED",
       "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+      "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
       "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
       "LICENSE_AND_TERMS_OWNER_APPROVED",
       "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",

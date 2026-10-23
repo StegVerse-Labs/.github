@@ -1,0 +1,84 @@
+{
+  "schema": "stegverse.adjacency-ruling/v1",
+  "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+  "ruling_class": "D",
+  "ruling": "ADJACENT_NOT_DUPLICATE",
+  "ruled_by": "PROPOSED by Lane C (grok-lane-c) as the registration input Coordination (STEGVERSE-CANONICAL-WORK-COORDINATION-001) asked for on 2026-10-23; a Coordination ruling of ADJACENT_NOT_DUPLICATE for this task is not observed: ruling record ref UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+  "subject": {
+    "components": [
+      "customer-quickstart-and-release-notes",
+      "entitlement-separation",
+      "icv-commercial-distribution",
+      "sdk-governance-gate-free-tier",
+      "sdk-package-version-identity",
+      "sdk-portable-governance-verification-bundle",
+      "tvc-sdk-1.3.0-publication"
+    ],
+    "finish_point": {
+      "acceptance_test": "StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py::GovernanceProductFinishPoint::test_finish_point_verdict",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "source_commit": "289f727327a4b4ef8d5d392cbe0698a60c38f1b0",
+      "source_ref": "StegVerse-org/StegVerse-SDK#556"
+    }
+  },
+  "candidates": [
+    {
+      "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+      "components": [
+        "schema-migration",
+        "structural-validator",
+        "validator-inventory"
+      ],
+      "finish_point_paths": [
+        ".github/workflows/governance-gate.yml",
+        "stegverse/governance_gate.py"
+      ],
+      "record_finish_point": "NONE_DECLARED_IN_RECORD",
+      "relied_on_as": "the gate's run step and governance_gate.read_workflow_disposition, owned by this candidate per governance-gate.yml owning_existing_goal; read and executed, never changed; the checker (run_gate, structural_validator_candidate) is not run"
+    },
+    {
+      "task_id": "SDK-COST-DERIVED-TIER-PRICING-001",
+      "components": [
+        "cost-component-registry",
+        "tier-pricing"
+      ],
+      "finish_point_paths": [],
+      "record_finish_point": "NONE_DECLARED_IN_RECORD"
+    },
+    {
+      "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "components": [],
+      "finish_point_paths": [],
+      "record_finish_point": "NONE_DECLARED_IN_RECORD"
+    },
+    {
+      "task_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+      "components": [],
+      "finish_point_paths": [],
+      "record_finish_point": "NONE_DECLARED_IN_RECORD"
+    }
+  ],
+  "consumes_dependencies": [
+    {
+      "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+      "failure_class": "A",
+      "consumed_by": "the gate disposition step and the checker's governance-gate-selftest receipt (sdk-governance-gate-free-tier)"
+    },
+    {
+      "task_id": "SDK-COST-DERIVED-TIER-PRICING-001",
+      "failure_class": "A",
+      "consumed_by": "ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT (entitlement-separation)"
+    },
+    {
+      "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "failure_class": "A",
+      "consumed_by": "authentic payment-provider ingress for icv-commercial-distribution"
+    }
+  ],
+  "conditions_claimed": {
+    "a": "components disjoint (after the 0cba8a50 fold of sdk-reusable-governance-gate-workflow and tier-pricing-candidate)",
+    "b": "the finish-point test imports no stegverse module at run time and its static closure (69 files) touches none of the candidates' components",
+    "c": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001, SDK-COST-DERIVED-TIER-PRICING-001 and PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 are consumes-dependencies (TASK dependencies of the record)"
+  },
+  "evidence_digest": "sha256:44b492562c70fc1cb01b6cbecbb0418fde26f7108195480bda40f08396ff449e"
+}
