@@ -17,12 +17,22 @@ is never trusted: its digest is re-derived, and its conditions are re-computed f
       names in that repository (source_refs, existing_evidence_refs, handoff_projection_refs) or (ii) a module whose
       underscore-split name contains a candidate component name (hyphens -> underscores) as a contiguous run.
   (c) every consumes-dependency the ruling names is a candidate and a TASK dependency of the subject record.
+  (P) consumed-source pin: a consumes_dependencies[] entry may carry pinned_source {repository (= the finish-point
+      repository), commit (40-hex), files {path: sha256}}. Each sha256 is recomputed from the file at the pinned
+      commit and at the finish-point commit, and the finish-point test file must carry the same commit and sha256s.
+  (R) owner routing: protected_paths[] {repository, owner_task_id, paths, on_modification {disposition FAIL_CLOSED,
+      failure_code, routed_to = owner_task_id}}. Its paths must equal the owner's pinned files. A modified protected
+      path refuses with the entry's failure_code, owned by the owner task (verify, and check-change --base --head).
+  A candidate with non-empty finish_point_paths must have them pinned (P) and routed (R); only then are those
+  paths exempt from (b) for that candidate. Nothing they load is exempt.
 
 A ruling only ever clears COORDINATE_CONVERGENCE for exactly the subject task, over candidates it covers; a
 STOP_COLLISION (hard collision) is never cleared. Everything else is a six-field FAIL_CLOSED.
 
   digest  --ruling R                                   -> the evidence_digest R must carry
   verify  --ruling R --request Q [--base DIR] --finish-point-root DIR [--receipt-out F]
+  check-change --ruling R --root DIR --base REV --head REV [--receipt-out F]
+                                                       -> FAIL_CLOSED if base..head modifies a protected path
 """
 from __future__ import annotations
 
@@ -51,14 +61,14 @@ REQUIRED = ("schema", "task_id", "ruling_class", "ruling", "ruled_by", "subject"
 
 
 class RulingRefusal(Exception):
-    def __init__(self, code: str, predicate: str, repair: str, detail: Any = None):
+    def __init__(self, code: str, predicate: str, repair: str, detail: Any = None, owner: str = OWNING_GOAL):
         super().__init__(code)
-        self.code, self.predicate, self.repair, self.detail = code, predicate, repair, detail
+        self.code, self.predicate, self.repair, self.detail, self.owner = code, predicate, repair, detail, owner
 
     def six(self) -> dict[str, Any]:
         return {"disposition": "FAIL_CLOSED", "failure_code": self.code, "failed_predicate": self.predicate,
                 "required_evidence_or_repair": self.repair, "retry_entrypoint": ENTRYPOINT,
-                "owning_existing_goal": OWNING_GOAL, "next_attempt": NEXT_ATTEMPT, "detail": self.detail}
+                "owning_existing_goal": self.owner, "next_attempt": NEXT_ATTEMPT, "detail": self.detail}
 
 
 def canon(value: Any) -> bytes:
@@ -576,6 +586,155 @@ def touches(closure: Iterable[str], record: dict[str, Any], repository: str) -> 
     return hits
 
 
+# --- (P) consumed-source pins and (R) owner routing -------------------------------------------------------------
+HEX40 = re.compile(r"^[0-9a-f]{40}$")
+HEX64 = re.compile(r"^(sha256:)?[0-9a-f]{64}$")
+
+
+def _bare(digest: str) -> str:
+    return digest[len("sha256:"):] if digest.startswith("sha256:") else digest
+
+
+def pin_structure(ruling: dict[str, Any], repository: str) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]]]:
+    """Well-formedness of pins/routes and the relied-paths coverage; no source is read."""
+    pins: dict[str, dict[str, Any]] = {}
+    for dep in ruling.get("consumes_dependencies") or []:
+        if not (isinstance(dep, dict) and "pinned_source" in dep):
+            continue
+        tid, pin = dep.get("task_id"), dep["pinned_source"]
+        files = pin.get("files") if isinstance(pin, dict) else None
+        ok = (isinstance(pin, dict) and pin.get("repository") == repository and HEX40.match(str(pin.get("commit")))
+              and isinstance(files, dict) and bool(files) and tid not in pins
+              and all(isinstance(k, str) and k and not k.startswith("/") and ".." not in Path(k).parts
+                      and isinstance(v, str) and HEX64.match(v) for k, v in files.items()))
+        _require(bool(ok), "ADJACENCY_RULING_CONSUMED_PIN_MALFORMED", "CONSUMED_PIN_IS_WELL_FORMED",
+                 f"consumes_dependencies[{tid}].pinned_source needs repository {repository} (the finish-point repository), "
+                 "a 40-hex commit and non-empty files {relative path: sha256}", {"task_id": tid, "pinned_source": pin})
+        pins[tid] = {"repository": repository, "commit": pin["commit"], "files": {k: _bare(v) for k, v in files.items()}}
+    routes = ruling.get("protected_paths", [])
+    _require(isinstance(routes, list), "ADJACENCY_RULING_PROTECTED_PATHS_MALFORMED", "PROTECTED_PATHS_ARE_A_LIST",
+             "protected_paths must be a list of {repository, owner_task_id, paths, on_modification}")
+    for route in routes:
+        mod = route.get("on_modification") if isinstance(route, dict) else None
+        ok = (isinstance(route, dict) and route.get("repository") == repository
+              and isinstance(route.get("owner_task_id"), str) and route["owner_task_id"]
+              and isinstance(route.get("paths"), list) and route["paths"]
+              and all(isinstance(x, str) and x for x in route["paths"])
+              and isinstance(mod, dict) and mod.get("disposition") == "FAIL_CLOSED"
+              and isinstance(mod.get("failure_code"), str) and mod["failure_code"])
+        _require(bool(ok), "ADJACENCY_RULING_PROTECTED_PATHS_MALFORMED", "PROTECTED_PATHS_ARE_WELL_FORMED",
+                 f"each protected_paths entry needs repository {repository}, owner_task_id, non-empty paths and "
+                 "on_modification {disposition FAIL_CLOSED, failure_code, routed_to}", route)
+        owner = route["owner_task_id"]
+        pin = pins.get(owner)
+        _require(mod.get("routed_to") == owner and pin is not None and sorted(route["paths"]) == sorted(pin["files"]),
+                 "ADJACENCY_RULING_PROTECTED_PATHS_UNROUTED", "PROTECTED_PATHS_EQUAL_THE_OWNERS_PIN_AND_ROUTE_TO_IT",
+                 f"protected_paths for {owner} must list exactly the files of {owner}'s consumes pin and route "
+                 f"on_modification to {owner}",
+                 {"owner_task_id": owner, "routed_to": mod.get("routed_to"), "paths": sorted(route["paths"]),
+                  "pinned_files": sorted(pin["files"]) if pin else None})
+    routed: dict[str, set[str]] = {}
+    for route in routes:
+        routed.setdefault(route["owner_task_id"], set()).update(route["paths"])
+    for cand in ruling.get("candidates") or []:
+        relied = cand.get("finish_point_paths") if isinstance(cand, dict) else None
+        if isinstance(relied, list) and relied:
+            cid = cand.get("task_id")
+            ok = cid in pins and set(relied) <= set(pins[cid]["files"]) and set(relied) <= routed.get(cid, set())
+            _require(ok, "ADJACENCY_RULING_RELIED_PATHS_UNPINNED", "RELIED_ON_CANDIDATE_PATHS_ARE_PINNED_AND_ROUTED",
+                     f"{cid}'s finish_point_paths must each be in {cid}'s consumes pinned_source and in a protected_paths "
+                     f"entry routed to {cid}; otherwise this is a fold, not a consumes-dependency",
+                     {"candidate": cid, "relied": sorted(relied), "pinned": sorted(pins.get(cid, {}).get("files", {})),
+                      "routed": sorted(routed.get(cid, set()))})
+    return pins, routes
+
+
+def _blob_sha(root: Path, rev: str, rel: str) -> str | None:
+    try:
+        out = subprocess.run(["git", "-C", str(root), "show", f"{rev}:{rel}"], capture_output=True, check=False, timeout=60)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return hashlib.sha256(out.stdout).hexdigest() if out.returncode == 0 else None
+
+
+def _has_commit(root: Path, commit: str) -> bool:
+    try:
+        return subprocess.run(["git", "-C", str(root), "cat-file", "-e", f"{commit}^{{commit}}"], capture_output=True,
+                              check=False, timeout=30).returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+def _owned_edit(routes: list[dict[str, Any]], changed: Iterable[str]) -> RulingRefusal | None:
+    changed = set(changed)
+    for route in routes:
+        hit = sorted(changed & set(route["paths"]))
+        if hit:
+            owner = route["owner_task_id"]
+            return RulingRefusal(route["on_modification"]["failure_code"], "PROTECTED_PATHS_UNMODIFIED_BY_SUBJECT",
+                                 f"{hit} are owned by {owner}: route the change to {owner}; once {owner} publishes it, "
+                                 "move the consumes pin (commit and sha256s) in the ruling and in the finish-point test",
+                                 {"modified": hit, "routed_to": owner}, owner)
+    return None
+
+
+def verify_pins(root: Path, head: str, test_rel: str, pins: dict[str, dict[str, Any]],
+                routes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    test_path = root / test_rel
+    test_text = test_path.read_text(encoding="utf-8", errors="replace") if test_path.is_file() else ""
+    rows = []
+    for tid, pin in sorted(pins.items()):
+        commit = pin["commit"]
+        _require(_has_commit(root, commit), "ADJACENCY_RULING_CONSUMED_PIN_COMMIT_UNAVAILABLE",
+                 "PINNED_COMMIT_PRESENT_IN_FINISH_POINT_SOURCE",
+                 f"fetch {pin['repository']}@{commit} into the finish-point checkout (tokenless); if the source is private "
+                 "the pinned bytes are UNKNOWN_NOT_AUTHENTICALLY_OBSERVED and the plan stays FAIL_CLOSED",
+                 {"task_id": tid, "commit": commit, "observed": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"})
+        for rel, digest in sorted(pin["files"].items()):
+            at_pin = _blob_sha(root, commit, rel)
+            _require(at_pin == digest, "ADJACENCY_RULING_CONSUMED_PIN_DIGEST_DIVERGES",
+                     "PINNED_SHA256_EQUALS_FILE_AT_PINNED_COMMIT", f"{rel} at {commit} must have sha256 {digest}",
+                     {"task_id": tid, "path": rel, "pinned": digest, "at_pin": at_pin})
+            at_head = _blob_sha(root, head, rel)
+            if at_head != digest:
+                raise _owned_edit(routes, [rel]) or RulingRefusal(
+                    "ADJACENCY_RULING_CONSUMED_PIN_DIGEST_DIVERGES", "PINNED_SHA256_EQUALS_FILE_AT_FINISH_POINT",
+                    f"{rel} at the finish-point commit {head} must equal its pin {digest}",
+                    {"task_id": tid, "path": rel, "pinned": digest, "at_finish_point": at_head})
+            _require(commit in test_text and digest in test_text, "ADJACENCY_RULING_FINISH_TEST_DOES_NOT_ENFORCE_PIN",
+                     "FINISH_TEST_CARRIES_THE_SAME_PIN",
+                     f"{test_rel} must carry {commit} and the sha256 of {rel} ({digest}) and verify them before use",
+                     {"task_id": tid, "path": rel, "commit_carried": commit in test_text,
+                      "sha256_carried": digest in test_text})
+        rows.append({"task_id": tid, "commit": commit, "files": pin["files"], "condition_pin": "HELD"})
+    return rows
+
+
+def check_change(ruling: Any, root: Path, base: str, head: str) -> dict[str, Any]:
+    """FAIL_CLOSED when base..head modifies a protected path (routed to its owner)."""
+    body: dict[str, Any] = {"schema": RECEIPT_SCHEMA, "mode": "check-change", "base": base, "head": head,
+                            "clock_read": False, "network_used": False, "llm_used": False, "lowest_supported_mode": "E0"}
+    try:
+        _require(isinstance(ruling, dict) and isinstance(ruling.get("subject"), dict), "ADJACENCY_RULING_SCHEMA_INVALID",
+                 "ADJACENCY_RULING_IS_WELL_FORMED", f"a {SCHEMA} object with a subject")
+        repository = ((ruling["subject"].get("finish_point") or {}).get("repository"))
+        _pins, routes = pin_structure(ruling, repository)
+        try:
+            diff = subprocess.run(["git", "-C", str(root), "diff", "--name-only", "--no-renames", base, head],
+                                  capture_output=True, text=True, check=False, timeout=60)
+        except (OSError, subprocess.SubprocessError) as exc:
+            diff = subprocess.CompletedProcess([], 1, "", str(exc))
+        _require(diff.returncode == 0, "ADJACENCY_RULING_CHANGE_UNREADABLE", "CHANGE_DIFF_READABLE",
+                 f"{root} must hold both {base} and {head}", diff.stderr[:300])
+        refusal = _owned_edit(routes, diff.stdout.split())
+        if refusal is not None:
+            raise refusal
+        body.update({"disposition": "ALLOW", "condition_routing": "HELD", "protected_paths": routes})
+    except RulingRefusal as refusal:
+        body.update(refusal.six())
+    return body
+
+
 # --- verification ---------------------------------------------------------------------------------------------
 def _load_evaluator(base: Path) -> Any:
     script = base / EVALUATOR
@@ -662,6 +821,7 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
     cand_ids = [c.get("task_id") for c in candidates if isinstance(c, dict)]
     _require(bool(cand_ids) and len(set(cand_ids)) == len(cand_ids) and task_id not in cand_ids,
              "ADJACENCY_RULING_SCHEMA_INVALID", "RULING_NAMES_DISTINCT_CANDIDATES", "list each candidate Goal once")
+    pins, routes = pin_structure(ruling, repository)
     if checkin_rows is not None:
         for row in checkin_rows:
             evidence = row.get("evidence") or {}
@@ -683,6 +843,7 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
     _require(head == fp["source_commit"], "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
              "FINISH_POINT_SOURCE_AT_PINNED_COMMIT",
              f"the finish-point root must be {repository} checked out at {fp['source_commit']}", {"observed_head": head})
+    pin_rows = verify_pins(finish_point_root, head, test_rel, pins, routes)
     closure = static_closure(finish_point_root, test_rel)
 
     rows = []
@@ -700,21 +861,23 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
         footprint = sorted(_footprint(observed, repository))
         listed = cand.get("finish_point_paths")
         _require(isinstance(listed, list), "ADJACENCY_RULING_SCHEMA_INVALID", "RULING_LISTS_FINISH_POINT_PATHS",
-                 f"candidates[{cid}].finish_point_paths must list the paths it relies on (may be empty)")
+                 f"candidates[{cid}].finish_point_paths must list the {cid} paths the finish point relies on (pinned and "
+                 "routed); [] when it relies on none")
         repos, shared, lineage, adjacent, substrates, conflicts, _shareable = evaluator.overlap(record, observed, None)
         a_ok = not shared and not lineage and not substrates and not conflicts and not (set(observed_subject) & set(comps))
         _require(a_ok, "ADJACENCY_CONDITION_A_NOT_HELD", "COMPONENTS_DISJOINT_RECOMPUTED",
                  f"{task_id} and {cid} overlap beyond adjacency; this is a duplicate - fold the overlap into {cid}",
                  {"components": shared, "lineage": lineage, "execution_substrates": substrates,
                   "user_action_surface_conflicts": conflicts})
-        hits = touches(closure, observed, repository)
+        consumed = set(listed) if listed and cid in pins else set()  # pinned + routed + verified above
+        hits = [h for h in touches(closure, observed, repository) if h["path"] not in consumed]
         _require(not hits, "ADJACENCY_CONDITION_B_NOT_HELD", "FINISH_POINT_TEST_TOUCHES_NO_CANDIDATE_COMPONENT_RECOMPUTED",
                  f"the finish-point test reaches {cid}'s components; this is a duplicate - fold the overlap into {cid}",
                  hits)
         rows.append({"task_id": cid, "components": comps, "footprint_in_finish_point_repository": footprint,
                      "overlap": {"repositories": repos, "components": shared, "lineage": lineage, "adjacent": adjacent,
                                  "execution_substrates": substrates, "user_action_surface_conflicts": conflicts},
-                     "condition_a": "HELD", "condition_b": "HELD"})
+                     "pinned_consumed_paths": sorted(consumed), "condition_a": "HELD", "condition_b": "HELD"})
 
     deps = {d.get("ref") for d in record.get("dependencies") or [] if isinstance(d, dict) and d.get("kind") == "TASK"}
     consumes = ruling["consumes_dependencies"] if isinstance(ruling["consumes_dependencies"], list) else None
@@ -729,6 +892,9 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
             "finish_point": {"repository": repository, "source_commit": head, "test": test_rel,
                              "closure": closure, "closure_digest": sha(canon(closure))},
             "candidates": rows, "consumes_dependencies": consumes, "condition_c": "HELD",
+            "consumed_pins": pin_rows, "protected_paths": routes,
+            "condition_pin": "HELD" if pin_rows else "NOT_APPLICABLE",
+            "condition_routing": "HELD" if routes else "NOT_APPLICABLE",
             "clears": "COORDINATE_CONVERGENCE"}
 
 
@@ -743,13 +909,23 @@ def main(argv: list[str] | None = None) -> int:
     v.add_argument("--base", type=Path, default=ROOT)
     v.add_argument("--finish-point-root", type=Path)
     v.add_argument("--receipt-out", type=Path)
+    c = sub.add_parser("check-change")
+    c.add_argument("--ruling", required=True, type=Path)
+    c.add_argument("--root", required=True, type=Path)
+    c.add_argument("--base", required=True)
+    c.add_argument("--head", required=True)
+    c.add_argument("--receipt-out", type=Path)
     args = parser.parse_args(argv)
     ruling = json.loads(args.ruling.read_text(encoding="utf-8"))
     if args.cmd == "digest":
         print(ruling_digest(ruling))
         return 0
-    request = json.loads(args.request.read_text(encoding="utf-8"))
-    body = verify(ruling, request, args.base.resolve(), args.finish_point_root.resolve() if args.finish_point_root else None)
+    if args.cmd == "check-change":
+        body = check_change(ruling, args.root.resolve(), args.base, args.head)
+    else:
+        request = json.loads(args.request.read_text(encoding="utf-8"))
+        body = verify(ruling, request, args.base.resolve(),
+                      args.finish_point_root.resolve() if args.finish_point_root else None)
     text = json.dumps(body, indent=2, sort_keys=True) + "\n"
     if args.receipt_out:
         args.receipt_out.write_text(text, encoding="utf-8")

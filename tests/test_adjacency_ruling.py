@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import copy
 import importlib.util
+import hashlib
 import json
 import shutil
 import subprocess
@@ -240,6 +241,129 @@ class AdjacencyRulingTests(unittest.TestCase):
     def test_reassigned_module_constant_fails_closed(self) -> None:
         self.assert_unresolved("import importlib\nNAME = 'pkg.other'\ndef _f():\n    global NAME\n    NAME = input()\n"
                                "def run_gate():\n    importlib.import_module(NAME)\n")
+
+    # -- (P) consumed-source pin and (R) owner routing ----------------------------------------------------------
+    def pinned_fixture(self, *, edit_consumed=False, carry_pin=True, gate_loads=None):
+        root = Path(tempfile.mkdtemp(prefix="fp-pin-"))
+        self.addCleanup(shutil.rmtree, root, True)
+        for rel, text in FILES.items():
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (root / rel).write_text(text, encoding="utf-8")
+        (root / "gate").mkdir()
+        (root / "gate" / "__init__.py").write_text("", encoding="utf-8")
+        (root / "gate" / "step.yml").write_text("run: exit 1\n", encoding="utf-8")
+        reader = "def read():\n    return 'FAIL_CLOSED'\n"
+        if gate_loads:
+            reader = f"import importlib\ndef read():\n    return importlib.import_module('{gate_loads}')\n"
+            (root / Path(*gate_loads.split("."))).with_suffix(".py").write_text("X = 1\n", encoding="utf-8")
+        (root / "gate" / "gate_reader.py").write_text(reader, encoding="utf-8")
+        git(root, "init", "-q")
+        git(root, "add", "-A")
+        git(root, "commit", "-qm", "owner")
+        pin_commit = git(root, "rev-parse", "HEAD")
+        files = {rel: hashlib.sha256((root / rel).read_bytes()).hexdigest() for rel in ("gate/step.yml", "gate/gate_reader.py")}
+        carried = f"PIN = {json.dumps({'commit': pin_commit, 'files': files})}\n" if carry_pin else "PIN = {}\n"
+        (root / "tests" / "test_fp.py").write_text(carried + "from gate import gate_reader\n", encoding="utf-8")
+        if edit_consumed:
+            (root / "gate" / "gate_reader.py").write_text("def read():\n    return 'ALLOW'\n", encoding="utf-8")
+        git(root, "add", "-A")
+        git(root, "commit", "-qm", "subject")
+        return root, pin_commit, git(root, "rev-parse", "HEAD"), files
+
+    def pinned_ruling(self, commit, pin_commit, files, mutate=None):
+        cand = candidate(components=("gate-reader", "validator-inventory"))
+        self.put(cand)
+        req = request()
+        body = ruling(commit, req, [cand])
+        paths = sorted(files)
+        body["candidates"][0]["finish_point_paths"] = paths
+        body["consumes_dependencies"][0]["pinned_source"] = {"repository": "Org/fp", "commit": pin_commit, "files": dict(files)}
+        body["protected_paths"] = [{"repository": "Org/fp", "owner_task_id": "CAND-A-001", "paths": paths,
+                                    "on_modification": {"disposition": "FAIL_CLOSED", "failure_code": "OWNER_OWNED_EDIT",
+                                                        "routed_to": "CAND-A-001"}}]
+        if mutate:
+            mutate(body)
+        body["evidence_digest"] = ar.ruling_digest(body)
+        return body, req
+
+    def test_pinned_and_routed_consumed_paths_allow_and_are_exempt_from_b(self) -> None:
+        root, pin, head, files = self.pinned_fixture()
+        body, req = self.pinned_ruling(head, pin, files)
+        verdict = ar.verify(body, req, self.base, root)
+        self.assertEqual(verdict["disposition"], "ALLOW", verdict)
+        self.assertEqual(verdict["condition_pin"], "HELD")
+        self.assertEqual(verdict["condition_routing"], "HELD")
+        self.assertIn("gate/gate_reader.py", verdict["finish_point"]["closure"])
+        self.assertEqual(verdict["candidates"][0]["pinned_consumed_paths"], ["gate/gate_reader.py", "gate/step.yml"])
+
+    def test_what_a_pinned_file_loads_by_name_is_not_exempt(self) -> None:
+        root, pin, head, files = self.pinned_fixture(gate_loads="gate.validator_inventory")
+        body, req = self.pinned_ruling(head, pin, files)
+        verdict = ar.verify(body, req, self.base, root)
+        self.refused(verdict, "ADJACENCY_CONDITION_B_NOT_HELD")
+        self.assertEqual(verdict["detail"], [{"path": "gate/validator_inventory.py", "reason": "MODULE_NAMES_CANDIDATE_COMPONENT",
+                                              "component": "validator-inventory"}])
+
+    def test_subject_edit_of_a_protected_path_fails_closed_owned_by_the_owner(self) -> None:
+        root, pin, head, files = self.pinned_fixture(edit_consumed=True)
+        body, req = self.pinned_ruling(head, pin, files)
+        verdict = ar.verify(body, req, self.base, root)
+        self.refused(verdict, "OWNER_OWNED_EDIT")
+        self.assertEqual(verdict["owning_existing_goal"], "CAND-A-001")
+        self.assertEqual(verdict["detail"]["modified"], ["gate/gate_reader.py"])
+        change = ar.check_change(body, root, pin, head)
+        self.refused(change, "OWNER_OWNED_EDIT")
+        self.assertEqual(change["owning_existing_goal"], "CAND-A-001")
+
+    def test_check_change_outside_protected_paths_allows(self) -> None:
+        root, pin, head, files = self.pinned_fixture()
+        body, _req = self.pinned_ruling(head, pin, files)
+        change = ar.check_change(body, root, pin, head)
+        self.assertEqual(change["disposition"], "ALLOW", change)
+        self.refused(ar.check_change(body, root, "0" * 40, head), "ADJACENCY_RULING_CHANGE_UNREADABLE")
+
+    def test_pin_digest_commit_and_finish_test_enforcement_fail_closed(self) -> None:
+        root, pin, head, files = self.pinned_fixture()
+        def bad_digest(b):
+            b["consumes_dependencies"][0]["pinned_source"]["files"]["gate/step.yml"] = "0" * 64
+        def bad_commit(b):
+            b["consumes_dependencies"][0]["pinned_source"]["commit"] = "1" * 40
+        for mutate, code in ((bad_digest, "ADJACENCY_RULING_CONSUMED_PIN_DIGEST_DIVERGES"),
+                             (bad_commit, "ADJACENCY_RULING_CONSUMED_PIN_COMMIT_UNAVAILABLE")):
+            body, req = self.pinned_ruling(head, pin, files, mutate)
+            self.refused(ar.verify(body, req, self.base, root), code)
+        root, pin, head, files = self.pinned_fixture(carry_pin=False)
+        body, req = self.pinned_ruling(head, pin, files)
+        self.refused(ar.verify(body, req, self.base, root), "ADJACENCY_RULING_FINISH_TEST_DOES_NOT_ENFORCE_PIN")
+
+    def test_malformed_unrouted_and_unpinned_relied_paths_fail_closed(self) -> None:
+        root, pin, head, files = self.pinned_fixture()
+        def short_commit(b):
+            b["consumes_dependencies"][0]["pinned_source"]["commit"] = pin[:12]
+        def other_repo(b):
+            b["consumes_dependencies"][0]["pinned_source"]["repository"] = "Org/other"
+        def no_failure_code(b):
+            del b["protected_paths"][0]["on_modification"]["failure_code"]
+        def misrouted(b):
+            b["protected_paths"][0]["on_modification"]["routed_to"] = "SOMEONE-ELSE"
+        def partial_paths(b):
+            b["protected_paths"][0]["paths"] = ["gate/step.yml"]
+        def no_pin(b):
+            b["consumes_dependencies"][0].pop("pinned_source")
+            b["protected_paths"] = []
+        def no_route(b):
+            b["protected_paths"] = []
+        cases = ((short_commit, "ADJACENCY_RULING_CONSUMED_PIN_MALFORMED"),
+                 (other_repo, "ADJACENCY_RULING_CONSUMED_PIN_MALFORMED"),
+                 (no_failure_code, "ADJACENCY_RULING_PROTECTED_PATHS_MALFORMED"),
+                 (misrouted, "ADJACENCY_RULING_PROTECTED_PATHS_UNROUTED"),
+                 (partial_paths, "ADJACENCY_RULING_PROTECTED_PATHS_UNROUTED"),
+                 (no_pin, "ADJACENCY_RULING_RELIED_PATHS_UNPINNED"),
+                 (no_route, "ADJACENCY_RULING_RELIED_PATHS_UNPINNED"))
+        for mutate, code in cases:
+            body, req = self.pinned_ruling(head, pin, files, mutate)
+            with self.subTest(mutate.__name__):
+                self.refused(ar.verify(body, req, self.base, root), code)
 
     # -- (a) recomputed ---------------------------------------------------------------------------------------
     def test_a_fails_on_a_shared_component_even_if_the_ruling_omits_it(self) -> None:
