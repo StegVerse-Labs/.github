@@ -23,9 +23,9 @@ REQUEST = f"tests/fixtures/canonical_task_registration/github-universal-governan
 ADJACENCY = f"tests/fixtures/canonical_task_registration/github-universal-governance-product/{TASK_ID}.adjacency-test.json"
 FINISH_TEST = ("StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py"
                "::GovernanceProductFinishPoint::test_finish_point_verdict")
-FINISH_COMMIT = "233d16231d979c5f8baebab5200a0bfdfd511ecb"
+FINISH_COMMIT = "a36ee8b424c6f731797423153f047f260d66af1d"
 RULING = "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json"
-SCOPE_DIGEST = "sha256:088e015129029da435954109c6089b180e951d6196853764b71a0bcc4bbe2441"
+SCOPE_DIGEST = "sha256:9bb52a5e6d26456c339d24c0460e4672afed7b58bd5adf08b8c7b0d805629992"
 SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
        "owning_existing_goal", "next_attempt")
 EXPECTED_PLAN = {
