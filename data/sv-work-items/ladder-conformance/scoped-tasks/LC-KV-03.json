@@ -1,0 +1,21 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "E0_TERMINAL_OR_CLASS_B",
+ "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "H-KV-DURABLE-CUSTODY-PROVIDER",
+  "H-KV-TVC-CUSTODY-ISSUANCE"
+ ],
+ "next_attempt": "on the next record change of TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 or the TV/TVC issuance transition's admission event",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "Lane D (KV and WorkSpace)",
+ "proposed_resolution": "(a) declare an ecosystem git-ref custody adapter (refs/stegverse/kv-custody/<principal>) written by manifest-directed append and read back by exact lineage hash; device-local, cloud stores, NAS and removable media stay optional upper layers; (b) request (counterparty TV/TVC, Lane C) a TVC manifest transition issuing the custody-key reference and its receipt, which LC-KV-01's evidence input consumes",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "an ecosystem-only durable custody provider, and a TV/TVC transition that issues tvc://skap-custody/ references with an issuance receipt",
+ "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-03"
+}

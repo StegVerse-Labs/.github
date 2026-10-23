@@ -1,0 +1,22 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
+ "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+  "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+  "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER"
+ ],
+ "next_attempt": "on the next push to laned/kv-skap-vault-finish-point (continuity-vault-kit#258)",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "Lane D (KV and WorkSpace)",
+ "proposed_resolution": "add an evidence input to runtime.kv_skap_vault finish-point (e.g. --evidence <file> listing InTr write/revoke transition receipts, an admitted durable-custody readback receipt and a TV/TVC issuance receipt); the verifier checks each against the lineage and turns the matching predicate ALLOW, otherwise keeps its six-field FAIL_CLOSED",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "finish_point() must take the evidence it waits for as input instead of reading the constant NOT_YET_BUILT, so a receipt (not a code edit) turns each predicate ALLOW",
+ "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-01"
+}

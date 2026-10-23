@@ -1,0 +1,20 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "FINISH_APPENDS_ORGANIZATION_LEDGER_RECEIPT",
+ "failure_code": "LADDER_FINISH_NOT_LEDGER_BOUND",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "H-KV-FINISH-LEDGER"
+ ],
+ "next_attempt": "on the next record change of KV-SKAP-VAULT-FUNCTIONAL-001",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "Lane D (KV and WorkSpace)",
+ "proposed_resolution": "emit the ALLOW verdict as a stegverse.canonical-state-transition-receipt/v1 (the type the org contract admits) appended under the organization-ledger lock by the writer split in #3255; until then the verdict stays a record, not runtime",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "a manifest-directed transition that appends the finish-point verdict to refs/stegverse/organization-ledger",
+ "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-06"
+}

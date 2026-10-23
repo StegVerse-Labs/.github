@@ -1,0 +1,12 @@
+$ {python} -c import json
+from runtime import task_registry_event_sovereign_kv_binding as b
+try:
+    out = b.validate_vault_lineage_custody_result(binding={'schema': b.VAULT_LINEAGE_BINDING_SCHEMA, 'provider_write_request': {}}, provider_receipt={}, read_back_lineage={})
+    print(json.dumps(dict(out, disposition=out.get('disposition', 'RETURNED_WITHOUT_DISPOSITION'))))
+except Exception as exc:
+    print(json.dumps({'disposition': 'EXCEPTION', 'exception': type(exc).__name__, 'message': str(exc)}))
+
+--- exit 0
+--- stdout
+{"disposition": "EXCEPTION", "exception": "TaskRegistryEventCustodyBindingError", "message": "provider receipt schema mismatch"}
+--- stderr

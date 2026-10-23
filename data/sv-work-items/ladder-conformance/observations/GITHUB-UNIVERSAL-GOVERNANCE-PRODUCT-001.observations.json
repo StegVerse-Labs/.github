@@ -1,0 +1,727 @@
+{
+ "mode": "E0",
+ "observed_by": "scripts/ladder_conformance.py observe",
+ "roots": {
+  "labs3326": {
+   "commit": "e9085315410f26252214dc64429be19d835886ab",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
+  "labsmain": {
+   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
+  "org": {
+   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "kind": "git",
+   "repo": "StegVerse-org/.github"
+  },
+  "sdk556": {
+   "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "kind": "git",
+   "repo": "StegVerse-org/StegVerse-SDK"
+  },
+  "sdkmain": {
+   "commit": "daca828a51d954f2817df4ca9f4fa25807248aa0",
+   "kind": "git",
+   "repo": "StegVerse-org/StegVerse-SDK"
+  },
+  "tvc": {
+   "commit": "c4845bea704949c46658042963e8c532c9559939",
+   "kind": "git",
+   "repo": "StegVerse-Labs/TVC"
+  }
+ },
+ "runs": [
+  {
+   "command": "{python} -m unittest -v tests.test_governance_product_finish_point",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "ALLOW",
+     "passed": true,
+     "skipped": 0,
+     "subject": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "tests_ran": 4
+    }
+   ],
+   "pin": "StegVerse-org/StegVerse-SDK@2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/gov-finish-point-tests.out",
+   "raw_sha256": "sha256:511d457ea7f29429d0c50d393145f60a427a6d4a1a9e560061da9a09895157b5",
+   "run_id": "gov-finish-point-tests",
+   "status": "OBSERVED",
+   "what": "the sealed acceptance suite at E0"
+  },
+  {
+   "command": "{python} -m unittest -v tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_structural_pin_mismatch_fails_closed_with_six_fields",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "ALLOW",
+     "passed": true,
+     "skipped": 0,
+     "subject": "STRUCTURAL_PIN",
+     "tests_ran": 1
+    }
+   ],
+   "pin": "StegVerse-org/StegVerse-SDK@2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/gov-structural-pin-tests.out",
+   "raw_sha256": "sha256:5e9ab8394695d11acc7bea10fe688c2eb74b787d80007c1e6c04f64790a5658a",
+   "run_id": "gov-structural-pin-tests",
+   "status": "OBSERVED",
+   "what": "the consumed STRUCTURAL pin fails closed with six fields on mismatch"
+  },
+  {
+   "files_scanned": 794,
+   "hits": [
+    {
+     "line": 3,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "text": "Predicate NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN, run at the commit the TV/TVC release receipt"
+    }
+   ],
+   "patterns": [
+    "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+    "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+    "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+    "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+    "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+    "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+    "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+    "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+    "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+    "LICENSE_AND_TERMS_OWNER_APPROVED",
+    "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+    "GOVERNANCE_PRODUCT_RELEASE",
+    "ENTITLEMENT_SEPARATE_FROM_DISPOSITION"
+   ],
+   "pin": "StegVerse-org/StegVerse-SDK@2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "run_id": "gov-verifier-search-sdk556",
+   "status": "OBSERVED",
+   "what": "code (py/yml) that evaluates any sealed predicate, SDK#556 head"
+  },
+  {
+   "files_scanned": 792,
+   "hits": [],
+   "patterns": [
+    "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+    "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+    "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+    "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+    "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+    "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+    "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+    "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+    "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+    "LICENSE_AND_TERMS_OWNER_APPROVED",
+    "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+    "GOVERNANCE_PRODUCT_RELEASE",
+    "ENTITLEMENT_SEPARATE_FROM_DISPOSITION"
+   ],
+   "pin": "StegVerse-org/StegVerse-SDK@daca828a51d954f2817df4ca9f4fa25807248aa0",
+   "run_id": "gov-verifier-search-sdkmain",
+   "status": "OBSERVED",
+   "what": "same search, SDK main"
+  },
+  {
+   "files_scanned": 1449,
+   "hits": [],
+   "patterns": [
+    "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+    "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+    "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+    "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+    "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+    "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+    "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+    "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+    "LICENSE_AND_TERMS_OWNER_APPROVED",
+    "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+    "GOVERNANCE_PRODUCT_RELEASE",
+    "ENTITLEMENT_SEPARATE_FROM_DISPOSITION"
+   ],
+   "pin": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab",
+   "run_id": "gov-verifier-search-labs3326",
+   "status": "OBSERVED",
+   "what": "same search, Labs#3326 head (code only: py/yml, request fixtures and their own tests excluded)"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 120,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "\"kind\": \"HUMAN_ACTION\"",
+     "text": "\"kind\": \"HUMAN_ACTION\","
+    },
+    {
+     "line": 126,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "\"kind\": \"HUMAN_ACTION\"",
+     "text": "\"kind\": \"HUMAN_ACTION\","
+    },
+    {
+     "line": 132,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "\"kind\": \"HUMAN_ACTION\"",
+     "text": "\"kind\": \"HUMAN_ACTION\","
+    },
+    {
+     "line": 138,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "\"kind\": \"HUMAN_ACTION\"",
+     "text": "\"kind\": \"HUMAN_ACTION\","
+    },
+    {
+     "line": 144,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "\"kind\": \"HUMAN_ACTION\"",
+     "text": "\"kind\": \"HUMAN_ACTION\","
+    },
+    {
+     "line": 122,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "decision owner: OWNER",
+     "text": "\"ref\": \"decision owner: OWNER + TV/TVC\""
+    },
+    {
+     "line": 128,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "decision owner: OWNER",
+     "text": "\"ref\": \"decision owner: OWNER\""
+    },
+    {
+     "line": 134,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "decision owner: OWNER",
+     "text": "\"ref\": \"decision owner: OWNER + ICV\""
+    },
+    {
+     "line": 140,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "decision owner: OWNER",
+     "text": "\"ref\": \"decision owner: OWNER + ICV + TV/TVC\""
+    },
+    {
+     "line": 146,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "decision owner: OWNER",
+     "text": "\"ref\": \"decision owner: OWNER + TV/TVC\""
+    },
+    {
+     "line": 347,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "held for owner merge",
+     "text": "\"chat_owned_implementation\": \"1 (I=1). The SDK release-prep lane (StegVerse-org/StegVerse-SDK#534, #535, #536) is implemented by a chat/cloud-agent session and held for owner merge. A reviewer who cou"
+    },
+    {
+     "line": 50,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "OWNER_APPROVED",
+     "text": "\"LICENSE_AND_TERMS_OWNER_APPROVED\","
+    },
+    {
+     "line": 227,
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "pattern": "OWNER_APPROVED",
+     "text": "\"LICENSE_AND_TERMS_OWNER_APPROVED\","
+    }
+   ],
+   "patterns": [
+    "\"kind\": \"HUMAN_ACTION\"",
+    "decision owner: OWNER",
+    "held for owner merge",
+    "OWNER_APPROVED"
+   ],
+   "pin": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab",
+   "run_id": "gov-record-owner-phrases",
+   "status": "OBSERVED",
+   "what": "owner-gated dependencies and phrases in the sealed request record"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 17,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "APPROVER_CLASS",
+     "text": "APPROVER_CLASS,"
+    },
+    {
+     "line": 106,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "APPROVER_CLASS",
+     "text": "approver_class=approval.get('approver_class') or APPROVER_CLASS,"
+    },
+    {
+     "line": 90,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "validate_browser_packet\\(",
+     "text": "findings = validate_browser_packet(packet)"
+    },
+    {
+     "line": 31,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "/var/lib/stegverse",
+     "text": "RESULT_ROOT = Path('/var/lib/stegverse/skap/github/sdk-v1.3.0-release/results')"
+    },
+    {
+     "line": 32,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "/var/lib/stegverse",
+     "text": "CONSUMED_ROOT = Path('/var/lib/stegverse/skap/github/sdk-v1.3.0-release/consumed')"
+    },
+    {
+     "line": 102,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "datetime\\.now",
+     "text": "now = datetime.now(timezone.utc)"
+    },
+    {
+     "line": 169,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "'status': 'blocked'",
+     "text": "return {'status': 'blocked', 'reason': 'SDK_V1_3_OWNER_INGRESS_ROOT_NOT_PRESENT', 'credential_value_exposed': False}"
+    },
+    {
+     "line": 177,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "'status': 'blocked'",
+     "text": "return {'status': 'blocked', 'reason': str(exc), 'ingress_id': ingress_id, 'credential_value_exposed': False}"
+    },
+    {
+     "line": 178,
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "pattern": "'status': 'blocked'",
+     "text": "return {'status': 'blocked', 'reason': 'NO_UNCONSUMED_SDK_V1_3_OWNER_INGRESS', 'credential_value_exposed': False}"
+    },
+    {
+     "line": 11,
+     "path": "config/sdk_v1_3_0_release.json",
+     "pattern": "\"allow_tag_update\"",
+     "text": "\"allow_tag_update\": false,"
+    },
+    {
+     "line": 19,
+     "path": "config/sdk_v1_3_0_release.json",
+     "pattern": "\"commit_sha\"",
+     "text": "\"commit_sha\": \"b1376d3e3e3c79b6e996d32766bfd7e41cd0ccc4\","
+    },
+    {
+     "line": 23,
+     "path": "config/sdk_v1_3_0_release.json",
+     "pattern": "\"registry\": \"pypi\"",
+     "text": "\"registry\": \"pypi\","
+    }
+   ],
+   "patterns": [
+    "APPROVER_CLASS",
+    "validate_browser_packet\\(",
+    "/var/lib/stegverse",
+    "datetime\\.now",
+    "'status': 'blocked'",
+    "\"allow_tag_update\"",
+    "\"commit_sha\"",
+    "\"registry\": \"pypi\""
+   ],
+   "pin": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939",
+   "run_id": "gov-tvc-release-path",
+   "status": "OBSERVED",
+   "what": "the TV/TVC SDK v1.3.0 release path: owner ingress, resident root, clock, bare status"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 63,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "^def (validate_candidate|validate_authorization|publish)\\(",
+     "text": "def validate_candidate(candidate_dir: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:"
+    },
+    {
+     "line": 163,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "^def (validate_candidate|validate_authorization|publish)\\(",
+     "text": "def validate_authorization(auth: dict[str, Any], receipt: dict[str, Any]) -> None:"
+    },
+    {
+     "line": 238,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "^def (validate_candidate|validate_authorization|publish)\\(",
+     "text": "def publish(candidate_dir: Path, authorization_path: Path, *, token: str | None = None, api_root: str = \"https://api.github.com\") -> dict[str, Any]:"
+    },
+    {
+     "line": 12,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "urlopen",
+     "text": "from urllib.request import Request, urlopen"
+    },
+    {
+     "line": 200,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "urlopen",
+     "text": "with urlopen(request, timeout=30) as response:"
+    },
+    {
+     "line": 227,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "urlopen",
+     "text": "with urlopen(request, timeout=60) as response:"
+    }
+   ],
+   "patterns": [
+    "^def (validate_candidate|validate_authorization|publish)\\(",
+    "urlopen",
+    "datetime"
+   ],
+   "pin": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939",
+   "run_id": "gov-tvc-portable-publisher",
+   "status": "OBSERVED",
+   "what": "the generic TV/TVC portable release publisher (candidate conforming route)"
+  },
+  {
+   "files_scanned": 3,
+   "hits": [
+    {
+     "line": 3,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "release[_ -]receipt",
+     "text": "Predicate NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN, run at the commit the TV/TVC release receipt"
+    },
+    {
+     "line": 24,
+     "path": ".github/workflows/governance-gate-selftest.yml",
+     "pattern": "sdk_ref:",
+     "text": "sdk_ref: ${{ github.event.pull_request.head.sha || github.sha }}"
+    },
+    {
+     "line": 29,
+     "path": ".github/workflows/governance-gate-selftest.yml",
+     "pattern": "sdk_ref:",
+     "text": "# No sdk_ref: the gate resolves job.workflow_sha, the commit this run is"
+    }
+   ],
+   "patterns": [
+    "release[_ -]receipt",
+    "sdk_ref:",
+    "tvc"
+   ],
+   "pin": "StegVerse-org/StegVerse-SDK@2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "run_id": "gov-selftest-ref-binding",
+   "status": "OBSERVED",
+   "what": "does the finish-point verifier read a TV/TVC release receipt to pick its ref?"
+  },
+  {
+   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json --base .",
+   "exit_code": 1,
+   "outcomes": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+     "failure_code": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+     "next_attempt": "on the next registration request event after the repair is recorded",
+     "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+     "required_evidence_or_repair": "coordinate GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 with ['PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001', 'STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001'] (COORDINATE_BEFORE_MUTATION) or narrow its targets before merge",
+     "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+     "subject": "REGISTRATION_PLAN"
+    }
+   ],
+   "pin": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/gov-registration-plan-without-ruling.out",
+   "raw_sha256": "sha256:3a12800e21911c9ce15e4dc2dc2b1ba0b0a9a20b90d95a35909bff404ad305fb",
+   "run_id": "gov-registration-plan-without-ruling",
+   "status": "OBSERVED",
+   "what": "registration plan, no adjacency ruling"
+  },
+  {
+   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json --base . --adjacency-ruling control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json --finish-point-root {root:sdk556}",
+   "exit_code": 1,
+   "outcomes": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "CANDIDATE_DECLARES_COMPONENTS",
+     "failure_code": "ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED",
+     "next_attempt": "on the next registration request event after the repair is recorded",
+     "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+     "required_evidence_or_repair": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's observed record declares no targets.components, so (a) and (b) would hold vacuously; PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's owner records its components (a record change through its own Goal), or the overlap is resolved by Coordination without this input",
+     "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+     "subject": "REGISTRATION_PLAN"
+    }
+   ],
+   "pin": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/gov-registration-plan-with-ruling.out",
+   "raw_sha256": "sha256:deef3ef968dbe80d16e31ffe942c7b9e98ac924737249b897f5081186d568df1",
+   "run_id": "gov-registration-plan-with-ruling",
+   "status": "OBSERVED",
+   "what": "registration plan with the adjacency ruling and the finish-point root"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 7,
+     "path": ".stegverse/transition-ledger/org-contract.json",
+     "pattern": "canonical-state-transition-receipt/v1",
+     "text": "\"stegverse.canonical-state-transition-receipt/v1\""
+    },
+    {
+     "line": 6,
+     "path": ".stegverse/transition-ledger/org-contract.json",
+     "pattern": "repo-transition-receipt/v1",
+     "text": "\"stegverse.repo-transition-receipt/v1\","
+    }
+   ],
+   "patterns": [
+    "canonical-state-transition-receipt/v1",
+    "repo-transition-receipt/v1"
+   ],
+   "pin": "StegVerse-org/.github@907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "run_id": "org-ledger-consumes",
+   "status": "OBSERVED",
+   "what": "what the StegVerse-org ledger admits"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 183,
+     "path": "data/sv-work-items/lifecycle-transitions.json",
+     "pattern": "SV_CHANGE_ADMIT",
+     "text": "\"transition_class\": \"SV_CHANGE_ADMIT\""
+    },
+    {
+     "line": 1948,
+     "path": "resident-runtime/sv_work_items.py",
+     "pattern": "SV_CHANGE_ADMIT",
+     "text": "if transition_class == \"SV_CHANGE_ADMIT\":"
+    },
+    {
+     "line": 192,
+     "path": "data/sv-work-items/lifecycle-transitions.json",
+     "pattern": "LEDGER_HEAD_COMPARE_AND_SWAP",
+     "text": "\"LEDGER_HEAD_COMPARE_AND_SWAP\","
+    },
+    {
+     "line": 1817,
+     "path": "resident-runtime/sv_work_items.py",
+     "pattern": "^def admit\\(",
+     "text": "def admit(obs: Mapping[str, Any], evaluator: Callable[..., dict] = evaluate_admission, **kw: Any) -> dict[str, Any]:"
+    }
+   ],
+   "patterns": [
+    "SV_CHANGE_ADMIT",
+    "LEDGER_HEAD_COMPARE_AND_SWAP",
+    "^def admit\\("
+   ],
+   "pin": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "run_id": "labs-sv-change-admit",
+   "status": "OBSERVED",
+   "what": "the SV_CHANGE_ADMIT transition on Labs main (declared class and evaluator)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-org/StegVerse-SDK#556",
+   "run_id": "pr-sdk556",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot"
+  },
+  {
+   "baseRefName": "laned/tvc-new-identity-requests",
+   "headRefOid": "e9085315410f26252214dc64429be19d835886ab",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3326",
+   "run_id": "pr-labs3326",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "86578debc5f808fc1051185e3db889796e66c4d1",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3313",
+   "run_id": "pr-labs3313",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (SV_CHANGE_ADMIT branch-writer derivation)"
+  },
+  {
+   "baseRefName": "grok/lane-c-workflow-surface-registration",
+   "headRefOid": "d6659962977d13a0249f0cf18b5f98bb1e532271",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3255",
+   "run_id": "pr-labs3255",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (org-ledger writer split)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "9e00a16ea22eeb221ecf70328cc3716e8c72a4a7",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3311",
+   "run_id": "pr-labs3311",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (EXISTING_IDENTITY mode + WorkerCoordinator claim request)"
+  }
+ ],
+ "schema": "stegverse.ladder-conformance-observations/v1",
+ "sources": [
+  {
+   "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "git_blob": "22d8416d8f73ebd49092a775f8166ecdf68fde5a",
+   "path": "tests/test_governance_product_finish_point.py",
+   "repo": "StegVerse-org/StegVerse-SDK",
+   "root": "sdk556",
+   "sha256": "sha256:f1c06da6f0c5ffaf0e2a2231b2cb561fc6b7056d4c9c8e243b117557835409eb"
+  },
+  {
+   "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "git_blob": "f733465972fb3db884bc16d68a7a86c431dad500",
+   "path": ".github/workflows/governance-gate.yml",
+   "repo": "StegVerse-org/StegVerse-SDK",
+   "root": "sdk556",
+   "sha256": "sha256:1d14c9baf363e37a5b66a33016497869206a671a2a7d29596a95c23eedb82df0"
+  },
+  {
+   "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "git_blob": "f9c95487787511b70529ff249fca3c89659a086c",
+   "path": ".github/workflows/governance-gate-selftest.yml",
+   "repo": "StegVerse-org/StegVerse-SDK",
+   "root": "sdk556",
+   "sha256": "sha256:3052fbaefd7190077ea053e18556d44522daf31f74906d0d28ce0b168a834c0c"
+  },
+  {
+   "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "git_blob": "85d4aea48a01a437f0250112b6b63f2b3a3eae52",
+   "path": ".github/workflows/governance-product-finish-point.yml",
+   "repo": "StegVerse-org/StegVerse-SDK",
+   "root": "sdk556",
+   "sha256": "sha256:f57110327a6aab252b9fe4eb4e034d18bda43c8b2b8cb593e92f655d849aded4"
+  },
+  {
+   "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "git_blob": "eb56809530a3f3c23d96a7297c8cb4fbc0896a6e",
+   "path": "stegverse/governance_gate.py",
+   "repo": "StegVerse-org/StegVerse-SDK",
+   "root": "sdk556",
+   "sha256": "sha256:3db3e83c97764e912919018dcb560c011d3b499ea550aef43e3f61e64a36ee4f"
+  },
+  {
+   "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "git_blob": "e88f85666f60d5508c70ef0d61daf3f3ede3bdf4",
+   "path": "stegverse/structural_validator_candidate.py",
+   "repo": "StegVerse-org/StegVerse-SDK",
+   "root": "sdk556",
+   "sha256": "sha256:574b017a927acc9e4ef15ef90e0f71ddbdbd854dd1575ffa43bfbc1f1533bef7"
+  },
+  {
+   "commit": "e9085315410f26252214dc64429be19d835886ab",
+   "git_blob": "c2a4bbb99d93308296c2fe0355fbffd9b84eb624",
+   "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3326",
+   "sha256": "sha256:9ee0b44cdf855ba117b3f28054c343a0ab433e5ade1b5042d1c70bfcd5d10d50"
+  },
+  {
+   "commit": "e9085315410f26252214dc64429be19d835886ab",
+   "git_blob": "569dab51573a6e2d7bb66d7e8e2eb1edcea5094b",
+   "path": "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3326",
+   "sha256": "sha256:fb91059d77a8f4b6ecbbb195a0644db04a9fa2a56141e4bef14019739018b790"
+  },
+  {
+   "commit": "e9085315410f26252214dc64429be19d835886ab",
+   "git_blob": "3a34745bf69403111d0945d1ca4e312e2318b1b5",
+   "path": "control/goal-task-allocation-requests/lane-c-github-universal-governance-product-2026-10-23.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3326",
+   "sha256": "sha256:0dc505c248b8fcba655754601f46ca5edeacec360e20f61e2b47a7e836980f12"
+  },
+  {
+   "commit": "e9085315410f26252214dc64429be19d835886ab",
+   "git_blob": "c5cc4aac33041b5efba4c71250d15a97193eaefd",
+   "path": "docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3326",
+   "sha256": "sha256:4e59c4efdf34f8cbc8a30d8b1847feefd5152a398c7373c2860219655eae7466"
+  },
+  {
+   "commit": "e9085315410f26252214dc64429be19d835886ab",
+   "git_blob": "ab333f897a2622e9eb06604bf008d6b330733bff",
+   "path": "scripts/canonical_task_registration_transition.py",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3326",
+   "sha256": "sha256:fe7bdbb3cc7c97ea0190219cd35101ada71a0cfc2d5c8ddd1e6b3e881c938e1f"
+  },
+  {
+   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "git_blob": "c66de6e86c9ec7d167f0e5edf74e717af0688224",
+   "path": "data/sv-work-items/lifecycle-transitions.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsmain",
+   "sha256": "sha256:853c5545bf306eea48c66150ca42d323f130531519112d69e19c4f472556675f"
+  },
+  {
+   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "git_blob": "9e926ed41210963d4c5b6bc2000ce71c51cf6664",
+   "path": "resident-runtime/sv_work_items.py",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsmain",
+   "sha256": "sha256:ea36302d1fcdac0f2de01fa8b8f873e805959ae0f2cfe1c10f11d6d9d91ed1e0"
+  },
+  {
+   "commit": "c4845bea704949c46658042963e8c532c9559939",
+   "git_blob": "0e468077751ab01d740f17c51f324a4a13d45718",
+   "path": "config/sdk_v1_3_0_release.json",
+   "repo": "StegVerse-Labs/TVC",
+   "root": "tvc",
+   "sha256": "sha256:486c568c1dad89c2c291f0f105603bf051e8d6e71753b2a681d0e778eb54fc7e"
+  },
+  {
+   "commit": "c4845bea704949c46658042963e8c532c9559939",
+   "git_blob": "5310c72e2ad69b173f673f87884db5c098a06de4",
+   "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+   "repo": "StegVerse-Labs/TVC",
+   "root": "tvc",
+   "sha256": "sha256:e3923a9ac06d98074145ef7dcd15d5886677530c8d2ee66c7b567f3e801b498c"
+  },
+  {
+   "commit": "c4845bea704949c46658042963e8c532c9559939",
+   "git_blob": "ee95d8d368858fb8ee03d0ae2741119d9ad36803",
+   "path": "tasks/tvc_portable_github_release_publisher.py",
+   "repo": "StegVerse-Labs/TVC",
+   "root": "tvc",
+   "sha256": "sha256:c9a3507276bd4df704e94fcf5399705ee61d8e8f689eb903c660c2ba9007515d"
+  },
+  {
+   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "git_blob": "cd56b2d066ee570bdfdddc8371e92a07f201c8fc",
+   "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
+   "repo": "StegVerse-org/.github",
+   "root": "org",
+   "sha256": "sha256:a5d9e34057e522dcd824c709b907584d2403f7403b6783b901a724f4c02c9939"
+  },
+  {
+   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "git_blob": "b5a24567f9961480eda4503143b7b773aa095421",
+   "path": ".stegverse/transition-ledger/org-contract.json",
+   "repo": "StegVerse-org/.github",
+   "root": "org",
+   "sha256": "sha256:6d373913af7bd13a53c71beffbe617aa80c284df73d4f25ec3c466547b4ceda8"
+  }
+ ],
+ "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001"
+}

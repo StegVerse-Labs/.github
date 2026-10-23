@@ -1,0 +1,24 @@
+$ {python} -m unittest -v tests.test_kv_skap_vault_finish_point
+--- exit 0
+--- stdout
+--- stderr
+test_durable_custody_is_consumed_from_the_sovereign_kv_goal_not_reimplemented (tests.test_kv_skap_vault_finish_point.AuthorityAndLadder.test_durable_custody_is_consumed_from_the_sovereign_kv_goal_not_reimplemented) ... ok
+test_e0_stdlib_only_no_model_network_or_clock (tests.test_kv_skap_vault_finish_point.AuthorityAndLadder.test_e0_stdlib_only_no_model_network_or_clock) ... ok
+test_no_authority_is_duplicated (tests.test_kv_skap_vault_finish_point.AuthorityAndLadder.test_no_authority_is_duplicated) ... ok
+test_revocation_is_receipted_and_not_repeatable (tests.test_kv_skap_vault_finish_point.Consent.test_revocation_is_receipted_and_not_repeatable) ... ok
+test_write_and_read_require_a_covering_consent (tests.test_kv_skap_vault_finish_point.Consent.test_write_and_read_require_a_covering_consent) ... ok
+test_key_or_credential_material_never_enters_kv (tests.test_kv_skap_vault_finish_point.Custody.test_key_or_credential_material_never_enters_kv) ... ok
+test_only_tv_tvc_custody_key_references_are_held (tests.test_kv_skap_vault_finish_point.Custody.test_only_tv_tvc_custody_key_references_are_held) ... ok
+test_write_requires_a_bound_custody_reference (tests.test_kv_skap_vault_finish_point.Custody.test_write_requires_a_bound_custody_reference) ... ok
+test_cli_exit_code_matches_disposition (tests.test_kv_skap_vault_finish_point.KvSkapVaultFinishPoint.test_cli_exit_code_matches_disposition) ... ok
+test_finish_point_verdict (tests.test_kv_skap_vault_finish_point.KvSkapVaultFinishPoint.test_finish_point_verdict) ... ok
+test_any_device_reconstructs_exactly_from_the_lineage_alone (tests.test_kv_skap_vault_finish_point.LineageAndContinuity.test_any_device_reconstructs_exactly_from_the_lineage_alone) ... ok
+test_lineage_is_one_continuous_hash_chain (tests.test_kv_skap_vault_finish_point.LineageAndContinuity.test_lineage_is_one_continuous_hash_chain) ... ok
+test_tampering_anywhere_breaks_the_lineage (tests.test_kv_skap_vault_finish_point.LineageAndContinuity.test_tampering_anywhere_breaks_the_lineage) ... ok
+test_mutations_require_an_intr_transition_reference (tests.test_kv_skap_vault_finish_point.RoundTrip.test_mutations_require_an_intr_transition_reference) ... ok
+test_write_read_revoke_round_trip_is_exact (tests.test_kv_skap_vault_finish_point.RoundTrip.test_write_read_revoke_round_trip_is_exact) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in <t>s
+
+OK

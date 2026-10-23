@@ -1,0 +1,782 @@
+{
+ "goals": {
+  "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001": {
+   "roots": {
+    "labs3326": {
+     "commit": "e9085315410f26252214dc64429be19d835886ab",
+     "kind": "git",
+     "ref": "StegVerse-Labs/.github#3326",
+     "repo": "StegVerse-Labs/.github"
+    },
+    "labsmain": {
+     "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+     "kind": "git",
+     "ref": "StegVerse-Labs/.github main",
+     "repo": "StegVerse-Labs/.github"
+    },
+    "org": {
+     "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+     "kind": "git",
+     "ref": "StegVerse-org/.github main",
+     "repo": "StegVerse-org/.github"
+    },
+    "sdk556": {
+     "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+     "kind": "git",
+     "ref": "StegVerse-SDK#556",
+     "repo": "StegVerse-org/StegVerse-SDK"
+    },
+    "sdkmain": {
+     "commit": "daca828a51d954f2817df4ca9f4fa25807248aa0",
+     "kind": "git",
+     "ref": "StegVerse-SDK main",
+     "repo": "StegVerse-org/StegVerse-SDK"
+    },
+    "tvc": {
+     "commit": "c4845bea704949c46658042963e8c532c9559939",
+     "kind": "git",
+     "ref": "StegVerse-Labs/TVC main",
+     "repo": "StegVerse-Labs/TVC"
+    }
+   },
+   "runs": [
+    {
+     "argv": [
+      "{python}",
+      "-m",
+      "unittest",
+      "-v",
+      "tests.test_governance_product_finish_point"
+     ],
+     "kind": "command",
+     "on_fail": {
+      "failed_predicate": "E0_VERIFIER_SUITE_PASSES_WITH_ZERO_SKIPPED",
+      "failure_code": "LADDER_E0_VERIFIER_TESTS_NOT_GREEN",
+      "next_attempt": "on the next observe run",
+      "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+      "required_evidence_or_repair": "repair the verifier suite at the pinned commit",
+      "retry_entrypoint": "python scripts/ladder_conformance.py observe"
+     },
+     "parse": "unittest",
+     "root": "sdk556",
+     "run_id": "gov-finish-point-tests",
+     "subject": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "what": "the sealed acceptance suite at E0"
+    },
+    {
+     "argv": [
+      "{python}",
+      "-m",
+      "unittest",
+      "-v",
+      "tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_structural_pin_mismatch_fails_closed_with_six_fields"
+     ],
+     "kind": "command",
+     "on_fail": {
+      "failed_predicate": "E0_VERIFIER_SUITE_PASSES_WITH_ZERO_SKIPPED",
+      "failure_code": "LADDER_E0_VERIFIER_TESTS_NOT_GREEN",
+      "next_attempt": "on the next observe run",
+      "owning_existing_goal": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+      "required_evidence_or_repair": "repair the verifier suite at the pinned commit",
+      "retry_entrypoint": "python scripts/ladder_conformance.py observe"
+     },
+     "parse": "unittest",
+     "root": "sdk556",
+     "run_id": "gov-structural-pin-tests",
+     "subject": "STRUCTURAL_PIN",
+     "what": "the consumed STRUCTURAL pin fails closed with six fields on mismatch"
+    },
+    {
+     "globs": [
+      "*.py",
+      "*.yml",
+      "*.yaml"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+      "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+      "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+      "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+      "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+      "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+      "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+      "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+      "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+      "LICENSE_AND_TERMS_OWNER_APPROVED",
+      "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+      "GOVERNANCE_PRODUCT_RELEASE",
+      "ENTITLEMENT_SEPARATE_FROM_DISPOSITION"
+     ],
+     "root": "sdk556",
+     "run_id": "gov-verifier-search-sdk556",
+     "what": "code (py/yml) that evaluates any sealed predicate, SDK#556 head"
+    },
+    {
+     "globs": [
+      "*.py",
+      "*.yml",
+      "*.yaml"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+      "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+      "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+      "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+      "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+      "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+      "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+      "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+      "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+      "LICENSE_AND_TERMS_OWNER_APPROVED",
+      "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+      "GOVERNANCE_PRODUCT_RELEASE",
+      "ENTITLEMENT_SEPARATE_FROM_DISPOSITION"
+     ],
+     "root": "sdkmain",
+     "run_id": "gov-verifier-search-sdkmain",
+     "what": "same search, SDK main"
+    },
+    {
+     "exclude": [
+      "tests/test_github_universal_governance_product_goal_request.py",
+      "tests/test_adjacency_ruling.py"
+     ],
+     "globs": [
+      "*.py",
+      "*.yml",
+      "*.yaml"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+      "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+      "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+      "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+      "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+      "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+      "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+      "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+      "LICENSE_AND_TERMS_OWNER_APPROVED",
+      "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+      "GOVERNANCE_PRODUCT_RELEASE",
+      "ENTITLEMENT_SEPARATE_FROM_DISPOSITION"
+     ],
+     "root": "labs3326",
+     "run_id": "gov-verifier-search-labs3326",
+     "what": "same search, Labs#3326 head (code only: py/yml, request fixtures and their own tests excluded)"
+    },
+    {
+     "globs": [
+      "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "\"kind\": \"HUMAN_ACTION\"",
+      "decision owner: OWNER",
+      "held for owner merge",
+      "OWNER_APPROVED"
+     ],
+     "root": "labs3326",
+     "run_id": "gov-record-owner-phrases",
+     "what": "owner-gated dependencies and phrases in the sealed request record"
+    },
+    {
+     "globs": [
+      "tasks/sdk_v1_3_0_release_owner_ingress.py",
+      "config/sdk_v1_3_0_release.json"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "APPROVER_CLASS",
+      "validate_browser_packet\\(",
+      "/var/lib/stegverse",
+      "datetime\\.now",
+      "'status': 'blocked'",
+      "\"allow_tag_update\"",
+      "\"commit_sha\"",
+      "\"registry\": \"pypi\""
+     ],
+     "root": "tvc",
+     "run_id": "gov-tvc-release-path",
+     "what": "the TV/TVC SDK v1.3.0 release path: owner ingress, resident root, clock, bare status"
+    },
+    {
+     "globs": [
+      "tasks/tvc_portable_github_release_publisher.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "^def (validate_candidate|validate_authorization|publish)\\(",
+      "urlopen",
+      "datetime"
+     ],
+     "root": "tvc",
+     "run_id": "gov-tvc-portable-publisher",
+     "what": "the generic TV/TVC portable release publisher (candidate conforming route)"
+    },
+    {
+     "globs": [
+      ".github/workflows/governance-gate-selftest.yml",
+      ".github/workflows/governance-product-finish-point.yml",
+      "tests/test_governance_product_finish_point.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "release[_ -]receipt",
+      "sdk_ref:",
+      "tvc"
+     ],
+     "root": "sdk556",
+     "run_id": "gov-selftest-ref-binding",
+     "what": "does the finish-point verifier read a TV/TVC release receipt to pick its ref?"
+    },
+    {
+     "argv": [
+      "{python}",
+      "scripts/canonical_task_registration_transition.py",
+      "plan",
+      "--request",
+      "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+      "--base",
+      "."
+     ],
+     "kind": "command",
+     "parse": "disposition",
+     "root": "labs3326",
+     "run_id": "gov-registration-plan-without-ruling",
+     "subject": "REGISTRATION_PLAN",
+     "what": "registration plan, no adjacency ruling"
+    },
+    {
+     "argv": [
+      "{python}",
+      "scripts/canonical_task_registration_transition.py",
+      "plan",
+      "--request",
+      "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+      "--base",
+      ".",
+      "--adjacency-ruling",
+      "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json",
+      "--finish-point-root",
+      "{root:sdk556}"
+     ],
+     "kind": "command",
+     "parse": "disposition",
+     "root": "labs3326",
+     "run_id": "gov-registration-plan-with-ruling",
+     "subject": "REGISTRATION_PLAN",
+     "what": "registration plan with the adjacency ruling and the finish-point root"
+    },
+    {
+     "globs": [
+      ".stegverse/transition-ledger/org-contract.json"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "canonical-state-transition-receipt/v1",
+      "repo-transition-receipt/v1"
+     ],
+     "root": "org",
+     "run_id": "org-ledger-consumes",
+     "what": "what the StegVerse-org ledger admits"
+    },
+    {
+     "globs": [
+      "data/sv-work-items/lifecycle-transitions.json",
+      "resident-runtime/sv_work_items.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "SV_CHANGE_ADMIT",
+      "LEDGER_HEAD_COMPARE_AND_SWAP",
+      "^def admit\\("
+     ],
+     "root": "labsmain",
+     "run_id": "labs-sv-change-admit",
+     "what": "the SV_CHANGE_ADMIT transition on Labs main (declared class and evaluator)"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 556,
+     "repo": "StegVerse-org/StegVerse-SDK",
+     "run_id": "pr-sdk556",
+     "what": "PR state snapshot"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3326,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3326",
+     "what": "PR state snapshot"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3313,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3313",
+     "what": "PR state snapshot (SV_CHANGE_ADMIT branch-writer derivation)"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3255,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3255",
+     "what": "PR state snapshot (org-ledger writer split)"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3311,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3311",
+     "what": "PR state snapshot (EXISTING_IDENTITY mode + WorkerCoordinator claim request)"
+    }
+   ],
+   "sources": [
+    {
+     "path": "tests/test_governance_product_finish_point.py",
+     "root": "sdk556"
+    },
+    {
+     "path": ".github/workflows/governance-gate.yml",
+     "root": "sdk556"
+    },
+    {
+     "path": ".github/workflows/governance-gate-selftest.yml",
+     "root": "sdk556"
+    },
+    {
+     "path": ".github/workflows/governance-product-finish-point.yml",
+     "root": "sdk556"
+    },
+    {
+     "path": "stegverse/governance_gate.py",
+     "root": "sdk556"
+    },
+    {
+     "path": "stegverse/structural_validator_candidate.py",
+     "root": "sdk556"
+    },
+    {
+     "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+     "root": "labs3326"
+    },
+    {
+     "path": "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json",
+     "root": "labs3326"
+    },
+    {
+     "path": "control/goal-task-allocation-requests/lane-c-github-universal-governance-product-2026-10-23.json",
+     "root": "labs3326"
+    },
+    {
+     "path": "docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md",
+     "root": "labs3326"
+    },
+    {
+     "path": "scripts/canonical_task_registration_transition.py",
+     "root": "labs3326"
+    },
+    {
+     "path": "data/sv-work-items/lifecycle-transitions.json",
+     "root": "labsmain"
+    },
+    {
+     "path": "resident-runtime/sv_work_items.py",
+     "root": "labsmain"
+    },
+    {
+     "path": "config/sdk_v1_3_0_release.json",
+     "root": "tvc"
+    },
+    {
+     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
+     "root": "tvc"
+    },
+    {
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "root": "tvc"
+    },
+    {
+     "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
+     "root": "org"
+    },
+    {
+     "path": ".stegverse/transition-ledger/org-contract.json",
+     "root": "org"
+    }
+   ]
+  },
+  "KV-SKAP-VAULT-FUNCTIONAL-001": {
+   "roots": {
+    "cvk258": {
+     "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
+     "kind": "git",
+     "ref": "continuity-vault-kit#258",
+     "repo": "StegVerse-Labs/continuity-vault-kit"
+    },
+    "cvk259": {
+     "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
+     "kind": "git",
+     "ref": "continuity-vault-kit#259",
+     "repo": "StegVerse-Labs/continuity-vault-kit"
+    },
+    "labs3324": {
+     "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
+     "kind": "git",
+     "ref": "StegVerse-Labs/.github#3324",
+     "repo": "StegVerse-Labs/.github"
+    },
+    "labs3327": {
+     "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
+     "kind": "git",
+     "ref": "StegVerse-Labs/.github#3327",
+     "repo": "StegVerse-Labs/.github"
+    },
+    "labsmain": {
+     "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+     "kind": "git",
+     "ref": "StegVerse-Labs/.github main",
+     "repo": "StegVerse-Labs/.github"
+    },
+    "org": {
+     "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+     "kind": "git",
+     "ref": "StegVerse-org/.github main",
+     "repo": "StegVerse-org/.github"
+    },
+    "tvc": {
+     "commit": "c4845bea704949c46658042963e8c532c9559939",
+     "kind": "git",
+     "ref": "StegVerse-Labs/TVC main",
+     "repo": "StegVerse-Labs/TVC"
+    }
+   },
+   "runs": [
+    {
+     "argv": [
+      "{python}",
+      "-m",
+      "runtime.kv_skap_vault",
+      "finish-point"
+     ],
+     "kind": "command",
+     "parse": "finish-point",
+     "root": "cvk258",
+     "run_id": "kv-finish-point",
+     "what": "the sealed finish-point verifier at E0"
+    },
+    {
+     "argv": [
+      "{python}",
+      "-m",
+      "unittest",
+      "-v",
+      "tests.test_kv_skap_vault_finish_point"
+     ],
+     "kind": "command",
+     "on_fail": {
+      "failed_predicate": "E0_VERIFIER_SUITE_PASSES_WITH_ZERO_SKIPPED",
+      "failure_code": "LADDER_E0_VERIFIER_TESTS_NOT_GREEN",
+      "next_attempt": "on the next observe run",
+      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+      "required_evidence_or_repair": "repair the verifier suite at the pinned commit",
+      "retry_entrypoint": "python scripts/ladder_conformance.py observe"
+     },
+     "parse": "unittest",
+     "root": "cvk258",
+     "run_id": "kv-finish-point-tests",
+     "subject": "KV_FINISH_POINT_SUITE",
+     "what": "the sealed acceptance suite"
+    },
+    {
+     "globs": [
+      "runtime/kv_skap_vault.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "^def finish_point\\(",
+      "^NOT_YET_BUILT = \\{",
+      "^def _exercise\\(",
+      "tvc_issuance_receipt_ref=\"fixture:",
+      "intr_transition_ref=\"intr:fixture"
+     ],
+     "root": "cvk258",
+     "run_id": "kv-finish-point-evidence-input",
+     "what": "does the finish point take any evidence input (receipts) or only constants?"
+    },
+    {
+     "argv": [
+      "{python}",
+      "-m",
+      "unittest",
+      "-v",
+      "tests.test_sovereign_kv_vault_lineage_record"
+     ],
+     "kind": "command",
+     "on_fail": {
+      "failed_predicate": "E0_VERIFIER_SUITE_PASSES_WITH_ZERO_SKIPPED",
+      "failure_code": "LADDER_E0_VERIFIER_TESTS_NOT_GREEN",
+      "next_attempt": "on the next observe run",
+      "owning_existing_goal": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "required_evidence_or_repair": "repair the verifier suite at the pinned commit",
+      "retry_entrypoint": "python scripts/ladder_conformance.py observe"
+     },
+     "parse": "unittest",
+     "root": "cvk259",
+     "run_id": "kv-lineage-tests",
+     "subject": "KV_LINEAGE_SUITE",
+     "what": "the consumed custody extension suite"
+    },
+    {
+     "argv": [
+      "{python}",
+      "-c",
+      "import json\nfrom runtime import task_registry_event_sovereign_kv_binding as b\ntry:\n    out = b.validate_vault_lineage_custody_result(binding={'schema': b.VAULT_LINEAGE_BINDING_SCHEMA, 'provider_write_request': {}}, provider_receipt={}, read_back_lineage={})\n    print(json.dumps(dict(out, disposition=out.get('disposition', 'RETURNED_WITHOUT_DISPOSITION'))))\nexcept Exception as exc:\n    print(json.dumps({'disposition': 'EXCEPTION', 'exception': type(exc).__name__, 'message': str(exc)}))\n"
+     ],
+     "kind": "command",
+     "parse": "disposition",
+     "root": "cvk259",
+     "run_id": "kv-lineage-validate-unbound-receipt",
+     "subject": "DURABLE_CUSTODY_VALIDATION",
+     "what": "validate_vault_lineage_custody_result with no provider receipt: does it return a six-field disposition?"
+    },
+    {
+     "globs": [
+      "runtime/kv_storage_provider_adapter.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "DeclarativeStorageProviderAdapter\\(\""
+     ],
+     "root": "cvk259",
+     "run_id": "kv-provider-registry",
+     "what": "the durable-custody provider adapters the lineage can be written to"
+    },
+    {
+     "argv": [
+      "{python}",
+      "scripts/canonical_task_registration_transition.py",
+      "plan",
+      "--request",
+      "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+      "--base",
+      "."
+     ],
+     "kind": "command",
+     "parse": "disposition",
+     "root": "labs3327",
+     "run_id": "kv-registration-plan-without-ruling",
+     "subject": "REGISTRATION_PLAN",
+     "what": "registration plan, no adjacency ruling"
+    },
+    {
+     "argv": [
+      "{python}",
+      "scripts/canonical_task_registration_transition.py",
+      "plan",
+      "--request",
+      "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+      "--base",
+      ".",
+      "--adjacency-ruling",
+      "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+      "--finish-point-root",
+      "{root:cvk258}"
+     ],
+     "kind": "command",
+     "parse": "disposition",
+     "root": "labs3327",
+     "run_id": "kv-registration-plan-with-ruling",
+     "subject": "REGISTRATION_PLAN",
+     "what": "registration plan with the Coordination class-D adjacency ruling and the finish-point root"
+    },
+    {
+     "globs": [
+      "runtime/kv_skap_vault.py",
+      "tests/test_kv_skap_vault_finish_point.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "organization[-_ ]ledger",
+      "ORGANIZATION_RECEIPT",
+      "refs/stegverse"
+     ],
+     "root": "cvk258",
+     "run_id": "kv-ledger-binding",
+     "what": "any organization-ledger receipt in the KV finish point or request"
+    },
+    {
+     "globs": [
+      ".github/workflows/organization-ledger-transition.yml"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "^on:",
+      "^\\s+- '.*'$",
+      "workflow_dispatch"
+     ],
+     "root": "labsmain",
+     "run_id": "labs-ledger-writer-trigger",
+     "what": "what the Labs organization-ledger writer fires on (main)"
+    },
+    {
+     "globs": [
+      "data/sv-work-items/lifecycle-transitions.json",
+      "resident-runtime/sv_work_items.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "SV_CHANGE_ADMIT",
+      "LEDGER_HEAD_COMPARE_AND_SWAP",
+      "^def admit\\("
+     ],
+     "root": "labsmain",
+     "run_id": "labs-sv-change-admit",
+     "what": "the SV_CHANGE_ADMIT transition on Labs main (declared class and evaluator)"
+    },
+    {
+     "globs": [
+      "*.py",
+      "*.json",
+      "*.yml"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "tvc://skap-custody",
+      "skap-custody/"
+     ],
+     "root": "tvc",
+     "run_id": "kv-tvc-custody-issuer",
+     "what": "any TV/TVC producer of tvc://skap-custody/ references (TVC main)"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 258,
+     "repo": "StegVerse-Labs/continuity-vault-kit",
+     "run_id": "pr-cvk258",
+     "what": "PR state snapshot"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 259,
+     "repo": "StegVerse-Labs/continuity-vault-kit",
+     "run_id": "pr-cvk259",
+     "what": "PR state snapshot"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3324,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3324",
+     "what": "PR state snapshot"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3327,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3327",
+     "what": "PR state snapshot"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3311,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3311",
+     "what": "PR state snapshot (EXISTING_IDENTITY mode + WorkerCoordinator claim request)"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3313,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3313",
+     "what": "PR state snapshot (SV_CHANGE_ADMIT branch-writer derivation)"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 3255,
+     "repo": "StegVerse-Labs/.github",
+     "run_id": "pr-labs3255",
+     "what": "PR state snapshot (org-ledger writer split)"
+    }
+   ],
+   "sources": [
+    {
+     "path": "runtime/kv_skap_vault.py",
+     "root": "cvk258"
+    },
+    {
+     "path": "runtime/secret_field_policy.py",
+     "root": "cvk258"
+    },
+    {
+     "path": "tests/test_kv_skap_vault_finish_point.py",
+     "root": "cvk258"
+    },
+    {
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "root": "cvk259"
+    },
+    {
+     "path": "runtime/kv_storage_provider_adapter.py",
+     "root": "cvk259"
+    },
+    {
+     "path": "tests/test_sovereign_kv_vault_lineage_record.py",
+     "root": "cvk259"
+    },
+    {
+     "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+     "root": "labs3324"
+    },
+    {
+     "path": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
+     "root": "labs3324"
+    },
+    {
+     "path": "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md",
+     "root": "labs3324"
+    },
+    {
+     "path": "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+     "root": "labs3327"
+    },
+    {
+     "path": "scripts/adjacency_ruling.py",
+     "root": "labs3327"
+    },
+    {
+     "path": "scripts/canonical_task_registration_transition.py",
+     "root": "labs3327"
+    },
+    {
+     "path": "data/sv-work-items/lifecycle-transitions.json",
+     "root": "labsmain"
+    },
+    {
+     "path": "resident-runtime/sv_work_items.py",
+     "root": "labsmain"
+    },
+    {
+     "path": ".github/workflows/organization-ledger-transition.yml",
+     "root": "labsmain"
+    },
+    {
+     "path": ".github/workflows/canonical-task-registration-transition.yml",
+     "root": "labsmain"
+    },
+    {
+     "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
+     "root": "org"
+    },
+    {
+     "path": ".stegverse/transition-ledger/org-contract.json",
+     "root": "org"
+    }
+   ]
+  }
+ },
+ "schema": "stegverse.ladder-conformance-observation-plan/v1"
+}

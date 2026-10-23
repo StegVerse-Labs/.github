@@ -1,0 +1,92 @@
+$ {python} -m runtime.kv_skap_vault finish-point
+--- exit 2
+--- stdout
+{
+  "authority_model": {
+    "claim_and_fence_authority": "WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "holds_key_material": false,
+    "mints_claim_or_fence": false,
+    "mints_credentials": false,
+    "mints_execution_authority": false,
+    "mints_intr_admission": false,
+    "skap_ciphertext_custody_writer": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "user_verifier": "KV/SKAP Vault"
+  },
+  "clock_read": false,
+  "disposition": "FAIL_CLOSED",
+  "llm_used": false,
+  "lowest_supported_mode": "E0",
+  "mode": "E0",
+  "network_used": false,
+  "predicates": [
+    {
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+      "failure_class": "B",
+      "failure_code": "INTR_TRANSITION_RECEIPTS_NOT_OBSERVED",
+      "next_attempt": "on the next finish-point run after the repair is bound",
+      "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+      "predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+      "required_evidence_or_repair": "the local round-trip is exact, but each write and revoke must bind a real Interlock/InTr transition receipt; bind the InTr adapter (STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 lane) and verify its receipts here",
+      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)"
+    },
+    {
+      "disposition": "ALLOW",
+      "predicate": "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY"
+    },
+    {
+      "disposition": "ALLOW",
+      "predicate": "CONSENT_RECEIPT_PRECEDES_EVERY_KV_WRITE_AND_READ"
+    },
+    {
+      "disposition": "ALLOW",
+      "predicate": "REVOCATION_RECEIPT_ENDS_READ_ACCESS"
+    },
+    {
+      "disposition": "ALLOW",
+      "predicate": "RECEIPT_HASH_LINEAGE_CONTINUOUS_ACROSS_WRITE_READ_REVOKE"
+    },
+    {
+      "dependency_relation": "CONSUMES",
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+      "failure_class": "B",
+      "failure_code": "KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND",
+      "next_attempt": "on the next finish-point run after the repair is bound",
+      "owning_existing_goal": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "predicate": "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+      "required_evidence_or_repair": "reconstruction from the lineage alone is exact on a fresh instance; the durable KV custody location the lineage is read from on any device is consumed from TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 (provider-neutral write and exact-hash readback; its first unresolved predicate is AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV) and is not re-implemented here; bind its admitted readback receipt when it exists",
+      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)"
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER",
+      "failure_class": "B",
+      "failure_code": "TVC_CUSTODY_KEY_ISSUANCE_NOT_OBSERVED",
+      "next_attempt": "on the next finish-point run after the repair is bound",
+      "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+      "predicate": "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER",
+      "required_evidence_or_repair": "the vault refuses every non-TV/TVC writer and all key material; a real TV/TVC custody-key issuance receipt must be observed and bound (a TV/TVC transition, not a blocker)",
+      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)"
+    },
+    {
+      "disposition": "ALLOW",
+      "predicate": "NO_DUPLICATED_GOVERNANCE_CREDENTIAL_VERIFIER_OR_KV_AUTHORITY"
+    },
+    {
+      "disposition": "ALLOW",
+      "predicate": "FINISH_POINT_VERDICT_REACHED_AT_E0_WITHOUT_LLM"
+    }
+  ],
+  "schema": "stegverse.kv-skap-vault-finish-point-verdict/v1",
+  "scope_digest": "sha256:d68e239bd1eeabe6558b52928632e9e1df35656e55b3f899755924e66b862ada",
+  "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+  "unmet_predicates": [
+    "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+    "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+    "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER"
+  ]
+}
+--- stderr

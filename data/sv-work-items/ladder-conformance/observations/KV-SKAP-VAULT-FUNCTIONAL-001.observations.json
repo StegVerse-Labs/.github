@@ -1,0 +1,643 @@
+{
+ "mode": "E0",
+ "observed_by": "scripts/ladder_conformance.py observe",
+ "roots": {
+  "cvk258": {
+   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
+   "kind": "git",
+   "repo": "StegVerse-Labs/continuity-vault-kit"
+  },
+  "cvk259": {
+   "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "kind": "git",
+   "repo": "StegVerse-Labs/continuity-vault-kit"
+  },
+  "labs3324": {
+   "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
+  "labs3327": {
+   "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
+  "labsmain": {
+   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
+  "org": {
+   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "kind": "git",
+   "repo": "StegVerse-org/.github"
+  },
+  "tvc": {
+   "commit": "c4845bea704949c46658042963e8c532c9559939",
+   "kind": "git",
+   "repo": "StegVerse-Labs/TVC"
+  }
+ },
+ "runs": [
+  {
+   "command": "{python} -m runtime.kv_skap_vault finish-point",
+   "exit_code": 2,
+   "outcomes": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+     "failure_code": "INTR_TRANSITION_RECEIPTS_NOT_OBSERVED",
+     "next_attempt": "on the next finish-point run after the repair is bound",
+     "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+     "required_evidence_or_repair": "the local round-trip is exact, but each write and revoke must bind a real Interlock/InTr transition receipt; bind the InTr adapter (STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 lane) and verify its receipts here",
+     "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "CONSENT_RECEIPT_PRECEDES_EVERY_KV_WRITE_AND_READ"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "REVOCATION_RECEIPT_ENDS_READ_ACCESS"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "RECEIPT_HASH_LINEAGE_CONTINUOUS_ACROSS_WRITE_READ_REVOKE"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+     "failure_code": "KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND",
+     "next_attempt": "on the next finish-point run after the repair is bound",
+     "owning_existing_goal": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+     "required_evidence_or_repair": "reconstruction from the lineage alone is exact on a fresh instance; the durable KV custody location the lineage is read from on any device is consumed from TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 (provider-neutral write and exact-hash readback; its first unresolved predicate is AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV) and is not re-implemented here; bind its admitted readback receipt when it exists",
+     "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER",
+     "failure_code": "TVC_CUSTODY_KEY_ISSUANCE_NOT_OBSERVED",
+     "next_attempt": "on the next finish-point run after the repair is bound",
+     "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+     "required_evidence_or_repair": "the vault refuses every non-TV/TVC writer and all key material; a real TV/TVC custody-key issuance receipt must be observed and bound (a TV/TVC transition, not a blocker)",
+     "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "NO_DUPLICATED_GOVERNANCE_CREDENTIAL_VERIFIER_OR_KV_AUTHORITY"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "FINISH_POINT_VERDICT_REACHED_AT_E0_WITHOUT_LLM"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+     "failure_code": "INTR_TRANSITION_RECEIPTS_NOT_OBSERVED",
+     "next_attempt": "on the next finish-point run after the repair is bound",
+     "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+     "required_evidence_or_repair": "the local round-trip is exact, but each write and revoke must bind a real Interlock/InTr transition receipt; bind the InTr adapter (STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 lane) and verify its receipts here",
+     "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
+     "six_fields_source": "unmet_predicates[0]",
+     "subject": "FINISH_POINT_VERDICT",
+     "unmet": [
+      "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+      "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+      "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER"
+     ]
+    }
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-finish-point.out",
+   "raw_sha256": "sha256:94386beab792effa39a9718cbbc65e0a5df7cc4874751878944c57083272ae16",
+   "run_id": "kv-finish-point",
+   "status": "OBSERVED",
+   "what": "the sealed finish-point verifier at E0"
+  },
+  {
+   "command": "{python} -m unittest -v tests.test_kv_skap_vault_finish_point",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "ALLOW",
+     "passed": true,
+     "skipped": 0,
+     "subject": "KV_FINISH_POINT_SUITE",
+     "tests_ran": 15
+    }
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-finish-point-tests.out",
+   "raw_sha256": "sha256:cc25bb7de6c9c29e5eb13d6229798a4fdc373824a1398b443537debcc2dcce11",
+   "run_id": "kv-finish-point-tests",
+   "status": "OBSERVED",
+   "what": "the sealed acceptance suite"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 369,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "^def finish_point\\(",
+     "text": "def finish_point() -> dict[str, Any]:"
+    },
+    {
+     "line": 277,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "^NOT_YET_BUILT = \\{",
+     "text": "NOT_YET_BUILT = {"
+    },
+    {
+     "line": 297,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "^def _exercise\\(",
+     "text": "def _exercise() -> dict[str, bool]:"
+    },
+    {
+     "line": 303,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "tvc_issuance_receipt_ref=\"fixture:",
+     "text": "tvc_issuance_receipt_ref=\"fixture:tvc-issuance-unobserved\")"
+    },
+    {
+     "line": 328,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "tvc_issuance_receipt_ref=\"fixture:",
+     "text": "tvc_issuance_receipt_ref=\"fixture:tvc-issuance-unobserved\")"
+    },
+    {
+     "line": 308,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "intr_transition_ref=\"intr:fixture",
+     "text": "custody_key_ref=ref, intr_transition_ref=\"intr:fixture-write\")"
+    },
+    {
+     "line": 310,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "intr_transition_ref=\"intr:fixture",
+     "text": "vault.revoke_consent(consent_receipt_hash=consent, intr_transition_ref=\"intr:fixture-revoke\", observed_at=\"fixture\")"
+    }
+   ],
+   "patterns": [
+    "^def finish_point\\(",
+    "^NOT_YET_BUILT = \\{",
+    "^def _exercise\\(",
+    "tvc_issuance_receipt_ref=\"fixture:",
+    "intr_transition_ref=\"intr:fixture"
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "run_id": "kv-finish-point-evidence-input",
+   "status": "OBSERVED",
+   "what": "does the finish point take any evidence input (receipts) or only constants?"
+  },
+  {
+   "command": "{python} -m unittest -v tests.test_sovereign_kv_vault_lineage_record",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "ALLOW",
+     "passed": true,
+     "skipped": 0,
+     "subject": "KV_LINEAGE_SUITE",
+     "tests_ran": 10
+    }
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-lineage-tests.out",
+   "raw_sha256": "sha256:a19a4b23a8363830e23d075ce5ebe6ba4e5d77947ed1da18d640a19572a7b62c",
+   "run_id": "kv-lineage-tests",
+   "status": "OBSERVED",
+   "what": "the consumed custody extension suite"
+  },
+  {
+   "command": "{python} -c import json\nfrom runtime import task_registry_event_sovereign_kv_binding as b\ntry:\n    out = b.validate_vault_lineage_custody_result(binding={'schema': b.VAULT_LINEAGE_BINDING_SCHEMA, 'provider_write_request': {}}, provider_receipt={}, read_back_lineage={})\n    print(json.dumps(dict(out, disposition=out.get('disposition', 'RETURNED_WITHOUT_DISPOSITION'))))\nexcept Exception as exc:\n    print(json.dumps({'disposition': 'EXCEPTION', 'exception': type(exc).__name__, 'message': str(exc)}))\n",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "EXCEPTION",
+     "subject": "DURABLE_CUSTODY_VALIDATION"
+    }
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-lineage-validate-unbound-receipt.out",
+   "raw_sha256": "sha256:5f694306a9e7636c53dbadaf6048e333b4cb81f3e6fdc4eea5e4848e2f4a640a",
+   "run_id": "kv-lineage-validate-unbound-receipt",
+   "status": "OBSERVED",
+   "what": "validate_vault_lineage_custody_result with no provider receipt: does it return a six-field disposition?"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 150,
+     "path": "runtime/kv_storage_provider_adapter.py",
+     "pattern": "DeclarativeStorageProviderAdapter\\(\"",
+     "text": "DeclarativeStorageProviderAdapter(\"device-local\", \"This Device\", \"device-local-storage\", storage_class=\"DEVICE\", locator_kind=\"LOCAL_ROOT\", session_requirement=\"NONE\", credential_requirement=\"NONE\", a"
+    },
+    {
+     "line": 151,
+     "path": "runtime/kv_storage_provider_adapter.py",
+     "pattern": "DeclarativeStorageProviderAdapter\\(\"",
+     "text": "DeclarativeStorageProviderAdapter(\"icloud-drive\", \"iCloud Drive\", \"apple-cloud-storage\", access_adapter=\"provider-or-file-provider\"),"
+    },
+    {
+     "line": 152,
+     "path": "runtime/kv_storage_provider_adapter.py",
+     "pattern": "DeclarativeStorageProviderAdapter\\(\"",
+     "text": "DeclarativeStorageProviderAdapter(\"google-drive\", \"Google Drive\", \"google-cloud-storage\", access_adapter=\"provider-or-file-provider\"),"
+    },
+    {
+     "line": 153,
+     "path": "runtime/kv_storage_provider_adapter.py",
+     "pattern": "DeclarativeStorageProviderAdapter\\(\"",
+     "text": "DeclarativeStorageProviderAdapter(\"onedrive\", \"Microsoft OneDrive\", \"microsoft-cloud-storage\", access_adapter=\"provider-or-file-provider\"),"
+    },
+    {
+     "line": 154,
+     "path": "runtime/kv_storage_provider_adapter.py",
+     "pattern": "DeclarativeStorageProviderAdapter\\(\"",
+     "text": "DeclarativeStorageProviderAdapter(\"dropbox\", \"Dropbox\", \"dropbox-cloud-storage\", access_adapter=\"provider-native\"),"
+    },
+    {
+     "line": 155,
+     "path": "runtime/kv_storage_provider_adapter.py",
+     "pattern": "DeclarativeStorageProviderAdapter\\(\"",
+     "text": "DeclarativeStorageProviderAdapter(\"nas\", \"NAS / Network Storage\", \"network-storage\", storage_class=\"NETWORK\", locator_kind=\"NETWORK_PATH\", session_requirement=\"ADAPTER_DEFINED\", credential_requirement"
+    },
+    {
+     "line": 156,
+     "path": "runtime/kv_storage_provider_adapter.py",
+     "pattern": "DeclarativeStorageProviderAdapter\\(\"",
+     "text": "DeclarativeStorageProviderAdapter(\"removable-storage\", \"Removable Storage\", \"removable-storage\", storage_class=\"REMOVABLE\", locator_kind=\"MOUNTED_PATH\", session_requirement=\"NONE\", credential_requirem"
+    }
+   ],
+   "patterns": [
+    "DeclarativeStorageProviderAdapter\\(\""
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "run_id": "kv-provider-registry",
+   "status": "OBSERVED",
+   "what": "the durable-custody provider adapters the lineage can be written to"
+  },
+  {
+   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base .",
+   "exit_code": 1,
+   "outcomes": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+     "failure_code": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+     "next_attempt": "on the next registration request event after the repair is recorded",
+     "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+     "required_evidence_or_repair": "coordinate KV-SKAP-VAULT-FUNCTIONAL-001 with ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] (COORDINATE_BEFORE_MUTATION) or narrow its targets before merge",
+     "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+     "subject": "REGISTRATION_PLAN"
+    }
+   ],
+   "pin": "StegVerse-Labs/.github@724dc816d785b1cddac8a89f929048d4ba842550",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-without-ruling.out",
+   "raw_sha256": "sha256:b11cb288af5995075d666b9835e1c6c502146161a6c54be6a548edc5fd1c45b4",
+   "run_id": "kv-registration-plan-without-ruling",
+   "status": "OBSERVED",
+   "what": "registration plan, no adjacency ruling"
+  },
+  {
+   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258}",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "ALLOW",
+     "subject": "REGISTRATION_PLAN"
+    }
+   ],
+   "pin": "StegVerse-Labs/.github@724dc816d785b1cddac8a89f929048d4ba842550",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-with-ruling.out",
+   "raw_sha256": "sha256:33dd486fd89cd42ce77fc8ef7363303fc5d1a8f82d9cf4d352a527fea741b5f5",
+   "run_id": "kv-registration-plan-with-ruling",
+   "status": "OBSERVED",
+   "what": "registration plan with the Coordination class-D adjacency ruling and the finish-point root"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [],
+   "patterns": [
+    "organization[-_ ]ledger",
+    "ORGANIZATION_RECEIPT",
+    "refs/stegverse"
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "run_id": "kv-ledger-binding",
+   "status": "OBSERVED",
+   "what": "any organization-ledger receipt in the KV finish point or request"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 21,
+     "path": ".github/workflows/organization-ledger-transition.yml",
+     "pattern": "^on:",
+     "text": "on:"
+    },
+    {
+     "line": 25,
+     "path": ".github/workflows/organization-ledger-transition.yml",
+     "pattern": "^\\s+- '.*'$",
+     "text": "- '.stegverse/intr-destination/self-closure-packet.json'"
+    }
+   ],
+   "patterns": [
+    "^on:",
+    "^\\s+- '.*'$",
+    "workflow_dispatch"
+   ],
+   "pin": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "run_id": "labs-ledger-writer-trigger",
+   "status": "OBSERVED",
+   "what": "what the Labs organization-ledger writer fires on (main)"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 183,
+     "path": "data/sv-work-items/lifecycle-transitions.json",
+     "pattern": "SV_CHANGE_ADMIT",
+     "text": "\"transition_class\": \"SV_CHANGE_ADMIT\""
+    },
+    {
+     "line": 1948,
+     "path": "resident-runtime/sv_work_items.py",
+     "pattern": "SV_CHANGE_ADMIT",
+     "text": "if transition_class == \"SV_CHANGE_ADMIT\":"
+    },
+    {
+     "line": 192,
+     "path": "data/sv-work-items/lifecycle-transitions.json",
+     "pattern": "LEDGER_HEAD_COMPARE_AND_SWAP",
+     "text": "\"LEDGER_HEAD_COMPARE_AND_SWAP\","
+    },
+    {
+     "line": 1817,
+     "path": "resident-runtime/sv_work_items.py",
+     "pattern": "^def admit\\(",
+     "text": "def admit(obs: Mapping[str, Any], evaluator: Callable[..., dict] = evaluate_admission, **kw: Any) -> dict[str, Any]:"
+    }
+   ],
+   "patterns": [
+    "SV_CHANGE_ADMIT",
+    "LEDGER_HEAD_COMPARE_AND_SWAP",
+    "^def admit\\("
+   ],
+   "pin": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "run_id": "labs-sv-change-admit",
+   "status": "OBSERVED",
+   "what": "the SV_CHANGE_ADMIT transition on Labs main (declared class and evaluator)"
+  },
+  {
+   "files_scanned": 1385,
+   "hits": [],
+   "patterns": [
+    "tvc://skap-custody",
+    "skap-custody/"
+   ],
+   "pin": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939",
+   "run_id": "kv-tvc-custody-issuer",
+   "status": "OBSERVED",
+   "what": "any TV/TVC producer of tvc://skap-custody/ references (TVC main)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "981017e135142deba2d1d31a2b311023dfed5cc2",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/continuity-vault-kit#258",
+   "run_id": "pr-cvk258",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/continuity-vault-kit#259",
+   "run_id": "pr-cvk259",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot"
+  },
+  {
+   "baseRefName": "laned/goal-scope-seal",
+   "headRefOid": "32a4f3449385995c7e60439abcf795bebdefacb1",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3324",
+   "run_id": "pr-labs3324",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot"
+  },
+  {
+   "baseRefName": "laned/tvc-new-identity-requests",
+   "headRefOid": "724dc816d785b1cddac8a89f929048d4ba842550",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3327",
+   "run_id": "pr-labs3327",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "9e00a16ea22eeb221ecf70328cc3716e8c72a4a7",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3311",
+   "run_id": "pr-labs3311",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (EXISTING_IDENTITY mode + WorkerCoordinator claim request)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "86578debc5f808fc1051185e3db889796e66c4d1",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3313",
+   "run_id": "pr-labs3313",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (SV_CHANGE_ADMIT branch-writer derivation)"
+  },
+  {
+   "baseRefName": "grok/lane-c-workflow-surface-registration",
+   "headRefOid": "d6659962977d13a0249f0cf18b5f98bb1e532271",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/.github#3255",
+   "run_id": "pr-labs3255",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (org-ledger writer split)"
+  }
+ ],
+ "schema": "stegverse.ladder-conformance-observations/v1",
+ "sources": [
+  {
+   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
+   "git_blob": "5a04747b4a0ce082d46812b0928b87856c3bae62",
+   "path": "runtime/kv_skap_vault.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk258",
+   "sha256": "sha256:08f48a430ded93ee9b5924eca07d8345bce4a8956af0c76a5bce7f54d7133884"
+  },
+  {
+   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
+   "git_blob": "33c7e04b0498eff30d1fd87b659109aff003854f",
+   "path": "runtime/secret_field_policy.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk258",
+   "sha256": "sha256:c6fb0a9a5fe4083c1c7b7f0b28f6a4bf70885a581a39f533af3faeacca4e4dbc"
+  },
+  {
+   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
+   "git_blob": "304c86a2e8ada5f97b681bf78b80e8d390c34285",
+   "path": "tests/test_kv_skap_vault_finish_point.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk258",
+   "sha256": "sha256:c0cb16efc6cd4a1d60e2be2a5f84eb9e97fb72b902713eaec5d414a5a92c602e"
+  },
+  {
+   "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "git_blob": "6ef45b21bef935e4f93f535314e0320d0d632510",
+   "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk259",
+   "sha256": "sha256:ebfc7a84302cc5593e28a427ecb910f0b220d7db70bf5bf0eb6c1703bc9cd9b5"
+  },
+  {
+   "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "git_blob": "c6c71ccbb4a9ce8bf02599c28ec1e5d4f2e166d7",
+   "path": "runtime/kv_storage_provider_adapter.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk259",
+   "sha256": "sha256:7c6bf0b8bb4a8f35bae6e6794bbbe320b5bb65a9906aed8ed3a916da493587d2"
+  },
+  {
+   "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "git_blob": "50d5fd3762839824a6397e9b43f76b7144848faa",
+   "path": "tests/test_sovereign_kv_vault_lineage_record.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk259",
+   "sha256": "sha256:27ba6ceaf1760871daa802fb51536330102230858bd6d9919fd980bbf5065050"
+  },
+  {
+   "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
+   "git_blob": "13034a6b137e0a926f18f368af6a0a74e6731190",
+   "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3324",
+   "sha256": "sha256:781c653bd210df88e38bc350486f0113840a6b951154270376e9babca46f96a8"
+  },
+  {
+   "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
+   "git_blob": "a1b0ea9790b0bcbed52e8a550585662eabb36e42",
+   "path": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3324",
+   "sha256": "sha256:019ea91c3f3d54a1c328d3eca0eee84ce2cb2857b7c25265cf6fa7496674d303"
+  },
+  {
+   "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
+   "git_blob": "dedc21b5447c1af55c9e9b2bd197d76b888f630c",
+   "path": "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3324",
+   "sha256": "sha256:91920937c4a4d8c33de228477bcde5aeaa6f406e794b0a0f6317d6b877083bee"
+  },
+  {
+   "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
+   "git_blob": "75b648533d8da2283886306723fbc681d5d69375",
+   "path": "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3327",
+   "sha256": "sha256:7fc6e00cd947d4020f94bf2a377e5be77fc686001821076ee570b35a04fca353"
+  },
+  {
+   "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
+   "git_blob": "4a75607777c447807a82d65d5da88a0abaaa4169",
+   "path": "scripts/adjacency_ruling.py",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3327",
+   "sha256": "sha256:89fd04e597bd80fecb6ff269a2c30f525973a6d4a8d8c6d11e1459479a4c1527"
+  },
+  {
+   "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
+   "git_blob": "ab333f897a2622e9eb06604bf008d6b330733bff",
+   "path": "scripts/canonical_task_registration_transition.py",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labs3327",
+   "sha256": "sha256:fe7bdbb3cc7c97ea0190219cd35101ada71a0cfc2d5c8ddd1e6b3e881c938e1f"
+  },
+  {
+   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "git_blob": "c66de6e86c9ec7d167f0e5edf74e717af0688224",
+   "path": "data/sv-work-items/lifecycle-transitions.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsmain",
+   "sha256": "sha256:853c5545bf306eea48c66150ca42d323f130531519112d69e19c4f472556675f"
+  },
+  {
+   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "git_blob": "9e926ed41210963d4c5b6bc2000ce71c51cf6664",
+   "path": "resident-runtime/sv_work_items.py",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsmain",
+   "sha256": "sha256:ea36302d1fcdac0f2de01fa8b8f873e805959ae0f2cfe1c10f11d6d9d91ed1e0"
+  },
+  {
+   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "git_blob": "18fa81b714bd27b8cf0aa03c5f60feb22765d791",
+   "path": ".github/workflows/organization-ledger-transition.yml",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsmain",
+   "sha256": "sha256:5e7338c068cc58f54f0f8f0a5cb1678c6cf3061ad2a34a5725219efff2afc392"
+  },
+  {
+   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "git_blob": "fcc79f871b56fa654a6a2175b9a904f755b8f9a6",
+   "path": ".github/workflows/canonical-task-registration-transition.yml",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsmain",
+   "sha256": "sha256:a0762646575f4c07f80ebbc4705670fd9b51f9b286bdcaf542c12b50062f48b4"
+  },
+  {
+   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "git_blob": "cd56b2d066ee570bdfdddc8371e92a07f201c8fc",
+   "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
+   "repo": "StegVerse-org/.github",
+   "root": "org",
+   "sha256": "sha256:a5d9e34057e522dcd824c709b907584d2403f7403b6783b901a724f4c02c9939"
+  },
+  {
+   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "git_blob": "b5a24567f9961480eda4503143b7b773aa095421",
+   "path": ".stegverse/transition-ledger/org-contract.json",
+   "repo": "StegVerse-org/.github",
+   "root": "org",
+   "sha256": "sha256:6d373913af7bd13a53c71beffbe617aa80c284df73d4f25ec3c466547b4ceda8"
+  }
+ ],
+ "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001"
+}

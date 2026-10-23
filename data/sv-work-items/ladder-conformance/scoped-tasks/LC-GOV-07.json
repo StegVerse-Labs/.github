@@ -1,0 +1,20 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "HANDOFF_SURFACE_ADMITTED",
+ "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
+ "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+ "items": [
+  "H-GOV-ADMISSION"
+ ],
+ "next_attempt": "on each dependency's admission event",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_lane": "GitHub Product lane (Lane C)",
+ "proposed_resolution": "no repair inside the product; each draft is admitted by its own exact-head admission, in order #3255 -> #3313 -> #3311 -> #3326 -> StegVerse-SDK#556; nothing waits on a person",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "admit the path's drafts (#3313, #3255, #3311, #3326, StegVerse-SDK#556) through exact-head SV_CHANGE_ADMIT",
+ "retry_point": "SV_CHANGE_ADMIT (resident-runtime/sv_work_items.py::admit, StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-GOV-07"
+}
