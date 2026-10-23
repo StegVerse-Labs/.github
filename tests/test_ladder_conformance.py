@@ -85,7 +85,16 @@ class CommittedArtifacts(unittest.TestCase):
         seq = next(i for i in layers if decl[i]["layer"] == "1->2")
         for i in (l1, l2):  # each layer refuses on its own, with six fields and its own scoped tasks
             self.assertTrue(layers[i]["refusals"] and layers[i]["scoped_tasks"], i)
-            self.assertIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, i))
+        # revision 4 (cvk#258 @037f505e): layer 1's caller-supplied root / asserted identity bypass is closed at the KV
+        # surface; production ALLOW still needs pinned anchors (a code edit), and the anchor's own bypasses sit on the
+        # consumed LLM-adapter#432 handoff (Lane B, LC-KV-16)
+        self.assertNotIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, l1))
+        self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, l1))
+        self.assertIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, l2))
+        self.assertIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
+        for s_ in ("PROD_LAYER1_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY", "LAYER1_TRANSPORT_NOT_INSTALLED",
+                   "LAYER1_TEMPORARY_LEDGER_WITHOUT_ANCHOR"):
+            self.assertIn(s_, decl[l1]["required_outcomes"])
         self.assertIn("LADDER_ACCESS_LAYERS_COLLAPSED", _codes(d, seq))
         self.assertTrue(set(decl[l1]["required_outcomes"]) and "e0_terminal" in decl[l1])
         # layer 2 now has its own E0 gate (SkapLayer2Gate), witnessed by required refusals, not a class_b record
@@ -93,6 +102,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertTrue(set(decl[l2]["required_outcomes"]) and "e0_terminal" in decl[l2])
         # the sequence check requires layer 2 to refuse a receipt from a non-pinned evaluator; observed ALLOW is a finding
         self.assertIn("LAYER2_ON_LAYER1_RECEIPT_FROM_NON_PINNED_EVALUATOR", decl[seq]["required_outcomes"])
+        self.assertIn("LAYER2_ON_LAYER1_RECEIPT_FROM_DISGUISED_NON_PINNED_EVALUATOR", decl[seq]["required_outcomes"])
         self.assertIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(d, seq))
         self.assertIn("REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", decl[l1]["what"])
 
@@ -104,6 +114,18 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("#429", t["finish_point_cross_reference"])
         self.assertIn("confirmed by Coordination", t["owning_lane_mapping"])
         self.assertTrue(t["owning_lane"].startswith("InTr and Mesh Destinations lane (Lane B"))
+
+    def test_lc_kv_15_is_split_and_the_anchor_items_name_lane_b(self):
+        tasks = {t["task_id"]: t for t in _inputs()["tasks"]}
+        t15, t16 = tasks["LC-KV-15"], tasks["LC-KV-16"]
+        self.assertTrue(t15["owning_lane"].startswith("Lane D"))
+        self.assertTrue(t16["owning_lane"].startswith("InTr and Mesh Destinations lane (Lane B"))
+        self.assertIn("Coordination's routing via Lane B", t16["required_repair"])
+        self.assertEqual(t16["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
+        for t in (t15, t16):
+            self.assertIn("c2c57505535fb89ee88477eda1378c5fc610e0f7", t["required_repair"])
+            self.assertIn("f77cf07505615b7ad3db11338cb252a2638040e2", t["required_repair"])
+            self.assertIn("@037f505e", t["required_repair"])
 
     def test_withdrawn_git_ref_custody_adapter_is_not_proposed(self):
         t = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-03")

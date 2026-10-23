@@ -1,22 +1,22 @@
 {
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
- "disposition": "DENY",
- "failed_check": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
  "failure_class": {
   "class": "B",
-  "reason": "a missing capability: no real ledger root to bind (organization-ledger genesis #3255 draft) and no admitted NODE_HEALTH_REPORTED producer (LLM-adapter#429 draft)"
+  "reason": "the anchors do not exist yet: org-ledger onboarding (LLM-adapter#431), the anchor (#432, StegOS#427), an installed InTr transport and the NODE_HEALTH_REPORTED producer (#429), all drafts"
  },
- "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
+ "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "items": [
   "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE"
  ],
- "next_attempt": "on the next push to laned/kv-skap-vault-finish-point (continuity-vault-kit#258), once a ledger root is bound (StegVerse-Labs/.github#3255) and a NODE_HEALTH_REPORTED producer is admitted (StegVerse-org/LLM-adapter#429)",
+ "next_attempt": "on the next push to laned/kv-skap-vault-finish-point (continuity-vault-kit#258), which Lane D reports switches layer 1 to evaluate_anchored; then on the admission of StegVerse-org/LLM-adapter#431, #432 and #429",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
  "owning_lane": "Lane D (KV and WorkSpace)",
- "proposed_resolution": "bind KVInterlockRuntime's healthy_node_ledger_root to the node-exchange ledger KV reads by exact head (never a constructor argument a requester or caller controls) and refuse with six-field FAIL_CLOSED KV_ACCESS_LAYER1_REFUSED when it is unbound; take the requester identity from the verified InTr boundary proof rather than a caller-asserted field; pass the real InTr transport state to the evaluator so NOT_YET_ENABLED refuses",
+ "proposed_resolution": "switch layer 1 to llm_adapter.endpoint_ledger_anchor.evaluate_anchored (#432 @c2c57505535fb89ee88477eda1378c5fc610e0f7, evaluator @fdaa2005) and pass it only the contract-location org ledger (StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter) at the pinned genesis with the head read back from the ref - never a caller-supplied org root or head, because NODE_LEDGER_OPENED is unsigned (StegOS#427 @f77cf07505615b7ad3db11338cb252a2638040e2) and a caller-created org-ledger directory anchors any root (observed ALLOW); retire the PENDING_LANE_B_SCHEMA anchor shape in favour of the v1 record; pin the genesis once #431 onboards it and the transport once Lane B installs it (LC-KV-16), so the pins are a receipt-derived record rather than a code edit; until then the six-field FAIL_CLOSED stays",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "layer 1 decides health over whatever ledger root its constructor is given: a caller-written scratch ledger plus a caller-asserted boundary_proof.source_identity_ref yields layer-1 ALLOW and a KV-access receipt layer 2 accepts, and no non-test code binds a real ledger root; layer 1 also passes transport_state=\"INSTALLED\" hard-coded while the InTr transport is NOT_YET_ENABLED",
+ "required_repair": "split and re-coded (revision 4, continuity-vault-kit#258 @037f505e; a re-run at Lane D's next #258 head is expected). Closed at the KV surface: the rev-3 bypass (a caller-written scratch ledger plus a caller-asserted identity reached layer-1 ALLOW) now refuses under both the production and the E0 anchors, the ledger is bound only by contract location at a pinned genesis or as an anchored temporary ledger, and transport state and identity come from the installed transport in TRUST_ANCHORS (hard-coded INSTALLED remains only in the labelled local exercise, refused at the production gate). Moved to LC-KV-16 (Lane B): the transport-state and identity-from-proof items, per Coordination's routing via Lane B (a claim). Lane D keeps, in continuity-vault-kit#258: production TRUST_ANCHORS are constants with no genesis, no transport and no anchor issuer, so layer-1 ALLOW needs a code edit; KV's anchor check uses NODE_LEDGER_OPENED_SCHEMA 'stegverse.node-ledger-opened/PENDING_LANE_B_SCHEMA' with issuer verifiers, while the anchor Lane B built is StegVerse-org/LLM-adapter#432 @c2c57505535fb89ee88477eda1378c5fc610e0f7 (evaluate_anchored, 'stegverse.node-ledger-opened/v1', draft, read only) fed by StegVerse-Labs/StegOS#427 @f77cf07505615b7ad3db11338cb252a2638040e2 (NODE_LEDGER_OPENED at EPHEMERAL generation, draft, read only); evaluate_anchored refuses unanchored roots (observed TEMP_NODE_LEDGER_NOT_ANCHORED UNANCHORED) but anchors relative to whatever org_ledger_root and head it is passed",
  "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

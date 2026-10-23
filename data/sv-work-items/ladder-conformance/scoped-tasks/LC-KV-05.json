@@ -11,14 +11,15 @@
  "items": [
   "H-KV-ADMISSION",
   "H-KV-HEALTHY-NODE-DETERMINATION",
-  "H-KV-TVC-CUSTODY-ISSUANCE"
+  "H-KV-TVC-CUSTODY-ISSUANCE",
+  "H-KV-ENDPOINT-LEDGER-ANCHOR"
  ],
  "next_attempt": "on each dependency's admission event",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
  "owning_lane": "Lane D (KV and WorkSpace)",
- "proposed_resolution": "no repair inside KV; each draft is admitted by its own exact-head admission, in order #3255 -> #3313 -> #3311 -> #3324/#3327 -> LLM-adapter#428 -> #429 -> TVC#537 -> continuity-vault-kit#259 -> #258; nothing waits on a person",
+ "proposed_resolution": "no repair inside KV; each draft is admitted by its own exact-head admission, in order #3255 -> #3313 -> #3311 -> #3324/#3327 -> LLM-adapter#428 -> #429 -> #431 -> StegOS#427 -> LLM-adapter#432 -> TVC#537 -> continuity-vault-kit#259 together with #258 (the custody verifier fix is only in #258); nothing waits on a person",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "admit the path's drafts (#3313, #3255, #3311, #3324, #3327, continuity-vault-kit#258/#259, LLM-adapter#428/#429, TVC#537) through exact-head SV_CHANGE_ADMIT",
+ "required_repair": "admit the path's drafts (#3313, #3255, #3311, #3324, #3327, continuity-vault-kit#258/#259, LLM-adapter#428/#429/#431/#432, StegOS#427, TVC#537) through exact-head SV_CHANGE_ADMIT",
  "retry_point": "SV_CHANGE_ADMIT (resident-runtime/sv_work_items.py::admit, StegVerse-Labs/.github)",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

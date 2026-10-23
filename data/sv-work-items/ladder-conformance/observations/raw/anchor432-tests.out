@@ -1,0 +1,31 @@
+$ {python} -c import os,sys,tempfile,unittest; os.environ['STEGVERSE_REPO_LEDGER_ROOT']=tempfile.mkdtemp(prefix='lc-test-ledger-'); os.environ['STEGVERSE_GATEWAY_FORWARD_DB']=os.path.join(tempfile.mkdtemp(prefix='lc-test-fwd-'),'gateway-forward.db'); sys.path[:0]=['.']; import tests; sys.path.append(sys.argv[1]); sys.argv=[sys.argv[0],'-v','tests.test_endpoint_ledger_anchor']; unittest.main(module=None) {root:sdk080}
+--- exit 0
+--- stdout
+--- stderr
+test_ephemeral_needs_the_stegos_record (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_ephemeral_needs_the_stegos_record) ... ok
+test_foreign_producer_receipts (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_foreign_producer_receipts) ... ok
+test_kind_names (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_kind_names) ... ok
+test_mismatched_genesis (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_mismatched_genesis) ... ok
+test_mismatched_key_in_a_permanent_anchor (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_mismatched_key_in_a_permanent_anchor) ... ok
+test_mismatched_key_in_the_anchor (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_mismatched_key_in_the_anchor) ... ok
+test_mismatched_key_on_the_chain (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_mismatched_key_on_the_chain) ... ok
+test_org_head_must_be_pinned_and_current (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_org_head_must_be_pinned_and_current) ... ok
+test_pinned_code_digests (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_pinned_code_digests) ... ok
+test_report_that_does_not_re_derive_is_foreign (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_report_that_does_not_re_derive_is_foreign) ... ok
+test_unanchored_scratch_ledger (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_unanchored_scratch_ledger) ... ok
+test_unsealed_node_ledger_opened (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_unsealed_node_ledger_opened) ... ok
+test_ephemeral_node_anchored_by_stegos_node_ledger_opened_reaches_layer1_allow (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_ephemeral_node_anchored_by_stegos_node_ledger_opened_reaches_layer1_allow) ... ok
+test_gateway_node_reaches_layer1_allow_on_its_org_carried_location (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_gateway_node_reaches_layer1_allow_on_its_org_carried_location) ... ok
+test_permanent_kv_and_skap_vault_own_ledgers_reach_layer1_allow (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_permanent_kv_and_skap_vault_own_ledgers_reach_layer1_allow) ... ok
+test_the_lc_kv_15_hole_is_closed (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_the_lc_kv_15_hole_is_closed) ... ok
+test_evaluator_is_untouched (tests.test_endpoint_ledger_anchor.DeterminismTests.test_evaluator_is_untouched) ... ok
+test_no_clock_network_or_randomness (tests.test_endpoint_ledger_anchor.DeterminismTests.test_no_clock_network_or_randomness) ... ok
+test_disburse_read_back_then_root_inadmissible (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disburse_read_back_then_root_inadmissible) ... ok
+test_disbursement_not_read_back_fails_closed (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disbursement_not_read_back_fails_closed) ... ok
+test_dissolution_is_an_event_not_a_timer (tests.test_endpoint_ledger_anchor.DissolutionTests.test_dissolution_is_an_event_not_a_timer) ... ok
+test_only_ephemeral_dissolves (tests.test_endpoint_ledger_anchor.DissolutionTests.test_only_ephemeral_dissolves) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in <t>s
+
+OK

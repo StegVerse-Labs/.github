@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "DENY",
+ "failed_check": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
+ "failure_class": {
+  "class": "B",
+  "reason": "a missing capability Lane B builds (Coordination's routing via Lane B): receipt-read transport and proof-derived identity in the evaluate_anchored wrapper"
+ },
+ "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "H-KV-ENDPOINT-LEDGER-ANCHOR"
+ ],
+ "next_attempt": "on the next push to StegVerse-org/LLM-adapter#432",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "InTr and Mesh Destinations lane (Lane B, InTr; StegVerse-org/.github#162); consuming lane: Lane D (KV and WorkSpace)",
+ "proposed_resolution": "in evaluate_anchored, take the transport state only from an installed InTr transport read from its receipts (no INSTALLED default; absent or NOT_YET_ENABLED is six-field FAIL_CLOSED), and take the identity only from a verified proof of possession of the node_identity_key the anchor binds (no caller-chosen node_id); keep the six-field TEMP_NODE_LEDGER_NOT_ANCHORED refusals; consider requiring the org ledger at its contract location and pinned genesis inside the wrapper so no consumer can pass a scratch org ledger",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "split from LC-KV-15 (revision 4, continuity-vault-kit#258 @037f505e; a re-run at Lane D's next #258 head is expected) per Coordination's routing via Lane B (a claim): the transport-state and identity-from-proof items belong to Lane B in the evaluate_anchored wrapper of StegVerse-org/LLM-adapter#432 @c2c57505535fb89ee88477eda1378c5fc610e0f7 (draft, read only). Observed there: transport_state is a caller argument defaulting to INSTALLED (an anchored root with no transport input is ALLOW), and node_id is a caller argument not derived from a verified node_identity_key proof; also observed for Lane B's information: the anchor is checked against a caller-supplied org ledger and head, and NODE_LEDGER_OPENED (StegVerse-Labs/StegOS#427 @f77cf07505615b7ad3db11338cb252a2638040e2) is unsigned, so a caller-created org-ledger directory anchors any root (ALLOW); KV's consuming side of that is LC-KV-15",
+ "retry_point": "python -m unittest tests.test_endpoint_ledger_anchor (StegVerse-org/LLM-adapter), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-16"
+}

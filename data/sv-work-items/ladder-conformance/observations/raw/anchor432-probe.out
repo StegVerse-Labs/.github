@@ -1,0 +1,61 @@
+$ {python} -c import inspect, json, os, sys, tempfile
+os.environ['STEGVERSE_REPO_LEDGER_ROOT'] = tempfile.mkdtemp(prefix='lc-anchor-ledger-')
+os.environ['STEGVERSE_GATEWAY_FORWARD_DB'] = os.path.join(tempfile.mkdtemp(prefix='lc-anchor-fwd-'), 'gateway-forward.db')
+sys.path[:0] = ['.']
+import tests
+sys.path.append(sys.argv[1])
+from llm_adapter import endpoint_ledger_anchor as anchor
+from llm_adapter import healthy_node_evaluator as hne
+import tests.test_endpoint_ledger_anchor as T
+SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt")
+rows = []
+def row(subject, out, note=None):
+    r = {"subject": subject, "disposition": out.get("disposition")}
+    for k in SIX + ("reason",):
+        if isinstance(out.get(k), str):
+            r[k] = out[k]
+    if note:
+        r["note"] = note
+    rows.append(r)
+def case(fn):
+    t = T.AnchoredEndToEndTests("test_the_lc_kv_15_hole_is_closed")
+    t.setUp()
+    try:
+        fn(t)
+    except Exception as exc:
+        rows.append({"subject": fn.__name__.upper(), "disposition": "EXCEPTION", "exception": type(exc).__name__, "message": str(exc)[:200]})
+    finally:
+        t.doCleanups()
+def unanchored(t):
+    anchor.open_ledger(t.node, T.NODE, "EPHEMERAL", T.KEY, "StegNode")
+    t.chain_to_admission()
+    row("UNANCHORED_ROOT_VIA_BARE_EVALUATOR", hne.evaluate(T.NODE, ledger_root=t.node, require_admission=True),
+        "observational: the bare evaluator ALLOWs any root it is handed")
+    row("UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED", t.evaluate(require_admission=True))
+case(unanchored)
+def no_genesis(t):
+    t.chain_to_admission()
+    row("ROOT_WITHOUT_GENESIS_VIA_EVALUATE_ANCHORED", t.evaluate(require_admission=True))
+case(no_genesis)
+def head_mismatch(t):
+    t.open_and_anchor()
+    t.chain_to_admission()
+    row("ORG_LEDGER_HEAD_NOT_THE_SUPPLIED_COPY", t.evaluate(head="sha256:" + "0" * 64, require_admission=True))
+case(head_mismatch)
+def self_minted(t):
+    genesis = anchor.open_ledger(t.node, T.NODE, "EPHEMERAL", T.KEY, "StegNode")["genesis"]
+    rec = T.opened_for(genesis)  # the caller re-targets and reseals a NODE_LEDGER_OPENED record (self-hash, no signature)
+    anchor.anchor(t.node, t.org, T.NODE, rec)  # into an org-ledger directory the caller created
+    t.chain_to_admission()
+    row("SELF_MINTED_ANCHOR_ON_CALLER_CREATED_ORG_LEDGER", t.evaluate(require_admission=True),
+        "observational: anchoring is checked against whatever org_ledger_root and head the caller passes; the NODE_LEDGER_OPENED record is sealed by its own sha256 only")
+    row("ANCHORED_ROOT_DEFAULT_TRANSPORT_STATE", t.evaluate(require_admission=True),
+        "observational: evaluate_anchored's transport_state defaults to %r" % inspect.signature(anchor.evaluate_anchored).parameters["transport_state"].default)
+    row("ANCHORED_ROOT_TRANSPORT_NOT_YET_ENABLED", t.evaluate(require_admission=True, transport_state="NOT_YET_ENABLED"))
+case(self_minted)
+print(json.dumps({"rows": rows}, sort_keys=True))
+ {root:sdk080}
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "ALLOW", "note": "observational: the bare evaluator ALLOWs any root it is handed", "subject": "UNANCHORED_ROOT_VIA_BARE_EVALUATOR"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "ENDPOINT_LEDGER_ANCHORED_ON_ORG_LEDGER", "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED", "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162", "reason": "UNANCHORED", "required_evidence_or_repair": "an InTr path receipt pair: INTR_MESH_PATH_TRANSFER on the endpoint ledger and INTR_MESH_PATH_INGRESS (ORGANIZATION_INTR_DESTINATION_INGRESS) on the org ledger, linked by seal, with the source half retained; for EPHEMERAL its body is the StegOS NODE_LEDGER_OPENED record emitted at generation", "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event", "subject": "UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "ENDPOINT_GENESIS_DECLARES_THE_NODE", "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED", "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162", "reason": "ENDPOINT_GENESIS_INVALID", "required_evidence_or_repair": "a REPOSITORY_LEDGER_INITIALIZATION genesis (stegverse.endpoint-ledger-genesis/v1) naming this node_id, endpoint_kind, a well-formed node_identity_key, the pinned code digests and, for EPHEMERAL, a StegApp/StegBrowser/StegNode node_kind", "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event", "subject": "ROOT_WITHOUT_GENESIS_VIA_EVALUATE_ANCHORED"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "ORG_LEDGER_HEAD_PINNED", "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED", "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162", "reason": "ORG_LEDGER_HEAD_NOT_PINNED", "required_evidence_or_repair": "org_ledger_head_receipt_sha256 read back from refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter, equal to the supplied copy's HEAD.json", "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event", "subject": "ORG_LEDGER_HEAD_NOT_THE_SUPPLIED_COPY"}, {"disposition": "ALLOW", "note": "observational: anchoring is checked against whatever org_ledger_root and head the caller passes; the NODE_LEDGER_OPENED record is sealed by its own sha256 only", "subject": "SELF_MINTED_ANCHOR_ON_CALLER_CREATED_ORG_LEDGER"}, {"disposition": "ALLOW", "note": "observational: evaluate_anchored's transport_state defaults to 'INSTALLED'", "subject": "ANCHORED_ROOT_DEFAULT_TRANSPORT_STATE"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY", "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162", "reason": "TRANSPORT_NOT_INSTALLED", "required_evidence_or_repair": "the requester's transport must be INSTALLED; a NOT_YET_ENABLED or unknown transport establishes no healthy node", "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)", "subject": "ANCHORED_ROOT_TRANSPORT_NOT_YET_ENABLED"}]}
+--- stderr

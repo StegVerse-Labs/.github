@@ -121,19 +121,20 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "disposition": "ALLOW",
       "finish_point": {
         "closure": {
+          ".git": "sha256:a82df0b8fd92b6fdc83fe673808f6c0d1133cbfa0e0ed96110c69972ed8f5889",
           "runtime/intr_pinned/healthy_node_evaluator.py": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58",
-          "runtime/kv_interlock_endpoint.py": "sha256:728f6c229d9cb49cc6063bf903272d5e0026e5ffea719e233844826b6317d65e",
-          "runtime/kv_skap_layer2.py": "sha256:295338c06fc37a4b1b3d0bed77b90ca66ebeae2faf786f64791d9c79e6163583",
-          "runtime/kv_skap_vault.py": "sha256:6446ee26fe4348ab60d76c1d47ed4a1836e1322f1c88b29a3d820e04506951a2",
+          "runtime/kv_interlock_endpoint.py": "sha256:c2b0d503e8dd547b30908fc4bdd99924bb2209b3b506badb2d47ee9d9fa16e71",
+          "runtime/kv_skap_layer2.py": "sha256:35643c54406727e1bab36f2417f1d4d395adf48fdda2864fc86fcbec807671f7",
+          "runtime/kv_skap_vault.py": "sha256:45ddf854282fdc112ea23de443929586d607aa2f244f6211e3a5d993ffadd9d7",
           "runtime/secret_field_policy.py": "sha256:c6fb0a9a5fe4083c1c7b7f0b28f6a4bf70885a581a39f533af3faeacca4e4dbc",
-          "tests/kv_two_layer_e0.py": "sha256:7d1f3dbf6c23b60a781c14f4c4113647ce88b08723182c404488864893b26ea2",
-          "tests/test_kv_skap_vault_finish_point.py": "sha256:92fc93194870aec74b4f76ee142f30a708bfb2c2469dcdada58c64c79aea27bf"
+          "tests/kv_two_layer_e0.py": "sha256:ad4553e0ee08b2c4c916349d881ee28793a0e22cf14b8e641d05eb092785f8ad",
+          "tests/test_kv_skap_vault_finish_point.py": "sha256:b78b1dcb05e9cb3115ce38766d4d0e31306c56921a1e864fab5faedea9a9ddbd"
         },
-        "closure_digest": "sha256:12b0cac6a1aca4c27436e32f427e6b35aff656c8c3ff6588ab51f09a99f83729",
+        "closure_digest": "sha256:cee8806945cf8bae6b6566b759d66d0ebbfa28fd378c125c33033943dec3f2d0",
         "finish_test_runners": [],
         "hashed_pin_data_paths": [],
         "repository": "StegVerse-Labs/continuity-vault-kit",
-        "source_commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
+        "source_commit": "037f505e704203f5022339141a3877145fca2af3",
         "stub_contexts_disabled_by": [],
         "stub_preload_sources": [],
         "stub_seeded_contexts": {},
@@ -144,7 +145,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "network_used": false,
       "protected_paths": [],
       "ruled_by": "Coordination (STEGVERSE-CANONICAL-WORK-COORDINATION-001), relayed to Lane D 2026-10-23; ruling record ref UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "ruling_digest": "sha256:c811c7df4e2fa570d4c28825abc31338c2bfe25a5b2f73e782b9be6f32451c08",
+      "ruling_digest": "sha256:6202f734d154c051b4d16bd095e86380cefdf29250cc99bbefeea40f821fbd6f",
       "schema": "stegverse.adjacency-ruling-verification/v1",
       "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001"
     },
@@ -155,7 +156,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "proposed_cosv_task_vector": null,
       "proposed_task_id_matches": true
     },
-    "collision_checkin": "CONTINUE_BY_VERIFIED_ADJACENCY_RULING (scripts/check_registry_collision_checkin.py COORDINATE_CONVERGENCE over ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] cleared by scripts/adjacency_ruling.py; ruling sha256:c811c7df4e2fa570d4c28825abc31338c2bfe25a5b2f73e782b9be6f32451c08, conditions a/b/c recomputed)",
+    "collision_checkin": "CONTINUE_BY_VERIFIED_ADJACENCY_RULING (scripts/check_registry_collision_checkin.py COORDINATE_CONVERGENCE over ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] cleared by scripts/adjacency_ruling.py; ruling sha256:6202f734d154c051b4d16bd095e86380cefdf29250cc99bbefeea40f821fbd6f, conditions a/b/c recomputed)",
     "cosv_derivation": "scripts/cosv.py encode_task(exact_metrics)",
     "cosv_task_vector": "10800000110000",
     "finish_point": {

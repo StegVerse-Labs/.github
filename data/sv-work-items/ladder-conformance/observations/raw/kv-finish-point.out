@@ -5,7 +5,7 @@ $ {python} -m runtime.kv_skap_vault finish-point
   "access_constraints": [
     {
       "constraint": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
-      "dependency_owner": "Interlock/InTr healthy-node evaluator, LC-KV-13/LC-KV-14 (StegVerse-org/LLM-adapter#428 llm_adapter/healthy_node_evaluator.py, InTr and Mesh Destinations lane); the NODE_HEALTH_REPORTED producer is unassigned (Lane B asked Coordination)",
+      "dependency_owner": "Interlock/InTr healthy-node evaluator, LC-KV-13/LC-KV-14 (StegVerse-org/LLM-adapter#428 llm_adapter/healthy_node_evaluator.py, producer #429, inputs #430, InTr and Mesh Destinations lane); the chain at StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter is not onboarded yet (onboarding StegVerse-org/LLM-adapter#431, Lane B draft)",
       "disposition": "FAIL_CLOSED",
       "enforced_in_sealed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
       "failed_predicate": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
@@ -160,6 +160,7 @@ $ {python} -m runtime.kv_skap_vault finish-point
   "schema": "stegverse.kv-skap-vault-finish-point-verdict/v1",
   "scope_digest": "sha256:d68e239bd1eeabe6558b52928632e9e1df35656e55b3f899755924e66b862ada",
   "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+  "trust_anchors_label": "PRODUCTION",
   "unmet_predicates": [
     "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
     "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY",
