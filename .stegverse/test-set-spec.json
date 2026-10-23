@@ -67,9 +67,9 @@
     "env": "STEGVERSE_TVC_ROOT",
     "kind": "env_path"
    },
-   "finish_point": "STEGVERSE_TVC_ROOT names a TVC checkout in the job and the conformance exchange tests run and pass at the exact head",
+   "finish_point": "the ratchet's pinned checkout of StegVerse-Labs/TVC at the commit .stegverse/verification-inputs/tvc.json declares is bound as STEGVERSE_TVC_ROOT (scripts/tvc_verification_input.py bind) and the conformance exchange tests run and pass at the exact head with 0 skipped",
    "owner": "GitHub Product, Lane C (StegVerse-org/.github#164)",
-   "repair": "a TV/TVC checkout supplied as STEGVERSE_TVC_ROOT to the job that runs this set"
+   "repair": "the ratchet reads StegVerse-Labs/TVC at the manifest-pinned commit with its own GITHUB_TOKEN only (no repository secret, no PAT); TVC is private, so that read needs a TV/TVC-issued, per-run, read-only lease to this job (TVC-PRIVATE-SOURCE-READ-001, StegVerse-Labs/TVC#535) - the bind step prints the six-field TVC_VERIFICATION_INPUT_READ_CREDENTIAL_NOT_ISSUED until it is issued"
   }
  },
  "manifest": ".stegverse/test-sets.json",

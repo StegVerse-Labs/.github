@@ -82,6 +82,48 @@ jobs:
             --dest-root "$RUNNER_TEMP/pinned-inputs" --env-out "$GITHUB_ENV" \
             --retry-entrypoint ".github/workflows/test-suite-ratchet.yml ratchet"
 
+      # TV/TVC verification input (StegVerse-org/.github#164, Lane C): the [tvc] sets of
+      # tests/test_canonical_work_in_process_admission.py and tests/test_origin_attestation_tvc_conformance.py need
+      # STEGVERSE_TVC_ROOT. .stegverse/verification-inputs/tvc.json pins StegVerse-Labs/TVC to an exact commit (never a
+      # moving branch). The job reads it with its own GITHUB_TOKEN only - no repository secret, no PAT. When that token
+      # cannot read the pinned commit (TVC is private), the checkout is not attempted, the bind step prints a six-field
+      # FAIL_CLOSED routing the read credential to a TV/TVC read lease, STEGVERSE_TVC_ROOT stays unset, and the selector
+      # reports those sets as REQUIRED_VERIFICATION_INPUT_UNAVAILABLE - blocking every change that selects them, never
+      # bypassable, and never failing changes that do not.
+      - name: TV/TVC verification input pin (manifest-declared commit)
+        id: tvc-pin
+        run: python scripts/tvc_verification_input.py pin --manifest .stegverse/verification-inputs/tvc.json --github-output "$GITHUB_OUTPUT"
+
+      - name: Can this job's GITHUB_TOKEN read the pinned TV/TVC commit (read-only probe)
+        id: tvc-probe
+        if: steps.tvc-pin.outputs.manifest == 'ok'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TVC_REPOSITORY: ${{ steps.tvc-pin.outputs.repository }}
+          TVC_COMMIT: ${{ steps.tvc-pin.outputs.commit }}
+        run: |
+          if gh api "repos/$TVC_REPOSITORY/commits/$TVC_COMMIT" --jq .sha 2>/dev/null | grep -qx "$TVC_COMMIT"; then
+            echo "readable=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "readable=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: TV/TVC checkout at the pinned commit (read-only)
+        if: steps.tvc-probe.outputs.readable == 'true'
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          repository: ${{ steps.tvc-pin.outputs.repository }}
+          ref: ${{ steps.tvc-pin.outputs.commit }}
+          path: ${{ steps.tvc-pin.outputs.path }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Bind STEGVERSE_TVC_ROOT to the pinned checkout, or say in six fields why not
+        run: |
+          python scripts/tvc_verification_input.py bind --manifest .stegverse/verification-inputs/tvc.json \
+            --checkout .verification-inputs/tvc --readable "${{ steps.tvc-probe.outputs.readable == 'true' }}" \
+            --dest "$RUNNER_TEMP/verification-inputs/tvc" --env-out "$GITHUB_ENV"
+
       - name: Select the test sets this change requires
         env:
           EVENT_NAME: ${{ github.event_name }}

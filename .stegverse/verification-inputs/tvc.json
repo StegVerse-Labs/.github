@@ -1,0 +1,19 @@
+{
+ "authority_effect": "NONE",
+ "checkout": "the job's own actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 (v4.3.0, already SHA-pinned in this repository) with repository/ref from this manifest, persist-credentials false, depth 1, only when the job's GITHUB_TOKEN can read the pinned commit; then moved out of the workspace by scripts/tvc_verification_input.py bind",
+ "commit": "c4845bea704949c46658042963e8c532c9559939",
+ "commit_observed_as": "StegVerse-Labs/TVC main head when pinned (merge of TVC#528); a re-pin is a manifest change through review",
+ "env": "STEGVERSE_TVC_ROOT",
+ "input": "tvc",
+ "lowest_supported_mode": "E0",
+ "manifest_sha256": "3a8d224ede15790684ce0ce9a920b24afe017549dcc5f99f75ebf7c9846a0ae6",
+ "owning_goal": "StegVerse-org/.github#164",
+ "read_credential": "the job's GITHUB_TOKEN only; no repository secret, no PAT. StegVerse-Labs/TVC is private, so a read beyond that token is a TV/TVC read lease (TVC-PRIVATE-SOURCE-READ-001), never an owner task",
+ "repository": "StegVerse-Labs/TVC",
+ "required_files": [
+  "scripts/tv_credential_sign_export_resident.py",
+  "scripts/tv_credential_verify_export_resident.py"
+ ],
+ "schema": "stegverse.verification-input.tvc-checkout/v1",
+ "selection": "the tvc input of .stegverse/test-set-spec.json (env_path STEGVERSE_TVC_ROOT); its sets are never bypassable and run with 0 skipped when it is present"
+}

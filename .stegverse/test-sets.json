@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "75c3a4b0faa8de07dee9913e493295417150cd9c35257d0b1e0ed61aa069cd65"
+  "spec_sha256": "6ee2fe343bcc8a805177672bb93652e85c591dcced3daf38b1784edd67a5db21"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -46,9 +46,9 @@
     "env": "STEGVERSE_TVC_ROOT",
     "kind": "env_path"
    },
-   "finish_point": "STEGVERSE_TVC_ROOT names a TVC checkout in the job and the conformance exchange tests run and pass at the exact head",
+   "finish_point": "the ratchet's pinned checkout of StegVerse-Labs/TVC at the commit .stegverse/verification-inputs/tvc.json declares is bound as STEGVERSE_TVC_ROOT (scripts/tvc_verification_input.py bind) and the conformance exchange tests run and pass at the exact head with 0 skipped",
    "owner": "GitHub Product, Lane C (StegVerse-org/.github#164)",
-   "repair": "a TV/TVC checkout supplied as STEGVERSE_TVC_ROOT to the job that runs this set"
+   "repair": "the ratchet reads StegVerse-Labs/TVC at the manifest-pinned commit with its own GITHUB_TOKEN only (no repository secret, no PAT); TVC is private, so that read needs a TV/TVC-issued, per-run, read-only lease to this job (TVC-PRIVATE-SOURCE-READ-001, StegVerse-Labs/TVC#535) - the bind step prints the six-field TVC_VERIFICATION_INPUT_READ_CREDENTIAL_NOT_ISSUED until it is issued"
   }
  },
  "repository": "StegVerse-Labs/.github",
@@ -9137,6 +9137,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_tvc_verification_input.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_tvc_verification_input.py"
+   ],
+   "tests": [
+    "tests/test_tvc_verification_input.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_ungoverned_ai_defensive_envelope_consumer.py",
    "inputs": [],
    "surfaces": [
@@ -11708,6 +11720,9 @@
    "source-bundles/reusable-task-registry.d/**",
    "workers/reusable_task_lifecycle.py",
    "workers/reusable_task_master_records_roundtrip.py"
+  ],
+  "scripts/tvc_verification_input.py": [
+   ".github/workflows/test-suite-ratchet.yml"
   ],
   "scripts/user_facing_explanation.py": [
    "schemas/user-facing-explanation.v1.schema.json"
@@ -16356,6 +16371,13 @@
   ],
   "tests/test_tvc_sovereign_route_bridge.py": [
    "workers/tvc_sovereign_route_bridge.py"
+  ],
+  "tests/test_tvc_verification_input.py": [
+   ".github/workflows/test-suite-ratchet.yml",
+   ".stegverse/test-set-spec.json",
+   ".stegverse/verification-inputs/tvc.json",
+   "scripts/test_set_selection.py",
+   "scripts/tvc_verification_input.py"
   ],
   "tests/test_ungoverned_ai_defensive_envelope_consumer.py": [
    "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json",
