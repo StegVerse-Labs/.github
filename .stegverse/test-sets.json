@@ -9994,6 +9994,7 @@
    "scripts/run_stegfin_continuity_machine_executor.py"
   ],
   "scripts/adjacency_ruling.py": [
+   ".github/workflows/**",
    "data/canonical-task-records/**",
    "scripts/evaluate_task_registry_collision_checkin.py"
   ],
@@ -11935,6 +11936,9 @@
   "tests/__init__.py": [
    "tests/posix_ledger_locus/sitecustomize.py"
   ],
+  "tests/conftest.py": [
+   "tests/pytest.py"
+  ],
   "tests/cosv_index_helpers.py": [
    "control/cosv-live-worker-coverage.json",
    "control/task-vector-index.d/**",
@@ -11981,6 +11985,8 @@
    "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
    "scripts/adjacency_ruling.py",
    "scripts/canonical_task_registration_transition.py",
+   "tests/__init__.py",
+   "tests/conftest.py",
    "tests/fixtures/**",
    "tests/fixtures/canonical_task_registration/**",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/**",

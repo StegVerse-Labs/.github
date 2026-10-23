@@ -23,9 +23,9 @@ REQUEST = f"tests/fixtures/canonical_task_registration/github-universal-governan
 ADJACENCY = f"tests/fixtures/canonical_task_registration/github-universal-governance-product/{TASK_ID}.adjacency-test.json"
 FINISH_TEST = ("StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py"
                "::GovernanceProductFinishPoint::test_finish_point_verdict")
-FINISH_COMMIT = "a36ee8b424c6f731797423153f047f260d66af1d"
+FINISH_COMMIT = "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce"
 RULING = "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json"
-SCOPE_DIGEST = "sha256:9bb52a5e6d26456c339d24c0460e4672afed7b58bd5adf08b8c7b0d805629992"
+SCOPE_DIGEST = "sha256:f6d69ee7e294e54401e7367d06fc51e10b0865198da22af1ca4890f2d1171fbb"
 SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
        "owning_existing_goal", "next_attempt")
 EXPECTED_PLAN = {
@@ -121,6 +121,12 @@ class GovernanceProductGoalRequestTests(unittest.TestCase):
         deps = {d["ref"] for d in record["dependencies"] if d["kind"] == "TASK"}
         cands = {c["task_id"] for c in ruling["candidates"]}
         for dep in ruling["consumes_dependencies"]:
+            if dep["task_id"] == module.UNOWNED:
+                # (U): not a candidate and not a TASK dependency; pinned, edit-guarded, routed to coordination
+                self.assertNotIn(dep["task_id"], cands)
+                self.assertIn("UNKNOWN_NOT_AUTHENTICALLY_OBSERVED", dep["owner_assignment"])
+                self.assertEqual(dep["pinned_source"]["repository"], "StegVerse-org/StegVerse-SDK")
+                continue
             self.assertIn(dep["task_id"], deps)
             self.assertIn(dep["task_id"], cands)
         for cand in ruling["candidates"]:

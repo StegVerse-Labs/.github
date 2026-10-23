@@ -17,7 +17,7 @@
     "finish_point": {
       "acceptance_test": "StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py::GovernanceProductFinishPoint::test_finish_point_verdict",
       "repository": "StegVerse-org/StegVerse-SDK",
-      "source_commit": "a36ee8b424c6f731797423153f047f260d66af1d",
+      "source_commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
       "source_ref": "StegVerse-org/StegVerse-SDK#556"
     }
   },
@@ -84,6 +84,19 @@
       "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
       "failure_class": "A",
       "consumed_by": "authentic payment-provider ingress for icv-commercial-distribution"
+    },
+    {
+      "task_id": "UNOWNED_NOT_OBSERVED",
+      "consumed_by": "tests/test_governance_product_finish_point.py (finish point) consumes stegverse/portable_governance_verifier.py; no canonical task record observed as its owner",
+      "provenance": "StegVerse-org/StegVerse-SDK#70 (ceb6a353162242dd9c5919d8af89823b9a97501a); lineage StegVerse-org/StegVerse-SDK#61, #65",
+      "owner_assignment": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; routed to STEGVERSE-CANONICAL-WORK-COORDINATION-001 (class B item on StegVerse-org/.github#160)",
+      "pinned_source": {
+        "repository": "StegVerse-org/StegVerse-SDK",
+        "commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+        "files": {
+          "stegverse/portable_governance_verifier.py": "d1963e230e74da447f47d49440cbec41570b2a8e573c5cd5adb33274d161a0f6"
+        }
+      }
     }
   ],
   "protected_paths": [
@@ -110,5 +123,5 @@
     "pin": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001's three files are verified against sha256 at 4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328 by the finish test before use; recomputed by scripts/adjacency_ruling.py verify (P)",
     "routing": "an edit to them fails closed as STRUCTURAL_OWNED_EDIT routed to SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001; recomputed by scripts/adjacency_ruling.py check-change (R)"
   },
-  "evidence_digest": "sha256:9b729d6806a56fb7a905125047d86eb6fc160cd7eff7d2bdc46fda2f265904a5"
+  "evidence_digest": "sha256:4ec134d185b6078a0cae7417d929d984e2c7a35745e3804cf24cde211f7575ed"
 }
