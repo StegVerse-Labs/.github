@@ -36,6 +36,8 @@ test_disburse_read_back_then_root_inadmissible (tests.test_endpoint_ledger_ancho
 test_disbursement_not_read_back_fails_closed (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disbursement_not_read_back_fails_closed) ... ok
 test_dissolution_is_an_event_not_a_timer (tests.test_endpoint_ledger_anchor.DissolutionTests.test_dissolution_is_an_event_not_a_timer) ... ok
 test_only_ephemeral_dissolves (tests.test_endpoint_ledger_anchor.DissolutionTests.test_only_ephemeral_dissolves) ... ok
+test_431s_null_genesis_pin_is_six_field_not_pinned (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_431s_null_genesis_pin_is_six_field_not_pinned)
+#431 sets expected_genesis_receipt_sha256 to null (it cannot be known before observation). ... ok
 test_carrier_stage_is_last_and_fails_closed (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_carrier_stage_is_last_and_fails_closed) ... ok
 test_no_health_report_is_health_report_missing_not_transport (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_no_health_report_is_health_report_missing_not_transport) ... ok
 test_not_designated_six_fields_name_431 (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_not_designated_six_fields_name_431) ... ok
@@ -60,6 +62,6 @@ test_unsigned_anchor_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAs
 test_wrong_org_ledger_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_wrong_org_ledger_is_refused) ... ok
 
 ----------------------------------------------------------------------
-Ran 52 tests in <t>s
+Ran 53 tests in <t>s
 
 OK

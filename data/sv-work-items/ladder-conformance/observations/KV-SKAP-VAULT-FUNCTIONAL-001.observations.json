@@ -37,8 +37,13 @@
    "kind": "git",
    "repo": "StegVerse-org/LLM-adapter"
   },
+  "llmad431": {
+   "commit": "27e2b9abd6956d871d5d3af390955f2a8288024c",
+   "kind": "git",
+   "repo": "StegVerse-org/LLM-adapter"
+  },
   "llmad432": {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "kind": "git",
    "repo": "StegVerse-org/LLM-adapter"
   },
@@ -3602,13 +3607,13 @@
     "\"custody\": \"TV/TVC",
     "NONE_PUBLISHED"
    ],
-   "pin": "StegVerse-org/LLM-adapter@a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "pin": "StegVerse-org/LLM-adapter@733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "run_id": "anchor432-schema",
    "status": "OBSERVED",
-   "what": "LLM-adapter#432 @a2ee67e6: failure code, signed NODE_LEDGER_OPENED schema, signer file paths (NODE_LEDGER_OPENED and org-ledger head attesters), evaluate_anchored signature, the pinned-genesis and head-attestation checks, the InTr carrier, org-ledger location reader"
+   "what": "LLM-adapter#432 @73316297: failure code, signed NODE_LEDGER_OPENED schema, signer file paths (NODE_LEDGER_OPENED and org-ledger head attesters), evaluate_anchored signature, the pinned-genesis and head-attestation checks, the InTr carrier, org-ledger location reader"
   },
   {
-   "command": "{python} -c import json, os, sys, tempfile, hashlib, subprocess\nfrom pathlib import Path\nfrom unittest import mock\nos.environ['STEGVERSE_REPO_LEDGER_ROOT'] = tempfile.mkdtemp(prefix='lc-anchor-ledger-')\nos.environ['STEGVERSE_GATEWAY_FORWARD_DB'] = os.path.join(tempfile.mkdtemp(prefix='lc-anchor-fwd-'), 'gateway-forward.db')\nsys.path[:0] = ['.']\nimport tests\nsys.path.append(sys.argv[1])\nfrom llm_adapter import endpoint_ledger_anchor as anchor\nfrom llm_adapter import healthy_node_evaluator as hne\nfrom llm_adapter import node_ingress_boundary as boundary\nfrom llm_adapter import org_ledger_location as location\nimport tests.test_endpoint_ledger_anchor as T\nfrom tests import org_ledger_harness as harness\nimport contextlib\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None):\n    r = {\"subject\": subject, \"disposition\": out.get(\"disposition\")}\n    for k in SIX + (\"reason\",):\n        if isinstance(out.get(k), str):\n            r[k] = out[k]\n    r[\"six_fields_present\"] = all(isinstance(out.get(k), str) and out[k].strip() for k in SIX) if out.get(\"disposition\") != \"ALLOW\" else None\n    if note:\n        r[\"note\"] = note\n    rows.append(r)\nROUTE = True   # rows run inside the TEST-ONLY append_route() harness (an admitted append route's stand-in) unless stated\ndef case(fn, production_signers=False, route=None):\n    t = T.CallerStoreAndIngressTests(\"test_production_refuses_every_positive_control\")\n    t.setUp()\n    ctx = harness.append_route() if (ROUTE if route is None else route) else contextlib.nullcontext()\n    try:\n      with ctx:\n        if production_signers:   # the real (empty) TV/TVC signer file instead of the suite's TEST-ONLY signer\n            p = mock.patch.object(anchor, \"load_opened_signers\", T.PRODUCTION_LOAD_OPENED_SIGNERS); p.start(); t.addCleanup(p.stop)\n        fn(t)\n    except Exception as exc:\n        rows.append({\"subject\": fn.__name__.upper(), \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:200]})\n    finally:\n        t.doCleanups()\n# every case runs with #431's contract designation (the suite's fixture), except PRODUCTION_CONTRACT_* which uses the branch's own contract\ndef unanchored(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    t.chain_to_admission()\n    row(\"UNANCHORED_ROOT_VIA_BARE_EVALUATOR\", hne.evaluate(T.NODE, ledger_root=t.node, require_admission=True),\n        \"observational: the bare evaluator (not evaluate_anchored) ALLOWs any root it is handed\")\n    row(\"UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED\", t.evaluate())\ncase(unanchored, True)\ndef no_genesis(t):\n    t.chain_to_admission()\n    row(\"ROOT_WITHOUT_GENESIS_VIA_EVALUATE_ANCHORED\", t.evaluate())\ncase(no_genesis, True)\ndef head_mismatch(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"ORG_LEDGER_HEAD_NOT_THE_SUPPLIED_COPY\", t.evaluate(head=\"sha256:\" + \"0\" * 64))\ncase(head_mismatch)\ndef self_minted(t):\n    genesis = anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")[\"genesis\"]\n    anchor.anchor(t.node, t.org, T.NODE, T.opened_for(genesis))   # re-targeted, resealed, unsigned\n    t.chain_to_admission()\n    row(\"SELF_MINTED_ANCHOR_ON_CALLER_CREATED_ORG_LEDGER\", t.evaluate())\n    row(\"ANCHORED_ROOT_DEFAULT_TRANSPORT_STATE\", t.evaluate(),\n        \"same setup as rev 4 (unsigned self-minted anchor): the anchor refusal is reached before transport\")\n    row(\"ANCHORED_ROOT_TRANSPORT_NOT_YET_ENABLED\", t.evaluate(transport_state=\"NOT_YET_ENABLED\"))\ncase(self_minted, True)\ndef own_key(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    seed = hashlib.sha256(b\"lc probe: a caller's own seed\").digest()\n    anchor.anchor(t.node, t.org, T.NODE, T.sign_opened(T.STEGOS_OPENED, seed=seed, key_id=\"callers-own-key\"))\n    t.chain_to_admission()\n    row(\"SELF_SIGNED_OPENED_RECORD_WITH_CALLERS_OWN_KEY\", t.evaluate())\ncase(own_key, True)\ndef production_signers(t):\n    t.open_and_anchor()   # signed with the suite's TEST-ONLY signer\n    t.chain_to_admission()\n    row(\"TEST_SIGNED_OPENED_RECORD_UNDER_PRODUCTION_SIGNER_FILE\", t.evaluate(),\n        \"the TV/TVC signer file at this head lists no signer\")\ncase(production_signers, True)\ndef transport_isolated(t):\n    t.open_and_anchor()\n    t.chain_to_admission(transport=boundary.HTTP)\n    row(\"TRANSPORT_NOT_INTR_WITH_VALID_ANCHOR_DEFAULT_ARGUMENT\", t.evaluate(), \"E0 harness: TEST-ONLY signer\")\n    out = t.evaluate(transport_state=\"INSTALLED\")\n    row(\"TRANSPORT_ASSERTED_INSTALLED_NOT_OBSERVED\", out, \"E0 harness: TEST-ONLY signer; anchor %s\" % (out.get(\"anchor\") or {}).get(\"disposition\"))\ncase(transport_isolated)\ndef forged_ingress(t):\n    t.open_and_anchor()\n    t.chain_to_admission(transport=boundary.HTTP)\n    seen = [r for r in hne.read_chain(t.root)[0] if r[\"transition_class\"] in (boundary.ADMITTED_CLASS, boundary.REFUSED_CLASS)][0]\n    ev = dict(seen[\"evidence\"])\n    ev.update(transport=boundary.INTERLOCK_INTR, transport_state=\"INSTALLED\", node_endpoint={\"node_id\": T.NODE})\n    anchor._emitter().append(seen[\"transition_id\"] + \":caller-appended\", boundary.ADMITTED_CLASS, seen[\"receipt_sha256\"],\n                             hne.sha(ev), ev, \"NONE\", hb_epoch=10**12)\n    out = t.evaluate()\n    row(\"CALLER_APPENDED_INGRESS_RECORD_CLAIMING_INSTALLED_INTR\", out,\n        \"observational: the node ledger is the caller's; the ingress record is appended by the caller, not by node_ingress_boundary over an installed transport (E0 harness: TEST-ONLY signer); anchor %s, intr_carrier_refusal %s\" % ((out.get(\"anchor\") or {}).get(\"disposition\"), out.get(\"intr_carrier_refusal\")))\ncase(forged_ingress)\ndef identity(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"IDENTITY_CLAIMED_NODE_ID_WITHOUT_PROOF\", t.evaluate(claimed_node_id=T.NODE, prove=False))\n    row(\"IDENTITY_PROOF_SIGNED_BY_ANOTHER_KEY\", t.evaluate(identity_proof=t.prove(seed=hashlib.sha256(b\"lc probe: other identity seed\").digest())))\n    row(\"IDENTITY_CLAIMED_NODE_ID_DIFFERS_FROM_PROOF\", t.evaluate(claimed_node_id=\"SV-NODE-ffffffffffffffffffffffff\"))\ncase(identity)\ndef org_location(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"ORG_LEDGER_GIT_DIR_IS_A_PLAIN_DIRECTORY\", t.evaluate(git_dir=t.tree))\n    with mock.patch.object(location, \"CONTRACT_PATH\", T.ROOT / \".stegverse/transition-ledger/contract.json\"):\n        row(\"PRODUCTION_CONTRACT_HAS_NO_ORG_LEDGER_DESIGNATION\", t.evaluate())\ncase(org_location)\ndef caller_store_permanent(t):\n    # (a): a PERMANENT root anchored on a git object store the caller created and filled (PERMANENT anchors use no signer)\n    root = t.permanent_node(\"perm-node\")\n    own = hashlib.sha256(b\"lc probe: a caller's own head attester\").digest()\n    store, head = t.caller_store(\"copy\", with_anchor_of=root)\n    t.chain_to_admission()\n    row(\"PERMANENT_ROOT_ON_CALLER_CREATED_ORG_OBJECT_STORE\", t.evaluate_on(store, head, root, None),\n        \"real genesis copied plus the caller's own anchor pair, no head attestation\")\n    row(\"CALLER_STORE_ATTESTED_BY_CALLERS_OWN_KEY\", t.evaluate_on(store, head, root, harness.attest(store, seed=own, key_id=\"callers-own\")))\n    row(\"CALLER_STORE_ATTESTED_UNDER_THE_ROUTE_KEY_ID_WITH_OWN_SEED\", t.evaluate_on(store, head, root, harness.attest(store, seed=own, key_id=harness.ROUTE_REF[\"key_id\"])))\n    t.publish()\n    row(\"CALLER_STORE_WITH_THE_ROUTES_ATTESTATION_OF_THE_REAL_STORE_REPLAYED\", t.evaluate_on(store, head, root, harness.attest(t.git)))\n    minted, mhead = t.caller_store(\"minted\", own_genesis=True)\n    row(\"CALLER_STORE_WITH_ITS_OWN_GENESIS\", t.evaluate_on(minted, mhead, root, harness.attest(minted)),\n        \"even attested by the (TEST-ONLY) route key\")\n    with mock.patch.object(location, \"CONTRACT_PATH\", T.CONTRACT_431):\n        row(\"CONTRACT_WITHOUT_GENESIS_PIN\", t.evaluate_on(store, head, root, harness.attest(store)),\n            \"#431's contract copy (no expected_genesis_receipt_sha256)\")\ncase(caller_store_permanent, True)\ndef caller_store_permanent_forged_ingress(t):\n    # (c): no transport patch (InTr NOT_YET_ENABLED as on main); the caller appends its own NODE_INGRESS_ADMITTED\n    root = t.permanent_node(\"perm-node-2\")\n    anchor.anchor(root, t.org, T.NODE)\n    t.chain_to_admission(installed=False)\n    t.caller_appended_ingress()\n    store, head = t.caller_store(\"caller-everything\")\n    row(\"PERMANENT_CALLER_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH\", t.evaluate_on(store, head, root, None))\n    out = t.evaluate(t.endpoint(\"PERMANENT\", root))\n    row(\"ROUTE_ATTESTED_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH\", out,\n        \"anchor %s; intr_carrier_refusal %s\" % ((out.get(\"anchor\") or {}).get(\"disposition\"), out.get(\"intr_carrier_refusal\")))\ncase(caller_store_permanent_forged_ingress, True)\ndef positive(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"E0_POSITIVE_CONTROL_EPHEMERAL_TEST_SIGNER\", t.evaluate(), \"E0 harness: TEST-ONLY signer and #431 fixture contract\")\ncase(positive)\ndef production(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"PRODUCTION_HEAD_SIGNERS_E0_POSITIVE_CONTROL\", t.evaluate(),\n        \"outside append_route(): the real (empty) .stegverse/node-ledger/org-ledger-head-signers.v1.json\")\ncase(production, False, False)\ndef production_bare(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    t.chain_to_admission()\n    row(\"PRODUCTION_UNANCHORED_ROOT_VIA_BARE_EVALUATOR\", hne.evaluate(T.NODE, ledger_root=t.node, require_admission=True),\n        \"observational: production signer files; the bare evaluator takes any root it is handed\")\n    row(\"PRODUCTION_UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED\", t.evaluate())\ncase(production_bare, True, False)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n {root:sdk080}",
+   "command": "{python} -c import tempfile\nimport pathlib\nimport json, os, sys, tempfile, hashlib, subprocess\nfrom pathlib import Path\nfrom unittest import mock\nos.environ['STEGVERSE_REPO_LEDGER_ROOT'] = tempfile.mkdtemp(prefix='lc-anchor-ledger-')\nos.environ['STEGVERSE_GATEWAY_FORWARD_DB'] = os.path.join(tempfile.mkdtemp(prefix='lc-anchor-fwd-'), 'gateway-forward.db')\nsys.path[:0] = ['.']\nimport tests\nsys.path.append(sys.argv[1])\nfrom llm_adapter import endpoint_ledger_anchor as anchor\nfrom llm_adapter import healthy_node_evaluator as hne\nfrom llm_adapter import node_ingress_boundary as boundary\nfrom llm_adapter import org_ledger_location as location\nimport tests.test_endpoint_ledger_anchor as T\nfrom tests import org_ledger_harness as harness\nimport contextlib\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None):\n    r = {\"subject\": subject, \"disposition\": out.get(\"disposition\")}\n    for k in SIX + (\"reason\",):\n        if isinstance(out.get(k), str):\n            r[k] = out[k]\n    r[\"six_fields_present\"] = all(isinstance(out.get(k), str) and out[k].strip() for k in SIX) if out.get(\"disposition\") != \"ALLOW\" else None\n    if note:\n        r[\"note\"] = note\n    rows.append(r)\nROUTE = True   # rows run inside the TEST-ONLY append_route() harness (an admitted append route's stand-in) unless stated\ndef case(fn, production_signers=False, route=None):\n    t = T.CallerStoreAndIngressTests(\"test_production_refuses_every_positive_control\")\n    t.setUp()\n    ctx = harness.append_route() if (ROUTE if route is None else route) else contextlib.nullcontext()\n    try:\n      with ctx:\n        if production_signers:   # the real (empty) TV/TVC signer file instead of the suite's TEST-ONLY signer\n            p = mock.patch.object(anchor, \"load_opened_signers\", T.PRODUCTION_LOAD_OPENED_SIGNERS); p.start(); t.addCleanup(p.stop)\n        fn(t)\n    except Exception as exc:\n        rows.append({\"subject\": fn.__name__.upper(), \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:200]})\n    finally:\n        t.doCleanups()\n# every case runs with #431's contract designation (the suite's fixture), except PRODUCTION_CONTRACT_* which uses the branch's own contract\ndef unanchored(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    t.chain_to_admission()\n    row(\"UNANCHORED_ROOT_VIA_BARE_EVALUATOR\", hne.evaluate(T.NODE, ledger_root=t.node, require_admission=True),\n        \"observational: the bare evaluator (not evaluate_anchored) ALLOWs any root it is handed\")\n    row(\"UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED\", t.evaluate())\ncase(unanchored, True)\ndef no_genesis(t):\n    t.chain_to_admission()\n    row(\"ROOT_WITHOUT_GENESIS_VIA_EVALUATE_ANCHORED\", t.evaluate())\ncase(no_genesis, True)\ndef head_mismatch(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"ORG_LEDGER_HEAD_NOT_THE_SUPPLIED_COPY\", t.evaluate(head=\"sha256:\" + \"0\" * 64))\ncase(head_mismatch)\ndef self_minted(t):\n    genesis = anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")[\"genesis\"]\n    anchor.anchor(t.node, t.org, T.NODE, T.opened_for(genesis))   # re-targeted, resealed, unsigned\n    t.chain_to_admission()\n    row(\"SELF_MINTED_ANCHOR_ON_CALLER_CREATED_ORG_LEDGER\", t.evaluate())\n    row(\"ANCHORED_ROOT_DEFAULT_TRANSPORT_STATE\", t.evaluate(),\n        \"same setup as rev 4 (unsigned self-minted anchor): the anchor refusal is reached before transport\")\n    row(\"ANCHORED_ROOT_TRANSPORT_NOT_YET_ENABLED\", t.evaluate(transport_state=\"NOT_YET_ENABLED\"))\ncase(self_minted, True)\ndef own_key(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    seed = hashlib.sha256(b\"lc probe: a caller's own seed\").digest()\n    anchor.anchor(t.node, t.org, T.NODE, T.sign_opened(T.STEGOS_OPENED, seed=seed, key_id=\"callers-own-key\"))\n    t.chain_to_admission()\n    row(\"SELF_SIGNED_OPENED_RECORD_WITH_CALLERS_OWN_KEY\", t.evaluate())\ncase(own_key, True)\ndef production_signers(t):\n    t.open_and_anchor()   # signed with the suite's TEST-ONLY signer\n    t.chain_to_admission()\n    row(\"TEST_SIGNED_OPENED_RECORD_UNDER_PRODUCTION_SIGNER_FILE\", t.evaluate(),\n        \"the TV/TVC signer file at this head lists no signer\")\ncase(production_signers, True)\ndef transport_isolated(t):\n    t.open_and_anchor()\n    t.chain_to_admission(transport=boundary.HTTP)\n    row(\"TRANSPORT_NOT_INTR_WITH_VALID_ANCHOR_DEFAULT_ARGUMENT\", t.evaluate(), \"E0 harness: TEST-ONLY signer\")\n    out = t.evaluate(transport_state=\"INSTALLED\")\n    row(\"TRANSPORT_ASSERTED_INSTALLED_NOT_OBSERVED\", out, \"E0 harness: TEST-ONLY signer; anchor %s\" % (out.get(\"anchor\") or {}).get(\"disposition\"))\ncase(transport_isolated)\ndef forged_ingress(t):\n    t.open_and_anchor()\n    t.chain_to_admission(transport=boundary.HTTP)\n    seen = [r for r in hne.read_chain(t.root)[0] if r[\"transition_class\"] in (boundary.ADMITTED_CLASS, boundary.REFUSED_CLASS)][0]\n    ev = dict(seen[\"evidence\"])\n    ev.update(transport=boundary.INTERLOCK_INTR, transport_state=\"INSTALLED\", node_endpoint={\"node_id\": T.NODE})\n    anchor._emitter().append(seen[\"transition_id\"] + \":caller-appended\", boundary.ADMITTED_CLASS, seen[\"receipt_sha256\"],\n                             hne.sha(ev), ev, \"NONE\", hb_epoch=10**12)\n    out = t.evaluate()\n    row(\"CALLER_APPENDED_INGRESS_RECORD_CLAIMING_INSTALLED_INTR\", out,\n        \"observational: the node ledger is the caller's; the ingress record is appended by the caller, not by node_ingress_boundary over an installed transport (E0 harness: TEST-ONLY signer); anchor %s, intr_carrier_refusal %s\" % ((out.get(\"anchor\") or {}).get(\"disposition\"), out.get(\"intr_carrier_refusal\")))\ncase(forged_ingress)\ndef identity(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"IDENTITY_CLAIMED_NODE_ID_WITHOUT_PROOF\", t.evaluate(claimed_node_id=T.NODE, prove=False))\n    row(\"IDENTITY_PROOF_SIGNED_BY_ANOTHER_KEY\", t.evaluate(identity_proof=t.prove(seed=hashlib.sha256(b\"lc probe: other identity seed\").digest())))\n    row(\"IDENTITY_CLAIMED_NODE_ID_DIFFERS_FROM_PROOF\", t.evaluate(claimed_node_id=\"SV-NODE-ffffffffffffffffffffffff\"))\ncase(identity)\ndef org_location(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"ORG_LEDGER_GIT_DIR_IS_A_PLAIN_DIRECTORY\", t.evaluate(git_dir=t.tree))\n    with mock.patch.object(location, \"CONTRACT_PATH\", T.ROOT / \".stegverse/transition-ledger/contract.json\"):\n        row(\"PRODUCTION_CONTRACT_HAS_NO_ORG_LEDGER_DESIGNATION\", t.evaluate())\ncase(org_location)\ndef caller_store_permanent(t):\n    # (a): a PERMANENT root anchored on a git object store the caller created and filled (PERMANENT anchors use no signer)\n    root = t.permanent_node(\"perm-node\")\n    own = hashlib.sha256(b\"lc probe: a caller's own head attester\").digest()\n    store, head = t.caller_store(\"copy\", with_anchor_of=root)\n    t.chain_to_admission()\n    row(\"PERMANENT_ROOT_ON_CALLER_CREATED_ORG_OBJECT_STORE\", t.evaluate_on(store, head, root, None),\n        \"real genesis copied plus the caller's own anchor pair, no head attestation\")\n    row(\"CALLER_STORE_ATTESTED_BY_CALLERS_OWN_KEY\", t.evaluate_on(store, head, root, harness.attest(store, seed=own, key_id=\"callers-own\")))\n    row(\"CALLER_STORE_ATTESTED_UNDER_THE_ROUTE_KEY_ID_WITH_OWN_SEED\", t.evaluate_on(store, head, root, harness.attest(store, seed=own, key_id=harness.ROUTE_REF[\"key_id\"])))\n    t.publish()\n    row(\"CALLER_STORE_WITH_THE_ROUTES_ATTESTATION_OF_THE_REAL_STORE_REPLAYED\", t.evaluate_on(store, head, root, harness.attest(t.git)))\n    minted, mhead = t.caller_store(\"minted\", own_genesis=True)\n    row(\"CALLER_STORE_WITH_ITS_OWN_GENESIS\", t.evaluate_on(minted, mhead, root, harness.attest(minted)),\n        \"even attested by the (TEST-ONLY) route key\")\n    with mock.patch.object(location, \"CONTRACT_PATH\", T.CONTRACT_431):\n        row(\"CONTRACT_WITHOUT_GENESIS_PIN\", t.evaluate_on(store, head, root, harness.attest(store)),\n            \"#431's contract.json byte copy: expected_genesis_receipt_sha256 null\")\n    absent = json.loads(T.CONTRACT_431.read_text()); del absent[\"repository_ledger_location\"][\"expected_genesis_receipt_sha256\"]\n    ap = pathlib.Path(tempfile.mkdtemp(prefix=\"lc-probe-contract-\")) / \"contract-absent.json\"; ap.write_text(json.dumps(absent))\n    with mock.patch.object(location, \"CONTRACT_PATH\", ap):\n        row(\"CONTRACT_GENESIS_PIN_FIELD_ABSENT\", t.evaluate_on(store, head, root, harness.attest(store)),\n            \"#431's contract with the field removed\")\ncase(caller_store_permanent, True)\ndef caller_store_permanent_forged_ingress(t):\n    # (c): no transport patch (InTr NOT_YET_ENABLED as on main); the caller appends its own NODE_INGRESS_ADMITTED\n    root = t.permanent_node(\"perm-node-2\")\n    anchor.anchor(root, t.org, T.NODE)\n    t.chain_to_admission(installed=False)\n    t.caller_appended_ingress()\n    store, head = t.caller_store(\"caller-everything\")\n    row(\"PERMANENT_CALLER_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH\", t.evaluate_on(store, head, root, None))\n    out = t.evaluate(t.endpoint(\"PERMANENT\", root))\n    row(\"ROUTE_ATTESTED_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH\", out,\n        \"anchor %s; intr_carrier_refusal %s\" % ((out.get(\"anchor\") or {}).get(\"disposition\"), out.get(\"intr_carrier_refusal\")))\ncase(caller_store_permanent_forged_ingress, True)\ndef positive(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"E0_POSITIVE_CONTROL_EPHEMERAL_TEST_SIGNER\", t.evaluate(), \"E0 harness: TEST-ONLY signer and #431 fixture contract\")\ncase(positive)\ndef production(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"PRODUCTION_HEAD_SIGNERS_E0_POSITIVE_CONTROL\", t.evaluate(),\n        \"outside append_route(): the real (empty) .stegverse/node-ledger/org-ledger-head-signers.v1.json\")\ncase(production, False, False)\ndef production_bare(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    t.chain_to_admission()\n    row(\"PRODUCTION_UNANCHORED_ROOT_VIA_BARE_EVALUATOR\", hne.evaluate(T.NODE, ledger_root=t.node, require_admission=True),\n        \"observational: production signer files; the bare evaluator takes any root it is handed\")\n    row(\"PRODUCTION_UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED\", t.evaluate())\ncase(production_bare, True, False)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n {root:sdk080}",
    "exit_code": 0,
    "outcomes": [
     {
@@ -3881,13 +3886,26 @@
      "failed_predicate": "ORG_LEDGER_GENESIS_PINNED_BY_CONTRACT",
      "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
      "next_attempt": "when StegVerse-org/LLM-adapter#431 lands the repository_ledger_location designation (and the pinned org genesis) in the contract; event-driven, never on a timer",
-     "note": "#431's contract copy (no expected_genesis_receipt_sha256)",
+     "note": "#431's contract.json byte copy: expected_genesis_receipt_sha256 null",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162; blocked on StegVerse-org/LLM-adapter#431 (repository_ledger_location designation)",
      "reason": "ORG_LEDGER_GENESIS_NOT_PINNED",
      "required_evidence_or_repair": "repository_ledger_location.expected_genesis_receipt_sha256 in .stegverse/transition-ledger/contract.json: the org genesis receipt the registry designates (a field #431's contract shape has to add)",
      "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(...) once StegVerse-org/LLM-adapter#431's repository_ledger_location (with expected_genesis_receipt_sha256) is in .stegverse/transition-ledger/contract.json",
      "six_fields_present": true,
      "subject": "CONTRACT_WITHOUT_GENESIS_PIN"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ORG_LEDGER_GENESIS_PINNED_BY_CONTRACT",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "when StegVerse-org/LLM-adapter#431 lands the repository_ledger_location designation (and the pinned org genesis) in the contract; event-driven, never on a timer",
+     "note": "#431's contract with the field removed",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162; blocked on StegVerse-org/LLM-adapter#431 (repository_ledger_location designation)",
+     "reason": "ORG_LEDGER_GENESIS_NOT_PINNED",
+     "required_evidence_or_repair": "repository_ledger_location.expected_genesis_receipt_sha256 in .stegverse/transition-ledger/contract.json: the org genesis receipt the registry designates (a field #431's contract shape has to add)",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(...) once StegVerse-org/LLM-adapter#431's repository_ledger_location (with expected_genesis_receipt_sha256) is in .stegverse/transition-ledger/contract.json",
+     "six_fields_present": true,
+     "subject": "CONTRACT_GENESIS_PIN_FIELD_ABSENT"
     },
     {
      "disposition": "FAIL_CLOSED",
@@ -3952,12 +3970,12 @@
      "subject": "PRODUCTION_UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED"
     }
    ],
-   "pin": "StegVerse-org/LLM-adapter@a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "pin": "StegVerse-org/LLM-adapter@733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/anchor432-probe.out",
-   "raw_sha256": "sha256:c72d239362d01e331e2e588f001df51e58158ca18476321c3ae31cce129bee39",
+   "raw_sha256": "sha256:63e774ccbf1e6d7d26cdbf310719e6df72d3e56ec915a15fb73b84560c9d4163",
    "run_id": "anchor432-probe",
    "status": "OBSERVED",
-   "what": "LLM-adapter#432 @a2ee67e6 evaluate_anchored, rows inside the suite's TEST-ONLY append_route() harness (pinned-genesis contract fixture, TEST-ONLY head attester) unless named PRODUCTION_* (real, empty signer files): the rev-5 rows, the caller-store rows (no attestation, the caller's own key, the route key id with the caller's seed, the real store's attestation replayed, the caller's own genesis, a contract without the genesis pin), the caller-appended ingress rows with and without the transport patch, and production rows for the positive control and the bare evaluator; unanchored root (bare evaluator vs evaluate_anchored), no genesis, mismatched org head, rev-4 self-minted and default-transport rows, a NODE_LEDGER_OPENED signed with the caller's own key, a test-signed record under the real (empty) TV/TVC signer file, transport isolated (non-InTr ingress, asserted INSTALLED), a caller-appended ingress record, identity proof rows, org location rows (plain directory, the branch's own contract), a PERMANENT root on a caller-created org object store with and without the harness transport patch, an E0 positive control"
+   "what": "LLM-adapter#432 @73316297 evaluate_anchored, rows inside the suite's TEST-ONLY append_route() harness (pinned-genesis contract fixture, TEST-ONLY head attester) unless named PRODUCTION_* (real, empty signer files): the rev-5 rows, the caller-store rows (no attestation, the caller's own key, the route key id with the caller's seed, the real store's attestation replayed, the caller's own genesis, a contract without the genesis pin), the caller-appended ingress rows with and without the transport patch, and production rows for the positive control and the bare evaluator; unanchored root (bare evaluator vs evaluate_anchored), no genesis, mismatched org head, rev-4 self-minted and default-transport rows, a NODE_LEDGER_OPENED signed with the caller's own key, a test-signed record under the real (empty) TV/TVC signer file, transport isolated (non-InTr ingress, asserted INSTALLED), a caller-appended ingress record, identity proof rows, org location rows (plain directory, the branch's own contract), a PERMANENT root on a caller-created org object store with and without the harness transport patch, an E0 positive control"
   },
   {
    "command": "{python} -c import os,sys,tempfile,unittest; os.environ['STEGVERSE_REPO_LEDGER_ROOT']=tempfile.mkdtemp(prefix='lc-test-ledger-'); os.environ['STEGVERSE_GATEWAY_FORWARD_DB']=os.path.join(tempfile.mkdtemp(prefix='lc-test-fwd-'),'gateway-forward.db'); sys.path[:0]=['.']; import tests; sys.path.append(sys.argv[1]); sys.argv=[sys.argv[0],'-v','tests.test_endpoint_ledger_anchor']; unittest.main(module=None) {root:sdk080}",
@@ -3968,15 +3986,101 @@
      "passed": true,
      "skipped": 0,
      "subject": "ENDPOINT_LEDGER_ANCHOR_SUITE",
-     "tests_ran": 52
+     "tests_ran": 53
     }
    ],
-   "pin": "StegVerse-org/LLM-adapter@a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "pin": "StegVerse-org/LLM-adapter@733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/anchor432-tests.out",
-   "raw_sha256": "sha256:86cc28d6da8951ec5d8b1044da190697f80a92fd9531054344c5e4c86c99a8eb",
+   "raw_sha256": "sha256:817c57e4c9534f98d35425fbc3505c4bee2bdcbd542c07b3ce351d472cb02540",
    "run_id": "anchor432-tests",
    "status": "OBSERVED",
    "what": "LLM-adapter#432 endpoint ledger anchor suite"
+  },
+  {
+   "command": "{python} -c import sys,unittest; sys.path.insert(0,'.'); sys.argv=[sys.argv[0],'-v','tests.test_llm_adapter_ledger_merge_transfer']; unittest.main(module=None)",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "ALLOW",
+     "passed": true,
+     "skipped": 0,
+     "subject": "CONTRACT_431_GENESIS_PIN_SUITE",
+     "tests_ran": 15
+    }
+   ],
+   "pin": "StegVerse-org/LLM-adapter@27e2b9abd6956d871d5d3af390955f2a8288024c",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/contract431-genesis-pin-tests.out",
+   "raw_sha256": "sha256:d6870ab822209b4620e9df07fd2e224fed3be9b2559ed5f8c8d48269bd549712",
+   "run_id": "contract431-genesis-pin-tests",
+   "status": "OBSERVED",
+   "what": "LLM-adapter#431 onboarding suite incl. ExpectedGenesisPinTests (the contract pin is null with a note; the genesis digest moves with the clock-stamped observed_at)"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 28,
+     "path": ".stegverse/transition-ledger/contract.json",
+     "pattern": "\"expected_genesis_receipt_sha256\": null",
+     "text": "\"expected_genesis_receipt_sha256\": null,"
+    },
+    {
+     "line": 29,
+     "path": ".stegverse/transition-ledger/contract.json",
+     "pattern": "cannot be known before it is observed",
+     "text": "\"expected_genesis_note\": \"Null on purpose: the REPOSITORY_LEDGER_INITIALIZATION genesis receipt for repository-ledger/StegVerse-org/LLM-adapter cannot be known before it is observed. Its receipt_sha25"
+    },
+    {
+     "line": 251,
+     "path": "tests/test_llm_adapter_ledger_merge_transfer.py",
+     "pattern": "cannot be known before it is observed",
+     "text": "for needle in (\"cannot be known before it is observed\", \"observed_at\", \"ORG_LEDGER_GENESIS_NOT_PINNED\"):"
+    },
+    {
+     "line": 29,
+     "path": ".stegverse/transition-ledger/contract.json",
+     "pattern": "stamps from datetime.now\\(\\)",
+     "text": "\"expected_genesis_note\": \"Null on purpose: the REPOSITORY_LEDGER_INITIALIZATION genesis receipt for repository-ledger/StegVerse-org/LLM-adapter cannot be known before it is observed. Its receipt_sha25"
+    },
+    {
+     "line": 209,
+     "path": "tests/test_llm_adapter_ledger_merge_transfer.py",
+     "pattern": "^class ExpectedGenesisPinTests",
+     "text": "class ExpectedGenesisPinTests(unittest.TestCase):"
+    }
+   ],
+   "patterns": [
+    "\"expected_genesis_receipt_sha256\": null",
+    "cannot be known before it is observed",
+    "stamps from datetime.now\\(\\)",
+    "^class ExpectedGenesisPinTests"
+   ],
+   "pin": "StegVerse-org/LLM-adapter@27e2b9abd6956d871d5d3af390955f2a8288024c",
+   "run_id": "contract431-genesis-pin",
+   "status": "OBSERVED",
+   "what": "LLM-adapter#431 contract repository_ledger_location genesis pin (null) and note; #432's #431 fixture is a byte copy (sha256 d97cd4dc)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "3b7d0c8d0c97675e01d828ceeff452c00c375052",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/TVC#542",
+   "run_id": "pr-tvc542",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (ORG-LEDGER-HEAD-SIGNER-001: TV/TVC org-ledger head attest and signer public-key reference publish)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "00cc3798a3d5c078949099b3ee14b0470ce35d9b",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/TVC#540",
+   "run_id": "pr-tvc540",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (LC-KV-18: TV/TVC NODE_LEDGER_OPENED sign and signer publish)"
   },
   {
    "files_scanned": 165,
@@ -4042,10 +4146,10 @@
     "^    \"(pytest|pillow|pillow-heif)>=",
     "stegverse-sdk @ git"
    ],
-   "pin": "StegVerse-org/LLM-adapter@a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "pin": "StegVerse-org/LLM-adapter@733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "run_id": "anchor432-bare-evaluator-callers",
    "status": "OBSERVED",
-   "what": "LLM-adapter#432 @a2ee67e6: non-test callers of the bare healthy_node_evaluator.evaluate, and the dev extra the CI comment names (pyproject.toml, unchanged from LLM-adapter main @ece815b1)"
+   "what": "LLM-adapter#432 @73316297: non-test callers of the bare healthy_node_evaluator.evaluate, and the dev extra the CI comment names (pyproject.toml, unchanged from LLM-adapter main @ece815b1)"
   },
   {
    "baseRefName": "laneb/healthy-node-evaluator",
@@ -4632,7 +4736,7 @@
   },
   {
    "baseRefName": "main",
-   "headRefOid": "27e2b9abd6956d871d5d3af390955f2a8288024c",
+   "headRefOid": "72514c6b783ac9c5f1afe9a035d27129aebd9063",
    "isDraft": true,
    "pin": null,
    "pr": "StegVerse-org/LLM-adapter#431",
@@ -4643,7 +4747,7 @@
   },
   {
    "baseRefName": "main",
-   "headRefOid": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
+   "headRefOid": "74509feca062d5f17dbefe5730cbb1304ab6b318",
    "isDraft": true,
    "pin": null,
    "pr": "StegVerse-org/LLM-adapter#432",
@@ -5038,7 +5142,7 @@
    "sha256": "sha256:0c246c18e2817b5e7c63257eeb86aa9bd289abe9e49c7ceccdd3b8fe7966fda2"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "git_blob": "cd9b534a81d4b5bb9047e3133854694bf2f64247",
    "path": "llm_adapter/endpoint_ledger_anchor.py",
    "repo": "StegVerse-org/LLM-adapter",
@@ -5046,15 +5150,15 @@
    "sha256": "sha256:261966f309f7b5786b46b64d2fba14e48fd853bcfab879b75faf63195eb6f1eb"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
-   "git_blob": "7b7734d7a6a6624be2b30e21b2fcc161206505ab",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
+   "git_blob": "cf9978297038dd86274e4f652e72d29b124a462d",
    "path": "tests/test_endpoint_ledger_anchor.py",
    "repo": "StegVerse-org/LLM-adapter",
    "root": "llmad432",
-   "sha256": "sha256:5b53e0c621fccfff9328c95a58d2c1fc18d6cbb63f751b58a82ab1a9a2bfff64"
+   "sha256": "sha256:b182f7692922fc623b19c79304ef8ea5e661392408888cc3f5f8dfca9ee8c822"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "git_blob": "8fcab880d408577a82fae38b79a381b8470f315b",
    "path": "llm_adapter/org_ledger_location.py",
    "repo": "StegVerse-org/LLM-adapter",
@@ -5062,7 +5166,7 @@
    "sha256": "sha256:b51e6a8bd39ba6fd83044222a3858a2cb0c437020e3e9abbe97c4494d41f2681"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "git_blob": "55ae6d64f69cea62863ea2760f85c217744f69c1",
    "path": ".stegverse/node-ledger/node-ledger-opened-signers.v1.json",
    "repo": "StegVerse-org/LLM-adapter",
@@ -5070,7 +5174,7 @@
    "sha256": "sha256:478174cb89dc173e9bf7e8deb1db8b3881161e5a2fd10d6435298f74b6d3c63d"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "git_blob": "4ab2df841f2ad9f968cbab268b29c26bb2337ae1",
    "path": ".stegverse/node-ledger/org-ledger-head-signers.v1.json",
    "repo": "StegVerse-org/LLM-adapter",
@@ -5078,7 +5182,7 @@
    "sha256": "sha256:3be27ff079433995d5eba111a5bb8cbe058e492938fb2b7ca299fe7bf6b69297"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "git_blob": "4865ef5093cb6ba7bdd069f871aed41629d7d2dd",
    "path": "llm_adapter/intr_transport_carrier.py",
    "repo": "StegVerse-org/LLM-adapter",
@@ -5086,7 +5190,7 @@
    "sha256": "sha256:9f460c078f5aba3a25edfecaf7e240334d943c3bf0b0cecc5972fc59e47501bf"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "git_blob": "568300ebf5d0c7be5193e2732da4cb946cf80c5c",
    "path": "tests/org_ledger_harness.py",
    "repo": "StegVerse-org/LLM-adapter",
@@ -5094,7 +5198,7 @@
    "sha256": "sha256:3bbf7f7da563afd9e7a1da1ee8cdbb04219a655a3dcaff3d3a6b2190ce6db945"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "git_blob": "60f671192c8a48953f9e07fb6c7e5a29e8fe67b3",
    "path": "llm_adapter/node_ingress_boundary.py",
    "repo": "StegVerse-org/LLM-adapter",
@@ -5102,12 +5206,36 @@
    "sha256": "sha256:86bae0426956581b862dd085c4ac64bf0a4f7dc37b0309ca9d223a3306754339"
   },
   {
-   "commit": "a2ee67e65c3d1da83dd2d750d48ea8b282d7604e",
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
    "git_blob": "292de8e9c990839ba508ef1828fa3675758311ca",
    "path": "pyproject.toml",
    "repo": "StegVerse-org/LLM-adapter",
    "root": "llmad432",
    "sha256": "sha256:8547a0921e050f1ffb31bac3277a8211b39f31f9963b0a8866a066f8627b2beb"
+  },
+  {
+   "commit": "733162978292fbc7be3a562a4fa9f5bed4ada91e",
+   "git_blob": "c71b49602225e79d567387025e361638d60a1ab8",
+   "path": "tests/fixtures/node_receipts/contract_with_431_repository_ledger_location.json",
+   "repo": "StegVerse-org/LLM-adapter",
+   "root": "llmad432",
+   "sha256": "sha256:d97cd4dc978c7ea02f41137dc85bbf5eb74b2ea6595bc58513be57b4c125e89f"
+  },
+  {
+   "commit": "27e2b9abd6956d871d5d3af390955f2a8288024c",
+   "git_blob": "c71b49602225e79d567387025e361638d60a1ab8",
+   "path": ".stegverse/transition-ledger/contract.json",
+   "repo": "StegVerse-org/LLM-adapter",
+   "root": "llmad431",
+   "sha256": "sha256:d97cd4dc978c7ea02f41137dc85bbf5eb74b2ea6595bc58513be57b4c125e89f"
+  },
+  {
+   "commit": "27e2b9abd6956d871d5d3af390955f2a8288024c",
+   "git_blob": "58ff116b9bdc651cc7cc710acdceb058622e95c6",
+   "path": "tests/test_llm_adapter_ledger_merge_transfer.py",
+   "repo": "StegVerse-org/LLM-adapter",
+   "root": "llmad431",
+   "sha256": "sha256:be5abaa77759a08249f5e0e8d3d55e63b0501f0ddae83d82bd50f6c678929f92"
   },
   {
    "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",

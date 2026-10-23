@@ -95,7 +95,21 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
-        self.assertIn("a2ee67e65c3d1da83dd2d750d48ea8b282d7604e", anc["e0_terminal"]["by"])
+        self.assertIn("733162978292fbc7be3a562a4fa9f5bed4ada91e", anc["e0_terminal"]["by"])
+        # revision 7: the null genesis pin (Lane B) and the EPHEMERAL signer (TV/TVC) are separate blockers of one item;
+        # the org-ledger head signer is an external registered task (ORG-LEDGER-HEAD-SIGNER-001), not a scoped task here
+        self.assertEqual([b["id"] for b in anc["allow_path"]["blockers"]],
+                         ["ORG_GENESIS_PIN_NULL", "EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED"])
+        self.assertEqual([r["ref"] for r in anc["external_dependency_refs"]], ["ORG-LEDGER-HEAD-SIGNER-001"])
+        self.assertTrue(anc["external_dependency_refs"][0]["owner"].startswith("GitHub Product lane"))
+        self.assertIn("LC-KV-13 finish point (a PERMANENT node) waits on it", anc["external_dependency_refs"][0]["evidence"])
+        res = next(r for r in d["items"] if r["id"] == "H-KV-ENDPOINT-LEDGER-ANCHOR")
+        self.assertEqual(sorted(r.get("blocker") for r in res["refusals"] if r["failure_code"] == "LADDER_ALLOW_PATH_UNBOUND"),
+                         ["EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED", "ORG_GENESIS_PIN_NULL"])
+        self.assertEqual([r["external_ref"] for r in res["refusals"] if r["failure_code"] == "LADDER_EXTERNAL_DEPENDENCY_PENDING"],
+                         ["ORG-LEDGER-HEAD-SIGNER-001"])
+        for s_ in ("CONTRACT_WITHOUT_GENESIS_PIN", "CONTRACT_GENESIS_PIN_FIELD_ABSENT"):
+            self.assertEqual(anc["required_outcomes"][s_], ["FAIL_CLOSED"], s_)
         for s_ in ("PERMANENT_ROOT_ON_CALLER_CREATED_ORG_OBJECT_STORE", "CALLER_APPENDED_INGRESS_RECORD_CLAIMING_INSTALLED_INTR",
                    "PERMANENT_CALLER_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH", "CALLER_STORE_WITH_ITS_OWN_GENESIS",
                    "CALLER_STORE_WITH_THE_ROUTES_ATTESTATION_OF_THE_REAL_STORE_REPLAYED", "PRODUCTION_HEAD_SIGNERS_E0_POSITIVE_CONTROL"):
@@ -144,10 +158,11 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertTrue(t15["owning_lane"].startswith("Lane D"))
         self.assertNotIn("LC-KV-16", tasks)  # closed in revision 6: (a), (b) and (c) are FAIL_CLOSED at #432 @a2ee67e6
         self.assertIn("1cbad77eaff3254ea30fb9d3377d40abcf6728df", t15["required_repair"])
-        self.assertIn("a2ee67e65c3d1da83dd2d750d48ea8b282d7604e", t15["required_repair"])
+        self.assertIn("733162978292fbc7be3a562a4fa9f5bed4ada91e", t15["required_repair"])
+        self.assertIn("clean-venv runs in their PR bodies", t15["required_repair"])
         self.assertIn("b93b06a48e679290e5ff153d1da8f42ab9627465", t15["required_repair"])
         self.assertIn("witnesses that refusal; it does not bind an ALLOW path", t15["required_repair"])
-        self.assertIn("re-vendor runtime/intr_pinned/ from #432 @a2ee67e6", t15["proposed_resolution"])
+        self.assertIn("re-vendor runtime/intr_pinned/ from #432's admitted head", t15["proposed_resolution"])
         self.assertNotIn("LC-KV-10", tasks)
 
     def test_empty_tvc_signer_file_is_a_class_c_tvc_task(self):
@@ -158,8 +173,24 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(t["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
         self.assertEqual(t["failure_code"], "LADDER_ALLOW_PATH_UNBOUND")
         self.assertIn("ac9a1532102452ea75badc0ee2b902b92cecd1b7", t["required_repair"])
-        self.assertIn("org-ledger-head-signers.v1.json", t["required_repair"])
         self.assertIn("node-ledger-opened-signers.v1.json", t["required_repair"])
+        self.assertEqual(t["blocker"], "EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED")
+        self.assertIn("narrowed back", t["required_repair"])
+        self.assertIn("ORG-LEDGER-HEAD-SIGNER-001", t["required_repair"])
+        self.assertNotIn("org-ledger-head-signers", t["next_attempt"] + t["proposed_resolution"])
+        g = tasks["LC-KV-19"]  # the null org genesis pin: Lane B, next attempt on the genesis-observed record
+        self.assertEqual(g["blocker"], "ORG_GENESIS_PIN_NULL")
+        self.assertEqual(g["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
+        self.assertTrue(g["owning_lane"].startswith("InTr and Mesh Destinations lane (Lane B"))
+        self.assertEqual(g["failure_class"]["class"], "B")
+        self.assertIn("genesis-observed record", g["next_attempt"])
+        self.assertIn("27e2b9abd6956d871d5d3af390955f2a8288024c", g["required_repair"])
+        self.assertIn("Observation, not a verdict", g["required_repair"])
+        self.assertIn("LC-GOV-04", g["required_repair"])
+        for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
+            self.assertTrue(str(g.get(k) or "").strip(), k)
+        self.assertIn("ORG-LEDGER-HEAD-SIGNER-001", tasks["LC-KV-13"]["required_repair"])
+        self.assertIn("mint-both case", tasks["LC-KV-07"]["proposed_resolution"])
         for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
             self.assertTrue(str(t.get(k) or "").strip(), k)
         self.assertNotIn("LC-KV-17", tasks)  # closed in revision 6: cvk#258 @b93b06a4 refuses the unsigned anchor
@@ -403,6 +434,43 @@ class Refusals(unittest.TestCase):
         t["task_id"] = "LC-KV-99"
         self.tasks.append(t)
         self.assertEqual(self.run_()["consistency"], "FAIL_CLOSED")
+
+    def test_allow_path_blockers_are_separate_gaps_with_their_own_tasks(self):
+        it = self.item(self.allowed)
+        it["allow_path"] = {"state": "UNBOUND", "evidence": "two things", "blockers": [
+            {"id": "B1", "evidence": "first"}, {"id": "B2", "evidence": "second"}]}
+        tmpl = next(t for t in self.tasks if t["task_id"] == "LC-KV-15")
+        for b in ("B1", "B2"):
+            self.tasks.append(dict(copy.deepcopy(tmpl), task_id="LC-KV-9" + b[-1], items=[self.allowed], blocker=b))
+        d = self.run_()
+        res = next(r for r in d["items"] if r["id"] == self.allowed)
+        self.assertEqual(sorted(r.get("blocker") for r in res["refusals"]), ["B1", "B2"])
+        self.assertEqual(d["consistency"], "ALLOW", d["consistency_refusals"])
+        self.tasks = [t for t in self.tasks if t["task_id"] != "LC-KV-92"]  # one blocker uncovered
+        self.assertEqual(self.run_()["consistency"], "FAIL_CLOSED")
+        self.tasks.append(dict(copy.deepcopy(tmpl), task_id="LC-KV-93", items=[self.allowed], blocker="B1"))
+        self.assertEqual(self.run_()["consistency"], "FAIL_CLOSED")  # two tasks on one (item, blocker)
+
+    def test_malformed_blockers_fail_closed(self):
+        for bad in ([], [{"id": "B1"}], [{"id": "B1", "evidence": "x"}, {"id": "B1", "evidence": "y"}]):
+            self.item(self.allowed)["allow_path"] = {"state": "UNBOUND", "evidence": "x", "blockers": bad}
+            self.assertIn("LADDER_ALLOW_PATH_BLOCKER_MALFORMED", _codes(self.run_(), self.allowed))
+
+    def test_external_dependency_ref_is_pending_and_needs_no_scoped_task(self):
+        self.item(self.allowed)["external_dependency_refs"] = [{"ref": "X-001", "owner": "Lane X", "evidence": "e"}]
+        d = self.run_()
+        self.assertEqual(_verdict(d, self.allowed), "FAIL_CLOSED")
+        res = next(r for r in d["items"] if r["id"] == self.allowed)
+        self.assertEqual([(r["failure_code"], r["external_ref"]) for r in res["refusals"]],
+                         [("LADDER_EXTERNAL_DEPENDENCY_PENDING", "X-001")])
+        self.assertEqual(d["consistency"], "ALLOW", d["consistency_refusals"])
+        t = dict(copy.deepcopy(next(t for t in self.tasks if t["task_id"] == "LC-KV-15")), task_id="LC-KV-99",
+                 failure_code="LADDER_EXTERNAL_DEPENDENCY_PENDING", items=[self.allowed])
+        self.tasks.append(t)  # the referenced registered task covers it; a scoped task here is a mismatch
+        self.assertEqual(self.run_()["consistency"], "FAIL_CLOSED")
+        for bad in ([], [{"ref": "X-001", "owner": ""}], [{"ref": "X", "owner": "o", "evidence": "e"}] * 2):
+            self.item(self.allowed)["external_dependency_refs"] = bad
+            self.assertIn("LADDER_EXTERNAL_DEPENDENCY_REF_MALFORMED", _codes(self.run_(), self.allowed))
 
     def test_wrong_schema_fails_closed(self):
         self.decl["schema"] = "x"

@@ -27,7 +27,15 @@ also run through its _item_problems. This module adds only what a cross-reposito
 * an item or scoped task may carry an optional failure_class {"class": "A"|"B"|"C", "reason": non-empty} using the
   ecosystem's classes (A: decided by an existing manifest transition or a repair inside the item's own surface; B: a
   missing capability a lane builds; C: waits on a ruling or decision). It is recorded, never changes a verdict, and a
-  malformed one is FAIL_CLOSED LADDER_FAILURE_CLASS_MALFORMED (item) or LADDER_SCOPED_TASK_MISMATCH (task).
+  malformed one is FAIL_CLOSED LADDER_FAILURE_CLASS_MALFORMED (item) or LADDER_SCOPED_TASK_MISMATCH (task);
+* an unbound allow_path may name its independent blockers (allow_path.blockers: [{"id", "evidence"}], distinct ids):
+  each is its own LADDER_ALLOW_PATH_UNBOUND refusal carrying "blocker", and a scoped task for it names the same
+  "blocker", so different owners can each hold one blocker of one item (tasks sharing a failure code cover disjoint
+  (item, blocker) pairs); malformed blockers are FAIL_CLOSED LADDER_ALLOW_PATH_BLOCKER_MALFORMED;
+* an item may reference a dependency registered elsewhere as its own task (external_dependency_refs: [{"ref", "owner",
+  "evidence"}], distinct refs): each is FAIL_CLOSED LADDER_EXTERNAL_DEPENDENCY_PENDING carrying "external_ref"; the
+  referenced registered task covers it, so no scoped task here may carry that code; a malformed reference is
+  FAIL_CLOSED LADDER_EXTERNAL_DEPENDENCY_REF_MALFORMED.
 
 Pure over the supplied documents: stdlib, no clock, no network, no LLM. Verdicts: ALLOW, DENY, FAIL_CLOSED.
 """
@@ -90,6 +98,23 @@ def refusal(disposition: str, code: str, predicate: str, repair: str, owning_goa
     return {"disposition": disposition, "failure_code": code, "failed_predicate": predicate,
             "required_evidence_or_repair": repair, "retry_entrypoint": retry, "owning_existing_goal": owning_goal,
             "next_attempt": nxt, **detail}
+
+
+def _blockers_ok(v: Any) -> bool:
+    return (isinstance(v, list) and bool(v)
+            and all(isinstance(b, Mapping) and set(b) == {"id", "evidence"}
+                    and all(isinstance(b[k], str) and b[k].strip() for k in ("id", "evidence")) for b in v)
+            and len({b["id"] for b in v}) == len(v))
+
+
+def _external_refs_ok(v: Any) -> bool:
+    return (isinstance(v, list) and bool(v)
+            and all(isinstance(r, Mapping) and set(r) == {"ref", "owner", "evidence"}
+                    and all(isinstance(r[k], str) and r[k].strip() for k in ("ref", "owner", "evidence")) for r in v)
+            and len({r["ref"] for r in v}) == len(v))
+
+
+EXTERNAL_CODE = "LADDER_EXTERNAL_DEPENDENCY_PENDING"
 
 
 def _strings(v: Any):
@@ -240,10 +265,19 @@ def evaluate_item(goal: Mapping[str, Any], item: Any, obs: Mapping[str, Any]) ->
     ap = item.get("allow_path")
     if e0 is not None and not (isinstance(ap, Mapping) and ap.get("state") in ("OBSERVED_ALLOW", "BOUND")
                                and isinstance(ap.get("by"), str) and ap["by"].strip()):
-        bad.append(refusal("FAIL_CLOSED", "LADDER_ALLOW_PATH_UNBOUND", "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
-                           "give the component an evidence input or transition through which the receipt it waits for "
-                           "turns the item ALLOW", owning, "on the next observe run", item=name,
-                           evidence=(ap or {}).get("evidence") if isinstance(ap, Mapping) else None))
+        blockers = ap.get("blockers") if isinstance(ap, Mapping) else None
+        if blockers is not None and not _blockers_ok(blockers):
+            bad.append(refusal("FAIL_CLOSED", "LADDER_ALLOW_PATH_BLOCKER_MALFORMED", "ALLOW_PATH_BLOCKERS_ARE_ID_AND_EVIDENCE",
+                               "allow_path.blockers is a non-empty list of {\"id\", \"evidence\"} with distinct ids",
+                               owning, "re-run check", item=name))
+            blockers = None
+        for b in blockers or [None]:
+            extra = {"blocker": b["id"]} if b else {}
+            bad.append(refusal("FAIL_CLOSED", "LADDER_ALLOW_PATH_UNBOUND", "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
+                               "give the component an evidence input or transition through which the receipt it waits "
+                               "for turns the item ALLOW", owning, "on the next observe run", item=name,
+                               evidence=b["evidence"] if b else ((ap or {}).get("evidence") if isinstance(ap, Mapping)
+                                                                 else None), **extra))
 
     # 6. a finish handoff appends an organization-ledger receipt
     if item.get("finish_handoff") and not (isinstance(item.get("ledger_binding"), Mapping)
@@ -258,6 +292,19 @@ def evaluate_item(goal: Mapping[str, Any], item: Any, obs: Mapping[str, Any]) ->
         bad.append(refusal("FAIL_CLOSED", "LADDER_DEPENDENCY_NOT_ADMITTED", "HANDOFF_SURFACE_ADMITTED",
                            "admit the dependency through its own exact-head admission", owning,
                            "on the dependency's admission event", item=name, evidence=d))
+
+    # 7b. a dependency registered elsewhere as its own task (covered there, not by a scoped task here)
+    ext = item.get("external_dependency_refs")
+    if ext is not None and not _external_refs_ok(ext):
+        bad.append(refusal("FAIL_CLOSED", "LADDER_EXTERNAL_DEPENDENCY_REF_MALFORMED", "EXTERNAL_REF_IS_REF_OWNER_EVIDENCE",
+                           "external_dependency_refs is a non-empty list of {\"ref\", \"owner\", \"evidence\"} with "
+                           "distinct refs", owning, "re-run check", item=name))
+    elif ext:
+        for r in ext:
+            bad.append(refusal("FAIL_CLOSED", EXTERNAL_CODE, "EXTERNAL_REGISTERED_DEPENDENCY_ADMITTED",
+                               "admit " + r["ref"] + " (its own registered task, owned by " + r["owner"] + ")", owning,
+                               "on " + r["ref"] + "'s admission event", item=name, external_ref=r["ref"],
+                               owner=r["owner"], evidence=r["evidence"]))
 
     # 8. an optional failure classification is well formed
     if "failure_class" in item and not _failure_class_ok(item["failure_class"]):
@@ -308,33 +355,36 @@ def evaluate(decl: Mapping[str, Any], obs: Mapping[str, Any], tasks: list[Mappin
               and isinstance(t.get("proposed_resolution"), str) and t["proposed_resolution"].strip()
               and ("finish_point" not in t or (isinstance(t["finish_point"], str) and t["finish_point"].strip()))
               and ("failure_class" not in t or _failure_class_ok(t["failure_class"]))
+              and ("blocker" not in t or (isinstance(t["blocker"], str) and t["blocker"].strip()))
               and t.get("task_id") not in ids_seen)
         if ok:
             ids_seen.add(t["task_id"])
-            others = {i for o in by_code.get(t["failure_code"], []) for i in o["items"]}
-            ok = not (others & set(t["items"]))
+            others = {(i, o.get("blocker")) for o in by_code.get(t["failure_code"], []) for i in o["items"]}
+            ok = not (others & {(i, t.get("blocker")) for i in t["items"]})
         if not ok:
             problems.append(refusal("FAIL_CLOSED", "LADDER_SCOPED_TASK_MISMATCH", "SCOPED_TASK_HAS_SIX_FIELDS_AND_LANE",
                                     "scoped tasks carry the six fields, owning lane, items and proposed resolution; a "
                                     "finish_point, when present, is a non-empty string; a failure_class, when present, is "
-                                    "A, B or C with a reason; tasks sharing a failure code "
-                                    "cover disjoint items", CHECK_GOAL, "re-run check",
+                                    "A, B or C with a reason; a blocker, when present, is a non-empty string; tasks "
+                                    "sharing a failure code cover disjoint (item, blocker) pairs", CHECK_GOAL, "re-run check",
                                     task=t.get("task_id")))
             continue
         by_code.setdefault(t["failure_code"], []).append(t)
-    need: dict[str, set[str]] = {}
+    need: dict[str, set] = {}
     for r in results:
         for f in r["refusals"]:
-            need.setdefault(f["failure_code"], set()).add(r["id"])
+            if f["failure_code"] != EXTERNAL_CODE:   # covered by the referenced registered task
+                need.setdefault(f["failure_code"], set()).add((r["id"], f.get("blocker")))
         codes = {f["failure_code"] for f in r["refusals"]}
         r["scoped_tasks"] = sorted({t["task_id"] for c in codes for t in by_code.get(c, []) if r["id"] in t["items"]})
     for code, its in sorted(need.items()):
-        listed = {i for t in by_code.get(code, []) for i in t["items"]}
+        listed = {(i, t.get("blocker")) for t in by_code.get(code, []) for i in t["items"]}
         if listed != its:
+            fmt = lambda xs: sorted(i if b is None else i + " [" + b + "]" for i, b in xs)
             problems.append(refusal("FAIL_CLOSED", "LADDER_SCOPED_TASK_MISMATCH", "EVERY_GAP_HAS_A_SCOPED_TASK",
-                                    "scoped tasks for " + code + " listing exactly " + ", ".join(sorted(its)), CHECK_GOAL,
+                                    "scoped tasks for " + code + " listing exactly " + ", ".join(fmt(its)), CHECK_GOAL,
                                     "re-run check", gap_code=code,
-                                    task=sorted(t["task_id"] for t in by_code.get(code, [])), listed=sorted(listed)))
+                                    task=sorted(t["task_id"] for t in by_code.get(code, [])), listed=fmt(listed)))
     for code in sorted(set(by_code) - set(need)):
         problems.append(refusal("FAIL_CLOSED", "LADDER_SCOPED_TASK_MISMATCH", "SCOPED_TASK_COVERS_A_GAP",
                                 "drop the scoped task: no item carries " + code, CHECK_GOAL, "re-run check",
