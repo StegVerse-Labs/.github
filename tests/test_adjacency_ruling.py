@@ -204,6 +204,78 @@ class AdjacencyRulingTests(unittest.TestCase):
                     "pkg/run_me.py", "pkg/exec_me.py", "pkg/structural_validator_candidate.py"):
             self.assertIn(rel, closure, rel)
 
+    # -- stub-seeded packages: __init__ left out only when every path loads under a provable stub -------------
+    ENSURE = ("import importlib, sys, types\nfrom pathlib import Path\n"
+              "def _sdk_module(name):\n    package = sys.modules.get('pkg')\n"
+              "    if package is None or not hasattr(package, '__path__'):\n"
+              "        package = types.ModuleType('pkg')\n        package.__path__ = [str(Path(__file__).parent)]\n"
+              "        sys.modules['pkg'] = package\n    return importlib.import_module(f'pkg.{name}')\n"
+              "def run():\n    return _sdk_module('verifier')\n")
+    UNCOND = ("import importlib, sys, types\n"
+              "def run():\n    stub = types.ModuleType('pkg')\n    stub.__path__ = ['pkg']\n"
+              "    sys.modules['pkg'] = stub\n    return importlib.import_module('pkg.verifier')\n")
+    BY_PATH = ("import importlib.util\nfrom pathlib import Path\nROOT = Path(__file__).resolve().parents[1]\n"
+               "spec = importlib.util.spec_from_file_location('g', ROOT / 'pkg/gate.py')\n")
+
+    def stub_closure(self, gate, test=None, extra=None):
+        files = dict(FILES, **{"tests/test_fp.py": test or self.BY_PATH, "pkg/gate.py": gate,
+                               "pkg/__init__.py": "from . import danger\n", "pkg/danger.py": "D = 1\n",
+                               "pkg/verifier.py": "from .helper import H\n", "pkg/helper.py": "H = 1\n",
+                               "pkg/other.py": "O = 1\n"}, **(extra or {}))
+        root, _ = self.fp(files)
+        notes = {}
+        return ar.static_closure(root, "tests/test_fp.py", notes), notes
+
+    def assert_stub(self, closure) -> None:
+        self.assertIn("pkg/verifier.py", closure)
+        self.assertIn("pkg/helper.py", closure)  # relative import inside the stub-only module
+        self.assertNotIn("pkg/__init__.py", closure)
+        self.assertNotIn("pkg/danger.py", closure)
+
+    def assert_init(self, closure) -> None:
+        self.assertIn("pkg/verifier.py", closure)
+        self.assertIn("pkg/__init__.py", closure)
+        self.assertIn("pkg/danger.py", closure)
+
+    def test_stub_seeded_ensure_idiom_excludes_init(self) -> None:
+        closure, notes = self.stub_closure(self.ENSURE)
+        self.assert_stub(closure)
+        self.assertEqual(notes["stub_contexts"]["pkg/helper.py"], ["S:pkg"])
+        self.assertEqual(notes["stub_contexts_disabled_by"], [])
+
+    def test_stub_seeded_unconditionally_excludes_init(self) -> None:
+        self.assert_stub(self.stub_closure(self.UNCOND)[0])
+
+    def test_normal_import_elsewhere_keeps_init(self) -> None:
+        self.assert_init(self.stub_closure(self.ENSURE, self.BY_PATH + "import pkg.other\n")[0])
+        # the stub-only module reached normally too: its relative imports run under the real package
+        self.assert_init(self.stub_closure(self.ENSURE, self.BY_PATH + "from pkg import verifier\n")[0])
+
+    def test_conditional_seeding_keeps_init(self) -> None:
+        gate = self.UNCOND.replace("    stub = ", "    if os.environ.get('SEED'):\n        stub = ").replace(
+            "    stub.__path__", "        stub.__path__").replace("    sys.modules['pkg'] = stub",
+                                                                 "        sys.modules['pkg'] = stub")
+        self.assert_init(self.stub_closure("import os\n" + gate)[0])
+
+    def test_non_constant_or_late_or_pathless_seeding_keeps_init(self) -> None:
+        self.assert_init(self.stub_closure(self.UNCOND.replace("sys.modules['pkg']", "sys.modules[NAME]")
+                                           + "NAME = 'pkg'\n")[0])
+        self.assert_init(self.stub_closure(self.UNCOND.replace("types.ModuleType('pkg')", "types.ModuleType(N)")
+                                           + "N = 'pkg'\n")[0])
+        late = ("import importlib, sys, types\ndef run():\n    m = importlib.import_module('pkg.verifier')\n"
+                "    stub = types.ModuleType('pkg')\n    stub.__path__ = []\n    sys.modules['pkg'] = stub\n    return m\n")
+        self.assert_init(self.stub_closure(late)[0])
+        self.assert_init(self.stub_closure(self.UNCOND.replace("    stub.__path__ = ['pkg']\n", ""))[0])
+        other_fn = ("import importlib, sys, types\ndef seed():\n    stub = types.ModuleType('pkg')\n"
+                    "    stub.__path__ = []\n    sys.modules['pkg'] = stub\n"
+                    "def run():\n    seed()\n    return importlib.import_module('pkg.verifier')\n")
+        self.assert_init(self.stub_closure(other_fn)[0])
+
+    def test_removal_from_sys_modules_in_the_closure_keeps_init(self) -> None:
+        closure, notes = self.stub_closure(self.ENSURE + "def reset():\n    sys.modules.pop('pkg', None)\n")
+        self.assert_init(closure)
+        self.assertEqual(notes["stub_contexts_disabled_by"], [("pkg/gate.py", 13)])
+
     def assert_unresolved(self, gate, test=None) -> None:
         cand = candidate()
         self.put(cand)

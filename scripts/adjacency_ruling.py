@@ -396,8 +396,148 @@ def _abs(module: _Module, p: Any) -> Path:
     return p if p.is_absolute() else (module.path.parent / p)
 
 
-def dynamic_loads(root: Path, path: Path, tree: ast.Module) -> tuple[list[str], list[Path], list[dict[str, Any]], set[str]]:
-    """(module names, files, unresolved sites, module-private loader functions) of the by-name loads in one file."""
+# --- stub-seeded packages ----------------------------------------------------------------------------------------
+# importlib.import_module("P.x") runs P/__init__.py only when "P" is not yet in sys.modules. A function that, before
+# the load and on every path, installs sys.modules["P"] = types.ModuleType("P") with __path__ set therefore loads
+# P.x without P's __init__. Recognised only with literal package names, as straight-line statements of the loading
+# function's own body that precede the load, or as an `if` (no else) whose test is false only when "P" is already in
+# sys.modules (`X is None` / `not X` for X = sys.modules.get("P"), or `"P" not in sys.modules`, as one disjunct of
+# side-effect-free terms) and whose body seeds unconditionally. Anything else seeds nothing (conservative).
+_PURE_CALLS = {"hasattr", "isinstance", "getattr", "len"}
+
+
+def _const_str(node: ast.AST | None) -> str | None:
+    return node.value if isinstance(node, ast.Constant) and isinstance(node.value, str) else None
+
+
+def _is_sys_modules(node: ast.AST, aliases: dict[str, str]) -> bool:
+    return _qual(node, aliases) == "sys.modules"
+
+
+def _touches_sys_modules(node: ast.AST, aliases: dict[str, str]) -> bool:
+    return any(isinstance(n, ast.Attribute) and _is_sys_modules(n, aliases) for n in ast.walk(node))
+
+
+def _pure(node: ast.AST, aliases: dict[str, str]) -> bool:
+    for n in ast.walk(node):
+        if isinstance(n, ast.Call) and _qual(n.func, aliases) not in _PURE_CALLS:
+            return False
+        if isinstance(n, (ast.NamedExpr, ast.Lambda, ast.Await, ast.Yield, ast.YieldFrom)):
+            return False
+    return True
+
+
+def _absent_implying(test: ast.AST, getvars: dict[str, str], aliases: dict[str, str]) -> set[str]:
+    """Packages P such that `test` is true whenever P is not in sys.modules."""
+    if not _pure(test, aliases):
+        return set()
+    terms = test.values if isinstance(test, ast.BoolOp) and isinstance(test.op, ast.Or) else [test]
+    out = set()
+    for t in terms:
+        if (isinstance(t, ast.Compare) and len(t.ops) == 1 and isinstance(t.ops[0], ast.Is)
+                and isinstance(t.left, ast.Name) and t.left.id in getvars
+                and isinstance(t.comparators[0], ast.Constant) and t.comparators[0].value is None):
+            out.add(getvars[t.left.id])
+        elif isinstance(t, ast.UnaryOp) and isinstance(t.op, ast.Not) and isinstance(t.operand, ast.Name) \
+                and t.operand.id in getvars:
+            out.add(getvars[t.operand.id])
+        elif (isinstance(t, ast.Compare) and len(t.ops) == 1 and isinstance(t.ops[0], ast.NotIn)
+              and _const_str(t.left) and _is_sys_modules(t.comparators[0], aliases)):
+            out.add(_const_str(t.left))
+    return out
+
+
+def _seeds(stmts: list[ast.stmt], aliases: dict[str, str], getvars: dict[str, str] | None = None) -> set[str]:
+    """Packages installed in sys.modules as a stub with __path__ by straight-line `stmts`, on every path."""
+    getvars = dict(getvars or {})
+    stub: dict[str, str] = {}          # variable -> P for X = types.ModuleType("P")
+    has_path: set[str] = set()         # P whose stub got __path__
+    installed: dict[str, str] = {}     # P -> "var:X" or "direct"
+    seeded: set[str] = set()
+
+    def rebinds(stmt: ast.stmt) -> set[str]:
+        names = set()
+        for n in ast.walk(stmt):
+            if isinstance(n, ast.Name) and isinstance(n.ctx, (ast.Store, ast.Del)):
+                names.add(n.id)
+        return names
+
+    for stmt in stmts:
+        handled = False
+        if isinstance(stmt, ast.Assign) and len(stmt.targets) == 1:
+            target, value = stmt.targets[0], stmt.value
+            if isinstance(target, ast.Name) and isinstance(value, ast.Call) and not value.keywords \
+                    and _qual(value.func, aliases) == "types.ModuleType" and len(value.args) == 1 and _const_str(value.args[0]):
+                for P, how in list(installed.items()):
+                    if how == f"var:{target.id}":
+                        del installed[P]
+                stub[target.id] = _const_str(value.args[0])
+                getvars.pop(target.id, None)
+                handled = True
+            elif isinstance(target, ast.Name) and isinstance(value, ast.Call) and not value.keywords \
+                    and isinstance(value.func, ast.Attribute) and value.func.attr == "get" \
+                    and _is_sys_modules(value.func.value, aliases) and len(value.args) == 1 and _const_str(value.args[0]):
+                getvars[target.id] = _const_str(value.args[0])
+                stub.pop(target.id, None)
+                handled = True
+            elif isinstance(target, ast.Attribute) and target.attr == "__path__":
+                obj = target.value
+                if isinstance(obj, ast.Name) and obj.id in stub:
+                    has_path.add(stub[obj.id]); handled = True
+                elif isinstance(obj, ast.Subscript) and _is_sys_modules(obj.value, aliases) and _const_str(obj.slice) \
+                        and installed.get(_const_str(obj.slice)) is not None:
+                    has_path.add(_const_str(obj.slice)); handled = True
+            elif isinstance(target, ast.Subscript) and _is_sys_modules(target.value, aliases) and _const_str(target.slice):
+                P = _const_str(target.slice)
+                if isinstance(value, ast.Name) and stub.get(value.id) == P:
+                    installed[P] = f"var:{value.id}"
+                    handled = True
+                elif isinstance(value, ast.Call) and _qual(value.func, aliases) == "types.ModuleType" \
+                        and len(value.args) == 1 and _const_str(value.args[0]) == P and not value.keywords:
+                    installed[P] = "direct"
+                    has_path.discard(P)
+                    handled = True
+                else:
+                    installed.pop(P, None); seeded.discard(P); handled = True
+        elif isinstance(stmt, ast.If) and not stmt.orelse:
+            absent = _absent_implying(stmt.test, getvars, aliases)
+            inner = _seeds(stmt.body, aliases, getvars)
+            seeded |= absent & inner
+            for name in rebinds(stmt):
+                stub.pop(name, None); getvars.pop(name, None)
+            # a branch that seeds P conditionally leaves the earlier state of other packages unknown
+            if _touches_sys_modules(stmt, aliases):
+                for P in list(installed):
+                    if P not in (absent & inner):
+                        installed.pop(P); seeded.discard(P)
+            handled = True
+        if not handled:
+            for name in rebinds(stmt):
+                stub.pop(name, None); getvars.pop(name, None)
+            if _touches_sys_modules(stmt, aliases):  # any other sys.modules use: nothing proven any more
+                installed.clear(); seeded.clear()
+        for P in list(installed):
+            if P in has_path:
+                seeded.add(P)
+    return seeded
+
+
+def _seeded_before(module: "_Module", call: ast.Call) -> set[str]:
+    """Packages provably stub-seeded before `call`, by its own function's body."""
+    fn = module.owner.get(id(call))
+    if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return set()
+    for k, stmt in enumerate(fn.body):
+        if any(n is call for n in ast.walk(stmt)):  # the statements before it run first, on every path
+            return _seeds(fn.body[:k], module.aliases)
+    return set()
+
+
+def dynamic_loads(root: Path, path: Path, tree: ast.Module, stubbed: list[tuple[str, str]] | None = None
+                  ) -> tuple[list[str], list[Path], list[dict[str, Any]], set[str]]:
+    """(module names, files, unresolved sites, module-private loader functions) of the by-name loads in one file.
+    With `stubbed`, a module load under a package stub-seeded before it is appended there as (name, package)
+    instead of to the names."""
     module = _Module(root, path, tree)
     rel = path.relative_to(root).as_posix()
     names: list[str] = []
@@ -412,6 +552,7 @@ def dynamic_loads(root: Path, path: Path, tree: ast.Module) -> tuple[list[str], 
             (k.value for k in call.keywords if k.arg == keyword), None)
         fn = module.owner.get(id(call))
         site = {"path": rel, "line": call.lineno, "call": q}
+        start = len(names)
         try:
             if expr is None:
                 raise _Unknown("no target argument")
@@ -419,6 +560,7 @@ def dynamic_loads(root: Path, path: Path, tree: ast.Module) -> tuple[list[str], 
                 expr = expr.args[0]
             vals = module.values(expr, fn)
             if kind == "module":
+                seeded = _seeded_before(module, call) if stubbed is not None and q.endswith("import_module") else set()
                 package = next((k.value for k in call.keywords if k.arg == "package"), None)
                 if package is None and q.endswith("import_module") and len(call.args) > 1:
                     package = call.args[1]
@@ -435,6 +577,11 @@ def dynamic_loads(root: Path, path: Path, tree: ast.Module) -> tuple[list[str], 
                             names.append(".".join(base + ([v.lstrip(".")] if v.lstrip(".") else [])))
                     else:
                         names.append(v)
+                if seeded:
+                    for i in range(len(names) - 1, -1, -1):
+                        under = next((P for P in sorted(seeded) if names[i].startswith(P + ".")), None)
+                        if under and i >= start:
+                            stubbed.append((names.pop(i), under))
             elif kind == "path":
                 for v in vals:
                     if not isinstance(v, (str, Path)) or isinstance(v, _Table):
@@ -462,66 +609,165 @@ def dynamic_loads(root: Path, path: Path, tree: ast.Module) -> tuple[list[str], 
     return names, files, unresolved, module.private_loaders
 
 
-def static_closure(root: Path, test_rel: str) -> dict[str, str]:
-    """{repository path: sha256} of the test file and every repository file it reaches statically."""
+def _file_edges(root: Path, path: Path, tree: ast.Module, rel: str) -> dict[str, Any]:
+    absolute: list[str] = []
+    relative: list[str] = []
+    files: list[Path] = []
+    aliases = _aliases(tree)
+    keys: set[int] = set()  # a string used only as a sys.modules key or a stub's name is not an import
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Subscript) and _is_sys_modules(node.value, aliases):
+            keys.add(id(node.slice))
+        elif isinstance(node, ast.Call) and node.args and (
+                _qual(node.func, aliases) == "types.ModuleType"
+                or (isinstance(node.func, ast.Attribute) and node.func.attr == "get"
+                    and _is_sys_modules(node.func.value, aliases))):
+            keys.add(id(node.args[0]))
+        elif isinstance(node, ast.Call) and node.args and _qual(node.func, aliases) == "importlib.import_module":
+            keys.add(id(node.args[0]))  # resolved by dynamic_loads below, with its stub context
+        elif isinstance(node, ast.Compare) and len(node.ops) == 1 and isinstance(node.ops[0], (ast.In, ast.NotIn)) \
+                and _is_sys_modules(node.comparators[0], aliases):
+            keys.add(id(node.left))
+        elif isinstance(node, ast.Assign) and any(isinstance(t, ast.Attribute) and t.attr == "__path__"
+                                                  for t in node.targets):
+            keys.update(id(n) for n in ast.walk(node.value) if isinstance(n, ast.Constant))  # directories, not imports
+    for node in ast.walk(tree):
+        if id(node) in keys:
+            continue
+        if isinstance(node, ast.Import):
+            absolute += [a.name for a in node.names]
+        elif isinstance(node, ast.ImportFrom):
+            (relative if node.level else absolute).extend(_resolve_from(root, path, node))
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str):
+            text = node.value.strip()
+            if text and len(text) < 300 and "\n" not in text:
+                candidate = (root / text)
+                try:
+                    if candidate.resolve().is_file() and root in candidate.resolve().parents:
+                        files.append(candidate.resolve())
+                except OSError:
+                    pass
+                if all(part.isidentifier() for part in text.split(".")):
+                    absolute.append(text)
+    stubbed: list[tuple[str, str]] = []
+    dyn_names, dyn_files, dyn_unresolved, loaders = dynamic_loads(root, path, tree, stubbed)
+    for target in dyn_files:
+        try:
+            target = target.resolve()
+        except OSError:
+            continue
+        if target.is_file() and root in target.parents:
+            files.append(target)
+    return {"absolute": absolute + dyn_names, "relative": relative, "stubbed": stubbed, "files": files,
+            "unresolved": dyn_unresolved, "loaders": loaders}
+
+
+def _sys_modules_removals(tree: ast.Module) -> list[int]:
+    """Lines that can remove an entry from sys.modules (del / pop / popitem / clear, rebinding sys.modules) or
+    re-execute a package (importlib.reload). Assignments keep the key present, so they cannot drop a stub."""
+    aliases = _aliases(tree)
+    out = []
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Subscript) and _is_sys_modules(n.value, aliases) and isinstance(n.ctx, ast.Del):
+            out.append(n.lineno)
+        elif isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and _is_sys_modules(n.func.value, aliases) \
+                and n.func.attr in ("pop", "popitem", "clear", "__delitem__"):
+            out.append(n.lineno)
+        elif isinstance(n, ast.Call) and _qual(n.func, aliases) in ("importlib.reload", "imp.reload"):
+            out.append(n.lineno)
+        elif isinstance(n, (ast.Assign, ast.AugAssign, ast.AnnAssign, ast.Delete)):
+            targets = n.targets if isinstance(n, (ast.Assign, ast.Delete)) else [n.target]
+            if any(_is_sys_modules(t, aliases) for t in targets):
+                out.append(n.lineno)
+    return out
+
+
+def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = None) -> dict[str, str]:
+    """{repository path: sha256} of the test file and every repository file it reaches statically.
+
+    Every reached file carries the contexts it is reached in: N (normal) or S:<package> (loaded under a package that
+    was stub-seeded in sys.modules before the load). A package's __init__.py joins the closure when an import below it
+    runs in context N, and is left out only for imports made under its stub: the stub-seeded load itself and the
+    relative imports of modules reached in that S context. A module also reached in context N keeps every __init__.
+    If any closure file writes sys.modules other than through a recognised seed (which could remove the stub before
+    a later import), stub contexts are not used at all."""
     root = root.resolve()
     start = (root / test_rel).resolve()
     _require(start.is_file() and root in start.parents, "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
              "FINISH_POINT_TEST_PRESENT_AT_PINNED_COMMIT",
              f"the finish-point test {test_rel} must exist at the pinned commit of the finish-point repository")
-    seen: dict[str, str] = {}
+    edges: dict[str, dict[str, Any] | None] = {}
     trees: dict[str, ast.Module] = {}
-    private_loaders: dict[str, set[str]] = {}
-    unresolved: list[dict[str, Any]] = []
-    queue = [start]
-    while queue:
-        path = queue.pop()
+    data_of: dict[str, str] = {}
+
+    def load(path: Path) -> dict[str, Any] | None:
         rel = path.relative_to(root).as_posix()
-        if rel in seen:
-            continue
-        data = path.read_bytes()
-        seen[rel] = sha(data)
-        if path.suffix != ".py":
-            continue
-        try:
-            tree = ast.parse(data.decode("utf-8"), filename=rel)
-        except (SyntaxError, UnicodeDecodeError) as exc:
-            raise RulingRefusal("ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE", "FINISH_POINT_CLOSURE_PARSES",
-                                f"{rel} must parse so its closure can be computed", str(exc))
-        names: list[str] = []
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                names += [a.name for a in node.names]
-            elif isinstance(node, ast.ImportFrom):
-                names += _resolve_from(root, path, node)
-            elif isinstance(node, ast.Constant) and isinstance(node.value, str):
-                text = node.value.strip()
-                if text and len(text) < 300 and "\n" not in text:
-                    candidate = (root / text)
-                    try:
-                        if candidate.resolve().is_file() and root in candidate.resolve().parents:
-                            queue.append(candidate.resolve())
-                    except OSError:
-                        pass
-                    if all(part.isidentifier() for part in text.split(".")):
-                        names.append(text)
-        dyn_names, dyn_files, dyn_unresolved, loaders = dynamic_loads(root, path, tree)
-        names += dyn_names
-        unresolved += dyn_unresolved
-        if loaders:
-            private_loaders[rel] = loaders
-        trees[rel] = tree
-        for target in dyn_files:
-            try:
-                target = target.resolve()
-            except OSError:
-                continue
-            if target.is_file() and root in target.parents:
-                queue.append(target)
-        for name in names:
+        if rel not in data_of:
+            data = path.read_bytes()
+            data_of[rel] = sha(data)
+            if path.suffix != ".py":
+                edges[rel] = None
+            else:
+                try:
+                    tree = ast.parse(data.decode("utf-8"), filename=rel)
+                except (SyntaxError, UnicodeDecodeError) as exc:
+                    raise RulingRefusal("ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE", "FINISH_POINT_CLOSURE_PARSES",
+                                        f"{rel} must parse so its closure can be computed", str(exc))
+                trees[rel] = tree
+                edges[rel] = _file_edges(root, path, tree, rel)
+        return edges[rel]
+
+    def walk(use_stubs: bool) -> dict[str, set[str]]:
+        contexts: dict[str, set[str]] = {}
+        queue: list[tuple[Path, str]] = [(start, "N")]
+
+        def add(name: str, ctx: str, under: str | None) -> None:
             parts = name.split(".")
-            for i in range(1, len(parts) + 1):  # a package's __init__ runs on import of anything below it
-                queue += _module_files(root, ".".join(parts[:i]))
+            for i in range(1, len(parts) + 1):  # a package's __init__ runs on import of anything below it ...
+                prefix = ".".join(parts[:i])
+                if under and (under == prefix or under.startswith(prefix + ".")):
+                    continue  # ... unless the package is already a stub in sys.modules
+                queue.extend((f, ctx) for f in _module_files(root, prefix))
+
+        while queue:
+            path, ctx = queue.pop()
+            rel = path.relative_to(root).as_posix()
+            if ctx in contexts.setdefault(rel, set()):
+                continue
+            contexts[rel].add(ctx)
+            e = load(path)
+            if e is None:
+                continue
+            for name in e["absolute"]:
+                add(name, "N", None)
+            pkg = ctx[2:] if ctx.startswith("S:") else None
+            for name in e["relative"]:
+                if pkg and name.startswith(pkg + "."):
+                    add(name, ctx, pkg)
+                else:
+                    add(name, "N", None)
+            for name, under in e["stubbed"]:
+                if use_stubs:
+                    add(name, f"S:{under}", under)
+                else:
+                    add(name, "N", None)
+            queue.extend((f, "N") for f in e["files"])
+        return contexts
+
+    contexts = walk(True)
+    if any(c.startswith("S:") for cs in contexts.values() for c in cs):
+        foreign = [(rel, line) for rel, t in trees.items() if rel in contexts for line in _sys_modules_removals(t)]
+        if foreign:
+            contexts = walk(False)
+        if receipt is not None:
+            receipt["stub_contexts_disabled_by"] = sorted(foreign)[:20]
+    if receipt is not None:
+        receipt["stub_contexts"] = {rel: sorted(cs) for rel, cs in sorted(contexts.items())
+                                    if any(c.startswith("S:") for c in cs)}
+    seen = {rel: data_of[rel] for rel in contexts}
+    private_loaders = {rel: edges[rel]["loaders"] for rel in contexts if edges[rel] and edges[rel]["loaders"]}
+    unresolved = [u for rel in contexts if edges[rel] for u in edges[rel]["unresolved"]]
+    trees = {rel: t for rel, t in trees.items() if rel in contexts}
     # a module-private loader resolved from its own call sites must not be reachable from another closure file
     for owner_rel, loaders in private_loaders.items():
         for rel, tree in trees.items():
@@ -844,7 +1090,8 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
              "FINISH_POINT_SOURCE_AT_PINNED_COMMIT",
              f"the finish-point root must be {repository} checked out at {fp['source_commit']}", {"observed_head": head})
     pin_rows = verify_pins(finish_point_root, head, test_rel, pins, routes)
-    closure = static_closure(finish_point_root, test_rel)
+    closure_notes: dict[str, Any] = {}
+    closure = static_closure(finish_point_root, test_rel, closure_notes)
 
     rows = []
     for cand in candidates:
@@ -890,7 +1137,9 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
                  f"{did} must be a ruled candidate and a TASK dependency of {task_id}'s record", dep)
     return {"task_id": task_id, "ruling_digest": digest, "ruled_by": ruling["ruled_by"],
             "finish_point": {"repository": repository, "source_commit": head, "test": test_rel,
-                             "closure": closure, "closure_digest": sha(canon(closure))},
+                             "closure": closure, "closure_digest": sha(canon(closure)),
+                             "stub_seeded_contexts": closure_notes.get("stub_contexts", {}),
+                             "stub_contexts_disabled_by": closure_notes.get("stub_contexts_disabled_by", [])},
             "candidates": rows, "consumes_dependencies": consumes, "condition_c": "HELD",
             "consumed_pins": pin_rows, "protected_paths": routes,
             "condition_pin": "HELD" if pin_rows else "NOT_APPLICABLE",
