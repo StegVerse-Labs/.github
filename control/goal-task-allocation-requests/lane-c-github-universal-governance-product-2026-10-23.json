@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "LANE-C-GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-ALLOCATION-REQUEST-20261023",
+  "state": "PROPOSED",
+  "issue": "StegVerse-org/.github#164",
+  "proposed_task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "proposed_task_id_source": "StegVerse-Labs/.github#3012 proposal; StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md",
+  "cosv_task_vector": null,
+  "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 320,
+  "owning_task_found": false,
+  "scope": "PROPOSED: Release StegVerse Governance as an independently installable GitHub product whose only product claim is a verifiable receipt chain built on customer-supplied manifest constraints. ALL ACTIONS BY MANIFEST and state-transition dependent; every attempted transition returns ALLOW, DENY or FAIL_CLOSED, and missing runtime observation is never converted into ALLOW. The customer retains its data, credentials, infrastructure and execution. Preserve canonical SDK manifest/route semantics, StegCore/StegGate evaluation semantics, Interlock/InTr transition authority, TV/TVC credential and release authority, Organization ledger observed reality and Master Records reconstruction. Introduce no external machine, hosted runtime, scheduler, second device or new framework/dependency, and reduce existing dependencies. Make no safety, compliance or authority claim.",
+  "scope_digest": "sha256:27909085ddc6d08f35d5ebb58cfaf6ed8152f2f3c2826b015a932c28334ed764",
+  "requested_action": "Check the identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "handoff_ref": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md"
+}
