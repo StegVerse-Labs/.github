@@ -8954,6 +8954,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_test_suite_ratchet_repair_task.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_test_suite_ratchet_repair_task.py"
+   ],
+   "tests": [
+    "tests/test_test_suite_ratchet_repair_task.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_transition_disposition_invariant.py",
    "inputs": [],
    "surfaces": [
@@ -16249,6 +16261,13 @@
    "data/test-suite-baseline.json",
    "scripts/test_suite_baseline_drift.py",
    "tests/__init__.py"
+  ],
+  "tests/test_test_suite_ratchet_repair_task.py": [
+   ".stegverse/test-sets.json",
+   "data/test-suite-ratchet-repair-task.json",
+   "scripts/evaluate_admission_job_observation.py",
+   "scripts/test_set_selection.py",
+   "scripts/test_suite_baseline_drift.py"
   ],
   "tests/test_transition_disposition_invariant.py": [
    "scripts/validate_transition_disposition.py"
