@@ -27,15 +27,6 @@
   "workers"
  ],
  "inputs": {
-  "jsonschema": {
-   "check": {
-    "kind": "python_module",
-    "module": "jsonschema"
-   },
-   "finish_point": "a declared jsonschema install (approved) in the job that runs this set, and its tests run and pass at the exact head",
-   "owner": "StegVerse-org/.github#166 (P4 lane; a dependency decision for Rigel)",
-   "repair": "jsonschema is not vendored, not in a requirements file and not installed by any test workflow in this repository; adding it is a new dependency and needs Rigel's approval"
-  },
   "labs-ledger-ref": {
    "check": {
     "contains": "a5bb54d81893b392a3ce28182986fc39857807e1",
@@ -110,16 +101,6 @@
    ]
   },
   {
-   "file": "tests/test_hil_explanation_experiment.py",
-   "id": "tests/test_hil_explanation_experiment.py[jsonschema]",
-   "inputs": [
-    "jsonschema"
-   ],
-   "tests": [
-    "tests/test_hil_explanation_experiment.py::SchemaOnlyConsumers::test_jsonschema_rejects_contradictory_trials"
-   ]
-  },
-  {
    "file": "tests/test_mir_sv_exp3_cross_owner_wire_binding.py",
    "id": "tests/test_mir_sv_exp3_cross_owner_wire_binding.py[stegverse-sdk]",
    "inputs": [
@@ -167,17 +148,6 @@
    ],
    "tests": [
     "tests/test_sv_change_base_state_readback_component.py::BaseStateReadbackTests::test_known_answer_live_labs_head"
-   ]
-  },
-  {
-   "file": "tests/test_user_facing_explanation.py",
-   "id": "tests/test_user_facing_explanation.py[jsonschema]",
-   "inputs": [
-    "jsonschema"
-   ],
-   "tests": [
-    "tests/test_user_facing_explanation.py::SchemaOnlyConsumers::test_jsonschema_rejects_contradictory_artifacts",
-    "tests/test_user_facing_explanation.py::VerifiedReceiptLocatorSchema::test_verified_receipt_locator_is_required_by_jsonschema"
    ]
   }
  ],

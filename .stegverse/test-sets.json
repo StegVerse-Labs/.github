@@ -3,18 +3,9 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "62799e30be0a4cde20d355eb58754fa83d8db930b89a9dd145eae45d762efe45"
+  "spec_sha256": "c6abe502b34aee10a8d14c851927353fea4cb68f41c4b85c43c8f1382ac65a1f"
  },
  "inputs": {
-  "jsonschema": {
-   "check": {
-    "kind": "python_module",
-    "module": "jsonschema"
-   },
-   "finish_point": "a declared jsonschema install (approved) in the job that runs this set, and its tests run and pass at the exact head",
-   "owner": "StegVerse-org/.github#166 (P4 lane; a dependency decision for Rigel)",
-   "repair": "jsonschema is not vendored, not in a requirements file and not installed by any test workflow in this repository; adding it is a new dependency and needs Rigel's approval"
-  },
   "labs-ledger-ref": {
    "check": {
     "contains": "a5bb54d81893b392a3ce28182986fc39857807e1",
@@ -3408,9 +3399,7 @@
   },
   {
    "always": false,
-   "exclude": [
-    "tests/test_hil_explanation_experiment.py::SchemaOnlyConsumers::test_jsonschema_rejects_contradictory_trials"
-   ],
+   "exclude": [],
    "id": "tests/test_hil_explanation_experiment.py",
    "inputs": [],
    "surfaces": [
@@ -3418,20 +3407,6 @@
    ],
    "tests": [
     "tests/test_hil_explanation_experiment.py"
-   ]
-  },
-  {
-   "always": false,
-   "exclude": [],
-   "id": "tests/test_hil_explanation_experiment.py[jsonschema]",
-   "inputs": [
-    "jsonschema"
-   ],
-   "surfaces": [
-    "tests/test_hil_explanation_experiment.py"
-   ],
-   "tests": [
-    "tests/test_hil_explanation_experiment.py::SchemaOnlyConsumers::test_jsonschema_rejects_contradictory_trials"
    ]
   },
   {
@@ -7099,6 +7074,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_stdlib_json_schema.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_stdlib_json_schema.py"
+   ],
+   "tests": [
+    "tests/test_stdlib_json_schema.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_stdlib_test_runner_workflows.py",
    "inputs": [],
    "surfaces": [
@@ -9194,10 +9181,7 @@
   },
   {
    "always": false,
-   "exclude": [
-    "tests/test_user_facing_explanation.py::SchemaOnlyConsumers::test_jsonschema_rejects_contradictory_artifacts",
-    "tests/test_user_facing_explanation.py::VerifiedReceiptLocatorSchema::test_verified_receipt_locator_is_required_by_jsonschema"
-   ],
+   "exclude": [],
    "id": "tests/test_user_facing_explanation.py",
    "inputs": [],
    "surfaces": [
@@ -9205,21 +9189,6 @@
    ],
    "tests": [
     "tests/test_user_facing_explanation.py"
-   ]
-  },
-  {
-   "always": false,
-   "exclude": [],
-   "id": "tests/test_user_facing_explanation.py[jsonschema]",
-   "inputs": [
-    "jsonschema"
-   ],
-   "surfaces": [
-    "tests/test_user_facing_explanation.py"
-   ],
-   "tests": [
-    "tests/test_user_facing_explanation.py::SchemaOnlyConsumers::test_jsonschema_rejects_contradictory_artifacts",
-    "tests/test_user_facing_explanation.py::VerifiedReceiptLocatorSchema::test_verified_receipt_locator_is_required_by_jsonschema"
    ]
   },
   {
@@ -13441,7 +13410,8 @@
    "data/hil-explanation-experiment/results.json",
    "data/user-facing-explanation/fixtures.d/**",
    "schemas/hil-explanation-trial-record.v1.schema.json",
-   "scripts/hil_explanation_experiment.py"
+   "scripts/hil_explanation_experiment.py",
+   "scripts/stdlib_json_schema.py"
   ],
   "tests/test_hil_intr_materialization_consumer.py": [
    "scripts/consume_hil_intr_materialization_request.py"
@@ -15342,6 +15312,16 @@
    "data/canonical-task-registry.json",
    "docs/STCM_CHF_THERMODYNAMIC_WITNESS_REGISTRATION_MIRROR_HANDOFF.md"
   ],
+  "tests/test_stdlib_json_schema.py": [
+   "schemas/hil-explanation-trial-record.v1.schema.json",
+   "schemas/user-facing-explanation.v1.schema.json",
+   "scripts/stdlib_json_schema.py",
+   "tests/fixtures/**",
+   "tests/fixtures/stdlib-json-schema/**",
+   "tests/fixtures/stdlib-json-schema/agreement-corpus.json",
+   "tests/test_hil_explanation_experiment.py",
+   "tests/test_user_facing_explanation.py"
+  ],
   "tests/test_stdlib_test_runner_workflows.py": [
    ".github/workflows/**"
   ],
@@ -16375,6 +16355,7 @@
    "data/user-facing-explanation/fixtures.d/**",
    "schemas/user-facing-explanation.v1.schema.json",
    "scripts/render_user_facing_explanation_examples.py",
+   "scripts/stdlib_json_schema.py",
    "scripts/user_facing_explanation.py"
   ],
   "tests/test_va_conversational_runtime_gateway_start.py": [

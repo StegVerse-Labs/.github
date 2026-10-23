@@ -75,10 +75,12 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           RTC014_LIVE_LABS_REPO: ${{ github.workspace }}
         run: |
+          # the sealed selection binds head_sha (this merge ref), its parents, base_sha and the PR head
           base=()
-          if [ "$EVENT_NAME" = "pull_request" ]; then base=(--base "$BASE_SHA"); fi
+          if [ "$EVENT_NAME" = "pull_request" ]; then base=(--base "$BASE_SHA" --pr-head "$HEAD_SHA"); fi
           python scripts/test_set_selection.py select --manifest .stegverse/test-sets.json \
             --spec .stegverse/test-set-spec.json "${base[@]}" --head HEAD \
             --retry-entrypoint ".github/workflows/test-suite-ratchet.yml ratchet" \

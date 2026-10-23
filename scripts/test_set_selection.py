@@ -328,6 +328,22 @@ def input_available(root: Path, decl: Mapping[str, Any], python: str, env: Mappi
 
 # -- selection -----------------------------------------------------------------------------------------------
 
+def resolve(root: Path, rev: str | None) -> str | None:
+    """The exact commit a revision names here, or None."""
+    if not rev:
+        return None
+    done = subprocess.run(["git", "rev-parse", "--verify", "--quiet", f"{rev}^{{commit}}"], cwd=root,
+                          capture_output=True, text=True)
+    return done.stdout.strip() if done.returncode == 0 and done.stdout.strip() else None
+
+
+def parents(root: Path, sha: str | None) -> list[str]:
+    if not sha:
+        return []
+    done = subprocess.run(["git", "rev-list", "--parents", "-n", "1", sha], cwd=root, capture_output=True, text=True)
+    return done.stdout.split()[1:] if done.returncode == 0 else []
+
+
 def changed(root: Path, base: str, head: str) -> list[str] | None:
     done = subprocess.run(["git", "diff", "--name-only", "--no-renames", f"{base}...{head}"], cwd=root,
                           capture_output=True, text=True)
@@ -339,10 +355,29 @@ def changed(root: Path, base: str, head: str) -> list[str] | None:
 def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, manifest_path: str,
            spec: Mapping[str, Any] | None, spec_path: str | None, base: str | None, head: str | None,
            python: str = sys.executable, env: Mapping[str, str] | None = None, retry: str = "",
-           goal: str = DEFAULT_GOAL) -> dict:
+           goal: str = DEFAULT_GOAL, pr_head: str | None = None) -> dict:
     env = os.environ if env is None else env
     nxt = "the next run of this job at the exact head"
     rows: list[dict] = []
+    # The record binds the exact commits it was computed for: the head the suite runs on (for a pull request,
+    # GitHub's merge ref), its parents, the base, and the pull request head the merge ref was built from.
+    head_sha = resolve(root, head or "HEAD")
+    base_sha = resolve(root, base)
+    head_parents = parents(root, head_sha)
+    if head_sha is None:
+        rows.append(six("TEST_SET_SELECTION_HEAD_UNRESOLVED", "SELECTION_IS_BOUND_TO_AN_EXACT_HEAD_COMMIT",
+                        f"--head {head or 'HEAD'} names no commit in this checkout; select on the exact head",
+                        retry, goal, nxt, blocking=True))
+    if base and base_sha is None:
+        rows.append(six("TEST_SET_SELECTION_BASE_UNRESOLVED", "SELECTION_IS_BOUND_TO_AN_EXACT_BASE_COMMIT",
+                        f"--base {base} names no commit in this checkout; fetch the base (fetch-depth: 0)",
+                        retry, goal, nxt, blocking=True))
+    if pr_head is not None and head_sha is not None and pr_head not in ([head_sha] + head_parents[1:]):
+        rows.append(six("TEST_SET_SELECTION_HEAD_IS_NOT_THE_PULL_REQUEST_HEAD",
+                        "SELECTION_HEAD_IS_THE_PULL_REQUEST_HEAD_OR_ITS_MERGE_REF",
+                        f"the selected head {head_sha} is neither the pull request head {pr_head} nor a merge ref "
+                        "built from it; check out the exact pull request head or its merge ref", retry, goal, nxt,
+                        blocking=True))
     all_reasons: list[dict] = []
     fresh = None
     if spec is not None and spec_path:
@@ -427,6 +462,7 @@ def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, m
             if not any(k == key or k.startswith(key + ".") for k in known):
                 stale_listing.append(f)
     body = {"schema": SELECTION_SCHEMA, "repository": manifest.get("repository"), "base": base, "head": head,
+            "base_sha": base_sha, "head_sha": head_sha, "head_parents": head_parents, "pr_head_sha": pr_head,
             "runner": manifest["runner"], "lowest_supported_mode": "E0", "derived_from_clock": False,
             "authority_effect": "NONE", "diff_available": diff is not None, "diff": diff,
             "manifest": {"path": manifest_path, "sha256": hashlib.sha256(canonical(manifest)).hexdigest(),
@@ -468,6 +504,8 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--spec", help="the spec the manifest is generated from: a stale manifest selects every set")
     s.add_argument("--base")
     s.add_argument("--head", default="HEAD")
+    s.add_argument("--pr-head", help="the pull request head sha: the selected head must be it or a merge ref built "
+                   "from it (its second parent)")
     s.add_argument("--retry-entrypoint", default="the job that runs this selection")
     s.add_argument("--owning-goal", default=DEFAULT_GOAL)
     s.add_argument("--out", required=True)
@@ -499,10 +537,11 @@ def main(argv: list[str] | None = None) -> int:
     spec = json.loads((root / a.spec).read_text(encoding="utf-8")) if a.spec else None
     diff = changed(root, a.base, a.head) if a.base else None
     record = select(root, manifest, diff, manifest_path=a.manifest, spec=spec, spec_path=a.spec, base=a.base,
-                    head=a.head, retry=a.retry_entrypoint, goal=a.owning_goal)
+                    head=a.head, retry=a.retry_entrypoint, goal=a.owning_goal, pr_head=a.pr_head)
     Path(a.out).write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if a.args_out:
         Path(a.args_out).write_text("\n".join(run_args(record)) + "\n", encoding="utf-8")
+    print(f"SELECTION head_sha={record['head_sha']} base_sha={record['base_sha']} pr_head_sha={record['pr_head_sha']}")
     print(f"SELECTION mode={record['mode']} selected={record['selected_count']}/{record['sets_total']} "
           f"runnable={sum(1 for x in record['selected'] if x['runnable'])} "
           f"input_unavailable={len(record['input_unavailable'])} {SEAL}={record[SEAL]}")

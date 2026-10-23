@@ -628,18 +628,37 @@ def in_selection(node: str, selection: Mapping[str, Any] | None) -> bool:
         not any(under(node, d) for d in run.get("deselect", []))
 
 
-def selection_rows(selection: Mapping[str, Any], retry: str, goal: str) -> tuple[list[dict], dict]:
+def selection_rows(selection: Mapping[str, Any], retry: str, goal: str, root: Path | None = None,
+                   base: str | None = None) -> tuple[list[dict], dict]:
     rows: list[dict] = []
+    nxt = "the next run of this job at the exact head"
     if not selection.get("seal_verifies"):
         rows.append(rvs_row("SELECTION_UNVERIFIED", selection.get("path"), "the test-set selection's seal does not "
                             "verify, so it is not shown which sets this change requires; re-run the selection",
-                            retry, goal, "the next run of this job at the exact head"))
+                            retry, goal, nxt))
+    if root is not None:
+        # the sealed record must be for the exact head (and base) this adjudication runs on, never a reused one
+        from test_set_selection import resolve
+        here = resolve(root, "HEAD")
+        if selection.get("head_sha") != here or here is None:
+            rows.append(rvs_row("SELECTION_HEAD_MISMATCH", selection.get("path"), f"the selection was computed for "
+                                f"head {selection.get('head_sha')!r}, not this head {here!r}; select on this head",
+                                retry, goal, nxt, selection_head_sha=selection.get("head_sha"), head_sha=here))
+        if base is not None:
+            want = resolve(root, base)
+            if selection.get("base_sha") != want or want is None:
+                rows.append(rvs_row("SELECTION_BASE_MISMATCH", selection.get("path"), f"the selection was computed "
+                                    f"against base {selection.get('base_sha')!r}, not this base {want!r}; select "
+                                    "against this base", retry, goal, nxt, selection_base_sha=selection.get("base_sha"),
+                                    base_sha=want))
     for u in list(selection.get("rows") or []) + list(selection.get("input_unavailable") or []):
         rows.append({"test": f"set:{u.get('set')}" if u.get("set") else u.get("failure_code"),
                      "kind": "INPUT_UNAVAILABLE" if u.get("set") else u.get("failure_code"),
                      "disposition": "FAIL_CLOSED", "blocking": True,
                      **{k: u[k] for k in SIX}, **{k: u[k] for k in ("set", "input") if k in u}})
     info = {"path": selection.get("path"), SEAL: selection.get(SEAL), "seal_verifies": selection.get("seal_verifies"),
+            "head_sha": selection.get("head_sha"), "base_sha": selection.get("base_sha"),
+            "pr_head_sha": selection.get("pr_head_sha"),
             "mode": selection.get("mode"), "all_reasons": selection.get("all_reasons"),
             "sets_total": selection.get("sets_total"), "selected_count": selection.get("selected_count"),
             "not_selected_count": selection.get("not_selected_count"),
@@ -660,6 +679,8 @@ RVS = "REQUIRED_VERIFICATION_SKIPPED"
 SKIPPED, NOT_RUN = "SKIPPED", "NOT_RUN"
 PREDICATES = {
     "SELECTION_UNVERIFIED": "TEST_SET_SELECTION_SEAL_VERIFIES",
+    "SELECTION_HEAD_MISMATCH": "TEST_SET_SELECTION_IS_BOUND_TO_THIS_EXACT_HEAD",
+    "SELECTION_BASE_MISMATCH": "TEST_SET_SELECTION_IS_BOUND_TO_THIS_EXACT_BASE",
     "SKIPPED": "REQUIRED_TEST_IS_NOT_SKIPPED",
     "XFAIL": "REQUIRED_TEST_IS_NOT_SKIPPED",
     "XPASS": "REQUIRED_TEST_IS_NOT_SKIPPED",
@@ -1189,7 +1210,7 @@ def main(argv: list[str] | None = None) -> int:
     head_nodes: set[str] = set()
     selection = load_selection(args.selection) if args.selection else None
     if selection is not None:
-        srows, sinfo = selection_rows(selection, retry, args.owning_goal)
+        srows, sinfo = selection_rows(selection, retry, args.owning_goal, root, getattr(args, "base", None))
         vrows += srows
         vinfo["selection"] = sinfo
     if not getattr(args, "unittest_output", None):

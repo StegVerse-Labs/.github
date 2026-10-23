@@ -265,6 +265,60 @@ class SelectorTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertTrue(any(r.get("kind") == "SELECTION_UNVERIFIED" for r in out["tests"]))
 
+    # -- the record binds the exact head and base ---------------------------------------------------------------
+
+    def test_the_sealed_selection_binds_the_exact_head_base_and_pull_request_head(self) -> None:
+        self.toy.write("src/a.py", "A = 2\n")
+        head = self.toy.commit("change a")
+        code, record = self.select(self.toy.base)
+        self.assertEqual((record["head_sha"], record["base_sha"]), (head, self.toy.base))
+        self.assertEqual(record["head_parents"], [self.toy.base])
+        tampered = dict(record, head_sha=self.toy.base)
+        self.assertFalse(sel.seal_verifies(tampered))
+        # a merge ref built from the pull request head: the PR head is its second parent
+        self.toy.git("checkout", "-q", "-b", "pr", head)
+        self.toy.git("checkout", "-q", "main")
+        self.toy.git("reset", "-q", "--hard", self.toy.base)
+        self.toy.write("src/c.py", "C = 2\n")
+        main2 = self.toy.commit("main moves")
+        self.toy.git("merge", "-q", "--no-ff", "-m", "merge ref", "pr")
+        merge = self.toy.git("rev-parse", "HEAD")
+        rec = sel.select(self.toy.path, json.loads((self.toy.path / ".stegverse/test-sets.json").read_text()),
+                         sel.changed(self.toy.path, main2, "HEAD"), manifest_path=".stegverse/test-sets.json",
+                         spec=None, spec_path=None, base=main2, head="HEAD", pr_head=head)
+        self.assertEqual((rec["head_sha"], rec["head_parents"], rec["pr_head_sha"]), (merge, [main2, head], head))
+        self.assertEqual(rec["rows"], [])
+        wrong = sel.select(self.toy.path, json.loads((self.toy.path / ".stegverse/test-sets.json").read_text()),
+                           sel.changed(self.toy.path, main2, "HEAD"), manifest_path=".stegverse/test-sets.json",
+                           spec=None, spec_path=None, base=main2, head="HEAD", pr_head=self.toy.base)
+        self.assertEqual(wrong["disposition"], "FAIL_CLOSED")
+        self.assertEqual(wrong["failure_code"], "TEST_SET_SELECTION_HEAD_IS_NOT_THE_PULL_REQUEST_HEAD")
+
+    def test_an_unresolvable_base_or_head_fails_closed(self) -> None:
+        manifest = json.loads((self.toy.path / ".stegverse/test-sets.json").read_text())
+        rec = sel.select(self.toy.path, manifest, None, manifest_path=".stegverse/test-sets.json", spec=None,
+                         spec_path=None, base="0" * 40, head="no-such-ref")
+        codes = [r["failure_code"] for r in rec["rows"]]
+        self.assertEqual(codes, ["TEST_SET_SELECTION_HEAD_UNRESOLVED", "TEST_SET_SELECTION_BASE_UNRESOLVED"])
+        self.assertEqual((rec["mode"], rec["disposition"]), ("ALL", "FAIL_CLOSED"))
+
+    def test_a_selection_computed_for_another_head_fails_closed_in_the_adjudication(self) -> None:
+        self.toy.write("src/a.py", "A = 2\n")
+        self.toy.commit("change a")
+        self.select(self.toy.base)
+        code, record = self.adjudicate(self.toy.base)
+        self.assertEqual((code, record["disposition"]), (0, "ALLOW"), record)
+        self.assertEqual(record["verification"]["selection"]["head_sha"], self.toy.git("rev-parse", "HEAD"))
+        self.toy.write("src/a.py", "A = 3\n")      # the head moves; the old (validly sealed) record is reused
+        self.toy.commit("change a again")
+        code, record = self.adjudicate(self.toy.base)
+        self.assertEqual(code, 1)
+        row = next(r for r in record["tests"] if r.get("kind") == "SELECTION_HEAD_MISMATCH")
+        self.assertEqual(row["failed_predicate"], "TEST_SET_SELECTION_IS_BOUND_TO_THIS_EXACT_HEAD")
+        self.assertTrue(all(row[k] for k in drift.SIX))
+        code, record = self.adjudicate(self.toy.git("rev-parse", "HEAD~1"))
+        self.assertTrue(any(r.get("kind") == "SELECTION_BASE_MISMATCH" for r in record["tests"]))
+
 
 class UnittestNamesTests(unittest.TestCase):
     def test_fixture_bases_and_mixins_are_not_runnable_units_and_inherited_tests_are_listed(self) -> None:
