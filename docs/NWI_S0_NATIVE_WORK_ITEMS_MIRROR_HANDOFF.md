@@ -374,3 +374,23 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - A NATIVE hb_epoch string failing 726248a5 is DENY HB_EPOCH_MISMATCH.
   - `""` and `"null"` are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
 
+
+## Round 11: the branch writer is derived from the sv-push-receipt chain (Lane C alignment, TVC#531)
+
+Invariant **BRANCH_WRITER_IS_DERIVED_FROM_THE_PUSH_RECEIPT_CHAIN** (owning goal StegVerse-org/.github#163). It retires PR_AUTHOR_SESSION_DECLARED.
+
+- `sv_work_items.derive_branch_writer(push_receipts, change_commits, target_repository=, change_id=)` reads sealed sv-push-receipt.v1 receipts (Labs#3267, `resident-runtime/sv_push_receipt.py`).
+  - The chain must be one repository and one ref, contiguous from `change_commits.base_commit` to `head_commit`.
+  - The authoring session is the `pusher_session` of the receipt at the head.
+- `verify_branch_writer` keeps **BRANCH_WRITER_IS_BRANCH_OWNER**. Every pusher and every named `content[*].writer_session` must be the derived session or a receipted co-author grant; anything else is FAIL_CLOSED BRANCH_HAS_FOREIGN_WRITER.
+- **A gap in the chain is never a DENY.** It is a six-field FAIL_CLOSED BRANCH_WRITER_UNOBSERVED, and `writer_evidence` names the gap. A chain that stops short of the head is FAIL_CLOSED WRITER_EVIDENCE_NOT_AT_HEAD. `retry_entrypoint` names the push-time producer and the org-ledger append (#3255).
+- **No PR body line, commit trailer or `declared_session` grants or refuses anything.** `declared_session` and `opened_by_session` stay schema-required attribution labels (an empty one is a schema mismatch). sv-change.v1 is unchanged.
+- **Mode declarations:**
+  - `lifecycle-transitions.json` has a `predicate_modes` entry and every invariant has a `modes` entry. Both use TVC#531's `modes` shape.
+  - The ladder is `data/sv-work-items/operating-modes.json` from #3308 (branch p1/operating-mode-ladder @81f8a8ca, not on main). It is referenced by path and not duplicated.
+- **Corpus:**
+  - The class id ASC-PR_AUTHOR_SESSION_DECLARED@schema and its scenario ids are frozen, as the corpus is append-only.
+  - Its single axis was re-derived: a `declared_session` with no push-receipt chain is FAIL_CLOSED BRANCH_WRITER_UNOBSERVED.
+  - Every scenario now carries `push_receipts` and `change_commits`, so every seal and the corpus head moved, but no id moved.
+- **Runtime status:** this is admission input only. It does not count at runtime until the receipts are appended to refs/stegverse/organization-ledger by the org writer (#3255, not admitted), and until then the evidence is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED.
+- **Follow-up:** WITHDRAW_BY_DECLARED_SESSION keeps its name. A withdraw-by-branch-writer predicate is not claimed here.
