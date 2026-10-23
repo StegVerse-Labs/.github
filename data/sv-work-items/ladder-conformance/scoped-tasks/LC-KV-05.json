@@ -19,7 +19,7 @@
  "owning_lane": "Lane D (KV and WorkSpace)",
  "proposed_resolution": "no repair inside KV; each draft is admitted by its own exact-head admission, in order #3255 -> #3313 -> #3311 -> #3324/#3327 -> LLM-adapter#428 -> #429 -> #431 -> StegOS#427 -> LLM-adapter#432 -> TVC#537 -> continuity-vault-kit#259 together with #258 (the custody verifier fix is only in #258); nothing waits on a person",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "admit the path's drafts (#3313, #3255, #3311, #3324, #3327, continuity-vault-kit#258/#259, LLM-adapter#428/#429/#431/#432, StegOS#427, TVC#537) through exact-head SV_CHANGE_ADMIT",
+ "required_repair": "admit the path's drafts (#3313, #3255, #3311, #3324, #3327, continuity-vault-kit#258 @eb62640c and #259 @d052d652, LLM-adapter#428 @0b37fe3b, #429 @5f5f7bbe, #431 @b7a5c08b, #432 @1cbad77e, StegOS#427 @ac9a1532, TVC#537 @c87272cf) through exact-head SV_CHANGE_ADMIT; Labs#3327's adjacency ruling names #258 @037f505e as the finish-point source, so it needs a re-pin to the #258 head that is admitted (at @eb62640c the plan refuses ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE; baseline drift, not a blocker)",
  "retry_point": "SV_CHANGE_ADMIT (resident-runtime/sv_work_items.py::admit, StegVerse-Labs/.github)",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

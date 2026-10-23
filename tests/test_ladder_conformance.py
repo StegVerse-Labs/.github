@@ -85,25 +85,28 @@ class CommittedArtifacts(unittest.TestCase):
         seq = next(i for i in layers if decl[i]["layer"] == "1->2")
         for i in (l1, l2):  # each layer refuses on its own, with six fields and its own scoped tasks
             self.assertTrue(layers[i]["refusals"] and layers[i]["scoped_tasks"], i)
-        # revision 4 (cvk#258 @037f505e): layer 1's caller-supplied root / asserted identity bypass is closed at the KV
-        # surface; production ALLOW still needs pinned anchors (a code edit), and the anchor's own bypasses sit on the
-        # consumed LLM-adapter#432 handoff (Lane B, LC-KV-16)
+        # revision 5 (cvk#258 @eb62640c, LLM-adapter#432 @1cbad77e): layer 1 has no bypass of its own; production ALLOW
+        # still needs the transport installed (a code edit); the vendored #432 @c2c57505 ALLOWs an unsigned EPHEMERAL
+        # anchor at E0 (a witness failure, LC-KV-17); the anchor's residual bypasses sit on the #432 handoff (LC-KV-16)
         self.assertNotIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, l1))
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, l1))
         self.assertIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, l2))
         self.assertIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         for s_ in ("PROD_LAYER1_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY", "LAYER1_TRANSPORT_NOT_INSTALLED",
-                   "LAYER1_TEMPORARY_LEDGER_WITHOUT_ANCHOR"):
+                   "LAYER1_NODE_LEDGER_WITHOUT_ANCHOR", "LAYER1_EPHEMERAL_ANCHORED_BY_UNSIGNED_OPENED_RECORD",
+                   "PROD_LAYER1_INJECTED_DISGUISED_EVALUATOR"):
             self.assertIn(s_, decl[l1]["required_outcomes"])
+        self.assertIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(d, l1))
         self.assertIn("LADDER_ACCESS_LAYERS_COLLAPSED", _codes(d, seq))
         self.assertTrue(set(decl[l1]["required_outcomes"]) and "e0_terminal" in decl[l1])
         # layer 2 now has its own E0 gate (SkapLayer2Gate), witnessed by required refusals, not a class_b record
         self.assertNotIn("class_b", decl[l2])
         self.assertTrue(set(decl[l2]["required_outcomes"]) and "e0_terminal" in decl[l2])
-        # the sequence check requires layer 2 to refuse a receipt from a non-pinned evaluator; observed ALLOW is a finding
+        # the sequence check requires layer 2 to refuse a receipt from a non-pinned or disguised evaluator; LC-KV-10 is
+        # closed (object-identity pin), so the sequence carries no witness failure
         self.assertIn("LAYER2_ON_LAYER1_RECEIPT_FROM_NON_PINNED_EVALUATOR", decl[seq]["required_outcomes"])
         self.assertIn("LAYER2_ON_LAYER1_RECEIPT_FROM_DISGUISED_NON_PINNED_EVALUATOR", decl[seq]["required_outcomes"])
-        self.assertIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(d, seq))
+        self.assertNotIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(d, seq))
         self.assertIn("REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", decl[l1]["what"])
 
     def test_lc_kv_13_has_the_fixed_finish_point(self):
@@ -123,9 +126,24 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("Coordination's routing via Lane B", t16["required_repair"])
         self.assertEqual(t16["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
         for t in (t15, t16):
-            self.assertIn("c2c57505535fb89ee88477eda1378c5fc610e0f7", t["required_repair"])
-            self.assertIn("f77cf07505615b7ad3db11338cb252a2638040e2", t["required_repair"])
-            self.assertIn("@037f505e", t["required_repair"])
+            self.assertIn("1cbad77eaff3254ea30fb9d3377d40abcf6728df", t["required_repair"])
+        self.assertIn("eb62640c6a7a6d49a8de362da45639671e23da50", t15["required_repair"])
+        self.assertIn("c2c57505535fb89ee88477eda1378c5fc610e0f7", t15["required_repair"])
+        self.assertNotIn("TEMP_NODE_LEDGER_NOT_ANCHORED", t16["proposed_resolution"])
+        self.assertNotIn("LC-KV-10", tasks)
+
+    def test_empty_tvc_signer_file_is_a_class_c_tvc_task(self):
+        tasks = {t["task_id"]: t for t in _inputs()["tasks"]}
+        t = tasks["LC-KV-18"]
+        self.assertEqual(t["failure_class"]["class"], "C")
+        self.assertTrue(t["owning_lane"].startswith("TV/TVC"))
+        self.assertEqual(t["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
+        self.assertEqual(t["failure_code"], "LADDER_ALLOW_PATH_UNBOUND")
+        self.assertIn("ac9a1532102452ea75badc0ee2b902b92cecd1b7", t["required_repair"])
+        for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
+            self.assertTrue(str(t.get(k) or "").strip(), k)
+        t17 = tasks["LC-KV-17"]
+        self.assertEqual((t17["failure_class"]["class"], t17["failure_code"]), ("A", "OPERATING_MODE_E0_WITNESS_FAILED"))
 
     def test_withdrawn_git_ref_custody_adapter_is_not_proposed(self):
         t = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-03")
@@ -359,7 +377,7 @@ class Refusals(unittest.TestCase):
         self.assertIn("OPERATING_MODE_E0_WITNESS_UNBOUND", _codes(self.run_(), self.allowed))
 
     def test_tasks_sharing_a_code_must_cover_disjoint_items(self):
-        t = copy.deepcopy(next(t for t in self.tasks if t["task_id"] == "LC-KV-10"))
+        t = copy.deepcopy(next(t for t in self.tasks if t["task_id"] == "LC-KV-17"))
         t["task_id"] = "LC-KV-99"
         self.tasks.append(t)
         self.assertEqual(self.run_()["consistency"], "FAIL_CLOSED")

@@ -20,12 +20,28 @@ test_permanent_kv_and_skap_vault_own_ledgers_reach_layer1_allow (tests.test_endp
 test_the_lc_kv_15_hole_is_closed (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_the_lc_kv_15_hole_is_closed) ... ok
 test_evaluator_is_untouched (tests.test_endpoint_ledger_anchor.DeterminismTests.test_evaluator_is_untouched) ... ok
 test_no_clock_network_or_randomness (tests.test_endpoint_ledger_anchor.DeterminismTests.test_no_clock_network_or_randomness) ... ok
+test_the_org_ledger_reader_is_the_one_local_io_boundary (tests.test_endpoint_ledger_anchor.DeterminismTests.test_the_org_ledger_reader_is_the_one_local_io_boundary) ... ok
 test_disburse_read_back_then_root_inadmissible (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disburse_read_back_then_root_inadmissible) ... ok
 test_disbursement_not_read_back_fails_closed (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disbursement_not_read_back_fails_closed) ... ok
 test_dissolution_is_an_event_not_a_timer (tests.test_endpoint_ledger_anchor.DissolutionTests.test_dissolution_is_an_event_not_a_timer) ... ok
 test_only_ephemeral_dissolves (tests.test_endpoint_ledger_anchor.DissolutionTests.test_only_ephemeral_dissolves) ... ok
+test_a_proof_must_verify_under_the_anchored_key_over_the_current_challenge (tests.test_endpoint_ledger_anchor.IdentityAndTransportTests.test_a_proof_must_verify_under_the_anchored_key_over_the_current_challenge) ... ok
+test_asserted_identity_with_no_proof_is_refused (tests.test_endpoint_ledger_anchor.IdentityAndTransportTests.test_asserted_identity_with_no_proof_is_refused) ... ok
+test_asserted_transport_is_refused (tests.test_endpoint_ledger_anchor.IdentityAndTransportTests.test_asserted_transport_is_refused) ... ok
+test_transport_unobserved_without_an_installed_intr_ingress (tests.test_endpoint_ledger_anchor.IdentityAndTransportTests.test_transport_unobserved_without_an_installed_intr_ingress) ... ok
+test_issued_anchor_shape_and_organization_ledger_verifier (tests.test_endpoint_ledger_anchor.IssuedAnchorTests.test_issued_anchor_shape_and_organization_ledger_verifier) ... ok
+test_pinned_digests_match_lane_d (tests.test_endpoint_ledger_anchor.IssuedAnchorTests.test_pinned_digests_match_lane_d) ... ok
+test_published_schemas_match_the_code (tests.test_endpoint_ledger_anchor.IssuedAnchorTests.test_published_schemas_match_the_code) ... ok
+test_anchor_signed_under_a_published_key_id_by_another_key_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_anchor_signed_under_a_published_key_id_by_another_key_is_refused) ... ok
+test_asserted_node_id_decides_nothing (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_asserted_node_id_decides_nothing) ... ok
+test_caller_minted_anchor_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_caller_minted_anchor_is_refused) ... ok
+test_defaulted_transport_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_defaulted_transport_is_refused) ... ok
+test_production_publishes_no_signer_yet (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_production_publishes_no_signer_yet) ... ok
+test_the_evaluator_gets_the_receipts_transport_explicitly (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_the_evaluator_gets_the_receipts_transport_explicitly) ... ok
+test_unsigned_anchor_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_unsigned_anchor_is_refused) ... ok
+test_wrong_org_ledger_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_wrong_org_ledger_is_refused) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in <t>s
+Ran 38 tests in <t>s
 
 OK

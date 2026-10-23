@@ -3,6 +3,11 @@
  "observed_by": "scripts/ladder_conformance.py observe",
  "roots": {
   "cvk258": {
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "kind": "git",
+   "repo": "StegVerse-Labs/continuity-vault-kit"
+  },
+  "cvk258ruling": {
    "commit": "037f505e704203f5022339141a3877145fca2af3",
    "kind": "git",
    "repo": "StegVerse-Labs/continuity-vault-kit"
@@ -38,7 +43,7 @@
    "repo": "StegVerse-org/LLM-adapter"
   },
   "llmad432": {
-   "commit": "c2c57505535fb89ee88477eda1378c5fc610e0f7",
+   "commit": "1cbad77eaff3254ea30fb9d3377d40abcf6728df",
    "kind": "git",
    "repo": "StegVerse-org/LLM-adapter"
   },
@@ -146,9 +151,9 @@
      ]
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-finish-point.out",
-   "raw_sha256": "sha256:3c908f9d20c747f9ad2cd712ae6a64986333e19bd78afb7872fd0a1313a79322",
+   "raw_sha256": "sha256:27c36b893ccda5901e8a73f9bc51fa9726baf935616c1ccb6a8a581679ed1ce9",
    "run_id": "kv-finish-point",
    "status": "OBSERVED",
    "what": "the sealed finish-point verifier at E0"
@@ -162,12 +167,12 @@
      "passed": true,
      "skipped": 0,
      "subject": "KV_FINISH_POINT_SUITE",
-     "tests_ran": 30
+     "tests_ran": 31
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-finish-point-tests.out",
-   "raw_sha256": "sha256:da66fb42a03bbff0fc237a1aac790f8cfc995f9b8054b7e86d5ab3a1d8399fb6",
+   "raw_sha256": "sha256:962d245c5bed4cf328a5faf7a130220dcfc0792a09c7208f0ff4cdc449b97ad8",
    "run_id": "kv-finish-point-tests",
    "status": "OBSERVED",
    "what": "the sealed acceptance suite"
@@ -176,25 +181,25 @@
    "files_scanned": 1,
    "hits": [
     {
-     "line": 1167,
+     "line": 1211,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "^def finish_point\\(evidence",
      "text": "def finish_point(evidence: Any = None, scratch_ledger_git_dir: str | None = None) -> dict[str, Any]:"
     },
     {
-     "line": 1186,
+     "line": 1230,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "add_argument\\(\"--evidence\"",
      "text": "parser.add_argument(\"--evidence\", help=f\"{EVIDENCE_SCHEMA} JSON file\")"
     },
     {
-     "line": 439,
+     "line": 442,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "^EVIDENCE_SCHEMA = ",
      "text": "EVIDENCE_SCHEMA = \"stegverse.kv-skap-vault-finish-point-evidence/v1\""
     },
     {
-     "line": 874,
+     "line": 901,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "HEALTHY_NODE_EVALUATOR_NOT_THE_PINNED_INTR_EVALUATOR",
      "text": "return (\"HEALTHY_NODE_EVALUATOR_NOT_THE_PINNED_INTR_EVALUATOR\", \"B\","
@@ -208,7 +213,7 @@
     "^NOT_YET_BUILT = \\{",
     "tvc_issuance_receipt_ref=\"fixture:"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "kv-finish-point-evidence-input",
    "status": "OBSERVED",
    "what": "does the finish point take any evidence input (receipts) or only constants?"
@@ -331,7 +336,7 @@
    "what": "registration plan, no adjacency ruling"
   },
   {
-   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258}",
+   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258ruling}",
    "exit_code": 0,
    "outcomes": [
     {
@@ -341,76 +346,98 @@
    ],
    "pin": "StegVerse-Labs/.github@c541fa72f08d334f3c5c3b42a35c9fa75ac3f3cd",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-with-ruling.out",
-   "raw_sha256": "sha256:1228c2c8752827f63f948e9852e4f39f87901822d2d56234ef72a0a37c886773",
+   "raw_sha256": "sha256:09fb14ecf3f0622d3aaba072b6d14317f91af242806834ec7ba1d4e50d01e156",
    "run_id": "kv-registration-plan-with-ruling",
    "status": "OBSERVED",
-   "what": "registration plan with the Coordination class-D adjacency ruling and the finish-point root"
+   "what": "registration plan with the Coordination class-D adjacency ruling and the finish-point root at the commit the ruling names (#258 @037f505e)"
+  },
+  {
+   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258}",
+   "exit_code": 1,
+   "outcomes": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "FINISH_POINT_SOURCE_AT_PINNED_COMMIT",
+     "failure_code": "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
+     "next_attempt": "on the next registration request event after the repair is recorded",
+     "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+     "required_evidence_or_repair": "the finish-point root must be StegVerse-Labs/continuity-vault-kit checked out at 037f505e704203f5022339141a3877145fca2af3",
+     "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+     "subject": "REGISTRATION_PLAN"
+    }
+   ],
+   "pin": "StegVerse-Labs/.github@c541fa72f08d334f3c5c3b42a35c9fa75ac3f3cd",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-with-ruling-at-head.out",
+   "raw_sha256": "sha256:67bb3a2e35c3146f49b15cc953208b7cace5214597157b2c02f42ec26f906fe2",
+   "run_id": "kv-registration-plan-with-ruling-at-head",
+   "status": "OBSERVED",
+   "what": "registration plan with the same ruling and the finish-point root at the current #258 head (@eb62640c)"
   },
   {
    "files_scanned": 2,
    "hits": [
     {
-     "line": 1087,
+     "line": 1131,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "^ORGANIZATION_LEDGER_REF = ",
      "text": "ORGANIZATION_LEDGER_REF = \"refs/stegverse/organization-ledger\""
     },
     {
-     "line": 1126,
+     "line": 1170,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "^def append_organization_ledger_receipt\\(",
      "text": "def append_organization_ledger_receipt(receipt: dict[str, Any], scratch_ledger_git_dir: str | None) -> dict[str, Any]:"
     },
     {
-     "line": 1118,
+     "line": 1162,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "\"real_ledger_written\": False",
      "text": "\"real_ledger_written\": False}"
     },
     {
-     "line": 1164,
+     "line": 1208,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "\"real_ledger_written\": False",
      "text": "\"receipt_sha256\": sha256_uri(receipt), \"locus\": \"SCRATCH_LEDGER\", \"real_ledger_written\": False}"
     },
     {
-     "line": 1136,
+     "line": 1180,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "SCRATCH_LEDGER",
      "text": "return _ledger_fail(\"SCRATCH_LEDGER_NOT_A_GIT_DIR\", \"A\", \"name an existing scratch git directory\","
     },
     {
-     "line": 1154,
+     "line": 1198,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "SCRATCH_LEDGER",
      "text": "return _ledger_fail(\"SCRATCH_LEDGER_OBJECT_WRITE_FAILED\", \"A\", \"the scratch git directory refused objects\","
     },
     {
-     "line": 1164,
+     "line": 1208,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "SCRATCH_LEDGER",
      "text": "\"receipt_sha256\": sha256_uri(receipt), \"locus\": \"SCRATCH_LEDGER\", \"real_ledger_written\": False}"
     },
     {
-     "line": 657,
+     "line": 672,
      "path": "tests/test_kv_skap_vault_finish_point.py",
      "pattern": "SCRATCH_LEDGER",
      "text": "self.assertEqual(append[\"locus\"], \"SCRATCH_LEDGER\")"
     },
     {
-     "line": 676,
+     "line": 691,
      "path": "tests/test_kv_skap_vault_finish_point.py",
      "pattern": "SCRATCH_LEDGER",
      "text": "self.assertEqual(append[\"failure_code\"], \"SCRATCH_LEDGER_NOT_A_GIT_DIR\")"
     },
     {
-     "line": 1138,
+     "line": 1182,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "remote\\b.*stdout|_git\\(scratch_ledger_git_dir, \"remote\"\\)",
      "text": "if _git(scratch_ledger_git_dir, \"remote\").stdout.strip():"
     },
     {
-     "line": 1089,
+     "line": 1133,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "^LEDGER_GENESIS_OWNER = ",
      "text": "LEDGER_GENESIS_OWNER = (\"organization-ledger writer split (StegVerse-Labs/.github#3255) / StegVerse-org/.github \""
@@ -424,7 +451,7 @@
     "remote\\b.*stdout|_git\\(scratch_ledger_git_dir, \"remote\"\\)",
     "^LEDGER_GENESIS_OWNER = "
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "kv-ledger-binding",
    "status": "OBSERVED",
    "what": "any organization-ledger receipt in the KV finish point or request"
@@ -779,97 +806,133 @@
    "what": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE in Labs main: specimen status and any evaluator"
   },
   {
-   "files_scanned": 65,
+   "files_scanned": 74,
    "hits": [
     {
      "line": 1,
-     "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+     "path": "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py",
      "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
      "text": "\"\"\"LC-KV-13: decide REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE from receipted health reports only."
     },
     {
      "line": 65,
-     "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+     "path": "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py",
      "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
      "text": "PREDICATE = \"REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE\""
     },
     {
-     "line": 51,
-     "path": "runtime/kv_interlock_endpoint.py",
+     "line": 57,
+     "path": "runtime/intr_pinned/llm_adapter/node_ingress_boundary.py",
      "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
-     "text": "# (INTR_DEVICE_KV). It first requires REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE, decided by the healthy-node"
+     "text": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE. Lane D's layer 1 treats anything"
     },
     {
-     "line": 68,
+     "line": 289,
+     "path": "runtime/intr_pinned/llm_adapter/node_ingress_boundary.py",
+     "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "text": "failed_predicate REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE,"
+    },
+    {
+     "line": 56,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "text": "# (INTR_DEVICE_KV). It first requires REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE, decided by the code InTr owns"
+    },
+    {
+     "line": 74,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
      "text": "HEALTHY_NODE_PREDICATE = \"REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE\""
     },
     {
-     "line": 871,
+     "line": 898,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
      "text": "f\"{where}: the layer-1 receipt carries no verifying REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE receipt\")"
     },
     {
      "line": 3,
-     "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+     "path": "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py",
      "pattern": "CURRENT_NODE_HEALTH",
      "text": "This is the E0 evaluator for gate CURRENT_NODE_HEALTH (StegVerse-Labs/.github"
     },
     {
      "line": 66,
-     "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+     "path": "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py",
      "pattern": "CURRENT_NODE_HEALTH",
      "text": "GATE = \"CURRENT_NODE_HEALTH\""
     },
     {
-     "line": 71,
+     "line": 15,
+     "path": "runtime/intr_pinned/llm_adapter/node_health_report_producer.py",
+     "pattern": "CURRENT_NODE_HEALTH",
+     "text": "CURRENT_NODE_HEALTH (carrying `evaluated_node_id`), or a NODE_INGRESS_ADMITTED"
+    },
+    {
+     "line": 115,
+     "path": "runtime/intr_pinned/llm_adapter/node_health_report_producer.py",
+     "pattern": "CURRENT_NODE_HEALTH",
+     "text": "\"TRIGGER_NOT_RECOGNISED\": (\"TRIGGER_EVENT_RECEIPTED\", \"a NODE_INGRESS_REFUSED (at CURRENT_NODE_HEALTH), \""
+    },
+    {
+     "line": 292,
+     "path": "runtime/intr_pinned/llm_adapter/node_ingress_boundary.py",
+     "pattern": "CURRENT_NODE_HEALTH",
+     "text": "CURRENT_NODE_HEALTH), `reason`, `standing_refusal` (the verbatim"
+    },
+    {
+     "line": 77,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "CURRENT_NODE_HEALTH",
      "text": "HEALTHY_NODE_GATE = \"CURRENT_NODE_HEALTH\""
     },
     {
-     "line": 79,
+     "line": 83,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "^PINNED_HEALTHY_NODE_EVALUATOR",
      "text": "PINNED_HEALTHY_NODE_EVALUATOR = {"
     },
     {
-     "line": 142,
+     "line": 203,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "^PINNED_HEALTHY_NODE_EVALUATOR",
      "text": "PINNED_HEALTHY_NODE_EVALUATOR_ID = (PINNED_HEALTHY_NODE_EVALUATOR[\"module\"] + \".\""
     },
     {
-     "line": 549,
+     "line": 571,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "healthy_node_evaluator=",
      "text": "clock=lambda: fixed, healthy_node_evaluator=_exercise_only_healthy_node_evaluator,"
     },
     {
-     "line": 137,
+     "line": 1,
+     "path": "runtime/intr_pinned/llm_adapter/endpoint_ledger_anchor.py",
+     "pattern": "healthy_node_ledger_root",
+     "text": "\"\"\"LC-KV-13: bind healthy_node_ledger_root only to an endpoint ledger the organization ledger anchors."
+    },
+    {
+     "line": 198,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "healthy_node_ledger_root",
      "text": "def healthy_node_ledger_root(checkout: Any) -> str | None:"
     },
     {
-     "line": 46,
+     "line": 48,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "healthy_node_ledger_root",
-     "text": "healthy_node_ledger_root, layer1_receipt_conformance)"
+     "text": "_HEALTHY_RECEIPT_EXACT, healthy_node_ledger_root,"
     },
     {
-     "line": 498,
+     "line": 502,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "healthy_node_ledger_root",
-     "text": "if ledger_root != healthy_node_ledger_root(LOCAL_EXERCISE_LABEL) or transport_state != \"INSTALLED\" \\"
+     "text": "if org_ledger_root != healthy_node_ledger_root(LOCAL_EXERCISE_LABEL) or transport_state != \"INSTALLED\" \\"
     },
     {
-     "line": 518,
+     "line": 524,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "healthy_node_ledger_root",
-     "text": "return {\"ledger_root\": healthy_node_ledger_root(LOCAL_EXERCISE_LABEL), \"scratch\": None,"
+     "text": "return {\"org_ledger_root\": healthy_node_ledger_root(LOCAL_EXERCISE_LABEL),"
     }
    ],
    "patterns": [
@@ -879,7 +942,7 @@
     "healthy_node_evaluator=",
     "healthy_node_ledger_root"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "layer1-healthy-node-search-kv",
    "status": "OBSERVED",
    "what": "any healthy-node / node-health gate in the KV code (#258 and #259 heads)"
@@ -1188,7 +1251,7 @@
      "subject": "KV_RECONSTRUCT_AND_READ_FROM_EXPORT_WITHOUT_INTR"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-layers-probe.out",
    "raw_sha256": "sha256:24294305def8cf6e334161a51b822a8b67db29e1e28d7057550064390cbf5aba",
    "run_id": "kv-layers-probe",
@@ -1199,37 +1262,37 @@
    "files_scanned": 1,
    "hits": [
     {
-     "line": 159,
+     "line": 162,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "^class KVSkapVault",
      "text": "class KVSkapVault:"
     },
     {
-     "line": 216,
+     "line": 219,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
      "text": "def bind_custody_key_reference(self, *, custody_key_ref: str, issued_by: str, tvc_issuance_receipt_ref: str,"
     },
     {
-     "line": 238,
+     "line": 241,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
      "text": "def grant_consent(self, *, purposes: list[str], projection_ids: list[str], observed_at: str,"
     },
     {
-     "line": 280,
+     "line": 283,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
      "text": "def write_projection(self, *, projection_id: str, content: Any, consent_receipt_hash: str,"
     },
     {
-     "line": 295,
+     "line": 298,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
      "text": "def read_projection(self, *, projection_id: str, consent_receipt_hash: str,"
     },
     {
-     "line": 317,
+     "line": 320,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
      "text": "def reconstruct(cls, exported: dict[str, Any], *, skap_gate: Any = None,"
@@ -1247,133 +1310,133 @@
      "text": "INTR_KV_SKAP, a separate gate fed by a layer-1 receipt."
     },
     {
-     "line": 125,
+     "line": 128,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "#   KVInterlockRuntime.handle (INTR_DEVICE_KV), which mints a KV-access receipt."
     },
     {
-     "line": 127,
+     "line": 130,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "#   (INTR_KV_SKAP, runtime/kv_skap_layer2.py), a separate gate. It admits a transition whose prior_receipt_hash is a"
     },
     {
-     "line": 357,
+     "line": 360,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "return {\"kv_access_receipt_hash\": receipt[\"prior_receipt_hash\"], \"skap_access_receipt_hash\": receipt_hash,"
     },
     {
-     "line": 372,
+     "line": 375,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "def skap_entry(gate: Any, vault: \"KVSkapVault | None\", *, operation: str, kv_access_receipt_hash: Any,"
     },
     {
-     "line": 376,
+     "line": 379,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "It submits exactly one INTR_KV_SKAP transition, whose prior_receipt_hash is the caller's layer-1 KV-access"
     },
     {
-     "line": 394,
+     "line": 397,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "prior_receipt_hash=kv_access_receipt_hash))"
     },
     {
-     "line": 410,
+     "line": 413,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "\"skap_access_receipt_hash\": receipt_hash, \"kv_access_receipt_hash\": kv_access_receipt_hash}"
     },
     {
-     "line": 469,
+     "line": 472,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "\"evidence.layer1_kv_access_receipts and evidence.layer2_skap_access_receipts, the two credential layers that \""
     },
     {
-     "line": 587,
+     "line": 609,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "return self.kv_access()[\"kv_access_receipt\"][\"receipt_hash\"]"
     },
     {
-     "line": 590,
+     "line": 612,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "return skap_entry(self.gate, vault, operation=operation, kv_access_receipt_hash=self.kv_hash(),"
     },
     {
-     "line": 628,
+     "line": 650,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "and out.get(\"kv_access_receipt\") is None for out in (no_health, unverified))"
     },
     {
-     "line": 665,
+     "line": 687,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "refused(lambda: skap_entry(h.gate, live, operation=\"SKAP_READ\", kv_access_receipt_hash=forged_prior,"
     },
     {
-     "line": 783,
+     "line": 805,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "ACCESS_EVIDENCE_KEYS = (\"layer1_kv_access_receipts\", \"layer2_skap_access_receipts\")"
     },
     {
-     "line": 794,
+     "line": 817,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "\"supply evidence.layer1_kv_access_receipts: one stegverse.kv-access-receipt/v1 minted by \""
     },
     {
-     "line": 795,
+     "line": 818,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "\"KVInterlockRuntime.handle (INTR_DEVICE_KV) per lineage receipt. Each must carry the ALLOW evaluation of \""
     },
     {
-     "line": 803,
+     "line": 830,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "\"SkapLayer2Gate.admit (INTR_KV_SKAP) per lineage receipt, used once, for the operation and principal it names\"),"
     },
     {
-     "line": 858,
+     "line": 885,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "kv = layer1.get(access.get(\"kv_access_receipt_hash\"))"
     },
     {
-     "line": 863,
+     "line": 890,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "or kv.get(\"boundary\") != \"INTR_DEVICE_KV\" or kv.get(\"minted_by\") != \"KVInterlockRuntime.handle\" \\"
     },
     {
-     "line": 867,
+     "line": 894,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "f\"{where}: the layer-1 receipt must re-derive as an INTR_DEVICE_KV receipt minted by \""
     },
     {
-     "line": 901,
+     "line": 934,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "or skap.get(\"boundary\") != \"INTR_KV_SKAP\" or skap.get(\"minted_by\") != \"SkapLayer2Gate.admit\" \\"
     },
     {
-     "line": 906,
+     "line": 939,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "f\"{where}: the layer-2 receipt must re-derive as an INTR_KV_SKAP receipt minted by \""
     },
     {
-     "line": 919,
+     "line": 952,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
      "text": "if prior is None or prior != access.get(\"kv_access_receipt_hash\") or prior not in layer1:"
@@ -1388,46 +1451,46 @@
      "line": 43,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
-     "text": "from runtime.kv_interlock_endpoint import (HEALTHY_NODE_RECEIPT_SCHEMA, KV_ACCESS_RECEIPT_SCHEMA,"
+     "text": "from runtime.kv_interlock_endpoint import (FINISH_POINT_NODE_ENDPOINT_KIND, HEALTHY_NODE_PREDICATE,"
     },
     {
-     "line": 45,
+     "line": 47,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
-     "text": "TRUST_ANCHORS, KVInterlockRuntime, _HEALTHY_RECEIPT_EXACT,"
+     "text": "PINNED_HEALTHY_NODE_EVALUATOR_ID, TRUST_ANCHORS, KVInterlockRuntime,"
     },
     {
-     "line": 125,
+     "line": 128,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
      "text": "#   KVInterlockRuntime.handle (INTR_DEVICE_KV), which mints a KV-access receipt."
     },
     {
-     "line": 341,
+     "line": 344,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
      "text": "\"(runtime.kv_skap_layer2.SkapLayer2Gate over KVInterlockRuntime) and enter through skap_entry\"),"
     },
     {
-     "line": 508,
+     "line": 512,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
      "text": "class _LocalExerciseLayer1(KVInterlockRuntime):"
     },
     {
-     "line": 795,
+     "line": 818,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
      "text": "\"KVInterlockRuntime.handle (INTR_DEVICE_KV) per lineage receipt. Each must carry the ALLOW evaluation of \""
     },
     {
-     "line": 863,
+     "line": 890,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
      "text": "or kv.get(\"boundary\") != \"INTR_DEVICE_KV\" or kv.get(\"minted_by\") != \"KVInterlockRuntime.handle\" \\"
     },
     {
-     "line": 868,
+     "line": 895,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
      "text": "\"KVInterlockRuntime.handle for the same InTr receipt and node\")"
@@ -1441,7 +1504,7 @@
     "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
     "kv_interlock|KVInterlockRuntime|response_hash"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "kv-layers-structure",
    "status": "OBSERVED",
    "what": "KVSkapVault entry points: which take an InTr reference, what _require_intr checks, any layer-1 receipt"
@@ -1599,7 +1662,7 @@
     "self.vault_root = ",
     "intr|InTr|healthy"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "skap-direct-store-cvk",
    "status": "OBSERVED",
    "what": "direct SKAP sealed-credential read/write in continuity-vault-kit (no InTr, no KV gate)"
@@ -1823,19 +1886,19 @@
    "what": "do the KV request, allocation or handoff (#3324) name either access layer or the healthy-node predicate?"
   },
   {
-   "command": "{python} -c import base64, hashlib, json, sys, tempfile\nsys.path[:0] = [\".\", \"tests\"]\nimport kv_two_layer_e0 as e0\nfrom kv_two_layer_e0 import TwoLayers\nfrom runtime import kv_interlock_endpoint as ep\nfrom runtime import kv_skap_vault as kv\nfrom runtime.kv_skap_layer2 import SkapLayer2Gate, kv_skap_transition\nfrom runtime import task_registry_event_sovereign_kv_binding as b\nfrom execution.adapter import canonical_sha256\nfrom execution.vault_store import KnowledgeVaultExecutionStore, SKAP_KV_RECORD_SCHEMA, SKAP_SEALED_FORMAT, SkapAccessRefused\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None):\n    r = {\"subject\": subject}\n    if isinstance(out, dict):\n        d = out.get(\"disposition\") or out.get(\"decision\")\n        r[\"disposition\"] = \"ALLOW\" if d in (\"ALLOW\", \"ALLOW_BOUNDED_CONTEXT\") else d\n        for k in SIX + (\"failure_class\", \"refusal_cause\"):\n            if isinstance(out.get(k), str):\n                r[k] = out[k]\n    else:\n        r[\"disposition\"] = out\n    if note: r[\"note\"] = note\n    rows.append(r)\ndef guard(subject, fn):\n    try:\n        fn()\n    except Exception as exc:\n        f = getattr(exc, \"fields\", None)\n        if isinstance(f, dict):\n            row(subject, f, \"raised %s carrying six fields\" % type(exc).__name__)\n        else:\n            rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:200]})\nN = \"device:probe:1\"\ndef fake_eval(node_ref, **_):\n    out = dict(ep._HEALTHY_RECEIPT_EXACT)\n    out.update(node_id=node_ref, health_report_receipt_sha256=\"sha256:\" + \"c\" * 64, chain_head_receipt_sha256=\"sha256:\" + \"d\" * 64)\n    return out\ndef disguised_eval():\n    # an injected evaluator dressed as the pin: same module/qualname and a code object whose filename is the vendored file\n    import runtime.intr_pinned.healthy_node_evaluator as pinned\n    f = lambda node_ref, **kw: fake_eval(node_ref, **kw)\n    f.__code__ = f.__code__.replace(co_filename=pinned.__file__, co_name=\"evaluate\")\n    f.__module__, f.__qualname__, f.__name__ = pinned.__name__, \"evaluate\", \"evaluate\"\n    return f\ndef l1(subject, access_kw=None, **kw):\n    guard(subject, lambda: row(subject, TwoLayers(node=N, **kw).kv_access(**(access_kw or {}))))\ndef tr(t, prior, op=\"SKAP_READ\"):\n    return kv_skap_transition(principal_ref=t.principal, operation=op, subject_ref=\"p1\", prior_receipt_hash=prior)\n\n# --- production trust anchors (nothing observed): every path must refuse ---\nl1(\"PROD_LAYER1_E0_GIT_LEDGER_ASSERTED_IDENTITY\")\nl1(\"PROD_LAYER1_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY\", ledger_checkout=e0.e0_scratch_ledger_root(N))\nl1(\"PROD_LAYER1_UNANCHORED_TEMPORARY_LEDGER\", ledger_checkout={\"kind\": ep.LEDGER_SOURCE_TEMPORARY, \"ledger_root\": e0.e0_temporary_node_ledger(N)[0]})\nl1(\"PROD_LAYER1_INJECTED_NON_PINNED_EVALUATOR\", evaluator=fake_eval)\ndef local_exercise():\n    h = kv._ExerciseHarness()\n    a = h.kv_access()\n    row(\"LOCAL_EXERCISE_LAYER1_HARDCODED_INSTALLED\", a, \"observational: the labelled local exercise stands in for transport INSTALLED\")\n    rec = a.get(\"kv_access_receipt\") or {}\n    row(\"LOCAL_EXERCISE_RECEIPT_AT_PRODUCTION_LAYER2_GATE\", SkapLayer2Gate(h.layer1).admit(kv_skap_transition(\n        principal_ref=\"principal:x\", operation=\"SKAP_READ\", subject_ref=\"p1\", prior_receipt_hash=rec.get(\"receipt_hash\"))))\nguard(\"LOCAL_EXERCISE\", local_exercise)\n\nwith e0.e0_trust_anchors():\n    l1(\"LAYER1_NO_LEDGER_BOUND\", ledger_checkout=None)\n    l1(\"LAYER1_NO_HEALTH_REPORT_ON_LEDGER\", ledger_checkout=e0.e0_health_ledger(N, report=False)[0])\n    l1(\"LAYER1_UNHEALTHY_REPORT\", ledger_checkout=e0.e0_health_ledger(N, status=\"UNHEALTHY\")[0])\n    l1(\"LAYER1_HEALTHY_BUT_NOT_ADMITTED\", ledger_checkout=e0.e0_health_ledger(N, admitted=False)[0])\n    l1(\"LAYER1_REPORT_FOR_ANOTHER_NODE\", ledger_checkout=e0.e0_health_ledger(\"device:other:9\")[0])\n    l1(\"LAYER1_UNVERIFIED_BOUNDARY_PROOF\", access_kw={\"verification_state\": \"UNVERIFIED\"})\n    l1(\"LAYER1_CALLER_ASSERTED_HEALTH_EVIDENCE\", access_kw={\"evidence\": {\"healthy\": True}})\n    l1(\"LAYER1_BARE_SCRATCH_LEDGER_ROOT\", ledger_checkout=e0.e0_scratch_ledger_root(N))\n    def unenrolled():\n        t = TwoLayers(node=N)\n        request, envelope = e0.request_and_envelope(99, \"device:not-enrolled:7\")\n        row(\"LAYER1_CALLER_ASSERTED_IDENTITY_NOT_AUTHENTICATED\", t.layer1.handle(\n            request, intr_envelope=envelope, intr_receipt_ref=kv.sha256_uri(e0.intr_receipt(\"t99\"))))\n    guard(\"LAYER1_CALLER_ASSERTED_IDENTITY_NOT_AUTHENTICATED\", unenrolled)\n    def not_installed():\n        t = TwoLayers(node=N)\n        e0.E0_TRANSPORT.state = \"NOT_YET_ENABLED\"\n        try:\n            row(\"LAYER1_TRANSPORT_NOT_INSTALLED\", t.kv_access())\n        finally:\n            del e0.E0_TRANSPORT.state\n    guard(\"LAYER1_TRANSPORT_NOT_INSTALLED\", not_installed)\n    l1(\"LAYER1_TEMPORARY_LEDGER_WITHOUT_ANCHOR\", ledger_checkout={\"kind\": ep.LEDGER_SOURCE_TEMPORARY, \"ledger_root\": e0.e0_temporary_node_ledger(N)[0]})\n    l1(\"LAYER1_TEMPORARY_LEDGER_ANCHOR_NOT_ISSUED\", ledger_checkout=e0.e0_temporary_source(N, issued=False))\n    l1(\"LAYER1_TEMPORARY_LEDGER_ANCHOR_OTHER_IDENTITY_KEY\", ledger_checkout=e0.e0_temporary_source(N, node_identity_key=\"e0-node-identity-key:other\"))\n    l1(\"LAYER1_TEMPORARY_LEDGER_ANCHORED\", ledger_checkout=e0.e0_temporary_source(N))\n    def injected(subject, evaluator):\n        t = TwoLayers(node=N, evaluator=evaluator)\n        a = t.kv_access()\n        row(\"LAYER1_\" + subject, a)\n        h = (a.get(\"kv_access_receipt\") or {}).get(\"receipt_hash\")\n        row(\"LAYER2_ON_LAYER1_RECEIPT_FROM_\" + subject, t.gate.admit(tr(t, h)))\n    guard(\"NON_PINNED_EVALUATOR\", lambda: injected(\"NON_PINNED_EVALUATOR\", fake_eval))\n    guard(\"DISGUISED_NON_PINNED_EVALUATOR\", lambda: injected(\"DISGUISED_NON_PINNED_EVALUATOR\", disguised_eval()))\n    def l2():\n        t = TwoLayers(node=N)\n        row(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", t.gate.admit(tr(t, None)))\n        row(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", t.gate.admit(tr(t, \"sha256:\" + \"a\" * 64)))\n        h = t.kv_hash()\n        row(\"LAYER2_ON_LAYER1_RECEIPT_FROM_PINNED_EVALUATOR\", t.gate.admit(tr(t, h)))\n        row(\"LAYER2_REUSED_LAYER1_RECEIPT\", t.gate.admit(tr(t, h)))\n        h2 = t.kv_hash()\n        with e0.production_trust_anchors():\n            row(\"LAYER2_ON_E0_RECEIPT_UNDER_PRODUCTION_ANCHORS\", t.gate.admit(tr(t, h2)))\n        h3 = t.kv_hash()\n        t.layer1.__class__ = type(\"SubclassedLayer1\", (ep.KVInterlockRuntime,), {})\n        row(\"LAYER2_WITH_SUBCLASSED_LAYER1_RUNTIME\", t.gate.admit(tr(t, h3)))\n    guard(\"LAYER2_SEQUENCE\", l2)\n    def bundle(secret):\n        s = {\"format\": SKAP_SEALED_FORMAT, \"object_id\": \"skap://APIs/probe/v1\", \"credential_version\": 1,\n             \"wrapping_policy_ref\": \"policy://skap/probe\", \"purpose\": \"probe\", \"endpoint_ref\": \"https://example.invalid\",\n             \"key_authority_ref\": \"tvc://credential-root/test-only\", \"kdf_salt_b64\": \"c2FsdA==\", \"nonce_b64\": \"bm9uY2U=\",\n             \"aad_hash\": \"sha256:\" + hashlib.sha256(secret).hexdigest(), \"ciphertext_b64\": base64.b64encode(hashlib.sha256(b\"ct\" + secret).digest()).decode(),\n             \"plaintext_persisted\": False, \"key_material_persisted\": False, \"authority_transfer\": False}\n        r = {\"schema\": \"stegverse.skap.owner_credential_ingress_receipt/v1\", \"object_id\": s[\"object_id\"],\n             \"credential_version\": s[\"credential_version\"], \"purpose\": s[\"purpose\"], \"endpoint_ref\": s[\"endpoint_ref\"],\n             \"wrapping_policy_ref\": s[\"wrapping_policy_ref\"], \"authorization_ref\": \"webauthn://probe\", \"source_class\": \"TRUSTED_INTERACTIVE_EDGE\",\n             \"key_authority_ref\": s[\"key_authority_ref\"], \"sealed_material_hash\": canonical_sha256(s), \"plaintext_length\": len(secret),\n             \"owner_authorized\": True, \"plaintext_persisted\": False, \"device_durable_secret_custody\": False,\n             \"kv_decryption_authority\": False, \"model_secret_access\": False, \"authority_transfer\": False, \"ingressed_at\": \"2026-10-23T00:00:00Z\"}\n        return s, r\n    def refused(subject, fn, note=None):\n        try:\n            out = fn()\n            row(subject, \"ALLOW\", note)\n            return out\n        except SkapAccessRefused as exc:\n            row(subject, exc.fields, \"raised SkapAccessRefused carrying six fields\")\n    def store_probe():\n        t = TwoLayers(principal=\"principal:owner\", node=N)\n        acc = lambda op, sid, g=None: {\"skap_gate\": g or t.gate, \"principal_ref\": \"principal:owner\", \"skap_access_receipt_hash\": t.skap_hash(op, sid)}\n        with tempfile.TemporaryDirectory() as tmp:\n            st = KnowledgeVaultExecutionStore(tmp)\n            sealed, receipt = bundle(b\"probe-credential-a\")\n            st.append_skap_sealed_credential(\"s1\", sealed, receipt, **acc(\"SKAP_SEALED_CREDENTIAL_APPEND\", \"s1\"))\n            back = st.read_skap_sealed_credential(\"s1\", **acc(\"SKAP_SEALED_CREDENTIAL_READ\", \"s1\"))\n            row(\"SKAP_GATED_APPEND_THEN_GATED_READ\", \"ALLOW\" if back == sealed else \"FAIL_CLOSED\")\n            refused(\"SKAP_RECORD_READ_VIA_READ_STREAM_WITHOUT_LAYER2\", lambda: KnowledgeVaultExecutionStore(tmp).read_stream(\"Extensions\", \"s1\"))\n            forged, _ = bundle(b\"probe-credential-forged\")\n            rec = {\"schema\": SKAP_KV_RECORD_SCHEMA, \"object_id\": forged[\"object_id\"], \"credential_version\": forged[\"credential_version\"],\n                   \"sealed_material\": forged, \"sealed_material_hash\": canonical_sha256(forged), \"kv_decryption_authority\": False,\n                   \"kv_secret_resolution_authority\": False, \"plaintext_present\": False, \"key_material_present\": False, \"authority_transfer\": False,\n                   \"access\": {\"kv_access_receipt_hash\": \"sha256:\" + \"0\" * 64, \"skap_access_receipt_hash\": \"sha256:\" + \"0\" * 64}}\n            refused(\"SKAP_RECORD_WRITE_VIA_APPEND_EXTENSION_WITHOUT_LAYER2\", lambda: KnowledgeVaultExecutionStore(tmp).append_extension(\"s1\", rec))\n            with open(st.execution_root / \"Extensions\" / \"s1.jsonl\", \"a\", encoding=\"utf-8\") as fh:\n                fh.write(json.dumps({\"record\": rec, \"record_sha256\": canonical_sha256(rec)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False) + \"\\n\")\n            refused(\"SKAP_RECORD_FORGED_BY_FILE_WRITE_THEN_GATED_READ\", lambda: st.read_skap_sealed_credential(\"s1\", **acc(\"SKAP_SEALED_CREDENTIAL_READ\", \"s1\")))\n        with tempfile.TemporaryDirectory() as tmp:\n            st = KnowledgeVaultExecutionStore(tmp)\n            sealed, receipt = bundle(b\"probe-credential-b\")\n            st.append_skap_sealed_credential(\"s2\", sealed, receipt, **acc(\"SKAP_SEALED_CREDENTIAL_APPEND\", \"s2\"))\n            t2 = TwoLayers(principal=\"principal:owner\", node=N)  # a restarted process: a fresh gate over the same files\n            refused(\"SKAP_LEGIT_RECORD_READ_AFTER_GATE_RESTART\", lambda: st.read_skap_sealed_credential(\n                \"s2\", skap_gate=t2.gate, principal_ref=\"principal:owner\", skap_access_receipt_hash=t2.skap_hash(\"SKAP_SEALED_CREDENTIAL_READ\", \"s2\")),\n                \"observational: provenance bindings live in the gate's memory\")\n            Lenient = type(\"LenientGate\", (SkapLayer2Gate,), {})\n            refused(\"SKAP_STORE_WITH_SUBCLASSED_GATE\", lambda: st.read_skap_sealed_credential(\n                \"s2\", skap_gate=Lenient(t.layer1), principal_ref=\"principal:owner\", skap_access_receipt_hash=\"sha256:\" + \"1\" * 64))\n    guard(\"SKAP_STORE\", store_probe)\n    def custody():\n        t = TwoLayers(node=N)\n        kvh = t.kv_hash()\n        sk = t.gate.admit(tr(t, kvh))[\"skap_access_receipt\"][\"receipt_hash\"]\n        pr = {\"kv_access_receipt_hash\": kvh, \"skap_access_receipt_hash\": sk}\n        for subject, verifier in ((\"CUSTODY_VERIFIER_ARBITRARY_CALLABLE\", lambda *_: {\"disposition\": \"ALLOW\"}),\n                                  (\"CUSTODY_VERIFIER_SUBCLASSED_GATE\", type(\"LenientGate\", (SkapLayer2Gate,), {})(t.layer1).verify_access_chain)):\n            try:\n                out = b._require_access_layers(dict(pr), verifier)\n                row(subject, \"ALLOW\", \"returned %r\" % (out,))\n            except Exception as exc:\n                f = getattr(exc, \"fields\", None)\n                row(subject, f if isinstance(f, dict) else {\"disposition\": \"FAIL_CLOSED\", \"failure_code\": getattr(exc, \"failure_code\", type(exc).__name__)},\n                    \"raised %s\" % type(exc).__name__)\n    guard(\"CUSTODY_VERIFIER\", custody)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "command": "{python} -c import base64, hashlib, json, sys, tempfile\nsys.path[:0] = [\".\", \"tests\"]\nimport kv_two_layer_e0 as e0\nfrom kv_two_layer_e0 import TwoLayers\nfrom runtime import kv_interlock_endpoint as ep\nfrom runtime import kv_skap_vault as kv\nfrom runtime.kv_skap_layer2 import SkapLayer2Gate, kv_skap_transition\nfrom runtime import task_registry_event_sovereign_kv_binding as b\nfrom execution.adapter import canonical_sha256\nfrom execution.vault_store import KnowledgeVaultExecutionStore, SKAP_KV_RECORD_SCHEMA, SKAP_SEALED_FORMAT, SkapAccessRefused\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None):\n    r = {\"subject\": subject}\n    if isinstance(out, dict):\n        d = out.get(\"disposition\") or out.get(\"decision\")\n        r[\"disposition\"] = \"ALLOW\" if d in (\"ALLOW\", \"ALLOW_BOUNDED_CONTEXT\") else d\n        for k in SIX + (\"failure_class\", \"refusal_cause\"):\n            if isinstance(out.get(k), str):\n                r[k] = out[k]\n    else:\n        r[\"disposition\"] = out\n    if note: r[\"note\"] = note\n    rows.append(r)\ndef guard(subject, fn):\n    try:\n        fn()\n    except Exception as exc:\n        f = getattr(exc, \"fields\", None)\n        if isinstance(f, dict):\n            row(subject, f, \"raised %s carrying six fields\" % type(exc).__name__)\n        else:\n            rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:200]})\nN = e0.NODE\ndef fake_eval(node_ref, **_):\n    out = dict(ep._HEALTHY_RECEIPT_EXACT)\n    out.update(node_id=node_ref, health_report_receipt_sha256=\"sha256:\" + \"c\" * 64, chain_head_receipt_sha256=\"sha256:\" + \"d\" * 64)\n    return out\ndef disguised_eval():\n    # an injected evaluator dressed as the pin: module/qualname/name and a code object whose filename is the vendored\n    # evaluate_anchored file\n    import inspect\n    pinned = e0.pinned()[\"endpoint_ledger_anchor\"]\n    f = lambda node_ref, **kw: fake_eval(node_ref, **kw)\n    f.__code__ = f.__code__.replace(co_filename=inspect.getsourcefile(pinned), co_name=\"evaluate_anchored\")\n    f.__module__, f.__qualname__, f.__name__ = pinned.__name__, \"evaluate_anchored\", \"evaluate_anchored\"\n    return f\ndef l1(subject, access_kw=None, note=None, **kw):\n    guard(subject, lambda: row(subject, TwoLayers(node=N, **kw).kv_access(**(access_kw or {})), note))\ndef tr(t, prior, op=\"SKAP_READ\"):\n    return kv_skap_transition(principal_ref=t.principal, operation=op, subject_ref=\"p1\", prior_receipt_hash=prior)\n\n# --- production trust anchors (nothing observed): every path must refuse ---\nl1(\"PROD_LAYER1_E0_GIT_LEDGER_ASSERTED_IDENTITY\")\nl1(\"PROD_LAYER1_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY\", ledger_checkout=e0.e0_scratch_ledger_root(N))\nl1(\"PROD_LAYER1_UNANCHORED_NODE_LEDGER\", ledger_checkout=e0.e0_health_ledger(N, anchored=False)[0])\nl1(\"PROD_LAYER1_INJECTED_DISGUISED_EVALUATOR\", evaluator=disguised_eval())\nl1(\"PROD_LAYER1_INJECTED_NON_PINNED_EVALUATOR\", evaluator=fake_eval)\ndef local_exercise():\n    h = kv._ExerciseHarness()\n    a = h.kv_access()\n    row(\"LOCAL_EXERCISE_LAYER1_HARDCODED_INSTALLED\", a, \"observational: the labelled local exercise stands in for transport INSTALLED\")\n    rec = a.get(\"kv_access_receipt\") or {}\n    row(\"LOCAL_EXERCISE_RECEIPT_AT_PRODUCTION_LAYER2_GATE\", SkapLayer2Gate(h.layer1).admit(kv_skap_transition(\n        principal_ref=\"principal:x\", operation=\"SKAP_READ\", subject_ref=\"p1\", prior_receipt_hash=rec.get(\"receipt_hash\"))))\nguard(\"LOCAL_EXERCISE\", local_exercise)\n\nwith e0.e0_trust_anchors():\n    l1(\"LAYER1_NO_LEDGER_BOUND\", ledger_checkout=None)\n    l1(\"LAYER1_NO_HEALTH_REPORT_ON_LEDGER\", ledger_checkout=e0.e0_health_ledger(N, report=False)[0])\n    l1(\"LAYER1_UNHEALTHY_REPORT\", ledger_checkout=e0.e0_health_ledger(N, status=\"UNHEALTHY\")[0])\n    l1(\"LAYER1_HEALTHY_BUT_NOT_ADMITTED\", ledger_checkout=e0.e0_health_ledger(N, admitted=False)[0])\n    l1(\"LAYER1_REPORT_FOR_ANOTHER_NODE\", ledger_checkout=e0.e0_health_ledger(e0.OTHER_NODE)[0])\n    l1(\"LAYER1_UNVERIFIED_BOUNDARY_PROOF\", access_kw={\"verification_state\": \"UNVERIFIED\"})\n    l1(\"LAYER1_CALLER_ASSERTED_HEALTH_EVIDENCE\", access_kw={\"evidence\": {\"healthy\": True}})\n    l1(\"LAYER1_BARE_SCRATCH_LEDGER_ROOT\", ledger_checkout=e0.e0_scratch_ledger_root(N))\n    def unenrolled():\n        t = TwoLayers(node=N)\n        request, envelope = e0.request_and_envelope(99, \"device:not-enrolled:7\")\n        row(\"LAYER1_CALLER_ASSERTED_IDENTITY_NOT_AUTHENTICATED\", t.layer1.handle(\n            request, intr_envelope=envelope, intr_receipt_ref=kv.sha256_uri(e0.intr_receipt(\"t99\"))))\n    guard(\"LAYER1_CALLER_ASSERTED_IDENTITY_NOT_AUTHENTICATED\", unenrolled)\n    def not_installed():\n        t = TwoLayers(node=N)\n        e0.E0_TRANSPORT.state = \"NOT_YET_ENABLED\"\n        try:\n            row(\"LAYER1_TRANSPORT_NOT_INSTALLED\", t.kv_access())\n        finally:\n            del e0.E0_TRANSPORT.state\n    guard(\"LAYER1_TRANSPORT_NOT_INSTALLED\", not_installed)\n    l1(\"LAYER1_NODE_LEDGER_WITHOUT_ANCHOR\", ledger_checkout=e0.e0_health_ledger(N, anchored=False)[0])\n    l1(\"LAYER1_TRANSPORT_KEY_NOT_THE_ANCHORED_GENESIS_KEY\", ledger_checkout=e0.e0_health_ledger(N, transport_key=e0.e0_node_identity_key(N, \"other\"))[0])\n    l1(\"LAYER1_FOREIGN_PRODUCER_REPORTS\", ledger_checkout=e0.e0_health_ledger(N, foreign=True)[0])\n    l1(\"LAYER1_ORG_REF_ABSENT\", ledger_checkout={\"kind\": ep.LEDGER_SOURCE_ANCHORED, \"org_ledger_git_dir\": e0.e0_empty_ref_checkout(), \"endpoint\": {\"endpoint_kind\": \"PERMANENT\", \"ledger_root\": str(e0.e0_health_ledger(N)[0][\"endpoint\"][\"ledger_root\"])}})\n    l1(\"LAYER1_PERMANENT_NODE_ANCHORED\", ledger_checkout=e0.e0_health_ledger(N)[0],\n       note=\"observational: the org-ledger object store is a git repository the harness created; its REPOSITORY_LEDGER_INITIALIZATION genesis is derived from its own receipt, not pinned\")\n    l1(\"LAYER1_EPHEMERAL_ANCHORED_BY_UNSIGNED_OPENED_RECORD\", ledger_checkout=e0.e0_health_ledger(N, kind=\"EPHEMERAL\")[0],\n       note=\"observational: the vendored #432 @c2c57505 anchor check accepts a NODE_LEDGER_OPENED record sealed only by its own sha256\")\n    def flagged():\n        Flagged = type(\"FlaggedLayer1\", (ep.KVInterlockRuntime,), {\"_EXERCISE_ONLY_UNPINNED_DECIDER\": True})\n        t = TwoLayers(node=N)\n        t.layer1 = Flagged(**{k: getattr(t.layer1, k) for k in (\"authority_validator\", \"policy_evaluator\", \"receipt_store\", \"clock\", \"healthy_node_ledger_checkout\")}, healthy_node_evaluator=fake_eval)\n        t.gate = SkapLayer2Gate(t.layer1)\n        a = t.kv_access()\n        row(\"LAYER1_SUBCLASS_SETTING_EXERCISE_FLAG_WITH_INJECTED_EVALUATOR\", a)\n        h = (a.get(\"kv_access_receipt\") or {}).get(\"receipt_hash\")\n        row(\"LAYER2_ON_LAYER1_RECEIPT_FROM_EXERCISE_FLAG_SUBCLASS\", t.gate.admit(tr(t, h)))\n    guard(\"EXERCISE_FLAG_SUBCLASS\", flagged)\n    def injected(subject, evaluator):\n        t = TwoLayers(node=N, evaluator=evaluator)\n        a = t.kv_access()\n        row(\"LAYER1_\" + subject, a)\n        h = (a.get(\"kv_access_receipt\") or {}).get(\"receipt_hash\")\n        row(\"LAYER2_ON_LAYER1_RECEIPT_FROM_\" + subject, t.gate.admit(tr(t, h)))\n    guard(\"NON_PINNED_EVALUATOR\", lambda: injected(\"NON_PINNED_EVALUATOR\", fake_eval))\n    guard(\"DISGUISED_NON_PINNED_EVALUATOR\", lambda: injected(\"DISGUISED_NON_PINNED_EVALUATOR\", disguised_eval()))\n    def l2():\n        t = TwoLayers(node=N)\n        row(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", t.gate.admit(tr(t, None)))\n        row(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", t.gate.admit(tr(t, \"sha256:\" + \"a\" * 64)))\n        h = t.kv_hash()\n        row(\"LAYER2_ON_LAYER1_RECEIPT_FROM_PINNED_EVALUATOR\", t.gate.admit(tr(t, h)))\n        row(\"LAYER2_REUSED_LAYER1_RECEIPT\", t.gate.admit(tr(t, h)))\n        h2 = t.kv_hash()\n        with e0.production_trust_anchors():\n            row(\"LAYER2_ON_E0_RECEIPT_UNDER_PRODUCTION_ANCHORS\", t.gate.admit(tr(t, h2)))\n        h3 = t.kv_hash()\n        t.layer1.__class__ = type(\"SubclassedLayer1\", (ep.KVInterlockRuntime,), {})\n        row(\"LAYER2_WITH_SUBCLASSED_LAYER1_RUNTIME\", t.gate.admit(tr(t, h3)))\n    guard(\"LAYER2_SEQUENCE\", l2)\n    def bundle(secret):\n        s = {\"format\": SKAP_SEALED_FORMAT, \"object_id\": \"skap://APIs/probe/v1\", \"credential_version\": 1,\n             \"wrapping_policy_ref\": \"policy://skap/probe\", \"purpose\": \"probe\", \"endpoint_ref\": \"https://example.invalid\",\n             \"key_authority_ref\": \"tvc://credential-root/test-only\", \"kdf_salt_b64\": \"c2FsdA==\", \"nonce_b64\": \"bm9uY2U=\",\n             \"aad_hash\": \"sha256:\" + hashlib.sha256(secret).hexdigest(), \"ciphertext_b64\": base64.b64encode(hashlib.sha256(b\"ct\" + secret).digest()).decode(),\n             \"plaintext_persisted\": False, \"key_material_persisted\": False, \"authority_transfer\": False}\n        r = {\"schema\": \"stegverse.skap.owner_credential_ingress_receipt/v1\", \"object_id\": s[\"object_id\"],\n             \"credential_version\": s[\"credential_version\"], \"purpose\": s[\"purpose\"], \"endpoint_ref\": s[\"endpoint_ref\"],\n             \"wrapping_policy_ref\": s[\"wrapping_policy_ref\"], \"authorization_ref\": \"webauthn://probe\", \"source_class\": \"TRUSTED_INTERACTIVE_EDGE\",\n             \"key_authority_ref\": s[\"key_authority_ref\"], \"sealed_material_hash\": canonical_sha256(s), \"plaintext_length\": len(secret),\n             \"owner_authorized\": True, \"plaintext_persisted\": False, \"device_durable_secret_custody\": False,\n             \"kv_decryption_authority\": False, \"model_secret_access\": False, \"authority_transfer\": False, \"ingressed_at\": \"2026-10-23T00:00:00Z\"}\n        return s, r\n    def refused(subject, fn, note=None):\n        try:\n            out = fn()\n            row(subject, \"ALLOW\", note)\n            return out\n        except SkapAccessRefused as exc:\n            row(subject, exc.fields, \"raised SkapAccessRefused carrying six fields\")\n    def store_probe():\n        t = TwoLayers(principal=\"principal:owner\", node=N)\n        acc = lambda op, sid, g=None: {\"skap_gate\": g or t.gate, \"principal_ref\": \"principal:owner\", \"skap_access_receipt_hash\": t.skap_hash(op, sid)}\n        with tempfile.TemporaryDirectory() as tmp:\n            st = KnowledgeVaultExecutionStore(tmp)\n            sealed, receipt = bundle(b\"probe-credential-a\")\n            st.append_skap_sealed_credential(\"s1\", sealed, receipt, **acc(\"SKAP_SEALED_CREDENTIAL_APPEND\", \"s1\"))\n            back = st.read_skap_sealed_credential(\"s1\", **acc(\"SKAP_SEALED_CREDENTIAL_READ\", \"s1\"))\n            row(\"SKAP_GATED_APPEND_THEN_GATED_READ\", \"ALLOW\" if back == sealed else \"FAIL_CLOSED\")\n            refused(\"SKAP_RECORD_READ_VIA_READ_STREAM_WITHOUT_LAYER2\", lambda: KnowledgeVaultExecutionStore(tmp).read_stream(\"Extensions\", \"s1\"))\n            forged, _ = bundle(b\"probe-credential-forged\")\n            rec = {\"schema\": SKAP_KV_RECORD_SCHEMA, \"object_id\": forged[\"object_id\"], \"credential_version\": forged[\"credential_version\"],\n                   \"sealed_material\": forged, \"sealed_material_hash\": canonical_sha256(forged), \"kv_decryption_authority\": False,\n                   \"kv_secret_resolution_authority\": False, \"plaintext_present\": False, \"key_material_present\": False, \"authority_transfer\": False,\n                   \"access\": {\"kv_access_receipt_hash\": \"sha256:\" + \"0\" * 64, \"skap_access_receipt_hash\": \"sha256:\" + \"0\" * 64}}\n            refused(\"SKAP_RECORD_WRITE_VIA_APPEND_EXTENSION_WITHOUT_LAYER2\", lambda: KnowledgeVaultExecutionStore(tmp).append_extension(\"s1\", rec))\n            with open(st.execution_root / \"Extensions\" / \"s1.jsonl\", \"a\", encoding=\"utf-8\") as fh:\n                fh.write(json.dumps({\"record\": rec, \"record_sha256\": canonical_sha256(rec)}, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=False) + \"\\n\")\n            refused(\"SKAP_RECORD_FORGED_BY_FILE_WRITE_THEN_GATED_READ\", lambda: st.read_skap_sealed_credential(\"s1\", **acc(\"SKAP_SEALED_CREDENTIAL_READ\", \"s1\")))\n        with tempfile.TemporaryDirectory() as tmp:\n            st = KnowledgeVaultExecutionStore(tmp)\n            sealed, receipt = bundle(b\"probe-credential-b\")\n            st.append_skap_sealed_credential(\"s2\", sealed, receipt, **acc(\"SKAP_SEALED_CREDENTIAL_APPEND\", \"s2\"))\n            t2 = TwoLayers(principal=\"principal:owner\", node=N)  # a restarted process: a fresh gate over the same files\n            refused(\"SKAP_LEGIT_RECORD_READ_AFTER_GATE_RESTART\", lambda: st.read_skap_sealed_credential(\n                \"s2\", skap_gate=t2.gate, principal_ref=\"principal:owner\", skap_access_receipt_hash=t2.skap_hash(\"SKAP_SEALED_CREDENTIAL_READ\", \"s2\")),\n                \"observational: provenance bindings live in the gate's memory\")\n            Lenient = type(\"LenientGate\", (SkapLayer2Gate,), {})\n            refused(\"SKAP_STORE_WITH_SUBCLASSED_GATE\", lambda: st.read_skap_sealed_credential(\n                \"s2\", skap_gate=Lenient(t.layer1), principal_ref=\"principal:owner\", skap_access_receipt_hash=\"sha256:\" + \"1\" * 64))\n    guard(\"SKAP_STORE\", store_probe)\n    def custody():\n        t = TwoLayers(node=N)\n        kvh = t.kv_hash()\n        sk = t.gate.admit(tr(t, kvh))[\"skap_access_receipt\"][\"receipt_hash\"]\n        pr = {\"kv_access_receipt_hash\": kvh, \"skap_access_receipt_hash\": sk}\n        for subject, verifier in ((\"CUSTODY_VERIFIER_ARBITRARY_CALLABLE\", lambda *_: {\"disposition\": \"ALLOW\"}),\n                                  (\"CUSTODY_VERIFIER_SUBCLASSED_GATE\", type(\"LenientGate\", (SkapLayer2Gate,), {})(t.layer1).verify_access_chain)):\n            try:\n                out = b._require_access_layers(dict(pr), verifier)\n                row(subject, \"ALLOW\", \"returned %r\" % (out,))\n            except Exception as exc:\n                f = getattr(exc, \"fields\", None)\n                row(subject, f if isinstance(f, dict) else {\"disposition\": \"FAIL_CLOSED\", \"failure_code\": getattr(exc, \"failure_code\", type(exc).__name__)},\n                    \"raised %s\" % type(exc).__name__)\n    guard(\"CUSTODY_VERIFIER\", custody)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
    "exit_code": 0,
    "outcomes": [
     {
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "HEALTHY_NODE_LEDGER_CHAIN_ONBOARDED_WITH_GENESIS",
-     "failure_class": "B",
+     "failure_class": "C",
      "failure_code": "KV_ACCESS_LAYER1_REFUSED",
      "next_attempt": "when the LLM-adapter chain is onboarded and its genesis exists at the contract location",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (Lane B, InTr and Mesh Destinations, StegVerse-org/.github#162)",
-     "refusal_cause": "HEALTHY_NODE_LEDGER_GENESIS_NOT_PINNED",
-     "required_evidence_or_repair": "HEALTHY_NODE_LEDGER_GENESIS_NOT_PINNED: KV has no pinned genesis for the chain at the contract location (observed sha256:94087834d89655f7d92703346941f494e079d2f699a2347d108feaf1030ef470 at 490a51322ebb is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED until the genesis is admitted)",
-     "retry_entrypoint": "StegVerse-Labs/.github#3255 (organization-ledger genesis) and StegVerse-org/LLM-adapter#431 (onboarding); KV then pins the observed genesis receipt in TRUST_ANCHORS",
+     "refusal_cause": "HEALTHY_NODE_LEDGER_GENESIS_NOT_DERIVABLE",
+     "required_evidence_or_repair": "HEALTHY_NODE_LEDGER_GENESIS_NOT_DERIVABLE: the chain at refs/stegverse/organization-ledger@9aa82a4c5120:repository-ledger/StegVerse-org/LLM-adapter starts at sha256:bf6729505765cc56cee11f599ed91252e95c5f12c7b2b4ee6f74927630817a5c, which does not derive as the LLM-adapter repository-ledger genesis from its own receipt: it is labelled 'E0_STANDIN_TEST_ONLY_NOT_EVIDENCE', not for the trust anchors in force ('PRODUCTION')",
+     "retry_entrypoint": "StegVerse-Labs/.github#3255 (organization-ledger genesis) and StegVerse-org/LLM-adapter#431 (onboarding); KV derives the genesis from the receipt it then observes at the contract location",
      "subject": "PROD_LAYER1_E0_GIT_LEDGER_ASSERTED_IDENTITY"
     },
     {
@@ -1852,26 +1915,38 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "failed_predicate": "REQUESTER_IDENTITY_AUTHENTICATED_BY_INSTALLED_INTR_TRANSPORT",
-     "failure_class": "B",
-     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
-     "next_attempt": "when an installed InTr DEVICE->KV transport is authentically observed",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "refusal_cause": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED",
-     "required_evidence_or_repair": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED: transport_state is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; KV derives the requester identity only from the installed InTr transport's verification of the envelope, and boundary_proof.source_identity_ref ('device:probe:1') is a caller field that is never trusted",
-     "retry_entrypoint": "the installed InTr DEVICE->KV transport (Lane B, InTr and Mesh Destinations, StegVerse-org/.github#162), then runtime.kv_interlock_endpoint.KVInterlockRuntime.handle",
-     "subject": "PROD_LAYER1_UNANCHORED_TEMPORARY_LEDGER"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
      "failed_predicate": "HEALTHY_NODE_LEDGER_CHAIN_ONBOARDED_WITH_GENESIS",
-     "failure_class": "B",
+     "failure_class": "C",
      "failure_code": "KV_ACCESS_LAYER1_REFUSED",
      "next_attempt": "when the LLM-adapter chain is onboarded and its genesis exists at the contract location",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (Lane B, InTr and Mesh Destinations, StegVerse-org/.github#162)",
-     "refusal_cause": "HEALTHY_NODE_LEDGER_GENESIS_NOT_PINNED",
-     "required_evidence_or_repair": "HEALTHY_NODE_LEDGER_GENESIS_NOT_PINNED: KV has no pinned genesis for the chain at the contract location (observed sha256:94087834d89655f7d92703346941f494e079d2f699a2347d108feaf1030ef470 at 490a51322ebb is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED until the genesis is admitted)",
-     "retry_entrypoint": "StegVerse-Labs/.github#3255 (organization-ledger genesis) and StegVerse-org/LLM-adapter#431 (onboarding); KV then pins the observed genesis receipt in TRUST_ANCHORS",
+     "refusal_cause": "HEALTHY_NODE_LEDGER_GENESIS_NOT_DERIVABLE",
+     "required_evidence_or_repair": "HEALTHY_NODE_LEDGER_GENESIS_NOT_DERIVABLE: the chain at refs/stegverse/organization-ledger@e35900f735c8:repository-ledger/StegVerse-org/LLM-adapter starts at sha256:bf6729505765cc56cee11f599ed91252e95c5f12c7b2b4ee6f74927630817a5c, which does not derive as the LLM-adapter repository-ledger genesis from its own receipt: it is labelled 'E0_STANDIN_TEST_ONLY_NOT_EVIDENCE', not for the trust anchors in force ('PRODUCTION')",
+     "retry_entrypoint": "StegVerse-Labs/.github#3255 (organization-ledger genesis) and StegVerse-org/LLM-adapter#431 (onboarding); KV derives the genesis from the receipt it then observes at the contract location",
+     "subject": "PROD_LAYER1_UNANCHORED_NODE_LEDGER"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "when KVInterlockRuntime is constructed without an injected decider",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "refusal_cause": "LAYER1_NOT_EVALUATED_THROUGH_EVALUATE_ANCHORED",
+     "required_evidence_or_repair": "LAYER1_NOT_EVALUATED_THROUGH_EVALUATE_ANCHORED: the layer-1 health decider is not the evaluate_anchored object loaded from the digest-checked vendored bytes (sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10, evaluator sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58); a callable's __module__, __qualname__ or source filename is never accepted as its identity",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "PROD_LAYER1_INJECTED_DISGUISED_EVALUATOR"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "when KVInterlockRuntime is constructed without an injected decider",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "refusal_cause": "LAYER1_NOT_EVALUATED_THROUGH_EVALUATE_ANCHORED",
+     "required_evidence_or_repair": "LAYER1_NOT_EVALUATED_THROUGH_EVALUATE_ANCHORED: the layer-1 health decider is not the evaluate_anchored object loaded from the digest-checked vendored bytes (sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10, evaluator sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58); a callable's __module__, __qualname__ or source filename is never accepted as its identity",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
      "subject": "PROD_LAYER1_INJECTED_NON_PINNED_EVALUATOR"
     },
     {
@@ -1887,7 +1962,7 @@
      "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "refusal_cause": "LAYER1_RUNTIME_NOT_KV_INTERLOCK_RUNTIME",
-     "required_evidence_or_repair": "LAYER1_RUNTIME_NOT_KV_INTERLOCK_RUNTIME: sha256:b8b4411dee230a3e685e67dd5ea1fe45e0ec16a126ce47cd66508967a5be7544 was not minted by the real KVInterlockRuntime under the pinned healthy-node evaluator (runtime.intr_pinned, sha256:fdaa2005...1f58), the installed InTr transport, a contract-location or anchored temporary ledger binding and the trust anchors in force; it is refused",
+     "required_evidence_or_repair": "LAYER1_RUNTIME_NOT_KV_INTERLOCK_RUNTIME: sha256:766ecde7d1ce00bed966cb6b10ddcaf58ab6f3c73c4a7b87820535af45b464ef was not minted by the real KVInterlockRuntime under the pinned healthy-node evaluator (runtime/intr_pinned, sha256:fdaa2005...1f58) reached through #432's evaluate_anchored (sha256:5fcc9018...3d10), the installed InTr transport, the contract-location org ledger with a node root evaluate_anchored admitted, and the trust anchors in force; it is refused",
      "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LOCAL_EXERCISE_RECEIPT_AT_PRODUCTION_LAYER2_GATE"
     },
@@ -1911,7 +1986,7 @@
      "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "refusal_cause": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
-     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED HEALTH_REPORT_MISSING: a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'SV-NODE-E0TEST0001' (FAIL_CLOSED HEALTH_REPORT_MISSING: a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json)",
      "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER1_NO_HEALTH_REPORT_ON_LEDGER"
     },
@@ -1923,7 +1998,7 @@
      "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "refusal_cause": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
-     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (DENY HEALTH_REPORTED_NOT_HEALTHY: a newer receipted report whose status is exactly HEALTHY)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'SV-NODE-E0TEST0001' (DENY HEALTH_REPORTED_NOT_HEALTHY: a newer receipted report whose status is exactly HEALTHY)",
      "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER1_UNHEALTHY_REPORT"
     },
@@ -1935,20 +2010,20 @@
      "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "refusal_cause": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
-     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED NODE_NOT_ADMITTED: the newest NODE_INGRESS_* receipt for this node must be NODE_INGRESS_ADMITTED with healthy_node_established true, citing the current health report)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'SV-NODE-E0TEST0001' (FAIL_CLOSED NODE_NOT_ADMITTED: the newest NODE_INGRESS_* receipt for this node must be NODE_INGRESS_ADMITTED with healthy_node_established true, citing the current health report)",
      "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER1_HEALTHY_BUT_NOT_ADMITTED"
     },
     {
      "disposition": "FAIL_CLOSED",
-     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
-     "failure_class": "B",
-     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
-     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "refusal_cause": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
-     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED HEALTH_REPORT_MISSING: a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json)",
-     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "failed_predicate": "ENDPOINT_GENESIS_DECLARES_THE_NODE",
+     "failure_class": "C",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "refusal_cause": "NODE_ROOT_NOT_ANCHORED_ENDPOINT_GENESIS_INVALID",
+     "required_evidence_or_repair": "NODE_ROOT_NOT_ANCHORED_ENDPOINT_GENESIS_INVALID: evaluate_anchored refused the 'PERMANENT' root of 'SV-NODE-E0TEST0001' (ENDPOINT_GENESIS_INVALID: a REPOSITORY_LEDGER_INITIALIZATION genesis (stegverse.endpoint-ledger-genesis/v1) naming this node_id, endpoint_kind, a well-formed node_identity_key, the pinned code digests and, for EPHEMERAL, a StegApp/StegBrowser/StegNode node_kind; genesis sha256:2ebe5e9784b639ce8ba115ad5bca34fbf79eea3ebf7af0c6eae0c9243b1b4682 does not declare SV-NODE-E0TEST0001 as PERMANENT with the pinned digests)",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event",
      "subject": "LAYER1_REPORT_FOR_ANOTHER_NODE"
     },
     {
@@ -2007,72 +2082,138 @@
      "next_attempt": "when an installed InTr DEVICE->KV transport is authentically observed",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "refusal_cause": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED",
-     "required_evidence_or_repair": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED: transport_state is NOT_YET_ENABLED; KV derives the requester identity only from the installed InTr transport's verification of the envelope, and boundary_proof.source_identity_ref ('device:probe:1') is a caller field that is never trusted",
+     "required_evidence_or_repair": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED: transport_state is NOT_YET_ENABLED; KV derives the requester identity only from the installed InTr transport's verification of the envelope, and boundary_proof.source_identity_ref ('SV-NODE-E0TEST0001') is a caller field that is never trusted",
      "retry_entrypoint": "the installed InTr DEVICE->KV transport (Lane B, InTr and Mesh Destinations, StegVerse-org/.github#162), then runtime.kv_interlock_endpoint.KVInterlockRuntime.handle",
      "subject": "LAYER1_TRANSPORT_NOT_INSTALLED"
     },
     {
      "disposition": "FAIL_CLOSED",
-     "failed_predicate": "TEMPORARY_NODE_LEDGER_ANCHORED_BY_NODE_LEDGER_OPENED",
+     "failed_predicate": "ENDPOINT_LEDGER_ANCHORED_ON_ORG_LEDGER",
      "failure_class": "B",
-     "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED",
-     "next_attempt": "when Lane B's NODE_LEDGER_OPENED anchor and dissolution transition exist and an issuer verifier is pinned",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "refusal_cause": "NODE_LEDGER_OPENED_ANCHOR_ABSENT",
-     "required_evidence_or_repair": "NODE_LEDGER_OPENED_ANCHOR_ABSENT: a temporary node ledger is bound only with its NODE_LEDGER_OPENED anchor receipt",
-     "retry_entrypoint": "Lane B's NODE_LEDGER_OPENED anchor receipt (issued by the org ledger or TV/TVC, binding node_id, node_identity_key and the genesis hash) and its node-ledger dissolution/disbursement transition back to StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter (LLM-adapter#431), then runtime.kv_interlock_endpoint.KVInterlockRuntime.handle",
-     "subject": "LAYER1_TEMPORARY_LEDGER_WITHOUT_ANCHOR"
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "refusal_cause": "NODE_ROOT_NOT_ANCHORED_UNANCHORED",
+     "required_evidence_or_repair": "NODE_ROOT_NOT_ANCHORED_UNANCHORED: evaluate_anchored refused the 'PERMANENT' root of 'SV-NODE-E0TEST0001' (UNANCHORED: an InTr path receipt pair: INTR_MESH_PATH_TRANSFER on the endpoint ledger and INTR_MESH_PATH_INGRESS (ORGANIZATION_INTR_DESTINATION_INGRESS) on the org ledger, linked by seal, with the source half retained; for EPHEMERAL its body is the StegOS NODE_LEDGER_OPENED record emitted at generation; no anchor ingress for SV-NODE-E0TEST0001->StegVerse-org:intr-destination on the org ledger)",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event",
+     "subject": "LAYER1_NODE_LEDGER_WITHOUT_ANCHOR"
     },
     {
      "disposition": "FAIL_CLOSED",
-     "failed_predicate": "TEMPORARY_NODE_LEDGER_ANCHORED_BY_NODE_LEDGER_OPENED",
-     "failure_class": "B",
-     "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED",
-     "next_attempt": "when Lane B's NODE_LEDGER_OPENED anchor and dissolution transition exist and an issuer verifier is pinned",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "refusal_cause": "NODE_LEDGER_OPENED_ISSUER_NOT_VERIFIED",
-     "required_evidence_or_repair": "NODE_LEDGER_OPENED_ISSUER_NOT_VERIFIED: no verifier for issuer 'ORGANIZATION_LEDGER' is pinned in TRUST_ANCHORS (Lane B's anchor schema is pending and TV/TVC receipts are unsigned: TVC#537, LC-KV-08); an unverifiable anchor is refused",
-     "retry_entrypoint": "Lane B's NODE_LEDGER_OPENED anchor receipt (issued by the org ledger or TV/TVC, binding node_id, node_identity_key and the genesis hash) and its node-ledger dissolution/disbursement transition back to StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter (LLM-adapter#431), then runtime.kv_interlock_endpoint.KVInterlockRuntime.handle",
-     "subject": "LAYER1_TEMPORARY_LEDGER_ANCHOR_NOT_ISSUED"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "failed_predicate": "TEMPORARY_NODE_LEDGER_ANCHORED_BY_NODE_LEDGER_OPENED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
      "failure_class": "C",
-     "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED",
-     "next_attempt": "when Lane B's NODE_LEDGER_OPENED anchor and dissolution transition exist and an issuer verifier is pinned",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "on the next DEVICE->KV InTr transition that carries the repair",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "refusal_cause": "NODE_LEDGER_OPENED_NODE_IDENTITY_KEY_MISMATCH",
-     "required_evidence_or_repair": "NODE_LEDGER_OPENED_NODE_IDENTITY_KEY_MISMATCH: the anchor's node_identity_key is not the transport-authenticated node identity key",
-     "retry_entrypoint": "Lane B's NODE_LEDGER_OPENED anchor receipt (issued by the org ledger or TV/TVC, binding node_id, node_identity_key and the genesis hash) and its node-ledger dissolution/disbursement transition back to StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter (LLM-adapter#431), then runtime.kv_interlock_endpoint.KVInterlockRuntime.handle",
-     "subject": "LAYER1_TEMPORARY_LEDGER_ANCHOR_OTHER_IDENTITY_KEY"
-    },
-    {
-     "disposition": "ALLOW",
-     "subject": "LAYER1_TEMPORARY_LEDGER_ANCHORED"
-    },
-    {
-     "disposition": "ALLOW",
-     "subject": "LAYER1_NON_PINNED_EVALUATOR"
+     "refusal_cause": "REQUESTER_KEY_NOT_THE_ANCHORED_NODE_IDENTITY_KEY",
+     "required_evidence_or_repair": "REQUESTER_KEY_NOT_THE_ANCHORED_NODE_IDENTITY_KEY: the transport-authenticated node_identity_key is not the key the anchored genesis binds; a node is admitted only under the key its anchored ledger was opened with",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_TRANSPORT_KEY_NOT_THE_ANCHORED_GENESIS_KEY"
     },
     {
      "disposition": "FAIL_CLOSED",
-     "failed_predicate": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
+     "failed_predicate": "RECEIPTS_FROM_PINNED_PRODUCERS_ONLY",
+     "failure_class": "C",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "refusal_cause": "NODE_ROOT_NOT_ANCHORED_FOREIGN_PRODUCER_RECEIPT",
+     "required_evidence_or_repair": "NODE_ROOT_NOT_ANCHORED_FOREIGN_PRODUCER_RECEIPT: evaluate_anchored refused the 'PERMANENT' root of 'SV-NODE-E0TEST0001' (FOREIGN_PRODUCER_RECEIPT: every receipt on the endpoint chain must be one the pinned evaluator/producer code writes; remove nothing, open a new anchored ledger instead; sha256:7dbf3351c930f6b004e5bc06c0e4b428858f0f6fc30cf69d57b245fbd6c5e107 does not re-derive as the pinned producer's report)",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event",
+     "subject": "LAYER1_FOREIGN_PRODUCER_REPORTS"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "HEALTHY_NODE_LEDGER_CHAIN_ONBOARDED_WITH_GENESIS",
+     "failure_class": "B",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "when the LLM-adapter chain is onboarded and its genesis exists at the contract location",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (Lane B, InTr and Mesh Destinations, StegVerse-org/.github#162)",
+     "refusal_cause": "HEALTHY_NODE_LEDGER_NOT_ONBOARDED",
+     "required_evidence_or_repair": "HEALTHY_NODE_LEDGER_NOT_ONBOARDED: StegVerse-org/.github refs/stegverse/organization-ledger is not observed in the bound repository (the organization-ledger genesis is StegVerse-Labs/.github#3255). The healthy-node chain is bound by contract location to StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter; that chain must be onboarded with a genesis before any health report is readable",
+     "retry_entrypoint": "StegVerse-Labs/.github#3255 (organization-ledger genesis) and StegVerse-org/LLM-adapter#431 (onboarding); KV derives the genesis from the receipt it then observes at the contract location",
+     "subject": "LAYER1_ORG_REF_ABSENT"
+    },
+    {
+     "disposition": "ALLOW",
+     "note": "observational: the org-ledger object store is a git repository the harness created; its REPOSITORY_LEDGER_INITIALIZATION genesis is derived from its own receipt, not pinned",
+     "subject": "LAYER1_PERMANENT_NODE_ANCHORED"
+    },
+    {
+     "disposition": "ALLOW",
+     "note": "observational: the vendored #432 @c2c57505 anchor check accepts a NODE_LEDGER_OPENED record sealed only by its own sha256",
+     "subject": "LAYER1_EPHEMERAL_ANCHORED_BY_UNSIGNED_OPENED_RECORD"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "on the next DEVICE->KV InTr transition that carries the repair",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "refusal_cause": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the ALLOW is not evaluate_anchored's over the bound endpoint at the observed org-ledger head (anchor block absent or for another node, kind, head, evaluator or pin set)",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_SUBCLASS_SETTING_EXERCISE_FLAG_WITH_INJECTED_EVALUATOR"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
      "failure_class": "C",
      "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
      "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "refusal_cause": "LAYER1_HEALTH_EVALUATOR_NOT_PINNED",
-     "required_evidence_or_repair": "LAYER1_HEALTH_EVALUATOR_NOT_PINNED: sha256:732c20f795740cd58a84f60c8cb29ffcb176b370a573677c4930af6add63ae6b was not minted by the real KVInterlockRuntime under the pinned healthy-node evaluator (runtime.intr_pinned, sha256:fdaa2005...1f58), the installed InTr transport, a contract-location or anchored temporary ledger binding and the trust anchors in force; it is refused",
+     "refusal_cause": "LAYER1_KV_ACCESS_RECEIPT_ABSENT",
+     "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ABSENT: prior_receipt_hash must be the layer-1 KV-access receipt minted by KVInterlockRuntime.handle for a currently admitted healthy node",
+     "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER2_ON_LAYER1_RECEIPT_FROM_EXERCISE_FLAG_SUBCLASS"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "when KVInterlockRuntime is constructed without an injected decider",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "refusal_cause": "LAYER1_NOT_EVALUATED_THROUGH_EVALUATE_ANCHORED",
+     "required_evidence_or_repair": "LAYER1_NOT_EVALUATED_THROUGH_EVALUATE_ANCHORED: the layer-1 health decider is not the evaluate_anchored object loaded from the digest-checked vendored bytes (sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10, evaluator sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58); a callable's __module__, __qualname__ or source filename is never accepted as its identity",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_NON_PINNED_EVALUATOR"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+     "failure_class": "C",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "refusal_cause": "LAYER1_KV_ACCESS_RECEIPT_ABSENT",
+     "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ABSENT: prior_receipt_hash must be the layer-1 KV-access receipt minted by KVInterlockRuntime.handle for a currently admitted healthy node",
      "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER2_ON_LAYER1_RECEIPT_FROM_NON_PINNED_EVALUATOR"
     },
     {
-     "disposition": "ALLOW",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "when KVInterlockRuntime is constructed without an injected decider",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "refusal_cause": "LAYER1_NOT_EVALUATED_THROUGH_EVALUATE_ANCHORED",
+     "required_evidence_or_repair": "LAYER1_NOT_EVALUATED_THROUGH_EVALUATE_ANCHORED: the layer-1 health decider is not the evaluate_anchored object loaded from the digest-checked vendored bytes (sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10, evaluator sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58); a callable's __module__, __qualname__ or source filename is never accepted as its identity",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER1_DISGUISED_NON_PINNED_EVALUATOR"
     },
     {
-     "disposition": "ALLOW",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+     "failure_class": "C",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "refusal_cause": "LAYER1_KV_ACCESS_RECEIPT_ABSENT",
+     "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ABSENT: prior_receipt_hash must be the layer-1 KV-access receipt minted by KVInterlockRuntime.handle for a currently admitted healthy node",
+     "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER2_ON_LAYER1_RECEIPT_FROM_DISGUISED_NON_PINNED_EVALUATOR"
     },
     {
@@ -2111,7 +2252,7 @@
      "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "refusal_cause": "LAYER1_KV_ACCESS_RECEIPT_ALREADY_USED",
-     "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ALREADY_USED: sha256:1b32c0709e63601c811ef34037bfaf4e2094025c700f40f71bdeb9bb602d4a4e already admitted one KV->SKAP transition; each SKAP operation needs its own DEVICE->KV InTr transition from a currently admitted healthy node",
+     "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ALREADY_USED: sha256:30e1938f0409e3708b51d50c5a52a9903d02f94072a3ac294386a13853d481b7 already admitted one KV->SKAP transition; each SKAP operation needs its own DEVICE->KV InTr transition from a currently admitted healthy node",
      "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER2_REUSED_LAYER1_RECEIPT"
     },
@@ -2123,7 +2264,7 @@
      "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "refusal_cause": "LAYER1_RECEIPT_MINTED_UNDER_OTHER_TRUST_ANCHORS",
-     "required_evidence_or_repair": "LAYER1_RECEIPT_MINTED_UNDER_OTHER_TRUST_ANCHORS: sha256:eaed93b11a9d9b5a15a48a6c55425d04c89190b0a27f98f03eb0216fcdf05c5b was not minted by the real KVInterlockRuntime under the pinned healthy-node evaluator (runtime.intr_pinned, sha256:fdaa2005...1f58), the installed InTr transport, a contract-location or anchored temporary ledger binding and the trust anchors in force; it is refused",
+     "required_evidence_or_repair": "LAYER1_RECEIPT_MINTED_UNDER_OTHER_TRUST_ANCHORS: sha256:e3125f7a150e517271a7ae4eefe9461d4b3ac141b1512b29dfaef545f2f7baf4 was not minted by the real KVInterlockRuntime under the pinned healthy-node evaluator (runtime/intr_pinned, sha256:fdaa2005...1f58) reached through #432's evaluate_anchored (sha256:5fcc9018...3d10), the installed InTr transport, the contract-location org ledger with a node root evaluate_anchored admitted, and the trust anchors in force; it is refused",
      "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER2_ON_E0_RECEIPT_UNDER_PRODUCTION_ANCHORS"
     },
@@ -2135,7 +2276,7 @@
      "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "refusal_cause": "LAYER1_RUNTIME_NOT_KV_INTERLOCK_RUNTIME",
-     "required_evidence_or_repair": "LAYER1_RUNTIME_NOT_KV_INTERLOCK_RUNTIME: sha256:8c0a0e1553556dff34e4b44c5fbef9cca841beb4309ab25976c59b16163fb548 was not minted by the real KVInterlockRuntime under the pinned healthy-node evaluator (runtime.intr_pinned, sha256:fdaa2005...1f58), the installed InTr transport, a contract-location or anchored temporary ledger binding and the trust anchors in force; it is refused",
+     "required_evidence_or_repair": "LAYER1_RUNTIME_NOT_KV_INTERLOCK_RUNTIME: sha256:8e71b98c9fef8a39d289e95d57a952505df9be230b431e789a25e1cf8580b32e was not minted by the real KVInterlockRuntime under the pinned healthy-node evaluator (runtime/intr_pinned, sha256:fdaa2005...1f58) reached through #432's evaluate_anchored (sha256:5fcc9018...3d10), the installed InTr transport, the contract-location org ledger with a node root evaluate_anchored admitted, and the trust anchors in force; it is refused",
      "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
      "subject": "LAYER2_WITH_SUBCLASSED_LAYER1_RUNTIME"
     },
@@ -2216,195 +2357,448 @@
      "subject": "CUSTODY_VERIFIER_SUBCLASSED_GATE"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/layer1-two-layer-probe.out",
-   "raw_sha256": "sha256:220a785232f585c02c21d3d855e5f016ef4e9149230d398905c1ad19e431b2fa",
+   "raw_sha256": "sha256:d495b68106b259189bf445f2106b94f4380e89a8f7e9e25dc28c90a44fad3d4e",
    "run_id": "layer1-two-layer-probe",
    "status": "OBSERVED",
-   "what": "both gates and the store at #258 @037f505e through its own E0 harness (tests/kv_two_layer_e0.py): PROD_* rows under the production TRUST_ANCHORS (E0 git ledger, scratch ledger + asserted identity, unanchored temporary ledger, injected evaluator); the labelled local exercise (hard-coded INSTALLED) and its receipt at the production gate; inside e0_trust_anchors(): the seven layer-1 refusals, a bare scratch root, a caller-asserted identity, transport NOT_YET_ENABLED, temporary ledgers (no anchor, unissued, other key, anchored); a non-pinned and a disguised non-pinned evaluator with their receipts at layer 2; layer-2 refusals (none, caller-minted, reused, E0 receipt under production anchors, subclassed layer 1); read_stream / append_extension / direct file write / gate restart / subclassed gate on SKAP records; the custody verifier with an arbitrary callable and a subclassed gate"
+   "what": "both gates and the store at #258 @eb62640c through its own E0 harness (tests/kv_two_layer_e0.py): PROD_* rows under the production TRUST_ANCHORS (E0 git ledger, scratch ledger + asserted identity, unanchored node ledger, injected and disguised evaluators); the labelled local exercise (hard-coded INSTALLED) and its receipt at the production gate; inside e0_trust_anchors(): the seven layer-1 refusals, a bare scratch root, a caller-asserted identity, transport NOT_YET_ENABLED, an unanchored node ledger, a transport key that is not the anchored genesis key, foreign producer reports, an org repository without the ref, an anchored PERMANENT node (ALLOW), an EPHEMERAL node anchored by an unsigned NODE_LEDGER_OPENED record, a subclass setting the exercise flag with an injected evaluator; a non-pinned and a disguised non-pinned evaluator with their receipts at layer 2; layer-2 refusals (none, caller-minted, reused, E0 receipt under production anchors, subclassed layer 1); read_stream / append_extension / direct file write / gate restart / subclassed gate on SKAP records; the custody verifier with an arbitrary callable and a subclassed gate"
   },
   {
-   "files_scanned": 2,
+   "files_scanned": 3,
    "hits": [
     {
-     "line": 187,
+     "line": 375,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "def pinned_decider_identity\\(",
+     "text": "def pinned_decider_identity(decider: Any, pin_id: str = PINNED_ANCHORED_EVALUATOR_ID) -> str | None:"
+    },
+    {
+     "line": 386,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "def evaluator_identity\\(",
      "text": "def evaluator_identity(evaluator: Any) -> str:"
     },
     {
-     "line": 165,
+     "line": 381,
      "path": "runtime/kv_interlock_endpoint.py",
-     "pattern": "def _callable_source_sha256\\(",
-     "text": "def _callable_source_sha256(fn: Any) -> str | None:"
+     "pattern": "decider is not loaded\\[\"object\"\\]",
+     "text": "if loaded is None or decider is not loaded[\"object\"] or _code_sha256(decider) != loaded[\"code_sha256\"]:"
     },
     {
-     "line": 168,
+     "line": 831,
      "path": "runtime/kv_interlock_endpoint.py",
-     "pattern": "inspect\\.getsourcefile",
-     "text": "return _file_sha256(inspect.getsourcefile(fn))"
+     "pattern": "_EXERCISE_ONLY_UNPINNED_DECIDER = ",
+     "text": "_EXERCISE_ONLY_UNPINNED_DECIDER = False"
+    },
+    {
+     "line": 518,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "_EXERCISE_ONLY_UNPINNED_DECIDER = ",
+     "text": "_EXERCISE_ONLY_UNPINNED_DECIDER = True  # its receipts record NOT_THE_PINNED_OBJECT and are refused downstream"
     }
    ],
    "patterns": [
+    "def pinned_decider_identity\\(",
     "def evaluator_identity\\(",
-    "def _callable_source_sha256\\(",
-    "inspect\\.getsourcefile",
-    "healthy_node_evaluator: Any = ",
-    "evaluator is pinned|is PINNED_HEALTHY_NODE_EVALUATOR"
+    "decider is not loaded\\[\"object\"\\]",
+    "_EXERCISE_ONLY_UNPINNED_DECIDER = "
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "kv-evaluator-identity",
    "status": "OBSERVED",
-   "what": "how layer 1/2 identify the pinned evaluator (#258): constructor parameter, module/qualname, source file sha"
+   "what": "how layer 1/2 identify the pinned decider (#258): object identity plus load-time code digest, the exercise-only flag"
   },
   {
    "files_scanned": 1,
    "hits": [
     {
-     "line": 248,
+     "line": 466,
      "path": "runtime/kv_interlock_endpoint.py",
-     "pattern": "^NODE_LEDGER_OPENED_SCHEMA = ",
-     "text": "NODE_LEDGER_OPENED_SCHEMA = \"stegverse.node-ledger-opened/PENDING_LANE_B_SCHEMA\""
+     "pattern": "^EPHEMERAL_NODE_LEDGER_OPENED_SCHEMA = ",
+     "text": "EPHEMERAL_NODE_LEDGER_OPENED_SCHEMA = \"stegverse.node-ledger-opened/v1\"  # #432 OPENED_SCHEMA (StegOS)"
     },
     {
-     "line": 372,
+     "line": 470,
      "path": "runtime/kv_interlock_endpoint.py",
-     "pattern": "def verify_node_ledger_anchor\\(",
-     "text": "def verify_node_ledger_anchor(anchor: Any, *, ledger_root: Any, identity: Any) -> dict[str, Any]:"
+     "pattern": "^ANCHOR_REFUSAL_CODE = ",
+     "text": "ANCHOR_REFUSAL_CODE = \"EPHEMERAL_NODE_LEDGER_NOT_ANCHORED\""
     },
     {
-     "line": 218,
+     "line": 85,
      "path": "runtime/kv_interlock_endpoint.py",
-     "pattern": "\"node_ledger_anchor_issuers\": ",
-     "text": "\"node_ledger_anchor_issuers\": {},"
+     "pattern": "\"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\"",
+     "text": "\"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\","
+    },
+    {
+     "line": 114,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "\"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\"",
+     "text": "\"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\","
+    },
+    {
+     "line": 133,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "\"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\"",
+     "text": "\"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\","
+    },
+    {
+     "line": 447,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "\"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\"",
+     "text": "{\"pull_request\": \"StegVerse-org/LLM-adapter#432 (draft)\", \"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\"},"
+    },
+    {
+     "line": 137,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "\"source_sha256\": \"sha256:5fcc9018",
+     "text": "\"source_sha256\": \"sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10\","
+    },
+    {
+     "line": 437,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "\"intr_transport\": None",
+     "text": "\"intr_transport\": None,"
+    },
+    {
+     "line": 506,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "^GENESIS_DERIVATION = ",
+     "text": "GENESIS_DERIVATION = \"ORG_LEDGER_GENESIS_RECEIPT_AT_CONTRACT_LOCATION\""
     }
    ],
    "patterns": [
-    "^NODE_LEDGER_OPENED_SCHEMA = ",
-    "def verify_node_ledger_anchor\\(",
-    "\"node_ledger_anchor_issuers\": "
+    "^EPHEMERAL_NODE_LEDGER_OPENED_SCHEMA = ",
+    "^ANCHOR_REFUSAL_CODE = ",
+    "\"commit\": \"c2c57505535fb89ee88477eda1378c5fc610e0f7\"",
+    "\"source_sha256\": \"sha256:5fcc9018",
+    "\"intr_transport\": None",
+    "^GENESIS_DERIVATION = "
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "kv-anchor-schema",
    "status": "OBSERVED",
-   "what": "the NODE_LEDGER_OPENED schema KV verifies (#258) next to the one LLM-adapter#432 and StegOS#427 emit/check"
+   "what": "what KV vendors and passes for the anchored-root check (#258): the vendored #432 commit and digest, the anchor refusal code, the trust anchors"
   },
   {
-   "files_scanned": 1,
+   "files_scanned": 3,
    "hits": [
     {
-     "line": 124,
+     "line": 200,
      "path": "llm_adapter/endpoint_ledger_anchor.py",
-     "pattern": "^OPENED_SCHEMA = ",
-     "text": "OPENED_SCHEMA = \"stegverse.node-ledger-opened/v1\""
+     "pattern": "^FAILURE_CODE = ",
+     "text": "FAILURE_CODE = \"EPHEMERAL_NODE_LEDGER_NOT_ANCHORED\""
     },
     {
-     "line": 650,
+     "line": 185,
+     "path": "llm_adapter/endpoint_ledger_anchor.py",
+     "pattern": "^SIGNED_OPENED_SCHEMA = ",
+     "text": "SIGNED_OPENED_SCHEMA = \"stegverse.node-ledger-opened-signed/v1\"   # schemas/node-ledger-opened-signed.v1.json"
+    },
+    {
+     "line": 146,
+     "path": "llm_adapter/endpoint_ledger_anchor.py",
+     "pattern": "^OPENED_SIGNERS_PATH = ",
+     "text": "OPENED_SIGNERS_PATH = ROOT / \".stegverse/node-ledger/node-ledger-opened-signers.v1.json\""
+    },
+    {
+     "line": 924,
      "path": "llm_adapter/endpoint_ledger_anchor.py",
      "pattern": "^def evaluate_anchored\\(",
-     "text": "def evaluate_anchored(node_id: Any, *, endpoint: Any, org_ledger_root: Any, org_ledger_head_receipt_sha256: Any,"
+     "text": "def evaluate_anchored(claimed_node_id: Any = None, *, endpoint: Any, org_ledger_git_dir: Any,"
     },
     {
-     "line": 651,
+     "line": 926,
      "path": "llm_adapter/endpoint_ledger_anchor.py",
-     "pattern": "transport_state: Any = ",
-     "text": "transport_state: Any = hne.INSTALLED, report_receipt_sha256: Any = None,"
+     "pattern": "transport_state: Any = None",
+     "text": "transport_state: Any = None, report_receipt_sha256: Any = None) -> dict[str, Any]:"
     },
     {
-     "line": 652,
+     "line": 908,
      "path": "llm_adapter/endpoint_ledger_anchor.py",
-     "pattern": "require_admission: bool = ",
-     "text": "require_admission: bool = False) -> dict[str, Any]:"
+     "pattern": "^def observed_transport\\(",
+     "text": "def observed_transport(ledger_root: Any, node_id: str) -> dict[str, Any] | None:"
     },
     {
-     "line": 464,
-     "path": "llm_adapter/endpoint_ledger_anchor.py",
-     "pattern": "^def _org_chain\\(",
-     "text": "def _org_chain(org_ledger_root: Any, head: Any):"
+     "line": 78,
+     "path": "llm_adapter/org_ledger_location.py",
+     "pattern": "^def designated_org_ledger\\(",
+     "text": "def designated_org_ledger(org_ledger_git_dir: Any):"
+    },
+    {
+     "line": 114,
+     "path": "llm_adapter/org_ledger_location.py",
+     "pattern": "chain\\[-1\\]\\.get\\(\"transition_class\"\\) != GENESIS_CLASS",
+     "text": "if failure or chain[-1].get(\"transition_class\") != GENESIS_CLASS or chain[-1].get(\"repository\") != REPOSITORY:"
+    },
+    {
+     "line": 5,
+     "path": ".stegverse/node-ledger/node-ledger-opened-signers.v1.json",
+     "pattern": "\"signers\": \\[\\]",
+     "text": "\"signers\": [],"
+    },
+    {
+     "line": 4,
+     "path": ".stegverse/node-ledger/node-ledger-opened-signers.v1.json",
+     "pattern": "\"custody\": \"TV/TVC",
+     "text": "\"custody\": \"TV/TVC. Keys are generated and held by TV/TVC custody only; bots and this repository never hold key material. A reference is added here only by an admitted change carrying TV/TVC's publica"
+    },
+    {
+     "line": 11,
+     "path": ".stegverse/node-ledger/node-ledger-opened-signers.v1.json",
+     "pattern": "\"custody\": \"TV/TVC",
+     "text": "\"custody\": \"TV/TVC\","
+    },
+    {
+     "line": 6,
+     "path": ".stegverse/node-ledger/node-ledger-opened-signers.v1.json",
+     "pattern": "NONE_PUBLISHED",
+     "text": "\"state\": \"NONE_PUBLISHED: every EPHEMERAL anchor is FAIL_CLOSED NODE_LEDGER_OPENED_SIGNER_NOT_PUBLISHED until one is published. PERMANENT, KV, SKAP_VAULT and GATEWAY anchors do not use this file.\","
     }
    ],
    "patterns": [
-    "^OPENED_SCHEMA = ",
+    "^FAILURE_CODE = ",
+    "^SIGNED_OPENED_SCHEMA = ",
+    "^OPENED_SIGNERS_PATH = ",
     "^def evaluate_anchored\\(",
-    "transport_state: Any = ",
-    "require_admission: bool = ",
-    "^def _org_chain\\("
+    "transport_state: Any = None",
+    "^def observed_transport\\(",
+    "^def designated_org_ledger\\(",
+    "chain\\[-1\\]\\.get\\(\"transition_class\"\\) != GENESIS_CLASS",
+    "\"signers\": \\[\\]",
+    "\"custody\": \"TV/TVC",
+    "NONE_PUBLISHED"
    ],
-   "pin": "StegVerse-org/LLM-adapter@c2c57505535fb89ee88477eda1378c5fc610e0f7",
+   "pin": "StegVerse-org/LLM-adapter@1cbad77eaff3254ea30fb9d3377d40abcf6728df",
    "run_id": "anchor432-schema",
    "status": "OBSERVED",
-   "what": "LLM-adapter#432 OPENED_SCHEMA and the evaluate_anchored defaults"
+   "what": "LLM-adapter#432 @1cbad77e: failure code, signed NODE_LEDGER_OPENED schema, signer file path, evaluate_anchored signature, receipt-read transport, org-ledger location reader"
   },
   {
-   "command": "{python} -c import inspect, json, os, sys, tempfile\nos.environ['STEGVERSE_REPO_LEDGER_ROOT'] = tempfile.mkdtemp(prefix='lc-anchor-ledger-')\nos.environ['STEGVERSE_GATEWAY_FORWARD_DB'] = os.path.join(tempfile.mkdtemp(prefix='lc-anchor-fwd-'), 'gateway-forward.db')\nsys.path[:0] = ['.']\nimport tests\nsys.path.append(sys.argv[1])\nfrom llm_adapter import endpoint_ledger_anchor as anchor\nfrom llm_adapter import healthy_node_evaluator as hne\nimport tests.test_endpoint_ledger_anchor as T\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None):\n    r = {\"subject\": subject, \"disposition\": out.get(\"disposition\")}\n    for k in SIX + (\"reason\",):\n        if isinstance(out.get(k), str):\n            r[k] = out[k]\n    if note:\n        r[\"note\"] = note\n    rows.append(r)\ndef case(fn):\n    t = T.AnchoredEndToEndTests(\"test_the_lc_kv_15_hole_is_closed\")\n    t.setUp()\n    try:\n        fn(t)\n    except Exception as exc:\n        rows.append({\"subject\": fn.__name__.upper(), \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:200]})\n    finally:\n        t.doCleanups()\ndef unanchored(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    t.chain_to_admission()\n    row(\"UNANCHORED_ROOT_VIA_BARE_EVALUATOR\", hne.evaluate(T.NODE, ledger_root=t.node, require_admission=True),\n        \"observational: the bare evaluator ALLOWs any root it is handed\")\n    row(\"UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED\", t.evaluate(require_admission=True))\ncase(unanchored)\ndef no_genesis(t):\n    t.chain_to_admission()\n    row(\"ROOT_WITHOUT_GENESIS_VIA_EVALUATE_ANCHORED\", t.evaluate(require_admission=True))\ncase(no_genesis)\ndef head_mismatch(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"ORG_LEDGER_HEAD_NOT_THE_SUPPLIED_COPY\", t.evaluate(head=\"sha256:\" + \"0\" * 64, require_admission=True))\ncase(head_mismatch)\ndef self_minted(t):\n    genesis = anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")[\"genesis\"]\n    rec = T.opened_for(genesis)  # the caller re-targets and reseals a NODE_LEDGER_OPENED record (self-hash, no signature)\n    anchor.anchor(t.node, t.org, T.NODE, rec)  # into an org-ledger directory the caller created\n    t.chain_to_admission()\n    row(\"SELF_MINTED_ANCHOR_ON_CALLER_CREATED_ORG_LEDGER\", t.evaluate(require_admission=True),\n        \"observational: anchoring is checked against whatever org_ledger_root and head the caller passes; the NODE_LEDGER_OPENED record is sealed by its own sha256 only\")\n    row(\"ANCHORED_ROOT_DEFAULT_TRANSPORT_STATE\", t.evaluate(require_admission=True),\n        \"observational: evaluate_anchored's transport_state defaults to %r\" % inspect.signature(anchor.evaluate_anchored).parameters[\"transport_state\"].default)\n    row(\"ANCHORED_ROOT_TRANSPORT_NOT_YET_ENABLED\", t.evaluate(require_admission=True, transport_state=\"NOT_YET_ENABLED\"))\ncase(self_minted)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n {root:sdk080}",
+   "command": "{python} -c import json, os, sys, tempfile, hashlib, subprocess\nfrom pathlib import Path\nfrom unittest import mock\nos.environ['STEGVERSE_REPO_LEDGER_ROOT'] = tempfile.mkdtemp(prefix='lc-anchor-ledger-')\nos.environ['STEGVERSE_GATEWAY_FORWARD_DB'] = os.path.join(tempfile.mkdtemp(prefix='lc-anchor-fwd-'), 'gateway-forward.db')\nsys.path[:0] = ['.']\nimport tests\nsys.path.append(sys.argv[1])\nfrom llm_adapter import endpoint_ledger_anchor as anchor\nfrom llm_adapter import healthy_node_evaluator as hne\nfrom llm_adapter import node_ingress_boundary as boundary\nfrom llm_adapter import org_ledger_location as location\nimport tests.test_endpoint_ledger_anchor as T\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None):\n    r = {\"subject\": subject, \"disposition\": out.get(\"disposition\")}\n    for k in SIX + (\"reason\",):\n        if isinstance(out.get(k), str):\n            r[k] = out[k]\n    r[\"six_fields_present\"] = all(isinstance(out.get(k), str) and out[k].strip() for k in SIX) if out.get(\"disposition\") != \"ALLOW\" else None\n    if note:\n        r[\"note\"] = note\n    rows.append(r)\ndef case(fn, production_signers=False):\n    t = T.AnchoredEndToEndTests(\"test_the_lc_kv_15_hole_is_closed\")\n    t.setUp()\n    try:\n        if production_signers:   # the real (empty) TV/TVC signer file instead of the suite's TEST-ONLY signer\n            p = mock.patch.object(anchor, \"load_opened_signers\", T.PRODUCTION_LOAD_OPENED_SIGNERS); p.start(); t.addCleanup(p.stop)\n        fn(t)\n    except Exception as exc:\n        rows.append({\"subject\": fn.__name__.upper(), \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:200]})\n    finally:\n        t.doCleanups()\n# every case runs with #431's contract designation (the suite's fixture), except PRODUCTION_CONTRACT_* which uses the branch's own contract\ndef unanchored(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    t.chain_to_admission()\n    row(\"UNANCHORED_ROOT_VIA_BARE_EVALUATOR\", hne.evaluate(T.NODE, ledger_root=t.node, require_admission=True),\n        \"observational: the bare evaluator (not evaluate_anchored) ALLOWs any root it is handed\")\n    row(\"UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED\", t.evaluate())\ncase(unanchored, True)\ndef no_genesis(t):\n    t.chain_to_admission()\n    row(\"ROOT_WITHOUT_GENESIS_VIA_EVALUATE_ANCHORED\", t.evaluate())\ncase(no_genesis, True)\ndef head_mismatch(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"ORG_LEDGER_HEAD_NOT_THE_SUPPLIED_COPY\", t.evaluate(head=\"sha256:\" + \"0\" * 64))\ncase(head_mismatch)\ndef self_minted(t):\n    genesis = anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")[\"genesis\"]\n    anchor.anchor(t.node, t.org, T.NODE, T.opened_for(genesis))   # re-targeted, resealed, unsigned\n    t.chain_to_admission()\n    row(\"SELF_MINTED_ANCHOR_ON_CALLER_CREATED_ORG_LEDGER\", t.evaluate())\n    row(\"ANCHORED_ROOT_DEFAULT_TRANSPORT_STATE\", t.evaluate(),\n        \"same setup as rev 4 (unsigned self-minted anchor): the anchor refusal is reached before transport\")\n    row(\"ANCHORED_ROOT_TRANSPORT_NOT_YET_ENABLED\", t.evaluate(transport_state=\"NOT_YET_ENABLED\"))\ncase(self_minted, True)\ndef own_key(t):\n    anchor.open_ledger(t.node, T.NODE, \"EPHEMERAL\", T.KEY, \"StegNode\")\n    seed = hashlib.sha256(b\"lc probe: a caller's own seed\").digest()\n    anchor.anchor(t.node, t.org, T.NODE, T.sign_opened(T.STEGOS_OPENED, seed=seed, key_id=\"callers-own-key\"))\n    t.chain_to_admission()\n    row(\"SELF_SIGNED_OPENED_RECORD_WITH_CALLERS_OWN_KEY\", t.evaluate())\ncase(own_key, True)\ndef production_signers(t):\n    t.open_and_anchor()   # signed with the suite's TEST-ONLY signer\n    t.chain_to_admission()\n    row(\"TEST_SIGNED_OPENED_RECORD_UNDER_PRODUCTION_SIGNER_FILE\", t.evaluate(),\n        \"the TV/TVC signer file at this head lists no signer\")\ncase(production_signers, True)\ndef transport_isolated(t):\n    t.open_and_anchor()\n    t.chain_to_admission(transport=boundary.HTTP)\n    row(\"TRANSPORT_NOT_INTR_WITH_VALID_ANCHOR_DEFAULT_ARGUMENT\", t.evaluate(), \"E0 harness: TEST-ONLY signer\")\n    row(\"TRANSPORT_ASSERTED_INSTALLED_NOT_OBSERVED\", t.evaluate(transport_state=\"INSTALLED\"), \"E0 harness: TEST-ONLY signer\")\ncase(transport_isolated)\ndef forged_ingress(t):\n    t.open_and_anchor()\n    t.chain_to_admission(transport=boundary.HTTP)\n    seen = [r for r in hne.read_chain(t.root)[0] if r[\"transition_class\"] in (boundary.ADMITTED_CLASS, boundary.REFUSED_CLASS)][0]\n    ev = dict(seen[\"evidence\"])\n    ev.update(transport=boundary.INTERLOCK_INTR, transport_state=\"INSTALLED\", node_endpoint={\"node_id\": T.NODE})\n    anchor._emitter().append(seen[\"transition_id\"] + \":caller-appended\", boundary.ADMITTED_CLASS, seen[\"receipt_sha256\"],\n                             hne.sha(ev), ev, \"NONE\", hb_epoch=10**12)\n    row(\"CALLER_APPENDED_INGRESS_RECORD_CLAIMING_INSTALLED_INTR\", t.evaluate(),\n        \"observational: the node ledger is the caller's; the ingress record is appended by the caller, not by node_ingress_boundary over an installed transport (E0 harness: TEST-ONLY signer)\")\ncase(forged_ingress)\ndef identity(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"IDENTITY_CLAIMED_NODE_ID_WITHOUT_PROOF\", t.evaluate(claimed_node_id=T.NODE, prove=False))\n    row(\"IDENTITY_PROOF_SIGNED_BY_ANOTHER_KEY\", t.evaluate(identity_proof=t.prove(seed=hashlib.sha256(b\"lc probe: other identity seed\").digest())))\n    row(\"IDENTITY_CLAIMED_NODE_ID_DIFFERS_FROM_PROOF\", t.evaluate(claimed_node_id=\"SV-NODE-ffffffffffffffffffffffff\"))\ncase(identity)\ndef org_location(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"ORG_LEDGER_GIT_DIR_IS_A_PLAIN_DIRECTORY\", t.evaluate(git_dir=t.tree))\n    with mock.patch.object(location, \"CONTRACT_PATH\", T.ROOT / \".stegverse/transition-ledger/contract.json\"):\n        row(\"PRODUCTION_CONTRACT_HAS_NO_ORG_LEDGER_DESIGNATION\", t.evaluate())\ncase(org_location)\ndef caller_store_permanent(t):\n    # the whole org ledger (genesis, anchor pair) is written by the caller into a git object store it created; PERMANENT\n    # anchors use no signer file\n    t.use(Path(t._t.name) / \"perm-node\")\n    t.open_and_anchor(\"PERMANENT\", root=t.root)\n    t.chain_to_admission()\n    row(\"PERMANENT_ROOT_ON_CALLER_CREATED_ORG_OBJECT_STORE\", t.evaluate(t.endpoint(\"PERMANENT\", t.root)),\n        \"observational, under #431's designation (fixture): the ref and namespace come from the contract; the object store, its REPOSITORY_LEDGER_INITIALIZATION genesis and the head are caller-chosen\")\ncase(caller_store_permanent, True)\ndef caller_store_permanent_forged_ingress(t):\n    # no node_ingress_boundary.TRANSPORTS patch: InTr is NOT_YET_ENABLED as on main, so the boundary refuses; the caller\n    # then appends its own NODE_INGRESS_ADMITTED record claiming installed InTr\n    t.use(Path(t._t.name) / \"perm-node-2\")\n    t.open_and_anchor(\"PERMANENT\", root=t.root)\n    t.chain_to_admission(installed=False)\n    chain = hne.read_chain(t.root)[0]\n    seen = [r for r in chain if r[\"transition_class\"] in (boundary.ADMITTED_CLASS, boundary.REFUSED_CLASS)]\n    base = seen[0] if seen else chain[0]\n    ev = {\"schema\": \"stegverse.node-ingress-record/v1\", \"node_endpoint\": {\"node_id\": T.NODE}, \"evaluated_node_id\": T.NODE,\n          \"healthy_node_established\": True, \"transport\": boundary.INTERLOCK_INTR, \"transport_state\": \"INSTALLED\"}\n    for r in chain:\n        if r[\"transition_class\"] == \"NODE_HEALTH_REPORTED\":\n            ev[\"health_report_receipt_sha256\"] = r[\"receipt_sha256\"]; break\n    anchor._emitter().append(\"NODE_INGRESS_ADMITTED:caller-appended\", boundary.ADMITTED_CLASS, base[\"receipt_sha256\"],\n                             hne.sha(ev), ev, \"NONE\", hb_epoch=10**12)\n    row(\"PERMANENT_CALLER_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH\", t.evaluate(t.endpoint(\"PERMANENT\", t.root)),\n        \"observational, under #431's designation (fixture) and the real signer file: no harness transport patch; the caller writes the org object store, its own node ledger and the ingress record\")\ncase(caller_store_permanent_forged_ingress, True)\ndef positive(t):\n    t.open_and_anchor()\n    t.chain_to_admission()\n    row(\"E0_POSITIVE_CONTROL_EPHEMERAL_TEST_SIGNER\", t.evaluate(), \"E0 harness: TEST-ONLY signer and #431 fixture contract\")\ncase(positive)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n {root:sdk080}",
    "exit_code": 0,
    "outcomes": [
     {
      "disposition": "ALLOW",
-     "note": "observational: the bare evaluator ALLOWs any root it is handed",
+     "note": "observational: the bare evaluator (not evaluate_anchored) ALLOWs any root it is handed",
+     "six_fields_present": null,
      "subject": "UNANCHORED_ROOT_VIA_BARE_EVALUATOR"
     },
     {
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "ENDPOINT_LEDGER_ANCHORED_ON_ORG_LEDGER",
-     "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
      "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
      "reason": "UNANCHORED",
      "required_evidence_or_repair": "an InTr path receipt pair: INTR_MESH_PATH_TRANSFER on the endpoint ledger and INTR_MESH_PATH_INGRESS (ORGANIZATION_INTR_DESTINATION_INGRESS) on the org ledger, linked by seal, with the source half retained; for EPHEMERAL its body is the StegOS NODE_LEDGER_OPENED record emitted at generation",
-     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
      "subject": "UNANCHORED_ROOT_VIA_EVALUATE_ANCHORED"
     },
     {
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "ENDPOINT_GENESIS_DECLARES_THE_NODE",
-     "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
      "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
      "reason": "ENDPOINT_GENESIS_INVALID",
      "required_evidence_or_repair": "a REPOSITORY_LEDGER_INITIALIZATION genesis (stegverse.endpoint-ledger-genesis/v1) naming this node_id, endpoint_kind, a well-formed node_identity_key, the pinned code digests and, for EPHEMERAL, a StegApp/StegBrowser/StegNode node_kind",
-     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
      "subject": "ROOT_WITHOUT_GENESIS_VIA_EVALUATE_ANCHORED"
     },
     {
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "ORG_LEDGER_HEAD_PINNED",
-     "failure_code": "TEMP_NODE_LEDGER_NOT_ANCHORED",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
      "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
      "reason": "ORG_LEDGER_HEAD_NOT_PINNED",
      "required_evidence_or_repair": "org_ledger_head_receipt_sha256 read back from refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter, equal to the supplied copy's HEAD.json",
-     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(node_id, endpoint=..., org_ledger_root=..., org_ledger_head_receipt_sha256=...) on the next anchor or org-ledger head event",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
      "subject": "ORG_LEDGER_HEAD_NOT_THE_SUPPLIED_COPY"
     },
     {
-     "disposition": "ALLOW",
-     "note": "observational: anchoring is checked against whatever org_ledger_root and head the caller passes; the NODE_LEDGER_OPENED record is sealed by its own sha256 only",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "NODE_LEDGER_OPENED_SIGNED_BY_PUBLISHED_KEY",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "NODE_LEDGER_OPENED_UNSIGNED",
+     "required_evidence_or_repair": "the InTr pair must carry a stegverse.node-ledger-opened-signed/v1 envelope: StegOS's record plus an Ed25519 signature over it by a key in .stegverse/node-ledger/node-ledger-opened-signers.v1.json",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
      "subject": "SELF_MINTED_ANCHOR_ON_CALLER_CREATED_ORG_LEDGER"
     },
     {
-     "disposition": "ALLOW",
-     "note": "observational: evaluate_anchored's transport_state defaults to 'INSTALLED'",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "NODE_LEDGER_OPENED_SIGNED_BY_PUBLISHED_KEY",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "note": "same setup as rev 4 (unsigned self-minted anchor): the anchor refusal is reached before transport",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "NODE_LEDGER_OPENED_UNSIGNED",
+     "required_evidence_or_repair": "the InTr pair must carry a stegverse.node-ledger-opened-signed/v1 envelope: StegOS's record plus an Ed25519 signature over it by a key in .stegverse/node-ledger/node-ledger-opened-signers.v1.json",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
      "subject": "ANCHORED_ROOT_DEFAULT_TRANSPORT_STATE"
     },
     {
      "disposition": "FAIL_CLOSED",
-     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
-     "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
-     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162",
-     "reason": "TRANSPORT_NOT_INSTALLED",
-     "required_evidence_or_repair": "the requester's transport must be INSTALLED; a NOT_YET_ENABLED or unknown transport establishes no healthy node",
-     "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)",
+     "failed_predicate": "NODE_LEDGER_OPENED_SIGNED_BY_PUBLISHED_KEY",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "NODE_LEDGER_OPENED_UNSIGNED",
+     "required_evidence_or_repair": "the InTr pair must carry a stegverse.node-ledger-opened-signed/v1 envelope: StegOS's record plus an Ed25519 signature over it by a key in .stegverse/node-ledger/node-ledger-opened-signers.v1.json",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
      "subject": "ANCHORED_ROOT_TRANSPORT_NOT_YET_ENABLED"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "NODE_LEDGER_OPENED_SIGNED_BY_PUBLISHED_KEY",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "NODE_LEDGER_OPENED_SIGNER_NOT_PUBLISHED",
+     "required_evidence_or_repair": "the signature's key_id must be a published public-key reference in .stegverse/node-ledger/node-ledger-opened-signers.v1.json (TV/TVC custody publishes it; none is published yet)",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
+     "subject": "SELF_SIGNED_OPENED_RECORD_WITH_CALLERS_OWN_KEY"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "NODE_LEDGER_OPENED_SIGNED_BY_PUBLISHED_KEY",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "note": "the TV/TVC signer file at this head lists no signer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "NODE_LEDGER_OPENED_SIGNER_NOT_PUBLISHED",
+     "required_evidence_or_repair": "the signature's key_id must be a published public-key reference in .stegverse/node-ledger/node-ledger-opened-signers.v1.json (TV/TVC custody publishes it; none is published yet)",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
+     "subject": "TEST_SIGNED_OPENED_RECORD_UNDER_PRODUCTION_SIGNER_FILE"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "INSTALLED_INTR_TRANSPORT_OBSERVED_ON_RECEIPTS",
+     "failure_code": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED",
+     "next_attempt": "on the next NODE_INGRESS_ADMITTED receipt carried by an installed InTr transport; never on a timer",
+     "note": "E0 harness: TEST-ONLY signer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED",
+     "required_evidence_or_repair": "the node's current NODE_INGRESS_ADMITTED record on the anchored chain must say transport INTERLOCK_INTR, transport_state INSTALLED (llm_adapter.node_ingress_boundary); a caller-asserted transport_state is never accepted",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(...) after the node arrives over the installed InTr transport and the boundary records it (node_ingress_boundary INTERLOCK_INTR is NOT_YET_ENABLED on main)",
+     "six_fields_present": true,
+     "subject": "TRANSPORT_NOT_INTR_WITH_VALID_ANCHOR_DEFAULT_ARGUMENT"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "INSTALLED_INTR_TRANSPORT_OBSERVED_ON_RECEIPTS",
+     "failure_code": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED",
+     "next_attempt": "on the next NODE_INGRESS_ADMITTED receipt carried by an installed InTr transport; never on a timer",
+     "note": "E0 harness: TEST-ONLY signer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED",
+     "required_evidence_or_repair": "the node's current NODE_INGRESS_ADMITTED record on the anchored chain must say transport INTERLOCK_INTR, transport_state INSTALLED (llm_adapter.node_ingress_boundary); a caller-asserted transport_state is never accepted",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(...) after the node arrives over the installed InTr transport and the boundary records it (node_ingress_boundary INTERLOCK_INTR is NOT_YET_ENABLED on main)",
+     "six_fields_present": true,
+     "subject": "TRANSPORT_ASSERTED_INSTALLED_NOT_OBSERVED"
+    },
+    {
+     "disposition": "ALLOW",
+     "note": "observational: the node ledger is the caller's; the ingress record is appended by the caller, not by node_ingress_boundary over an installed transport (E0 harness: TEST-ONLY signer)",
+     "six_fields_present": null,
+     "subject": "CALLER_APPENDED_INGRESS_RECORD_CLAIMING_INSTALLED_INTR"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "NODE_IDENTITY_PROVEN_BY_NODE_IDENTITY_KEY_SIGNATURE",
+     "failure_code": "NODE_IDENTITY_NOT_PROVEN",
+     "next_attempt": "when the node signs the current challenge with its TV/TVC-held key; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "NODE_IDENTITY_PROOF_ABSENT",
+     "required_evidence_or_repair": "a stegverse.node-identity-proof/v1 signature by the anchored node_identity_key over identity_challenge(...); an asserted identity is not proof",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(..., identity_proof=...) with a proof over the challenge for the current endpoint and org-ledger heads",
+     "six_fields_present": true,
+     "subject": "IDENTITY_CLAIMED_NODE_ID_WITHOUT_PROOF"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "NODE_IDENTITY_PROVEN_BY_NODE_IDENTITY_KEY_SIGNATURE",
+     "failure_code": "NODE_IDENTITY_NOT_PROVEN",
+     "next_attempt": "when the node signs the current challenge with its TV/TVC-held key; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "NODE_IDENTITY_PROOF_INVALID",
+     "required_evidence_or_repair": "the proof must name the anchored key_id and the current challenge digest, and its Ed25519 signature must verify under the anchored public key",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(..., identity_proof=...) with a proof over the challenge for the current endpoint and org-ledger heads",
+     "six_fields_present": true,
+     "subject": "IDENTITY_PROOF_SIGNED_BY_ANOTHER_KEY"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "NODE_IDENTITY_PROVEN_BY_NODE_IDENTITY_KEY_SIGNATURE",
+     "failure_code": "NODE_IDENTITY_NOT_PROVEN",
+     "next_attempt": "when the node signs the current challenge with its TV/TVC-held key; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "NODE_IDENTITY_PROOF_INVALID",
+     "required_evidence_or_repair": "the proof must name the anchored key_id and the current challenge digest, and its Ed25519 signature must verify under the anchored public key",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(..., identity_proof=...) with a proof over the challenge for the current endpoint and org-ledger heads",
+     "six_fields_present": true,
+     "subject": "IDENTITY_CLAIMED_NODE_ID_DIFFERS_FROM_PROOF"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ORG_LEDGER_LOCATION_FROM_CONTRACT",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "ORG_LEDGER_LOCATION_UNREADABLE",
+     "required_evidence_or_repair": "the designated ref and namespace read back from a local StegVerse-org/.github object store (git archive <ref> <namespace>; no network), with a REPOSITORY_LEDGER_INITIALIZATION genesis for this repository",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
+     "subject": "ORG_LEDGER_GIT_DIR_IS_A_PLAIN_DIRECTORY"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ORG_LEDGER_LOCATION_FROM_CONTRACT",
+     "failure_code": "EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+     "next_attempt": "re-evaluate when the endpoint's anchor (InTr path receipt pair, or the gateway location genesis) is observed on the pinned org-ledger head; event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13 (closes LC-KV-15's caller-supplied root), InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "ORG_LEDGER_LOCATION_NOT_DESIGNATED",
+     "required_evidence_or_repair": "the repository_ledger_location (repository, ref, namespace) in .stegverse/transition-ledger/contract.json, as StegVerse-org/LLM-adapter#431 designates; a caller-chosen path is never the org ledger",
+     "retry_entrypoint": "llm_adapter.endpoint_ledger_anchor.evaluate_anchored(endpoint=..., org_ledger_git_dir=..., org_ledger_head_receipt_sha256=..., identity_proof=...) on the next anchor or org-ledger head event",
+     "six_fields_present": true,
+     "subject": "PRODUCTION_CONTRACT_HAS_NO_ORG_LEDGER_DESIGNATION"
+    },
+    {
+     "disposition": "ALLOW",
+     "note": "observational, under #431's designation (fixture): the ref and namespace come from the contract; the object store, its REPOSITORY_LEDGER_INITIALIZATION genesis and the head are caller-chosen",
+     "six_fields_present": null,
+     "subject": "PERMANENT_ROOT_ON_CALLER_CREATED_ORG_OBJECT_STORE"
+    },
+    {
+     "disposition": "ALLOW",
+     "note": "observational, under #431's designation (fixture) and the real signer file: no harness transport patch; the caller writes the org object store, its own node ledger and the ingress record",
+     "six_fields_present": null,
+     "subject": "PERMANENT_CALLER_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH"
+    },
+    {
+     "disposition": "ALLOW",
+     "note": "E0 harness: TEST-ONLY signer and #431 fixture contract",
+     "six_fields_present": null,
+     "subject": "E0_POSITIVE_CONTROL_EPHEMERAL_TEST_SIGNER"
     }
    ],
-   "pin": "StegVerse-org/LLM-adapter@c2c57505535fb89ee88477eda1378c5fc610e0f7",
+   "pin": "StegVerse-org/LLM-adapter@1cbad77eaff3254ea30fb9d3377d40abcf6728df",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/anchor432-probe.out",
-   "raw_sha256": "sha256:129c740f965beb98ba077b9dfb7b8d83484b51a99f63c5df53ef481d4033d8ee",
+   "raw_sha256": "sha256:5a85df476242e609145b97a0f59e383b109ec87f9868b506e3db2e87336393d9",
    "run_id": "anchor432-probe",
    "status": "OBSERVED",
-   "what": "LLM-adapter#432 @c2c57505 evaluate_anchored over temporary ledgers: an unanchored EPHEMERAL root (bare evaluator vs evaluate_anchored), a root with no genesis, an org head that is not the supplied copy's, and observational rows: a caller-resealed NODE_LEDGER_OPENED anchored on a caller-created org-ledger directory, the transport_state default, transport NOT_YET_ENABLED"
+   "what": "LLM-adapter#432 @1cbad77e evaluate_anchored (with #431's designation from the suite fixture unless stated): unanchored root (bare evaluator vs evaluate_anchored), no genesis, mismatched org head, rev-4 self-minted and default-transport rows, a NODE_LEDGER_OPENED signed with the caller's own key, a test-signed record under the real (empty) TV/TVC signer file, transport isolated (non-InTr ingress, asserted INSTALLED), a caller-appended ingress record, identity proof rows, org location rows (plain directory, the branch's own contract), a PERMANENT root on a caller-created org object store with and without the harness transport patch, an E0 positive control"
   },
   {
    "command": "{python} -c import os,sys,tempfile,unittest; os.environ['STEGVERSE_REPO_LEDGER_ROOT']=tempfile.mkdtemp(prefix='lc-test-ledger-'); os.environ['STEGVERSE_GATEWAY_FORWARD_DB']=os.path.join(tempfile.mkdtemp(prefix='lc-test-fwd-'),'gateway-forward.db'); sys.path[:0]=['.']; import tests; sys.path.append(sys.argv[1]); sys.argv=[sys.argv[0],'-v','tests.test_endpoint_ledger_anchor']; unittest.main(module=None) {root:sdk080}",
@@ -2415,12 +2809,12 @@
      "passed": true,
      "skipped": 0,
      "subject": "ENDPOINT_LEDGER_ANCHOR_SUITE",
-     "tests_ran": 22
+     "tests_ran": 38
     }
    ],
-   "pin": "StegVerse-org/LLM-adapter@c2c57505535fb89ee88477eda1378c5fc610e0f7",
+   "pin": "StegVerse-org/LLM-adapter@1cbad77eaff3254ea30fb9d3377d40abcf6728df",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/anchor432-tests.out",
-   "raw_sha256": "sha256:dd33072a1b2ee00844cc53a08d11dbb1082f4ae1648715de0b242957fa077e6e",
+   "raw_sha256": "sha256:b2465c30a6630f2beb50f0e001a8eaeb5d966e2ea997f2a5a735c9d8861a12b7",
    "run_id": "anchor432-tests",
    "status": "OBSERVED",
    "what": "LLM-adapter#432 endpoint ledger anchor suite"
@@ -2452,55 +2846,49 @@
      "text": "class SkapLayer2Gate:"
     },
     {
-     "line": 651,
+     "line": 833,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
      "text": "def verify_kv_access_receipt(self, receipt_hash: Any) -> dict[str, Any] | None:"
     },
     {
-     "line": 120,
+     "line": 126,
      "path": "runtime/kv_skap_layer2.py",
      "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
      "text": "def verify_kv_access_receipt(self, receipt_hash: Any) -> dict[str, Any] | None:"
     },
     {
-     "line": 125,
+     "line": 131,
      "path": "runtime/kv_skap_layer2.py",
      "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
      "text": "def admit(self, transition: Any) -> dict[str, Any]:"
     },
     {
-     "line": 193,
+     "line": 201,
      "path": "runtime/kv_skap_layer2.py",
      "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
      "text": "def consume(self, receipt_hash: Any, *, principal_ref: str, operation: str,"
     },
     {
-     "line": 232,
+     "line": 240,
      "path": "runtime/kv_skap_layer2.py",
      "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
      "text": "def verify_access_chain(self, kv_access_receipt_hash: Any, skap_access_receipt_hash: Any) -> dict[str, Any]:"
     },
     {
-     "line": 110,
+     "line": 116,
      "path": "runtime/kv_skap_layer2.py",
      "pattern": "receipt.get\\(.minted_by.\\)",
      "text": "or receipt.get(\"boundary\") != LAYER1_BOUNDARY or receipt.get(\"minted_by\") != \"KVInterlockRuntime.handle\" \\"
     },
     {
-     "line": 113,
+     "line": 119,
      "path": "runtime/kv_skap_layer2.py",
      "pattern": "healthy_node_established.\\) is not True",
      "text": "or receipt[\"healthy_node_receipt\"].get(\"healthy_node_established\") is not True:"
     },
     {
-     "line": 86,
-     "path": "runtime/kv_interlock_endpoint.py",
-     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "\"source_sha256\": \"sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58\","
-    },
-    {
-     "line": 93,
+     "line": 90,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
      "text": "\"source_sha256\": \"sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58\","
@@ -2512,7 +2900,7 @@
      "text": "\"source_sha256\": \"sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58\","
     },
     {
-     "line": 102,
+     "line": 101,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
      "text": "\"source_sha256\": \"sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58\","
@@ -2524,64 +2912,100 @@
      "text": "\"source_sha256\": \"sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58\","
     },
     {
-     "line": 165,
+     "line": 110,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "def _callable_source_sha256(fn: Any) -> str | None:"
+     "text": "\"source_sha256\": \"sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58\","
     },
     {
-     "line": 180,
+     "line": 115,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "if observed != PINNED_HEALTHY_NODE_EVALUATOR[\"source_sha256\"]:"
+     "text": "\"source_sha256\": \"sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58\","
     },
     {
-     "line": 182,
+     "line": 137,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "f\"{PINNED_HEALTHY_NODE_EVALUATOR['source_sha256']}\")"
+     "text": "\"source_sha256\": \"sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10\","
     },
     {
-     "line": 224,
+     "line": 338,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "\"source_sha256\": \"sha256:21249f2505505afd60eb14188ea638202f2926b207d64cfcf8c3bc5db2d9f361\","
+     "text": "or getattr(anchor, \"EVALUATOR_SHA256\", None) != PINNED_HEALTHY_NODE_EVALUATOR[\"source_sha256\"]:"
     },
     {
-     "line": 288,
+     "line": 352,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "if _file_sha256(getattr(module, \"__file__\", None)) != PINNED_HEALTHY_NODE_EVALUATOR[\"source_sha256\"]:"
+     "text": "\"object\": fn, \"code_sha256\": code, \"source_sha256\": pin[\"source_sha256\"],"
     },
     {
-     "line": 407,
+     "line": 405,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "pinned = {\"evaluator_source_sha256\": PINNED_HEALTHY_NODE_EVALUATOR[\"source_sha256\"],"
+     "text": "\"healthy_node_evaluator_source_sha256\": inner[\"loaded_bytes_sha256\"],"
     },
     {
      "line": 408,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "\"producer_source_sha256\": PINNED_NODE_HEALTH_REPORT_PRODUCER[\"source_sha256\"]}"
+     "text": "\"healthy_node_anchor_check_source_sha256\": outer[\"loaded_bytes_sha256\"],"
     },
     {
-     "line": 480,
+     "line": 411,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "return {\"healthy_node_evaluator\": NOT_PINNED_DECIDER, \"healthy_node_evaluator_source_sha256\": None,"
+    },
+    {
+     "line": 413,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "\"healthy_node_anchor_check_source_sha256\": None, \"healthy_node_anchor_check_code_sha256\": code}"
+    },
+    {
+     "line": 443,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "\"source_sha256\": \"sha256:21249f2505505afd60eb14188ea638202f2926b207d64cfcf8c3bc5db2d9f361\","
+    },
+    {
+     "line": 653,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
      "text": "or receipt.get(\"healthy_node_evaluator_source_sha256\") != PINNED_HEALTHY_NODE_EVALUATOR[\"source_sha256\"]:"
     },
     {
-     "line": 735,
+     "line": 656,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "or receipt.get(\"healthy_node_anchor_check_source_sha256\") != PINNED_ANCHORED_EVALUATOR[\"source_sha256\"]:"
+    },
+    {
+     "line": 693,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "or anchored.get(\"evaluator_sha256\") != PINNED_HEALTHY_NODE_EVALUATOR[\"source_sha256\"] \\"
+    },
+    {
+     "line": 914,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
      "text": "f\"({pin['source_sha256']}), and KV never asserts a node's health itself\"),"
     },
     {
-     "line": 825,
+     "line": 921,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
-     "text": "\"healthy_node_evaluator_source_sha256\": _callable_source_sha256(self.healthy_node_evaluator),"
+     "text": "f\"vendored bytes ({PINNED_ANCHORED_EVALUATOR['source_sha256']}, evaluator {pin['source_sha256']}); \""
+    },
+    {
+     "line": 995,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "or anchored.get(\"evaluator_sha256\") != PINNED_HEALTHY_NODE_EVALUATOR[\"source_sha256\"] \\"
     }
    ],
    "patterns": [
@@ -2593,7 +3017,7 @@
     "healthy_node_evaluator: Any = None",
     "healthy_node_ledger_root: Any = None"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "layer2-structure",
    "status": "OBSERVED",
    "what": "SkapLayer2Gate: what verify_kv_access_receipt checks on a layer-1 receipt (schema, boundary, minted_by, healthy_node_established) and whether it checks the evaluator identity or source sha"
@@ -2649,13 +3073,13 @@
     "_consume_skap_access\\(",
     "record.get\\(\"schema\"\\) == SKAP_KV_RECORD_SCHEMA"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "kv-store-extension-structure",
    "status": "OBSERVED",
    "what": "KnowledgeVaultExecutionStore public append_extension/read_stream next to the gated SKAP read/write"
   },
   {
-   "files_scanned": 116,
+   "files_scanned": 125,
    "hits": [
     {
      "line": 279,
@@ -2664,7 +3088,7 @@
      "text": "runtime = KVInterlockRuntime("
     },
     {
-     "line": 550,
+     "line": 572,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "healthy_node_ledger_checkout=|ledger_checkout=",
      "text": "healthy_node_ledger_checkout=LOCAL_EXERCISE_LABEL)"
@@ -2688,13 +3112,13 @@
      "text": "result = run_probe(args.value, probe_id=args.probe_id, healthy_node_ledger_checkout=e0_standin_healthy_node(),"
     },
     {
-     "line": 487,
+     "line": 490,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "LOCAL_EXERCISE_LABEL = ",
      "text": "LOCAL_EXERCISE_LABEL = \"LOCAL_EXERCISE_ONLY_NOT_EVIDENCE\""
     },
     {
-     "line": 209,
+     "line": 433,
      "path": "runtime/kv_interlock_endpoint.py",
      "pattern": "^TRUST_ANCHORS",
      "text": "TRUST_ANCHORS: dict[str, Any] = {"
@@ -2706,7 +3130,7 @@
     "LOCAL_EXERCISE_LABEL = ",
     "^TRUST_ANCHORS"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@037f505e704203f5022339141a3877145fca2af3",
+   "pin": "StegVerse-Labs/continuity-vault-kit@eb62640c6a7a6d49a8de362da45639671e23da50",
    "run_id": "kv-ledger-root-binding",
    "status": "OBSERVED",
    "what": "which non-test code constructs KVInterlockRuntime and what ledger root it binds"
@@ -2962,7 +3386,7 @@
   },
   {
    "baseRefName": "main",
-   "headRefOid": "c2c57505535fb89ee88477eda1378c5fc610e0f7",
+   "headRefOid": "1cbad77eaff3254ea30fb9d3377d40abcf6728df",
    "isDraft": true,
    "pin": null,
    "pr": "StegVerse-org/LLM-adapter#432",
@@ -2973,7 +3397,7 @@
   },
   {
    "baseRefName": "main",
-   "headRefOid": "f77cf07505615b7ad3db11338cb252a2638040e2",
+   "headRefOid": "ac9a1532102452ea75badc0ee2b902b92cecd1b7",
    "isDraft": true,
    "pin": null,
    "pr": "StegVerse-Labs/StegOS#427",
@@ -2995,7 +3419,7 @@
   },
   {
    "baseRefName": "main",
-   "headRefOid": "037f505e704203f5022339141a3877145fca2af3",
+   "headRefOid": "eb62640c6a7a6d49a8de362da45639671e23da50",
    "isDraft": true,
    "pin": null,
    "pr": "StegVerse-Labs/continuity-vault-kit#258",
@@ -3074,15 +3498,15 @@
  "schema": "stegverse.ladder-conformance-observations/v1",
  "sources": [
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
-   "git_blob": "f2d1f39736fe08c182e30be18a036cc3ae678825",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "git_blob": "afbe605196234453ceaf0d4170e35f5f8d6d082e",
    "path": "runtime/kv_skap_vault.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:45ddf854282fdc112ea23de443929586d607aa2f244f6211e3a5d993ffadd9d7"
+   "sha256": "sha256:f7c9bff69d58ad82891c512e36853bacdfd81803903c653096dadc127bdf5cb5"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
    "git_blob": "db9601d3c5a24e530441f21c33eeacf94a273501",
    "path": "execution/vault_store.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -3090,36 +3514,52 @@
    "sha256": "sha256:84682029c0553c093be92e433f8ead572f76d9afcea6a6b8c45fb7ff42109a6a"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
-   "git_blob": "95223b8e6caa4f0068073e06259ce9613462df67",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "git_blob": "14127ec864e10fdcc492ced14695ed9e52b87a8f",
    "path": "runtime/kv_interlock_endpoint.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:c2b0d503e8dd547b30908fc4bdd99924bb2209b3b506badb2d47ee9d9fa16e71"
+   "sha256": "sha256:e11245984b27118358020ff838697ea8f55c53e3c54e951a81d991460b346e73"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
-   "git_blob": "d37219e9c304aefdba427a6a9f2ff911a36fb6f2",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "git_blob": "478dc6057ba0a8ce11694a703b05b065646e65d3",
    "path": "runtime/kv_skap_layer2.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:35643c54406727e1bab36f2417f1d4d395adf48fdda2864fc86fcbec807671f7"
+   "sha256": "sha256:d16a2e580961ded2083fee519da36446046f4c1272c86ebdf9bc100180f3cf8d"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
    "git_blob": "3e433b27b3d1a65b15e60a1614c2961dce210140",
-   "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+   "path": "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
    "sha256": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
-   "git_blob": "e899f9727707f91a68de8f6d6d0ea4afb1d9f7db",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "git_blob": "602ecf3c8acdf0505fdf8f7d4e75579a2a447acc",
+   "path": "runtime/intr_pinned/llm_adapter/endpoint_ledger_anchor.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk258",
+   "sha256": "sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10"
+  },
+  {
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "git_blob": "b8c1eaac752f4b95a4272dde02264bcc8336337b",
+   "path": "runtime/intr_pinned/PINNED.md",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk258",
+   "sha256": "sha256:0f09c2c944869a87f3abd8be4760db966ee3fb7a72b72753e77091cafe64712b"
+  },
+  {
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "git_blob": "ed509a7863cf2a1ce78c66e297a798ae19451eb5",
    "path": "tests/kv_two_layer_e0.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:ad4553e0ee08b2c4c916349d881ee28793a0e22cf14b8e641d05eb092785f8ad"
+   "sha256": "sha256:4212528f659520ae6bae9f69100bed0a31e1a19a6c5567d4dfeb1e3a9083c77b"
   },
   {
    "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
@@ -3242,7 +3682,7 @@
    "sha256": "sha256:1b3a7e7efccf81369353e53d16a17590b9bef90cf3006dc27a549c1ed7b426c3"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
    "git_blob": "33c7e04b0498eff30d1fd87b659109aff003854f",
    "path": "runtime/secret_field_policy.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -3250,12 +3690,12 @@
    "sha256": "sha256:c6fb0a9a5fe4083c1c7b7f0b28f6a4bf70885a581a39f533af3faeacca4e4dbc"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
-   "git_blob": "606317ac7433b414a8f9c1b21a9e4fcb6e0f2c8b",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "git_blob": "f9a7d4dd003e7913657a181a7b05d53c4ce6d25e",
    "path": "tests/test_kv_skap_vault_finish_point.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:b78b1dcb05e9cb3115ce38766d4d0e31306c56921a1e864fab5faedea9a9ddbd"
+   "sha256": "sha256:07e72af4d1b914e36d3a8c474708117ab4543030b60a6d4d111c30cd7be1d2d9"
   },
   {
    "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
@@ -3266,7 +3706,7 @@
    "sha256": "sha256:a4b6323cc3291700c326903dc77961b85770c183bb45f169a264e412b40db67d"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
    "git_blob": "4c933f8f126653a5a35ed1805d765c6985cfb1d1",
    "path": "runtime/task_registry_event_sovereign_kv_binding.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -3274,28 +3714,44 @@
    "sha256": "sha256:d304ee58f3ede2732467e49c31465e83fa08d1a8eb7f0216ac0d22b0c848b90f"
   },
   {
-   "commit": "037f505e704203f5022339141a3877145fca2af3",
-   "git_blob": "fafbb1582eb9074d7ce7454c8e894a030bf7d11c",
+   "commit": "eb62640c6a7a6d49a8de362da45639671e23da50",
+   "git_blob": "acb5980311cc8716c66884385b6dfca4c2b88640",
    "path": "tests/test_kv_ladder_conformance_lc_kv.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:ce0f570fa9d6a70d4682f737adac31fc087f6082fc328543c620c3a7fd4f4790"
+   "sha256": "sha256:c151e1af01ea2f95c005875221761e9b5c378efc3dd98cdf10fb37e2ff327144"
   },
   {
-   "commit": "c2c57505535fb89ee88477eda1378c5fc610e0f7",
-   "git_blob": "602ecf3c8acdf0505fdf8f7d4e75579a2a447acc",
+   "commit": "1cbad77eaff3254ea30fb9d3377d40abcf6728df",
+   "git_blob": "d6ace540f93dd4767b34e80dab99789210e86e2e",
    "path": "llm_adapter/endpoint_ledger_anchor.py",
    "repo": "StegVerse-org/LLM-adapter",
    "root": "llmad432",
-   "sha256": "sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10"
+   "sha256": "sha256:7a998544707e8fce7164d9229116942501b141b13a4f5af8772a3dbd8feb8403"
   },
   {
-   "commit": "c2c57505535fb89ee88477eda1378c5fc610e0f7",
-   "git_blob": "db8e9c04276cf67dcdb089b5d4e8056b04ecf6ed",
+   "commit": "1cbad77eaff3254ea30fb9d3377d40abcf6728df",
+   "git_blob": "52e76013067ce739c7eaf6a2fdf89c66612f7c7d",
    "path": "tests/test_endpoint_ledger_anchor.py",
    "repo": "StegVerse-org/LLM-adapter",
    "root": "llmad432",
-   "sha256": "sha256:d7c60dd767cddf3c3e503dc3d30a7d2625ba8f715d52e05c8bd0e675eec5671a"
+   "sha256": "sha256:644bb727801671c930ae036af40af704306ead7fdedf24aa68b57fc502b1d5ed"
+  },
+  {
+   "commit": "1cbad77eaff3254ea30fb9d3377d40abcf6728df",
+   "git_blob": "38e374558f48773522ed3f7408c155a558413390",
+   "path": "llm_adapter/org_ledger_location.py",
+   "repo": "StegVerse-org/LLM-adapter",
+   "root": "llmad432",
+   "sha256": "sha256:2ffaa91a606d18c45f239930e0e50292cb12461be22dc370fb6343037e3fce78"
+  },
+  {
+   "commit": "1cbad77eaff3254ea30fb9d3377d40abcf6728df",
+   "git_blob": "55ae6d64f69cea62863ea2760f85c217744f69c1",
+   "path": ".stegverse/node-ledger/node-ledger-opened-signers.v1.json",
+   "repo": "StegVerse-org/LLM-adapter",
+   "root": "llmad432",
+   "sha256": "sha256:478174cb89dc173e9bf7e8deb1db8b3881161e5a2fd10d6435298f74b6d3c63d"
   },
   {
    "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",

@@ -5,7 +5,7 @@ $ {python} -m runtime.kv_skap_vault finish-point
   "access_constraints": [
     {
       "constraint": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
-      "dependency_owner": "Interlock/InTr healthy-node evaluator, LC-KV-13/LC-KV-14 (StegVerse-org/LLM-adapter#428 llm_adapter/healthy_node_evaluator.py, producer #429, inputs #430, InTr and Mesh Destinations lane); the chain at StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter is not onboarded yet (onboarding StegVerse-org/LLM-adapter#431, Lane B draft)",
+      "dependency_owner": "Interlock/InTr healthy-node evaluator, LC-KV-13/LC-KV-14 (StegVerse-org/LLM-adapter#428 llm_adapter/healthy_node_evaluator.py, producer #429, inputs #430, anchored-root check #432 evaluate_anchored, InTr and Mesh Destinations lane), for a PERMANENT node; the chain at StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter is not onboarded yet (onboarding StegVerse-org/LLM-adapter#431, Lane B draft)",
       "disposition": "FAIL_CLOSED",
       "enforced_in_sealed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
       "failed_predicate": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
@@ -14,7 +14,7 @@ $ {python} -m runtime.kv_skap_vault finish-point
       "next_attempt": "on the next finish-point run whose evidence bundle carries the repair",
       "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
       "refusal_cause": "ACCESS_RECEIPTS_NOT_OBSERVED",
-      "required_evidence_or_repair": "ACCESS_RECEIPTS_NOT_OBSERVED: supply evidence.layer1_kv_access_receipts: one stegverse.kv-access-receipt/v1 minted by KVInterlockRuntime.handle (INTR_DEVICE_KV) per lineage receipt. Each must carry the ALLOW evaluation of the pinned InTr evaluator StegVerse-org/LLM-adapter@0b37fe3b:llm_adapter.healthy_node_evaluator.evaluate (source sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58, require_admission=True, LC-KV-13/14) over a receipted HEALTHY NODE_HEALTH_REPORTED report. KV never asserts health, and the local exercise evaluator is not evidence.",
+      "required_evidence_or_repair": "ACCESS_RECEIPTS_NOT_OBSERVED: supply evidence.layer1_kv_access_receipts: one stegverse.kv-access-receipt/v1 minted by KVInterlockRuntime.handle (INTR_DEVICE_KV) per lineage receipt. Each must carry the ALLOW evaluation of the pinned InTr evaluator StegVerse-org/LLM-adapter@c2c57505:llm_adapter.healthy_node_evaluator.evaluate (source sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58, require_admission=True, LC-KV-13/14) over a receipted HEALTHY NODE_HEALTH_REPORTED report, reached through the pinned anchored-root check StegVerse-org/LLM-adapter#432@c2c57505:llm_adapter.endpoint_ledger_anchor.evaluate_anchored (source sha256:5fcc9018e18d709ab5b9c9ea5195e751abf2d01b4c124cf4fafdcfb617023d10) over a PERMANENT node's anchored ledger (LC-KV-13 completes with a PERMANENT node; EPHEMERAL generation is a separate task). KV never asserts health, and the local exercise evaluator is not evidence.",
       "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)"
     },
     {
@@ -47,6 +47,14 @@ $ {python} -m runtime.kv_skap_vault finish-point
     }
   ],
   "access_constraints_conformant": 0,
+  "admission_order": {
+    "admitted_together": [
+      "StegVerse-Labs/continuity-vault-kit#258",
+      "StegVerse-Labs/continuity-vault-kit#259"
+    ],
+    "rule": "ADMITTED_TOGETHER",
+    "tracked_by": "LC-KV-05 (P1 ladder conformance, StegVerse-Labs/.github#3330)"
+  },
   "authority_model": {
     "claim_and_fence_authority": "WorkerCoordinator",
     "credential_authority": "TV/TVC",

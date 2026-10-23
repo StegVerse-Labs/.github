@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+ "failure_class": {
+  "class": "A",
+  "reason": "a repair inside continuity-vault-kit's own layer-1 surface (its vendored copy)"
+ },
+ "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE"
+ ],
+ "next_attempt": "on the next push to laned/kv-skap-vault-finish-point (continuity-vault-kit#258)",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "Lane D (KV and WorkSpace)",
+ "proposed_resolution": "re-vendor runtime/intr_pinned/ from StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df (signed NODE_LEDGER_OPENED envelope verified against .stegverse/node-ledger/node-ledger-opened-signers.v1.json, failure code EPHEMERAL_NODE_LEDGER_NOT_ANCHORED with no alias) so an unsigned EPHEMERAL anchor is six-field FAIL_CLOSED NODE_LEDGER_OPENED_UNSIGNED at layer 1; add the row to the E0 harness",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "new (revision 5, continuity-vault-kit#258 @eb62640c, LLM-adapter#432 @1cbad77e, StegOS#427 @ac9a1532): inside the E0 stand-in anchors, layer 1 ALLOWs an EPHEMERAL node whose NODE_LEDGER_OPENED record is sealed only by its own sha256 (run layer1-two-layer-probe LAYER1_EPHEMERAL_ANCHORED_BY_UNSIGNED_OPENED_RECORD: ALLOW), because the vendored #432 @c2c57505 does not require a signed envelope; #432 @1cbad77e refuses the same shape (NODE_LEDGER_OPENED_UNSIGNED, run anchor432-probe SELF_MINTED_ANCHOR_ON_CALLER_CREATED_ORG_LEDGER). The vendored module's own six fields still read TEMP_NODE_LEDGER_NOT_ANCHORED while KV reports EPHEMERAL_NODE_LEDGER_NOT_ANCHORED",
+ "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-17"
+}

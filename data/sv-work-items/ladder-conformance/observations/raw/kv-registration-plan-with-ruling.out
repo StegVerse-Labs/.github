@@ -1,4 +1,4 @@
-$ {python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258}
+$ {python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258ruling}
 --- exit 0
 --- stdout
 {
@@ -121,7 +121,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "disposition": "ALLOW",
       "finish_point": {
         "closure": {
-          ".git": "sha256:a82df0b8fd92b6fdc83fe673808f6c0d1133cbfa0e0ed96110c69972ed8f5889",
+          ".git": "sha256:ea61c4f215e6912f4164aa573ab292896a60b1a54f3ca2850cbdc628bfd19bf5",
           "runtime/intr_pinned/healthy_node_evaluator.py": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58",
           "runtime/kv_interlock_endpoint.py": "sha256:c2b0d503e8dd547b30908fc4bdd99924bb2209b3b506badb2d47ee9d9fa16e71",
           "runtime/kv_skap_layer2.py": "sha256:35643c54406727e1bab36f2417f1d4d395adf48fdda2864fc86fcbec807671f7",
@@ -130,7 +130,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
           "tests/kv_two_layer_e0.py": "sha256:ad4553e0ee08b2c4c916349d881ee28793a0e22cf14b8e641d05eb092785f8ad",
           "tests/test_kv_skap_vault_finish_point.py": "sha256:b78b1dcb05e9cb3115ce38766d4d0e31306c56921a1e864fab5faedea9a9ddbd"
         },
-        "closure_digest": "sha256:cee8806945cf8bae6b6566b759d66d0ebbfa28fd378c125c33033943dec3f2d0",
+        "closure_digest": "sha256:a35c6cdaf7c9acfb5d82bd9eb05396d7d2dee7efda97f4e75362a27c6aa43a7a",
         "finish_test_runners": [],
         "hashed_pin_data_paths": [],
         "repository": "StegVerse-Labs/continuity-vault-kit",
