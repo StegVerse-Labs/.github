@@ -40,11 +40,33 @@ jobs:
       - name: RT-INVARIANT-EVALUATION-001 spec guard, the B-P6 probe set as data
         run: python -m unittest -v tests/test_invariant_evaluation_probes.py
 
+      # Read-only inputs, fetched before the suite runs: this repository's own organization ledger ref
+      # (one anonymous fetch of a public ref; no credential, no polling) - it is the drift receipt's
+      # epoch source (its hb_reference.epoch; no clock is read) and the clone
+      # tests/test_sv_change_base_state_readback_component.py's known-answer test needs
+      # (RTC014_LIVE_LABS_REPO, ledger head a5bb54d8 is on it), which was skipped while this checkout
+      # did not hold the ref - and StegVerse-org/.github's main-change receipt writer at its pin.
+      # When either is unreadable the receipt says so in six fields and the known-answer test fails; it
+      # never guesses.
+      - name: Organization ledger ref and the pinned main-change receipt writer, read-only
+        run: |
+          git -c 'http.https://github.com/.extraheader=' fetch --no-tags --quiet origin \
+            '+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger' || echo "organization ledger ref not fetched"
+          if git -c 'http.https://github.com/.extraheader=' fetch --no-tags --quiet --depth=1 \
+              https://github.com/StegVerse-org/.github 7638b006ef9da2d65240576c706482b9ecc4153f; then
+            git show FETCH_HEAD:resident-runtime/main_change_receipt.py > /tmp/main_change_receipt.py
+          else
+            echo "main-change receipt writer not fetched"
+          fi
+
       # One suite run feeds the comparison. 0 is all passed and 1 is some failed; any other status
       # (interrupted, internal error, usage error, nothing collected) is not a suite result. The junit
       # record and -rfEsxX name every skipped, xfailed, xpassed and uncollected test, so the next step
       # can fail closed on each (REQUIRED_VERIFICATION_SKIPPED); a skip is never a pass.
       - name: Run the suite once
+        env:
+          # the checkout holds refs/stegverse/organization-ledger (step above): the live-repo known answer runs
+          RTC014_LIVE_LABS_REPO: ${{ github.workspace }}
         run: |
           set +e
           python -m pytest tests -q --tb=no -p no:cacheprovider -rfEsxX --junitxml=/tmp/pytest-suite.xml > /tmp/pytest-suite.txt
@@ -52,19 +74,6 @@ jobs:
           set -e
           tail -n 1 /tmp/pytest-suite.txt
           test "$status" -le 1
-
-      # Read-only inputs for the drift receipt: the organization ledger head (its hb_reference.epoch is
-      # the epoch; no clock is read) and StegVerse-org/.github's main-change receipt writer at its pin.
-      # When either is unreadable the receipt says so in six fields; it never guesses.
-      - name: Organization ledger head and the pinned main-change receipt writer, read-only
-        run: |
-          git fetch --no-tags --quiet origin '+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger' || echo "organization ledger ref not fetched"
-          if git -c 'http.https://github.com/.extraheader=' fetch --no-tags --quiet --depth=1 \
-              https://github.com/StegVerse-org/.github 7638b006ef9da2d65240576c706482b9ecc4153f; then
-            git show FETCH_HEAD:resident-runtime/main_change_receipt.py > /tmp/main_change_receipt.py
-          else
-            echo "main-change receipt writer not fetched"
-          fi
 
       # The ratchet's own comparison (run_suite/compare), made drift-aware by
       # scripts/test_suite_baseline_drift.py. Pull request: a failure that also fails on the exact base

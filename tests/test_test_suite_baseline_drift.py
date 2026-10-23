@@ -532,5 +532,88 @@ class BaselineDriftTests(unittest.TestCase):
         self.assertEqual(record["verification"]["ran"], 2)
 
 
+    # -- a repository's first baseline: receipted by detect (unittest, bisected), linked by pr -----------------
+
+    def first_baseline_toy(self) -> tuple[str, Path]:
+        """main: tests pass, then one commit breaks test_y, then a module with a skipped test lands. The baseline
+        file exists only in the checkout (the change under review introduces it)."""
+        self.addCleanup(setattr, drift, "RETRY_DETECT", drift.DEFAULT_RETRY_DETECT)
+        self.unittest_toy()
+        self.toy.commit("tests pass")
+        self.toy.commit("unrelated 1")
+        self.toy.write("y.txt", "broken\n")
+        breaking = self.toy.commit("breaks y")
+        self.toy.write("tests/test_s.py", "import unittest\nclass S(unittest.TestCase):\n"
+                       "    @unittest.skip('needs an input this runner lacks')\n    def test_s(self):\n        pass\n")
+        self.toy.commit("a skipped test lands")
+        self.toy.write("org/baseline.json", json.dumps({"known_failing": [], "pre_existing_until": "genesis"}))
+        done = subprocess.run([sys.executable, "-m", "unittest", "-v", "tests.test_u", "tests.test_s"],
+                              cwd=self.toy.path, capture_output=True, text=True)
+        out_file = Path(self.tmp.name) / "main-unittest.txt"
+        out_file.write_text(done.stdout + done.stderr)
+        return breaking, out_file
+
+    def detect_cli(self, out_file: Path, modules: list[str]) -> tuple[int, dict, Path]:
+        out = Path(self.tmp.name) / "out-detect"
+        code = drift.main(["detect", "--root", str(self.toy.path), "--baseline", "org/baseline.json",
+                           "--unittest-output", str(out_file), "--unittest-modules", *modules,
+                           "--bisect-start", self.toy.baseline, "--detect-entrypoint", "toy-detect.yml",
+                           "--hb-epoch", "469411750", "--repository", "toy/repo", "--owning-goal", "TOY-GOAL-001",
+                           "--out-dir", str(out)])
+        return code, json.loads((out / "receipt.json").read_text()), out / "receipt.json"
+
+    def test_first_baseline_is_receipted_by_unittest_detect_bisected_from_the_supplied_start(self) -> None:
+        breaking, out_file = self.first_baseline_toy()
+        code, receipt, _ = self.detect_cli(out_file, ["tests.test_u", "tests.test_s"])
+        self.assertEqual(code, 1)
+        self.assertEqual(receipt["runner"], "unittest")
+        self.assertEqual((receipt["baseline"]["read_from"], receipt["baseline"]["bisect_start"],
+                          receipt["baseline"]["written_at_commit"]), ("CHECKOUT", self.toy.baseline, None))
+        self.assertEqual(receipt["baseline"]["pre_existing_until"], "genesis")
+        [entry] = receipt["drift"]
+        self.assertEqual((entry["test"], entry["first_failing_commit"], entry["classification"]),
+                         ("tests/test_u.py::U::test_y", breaking, "INTRODUCED_ON_MAIN_AFTER_BASELINE"))
+        # the skip is never drift and never pre-existing: it leads the receipt as REQUIRED_VERIFICATION_SKIPPED
+        self.assertEqual((receipt["failure_code"], receipt["verification"]["rows"][0]["kind"],
+                          receipt["verification"]["rows"][0]["test"]),
+                         ("REQUIRED_VERIFICATION_SKIPPED", "SKIPPED", "tests.test_s.S.test_s"))
+        self.assertEqual(receipt["retry_entrypoint"], "toy-detect.yml")
+        self.assert_six(receipt)
+
+    def test_pre_existing_rows_name_their_baseline_receipt_entry_and_skips_stay_fail_closed(self) -> None:
+        breaking, out_file = self.first_baseline_toy()
+        _, _, receipt_path = self.detect_cli(out_file, ["tests.test_u"])
+        base = self.toy.git("rev-parse", "HEAD")
+        self.toy.write("docs.md", "unrelated\n")
+        self.toy.commit("pr: adds the baseline and docs")
+        extra = ["--baseline", "org/baseline.json", "--baseline-receipt", str(receipt_path),
+                 "--detect-entrypoint", "toy-detect.yml"]
+        status, head_out = self.run_unittest()
+        code, record = self.pr_cli(base, head_out, status, ["tests.test_u"], extra)
+        self.assertEqual((code, record["disposition"]), (0, "PRE_EXISTING_BASELINE_FAILURE"), record)
+        [row] = record["tests"]
+        self.assertEqual((row["baseline_receipt"]["receipted"], row["baseline_receipt"]["first_failing_commit"]),
+                         (True, breaking))
+        self.assertEqual((row["pre_existing_until"], row["retry_entrypoint"], row["blocking"]),
+                         ("genesis", "toy-detect.yml", False))
+        self.assertTrue(record["verification"]["baseline_receipt"]["seal_verifies"])
+        # a receipt whose seal does not verify links nothing
+        tampered = json.loads(receipt_path.read_text())
+        tampered["drift"][0]["first_failing_commit"] = "0" * 40
+        receipt_path.write_text(json.dumps(tampered))
+        code, record = self.pr_cli(base, head_out, status, ["tests.test_u"], extra)
+        self.assertEqual(record["tests"][0]["baseline_receipt"]["receipted"], False)
+        self.assertFalse(record["verification"]["baseline_receipt"]["seal_verifies"])
+        # the skipped test is REQUIRED_VERIFICATION_SKIPPED with the receipt supplied, never pre-existing
+        done = subprocess.run([sys.executable, "-m", "unittest", "-v", "tests.test_u", "tests.test_s"],
+                              cwd=self.toy.path, capture_output=True, text=True)
+        both = Path(self.tmp.name) / "both.txt"
+        both.write_text(done.stdout + done.stderr)
+        code, record = self.pr_cli(base, both, done.returncode, ["tests.test_u", "tests.test_s"], extra)
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "SKIPPED")["test"], "tests.test_s.S.test_s")
+        self.assertEqual([r["test"] for r in record["tests"] if r["disposition"] == "PRE_EXISTING_BASELINE_FAILURE"],
+                         ["tests/test_u.py::U::test_y"])
+
 if __name__ == "__main__":
     unittest.main()

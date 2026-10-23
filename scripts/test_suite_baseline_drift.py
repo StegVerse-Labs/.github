@@ -63,6 +63,7 @@ DEFAULT_GOAL = "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-0
 LEDGER_GOAL = "StegVerse-org/.github#162 (organization ledger) / StegVerse-org/.github#166"
 RETRY_DETECT = ".github/workflows/test-suite-ratchet.yml (push to main) -> scripts/test_suite_baseline_drift.py detect"
 RETRY_PR = ".github/workflows/test-suite-ratchet.yml (pull_request) -> scripts/test_suite_baseline_drift.py pr"
+DEFAULT_RETRY_DETECT = RETRY_DETECT   # --detect-entrypoint names another repository's detect workflow
 UNITTEST, PYTEST = "unittest", "pytest"
 SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
        "owning_existing_goal", "next_attempt")
@@ -361,10 +362,21 @@ def review_one(root: Path, head: str, entry: Mapping[str, Any], open_prs: list[M
 def detect(root: Path, head: str, *, baseline_path: str, observed: set[str] | None, epoch_arg: str | None,
            writer_path: str | None, writer_sha256: str | None, repository: str, goal: str,
            open_prs: list[Mapping[str, Any]], python: str = sys.executable,
-           verification_rows: list[dict] | None = None, verification: Mapping[str, Any] | None = None) -> dict:
+           verification_rows: list[dict] | None = None, verification: Mapping[str, Any] | None = None,
+           runner: str = PYTEST, bisect_start: str | None = None) -> dict:
     root = Path(root)
     head = rev(root, head)
-    baseline = json.loads(git(root, "show", f"{head}:{baseline_path}"))
+    if git_ok(root, "cat-file", "-e", f"{head}:{baseline_path}"):
+        baseline = json.loads(git(root, "show", f"{head}:{baseline_path}"))
+        baseline_blob, baseline_read_from = git(root, "rev-parse", f"{head}:{baseline_path}").strip(), "HEAD_TREE"
+    elif (root / baseline_path).is_file():
+        # a baseline introduced by the change under review, judged against an older head (e.g. the main head a
+        # new repository's first baseline is receipted at): read from the checkout, its blob recorded
+        baseline = json.loads((root / baseline_path).read_text(encoding="utf-8"))
+        baseline_blob = git(root, "hash-object", str(root / baseline_path)).strip()
+        baseline_read_from = "CHECKOUT"
+    else:
+        raise SystemExit(f"baseline {baseline_path} is neither in {head} nor in the checkout")
     if observed is None:
         observed = run_suite_at(root, head, python)
     report = compare(observed, baseline)
@@ -375,8 +387,12 @@ def detect(root: Path, head: str, *, baseline_path: str, observed: set[str] | No
                           "supply StegVerse-org/.github resident-runtime/main_change_receipt.py at the pinned commit",
                           RETRY_DETECT, goal, "the next run with the writer at its pin", writer=writer_info))
     start = baseline_commit(root, head, baseline_path)
+    if start is None and bisect_start:
+        # no commit on this line wrote the baseline: bisect from the supplied start (a commit where the
+        # failing tests are absent or pass, e.g. the repository's first commit); absent counts as not failing
+        start = rev(root, bisect_start)
     drift = []
-    prober = Prober(root, python)
+    prober = Prober(root, python, runner)
     try:
         line = first_parent_line(root, start, head) if start else [head]
         for test_id in report["newly_failing"]:
@@ -424,8 +440,10 @@ def detect(root: Path, head: str, *, baseline_path: str, observed: set[str] | No
     body: dict[str, Any] = {
         "schema": DRIFT_SCHEMA, "repository": repository, "head": head, "lowest_supported_mode": "E0",
         "hb_epoch": epoch, "hb_epoch_source": epoch_source, "derived_from_clock": False,
-        "baseline": {"path": baseline_path, "blob": git(root, "rev-parse", f"{head}:{baseline_path}").strip(),
-                     "written_at_commit": start},
+        "baseline": {"path": baseline_path, "blob": baseline_blob, "read_from": baseline_read_from,
+                     "written_at_commit": baseline_commit(root, head, baseline_path), "bisect_start": start,
+                     "pre_existing_until": baseline.get("pre_existing_until")},
+        "runner": runner,
         "ratchet": report, "drift": drift, "review_sha256": review[SEAL],
         "repair_task_id": task["task_id"] if task else None,
         "writer": writer_info, "ledger_append": ledger_append(goal), "authority_effect": "NONE",
@@ -457,8 +475,8 @@ def repair_task(head: str, drift: list[dict], review: Mapping[str, Any], goal: s
         "owning_existing_goal": goal, "observed_at_head": head, "lowest_supported_mode": "E0",
         "scope": {"tests": tests, "candidate_paths": paths,
                   "first_failing_commits": {e["test"]: e.get("first_failing_commit") for e in drift}},
-        "finish_point": ("at one main head every listed test passes, check_test_suite_ratchet.py reports new=0, "
-                         "and this module's detect receipt at that head is ALLOW"),
+        "finish_point": ("at one main head every listed test passes, the ratchet comparison against the baseline "
+                         "reports new=0 (newly_failing empty), and this module's detect receipt at that head is ALLOW"),
         "out_of_scope": "baseline edits that add these tests (that records the drift, it does not repair it)",
         "retry_entrypoint": RETRY_DETECT, "authority_effect": "NONE",
     }, SEAL)
@@ -484,7 +502,8 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
                    repository: str, epoch: str | None, python: str = sys.executable, runner: str = PYTEST,
                    unparsed: list[str] | None = None, suite_status: int | None = None,
                    retry_pr: str = RETRY_PR, verification_rows: list[dict] | None = None,
-                   verification: Mapping[str, Any] | None = None) -> dict:
+                   verification: Mapping[str, Any] | None = None,
+                   baseline_receipt: Mapping[str, Any] | None = None) -> dict:
     root = Path(root)
     base, head = rev(root, base), rev(root, head)
     baseline = json.loads((root / baseline_path).read_text(encoding="utf-8")) \
@@ -521,6 +540,10 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
                     "repaired under the drift repair task emitted by detect on main; this change neither touches "
                     "nor introduces it", RETRY_DETECT, goal,
                     "the push to main that completes the repair task; this change proceeds now")})
+                if baseline.get("pre_existing_until"):
+                    row["pre_existing_until"] = baseline["pre_existing_until"]
+                if baseline_receipt is not None:
+                    row["baseline_receipt"] = receipt_link(baseline_receipt, test_id)
             elif at_base == FAIL:
                 row.update({"disposition": "FAIL_CLOSED", "blocking": True, **item(
                     "BASELINE_FAILURE_TOUCHED_BY_CHANGE", "CHANGE_DOES_NOT_TOUCH_A_FAILING_TEST_WITHOUT_FIXING_IT",
@@ -545,6 +568,9 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
     finally:
         prober.close()
     blocking = [r for r in rows if r["blocking"]]
+    if baseline_receipt is not None:
+        verification = {**(verification or {}), "baseline_receipt": {
+            k: baseline_receipt.get(k) for k in ("path", SEAL, "head", "seal_verifies")}}
     body: dict[str, Any] = {"schema": PR_SCHEMA, "repository": repository, "base": base, "head": head,
                             "lowest_supported_mode": "E0", "hb_epoch": epoch, "derived_from_clock": False,
                             "runner": runner, "ratchet": report, "tests": rows, "authority_effect": "NONE",
@@ -560,6 +586,26 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
     else:
         body["disposition"] = "ALLOW"
     return seal(body, SEAL)
+
+
+def load_baseline_receipt(path: str) -> dict:
+    """A detect receipt (this module's own output) naming each pre-existing failure and its first failing commit;
+    its seal is checked, never assumed."""
+    record = json.loads(Path(path).read_text(encoding="utf-8"))
+    return {"path": path, SEAL: record.get(SEAL), "head": record.get("head"),
+            "seal_verifies": seal({k: v for k, v in record.items() if k != SEAL}, SEAL).get(SEAL) == record.get(SEAL),
+            "drift": {e["test"]: e for e in record.get("drift") or []}}
+
+
+def receipt_link(receipt: Mapping[str, Any], test_id: str) -> dict:
+    entry = receipt["drift"].get(test_id) if receipt.get("seal_verifies") else None
+    if entry is None:
+        return {"receipted": False, "receipt_sha256": receipt.get(SEAL), "seal_verifies": receipt.get("seal_verifies"),
+                "detail": "failing on the base but not named by a seal-verifying baseline receipt: the next detect "
+                          "run on main receipts it"}
+    return {"receipted": True, "receipt_sha256": receipt[SEAL], "receipt_head": receipt.get("head"),
+            "classification": entry.get("classification"), "first_failing_commit": entry.get("first_failing_commit"),
+            "introducing_commit": entry.get("introducing_commit")}
 
 
 # -- required verification: nothing skipped, nothing unrun, nothing missing ------------------------------------
@@ -1040,24 +1086,33 @@ def main(argv: list[str] | None = None) -> int:
     common.add_argument("--writer-sha256", help="the writer's pinned sha256; any other bytes are not loaded")
     common.add_argument("--junit-xml", help="pytest --junitxml record of the --pytest-output run: every skipped, "
                         "xfailed or uncollected test in it is FAIL_CLOSED REQUIRED_VERIFICATION_SKIPPED")
+    common.add_argument("--unittest-output", help="`python -m unittest -v` output already produced for --head; its "
+                        "FAIL/ERROR lines are the observed set and probes (base, bisection) use unittest")
+    common.add_argument("--unittest-modules", nargs="*", default=[], help="the module list the unittest run was "
+                        "given; each listed test must have run, and none may be skipped")
+    common.add_argument("--detect-entrypoint", help="the workflow that runs detect on main in this repository "
+                        f"(default: {DEFAULT_RETRY_DETECT})")
     common.add_argument("--required-unittest-modules-from", action="append", default=[],
                         help="a workflow whose `python -m unittest` module list must have every test run in this "
                         "pytest run (its pytest-only functions are delegated here)")
     d = sub.add_parser("detect", parents=[common])
     d.add_argument("--open-prs", help="JSON list of {number, files} for the implication review")
+    d.add_argument("--bisect-start", help="when no commit on the first-parent line wrote the baseline, bisect from "
+                   "this commit (e.g. the repository's first commit)")
     p = sub.add_parser("pr", parents=[common])
     p.add_argument("--base", required=True)
-    p.add_argument("--unittest-output", help="`python -m unittest -v` output already produced for --head; its "
-                   "FAIL/ERROR lines are the observed set and the base is probed with unittest")
     p.add_argument("--suite-status", type=int, help="exit status of the run that produced the output")
     p.add_argument("--retry-entrypoint", default=RETRY_PR, help="the workflow a blocked change re-runs")
-    p.add_argument("--unittest-modules", nargs="*", default=[], help="the module list the unittest run was given; "
-                   "each listed test must have run, and none may be skipped")
     p.add_argument("--pytest-proof", help="the required job at this head that runs the listed modules' pytest-only "
                    "functions and fails closed if they do not run (e.g. test-suite-ratchet.yml ratchet)")
+    p.add_argument("--baseline-receipt", help="this module's sealed detect receipt for the main head the "
+                   "baseline was receipted at: each PRE_EXISTING_BASELINE_FAILURE row names its entry")
     p.add_argument("--path-filter-check", action="store_true", help="fail closed when a path-filtered workflow "
                    "that runs a file this change edits would not be triggered by the change")
     args = parser.parse_args(argv)
+    global RETRY_DETECT
+    if args.detect_entrypoint:
+        RETRY_DETECT = args.detect_entrypoint
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     root = Path(args.root).resolve()
@@ -1079,10 +1134,24 @@ def main(argv: list[str] | None = None) -> int:
                     {"workflow": wf, "modules": len(mods), "tests_required": len(need)})
     if args.command == "detect":
         open_prs = json.loads(Path(args.open_prs).read_text()) if args.open_prs else []
-        result = detect(root, args.head, baseline_path=args.baseline, observed=_observed(args.pytest_output),
+        runner, observed_d = PYTEST, _observed(args.pytest_output)
+        if args.unittest_output:
+            runner = UNITTEST
+            observed_d, _unparsed = observed_unittest(args.unittest_output)
+            rows_u, info_u = unittest_verification(root, Path(args.unittest_output).read_text(encoding="utf-8"),
+                                                   args.unittest_modules, retry, args.owning_goal)
+            for line in _unparsed:
+                if not any(r["kind"] == "COLLECTION_ERROR" for r in rows_u):
+                    rows_u.append(rvs_row("COLLECTION_ERROR", None, "the runner reported a failure that names no test",
+                                          retry, args.owning_goal, "the next run of this job at the exact head",
+                                          outcome_line=line))
+            vrows += rows_u
+            vinfo.update({"runner": UNITTEST, **info_u})
+        result = detect(root, args.head, baseline_path=args.baseline, observed=observed_d,
                         epoch_arg=args.hb_epoch, writer_path=args.writer, writer_sha256=args.writer_sha256,
                         repository=args.repository, goal=args.owning_goal, open_prs=open_prs,
-                        verification_rows=vrows, verification=vinfo)
+                        verification_rows=vrows, verification=vinfo, runner=runner,
+                        bisect_start=args.bisect_start)
         for name, record in result.items():
             if record is not None:
                 (out / f"{name.replace('_', '-')}.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n")
@@ -1142,7 +1211,9 @@ def main(argv: list[str] | None = None) -> int:
     record = pr_disposition(root, args.base, args.head, baseline_path=args.baseline, observed=observed,
                             goal=args.owning_goal, repository=args.repository, epoch=epoch, runner=runner,
                             unparsed=unparsed, suite_status=args.suite_status, retry_pr=args.retry_entrypoint,
-                            verification_rows=vrows, verification=vinfo)
+                            verification_rows=vrows, verification=vinfo,
+                            baseline_receipt=load_baseline_receipt(args.baseline_receipt) if args.baseline_receipt
+                            else None)
     (out / "pr-disposition.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n")
     print(json.dumps({k: record.get(k) for k in ("disposition", *SIX, SEAL) if record.get(k) is not None},
                      sort_keys=True))
