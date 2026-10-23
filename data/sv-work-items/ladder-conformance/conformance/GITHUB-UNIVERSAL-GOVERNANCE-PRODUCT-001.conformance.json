@@ -4,6 +4,10 @@
  "consistency": "ALLOW",
  "consistency_refusals": [],
  "counts": {
+  "CONSTRAINT": {
+   "checked": 0,
+   "conformant": 0
+  },
   "HANDOFF": {
    "checked": 7,
    "conformant": 2
@@ -1154,16 +1158,16 @@
  "owning_lane": "GitHub Product lane (Lane C)",
  "receipt": {
   "code": {
-   "resident-runtime/ladder_conformance.py": "sha256:d0a59d29301471f5bdfa1aa3eb3b30d01430be7d3e6ff0397fafc97cc92d008c",
+   "resident-runtime/ladder_conformance.py": "sha256:6b8a52ce7456aec60448f38438f39aeb39b13e2763950063aecd61b0e43eca79",
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
-   "scripts/ladder_conformance.py": "sha256:724e1708b97ec402847a0a8f4a596b44d3cc0eeb41c71ad555d6e6d795b78828"
+   "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:226c2b471334709a10faba9bb37c34ac23f4d47b6f50a5e2581daebdf6a33983",
+  "document_sha256": "sha256:7c8661729e8349f505fbcaceaa841176608725336f837eed7b89c38aac55088b",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
    "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:8e12dcfb5688343dd4d19adbcc71ad1a59a2c3732caa6e64ed02210a8c203a37",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:5e1345ba5a47836c1d10aba964e686af3e692f2a3dfd9f822bd8d73e58637c8f",
-   "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:7cf385c362d8d9b5792748711094de80b7530282838c6b1ec356be09adca2bc5",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:f79904169bef03c63988951502ae5885e33d9a295a1e9fa3a53620ea635c5aec",
+   "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:a73b4cfa6aff0867064d15ca7d5315bace00892764bf088a1eee7fc05670824f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:afd8ce5c3f373675d44e75cc8740bffc40d267f4aa1a249fc99c05898096689a",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-02.json": "sha256:72bdd759ba48e4de147b18587775b62624086a83923243f5ce0bb481269508a7",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-03.json": "sha256:3985092c630fe8d95f5070927d32344964ff9ce4d6c957d428d5f858d7191858",

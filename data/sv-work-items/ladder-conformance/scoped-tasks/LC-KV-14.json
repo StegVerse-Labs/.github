@@ -1,0 +1,20 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "NON_ALLOW_CARRIES_SIX_FIELDS",
+ "failure_code": "LADDER_E0_TERMINAL_NOT_SIX_FIELD",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "H-KV-HEALTHY-NODE-DETERMINATION"
+ ],
+ "next_attempt": "on the next push to StegVerse-org/LLM-adapter main touching llm_adapter/node_ingress_boundary.py",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "InTr and Mesh Destinations lane (Lane B, InTr; StegVerse-org/.github#162); consuming lane: Lane D (KV and WorkSpace)",
+ "proposed_resolution": "keep the recorded DENY ingress receipt and return {disposition: DENY|FAIL_CLOSED, failure_code: NODE_NOT_CURRENTLY_ADMITTED_HEALTHY, failed_predicate: REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE, required_evidence_or_repair, retry_entrypoint, owning_existing_goal, next_attempt} from the admit entry; layer 1 treats anything but ALLOW as its own KV_ACCESS_LAYER1_REFUSED",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "a refused node standing must be returned as a six-field disposition, not raised (admit raises StandingRefused after recording a DENY ingress)",
+ "retry_point": "python -m unittest test_node_ingress_boundary test_node_standing (StegVerse-org/LLM-adapter), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-14"
+}

@@ -49,7 +49,7 @@ class CommittedArtifacts(unittest.TestCase):
             decl = _inputs()["declarations"][g]
             preds = [r["id"] for r in d["items"] if r["kind"] == "PREDICATE"]
             self.assertEqual(sorted(preds), sorted(decl["sealed_expected_evidence_predicates"]), g)
-            self.assertEqual(d["counts"]["PREDICATE"]["checked"] + d["counts"]["HANDOFF"]["checked"], len(d["items"]))
+            self.assertEqual(sum(d["counts"][k]["checked"] for k in lc.KINDS), len(d["items"]))
             self.assertEqual(d["gaps"], sum(1 for r in d["items"] if r["verdict"] != "ALLOW"))
 
     def test_every_non_allow_item_carries_six_fields_and_a_scoped_task(self):
@@ -71,6 +71,34 @@ class CommittedArtifacts(unittest.TestCase):
             for k in lc.TASK_SIX:
                 self.assertTrue(t[k].strip(), (t["task_id"], k))
             self.assertEqual(t["status"], "SCOPED_TASK_RECORD_ONLY")
+        for t in tasks:
+            if t["items"] == ["H-KV-HEALTHY-NODE-DETERMINATION"]:
+                self.assertTrue(t["owning_lane"].startswith("InTr and Mesh Destinations lane"), t["task_id"])
+
+    def test_two_credential_layers_are_separate_sequential_checks(self):
+        d = json.loads(cli.build()[KV])
+        layers = {r["id"]: r for r in d["items"] if r["kind"] == "CONSTRAINT"}
+        decl = {i["id"]: i for i in _inputs()["declarations"][KV]["items"]}
+        self.assertEqual(sorted(str(decl[i]["layer"]) for i in layers), ["1", "1->2", "2"])
+        l1 = next(i for i in layers if decl[i]["layer"] == 1)
+        l2 = next(i for i in layers if decl[i]["layer"] == 2)
+        seq = next(i for i in layers if decl[i]["layer"] == "1->2")
+        for i in (l1, l2):  # each layer refuses on its own, with six fields and its own scoped tasks
+            self.assertTrue(layers[i]["refusals"] and layers[i]["scoped_tasks"], i)
+            self.assertIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, i))
+        self.assertIn("LADDER_ACCESS_LAYERS_COLLAPSED", _codes(d, seq))
+        self.assertTrue(set(decl[l1]["required_outcomes"]) and "e0_terminal" in decl[l1])
+        self.assertIn("class_b", decl[l2])  # no E0 gate exists on the SKAP boundary inside KV: recorded, not invented
+        self.assertIn("REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", decl[l1]["what"])
+
+    def test_withdrawn_git_ref_custody_adapter_is_not_proposed(self):
+        t = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-03")
+        self.assertNotIn("refs/stegverse/kv-custody", t["proposed_resolution"])
+        self.assertIn("withdrawn", t["required_repair"])
+        for k in ("InTr", "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", "TV/TVC", "layer-1", "layer-2"):
+            self.assertIn(k, t["proposed_resolution"])
+        cb = next(i for i in _inputs()["declarations"][KV]["items"] if i["id"] == "H-KV-DURABLE-CUSTODY-PROVIDER")["class_b"]
+        self.assertNotIn("refs/stegverse/kv-custody", cb["required_evidence_or_repair"])
 
     def test_receipt_binds_inputs_code_and_inspected_heads(self):
         for g, text in cli.build().items():
@@ -226,6 +254,46 @@ class Refusals(unittest.TestCase):
         it["owner_actions"] = ["x"]
         self.assertEqual(_verdict(self.run_(), it["id"]), "DENY")
 
+    def test_bypass_path_is_deny(self):
+        self.item(self.allowed)["bypass_paths"] = ["direct read"]
+        d = self.run_()
+        self.assertEqual(_verdict(d, self.allowed), "DENY")
+        self.assertIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, self.allowed))
+
+    def test_collapsed_layers_are_deny(self):
+        self.item(self.allowed)["collapsed_layers"] = ["one call mints both"]
+        d = self.run_()
+        self.assertEqual(_verdict(d, self.allowed), "DENY")
+        self.assertIn("LADDER_ACCESS_LAYERS_COLLAPSED", _codes(d, self.allowed))
+
+    def test_constraint_outside_sealed_scope_fails_closed(self):
+        it = self.item(self.allowed)
+        it["kind"] = "CONSTRAINT"
+        self.assertIn("LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE", _codes(self.run_(), self.allowed))
+        it["sealed_scope_includes"] = True
+        self.assertNotIn("LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE", _codes(self.run_(), self.allowed))
+
+    def test_required_outcome_mismatch_missing_and_exception(self):
+        it = self.item(self.allowed)
+        it["required_outcomes"] = {self.allowed: ["FAIL_CLOSED"]}
+        self.assertIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(self.run_(), self.allowed))
+        it["required_outcomes"] = {"NO_SUCH_PROBE": ["FAIL_CLOSED"]}
+        self.assertIn("OPERATING_MODE_E0_WITNESS_UNBOUND", _codes(self.run_(), self.allowed))
+        it["required_outcomes"] = {self.allowed: ["ALLOW"]}
+        self.assertEqual(_verdict(self.run_(), self.allowed), "ALLOW")
+        hn = self.item("H-KV-HEALTHY-NODE-DETERMINATION")
+        self.assertIn("LADDER_E0_TERMINAL_NOT_SIX_FIELD", _codes(self.run_(), hn["id"]))  # StandingRefused is raised
+
+    def test_missing_evidence_run_is_unbound(self):
+        self.item(self.allowed)["evidence_runs"] = ["no-such-run"]
+        self.assertIn("OPERATING_MODE_E0_WITNESS_UNBOUND", _codes(self.run_(), self.allowed))
+
+    def test_tasks_sharing_a_code_must_cover_disjoint_items(self):
+        t = copy.deepcopy(next(t for t in self.tasks if t["task_id"] == "LC-KV-10"))
+        t["task_id"] = "LC-KV-99"
+        self.tasks.append(t)
+        self.assertEqual(self.run_()["consistency"], "FAIL_CLOSED")
+
     def test_wrong_schema_fails_closed(self):
         self.decl["schema"] = "x"
         self.assertEqual(lc.evaluate(self.decl, self.obs, self.tasks)["failure_code"], "LADDER_DECLARATION_MALFORMED")
@@ -235,6 +303,11 @@ class Refusals(unittest.TestCase):
 
 
 class Parsers(unittest.TestCase):
+    def test_rows_parser_keeps_each_probe(self):
+        out = cli._parse("rows", {}, 0, json.dumps({"rows": [{"subject": "A", "disposition": "ALLOW"},
+                                                            {"subject": "B", "disposition": "EXCEPTION"}]}), "")
+        self.assertEqual([o["subject"] for o in out], ["A", "B"])
+
     def test_unittest_parser_records_ran_and_skipped(self):
         out = cli._parse("unittest", {"subject": "S", "on_fail": {}}, 0, "", "....\nRan 4 tests in 0.1s\n\nOK (skipped=1)\n")
         self.assertEqual(out[0]["tests_ran"], 4)

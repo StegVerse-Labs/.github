@@ -154,6 +154,8 @@ def _parse(kind: str, run: dict[str, Any], rc: int, out: str, err: str) -> list[
     if kind == "disposition":
         d = json.loads(out if out.strip() else err)  # a non-ALLOW plan is printed on stderr
         return [dict(_six(d), subject=run.get("subject"))]
+    if kind == "rows":  # a probe printing {"rows": [{subject, disposition, ...}, ...]}
+        return [dict(r) for r in json.loads(out)["rows"]]
     if kind == "unittest":
         text = err + out
         m = re.search(r"^Ran (\d+) tests?", text, re.M)

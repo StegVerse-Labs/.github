@@ -15,6 +15,12 @@ also run through its _item_problems. This module adds only what a cross-reposito
   LADDER_ALLOW_PATH_UNBOUND: at E0 no LLM edits code, so the path would stop there;
 * a finish that appends no organization-ledger receipt is FAIL_CLOSED LADDER_FINISH_NOT_LEDGER_BOUND (runtime counts only
   when a manifest-directed transition appends a receipt to refs/stegverse/organization-ledger);
+* an access-path CONSTRAINT (e.g. the two credential layers: KV via InTr from a currently admitted healthy node, then the
+  SKAP Vault via InTr only from inside KV, in that order) is DENY LADDER_ACCESS_PATH_BYPASSES_LAYER when an observed path
+  reaches the protected surface without its gate, DENY LADDER_ACCESS_LAYERS_COLLAPSED when one step mints or skips both
+  layers, and FAIL_CLOSED LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE when the goal's sealed scope does not name it;
+* an observed run whose outcome for a named probe differs from what the item requires is OPERATING_MODE_E0_WITNESS_FAILED
+  (or LADDER_E0_TERMINAL_NOT_SIX_FIELD when the component raised or returned a non-ALLOW without the six fields);
 * every non-ALLOW item is covered by a six-field scoped task naming the owning lane, and every scoped task covers only
   non-ALLOW items carrying its failure code (LADDER_SCOPED_TASK_MISMATCH otherwise).
 
@@ -39,7 +45,7 @@ CHECK_GOAL = "StegVerse-org/.github#163"
 ENTRY = "resident-runtime/ladder_conformance.py::evaluate"
 RETRY = "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
 GOALS = ("KV-SKAP-VAULT-FUNCTIONAL-001", "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001")
-KINDS = ("PREDICATE", "HANDOFF")
+KINDS = ("PREDICATE", "HANDOFF", "CONSTRAINT")
 TASK_SIX = ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt")
 RANK = {"ALLOW": 0, "FAIL_CLOSED": 1, "DENY": 2}
 
@@ -94,7 +100,7 @@ def evaluate_item(goal: Mapping[str, Any], item: Any, obs: Mapping[str, Any]) ->
     if not isinstance(item, Mapping) or not isinstance(item.get("id"), str) or item.get("kind") not in KINDS:
         return {"id": item.get("id") if isinstance(item, Mapping) else None, "verdict": "FAIL_CLOSED", "refusals": [
             refusal("FAIL_CLOSED", "LADDER_ITEM_MALFORMED", "EVERY_ITEM_HAS_AN_ID_AND_KIND",
-                    "give the item a string id and kind PREDICATE or HANDOFF", CHECK_GOAL, "re-run check")]}
+                    "give the item a string id and kind PREDICATE, HANDOFF or CONSTRAINT", CHECK_GOAL, "re-run check")]}
     name = "%s:%s" % (goal["task_id"], item["id"])
     bad: list[dict[str, Any]] = []
     e0 = item.get("e0_terminal")
@@ -172,6 +178,53 @@ def evaluate_item(goal: Mapping[str, Any], item: Any, obs: Mapping[str, Any]) ->
                            "return a six-field disposition instead of a bare status (a bare BLOCKED is not a finding)",
                            owning, "on the next record change of the owning goal", item=name, evidence=x))
 
+    # 4b. required outcomes of named probes on the pinned runs
+    req = item.get("required_outcomes") if isinstance(item.get("required_outcomes"), Mapping) else {}
+    if req:
+        seen = {}
+        for rid in item.get("observed_by", []):
+            for o in (runs.get(rid) or {}).get("outcomes") or []:
+                if o.get("subject") in req:
+                    seen[o["subject"]] = (rid, o)
+        for subj, allowed in sorted(req.items()):
+            if subj not in seen:
+                bad.append(refusal("FAIL_CLOSED", "OPERATING_MODE_E0_WITNESS_UNBOUND", "REQUIRED_PROBE_OBSERVED",
+                                   "observe the probe " + subj, owning, "on the next observe run", item=name, probe=subj))
+                continue
+            rid, o = seen[subj]
+            got = o.get("disposition")
+            six = got == "ALLOW" or all(isinstance(o.get(k), str) and o[k].strip() for k in om.SIX)
+            if got == "EXCEPTION" or (got in allowed and not six):
+                bad.append(refusal("FAIL_CLOSED", "LADDER_E0_TERMINAL_NOT_SIX_FIELD", "NON_ALLOW_CARRIES_SIX_FIELDS",
+                                   "return a six-field %s for %s instead of %s" % ("/".join(allowed), subj,
+                                   "raising " + str(o.get("exception")) if got == "EXCEPTION" else "a bare " + str(got)),
+                                   owning, "on the next observe run", item=name, run_id=rid, probe=subj, got=got))
+            elif got not in allowed:
+                bad.append(refusal("FAIL_CLOSED", "OPERATING_MODE_E0_WITNESS_FAILED", "E0_TERMINAL_DECIDES_AS_REQUIRED",
+                                   "for %s the component must return %s; it returned %s" % (subj, "/".join(allowed), got),
+                                   owning, "on the next observe run", item=name, run_id=rid, probe=subj, got=got))
+
+    missing_ev = [r for r in item.get("evidence_runs", []) or [] if r not in runs]
+    if missing_ev:
+        bad.append(refusal("FAIL_CLOSED", "OPERATING_MODE_E0_WITNESS_UNBOUND", "EVIDENCE_IS_AN_OBSERVED_RUN",
+                           "every evidence_runs entry names a run in the observations", owning,
+                           "on the next observe run", item=name, missing=missing_ev))
+
+    # 4c. access-path constraints
+    for x in item.get("bypass_paths", []) or []:
+        bad.append(refusal("DENY", "LADDER_ACCESS_PATH_BYPASSES_LAYER", "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
+                           "remove the path or route it through the layer's InTr gate", owning,
+                           "on the next record change of the owning goal", item=name, evidence=x))
+    for x in item.get("collapsed_layers", []) or []:
+        bad.append(refusal("DENY", "LADDER_ACCESS_LAYERS_COLLAPSED", "TWO_SEQUENTIAL_GATES_EACH_WITH_ITS_OWN_RECEIPT",
+                           "split the step so layer 2 consumes a layer-1 receipt minted by a separate, verified gate",
+                           owning, "on the next record change of the owning goal", item=name, evidence=x))
+    if item.get("kind") == "CONSTRAINT" and item.get("sealed_scope_includes") is not True:
+        bad.append(refusal("FAIL_CLOSED", "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE", "CONSTRAINT_IS_A_SEALED_PREDICATE",
+                           "add the constraint to the goal's sealed expected_evidence_predicates (a re-seal through the "
+                           "goal's own request)", owning, "on the next record change of the owning goal", item=name,
+                           evidence=item.get("sealed_scope_evidence")))
+
     # 5. ALLOW is reachable without a code edit
     ap = item.get("allow_path")
     if e0 is not None and not (isinstance(ap, Mapping) and ap.get("state") in ("OBSERVED_ALLOW", "BOUND")
@@ -227,35 +280,42 @@ def evaluate(decl: Mapping[str, Any], obs: Mapping[str, Any], tasks: list[Mappin
                                 missing=sorted(set(sealed) - set(preds)), extra=sorted(set(preds) - set(sealed))))
     # scoped tasks <-> non-ALLOW items, both directions
     mine = [t for t in tasks if isinstance(t, Mapping) and t.get("goal") == decl["task_id"]]
-    by_code: dict[str, Mapping[str, Any]] = {}
+    by_code: dict[str, list[Mapping[str, Any]]] = {}
+    ids_seen: set[str] = set()
     for t in mine:
         ok = (t.get("schema") == TASK_SCHEMA and all(isinstance(t.get(k), str) and t[k].strip() for k in TASK_SIX)
               and t.get("disposition") in ("DENY", "FAIL_CLOSED") and isinstance(t.get("owning_lane"), str)
               and t["owning_lane"].strip() and isinstance(t.get("items"), list) and t["items"]
-              and isinstance(t.get("proposed_resolution"), str) and t["proposed_resolution"].strip())
-        if not ok or t["failure_code"] in by_code:
+              and isinstance(t.get("proposed_resolution"), str) and t["proposed_resolution"].strip()
+              and t.get("task_id") not in ids_seen)
+        if ok:
+            ids_seen.add(t["task_id"])
+            others = {i for o in by_code.get(t["failure_code"], []) for i in o["items"]}
+            ok = not (others & set(t["items"]))
+        if not ok:
             problems.append(refusal("FAIL_CLOSED", "LADDER_SCOPED_TASK_MISMATCH", "SCOPED_TASK_HAS_SIX_FIELDS_AND_LANE",
-                                    "one scoped task per (goal, failure code) with the six fields, owning lane, items and "
-                                    "proposed resolution", CHECK_GOAL, "re-run check", task=t.get("task_id")))
+                                    "scoped tasks carry the six fields, owning lane, items and proposed resolution; tasks "
+                                    "sharing a failure code cover disjoint items", CHECK_GOAL, "re-run check",
+                                    task=t.get("task_id")))
             continue
-        by_code[t["failure_code"]] = t
+        by_code.setdefault(t["failure_code"], []).append(t)
     need: dict[str, set[str]] = {}
     for r in results:
         for f in r["refusals"]:
             need.setdefault(f["failure_code"], set()).add(r["id"])
-        tids = sorted({by_code[f["failure_code"]]["task_id"] for f in r["refusals"] if f["failure_code"] in by_code})
-        r["scoped_tasks"] = tids
+        codes = {f["failure_code"] for f in r["refusals"]}
+        r["scoped_tasks"] = sorted({t["task_id"] for c in codes for t in by_code.get(c, []) if r["id"] in t["items"]})
     for code, its in sorted(need.items()):
-        t = by_code.get(code)
-        if t is None or set(t["items"]) != its:
+        listed = {i for t in by_code.get(code, []) for i in t["items"]}
+        if listed != its:
             problems.append(refusal("FAIL_CLOSED", "LADDER_SCOPED_TASK_MISMATCH", "EVERY_GAP_HAS_A_SCOPED_TASK",
-                                    "a scoped task for " + code + " listing exactly " + ", ".join(sorted(its)), CHECK_GOAL,
-                                    "re-run check", gap_code=code, task=(t or {}).get("task_id"),
-                                    listed=sorted((t or {}).get("items", []))))
+                                    "scoped tasks for " + code + " listing exactly " + ", ".join(sorted(its)), CHECK_GOAL,
+                                    "re-run check", gap_code=code,
+                                    task=sorted(t["task_id"] for t in by_code.get(code, [])), listed=sorted(listed)))
     for code in sorted(set(by_code) - set(need)):
         problems.append(refusal("FAIL_CLOSED", "LADDER_SCOPED_TASK_MISMATCH", "SCOPED_TASK_COVERS_A_GAP",
                                 "drop the scoped task: no item carries " + code, CHECK_GOAL, "re-run check",
-                                task=by_code[code]["task_id"]))
+                                task=sorted(t["task_id"] for t in by_code[code])))
     counts = {k: {"checked": sum(1 for r in results if r["kind"] == k),
                   "conformant": sum(1 for r in results if r["kind"] == k and r["verdict"] == "ALLOW")} for k in KINDS}
     nonallow = [r for r in results if r["verdict"] != "ALLOW"]
@@ -263,7 +323,7 @@ def evaluate(decl: Mapping[str, Any], obs: Mapping[str, Any], tasks: list[Mappin
     doc = {"schema": SCHEMA, "task_id": decl["task_id"], "owning_lane": decl.get("owning_lane"),
            "owning_goal": decl.get("owning_goal"), "finish_point": decl.get("finish_point"), "mode": MODES[0],
            "verdict": verdict, "counts": counts, "gaps": len(nonallow),
-           "scoped_tasks": sorted(by_code[c]["task_id"] for c in by_code), "items": results,
+           "scoped_tasks": sorted(t["task_id"] for c in by_code for t in by_code[c]), "items": results,
            "consistency": "ALLOW" if not problems else "FAIL_CLOSED", "consistency_refusals": problems,
            "authority_effect": "NONE_CONFORMANCE_RECORD_ONLY", "organization_ledger_appended": False,
            "llm_used": False, "network_used": False, "clock_read": False}

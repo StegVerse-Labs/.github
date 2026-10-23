@@ -1,0 +1,21 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "DENY",
+ "failed_check": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
+ "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
+  "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV"
+ ],
+ "next_attempt": "on the next push to laned/kv-skap-vault-finish-point (continuity-vault-kit#258)",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "Lane D (KV and WorkSpace)",
+ "proposed_resolution": "make KVSkapVault's KV operations private behind a layer-1 entry (KVInterlockRuntime.handle) and its SKAP operations private behind a layer-2 entry that takes the INTR_KV_SKAP receipt; route VaultStore SKAP read/write through the layer-2 entry; record the TVC resident stores as non-conforming for this goal and request (counterparty TV/TVC) that they be reached only as INTR_KV_SKAP payloads; each refusal is six-field",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "remove or gate every observed path that reaches KV without layer 1 or the SKAP Vault without layer 2: KVSkapVault write/read/reconstruct and bind_custody_key_reference callable directly (#258), VaultStore append/read_skap_sealed_credential on a filesystem root (continuity-vault-kit), TVC resident SKAP stores under /var/lib/stegverse/skap (tools/skap_resident_sealed_object.py, skap_resident_seal_activation.py, tvc_google_drive_skap_refresh_store.py, tvc_google_drive_client_secret_use.py)",
+ "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-07"
+}

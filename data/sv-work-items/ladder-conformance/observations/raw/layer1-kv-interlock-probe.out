@@ -1,0 +1,38 @@
+$ {python} -c import json
+from runtime import kv_interlock_endpoint as k
+rows = []
+req = {"schema_version": k.REQUEST_SCHEMA, "operation": "REQUEST", "request_id": "ladder-probe-1",
+       "requester": {"module": "ladder-probe", "component": "probe"}, "purpose": "ladder-probe",
+       "record_class": "profile", "requested_scope": ["profile"], "minimum_necessary_justification": "probe",
+       "authority_ref": "authority:probe", "disclosure_mode": "BOUNDED_CONTEXT"}
+def env(**over):
+    e = {"schema": k.ENVELOPE_SCHEMA, "protocol": "InTr", "packet_id": "pkt-probe", "direction": "REQUEST",
+         "source_role": "DEVICE", "next_role": "KV", "request_id": req["request_id"], "operation": req["operation"],
+         "payload_schema_version": k.REQUEST_SCHEMA, "payload_hash": k.sha256_uri(req), "sealed_material_ref": "sealed:probe",
+         "authority": {"authority_transfer": False, "transport_grants_execution_authority": False,
+                       "model_output_grants_execution_authority": False, "credential_authority_effect": "NONE"},
+         "boundary_proof": {"required": True, "source_identity_ref": "caller-chosen", "next_boundary_identity_ref": "caller-chosen",
+                            "verification_state": "VERIFIED"},
+         "receipt_policy": {"receipt_required": True, "receipt_contains_payload_plaintext": False,
+                            "receipt_chain_required": True, "ambiguous_disposition": "FAIL_CLOSED"}}
+    e.update(over)
+    return e
+rt = k.KVInterlockRuntime(authority_validator=lambda *a: True,
+                          policy_evaluator=lambda r: {"decision": "ALLOW_BOUNDED_CONTEXT", "granted_scope": ["profile"],
+                                                      "context": {"profile": "x"}, "source_refs": [], "policy_profile": "probe"},
+                          receipt_store=lambda rec: "receipt:probe")
+def probe(subject, fn):
+    try:
+        out = fn()
+        d = out.get("decision")
+        rows.append({"subject": subject, "disposition": "ALLOW" if d == "ALLOW_BOUNDED_CONTEXT" else d})
+    except Exception as exc:
+        rows.append({"subject": subject, "disposition": "EXCEPTION", "exception": type(exc).__name__, "message": str(exc)})
+probe("LAYER1_KV_ACCESS_WITHOUT_HEALTHY_NODE_EVIDENCE", lambda: rt.handle(req, intr_envelope=env(), intr_receipt_ref="sha256:" + "a" * 64))
+probe("LAYER1_KV_ACCESS_WITH_UNVERIFIED_BOUNDARY_PROOF", lambda: rt.handle(req, intr_envelope=env(boundary_proof={"required": True, "source_identity_ref": "x", "next_boundary_identity_ref": "y", "verification_state": "UNVERIFIED"}), intr_receipt_ref="sha256:" + "a" * 64))
+print(json.dumps({"rows": rows}, sort_keys=True))
+
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "ALLOW", "subject": "LAYER1_KV_ACCESS_WITHOUT_HEALTHY_NODE_EVIDENCE"}, {"disposition": "EXCEPTION", "exception": "KVInterlockRuntimeError", "message": "verified boundary proof required", "subject": "LAYER1_KV_ACCESS_WITH_UNVERIFIED_BOUNDARY_PROOF"}]}
+--- stderr

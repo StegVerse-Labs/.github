@@ -1,0 +1,24 @@
+$ {python} -c import json, os, sys, tempfile
+sys.path[:0] = [".", sys.argv[1]]
+with tempfile.TemporaryDirectory(dir=".") as root:
+    os.environ["STEGVERSE_REPO_LEDGER_ROOT"] = root
+    from llm_adapter import node_ingress_boundary as b
+    sig = {"mode": "ESTABLISH_GENESIS", "predecessor": None, "node_class": "LLM_ADAPTER"}
+    rows = []
+    for subject, extra, kw in (("HEALTH_REPORTED_UNHEALTHY", {}, {"health": lambda: {"status": "UNHEALTHY"}}),
+                               ("HEALTH_NOT_SUPPLIED", {}, {}),
+                               ("TRANSPORT_INTERLOCK_INTR_NOT_YET_ENABLED", {}, {"transport": b.INTERLOCK_INTR, "health": lambda: {"status": "HEALTHY"}}),
+                               ("STANDING_REFUSED", {"mode": "NOT_A_MODE"}, {})):
+        try:
+            out = b.admit(dict(sig, node_ref="ladder-probe-" + subject.lower(), **extra), **kw)
+            rec = out["ingress_record"]
+            rows.append({"subject": subject, "disposition": "ALLOW", "healthy_node_established": rec["healthy_node_established"],
+                         "node_health_status": rec["node_health_status"], "transport": rec["transport"], "transport_state": rec["transport_state"]})
+        except Exception as exc:
+            rows.append({"subject": subject, "disposition": "EXCEPTION", "exception": type(exc).__name__})
+print(json.dumps({"rows": rows}, sort_keys=True))
+ {root:sdk080}
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "ALLOW", "healthy_node_established": true, "node_health_status": "UNHEALTHY", "subject": "HEALTH_REPORTED_UNHEALTHY", "transport": "HTTP", "transport_state": "INSTALLED"}, {"disposition": "ALLOW", "healthy_node_established": true, "node_health_status": null, "subject": "HEALTH_NOT_SUPPLIED", "transport": "HTTP", "transport_state": "INSTALLED"}, {"disposition": "ALLOW", "healthy_node_established": true, "node_health_status": "HEALTHY", "subject": "TRANSPORT_INTERLOCK_INTR_NOT_YET_ENABLED", "transport": "INTERLOCK_INTR", "transport_state": "NOT_YET_ENABLED"}, {"disposition": "EXCEPTION", "exception": "StandingRefused", "subject": "STANDING_REFUSED"}]}
+--- stderr

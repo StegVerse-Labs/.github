@@ -441,11 +441,23 @@
      "ref": "StegVerse-Labs/.github main",
      "repo": "StegVerse-Labs/.github"
     },
+    "llmad": {
+     "commit": "ece815b1c5976dadb7d4cdc47ab37ae7a2a75605",
+     "kind": "git",
+     "ref": "StegVerse-org/LLM-adapter main",
+     "repo": "StegVerse-org/LLM-adapter"
+    },
     "org": {
      "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
      "kind": "git",
      "ref": "StegVerse-org/.github main",
      "repo": "StegVerse-org/.github"
+    },
+    "sdk080": {
+     "commit": "080ea4b275c2207268b24314109e8c4f47298405",
+     "kind": "git",
+     "ref": "the SDK commit LLM-adapter pins in pyproject.toml",
+     "repo": "StegVerse-org/StegVerse-SDK"
     },
     "tvc": {
      "commit": "c4845bea704949c46658042963e8c532c9559939",
@@ -653,6 +665,224 @@
      "what": "any TV/TVC producer of tvc://skap-custody/ references (TVC main)"
     },
     {
+     "argv": [
+      "{python}",
+      "-c",
+      "import json, os, sys, tempfile\nsys.path[:0] = [\".\", sys.argv[1]]\nwith tempfile.TemporaryDirectory(dir=\".\") as root:\n    os.environ[\"STEGVERSE_REPO_LEDGER_ROOT\"] = root\n    from llm_adapter import node_ingress_boundary as b\n    sig = {\"mode\": \"ESTABLISH_GENESIS\", \"predecessor\": None, \"node_class\": \"LLM_ADAPTER\"}\n    rows = []\n    for subject, extra, kw in ((\"HEALTH_REPORTED_UNHEALTHY\", {}, {\"health\": lambda: {\"status\": \"UNHEALTHY\"}}),\n                               (\"HEALTH_NOT_SUPPLIED\", {}, {}),\n                               (\"TRANSPORT_INTERLOCK_INTR_NOT_YET_ENABLED\", {}, {\"transport\": b.INTERLOCK_INTR, \"health\": lambda: {\"status\": \"HEALTHY\"}}),\n                               (\"STANDING_REFUSED\", {\"mode\": \"NOT_A_MODE\"}, {})):\n        try:\n            out = b.admit(dict(sig, node_ref=\"ladder-probe-\" + subject.lower(), **extra), **kw)\n            rec = out[\"ingress_record\"]\n            rows.append({\"subject\": subject, \"disposition\": \"ALLOW\", \"healthy_node_established\": rec[\"healthy_node_established\"],\n                         \"node_health_status\": rec[\"node_health_status\"], \"transport\": rec[\"transport\"], \"transport_state\": rec[\"transport_state\"]})\n        except Exception as exc:\n            rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__})\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+      "{root:sdk080}"
+     ],
+     "kind": "command",
+     "parse": "rows",
+     "root": "llmad",
+     "run_id": "layer1-healthy-node-probe",
+     "what": "LLM-adapter node ingress (the only code that establishes a healthy node): does an unhealthy, unreported or InTr-not-enabled arrival get refused, and is a refusal returned with six fields?"
+    },
+    {
+     "argv": [
+      "{python}",
+      "-c",
+      "import sys,unittest; sys.path[:0]=['.','tests',sys.argv[1]]; sys.argv=[sys.argv[0],'-v','test_node_ingress_boundary','test_node_standing']; unittest.main(module=None)",
+      "{root:sdk080}"
+     ],
+     "kind": "command",
+     "on_fail": {
+      "failed_predicate": "E0_VERIFIER_SUITE_PASSES_WITH_ZERO_SKIPPED",
+      "failure_code": "LADDER_E0_VERIFIER_TESTS_NOT_GREEN",
+      "next_attempt": "on the next observe run",
+      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+      "required_evidence_or_repair": "repair the verifier suite at the pinned commit",
+      "retry_entrypoint": "python scripts/ladder_conformance.py observe"
+     },
+     "parse": "unittest",
+     "root": "llmad",
+     "run_id": "layer1-healthy-node-tests",
+     "subject": "HEALTHY_NODE_SUITE",
+     "what": "the LLM-adapter node ingress and standing suites at the pinned commit"
+    },
+    {
+     "globs": [
+      "*.py",
+      "data/node-exchange/*.json"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+      "\"status\": \"SOURCE_SPECIMEN",
+      "\"runtime_claim\"",
+      "credential_request_requires_currently_admitted_healthy_node"
+     ],
+     "root": "labsmain",
+     "run_id": "layer1-healthy-node-predicate-labs",
+     "what": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE in Labs main: specimen status and any evaluator"
+    },
+    {
+     "globs": [
+      "runtime/*.py",
+      "execution/*.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+      "healthy_node",
+      "node_health",
+      "CURRENT_NODE_HEALTH"
+     ],
+     "root": "cvk258",
+     "run_id": "layer1-healthy-node-search-kv",
+     "what": "any healthy-node / node-health gate in the KV code (#258 and #259 heads)"
+    },
+    {
+     "globs": [
+      "runtime/*.py",
+      "execution/*.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+      "healthy_node",
+      "node_health",
+      "CURRENT_NODE_HEALTH",
+      "intr_receipt_ref"
+     ],
+     "root": "cvk259",
+     "run_id": "layer1-healthy-node-search-kv259",
+     "what": "same search, #259 head"
+    },
+    {
+     "globs": [
+      "*.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+      "healthy_node",
+      "CURRENT_NODE_HEALTH"
+     ],
+     "root": "tvc",
+     "run_id": "layer1-healthy-node-search-tvc",
+     "what": "same search, TVC main"
+    },
+    {
+     "argv": [
+      "{python}",
+      "-c",
+      "import json\nfrom runtime import kv_interlock_endpoint as k\nrows = []\nreq = {\"schema_version\": k.REQUEST_SCHEMA, \"operation\": \"REQUEST\", \"request_id\": \"ladder-probe-1\",\n       \"requester\": {\"module\": \"ladder-probe\", \"component\": \"probe\"}, \"purpose\": \"ladder-probe\",\n       \"record_class\": \"profile\", \"requested_scope\": [\"profile\"], \"minimum_necessary_justification\": \"probe\",\n       \"authority_ref\": \"authority:probe\", \"disclosure_mode\": \"BOUNDED_CONTEXT\"}\ndef env(**over):\n    e = {\"schema\": k.ENVELOPE_SCHEMA, \"protocol\": \"InTr\", \"packet_id\": \"pkt-probe\", \"direction\": \"REQUEST\",\n         \"source_role\": \"DEVICE\", \"next_role\": \"KV\", \"request_id\": req[\"request_id\"], \"operation\": req[\"operation\"],\n         \"payload_schema_version\": k.REQUEST_SCHEMA, \"payload_hash\": k.sha256_uri(req), \"sealed_material_ref\": \"sealed:probe\",\n         \"authority\": {\"authority_transfer\": False, \"transport_grants_execution_authority\": False,\n                       \"model_output_grants_execution_authority\": False, \"credential_authority_effect\": \"NONE\"},\n         \"boundary_proof\": {\"required\": True, \"source_identity_ref\": \"caller-chosen\", \"next_boundary_identity_ref\": \"caller-chosen\",\n                            \"verification_state\": \"VERIFIED\"},\n         \"receipt_policy\": {\"receipt_required\": True, \"receipt_contains_payload_plaintext\": False,\n                            \"receipt_chain_required\": True, \"ambiguous_disposition\": \"FAIL_CLOSED\"}}\n    e.update(over)\n    return e\nrt = k.KVInterlockRuntime(authority_validator=lambda *a: True,\n                          policy_evaluator=lambda r: {\"decision\": \"ALLOW_BOUNDED_CONTEXT\", \"granted_scope\": [\"profile\"],\n                                                      \"context\": {\"profile\": \"x\"}, \"source_refs\": [], \"policy_profile\": \"probe\"},\n                          receipt_store=lambda rec: \"receipt:probe\")\ndef probe(subject, fn):\n    try:\n        out = fn()\n        d = out.get(\"decision\")\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\" if d == \"ALLOW_BOUNDED_CONTEXT\" else d})\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nprobe(\"LAYER1_KV_ACCESS_WITHOUT_HEALTHY_NODE_EVIDENCE\", lambda: rt.handle(req, intr_envelope=env(), intr_receipt_ref=\"sha256:\" + \"a\" * 64))\nprobe(\"LAYER1_KV_ACCESS_WITH_UNVERIFIED_BOUNDARY_PROOF\", lambda: rt.handle(req, intr_envelope=env(boundary_proof={\"required\": True, \"source_identity_ref\": \"x\", \"next_boundary_identity_ref\": \"y\", \"verification_state\": \"UNVERIFIED\"}), intr_receipt_ref=\"sha256:\" + \"a\" * 64))\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n"
+     ],
+     "kind": "command",
+     "parse": "rows",
+     "root": "cvk258",
+     "run_id": "layer1-kv-interlock-probe",
+     "what": "KVInterlockRuntime.handle (#258), the DEVICE->KV InTr entry: KV access with no healthy-node evidence (caller-asserted VERIFIED proof) and with an unverified proof"
+    },
+    {
+     "argv": [
+      "{python}",
+      "-c",
+      "import json\nfrom runtime.kv_skap_vault import KVSkapVault, VaultRefusal, CUSTODY_REF_PREFIX, CREDENTIAL_AUTHORITY\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except VaultRefusal as exc:\n        rows.append(dict({k: v for k, v in exc.fields.items() if isinstance(v, str)}, subject=subject))\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__})\nref = CUSTODY_REF_PREFIX + \"ladder-probe\"\ndef skap_bind():\n    KVSkapVault(\"principal:ladder-probe\").bind_custody_key_reference(custody_key_ref=ref, issued_by=CREDENTIAL_AUTHORITY, tvc_issuance_receipt_ref=\"probe:no-layer1-receipt\")\ndef kv_read():\n    v = KVSkapVault(\"principal:ladder-probe\")\n    v.bind_custody_key_reference(custody_key_ref=ref, issued_by=CREDENTIAL_AUTHORITY, tvc_issuance_receipt_ref=\"probe:x\")\n    c = v.grant_consent(purposes=[\"WRITE\", \"READ\"], projection_ids=[\"p\"], observed_at=\"probe\")[\"receipt_hash\"]\n    v.write_projection(projection_id=\"p\", content={\"a\": 1}, consent_receipt_hash=c, custody_key_ref=ref, intr_transition_ref=\"intr:not-a-receipt\")\n    v.read_projection(projection_id=\"p\", consent_receipt_hash=c)\n    return v, c\ndef reconstruct_read():\n    v, c = kv_read()\n    KVSkapVault.reconstruct(v.export_lineage()).read_projection(projection_id=\"p\", consent_receipt_hash=c)\nprobe(\"SKAP_BIND_WITHOUT_LAYER1_KV_ACCESS_RECEIPT\", skap_bind)\nprobe(\"KV_WRITE_READ_WITHOUT_HEALTHY_NODE_OR_VERIFIED_INTR\", kv_read)\nprobe(\"KV_RECONSTRUCT_AND_READ_FROM_EXPORT_WITHOUT_INTR\", reconstruct_read)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n"
+     ],
+     "kind": "command",
+     "parse": "rows",
+     "root": "cvk258",
+     "run_id": "kv-layers-probe",
+     "what": "KVSkapVault (#258): SKAP bind, KV write/read and reconstruct-read with no layer-1 KV-access receipt, no healthy-node input and an unverified intr: string"
+    },
+    {
+     "globs": [
+      "runtime/kv_skap_vault.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "^class KVSkapVault",
+      "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
+      "^def _require_intr",
+      "startswith\\(\"intr:\"\\)",
+      "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+      "kv_interlock|KVInterlockRuntime|response_hash"
+     ],
+     "root": "cvk258",
+     "run_id": "kv-layers-structure",
+     "what": "KVSkapVault entry points: which take an InTr reference, what _require_intr checks, any layer-1 receipt"
+    },
+    {
+     "globs": [
+      "execution/vault_store.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "    def (append|read)_skap_sealed_credential\\(",
+      "self.vault_root = ",
+      "intr|InTr|healthy"
+     ],
+     "root": "cvk258",
+     "run_id": "skap-direct-store-cvk",
+     "what": "direct SKAP sealed-credential read/write in continuity-vault-kit (no InTr, no KV gate)"
+    },
+    {
+     "globs": [
+      "tools/skap_resident_sealed_object.py",
+      "skap_resident_seal_activation.py",
+      "tvc_google_drive_skap_refresh_store.py",
+      "tvc_google_drive_client_secret_use.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "/var/lib/stegverse/skap",
+      "^def (persist_once|resolve_persisted)\\(",
+      "(?i)intr|interlock",
+      "(?i)\\bkv\\b|continuity.vault"
+     ],
+     "root": "tvc",
+     "run_id": "skap-direct-store-tvc",
+     "what": "TVC SKAP resident-root stores: resident path, persist/resolve entry points, any InTr or KV reference"
+    },
+    {
+     "argv": [
+      "{python}",
+      "-c",
+      "import json, sys\nsys.path.insert(0, \"tools\")\nimport coinbase_intr_double_interlock as d\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nkw = dict(ingress_id=\"ladder-probe\", credential_ref=\"tvc://probe\", payload_hash=\"sha256:\" + \"0\" * 64)\ndef l1_no_health():\n    d.validate_chain(d.build_chain(**kw))\ndef l2_no_l1():\n    d.build_kv_skap_receipt(device_kv_receipt={}, **kw)\ndef l2_caller_minted_l1():\n    first = d.build_device_kv_receipt(**kw)  # minted by the caller itself: no gate, no node, no InTr exchange\n    d.build_kv_skap_receipt(device_kv_receipt=first, **kw)\nprobe(\"LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE\", l1_no_health)\nprobe(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", l2_no_l1)\nprobe(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", l2_caller_minted_l1)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n"
+     ],
+     "kind": "command",
+     "parse": "rows",
+     "root": "tvc",
+     "run_id": "layers-tvc-double-interlock-probe",
+     "what": "TVC double interlock INTR_DEVICE_KV -> INTR_KV_SKAP: layer 1 without healthy-node evidence, layer 2 without layer 1, layer 2 on a caller-minted layer-1 receipt"
+    },
+    {
+     "globs": [
+      "tools/coinbase_intr_double_interlock.py"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "boundary=\"INTR_(DEVICE_KV|KV_SKAP)\"",
+      "\"boundary_verification\": \"VERIFIED\"",
+      "^def (build_chain|build_device_kv_receipt|build_kv_skap_receipt|validate_chain)\\(",
+      "prior_receipt_hash=device_kv_receipt",
+      "(?i)health"
+     ],
+     "root": "tvc",
+     "run_id": "layers-tvc-double-interlock-structure",
+     "what": "TVC double interlock: boundaries, self-asserted verification, one-call minting of both hops, refusal form"
+    },
+    {
+     "globs": [
+      "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+      "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
+      "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "(?i)healthy.node",
+      "HEALTHY_NODE",
+      "(?i)reachable only",
+      "INTR_DEVICE_KV|INTR_KV_SKAP",
+      "(?i)kv.access.receipt",
+      "(?i)Interlock/InTr"
+     ],
+     "root": "labs3324",
+     "run_id": "layers-sealed-scope-search",
+     "what": "do the KV request, allocation or handoff (#3324) name either access layer or the healthy-node predicate?"
+    },
+    {
      "kind": "gh_pr",
      "number": 258,
      "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -706,6 +936,58 @@
     {
      "path": "runtime/kv_skap_vault.py",
      "root": "cvk258"
+    },
+    {
+     "path": "execution/vault_store.py",
+     "root": "cvk258"
+    },
+    {
+     "path": "runtime/kv_interlock_endpoint.py",
+     "root": "cvk258"
+    },
+    {
+     "path": "data/node-exchange/first-executable-conformance-v0.1.json",
+     "root": "labsmain"
+    },
+    {
+     "path": "data/node-exchange/interconnected-capability-custody-v0.1.json",
+     "root": "labsmain"
+    },
+    {
+     "path": "tools/coinbase_intr_double_interlock.py",
+     "root": "tvc"
+    },
+    {
+     "path": "tools/skap_resident_sealed_object.py",
+     "root": "tvc"
+    },
+    {
+     "path": "skap_resident_seal_activation.py",
+     "root": "tvc"
+    },
+    {
+     "path": "tvc_google_drive_skap_refresh_store.py",
+     "root": "tvc"
+    },
+    {
+     "path": "tvc_google_drive_client_secret_use.py",
+     "root": "tvc"
+    },
+    {
+     "path": "llm_adapter/node_ingress_boundary.py",
+     "root": "llmad"
+    },
+    {
+     "path": "llm_adapter/node_standing.py",
+     "root": "llmad"
+    },
+    {
+     "path": "tests/test_node_ingress_boundary.py",
+     "root": "llmad"
+    },
+    {
+     "path": "tests/test_node_standing.py",
+     "root": "llmad"
     },
     {
      "path": "runtime/secret_field_policy.py",
