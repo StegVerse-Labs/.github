@@ -60,10 +60,10 @@
         "ref": "class C hand-off, outside the finish point: index L77 check-off by owner or practitioner; L75 check-off after an element is admitted (none admitted today). (index L73; https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562)"
       },
       {
-        "dependency_id": "PAT_003_STRUCTURAL_VERIFIER",
+        "dependency_id": "PAT_003_STRUCTURAL_VERIFIER_ADMISSION",
         "kind": "CAPABILITY",
         "state": "UNRESOLVED",
-        "ref": "class B: no entrypoint checks FE-1/FE-2/FE-3; interim count check (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562)"
+        "ref": "verifier pending admission of StegVerse-Labs/Patents#23 (DRAFT, unadmitted) @1d6491f505899e2374b1bcdabbed9378e8a7e40f: tools/verify_pat003_finish_points.py sha256 6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74 -> research/pat003/finish_point_verifier_v1.py sha256 de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c; not on Patents main; until admitted the entrypoint is an admission input, not an ALLOW (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368815727)"
       }
     ],
     "blockers": [],
@@ -185,14 +185,14 @@
         "ENDS_AT_READY_FOR_FILING_REVIEW_INPUTS_NEVER_READY_TO_FILE"
       ],
       "finish_point": {
-        "acceptance_test": "at a StegVerse-Labs/Patents main head H, after merge-admission and ledger readback: FE-1 AND FE-2 AND FE-3; and python tools/validate_patent_readiness.py --family PAT-003 --root . at H still shows filing-boundary PASS, not READY_TO_FILE",
+        "acceptance_test": "at a StegVerse-Labs/Patents main head H, after merge-admission and ledger readback: FE-1 AND FE-2 AND FE-3 (each MET per verifier_entrypoint at H); and python tools/validate_patent_readiness.py --family PAT-003 --root . at H still shows filing-boundary PASS, not READY_TO_FILE",
         "predicate": "FE-1: the chart's appended evidence-map section has 10 limitation rows (method L1-L6, system L1-L4), each with 3 evidence-class lines (proofs, software tests, physical measurements), 30 lines; each line has a non-empty locator, a hash (40/64-hex, pointer, or explicit NOT_COMPUTED/none-located), conditions and a status; the 10 proposed-class values are each in {implemented, written_description_only, proposed, unsupported}; every row stays CANDIDATE_NOT_ADMITTED. FE-2: every public blob or commit the section names resolves in its repository; private pointers are a Drive ID plus a 64-hex SHA-256 only. FE-3: implementation anchors exist at an immutable commit for the rows proposed as implemented-partial (method L3, system L4). Ends at evidence-complete inputs to READY_FOR_FILING_REVIEW, never READY_TO_FILE. Owner/practitioner check-offs are class C hand-offs, not part of this finish point: index L77 check-off by owner or practitioner; L75 check-off after an element is admitted (none admitted today).",
-        "verifier_entrypoint": "STRUCTURAL_VERIFIER_NOT_IMPLEMENTED (class B missing capability: no entrypoint checks chart/chronology/ledger structure; tools/validate_patent_readiness.py only parses checkboxes). Interim: the stated counts, read at H",
+        "verifier_entrypoint": "StegVerse-Labs/Patents/tools/verify_pat003_finish_points.py@1d6491f505899e2374b1bcdabbed9378e8a7e40f (sha256 6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74; impl research/pat003/finish_point_verifier_v1.py sha256 de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c; DRAFT Patents#23, UNADMITTED, see dependency PAT_003_STRUCTURAL_VERIFIER_ADMISSION): python tools/verify_pat003_finish_points.py --git-dir <Patents clone> --rev H --points FE-1,FE-2,FE-3 --object-store StegVerse-Labs/.github=<clone> --object-store StegVerse-Labs/video-engine=<clone>; MET only when every requested point is MET (exit 0); exit 2 NOT_MET/UNKNOWN, exit 3 FAIL_CLOSED; human check-offs are HUMAN_ACTION_REQUIRED and never evaluated",
         "lowest_supported_mode": "E0",
         "finish_point_source": "Lane A replacement, https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562"
       }
     },
-    "scope_digest": "sha256:748ae675bf601d4ca727bed342a8c6677f3c126891c99405f552675faad9097c",
+    "scope_digest": "sha256:d2807cbe8d7a9f178dae93fecdf749449d7e769c76f0541e4c2ba7e95275fc60",
     "supersedes_scope_digest": null
   },
   "vector": {

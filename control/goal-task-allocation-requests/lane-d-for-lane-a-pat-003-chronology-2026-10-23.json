@@ -13,7 +13,7 @@
   "observed_registry_generation": 320,
   "owning_task_found": false,
   "scope": "PAT-003 dated chronology: populate evidence/PAT-003_DISCLOSURE_CHRONOLOGY.md with dated, attributable conception and public/private disclosure records and complete the disclosure-risk audit of already-public source with exact dates and references. Inventor contributions are recorded as evidence only; inventorship is determined by the practitioner (PAT-003-FILING-PACKET, not claimed here). No filing, no legal determination.",
-  "scope_digest": "sha256:2504daf54448ea61e279717f05e861ebc8ea92f78f046a00b7f85cdcaf71972e",
+  "scope_digest": "sha256:ae347f68961265df18e0760c24fae97bdcc801954dd491b6a3ba7276a2f9235f",
   "requested_action": "Check the Lane A identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition.",
   "authority_effect": "NONE_REQUEST_ONLY",
   "handoff_ref": "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"

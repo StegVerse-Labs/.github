@@ -57,10 +57,10 @@
         "ref": "class C hand-off, outside the finish point: enablement and foreign-filing consequences (counsel), inventorship, and the index L78/L79 check-off. (index L73; https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562)"
       },
       {
-        "dependency_id": "PAT_003_STRUCTURAL_VERIFIER",
+        "dependency_id": "PAT_003_STRUCTURAL_VERIFIER_ADMISSION",
         "kind": "CAPABILITY",
         "state": "UNRESOLVED",
-        "ref": "class B: no entrypoint checks FC-1/FC-2; interim count check (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562)"
+        "ref": "verifier pending admission of StegVerse-Labs/Patents#23 (DRAFT, unadmitted) @1d6491f505899e2374b1bcdabbed9378e8a7e40f: tools/verify_pat003_finish_points.py sha256 6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74 -> research/pat003/finish_point_verifier_v1.py sha256 de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c; not on Patents main; until admitted the entrypoint is an admission input, not an ALLOW (https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368815727)"
       }
     ],
     "blockers": [],
@@ -182,14 +182,14 @@
         "ENDS_AT_READY_FOR_FILING_REVIEW_INPUTS_NEVER_READY_TO_FILE"
       ],
       "finish_point": {
-        "acceptance_test": "at a StegVerse-Labs/Patents main head H, after merge-admission and ledger readback: FC-1 AND FC-2; and python tools/validate_patent_readiness.py --family PAT-003 --root . at H still shows filing-boundary PASS, not READY_TO_FILE",
+        "acceptance_test": "at a StegVerse-Labs/Patents main head H, after merge-admission and ledger readback: FC-1 AND FC-2 (each MET per verifier_entrypoint at H); and python tools/validate_patent_readiness.py --family PAT-003 --root . at H still shows filing-boundary PASS, not READY_TO_FILE",
         "predicate": "FC-1: evidence/PAT-003_DISCLOSURE_CHRONOLOGY.md has at least one record per event class where the fact is knowable, each carrying all 16 intake fields, an ISO-8601 date and a locator plus commit, blob or hash; a fact that is not knowable stays unknown and UNVERIFIED, never invented. FC-2: a disclosure-risk table lists each already-public PAT-003 surface with its first-public commit date and URL or commit. Ends at evidence-complete inputs to READY_FOR_FILING_REVIEW, never READY_TO_FILE. Owner/practitioner check-offs are class C hand-offs, not part of this finish point: enablement and foreign-filing consequences (counsel), inventorship, and the index L78/L79 check-off.",
-        "verifier_entrypoint": "STRUCTURAL_VERIFIER_NOT_IMPLEMENTED (class B missing capability: no entrypoint checks chart/chronology/ledger structure; tools/validate_patent_readiness.py only parses checkboxes). Interim: the stated counts, read at H",
+        "verifier_entrypoint": "StegVerse-Labs/Patents/tools/verify_pat003_finish_points.py@1d6491f505899e2374b1bcdabbed9378e8a7e40f (sha256 6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74; impl research/pat003/finish_point_verifier_v1.py sha256 de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c; DRAFT Patents#23, UNADMITTED, see dependency PAT_003_STRUCTURAL_VERIFIER_ADMISSION): python tools/verify_pat003_finish_points.py --git-dir <Patents clone> --rev H --points FC-1,FC-2 --object-store StegVerse-Labs/.github=<clone> --object-store StegVerse-Labs/video-engine=<clone>; MET only when every requested point is MET (exit 0); exit 2 NOT_MET/UNKNOWN, exit 3 FAIL_CLOSED; human check-offs are HUMAN_ACTION_REQUIRED and never evaluated",
         "lowest_supported_mode": "E0",
         "finish_point_source": "Lane A replacement, https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562"
       }
     },
-    "scope_digest": "sha256:2504daf54448ea61e279717f05e861ebc8ea92f78f046a00b7f85cdcaf71972e",
+    "scope_digest": "sha256:ae347f68961265df18e0760c24fae97bdcc801954dd491b6a3ba7276a2f9235f",
     "supersedes_scope_digest": null
   },
   "vector": {

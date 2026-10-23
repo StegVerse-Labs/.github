@@ -108,10 +108,18 @@ class Registration(unittest.TestCase):
             fp = rec["sealed_scope"]["scope"]["finish_point"]
             self.assertNotIn("unresolved_items no longer lists", fp["predicate"])
             self.assertIn("never READY_TO_FILE", fp["predicate"])
-            self.assertTrue(fp["verifier_entrypoint"].startswith("STRUCTURAL_VERIFIER_NOT_IMPLEMENTED"))
+            verifier = goal["verifier"]
+            self.assertIn(f"StegVerse-Labs/Patents/{verifier['entrypoint']}@{verifier['commit']}", fp["verifier_entrypoint"])
+            self.assertIn(verifier["entrypoint_sha256"], fp["verifier_entrypoint"])
+            self.assertIn("UNADMITTED", fp["verifier_entrypoint"])
+            self.assertNotIn("NOT_IMPLEMENTED", fp["verifier_entrypoint"])
             kinds = {(d["dependency_id"], d["kind"], d["state"]) for d in rec["record"]["dependencies"]}
             self.assertIn(("PAT_003_OWNER_OR_PRACTITIONER_CHECK_OFF", "HUMAN_ACTION", "UNRESOLVED"), kinds)
-            self.assertIn(("PAT_003_STRUCTURAL_VERIFIER", "CAPABILITY", "UNRESOLVED"), kinds)
+            self.assertIn(("PAT_003_STRUCTURAL_VERIFIER_ADMISSION", "CAPABILITY", "UNRESOLVED"), kinds)
+            dep = next(d for d in rec["record"]["dependencies"] if d["dependency_id"] == "PAT_003_STRUCTURAL_VERIFIER_ADMISSION")
+            self.assertIn("pending admission of StegVerse-Labs/Patents#23", dep["ref"])
+            self.assertIn(verifier["commit"], dep["ref"])
+            self.assertEqual(verifier["admission_state"], "UNADMITTED_DRAFT_PR_DEPENDENCY_NOT_ALLOW")
 
     def test_scope_seal_holds_for_the_record(self):
         gss = load_module("goal_scope_seal_pat003", "scripts/goal_scope_seal.py")

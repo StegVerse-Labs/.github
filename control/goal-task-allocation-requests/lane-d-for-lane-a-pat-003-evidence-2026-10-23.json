@@ -13,7 +13,7 @@
   "observed_registry_generation": 320,
   "owning_task_found": false,
   "scope": "PAT-003 (Generalized Adaptive Scanner Using Dynamic Micro-Nodes) limitation-level evidence: map each claim limitation of filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md to exact repository, path, immutable commit or blob, test and gap, classified implemented / written-description-only / proposed / unsupported. Evidence work only: no filing, no legal determination, no patent-pending language, no enabling disclosure in public surfaces.",
-  "scope_digest": "sha256:748ae675bf601d4ca727bed342a8c6677f3c126891c99405f552675faad9097c",
+  "scope_digest": "sha256:d2807cbe8d7a9f178dae93fecdf749449d7e769c76f0541e4c2ba7e95275fc60",
   "requested_action": "Check the Lane A identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition.",
   "authority_effect": "NONE_REQUEST_ONLY",
   "handoff_ref": "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"

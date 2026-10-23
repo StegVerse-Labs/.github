@@ -13,7 +13,7 @@
   "observed_registry_generation": 320,
   "owning_task_found": false,
   "scope": "PAT-003 prior art: a dated, reproducible prior-art search ledger for PAT-003 and a map of its overlap with the existing PAT families (reviews/PAT-003_TECHNICAL_COMPARISON_RESEARCH_LEDGER.md). Practitioner evaluation of the ledger is outside this task (PAT-003-FILING-PACKET, not claimed here). No filing, no legal determination, no freedom-to-operate opinion.",
-  "scope_digest": "sha256:fa38d9f6683dd4528346cf0cb45d63c5656ed959cc34899eaef5e2edb0ce9fe4",
+  "scope_digest": "sha256:981e3b75df3c4cd5274bc485eeea39ea5a89f8971e8c8b3b286338c195eebf2b",
   "requested_action": "Check the Lane A identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition.",
   "authority_effect": "NONE_REQUEST_ONLY",
   "handoff_ref": "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"

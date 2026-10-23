@@ -27,7 +27,7 @@
       "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-EVIDENCE.request.json",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-evidence-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-EVIDENCE.claim-draft.json",
-      "scope_digest": "sha256:748ae675bf601d4ca727bed342a8c6677f3c126891c99405f552675faad9097c",
+      "scope_digest": "sha256:d2807cbe8d7a9f178dae93fecdf749449d7e769c76f0541e4c2ba7e95275fc60",
       "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
       "metrics_source": {
         "supplied_by": "Lane A",
@@ -36,21 +36,38 @@
         "lane_d_rederivation": "every field re-derived read-only by Lane D (index blob 48996386, validator stdout 2eba982e, registry gen 320, claims gen 2, Patents#21 @63be4ccf); chat attribution UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, counts observed"
       },
       "finish_point_source": "Lane A replacement (FE/FC/FP), same comment",
+      "verifier": {
+        "repository": "StegVerse-Labs/Patents",
+        "pr": 23,
+        "commit": "1d6491f505899e2374b1bcdabbed9378e8a7e40f",
+        "entrypoint": "tools/verify_pat003_finish_points.py",
+        "entrypoint_sha256": "6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74",
+        "implementation": "research/pat003/finish_point_verifier_v1.py",
+        "implementation_sha256": "de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c",
+        "admission_state": "UNADMITTED_DRAFT_PR_DEPENDENCY_NOT_ALLOW",
+        "lane_d_readonly_reverification": {
+          "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304": "all 7 NOT_MET (exit 2)",
+          "63be4ccf5542661449cdd601723d34c0e13c6545": "FE-1 MET; FE-2,FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
+          "human_action_dependencies": "7 x HUMAN_ACTION_REQUIRED, evaluated_by_tool false",
+          "verifier_unit_tests": "56 OK, 0 skipped"
+        }
+      },
+      "open_fail_closed": "downgraded: verifier pending admission of Patents#23 (FINISH_POINT_VERIFIER_NOT_IMPLEMENTED repaired in draft)",
       "lane_a_scratch_plan_sha256": "db7c8ed8289d51d70b4398f56e5618eace948584fb2c80e23135f873b1add939",
       "expected_plan": {
         "disposition": "ALLOW",
         "cosv_task_vector": "10110010012000",
-        "scope_digest": "sha256:748ae675bf601d4ca727bed342a8c6677f3c126891c99405f552675faad9097c",
+        "scope_digest": "sha256:d2807cbe8d7a9f178dae93fecdf749449d7e769c76f0541e4c2ba7e95275fc60",
         "successor_registry_generation": 321,
         "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
         "derived_files": {
-          "control/goal-scope-seals/PAT-003-EVIDENCE.json": "sha256:988f86220ca7d7301c2b2e91f21c2d4fb69bd3c3c75a6b4a3e090c58de2c1da1",
+          "control/goal-scope-seals/PAT-003-EVIDENCE.json": "sha256:eb1a522ecd14df6e75e6955a6d45cd804f80a33c213c178a7f0d480432b29a36",
           "control/task-vector-index.d/PAT-003-EVIDENCE.json": "sha256:0ac67cf6772cc94c8f7586aebdbb377ff38724416046d889af92d894dfb5f5e7",
           "control/task-vectors/PAT-003-EVIDENCE.json": "sha256:f2446a2e6d7f52e8579e7488c93637e68c6593bb51b8cf84e6e329044c238e54",
-          "data/canonical-task-records/PAT-003-EVIDENCE.json": "sha256:446961e7bc2cf98c83342299fc309eeac9ca7c7e6804fd7f0224c129b637f733",
-          "data/canonical-task-registry.json": "sha256:20aaabe04d1df3c8ea3c7718cbb20ef8077e41c2665d31b52554b8680381ef2a"
+          "data/canonical-task-records/PAT-003-EVIDENCE.json": "sha256:e9b5024f8f8cb508078d4f7c2755c59e2b25a7f0eb27945af5565f853c864632",
+          "data/canonical-task-registry.json": "sha256:ebb7a452f75978297f9db30688e9c4a59525aa47c94bfaab66a3951a3b84ad4d"
         },
-        "request_sha256": "sha256:8b9c6d3be9eca8828459ab2e355df9372558fabf409eda95b0aaaea09f5b8e02"
+        "request_sha256": "sha256:5edfaa4331da1e6f6a4f9bd7c6d04765ddfc1fe53d39fed4fa7a4a6813375400"
       }
     },
     {
@@ -61,7 +78,7 @@
       "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-CHRONOLOGY.request.json",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-chronology-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-CHRONOLOGY.claim-draft.json",
-      "scope_digest": "sha256:2504daf54448ea61e279717f05e861ebc8ea92f78f046a00b7f85cdcaf71972e",
+      "scope_digest": "sha256:ae347f68961265df18e0760c24fae97bdcc801954dd491b6a3ba7276a2f9235f",
       "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
       "metrics_source": {
         "supplied_by": "Lane A",
@@ -70,21 +87,38 @@
         "lane_d_rederivation": "every field re-derived read-only by Lane D (index blob 48996386, validator stdout 2eba982e, registry gen 320, claims gen 2, Patents#21 @63be4ccf); chat attribution UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, counts observed"
       },
       "finish_point_source": "Lane A replacement (FE/FC/FP), same comment",
+      "verifier": {
+        "repository": "StegVerse-Labs/Patents",
+        "pr": 23,
+        "commit": "1d6491f505899e2374b1bcdabbed9378e8a7e40f",
+        "entrypoint": "tools/verify_pat003_finish_points.py",
+        "entrypoint_sha256": "6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74",
+        "implementation": "research/pat003/finish_point_verifier_v1.py",
+        "implementation_sha256": "de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c",
+        "admission_state": "UNADMITTED_DRAFT_PR_DEPENDENCY_NOT_ALLOW",
+        "lane_d_readonly_reverification": {
+          "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304": "all 7 NOT_MET (exit 2)",
+          "63be4ccf5542661449cdd601723d34c0e13c6545": "FE-1 MET; FE-2,FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
+          "human_action_dependencies": "7 x HUMAN_ACTION_REQUIRED, evaluated_by_tool false",
+          "verifier_unit_tests": "56 OK, 0 skipped"
+        }
+      },
+      "open_fail_closed": "downgraded: verifier pending admission of Patents#23 (FINISH_POINT_VERIFIER_NOT_IMPLEMENTED repaired in draft)",
       "lane_a_scratch_plan_sha256": "34044fe360a07054a7ff1fa80c6c370418ae3bfe9796da424bcf61b25fc5beb6",
       "expected_plan": {
         "disposition": "ALLOW",
         "cosv_task_vector": "10100000012000",
-        "scope_digest": "sha256:2504daf54448ea61e279717f05e861ebc8ea92f78f046a00b7f85cdcaf71972e",
+        "scope_digest": "sha256:ae347f68961265df18e0760c24fae97bdcc801954dd491b6a3ba7276a2f9235f",
         "successor_registry_generation": 321,
         "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
         "derived_files": {
-          "control/goal-scope-seals/PAT-003-CHRONOLOGY.json": "sha256:3a6a3bda6d6e896f9be78f804b19d83490724652283fcc71dee13d8dc0d8a5b9",
+          "control/goal-scope-seals/PAT-003-CHRONOLOGY.json": "sha256:976247e01603e87e22a449b5e8db232fd51e3d3b401443c6bea27feb37841d98",
           "control/task-vector-index.d/PAT-003-CHRONOLOGY.json": "sha256:bbf9ad8ededeca384ee944af19a03a77b5c88eaa7d8bf93a2fcb067c68ac2a8e",
           "control/task-vectors/PAT-003-CHRONOLOGY.json": "sha256:84c84987539f50ffdcf5c3441e12f146dab0dd3739793af018bcda04f7ba4916",
-          "data/canonical-task-records/PAT-003-CHRONOLOGY.json": "sha256:bef79ab583c379f1617eb8b5d8ce7816b44532a3cb7c908a3778d89ecdda2792",
-          "data/canonical-task-registry.json": "sha256:dd9b38c5addd7438abb92283cc07064af4b0f52ba94ca1a3510f4fec7c2c632e"
+          "data/canonical-task-records/PAT-003-CHRONOLOGY.json": "sha256:28ee1d98ad2296654ace6fa7c1f9c502fb0368d704663fc604a167b72e4523b6",
+          "data/canonical-task-registry.json": "sha256:aef502be58a767e43e5d41f74b44f3629ffc93e360c5d5f15949494a823b8582"
         },
-        "request_sha256": "sha256:7ab890566e06b7b78a798446dfc9bc526abd9b5c4a3954117596957e32e7e277"
+        "request_sha256": "sha256:b5f85495208cc6d59486ae8bca61dfcad8f20bc74114b6e3c12e08591999a63a"
       }
     },
     {
@@ -95,7 +129,7 @@
       "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-PRIOR-ART.request.json",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-prior-art-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-PRIOR-ART.claim-draft.json",
-      "scope_digest": "sha256:fa38d9f6683dd4528346cf0cb45d63c5656ed959cc34899eaef5e2edb0ce9fe4",
+      "scope_digest": "sha256:981e3b75df3c4cd5274bc485eeea39ea5a89f8971e8c8b3b286338c195eebf2b",
       "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
       "metrics_source": {
         "supplied_by": "Lane A",
@@ -104,21 +138,38 @@
         "lane_d_rederivation": "every field re-derived read-only by Lane D (index blob 48996386, validator stdout 2eba982e, registry gen 320, claims gen 2, Patents#21 @63be4ccf); chat attribution UNKNOWN_NOT_AUTHENTICALLY_OBSERVED, counts observed"
       },
       "finish_point_source": "Lane A replacement (FE/FC/FP), same comment",
+      "verifier": {
+        "repository": "StegVerse-Labs/Patents",
+        "pr": 23,
+        "commit": "1d6491f505899e2374b1bcdabbed9378e8a7e40f",
+        "entrypoint": "tools/verify_pat003_finish_points.py",
+        "entrypoint_sha256": "6e131d1be6f842f8aaf6a179cd33ba9631cd78cf72336d7cc6e6fbd80d07dc74",
+        "implementation": "research/pat003/finish_point_verifier_v1.py",
+        "implementation_sha256": "de295cb3dc2faef6e67ae7684bb61b23eccd5d4c92dd6eb8b08d07845e11b55c",
+        "admission_state": "UNADMITTED_DRAFT_PR_DEPENDENCY_NOT_ALLOW",
+        "lane_d_readonly_reverification": {
+          "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304": "all 7 NOT_MET (exit 2)",
+          "63be4ccf5542661449cdd601723d34c0e13c6545": "FE-1 MET; FE-2,FE-3,FC-1,FC-2,FP-1,FP-2 NOT_MET (exit 2)",
+          "human_action_dependencies": "7 x HUMAN_ACTION_REQUIRED, evaluated_by_tool false",
+          "verifier_unit_tests": "56 OK, 0 skipped"
+        }
+      },
+      "open_fail_closed": "downgraded: verifier pending admission of Patents#23 (FINISH_POINT_VERIFIER_NOT_IMPLEMENTED repaired in draft)",
       "lane_a_scratch_plan_sha256": "fe50042bdc33f81e9ed26883aeb48e6bede094ca161a4e940a8996c85bfcaf3a",
       "expected_plan": {
         "disposition": "ALLOW",
         "cosv_task_vector": "10100000011000",
-        "scope_digest": "sha256:fa38d9f6683dd4528346cf0cb45d63c5656ed959cc34899eaef5e2edb0ce9fe4",
+        "scope_digest": "sha256:981e3b75df3c4cd5274bc485eeea39ea5a89f8971e8c8b3b286338c195eebf2b",
         "successor_registry_generation": 321,
         "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
         "derived_files": {
-          "control/goal-scope-seals/PAT-003-PRIOR-ART.json": "sha256:16e6b64b9f4361c6e884e52a4891e2e8b04900dde1871e871acf6f23cf78e752",
+          "control/goal-scope-seals/PAT-003-PRIOR-ART.json": "sha256:756b99758ced660286941052e02b140d6dce8cab0a0f867a527164675c92bec7",
           "control/task-vector-index.d/PAT-003-PRIOR-ART.json": "sha256:eb3591c01df2817bf8b14a977126e1a1c6f6d6043c6ef4ca5e0c4cfa95ec5208",
           "control/task-vectors/PAT-003-PRIOR-ART.json": "sha256:f894d1e1732d6f2ef8dc7c63f6d610dc812148a8086bb8c87cd6763c226af35c",
-          "data/canonical-task-records/PAT-003-PRIOR-ART.json": "sha256:983364a058dab65c226e820bdf170fee7397ce09eea40fa7b9c65f7f9b4333cd",
-          "data/canonical-task-registry.json": "sha256:bdbcba3c3c69fb4974fd15512d5c05db1105832af89e06384d7f2c47ba018e9f"
+          "data/canonical-task-records/PAT-003-PRIOR-ART.json": "sha256:86c8cf4fab7a38a32675295d60459325d11d5da7391ce42e3d47b9135aa789e2",
+          "data/canonical-task-registry.json": "sha256:7587dce3a350b5dc8795e60aa18c2fac063a99ff83d3cec2e15a169e6fa5bb18"
         },
-        "request_sha256": "sha256:ec278ddfed5373c8e587129bcab3091b07a4919be03ce2585e79bd85111c2e07"
+        "request_sha256": "sha256:169405debb86768b652f493d094a3ebdcb28c3b0c3d1e227445f933213f4eae6"
       }
     }
   ],
