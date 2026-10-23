@@ -25,6 +25,12 @@ is never trusted: its digest is re-derived, and its conditions are re-computed f
       path refuses with the entry's failure_code, owned by the owner task (verify, and check-change --base --head).
   A candidate with non-empty finish_point_paths must have them pinned (P) and routed (R); only then are those
   paths exempt from (b) for that candidate. Nothing they load is exempt.
+  (U) unowned consumed source: one consumes_dependencies[] entry may have task_id UNOWNED_NOT_OBSERVED (a source the
+      finish point consumes whose owner is not observed in any record). It must carry pinned_source as in (P); each
+      sha256 is recomputed at the pinned commit and at the finish-point commit. Any edit to a pinned file (at the
+      finish-point commit, or in check-change) is FAIL_CLOSED ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT owned by the
+      routing Goal STEGVERSE-CANONICAL-WORK-COORDINATION-001 until an owner is assigned. It is not a candidate, adds
+      no component, takes no protected_paths entry and is outside (c).
 
 A ruling only ever clears COORDINATE_CONVERGENCE for exactly the subject task, over candidates it covers; a
 STOP_COLLISION (hard collision) is never cleared. Everything else is a six-field FAIL_CLOSED.
@@ -38,11 +44,13 @@ from __future__ import annotations
 
 import argparse
 import ast
+import configparser
 import hashlib
 import importlib.util
 import json
 import subprocess
 import re
+import shlex
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -56,6 +64,7 @@ NEXT_ATTEMPT = "on the next registration plan after the ruling or the finish-poi
 EVALUATOR = "scripts/evaluate_task_registry_collision_checkin.py"
 RECORDS = "data/canonical-task-records"
 ADDRESSABLE = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+:[A-Za-z0-9_./-]+\.py(::[A-Za-z0-9_]+)*$")
+UNOWNED = "UNOWNED_NOT_OBSERVED"
 REQUIRED = ("schema", "task_id", "ruling_class", "ruling", "ruled_by", "subject", "candidates",
             "consumes_dependencies", "evidence_digest")
 
@@ -682,6 +691,314 @@ def _sys_modules_removals(tree: ast.Module) -> list[int]:
     return out
 
 
+# --- what can import a stub-seeded package before the finish test runs -----------------------------------------
+# A stub context for P is sound only if nothing imports P normally before the seeding function runs. The closure
+# covers the test's own imports; this covers the rest of the process, statically, at the pinned commit:
+#   - Python that runs before the test module: conftest.py on the test's directory chain, the test's package
+#     __init__ chain, sitecustomize.py / usercustomize.py and executable .pth lines anywhere in the repository;
+#   - pytest plugins named by configuration on the chain (pytest.ini, tox.ini [pytest], setup.cfg [tool:pytest],
+#     pyproject [tool.pytest.ini_options] / [tool.pytest] addopts -p, pytest11 entry points);
+#   - the runner command: every workflow step under .github/workflows that names the finish test (path or dotted
+#     module). No such step means the runner is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED.
+# Python sources are followed with the closure walk (no stub contexts); a source that reaches P's __init__ or a
+# load that does not resolve, and any source or command that cannot be read statically, keeps P's __init__.
+_PY = re.compile(r"^python(?:[0-9]+(?:\.[0-9]+)*)?$")
+_PYTEST_CONFIG = (("pytest.ini", "pytest"), ("tox.ini", "pytest"), ("setup.cfg", "tool:pytest"))
+_PY_FLAGS = set("bBdEhiIOqsSuvVxR") | {"OO", "-version"}
+
+
+def _why(source: str, reason: str, detail: Any = None, line: int | None = None) -> dict[str, Any]:
+    out: dict[str, Any] = {"source": source, "reason": reason}
+    if line is not None:
+        out["line"] = line
+    if detail is not None:
+        out["detail"] = detail
+    return out
+
+
+def _names_package(text: str, packages: set[str]) -> list[str]:
+    return sorted(P for P in packages if re.search(rf"(?<![A-Za-z0-9_.]){re.escape(P)}(?![A-Za-z0-9_])", text))
+
+
+def _plugin(root: Path, name: str, source: str, packages: set[str], roots: list[tuple[Path, str]],
+            reasons: list[dict[str, Any]]) -> None:
+    name = name.strip()
+    if not name or name.startswith("no:"):
+        return
+    module = name.split(":")[0].strip()
+    if any(module == P or module.startswith(P + ".") for P in packages):
+        reasons.append(_why(source, "PYTEST_PLUGIN_IMPORTS_STUB_PACKAGE", module))
+    elif _module_files(root, module):
+        parts = module.split(".")
+        for i in range(1, len(parts) + 1):
+            roots.extend((f, f"{source}: -p {module}") for f in _module_files(root, ".".join(parts[:i])))
+    else:
+        reasons.append(_why(source, "PYTEST_PLUGIN_NOT_IN_REPOSITORY", module))
+
+
+def _addopts(root: Path, value: Any, source: str, packages: set[str], roots: list[tuple[Path, str]],
+             reasons: list[dict[str, Any]]) -> None:
+    if isinstance(value, list) and all(isinstance(v, str) for v in value):
+        tokens = list(value)
+    elif isinstance(value, str):
+        try:
+            tokens = shlex.split(value)
+        except ValueError as exc:
+            reasons.append(_why(source, "PYTEST_ADDOPTS_UNPARSEABLE", str(exc)))
+            return
+    else:
+        reasons.append(_why(source, "PYTEST_ADDOPTS_UNPARSEABLE", repr(value)[:200]))
+        return
+    i = 0
+    while i < len(tokens):
+        t = tokens[i]
+        if t == "-p" and i + 1 < len(tokens):
+            _plugin(root, tokens[i + 1], source, packages, roots, reasons)
+            i += 2
+            continue
+        if t.startswith("-p") and len(t) > 2:
+            _plugin(root, t[2:].lstrip("="), source, packages, roots, reasons)
+        elif t in ("-c", "--config-file", "--rootdir", "--confcutdir") or t.startswith(("--config-file=", "--rootdir=",
+                                                                                        "--confcutdir=")):
+            reasons.append(_why(source, "PYTEST_CONFIG_REDIRECTED", t))
+        elif _names_package(t, packages):
+            reasons.append(_why(source, "PYTEST_ADDOPTS_NAMES_STUB_PACKAGE", t))
+        i += 1
+
+
+def _pytest_config(root: Path, chain: list[Path], packages: set[str], roots: list[tuple[Path, str]],
+                   reasons: list[dict[str, Any]]) -> None:
+    for d in chain:
+        for fname, section in _PYTEST_CONFIG:
+            f = d / fname
+            if not f.is_file():
+                continue
+            rel = f.relative_to(root).as_posix()
+            cp = configparser.RawConfigParser(strict=False)
+            try:
+                cp.read_string(f.read_text(encoding="utf-8"))
+            except (configparser.Error, UnicodeDecodeError) as exc:
+                reasons.append(_why(rel, "PYTEST_CONFIG_UNPARSEABLE", str(exc)[:200]))
+                continue
+            if cp.has_option(section, "addopts"):
+                _addopts(root, cp.get(section, "addopts"), rel, packages, roots, reasons)
+            if fname == "setup.cfg" and cp.has_option("options.entry_points", "pytest11"):
+                for line in cp.get("options.entry_points", "pytest11").splitlines():
+                    if "=" in line:
+                        _plugin(root, line.split("=", 1)[1], f"{rel} pytest11", packages, roots, reasons)
+        f = d / "pyproject.toml"
+        if f.is_file():
+            rel = f.relative_to(root).as_posix()
+            try:
+                import tomllib  # stdlib (3.11+)
+                data = tomllib.loads(f.read_text(encoding="utf-8"))
+            except Exception as exc:  # noqa: BLE001 - unreadable config keeps __init__
+                reasons.append(_why(rel, "PYTEST_CONFIG_UNPARSEABLE", str(exc)[:200]))
+                continue
+            tool = (data.get("tool") or {}).get("pytest") or {}
+            for table in (tool, tool.get("ini_options") or {}):
+                if isinstance(table, dict) and "addopts" in table:
+                    _addopts(root, table["addopts"], rel, packages, roots, reasons)
+            eps = ((data.get("project") or {}).get("entry-points") or {}).get("pytest11") or {}
+            for value in eps.values() if isinstance(eps, dict) else []:
+                _plugin(root, str(value), f"{rel} pytest11", packages, roots, reasons)
+        f = d / "setup.py"
+        if f.is_file() and "pytest11" in f.read_text(encoding="utf-8", errors="replace"):
+            reasons.append(_why(f.relative_to(root).as_posix(), "PYTEST_ENTRY_POINT_NOT_STATIC", "setup.py names pytest11"))
+
+
+def _site_files(root: Path, packages: set[str], roots: list[tuple[Path, str]], reasons: list[dict[str, Any]]) -> None:
+    for f in sorted(root.rglob("*")):
+        if ".git" in f.relative_to(root).parts or not f.is_file():
+            continue
+        rel = f.relative_to(root).as_posix()
+        if f.name in ("sitecustomize.py", "usercustomize.py"):
+            roots.append((f, f"{rel} (site startup hook)"))
+        elif f.suffix == ".pth":
+            for n, line in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+                if not line.startswith(("import ", "import\t")):
+                    continue
+                try:
+                    tree = ast.parse(line)
+                except SyntaxError as exc:
+                    reasons.append(_why(rel, "PTH_LINE_UNPARSEABLE", str(exc), n))
+                    continue
+                names = [a.name for node in ast.walk(tree) if isinstance(node, ast.Import) for a in node.names]
+                if any(isinstance(node, (ast.Call, ast.ImportFrom)) for node in ast.walk(tree)):
+                    reasons.append(_why(rel, "PTH_LINE_NOT_STATIC", line[:200], n))
+                for name in names:
+                    if any(name == P or name.startswith(P + ".") for P in packages):
+                        reasons.append(_why(rel, "PTH_IMPORTS_STUB_PACKAGE", name, n))
+                    elif _module_files(root, name):
+                        roots.extend((m, f"{rel}:{n}") for m in _module_files(root, name))
+                    else:
+                        reasons.append(_why(rel, "PTH_IMPORT_NOT_IN_REPOSITORY", name, n))
+
+
+def _runner_commands(root: Path, test_rel: str) -> list[tuple[str, int, str, str]]:
+    """(workflow, line, joined command line, workflow text) for every workflow line naming the finish test."""
+    dotted = test_rel[:-3].replace("/", ".") if test_rel.endswith(".py") else None
+    refs = [test_rel] + ([dotted] if dotted else [])
+    found = []
+    wf_dir = root / ".github" / "workflows"
+    for wf in sorted(list(wf_dir.glob("*.yml")) + list(wf_dir.glob("*.yaml"))) if wf_dir.is_dir() else []:
+        text = wf.read_text(encoding="utf-8", errors="replace")
+        lines = text.splitlines()
+        for i, line in enumerate(lines):
+            if not any(re.search(rf"(?<![A-Za-z0-9_./-]){re.escape(r)}(?![A-Za-z0-9_])", line) for r in refs):
+                continue
+            item = line.strip()
+            if item.startswith("- ") and " " not in item[2:].strip().strip("'\""):
+                continue  # a YAML list item (paths filter), not a command
+            a = i
+            while a > 0 and lines[a - 1].rstrip().endswith("\\"):
+                a -= 1
+            b = i
+            while b + 1 < len(lines) and lines[b].rstrip().endswith("\\"):
+                b += 1
+            cmd = " ".join(l.rstrip().rstrip("\\").strip() for l in lines[a:b + 1])
+            cmd = re.sub(r"^(-\s*)?(run|script)\s*:\s*", "", cmd).strip().strip("'\"")
+            found.append((wf.relative_to(root).as_posix(), i + 1, cmd, text))
+    return found
+
+
+def _runner(root: Path, test_rel: str, packages: set[str], roots: list[tuple[Path, str]],
+            reasons: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    runners = _runner_commands(root, test_rel)
+    if not runners:
+        reasons.append(_why(".github/workflows", "FINISH_TEST_RUNNER_NOT_OBSERVED",
+                            f"no workflow step at the pinned commit runs {test_rel}; the runner command is "
+                            "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"))
+        return []
+    dotted = test_rel[:-3].replace("/", ".")
+    observed = []
+    for wf, line, cmd, text in runners:
+        src = f"{wf}:{line}"
+        observed.append({"workflow": wf, "line": line, "command": cmd})
+        if any(ch in cmd for ch in "$`") or "<<" in cmd:
+            reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", cmd[:200]))
+            continue
+        try:
+            tokens = shlex.split(cmd)
+        except ValueError as exc:
+            reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", str(exc)))
+            continue
+        segments, cur = [], []
+        for t in tokens:
+            if t in ("&&", "||", ";", "|"):
+                segments.append(cur); cur = []
+            else:
+                cur.append(t)
+        segments.append(cur)
+        seg = next((g for g in segments if any(test_rel in t or t == dotted or t.startswith(dotted + ".") for t in g)), None)
+        if not seg:
+            reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", cmd[:200]))
+            continue
+        env = {}
+        while seg and re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", seg[0]):
+            k, v = seg.pop(0).split("=", 1)
+            env[k] = v
+        for k in ("PYTEST_ADDOPTS", "PYTEST_PLUGINS", "PYTEST_DISABLE_PLUGIN_AUTOLOAD"):
+            m = re.search(rf"^\s*{k}\s*:\s*(.*)$", text, re.M)
+            if m and k not in env:
+                env[k] = m.group(1).strip().strip("'\"")
+        if not seg:
+            reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", cmd[:200]))
+            continue
+        exe, args = Path(seg[0]).name, seg[1:]
+        mode, rest = None, []
+        if exe in ("pytest", "py.test"):
+            mode, rest = "pytest-external", args
+        elif _PY.match(exe):
+            i = 0
+            while i < len(args):
+                a = args[i]
+                if a == "-m" and i + 1 < len(args):
+                    module = args[i + 1]
+                    if _module_files(root, module.split(".")[0]):
+                        parts = module.split(".")
+                        for j in range(1, len(parts) + 1):
+                            roots.extend((f, f"{src}: python -m {module}") for f in _module_files(root, ".".join(parts[:j])))
+                        main = root.joinpath(*parts) / "__main__.py"
+                        if main.is_file():
+                            roots.append((main, f"{src}: python -m {module}"))
+                        mode = "repository-module"
+                    elif module == "unittest":
+                        mode = "unittest"
+                    elif module == "pytest":
+                        mode = "pytest-external"
+                    else:
+                        reasons.append(_why(src, "RUNNER_MODULE_NOT_IN_REPOSITORY", module))
+                        mode = "unknown"
+                    rest = args[i + 2:]
+                    break
+                if a == "-c":
+                    reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", "python -c"))
+                    mode = "unknown"
+                    break
+                if a in ("-W", "-X") and i + 1 < len(args):
+                    if _names_package(args[i + 1], packages):
+                        reasons.append(_why(src, "RUNNER_COMMAND_NAMES_STUB_PACKAGE", args[i + 1]))
+                    i += 2
+                    continue
+                if a.startswith("-") and (a[1:] in _PY_FLAGS or all(ch in "bBdEiIOqsSuvR" for ch in a[1:])):
+                    i += 1
+                    continue
+                if a.startswith("-"):
+                    reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", a))
+                    mode = "unknown"
+                    break
+                script = (root / a)
+                if script.is_file() and a.endswith(".py"):
+                    roots.append((script.resolve(), f"{src}: python {a}"))
+                    mode = "script"
+                else:
+                    reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", a))
+                    mode = "unknown"
+                rest = args[i + 1:]
+                break
+        else:
+            reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", exe))
+            continue
+        if mode is None:
+            reasons.append(_why(src, "RUNNER_COMMAND_NOT_STATIC", cmd[:200]))
+            continue
+        if mode == "pytest-external":
+            _addopts(root, rest, src, packages, roots, reasons)
+            if "PYTEST_ADDOPTS" in env:
+                _addopts(root, env["PYTEST_ADDOPTS"], f"{src} PYTEST_ADDOPTS", packages, roots, reasons)
+            for name in (env.get("PYTEST_PLUGINS") or "").split(","):
+                _plugin(root, name, f"{src} PYTEST_PLUGINS", packages, roots, reasons)
+            if env.get("PYTEST_DISABLE_PLUGIN_AUTOLOAD") in (None, "", "0", "false", "False"):
+                reasons.append(_why(src, "PYTEST_PLUGIN_AUTOLOAD_UNRESOLVED",
+                                    "installed pytest11 plugins load at start-up; set PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 "
+                                    "or run the finish test with python -m unittest"))
+        else:
+            leftover = [t for t in rest if test_rel not in t and t != dotted and not t.startswith(dotted + ".")]
+            hit = _names_package(" ".join(leftover), packages)
+            if hit:
+                reasons.append(_why(src, "RUNNER_COMMAND_NAMES_STUB_PACKAGE", " ".join(leftover)[:200]))
+    return observed
+
+
+def _preload(root: Path, test_rel: str, packages: set[str]) -> tuple[list[tuple[Path, str]], list[dict[str, Any]], list]:
+    roots: list[tuple[Path, str]] = []
+    reasons: list[dict[str, Any]] = []
+    test_dir = (root / test_rel).parent
+    chain = [root] + [root.joinpath(*Path(test_rel).parts[:i]) for i in range(1, len(Path(test_rel).parts))]
+    for d in chain:
+        if (d / "conftest.py").is_file():
+            roots.append((d / "conftest.py", "conftest.py on the test's path chain"))
+    d = test_dir
+    while d != root and (d / "__init__.py").is_file():  # the test module is imported as part of its package
+        roots.append((d / "__init__.py", "the test's package __init__ chain"))
+        d = d.parent
+    _pytest_config(root, chain, packages, roots, reasons)
+    _site_files(root, packages, roots, reasons)
+    runners = _runner(root, test_rel, packages, roots, reasons)
+    return roots, reasons, runners
+
+
 def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = None) -> dict[str, str]:
     """{repository path: sha256} of the test file and every repository file it reaches statically.
 
@@ -689,8 +1006,10 @@ def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = N
     was stub-seeded in sys.modules before the load). A package's __init__.py joins the closure when an import below it
     runs in context N, and is left out only for imports made under its stub: the stub-seeded load itself and the
     relative imports of modules reached in that S context. A module also reached in context N keeps every __init__.
-    If any closure file writes sys.modules other than through a recognised seed (which could remove the stub before
-    a later import), stub contexts are not used at all."""
+    Stub contexts are not used at all (P's __init__ stays) if any closure file can remove a sys.modules entry, or if
+    anything outside the closure that runs in the same process first can import P or cannot be read statically
+    (conftest.py and package __init__ on the test's chain, pytest configuration and plugins, site hooks, the
+    workflow command that runs the finish test; see _preload). Each reason is recorded."""
     root = root.resolve()
     start = (root / test_rel).resolve()
     _require(start.is_file() and root in start.parents, "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
@@ -717,9 +1036,9 @@ def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = N
                 edges[rel] = _file_edges(root, path, tree, rel)
         return edges[rel]
 
-    def walk(use_stubs: bool) -> dict[str, set[str]]:
+    def walk(use_stubs: bool, starts: list[Path] | None = None) -> dict[str, set[str]]:
         contexts: dict[str, set[str]] = {}
-        queue: list[tuple[Path, str]] = [(start, "N")]
+        queue: list[tuple[Path, str]] = [(p, "N") for p in (starts or [start])]
 
         def add(name: str, ctx: str, under: str | None) -> None:
             parts = name.split(".")
@@ -755,12 +1074,32 @@ def static_closure(root: Path, test_rel: str, receipt: dict[str, Any] | None = N
         return contexts
 
     contexts = walk(True)
-    if any(c.startswith("S:") for cs in contexts.values() for c in cs):
-        foreign = [(rel, line) for rel, t in trees.items() if rel in contexts for line in _sys_modules_removals(t)]
-        if foreign:
+    packages = {c[2:] for cs in contexts.values() for c in cs if c.startswith("S:")}
+    if packages:
+        disabled = [_why(rel, "SYS_MODULES_REMOVAL_IN_CLOSURE", None, line)
+                    for rel, t in sorted(trees.items()) if rel in contexts for line in _sys_modules_removals(t)]
+        roots, reasons, runners = _preload(root, test_rel, packages)
+        disabled += reasons
+        for path, why in roots:
+            src = path.relative_to(root).as_posix()
+            try:
+                reached = walk(False, [path])
+            except RulingRefusal as refusal:
+                disabled.append(_why(src, "PRELOAD_SOURCE_UNREADABLE", f"{why}: {refusal.detail}"))
+                continue
+            for P in sorted(packages):
+                own = {f.relative_to(root).as_posix() for f in _module_files(root, P)}
+                if own & set(reached):
+                    disabled.append(_why(src, "PRELOAD_IMPORTS_STUB_PACKAGE", f"{why}: reaches {sorted(own & set(reached))}"))
+            loose = [u for rel in reached if edges.get(rel) for u in edges[rel]["unresolved"]]
+            if loose:
+                disabled.append(_why(src, "PRELOAD_LOAD_UNRESOLVED", {"via": why, "sites": loose[:5]}))
+        if disabled:
             contexts = walk(False)
         if receipt is not None:
-            receipt["stub_contexts_disabled_by"] = sorted(foreign)[:20]
+            receipt["stub_contexts_disabled_by"] = disabled[:50]
+            receipt["stub_preload_sources"] = sorted({f"{p.relative_to(root).as_posix()} ({w})" for p, w in roots})
+            receipt["finish_test_runners"] = runners
     if receipt is not None:
         receipt["stub_contexts"] = {rel: sorted(cs) for rel, cs in sorted(contexts.items())
                                     if any(c.startswith("S:") for c in cs)}
@@ -845,9 +1184,14 @@ def pin_structure(ruling: dict[str, Any], repository: str) -> tuple[dict[str, di
     """Well-formedness of pins/routes and the relied-paths coverage; no source is read."""
     pins: dict[str, dict[str, Any]] = {}
     for dep in ruling.get("consumes_dependencies") or []:
+        _require(not (isinstance(dep, dict) and dep.get("task_id") == UNOWNED and "pinned_source" not in dep),
+                 "ADJACENCY_RULING_CONSUMED_PIN_MALFORMED", "UNOWNED_CONSUMED_SOURCE_IS_PINNED",
+                 f"a {UNOWNED} consumes entry must carry pinned_source {{repository, commit, files {{path: sha256}}}}", dep)
         if not (isinstance(dep, dict) and "pinned_source" in dep):
             continue
         tid, pin = dep.get("task_id"), dep["pinned_source"]
+        _require(tid != UNOWNED or tid not in pins, "ADJACENCY_RULING_CONSUMED_PIN_MALFORMED", "CONSUMED_PIN_IS_WELL_FORMED",
+                 f"list every unowned consumed file in the one {UNOWNED} entry", {"task_id": tid})
         files = pin.get("files") if isinstance(pin, dict) else None
         ok = (isinstance(pin, dict) and pin.get("repository") == repository and HEX40.match(str(pin.get("commit")))
               and isinstance(files, dict) and bool(files) and tid not in pins
@@ -872,6 +1216,9 @@ def pin_structure(ruling: dict[str, Any], repository: str) -> tuple[dict[str, di
                  f"each protected_paths entry needs repository {repository}, owner_task_id, non-empty paths and "
                  "on_modification {disposition FAIL_CLOSED, failure_code, routed_to}", route)
         owner = route["owner_task_id"]
+        _require(owner != UNOWNED, "ADJACENCY_RULING_PROTECTED_PATHS_MALFORMED", "PROTECTED_PATHS_ROUTE_TO_AN_OWNER",
+                 f"{UNOWNED} files are not routed through protected_paths; an edit to them is "
+                 "ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT, owned by the routing Goal", route)
         pin = pins.get(owner)
         _require(mod.get("routed_to") == owner and pin is not None and sorted(route["paths"]) == sorted(pin["files"]),
                  "ADJACENCY_RULING_PROTECTED_PATHS_UNROUTED", "PROTECTED_PATHS_EQUAL_THE_OWNERS_PIN_AND_ROUTE_TO_IT",
@@ -924,6 +1271,16 @@ def _owned_edit(routes: list[dict[str, Any]], changed: Iterable[str]) -> RulingR
     return None
 
 
+def _unowned_edit(pins: dict[str, dict[str, Any]], changed: Iterable[str]) -> RulingRefusal | None:
+    hit = sorted(set(changed) & set((pins.get(UNOWNED) or {}).get("files") or {}))
+    if not hit:
+        return None
+    return RulingRefusal("ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT", "UNOWNED_CONSUMED_SOURCE_UNMODIFIED",
+                         f"{hit} are consumed by the finish point and have no observed owner: do not edit them here; "
+                         f"{OWNING_GOAL} assigns an owner (class B), the owner publishes the change, and the pin moves "
+                         "after that", {"modified": hit, "owner": UNOWNED, "routed_to": OWNING_GOAL})
+
+
 def verify_pins(root: Path, head: str, test_rel: str, pins: dict[str, dict[str, Any]],
                 routes: list[dict[str, Any]]) -> list[dict[str, Any]]:
     test_path = root / test_rel
@@ -942,17 +1299,28 @@ def verify_pins(root: Path, head: str, test_rel: str, pins: dict[str, dict[str, 
                      "PINNED_SHA256_EQUALS_FILE_AT_PINNED_COMMIT", f"{rel} at {commit} must have sha256 {digest}",
                      {"task_id": tid, "path": rel, "pinned": digest, "at_pin": at_pin})
             at_head = _blob_sha(root, head, rel)
+            if at_head != digest and tid == UNOWNED:
+                refusal = _unowned_edit(pins, [rel])
+                refusal.detail.update({"pinned": digest, "at_finish_point": at_head})
+                raise refusal
             if at_head != digest:
                 raise _owned_edit(routes, [rel]) or RulingRefusal(
                     "ADJACENCY_RULING_CONSUMED_PIN_DIGEST_DIVERGES", "PINNED_SHA256_EQUALS_FILE_AT_FINISH_POINT",
                     f"{rel} at the finish-point commit {head} must equal its pin {digest}",
                     {"task_id": tid, "path": rel, "pinned": digest, "at_finish_point": at_head})
+            if tid == UNOWNED:
+                continue  # verified here at both commits; the finish test is not required to carry it
             _require(commit in test_text and digest in test_text, "ADJACENCY_RULING_FINISH_TEST_DOES_NOT_ENFORCE_PIN",
                      "FINISH_TEST_CARRIES_THE_SAME_PIN",
                      f"{test_rel} must carry {commit} and the sha256 of {rel} ({digest}) and verify them before use",
                      {"task_id": tid, "path": rel, "commit_carried": commit in test_text,
                       "sha256_carried": digest in test_text})
-        rows.append({"task_id": tid, "commit": commit, "files": pin["files"], "condition_pin": "HELD"})
+        row = {"task_id": tid, "commit": commit, "files": pin["files"], "condition_pin": "HELD"}
+        if tid == UNOWNED:
+            row.update({"owner": UNOWNED, "edit_failure_code": "ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT",
+                        "edit_routed_to": OWNING_GOAL, "enforced_by_finish_test": all(
+                            commit in test_text and d in test_text for d in pin["files"].values())})
+        rows.append(row)
     return rows
 
 
@@ -964,7 +1332,7 @@ def check_change(ruling: Any, root: Path, base: str, head: str) -> dict[str, Any
         _require(isinstance(ruling, dict) and isinstance(ruling.get("subject"), dict), "ADJACENCY_RULING_SCHEMA_INVALID",
                  "ADJACENCY_RULING_IS_WELL_FORMED", f"a {SCHEMA} object with a subject")
         repository = ((ruling["subject"].get("finish_point") or {}).get("repository"))
-        _pins, routes = pin_structure(ruling, repository)
+        pins, routes = pin_structure(ruling, repository)
         try:
             diff = subprocess.run(["git", "-C", str(root), "diff", "--name-only", "--no-renames", base, head],
                                   capture_output=True, text=True, check=False, timeout=60)
@@ -972,7 +1340,7 @@ def check_change(ruling: Any, root: Path, base: str, head: str) -> dict[str, Any
             diff = subprocess.CompletedProcess([], 1, "", str(exc))
         _require(diff.returncode == 0, "ADJACENCY_RULING_CHANGE_UNREADABLE", "CHANGE_DIFF_READABLE",
                  f"{root} must hold both {base} and {head}", diff.stderr[:300])
-        refusal = _owned_edit(routes, diff.stdout.split())
+        refusal = _owned_edit(routes, diff.stdout.split()) or _unowned_edit(pins, diff.stdout.split())
         if refusal is not None:
             raise refusal
         body.update({"disposition": "ALLOW", "condition_routing": "HELD", "protected_paths": routes})
@@ -1065,7 +1433,8 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
 
     candidates = ruling["candidates"] if isinstance(ruling["candidates"], list) else []
     cand_ids = [c.get("task_id") for c in candidates if isinstance(c, dict)]
-    _require(bool(cand_ids) and len(set(cand_ids)) == len(cand_ids) and task_id not in cand_ids,
+    _require(bool(cand_ids) and len(set(cand_ids)) == len(cand_ids) and task_id not in cand_ids
+             and UNOWNED not in cand_ids,
              "ADJACENCY_RULING_SCHEMA_INVALID", "RULING_NAMES_DISTINCT_CANDIDATES", "list each candidate Goal once")
     pins, routes = pin_structure(ruling, repository)
     if checkin_rows is not None:
@@ -1092,6 +1461,9 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
     pin_rows = verify_pins(finish_point_root, head, test_rel, pins, routes)
     closure_notes: dict[str, Any] = {}
     closure = static_closure(finish_point_root, test_rel, closure_notes)
+    for row in pin_rows:
+        if row["task_id"] == UNOWNED:
+            row["in_finish_point_closure"] = {rel: rel in closure for rel in sorted(row["files"])}
 
     rows = []
     for cand in candidates:
@@ -1132,6 +1504,8 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
              "consumes_dependencies must be a list (may be empty)")
     for dep in consumes:
         did = dep.get("task_id") if isinstance(dep, dict) else None
+        if did == UNOWNED:
+            continue  # (U): not a candidate and not a dependency; pinned and edit-guarded above
         _require(did in cand_ids and did in deps, "ADJACENCY_CONDITION_C_NOT_HELD",
                  "CONSUMES_DEPENDENCY_RECORDED_ON_SUBJECT",
                  f"{did} must be a ruled candidate and a TASK dependency of {task_id}'s record", dep)
@@ -1139,11 +1513,14 @@ def _verify(ruling: Any, request: dict[str, Any], base: Path, finish_point_root:
             "finish_point": {"repository": repository, "source_commit": head, "test": test_rel,
                              "closure": closure, "closure_digest": sha(canon(closure)),
                              "stub_seeded_contexts": closure_notes.get("stub_contexts", {}),
-                             "stub_contexts_disabled_by": closure_notes.get("stub_contexts_disabled_by", [])},
+                             "stub_contexts_disabled_by": closure_notes.get("stub_contexts_disabled_by", []),
+                             "stub_preload_sources": closure_notes.get("stub_preload_sources", []),
+                             "finish_test_runners": closure_notes.get("finish_test_runners", [])},
             "candidates": rows, "consumes_dependencies": consumes, "condition_c": "HELD",
             "consumed_pins": pin_rows, "protected_paths": routes,
             "condition_pin": "HELD" if pin_rows else "NOT_APPLICABLE",
             "condition_routing": "HELD" if routes else "NOT_APPLICABLE",
+            "condition_unowned_pin": "HELD" if UNOWNED in pins else "NOT_APPLICABLE",
             "clears": "COORDINATE_CONVERGENCE"}
 
 
