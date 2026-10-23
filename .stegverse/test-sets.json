@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "6ee2fe343bcc8a805177672bb93652e85c591dcced3daf38b1784edd67a5db21"
+  "spec_sha256": "f5e6dcdc6fbf512377d2527706d1da6f62f590a48100a3b4e623f979fc993aed"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -46,9 +46,9 @@
     "env": "STEGVERSE_TVC_ROOT",
     "kind": "env_path"
    },
-   "finish_point": "the ratchet's pinned checkout of StegVerse-Labs/TVC at the commit .stegverse/verification-inputs/tvc.json declares is bound as STEGVERSE_TVC_ROOT (scripts/tvc_verification_input.py bind) and the conformance exchange tests run and pass at the exact head with 0 skipped",
+   "finish_point": "a TVC_LABS_CONFORMANCE_TEST_RECEIPT sealed by StegVerse-Labs/TVC's own CI (StegVerse-Labs/TVC#539) is retained on refs/stegverse/organization-ledger and matches this head's consumed surface (scripts/tvc_conformance_receipt.py consume: ALLOW)",
    "owner": "GitHub Product, Lane C (StegVerse-org/.github#164)",
-   "repair": "the ratchet reads StegVerse-Labs/TVC at the manifest-pinned commit with its own GITHUB_TOKEN only (no repository secret, no PAT); TVC is private, so that read needs a TV/TVC-issued, per-run, read-only lease to this job (TVC-PRIVATE-SOURCE-READ-001, StegVerse-Labs/TVC#535) - the bind step prints the six-field TVC_VERIFICATION_INPUT_READ_CREDENTIAL_NOT_ISSUED until it is issued"
+   "repair": "TVC CI runs both conformance tests with 0 skipped and seals the receipt on every push to TVC main; the organization ledger writer appends it (never this job, which reads no TVC source and holds no TVC credential). Until a matching receipt is readable on the chain, the ratchet prints the six-field REQUIRED_VERIFICATION_INPUT_UNAVAILABLE for changes that select a [tvc] set only"
   }
  },
  "repository": "StegVerse-Labs/.github",
@@ -9065,6 +9065,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_tvc_conformance_receipt.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_tvc_conformance_receipt.py"
+   ],
+   "tests": [
+    "tests/test_tvc_conformance_receipt.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_tvc_pr92_private_source_bootstrap.py",
    "inputs": [],
    "surfaces": [
@@ -9132,18 +9144,6 @@
    ],
    "tests": [
     "tests/test_tvc_sovereign_route_bridge.py"
-   ]
-  },
-  {
-   "always": false,
-   "exclude": [],
-   "id": "tests/test_tvc_verification_input.py",
-   "inputs": [],
-   "surfaces": [
-    "tests/test_tvc_verification_input.py"
-   ],
-   "tests": [
-    "tests/test_tvc_verification_input.py"
    ]
   },
   {
@@ -11721,8 +11721,12 @@
    "workers/reusable_task_lifecycle.py",
    "workers/reusable_task_master_records_roundtrip.py"
   ],
-  "scripts/tvc_verification_input.py": [
-   ".github/workflows/test-suite-ratchet.yml"
+  "scripts/tvc_conformance_receipt.py": [
+   ".github/workflows/test-suite-ratchet.yml",
+   ".stegverse/verification-inputs/**",
+   ".stegverse/verification-inputs/tvc-conformance-receipt.json",
+   "resident-runtime/ledger_store.py",
+   "resident-runtime/organization_ledger_readback.py"
   ],
   "scripts/user_facing_explanation.py": [
    "schemas/user-facing-explanation.v1.schema.json"
@@ -16337,6 +16341,14 @@
    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
    "scripts/cosv.py"
   ],
+  "tests/test_tvc_conformance_receipt.py": [
+   ".github/workflows/**",
+   ".github/workflows/test-suite-ratchet.yml",
+   ".stegverse/verification-inputs/**",
+   ".stegverse/verification-inputs/tvc-conformance-receipt.json",
+   "org-kernel/kernel.py",
+   "scripts/tvc_conformance_receipt.py"
+  ],
   "tests/test_tvc_pr92_private_source_bootstrap.py": [
    "control/resident-execution-request.d/tvc-repository-broker-validation-001.json",
    "scripts/bootstrap_tvc_pr92_validation_source.py",
@@ -16371,13 +16383,6 @@
   ],
   "tests/test_tvc_sovereign_route_bridge.py": [
    "workers/tvc_sovereign_route_bridge.py"
-  ],
-  "tests/test_tvc_verification_input.py": [
-   ".github/workflows/test-suite-ratchet.yml",
-   ".stegverse/test-set-spec.json",
-   ".stegverse/verification-inputs/tvc.json",
-   "scripts/test_set_selection.py",
-   "scripts/tvc_verification_input.py"
   ],
   "tests/test_ungoverned_ai_defensive_envelope_consumer.py": [
    "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json",

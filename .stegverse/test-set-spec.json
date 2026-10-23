@@ -67,9 +67,9 @@
     "env": "STEGVERSE_TVC_ROOT",
     "kind": "env_path"
    },
-   "finish_point": "the ratchet's pinned checkout of StegVerse-Labs/TVC at the commit .stegverse/verification-inputs/tvc.json declares is bound as STEGVERSE_TVC_ROOT (scripts/tvc_verification_input.py bind) and the conformance exchange tests run and pass at the exact head with 0 skipped",
+   "finish_point": "a TVC_LABS_CONFORMANCE_TEST_RECEIPT sealed by StegVerse-Labs/TVC's own CI (StegVerse-Labs/TVC#539) is retained on refs/stegverse/organization-ledger and matches this head's consumed surface (scripts/tvc_conformance_receipt.py consume: ALLOW)",
    "owner": "GitHub Product, Lane C (StegVerse-org/.github#164)",
-   "repair": "the ratchet reads StegVerse-Labs/TVC at the manifest-pinned commit with its own GITHUB_TOKEN only (no repository secret, no PAT); TVC is private, so that read needs a TV/TVC-issued, per-run, read-only lease to this job (TVC-PRIVATE-SOURCE-READ-001, StegVerse-Labs/TVC#535) - the bind step prints the six-field TVC_VERIFICATION_INPUT_READ_CREDENTIAL_NOT_ISSUED until it is issued"
+   "repair": "TVC CI runs both conformance tests with 0 skipped and seals the receipt on every push to TVC main; the organization ledger writer appends it (never this job, which reads no TVC source and holds no TVC credential). Until a matching receipt is readable on the chain, the ratchet prints the six-field REQUIRED_VERIFICATION_INPUT_UNAVAILABLE for changes that select a [tvc] set only"
   }
  },
  "manifest": ".stegverse/test-sets.json",
