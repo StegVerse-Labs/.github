@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "DENY",
+ "failed_check": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
+ "failure_class": {
+  "class": "B",
+  "reason": "a missing capability: no real ledger root to bind (organization-ledger genesis #3255 draft) and no admitted NODE_HEALTH_REPORTED producer (LLM-adapter#429 draft)"
+ },
+ "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE"
+ ],
+ "next_attempt": "on the next push to laned/kv-skap-vault-finish-point (continuity-vault-kit#258), once a ledger root is bound (StegVerse-Labs/.github#3255) and a NODE_HEALTH_REPORTED producer is admitted (StegVerse-org/LLM-adapter#429)",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "Lane D (KV and WorkSpace)",
+ "proposed_resolution": "bind KVInterlockRuntime's healthy_node_ledger_root to the node-exchange ledger KV reads by exact head (never a constructor argument a requester or caller controls) and refuse with six-field FAIL_CLOSED KV_ACCESS_LAYER1_REFUSED when it is unbound; take the requester identity from the verified InTr boundary proof rather than a caller-asserted field; pass the real InTr transport state to the evaluator so NOT_YET_ENABLED refuses",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "layer 1 decides health over whatever ledger root its constructor is given: a caller-written scratch ledger plus a caller-asserted boundary_proof.source_identity_ref yields layer-1 ALLOW and a KV-access receipt layer 2 accepts, and no non-test code binds a real ledger root; layer 1 also passes transport_state=\"INSTALLED\" hard-coded while the InTr transport is NOT_YET_ENABLED",
+ "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-15"
+}

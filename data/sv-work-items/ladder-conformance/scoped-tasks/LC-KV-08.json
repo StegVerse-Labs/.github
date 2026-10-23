@@ -2,18 +2,22 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "DENY",
  "failed_check": "TWO_SEQUENTIAL_GATES_EACH_WITH_ITS_OWN_RECEIPT",
+ "failure_class": {
+  "class": "C",
+  "reason": "a decision for TV/TVC on retiring or re-pointing its chain"
+ },
  "failure_code": "LADDER_ACCESS_LAYERS_COLLAPSED",
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "items": [
   "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT"
  ],
- "next_attempt": "on the next push to laned/kv-skap-vault-finish-point (continuity-vault-kit#258)",
+ "next_attempt": "on the next push to StegVerse-Labs/TVC touching tools/coinbase_intr_double_interlock.py",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
- "owning_lane": "Lane D (KV and WorkSpace)",
- "proposed_resolution": "reuse the existing INTR_DEVICE_KV -> INTR_KV_SKAP receipt chain shape (TVC tools/coinbase_intr_double_interlock.py, prior_receipt_hash) inside continuity-vault-kit: layer 1 = KVInterlockRuntime.handle emitting the INTR_DEVICE_KV receipt (verified, not caller-asserted), layer 2 = a SKAP entry verifying prior_receipt_hash against layer 1's receipt store; ask TV/TVC to drop one-call build_chain and self-asserted boundary_verification from any credential path",
+ "owning_lane": "TV/TVC (StegVerse-Labs/TVC); consuming lane: Lane D (KV and WorkSpace)",
+ "proposed_resolution": "TV/TVC drops one-call build_chain and self-asserted boundary_verification from any credential path (or re-points its chain at continuity-vault-kit's two gates); Lane D consumes only the two continuity-vault-kit gates",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "split the credential path into two sequential gates: the SKAP Vault admits only on a layer-1 KV-access receipt minted by the separate layer-1 gate; KV and SKAP stop being one object; no single call mints both hops; the #259 provider receipt requires the layer-1 receipt, not a non-empty string",
- "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "required_repair": "narrowed (revision 3): KV and the SKAP Vault are now two gates (KVInterlockRuntime.handle, then SkapLayer2Gate consuming its receipt), and the #259 receipt requires sha256 access-receipt hashes; what remains collapsed is TVC's own INTR_DEVICE_KV -> INTR_KV_SKAP chain: build_chain mints both hops in one call and build_device_kv_receipt self-asserts boundary_verification VERIFIED",
+ "retry_point": "StegVerse-Labs/TVC: tools/coinbase_intr_double_interlock.py validate_chain, then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",
  "task_id": "LC-KV-08"

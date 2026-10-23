@@ -2,18 +2,21 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+ "failure_class": {
+  "class": "C",
+  "reason": "a design decision for Lane D: check the pin at layer 2, or refuse injected evaluators"
+ },
  "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "items": [
-  "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
   "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT"
  ],
  "next_attempt": "on the next push to laned/kv-skap-vault-finish-point (continuity-vault-kit#258)",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
  "owning_lane": "Lane D (KV and WorkSpace)",
- "proposed_resolution": "KVInterlockRuntime.handle takes the REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE receipt as an input and verifies it (not a caller flag) before KV access; layer 2 verifies the layer-1 receipt against the layer-1 receipt store rather than recomputing a self-asserted hash",
+ "proposed_resolution": "apply the finish point's pin check (healthy_node_evaluator == PINNED_HEALTHY_NODE_EVALUATOR_ID and healthy_node_evaluator_source_sha256 == the pinned sha256) inside verify_kv_access_receipt and refuse otherwise with six-field FAIL_CLOSED SKAP_ACCESS_LAYER2_REFUSED, or stop KVInterlockRuntime from accepting an injected evaluator outside tests",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "the layer-1 entry must refuse KV access with no healthy-node receipt (observed ALLOW with a caller-asserted VERIFIED proof), and the layer-2 chain must refuse a caller-minted or health-less layer-1 receipt (observed ALLOW)",
+ "required_repair": "narrowed (revision 3; layer 1 now refuses with no healthy-node ALLOW, and layer 2 refuses absent, caller-minted and reused receipts): layer 2 accepts a layer-1 receipt whose health was decided by an injected non-pinned evaluator - SkapLayer2Gate.verify_kv_access_receipt does not check healthy_node_evaluator / healthy_node_evaluator_source_sha256 against the pin, which the finish point's _check_layer1 does",
  "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

@@ -23,7 +23,11 @@ also run through its _item_problems. This module adds only what a cross-reposito
   (or LADDER_E0_TERMINAL_NOT_SIX_FIELD when the component raised or returned a non-ALLOW without the six fields);
 * every non-ALLOW item is covered by a six-field scoped task naming the owning lane, and every scoped task covers only
   non-ALLOW items carrying its failure code (LADDER_SCOPED_TASK_MISMATCH otherwise); a scoped task may carry an optional
-  fixed finish_point (a non-empty string that bounds the task; anything beyond it is a new registered task).
+  fixed finish_point (a non-empty string that bounds the task; anything beyond it is a new registered task);
+* an item or scoped task may carry an optional failure_class {"class": "A"|"B"|"C", "reason": non-empty} using the
+  ecosystem's classes (A: decided by an existing manifest transition or a repair inside the item's own surface; B: a
+  missing capability a lane builds; C: waits on a ruling or decision). It is recorded, never changes a verdict, and a
+  malformed one is FAIL_CLOSED LADDER_FAILURE_CLASS_MALFORMED (item) or LADDER_SCOPED_TASK_MISMATCH (task).
 
 Pure over the supplied documents: stdlib, no clock, no network, no LLM. Verdicts: ALLOW, DENY, FAIL_CLOSED.
 """
@@ -49,6 +53,12 @@ GOALS = ("KV-SKAP-VAULT-FUNCTIONAL-001", "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-00
 KINDS = ("PREDICATE", "HANDOFF", "CONSTRAINT")
 TASK_SIX = ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt")
 RANK = {"ALLOW": 0, "FAIL_CLOSED": 1, "DENY": 2}
+FAILURE_CLASSES = ("A", "B", "C")
+
+
+def _failure_class_ok(v: Any) -> bool:
+    return (isinstance(v, Mapping) and set(v) == {"class", "reason"} and v.get("class") in FAILURE_CLASSES
+            and isinstance(v.get("reason"), str) and bool(v["reason"].strip()))
 
 
 def _standard():
@@ -249,12 +259,20 @@ def evaluate_item(goal: Mapping[str, Any], item: Any, obs: Mapping[str, Any]) ->
                            "admit the dependency through its own exact-head admission", owning,
                            "on the dependency's admission event", item=name, evidence=d))
 
+    # 8. an optional failure classification is well formed
+    if "failure_class" in item and not _failure_class_ok(item["failure_class"]):
+        bad.append(refusal("FAIL_CLOSED", "LADDER_FAILURE_CLASS_MALFORMED", "FAILURE_CLASS_IS_A_B_OR_C_WITH_REASON",
+                           "failure_class is {\"class\": \"A\"|\"B\"|\"C\", \"reason\": <non-empty>}", owning,
+                           "re-run check", item=name))
+
     verdict = max((r["disposition"] for r in bad), key=lambda d: RANK.get(d, 1), default="ALLOW")
     verdict = verdict if verdict in RANK else "FAIL_CLOSED"
     ladder = {m: {"llms": MODES.index(m), "form": deg.get(m)} for m in LADDER_DOWN}
     out = {"id": item["id"], "kind": item["kind"], "verdict": verdict, "ladder": ladder,
            "lowest_supported_mode": item.get("lowest_supported_mode"), "observed_state": item.get("observed_state"),
            "refusals": bad}
+    if _failure_class_ok(item.get("failure_class")):
+        out["failure_class"] = dict(item["failure_class"])
     return out
 
 
@@ -289,6 +307,7 @@ def evaluate(decl: Mapping[str, Any], obs: Mapping[str, Any], tasks: list[Mappin
               and t["owning_lane"].strip() and isinstance(t.get("items"), list) and t["items"]
               and isinstance(t.get("proposed_resolution"), str) and t["proposed_resolution"].strip()
               and ("finish_point" not in t or (isinstance(t["finish_point"], str) and t["finish_point"].strip()))
+              and ("failure_class" not in t or _failure_class_ok(t["failure_class"]))
               and t.get("task_id") not in ids_seen)
         if ok:
             ids_seen.add(t["task_id"])
@@ -297,7 +316,8 @@ def evaluate(decl: Mapping[str, Any], obs: Mapping[str, Any], tasks: list[Mappin
         if not ok:
             problems.append(refusal("FAIL_CLOSED", "LADDER_SCOPED_TASK_MISMATCH", "SCOPED_TASK_HAS_SIX_FIELDS_AND_LANE",
                                     "scoped tasks carry the six fields, owning lane, items and proposed resolution; a "
-                                    "finish_point, when present, is a non-empty string; tasks sharing a failure code "
+                                    "finish_point, when present, is a non-empty string; a failure_class, when present, is "
+                                    "A, B or C with a reason; tasks sharing a failure code "
                                     "cover disjoint items", CHECK_GOAL, "re-run check",
                                     task=t.get("task_id")))
             continue

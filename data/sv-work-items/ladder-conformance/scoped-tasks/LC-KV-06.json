@@ -2,17 +2,21 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "FINISH_APPENDS_ORGANIZATION_LEDGER_RECEIPT",
+ "failure_class": {
+  "class": "B",
+  "reason": "waits on organization-ledger genesis (#3255 draft)"
+ },
  "failure_code": "LADDER_FINISH_NOT_LEDGER_BOUND",
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "items": [
   "H-KV-FINISH-LEDGER"
  ],
- "next_attempt": "on the next record change of KV-SKAP-VAULT-FUNCTIONAL-001",
+ "next_attempt": "on the admission event of StegVerse-Labs/.github#3255 (organization-ledger genesis and writer split)",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
  "owning_lane": "Lane D (KV and WorkSpace)",
- "proposed_resolution": "emit the ALLOW verdict as a stegverse.canonical-state-transition-receipt/v1 (the type the org contract admits) appended under the organization-ledger lock by the writer split in #3255; until then the verdict stays a record, not runtime",
+ "proposed_resolution": "after #3255 is admitted, have the organization-ledger writer append the finish point's receipt under the ledger lock (the receipt shape and CAS are already in append_organization_ledger_receipt); keep the scratch path as a test-only exercise; until then the verdict stays a record, not runtime",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "a manifest-directed transition that appends the finish-point verdict to refs/stegverse/organization-ledger",
+ "required_repair": "narrowed (revision 3): the finish point already emits a stegverse.canonical-state-transition-receipt/v1 and CAS-appends it to refs/stegverse/organization-ledger in a remote-less scratch git dir (real_ledger_written false); what remains is the manifest-directed append to the real organization ledger",
  "retry_point": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

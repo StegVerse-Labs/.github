@@ -88,7 +88,12 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, i))
         self.assertIn("LADDER_ACCESS_LAYERS_COLLAPSED", _codes(d, seq))
         self.assertTrue(set(decl[l1]["required_outcomes"]) and "e0_terminal" in decl[l1])
-        self.assertIn("class_b", decl[l2])  # no E0 gate exists on the SKAP boundary inside KV: recorded, not invented
+        # layer 2 now has its own E0 gate (SkapLayer2Gate), witnessed by required refusals, not a class_b record
+        self.assertNotIn("class_b", decl[l2])
+        self.assertTrue(set(decl[l2]["required_outcomes"]) and "e0_terminal" in decl[l2])
+        # the sequence check requires layer 2 to refuse a receipt from a non-pinned evaluator; observed ALLOW is a finding
+        self.assertIn("LAYER2_ON_LAYER1_RECEIPT_FROM_NON_PINNED_EVALUATOR", decl[seq]["required_outcomes"])
+        self.assertIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(d, seq))
         self.assertIn("REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", decl[l1]["what"])
 
     def test_lc_kv_13_has_the_fixed_finish_point(self):
@@ -155,7 +160,7 @@ class Refusals(unittest.TestCase):
         self.decl = copy.deepcopy(inp["declarations"][KV])
         self.obs = copy.deepcopy(inp["observations"][KV])
         self.tasks = copy.deepcopy(inp["tasks"])
-        self.allowed = "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY"
+        self.allowed = "CONSENT_RECEIPT_PRECEDES_EVERY_KV_WRITE_AND_READ"  # observed ALLOW at the finish point
 
     def item(self, item_id):
         return next(i for i in self.decl["items"] if i["id"] == item_id)
@@ -298,7 +303,34 @@ class Refusals(unittest.TestCase):
         it["required_outcomes"] = {self.allowed: ["ALLOW"]}
         self.assertEqual(_verdict(self.run_(), self.allowed), "ALLOW")
         hn = self.item("H-KV-HEALTHY-NODE-DETERMINATION")
-        self.assertIn("LADDER_E0_TERMINAL_NOT_SIX_FIELD", _codes(self.run_(), hn["id"]))  # StandingRefused is raised
+        self.assertNotIn("LADDER_E0_TERMINAL_NOT_SIX_FIELD", _codes(self.run_(), hn["id"]))  # #428 returns six fields
+        for r in self.obs["runs"]:
+            if r["run_id"] == "layer1-healthy-node-probe":
+                for o in r["outcomes"]:
+                    if o["subject"] == "STANDING_REFUSED":
+                        o.clear()
+                        o.update({"subject": "STANDING_REFUSED", "disposition": "EXCEPTION", "exception": "StandingRefused"})
+        self.assertIn("LADDER_E0_TERMINAL_NOT_SIX_FIELD", _codes(self.run_(), hn["id"]))
+
+    def test_failure_class_is_recorded_and_checked(self):
+        d = self.run_()
+        prov = next(r for r in d["items"] if r["id"] == "H-KV-DURABLE-CUSTODY-PROVIDER")
+        self.assertEqual(prov["failure_class"]["class"], "B")
+        self.assertEqual(next(t for t in self.tasks if t["task_id"] == "LC-KV-09")["failure_class"]["class"], "C")
+        self.assertEqual(d["consistency"], "ALLOW")
+        it = self.item(self.allowed)
+        it["failure_class"] = {"class": "B", "reason": "recorded only"}
+        self.assertEqual(_verdict(self.run_(), self.allowed), "ALLOW")  # a classification never changes a verdict
+        for bad in ({"class": "D", "reason": "x"}, {"class": "B", "reason": " "}, {"class": "B"}, "B",
+                    {"class": "B", "reason": "x", "extra": 1}):
+            it["failure_class"] = bad
+            self.assertIn("LADDER_FAILURE_CLASS_MALFORMED", _codes(self.run_(), self.allowed), bad)
+        del it["failure_class"]
+        t = next(t for t in self.tasks if t["task_id"] == "LC-KV-09")
+        t["failure_class"] = {"class": "Z", "reason": "x"}
+        d = self.run_()
+        self.assertEqual(d["consistency"], "FAIL_CLOSED")
+        self.assertIn("LADDER_SCOPED_TASK_MISMATCH", [f["failure_code"] for f in d["consistency_refusals"]])
 
     def test_missing_evidence_run_is_unbound(self):
         self.item(self.allowed)["evidence_runs"] = ["no-such-run"]

@@ -8,5 +8,5 @@ except Exception as exc:
 
 --- exit 0
 --- stdout
-{"disposition": "EXCEPTION", "exception": "TaskRegistryEventCustodyBindingError", "message": "provider receipt schema mismatch"}
+{"schema": "stegverse.task-registry-sovereign-kv-vault-lineage-receipt/v1", "record_type": "KV_SKAP_VAULT_LINEAGE", "disposition": "FAIL_CLOSED", "failure_code": "VAULT_LINEAGE_CUSTODY_RESULT_NOT_VERIFIED", "failed_predicate": "AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV", "required_evidence_or_repair": "provider receipt schema mismatch; supply an admitted provider WRITE receipt for the bound request and the exact read-back lineage", "retry_entrypoint": "runtime.task_registry_event_sovereign_kv_binding.validate_vault_lineage_custody_result (StegVerse-Labs/continuity-vault-kit); python -m unittest tests.test_sovereign_kv_vault_lineage_record", "owning_existing_goal": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001", "next_attempt": "on the next admitted provider WRITE receipt and custody read-back for this lineage", "failure_class": "B", "exact_hash_readback_verified": false, "authority_effect": "NONE"}
 --- stderr

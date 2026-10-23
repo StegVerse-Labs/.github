@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "CONSTRAINT_IS_A_SEALED_PREDICATE",
+ "failure_class": {
+  "class": "C",
+  "reason": "waits on a ruling and a re-seal of the #3324 sealed scope (unchanged digest at #3324 @32a4f344)"
+ },
  "failure_code": "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE",
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "items": [

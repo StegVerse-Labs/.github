@@ -1,0 +1,109 @@
+$ {python} -c import json, sys, tempfile
+sys.path[:0] = [".", "tests"]
+from runtime import kv_interlock_endpoint as ep
+from runtime import kv_skap_vault as kv
+from runtime.kv_skap_layer2 import kv_skap_transition
+from kv_two_layer_e0 import TwoLayers, e0_health_ledger
+from execution.adapter import canonical_sha256
+from execution.vault_store import KnowledgeVaultExecutionStore, SKAP_KV_RECORD_SCHEMA
+from execution.vault_store import SKAP_SEALED_FORMAT
+import base64, hashlib
+SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt")
+rows = []
+def row(subject, out, note=None):
+    r = {"subject": subject}
+    if isinstance(out, dict):
+        d = out.get("disposition") or out.get("decision")
+        r["disposition"] = "ALLOW" if d in ("ALLOW", "ALLOW_BOUNDED_CONTEXT") else d
+        for k in SIX + ("failure_class",):
+            if isinstance(out.get(k), str):
+                r[k] = out[k]
+    else:
+        r["disposition"] = out
+    if note: r["note"] = note
+    rows.append(r)
+def guard(subject, fn):
+    try:
+        fn()
+    except Exception as exc:
+        f = getattr(exc, "fields", None)
+        if isinstance(f, dict):
+            row(subject, f, "raised %s carrying six fields" % type(exc).__name__)
+        else:
+            rows.append({"subject": subject, "disposition": "EXCEPTION", "exception": type(exc).__name__, "message": str(exc)[:200]})
+N = "device:probe:1"
+def l1(subject, **kw):
+    ev = kw.pop("access_kw", {})
+    guard(subject, lambda: row(subject, TwoLayers(node=N, **kw).kv_access(**ev)))
+l1("LAYER1_NO_LEDGER_BOUND", ledger_root=None)
+l1("LAYER1_NO_HEALTH_REPORT_ON_LEDGER", ledger_root=e0_health_ledger(N, report=False)[0])
+l1("LAYER1_UNHEALTHY_REPORT", ledger_root=e0_health_ledger(N, status="UNHEALTHY")[0])
+l1("LAYER1_HEALTHY_BUT_NOT_ADMITTED", ledger_root=e0_health_ledger(N, admitted=False)[0])
+l1("LAYER1_REPORT_FOR_ANOTHER_NODE", ledger_root=e0_health_ledger("device:other:9")[0])
+l1("LAYER1_UNVERIFIED_BOUNDARY_PROOF", access_kw={"verification_state": "UNVERIFIED"})
+l1("LAYER1_CALLER_ASSERTED_HEALTH_EVIDENCE", access_kw={"evidence": {"healthy": True}})
+# observational: a scratch ledger the caller writes, plus a caller-asserted VERIFIED boundary proof naming that node
+l1("LAYER1_CALLER_SUPPLIED_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY")
+def fake_eval(node_ref, **_):
+    out = dict(ep._HEALTHY_RECEIPT_EXACT)
+    out.update(node_id=node_ref, health_report_receipt_sha256="sha256:" + "c" * 64, chain_head_receipt_sha256="sha256:" + "d" * 64)
+    return out
+def injected():
+    t = TwoLayers(node=N, evaluator=fake_eval, ledger_root=None)
+    a = t.kv_access()
+    row("LAYER1_INJECTED_NON_PINNED_EVALUATOR", a)
+    if a.get("kv_access_receipt"):
+        h = a["kv_access_receipt"]["receipt_hash"]
+        row("LAYER2_ON_LAYER1_RECEIPT_FROM_NON_PINNED_EVALUATOR",
+            t.gate.admit(kv_skap_transition(principal_ref=t.principal, operation="SKAP_READ", subject_ref="p1", prior_receipt_hash=h)))
+guard("LAYER1_INJECTED_NON_PINNED_EVALUATOR", injected)
+def l2():
+    t = TwoLayers(node=N)
+    tr = lambda prior, op="SKAP_READ": kv_skap_transition(principal_ref=t.principal, operation=op, subject_ref="p1", prior_receipt_hash=prior)
+    row("LAYER2_WITHOUT_LAYER1_RECEIPT", t.gate.admit(tr(None)))
+    row("LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT", t.gate.admit(tr("sha256:" + "a" * 64)))
+    h = t.kv_hash()
+    first = t.gate.admit(tr(h))
+    row("LAYER2_ON_LAYER1_RECEIPT_FROM_PINNED_EVALUATOR", first)
+    row("LAYER2_REUSED_LAYER1_RECEIPT", t.gate.admit(tr(h)))
+guard("LAYER2_SEQUENCE", l2)
+def bundle(secret):
+    # a structurally valid sealed envelope with opaque bytes (no crypto dependency; KV never decrypts)
+    s = {"format": SKAP_SEALED_FORMAT, "object_id": "skap://APIs/probe/v1", "credential_version": 1,
+         "wrapping_policy_ref": "policy://skap/probe", "purpose": "probe", "endpoint_ref": "https://example.invalid",
+         "key_authority_ref": "tvc://credential-root/test-only", "kdf_salt_b64": "c2FsdA==", "nonce_b64": "bm9uY2U=",
+         "aad_hash": "sha256:" + hashlib.sha256(secret).hexdigest(), "ciphertext_b64": base64.b64encode(hashlib.sha256(b"ct" + secret).digest()).decode(),
+         "plaintext_persisted": False, "key_material_persisted": False, "authority_transfer": False}
+    r = {"schema": "stegverse.skap.owner_credential_ingress_receipt/v1", "object_id": s["object_id"],
+         "credential_version": s["credential_version"], "purpose": s["purpose"], "endpoint_ref": s["endpoint_ref"],
+         "wrapping_policy_ref": s["wrapping_policy_ref"], "authorization_ref": "webauthn://probe", "source_class": "TRUSTED_INTERACTIVE_EDGE",
+         "key_authority_ref": s["key_authority_ref"], "sealed_material_hash": canonical_sha256(s), "plaintext_length": len(secret),
+         "owner_authorized": True, "plaintext_persisted": False, "device_durable_secret_custody": False,
+         "kv_decryption_authority": False, "model_secret_access": False, "authority_transfer": False, "ingressed_at": "2026-10-23T00:00:00Z"}
+    return s, r
+def store_probe():
+    t = TwoLayers(principal="principal:owner", node=N)
+    acc = lambda op, sid: {"skap_gate": t.gate, "principal_ref": "principal:owner", "skap_access_receipt_hash": t.skap_hash(op, sid)}
+    with tempfile.TemporaryDirectory() as tmp:
+        st = KnowledgeVaultExecutionStore(tmp)
+        sealed, receipt = bundle(b"probe-credential-a")
+        st.append_skap_sealed_credential("s1", sealed, receipt, **acc("SKAP_SEALED_CREDENTIAL_APPEND", "s1"))
+        recs = [r for r in KnowledgeVaultExecutionStore(tmp).read_stream("Extensions", "s1") if r.get("schema") == SKAP_KV_RECORD_SCHEMA]
+        row("SKAP_RECORD_READ_VIA_READ_STREAM_WITHOUT_LAYER2", "ALLOW" if recs and recs[-1]["sealed_material"] == sealed else "FAIL_CLOSED",
+            "KnowledgeVaultExecutionStore.read_stream('Extensions', ...) returned the sealed SKAP record with no skap_gate and no SKAP-access receipt")
+        forged, _ = bundle(b"probe-credential-forged")
+        rec = {"schema": SKAP_KV_RECORD_SCHEMA, "object_id": forged["object_id"], "credential_version": forged["credential_version"],
+               "sealed_material": forged, "sealed_material_hash": canonical_sha256(forged), "kv_decryption_authority": False,
+               "kv_secret_resolution_authority": False, "plaintext_present": False, "key_material_present": False, "authority_transfer": False,
+               "access": {"kv_access_receipt_hash": "sha256:" + "0" * 64, "skap_access_receipt_hash": "sha256:" + "0" * 64}}
+        KnowledgeVaultExecutionStore(tmp).append_extension("s1", rec)
+        back = st.read_skap_sealed_credential("s1", **acc("SKAP_SEALED_CREDENTIAL_READ", "s1"))
+        row("SKAP_RECORD_WRITE_VIA_APPEND_EXTENSION_WITHOUT_LAYER2", "ALLOW" if back == forged else "FAIL_CLOSED",
+            "append_extension wrote a SKAP sealed-credential record with no layer-2 receipt; the gated read then returned it" if back == forged else None)
+guard("SKAP_STORE", store_probe)
+print(json.dumps({"rows": rows}, sort_keys=True))
+
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "FAIL_CLOSED", "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", "failure_class": "B", "failure_code": "KV_ACCESS_LAYER1_REFUSED", "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED LEDGER_HEAD_UNREADABLE: a readable HEAD.json naming a receipt on this repository's ledger)", "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER1_NO_LEDGER_BOUND"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", "failure_class": "B", "failure_code": "KV_ACCESS_LAYER1_REFUSED", "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED HEALTH_REPORT_MISSING: a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json)", "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER1_NO_HEALTH_REPORT_ON_LEDGER"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", "failure_class": "C", "failure_code": "KV_ACCESS_LAYER1_REFUSED", "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (DENY HEALTH_REPORTED_NOT_HEALTHY: a newer receipted report whose status is exactly HEALTHY)", "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER1_UNHEALTHY_REPORT"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", "failure_class": "C", "failure_code": "KV_ACCESS_LAYER1_REFUSED", "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED NODE_NOT_ADMITTED: the newest NODE_INGRESS_* receipt for this node must be NODE_INGRESS_ADMITTED with healthy_node_established true, citing the current health report)", "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER1_HEALTHY_BUT_NOT_ADMITTED"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", "failure_class": "B", "failure_code": "KV_ACCESS_LAYER1_REFUSED", "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED HEALTH_REPORT_MISSING: a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json)", "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER1_REPORT_FOR_ANOTHER_NODE"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE", "failure_class": "C", "failure_code": "KV_ACCESS_LAYER1_REFUSED", "next_attempt": "on the next DEVICE->KV InTr transition that carries the repair", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "INTR_DEVICE_KV_TRANSITION_NOT_ADMITTED: verified boundary proof required", "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER1_UNVERIFIED_BOUNDARY_PROOF"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE", "failure_class": "C", "failure_code": "KV_ACCESS_LAYER1_REFUSED", "next_attempt": "on the next DEVICE->KV InTr transition that carries the repair", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: healthy_node_evidence may only cite health_report_receipt_sha256 (a sha256 receipt address); health itself is never caller-asserted", "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER1_CALLER_ASSERTED_HEALTH_EVIDENCE"}, {"disposition": "ALLOW", "subject": "LAYER1_CALLER_SUPPLIED_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY"}, {"disposition": "ALLOW", "subject": "LAYER1_INJECTED_NON_PINNED_EVALUATOR"}, {"disposition": "ALLOW", "subject": "LAYER2_ON_LAYER1_RECEIPT_FROM_NON_PINNED_EVALUATOR"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT", "failure_class": "C", "failure_code": "SKAP_ACCESS_LAYER2_REFUSED", "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ABSENT: prior_receipt_hash must be the layer-1 KV-access receipt minted by KVInterlockRuntime.handle for a currently admitted healthy node", "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER2_WITHOUT_LAYER1_RECEIPT"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT", "failure_class": "C", "failure_code": "SKAP_ACCESS_LAYER2_REFUSED", "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_NOT_MINTED_BY_LAYER1: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa is not a KV-access receipt held by the layer-1 runtime; a caller-minted, recomputed or health-less layer-1 receipt is refused", "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT"}, {"disposition": "ALLOW", "subject": "LAYER2_ON_LAYER1_RECEIPT_FROM_PINNED_EVALUATOR"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT", "failure_class": "C", "failure_code": "SKAP_ACCESS_LAYER2_REFUSED", "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ALREADY_USED: sha256:bcd2f2cfe838287cfc5216026ec627f878b3093ab8ed8a8bbd0f06306ff89bcc already admitted one KV->SKAP transition; each SKAP operation needs its own DEVICE->KV InTr transition from a currently admitted healthy node", "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)", "subject": "LAYER2_REUSED_LAYER1_RECEIPT"}, {"disposition": "ALLOW", "note": "KnowledgeVaultExecutionStore.read_stream('Extensions', ...) returned the sealed SKAP record with no skap_gate and no SKAP-access receipt", "subject": "SKAP_RECORD_READ_VIA_READ_STREAM_WITHOUT_LAYER2"}, {"disposition": "ALLOW", "note": "append_extension wrote a SKAP sealed-credential record with no layer-2 receipt; the gated read then returned it", "subject": "SKAP_RECORD_WRITE_VIA_APPEND_EXTENSION_WITHOUT_LAYER2"}]}
+--- stderr

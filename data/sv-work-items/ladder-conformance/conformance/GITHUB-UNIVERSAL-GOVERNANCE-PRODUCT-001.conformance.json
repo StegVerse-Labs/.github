@@ -1158,7 +1158,7 @@
  "owning_lane": "GitHub Product lane (Lane C)",
  "receipt": {
   "code": {
-   "resident-runtime/ladder_conformance.py": "sha256:eac5d4e34b19ae07e13677a99d3dceae54bf56aae2393db5f412271674dbae7b",
+   "resident-runtime/ladder_conformance.py": "sha256:a6ad9b0cb3292b3b975a1aa365f6141a75ee2a7a132c15daf43dac903ee8b0e0",
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
@@ -1166,7 +1166,7 @@
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
    "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:8e12dcfb5688343dd4d19adbcc71ad1a59a2c3732caa6e64ed02210a8c203a37",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:f79904169bef03c63988951502ae5885e33d9a295a1e9fa3a53620ea635c5aec",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:1bb2002c11f72f9a989d2ebfeb8f82567f5870fc034835b3fae92fe5de281a83",
    "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:a73b4cfa6aff0867064d15ca7d5315bace00892764bf088a1eee7fc05670824f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:afd8ce5c3f373675d44e75cc8740bffc40d267f4aa1a249fc99c05898096689a",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-02.json": "sha256:72bdd759ba48e4de147b18587775b62624086a83923243f5ce0bb481269508a7",

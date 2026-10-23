@@ -3,12 +3,12 @@
  "observed_by": "scripts/ladder_conformance.py observe",
  "roots": {
   "cvk258": {
-   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
    "kind": "git",
    "repo": "StegVerse-Labs/continuity-vault-kit"
   },
   "cvk259": {
-   "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
    "kind": "git",
    "repo": "StegVerse-Labs/continuity-vault-kit"
   },
@@ -18,7 +18,7 @@
    "repo": "StegVerse-Labs/.github"
   },
   "labs3327": {
-   "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
+   "commit": "93526168775a09d1714f2356857c4cd24f3d32e7",
    "kind": "git",
    "repo": "StegVerse-Labs/.github"
   },
@@ -28,7 +28,12 @@
    "repo": "StegVerse-Labs/.github"
   },
   "llmad": {
-   "commit": "ece815b1c5976dadb7d4cdc47ab37ae7a2a75605",
+   "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
+   "kind": "git",
+   "repo": "StegVerse-org/LLM-adapter"
+  },
+  "llmad429": {
+   "commit": "5f5f7bbeea96d5f313effaa02f86b01196465247",
    "kind": "git",
    "repo": "StegVerse-org/LLM-adapter"
   },
@@ -46,6 +51,11 @@
    "commit": "c4845bea704949c46658042963e8c532c9559939",
    "kind": "git",
    "repo": "StegVerse-Labs/TVC"
+  },
+  "tvc537": {
+   "commit": "c87272cfccdcd731eb8cca6133a6596b389ff218",
+   "kind": "git",
+   "repo": "StegVerse-Labs/TVC"
   }
  },
  "runs": [
@@ -57,14 +67,20 @@
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
      "failure_code": "INTR_TRANSITION_RECEIPTS_NOT_OBSERVED",
-     "next_attempt": "on the next finish-point run after the repair is bound",
+     "next_attempt": "on the next finish-point run whose evidence bundle carries the repair",
      "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
-     "required_evidence_or_repair": "the local round-trip is exact, but each write and revoke must bind a real Interlock/InTr transition receipt; bind the InTr adapter (STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 lane) and verify its receipts here",
+     "required_evidence_or_repair": "the local round-trip is exact; supply evidence.lineage plus evidence.intr_transition_receipts, one stegverse.canonical-state-transition-receipt/v1 per write/revoke whose sha256 is the intr_receipt_ref its layer-1 KV-access receipt binds (outcome in ('ADMITTED', 'APPLIED'), subject_or_correlation_id == principal_ref) from Interlock/InTr; and the access_constraints row KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
      "subject": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT"
     },
     {
-     "disposition": "ALLOW",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next finish-point run whose evidence bundle carries the repair",
+     "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+     "required_evidence_or_repair": "ACCESS_RECEIPTS_NOT_OBSERVED: supply evidence.layer2_skap_access_receipts: one stegverse.skap-access-receipt/v1 minted by SkapLayer2Gate.admit (INTR_KV_SKAP) per lineage receipt, used once, for the operation and principal it names",
+     "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
      "subject": "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY"
     },
     {
@@ -83,9 +99,9 @@
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
      "failure_code": "KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND",
-     "next_attempt": "on the next finish-point run after the repair is bound",
+     "next_attempt": "on the next finish-point run whose evidence bundle carries the repair",
      "owning_existing_goal": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
-     "required_evidence_or_repair": "reconstruction from the lineage alone is exact on a fresh instance; the durable KV custody location the lineage is read from on any device is consumed from TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 (provider-neutral write and exact-hash readback; its first unresolved predicate is AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV) and is not re-implemented here; bind its admitted readback receipt when it exists",
+     "required_evidence_or_repair": "reconstruction from the lineage alone is exact on a fresh instance; the durable KV custody location the lineage is read from on any device is consumed from TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 (provider-neutral write and exact-hash readback; its first unresolved predicate is AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV) and is not re-implemented here; supply its ALLOW readback receipt as evidence.durable_custody_readback_receipt (lineage_sha256 == sha256 of evidence.lineage, provider not device-local)",
      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
      "subject": "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED"
     },
@@ -93,9 +109,9 @@
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER",
      "failure_code": "TVC_CUSTODY_KEY_ISSUANCE_NOT_OBSERVED",
-     "next_attempt": "on the next finish-point run after the repair is bound",
+     "next_attempt": "on the next finish-point run whose evidence bundle carries the repair",
      "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
-     "required_evidence_or_repair": "the vault refuses every non-TV/TVC writer and all key material; a real TV/TVC custody-key issuance receipt must be observed and bound (a TV/TVC transition, not a blocker)",
+     "required_evidence_or_repair": "the vault refuses every non-TV/TVC writer and all key material; supply evidence.tvc_issuance_receipts, one stegverse.tvc.skap-custody-reference-issuance/v1 per bound custody key whose receipt_sha256 equals its tvc_issuance_receipt_ref (TVC_SKAP_CUSTODY_REFERENCE_ISSUE, a TV/TVC transition, not a blocker)",
      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
      "subject": "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER"
     },
@@ -111,22 +127,23 @@
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
      "failure_code": "INTR_TRANSITION_RECEIPTS_NOT_OBSERVED",
-     "next_attempt": "on the next finish-point run after the repair is bound",
+     "next_attempt": "on the next finish-point run whose evidence bundle carries the repair",
      "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
-     "required_evidence_or_repair": "the local round-trip is exact, but each write and revoke must bind a real Interlock/InTr transition receipt; bind the InTr adapter (STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 lane) and verify its receipts here",
+     "required_evidence_or_repair": "the local round-trip is exact; supply evidence.lineage plus evidence.intr_transition_receipts, one stegverse.canonical-state-transition-receipt/v1 per write/revoke whose sha256 is the intr_receipt_ref its layer-1 KV-access receipt binds (outcome in ('ADMITTED', 'APPLIED'), subject_or_correlation_id == principal_ref) from Interlock/InTr; and the access_constraints row KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
      "six_fields_source": "unmet_predicates[0]",
      "subject": "FINISH_POINT_VERDICT",
      "unmet": [
       "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+      "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY",
       "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
       "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER"
      ]
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-finish-point.out",
-   "raw_sha256": "sha256:94386beab792effa39a9718cbbc65e0a5df7cc4874751878944c57083272ae16",
+   "raw_sha256": "sha256:d4a140ba54b7675fbd8b75363c5c25728dc9373d0ace113d44dcf48ec70f5321",
    "run_id": "kv-finish-point",
    "status": "OBSERVED",
    "what": "the sealed finish-point verifier at E0"
@@ -140,12 +157,12 @@
      "passed": true,
      "skipped": 0,
      "subject": "KV_FINISH_POINT_SUITE",
-     "tests_ran": 15
+     "tests_ran": 29
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-finish-point-tests.out",
-   "raw_sha256": "sha256:cc25bb7de6c9c29e5eb13d6229798a4fdc373824a1398b443537debcc2dcce11",
+   "raw_sha256": "sha256:eefbfd5e637927d30427f2997ffc48bd8842ad3d0773f551161e7b608b19f32d",
    "run_id": "kv-finish-point-tests",
    "status": "OBSERVED",
    "what": "the sealed acceptance suite"
@@ -154,56 +171,39 @@
    "files_scanned": 1,
    "hits": [
     {
-     "line": 369,
+     "line": 1126,
      "path": "runtime/kv_skap_vault.py",
-     "pattern": "^def finish_point\\(",
-     "text": "def finish_point() -> dict[str, Any]:"
+     "pattern": "^def finish_point\\(evidence",
+     "text": "def finish_point(evidence: Any = None, scratch_ledger_git_dir: str | None = None) -> dict[str, Any]:"
     },
     {
-     "line": 277,
+     "line": 1145,
      "path": "runtime/kv_skap_vault.py",
-     "pattern": "^NOT_YET_BUILT = \\{",
-     "text": "NOT_YET_BUILT = {"
+     "pattern": "add_argument\\(\"--evidence\"",
+     "text": "parser.add_argument(\"--evidence\", help=f\"{EVIDENCE_SCHEMA} JSON file\")"
     },
     {
-     "line": 297,
+     "line": 434,
      "path": "runtime/kv_skap_vault.py",
-     "pattern": "^def _exercise\\(",
-     "text": "def _exercise() -> dict[str, bool]:"
+     "pattern": "^EVIDENCE_SCHEMA = ",
+     "text": "EVIDENCE_SCHEMA = \"stegverse.kv-skap-vault-finish-point-evidence/v1\""
     },
     {
-     "line": 303,
+     "line": 840,
      "path": "runtime/kv_skap_vault.py",
-     "pattern": "tvc_issuance_receipt_ref=\"fixture:",
-     "text": "tvc_issuance_receipt_ref=\"fixture:tvc-issuance-unobserved\")"
-    },
-    {
-     "line": 328,
-     "path": "runtime/kv_skap_vault.py",
-     "pattern": "tvc_issuance_receipt_ref=\"fixture:",
-     "text": "tvc_issuance_receipt_ref=\"fixture:tvc-issuance-unobserved\")"
-    },
-    {
-     "line": 308,
-     "path": "runtime/kv_skap_vault.py",
-     "pattern": "intr_transition_ref=\"intr:fixture",
-     "text": "custody_key_ref=ref, intr_transition_ref=\"intr:fixture-write\")"
-    },
-    {
-     "line": 310,
-     "path": "runtime/kv_skap_vault.py",
-     "pattern": "intr_transition_ref=\"intr:fixture",
-     "text": "vault.revoke_consent(consent_receipt_hash=consent, intr_transition_ref=\"intr:fixture-revoke\", observed_at=\"fixture\")"
+     "pattern": "HEALTHY_NODE_EVALUATOR_NOT_THE_PINNED_INTR_EVALUATOR",
+     "text": "return (\"HEALTHY_NODE_EVALUATOR_NOT_THE_PINNED_INTR_EVALUATOR\", \"B\","
     }
    ],
    "patterns": [
-    "^def finish_point\\(",
+    "^def finish_point\\(evidence",
+    "add_argument\\(\"--evidence\"",
+    "^EVIDENCE_SCHEMA = ",
+    "HEALTHY_NODE_EVALUATOR_NOT_THE_PINNED_INTR_EVALUATOR",
     "^NOT_YET_BUILT = \\{",
-    "^def _exercise\\(",
-    "tvc_issuance_receipt_ref=\"fixture:",
-    "intr_transition_ref=\"intr:fixture"
+    "tvc_issuance_receipt_ref=\"fixture:"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
    "run_id": "kv-finish-point-evidence-input",
    "status": "OBSERVED",
    "what": "does the finish point take any evidence input (receipts) or only constants?"
@@ -217,12 +217,12 @@
      "passed": true,
      "skipped": 0,
      "subject": "KV_LINEAGE_SUITE",
-     "tests_ran": 10
+     "tests_ran": 18
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "pin": "StegVerse-Labs/continuity-vault-kit@d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-lineage-tests.out",
-   "raw_sha256": "sha256:a19a4b23a8363830e23d075ce5ebe6ba4e5d77947ed1da18d640a19572a7b62c",
+   "raw_sha256": "sha256:7d43d9a65b236defd664fed4561749ebcee9383f490244a8c9cc1992c4b42a94",
    "run_id": "kv-lineage-tests",
    "status": "OBSERVED",
    "what": "the consumed custody extension suite"
@@ -232,13 +232,19 @@
    "exit_code": 0,
    "outcomes": [
     {
-     "disposition": "EXCEPTION",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV",
+     "failure_code": "VAULT_LINEAGE_CUSTODY_RESULT_NOT_VERIFIED",
+     "next_attempt": "on the next admitted provider WRITE receipt and custody read-back for this lineage",
+     "owning_existing_goal": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+     "required_evidence_or_repair": "provider receipt schema mismatch; supply an admitted provider WRITE receipt for the bound request and the exact read-back lineage",
+     "retry_entrypoint": "runtime.task_registry_event_sovereign_kv_binding.validate_vault_lineage_custody_result (StegVerse-Labs/continuity-vault-kit); python -m unittest tests.test_sovereign_kv_vault_lineage_record",
      "subject": "DURABLE_CUSTODY_VALIDATION"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "pin": "StegVerse-Labs/continuity-vault-kit@d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-lineage-validate-unbound-receipt.out",
-   "raw_sha256": "sha256:5f694306a9e7636c53dbadaf6048e333b4cb81f3e6fdc4eea5e4848e2f4a640a",
+   "raw_sha256": "sha256:1e488d65a5307c9eaa8eaa0ab24ec8978434e9181ccef0f4d79b8503e99d0da0",
    "run_id": "kv-lineage-validate-unbound-receipt",
    "status": "OBSERVED",
    "what": "validate_vault_lineage_custody_result with no provider receipt: does it return a six-field disposition?"
@@ -292,7 +298,7 @@
    "patterns": [
     "DeclarativeStorageProviderAdapter\\(\""
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "pin": "StegVerse-Labs/continuity-vault-kit@d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
    "run_id": "kv-provider-registry",
    "status": "OBSERVED",
    "what": "the durable-custody provider adapters the lineage can be written to"
@@ -312,7 +318,7 @@
      "subject": "REGISTRATION_PLAN"
     }
    ],
-   "pin": "StegVerse-Labs/.github@724dc816d785b1cddac8a89f929048d4ba842550",
+   "pin": "StegVerse-Labs/.github@93526168775a09d1714f2356857c4cd24f3d32e7",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-without-ruling.out",
    "raw_sha256": "sha256:b11cb288af5995075d666b9835e1c6c502146161a6c54be6a548edc5fd1c45b4",
    "run_id": "kv-registration-plan-without-ruling",
@@ -328,22 +334,92 @@
      "subject": "REGISTRATION_PLAN"
     }
    ],
-   "pin": "StegVerse-Labs/.github@724dc816d785b1cddac8a89f929048d4ba842550",
+   "pin": "StegVerse-Labs/.github@93526168775a09d1714f2356857c4cd24f3d32e7",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-with-ruling.out",
-   "raw_sha256": "sha256:33dd486fd89cd42ce77fc8ef7363303fc5d1a8f82d9cf4d352a527fea741b5f5",
+   "raw_sha256": "sha256:523382b3fb0daba1c1e3371e4f2b8e4a672647b82c9be09ff2baaf9be2c66904",
    "run_id": "kv-registration-plan-with-ruling",
    "status": "OBSERVED",
    "what": "registration plan with the Coordination class-D adjacency ruling and the finish-point root"
   },
   {
    "files_scanned": 2,
-   "hits": [],
-   "patterns": [
-    "organization[-_ ]ledger",
-    "ORGANIZATION_RECEIPT",
-    "refs/stegverse"
+   "hits": [
+    {
+     "line": 1046,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "^ORGANIZATION_LEDGER_REF = ",
+     "text": "ORGANIZATION_LEDGER_REF = \"refs/stegverse/organization-ledger\""
+    },
+    {
+     "line": 1085,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "^def append_organization_ledger_receipt\\(",
+     "text": "def append_organization_ledger_receipt(receipt: dict[str, Any], scratch_ledger_git_dir: str | None) -> dict[str, Any]:"
+    },
+    {
+     "line": 1077,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "\"real_ledger_written\": False",
+     "text": "\"real_ledger_written\": False}"
+    },
+    {
+     "line": 1123,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "\"real_ledger_written\": False",
+     "text": "\"receipt_sha256\": sha256_uri(receipt), \"locus\": \"SCRATCH_LEDGER\", \"real_ledger_written\": False}"
+    },
+    {
+     "line": 1095,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "SCRATCH_LEDGER",
+     "text": "return _ledger_fail(\"SCRATCH_LEDGER_NOT_A_GIT_DIR\", \"A\", \"name an existing scratch git directory\","
+    },
+    {
+     "line": 1113,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "SCRATCH_LEDGER",
+     "text": "return _ledger_fail(\"SCRATCH_LEDGER_OBJECT_WRITE_FAILED\", \"A\", \"the scratch git directory refused objects\","
+    },
+    {
+     "line": 1123,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "SCRATCH_LEDGER",
+     "text": "\"receipt_sha256\": sha256_uri(receipt), \"locus\": \"SCRATCH_LEDGER\", \"real_ledger_written\": False}"
+    },
+    {
+     "line": 585,
+     "path": "tests/test_kv_skap_vault_finish_point.py",
+     "pattern": "SCRATCH_LEDGER",
+     "text": "self.assertEqual(append[\"locus\"], \"SCRATCH_LEDGER\")"
+    },
+    {
+     "line": 604,
+     "path": "tests/test_kv_skap_vault_finish_point.py",
+     "pattern": "SCRATCH_LEDGER",
+     "text": "self.assertEqual(append[\"failure_code\"], \"SCRATCH_LEDGER_NOT_A_GIT_DIR\")"
+    },
+    {
+     "line": 1097,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "remote\\b.*stdout|_git\\(scratch_ledger_git_dir, \"remote\"\\)",
+     "text": "if _git(scratch_ledger_git_dir, \"remote\").stdout.strip():"
+    },
+    {
+     "line": 1048,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "^LEDGER_GENESIS_OWNER = ",
+     "text": "LEDGER_GENESIS_OWNER = (\"organization-ledger writer split (StegVerse-Labs/.github#3255) / StegVerse-org/.github \""
+    }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "patterns": [
+    "^ORGANIZATION_LEDGER_REF = ",
+    "^def append_organization_ledger_receipt\\(",
+    "\"real_ledger_written\": False",
+    "SCRATCH_LEDGER",
+    "remote\\b.*stdout|_git\\(scratch_ledger_git_dir, \"remote\"\\)",
+    "^LEDGER_GENESIS_OWNER = "
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
    "run_id": "kv-ledger-binding",
    "status": "OBSERVED",
    "what": "any organization-ledger receipt in the KV finish point or request"
@@ -425,48 +501,108 @@
    "what": "any TV/TVC producer of tvc://skap-custody/ references (TVC main)"
   },
   {
-   "command": "{python} -c import json, os, sys, tempfile\nsys.path[:0] = [\".\", sys.argv[1]]\nwith tempfile.TemporaryDirectory(dir=\".\") as root:\n    os.environ[\"STEGVERSE_REPO_LEDGER_ROOT\"] = root\n    from llm_adapter import node_ingress_boundary as b\n    sig = {\"mode\": \"ESTABLISH_GENESIS\", \"predecessor\": None, \"node_class\": \"LLM_ADAPTER\"}\n    rows = []\n    for subject, extra, kw in ((\"HEALTH_REPORTED_UNHEALTHY\", {}, {\"health\": lambda: {\"status\": \"UNHEALTHY\"}}),\n                               (\"HEALTH_NOT_SUPPLIED\", {}, {}),\n                               (\"TRANSPORT_INTERLOCK_INTR_NOT_YET_ENABLED\", {}, {\"transport\": b.INTERLOCK_INTR, \"health\": lambda: {\"status\": \"HEALTHY\"}}),\n                               (\"STANDING_REFUSED\", {\"mode\": \"NOT_A_MODE\"}, {})):\n        try:\n            out = b.admit(dict(sig, node_ref=\"ladder-probe-\" + subject.lower(), **extra), **kw)\n            rec = out[\"ingress_record\"]\n            rows.append({\"subject\": subject, \"disposition\": \"ALLOW\", \"healthy_node_established\": rec[\"healthy_node_established\"],\n                         \"node_health_status\": rec[\"node_health_status\"], \"transport\": rec[\"transport\"], \"transport_state\": rec[\"transport_state\"]})\n        except Exception as exc:\n            rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__})\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n {root:sdk080}",
+   "command": "{python} -c import json, os, sys, tempfile\nsys.path[:0] = [\".\", sys.argv[1]]\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nwith tempfile.TemporaryDirectory(dir=\".\") as root:\n    os.environ[\"STEGVERSE_REPO_LEDGER_ROOT\"] = root\n    from llm_adapter import node_ingress_boundary as b\n    from llm_adapter import healthy_node_evaluator as e\n    sig = {\"mode\": \"ESTABLISH_GENESIS\", \"predecessor\": None, \"node_class\": \"LLM_ADAPTER\"}\n    rows = []\n    def keep(subject, out):\n        r = {\"subject\": subject, \"disposition\": out.get(\"disposition\"), \"healthy_node_established\": out.get(\"healthy_node_established\")}\n        for k in SIX + (\"reason\", \"failed_stage\"):\n            if isinstance(out.get(k), str):\n                r[k] = out[k]\n        rows.append(r)\n    for subject, extra, kw in ((\"HEALTH_REPORTED_UNHEALTHY\", {}, {\"health\": lambda: {\"status\": \"UNHEALTHY\"}}),\n                               (\"HEALTH_NOT_SUPPLIED\", {}, {}),\n                               (\"HEALTH_CALLER_ASSERTED_HEALTHY_UNRECEIPTED\", {}, {\"health\": lambda: {\"status\": \"HEALTHY\"}}),\n                               (\"TRANSPORT_INTERLOCK_INTR_NOT_YET_ENABLED\", {}, {\"transport\": b.INTERLOCK_INTR, \"health\": lambda: {\"status\": \"HEALTHY\"}}),\n                               (\"STANDING_REFUSED\", {\"mode\": \"NOT_A_MODE\"}, {})):\n        try:\n            keep(subject, b.admit(dict(sig, node_ref=\"ladder-probe-\" + subject.lower(), **extra), **kw))\n        except Exception as exc:\n            rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__})\n    for subject, kw in ((\"EVALUATOR_NO_LEDGER_HEAD\", {\"ledger_root\": os.path.join(root, \"missing\")}),\n                        (\"EVALUATOR_TRANSPORT_NOT_INSTALLED\", {\"ledger_root\": root, \"transport_state\": \"NOT_YET_ENABLED\"})):\n        try:\n            keep(subject, e.evaluate(\"ladder-probe-node\", **kw))\n        except Exception as exc:\n            rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__})\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n {root:sdk080}",
    "exit_code": 0,
    "outcomes": [
     {
-     "disposition": "ALLOW",
-     "healthy_node_established": true,
-     "node_health_status": "UNHEALTHY",
-     "subject": "HEALTH_REPORTED_UNHEALTHY",
-     "transport": "HTTP",
-     "transport_state": "INSTALLED"
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failed_stage": "CURRENT_NODE_HEALTH",
+     "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
+     "healthy_node_established": false,
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "LEDGER_HEAD_UNREADABLE: HEAD.json unreadable: FileNotFoundError",
+     "required_evidence_or_repair": "a readable HEAD.json naming a receipt on this repository's ledger",
+     "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)",
+     "subject": "HEALTH_REPORTED_UNHEALTHY"
     },
     {
-     "disposition": "ALLOW",
-     "healthy_node_established": true,
-     "node_health_status": null,
-     "subject": "HEALTH_NOT_SUPPLIED",
-     "transport": "HTTP",
-     "transport_state": "INSTALLED"
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failed_stage": "CURRENT_NODE_HEALTH",
+     "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
+     "healthy_node_established": false,
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "HEALTH_REPORT_MISSING: no NODE_HEALTH_REPORTED receipt for ladder-probe-health_not_supplied on the chain",
+     "required_evidence_or_repair": "a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json",
+     "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)",
+     "subject": "HEALTH_NOT_SUPPLIED"
     },
     {
-     "disposition": "ALLOW",
-     "healthy_node_established": true,
-     "node_health_status": "HEALTHY",
-     "subject": "TRANSPORT_INTERLOCK_INTR_NOT_YET_ENABLED",
-     "transport": "INTERLOCK_INTR",
-     "transport_state": "NOT_YET_ENABLED"
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failed_stage": "CURRENT_NODE_HEALTH",
+     "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
+     "healthy_node_established": false,
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "HEALTH_REPORT_MISSING: no NODE_HEALTH_REPORTED receipt for ladder-probe-health_caller_asserted_healthy_unreceipted on the chain",
+     "required_evidence_or_repair": "a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json",
+     "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)",
+     "subject": "HEALTH_CALLER_ASSERTED_HEALTHY_UNRECEIPTED"
     },
     {
-     "disposition": "EXCEPTION",
-     "exception": "StandingRefused",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failed_stage": "CURRENT_NODE_HEALTH",
+     "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
+     "healthy_node_established": false,
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "TRANSPORT_NOT_INSTALLED: transport_state is 'NOT_YET_ENABLED'",
+     "required_evidence_or_repair": "the requester's transport must be INSTALLED; a NOT_YET_ENABLED or unknown transport establishes no healthy node",
+     "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)",
+     "subject": "TRANSPORT_INTERLOCK_INTR_NOT_YET_ENABLED"
+    },
+    {
+     "disposition": "DENY",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failed_stage": "NODE_STANDING",
+     "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
+     "healthy_node_established": false,
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "unsupported standing mode: NOT_A_MODE",
+     "required_evidence_or_repair": "declare standing as GET /api/node-standing/readiness publishes it: explicit genesis or the owner's predecessor binding, and a known node_class",
+     "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)",
      "subject": "STANDING_REFUSED"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
+     "healthy_node_established": false,
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "LEDGER_HEAD_UNREADABLE",
+     "required_evidence_or_repair": "a readable HEAD.json naming a receipt on this repository's ledger",
+     "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)",
+     "subject": "EVALUATOR_NO_LEDGER_HEAD"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_code": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY",
+     "healthy_node_established": false,
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324) via LC-KV-13/LC-KV-14, InTr and Mesh Destinations lane StegVerse-org/.github#162",
+     "reason": "TRANSPORT_NOT_INSTALLED",
+     "required_evidence_or_repair": "the requester's transport must be INSTALLED; a NOT_YET_ENABLED or unknown transport establishes no healthy node",
+     "retry_entrypoint": "llm_adapter.healthy_node_evaluator.evaluate (via llm_adapter.node_ingress_boundary.admit, POST /api/node-standing)",
+     "subject": "EVALUATOR_TRANSPORT_NOT_INSTALLED"
     }
    ],
-   "pin": "StegVerse-org/LLM-adapter@ece815b1c5976dadb7d4cdc47ab37ae7a2a75605",
+   "pin": "StegVerse-org/LLM-adapter@0b37fe3b786a2de687235f5d9d146af49ffee9cd",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/layer1-healthy-node-probe.out",
-   "raw_sha256": "sha256:66b4c0a50c4076623ce9f35a2c97bc280121b8c1230b0b1b7e05465e7622d766",
+   "raw_sha256": "sha256:2bbbdcbcfd24882647404e9660f2ec6f0a7dffdd396afb100df73f8d0709e784",
    "run_id": "layer1-healthy-node-probe",
    "status": "OBSERVED",
-   "what": "LLM-adapter node ingress (the only code that establishes a healthy node): does an unhealthy, unreported or InTr-not-enabled arrival get refused, and is a refusal returned with six fields?"
+   "what": "LLM-adapter#428 node ingress admit() and healthy_node_evaluator.evaluate: an unhealthy, unreported, caller-asserted-healthy or InTr-not-enabled arrival, a refused standing, no ledger head; is each refused and returned with six fields?"
   },
   {
-   "command": "{python} -c import sys,unittest; sys.path[:0]=['.','tests',sys.argv[1]]; sys.argv=[sys.argv[0],'-v','test_node_ingress_boundary','test_node_standing']; unittest.main(module=None) {root:sdk080}",
+   "command": "{python} -c import os,sys,tempfile,unittest; os.environ['STEGVERSE_REPO_LEDGER_ROOT']=tempfile.mkdtemp(prefix='lc-test-ledger-'); os.environ['STEGVERSE_GATEWAY_FORWARD_DB']=os.path.join(tempfile.mkdtemp(prefix='lc-test-fwd-'),'gateway-forward.db'); sys.path[:0]=['.']; import tests; sys.path.append(sys.argv[1]); sys.argv=[sys.argv[0],'-v','tests.test_node_ingress_boundary','tests.test_node_standing','tests.test_healthy_node_evaluator']; unittest.main(module=None) {root:sdk080}",
    "exit_code": 0,
    "outcomes": [
     {
@@ -474,15 +610,15 @@
      "passed": true,
      "skipped": 0,
      "subject": "HEALTHY_NODE_SUITE",
-     "tests_ran": 49
+     "tests_ran": 74
     }
    ],
-   "pin": "StegVerse-org/LLM-adapter@ece815b1c5976dadb7d4cdc47ab37ae7a2a75605",
+   "pin": "StegVerse-org/LLM-adapter@0b37fe3b786a2de687235f5d9d146af49ffee9cd",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/layer1-healthy-node-tests.out",
-   "raw_sha256": "sha256:4632d158a99dab29c02d7d22a7e37eddb304f0f72516951641a22030ce76d0fd",
+   "raw_sha256": "sha256:c6e9805a622650efb208fe90c07f6e14a0067d9e8419309f31fafb8303e137bb",
    "run_id": "layer1-healthy-node-tests",
    "status": "OBSERVED",
-   "what": "the LLM-adapter node ingress and standing suites at the pinned commit"
+   "what": "the LLM-adapter node ingress, standing and healthy-node evaluator suites at #428"
   },
   {
    "files_scanned": 1408,
@@ -638,15 +774,119 @@
    "what": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE in Labs main: specimen status and any evaluator"
   },
   {
-   "files_scanned": 63,
-   "hits": [],
+   "files_scanned": 65,
+   "hits": [
+    {
+     "line": 1,
+     "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+     "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "text": "\"\"\"LC-KV-13: decide REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE from receipted health reports only."
+    },
+    {
+     "line": 65,
+     "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+     "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "text": "PREDICATE = \"REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE\""
+    },
+    {
+     "line": 45,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "text": "# (INTR_DEVICE_KV). It first requires REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE, decided by the healthy-node"
+    },
+    {
+     "line": 62,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "text": "HEALTHY_NODE_PREDICATE = \"REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE\""
+    },
+    {
+     "line": 837,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "text": "f\"{where}: the layer-1 receipt carries no verifying REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE receipt\")"
+    },
+    {
+     "line": 3,
+     "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+     "pattern": "CURRENT_NODE_HEALTH",
+     "text": "This is the E0 evaluator for gate CURRENT_NODE_HEALTH (StegVerse-Labs/.github"
+    },
+    {
+     "line": 66,
+     "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+     "pattern": "CURRENT_NODE_HEALTH",
+     "text": "GATE = \"CURRENT_NODE_HEALTH\""
+    },
+    {
+     "line": 65,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "CURRENT_NODE_HEALTH",
+     "text": "HEALTHY_NODE_GATE = \"CURRENT_NODE_HEALTH\""
+    },
+    {
+     "line": 69,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "^PINNED_HEALTHY_NODE_EVALUATOR",
+     "text": "PINNED_HEALTHY_NODE_EVALUATOR = {"
+    },
+    {
+     "line": 82,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "^PINNED_HEALTHY_NODE_EVALUATOR",
+     "text": "PINNED_HEALTHY_NODE_EVALUATOR_ID = (PINNED_HEALTHY_NODE_EVALUATOR[\"module\"] + \".\""
+    },
+    {
+     "line": 516,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "healthy_node_evaluator=",
+     "text": "clock=lambda: fixed, healthy_node_evaluator=_exercise_only_healthy_node_evaluator,"
+    },
+    {
+     "line": 244,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "healthy_node_ledger_root",
+     "text": "healthy_node_ledger_root: Any = None,"
+    },
+    {
+     "line": 259,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "healthy_node_ledger_root",
+     "text": "self.healthy_node_ledger_root = healthy_node_ledger_root"
+    },
+    {
+     "line": 296,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "healthy_node_ledger_root",
+     "text": "out = self.healthy_node_evaluator(node_ref, ledger_root=self.healthy_node_ledger_root,"
+    },
+    {
+     "line": 517,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "healthy_node_ledger_root",
+     "text": "healthy_node_ledger_root=LOCAL_EXERCISE_LABEL)"
+    },
+    {
+     "line": 547,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "healthy_node_ledger_root",
+     "text": "self.layer1.healthy_node_ledger_root = LOCAL_EXERCISE_LABEL if health == \"default\" else None"
+    },
+    {
+     "line": 551,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "healthy_node_ledger_root",
+     "text": "self.layer1.healthy_node_ledger_root = LOCAL_EXERCISE_LABEL"
+    }
+   ],
    "patterns": [
     "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
-    "healthy_node",
-    "node_health",
-    "CURRENT_NODE_HEALTH"
+    "CURRENT_NODE_HEALTH",
+    "^PINNED_HEALTHY_NODE_EVALUATOR",
+    "healthy_node_evaluator=",
+    "healthy_node_ledger_root"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
    "run_id": "layer1-healthy-node-search-kv",
    "status": "OBSERVED",
    "what": "any healthy-node / node-health gate in the KV code (#258 and #259 heads)"
@@ -877,13 +1117,13 @@
      "text": "\"interlock_intr_receipt_ref\": f\"{provider_receipt['interlock_receipt_ref']}|{provider_receipt['intr_receipt_ref']}\","
     },
     {
-     "line": 267,
+     "line": 373,
      "path": "runtime/task_registry_event_sovereign_kv_binding.py",
      "pattern": "intr_receipt_ref",
      "text": "for field, label in ((\"interlock_receipt_ref\", \"Interlock receipt\"), (\"intr_receipt_ref\", \"InTr receipt\"),"
     },
     {
-     "line": 288,
+     "line": 396,
      "path": "runtime/task_registry_event_sovereign_kv_binding.py",
      "pattern": "intr_receipt_ref",
      "text": "\"interlock_intr_receipt_ref\": f\"{provider_receipt['interlock_receipt_ref']}|{provider_receipt['intr_receipt_ref']}\","
@@ -896,7 +1136,7 @@
     "CURRENT_NODE_HEALTH",
     "intr_receipt_ref"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@2d51d34991121b56c1afd21abaad35ded0c2f94a",
+   "pin": "StegVerse-Labs/continuity-vault-kit@d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
    "run_id": "layer1-healthy-node-search-kv259",
    "status": "OBSERVED",
    "what": "same search, #259 head"
@@ -915,47 +1155,49 @@
    "what": "same search, TVC main"
   },
   {
-   "command": "{python} -c import json\nfrom runtime import kv_interlock_endpoint as k\nrows = []\nreq = {\"schema_version\": k.REQUEST_SCHEMA, \"operation\": \"REQUEST\", \"request_id\": \"ladder-probe-1\",\n       \"requester\": {\"module\": \"ladder-probe\", \"component\": \"probe\"}, \"purpose\": \"ladder-probe\",\n       \"record_class\": \"profile\", \"requested_scope\": [\"profile\"], \"minimum_necessary_justification\": \"probe\",\n       \"authority_ref\": \"authority:probe\", \"disclosure_mode\": \"BOUNDED_CONTEXT\"}\ndef env(**over):\n    e = {\"schema\": k.ENVELOPE_SCHEMA, \"protocol\": \"InTr\", \"packet_id\": \"pkt-probe\", \"direction\": \"REQUEST\",\n         \"source_role\": \"DEVICE\", \"next_role\": \"KV\", \"request_id\": req[\"request_id\"], \"operation\": req[\"operation\"],\n         \"payload_schema_version\": k.REQUEST_SCHEMA, \"payload_hash\": k.sha256_uri(req), \"sealed_material_ref\": \"sealed:probe\",\n         \"authority\": {\"authority_transfer\": False, \"transport_grants_execution_authority\": False,\n                       \"model_output_grants_execution_authority\": False, \"credential_authority_effect\": \"NONE\"},\n         \"boundary_proof\": {\"required\": True, \"source_identity_ref\": \"caller-chosen\", \"next_boundary_identity_ref\": \"caller-chosen\",\n                            \"verification_state\": \"VERIFIED\"},\n         \"receipt_policy\": {\"receipt_required\": True, \"receipt_contains_payload_plaintext\": False,\n                            \"receipt_chain_required\": True, \"ambiguous_disposition\": \"FAIL_CLOSED\"}}\n    e.update(over)\n    return e\nrt = k.KVInterlockRuntime(authority_validator=lambda *a: True,\n                          policy_evaluator=lambda r: {\"decision\": \"ALLOW_BOUNDED_CONTEXT\", \"granted_scope\": [\"profile\"],\n                                                      \"context\": {\"profile\": \"x\"}, \"source_refs\": [], \"policy_profile\": \"probe\"},\n                          receipt_store=lambda rec: \"receipt:probe\")\ndef probe(subject, fn):\n    try:\n        out = fn()\n        d = out.get(\"decision\")\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\" if d == \"ALLOW_BOUNDED_CONTEXT\" else d})\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nprobe(\"LAYER1_KV_ACCESS_WITHOUT_HEALTHY_NODE_EVIDENCE\", lambda: rt.handle(req, intr_envelope=env(), intr_receipt_ref=\"sha256:\" + \"a\" * 64))\nprobe(\"LAYER1_KV_ACCESS_WITH_UNVERIFIED_BOUNDARY_PROOF\", lambda: rt.handle(req, intr_envelope=env(boundary_proof={\"required\": True, \"source_identity_ref\": \"x\", \"next_boundary_identity_ref\": \"y\", \"verification_state\": \"UNVERIFIED\"}), intr_receipt_ref=\"sha256:\" + \"a\" * 64))\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "command": "{python} -c import json\nfrom runtime.kv_skap_vault import KVSkapVault, VaultRefusal, CUSTODY_REF_PREFIX, CREDENTIAL_AUTHORITY\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except VaultRefusal as exc:\n        rows.append(dict({k: v for k, v in exc.fields.items() if isinstance(v, str)}, subject=subject, disposition=\"FAIL_CLOSED\", raised=\"VaultRefusal\"))\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__})\nref = CUSTODY_REF_PREFIX + \"ladder-probe\"\ndef skap_bind():\n    KVSkapVault(\"principal:ladder-probe\").bind_custody_key_reference(custody_key_ref=ref, issued_by=CREDENTIAL_AUTHORITY, tvc_issuance_receipt_ref=\"probe:no-layer1-receipt\")\ndef kv_read():\n    v = KVSkapVault(\"principal:ladder-probe\")\n    v.bind_custody_key_reference(custody_key_ref=ref, issued_by=CREDENTIAL_AUTHORITY, tvc_issuance_receipt_ref=\"probe:x\")\n    c = v.grant_consent(purposes=[\"WRITE\", \"READ\"], projection_ids=[\"p\"], observed_at=\"probe\")[\"receipt_hash\"]\n    v.write_projection(projection_id=\"p\", content={\"a\": 1}, consent_receipt_hash=c, custody_key_ref=ref, intr_transition_ref=\"intr:not-a-receipt\")\n    v.read_projection(projection_id=\"p\", consent_receipt_hash=c)\n    return v, c\ndef reconstruct_read():\n    v, c = kv_read()\n    KVSkapVault.reconstruct(v.export_lineage()).read_projection(projection_id=\"p\", consent_receipt_hash=c)\nprobe(\"SKAP_BIND_WITHOUT_LAYER1_KV_ACCESS_RECEIPT\", skap_bind)\nprobe(\"KV_WRITE_READ_WITHOUT_HEALTHY_NODE_OR_VERIFIED_INTR\", kv_read)\nprobe(\"KV_RECONSTRUCT_AND_READ_FROM_EXPORT_WITHOUT_INTR\", reconstruct_read)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
    "exit_code": 0,
    "outcomes": [
     {
-     "disposition": "ALLOW",
-     "subject": "LAYER1_KV_ACCESS_WITHOUT_HEALTHY_NODE_EVIDENCE"
-    },
-    {
-     "disposition": "EXCEPTION",
-     "exception": "KVInterlockRuntimeError",
-     "message": "verified boundary proof required",
-     "subject": "LAYER1_KV_ACCESS_WITH_UNVERIFIED_BOUNDARY_PROOF"
-    }
-   ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
-   "raw": "data/sv-work-items/ladder-conformance/observations/raw/layer1-kv-interlock-probe.out",
-   "raw_sha256": "sha256:ce4bad586a87c6c70fcfbe58b296ba951abc2e7faa5fe8315954f9456435be13",
-   "run_id": "layer1-kv-interlock-probe",
-   "status": "OBSERVED",
-   "what": "KVInterlockRuntime.handle (#258), the DEVICE->KV InTr entry: KV access with no healthy-node evidence (caller-asserted VERIFIED proof) and with an unverified proof"
-  },
-  {
-   "command": "{python} -c import json\nfrom runtime.kv_skap_vault import KVSkapVault, VaultRefusal, CUSTODY_REF_PREFIX, CREDENTIAL_AUTHORITY\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except VaultRefusal as exc:\n        rows.append(dict({k: v for k, v in exc.fields.items() if isinstance(v, str)}, subject=subject))\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__})\nref = CUSTODY_REF_PREFIX + \"ladder-probe\"\ndef skap_bind():\n    KVSkapVault(\"principal:ladder-probe\").bind_custody_key_reference(custody_key_ref=ref, issued_by=CREDENTIAL_AUTHORITY, tvc_issuance_receipt_ref=\"probe:no-layer1-receipt\")\ndef kv_read():\n    v = KVSkapVault(\"principal:ladder-probe\")\n    v.bind_custody_key_reference(custody_key_ref=ref, issued_by=CREDENTIAL_AUTHORITY, tvc_issuance_receipt_ref=\"probe:x\")\n    c = v.grant_consent(purposes=[\"WRITE\", \"READ\"], projection_ids=[\"p\"], observed_at=\"probe\")[\"receipt_hash\"]\n    v.write_projection(projection_id=\"p\", content={\"a\": 1}, consent_receipt_hash=c, custody_key_ref=ref, intr_transition_ref=\"intr:not-a-receipt\")\n    v.read_projection(projection_id=\"p\", consent_receipt_hash=c)\n    return v, c\ndef reconstruct_read():\n    v, c = kv_read()\n    KVSkapVault.reconstruct(v.export_lineage()).read_projection(projection_id=\"p\", consent_receipt_hash=c)\nprobe(\"SKAP_BIND_WITHOUT_LAYER1_KV_ACCESS_RECEIPT\", skap_bind)\nprobe(\"KV_WRITE_READ_WITHOUT_HEALTHY_NODE_OR_VERIFIED_INTR\", kv_read)\nprobe(\"KV_RECONSTRUCT_AND_READ_FROM_EXPORT_WITHOUT_INTR\", reconstruct_read)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
-   "exit_code": 0,
-   "outcomes": [
-    {
-     "disposition": "ALLOW",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
+     "failure_class": "B",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next SKAP operation admitted by the layer-2 gate",
+     "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+     "raised": "VaultRefusal",
+     "required_evidence_or_repair": "the SKAP Vault is reachable only through InTr from inside KV: construct the vault with the layer-2 gate (runtime.kv_skap_layer2.SkapLayer2Gate over KVInterlockRuntime) and enter through skap_entry",
+     "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
      "subject": "SKAP_BIND_WITHOUT_LAYER1_KV_ACCESS_RECEIPT"
     },
     {
-     "disposition": "ALLOW",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
+     "failure_class": "B",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next SKAP operation admitted by the layer-2 gate",
+     "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+     "raised": "VaultRefusal",
+     "required_evidence_or_repair": "the SKAP Vault is reachable only through InTr from inside KV: construct the vault with the layer-2 gate (runtime.kv_skap_layer2.SkapLayer2Gate over KVInterlockRuntime) and enter through skap_entry",
+     "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
      "subject": "KV_WRITE_READ_WITHOUT_HEALTHY_NODE_OR_VERIFIED_INTR"
     },
     {
-     "disposition": "ALLOW",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
+     "failure_class": "B",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next SKAP operation admitted by the layer-2 gate",
+     "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)",
+     "raised": "VaultRefusal",
+     "required_evidence_or_repair": "the SKAP Vault is reachable only through InTr from inside KV: construct the vault with the layer-2 gate (runtime.kv_skap_layer2.SkapLayer2Gate over KVInterlockRuntime) and enter through skap_entry",
+     "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
      "subject": "KV_RECONSTRUCT_AND_READ_FROM_EXPORT_WITHOUT_INTR"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-layers-probe.out",
-   "raw_sha256": "sha256:dd00149f50821fb685109d9d05f267e7ed573ddbef54e110ad716280fdb2e425",
+   "raw_sha256": "sha256:24294305def8cf6e334161a51b822a8b67db29e1e28d7057550064390cbf5aba",
    "run_id": "kv-layers-probe",
    "status": "OBSERVED",
    "what": "KVSkapVault (#258): SKAP bind, KV write/read and reconstruct-read with no layer-1 KV-access receipt, no healthy-node input and an unverified intr: string"
@@ -964,52 +1206,238 @@
    "files_scanned": 1,
    "hits": [
     {
-     "line": 105,
+     "line": 158,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "^class KVSkapVault",
      "text": "class KVSkapVault:"
     },
     {
-     "line": 151,
+     "line": 215,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
-     "text": "def bind_custody_key_reference(self, *, custody_key_ref: str, issued_by: str,"
+     "text": "def bind_custody_key_reference(self, *, custody_key_ref: str, issued_by: str, tvc_issuance_receipt_ref: str,"
     },
     {
-     "line": 171,
+     "line": 237,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
-     "text": "def grant_consent(self, *, purposes: list[str], projection_ids: list[str], observed_at: str) -> dict[str, Any]:"
+     "text": "def grant_consent(self, *, purposes: list[str], projection_ids: list[str], observed_at: str,"
     },
     {
-     "line": 208,
+     "line": 279,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
      "text": "def write_projection(self, *, projection_id: str, content: Any, consent_receipt_hash: str,"
     },
     {
-     "line": 222,
+     "line": 294,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
-     "text": "def read_projection(self, *, projection_id: str, consent_receipt_hash: str) -> tuple[Any, dict[str, Any]]:"
+     "text": "def read_projection(self, *, projection_id: str, consent_receipt_hash: str,"
     },
     {
-     "line": 241,
+     "line": 316,
      "path": "runtime/kv_skap_vault.py",
      "pattern": "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
-     "text": "def reconstruct(cls, exported: dict[str, Any]) -> \"KVSkapVault\":"
+     "text": "def reconstruct(cls, exported: dict[str, Any], *, skap_gate: Any = None,"
     },
     {
-     "line": 250,
+     "line": 21,
      "path": "runtime/kv_skap_vault.py",
-     "pattern": "^def _require_intr",
-     "text": "def _require_intr(ref: str) -> None:"
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "``KVInterlockRuntime.handle``, INTR_DEVICE_KV, and it consumes the InTr healthy-node evaluator."
     },
     {
-     "line": 251,
+     "line": 23,
      "path": "runtime/kv_skap_vault.py",
-     "pattern": "startswith\\(\"intr:\"\\)",
-     "text": "if not isinstance(ref, str) or not ref.startswith(\"intr:\"):"
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "INTR_KV_SKAP, a separate gate fed by a layer-1 receipt."
+    },
+    {
+     "line": 124,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "#   KVInterlockRuntime.handle (INTR_DEVICE_KV), which mints a KV-access receipt."
+    },
+    {
+     "line": 126,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "#   (INTR_KV_SKAP, runtime/kv_skap_layer2.py), a separate gate. It admits a transition whose prior_receipt_hash is a"
+    },
+    {
+     "line": 352,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "return {\"kv_access_receipt_hash\": receipt[\"prior_receipt_hash\"], \"skap_access_receipt_hash\": receipt_hash,"
+    },
+    {
+     "line": 367,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "def skap_entry(gate: Any, vault: \"KVSkapVault | None\", *, operation: str, kv_access_receipt_hash: Any,"
+    },
+    {
+     "line": 371,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "It submits exactly one INTR_KV_SKAP transition, whose prior_receipt_hash is the caller's layer-1 KV-access"
+    },
+    {
+     "line": 389,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "prior_receipt_hash=kv_access_receipt_hash))"
+    },
+    {
+     "line": 405,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "\"skap_access_receipt_hash\": receipt_hash, \"kv_access_receipt_hash\": kv_access_receipt_hash}"
+    },
+    {
+     "line": 464,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "\"evidence.layer1_kv_access_receipts and evidence.layer2_skap_access_receipts, the two credential layers that \""
+    },
+    {
+     "line": 554,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "return self.kv_access()[\"kv_access_receipt\"][\"receipt_hash\"]"
+    },
+    {
+     "line": 557,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "return skap_entry(self.gate, vault, operation=operation, kv_access_receipt_hash=self.kv_hash(),"
+    },
+    {
+     "line": 595,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "and out.get(\"kv_access_receipt\") is None for out in (no_health, unverified))"
+    },
+    {
+     "line": 632,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "refused(lambda: skap_entry(h.gate, live, operation=\"SKAP_READ\", kv_access_receipt_hash=forged_prior,"
+    },
+    {
+     "line": 750,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "ACCESS_EVIDENCE_KEYS = (\"layer1_kv_access_receipts\", \"layer2_skap_access_receipts\")"
+    },
+    {
+     "line": 760,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "\"supply evidence.layer1_kv_access_receipts: one stegverse.kv-access-receipt/v1 minted by \""
+    },
+    {
+     "line": 761,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "\"KVInterlockRuntime.handle (INTR_DEVICE_KV) per lineage receipt. Each must carry the ALLOW evaluation of \""
+    },
+    {
+     "line": 769,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "\"SkapLayer2Gate.admit (INTR_KV_SKAP) per lineage receipt, used once, for the operation and principal it names\"),"
+    },
+    {
+     "line": 824,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "kv = layer1.get(access.get(\"kv_access_receipt_hash\"))"
+    },
+    {
+     "line": 829,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "or kv.get(\"boundary\") != \"INTR_DEVICE_KV\" or kv.get(\"minted_by\") != \"KVInterlockRuntime.handle\" \\"
+    },
+    {
+     "line": 833,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "f\"{where}: the layer-1 receipt must re-derive as an INTR_DEVICE_KV receipt minted by \""
+    },
+    {
+     "line": 861,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "or skap.get(\"boundary\") != \"INTR_KV_SKAP\" or skap.get(\"minted_by\") != \"SkapLayer2Gate.admit\" \\"
+    },
+    {
+     "line": 866,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "f\"{where}: the layer-2 receipt must re-derive as an INTR_KV_SKAP receipt minted by \""
+    },
+    {
+     "line": 879,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+     "text": "if prior is None or prior != access.get(\"kv_access_receipt_hash\") or prior not in layer1:"
+    },
+    {
+     "line": 21,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "``KVInterlockRuntime.handle``, INTR_DEVICE_KV, and it consumes the InTr healthy-node evaluator."
+    },
+    {
+     "line": 43,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "from runtime.kv_interlock_endpoint import (HEALTHY_NODE_RECEIPT_SCHEMA, KV_ACCESS_RECEIPT_SCHEMA,"
+    },
+    {
+     "line": 45,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "KVInterlockRuntime, _HEALTHY_RECEIPT_EXACT)"
+    },
+    {
+     "line": 124,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "#   KVInterlockRuntime.handle (INTR_DEVICE_KV), which mints a KV-access receipt."
+    },
+    {
+     "line": 340,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "\"(runtime.kv_skap_layer2.SkapLayer2Gate over KVInterlockRuntime) and enter through skap_entry\"),"
+    },
+    {
+     "line": 510,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "self.layer1 = KVInterlockRuntime("
+    },
+    {
+     "line": 761,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "\"KVInterlockRuntime.handle (INTR_DEVICE_KV) per lineage receipt. Each must carry the ALLOW evaluation of \""
+    },
+    {
+     "line": 829,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "or kv.get(\"boundary\") != \"INTR_DEVICE_KV\" or kv.get(\"minted_by\") != \"KVInterlockRuntime.handle\" \\"
+    },
+    {
+     "line": 834,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "kv_interlock|KVInterlockRuntime|response_hash",
+     "text": "\"KVInterlockRuntime.handle for the same InTr receipt and node\")"
     }
    ],
    "patterns": [
@@ -1020,7 +1448,7 @@
     "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
     "kv_interlock|KVInterlockRuntime|response_hash"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
    "run_id": "kv-layers-structure",
    "status": "OBSERVED",
    "what": "KVSkapVault entry points: which take an InTr reference, what _require_intr checks, any layer-1 receipt"
@@ -1029,19 +1457,19 @@
    "files_scanned": 1,
    "hits": [
     {
-     "line": 173,
+     "line": 226,
      "path": "execution/vault_store.py",
      "pattern": "    def (append|read)_skap_sealed_credential\\(",
-     "text": "def append_skap_sealed_credential(self, stream_id: str, sealed: dict[str, Any], ingress_receipt: dict[str, Any]) -> tuple[Path, Path]:"
+     "text": "def append_skap_sealed_credential(self, stream_id: str, sealed: dict[str, Any], ingress_receipt: dict[str, Any],"
     },
     {
-     "line": 198,
+     "line": 256,
      "path": "execution/vault_store.py",
      "pattern": "    def (append|read)_skap_sealed_credential\\(",
-     "text": "def read_skap_sealed_credential(self, stream_id: str) -> dict[str, Any] | None:"
+     "text": "def read_skap_sealed_credential(self, stream_id: str, *, skap_gate: Any = None,"
     },
     {
-     "line": 125,
+     "line": 178,
      "path": "execution/vault_store.py",
      "pattern": "self.vault_root = ",
      "text": "self.vault_root = Path(vault_root)"
@@ -1053,109 +1481,121 @@
      "text": "InTr packet/receipt and SKAP ciphertext persistence are metadata/ciphertext custody"
     },
     {
-     "line": 29,
+     "line": 15,
+     "path": "execution/vault_store.py",
+     "pattern": "intr|InTr|healthy",
+     "text": "layer-1 KV-access receipt (KVInterlockRuntime.handle, INTR_DEVICE_KV, healthy node). Without the gate and receipt,"
+    },
+    {
+     "line": 35,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "INTR_PACKET_SCHEMA = \"stegverse.intr.packet.review_candidate/v1\""
     },
     {
-     "line": 30,
+     "line": 36,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "INTR_RECEIPT_SCHEMA = \"stegverse.intr.hop_receipt/v1\""
     },
     {
-     "line": 56,
+     "line": 62,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "def _validate_intr_packet_for_kv(record: dict[str, Any]) -> None:"
     },
     {
-     "line": 58,
+     "line": 64,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "raise VaultStoreError(\"unsupported InTr packet schema for KnowledgeVault persistence\")"
     },
     {
-     "line": 61,
+     "line": 67,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "raise VaultStoreError(\"InTr packet envelope is required\")"
     },
     {
-     "line": 65,
+     "line": 71,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "raise VaultStoreError(\"InTr packet authority boundary is required\")"
     },
     {
-     "line": 67,
+     "line": 73,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "_require_false(authority.get(key), f\"InTr packet {key}\")"
     },
     {
-     "line": 71,
+     "line": 77,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "raise VaultStoreError(\"InTr protected payload metadata is required\")"
     },
     {
-     "line": 73,
+     "line": 79,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "raise VaultStoreError(\"InTr protected payload must remain sealed in KnowledgeVault\")"
     },
     {
-     "line": 74,
+     "line": 80,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "_require_false(protected.get(\"plaintext_present\"), \"InTr protected payload plaintext_present\")"
     },
     {
-     "line": 82,
+     "line": 88,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "def _validate_intr_receipt_for_kv(record: dict[str, Any]) -> None:"
     },
     {
-     "line": 84,
+     "line": 90,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "raise VaultStoreError(\"unsupported InTr receipt schema for KnowledgeVault persistence\")"
     },
     {
-     "line": 85,
+     "line": 91,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "_require_false(record.get(\"secret_plaintext_present\"), \"InTr receipt secret_plaintext_present\")"
     },
     {
-     "line": 86,
+     "line": 92,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "_require_false(record.get(\"authority_transfer\"), \"InTr receipt authority_transfer\")"
     },
     {
-     "line": 165,
+     "line": 159,
+     "path": "execution/vault_store.py",
+     "pattern": "intr|InTr|healthy",
+     "text": "\"SKAP sealed credentials are reachable only through InTr from inside KV: pass skap_gate \""
+    },
+    {
+     "line": 218,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "def append_intr_packet(self, packet_stream_id: str, record: dict[str, Any]) -> Path:"
     },
     {
-     "line": 166,
+     "line": 219,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "_validate_intr_packet_for_kv(record)"
     },
     {
-     "line": 169,
+     "line": 222,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "def append_intr_receipt(self, packet_stream_id: str, record: dict[str, Any]) -> Path:"
     },
     {
-     "line": 170,
+     "line": 223,
      "path": "execution/vault_store.py",
      "pattern": "intr|InTr|healthy",
      "text": "_validate_intr_receipt_for_kv(record)"
@@ -1166,7 +1606,7 @@
     "self.vault_root = ",
     "intr|InTr|healthy"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@981017e135142deba2d1d31a2b311023dfed5cc2",
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
    "run_id": "skap-direct-store-cvk",
    "status": "OBSERVED",
    "what": "direct SKAP sealed-credential read/write in continuity-vault-kit (no InTr, no KV gate)"
@@ -1390,8 +1830,625 @@
    "what": "do the KV request, allocation or handoff (#3324) name either access layer or the healthy-node predicate?"
   },
   {
+   "command": "{python} -c import json, sys, tempfile\nsys.path[:0] = [\".\", \"tests\"]\nfrom runtime import kv_interlock_endpoint as ep\nfrom runtime import kv_skap_vault as kv\nfrom runtime.kv_skap_layer2 import kv_skap_transition\nfrom kv_two_layer_e0 import TwoLayers, e0_health_ledger\nfrom execution.adapter import canonical_sha256\nfrom execution.vault_store import KnowledgeVaultExecutionStore, SKAP_KV_RECORD_SCHEMA\nfrom execution.vault_store import SKAP_SEALED_FORMAT\nimport base64, hashlib\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None):\n    r = {\"subject\": subject}\n    if isinstance(out, dict):\n        d = out.get(\"disposition\") or out.get(\"decision\")\n        r[\"disposition\"] = \"ALLOW\" if d in (\"ALLOW\", \"ALLOW_BOUNDED_CONTEXT\") else d\n        for k in SIX + (\"failure_class\",):\n            if isinstance(out.get(k), str):\n                r[k] = out[k]\n    else:\n        r[\"disposition\"] = out\n    if note: r[\"note\"] = note\n    rows.append(r)\ndef guard(subject, fn):\n    try:\n        fn()\n    except Exception as exc:\n        f = getattr(exc, \"fields\", None)\n        if isinstance(f, dict):\n            row(subject, f, \"raised %s carrying six fields\" % type(exc).__name__)\n        else:\n            rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:200]})\nN = \"device:probe:1\"\ndef l1(subject, **kw):\n    ev = kw.pop(\"access_kw\", {})\n    guard(subject, lambda: row(subject, TwoLayers(node=N, **kw).kv_access(**ev)))\nl1(\"LAYER1_NO_LEDGER_BOUND\", ledger_root=None)\nl1(\"LAYER1_NO_HEALTH_REPORT_ON_LEDGER\", ledger_root=e0_health_ledger(N, report=False)[0])\nl1(\"LAYER1_UNHEALTHY_REPORT\", ledger_root=e0_health_ledger(N, status=\"UNHEALTHY\")[0])\nl1(\"LAYER1_HEALTHY_BUT_NOT_ADMITTED\", ledger_root=e0_health_ledger(N, admitted=False)[0])\nl1(\"LAYER1_REPORT_FOR_ANOTHER_NODE\", ledger_root=e0_health_ledger(\"device:other:9\")[0])\nl1(\"LAYER1_UNVERIFIED_BOUNDARY_PROOF\", access_kw={\"verification_state\": \"UNVERIFIED\"})\nl1(\"LAYER1_CALLER_ASSERTED_HEALTH_EVIDENCE\", access_kw={\"evidence\": {\"healthy\": True}})\n# observational: a scratch ledger the caller writes, plus a caller-asserted VERIFIED boundary proof naming that node\nl1(\"LAYER1_CALLER_SUPPLIED_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY\")\ndef fake_eval(node_ref, **_):\n    out = dict(ep._HEALTHY_RECEIPT_EXACT)\n    out.update(node_id=node_ref, health_report_receipt_sha256=\"sha256:\" + \"c\" * 64, chain_head_receipt_sha256=\"sha256:\" + \"d\" * 64)\n    return out\ndef injected():\n    t = TwoLayers(node=N, evaluator=fake_eval, ledger_root=None)\n    a = t.kv_access()\n    row(\"LAYER1_INJECTED_NON_PINNED_EVALUATOR\", a)\n    if a.get(\"kv_access_receipt\"):\n        h = a[\"kv_access_receipt\"][\"receipt_hash\"]\n        row(\"LAYER2_ON_LAYER1_RECEIPT_FROM_NON_PINNED_EVALUATOR\",\n            t.gate.admit(kv_skap_transition(principal_ref=t.principal, operation=\"SKAP_READ\", subject_ref=\"p1\", prior_receipt_hash=h)))\nguard(\"LAYER1_INJECTED_NON_PINNED_EVALUATOR\", injected)\ndef l2():\n    t = TwoLayers(node=N)\n    tr = lambda prior, op=\"SKAP_READ\": kv_skap_transition(principal_ref=t.principal, operation=op, subject_ref=\"p1\", prior_receipt_hash=prior)\n    row(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", t.gate.admit(tr(None)))\n    row(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", t.gate.admit(tr(\"sha256:\" + \"a\" * 64)))\n    h = t.kv_hash()\n    first = t.gate.admit(tr(h))\n    row(\"LAYER2_ON_LAYER1_RECEIPT_FROM_PINNED_EVALUATOR\", first)\n    row(\"LAYER2_REUSED_LAYER1_RECEIPT\", t.gate.admit(tr(h)))\nguard(\"LAYER2_SEQUENCE\", l2)\ndef bundle(secret):\n    # a structurally valid sealed envelope with opaque bytes (no crypto dependency; KV never decrypts)\n    s = {\"format\": SKAP_SEALED_FORMAT, \"object_id\": \"skap://APIs/probe/v1\", \"credential_version\": 1,\n         \"wrapping_policy_ref\": \"policy://skap/probe\", \"purpose\": \"probe\", \"endpoint_ref\": \"https://example.invalid\",\n         \"key_authority_ref\": \"tvc://credential-root/test-only\", \"kdf_salt_b64\": \"c2FsdA==\", \"nonce_b64\": \"bm9uY2U=\",\n         \"aad_hash\": \"sha256:\" + hashlib.sha256(secret).hexdigest(), \"ciphertext_b64\": base64.b64encode(hashlib.sha256(b\"ct\" + secret).digest()).decode(),\n         \"plaintext_persisted\": False, \"key_material_persisted\": False, \"authority_transfer\": False}\n    r = {\"schema\": \"stegverse.skap.owner_credential_ingress_receipt/v1\", \"object_id\": s[\"object_id\"],\n         \"credential_version\": s[\"credential_version\"], \"purpose\": s[\"purpose\"], \"endpoint_ref\": s[\"endpoint_ref\"],\n         \"wrapping_policy_ref\": s[\"wrapping_policy_ref\"], \"authorization_ref\": \"webauthn://probe\", \"source_class\": \"TRUSTED_INTERACTIVE_EDGE\",\n         \"key_authority_ref\": s[\"key_authority_ref\"], \"sealed_material_hash\": canonical_sha256(s), \"plaintext_length\": len(secret),\n         \"owner_authorized\": True, \"plaintext_persisted\": False, \"device_durable_secret_custody\": False,\n         \"kv_decryption_authority\": False, \"model_secret_access\": False, \"authority_transfer\": False, \"ingressed_at\": \"2026-10-23T00:00:00Z\"}\n    return s, r\ndef store_probe():\n    t = TwoLayers(principal=\"principal:owner\", node=N)\n    acc = lambda op, sid: {\"skap_gate\": t.gate, \"principal_ref\": \"principal:owner\", \"skap_access_receipt_hash\": t.skap_hash(op, sid)}\n    with tempfile.TemporaryDirectory() as tmp:\n        st = KnowledgeVaultExecutionStore(tmp)\n        sealed, receipt = bundle(b\"probe-credential-a\")\n        st.append_skap_sealed_credential(\"s1\", sealed, receipt, **acc(\"SKAP_SEALED_CREDENTIAL_APPEND\", \"s1\"))\n        recs = [r for r in KnowledgeVaultExecutionStore(tmp).read_stream(\"Extensions\", \"s1\") if r.get(\"schema\") == SKAP_KV_RECORD_SCHEMA]\n        row(\"SKAP_RECORD_READ_VIA_READ_STREAM_WITHOUT_LAYER2\", \"ALLOW\" if recs and recs[-1][\"sealed_material\"] == sealed else \"FAIL_CLOSED\",\n            \"KnowledgeVaultExecutionStore.read_stream('Extensions', ...) returned the sealed SKAP record with no skap_gate and no SKAP-access receipt\")\n        forged, _ = bundle(b\"probe-credential-forged\")\n        rec = {\"schema\": SKAP_KV_RECORD_SCHEMA, \"object_id\": forged[\"object_id\"], \"credential_version\": forged[\"credential_version\"],\n               \"sealed_material\": forged, \"sealed_material_hash\": canonical_sha256(forged), \"kv_decryption_authority\": False,\n               \"kv_secret_resolution_authority\": False, \"plaintext_present\": False, \"key_material_present\": False, \"authority_transfer\": False,\n               \"access\": {\"kv_access_receipt_hash\": \"sha256:\" + \"0\" * 64, \"skap_access_receipt_hash\": \"sha256:\" + \"0\" * 64}}\n        KnowledgeVaultExecutionStore(tmp).append_extension(\"s1\", rec)\n        back = st.read_skap_sealed_credential(\"s1\", **acc(\"SKAP_SEALED_CREDENTIAL_READ\", \"s1\"))\n        row(\"SKAP_RECORD_WRITE_VIA_APPEND_EXTENSION_WITHOUT_LAYER2\", \"ALLOW\" if back == forged else \"FAIL_CLOSED\",\n            \"append_extension wrote a SKAP sealed-credential record with no layer-2 receipt; the gated read then returned it\" if back == forged else None)\nguard(\"SKAP_STORE\", store_probe)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "B",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED LEDGER_HEAD_UNREADABLE: a readable HEAD.json naming a receipt on this repository's ledger)",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_NO_LEDGER_BOUND"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "B",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED HEALTH_REPORT_MISSING: a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json)",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_NO_HEALTH_REPORT_ON_LEDGER"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (DENY HEALTH_REPORTED_NOT_HEALTHY: a newer receipted report whose status is exactly HEALTHY)",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_UNHEALTHY_REPORT"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED NODE_NOT_ADMITTED: the newest NODE_INGRESS_* receipt for this node must be NODE_INGRESS_ADMITTED with healthy_node_established true, citing the current health report)",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_HEALTHY_BUT_NOT_ADMITTED"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "B",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "re-evaluate when a new NODE_HEALTH_REPORTED receipt for this node is on the ledger chain; the evaluation is event-driven, never on a timer",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: the pinned healthy-node evaluator did not ALLOW 'device:probe:1' (FAIL_CLOSED HEALTH_REPORT_MISSING: a NODE_HEALTH_REPORTED receipt for this node on the chain from HEAD.json)",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_REPORT_FOR_ANOTHER_NODE"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "on the next DEVICE->KV InTr transition that carries the repair",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "INTR_DEVICE_KV_TRANSITION_NOT_ADMITTED: verified boundary proof required",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_UNVERIFIED_BOUNDARY_PROOF"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE",
+     "failure_class": "C",
+     "failure_code": "KV_ACCESS_LAYER1_REFUSED",
+     "next_attempt": "on the next DEVICE->KV InTr transition that carries the repair",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "NODE_NOT_CURRENTLY_ADMITTED_HEALTHY: healthy_node_evidence may only cite health_report_receipt_sha256 (a sha256 receipt address); health itself is never caller-asserted",
+     "retry_entrypoint": "runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER1_CALLER_ASSERTED_HEALTH_EVIDENCE"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "LAYER1_CALLER_SUPPLIED_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "LAYER1_INJECTED_NON_PINNED_EVALUATOR"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "LAYER2_ON_LAYER1_RECEIPT_FROM_NON_PINNED_EVALUATOR"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+     "failure_class": "C",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ABSENT: prior_receipt_hash must be the layer-1 KV-access receipt minted by KVInterlockRuntime.handle for a currently admitted healthy node",
+     "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER2_WITHOUT_LAYER1_RECEIPT"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+     "failure_class": "C",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_NOT_MINTED_BY_LAYER1: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa is not a KV-access receipt held by the layer-1 runtime; a caller-minted, recomputed or health-less layer-1 receipt is refused",
+     "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "LAYER2_ON_LAYER1_RECEIPT_FROM_PINNED_EVALUATOR"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+     "failure_class": "C",
+     "failure_code": "SKAP_ACCESS_LAYER2_REFUSED",
+     "next_attempt": "on the next KV->SKAP InTr transition whose prior_receipt_hash is a layer-1 KV-access receipt",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "LAYER1_KV_ACCESS_RECEIPT_ALREADY_USED: sha256:bcd2f2cfe838287cfc5216026ec627f878b3093ab8ed8a8bbd0f06306ff89bcc already admitted one KV->SKAP transition; each SKAP operation needs its own DEVICE->KV InTr transition from a currently admitted healthy node",
+     "retry_entrypoint": "runtime.kv_skap_layer2.SkapLayer2Gate.admit (StegVerse-Labs/continuity-vault-kit)",
+     "subject": "LAYER2_REUSED_LAYER1_RECEIPT"
+    },
+    {
+     "disposition": "ALLOW",
+     "note": "KnowledgeVaultExecutionStore.read_stream('Extensions', ...) returned the sealed SKAP record with no skap_gate and no SKAP-access receipt",
+     "subject": "SKAP_RECORD_READ_VIA_READ_STREAM_WITHOUT_LAYER2"
+    },
+    {
+     "disposition": "ALLOW",
+     "note": "append_extension wrote a SKAP sealed-credential record with no layer-2 receipt; the gated read then returned it",
+     "subject": "SKAP_RECORD_WRITE_VIA_APPEND_EXTENSION_WITHOUT_LAYER2"
+    }
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/layer1-two-layer-probe.out",
+   "raw_sha256": "sha256:62f5ae6b3a92aad948361fac6a1bc093b8d702159b1bec0425446da2fa5350f7",
+   "run_id": "layer1-two-layer-probe",
+   "status": "OBSERVED",
+   "what": "both gates at #258 through its own E0 harness (tests/kv_two_layer_e0.py, the real pinned evaluator over scratch health ledgers): layer-1 refusals (no ledger, no report, unhealthy, not admitted, another node, unverified proof, caller-asserted health); layer-2 refusals (no, caller-minted or reused layer-1 receipt); and observational rows: a caller-written scratch ledger, an injected non-pinned evaluator and its receipt at layer 2, KnowledgeVaultExecutionStore read_stream/append_extension on SKAP sealed records"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 78,
+     "path": "runtime/kv_skap_layer2.py",
+     "pattern": "^class SkapLayer2Gate",
+     "text": "class SkapLayer2Gate:"
+    },
+    {
+     "line": 262,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
+     "text": "def verify_kv_access_receipt(self, receipt_hash: Any) -> dict[str, Any] | None:"
+    },
+    {
+     "line": 91,
+     "path": "runtime/kv_skap_layer2.py",
+     "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
+     "text": "def verify_kv_access_receipt(self, receipt_hash: Any) -> dict[str, Any] | None:"
+    },
+    {
+     "line": 108,
+     "path": "runtime/kv_skap_layer2.py",
+     "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
+     "text": "def admit(self, transition: Any) -> dict[str, Any]:"
+    },
+    {
+     "line": 165,
+     "path": "runtime/kv_skap_layer2.py",
+     "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
+     "text": "def consume(self, receipt_hash: Any, *, principal_ref: str, operation: str,"
+    },
+    {
+     "line": 184,
+     "path": "runtime/kv_skap_layer2.py",
+     "pattern": "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
+     "text": "def verify_access_chain(self, kv_access_receipt_hash: Any, skap_access_receipt_hash: Any) -> dict[str, Any]:"
+    },
+    {
+     "line": 101,
+     "path": "runtime/kv_skap_layer2.py",
+     "pattern": "receipt.get\\(.minted_by.\\)",
+     "text": "or receipt.get(\"boundary\") != LAYER1_BOUNDARY or receipt.get(\"minted_by\") != \"KVInterlockRuntime.handle\" \\"
+    },
+    {
+     "line": 104,
+     "path": "runtime/kv_skap_layer2.py",
+     "pattern": "healthy_node_established.\\) is not True",
+     "text": "or receipt[\"healthy_node_receipt\"].get(\"healthy_node_established\") is not True:"
+    },
+    {
+     "line": 76,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "\"source_sha256\": \"sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58\","
+    },
+    {
+     "line": 105,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "def _callable_source_sha256(fn: Any) -> str | None:"
+    },
+    {
+     "line": 120,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "if observed != PINNED_HEALTHY_NODE_EVALUATOR[\"source_sha256\"]:"
+    },
+    {
+     "line": 122,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "f\"{PINNED_HEALTHY_NODE_EVALUATOR['source_sha256']}\")"
+    },
+    {
+     "line": 284,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "f\"({pin['source_sha256']}), and KV never asserts a node's health itself\"),"
+    },
+    {
+     "line": 348,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+     "text": "\"healthy_node_evaluator_source_sha256\": _callable_source_sha256(self.healthy_node_evaluator),"
+    },
+    {
+     "line": 244,
+     "path": "runtime/kv_interlock_endpoint.py",
+     "pattern": "healthy_node_ledger_root: Any = None",
+     "text": "healthy_node_ledger_root: Any = None,"
+    }
+   ],
+   "patterns": [
+    "^class SkapLayer2Gate",
+    "    def (admit|consume|verify_kv_access_receipt|verify_access_chain)\\(",
+    "receipt.get\\(.minted_by.\\)",
+    "healthy_node_established.\\) is not True",
+    "evaluator_source_sha256|healthy_node_evaluator_source|source_sha256",
+    "healthy_node_evaluator: Any = None",
+    "healthy_node_ledger_root: Any = None"
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
+   "run_id": "layer2-structure",
+   "status": "OBSERVED",
+   "what": "SkapLayer2Gate: what verify_kv_access_receipt checks on a layer-1 receipt (schema, boundary, minted_by, healthy_node_established) and whether it checks the evaluator identity or source sha"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 209,
+     "path": "execution/vault_store.py",
+     "pattern": "    def (append_extension|read_stream|append_skap_sealed_credential|read_skap_sealed_credential)\\(",
+     "text": "def append_extension(self, extension_stream_id: str, record: dict[str, Any]) -> Path:"
+    },
+    {
+     "line": 226,
+     "path": "execution/vault_store.py",
+     "pattern": "    def (append_extension|read_stream|append_skap_sealed_credential|read_skap_sealed_credential)\\(",
+     "text": "def append_skap_sealed_credential(self, stream_id: str, sealed: dict[str, Any], ingress_receipt: dict[str, Any],"
+    },
+    {
+     "line": 256,
+     "path": "execution/vault_store.py",
+     "pattern": "    def (append_extension|read_stream|append_skap_sealed_credential|read_skap_sealed_credential)\\(",
+     "text": "def read_skap_sealed_credential(self, stream_id: str, *, skap_gate: Any = None,"
+    },
+    {
+     "line": 279,
+     "path": "execution/vault_store.py",
+     "pattern": "    def (append_extension|read_stream|append_skap_sealed_credential|read_skap_sealed_credential)\\(",
+     "text": "def read_stream(self, category: str, stream_id: str) -> list[dict[str, Any]]:"
+    },
+    {
+     "line": 155,
+     "path": "execution/vault_store.py",
+     "pattern": "_consume_skap_access\\(",
+     "text": "def _consume_skap_access(gate: Any, receipt_hash: Any, *, principal_ref: Any, operation: str,"
+    },
+    {
+     "line": 235,
+     "path": "execution/vault_store.py",
+     "pattern": "_consume_skap_access\\(",
+     "text": "access = _consume_skap_access(skap_gate, skap_access_receipt_hash, principal_ref=principal_ref,"
+    },
+    {
+     "line": 259,
+     "path": "execution/vault_store.py",
+     "pattern": "_consume_skap_access\\(",
+     "text": "_consume_skap_access(skap_gate, skap_access_receipt_hash, principal_ref=principal_ref,"
+    },
+    {
+     "line": 262,
+     "path": "execution/vault_store.py",
+     "pattern": "record.get\\(\"schema\"\\) == SKAP_KV_RECORD_SCHEMA",
+     "text": "candidates = [record for record in extensions if record.get(\"schema\") == SKAP_KV_RECORD_SCHEMA]"
+    }
+   ],
+   "patterns": [
+    "    def (append_extension|read_stream|append_skap_sealed_credential|read_skap_sealed_credential)\\(",
+    "_consume_skap_access\\(",
+    "record.get\\(\"schema\"\\) == SKAP_KV_RECORD_SCHEMA"
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
+   "run_id": "kv-store-extension-structure",
+   "status": "OBSERVED",
+   "what": "KnowledgeVaultExecutionStore public append_extension/read_stream next to the gated SKAP read/write"
+  },
+  {
+   "files_scanned": 116,
+   "hits": [
+    {
+     "line": 510,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "KVInterlockRuntime\\(",
+     "text": "self.layer1 = KVInterlockRuntime("
+    },
+    {
+     "line": 263,
+     "path": "tools/run_endpoint_fanout_probe.py",
+     "pattern": "KVInterlockRuntime\\(",
+     "text": "runtime = KVInterlockRuntime("
+    },
+    {
+     "line": 517,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "healthy_node_ledger_root=",
+     "text": "healthy_node_ledger_root=LOCAL_EXERCISE_LABEL)"
+    },
+    {
+     "line": 273,
+     "path": "tools/run_endpoint_fanout_probe.py",
+     "pattern": "healthy_node_ledger_root=",
+     "text": "healthy_node_ledger_root=healthy_node_ledger_root,"
+    },
+    {
+     "line": 581,
+     "path": "tools/run_endpoint_fanout_probe.py",
+     "pattern": "healthy_node_ledger_root=",
+     "text": "result = run_probe(args.value, probe_id=args.probe_id, healthy_node_ledger_root=e0_standin_healthy_node(),"
+    },
+    {
+     "line": 482,
+     "path": "runtime/kv_skap_vault.py",
+     "pattern": "LOCAL_EXERCISE_LABEL = ",
+     "text": "LOCAL_EXERCISE_LABEL = \"LOCAL_EXERCISE_ONLY_NOT_EVIDENCE\""
+    }
+   ],
+   "patterns": [
+    "KVInterlockRuntime\\(",
+    "healthy_node_ledger_root=",
+    "LOCAL_EXERCISE_LABEL = "
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@256e72e1a92ff7325ea331fedc63b464339bee37",
+   "run_id": "kv-ledger-root-binding",
+   "status": "OBSERVED",
+   "what": "which non-test code constructs KVInterlockRuntime and what ledger root it binds"
+  },
+  {
+   "files_scanned": 62,
+   "hits": [
+    {
+     "line": 261,
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "pattern": "access_receipt_verifier",
+     "text": "# through access_receipt_verifier; a non-empty string is never accepted. This module mints neither receipt."
+    },
+    {
+     "line": 294,
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "pattern": "access_receipt_verifier",
+     "text": "\"no access_receipt_verifier was supplied, so the layer receipts cannot be checked against the gates' \""
+    },
+    {
+     "line": 333,
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "pattern": "access_receipt_verifier",
+     "text": "access_receipt_verifier: Any = None,"
+    },
+    {
+     "line": 340,
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "pattern": "access_receipt_verifier",
+     "text": "access_receipt_verifier=access_receipt_verifier)"
+    },
+    {
+     "line": 359,
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "pattern": "access_receipt_verifier",
+     "text": "access_receipt_verifier: Any = None,"
+    },
+    {
+     "line": 383,
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "pattern": "access_receipt_verifier",
+     "text": "kv_access_receipt_hash, skap_access_receipt_hash = _require_access_layers(provider_receipt, access_receipt_verifier)"
+    },
+    {
+     "line": 295,
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "pattern": "verify_access_chain",
+     "text": "\"receipt stores; supply the layer-2 gate's verify_access_chain\"))"
+    },
+    {
+     "line": 281,
+     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
+     "pattern": "^def _require_access_layers\\(",
+     "text": "def _require_access_layers(provider_receipt: Dict[str, Any], verifier: Any) -> tuple[str, str]:"
+    }
+   ],
+   "patterns": [
+    "access_receipt_verifier",
+    "verify_access_chain",
+    "^def _require_access_layers\\("
+   ],
+   "pin": "StegVerse-Labs/continuity-vault-kit@d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
+   "run_id": "kv-lineage-verifier-binding",
+   "status": "OBSERVED",
+   "what": "#259 custody validator: the access_receipt_verifier parameter and any non-test caller that wires SkapLayer2Gate.verify_access_chain"
+  },
+  {
+   "command": "{python} -c import json\nimport tvc_skap_custody_reference_issuance as t\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef keep(subject, out):\n    r = {\"subject\": subject, \"disposition\": out.get(\"disposition\")}\n    for k in SIX + (\"failure_class\", \"custody_key_ref\"):\n        if isinstance(out.get(k), str):\n            r[k] = out[k]\n    rows.append(r)\nkeep(\"ISSUE_INVALID_MANIFEST\", t.issue({}))\nkeep(\"ISSUE_MANIFEST_CARRYING_MATERIAL\", t.issue(dict(t.build_manifest(principal_ref=\"principal:probe\"), private_key=\"x\")))\nok = t.issue(t.build_manifest(principal_ref=\"principal:probe\"))\nkeep(\"ISSUE_VALID_MANIFEST\", ok)\nkeep(\"VERIFY_EDITED_RECEIPT\", t.verify(dict(ok, custody_key_ref=\"tvc://skap-custody/forged\")))\nkeep(\"VERIFY_ISSUED_RECEIPT\", t.verify(ok))\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "TVC_ISSUES_SKAP_CUSTODY_KEY_REFERENCE_BY_TRANSITION",
+     "failure_class": "B",
+     "failure_code": "TVC_CUSTODY_ISSUANCE_MANIFEST_INVALID",
+     "next_attempt": "on the next issuance manifest carrying the repair",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "supply a stegverse.tvc.skap-custody-reference-issuance-manifest/v1 manifest",
+     "retry_entrypoint": "python tvc_skap_custody_reference_issuance.py issue --manifest <file> (StegVerse-Labs/TVC)",
+     "subject": "ISSUE_INVALID_MANIFEST"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "TVC_ISSUES_SKAP_CUSTODY_KEY_REFERENCE_BY_TRANSITION",
+     "failure_class": "C",
+     "failure_code": "TVC_CUSTODY_ISSUANCE_MANIFEST_CARRIES_MATERIAL",
+     "next_attempt": "on the next issuance manifest carrying the repair",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "remove manifest.private_key; issuance manifests carry references only",
+     "retry_entrypoint": "python tvc_skap_custody_reference_issuance.py issue --manifest <file> (StegVerse-Labs/TVC)",
+     "subject": "ISSUE_MANIFEST_CARRYING_MATERIAL"
+    },
+    {
+     "custody_key_ref": "tvc://skap-custody/db4f49205cc491ecc1c203201b28fa43",
+     "disposition": "ALLOW",
+     "subject": "ISSUE_VALID_MANIFEST"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "TVC_ISSUES_SKAP_CUSTODY_KEY_REFERENCE_BY_TRANSITION",
+     "failure_class": "C",
+     "failure_code": "TVC_CUSTODY_ISSUANCE_RECEIPT_DIGEST_MISMATCH",
+     "next_attempt": "on the next issuance manifest carrying the repair",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "the receipt was edited",
+     "retry_entrypoint": "python tvc_skap_custody_reference_issuance.py issue --manifest <file> (StegVerse-Labs/TVC)",
+     "subject": "VERIFY_EDITED_RECEIPT"
+    },
+    {
+     "custody_key_ref": "tvc://skap-custody/db4f49205cc491ecc1c203201b28fa43",
+     "disposition": "ALLOW",
+     "subject": "VERIFY_ISSUED_RECEIPT"
+    }
+   ],
+   "pin": "StegVerse-Labs/TVC@c87272cfccdcd731eb8cca6133a6596b389ff218",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/tvc-custody-issuance-probe.out",
+   "raw_sha256": "sha256:ad92c515e55cfe30e458baf3605562246faac2973460419bc098b28f6ad59710",
+   "run_id": "tvc-custody-issuance-probe",
+   "status": "OBSERVED",
+   "what": "TVC#537 TVC_SKAP_CUSTODY_REFERENCE_ISSUE: invalid manifest, a manifest carrying material, a valid manifest, an edited receipt"
+  },
+  {
+   "command": "{python} -m unittest -v tests.test_tvc_skap_custody_reference_issuance",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "disposition": "ALLOW",
+     "passed": true,
+     "skipped": 0,
+     "subject": "TVC_CUSTODY_ISSUANCE_SUITE",
+     "tests_ran": 5
+    }
+   ],
+   "pin": "StegVerse-Labs/TVC@c87272cfccdcd731eb8cca6133a6596b389ff218",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/tvc-custody-issuance-tests.out",
+   "raw_sha256": "sha256:66f4547ccd0c1072ac3e8b2579e97945626672d1ef036c21363d83e5a9bed878",
+   "run_id": "tvc-custody-issuance-tests",
+   "status": "OBSERVED",
+   "what": "TVC#537 issuance suite"
+  },
+  {
+   "files_scanned": 154,
+   "hits": [
+    {
+     "line": 70,
+     "path": "llm_adapter/healthy_node_evaluator.py",
+     "pattern": "^HEALTH_REPORT_CLASS = ",
+     "text": "HEALTH_REPORT_CLASS = \"NODE_HEALTH_REPORTED\""
+    }
+   ],
+   "patterns": [
+    "^HEALTH_REPORT_CLASS = ",
+    "def (produce|emit|record)_\\w*health|node_health_report_producer"
+   ],
+   "pin": "StegVerse-org/LLM-adapter@0b37fe3b786a2de687235f5d9d146af49ffee9cd",
+   "run_id": "hn-producer-search",
+   "status": "OBSERVED",
+   "what": "any NODE_HEALTH_REPORTED producer: LLM-adapter#428 (evaluator) and #429 (producer draft)"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 4,
+     "path": "llm_adapter/node_health_report_producer.py",
+     "pattern": "NODE_HEALTH_REPORTED",
+     "text": "is a manifest state transition of class NODE_HEALTH_REPORTED, appended through"
+    },
+    {
+     "line": 129,
+     "path": "llm_adapter/node_health_report_producer.py",
+     "pattern": "^def \\w+\\(",
+     "text": "def _non_allow(node_id: Any, reason: str, detail: str, **extra: Any) -> dict[str, Any]:"
+    },
+    {
+     "line": 149,
+     "path": "llm_adapter/node_health_report_producer.py",
+     "pattern": "^def \\w+\\(",
+     "text": "def _evidence(receipt: Mapping[str, Any]) -> Mapping[str, Any]:"
+    },
+    {
+     "line": 154,
+     "path": "llm_adapter/node_health_report_producer.py",
+     "pattern": "^def \\w+\\(",
+     "text": "def _trigger(receipt: Mapping[str, Any]) -> tuple[str | None, Any]:"
+    },
+    {
+     "line": 169,
+     "path": "llm_adapter/node_health_report_producer.py",
+     "pattern": "^def \\w+\\(",
+     "text": "def _for_node(receipt: Mapping[str, Any], cls: str, node_id: str) -> bool:"
+    },
+    {
+     "line": 174,
+     "path": "llm_adapter/node_health_report_producer.py",
+     "pattern": "^def \\w+\\(",
+     "text": "def plan(trigger_receipt_sha256: Any, *, ledger_root: Any, repository: str = REPOSITORY) -> dict[str, Any]:"
+    },
+    {
+     "line": 256,
+     "path": "llm_adapter/node_health_report_producer.py",
+     "pattern": "^def \\w+\\(",
+     "text": "def _emitter():"
+    },
+    {
+     "line": 265,
+     "path": "llm_adapter/node_health_report_producer.py",
+     "pattern": "^def \\w+\\(",
+     "text": "def produce(trigger_receipt_sha256: Any, *, ledger_root: Any, repository: str = REPOSITORY) -> dict[str, Any]:"
+    }
+   ],
+   "patterns": [
+    "NODE_HEALTH_REPORTED",
+    "^def \\w+\\("
+   ],
+   "pin": "StegVerse-org/LLM-adapter@5f5f7bbeea96d5f313effaa02f86b01196465247",
+   "run_id": "hn-producer-search-429",
+   "status": "OBSERVED",
+   "what": "same search at #429"
+  },
+  {
    "baseRefName": "main",
-   "headRefOid": "a32cfd97717e988183e52b83fd88eba55cda398b",
+   "headRefOid": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-org/LLM-adapter#428",
+   "run_id": "pr-llmad428",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (healthy-node evaluator)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "5f5f7bbeea96d5f313effaa02f86b01196465247",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-org/LLM-adapter#429",
+   "run_id": "pr-llmad429",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (NODE_HEALTH_REPORTED producer)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "c87272cfccdcd731eb8cca6133a6596b389ff218",
+   "isDraft": true,
+   "pin": null,
+   "pr": "StegVerse-Labs/TVC#537",
+   "run_id": "pr-tvc537",
+   "state": "OPEN",
+   "status": "OBSERVED",
+   "what": "PR state snapshot (TVC custody-reference issuance)"
+  },
+  {
+   "baseRefName": "main",
+   "headRefOid": "69e62ec7793ff229e5c6bd70f291e2a769a244ff",
    "isDraft": true,
    "pin": null,
    "pr": "StegVerse-Labs/continuity-vault-kit#258",
@@ -1402,7 +2459,7 @@
   },
   {
    "baseRefName": "main",
-   "headRefOid": "3fd8548bf570804463e48be9867390af31dc885a",
+   "headRefOid": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
    "isDraft": true,
    "pin": null,
    "pr": "StegVerse-Labs/continuity-vault-kit#259",
@@ -1424,7 +2481,7 @@
   },
   {
    "baseRefName": "laned/tvc-new-identity-requests",
-   "headRefOid": "36d24924556cf3027b67f0f9a0f3ad7bff98e863",
+   "headRefOid": "50fe4b184297bccb4ed5f5970cb71ed1bdc042a4",
    "isDraft": true,
    "pin": null,
    "pr": "StegVerse-Labs/.github#3327",
@@ -1470,28 +2527,84 @@
  "schema": "stegverse.ladder-conformance-observations/v1",
  "sources": [
   {
-   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
-   "git_blob": "5a04747b4a0ce082d46812b0928b87856c3bae62",
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
+   "git_blob": "47a48b352343817aab55529e8f8bc94243c176bd",
    "path": "runtime/kv_skap_vault.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:08f48a430ded93ee9b5924eca07d8345bce4a8956af0c76a5bce7f54d7133884"
+   "sha256": "sha256:6446ee26fe4348ab60d76c1d47ed4a1836e1322f1c88b29a3d820e04506951a2"
   },
   {
-   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
-   "git_blob": "51c5cd243454aaea88fee48dcc39009e98c2c95a",
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
+   "git_blob": "7bb825bcd808a40ca273b6aea00380eb2ae761c6",
    "path": "execution/vault_store.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:bbf9450878e3671aff7c61e5eedca9c104d8bc806674d5b656df8dfde81b340f"
+   "sha256": "sha256:d2a0949b2783a99fff66ef1a9b2cdc5763eb2f05aca95c5b2e99175eb00c8e31"
   },
   {
-   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
-   "git_blob": "52ede3244966705cd5b781f25edb6047e7faa6b8",
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
+   "git_blob": "a1240989b98eee73fdc3d451442c0b6b7318914f",
    "path": "runtime/kv_interlock_endpoint.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:4bee477c06c6f765fa8df96edba95bc62901a018f1ff3dd8fded2b3c0713c44e"
+   "sha256": "sha256:728f6c229d9cb49cc6063bf903272d5e0026e5ffea719e233844826b6317d65e"
+  },
+  {
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
+   "git_blob": "c3b705bf88900526b174489e81dff88a218a3c81",
+   "path": "runtime/kv_skap_layer2.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk258",
+   "sha256": "sha256:295338c06fc37a4b1b3d0bed77b90ca66ebeae2faf786f64791d9c79e6163583"
+  },
+  {
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
+   "git_blob": "3e433b27b3d1a65b15e60a1614c2961dce210140",
+   "path": "runtime/intr_pinned/healthy_node_evaluator.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk258",
+   "sha256": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58"
+  },
+  {
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
+   "git_blob": "3ed872d79a3c3d96a29c34897c577098bff949fc",
+   "path": "tests/kv_two_layer_e0.py",
+   "repo": "StegVerse-Labs/continuity-vault-kit",
+   "root": "cvk258",
+   "sha256": "sha256:7d1f3dbf6c23b60a781c14f4c4113647ce88b08723182c404488864893b26ea2"
+  },
+  {
+   "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
+   "git_blob": "3e433b27b3d1a65b15e60a1614c2961dce210140",
+   "path": "llm_adapter/healthy_node_evaluator.py",
+   "repo": "StegVerse-org/LLM-adapter",
+   "root": "llmad",
+   "sha256": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58"
+  },
+  {
+   "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
+   "git_blob": "963dc28bf7ca8211a6d14beecdf8984009c39f3d",
+   "path": "tests/test_healthy_node_evaluator.py",
+   "repo": "StegVerse-org/LLM-adapter",
+   "root": "llmad",
+   "sha256": "sha256:3133037bc174b2caf2c0ba3b22f5ea39864890789c8883179af5ba51907b3c7b"
+  },
+  {
+   "commit": "c87272cfccdcd731eb8cca6133a6596b389ff218",
+   "git_blob": "95511a1f72baf74afd2e0dc3da7c1359cceb5476",
+   "path": "tvc_skap_custody_reference_issuance.py",
+   "repo": "StegVerse-Labs/TVC",
+   "root": "tvc537",
+   "sha256": "sha256:87f1a7b939e5eb4cbd8856343098f4707fa4a97611b0b392e0dcc1122cec290f"
+  },
+  {
+   "commit": "5f5f7bbeea96d5f313effaa02f86b01196465247",
+   "git_blob": "b5580813cd5cdaf04fcd211e771600a6d45d45cd",
+   "path": "llm_adapter/node_health_report_producer.py",
+   "repo": "StegVerse-org/LLM-adapter",
+   "root": "llmad429",
+   "sha256": "sha256:21249f2505505afd60eb14188ea638202f2926b207d64cfcf8c3bc5db2d9f361"
   },
   {
    "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
@@ -1550,15 +2663,15 @@
    "sha256": "sha256:3f9ea80d58d7a03fc237ebdf8defd641010f28134c217ef1e4e2284542a59a51"
   },
   {
-   "commit": "ece815b1c5976dadb7d4cdc47ab37ae7a2a75605",
-   "git_blob": "c24f15d204cad6e959c26508d2ec740881941c2a",
+   "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
+   "git_blob": "e752253978887ec7c683754b4474d8791a31b533",
    "path": "llm_adapter/node_ingress_boundary.py",
    "repo": "StegVerse-org/LLM-adapter",
    "root": "llmad",
-   "sha256": "sha256:13dd71dcdb8a8c621c94dae22404eedbcde4704abc8a44910ed17c25a0533423"
+   "sha256": "sha256:4c63d02ae78a4379cb5019afc32b22fa6108da420310da03defd36b1a7b86020"
   },
   {
-   "commit": "ece815b1c5976dadb7d4cdc47ab37ae7a2a75605",
+   "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
    "git_blob": "8d3fccaafd7f26e0fe716811811d1026c417d055",
    "path": "llm_adapter/node_standing.py",
    "repo": "StegVerse-org/LLM-adapter",
@@ -1566,23 +2679,23 @@
    "sha256": "sha256:703a057f7607b74aa766d31bf98f0ecf455dadded08b013e90fcf827c692f439"
   },
   {
-   "commit": "ece815b1c5976dadb7d4cdc47ab37ae7a2a75605",
-   "git_blob": "7c632cc15b32648bb5337c14b96b8a9e2dde6729",
+   "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
+   "git_blob": "0449106f4015b1edc8762ddc02561163ebd95e42",
    "path": "tests/test_node_ingress_boundary.py",
    "repo": "StegVerse-org/LLM-adapter",
    "root": "llmad",
-   "sha256": "sha256:9734f633de995ecab00537e31fac125c8d573760eec85eb0858db292873261fc"
+   "sha256": "sha256:bf2ed485d41a302021c3952306ce4a7590c7e699ebb3b8605182b8ae9ae76895"
   },
   {
-   "commit": "ece815b1c5976dadb7d4cdc47ab37ae7a2a75605",
-   "git_blob": "be7493168a75c2fb35ea99a22ab80c9dc12d913d",
+   "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
+   "git_blob": "07ec18955f8a76f8e22eaafd33d4712885eaab2f",
    "path": "tests/test_node_standing.py",
    "repo": "StegVerse-org/LLM-adapter",
    "root": "llmad",
-   "sha256": "sha256:b810b17c76e6b418d7d3bad6985b4e70edfe1aba4930c1994585c7da2bb634b2"
+   "sha256": "sha256:1b3a7e7efccf81369353e53d16a17590b9bef90cf3006dc27a549c1ed7b426c3"
   },
   {
-   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
    "git_blob": "33c7e04b0498eff30d1fd87b659109aff003854f",
    "path": "runtime/secret_field_policy.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -1590,36 +2703,36 @@
    "sha256": "sha256:c6fb0a9a5fe4083c1c7b7f0b28f6a4bf70885a581a39f533af3faeacca4e4dbc"
   },
   {
-   "commit": "981017e135142deba2d1d31a2b311023dfed5cc2",
-   "git_blob": "304c86a2e8ada5f97b681bf78b80e8d390c34285",
+   "commit": "256e72e1a92ff7325ea331fedc63b464339bee37",
+   "git_blob": "0ea8a6a65b0d51087ddf3f23e02fe2b0247cb4a8",
    "path": "tests/test_kv_skap_vault_finish_point.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:c0cb16efc6cd4a1d60e2be2a5f84eb9e97fb72b902713eaec5d414a5a92c602e"
+   "sha256": "sha256:92fc93194870aec74b4f76ee142f30a708bfb2c2469dcdada58c64c79aea27bf"
   },
   {
-   "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
-   "git_blob": "6ef45b21bef935e4f93f535314e0320d0d632510",
+   "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
+   "git_blob": "72e2921bff2682a4811852d400debe80387347d1",
    "path": "runtime/task_registry_event_sovereign_kv_binding.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk259",
-   "sha256": "sha256:ebfc7a84302cc5593e28a427ecb910f0b220d7db70bf5bf0eb6c1703bc9cd9b5"
+   "sha256": "sha256:a4b6323cc3291700c326903dc77961b85770c183bb45f169a264e412b40db67d"
   },
   {
-   "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
-   "git_blob": "c6c71ccbb4a9ce8bf02599c28ec1e5d4f2e166d7",
+   "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
+   "git_blob": "18b376ee7c4a397cfb2f3ab3d89a22538f2ac905",
    "path": "runtime/kv_storage_provider_adapter.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk259",
-   "sha256": "sha256:7c6bf0b8bb4a8f35bae6e6794bbbe320b5bb65a9906aed8ed3a916da493587d2"
+   "sha256": "sha256:c18da2a3dc418f96419e4efe83270676e860af8e46542eedba85bd608d6c1ddc"
   },
   {
-   "commit": "2d51d34991121b56c1afd21abaad35ded0c2f94a",
-   "git_blob": "50d5fd3762839824a6397e9b43f76b7144848faa",
+   "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
+   "git_blob": "bce8f1484d40b10ab058446a5b7cdc73d0824a6d",
    "path": "tests/test_sovereign_kv_vault_lineage_record.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk259",
-   "sha256": "sha256:27ba6ceaf1760871daa802fb51536330102230858bd6d9919fd980bbf5065050"
+   "sha256": "sha256:09e7f3c7a324b8e334ce0a4f7122b992e050cdc1a4af8098ea235d2b33321c8f"
   },
   {
    "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
@@ -1646,23 +2759,23 @@
    "sha256": "sha256:91920937c4a4d8c33de228477bcde5aeaa6f406e794b0a0f6317d6b877083bee"
   },
   {
-   "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
-   "git_blob": "75b648533d8da2283886306723fbc681d5d69375",
+   "commit": "93526168775a09d1714f2356857c4cd24f3d32e7",
+   "git_blob": "c7e092fdb4f2bdffe8c76849ed00942df0c248d0",
    "path": "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
    "repo": "StegVerse-Labs/.github",
    "root": "labs3327",
-   "sha256": "sha256:7fc6e00cd947d4020f94bf2a377e5be77fc686001821076ee570b35a04fca353"
+   "sha256": "sha256:5f35838e8d122f6a7377c1b7afe8819f1a9eef611192e70f0d4641569e61dce4"
   },
   {
-   "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
-   "git_blob": "4a75607777c447807a82d65d5da88a0abaaa4169",
+   "commit": "93526168775a09d1714f2356857c4cd24f3d32e7",
+   "git_blob": "4fb712f1a1bf38a415bd8e261c8f3e08cad51284",
    "path": "scripts/adjacency_ruling.py",
    "repo": "StegVerse-Labs/.github",
    "root": "labs3327",
-   "sha256": "sha256:89fd04e597bd80fecb6ff269a2c30f525973a6d4a8d8c6d11e1459479a4c1527"
+   "sha256": "sha256:f83ab30e0a079f551f258d322bfd83afbcf472b4d07b3711b8468b996d0f2c83"
   },
   {
-   "commit": "724dc816d785b1cddac8a89f929048d4ba842550",
+   "commit": "93526168775a09d1714f2356857c4cd24f3d32e7",
    "git_blob": "ab333f897a2622e9eb06604bf008d6b330733bff",
    "path": "scripts/canonical_task_registration_transition.py",
    "repo": "StegVerse-Labs/.github",
