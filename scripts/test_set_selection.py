@@ -22,7 +22,17 @@ selected set is REQUIRED_VERIFICATION_SKIPPED (scripts/test_suite_baseline_drift
 
 Surfaces are found statically and conservatively: the test file, every repository path a string literal or a
 `ROOT / "a" / "b"` chain names, and the local modules it imports, closed transitively over the Python files found.
-A path the analysis cannot attribute to any set selects every set, so an incomplete analysis widens, never narrows.
+A path chain or join is read both from the repository root and from the file's own directory (so an
+importlib-by-path load such as `Path(__file__).parent / "node_store.py"` is followed), and a relative import
+(`from .engine_v2 import X`) resolves in the importing file's package. A spec may also declare a set's surfaces
+explicitly (`extra_surfaces`). A path the analysis cannot attribute to any set selects every set, so an incomplete
+analysis widens, never narrows.
+
+An input is satisfied in one of two ways. Most inputs are checked in the job (a module, a path, a git ref) and
+the set then runs here. A `receipt_consumer` input is satisfied only by a sealed ALLOW from the consumer script it
+names (for example a ledger receipt whose surface bytes match this head); its set is then not run here and the
+selection records the bound receipt instead. A consumer absent at this head, a refusal, or any error is
+REQUIRED_VERIFICATION_INPUT_UNAVAILABLE (six fields) for the changes that select the set, and only those.
 No clock, no network, nothing published; the selection is sealed (receipt_sha256 over canonical JSON).
 """
 from __future__ import annotations
@@ -134,6 +144,39 @@ class Surfaces:
                     out.add(p)
         return out
 
+    def _near(self, text: str, here: str) -> set[str]:
+        """A path named in `here`, read from the repository root and from `here`'s own directory."""
+        out = self._resolve(text)
+        folder = str(Path(here).parent)
+        if folder not in ("", ".") and text and not text.startswith("/"):
+            local = os.path.normpath(os.path.join(folder, text.strip()))
+            if not local.startswith(".."):
+                out |= self._resolve(local)
+        return out
+
+    def _relative(self, node: ast.ImportFrom, here: str) -> set[str]:
+        """`from .x import y` / `from .. import z`: resolved in the importing file's package."""
+        pkg = Path(here).parent
+        for _ in range(node.level - 1):
+            pkg = pkg.parent
+        base = str(pkg) if str(pkg) != "." else ""
+        out = set()
+        stems = []
+        if node.module:
+            stems.append(node.module.replace(".", "/"))
+            stems += [f"{node.module.replace('.', '/')}/{a.name}" for a in node.names]
+        else:
+            stems += [a.name for a in node.names]
+        for stem in stems:
+            for cand in (f"{stem}.py", f"{stem}/__init__.py"):
+                q = os.path.normpath(os.path.join(base, cand)) if base else os.path.normpath(cand)
+                if q in self.files:
+                    out.add(q)
+        init = os.path.normpath(os.path.join(base, "__init__.py")) if base else "__init__.py"
+        if init in self.files:
+            out.add(init)
+        return out
+
     def direct(self, path: str) -> set[str]:
         if path in self._direct:
             return self._direct[path]
@@ -150,15 +193,17 @@ class Surfaces:
             elif isinstance(node, ast.BinOp):
                 parts = _chain(node)
                 if parts:
-                    refs |= self._resolve("/".join(parts))
+                    refs |= self._near("/".join(parts), path)
             elif isinstance(node, ast.Call) and getattr(node.func, "attr", None) == "join":
                 parts = [a.value for a in node.args if isinstance(a, ast.Constant) and isinstance(a.value, str)]
                 if parts:
-                    refs |= self._resolve("/".join(parts))
+                    refs |= self._near("/".join(parts), path)
             elif isinstance(node, ast.Import):
                 for a in node.names:
                     refs |= self._module(a.name, path)
-            elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+            elif isinstance(node, ast.ImportFrom) and node.level:
+                refs |= self._relative(node, path)
+            elif isinstance(node, ast.ImportFrom) and node.module:
                 refs |= self._module(node.module, path)
                 for a in node.names:
                     refs |= self._module(f"{node.module}.{a.name}", path)
@@ -326,6 +371,47 @@ def input_available(root: Path, decl: Mapping[str, Any], python: str, env: Mappi
     return False, f"unknown input check {kind!r}: an input that cannot be checked is unavailable"
 
 
+RECEIPT_KIND = "receipt_consumer"
+RECEIPT_PREDICATE = "SELECTED_TEST_SET_SATISFIED_BY_LEDGER_RECEIPT"
+
+
+def receipt_input(root: Path, check: Mapping[str, Any], python: str) -> tuple[bool, str, dict | None]:
+    """A `receipt_consumer` input: satisfied only by a sealed ALLOW from the consumer it names, run once at this
+    head (`python <consumer> <argv...> --out <file>`, `{root}` in argv is this checkout). Absent, refused,
+    unreadable or erroring is unavailable; nothing is retried, polled or dispatched."""
+    import tempfile
+    consumer = check.get("consumer", "")
+    where = (root / consumer) if consumer else None
+    pending = f" ({check['consumer_source']})" if check.get("consumer_source") else ""
+    if not consumer or where is None or not where.is_file():
+        return False, (f"receipt consumer {consumer or '(none declared)'} is not present at this head{pending}; "
+                       "no receipt can satisfy this input until it is"), None
+    allow = check.get("allow", "ALLOW")
+    argv = [str(a).replace("{root}", str(root)) for a in check.get("argv", [])]
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp) / "consumption.json"
+        try:
+            done = subprocess.run([python, str(where), *argv, "--out", str(out)], cwd=root, capture_output=True,
+                                  text=True, timeout=int(check.get("timeout_seconds", 600)))
+            record = json.loads(out.read_text(encoding="utf-8"))
+        except (OSError, ValueError, subprocess.SubprocessError) as exc:
+            return False, f"receipt consumer {consumer} gave no readable record ({exc.__class__.__name__})", None
+    if not isinstance(record, Mapping):
+        return False, f"receipt consumer {consumer} gave no readable record", None
+    bound = record.get("bound_receipt_sha256")
+    if record.get("disposition") == allow and not record.get("refusals") and isinstance(bound, str) and bound \
+            and done.returncode == 0:
+        binding = {"consumer": consumer, "disposition": allow, "bound_receipt_sha256": bound,
+                   **{k: record[k] for k in ("bound_by_organization_receipt_sha256", "bound_tvc_head_sha",
+                                             "bound_labs_commit", "surface_files_matched", "epoch_from_ledger_head")
+                      if k in record}}
+        return True, f"receipt consumer {consumer} {allow}: bound receipt {bound}", binding
+    refusals = record.get("refusals") or []
+    why = refusals[0].get("failed_predicate") if refusals and isinstance(refusals[0], Mapping) else None
+    return False, (f"receipt consumer {consumer} disposition {record.get('disposition')!r}"
+                   + (f" ({why})" if why else "") + f", not {allow}"), None
+
+
 # -- selection -----------------------------------------------------------------------------------------------
 
 def resolve(root: Path, rev: str | None) -> str | None:
@@ -426,6 +512,8 @@ def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, m
     excludes: set[str] = set()
     included: set[str] = set()
     unavailable: list[dict] = []
+    receipts: dict[str, dict | None] = {}
+    satisfied: list[dict] = []
     for s in sets:
         if s["id"] not in selected:
             continue
@@ -433,12 +521,25 @@ def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, m
         for name in s["inputs"]:
             if name not in status:
                 decl = decls.get(name)
-                status[name] = input_available(root, decl, python, env) if decl else \
-                    (False, f"input {name!r} is not declared in the manifest")
+                if decl and decl.get("check", {}).get("kind") == RECEIPT_KIND:
+                    ok, detail, receipts[name] = receipt_input(root, decl["check"], python)
+                    status[name] = (ok, detail)
+                else:
+                    status[name] = input_available(root, decl, python, env) if decl else \
+                        (False, f"input {name!r} is not declared in the manifest")
             inputs.append({"id": name, "available": status[name][0], "detail": status[name][1]})
-        runnable = all(i["available"] for i in inputs)
-        out_sets.append({"id": s["id"], "reasons": selected[s["id"]], "inputs": inputs, "runnable": runnable,
-                         "tests": s["tests"]})
+        ready = all(i["available"] for i in inputs)
+        by_receipt = [receipts[i["id"]] for i in inputs if receipts.get(i["id"])]
+        # a set whose receipt-backed input is satisfied is verified where the receipt was sealed, not here
+        runnable = ready and not by_receipt
+        entry = {"id": s["id"], "reasons": selected[s["id"]], "inputs": inputs, "runnable": runnable,
+                 "tests": s["tests"]}
+        if ready and by_receipt:
+            entry["satisfied_by_receipt"] = by_receipt
+            satisfied.append({"set": s["id"], "tests": s["tests"], "receipts": by_receipt})
+        out_sets.append(entry)
+        if ready and by_receipt:
+            continue
         if runnable:
             run_tests += s["tests"]
             included |= set(s["tests"])
@@ -447,8 +548,9 @@ def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, m
             for i in inputs:
                 if not i["available"]:
                     decl = decls.get(i["id"], {})
+                    receipt_backed = decl.get("check", {}).get("kind") == RECEIPT_KIND
                     unavailable.append(six(
-                        INPUT_UNAVAILABLE, "SELECTED_TEST_SET_INPUT_IS_AVAILABLE",
+                        INPUT_UNAVAILABLE, RECEIPT_PREDICATE if receipt_backed else "SELECTED_TEST_SET_INPUT_IS_AVAILABLE",
                         f"test set {s['id']} is selected by this change and needs input {i['id']} ({i['detail']}); "
                         f"{decl.get('repair', 'supply the input to the job that runs this set')}",
                         retry, decl.get("owner", goal), decl.get("finish_point", nxt),
@@ -472,7 +574,7 @@ def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, m
             "not_selected_note": "not selected means not run by this change and not reported as skipped",
             "selected": out_sets,
             "run": {"tests": run_tests, "deselect": sorted(excludes - included)},
-            "input_unavailable": unavailable, "rows": rows,
+            "input_unavailable": unavailable, "satisfied_by_receipt": satisfied, "rows": rows,
             "unlisted_test_files": stale_listing}
     blocking = rows + unavailable
     body["disposition"] = "FAIL_CLOSED" if blocking else "SELECTED"
@@ -550,6 +652,8 @@ def main(argv: list[str] | None = None) -> int:
     for x in record["selected"]:
         if record["mode"] == "DIFF" or not x["runnable"] or x["id"] == "core":
             print(f"SET {x['id']} runnable={x['runnable']} reasons={json.dumps(x['reasons'][:3], sort_keys=True)}")
+    for r in record["satisfied_by_receipt"]:
+        print(f"SATISFIED_BY_RECEIPT {r['set']} receipts={','.join(x['bound_receipt_sha256'] for x in r['receipts'])}")
     for u in record["input_unavailable"] + record["rows"]:
         print(f"FAIL_CLOSED {u['failure_code']} {u.get('set', '')} input={u.get('input', '')} "
               f"owner={u['owning_existing_goal']}")

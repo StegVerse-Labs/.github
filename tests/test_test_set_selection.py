@@ -177,6 +177,107 @@ class SelectorTests(unittest.TestCase):
         self.assertEqual((code, record["disposition"]), (0, "SELECTED"))
         self.assertIn("tests.test_b", record["run"]["tests"])
 
+    def test_importlib_by_path_loads_and_relative_imports_are_surfaces(self) -> None:
+        # a by-path load next to the importing file and a relative import inside a package (TVC_SETS_SURFACE_UNDER_DECLARED)
+        self.toy.write("src/pkg/__init__.py", "")
+        self.toy.write("src/pkg/engine_v2.py", "V = 2\n")
+        self.toy.write("src/pkg/engine_v3.py", "from .engine_v2 import V\n")
+        self.toy.write("src/kernel/node_store.py", "S = 1\n")
+        self.toy.write("src/kernel/kernel.py", "import importlib.util\nfrom pathlib import Path\n"
+                       "_s = importlib.util.spec_from_file_location('ns', Path(__file__).resolve().parent / 'node_store.py')\n")
+        self.toy.write("tests/test_d.py", "import importlib.util\nfrom pathlib import Path\nROOT = Path(__file__).resolve().parents[1]\n"
+                       "K = ROOT / 'src' / 'kernel' / 'kernel.py'\nE = ROOT / 'src' / 'pkg' / 'engine_v3.py'\n" + PASSING)
+        self.toy.generate()
+        base = self.toy.commit("by-path loads")
+        manifest = json.loads((self.toy.path / ".stegverse/test-sets.json").read_text())
+        [d] = [s for s in manifest["sets"] if s["id"] == "tests/test_d.py"]
+        reach = sel.closure(manifest["surface_graph"], d["surfaces"])
+        for path in ("src/kernel/kernel.py", "src/kernel/node_store.py", "src/pkg/engine_v3.py", "src/pkg/engine_v2.py",
+                     "src/pkg/__init__.py"):
+            self.assertIn(path, reach)
+        self.toy.write("src/kernel/node_store.py", "S = 2\n")
+        self.toy.write("src/pkg/engine_v2.py", "V = 3\n")
+        self.toy.commit("change what is loaded by path")
+        code, record = self.select(base)
+        self.assertEqual(record["mode"], "DIFF")
+        self.assertEqual(self.ids(record), ["core", "tests/test_d.py"])
+
+    def receipt_inputs(self, consumer_body: str | None) -> str:
+        inputs = {"tvc": {"check": {"kind": sel.RECEIPT_KIND, "consumer": "scripts/consume.py",
+                                    "argv": ["consume", "--head-root", "{root}"], "allow": "ALLOW",
+                                    "consumer_source": "toy#3332, not merged"},
+                          "owner": "Lane C (toy#164)", "finish_point": "the consumer returns ALLOW at this head",
+                          "repair": "append a matching receipt"}}
+        if consumer_body is not None:
+            self.toy.write("scripts/consume.py", consumer_body)
+        self.toy.spec(inputs, {"tests/test_b.py": ["tvc"]})
+        return self.toy.commit("declare a receipt-backed input")
+
+    CONSUMER = ("import json, sys\nout = sys.argv[sys.argv.index('--out') + 1]\n"
+                "json.dump({0}, open(out, 'w'))\nsys.exit({1})\n")
+
+    def test_a_receipt_backed_input_without_its_consumer_blocks_only_changes_that_select_the_set(self) -> None:
+        base = self.receipt_inputs(None)
+        self.toy.write("src/a.py", "A = 2\n")
+        self.toy.commit("change a")
+        code, record = self.select(base)
+        self.assertEqual((code, record["disposition"], record["input_unavailable"]), (0, "SELECTED", []))
+        self.toy.write("src/b.py", "B = 2\n")
+        self.toy.commit("change b")
+        code, record = self.select(base)
+        self.assertEqual((code, record["disposition"]), (1, "FAIL_CLOSED"))
+        [item] = record["input_unavailable"]
+        self.assertEqual((item["failure_code"], item["failed_predicate"], item["set"], item["input"],
+                          item["owning_existing_goal"]),
+                         (sel.INPUT_UNAVAILABLE, sel.RECEIPT_PREDICATE, "tests/test_b.py", "tvc", "Lane C (toy#164)"))
+        self.assertTrue(all(item[k] for k in sel.SIX))
+        self.assertIn("not present at this head (toy#3332, not merged)", item["required_evidence_or_repair"])
+        self.assertNotIn("tests.test_b", record["run"]["tests"])
+        # an environment path or checkout does not satisfy a receipt-backed input
+        code, record = self.select(base, {"STEGVERSE_TVC_ROOT": str(self.toy.path)})
+        self.assertEqual((code, record["disposition"]), (1, "FAIL_CLOSED"))
+
+    def test_only_a_consumer_allow_satisfies_a_receipt_backed_input_and_the_set_is_not_run_here(self) -> None:
+        refused = {"disposition": "FAIL_CLOSED", "refusals": [{"failed_predicate": "TVC_CONFORMANCE_RECEIPT_ON_ORGANIZATION_LEDGER"}]}
+        base = self.receipt_inputs(self.CONSUMER.format(repr(refused), 1))
+        self.toy.write("src/b.py", "B = 2\n")
+        self.toy.commit("change b")
+        code, record = self.select(base)
+        [item] = record["input_unavailable"]
+        self.assertEqual((code, item["failed_predicate"]), (1, sel.RECEIPT_PREDICATE))
+        self.assertIn("TVC_CONFORMANCE_RECEIPT_ON_ORGANIZATION_LEDGER", item["required_evidence_or_repair"])
+        # ALLOW without a bound receipt, or with a non-zero exit, is not ALLOW
+        self.toy.write("scripts/consume.py", self.CONSUMER.format(repr({"disposition": "ALLOW", "refusals": []}), 0))
+        self.toy.commit("allow without a receipt")
+        self.assertEqual(self.select(base)[0], 1)
+        allow = {"disposition": "ALLOW", "refusals": [], "bound_receipt_sha256": "sha256:" + "a" * 64,
+                 "bound_by_organization_receipt_sha256": "sha256:" + "b" * 64}
+        self.toy.write("scripts/consume.py", self.CONSUMER.format(repr(allow), 1))
+        self.toy.commit("allow with a failing exit")
+        self.assertEqual(self.select(base)[0], 1)
+        self.toy.write("scripts/consume.py", self.CONSUMER.format(repr(allow), 0))
+        self.toy.commit("allow")
+        code, record = self.select(base)
+        self.assertEqual((code, record["disposition"], record["input_unavailable"]), (0, "SELECTED", []))
+        [entry] = [x for x in record["selected"] if x["id"] == "tests/test_b.py"]
+        self.assertFalse(entry["runnable"])
+        self.assertEqual(entry["satisfied_by_receipt"][0]["bound_receipt_sha256"], allow["bound_receipt_sha256"])
+        self.assertEqual([r["set"] for r in record["satisfied_by_receipt"]], ["tests/test_b.py"])
+        self.assertNotIn("tests.test_b", record["run"]["tests"])          # verified by the receipt, not run here
+
+    def test_a_selection_change_and_a_main_push_reach_the_receipt_backed_set(self) -> None:
+        base = self.receipt_inputs(None)
+        self.toy.write(".stegverse/test-set-spec.json", (self.toy.path / ".stegverse/test-set-spec.json").read_text() + " ")
+        self.toy.generate()
+        self.toy.commit("touch the spec")
+        code, record = self.select(base)
+        self.assertEqual(record["mode"], "ALL")
+        self.assertIn("tests/test_b.py", self.ids(record))
+        self.assertEqual([i["set"] for i in record["input_unavailable"]], ["tests/test_b.py"])
+        code, record = self.select(None)                                   # a push: no base, every set
+        self.assertEqual(record["mode"], "ALL")
+        self.assertEqual([i["set"] for i in record["input_unavailable"]], ["tests/test_b.py"])
+
     def test_a_set_is_callable_by_id(self) -> None:
         out = subprocess.run([sys.executable, str(ROOT / "scripts/test_set_selection.py"), "set", "--root",
                               str(self.toy.path), "--manifest", ".stegverse/test-sets.json", "--id", "tests/test_a.py"],
@@ -345,6 +446,26 @@ class ThisRepositoryTests(unittest.TestCase):
             for name in s["inputs"]:
                 decl = manifest["inputs"][name]
                 self.assertTrue(decl["owner"] and decl["finish_point"] and decl["check"]["kind"], name)
+
+    def test_the_tvc_sets_reach_what_they_load_by_path_and_are_receipt_backed(self) -> None:
+        manifest = json.loads((ROOT / ".stegverse/test-sets.json").read_text(encoding="utf-8"))
+        sets = {s["id"]: s for s in manifest["sets"]}
+        canon = sets["tests/test_canonical_work_in_process_admission.py[tvc]"]
+        reach = sel.closure(manifest["surface_graph"], canon["surfaces"])
+        for path in ("org-kernel/node_store.py", "heartbeat_runtime/engine_v2.py", "heartbeat_runtime/worker_task_admission.py",
+                     "resident-runtime/organization_egress_boundary.py", "tests/test_origin_attestation_tvc_conformance.py"):
+            self.assertIn(path, reach)
+        origin = sets["tests/test_origin_attestation_tvc_conformance.py[tvc]"]
+        self.assertIn("org-kernel/node_store.py", sel.closure(manifest["surface_graph"], origin["surfaces"]))
+        for shared in ("tests/__init__.py", "tests/conftest.py",           # read by every pytest run
+                       "scripts/test_set_selection.py", ".github/workflows/test-suite-ratchet.yml",
+                       ".stegverse/test-set-spec.json", ".stegverse/test-sets.json"):  # shape selection: ALL
+            self.assertTrue(any(sel.glob_match(g, shared) for g in manifest["selects_all"]), shared)
+        check = manifest["inputs"]["tvc"]["check"]
+        self.assertEqual((check["kind"], check["consumer"], check["allow"]),
+                         (sel.RECEIPT_KIND, "scripts/tvc_conformance_receipt.py", "ALLOW"))
+        self.assertEqual(canon["inputs"], ["tvc"])
+        self.assertEqual(origin["inputs"], ["tvc"])
 
     def test_the_ratchet_runs_the_selection_and_nothing_else(self) -> None:
         text = (ROOT / ".github/workflows/test-suite-ratchet.yml").read_text(encoding="utf-8")

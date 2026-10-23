@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "c6abe502b34aee10a8d14c851927353fea4cb68f41c4b85c43c8f1382ac65a1f"
+  "spec_sha256": "a300488f8c5da639e8cd1700f75adedffc5e0f3056e6d8fcdcb6b12057e1c4c3"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -28,12 +28,21 @@
   },
   "tvc": {
    "check": {
-    "env": "STEGVERSE_TVC_ROOT",
-    "kind": "env_path"
+    "allow": "ALLOW",
+    "argv": [
+     "consume",
+     "--ledger",
+     "git+{root}#refs/stegverse/organization-ledger",
+     "--head-root",
+     "{root}"
+    ],
+    "consumer": "scripts/tvc_conformance_receipt.py",
+    "consumer_source": "StegVerse-Labs/.github#3332, not merged: until it is, this input is unavailable",
+    "kind": "receipt_consumer"
    },
-   "finish_point": "STEGVERSE_TVC_ROOT names a TVC checkout in the job and the conformance exchange tests run and pass at the exact head",
-   "owner": "GitHub Product, Lane C (StegVerse-org/.github#164)",
-   "repair": "a TV/TVC checkout supplied as STEGVERSE_TVC_ROOT to the job that runs this set"
+   "finish_point": "scripts/tvc_conformance_receipt.py consume returns ALLOW at the exact head: a TVC conformance test receipt on refs/stegverse/organization-ledger (sealed by StegVerse-Labs/TVC#539's CI, appended by the organization ledger writer) whose consumed Labs surface has the same sha256 as this head; the [tvc] sets are then verified by that receipt and not run here",
+   "owner": "GitHub Product, Lane C (StegVerse-org/.github#164); consumer StegVerse-Labs/.github#3332; append: the organization ledger writer",
+   "repair": "land the receipt consumer (StegVerse-Labs/.github#3332) and have the organization ledger writer append an ALLOW TVC conformance receipt observed against this head's surface bytes; a TVC checkout in this job does not satisfy it"
   }
  },
  "repository": "StegVerse-Labs/.github",
@@ -46,6 +55,7 @@
   ".stegverse/test-sets.json",
   "pyproject.toml",
   "pytest.ini",
+  "scripts/test_set_selection.py",
   "setup.cfg",
   "tests/*__init__.py",
   "tox.ini"
@@ -9526,6 +9536,7 @@
    "control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json",
    "control/resident-execution-request.d/canonical-work-organization-batch-custody-replay-001.json",
    "control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json",
+   "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py",
    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
    "scripts/consume_mir_roundtrip_egress_authenticity_request.py"
   ],
@@ -9644,19 +9655,38 @@
   "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py": [
    "control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json"
   ],
+  "heartbeat_runtime/__init__.py": [
+   "heartbeat_runtime/admitted_worker_runtime.py",
+   "heartbeat_runtime/engine_v11.py",
+   "heartbeat_runtime/engine_v13.py",
+   "heartbeat_runtime/governed_manifold.py",
+   "heartbeat_runtime/process_adapter.py"
+  ],
   "heartbeat_runtime/admitted_worker_runtime.py": [
-   "control/cross-task-coordination.json"
+   "control/cross-task-coordination.json",
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/coordination_graph.py",
+   "heartbeat_runtime/coordination_ledger.py",
+   "heartbeat_runtime/worker_assignment_functional_memory.py",
+   "heartbeat_runtime/worker_runtime_legacy.py",
+   "heartbeat_runtime/worker_task_admission.py"
   ],
   "heartbeat_runtime/engine_v10.py": [
    "control/blocker-resolution-policy.json",
    "control/worker-registry.json",
    "control/worker-status.json",
    "handoffs/generated/**",
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/blocker_policy.py",
+   "heartbeat_runtime/engine_v9.py",
    "scripts/run_stegindex_preflight.py",
    "scripts/verify_stegindex_resident_operational_proof.py"
   ],
   "heartbeat_runtime/engine_v11.py": [
-   "handoffs/generated/**"
+   "handoffs/generated/**",
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v10.py",
+   "heartbeat_runtime/engine_v9.py"
   ],
   "heartbeat_runtime/engine_v12.py": [
    "control/heartbeat-carrier-observation.json",
@@ -9665,8 +9695,18 @@
    "control/heartbeat-subsignals.json",
    "control/worker-control-plane-coordination.json",
    "control/worker-registry.json",
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/assignment_timer.py",
+   "heartbeat_runtime/engine_v11.py",
+   "heartbeat_runtime/governed_manifold.py",
+   "heartbeat_runtime/independent_oscillator.py",
+   "heartbeat_runtime/signal_space.py",
    "receipts/heartbeat-schema-cutover/**",
    "receipts/heartbeat-schema-cutover/HB29.json"
+  ],
+  "heartbeat_runtime/engine_v13.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v12.py"
   ],
   "heartbeat_runtime/engine_v2.py": [
    "control/heartbeat-state.json",
@@ -9676,24 +9716,85 @@
    "handoffs/generated/**",
    "workers/canonical_state_transition_custody.py"
   ],
+  "heartbeat_runtime/engine_v3.py": [
+   "control/worker-registry.json",
+   "control/worker-status.json",
+   "handoffs/generated/**",
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v2.py",
+   "heartbeat_runtime/org_assertions.py"
+  ],
+  "heartbeat_runtime/engine_v4.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v3.py"
+  ],
+  "heartbeat_runtime/engine_v5.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v3.py",
+   "heartbeat_runtime/engine_v4.py"
+  ],
+  "heartbeat_runtime/engine_v6.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v5.py"
+  ],
+  "heartbeat_runtime/engine_v7.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v6.py"
+  ],
+  "heartbeat_runtime/engine_v7_1.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v6.py",
+   "heartbeat_runtime/engine_v7.py"
+  ],
+  "heartbeat_runtime/engine_v8.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v7_1.py"
+  ],
   "heartbeat_runtime/engine_v9.py": [
    "control/heartbeat-master-records-projection.json",
    "control/heartbeat-state.json",
    "control/heartbeat-subsignals.json",
    "control/worker-registry.d/**",
    "control/worker-registry.json",
-   "events/heartbeat-runtime.jsonl"
+   "events/heartbeat-runtime.jsonl",
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/engine_v8.py",
+   "heartbeat_runtime/org_assertions.py",
+   "heartbeat_runtime/orphan_recovery.py"
   ],
   "heartbeat_runtime/independent_oscillator.py": [
    "control/heartbeat-protocol-anchor.json"
+  ],
+  "heartbeat_runtime/intr_carrier_profile.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/independent_oscillator.py"
+  ],
+  "heartbeat_runtime/intr_derived_carrier.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/intr_carrier_profile.py"
+  ],
+  "heartbeat_runtime/intr_subsignal_runtime.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/intr_derived_carrier.py"
+  ],
+  "heartbeat_runtime/machine_continuation.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/independent_oscillator.py"
   ],
   "heartbeat_runtime/org_assertions.py": [
    "control/claims-active.json",
    "control/org-state.json",
    "heartbeats/outbound/**"
   ],
+  "heartbeat_runtime/oscillator_producer.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/independent_oscillator.py"
+  ],
   "heartbeat_runtime/process_adapter.py": [
    "control/blocker-resolution-policy.json",
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/blocker_policy.py",
+   "heartbeat_runtime/engine_v2.py",
    "receipts/worker-mutation-scope/**"
   ],
   "heartbeat_runtime/runtime_presence_projection.py": [
@@ -9708,18 +9809,36 @@
    "data/canonical-task-registry.json",
    "workers/canonical_state_transition_custody.py"
   ],
+  "heartbeat_runtime/worker_runtime.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/admitted_worker_runtime.py",
+   "heartbeat_runtime/worker_runtime_legacy.py"
+  ],
   "heartbeat_runtime/worker_runtime_legacy.py": [
    "control/heartbeat-carrier-runtime-state.json",
    "control/worker-runtime-state.json",
    "events/heartbeat-runtime.jsonl",
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/assignment_timer.py",
+   "heartbeat_runtime/engine_v11.py",
+   "heartbeat_runtime/independent_oscillator.py",
+   "heartbeat_runtime/process_adapter.py",
    "state_language/__init__.py",
    "workers/canonical_state_transition_custody.py"
+  ],
+  "heartbeat_runtime/worker_task_admission.py": [
+   "heartbeat_runtime/__init__.py",
+   "heartbeat_runtime/independent_oscillator.py"
   ],
   "org-boundary/runtime/capability_ingress.py": [
    "org-runtime/interlock-intr.json"
   ],
   "org-boundary/runtime/node_standing.py": [
    "docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json"
+  ],
+  "org-boundary/runtime/process_boundary.py": [
+   "org-boundary/runtime/manifest_selection.py",
+   "org-boundary/runtime/node_standing.py"
   ],
   "org-kernel/kernel.py": [
    ".stegverse/transition-ledger/emit.py",
@@ -9728,6 +9847,7 @@
    "org-boundary/runtime/capability_ingress.py",
    "org-boundary/runtime/manifest_selection.py",
    "org-boundary/runtime/node_standing.py",
+   "org-kernel/node_store.py",
    "resident-runtime/activation-manifest.json",
    "resident-runtime/aggregate_repo_transition.py"
   ],
@@ -9893,7 +10013,9 @@
   ],
   "resident-runtime/sv_change_base_state_readback.py": [
    "data/canonical-task-registry.json",
-   "org-kernel/kernel.py"
+   "org-kernel/kernel.py",
+   "resident-runtime/ledger_store.py",
+   "resident-runtime/organization_ledger_readback.py"
   ],
   "resident-runtime/sv_migration.py": [
    "data/sv-work-items/surface-aliases.json"
@@ -10423,7 +10545,8 @@
    "scripts/run_native_email_action_monitor.py"
   ],
   "scripts/consume_native_email_action_monitor_request_kv.py": [
-   "scripts/consume_native_email_action_monitor_request.py"
+   "scripts/consume_native_email_action_monitor_request.py",
+   "scripts/run_native_email_action_monitor_kv_guard.py"
   ],
   "scripts/consume_one_shot_resident_stack_activation_request.py": [
    "control/resident-execution-request.d/one-shot-resident-stack-activation-001.json",
@@ -10995,6 +11118,9 @@
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json"
   ],
+  "scripts/materialize_kv_skap_canonical_return.py": [
+   "scripts/materialize_kv_device_from_skap_return.py"
+  ],
   "scripts/materialize_live_cosv_packet.py": [
    "control/heartbeat-carrier-runtime-state.json",
    "control/heartbeat-live-status.json",
@@ -11048,6 +11174,9 @@
   "scripts/package_sovereign_control_plane_bundle.py": [
    "README.md",
    "scripts/bootstrap_sovereign_runtime.py"
+  ],
+  "scripts/plan_external_framework_registry_rollout.py": [
+   "scripts/resolve_external_framework_roundtrip_rollout.py"
   ],
   "scripts/preflight_gadi_resident_execution.py": [
    "control/resident-execution-request.d/gadi-resident-execution-001.json"
@@ -11571,6 +11700,7 @@
   "scripts/run_stegbrowser_runtime_consumption_reusable.py": [
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json",
+   "scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py",
    "workers/stegbrowser_manifest_intr_ingress.py"
   ],
   "scripts/run_stegbrowser_universal_intr_materialization.py": [
@@ -11851,8 +11981,19 @@
   "scripts/watch_hil_tvc_lifecycle_outbox.py": [
    "scripts/consume_hil_tvc_lifecycle_outbox.py"
   ],
+  "state_language/__init__.py": [
+   "state_language/reconcile.py",
+   "state_language/vector.py"
+  ],
+  "state_language/reconcile.py": [
+   "state_language/__init__.py",
+   "state_language/vector.py"
+  ],
   "tests/__init__.py": [
    "tests/posix_ledger_locus/sitecustomize.py"
+  ],
+  "tests/conftest.py": [
+   "tests/pytest.py"
   ],
   "tests/cosv_index_helpers.py": [
    "control/cosv-live-worker-coverage.json",
@@ -12124,6 +12265,7 @@
    "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md"
   ],
   "tests/test_canonical_master_records_local_adapter_repair.py": [
+   "tests/__init__.py",
    "workers/canonical_state_transition_custody.py"
   ],
   "tests/test_canonical_master_records_state_transition_custody_source.py": [
@@ -13176,6 +13318,7 @@
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/governance_endpoint.py",
    "resident-runtime/ledger_store.py",
+   "tests/__init__.py",
    "tests/posix_ledger_locus/**"
   ],
   "tests/test_governance_endpoint_six_fields.py": [
@@ -15771,7 +15914,8 @@
    "workers/canonical_state_transition_custody.py"
   ],
   "tests/test_sv002_public_observation_runtime.py": [
-   "scripts/serve_sv002_observation_intr_runtime.py"
+   "scripts/serve_sv002_observation_intr_runtime.py",
+   "tests/__init__.py"
   ],
   "tests/test_sv002_public_observation_runtime_worker.py": [
    "workers/sv002_public_observation_runtime_worker.py"
@@ -16253,9 +16397,15 @@
    ".github/workflows/test-suite-ratchet.yml",
    ".stegverse/test-set-spec.json",
    ".stegverse/test-sets.json",
+   "heartbeat_runtime/engine_v2.py",
+   "heartbeat_runtime/worker_task_admission.py",
+   "org-kernel/node_store.py",
+   "resident-runtime/organization_egress_boundary.py",
    "scripts/test_set_selection.py",
    "scripts/test_suite_baseline_drift.py",
-   "tests/__init__.py"
+   "tests/__init__.py",
+   "tests/conftest.py",
+   "tests/test_origin_attestation_tvc_conformance.py"
   ],
   "tests/test_test_suite_baseline_drift.py": [
    "data/test-suite-baseline.json",
@@ -16571,8 +16721,15 @@
    "control/blocker-resolution-policy.json",
    "receipts/ecosystem-chat-sovereign-inference/**"
   ],
+  "workers/ecosystem_chat_sovereign_route_worker.py": [
+   "receipts/ecosystem-chat-sovereign-inference/**",
+   "workers/ecosystem_chat_sovereign_inference_worker.py",
+   "workers/llm_adapter_sovereign_execution_bridge.py",
+   "workers/tvc_sovereign_route_bridge.py"
+  ],
   "workers/ecosystem_chat_tc_tvc_route_worker.py": [
    "receipts/ecosystem-chat-sovereign-inference/**",
+   "workers/ecosystem_chat_sovereign_route_worker.py",
    "workers/master_records_sovereign_reconstruction_bridge.py"
   ],
   "workers/endpoint_fanout_sovereign_runtime_worker.py": [
@@ -16907,6 +17064,9 @@
   ],
   "workers/tvc_repository_broker_validation_worker.py": [
    "handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json"
+  ],
+  "workers/universal_governance_enforced_reference_bound_worker.py": [
+   "workers/universal_governance_enforced_reference_worker.py"
   ],
   "workers/universal_intr_profiled_ingress.py": [
    "heartbeat_runtime/intr_carrier_profile.py",
