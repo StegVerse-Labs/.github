@@ -241,11 +241,8 @@ class VerifiedReceiptLocatorSchema(unittest.TestCase):
                 U.validate_explanation(mutated)
 
     def test_verified_receipt_locator_is_required_by_jsonschema(self):
-        try:
-            from jsonschema import Draft202012Validator
-        except ImportError:  # pragma: no cover - CI installs pytest only
-            self.skipTest("jsonschema not installed")
-        validator = Draft202012Validator(SCHEMA)
+        from stdlib_json_schema import Validator  # stdlib, never skipped; jsonschema agreement runs in org CI
+        validator = Validator(SCHEMA)
         valid, mutations = self.mutations()
         self.assertTrue(validator.is_valid(valid))
         for name, mutated in mutations.items():
@@ -256,7 +253,7 @@ class SchemaOnlyConsumers(unittest.TestCase):
     """Repair for .github#3106 review finding EXPLANATION_SCHEMA_CROSS_FIELD_CONSISTENCY: a consumer that
     validates only against the JSON Schema (no builder) must still be unable to accept an artifact whose
     fields contradict each other. Each mutation below is checked with the dependency-free schema_check
-    and, when the jsonschema package is importable, with Draft202012Validator as well."""
+    and with the standard-library schema validator (scripts/stdlib_json_schema.py) as well."""
 
     def mutations(self):
         den = build("02-denied")
@@ -291,11 +288,8 @@ class SchemaOnlyConsumers(unittest.TestCase):
                 U.schema_check(inst, SCHEMA)
 
     def test_jsonschema_rejects_contradictory_artifacts(self):
-        try:
-            from jsonschema import Draft202012Validator
-        except ImportError:  # pragma: no cover - CI installs pytest only
-            self.skipTest("jsonschema not installed")
-        validator = Draft202012Validator(SCHEMA)
+        from stdlib_json_schema import Validator  # stdlib, never skipped; jsonschema agreement runs in org CI
+        validator = Validator(SCHEMA)
         for name, inst in self.mutations().items():
             self.assertFalse(validator.is_valid(inst), name)
         for p in FIXTURES:
