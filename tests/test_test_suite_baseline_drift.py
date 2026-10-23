@@ -615,5 +615,22 @@ class BaselineDriftTests(unittest.TestCase):
         self.assertEqual([r["test"] for r in record["tests"] if r["disposition"] == "PRE_EXISTING_BASELINE_FAILURE"],
                          ["tests/test_u.py::U::test_y"])
 
+    def test_unittest_outcomes_after_the_tests_own_output_and_in_subtests_are_read(self) -> None:
+        text = "\n".join([
+            "test_a (tests.test_m.C.test_a) ... {\"printed\": true}",
+            "more printed output",
+            "ok",
+            "test_b (tests.test_m.C.test_b) ... ",
+            "  test_b (tests.test_m.C.test_b) (epoch='+33') ... ERROR",
+            "  test_b (tests.test_m.C.test_b) (epoch='33') ... ok",
+            "test_c (tests.test_m.C.test_c)",
+            "A docstring line ... skipped 'needs an input'",
+            "test_d (tests.test_m.C.test_d) ... ok",
+            "", "Ran 4 tests in 0.1s", "", "FAILED (errors=1, skipped=1)"])
+        results, counts, ran = drift.unittest_results(text)
+        self.assertEqual(results, {"tests.test_m.C.test_a": "ok", "tests.test_m.C.test_b": "ERROR",
+                                   "tests.test_m.C.test_c": "skipped 'needs an input'", "tests.test_m.C.test_d": "ok"})
+        self.assertEqual((counts, ran), ({"errors": 1, "skipped": 1}, 4))
+
 if __name__ == "__main__":
     unittest.main()

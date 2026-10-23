@@ -640,6 +640,8 @@ COLLECT_ERROR_LINE = re.compile(r"^ERROR (\S+\.py)(?:\s|$)")
 UNITTEST_RESULT = re.compile(r"^(\S+) \(([^)\s]+)\)(?:\n.*?)? \.\.\. (ok|FAIL|ERROR|skipped.*|expected failure|unexpected success)$")
 UNITTEST_HEAD = re.compile(r"^(\S+) \(([^)\s]+)\)(?: \.\.\. (.*))?$")
 UNITTEST_TAIL = re.compile(r" \.\.\. (ok|FAIL|ERROR|skipped.*|expected failure|unexpected success)$")
+UNITTEST_WORD = re.compile(r"^(ok|FAIL|ERROR|skipped '.*'|expected failure|unexpected success)$")
+UNITTEST_SUBTEST = re.compile(r"^\s+(\S+) \(([^)\s]+)\) \(.*\) \.\.\. (ok|FAIL|ERROR|skipped.*)$")
 UNITTEST_COUNTS = re.compile(r"^(?:OK|FAILED) \((.*)\)$|^OK$")
 UNITTEST_RAN = re.compile(r"^Ran (\d+) tests? in ")
 REFERENCED_PATH = re.compile(r"(?<![\w./-])((?:tests|scripts|resident-runtime|workers)/[\w./-]+\.py)\b")
@@ -733,19 +735,31 @@ def unittest_results(text: str) -> tuple[dict[str, str], dict[str, int], int | N
     pending: str | None = None
     counts: dict[str, int] = {}
     ran = None
+    def dotted(name: str, ident: str) -> str:
+        return ident if ident.endswith("." + name) else ident + "." + name
+
     for line in text.splitlines():
+        # a subTest outcome (`  name (id) (params) ... ERROR`) is that test's outcome; a failing one wins
+        sub = UNITTEST_SUBTEST.match(line)
+        if sub:
+            test_id = dotted(sub.group(1), sub.group(2))
+            if results.get(test_id) not in ("FAIL", "ERROR"):
+                results[test_id] = sub.group(3)
+            continue
         m = UNITTEST_HEAD.match(line)
         if m and m.group(3) is not None and UNITTEST_TAIL.search(line):
-            results[m.group(2) if m.group(2).endswith("." + m.group(1)) else m.group(2) + "." + m.group(1)] = \
-                UNITTEST_TAIL.search(line).group(1)
+            results[dotted(m.group(1), m.group(2))] = UNITTEST_TAIL.search(line).group(1)
             pending = None
             continue
-        if m and m.group(3) is None:
-            pending = m.group(2) if m.group(2).endswith("." + m.group(1)) else m.group(2) + "." + m.group(1)
+        if m:
+            # `name (id)` (a docstring line follows), `name (id) ... ` (subTests follow) or `name (id) ... <the
+            # test's own output>`: the outcome is on a later line
+            pending = dotted(m.group(1), m.group(2))
             continue
-        t = UNITTEST_TAIL.search(line)
+        t = UNITTEST_TAIL.search(line) or UNITTEST_WORD.match(line)
         if t and pending:
-            results[pending] = t.group(1)
+            if results.get(pending) not in ("FAIL", "ERROR"):
+                results[pending] = t.group(1)
             pending = None
             continue
         r = UNITTEST_RAN.match(line)
