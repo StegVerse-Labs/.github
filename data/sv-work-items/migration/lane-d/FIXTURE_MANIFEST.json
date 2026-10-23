@@ -17,9 +17,9 @@
     },
     {
       "path": "schemas/sv-change.v1.schema.json",
-      "git_blob": "734968c00d112a97a58bcb647c7d33f76fae9d17",
-      "sha256": "sha256:7b3c3eea489758db318be952960175547ed4fd793a7b39bf5da32e67ad499046",
-      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
+      "git_blob": "6b43b6ecfa22c2f178de00f5c14121cb27bf1c5a",
+      "sha256": "sha256:c96fdb5b9a0bd7d0e5e71b546b46c7a54f3cd444c9b604837af63e45e0d59a35",
+      "commit": "7898cedba1400c8545cebcb463fd26deb25f7d5a"
     },
     {
       "path": "schemas/canonical-task-work-items.v1.schema.json",
@@ -53,15 +53,15 @@
     },
     {
       "path": "data/sv-work-items/required-checks.json",
-      "git_blob": "11f023411624ce5daf26fc342d4af9a39fd0614e",
-      "sha256": "sha256:42ca5394c4dc799a66cb2c88190786d416ef731b3896efb600c4b536981e415d",
-      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
+      "git_blob": "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d",
+      "sha256": "sha256:468c08adc9f269f130217db51c8eb22260fbf2369fac48232fe9d3937e583110",
+      "commit": "ae8b105d7504565665bf6918367517ffdcb481fd"
     },
     {
       "path": "resident-runtime/sv_work_items.py",
-      "git_blob": "bb2d02348dc41bbf3b1c13a763bcc018a896a1a3",
-      "sha256": "sha256:21dab6701a1ce9734fdb97f0af396366f0cd74f85c2b5e1e03c6ff255030b5b3",
-      "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
+      "git_blob": "9e926ed41210963d4c5b6bc2000ce71c51cf6664",
+      "sha256": "sha256:ea36302d1fcdac0f2de01fa8b8f873e805959ae0f2cfe1c10f11d6d9d91ed1e0",
+      "commit": "6de17e604a17f82d20fed4819ce350c48d8dd1a6"
     },
     {
       "path": "resident-runtime/sv_migration.py",
@@ -78,7 +78,7 @@
     },
     {
       "path": "data/sv-work-items/migration/lane-d/inputs/github-pr-snapshot.json",
-      "sha256": "sha256:2f91880ccdfc80ed87a74e8455dee19cf2a62a08595d93c4b2a5bfe49efdb2fb",
+      "sha256": "sha256:22a8d3edb586e3fc36bc3b683ede44ca038a2277e17f963808b57b7dbed95bb8",
       "origin": "one GitHub read of the 11 open Lane D PRs (2026-10-18 ~13:0xZ); blob digests from the fetched heads"
     }
   ],
@@ -104,24 +104,30 @@
     "unknown_goal_issues_with_evidence_locator": 1
   },
   "pinned_change_ids": {
-    "3231": "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204",
-    "3232": "svc:77ba7e8cb6befca5923be8122d9dfefb34a8733cb289237a5a9d6f23d95fe5bd",
-    "3235": "svc:c5fb62fb06c54cbc82084b8ace645395ca8a27b43795af9feca3834787cb8d35",
-    "3241": "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69",
-    "3243": "svc:2aebce74ad7103b4995b79ccda20c5985c03fb03205cbacd75c5c70a64157835",
-    "3245": "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da",
-    "3251": "svc:47a3143779a10ecb5ec05932448854282e9837193b7f53d136b0fc205dd03af3",
-    "3253": "svc:d6df893a9982e89ccbf2bc4140923fce767a3ba76defc070164a9e338faff953",
-    "3255": "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375",
-    "3258": "svc:8aa8412b7b76e4d96ac50157f17e8e73748c12ad482d6c24c1f850a337e13e87",
-    "3261": "svc:5530c50768bf3112045a3ee6c08f80b6600df1082c5903bf9e8087ade7207658"
+    "3231": "svc:23647f091724aaab171b4449964f687768c78d1e9ba19469f7cd8bab2c88f071",
+    "3232": "svc:b245a59bdd50f7f7ed5275fd85b54f6839e8e59ab062fc3609d0a112277c5d4d",
+    "3235": "svc:0aed9b4f819bdff7b099c70f0fc2b96bec952700d4c847559c9c4e07c7918588",
+    "3241": "svc:1186bafb319df89e9340ccaed328246af20aa19b5a123a915c4a0c7bb93ca6de",
+    "3243": "svc:28e55b25d369d8c14a4686d212aa8603a6d874eed531b95cb72453bd0c92f764",
+    "3245": "svc:7009f4ca0e9b97a641c286a14bdbaac15079c54c5e10ec3a96776ebacadc4a00",
+    "3251": "svc:bb4d70fb5f81fed9b02a3e4095dfdceeb04452965a2d225d82754d3937b475f8",
+    "3253": "svc:0f7405add9065e51ee9f813fbdb76bbdaf92d45095fdb4a2ce83ebd60ae84532",
+    "3255": "svc:0e6ceb60936db0cdaa5f44f1be2931fc682bbef4a093d1cd6d55b77e39716d2a",
+    "3258": "svc:402ecd7d620d8a8f39981fbdf88a162a57fc675aa0a2fe88954cc4fe879f3218",
+    "3261": "svc:6e7045726f6a94d0571aa75ee271960dc71da0e715b9ebcf165ac82857636cd6"
   },
   "observed_base": {
-    "main_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
-    "main_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
-    "registry_generation": 319,
-    "organization_ledger_head": "a5bb54d81893b392a3ce28182986fc39857807e1",
-    "note": "observed at fixture build; each record's original base is not observed (migration_provenance.original_base_observed false)"
+    "main_sha": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+    "main_tree_sha": "910a8504ae41b0f7edae3d3c772c40809adc9956",
+    "registry_generation": 320,
+    "organization_ledger_head": "9a407561062757a30f90818ec6c8105b04331a39",
+    "note": "re-observed 2026-10-23 (Lane D C7; registry blob 8731d45a at main 86382e60); each record's original base is not observed (migration_provenance.original_base_observed false)",
+    "previous": {
+      "main_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+      "main_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
+      "registry_generation": 319,
+      "organization_ledger_head": "a5bb54d81893b392a3ce28182986fc39857807e1"
+    }
   },
   "rules": [
     "extraction: §14 six-field table ('same' = previous cell), §16 'fc/fp/rep/re/goal/next' rows (goal KV per legend), six-field bullet blocks, and the #3245 BRANCH_WRITER_IS_BRANCH_OWNER row (failure_code BRANCH_HAS_FOREIGN_WRITER from INDEX MERGE AUTHORITY)",
@@ -174,6 +180,74 @@
       "from": "svi:2b555fbc",
       "to": "svi:6dbf4f70",
       "cause": "FB-3 evidence_locator L1204"
+    }
+  ],
+  "change_identity_moves_at_generation_320": [
+    {
+      "pr": 3231,
+      "from": "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204",
+      "to": "svc:23647f091724aaab171b4449964f687768c78d1e9ba19469f7cd8bab2c88f071",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3232,
+      "from": "svc:77ba7e8cb6befca5923be8122d9dfefb34a8733cb289237a5a9d6f23d95fe5bd",
+      "to": "svc:b245a59bdd50f7f7ed5275fd85b54f6839e8e59ab062fc3609d0a112277c5d4d",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3235,
+      "from": "svc:c5fb62fb06c54cbc82084b8ace645395ca8a27b43795af9feca3834787cb8d35",
+      "to": "svc:0aed9b4f819bdff7b099c70f0fc2b96bec952700d4c847559c9c4e07c7918588",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3241,
+      "from": "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69",
+      "to": "svc:1186bafb319df89e9340ccaed328246af20aa19b5a123a915c4a0c7bb93ca6de",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3243,
+      "from": "svc:2aebce74ad7103b4995b79ccda20c5985c03fb03205cbacd75c5c70a64157835",
+      "to": "svc:28e55b25d369d8c14a4686d212aa8603a6d874eed531b95cb72453bd0c92f764",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3245,
+      "from": "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da",
+      "to": "svc:7009f4ca0e9b97a641c286a14bdbaac15079c54c5e10ec3a96776ebacadc4a00",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3251,
+      "from": "svc:47a3143779a10ecb5ec05932448854282e9837193b7f53d136b0fc205dd03af3",
+      "to": "svc:bb4d70fb5f81fed9b02a3e4095dfdceeb04452965a2d225d82754d3937b475f8",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3253,
+      "from": "svc:d6df893a9982e89ccbf2bc4140923fce767a3ba76defc070164a9e338faff953",
+      "to": "svc:0f7405add9065e51ee9f813fbdb76bbdaf92d45095fdb4a2ce83ebd60ae84532",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3255,
+      "from": "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375",
+      "to": "svc:0e6ceb60936db0cdaa5f44f1be2931fc682bbef4a093d1cd6d55b77e39716d2a",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3258,
+      "from": "svc:8aa8412b7b76e4d96ac50157f17e8e73748c12ad482d6c24c1f850a337e13e87",
+      "to": "svc:402ecd7d620d8a8f39981fbdf88a162a57fc675aa0a2fe88954cc4fe879f3218",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
+    },
+    {
+      "pr": 3261,
+      "from": "svc:5530c50768bf3112045a3ee6c08f80b6600df1082c5903bf9e8087ade7207658",
+      "to": "svc:6e7045726f6a94d0571aa75ee271960dc71da0e715b9ebcf165ac82857636cd6",
+      "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
     }
   ]
 }
