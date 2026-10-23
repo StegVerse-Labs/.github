@@ -563,6 +563,41 @@
    "what": "the draft surfaces on the path reach main through the ecosystem SV_CHANGE_ADMIT transition, not a person"
   },
   {
+   "class_b": {
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+    "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
+    "next_attempt": "on Coordination's ruling on app installations and release tokens, then on the next push to the TV/TVC release publisher",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "required_evidence_or_repair": "a deterministic E0 check on the release path that refuses six-field when the publishing principal is an org member, collaborator or app installation, and a release route that crosses into StegVerse-org through InTr instead (after Coordination rules whether a GitHub App installation or a release token is membership)",
+    "retry_entrypoint": "StegVerse-Labs/TVC: tasks/tvc_portable_github_release_publisher.py validate_authorization, then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)"
+   },
+   "degraded_forms": {
+    "E0": "no deterministic membership check exists on the governance path at the inspected heads, so no verdict is reached at E0",
+    "E1": "one LLM lane authors repairs to the governance path's endpoint boundary; the deterministic verifier and exact-head CI receipts stand in for cross-checking",
+    "E2": "two LLM lanes: one authors a repair to the governance path's endpoint boundary, one cross-checks it; the deterministic verifier decides",
+    "E3": "three LLM lanes may author repairs to the governance path's endpoint boundary and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
+   },
+   "failure_class": {
+    "class": "C",
+    "reason": "waits on Coordination's ruling whether a GitHub App installation or a release token counts as endpoint membership; then a class B check the GitHub Product lane builds"
+   },
+   "id": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+   "kind": "CONSTRAINT",
+   "layer": "org-boundary",
+   "lowest_supported_mode": "NONE",
+   "observed_by": [
+    "gov-endpoint-org-membership",
+    "gov-membership-check-search",
+    "gov-cosv-app-installations"
+   ],
+   "observed_state": "no org-membership refusal at SDK#556 @2db2ad2e or TVC main @c4845bea (runs gov-membership-check-search, gov-endpoint-org-membership). The TV/TVC portable release publisher (tasks/tvc_portable_github_release_publisher.py, CREDENTIAL_ENV TVC_EPHEMERAL_GITHUB_TOKEN) publishes to StegVerse-org/StegVerse-SDK through api.github.com with a bearer token, and config/sdk_v1_3_0_release.json names authorization_request_repository StegVerse-org/TV; GitHub grants that write only to an org member, an outside collaborator or an app installation, so the release path as built makes TV/TVC an org principal. The token's principal is not observable here (no credential was read), so this is FAIL_CLOSED, not a finding of membership. StegVerse-Labs/.github main @86382e60 control/cosv-ecosystem-adoption-manifest.json records COSV GitHub App installation ids for 14 organizations (run gov-cosv-app-installations); whether an app installation is endpoint membership is unruled",
+   "requires_llms": 0,
+   "sealed_scope_evidence": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001's sealed expected_evidence_predicates (13, unchanged) do not name it",
+   "sealed_scope_includes": false,
+   "what": "Rigel's rule (revision 10 input): no endpoint, whether externally maintained or ecosystem maintained, can be a member of a GitHub Organization, because membership defeats the Inter-Org InTr data transfer protocol and its boundaries; endpoints reach an organization only through InTr. On the Governance goal: TV/TVC (the release authority), the SDK release surface and the COSV app are endpoints reached across organizations; none may act as an org member, collaborator or app-installation principal"
+  },
+  {
    "allow_path": {
     "by": "the verdict turns ALLOW when every predicate does",
     "state": "BOUND"

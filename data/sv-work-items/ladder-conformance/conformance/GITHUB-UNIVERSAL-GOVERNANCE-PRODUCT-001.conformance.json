@@ -5,7 +5,7 @@
  "consistency_refusals": [],
  "counts": {
   "CONSTRAINT": {
-   "checked": 0,
+   "checked": 1,
    "conformant": 0
   },
   "HANDOFF": {
@@ -28,7 +28,7 @@
   "source_ref": "StegVerse-org/StegVerse-SDK#556",
   "verifier_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_finish_point_verdict, checked out at the TV/TVC release-receipt ref"
  },
- "gaps": 17,
+ "gaps": 18,
  "inspected": {
   "roots": {
    "labs3326": {
@@ -1107,6 +1107,62 @@
    "verdict": "FAIL_CLOSED"
   },
   {
+   "failure_class": {
+    "class": "C",
+    "reason": "waits on Coordination's ruling whether a GitHub App installation or a release token counts as endpoint membership; then a class B check the GitHub Product lane builds"
+   },
+   "id": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+   "kind": "CONSTRAINT",
+   "ladder": {
+    "E0": {
+     "form": "no deterministic membership check exists on the governance path at the inspected heads, so no verdict is reached at E0",
+     "llms": 0
+    },
+    "E1": {
+     "form": "one LLM lane authors repairs to the governance path's endpoint boundary; the deterministic verifier and exact-head CI receipts stand in for cross-checking",
+     "llms": 1
+    },
+    "E2": {
+     "form": "two LLM lanes: one authors a repair to the governance path's endpoint boundary, one cross-checks it; the deterministic verifier decides",
+     "llms": 2
+    },
+    "E3": {
+     "form": "three LLM lanes may author repairs to the governance path's endpoint boundary and cross-check each other's diffs; the deterministic verifier alone decides the verdict",
+     "llms": 3
+    }
+   },
+   "lowest_supported_mode": "NONE",
+   "observed_state": "no org-membership refusal at SDK#556 @2db2ad2e or TVC main @c4845bea (runs gov-membership-check-search, gov-endpoint-org-membership). The TV/TVC portable release publisher (tasks/tvc_portable_github_release_publisher.py, CREDENTIAL_ENV TVC_EPHEMERAL_GITHUB_TOKEN) publishes to StegVerse-org/StegVerse-SDK through api.github.com with a bearer token, and config/sdk_v1_3_0_release.json names authorization_request_repository StegVerse-org/TV; GitHub grants that write only to an org member, an outside collaborator or an app installation, so the release path as built makes TV/TVC an org principal. The token's principal is not observable here (no credential was read), so this is FAIL_CLOSED, not a finding of membership. StegVerse-Labs/.github main @86382e60 control/cosv-ecosystem-adoption-manifest.json records COSV GitHub App installation ids for 14 organizations (run gov-cosv-app-installations); whether an app installation is endpoint membership is unruled",
+   "refusals": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
+     "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on Coordination's ruling on app installations and release tokens, then on the next push to the TV/TVC release publisher",
+     "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+     "required_evidence_or_repair": "a deterministic E0 check on the release path that refuses six-field when the publishing principal is an org member, collaborator or app installation, and a release route that crosses into StegVerse-org through InTr instead (after Coordination rules whether a GitHub App installation or a release token is membership)",
+     "retry_entrypoint": "StegVerse-Labs/TVC: tasks/tvc_portable_github_release_publisher.py validate_authorization, then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "evidence": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001's sealed expected_evidence_predicates (13, unchanged) do not name it",
+     "failed_predicate": "CONSTRAINT_IS_A_SEALED_PREDICATE",
+     "failure_code": "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE",
+     "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next record change of the owning goal",
+     "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+     "required_evidence_or_repair": "add the constraint to the goal's sealed expected_evidence_predicates (a re-seal through the goal's own request)",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
+    }
+   ],
+   "scoped_tasks": [
+    "LC-GOV-09",
+    "LC-GOV-10"
+   ],
+   "verdict": "FAIL_CLOSED"
+  },
+  {
    "id": "H-GOV-FINISH-LEDGER",
    "kind": "HANDOFF",
    "ladder": {
@@ -1162,12 +1218,12 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:7c8661729e8349f505fbcaceaa841176608725336f837eed7b89c38aac55088b",
+  "document_sha256": "sha256:75667abe77dddf731b8ec34e448b69cf3dae261954829d4850edac9e7a86d6b8",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:8e12dcfb5688343dd4d19adbcc71ad1a59a2c3732caa6e64ed02210a8c203a37",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0c7f0875c8f4171995eb378ead32a981a003234338c0f554d476308e27620663",
-   "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:a73b4cfa6aff0867064d15ca7d5315bace00892764bf088a1eee7fc05670824f",
+   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:c3ed64287b7af76f13af5753180a51d3adc02e4a2cea7a17fbcb7611d2557da5",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:a038b186ef2c264c7b0910e5f25f0daa788ae28c9fbec084c59598960ea90745",
+   "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:8e8bd49341ffa92be7973a44ee7d9746f82fc6302ba6269b655910dfe3a5481f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:becdc08760762e5398c5512bcc86b7290687878b4dafd617b13a325b5fdbdb0b",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-02.json": "sha256:5dc38459690343e8a49759bcdc7ca8e8d1afdfca18f0705127733560fcadb51e",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-03.json": "sha256:c4522fcbe7258e48dc3eaed097e6d3f778fbd4627a16c5b5b00ef96a477de4ed",
@@ -1175,7 +1231,9 @@
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-05.json": "sha256:ea35e6766354bd0b7a9b257c6162478a7c9c814f78d72c378cd92b7e0bb42561",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-06.json": "sha256:ab62cf438f3774ce9a51ac27e99f9ce3b1c5fa6c94fcd15fbed552f8c90666dd",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-07.json": "sha256:d0f727d3b3e50425554ec2b90babd176d823503bc45ccb4c95106c054497dd24",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-08.json": "sha256:3bd80a55940865b8d1317a6ae165fdffb3ce9f20541292b58896d23095070aa8"
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-08.json": "sha256:3bd80a55940865b8d1317a6ae165fdffb3ce9f20541292b58896d23095070aa8",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-09.json": "sha256:34a33301f47f4bdb18215cb68695aa276428c21d09ef8daada5365a508662176",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-10.json": "sha256:bd052d92b78a98d507a0fa3bfeb41090f1a2d27d089fa2f7d4b33e09a4d72191"
   },
   "note": "not a ledger receipt: runtime counts only when a manifest-directed transition appends a receipt to refs/stegverse/organization-ledger",
   "runtime_completion": false,
@@ -1193,7 +1251,9 @@
   "LC-GOV-05",
   "LC-GOV-06",
   "LC-GOV-07",
-  "LC-GOV-08"
+  "LC-GOV-08",
+  "LC-GOV-09",
+  "LC-GOV-10"
  ],
  "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "verdict": "DENY"

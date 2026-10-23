@@ -4,7 +4,7 @@
  "failed_check": "NO_EXTERNAL_MACHINE",
  "failure_class": {
   "class": "A",
-  "reason": "a repair inside TV/TVC's own surface under the existing no-external-machine rule; differs from TVC's own class C"
+  "reason": "a repair inside TV/TVC's own surface under the existing no-external-machine rule; GitHub Product agrees (class A)"
  },
  "failure_code": "LADDER_EXTERNAL_MACHINE_REQUIRED",
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
@@ -14,9 +14,9 @@
  "next_attempt": "on the next push to StegVerse-Labs/TVC#541 (or the residual follow-up PRs it names)",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
  "owning_lane": "GitHub Product lane as TV/TVC owner (StegVerse-Labs/TVC; owner per Coordination, a claim); consuming lane: Lane D (KV and WorkSpace)",
- "proposed_resolution": "retire the 10 units and the workflow assertion from the goal's path once the services they start read only through skap_custody_chain; replace each with the ecosystem transition the service performs (no resident host, no timer, no PathChanged watcher); the residual list may only shrink",
+ "proposed_resolution": "retire the 6 units from the goal's path and replace each with the ecosystem transition the service performs (no resident host, no timer, no PathChanged watcher); the residual list may only shrink",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "new (revision 9, continuity-vault-kit#258 @9551edab, #263 @f5f971a5, LLM-adapter#431 @66a098fa, #432 @0eaa1de0, #433 @8babb87a, StegVerse-org/.github#235 @69eae86e, TVC#541 @63705c86): StegVerse-Labs/TVC#541 @63705c86 still ships 9 systemd .service units and 1 .path unit under deploy/systemd/ (app-store-connect, coinbase execute/observe/request/settlement drains, post-return-release and skap-browser ingress/tunnel) that name /var/lib/stegverse/skap in ReadWritePaths, PathChanged or arguments, plus the infrastructure-credential-authority workflow asserting one unit's paths (run tvc541-residual-units). A systemd unit runs on a resident host, an external machine, and no external machine exists or ever will. TVC's residual list classes them C and says they follow the Python families; here they are class A",
+ "required_repair": "new (revision 9, continuity-vault-kit#258 @9551edab, #263 @f5f971a5, LLM-adapter#431 @66a098fa, #432 @0eaa1de0, #433 @8babb87a, StegVerse-org/.github#235 @69eae86e, TVC#541 @63705c86), narrowed (revision 10, continuity-vault-kit#263 @543e8c32, LLM-adapter#431 @a2237bc3, StegVerse-org/.github#235 @f84b97c1, TVC#541 @f75e3e7c, TVC#540 @b0ba93e3, TVC#542 @4c2504da): StegVerse-Labs/TVC#541 @f75e3e7c still ships 6 systemd units under deploy/systemd/ that name /var/lib/stegverse/skap - stegtvc-coinbase-intr-execute@.service, -observe@.service, -portfolio-request-drain.path, -portfolio-request-drain.service, -request-drain.service and -settlement-hb-drain.service (run tvc541-residual-units; 10 units and a workflow assertion at 63705c86). GitHub Product classes LC-KV-22 A and promised the removal for the next TVC#541 push; it has not landed. A systemd unit runs on a resident host, an external machine, and no external machine exists or ever will",
  "retry_point": "StegVerse-Labs/TVC#541: deploy/systemd/*.service, *.path and config/skap-resident-store-residuals.json, then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

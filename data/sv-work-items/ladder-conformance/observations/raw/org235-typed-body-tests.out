@@ -17,9 +17,12 @@ test_a_read_back_without_a_genesis_emits_nothing (tests.test_intr_path_transfer.
 test_a_typed_row_on_an_undeclared_intra_org_path_is_refused (tests.test_intr_path_transfer.TypedBody.test_a_typed_row_on_an_undeclared_intra_org_path_is_refused) ... ok
 test_any_other_typed_schema_is_refused_with_six_fields (tests.test_intr_path_transfer.TypedBody.test_any_other_typed_schema_is_refused_with_six_fields) ... ok
 test_endpoint_kinds_are_432s_endpoint_kind_v1_enum (tests.test_intr_path_transfer.TypedBody.test_endpoint_kinds_are_432s_endpoint_kind_v1_enum) ... ok
+test_endpoint_paths_are_a_data_row_list_with_no_row_yet (tests.test_intr_path_transfer.TypedBody.test_endpoint_paths_are_a_data_row_list_with_no_row_yet) ... ok
+test_kv_and_skap_rows_must_record_the_endpoint_head_digest (tests.test_intr_path_transfer.TypedBody.test_kv_and_skap_rows_must_record_the_endpoint_head_digest) ... ok
 test_no_new_workflow_and_the_path_workflows_are_unchanged (tests.test_intr_path_transfer.TypedBody.test_no_new_workflow_and_the_path_workflows_are_unchanged) ... ok
 test_the_emitted_source_half_has_the_receivers_carrier_shape (tests.test_intr_path_transfer.TypedBody.test_the_emitted_source_half_has_the_receivers_carrier_shape)
 intr_transport_carrier.verify's source-half predicates (LLM-adapter#431/#432/#433, sha256 9f460c07...). ... ok
+test_the_endpoint_head_digest_is_optional_and_sealed_in_the_typed_evidence (tests.test_intr_path_transfer.TypedBody.test_the_endpoint_head_digest_is_optional_and_sealed_in_the_typed_evidence) ... ok
 test_the_genesis_append_read_back_emits_the_typed_row (tests.test_intr_path_transfer.TypedBody.test_the_genesis_append_read_back_emits_the_typed_row)
 Reuse-first trigger: the genesis append's own read-back yields exactly the typed row; landing it in ... ok
 test_the_genesis_observed_row_is_allowlisted_sealed_and_typed (tests.test_intr_path_transfer.TypedBody.test_the_genesis_observed_row_is_allowlisted_sealed_and_typed) ... ok
@@ -30,6 +33,6 @@ test_a_typed_row_alongside_leaves_untyped_rows_byte_identical (tests.test_intr_p
 test_golden_is_main_output_and_untyped_output_is_byte_identical (tests.test_intr_path_transfer.UntypedTransfersAreByteIdentical.test_golden_is_main_output_and_untyped_output_is_byte_identical) ... ok
 
 ----------------------------------------------------------------------
-Ran 24 tests in <t>s
+Ran 27 tests in <t>s
 
 OK

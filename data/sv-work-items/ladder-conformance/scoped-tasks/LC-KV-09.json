@@ -4,21 +4,22 @@
  "failed_check": "CONSTRAINT_IS_A_SEALED_PREDICATE",
  "failure_class": {
   "class": "C",
-  "reason": "waits on a ruling and a re-seal of the #3324 sealed scope (unchanged digest at #3324 @32a4f344)"
+  "reason": "waits on a ruling and a re-seal of the #3324 sealed scope (unchanged digest at #3324 @32a4f344); the membership rule is given by Rigel but is not sealed"
  },
  "failure_code": "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE",
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "items": [
   "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
   "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
-  "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT"
+  "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+  "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
  ],
  "next_attempt": "on the next push to the KV request branch (StegVerse-Labs/.github#3324)",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
  "owning_lane": "Lane D (KV and WorkSpace)",
- "proposed_resolution": "re-seal the #3324 request with KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE, SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV and SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT as predicates (new scope digest), and have runtime.kv_skap_vault finish-point evaluate each; this check then moves them from CONSTRAINT to PREDICATE",
+ "proposed_resolution": "re-seal the #3324 request with KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE, SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV and SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT and ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER as predicates (new scope digest), and have runtime.kv_skap_vault finish-point evaluate each; this check then moves them from CONSTRAINT to PREDICATE",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "add the three access-path constraints to KV-SKAP-VAULT-FUNCTIONAL-001's sealed expected_evidence_predicates so the finish point must evaluate them",
+ "required_repair": "revision 10 adds ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER (Rigel's rule (revision 10): no endpoint, whether externally maintained or ecosystem maintained, can be a member of a GitHub Organization, because membership defeats the Inter-Org InTr data transfer protocol and its boundaries). Add the three access-path constraints and the membership constraint to KV-SKAP-VAULT-FUNCTIONAL-001's sealed expected_evidence_predicates so the finish point must evaluate them",
  "retry_point": "python scripts/canonical_task_registration_transition.py plan (StegVerse-Labs/.github), then python scripts/ladder_conformance.py observe/check",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

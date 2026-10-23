@@ -458,6 +458,167 @@
    "what": "registration plan with the adjacency ruling and the finish-point root"
   },
   {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 15,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "^CREDENTIAL_ENV = ",
+     "text": "CREDENTIAL_ENV = \"TVC_EPHEMERAL_GITHUB_TOKEN\""
+    },
+    {
+     "line": 192,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "\"Authorization\": f\"Bearer",
+     "text": "\"Authorization\": f\"Bearer {token}\","
+    },
+    {
+     "line": 219,
+     "path": "tasks/tvc_portable_github_release_publisher.py",
+     "pattern": "\"Authorization\": f\"Bearer",
+     "text": "\"Authorization\": f\"Bearer {token}\","
+    },
+    {
+     "line": 6,
+     "path": "config/sdk_v1_3_0_release.json",
+     "pattern": "\"authorization_request_repository\": ",
+     "text": "\"authorization_request_repository\": \"StegVerse-org/TV\","
+    },
+    {
+     "line": 17,
+     "path": "config/sdk_v1_3_0_release.json",
+     "pattern": "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+     "text": "\"repository\": \"StegVerse-org/StegVerse-SDK\","
+    },
+    {
+     "line": 31,
+     "path": "config/sdk_v1_3_0_release.json",
+     "pattern": "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+     "text": "\"repository\": \"StegVerse-org/StegVerse-SDK\","
+    }
+   ],
+   "patterns": [
+    "^CREDENTIAL_ENV = ",
+    "\"Authorization\": f\"Bearer",
+    "\"authorization_request_repository\": ",
+    "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+    "(?i)org_?membership|ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
+   ],
+   "pin": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939",
+   "run_id": "gov-endpoint-org-membership",
+   "status": "OBSERVED",
+   "what": "Rigel's rule (no endpoint is a member of a GitHub Organization) on the GOV path: the TV/TVC release publisher writes to StegVerse-org/StegVerse-SDK through the GitHub REST API with a bearer token (write access needs an org member, collaborator or app-installation principal), and no membership refusal exists"
+  },
+  {
+   "files_scanned": 1,
+   "hits": [
+    {
+     "line": 32,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139890227,"
+    },
+    {
+     "line": 41,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139890420,"
+    },
+    {
+     "line": 50,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139890529,"
+    },
+    {
+     "line": 59,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139890635,"
+    },
+    {
+     "line": 68,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139890727,"
+    },
+    {
+     "line": 77,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139890806,"
+    },
+    {
+     "line": 86,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139890929,"
+    },
+    {
+     "line": 95,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139890998,"
+    },
+    {
+     "line": 104,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139891080,"
+    },
+    {
+     "line": 113,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 139891470,"
+    },
+    {
+     "line": 122,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 155782498,"
+    },
+    {
+     "line": 131,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 155782616,"
+    },
+    {
+     "line": 140,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 155782655,"
+    },
+    {
+     "line": 149,
+     "path": "control/cosv-ecosystem-adoption-manifest.json",
+     "pattern": "\"installation_id\": ",
+     "text": "\"installation_id\": 155782693,"
+    }
+   ],
+   "patterns": [
+    "\"installation_id\": "
+   ],
+   "pin": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "run_id": "gov-cosv-app-installations",
+   "status": "OBSERVED",
+   "what": "StegVerse-Labs/.github main @86382e60: the COSV GitHub App installation ids recorded per organization in the ecosystem adoption manifest (is an app installation an endpoint membership?)"
+  },
+  {
+   "files_scanned": 793,
+   "hits": [],
+   "patterns": [
+    "(?i)org_?membership",
+    "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+    "ENDPOINT_ORG_MEMBERSHIP_REFUSED"
+   ],
+   "pin": "StegVerse-org/StegVerse-SDK@2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+   "run_id": "gov-membership-check-search",
+   "status": "OBSERVED",
+   "what": "any org-membership refusal on the GOV path (SDK#556, Labs#3326)"
+  },
+  {
    "files_scanned": 1,
    "hits": [
     {

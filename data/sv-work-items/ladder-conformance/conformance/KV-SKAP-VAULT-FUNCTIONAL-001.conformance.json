@@ -5,7 +5,7 @@
  "consistency_refusals": [],
  "counts": {
   "CONSTRAINT": {
-   "checked": 3,
+   "checked": 4,
    "conformant": 0
   },
   "HANDOFF": {
@@ -26,7 +26,7 @@
   "predicate": "KV_SKAP_VAULT_FINISH_POINT: python -m runtime.kv_skap_vault finish-point returns disposition ALLOW (every expected_evidence_predicate ALLOW over one receipt-hash lineage); until then it returns six-field FAIL_CLOSED naming each unmet predicate",
   "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_skap_vault finish-point"
  },
- "gaps": 9,
+ "gaps": 10,
  "inspected": {
   "roots": {
    "cvk258": {
@@ -40,7 +40,7 @@
     "repo": "StegVerse-Labs/continuity-vault-kit"
    },
    "cvk263": {
-    "commit": "f5f971a578b497815f1084176f5ecb3352770c71",
+    "commit": "543e8c3267a4638d80130bf1052fb4cebd9b206a",
     "kind": "git",
     "repo": "StegVerse-Labs/continuity-vault-kit"
    },
@@ -70,7 +70,7 @@
     "repo": "StegVerse-org/LLM-adapter"
    },
    "llmad431": {
-    "commit": "66a098fac891a782ad8175d8df3ae07e113a1db7",
+    "commit": "a2237bc38316f3abe362bcf7f06a2356ac3a0abd",
     "kind": "git",
     "repo": "StegVerse-org/LLM-adapter"
    },
@@ -90,7 +90,7 @@
     "repo": "StegVerse-org/.github"
    },
    "org235": {
-    "commit": "69eae86e405fc06f0e1487c6a263765ee1e542a7",
+    "commit": "f84b97c19d4f5948c6f0fe1d26accbf2bd45eb6a",
     "kind": "git",
     "repo": "StegVerse-org/.github"
    },
@@ -109,8 +109,18 @@
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    },
+   "tvc540": {
+    "commit": "b0ba93e3c5f32bb5f565779b29d81251ecaee96a",
+    "kind": "git",
+    "repo": "StegVerse-Labs/TVC"
+   },
    "tvc541": {
-    "commit": "63705c86a7c6228db5acdbb342d9991bf93b99d5",
+    "commit": "f75e3e7c8115eb535a3b2d388b36c391c4fb38d1",
+    "kind": "git",
+    "repo": "StegVerse-Labs/TVC"
+   },
+   "tvc542": {
+    "commit": "4c2504da3ef759fcf382d494e4a625aca46b1f55",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    }
@@ -269,7 +279,7 @@
     "sha256": "sha256:3f9ea80d58d7a03fc237ebdf8defd641010f28134c217ef1e4e2284542a59a51"
    },
    {
-    "commit": "63705c86a7c6228db5acdbb342d9991bf93b99d5",
+    "commit": "f75e3e7c8115eb535a3b2d388b36c391c4fb38d1",
     "git_blob": "89eccac45ac135ded1c5af2be4a6128feef79f3d",
     "path": "tools/skap_custody_chain.py",
     "repo": "StegVerse-Labs/TVC",
@@ -277,7 +287,7 @@
     "sha256": "sha256:38165d7d7064c57003456cf7e75b26443fde0a0ec831531ddb892846129c3a63"
    },
    {
-    "commit": "63705c86a7c6228db5acdbb342d9991bf93b99d5",
+    "commit": "f75e3e7c8115eb535a3b2d388b36c391c4fb38d1",
     "git_blob": "b52e465172e0c5d7e73a7dac643d6ae14aa16561",
     "path": "tools/kv_two_layer_receipts.py",
     "repo": "StegVerse-Labs/TVC",
@@ -285,7 +295,7 @@
     "sha256": "sha256:128602761bfa1903f945f595814f57bef5452de28164b7691bb526281ffbc669"
    },
    {
-    "commit": "63705c86a7c6228db5acdbb342d9991bf93b99d5",
+    "commit": "f75e3e7c8115eb535a3b2d388b36c391c4fb38d1",
     "git_blob": "47ded93181f0f66fab8b3ddd0d1cffec87c5acc4",
     "path": "tools/coinbase_intr_double_interlock.py",
     "repo": "StegVerse-Labs/TVC",
@@ -293,7 +303,7 @@
     "sha256": "sha256:81435d7f2b5f91f80501bf2a2684ab3590153e9482099fc9047ab2d4d59624b9"
    },
    {
-    "commit": "63705c86a7c6228db5acdbb342d9991bf93b99d5",
+    "commit": "f75e3e7c8115eb535a3b2d388b36c391c4fb38d1",
     "git_blob": "d34597a92980c61443affab3348f715b11d5423d",
     "path": "tools/skap_resident_sealed_object.py",
     "repo": "StegVerse-Labs/TVC",
@@ -301,20 +311,20 @@
     "sha256": "sha256:6e286a56b5fcdcf9858408e9d0a33f4ad5a76161c2a94256a83e742a6bb0ca7c"
    },
    {
-    "commit": "63705c86a7c6228db5acdbb342d9991bf93b99d5",
-    "git_blob": "3da2d7a0af437001b4138e41969e733a71f17f02",
+    "commit": "f75e3e7c8115eb535a3b2d388b36c391c4fb38d1",
+    "git_blob": "dc5d70f369567c89061a3000652c1b287842cd79",
     "path": "config/skap-custody-chain.manifest.json",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc541",
-    "sha256": "sha256:5cc6cf6217c510c233251df6abdbce7bec40bbdc7edeff16b886e428a52166e3"
+    "sha256": "sha256:81db79295d91c54700a0d31614cf8f87cf5cea12edc86200a756a56d9c1f3d3c"
    },
    {
-    "commit": "63705c86a7c6228db5acdbb342d9991bf93b99d5",
-    "git_blob": "862c9d04e15262bf78661e305519ed05126f1a85",
+    "commit": "f75e3e7c8115eb535a3b2d388b36c391c4fb38d1",
+    "git_blob": "62c279b8823e9746f97a7f20a1b6e3d717749e9f",
     "path": "config/skap-resident-store-residuals.json",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc541",
-    "sha256": "sha256:2b36cbc8fe26f1438f72f7d4b199ef2d06400f58d19abadcbcdee7e97426ef64"
+    "sha256": "sha256:b2161f92012560ddf2004939c4e9a4177f2d9e4aebb577f59e6948df1348c567"
    },
    {
     "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
@@ -469,7 +479,7 @@
     "sha256": "sha256:d97cd4dc978c7ea02f41137dc85bbf5eb74b2ea6595bc58513be57b4c125e89f"
    },
    {
-    "commit": "66a098fac891a782ad8175d8df3ae07e113a1db7",
+    "commit": "a2237bc38316f3abe362bcf7f06a2356ac3a0abd",
     "git_blob": "c71b49602225e79d567387025e361638d60a1ab8",
     "path": ".stegverse/transition-ledger/contract.json",
     "repo": "StegVerse-org/LLM-adapter",
@@ -477,7 +487,7 @@
     "sha256": "sha256:d97cd4dc978c7ea02f41137dc85bbf5eb74b2ea6595bc58513be57b4c125e89f"
    },
    {
-    "commit": "66a098fac891a782ad8175d8df3ae07e113a1db7",
+    "commit": "a2237bc38316f3abe362bcf7f06a2356ac3a0abd",
     "git_blob": "2a7ab5bc0a24b76a3c317e399c0a696f2deae1d8",
     "path": "tests/test_llm_adapter_ledger_merge_transfer.py",
     "repo": "StegVerse-org/LLM-adapter",
@@ -485,7 +495,7 @@
     "sha256": "sha256:95ae9e2b8a942bf2b2723907f44c740b439ac53f7590c297d56e19dd9b3bf55a"
    },
    {
-    "commit": "66a098fac891a782ad8175d8df3ae07e113a1db7",
+    "commit": "a2237bc38316f3abe362bcf7f06a2356ac3a0abd",
     "git_blob": "f2675ea4c86cf22e5379348101138bb292243f9b",
     "path": "scripts/llm_adapter_repository_ledger_genesis_pin.py",
     "repo": "StegVerse-org/LLM-adapter",
@@ -493,7 +503,7 @@
     "sha256": "sha256:8599ef194cc312ce2dc776b79ed4b8bffaf6f81d4e7ed9a7f025210f755f9481"
    },
    {
-    "commit": "66a098fac891a782ad8175d8df3ae07e113a1db7",
+    "commit": "a2237bc38316f3abe362bcf7f06a2356ac3a0abd",
     "git_blob": "ee2d44a57cb640a55c533fd4b939acac597abfae",
     "path": "scripts/llm_adapter_genesis_pin_ingress.py",
     "repo": "StegVerse-org/LLM-adapter",
@@ -501,7 +511,7 @@
     "sha256": "sha256:4d58cfefedccbc72479fab420b3a9ccc91806f855ad459626d792bb6f5b630a1"
    },
    {
-    "commit": "66a098fac891a782ad8175d8df3ae07e113a1db7",
+    "commit": "a2237bc38316f3abe362bcf7f06a2356ac3a0abd",
     "git_blob": "b21a9574547cfc418de980ba3379046670d3bb07",
     "path": ".stegverse/transition-ledger/genesis-pin-transition.v1.json",
     "repo": "StegVerse-org/LLM-adapter",
@@ -509,7 +519,7 @@
     "sha256": "sha256:e176072c80d71fb4658f6455876df60700b4f299287c2c70c8bef536a6032b6a"
    },
    {
-    "commit": "66a098fac891a782ad8175d8df3ae07e113a1db7",
+    "commit": "a2237bc38316f3abe362bcf7f06a2356ac3a0abd",
     "git_blob": "ddece2963c46db5fd3acfd84d8a63ec99b7acc00",
     "path": "llm_adapter/intr_transport_carrier.py",
     "repo": "StegVerse-org/LLM-adapter",
@@ -1306,11 +1316,11 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "the 3 direct KVSkapVault rows are six-field FAIL_CLOSED SKAP_ACCESS_LAYER2_REFUSED; at #258 @9551edab KnowledgeVaultExecutionStore.read_stream and append_extension refuse SKAP records, a record forged by a direct file write (with a valid storage hash) is refused by the gated read (SKAP_RECORD_PROVENANCE_NOT_VERIFIED), a subclassed gate is refused, and the gated append then gated read is ALLOW (run layer1-two-layer-probe SKAP_* rows); provenance is held in the gate's memory, so a legitimate record is refused after a gate restart (SKAP_LEGIT_RECORD_READ_AFTER_GATE_RESTART: FAIL_CLOSED; conforming, not durable; carried under H-KV-DURABLE-CUSTODY-PROVIDER). TV/TVC (TVC#541 @63705c86, moved from c7e4c106, GitHub Product lane as TV/TVC owner per Coordination, a claim; stacked on TVC#538): the four resident stores now call place_through_chain/read_through_chain (tools/skap_custody_chain.py) instead of the resident root, and the chain refuses six-field with no chain, an unlisted store, an out-of-scope subject, an absent or edited layer-1 receipt, a layer 2 not bound to layer 1, an edited TVC#537 issuance receipt and no client; with TVC#537 absent (as on TVC main) every chain is FAIL_CLOSED TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT (run skap-custody-chain-probe-tvc541). At 63705c86 (LC-KV-07 fix, tools/kv_layer_ledger_readback.py) every custody receipt is read back from a designated KV / SKAP Vault ledger and none is taken from the caller: with no ledger designated (DESIGNATIONS empty) the caller-minted rows are six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED, build_chain no longer takes layer receipts as arguments (DOUBLE_INTERLOCK_BUILD_CHAIN_ACCEPTS_CALLER_LAYER_RECEIPTS NOT_A_PARAMETER), and both mint-both tests pass with test-only designated ledgers - a caller ledger, an unpinned genesis, a split ledger and receipts handed in are each FAIL_CLOSED (run tvc541-mint-both-tests). Earlier TVC#541 tests hand-run in this venv: 35 passed, 1 failed (an import of cryptography, not installed here and not added), 0 skipped; Lane C's 354 is not reproduced",
+   "observed_state": "the 3 direct KVSkapVault rows are six-field FAIL_CLOSED SKAP_ACCESS_LAYER2_REFUSED; at #258 @9551edab KnowledgeVaultExecutionStore.read_stream and append_extension refuse SKAP records, a record forged by a direct file write (with a valid storage hash) is refused by the gated read (SKAP_RECORD_PROVENANCE_NOT_VERIFIED), a subclassed gate is refused, and the gated append then gated read is ALLOW (run layer1-two-layer-probe SKAP_* rows); provenance is held in the gate's memory, so a legitimate record is refused after a gate restart (SKAP_LEGIT_RECORD_READ_AFTER_GATE_RESTART: FAIL_CLOSED; conforming, not durable; carried under H-KV-DURABLE-CUSTODY-PROVIDER). TV/TVC (TVC#541, now @f75e3e7c - three LC-KV-07 residual commits after 63705c86 - GitHub Product lane as TV/TVC owner per Coordination, a claim; stacked on TVC#538): the four resident stores now call place_through_chain/read_through_chain (tools/skap_custody_chain.py) instead of the resident root, and the chain refuses six-field with no chain, an unlisted store, an out-of-scope subject, an absent or edited layer-1 receipt, a layer 2 not bound to layer 1, an edited TVC#537 issuance receipt and no client; with TVC#537 absent (as on TVC main) every chain is FAIL_CLOSED TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT (run skap-custody-chain-probe-tvc541). At 63705c86 (LC-KV-07 fix, tools/kv_layer_ledger_readback.py) every custody receipt is read back from a designated KV / SKAP Vault ledger and none is taken from the caller: with no ledger designated (DESIGNATIONS empty) the caller-minted rows are six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED, build_chain no longer takes layer receipts as arguments (DOUBLE_INTERLOCK_BUILD_CHAIN_ACCEPTS_CALLER_LAYER_RECEIPTS NOT_A_PARAMETER), and both mint-both tests pass with test-only designated ledgers - a caller ledger, an unpinned genesis, a split ledger and receipts handed in are each FAIL_CLOSED (run tvc541-mint-both-tests). Earlier TVC#541 tests hand-run in this venv: 35 passed, 1 failed (an import of cryptography, not installed here and not added), 0 skipped; Lane C's 354 is not reproduced",
    "refusals": [
     {
      "disposition": "DENY",
-     "evidence": "TVC#541 @63705c86a7c6228db5acdbb342d9991bf93b99d5 still ships 9 systemd .service units and 1 .path unit under deploy/systemd/ that name /var/lib/stegverse/skap (ReadWritePaths/PathChanged/arguments; run tvc541-residual-units): a resident host that runs systemd units is an external machine, and no external machine exists or ever will; TVC classes them C, 'follows the code families'",
+     "evidence": "TVC#541 @f75e3e7c8115eb535a3b2d388b36c391c4fb38d1 still ships 6 systemd units under deploy/systemd/ that name /var/lib/stegverse/skap (stegtvc-coinbase-intr-execute@.service, -observe@.service, -portfolio-request-drain.path and .service, -request-drain.service, -settlement-hb-drain.service; run tvc541-residual-units; 10 at 63705c86): a resident host that runs systemd units is an external machine, and no external machine exists or ever will; the units removal promised for the next TVC#541 push has not landed",
      "failed_predicate": "NO_EXTERNAL_MACHINE",
      "failure_code": "LADDER_EXTERNAL_MACHINE_REQUIRED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
@@ -1321,7 +1331,7 @@
     },
     {
      "disposition": "DENY",
-     "evidence": "TV/TVC SKAP access still does not require KV's gates (StegVerse-Labs/TVC#541 @63705c86a7c6228db5acdbb342d9991bf93b99d5): 40 tracked files still name the legacy resident root /var/lib/stegverse/skap - 29 non-test Python files, 9 systemd .service units, 1 .path unit and 1 workflow (config/skap-resident-store-residuals.json, 40 entries, matching git grep; runs skap-resident-residuals-tvc541, tvc541-residual-units) - and the migration leaves the legacy data in place. The caller-minted-receipt bypass of revision 6 is closed at 63705c86 (receipts only from designated ledgers; run tvc541-mint-both-tests). TVC main @c4845bea704949c46658042963e8c532c9559939 is unchanged (run skap-direct-store-tvc)",
+     "evidence": "TV/TVC SKAP access still does not require KV's gates (StegVerse-Labs/TVC#541 @f75e3e7c8115eb535a3b2d388b36c391c4fb38d1, narrowed in revision 10 from 40 to 11): 11 tracked files still name the legacy resident root /var/lib/stegverse/skap - 5 non-test Python files (tools/coinbase_intr_{execution_request,portfolio_request,settlement_watch}_drain.py, scripts/install_coinbase_intr_{observe,portfolio_request}_service.py) and 6 systemd units (config/skap-resident-store-residuals.json: 11 residuals, all class B, 2 structural blockers TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT and SKAP_VAULT_INTR_READ_CLIENT_NOT_BOUND; runs skap-resident-residuals-tvc541, tvc541-residual-units); the workflow assertion is gone; the legacy data stays in place. The caller-minted-receipt bypass of revision 6 stays closed (run tvc541-mint-both-tests). TVC main @c4845bea704949c46658042963e8c532c9559939 is unchanged (run skap-direct-store-tvc)",
      "failed_predicate": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
      "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
@@ -1375,7 +1385,7 @@
    "refusals": [
     {
      "disposition": "DENY",
-     "evidence": "TVC build_chain (tools/coinbase_intr_double_interlock.py:74 @c4845bea704949c46658042963e8c532c9559939) still mints the DEVICE->KV and KV->SKAP hops in one call, and build_device_kv_receipt (:45) self-asserts boundary_verification VERIFIED (:36), so any caller of that chain mints layer 1 itself and passes layer 2 - run layers-tvc-double-interlock-probe LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT (ALLOW); continuity-vault-kit no longer uses it, but it remains the reused INTR_DEVICE_KV -> INTR_KV_SKAP shape on TV/TVC's credential side. At TVC#541 @63705c86a7c6228db5acdbb342d9991bf93b99d5 build_chain no longer takes layer receipts from the caller; it reads both from the designated KV / SKAP Vault ledgers, and with none designated it is six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED (run skap-custody-chain-probe-tvc541 DOUBLE_INTERLOCK_*), so the collapse remains only on TVC main until #541 is admitted",
+     "evidence": "TVC build_chain (tools/coinbase_intr_double_interlock.py:74 @c4845bea704949c46658042963e8c532c9559939) still mints the DEVICE->KV and KV->SKAP hops in one call, and build_device_kv_receipt (:45) self-asserts boundary_verification VERIFIED (:36), so any caller of that chain mints layer 1 itself and passes layer 2 - run layers-tvc-double-interlock-probe LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT (ALLOW); continuity-vault-kit no longer uses it, but it remains the reused INTR_DEVICE_KV -> INTR_KV_SKAP shape on TV/TVC's credential side. At TVC#541 @f75e3e7c8115eb535a3b2d388b36c391c4fb38d1 build_chain no longer takes layer receipts from the caller; it reads both from the designated KV / SKAP Vault ledgers, and with none designated it is six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED (run skap-custody-chain-probe-tvc541 DOUBLE_INTERLOCK_*), so the collapse remains only on TVC main until #541 is admitted; at @f75e3e7c build_chain still exists (tools/coinbase_intr_double_interlock.py:130) and tools/coinbase_browser_skap_custody.py:51 still calls it - the build_chain removal promised for the next push has not landed (run tvc541-build-chain-and-org-ref)",
      "failed_predicate": "TWO_SEQUENTIAL_GATES_EACH_WITH_ITS_OWN_RECEIPT",
      "failure_code": "LADDER_ACCESS_LAYERS_COLLAPSED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
@@ -1399,6 +1409,168 @@
    "scoped_tasks": [
     "LC-KV-08",
     "LC-KV-09"
+   ],
+   "verdict": "DENY"
+  },
+  {
+   "failure_class": {
+    "class": "A",
+    "reason": "enforcement of a given rule inside each reader's own surface; the org-hosted node-ledger scope question is class C (LC-KV-25)"
+   },
+   "id": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+   "kind": "CONSTRAINT",
+   "ladder": {
+    "E0": {
+     "form": "no LLM: runtime.kv_receipt_ledgers.designation refuses an org-ledger designation (KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER) and an org repository, a ref other than KV_INTR_ENDPOINT, or a binding key from its MEMBERSHIP_KEYS list anywhere outside designation_notes (ENDPOINT_ORG_MEMBERSHIP_REFUSED), six-field, before any read (observed)",
+     "llms": 0
+    },
+    "E1": {
+     "form": "one LLM lane authors repairs to the endpoint designation reader; the deterministic verifier and exact-head CI receipts stand in for cross-checking",
+     "llms": 1
+    },
+    "E2": {
+     "form": "two LLM lanes: one authors a repair to the endpoint designation reader, one cross-checks it; the deterministic verifier decides",
+     "llms": 2
+    },
+    "E3": {
+     "form": "three LLM lanes may author repairs to the endpoint designation reader and cross-check each other's diffs; the deterministic verifier alone decides the verdict",
+     "llms": 3
+    }
+   },
+   "lowest_supported_mode": "E0",
+   "observed_state": "continuity-vault-kit#263 @543e8c3267a4638d80130bf1052fb4cebd9b206a (run cvk263-chain-probe, production contracts and Lane D's own TEST-ONLY harness with the genesis re-pinned in memory, so only the membership check can refuse): both committed contracts pass (no binding, no org ref); Lane D's five forms (org repository, org ref, team_slug, an app installation_id in the store, a top-level org_membership) and a capitalised Members key are six-field FAIL_CLOSED ENDPOINT_ORG_MEMBERSHIP_REFUSED (class C, predicate ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER), and an org-ledger ref is KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER, for kv and for skap_vault through the gate. Not refused (ALLOW at E0, a full read-back): a top-level organization, github_app_installation_id, permissions or owner key naming StegVerse-org - MEMBERSHIP_KEYS is an exact-name deny list (runtime/kv_receipt_ledgers.py:176 MEMBERSHIP_KEYS, :183 _org_membership; run endpoint-org-membership-kv), so a binding under any other key passes; scoped as LC-KV-24. A binding written inside designation_notes is ignored by design (prose) and is informational. Outside continuity-vault-kit no reader on the KV path refuses membership: LLM-adapter#431 @a2237bc38316f3abe362bcf7f06a2356ac3a0abd endpoint_ledger_designation (every endpoint kind's designation reader) has a closed key schema but no membership refusal, and its ORG and PERMANENT stores are GIT_REF inside an org repository (runs endpoint-org-membership-llmad431, designation431-vs-cvk263 MEMBERSHIP_REFUSAL_IN_431 ABSENT); TVC#541/#542 readers have none. Lane D classes ENDPOINT_ORG_MEMBERSHIP_REFUSED C; this record reads the enforcement as class A (the rule is given) and only the scope question - whether an org-hosted node ledger (PERMANENT, GIT_REF in StegVerse-org) is membership - as class C",
+   "refusals": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "MEMBERSHIP_TOP_LEVEL_GITHUB_APP_INSTALLATION_ID_KV",
+     "required_evidence_or_repair": "for MEMBERSHIP_TOP_LEVEL_GITHUB_APP_INSTALLATION_ID_KV the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "MEMBERSHIP_TOP_LEVEL_GITHUB_APP_INSTALLATION_ID_SKAP_VAULT",
+     "required_evidence_or_repair": "for MEMBERSHIP_TOP_LEVEL_GITHUB_APP_INSTALLATION_ID_SKAP_VAULT the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "MEMBERSHIP_TOP_LEVEL_ORGANIZATION_KEY_KV",
+     "required_evidence_or_repair": "for MEMBERSHIP_TOP_LEVEL_ORGANIZATION_KEY_KV the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "MEMBERSHIP_TOP_LEVEL_ORGANIZATION_KEY_SKAP_VAULT",
+     "required_evidence_or_repair": "for MEMBERSHIP_TOP_LEVEL_ORGANIZATION_KEY_SKAP_VAULT the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "MEMBERSHIP_TOP_LEVEL_ORG_PERMISSIONS_KV",
+     "required_evidence_or_repair": "for MEMBERSHIP_TOP_LEVEL_ORG_PERMISSIONS_KV the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "MEMBERSHIP_TOP_LEVEL_ORG_PERMISSIONS_SKAP_VAULT",
+     "required_evidence_or_repair": "for MEMBERSHIP_TOP_LEVEL_ORG_PERMISSIONS_SKAP_VAULT the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "MEMBERSHIP_TOP_LEVEL_OWNER_ORG_KV",
+     "required_evidence_or_repair": "for MEMBERSHIP_TOP_LEVEL_OWNER_ORG_KV the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "MEMBERSHIP_TOP_LEVEL_OWNER_ORG_SKAP_VAULT",
+     "required_evidence_or_repair": "for MEMBERSHIP_TOP_LEVEL_OWNER_ORG_SKAP_VAULT the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "DENY",
+     "evidence": "an endpoint designated through LLM-adapter#431 @a2237bc38316f3abe362bcf7f06a2356ac3a0abd endpoint_ledger_designation (ORG and PERMANENT kinds on GIT_REF in an org repository) or TVC#541 @f75e3e7c8115eb535a3b2d388b36c391c4fb38d1 / TVC#542 @4c2504da3ef759fcf382d494e4a625aca46b1f55 readers is never checked for org membership (runs endpoint-org-membership-llmad431, designation431-vs-cvk263, tvc542-kv-signer-entry); whether an org-hosted node ledger is membership needs Coordination's ruling (scoped as LC-KV-25)",
+     "failed_predicate": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
+     "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next record change of the owning goal",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "remove the path or route it through the layer's InTr gate",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "evidence": "the sealed scope of #3324 (expected_evidence_predicates, scope_digest unchanged) does not name ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER; the rule is a revision 10 input, not yet sealed",
+     "failed_predicate": "CONSTRAINT_IS_A_SEALED_PREDICATE",
+     "failure_code": "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+     "next_attempt": "on the next record change of the owning goal",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "add the constraint to the goal's sealed expected_evidence_predicates (a re-seal through the goal's own request)",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
+    }
+   ],
+   "scoped_tasks": [
+    "LC-KV-09",
+    "LC-KV-24",
+    "LC-KV-25"
    ],
    "verdict": "DENY"
   },
@@ -1473,7 +1645,7 @@
   {
    "failure_class": {
     "class": "B",
-    "reason": "the ALLOW path waits on the genesis pin being written from the published ledger (Lane B, LC-KV-19, repair drafted in #431 @66a098fa), the org emitter carrying the genesis-observed signal (LC-KV-20, INTR-PATH-TRANSFER-TYPED-BODY-001, Lane B; partly drafted in .github#235), TV/TVC's NODE_LEDGER_OPENED signer (LC-KV-18, class C), the KV ledger location model conflict (LC-KV-21, Rigel's ruling relayed by Coordination) and ORG-LEDGER-HEAD-SIGNER-001 (external, GitHub Product); the (a)/(b)/(c) bypasses are closed at #432 @74509fec"
+    "reason": "the ALLOW path waits on the genesis pin aligned with SUPPLIED_HB_EPOCH (Lane B, LC-KV-19), the intra-org edge as a code change and the emitter wiring (LC-KV-20, Lane B, class C per #167 comment 6372442705 item 7), TV/TVC's NODE_LEDGER_OPENED signer (LC-KV-18, TVC#540), the KV recorded receipt chain readers being aligned (LC-KV-21), the optional rollback watermark (LC-KV-23, Lane D) and ORG-LEDGER-HEAD-SIGNER-001 (external, GitHub Product, TVC#542); the (a)/(b)/(c) bypasses stay closed at #432"
    },
    "id": "H-KV-ENDPOINT-LEDGER-ANCHOR",
    "kind": "HANDOFF",
@@ -1496,12 +1668,38 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "draft #432 @0eaa1de0 (moved from 74509fec; suite 60 OK, run anchor432-tests): anchor_failure_code gives a per-kind code - EPHEMERAL_NODE_LEDGER_NOT_ANCHORED for EPHEMERAL, the org-ledger reason itself (ORG_LEDGER_HEAD_NOT_AUTHENTICATED, ORG_LEDGER_GENESIS_MISMATCH, ORG_LEDGER_GENESIS_NOT_PINNED) when it is one, else ENDPOINT_LEDGER_NOT_ANCHORED for PERMANENT, GATEWAY, KV and SKAP_VAULT (run anchor432-probe ANCHOR_FAILURE_CODE_BY_ENDPOINT_KIND: PER_KIND; the caller-store rows now carry these specific codes, every one still six-field FAIL_CLOSED). Earlier heads (Lane B rev 5, #431's null genesis pin, and since 73316297 only ORG_LEDGER_GENESIS_NOT_PINNED's repair/retry/next_attempt naming REPOSITORY_LEDGER_GENESIS_PIN; LC-KV-16 (a)/(b)/(c) closed): the rows run inside the suite's TEST-ONLY append_route() harness (pinned-genesis contract fixture, TEST-ONLY head attester) unless named PRODUCTION_*; no exception, every refusal six-field. Lane B's claims hold: the org genesis must equal the contract's repository_ledger_location.expected_genesis_receipt_sha256 (a caller store with its own genesis is ORG_LEDGER_GENESIS_MISMATCH even route-attested; a contract whose field is null - #431's contract.json, byte-copied as the #431 fixture (sha256 d97cd4dc) - or absent is six-field ORG_LEDGER_GENESIS_NOT_PINNED, failed_predicate ORG_LEDGER_GENESIS_PINNED_BY_CONTRACT, next_attempt naming #431); the head needs an Ed25519 attestation by a key in .stegverse/node-ledger/org-ledger-head-signers.v1.json (a caller store with the real genesis copied is ORG_LEDGER_HEAD_NOT_AUTHENTICATED unattested, under the caller's own key, under the route key id with the caller's seed, and with the real store's attestation replayed); a caller-appended NODE_INGRESS_ADMITTED counts for nothing (anchor ALLOW, then INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED with intr_carrier_refusal INTR_CARRIER_NOT_ON_AUTHENTICATED_ORG_LEDGER); the transport-only rows clear the anchor first (anchor ALLOW, then the transport refusal); (a), (b) and (c) are FAIL_CLOSED. With the real, empty head-signer file every read is FAIL_CLOSED MERGE_APPEND_PATH_NOT_ADMITTED, the E0 positive control included (PRODUCTION_HEAD_SIGNERS_E0_POSITIVE_CONTROL). #431 @66a098fa keeps expected_genesis_receipt_sha256: null (run contract431-genesis-pin) with the REPOSITORY_LEDGER_GENESIS_PIN planner and the pre-pin InTr ingress receiver, and adds (8a68dfb0) the LC-KV-19 repair - the genesis is taken only from the published ref read back plus an Ed25519 head attestation by a key in the published org-ledger-head-signers file - and (66a098fa) an allowlisted contract_path for the cvk KV/SKAP contracts; suite 33 ran, OK, 0 skipped (run contract431-genesis-pin-tests). Probed with the TEST-ONLY route signer patched in (run genesis-pin-probe; temporary ledger copies, nothing real touched): the positive control is ACCEPTED_FOR_GENESIS_PIN; a caller-written genesis and carrier on a caller ledger copy citing the genuine attestation of another copy is now FAIL_CLOSED ORG_LEDGER_HEAD_NOT_AUTHENTICATED (it was ACCEPTED at 1541d465), and so are a caller copy unattested, under its own key, under the published key id with an unpublished seed, and attestations naming another tree or location; with the real, empty signer file (NONE_PUBLISHED) both the genuine and the caller copy are MERGE_APPEND_PATH_NOT_ADMITTED; a contract_path that traverses or is unlisted is CONTRACT_PATH_NOT_ALLOWLISTED; cvk#263 @f5f971a5's two contracts pass the shape check and reach REPOSITORY_LEDGER_GENESIS_UNOBSERVED. The earlier rows hold: only REPOSITORY_LEDGER_GENESIS_OBSERVED is received while the pin is null; off-chain genesis and forged carriers are refused; once pinned, replays are PRE_PIN_INGRESS_CLOSED and the planner refuses another genesis (EXPECTED_GENESIS_PIN_CONFLICT) and is idempotent on the same one; no circularity (the receiver ACCEPTs with location.designated_org_ledger and carrier.observe patched to raise, zero calls; import graph acyclic); the pin written equals the digest read back and apply_write refuses a changed contract. #431's carrier is now 5c410dd3 (fails closed on an incomplete source half, INTR_SOURCE_EVIDENCE_INCOMPLETE) while #432 and KV still vendor 9f460c07, and #431's cvk fixtures are byte copies of cvk#263's earlier 20451a0c contracts, not f5f971a5's (blob compare, not a run). For a cvk contract the receiver ends at the LLM-adapter-bound carrier, so no trigger route exists yet for the cvk ledgers. The published ledger has no repository-ledger/StegVerse-org/LLM-adapter namespace yet (run org-ledger-llmad-namespace). The org emitter (LC-KV-20, class B, Lane B, INTR-PATH-TRANSFER-TYPED-BODY-001 by Coordination's ruling StegVerse-org/.github#162 comment 6371704941): main @907f4305 still cannot carry the signal (UNDECLARED / CANNOT_CARRY / NOT_LINKABLE; runs genesis-pin-probe ORG_EMITTER_*, org-emitter-shape); draft StegVerse-org/.github#235 @346b24f6 fixes the body (typed row body EQUAL to the receiver's signal, defect 1) and the evidence (source half COMPLETE and LINKABLE, defect 3), refuses an unallowlisted schema, an unsealed body and a gateway with an external ref six-field, suite 20 OK (run org235-typed-body-tests); but the path is a code constant (typed_path_id), not a declared_paths data row (defect 2, CODE_CONSTANT_ONLY), and nothing writes the INTR_MESH_PATH_INGRESS destination half #431 reads (defect 4, ABSENT; #431's fixture synthesizes it). #432 @74509fec: ORG_LEDGER_GENESIS_NOT_PINNED's repair, retry and next_attempt name REPOSITORY_LEDGER_GENESIS_PIN (run genesis-pin-next-attempt-432; rows CONTRACT_WITHOUT_GENESIS_PIN, CONTRACT_GENESIS_PIN_FIELD_ABSENT). The clock question is resolved by Coordination's ruling (StegVerse-org/.github#162 comment 6371352606): observed_at is recorded, never a decision input, and the pin is the read-back digest, not a prediction, so there is no conflict with LC-GOV-04. Still ALLOW (observational, not a bypass): the bare healthy_node_evaluator.evaluate on an unanchored root, inside and outside the harness (UNANCHORED_ROOT_VIA_BARE_EVALUATOR, PRODUCTION_UNANCHORED_ROOT_VIA_BARE_EVALUATOR) - it is the unchanged #428 evaluator, which takes any root it is handed; its one non-test caller is node_ingress_boundary.admit over the gateway's own ledger root (llm_adapter/node_ingress_boundary.py:317; run anchor432-bare-evaluator-callers), and at #432 that admission record no longer establishes transport, while KV layer 1 accepts only the object-pinned evaluate_anchored (run kv-anchor-schema). #433 @d0957dc1 carries org_ledger_location.py, intr_transport_carrier.py, tests/org_ledger_harness.py, the head-signer file and both #431 contract fixtures byte-identical to #432 @74509fec (blob compare, not a run); #433's endpoint_ledger_anchor.py does not carry #432's 74509fec next_attempt change. Suite: run anchor432-tests",
+   "observed_state": "revision 10, continuity-vault-kit#263 @543e8c32 (run cvk263-chain-probe; Lane D's own TEST-ONLY harness, genesis re-pinned in memory): production reads of both chains are six-field FAIL_CLOSED (kv: KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR; skap_vault read directly: SKAP_RECEIPT_CHAIN_NOT_VIA_KV_INTR) and the prerequisites list exactly Lane D's four class B codes; at E0 the kv chain and the skap_vault chain through SkapLayer2Gate read back to ALLOW (harness only; production stays FAIL_CLOSED); a caller-seed head signature and an attestation naming the other chain are KV_LEDGER_HEAD_NOT_AUTHENTICATED, org-ledger receipts presented as the KV chain are KV_RECEIPT_CHAIN_FOREIGN_RECORD_REFUSED, a provider record in the chain location is EXTERNAL_STORAGE_RECORD_REFUSED, an older genuinely signed head with the Org watermark is DENY KV_LEDGER_HEAD_ROLLBACK_DETECTED, and a never-minted layer-1 hash is SKAP_RECEIPT_CHAIN_NOT_VIA_KV_INTR; but the same older head WITHOUT the watermark is ALLOW for kv and for skap_vault through the gate, because recorded_head is an optional argument defaulting to None (runtime/kv_receipt_ledgers.py:414 and :479 recorded_head=None, :467 checked only when not None; runtime/kv_skap_layer2.py:133; run cvk263-watermark-optional), where LLM-adapter#431 @a2237bc3 refuses KV_LEDGER_ROLLBACK_WATERMARK_UNREAD (run llmad431-watermark-required) - scoped as LC-KV-23; the reader never checks observed_at (Lane D's E0 receipts carry a clock stamp and are ALLOW), so nothing binds it to SUPPLIED_HB_EPOCH (KV_CHAIN_RECEIPT_OBSERVED_AT_CLOCK_STAMP_ACCEPTED, informational, carried in LC-KV-23). Lane D's tests reproduce: tests/test_kv_ladder_conformance_lc_kv.py 57 OK (run cvk263-lc-kv-tests); P1's 28-file selection 383 passed, 48 subtests, 0 skipped (run cvk263-selected-28); the 21-module stdlib-only selection 252 OK (run cvk263-stdlib-21); finish point rc 2 FAIL_CLOSED (run cvk263-finish-point). TVC#540 @b0ba93e3 (run tvc540-signer-tests) and TVC#542 @4c2504da (run tvc542-signer-tests) are the LC-KV-18 and ORG-LEDGER-HEAD-SIGNER-001 drafts. Earlier: draft #432 @0eaa1de0 (moved from 74509fec; suite 60 OK, run anchor432-tests): anchor_failure_code gives a per-kind code - EPHEMERAL_NODE_LEDGER_NOT_ANCHORED for EPHEMERAL, the org-ledger reason itself (ORG_LEDGER_HEAD_NOT_AUTHENTICATED, ORG_LEDGER_GENESIS_MISMATCH, ORG_LEDGER_GENESIS_NOT_PINNED) when it is one, else ENDPOINT_LEDGER_NOT_ANCHORED for PERMANENT, GATEWAY, KV and SKAP_VAULT (run anchor432-probe ANCHOR_FAILURE_CODE_BY_ENDPOINT_KIND: PER_KIND; the caller-store rows now carry these specific codes, every one still six-field FAIL_CLOSED). Earlier heads (Lane B rev 5, #431's null genesis pin, and since 73316297 only ORG_LEDGER_GENESIS_NOT_PINNED's repair/retry/next_attempt naming REPOSITORY_LEDGER_GENESIS_PIN; LC-KV-16 (a)/(b)/(c) closed): the rows run inside the suite's TEST-ONLY append_route() harness (pinned-genesis contract fixture, TEST-ONLY head attester) unless named PRODUCTION_*; no exception, every refusal six-field. Lane B's claims hold: the org genesis must equal the contract's repository_ledger_location.expected_genesis_receipt_sha256 (a caller store with its own genesis is ORG_LEDGER_GENESIS_MISMATCH even route-attested; a contract whose field is null - #431's contract.json, byte-copied as the #431 fixture (sha256 d97cd4dc) - or absent is six-field ORG_LEDGER_GENESIS_NOT_PINNED, failed_predicate ORG_LEDGER_GENESIS_PINNED_BY_CONTRACT, next_attempt naming #431); the head needs an Ed25519 attestation by a key in .stegverse/node-ledger/org-ledger-head-signers.v1.json (a caller store with the real genesis copied is ORG_LEDGER_HEAD_NOT_AUTHENTICATED unattested, under the caller's own key, under the route key id with the caller's seed, and with the real store's attestation replayed); a caller-appended NODE_INGRESS_ADMITTED counts for nothing (anchor ALLOW, then INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED with intr_carrier_refusal INTR_CARRIER_NOT_ON_AUTHENTICATED_ORG_LEDGER); the transport-only rows clear the anchor first (anchor ALLOW, then the transport refusal); (a), (b) and (c) are FAIL_CLOSED. With the real, empty head-signer file every read is FAIL_CLOSED MERGE_APPEND_PATH_NOT_ADMITTED, the E0 positive control included (PRODUCTION_HEAD_SIGNERS_E0_POSITIVE_CONTROL). #431 @66a098fa keeps expected_genesis_receipt_sha256: null (run contract431-genesis-pin) with the REPOSITORY_LEDGER_GENESIS_PIN planner and the pre-pin InTr ingress receiver, and adds (8a68dfb0) the LC-KV-19 repair - the genesis is taken only from the published ref read back plus an Ed25519 head attestation by a key in the published org-ledger-head-signers file - and (66a098fa) an allowlisted contract_path for the cvk KV/SKAP contracts; suite 33 ran, OK, 0 skipped (run contract431-genesis-pin-tests). Probed with the TEST-ONLY route signer patched in (run genesis-pin-probe; temporary ledger copies, nothing real touched): the positive control is ACCEPTED_FOR_GENESIS_PIN; a caller-written genesis and carrier on a caller ledger copy citing the genuine attestation of another copy is now FAIL_CLOSED ORG_LEDGER_HEAD_NOT_AUTHENTICATED (it was ACCEPTED at 1541d465), and so are a caller copy unattested, under its own key, under the published key id with an unpublished seed, and attestations naming another tree or location; with the real, empty signer file (NONE_PUBLISHED) both the genuine and the caller copy are MERGE_APPEND_PATH_NOT_ADMITTED; a contract_path that traverses or is unlisted is CONTRACT_PATH_NOT_ALLOWLISTED; cvk#263 @f5f971a5's two contracts pass the shape check and reach REPOSITORY_LEDGER_GENESIS_UNOBSERVED. The earlier rows hold: only REPOSITORY_LEDGER_GENESIS_OBSERVED is received while the pin is null; off-chain genesis and forged carriers are refused; once pinned, replays are PRE_PIN_INGRESS_CLOSED and the planner refuses another genesis (EXPECTED_GENESIS_PIN_CONFLICT) and is idempotent on the same one; no circularity (the receiver ACCEPTs with location.designated_org_ledger and carrier.observe patched to raise, zero calls; import graph acyclic); the pin written equals the digest read back and apply_write refuses a changed contract. #431's carrier is now 5c410dd3 (fails closed on an incomplete source half, INTR_SOURCE_EVIDENCE_INCOMPLETE) while #432 and KV still vendor 9f460c07, and #431's cvk fixtures are byte copies of cvk#263's earlier 20451a0c contracts, not f5f971a5's (blob compare, not a run). For a cvk contract the receiver ends at the LLM-adapter-bound carrier, so no trigger route exists yet for the cvk ledgers. The published ledger has no repository-ledger/StegVerse-org/LLM-adapter namespace yet (run org-ledger-llmad-namespace). The org emitter (LC-KV-20, class B, Lane B, INTR-PATH-TRANSFER-TYPED-BODY-001 by Coordination's ruling StegVerse-org/.github#162 comment 6371704941): main @907f4305 still cannot carry the signal (UNDECLARED / CANNOT_CARRY / NOT_LINKABLE; runs genesis-pin-probe ORG_EMITTER_*, org-emitter-shape); draft StegVerse-org/.github#235 @346b24f6 fixes the body (typed row body EQUAL to the receiver's signal, defect 1) and the evidence (source half COMPLETE and LINKABLE, defect 3), refuses an unallowlisted schema, an unsealed body and a gateway with an external ref six-field, suite 20 OK (run org235-typed-body-tests); but the path is a code constant (typed_path_id), not a declared_paths data row (defect 2, CODE_CONSTANT_ONLY), and nothing writes the INTR_MESH_PATH_INGRESS destination half #431 reads (defect 4, ABSENT; #431's fixture synthesizes it). #432 @74509fec: ORG_LEDGER_GENESIS_NOT_PINNED's repair, retry and next_attempt name REPOSITORY_LEDGER_GENESIS_PIN (run genesis-pin-next-attempt-432; rows CONTRACT_WITHOUT_GENESIS_PIN, CONTRACT_GENESIS_PIN_FIELD_ABSENT). The clock part of #162 comment 6371352606 ('no conflict with LC-GOV-04') is superseded by #167 comment 6372442705 item 6: the genesis must align with SUPPLIED_HB_EPOCH (blocker ORG_GENESIS_PIN_NULL). Still ALLOW (observational, not a bypass): the bare healthy_node_evaluator.evaluate on an unanchored root, inside and outside the harness (UNANCHORED_ROOT_VIA_BARE_EVALUATOR, PRODUCTION_UNANCHORED_ROOT_VIA_BARE_EVALUATOR) - it is the unchanged #428 evaluator, which takes any root it is handed; its one non-test caller is node_ingress_boundary.admit over the gateway's own ledger root (llm_adapter/node_ingress_boundary.py:317; run anchor432-bare-evaluator-callers), and at #432 that admission record no longer establishes transport, while KV layer 1 accepts only the object-pinned evaluate_anchored (run kv-anchor-schema). #433 @d0957dc1 carries org_ledger_location.py, intr_transport_carrier.py, tests/org_ledger_harness.py, the head-signer file and both #431 contract fixtures byte-identical to #432 @74509fec (blob compare, not a run); #433's endpoint_ledger_anchor.py does not carry #432's 74509fec next_attempt change. Suite: run anchor432-tests",
    "refusals": [
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WITHOUT_WATERMARK_KV",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WITHOUT_WATERMARK_KV the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "ALLOW",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WITHOUT_WATERMARK_SKAP_VIA_GATE",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WITHOUT_WATERMARK_SKAP_VIA_GATE the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
     {
      "blocker": "ORG_GENESIS_PIN_NULL",
      "disposition": "FAIL_CLOSED",
-     "evidence": "#431 @66a098fac891a782ad8175d8df3ae07e113a1db7 contract.json expected_genesis_receipt_sha256 is null until REPOSITORY_LEDGER_GENESIS_PIN writes the observed digest (run contract431-genesis-pin; Coordination rulings StegVerse-org/.github#162 comments 6371352606 and 6371704941: LC-KV-19 is class A, fixed by Lane B first), and #432 refuses null six-field ORG_LEDGER_GENESIS_NOT_PINNED (runs anchor432-probe, genesis-pin-next-attempt-432). Lane B's repair is in the draft: the receiver now refuses a caller copy (ORG_LEDGER_HEAD_NOT_AUTHENTICATED) and, with no published head signer, every copy (MERGE_APPEND_PATH_NOT_ADMITTED) (run genesis-pin-probe). It remains until #431 is admitted, ORG-LEDGER-HEAD-SIGNER-001 publishes a key and the genesis is observed on the published ledger (run org-ledger-llmad-namespace)",
+     "evidence": "#431 @a2237bc38316f3abe362bcf7f06a2356ac3a0abd contract.json expected_genesis_receipt_sha256 is null (run contract431-genesis-pin) and #432 refuses null six-field ORG_LEDGER_GENESIS_NOT_PINNED (runs anchor432-probe, genesis-pin-next-attempt-432). Revision 10: StegVerse-org/.github#167 comment 6372442705 item 6 supersedes the 'no clock conflict' part of #162 comment 6371352606 - #431's genesis must align with SUPPLIED_HB_EPOCH (StegVerse-Labs/.github#3263/#3290) so the pin can be computed in advance, and pin-after-observe stays only as the read-back check; at a2237bc3 the genesis digest still moves with the clock-stamped observed_at, even with a supplied epoch (run contract431-genesis-pin-tests, ExpectedGenesisPinTests), so the pin cannot be computed in advance yet. The receiver repair (head attestation by a published signer) holds (run genesis-pin-probe); it remains until #431 aligns the genesis with SUPPLIED_HB_EPOCH, is admitted, ORG-LEDGER-HEAD-SIGNER-001 publishes a key and the read-back check matches (run org-ledger-llmad-namespace)",
      "failed_predicate": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
      "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
@@ -1513,7 +1711,7 @@
     {
      "blocker": "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER",
      "disposition": "FAIL_CLOSED",
-     "evidence": "the trigger route (option (b)) is the org's path transfer; on main StegVerse-org/.github@907f4305ddd4f39b16d96638744304de9ef0b67d it cannot carry the signal (runs genesis-pin-probe ORG_EMITTER_*, org-emitter-shape). Coordination's ruling (StegVerse-org/.github#162 comment 6371704941) makes it class B, owner Lane B, as INTR-PATH-TRANSFER-TYPED-BODY-001 covering four defects. Draft StegVerse-org/.github#235 @69eae86e405fc06f0e1487c6a263765ee1e542a7 (suite 24 OK, run org235-typed-body-tests) fixes (1) the body, (2) the path - StegVerse-org/.github->StegVerse-org:intr-destination is now a row of mesh_path_transfer.intra_org_paths (ORG235_TYPED_PATH_IN_THE_DECLARED_PATH_DATA DECLARED_AS_INTRA_ORG_DATA_ROW) - and (3) the evidence (COMPLETE, LINKABLE), and typed-row --from-readback builds the row from a read-back (ORG235_TYPED_ROW_FROM_READBACK EMITTED, body equal to #431's signal; a genesis that is not the chain root or an unverified read-back is six-field FAIL_CLOSED INTR_PATH_GENESIS_NOT_READ_BACK). Remaining (4): nothing runs --from-readback as a transition - the row still lands in transfers.json by hand (ORG235_FROM_READBACK_WIRED_TO_A_TRANSITION NOT_WIRED) - and no writer appends the INTR_MESH_PATH_INGRESS destination half #431 reads (ORG235_DESTINATION_HALF_WRITER ABSENT). The carrier (5c410dd3) now refuses a source half missing a rebuild key six-field INTR_SOURCE_EVIDENCE_INCOMPLETE in verify (destination_evidence still raises KeyError when called directly on such a half: ORG_EMITTER_SHAPED_SOURCE_HALF_LINKED_BY_THE_CARRIER)",
+     "evidence": "the trigger route is the org's path transfer; on main StegVerse-org/.github@907f4305ddd4f39b16d96638744304de9ef0b67d it cannot carry the signal (runs genesis-pin-probe ORG_EMITTER_*, org-emitter-shape: UNDECLARED, CANNOT_CARRY, NOT_LINKABLE). Revision 10: StegVerse-org/.github#167 comment 6372442705 item 7 supersedes #162 comment 6371704941 on the path: an intra-org path edge is a code change in resident-runtime/intr_path_transfer.py:119 (declared_paths pairs only distinct organizations, s != d), not a data row, class C, Lane B. Draft StegVerse-org/.github#235 @f84b97c19d4f5948c6f0fe1d26accbf2bd45eb6a (suite 27 OK, run org235-typed-body-tests; linked receipts now carry endpoint_head_sha256 digest-only, endpoint_paths empty) still declares the edge as a data row (ORG235_TYPED_PATH_IN_THE_DECLARED_PATH_DATA DECLARED_AS_INTRA_ORG_DATA_ROW), which the correction rules out; body EQUAL, evidence COMPLETE/LINKABLE and --from-readback EMITTED hold, but nothing runs --from-readback as a transition (NOT_WIRED) and no writer appends the INTR_MESH_PATH_INGRESS destination half (ABSENT)",
      "failed_predicate": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
      "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
@@ -1523,9 +1721,9 @@
      "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
     },
     {
-     "blocker": "KV_LEDGER_ON_ORG_LEDGER_REF_MODEL_CONFLICT",
+     "blocker": "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED",
      "disposition": "FAIL_CLOSED",
-     "evidence": "MODEL CONFLICT with Rigel's ruling relayed by Coordination (KV is independent of the ecosystem orgs: its own ledger behind its own InTr ingress/egress endpoint, never stored on an org's refs/stegverse/organization-ledger; KV only a governed layer over storage the user already owns, reached through a gateway node, holding only encrypted contents; and the further ruling: cloud storage - Rigel's Google Drive today, several major providers later - is an accepted existing dependency where KV's encrypted contents and KV's ledger may live, with order in KV's ledger). This anchor and its designations put KV's ledger on the org ledger: continuity-vault-kit#263 @f5f971a578b497815f1084176f5ecb3352770c71 designates 01_KV_Ledger and 02_SKAP_Vault_Ledger as subtrees repository-ledger/StegVerse-org/<name> of StegVerse-org/.github refs/stegverse/organization-ledger (run model-conflict-kv-ledger-location); LLM-adapter#432 @0eaa1de05320bc72ebb7db16a46431b4133b1b3d anchors the KV and SKAP_VAULT endpoint kinds against the pinned org genesis and the org head signer (run model-conflict-anchor-kinds); TVC#541 @63705c86a7c6228db5acdbb342d9991bf93b99d5 accepts a KV / SKAP Vault ledger designation only with ref refs/stegverse/organization-ledger (run model-conflict-tvc541-designation-ref); and KV over user-owned storage through a gateway node with encrypted contents only is not built - the storage adapter constructs intents only (run model-conflict-kv-user-storage). Scoped as LC-KV-21",
+     "evidence": "revision 10 (was KV_LEDGER_ON_ORG_LEDGER_REF_MODEL_CONFLICT). Lane D's part conforms: continuity-vault-kit#263 @543e8c3267a4638d80130bf1052fb4cebd9b206a records the kv (_StegVerse/Receipts) and skap_vault (_Vault/SKAP/Receipts) chains on STEGVERSE_KV / KV_INTR_ENDPOINT with one KV_STORAGE_ENDPOINT store, no org git ref outside the refusal markers (runs cvk263-contracts, model-conflict-kv-ledger-location), and refuses an org-ledger designation (KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER; run cvk263-chain-probe MEMBERSHIP_ORG_LEDGER_REF_*). The readers that must consume those chains are not aligned: (a) TVC#541 @f75e3e7c8115eb535a3b2d388b36c391c4fb38d1 tools/kv_layer_ledger_readback.py:50 still requires ORG_LEDGER_REF (the org-ref refusal promised for the next push has not landed; runs model-conflict-tvc541-designation-ref, tvc541-build-chain-and-org-ref); (b) LLM-adapter#431 @a2237bc38316f3abe362bcf7f06a2356ac3a0abd endpoint_ledger_designation refuses both of cvk#263's designations six-field ENDPOINT_LEDGER_STORE_TYPE_UNDECLARED because it knows only GIT_REF and GATEWAY_ENCRYPTED_BLOB (the withdrawn gateway-node and encryption names; #167 comment 6372442705 items 1 and 3), its kv head signer signs KV_LEDGER_HEAD where cvk#263 and TVC#542 use KV_RECORDED_RECEIPT_CHAIN_HEAD, and its genesis-pin allowlist names cvk's deleted .stegverse/receipt-ledgers paths (CVK263_CONTRACT_PLANNED_* CONTRACT_NOT_431_SHAPE) (runs designation431-vs-cvk263, llmad431-watermark-required, genesis-pin-probe); (c) LLM-adapter#432 @0eaa1de05320bc72ebb7db16a46431b4133b1b3d anchors KV and SKAP_VAULT against the org genesis and the org head signer (run model-conflict-anchor-kinds; Lane B register R-16); (d) TVC#542 @4c2504da3ef759fcf382d494e4a625aca46b1f55 keeps the kv_ledger_head_signer entry's ledger_location and signer_key_ref null and reads heads from a local git archive of a designated ref, so it cannot read a KV_STORAGE_ENDPOINT chain (run tvc542-kv-signer-entry). Scoped as LC-KV-21",
      "failed_predicate": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
      "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
@@ -1570,7 +1768,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-org/LLM-adapter#431 (repository_ledger_location designation; REPOSITORY_LEDGER_GENESIS_PIN and its pre-pin receiver; pin null until the genesis is observed; LC-KV-19 head attestation; allowlisted contract_path) draft @66a098fa",
+     "evidence": "StegVerse-org/LLM-adapter#431 (repository_ledger_location designation; REPOSITORY_LEDGER_GENESIS_PIN and its pre-pin receiver; pin null until the genesis is observed; LC-KV-19 head attestation; allowlisted contract_path) draft @a2237bc3",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
@@ -1581,7 +1779,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-org/.github#235 (INTR-PATH-TRANSFER-TYPED-BODY-001, typed genesis-observed body, intra_org_paths data row, typed-row --from-readback) draft @69eae86e",
+     "evidence": "StegVerse-org/.github#235 (INTR-PATH-TRANSFER-TYPED-BODY-001, typed genesis-observed body, intra_org_paths data row, typed-row --from-readback) draft @f84b97c1",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
@@ -1592,7 +1790,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/continuity-vault-kit#263 (KV-SKAP-LEDGER-LOCATION-001) draft @f5f971a5",
+     "evidence": "StegVerse-Labs/continuity-vault-kit#263 (KV-SKAP-LEDGER-LOCATION-001; recorded receipt chains on the storage endpoint) draft @543e8c32",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
@@ -1631,7 +1829,8 @@
     "LC-KV-18",
     "LC-KV-19",
     "LC-KV-20",
-    "LC-KV-21"
+    "LC-KV-21",
+    "LC-KV-23"
    ],
    "verdict": "FAIL_CLOSED"
   }
@@ -1650,25 +1849,28 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:43c76aa9b6dc4abaa6a0b773504a54957196aa25efdff1f5b8cbce8dfe04a94b",
+  "document_sha256": "sha256:2db1e3b14b836e3c42709fe9328f7ebaca04eca44f2dd8c715576237acebd635",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:85563d33bf0e4a7c06a9fc23625a503328dbb6d70844b40bc3926872142c652b",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0c7f0875c8f4171995eb378ead32a981a003234338c0f554d476308e27620663",
-   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:afe8d8bc78e484b563f5ff70e2ed1bf05aca88491901468bc20436765901a9e8",
+   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:918563f9450a64136e1bdaf10c4bcbcf628ff0b7f4aae3cd68967aa90308443a",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:a038b186ef2c264c7b0910e5f25f0daa788ae28c9fbec084c59598960ea90745",
+   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:c8bb268bbe7aac6e20b66fb194edc90201343f574fc9b2ddcdaee0edda44e93c",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:7d9551ba7732dc9b370a28a890dc44827aa70997fcf4a9d644bdab350485f348",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-04.json": "sha256:234d07b90a9e6b9297addc910b95ec5944f41adf59755afd17e4a7e3ace1b11d",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-05.json": "sha256:03ae34d57609eb6b693831d327ea1e7f513439928a3f20d34bf6ae69535e5955",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-06.json": "sha256:3bfdf38e1fa2c6927c50573367a5b66889cfaffcc1154dcf0c9adac3f3094d80",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-07.json": "sha256:f2bd49a0c93838e48a800da602ec8bbfda8d65e737144b54a694ccc4545d5c4d",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-08.json": "sha256:b315fa8bd65bb8a53a95a8c22445b64c0d1d277d922874bf28647c67ceb279a8",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-09.json": "sha256:b62ae2f71e3bf6c83be05e4bc4f9b693dc2ad98f7be6bd1884ec36f81b40563e",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-13.json": "sha256:e0a0ecaeb80c2c0526bc0f03c078c1cd0beb67cee41c175253a6f94d066b6c9e",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-18.json": "sha256:719e4b3db3e999eeb5ac456f38e26e7c108e7f7bc2a39791ed2bc8bda80004e2",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-19.json": "sha256:ed845f2fb773b3d1c8488918830c8a8635876e09389fa5da2247cf842e9ab7e5",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-20.json": "sha256:ccaede9fef379eae9534c1df93fa5f96f8867c200dbe76cd7ee69e7905137c23",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-21.json": "sha256:8b59e6b03678923c0ce3e2bb4b1c7dca05159a3f2659914fc8fe0e82f0235f08",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-22.json": "sha256:719d6e786172810b5a816dec2011e462538b2108a8f44d2dccb0f6aa0d672e51"
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-06.json": "sha256:9082238b592d4c3d78e8661ef7a667e9d7af7a10af201e28bf3602c77c5cabeb",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-07.json": "sha256:ef92d7bb0217aa40a0a00ab0bc7ff5a52db8815c0f8a27b0b620e09bd75625b8",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-08.json": "sha256:bf0367ae145b34159b9c95eea7145f9afed9a73b67abf84ea2d657f0dffb2def",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-09.json": "sha256:1aca58ce3d6b40ce525beb982e68ef0fc225c4e34cfae166b975ba6693d71e21",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-13.json": "sha256:4eb1111d208cfd7d622eea62b4ed952481c9da68679d849e16496654c26b7acd",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-18.json": "sha256:420d18178a6d50279299640773c557c7e8e60cb5784b40ea73f1cce8fe5fe8c1",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-19.json": "sha256:052d23645ef2fe6eb63acacac1b6787e33dcb7bae1517f8a86b5436648788d2b",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-20.json": "sha256:54073451a251ce25a57539989c0a4ffeca6c4e2ad74e8c49ba9175aa43937540",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-21.json": "sha256:3a527dadea61a95ae262097b6ad4a293539b83fc90092440e770f6c64cc33ec0",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-22.json": "sha256:359fcf008808596af9d6441876528faf340cf392a8ae7e22fcbe6a70948ee130",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-23.json": "sha256:61c80744aaa23b9054920b4bad9a8ea9eada3942b1c03a9b10a747c3ac0a4f27",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-24.json": "sha256:4fbfdaa8056bb6bcbfffa478ded947b3e5cb8bcc0cc316d210226ce88f663760",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-25.json": "sha256:1093a07cc55a4b1824fc79382f12aa88d10d525edc2308708a3d4b3b5721762e"
   },
   "note": "not a ledger receipt: runtime counts only when a manifest-directed transition appends a receipt to refs/stegverse/organization-ledger",
   "runtime_completion": false,
@@ -1691,7 +1893,10 @@
   "LC-KV-19",
   "LC-KV-20",
   "LC-KV-21",
-  "LC-KV-22"
+  "LC-KV-22",
+  "LC-KV-23",
+  "LC-KV-24",
+  "LC-KV-25"
  ],
  "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "verdict": "DENY"

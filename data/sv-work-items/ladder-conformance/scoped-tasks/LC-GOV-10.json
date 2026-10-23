@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "E0_TERMINAL_OR_CLASS_B",
+ "failure_class": {
+  "class": "C",
+  "reason": "waits on Coordination's ruling (app installation, release token); the check is then class B for the GitHub Product lane"
+ },
+ "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
+ "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+ "items": [
+  "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
+ ],
+ "next_attempt": "on Coordination's ruling on app installations and release tokens, then on the next push to the TV/TVC release publisher",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_lane": "GitHub Product lane (Lane C); ruling: Coordination (app installations, release tokens)",
+ "proposed_resolution": "Coordination rules whether a GitHub App installation, a fine-grained release token or an org-hosted node ledger is endpoint membership; then the GitHub Product lane adds a deterministic E0 check on the release path that refuses six-field when the publishing principal is an org member, collaborator or app installation, and routes the release into StegVerse-org through InTr",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "new (revision 10, continuity-vault-kit#263 @543e8c32, LLM-adapter#431 @a2237bc3, StegVerse-org/.github#235 @f84b97c1, TVC#541 @f75e3e7c, TVC#540 @b0ba93e3, TVC#542 @4c2504da): Rigel's rule (revision 10): no endpoint, whether externally maintained or ecosystem maintained, can be a member of a GitHub Organization, because membership defeats the Inter-Org InTr data transfer protocol and its boundaries. No membership check exists on the governance path (run gov-membership-check-search: 0 hits at SDK#556 @2db2ad2e). The TV/TVC release publisher (TVC main @c4845bea tasks/tvc_portable_github_release_publisher.py:15 CREDENTIAL_ENV TVC_EPHEMERAL_GITHUB_TOKEN, Bearer auth at :192 and :219) publishes to StegVerse-org/StegVerse-SDK, and config/sdk_v1_3_0_release.json names authorization_request_repository StegVerse-org/TV (run gov-endpoint-org-membership); GitHub grants release write only to an org member, an outside collaborator or an app installation, so the route as built needs TV/TVC to be an org principal. The token's principal is not observable here (no credential read), so this is six-field FAIL_CLOSED, not a finding. StegVerse-Labs/.github main @86382e60 control/cosv-ecosystem-adoption-manifest.json records COSV GitHub App installations on 14 organizations (run gov-cosv-app-installations); StegVerse-org/.github#235 docs/INTR_PROTOCOL_V1.md:31 cites organization memberships as directory evidence",
+ "retry_point": "python -m unittest tests.test_governance_product_finish_point (StegVerse-org/StegVerse-SDK), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-GOV-10"
+}

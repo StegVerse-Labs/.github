@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "DENY",
+ "failed_check": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
+ "failure_class": {
+  "class": "C",
+  "reason": "waits on Coordination's ruling whether an org-hosted node ledger (PERMANENT, GIT_REF in StegVerse-org) is membership; the check itself is then class B for Lane B and GitHub Product"
+ },
+ "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
+ ],
+ "next_attempt": "on Coordination's ruling on org-hosted node ledgers, then on the next push to LLM-adapter#431",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "InTr and Mesh Destinations lane (Lane B, StegVerse-org/.github#162) for LLM-adapter#431 endpoint_ledger_designation; GitHub Product lane as TV/TVC owner for the TVC#541/#542 readers; ruling: Coordination; consuming lane: Lane D (KV and WorkSpace)",
+ "proposed_resolution": "once ruled: add a six-field ENDPOINT_ORG_MEMBERSHIP_REFUSED check to #431 endpoint_ledger_designation for every endpoint kind (and to the TVC readers), refusing any endpoint designation that binds an org repository, team, app installation or membership; if org-hosted node ledgers are ruled membership, move PERMANENT and EPHEMERAL node ledgers to the node's own recorded receipt chain with an InTr crossing to the Org",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "new (revision 10, continuity-vault-kit#263 @543e8c32, LLM-adapter#431 @a2237bc3, StegVerse-org/.github#235 @f84b97c1, TVC#541 @f75e3e7c, TVC#540 @b0ba93e3, TVC#542 @4c2504da), under Rigel's rule (revision 10): no endpoint, whether externally maintained or ecosystem maintained, can be a member of a GitHub Organization, because membership defeats the Inter-Org InTr data transfer protocol and its boundaries. Outside continuity-vault-kit no reader on the KV path refuses membership: LLM-adapter#431 @a2237bc3 endpoint_ledger_designation (the designation reader for every endpoint kind) has a closed key schema but no membership refusal (MEMBERSHIP_REFUSAL_IN_431 ABSENT; run designation431-vs-cvk263), and its ORG and PERMANENT stores are GIT_REF inside an org repository (llm_adapter/endpoint_ledger_designation.py:78; run endpoint-org-membership-llmad431); TVC#541 and TVC#542 readers read designated org refs with no membership check (runs tvc541-build-chain-and-org-ref, tvc542-kv-signer-entry). Open question: whether an ecosystem-maintained node whose ledger is hosted in an org repository (a PERMANENT node on GIT_REF in StegVerse-org) is a member under the rule",
+ "retry_point": "python scripts/ladder_conformance.py observe (runs designation431-vs-cvk263, endpoint-org-membership-llmad431), then check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-25"
+}

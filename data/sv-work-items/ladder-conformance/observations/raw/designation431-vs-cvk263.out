@@ -1,0 +1,44 @@
+$ {python} -c # P1 rev 10: LLM-adapter#431 @a2237bc3 endpoint_ledger_designation against continuity-vault-kit#263 @543e8c32's
+# committed ledger designations (read from the cvk263 checkout given as argv[1]); pure functions only.
+import json, sys
+from pathlib import Path
+sys.path[:0] = ["."]
+from llm_adapter import endpoint_ledger_designation as E
+cvk = Path(sys.argv[1])
+SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt")
+rows = []
+def row(subject, out, note=None, **extra):
+    r = {"subject": subject}
+    if out is None:
+        r["disposition"] = "ALLOW"
+    elif isinstance(out, dict):
+        r["disposition"] = out.get("disposition")
+        for k in SIX:
+            if isinstance(out.get(k), str): r[k] = out[k]
+    else:
+        r["disposition"] = out
+    if note: r["note"] = note
+    r.update(extra); rows.append(r)
+for name, f in (("KV", "stegverse-kv-receipts.contract.json"), ("SKAP_VAULT", "skap-receipts.contract.json")):
+    c = json.loads((cvk / ".stegverse/receipt-chains" / f).read_text())
+    d = c["ledger_designation"]
+    row("CVK263_%s_DESIGNATION_UNDER_431" % name, E.designation_failure(d),
+        store_type=d["stores"][0].get("store_type"), accepted_store_types=list(E.STORE_TYPES),
+        note="#431 reads the designation Lane D committed for this chain")
+cvk_rl = (cvk / "runtime/kv_receipt_ledgers.py").read_text()
+import re
+m = re.search(r'^HEAD_DIGEST_NAME = "([A-Z_]+)"', cvk_rl, re.M)
+signs_cvk = m.group(1) if m else None
+signs_431 = E.HEAD_SIGNER_FILES[E.KV_LEDGER_HEAD_SIGNER][1]
+row("KV_HEAD_SIGNER_SIGNS_VALUE_431_VS_CVK263", "ALLOW" if signs_cvk == signs_431 else "FAIL_CLOSED",
+    note="informational: one kv-ledger-head-signers.v1.json entry is accepted by a reader only when its signs value matches",
+    signs_431=signs_431, signs_cvk263=signs_cvk)
+src = open(E.__file__).read()
+row("MEMBERSHIP_REFUSAL_IN_431", "ALLOW" if "MEMBERSHIP" in src.upper() else "ABSENT",
+    note="informational: #431 has a closed key schema (an extra key is ENDPOINT_LEDGER_DESIGNATION_INVALID) but no org-membership refusal code; ORG and PERMANENT stores are GIT_REF in an org repository")
+print(json.dumps({"rows": rows}, sort_keys=True))
+ {root:cvk263}
+--- exit 0
+--- stdout
+{"rows": [{"accepted_store_types": ["GIT_REF", "GATEWAY_ENCRYPTED_BLOB"], "disposition": "FAIL_CLOSED", "failed_predicate": "STORE_TYPE_IS_A_DECLARED_STORE_TYPE", "failure_code": "ENDPOINT_LEDGER_STORE_TYPE_UNDECLARED", "next_attempt": "on the admission of a corrected designation in the endpoint's own contract (event-triggered)", "note": "#431 reads the designation Lane D committed for this chain", "owning_existing_goal": "StegVerse-org/.github#162 (ENDPOINT-LEDGER-DESIGNATION-001; KV independence, .github#160 comment 6372216673)", "required_evidence_or_repair": "store_type GIT_REF or GATEWAY_ENCRYPTED_BLOB (store_type 'KV_STORAGE_ENDPOINT')", "retry_entrypoint": "llm_adapter.endpoint_ledger_designation.read_designated(designation, source=..., ...)", "store_type": "KV_STORAGE_ENDPOINT", "subject": "CVK263_KV_DESIGNATION_UNDER_431"}, {"accepted_store_types": ["GIT_REF", "GATEWAY_ENCRYPTED_BLOB"], "disposition": "FAIL_CLOSED", "failed_predicate": "STORE_TYPE_IS_A_DECLARED_STORE_TYPE", "failure_code": "ENDPOINT_LEDGER_STORE_TYPE_UNDECLARED", "next_attempt": "on the admission of a corrected designation in the endpoint's own contract (event-triggered)", "note": "#431 reads the designation Lane D committed for this chain", "owning_existing_goal": "StegVerse-org/.github#162 (ENDPOINT-LEDGER-DESIGNATION-001; KV independence, .github#160 comment 6372216673)", "required_evidence_or_repair": "store_type GIT_REF or GATEWAY_ENCRYPTED_BLOB (store_type 'KV_STORAGE_ENDPOINT')", "retry_entrypoint": "llm_adapter.endpoint_ledger_designation.read_designated(designation, source=..., ...)", "store_type": "KV_STORAGE_ENDPOINT", "subject": "CVK263_SKAP_VAULT_DESIGNATION_UNDER_431"}, {"disposition": "FAIL_CLOSED", "note": "informational: one kv-ledger-head-signers.v1.json entry is accepted by a reader only when its signs value matches", "signs_431": "KV_LEDGER_HEAD", "signs_cvk263": "KV_RECORDED_RECEIPT_CHAIN_HEAD", "subject": "KV_HEAD_SIGNER_SIGNS_VALUE_431_VS_CVK263"}, {"disposition": "ABSENT", "note": "informational: #431 has a closed key schema (an extra key is ENDPOINT_LEDGER_DESIGNATION_INVALID) but no org-membership refusal code; ORG and PERMANENT stores are GIT_REF in an org repository", "subject": "MEMBERSHIP_REFUSAL_IN_431"}]}
+--- stderr
