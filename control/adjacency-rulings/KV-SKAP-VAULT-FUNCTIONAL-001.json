@@ -44,7 +44,8 @@
         "stegbrowser-event-ephemeral-session",
         "tv-tvc-skap-social-credential-custody"
       ],
-      "finish_point_paths": [
+      "finish_point_paths": [],
+      "candidate_owned_paths": [
         "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
         "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
         "StegVerse-Labs/Site/docs/STEGSOCIALS_BOUNDED_GROUP_RUNTIME_PROOF_MIRROR_HANDOFF.md",
@@ -63,7 +64,8 @@
         "single-roundtrip-receipt-lineage",
         "tvc-skap-credential-reference"
       ],
-      "finish_point_paths": [
+      "finish_point_paths": [],
+      "candidate_owned_paths": [
         "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
         "workers/run_device_kv_skap_roundtrip_worker.py",
         "workers/run_device_kv_skap_canonical_runtime_worker.py",
@@ -92,7 +94,8 @@
         "sovereign-kv",
         "task-registry"
       ],
-      "finish_point_paths": [
+      "finish_point_paths": [],
+      "candidate_owned_paths": [
         "scripts/task_registry_checkin_event_history.py",
         "scripts/project_task_registry_event_to_sovereign_kv.py",
         "StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py"
@@ -112,5 +115,5 @@
     "b": "finish-point test exercises none of the candidates' components",
     "c": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 is a consumes-dependency"
   },
-  "evidence_digest": "sha256:96bb7bfbb8059e31e8360195ff9853050378c373f93ddd4b5140f86cfeb36dad"
+  "evidence_digest": "sha256:56ae5678e0177667bacd9c7fdf00cf470784374b6de4563d186ab8d2e221f1bd"
 }

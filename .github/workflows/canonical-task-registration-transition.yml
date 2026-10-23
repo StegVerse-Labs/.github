@@ -134,6 +134,13 @@ jobs:
             git init -q "$fp"
             env -u GITHUB_TOKEN -u GH_TOKEN git -C "$fp" fetch -q --depth=1 "https://github.com/${repo}.git" "$commit" \
               && git -C "$fp" checkout -q --detach FETCH_HEAD || echo "finish-point source unavailable; the plan fails closed"
+            # consumes pins: fetch each pinned commit into the same checkout, tokenless; a private or absent commit is
+            # UNKNOWN_NOT_AUTHENTICALLY_OBSERVED and the plan fails closed (ADJACENCY_RULING_CONSUMED_PIN_COMMIT_UNAVAILABLE)
+            pins=$(python -c "import json,re,sys;r=json.load(open(sys.argv[1]));c={str(d['pinned_source'].get('commit')) for d in r.get('consumes_dependencies') or [] if isinstance(d, dict) and isinstance(d.get('pinned_source'), dict)};print(' '.join(sorted(x for x in c if re.fullmatch('[0-9a-f]{40}', x))))" "$ruling")
+            for pin in $pins; do
+              env -u GITHUB_TOKEN -u GH_TOKEN git -C "$fp" fetch -q --depth=1 "https://github.com/${repo}.git" "$pin" \
+                || echo "pinned commit $pin unavailable tokenless (UNKNOWN_NOT_AUTHENTICALLY_OBSERVED); the plan fails closed"
+            done
             python scripts/canonical_task_registration_transition.py plan --request "$request" \
               --adjacency-ruling "$ruling" --finish-point-root "$fp" \
               --receipt-out "$RUNNER_TEMP/receipts/adjacency-$name.json" || status=1
