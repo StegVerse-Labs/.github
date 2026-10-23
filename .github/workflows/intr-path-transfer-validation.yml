@@ -27,6 +27,7 @@ on:
       - 'resident-runtime/intr_destination_ingress.py'
       - 'org-runtime/intr_protocol.py'
       - 'data/intr-protocol/v1/protocol.json'
+      - 'tests/test_intr_protocol_copy_equality.py'
       - 'tests/fixtures/intr-protocol/destinations/**'
       - 'tests/test_intr_path_transfer.py'
       - 'tests/test_intr_path_ingress.py'
@@ -82,6 +83,8 @@ jobs:
 
       - name: Ledger binding per organization (protocol.json pin); git-store backend over Lane D's pinned modules
         run: python3 -m unittest tests.test_intr_path_ledger -v
+      - name: InTr protocol v1 copy equality with StegVerse-org/.github (C6)
+        run: python3 -m unittest tests.test_intr_protocol_copy_equality -v
 
       - name: Cross-organization pair check through TV/TVC (TVC#528 fixture receipts; no token; real state FAIL_CLOSED at the TVC transition)
         run: |
