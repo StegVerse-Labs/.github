@@ -1,0 +1,155 @@
+"""Lane D for Lane A (PAT-003): registration requests, claim drafts and the WRITE_ADMISSION fence, all draft inputs.
+
+Nothing here registers, claims or fences. The plan pins COSV_NOT_DERIVABLE (Lane A owes task.v1 metrics), the allocator
+plans each claim draft in a temp tree, and WRITE_ADMISSION decides each fenced surface against the PROPOSED records."""
+from __future__ import annotations
+
+import importlib.util
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+FX = ROOT / "tests" / "fixtures" / "canonical_task_registration" / "pat-003-lane-a"
+MANIFEST = json.loads((FX / "MANIFEST.json").read_text(encoding="utf-8"))
+TASKS = ("PAT-003-EVIDENCE", "PAT-003-CHRONOLOGY", "PAT-003-PRIOR-ART")
+REPOS = {"StegVerse-Labs/Patents", "StegVerse-Labs/patent-registry"}
+SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+       "owning_existing_goal", "next_attempt")
+
+
+def load_module(name: str, rel: str):
+    spec = importlib.util.spec_from_file_location(name, ROOT / rel)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def request(task: str) -> dict:
+    return json.loads((FX / f"{task}.request.json").read_text(encoding="utf-8"))
+
+
+class Registration(unittest.TestCase):
+    def test_identities_are_lane_a_proposals_absent_from_the_registry(self):
+        registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
+        ids = {row.get("task_id") for row in registry["tasks"]}
+        self.assertEqual([g["task_id"] for g in MANIFEST["goals"]], list(TASKS))
+        for goal in MANIFEST["goals"]:
+            self.assertNotIn(goal["task_id"], ids)
+            self.assertFalse((ROOT / "data" / "canonical-task-records" / f"{goal['task_id']}.json").exists())
+            self.assertEqual(goal["identity_provenance"], "PROPOSED_BY_LANE_A")
+        self.assertFalse(MANIFEST["registry_edit"] or MANIFEST["registry_generation_bump"] or MANIFEST["ledger_append"])
+
+    def test_targets_name_both_repositories_and_exclude_the_filing_packet(self):
+        for task in TASKS:
+            req = request(task)
+            rec = req["record"]
+            self.assertEqual(set(rec["targets"]["repositories"]), REPOS)
+            self.assertEqual(rec["coordination_state"], "PROPOSED")
+            self.assertEqual(rec["worker_claim"], {"authority": "WORKERCOORDINATOR", "claim_ref": None,
+                                                   "fence_ref": None, "projection_only": True})
+            named = json.dumps([rec["targets"], rec["source_refs"], rec["existing_evidence_refs"], rec["adjacent_task_refs"]])
+            self.assertNotIn("FILING-PACKET", named)  # mentioned in the goal text only as excluded
+            self.assertNotIn("human-action-packet", named)
+            self.assertEqual(req["authority_effect"], "NONE_REGISTRATION_ONLY")
+            proposal = json.loads((ROOT / req["allocation_request_ref"]).read_text(encoding="utf-8"))
+            self.assertEqual(proposal["proposed_task_id"], task)
+            self.assertIsNone(proposal["cosv_task_vector"])
+            self.assertEqual(proposal["proposed_task_id_authority"], "NONE_PROPOSAL_ONLY")
+        components = [set(request(t)["record"]["targets"]["components"]) for t in TASKS]
+        self.assertFalse(components[0] & components[1] or components[0] & components[2] or components[1] & components[2])
+
+    def test_plan_fails_closed_on_cosv_as_recorded(self):
+        for goal in MANIFEST["goals"]:
+            with tempfile.TemporaryDirectory() as tmp:
+                out = Path(tmp) / "receipt.json"
+                subprocess.run([sys.executable, str(ROOT / "scripts" / "canonical_task_registration_transition.py"), "plan",
+                                "--request", str(ROOT / goal["request"]), "--base", str(ROOT), "--receipt-out", str(out)],
+                               cwd=ROOT, capture_output=True, text=True, check=False)
+                receipt = json.loads(out.read_text(encoding="utf-8"))
+            expected = goal["expected_plan"]
+            self.assertEqual(receipt["disposition"], "FAIL_CLOSED", goal["task_id"])
+            for field in SIX + ("detail",):
+                self.assertEqual(receipt[field], expected[field], (goal["task_id"], field))
+            self.assertEqual(receipt["failure_code"], "COSV_NOT_DERIVABLE")
+            for flag in ("consequence_committed", "organization_ledger_appended", "execution_authority_minted",
+                         "workercoordinator_claim_or_fence_minted", "intr_admission_minted"):
+                self.assertFalse(receipt[flag], (goal["task_id"], flag))
+
+    def test_scope_seal_holds_for_the_record(self):
+        gss = load_module("goal_scope_seal_pat003", "scripts/goal_scope_seal.py")
+        for goal in MANIFEST["goals"]:
+            req = request(goal["task_id"])
+            scope = gss.scope_of(req["record"], req["sealed_scope"]["scope"]["finish_point"])
+            self.assertEqual(gss.digest(scope), goal["scope_digest"])
+            self.assertEqual(req["sealed_scope"]["scope_digest"], goal["scope_digest"])
+
+
+class ClaimFence(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp)
+        for rel in ("scripts", "tasks", "control"):
+            shutil.copytree(ROOT / rel, self.tmp / rel)
+        (self.tmp / "events").mkdir(exist_ok=True)
+        for task in TASKS:
+            draft = json.loads((FX / f"{task}.claim-draft.json").read_text(encoding="utf-8"))
+            self.assertEqual(draft["task_id"], "ALLOCATOR_TASK_ID_NOT_ASSIGNED")
+            self.assertEqual({r["repository"]["full_name"] for r in draft["requirements"]["mandatory"]}, REPOS)
+            draft["task_id"] = f"TASK-SCRATCH-{task}"
+            (self.tmp / "tasks" / f"TASK-SCRATCH-{task}.json").write_text(json.dumps(draft), encoding="utf-8")
+
+    def allocate(self, *args: str) -> dict:
+        proc = subprocess.run([sys.executable, str(self.tmp / "scripts" / "allocate_claims.py"), *args],
+                              cwd=self.tmp, capture_output=True, text=True, check=False)
+        return json.loads(proc.stdout or proc.stderr)
+
+    def test_each_claim_draft_plans_and_the_three_co_hold(self):
+        generation = json.loads((ROOT / "control" / "claims-active.json").read_text(encoding="utf-8"))["generation"]
+        for task in TASKS:
+            plan = self.allocate("--plan", "--task", f"TASK-SCRATCH-{task}")
+            self.assertEqual((plan["state"], plan["refusal_predicate"]), ("ALLOCATION_PLANNED", None), plan)
+            self.assertEqual(plan["authority_effect"], "NONE_PLAN_ONLY")
+        for offset, task in enumerate(TASKS, start=1):
+            done = self.allocate("--task", f"TASK-SCRATCH-{task}", "--fencing-token", str(generation + offset))
+            self.assertEqual((done["state"], done["refusal_predicate"]), ("ALLOCATION_COMPLETE", None), done)
+        held = json.loads((self.tmp / "control" / "claims-active.json").read_text(encoding="utf-8"))
+        tokens = {c["task_id"]: c["lease"]["fencing_token"] for c in held["claims"]
+                  if c["repository"]["full_name"] == "StegVerse-Labs/Patents"}
+        self.assertEqual(sorted(tokens.values()), [generation + 1, generation + 2, generation + 3])
+        # the real claims registry is untouched
+        self.assertEqual(json.loads((ROOT / "control" / "claims-active.json").read_text(encoding="utf-8"))["generation"], generation)
+
+    def test_fenced_paths_are_disjoint_and_exist_in_the_handoff_inventory(self):
+        paths = [set(json.loads((FX / f"{t}.claim-draft.json").read_text(encoding="utf-8"))["requirements"]["mandatory"][0]
+                     ["scope"]["paths"]) for t in TASKS]
+        self.assertFalse(paths[0] & paths[1] or paths[0] & paths[2] or paths[1] & paths[2])
+        joined = set().union(*paths)
+        self.assertNotIn("reviews/PAT-003-human-action-packet.md", joined)
+        self.assertNotIn("data/active-family-prior-art-identifiers.json", joined)
+
+
+class WriteAdmission(unittest.TestCase):
+    def test_cases_decide_as_recorded(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        wa = load_module("write_admission_pat003", "scripts/write_admission.py")
+        graph = wa.seal_graph([request(t)["record"] for t in TASKS])
+        doc = json.loads((FX / "write-admission-cases.json").read_text(encoding="utf-8"))
+        self.assertTrue(doc["cases"])
+        for case in doc["cases"]:
+            body = wa.evaluate(case["surface"], case["work_item"], graph, doc["active_work"])
+            self.assertEqual(body["disposition"], case["expected_disposition"], (case["case"], body))
+            self.assertEqual(body["ledger_status"], "SCRATCH_NOT_A_LEDGER_RECEIPT")
+            if case["expected_failure_code"]:
+                self.assertEqual(body["failure_code"], case["expected_failure_code"], case["case"])
+                for field in SIX:
+                    self.assertTrue(body.get(field), (case["case"], field))
+
+
+if __name__ == "__main__":
+    unittest.main()

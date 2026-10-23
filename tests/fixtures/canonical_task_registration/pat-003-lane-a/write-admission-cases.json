@@ -1,0 +1,197 @@
+{
+  "schema": "stegverse.lane-d-pat-003-write-admission-cases/v1",
+  "label": "SCRATCH: graph holds the PROPOSED (not admitted) PAT-003 records; an ALLOW here is a scratch receipt over a proposed identity, not admission. Hypothetical writers stand for Lane A branches that do not exist yet.",
+  "active_work": {
+    "schema": "stegverse.write-admission-active-work/v1",
+    "observed": {
+      "source": "gh pr list --state open: StegVerse-Labs/Patents (1 open: #21) and StegVerse-Labs/patent-registry (#30,#15,#14,#13,#11,#8,#7; none touches a PAT-003 path); StegVerse-Labs/.github control/claims-active.json on main (generation 2, 0 claims); observed 2026-10-23 by Lane D",
+      "observed_at": "2026-10-23"
+    },
+    "items": [
+      {
+        "work_id": "StegVerse-Labs/Patents#21",
+        "task_id": "PAT-003-EVIDENCE",
+        "kind": "pull_request",
+        "ref": "https://github.com/StegVerse-Labs/Patents/pull/21",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/pat003-limitation-chart-evidence-map",
+        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "surfaces": [
+          {
+            "kind": "file",
+            "repository": "StegVerse-Labs/Patents",
+            "path": "filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md"
+          }
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {
+      "case": "evidence-chart-by-patents-21",
+      "surface": {
+        "kind": "file",
+        "repository": "StegVerse-Labs/Patents",
+        "path": "filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md"
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-EVIDENCE",
+        "work_id": "StegVerse-Labs/Patents#21",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/pat003-limitation-chart-evidence-map",
+        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "pull_request": "https://github.com/StegVerse-Labs/Patents/pull/21"
+      },
+      "expected_disposition": "ALLOW",
+      "expected_failure_code": null
+    },
+    {
+      "case": "evidence-readiness-index-by-patents-21",
+      "surface": {
+        "kind": "file",
+        "repository": "StegVerse-Labs/Patents",
+        "path": "filing-readiness/PAT-003_FILING_READINESS_INDEX.md"
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-EVIDENCE",
+        "work_id": "StegVerse-Labs/Patents#21",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/pat003-limitation-chart-evidence-map",
+        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "pull_request": "https://github.com/StegVerse-Labs/Patents/pull/21"
+      },
+      "expected_disposition": "ALLOW",
+      "expected_failure_code": null
+    },
+    {
+      "case": "evidence-chart-by-chronology-writer",
+      "surface": {
+        "kind": "file",
+        "repository": "StegVerse-Labs/Patents",
+        "path": "filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md"
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-CHRONOLOGY",
+        "work_id": "SCRATCH-HYPOTHETICAL-WRITER-PAT-003-CHRONOLOGY",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/SCRATCH-HYPOTHETICAL-pat-003-chronology",
+        "head": "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+      },
+      "expected_disposition": "FAIL_CLOSED",
+      "expected_failure_code": "WRITE_ADMISSION_RELATIONSHIP_UNRECEIPTED"
+    },
+    {
+      "case": "readiness-index-by-chronology-writer",
+      "surface": {
+        "kind": "file",
+        "repository": "StegVerse-Labs/Patents",
+        "path": "filing-readiness/PAT-003_FILING_READINESS_INDEX.md"
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-CHRONOLOGY",
+        "work_id": "SCRATCH-HYPOTHETICAL-WRITER-PAT-003-CHRONOLOGY",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/SCRATCH-HYPOTHETICAL-pat-003-chronology",
+        "head": "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+      },
+      "expected_disposition": "FAIL_CLOSED",
+      "expected_failure_code": "WRITE_ADMISSION_RELATIONSHIP_UNRECEIPTED"
+    },
+    {
+      "case": "chronology-by-chronology-writer",
+      "surface": {
+        "kind": "file",
+        "repository": "StegVerse-Labs/Patents",
+        "path": "evidence/PAT-003_DISCLOSURE_CHRONOLOGY.md"
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-CHRONOLOGY",
+        "work_id": "SCRATCH-HYPOTHETICAL-WRITER-PAT-003-CHRONOLOGY",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/SCRATCH-HYPOTHETICAL-pat-003-chronology",
+        "head": "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+      },
+      "expected_disposition": "ALLOW",
+      "expected_failure_code": null
+    },
+    {
+      "case": "prior-art-ledger-by-prior-art-writer",
+      "surface": {
+        "kind": "file",
+        "repository": "StegVerse-Labs/Patents",
+        "path": "reviews/PAT-003_TECHNICAL_COMPARISON_RESEARCH_LEDGER.md"
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-PRIOR-ART",
+        "work_id": "SCRATCH-HYPOTHETICAL-WRITER-PAT-003-PRIOR-ART",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/SCRATCH-HYPOTHETICAL-pat-003-prior-art",
+        "head": "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+      },
+      "expected_disposition": "ALLOW",
+      "expected_failure_code": null
+    },
+    {
+      "case": "cross-family-prior-art-ids-by-prior-art-writer",
+      "surface": {
+        "kind": "file",
+        "repository": "StegVerse-Labs/Patents",
+        "path": "data/active-family-prior-art-identifiers.json"
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-PRIOR-ART",
+        "work_id": "SCRATCH-HYPOTHETICAL-WRITER-PAT-003-PRIOR-ART",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/SCRATCH-HYPOTHETICAL-pat-003-prior-art",
+        "head": "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+      },
+      "expected_disposition": "FAIL_CLOSED",
+      "expected_failure_code": "WRITE_ADMISSION_RELATIONSHIP_UNRECEIPTED"
+    },
+    {
+      "case": "filing-packet-by-evidence-writer",
+      "surface": {
+        "kind": "file",
+        "repository": "StegVerse-Labs/Patents",
+        "path": "reviews/PAT-003-human-action-packet.md"
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-EVIDENCE",
+        "work_id": "StegVerse-Labs/Patents#21",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/pat003-limitation-chart-evidence-map",
+        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "pull_request": "https://github.com/StegVerse-Labs/Patents/pull/21"
+      },
+      "expected_disposition": "FAIL_CLOSED",
+      "expected_failure_code": "WRITE_ADMISSION_RELATIONSHIP_UNRECEIPTED"
+    },
+    {
+      "case": "patent-registry-19-by-evidence-writer",
+      "surface": {
+        "kind": "issue",
+        "repository": "StegVerse-Labs/patent-registry",
+        "number": 19
+      },
+      "work_item": {
+        "schema": "stegverse.write-admission-work-item/v1",
+        "task_id": "PAT-003-EVIDENCE",
+        "work_id": "StegVerse-Labs/Patents#21",
+        "repository": "StegVerse-Labs/Patents",
+        "branch": "laneA/pat003-limitation-chart-evidence-map",
+        "head": "63be4ccf5542661449cdd601723d34c0e13c6545",
+        "pull_request": "https://github.com/StegVerse-Labs/Patents/pull/21"
+      },
+      "expected_disposition": "ALLOW",
+      "expected_failure_code": null
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "lane-d-for-lane-a-pat-003-chronology-2026-10-23",
+  "task_id": "PAT-003-CHRONOLOGY",
+  "observed_registry_generation": 320,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-org/.github#165",
+  "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-chronology-2026-10-23.json",
+  "collision_analysis": [
+    "Identity provenance: PAT-003-CHRONOLOGY is PROPOSED_BY_LANE_A (Lane A (PAT-003, agent session 19d95368-7ddb-43b9-8e58-54fa330e98ec) via orchestrator New Bot c40482d9, 2026-10-23; the same key appears in the StegVerse-Labs/patent-registry#19 work register (PROPOSED / UNCLAIMED)). Lane D files the request; it does not originate the identity.",
+    "Owner: Lane A (PAT-003, 19d95368), per INDEX.md lane-to-Goal map 'PAT-003 (19d95368), Lane A: #165 (P3)'.",
+    "Not present in data/canonical-task-registry.json generation 320 (Labs main 86382e60) or in data/canonical-task-records/ (observed).",
+    "Adjacent, not equivalent: OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001 (PROPOSED/UNCLAIMED, repository StegVerse-Labs/.github, components optical-physical-state-admission-and-patent-scope-reconciliation, recorded-video-research-protocol-coordination, physical-replay-evidence-contract-review). This task targets StegVerse-Labs/Patents and patent-registry filing-readiness evidence only.",
+    "Shared status surfaces filing-readiness/PAT-003_FILING_READINESS_INDEX.md and data/PAT-003-completion-status.json are fenced to PAT-003-EVIDENCE only; PAT-003-CHRONOLOGY and PAT-003-PRIOR-ART update them only through a write-coordination with PAT-003-EVIDENCE (same owner, Lane A).",
+    "Excluded: PAT-003-FILING-PACKET stays UNCLAIMED (practitioner hand-off); no path of it is in this task's targets or fence."
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "PAT-003-CHRONOLOGY",
+    "correlation_id": "PAT-003-CHRONOLOGY",
+    "root_correlation_id": "PAT-003-CHRONOLOGY",
+    "parent_task_id": null,
+    "goal": "PAT-003 dated chronology: populate evidence/PAT-003_DISCLOSURE_CHRONOLOGY.md with dated, attributable conception and public/private disclosure records and complete the disclosure-risk audit of already-public source with exact dates and references. Inventor contributions are recorded as evidence only; inventorship is determined by the practitioner (PAT-003-FILING-PACKET, not claimed here). No filing, no legal determination.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "https://github.com/StegVerse-Labs/patent-registry/issues/19",
+      "https://github.com/StegVerse-Labs/patent-registry/issues/16",
+      "https://github.com/StegVerse-Labs/Patents/issues/16",
+      "https://github.com/StegVerse-org/.github/issues/165",
+      "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304",
+      "StegVerse-Labs/Patents/evidence/PAT-003_DISCLOSURE_CHRONOLOGY.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/Patents",
+        "StegVerse-Labs/patent-registry"
+      ],
+      "components": [
+        "pat-003-disclosure-chronology",
+        "pat-003-public-disclosure-risk-audit"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "PAT_003_FAMILY_OWNER_LANE_A",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "LLM_Coordination INDEX.md (Drive 1_dOuehS567PuLUzqvxHj9JaGYYPX2uA_) lane-to-Goal map: PAT-003 (19d95368), Lane A: StegVerse-org/.github#165 (P3)"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "PAT-003-EVIDENCE",
+      "PAT-003-PRIOR-ART"
+    ],
+    "existing_evidence_refs": [
+      "StegVerse-Labs/Patents/evidence/PAT-003_DISCLOSURE_CHRONOLOGY.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+    ],
+    "expected_evidence_predicates": [
+      "PAT_003_CHRONOLOGY_RECORDS_DATED_AND_ATTRIBUTABLE",
+      "PAT_003_PUBLIC_DISCLOSURE_RISK_AUDIT_EXACT_DATES_AND_REFERENCES",
+      "PAT_003_READINESS_ITEMS_RESOLVED_BY_VALIDATOR_NOT_BY_ASSERTION",
+      "INVENTORSHIP_NOT_DETERMINED_BY_THIS_TASK"
+    ],
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        }
+      ],
+      "selected_substrate_id": null,
+      "external_device_required": false,
+      "second_user_operated_device_allowed": false,
+      "authority_effect": "NONE"
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+      "SCOPE_CHANGE_ONLY_BY_GOAL_SCOPE_SUPERSEDE_REQUEST"
+    ],
+    "handoff_projection_refs": [
+      "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "PAT-003 dated chronology: populate evidence/PAT-003_DISCLOSURE_CHRONOLOGY.md with dated, attributable conception and public/private disclosure records and complete the disclosure-risk audit of already-public source with exact dates and references. Inventor contributions are recorded as evidence only; inventorship is determined by the practitioner (PAT-003-FILING-PACKET, not claimed here). No filing, no legal determination.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Patents",
+          "StegVerse-Labs/patent-registry"
+        ],
+        "components": [
+          "pat-003-disclosure-chronology",
+          "pat-003-public-disclosure-risk-audit"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "PAT_003_CHRONOLOGY_RECORDS_DATED_AND_ATTRIBUTABLE",
+        "PAT_003_PUBLIC_DISCLOSURE_RISK_AUDIT_EXACT_DATES_AND_REFERENCES",
+        "PAT_003_READINESS_ITEMS_RESOLVED_BY_VALIDATOR_NOT_BY_ASSERTION",
+        "INVENTORSHIP_NOT_DETERMINED_BY_THIS_TASK"
+      ],
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/Patents@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304: python tools/validate_patent_readiness.py --family PAT-003 --root .",
+        "predicate": "the validator's unresolved_items no longer lists: Factual conception and public/private disclosure chronology populated with dated, attributable records. | Disclosure-risk audit of already-public source completed with exact dates and references.",
+        "verifier_entrypoint": "StegVerse-Labs/Patents: tools/validate_patent_readiness.py (sig patent-readiness-validation:v1)",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:fed52b45316009923b0d4752329d3dccad0a1192e5916d9c4cedb3ac00035e9e",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP"
+    },
+    "metric_evidence": {
+      "lifecycle": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "archive_ready": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "unassigned_work": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "chat_owned_implementation": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "chat_owned_validation": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "chat_owned_integration": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "chat_owned_observation": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "chat_owned_credentials": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "canonical_owner_installed": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "thread_required": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "blocker_count": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "evidence_complete": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "activated": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "propagated": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "source": "no task.v1 exact_metrics are declared for this key in any observed surface (patent-registry#19 work register, Patents@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304, Labs registry gen 320); Lane A must supply them with evidence"
+    },
+    "evidence_refs": [
+      "https://github.com/StegVerse-Labs/patent-registry/issues/19"
+    ],
+    "observed_at": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

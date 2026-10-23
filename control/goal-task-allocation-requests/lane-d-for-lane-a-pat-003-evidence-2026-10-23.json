@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "LANE-D-FOR-LANE-A-PAT-003-EVIDENCE-ALLOCATION-REQUEST-20261023",
+  "state": "PROPOSED",
+  "issue": "StegVerse-org/.github#165",
+  "proposed_task_id": "PAT-003-EVIDENCE",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "proposed_task_id_source": "Lane A (PAT-003, agent session 19d95368-7ddb-43b9-8e58-54fa330e98ec) via orchestrator New Bot c40482d9, 2026-10-23; the same key appears in the StegVerse-Labs/patent-registry#19 work register (PROPOSED / UNCLAIMED)",
+  "proposed_owner": "Lane A (PAT-003, 19d95368)",
+  "cosv_task_vector": null,
+  "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 320,
+  "owning_task_found": false,
+  "scope": "PAT-003 (Generalized Adaptive Scanner Using Dynamic Micro-Nodes) limitation-level evidence: map each claim limitation of filing-readiness/PAT-003_LIMITATION_EVIDENCE_CHART.md to exact repository, path, immutable commit or blob, test and gap, classified implemented / written-description-only / proposed / unsupported. Evidence work only: no filing, no legal determination, no patent-pending language, no enabling disclosure in public surfaces.",
+  "scope_digest": "sha256:d7c3e99471d847d7184bc8872ca230c43f690efe0e62a74a57538c442c10dba2",
+  "requested_action": "Check the Lane A identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "handoff_ref": "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+}

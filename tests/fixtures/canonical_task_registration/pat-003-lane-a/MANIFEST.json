@@ -1,0 +1,100 @@
+{
+  "schema": "stegverse.lane-d.pat-003-claim-fence-manifest/v1",
+  "authority_effect": "NONE_DRAFT_MANIFEST",
+  "label": "admission-input-ready DRAFT. Every identity here is PROPOSED_BY_LANE_A; nothing is registered, claimed or fenced.",
+  "issue": "StegVerse-org/.github#165 (Goal of PAT-003); StegVerse-Labs/patent-registry#19 (parent #16)",
+  "owner_citation": "LLM_Coordination INDEX.md (Drive file 1_dOuehS567PuLUzqvxHj9JaGYYPX2uA_), lane-to-Goal map line: '- PAT-003 (19d95368), Lane A: #165 (P3)'",
+  "registry_edit": false,
+  "registry_generation_bump": false,
+  "claims_registry_edit": false,
+  "ledger_append": false,
+  "observed_registry_generation": 320,
+  "observed_claims_generation": 2,
+  "observed_sources": {
+    "StegVerse-Labs/Patents": "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304",
+    "StegVerse-Labs/patent-registry": "04d33cbdc64d8620dd83443a2f9575f21b5d05f7",
+    "StegVerse-Labs/.github main": "86382e60"
+  },
+  "excluded": {
+    "PAT-003-FILING-PACKET": "UNCLAIMED (practitioner hand-off, per Lane A); not requested, not fenced"
+  },
+  "goals": [
+    {
+      "task_id": "PAT-003-EVIDENCE",
+      "identity_provenance": "PROPOSED_BY_LANE_A",
+      "owner": "Lane A (PAT-003, 19d95368)",
+      "registration_mode": "NEW_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-EVIDENCE.request.json",
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-evidence-2026-10-23.json",
+      "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-EVIDENCE.claim-draft.json",
+      "scope_digest": "sha256:d7c3e99471d847d7184bc8872ca230c43f690efe0e62a74a57538c442c10dba2",
+      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "COSV_NOT_DERIVABLE",
+        "failed_predicate": "COSV_NOT_DERIVABLE",
+        "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS)",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded",
+        "detail": "encode_task failed: KeyError('lifecycle')"
+      }
+    },
+    {
+      "task_id": "PAT-003-CHRONOLOGY",
+      "identity_provenance": "PROPOSED_BY_LANE_A",
+      "owner": "Lane A (PAT-003, 19d95368)",
+      "registration_mode": "NEW_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-CHRONOLOGY.request.json",
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-chronology-2026-10-23.json",
+      "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-CHRONOLOGY.claim-draft.json",
+      "scope_digest": "sha256:fed52b45316009923b0d4752329d3dccad0a1192e5916d9c4cedb3ac00035e9e",
+      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "COSV_NOT_DERIVABLE",
+        "failed_predicate": "COSV_NOT_DERIVABLE",
+        "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS)",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded",
+        "detail": "encode_task failed: KeyError('lifecycle')"
+      }
+    },
+    {
+      "task_id": "PAT-003-PRIOR-ART",
+      "identity_provenance": "PROPOSED_BY_LANE_A",
+      "owner": "Lane A (PAT-003, 19d95368)",
+      "registration_mode": "NEW_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-PRIOR-ART.request.json",
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-prior-art-2026-10-23.json",
+      "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-PRIOR-ART.claim-draft.json",
+      "scope_digest": "sha256:8d1da1c50335780ce07abd08d8675d86e160ab9335a33658b8adb47ba656ca0e",
+      "plan_at_base": "StegVerse-Labs/.github laned/adjacency-ruling-input 36d24924 (main 86382e60, registry generation 320, plus the #3327 stack)",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "COSV_NOT_DERIVABLE",
+        "failed_predicate": "COSV_NOT_DERIVABLE",
+        "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS)",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded",
+        "detail": "encode_task failed: KeyError('lifecycle')"
+      }
+    }
+  ],
+  "claim_plan": {
+    "allocator": "scripts/allocate_claims.py --plan --task <scratch id> over a temp copy holding the three claim drafts",
+    "allocator_task_ids": "NOT ASSIGNED; the drafts carry ALLOCATOR_TASK_ID_NOT_ASSIGNED and the test gives them TASK-SCRATCH-* ids inside a temp tree only",
+    "expected": "ALLOCATION_PLANNED, refusal_predicate null, for each; applied in the temp tree they co-hold (no CONFLICTS_WITH_HELD_CLAIM)",
+    "execution_locus": "resident dispatcher (control/resident-execution-request.d -> scripts/consume_org_claim_allocator_request.py -> scripts/allocate_claims.py); the event-ephemeral consumer (StegVerse-Labs/.github#3211) is an open draft"
+  },
+  "write_admission": {
+    "cases": "tests/fixtures/canonical_task_registration/pat-003-lane-a/write-admission-cases.json",
+    "entrypoint": "scripts/write_admission.py evaluate",
+    "label": "SCRATCH_NOT_A_LEDGER_RECEIPT; graph holds PROPOSED records"
+  }
+}
