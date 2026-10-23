@@ -1,0 +1,605 @@
+{
+  "authority_effect": "NONE_E0_RECORD_ONLY_NO_LEDGER_WRITE",
+  "e0_terminal": true,
+  "goal_reference_sources_sha256": "sha256:31b2e33f161a815987e13fc943cbdb75dae98a01484a78b20fe59936ee619fbf",
+  "history_snapshot_sha256": "sha256:704000ec3d856d081c715ddb09b0db9cd9e461dc0090b65bd8760acd78b2cbb5",
+  "ledger_copies": [
+    {
+      "chains": [
+        {
+          "chain_break": null,
+          "head": "HEAD.json",
+          "receipts_on_chain": 1
+        },
+        {
+          "chain_break": null,
+          "head": "repository-ledger/Admissible-Existence/.github/HEAD.json",
+          "receipts_on_chain": 1
+        }
+      ],
+      "ledger": "Admissible-Existence",
+      "ref": "refs/stegverse/organization-ledger",
+      "tip": "2b117af78f27e94830b0ff20e2fb3aa49872d80d"
+    },
+    {
+      "chains": [
+        {
+          "chain_break": null,
+          "head": "HEAD.json",
+          "receipts_on_chain": 18
+        },
+        {
+          "chain_break": null,
+          "head": "repository-ledger/SV-LLM/.github/HEAD.json",
+          "receipts_on_chain": 6
+        },
+        {
+          "chain_break": null,
+          "head": "repository-ledger/SV-LLM/sandbox/HEAD.json",
+          "receipts_on_chain": 8
+        }
+      ],
+      "ledger": "SV-LLM",
+      "ref": "refs/stegverse/organization-ledger",
+      "tip": "e9ee01335e757b5d179b71e889c99d9016bfce73"
+    },
+    {
+      "chains": [
+        {
+          "chain_break": null,
+          "head": "HEAD.json",
+          "receipts_on_chain": 56
+        },
+        {
+          "chain_break": null,
+          "head": "repository-ledger/StegVerse-Labs/.github/HEAD.json",
+          "receipts_on_chain": 50
+        }
+      ],
+      "ledger": "StegVerse-Labs",
+      "ref": "refs/stegverse/organization-ledger",
+      "tip": "9a407561062757a30f90818ec6c8105b04331a39"
+    },
+    {
+      "chains": [
+        {
+          "chain_break": null,
+          "head": "HEAD.json",
+          "receipts_on_chain": 53
+        },
+        {
+          "chain_break": null,
+          "head": "repository-ledger/StegVerse-org/.github/HEAD.json",
+          "receipts_on_chain": 51
+        }
+      ],
+      "ledger": "StegVerse-org",
+      "ref": "refs/stegverse/organization-ledger",
+      "tip": "216487782daa161b886e608e64256877c14ca86f"
+    }
+  ],
+  "llm_required": false,
+  "record_kinds": {
+    "CUSTODY": 4,
+    "OWNER_ASSIGNMENT": 1
+  },
+  "records": [
+    {
+      "assigned_owner": null,
+      "authority_effect": "NONE_E0_RECORD_ONLY",
+      "candidate_derivation": {
+        "references": [
+          {
+            "found_in": [
+              "StegVerse-org/StegVerse-SDK#61 comment 5390918611"
+            ],
+            "goal_id": "SDK-POST-RETURN-PRODUCTION-PROOF-010",
+            "registered": false
+          }
+        ],
+        "registered": [],
+        "registered_not_excluded": [],
+        "source_numbers": [
+          61,
+          65,
+          66,
+          67,
+          69,
+          70
+        ],
+        "sources_read": [
+          "StegVerse-org/StegVerse-SDK#61 body",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384180256",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384246125",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384261548",
+          "StegVerse-org/StegVerse-SDK#61 comment 5388692981",
+          "StegVerse-org/StegVerse-SDK#61 comment 5388723611",
+          "StegVerse-org/StegVerse-SDK#61 comment 5390918611",
+          "StegVerse-org/StegVerse-SDK#61 comment 5404939398",
+          "StegVerse-org/StegVerse-SDK#61 comment 5404993940",
+          "StegVerse-org/StegVerse-SDK#61 comment 5843205542",
+          "StegVerse-org/StegVerse-SDK#65 body",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384179780",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384231962",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384240802",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384261916",
+          "StegVerse-org/StegVerse-SDK#65 comment 5388709514",
+          "StegVerse-org/StegVerse-SDK#65 comment 5388722706",
+          "StegVerse-org/StegVerse-SDK#65 comment 5404932562",
+          "StegVerse-org/StegVerse-SDK#65 comment 6130402108",
+          "StegVerse-org/StegVerse-SDK#65 comment 6132737289",
+          "StegVerse-org/StegVerse-SDK#65 comment 6132803610",
+          "StegVerse-org/StegVerse-SDK#66 body",
+          "StegVerse-org/StegVerse-SDK#67 body",
+          "StegVerse-org/StegVerse-SDK#69 body",
+          "StegVerse-org/StegVerse-SDK#70 body"
+        ],
+        "unavailable": false
+      },
+      "candidate_owner": null,
+      "custody": {
+        "consumed": true,
+        "custodian": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "custody_is_not_ownership": true,
+        "edit_policy": "EDITS_FAIL_CLOSED_UNTIL_AN_OWNER_IS_ASSIGNED_BY_RECEIPTED_LINEAGE",
+        "owner_status": "UNOWNED_NOT_OBSERVED",
+        "pinned": true
+      },
+      "declared_sha256": "sha256:2ccbc8f44f869f962a990d1c13fd2308b0d4a18a8b004d4020552eeabc95f67c",
+      "disposition": "FAIL_CLOSED",
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "Coordination class D ruling (2): no target extension, no reassignment"
+        }
+      ],
+      "failed_predicate": "A_GOAL_REFERENCE_IN_THE_LINEAGE_SOURCES_NAMES_A_REGISTERED_GOAL",
+      "failure_code": "NO_REGISTERED_CANDIDATE_OWNER",
+      "lineage_chain": {
+        "history_snapshot_sha256": "sha256:704000ec3d856d081c715ddb09b0db9cd9e461dc0090b65bd8760acd78b2cbb5",
+        "introducing_commit": "622ac7d286022d63c341cfffcd1cd11accff151d",
+        "links_oldest_first": [
+          {
+            "commit": "622ac7d286022d63c341cfffcd1cd11accff151d",
+            "goal_binding_receipts": [],
+            "introducing": true,
+            "landing_receipts": []
+          },
+          {
+            "commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+            "goal_binding_receipts": [],
+            "introducing": false,
+            "landing_receipts": []
+          }
+        ]
+      },
+      "next_attempt": "a canonical-task registration (or a lineage source naming a registered Goal), then re-evaluate",
+      "observed_non_receipted_lineage": {
+        "authoring_session_line": "absent",
+        "goal_docs_reference_path": "none",
+        "handoff_doc": "docs/INTERLOCK_RETURN_MIRROR_HANDOFF.md (issue: #65)",
+        "issue_65_registry_note": "SDK#65 comment 6132737289 records REGISTRY_OWNER_NOT_AUTHENTICATED: 'Resolve canonical owning ISSUE, Goal Task ID, COSV, mirror handoff before promotion; do not infer from SDK #65 or #334'",
+        "pr_body_goal_reference": "SDK issue #65 slice; no Goal task id",
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#67 (branch feat/interlock-return-65)",
+          "StegVerse-org/StegVerse-SDK#434 (modification)"
+        ]
+      },
+      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "path": "stegverse/interlock_return.py",
+      "pinned_commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+      "record_kind": "CUSTODY",
+      "record_sha256": "sha256:75f6c2e373dda1a56e2036529a669bad24c7b86522a2e2559dbbbed6a5cf4ac9",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "required_evidence_or_repair": "a registered Goal named in the lineage sources (Goal-id references observed: SDK-POST-RETURN-PRODUCTION-PROOF-010 (registered=False)); until then custody stays with STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "retry_entrypoint": "scripts/owner_assignment_transition.py evaluate",
+      "schema": "stegverse.owner-assignment-record/v1"
+    },
+    {
+      "assigned_owner": null,
+      "authority_effect": "NONE_E0_RECORD_ONLY",
+      "candidate_derivation": {
+        "references": [
+          {
+            "found_in": [
+              "StegVerse-org/StegVerse-SDK#61 comment 5390918611"
+            ],
+            "goal_id": "SDK-POST-RETURN-PRODUCTION-PROOF-010",
+            "registered": false
+          }
+        ],
+        "registered": [],
+        "registered_not_excluded": [],
+        "source_numbers": [
+          61,
+          65,
+          66,
+          67,
+          69,
+          70
+        ],
+        "sources_read": [
+          "StegVerse-org/StegVerse-SDK#61 body",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384180256",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384246125",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384261548",
+          "StegVerse-org/StegVerse-SDK#61 comment 5388692981",
+          "StegVerse-org/StegVerse-SDK#61 comment 5388723611",
+          "StegVerse-org/StegVerse-SDK#61 comment 5390918611",
+          "StegVerse-org/StegVerse-SDK#61 comment 5404939398",
+          "StegVerse-org/StegVerse-SDK#61 comment 5404993940",
+          "StegVerse-org/StegVerse-SDK#61 comment 5843205542",
+          "StegVerse-org/StegVerse-SDK#65 body",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384179780",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384231962",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384240802",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384261916",
+          "StegVerse-org/StegVerse-SDK#65 comment 5388709514",
+          "StegVerse-org/StegVerse-SDK#65 comment 5388722706",
+          "StegVerse-org/StegVerse-SDK#65 comment 5404932562",
+          "StegVerse-org/StegVerse-SDK#65 comment 6130402108",
+          "StegVerse-org/StegVerse-SDK#65 comment 6132737289",
+          "StegVerse-org/StegVerse-SDK#65 comment 6132803610",
+          "StegVerse-org/StegVerse-SDK#66 body",
+          "StegVerse-org/StegVerse-SDK#67 body",
+          "StegVerse-org/StegVerse-SDK#69 body",
+          "StegVerse-org/StegVerse-SDK#70 body"
+        ],
+        "unavailable": false
+      },
+      "candidate_owner": null,
+      "custody": {
+        "consumed": true,
+        "custodian": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "custody_is_not_ownership": true,
+        "edit_policy": "EDITS_FAIL_CLOSED_UNTIL_AN_OWNER_IS_ASSIGNED_BY_RECEIPTED_LINEAGE",
+        "owner_status": "UNOWNED_NOT_OBSERVED",
+        "pinned": true
+      },
+      "declared_sha256": "sha256:cd0de91e03ea25c401a23071d4fe93505e4359f8e35857b787f56c25b6b978d0",
+      "disposition": "FAIL_CLOSED",
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "Coordination class D ruling (2): no target extension, no reassignment"
+        }
+      ],
+      "failed_predicate": "A_GOAL_REFERENCE_IN_THE_LINEAGE_SOURCES_NAMES_A_REGISTERED_GOAL",
+      "failure_code": "NO_REGISTERED_CANDIDATE_OWNER",
+      "lineage_chain": {
+        "history_snapshot_sha256": "sha256:704000ec3d856d081c715ddb09b0db9cd9e461dc0090b65bd8760acd78b2cbb5",
+        "introducing_commit": "ed30b6439d755b23d029f5806801a18e3f418e64",
+        "links_oldest_first": [
+          {
+            "commit": "ed30b6439d755b23d029f5806801a18e3f418e64",
+            "goal_binding_receipts": [],
+            "introducing": true,
+            "landing_receipts": []
+          },
+          {
+            "commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+            "goal_binding_receipts": [],
+            "introducing": false,
+            "landing_receipts": []
+          }
+        ]
+      },
+      "next_attempt": "a canonical-task registration (or a lineage source naming a registered Goal), then re-evaluate",
+      "observed_non_receipted_lineage": {
+        "authoring_session_line": "absent",
+        "goal_docs_reference_path": "none",
+        "handoff_doc": "docs/INTERLOCK_RETURN_MIRROR_HANDOFF.md (issue: #65)",
+        "issue_65_registry_note": "SDK#65 comment 6132737289 records REGISTRY_OWNER_NOT_AUTHENTICATED: 'Resolve canonical owning ISSUE, Goal Task ID, COSV, mirror handoff before promotion; do not infer from SDK #65 or #334'",
+        "pr_body_goal_reference": "SDK issue #65 source slice 1; no Goal task id",
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#66 (branch feat/minimal-portable-governance-interlock-65)",
+          "StegVerse-org/StegVerse-SDK#434 (modification)"
+        ]
+      },
+      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "path": "stegverse/interlock_transition.py",
+      "pinned_commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+      "record_kind": "CUSTODY",
+      "record_sha256": "sha256:c37fb3e5868441323eefce67a7d707fd4f7033ca3da72f711b3eb1f1794beef5",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "required_evidence_or_repair": "a registered Goal named in the lineage sources (Goal-id references observed: SDK-POST-RETURN-PRODUCTION-PROOF-010 (registered=False)); until then custody stays with STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "retry_entrypoint": "scripts/owner_assignment_transition.py evaluate",
+      "schema": "stegverse.owner-assignment-record/v1"
+    },
+    {
+      "assigned_owner": null,
+      "authority_effect": "NONE_E0_RECORD_ONLY",
+      "candidate_owner": {
+        "basis": [
+          "StegVerse-org/StegVerse-SDK#434 body: Goal task MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002 (COSV 50000000100000)"
+        ],
+        "evidence_class": "OBSERVED_PR_BODY_NOT_A_LEDGER_RECEIPT",
+        "goal_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+        "ruling": "class D (1)",
+        "selected_by": "EXPLICIT_CANDIDATE_OWNER"
+      },
+      "custody": {
+        "consumed": true,
+        "custodian": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "custody_is_not_ownership": true,
+        "edit_policy": "EDITS_FAIL_CLOSED_UNTIL_AN_OWNER_IS_ASSIGNED_BY_RECEIPTED_LINEAGE",
+        "owner_status": "UNOWNED_NOT_OBSERVED",
+        "pinned": true
+      },
+      "declared_sha256": "sha256:22207791b0119615c6485b59666816feab0be01ab04c7d50723674c464c9f882",
+      "disposition": "FAIL_CLOSED",
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "excluded for this file by Coordination class D ruling (1)"
+        }
+      ],
+      "failed_predicate": "EVERY_HISTORY_COMMIT_HAS_A_READ_BACK_LANDING_RECEIPT",
+      "failure_code": "LINEAGE_INSUFFICIENT",
+      "lineage_chain": {
+        "history_snapshot_sha256": "sha256:704000ec3d856d081c715ddb09b0db9cd9e461dc0090b65bd8760acd78b2cbb5",
+        "introducing_commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+        "links_oldest_first": [
+          {
+            "commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+            "goal_binding_receipts": [],
+            "introducing": true,
+            "landing_receipts": []
+          }
+        ]
+      },
+      "next_attempt": "supply ledger copies holding those receipts; a git commit is never accepted in place of one",
+      "observed_non_receipted_lineage": {
+        "authoring_session_line": "absent (Claude-Session commit trailer only)",
+        "goal_docs_reference_path": "none",
+        "names_goal": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+        "pr_body_goal_reference": "Goal task MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002 (COSV 50000000100000)",
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#434 (branch claude/master-records-boundary-remediation; commit trailer Claude-Session session_01BhXFzVFQE21vmrBEyPpwoJ)"
+        ]
+      },
+      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "path": "stegverse/organization_record_names.py",
+      "pinned_commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+      "record_kind": "OWNER_ASSIGNMENT",
+      "record_sha256": "sha256:fd96265a2a43ffc4ebe9384ccc2f58ede2a9d8936645b713426a9dbf145fd410",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "required_evidence_or_repair": "ledger receipts (evidence.repository=StegVerse-org/StegVerse-SDK, evidence.merge_commit|transfer_commit|commit|source_commit=<commit>) on a chain in a supplied ledger copy for: 86daf0292fabda9b3cbb568024221ff415e6c358",
+      "retry_entrypoint": "scripts/owner_assignment_transition.py evaluate",
+      "schema": "stegverse.owner-assignment-record/v1",
+      "unmet_predicates": [
+        {
+          "failed_predicate": "EVERY_HISTORY_COMMIT_HAS_A_READ_BACK_LANDING_RECEIPT",
+          "required_evidence_or_repair": "ledger receipts (evidence.repository=StegVerse-org/StegVerse-SDK, evidence.merge_commit|transfer_commit|commit|source_commit=<commit>) on a chain in a supplied ledger copy for: 86daf0292fabda9b3cbb568024221ff415e6c358"
+        },
+        {
+          "failed_predicate": "INTRODUCING_COMMIT_BOUND_TO_CANDIDATE_GOAL_BY_RECEIPT",
+          "required_evidence_or_repair": "a read-back receipt for 86daf0292fabda9b3cbb568024221ff415e6c358 in StegVerse-org/StegVerse-SDK whose evidence names task_id|goal_task_id|owning_goal_task_id=MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002"
+        }
+      ]
+    },
+    {
+      "assigned_owner": null,
+      "authority_effect": "NONE_E0_RECORD_ONLY",
+      "candidate_derivation": {
+        "references": [
+          {
+            "found_in": [
+              "StegVerse-org/StegVerse-SDK#61 comment 5390918611"
+            ],
+            "goal_id": "SDK-POST-RETURN-PRODUCTION-PROOF-010",
+            "registered": false
+          }
+        ],
+        "registered": [],
+        "registered_not_excluded": [],
+        "source_numbers": [
+          61,
+          65,
+          66,
+          67,
+          69,
+          70
+        ],
+        "sources_read": [
+          "StegVerse-org/StegVerse-SDK#61 body",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384180256",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384246125",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384261548",
+          "StegVerse-org/StegVerse-SDK#61 comment 5388692981",
+          "StegVerse-org/StegVerse-SDK#61 comment 5388723611",
+          "StegVerse-org/StegVerse-SDK#61 comment 5390918611",
+          "StegVerse-org/StegVerse-SDK#61 comment 5404939398",
+          "StegVerse-org/StegVerse-SDK#61 comment 5404993940",
+          "StegVerse-org/StegVerse-SDK#61 comment 5843205542",
+          "StegVerse-org/StegVerse-SDK#65 body",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384179780",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384231962",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384240802",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384261916",
+          "StegVerse-org/StegVerse-SDK#65 comment 5388709514",
+          "StegVerse-org/StegVerse-SDK#65 comment 5388722706",
+          "StegVerse-org/StegVerse-SDK#65 comment 5404932562",
+          "StegVerse-org/StegVerse-SDK#65 comment 6130402108",
+          "StegVerse-org/StegVerse-SDK#65 comment 6132737289",
+          "StegVerse-org/StegVerse-SDK#65 comment 6132803610",
+          "StegVerse-org/StegVerse-SDK#66 body",
+          "StegVerse-org/StegVerse-SDK#67 body",
+          "StegVerse-org/StegVerse-SDK#69 body",
+          "StegVerse-org/StegVerse-SDK#70 body"
+        ],
+        "unavailable": false
+      },
+      "candidate_owner": null,
+      "custody": {
+        "consumed": true,
+        "custodian": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "custody_is_not_ownership": true,
+        "edit_policy": "EDITS_FAIL_CLOSED_UNTIL_AN_OWNER_IS_ASSIGNED_BY_RECEIPTED_LINEAGE",
+        "owner_status": "UNOWNED_NOT_OBSERVED",
+        "pinned": true
+      },
+      "declared_sha256": "sha256:d1963e230e74da447f47d49440cbec41570b2a8e573c5cd5adb33274d161a0f6",
+      "disposition": "FAIL_CLOSED",
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "Coordination class D ruling (2): no target extension, no reassignment"
+        }
+      ],
+      "failed_predicate": "A_GOAL_REFERENCE_IN_THE_LINEAGE_SOURCES_NAMES_A_REGISTERED_GOAL",
+      "failure_code": "NO_REGISTERED_CANDIDATE_OWNER",
+      "lineage_chain": {
+        "history_snapshot_sha256": "sha256:704000ec3d856d081c715ddb09b0db9cd9e461dc0090b65bd8760acd78b2cbb5",
+        "introducing_commit": "ceb6a353162242dd9c5919d8af89823b9a97501a",
+        "links_oldest_first": [
+          {
+            "commit": "ceb6a353162242dd9c5919d8af89823b9a97501a",
+            "goal_binding_receipts": [],
+            "introducing": true,
+            "landing_receipts": []
+          }
+        ]
+      },
+      "next_attempt": "a canonical-task registration (or a lineage source naming a registered Goal), then re-evaluate",
+      "observed_non_receipted_lineage": {
+        "authoring_session_line": "absent",
+        "goal_docs_reference_path": "none (INTERLOCK source mapping v1 observes SDK bafb0937 seams, not this path)",
+        "issues": [
+          "SDK#61 (closed 2026-09-27); comments cite SDK-local tasks/SDK-POST-RETURN-PRODUCTION-PROOF-010.json, not a canonical Goal"
+        ],
+        "pr_body_goal_reference": "SDK issue #61 slice; no Goal task id",
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#70 (merged 2026-08-23, branch feat/portable-governance-verifier-61-r2)"
+        ]
+      },
+      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "path": "stegverse/portable_governance_verifier.py",
+      "pinned_commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+      "record_kind": "CUSTODY",
+      "record_sha256": "sha256:c9b194fe6d26cb1deb8edfee60f8948d46e675b5c4f9b7a7c89f4b6e4633232f",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "required_evidence_or_repair": "a registered Goal named in the lineage sources (Goal-id references observed: SDK-POST-RETURN-PRODUCTION-PROOF-010 (registered=False)); until then custody stays with STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "retry_entrypoint": "scripts/owner_assignment_transition.py evaluate",
+      "schema": "stegverse.owner-assignment-record/v1"
+    },
+    {
+      "assigned_owner": null,
+      "authority_effect": "NONE_E0_RECORD_ONLY",
+      "candidate_derivation": {
+        "references": [
+          {
+            "found_in": [
+              "StegVerse-org/StegVerse-SDK#61 comment 5390918611"
+            ],
+            "goal_id": "SDK-POST-RETURN-PRODUCTION-PROOF-010",
+            "registered": false
+          }
+        ],
+        "registered": [],
+        "registered_not_excluded": [],
+        "source_numbers": [
+          61,
+          65,
+          66,
+          67,
+          69,
+          70
+        ],
+        "sources_read": [
+          "StegVerse-org/StegVerse-SDK#61 body",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384180256",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384246125",
+          "StegVerse-org/StegVerse-SDK#61 comment 5384261548",
+          "StegVerse-org/StegVerse-SDK#61 comment 5388692981",
+          "StegVerse-org/StegVerse-SDK#61 comment 5388723611",
+          "StegVerse-org/StegVerse-SDK#61 comment 5390918611",
+          "StegVerse-org/StegVerse-SDK#61 comment 5404939398",
+          "StegVerse-org/StegVerse-SDK#61 comment 5404993940",
+          "StegVerse-org/StegVerse-SDK#61 comment 5843205542",
+          "StegVerse-org/StegVerse-SDK#65 body",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384179780",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384231962",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384240802",
+          "StegVerse-org/StegVerse-SDK#65 comment 5384261916",
+          "StegVerse-org/StegVerse-SDK#65 comment 5388709514",
+          "StegVerse-org/StegVerse-SDK#65 comment 5388722706",
+          "StegVerse-org/StegVerse-SDK#65 comment 5404932562",
+          "StegVerse-org/StegVerse-SDK#65 comment 6130402108",
+          "StegVerse-org/StegVerse-SDK#65 comment 6132737289",
+          "StegVerse-org/StegVerse-SDK#65 comment 6132803610",
+          "StegVerse-org/StegVerse-SDK#66 body",
+          "StegVerse-org/StegVerse-SDK#67 body",
+          "StegVerse-org/StegVerse-SDK#69 body",
+          "StegVerse-org/StegVerse-SDK#70 body"
+        ],
+        "unavailable": false
+      },
+      "candidate_owner": null,
+      "custody": {
+        "consumed": true,
+        "custodian": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "custody_is_not_ownership": true,
+        "edit_policy": "EDITS_FAIL_CLOSED_UNTIL_AN_OWNER_IS_ASSIGNED_BY_RECEIPTED_LINEAGE",
+        "owner_status": "UNOWNED_NOT_OBSERVED",
+        "pinned": true
+      },
+      "declared_sha256": "sha256:536856c5da0bf3729f5a0188b8d5c461f2c7fd6018fbac9818f42f07d9f31787",
+      "disposition": "FAIL_CLOSED",
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "Coordination class D ruling (2): no target extension, no reassignment"
+        }
+      ],
+      "failed_predicate": "A_GOAL_REFERENCE_IN_THE_LINEAGE_SOURCES_NAMES_A_REGISTERED_GOAL",
+      "failure_code": "NO_REGISTERED_CANDIDATE_OWNER",
+      "lineage_chain": {
+        "history_snapshot_sha256": "sha256:704000ec3d856d081c715ddb09b0db9cd9e461dc0090b65bd8760acd78b2cbb5",
+        "introducing_commit": "e72677c90261b2bf5c4716baaba1eeb99f70c9fe",
+        "links_oldest_first": [
+          {
+            "commit": "e72677c90261b2bf5c4716baaba1eeb99f70c9fe",
+            "goal_binding_receipts": [],
+            "introducing": true,
+            "landing_receipts": []
+          },
+          {
+            "commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+            "goal_binding_receipts": [],
+            "introducing": false,
+            "landing_receipts": []
+          }
+        ]
+      },
+      "next_attempt": "a canonical-task registration (or a lineage source naming a registered Goal), then re-evaluate",
+      "observed_non_receipted_lineage": {
+        "authoring_session_line": "absent",
+        "goal_docs_reference_path": "none",
+        "handoff_doc": "docs/SPE_STEGGATE_BRIDGE_MIRROR_HANDOFF.md (issue: #61)",
+        "pr_body_goal_reference": "SDK issue #61 source slice 2; no Goal task id",
+        "pull_requests": [
+          "StegVerse-org/StegVerse-SDK#69 (branch feat/spe-steggate-bridge-61-r3)",
+          "StegVerse-org/StegVerse-SDK#434 (modification)"
+        ]
+      },
+      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "path": "stegverse/spe_steggate_bridge.py",
+      "pinned_commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+      "record_kind": "CUSTODY",
+      "record_sha256": "sha256:b888a269a9aa697384153dc25d9539d683f91a9314819cf24543037892fa119f",
+      "repository": "StegVerse-org/StegVerse-SDK",
+      "required_evidence_or_repair": "a registered Goal named in the lineage sources (Goal-id references observed: SDK-POST-RETURN-PRODUCTION-PROOF-010 (registered=False)); until then custody stays with STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "retry_entrypoint": "scripts/owner_assignment_transition.py evaluate",
+      "schema": "stegverse.owner-assignment-record/v1"
+    }
+  ],
+  "registry_sha256": "sha256:a2366fc6ad116f5e83d48379eb057cfd250ef42a92e7631399650a33f9f56448",
+  "request_id": "OWNER-ASSIGNMENT-GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-CLOSURE-1",
+  "request_sha256": "sha256:31cfc607dc5095e91feac7d9c87c5e7203d7ac8ca8c6661f375c315545cded5c",
+  "run_sha256": "sha256:0e4fe6c5bd58ebe01e7c1f62c44f8f7834e11112d814e18f634af8806a721615",
+  "schema": "stegverse.owner-assignment-run/v1",
+  "tally": {
+    "FAIL_CLOSED": 5
+  }
+}

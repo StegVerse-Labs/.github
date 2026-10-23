@@ -1,0 +1,71 @@
+{
+  "evidence_class": "GIT_OBSERVATION_NOT_A_LEDGER_RECEIPT",
+  "files": {
+    "stegverse/interlock_return.py": {
+      "commits_newest_first": [
+        {
+          "commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+          "status": "M"
+        },
+        {
+          "commit": "622ac7d286022d63c341cfffcd1cd11accff151d",
+          "status": "A"
+        }
+      ],
+      "introducing_commit": "622ac7d286022d63c341cfffcd1cd11accff151d",
+      "sha256_at_pin": "2ccbc8f44f869f962a990d1c13fd2308b0d4a18a8b004d4020552eeabc95f67c"
+    },
+    "stegverse/interlock_transition.py": {
+      "commits_newest_first": [
+        {
+          "commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+          "status": "M"
+        },
+        {
+          "commit": "ed30b6439d755b23d029f5806801a18e3f418e64",
+          "status": "A"
+        }
+      ],
+      "introducing_commit": "ed30b6439d755b23d029f5806801a18e3f418e64",
+      "sha256_at_pin": "cd0de91e03ea25c401a23071d4fe93505e4359f8e35857b787f56c25b6b978d0"
+    },
+    "stegverse/organization_record_names.py": {
+      "commits_newest_first": [
+        {
+          "commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+          "status": "A"
+        }
+      ],
+      "introducing_commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+      "sha256_at_pin": "22207791b0119615c6485b59666816feab0be01ab04c7d50723674c464c9f882"
+    },
+    "stegverse/portable_governance_verifier.py": {
+      "commits_newest_first": [
+        {
+          "commit": "ceb6a353162242dd9c5919d8af89823b9a97501a",
+          "status": "A"
+        }
+      ],
+      "introducing_commit": "ceb6a353162242dd9c5919d8af89823b9a97501a",
+      "sha256_at_pin": "d1963e230e74da447f47d49440cbec41570b2a8e573c5cd5adb33274d161a0f6"
+    },
+    "stegverse/spe_steggate_bridge.py": {
+      "commits_newest_first": [
+        {
+          "commit": "86daf0292fabda9b3cbb568024221ff415e6c358",
+          "status": "M"
+        },
+        {
+          "commit": "e72677c90261b2bf5c4716baaba1eeb99f70c9fe",
+          "status": "A"
+        }
+      ],
+      "introducing_commit": "e72677c90261b2bf5c4716baaba1eeb99f70c9fe",
+      "sha256_at_pin": "536856c5da0bf3729f5a0188b8d5c461f2c7fd6018fbac9818f42f07d9f31787"
+    }
+  },
+  "pinned_commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "schema": "stegverse.owner-assignment-git-history/v1",
+  "snapshot_sha256": "sha256:704000ec3d856d081c715ddb09b0db9cd9e461dc0090b65bd8760acd78b2cbb5"
+}
