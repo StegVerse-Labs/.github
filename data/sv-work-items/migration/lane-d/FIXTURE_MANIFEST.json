@@ -249,5 +249,61 @@
       "to": "svc:6e7045726f6a94d0571aa75ee271960dc71da0e715b9ebcf165ac82857636cd6",
       "cause": "base_ref re-observed (registry_generation 319 -> 320, ledger_head a5bb54d8 -> 9a407561); change_id hashes both"
     }
-  ]
+  ],
+  "pinned_source_repins": {
+    "rule": "No pinned source is re-pinned silently. Every re-pin is listed here with its from-pin (kept checkable at its historical commit), its to-pin and its cause; the to-pin must equal the file's contract-pins.json entry. tests/test_s0_lane_d_migration_fixtures.py::test_pinned_source_repins_are_recorded enforces this.",
+    "repins": [
+      {
+        "path": "schemas/sv-change.v1.schema.json",
+        "from": {
+          "git_blob": "734968c00d112a97a58bcb647c7d33f76fae9d17",
+          "sha256": "sha256:7b3c3eea489758db318be952960175547ed4fd793a7b39bf5da32e67ad499046",
+          "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
+        },
+        "to": {
+          "git_blob": "6b43b6ecfa22c2f178de00f5c14121cb27bf1c5a",
+          "sha256": "sha256:c96fdb5b9a0bd7d0e5e71b546b46c7a54f3cd444c9b604837af63e45e0d59a35",
+          "commit": "7898cedba1400c8545cebcb463fd26deb25f7d5a"
+        },
+        "cause": "the file's entry in data/sv-work-items/contract-pins.json changed (contract-pins blob b8e7e458 at main 86382e60); invariants.json#CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN: a consumer re-pins a listed file only when its entry changes",
+        "historical_pin_verify": "git show f4080202d8fc3057516978f143cd23732681a9e0:schemas/sv-change.v1.schema.json | git hash-object --stdin  ->  734968c00d112a97a58bcb647c7d33f76fae9d17",
+        "historical_pin_observed": "blob and sha256 matched at f4080202 (an ancestor of main 86382e60), Lane D local read 2026-10-23",
+        "builder_check": "scripts/build_lane_d_s0_migration_fixtures.py --check ALLOW at the new pins (outputs reproduce from the current sources)"
+      },
+      {
+        "path": "data/sv-work-items/required-checks.json",
+        "from": {
+          "git_blob": "11f023411624ce5daf26fc342d4af9a39fd0614e",
+          "sha256": "sha256:42ca5394c4dc799a66cb2c88190786d416ef731b3896efb600c4b536981e415d",
+          "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
+        },
+        "to": {
+          "git_blob": "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d",
+          "sha256": "sha256:468c08adc9f269f130217db51c8eb22260fbf2369fac48232fe9d3937e583110",
+          "commit": "ae8b105d7504565665bf6918367517ffdcb481fd"
+        },
+        "cause": "the file's entry in data/sv-work-items/contract-pins.json changed (contract-pins blob b8e7e458 at main 86382e60); invariants.json#CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN: a consumer re-pins a listed file only when its entry changes",
+        "historical_pin_verify": "git show f4080202d8fc3057516978f143cd23732681a9e0:data/sv-work-items/required-checks.json | git hash-object --stdin  ->  11f023411624ce5daf26fc342d4af9a39fd0614e",
+        "historical_pin_observed": "blob and sha256 matched at f4080202 (an ancestor of main 86382e60), Lane D local read 2026-10-23",
+        "builder_check": "scripts/build_lane_d_s0_migration_fixtures.py --check ALLOW at the new pins (outputs reproduce from the current sources)"
+      },
+      {
+        "path": "resident-runtime/sv_work_items.py",
+        "from": {
+          "git_blob": "bb2d02348dc41bbf3b1c13a763bcc018a896a1a3",
+          "sha256": "sha256:21dab6701a1ce9734fdb97f0af396366f0cd74f85c2b5e1e03c6ff255030b5b3",
+          "commit": "f4080202d8fc3057516978f143cd23732681a9e0"
+        },
+        "to": {
+          "git_blob": "9e926ed41210963d4c5b6bc2000ce71c51cf6664",
+          "sha256": "sha256:ea36302d1fcdac0f2de01fa8b8f873e805959ae0f2cfe1c10f11d6d9d91ed1e0",
+          "commit": "6de17e604a17f82d20fed4819ce350c48d8dd1a6"
+        },
+        "cause": "the file's entry in data/sv-work-items/contract-pins.json changed (contract-pins blob b8e7e458 at main 86382e60); invariants.json#CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN: a consumer re-pins a listed file only when its entry changes",
+        "historical_pin_verify": "git show f4080202d8fc3057516978f143cd23732681a9e0:resident-runtime/sv_work_items.py | git hash-object --stdin  ->  bb2d02348dc41bbf3b1c13a763bcc018a896a1a3",
+        "historical_pin_observed": "blob and sha256 matched at f4080202 (an ancestor of main 86382e60), Lane D local read 2026-10-23",
+        "builder_check": "scripts/build_lane_d_s0_migration_fixtures.py --check ALLOW at the new pins (outputs reproduce from the current sources)"
+      }
+    ]
+  }
 }
