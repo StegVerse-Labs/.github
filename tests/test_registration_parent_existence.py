@@ -14,6 +14,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -255,6 +256,32 @@ class Module(unittest.TestCase):
         self.assertEqual(crt.run("plan", path, base)["failure_code"], "REGISTRY_GENERATION_NOT_OBSERVED_TIP")
         write(path, child_request(7))  # duplicate identity and unregistered parent
         self.assertEqual(crt.run("plan", path, base)["failure_code"], "TASK_IDENTITY_NOT_UNIQUE")
+
+
+class ContractDeclaresTheCodes(unittest.TestCase):
+    CONTRACT = ROOT / "contracts" / "canonical-task-registration-transition.v1.json"
+
+    def test_contract_predicates_list_both_parent_codes(self):
+        predicates = json.loads(self.CONTRACT.read_text())["predicates"]
+        module = _load("registration_parent_existence_contract", MODULE)
+        self.assertEqual(module.PREDICATES, ("REGISTRATION_PARENT_NOT_REGISTERED", "REGISTRATION_PARENT_REGISTRY_UNREADABLE"))
+        for code in module.PREDICATES:
+            self.assertEqual(predicates.count(code), 1, code)
+
+    def test_contract_order_follows_the_hook_order(self):
+        predicates = json.loads(self.CONTRACT.read_text())["predicates"]
+        index = predicates.index
+        self.assertLess(index("REGISTRATION_REQUEST_SCHEMA_INVALID"), index("REGISTRATION_PARENT_REGISTRY_UNREADABLE"))
+        self.assertLess(index("REGISTRATION_PARENT_REGISTRY_UNREADABLE"), index("REGISTRY_GENERATION_NOT_OBSERVED_TIP"))
+        self.assertLess(index("TASK_IDENTITY_NOT_UNIQUE"), index("REGISTRATION_PARENT_NOT_REGISTERED"))
+        self.assertLess(index("REGISTRATION_PARENT_NOT_REGISTERED"), index("CANONICAL_RECORD_SCHEMA_INVALID"))
+
+    def test_every_module_refusal_code_is_a_contract_predicate(self):
+        predicates = set(json.loads(self.CONTRACT.read_text())["predicates"])
+        source = MODULE.read_text()
+        emitted = set(re.findall(r'"(REGISTRATION_PARENT_[A-Z_]+)"', source))
+        self.assertTrue(emitted)
+        self.assertLessEqual(emitted, predicates)
 
 
 class LiveRegistry(unittest.TestCase):
