@@ -9,7 +9,6 @@
   },
   "source_repository": "StegVerse-org/StegVerse-SDK",
   "pinned_commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
-  "candidate_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
   "files": [
     {
       "path": "stegverse/portable_governance_verifier.py",
@@ -24,7 +23,21 @@
           "SDK#61 (closed 2026-09-27); comments cite SDK-local tasks/SDK-POST-RETURN-PRODUCTION-PROOF-010.json, not a canonical Goal"
         ],
         "goal_docs_reference_path": "none (INTERLOCK source mapping v1 observes SDK bafb0937 seams, not this path)"
-      }
+      },
+      "derive_candidates_from": [
+        61,
+        65,
+        66,
+        67,
+        69,
+        70
+      ],
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "Coordination class D ruling (2): no target extension, no reassignment"
+        }
+      ]
     },
     {
       "path": "stegverse/interlock_return.py",
@@ -37,8 +50,23 @@
         "pr_body_goal_reference": "SDK issue #65 slice; no Goal task id",
         "authoring_session_line": "absent",
         "handoff_doc": "docs/INTERLOCK_RETURN_MIRROR_HANDOFF.md (issue: #65)",
-        "goal_docs_reference_path": "none"
-      }
+        "goal_docs_reference_path": "none",
+        "issue_65_registry_note": "SDK#65 comment 6132737289 records REGISTRY_OWNER_NOT_AUTHENTICATED: 'Resolve canonical owning ISSUE, Goal Task ID, COSV, mirror handoff before promotion; do not infer from SDK #65 or #334'"
+      },
+      "derive_candidates_from": [
+        61,
+        65,
+        66,
+        67,
+        69,
+        70
+      ],
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "Coordination class D ruling (2): no target extension, no reassignment"
+        }
+      ]
     },
     {
       "path": "stegverse/interlock_transition.py",
@@ -51,8 +79,23 @@
         "pr_body_goal_reference": "SDK issue #65 source slice 1; no Goal task id",
         "authoring_session_line": "absent",
         "handoff_doc": "docs/INTERLOCK_RETURN_MIRROR_HANDOFF.md (issue: #65)",
-        "goal_docs_reference_path": "none"
-      }
+        "goal_docs_reference_path": "none",
+        "issue_65_registry_note": "SDK#65 comment 6132737289 records REGISTRY_OWNER_NOT_AUTHENTICATED: 'Resolve canonical owning ISSUE, Goal Task ID, COSV, mirror handoff before promotion; do not infer from SDK #65 or #334'"
+      },
+      "derive_candidates_from": [
+        61,
+        65,
+        66,
+        67,
+        69,
+        70
+      ],
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "Coordination class D ruling (2): no target extension, no reassignment"
+        }
+      ]
     },
     {
       "path": "stegverse/organization_record_names.py",
@@ -65,7 +108,21 @@
         "names_goal": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
         "authoring_session_line": "absent (Claude-Session commit trailer only)",
         "goal_docs_reference_path": "none"
-      }
+      },
+      "candidate_owner": {
+        "goal_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+        "basis": [
+          "StegVerse-org/StegVerse-SDK#434 body: Goal task MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002 (COSV 50000000100000)"
+        ],
+        "evidence_class": "OBSERVED_PR_BODY_NOT_A_LEDGER_RECEIPT",
+        "ruling": "class D (1)"
+      },
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "excluded for this file by Coordination class D ruling (1)"
+        }
+      ]
     },
     {
       "path": "stegverse/spe_steggate_bridge.py",
@@ -79,7 +136,26 @@
         "authoring_session_line": "absent",
         "handoff_doc": "docs/SPE_STEGGATE_BRIDGE_MIRROR_HANDOFF.md (issue: #61)",
         "goal_docs_reference_path": "none"
-      }
+      },
+      "derive_candidates_from": [
+        61,
+        65,
+        66,
+        67,
+        69,
+        70
+      ],
+      "excluded_candidates": [
+        {
+          "goal_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+          "reason": "Coordination class D ruling (2): no target extension, no reassignment"
+        }
+      ]
     }
+  ],
+  "goal_reference_sources_sha256": "sha256:31b2e33f161a815987e13fc943cbdb75dae98a01484a78b20fe59936ee619fbf",
+  "rulings": [
+    "Coordination class D ruling (1) on Labs#3329 / org#160 comment 6366666181: organization_record_names.py candidate owner MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002 from the SDK#434 PR body, candidate only; INTERLOCK excluded for this file",
+    "Coordination class D ruling (2): the four SDK#61/#65 files get no target extension and no reassignment; candidates are derived from Goal references in SDK#61, SDK#65 and PR bodies #66/#67/#69/#70; with none registered, custody stays with STEGVERSE-CANONICAL-WORK-COORDINATION-001"
   ]
 }

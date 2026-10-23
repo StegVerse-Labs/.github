@@ -16,6 +16,7 @@
  "extra_surfaces": {
   "tests/test_owner_assignment_transition.py": [
    "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.git-history.json",
+   "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.goal-reference-sources.json",
    "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.request.json",
    "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.run.json",
    "data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json",

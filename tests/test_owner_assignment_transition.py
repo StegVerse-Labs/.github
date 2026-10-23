@@ -52,11 +52,22 @@ class Fixture:
         self.records = os.path.join(tmp, "records")
         os.makedirs(self.records)
 
-    def request(self, goal=GOAL, digest=None, names_goal=None):
+    def request(self, goal=GOAL, digest=None, names_goal=None, **entry):
         lin = {"names_goal": names_goal} if names_goal else {}
         return {"schema": T.REQUEST_SCHEMA, "request_id": "R-1", "source_repository": REPO,
                 "pinned_commit": self.mod, "candidate_goal": goal,
-                "files": [{"path": "pkg/f.py", "sha256": digest or self.digest, "observed_non_receipted_lineage": lin}]}
+                "files": [{"path": "pkg/f.py", "sha256": digest or self.digest, "observed_non_receipted_lineage": lin,
+                           **entry}]}
+
+    def sources(self, texts):
+        exports = []
+        for n, body in texts.items():
+            p = os.path.join(self.tmp, f"x{n}.json")
+            with open(p, "w") as fh:
+                json.dump({"number": n, "body": body, "comments": [
+                    {"url": f"https://x/{n}#issuecomment-{n}0", "body": "see " + body}]}, fh)
+            exports.append(p)
+        return T.sources_snapshot(exports, REPO)
 
     def history(self, req):
         return T.history(os.path.join(self.src, ".git"), REPO, req["pinned_commit"], [f["path"] for f in req["files"]])
@@ -91,9 +102,10 @@ class Fixture:
         git(self.tmp, "update-ref", T.LEDGER_REF, "HEAD", git_dir=bare)
         return copies
 
-    def run(self, req, copies=None, history=None):
+    def run(self, req, copies=None, history=None, sources=None):
         hist = history or self.history(req)
-        return T.evaluate(req, hist, T.read_ledgers(copies), self.registry, self.records, "sha256:req", "sha256:reg")
+        return T.evaluate(req, hist, T.read_ledgers(copies), self.registry, self.records, "sha256:req", "sha256:reg",
+                          sources)
 
 
 def landed(commit):
@@ -123,7 +135,9 @@ class OwnerAssignmentTransitionTests(unittest.TestCase):
         copies = self.f.ledger([landed(self.f.intro), {**landed(self.f.intro), "task_id": GOAL}, landed(self.f.mod)])
         rec = self.only(self.f.run(self.f.request(), copies))
         self.assertEqual(rec["disposition"], "ALLOW")
-        self.assertEqual(rec["owner_task_id"], GOAL)
+        self.assertEqual(rec["assigned_owner"], GOAL)
+        self.assertEqual(rec["record_kind"], "OWNER_ASSIGNMENT")
+        self.assertNotIn("custody", rec)
         self.assertNotIn("failure_code", rec)
         links = rec["lineage_chain"]["links_oldest_first"]
         self.assertEqual([l["commit"] for l in links], [self.f.intro, self.f.mod])
@@ -183,6 +197,68 @@ class OwnerAssignmentTransitionTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             self.f.run(req, history=hist)
 
+    def test_no_registered_derived_candidate_is_a_custody_record_not_ownership(self):
+        src = self.f.sources({61: "tracked in UNREGISTERED-TASK-010", 70: "slice of #61"})
+        req = self.f.request(goal=None, derive_candidates_from=[61, 70])
+        rec = self.only(self.f.run(req, sources=src))
+        self.assertEqual(rec["record_kind"], "CUSTODY")
+        self.assertIsNone(rec["candidate_owner"])
+        self.assertIsNone(rec["assigned_owner"])
+        self.assertEqual(rec["failure_code"], "NO_REGISTERED_CANDIDATE_OWNER")
+        for k in SIX:
+            self.assertTrue(rec.get(k), k)
+        self.assertEqual(rec["custody"]["custodian"], "STEGVERSE-CANONICAL-WORK-COORDINATION-001")
+        self.assertEqual(rec["custody"]["owner_status"], "UNOWNED_NOT_OBSERVED")
+        self.assertTrue(rec["custody"]["custody_is_not_ownership"])
+        refs = rec["candidate_derivation"]["references"]
+        self.assertEqual([(r["goal_id"], r["registered"]) for r in refs], [("UNREGISTERED-TASK-010", False)])
+        self.assertIn("UNREGISTERED-TASK-010", rec["required_evidence_or_repair"])
+
+    def test_registered_derived_candidate_still_needs_receipts(self):
+        src = self.f.sources({61: f"owned by {GOAL}"})
+        req = self.f.request(goal=None, derive_candidates_from=[61])
+        rec = self.only(self.f.run(req, sources=src))
+        self.assertEqual(rec["record_kind"], "OWNER_ASSIGNMENT")
+        self.assertEqual(rec["candidate_owner"]["goal_id"], GOAL)
+        self.assertEqual(rec["candidate_owner"]["selected_by"], "DERIVED_FROM_GOAL_REFERENCES")
+        self.assert_six(rec, "INTRODUCING_COMMIT_BOUND_TO_CANDIDATE_GOAL_BY_RECEIPT")
+        copies = self.f.ledger([{**landed(self.f.intro), "task_id": GOAL}, landed(self.f.mod)])
+        self.assertEqual(self.only(self.f.run(req, copies, sources=src))["assigned_owner"], GOAL)
+
+    def test_excluded_candidate_is_never_derived_or_selected(self):
+        src = self.f.sources({61: f"owned by {GOAL}"})
+        excl = [{"goal_id": GOAL, "reason": "ruling"}]
+        rec = self.only(self.f.run(self.f.request(goal=None, derive_candidates_from=[61], excluded_candidates=excl),
+                                   sources=src))
+        self.assertEqual(rec["record_kind"], "CUSTODY")
+        self.assertEqual(rec["excluded_candidates"], excl)
+        rec = self.only(self.f.run(self.f.request(goal=GOAL, excluded_candidates=excl)))
+        self.assertEqual(rec["record_kind"], "CUSTODY")
+        rec = self.only(self.f.run(self.f.request(candidate_owner={"goal_id": GOAL, "basis": []},
+                                                  excluded_candidates=excl)))
+        self.assertEqual(rec["failure_code"], "CANDIDATE_IS_EXCLUDED")
+
+    def test_two_registered_candidates_are_ambiguous(self):
+        self.f.registry["tasks"].append({"task_id": OTHER, "targets": {"repositories": [REPO]}})
+        src = self.f.sources({61: f"{GOAL} and {OTHER}"})
+        rec = self.only(self.f.run(self.f.request(goal=None, derive_candidates_from=[61]), sources=src))
+        self.assertEqual(rec["failure_code"], "CANDIDATE_OWNER_AMBIGUOUS")
+        self.assertEqual(rec["record_kind"], "CUSTODY")
+
+    def test_explicit_candidate_owner_is_separate_from_assigned_owner(self):
+        rec = self.only(self.f.run(self.f.request(goal=None, candidate_owner={"goal_id": GOAL, "basis": ["PR body"]})))
+        self.assertEqual(rec["candidate_owner"]["goal_id"], GOAL)
+        self.assertIsNone(rec["assigned_owner"])
+        self.assertEqual(rec["disposition"], "FAIL_CLOSED")
+
+    def test_sources_missing_or_tampered_fail_closed(self):
+        rec = self.only(self.f.run(self.f.request(goal=None, derive_candidates_from=[61])))
+        self.assertEqual(rec["failure_code"], "GOAL_REFERENCE_SOURCES_UNAVAILABLE")
+        src = self.f.sources({61: "x"})
+        src["sources"][0]["text"] = "UNREGISTERED-TASK-010"
+        with self.assertRaises(SystemExit):
+            self.f.run(self.f.request(goal=None, derive_candidates_from=[61]), sources=src)
+
     def test_no_network_clock_or_randomness_imports(self):
         with open(os.path.join(ROOT, "scripts", "owner_assignment_transition.py"), encoding="utf-8") as fh:
             tree = ast.parse(fh.read())
@@ -209,26 +285,43 @@ class CommittedClosureRunTests(unittest.TestCase):
         for rec in run["records"]:
             self.assertEqual(rec["record_sha256"], T.sha({k: v for k, v in rec.items() if k != "record_sha256"}))
 
-    def test_all_five_fail_closed_with_six_fields(self):
+    def test_all_five_fail_closed_with_six_fields_per_coordination_rulings(self):
         run, _ = self.load("run")
         self.assertEqual(run["tally"], {"FAIL_CLOSED": 5})
-        self.assertEqual(len(run["records"]), 5)
+        self.assertEqual(run["record_kinds"], {"CUSTODY": 4, "OWNER_ASSIGNMENT": 1})
+        interlock = "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
         for rec in run["records"]:
             for k in SIX:
                 self.assertTrue(rec.get(k), (rec["path"], k))
-            self.assertEqual(rec["failure_code"], "LINEAGE_INSUFFICIENT")
-            self.assertEqual(rec["candidate_goal"], "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001")
+            self.assertIsNone(rec["assigned_owner"])
+            self.assertIn(interlock, [e["goal_id"] for e in rec["excluded_candidates"]])
+            self.assertEqual(rec["custody"]["custodian"], "STEGVERSE-CANONICAL-WORK-COORDINATION-001")
         names = {r["path"]: r for r in run["records"]}
-        self.assertIn("contradicting_observation", names["stegverse/organization_record_names.py"])
+        orn = names.pop("stegverse/organization_record_names.py")
+        self.assertEqual(orn["record_kind"], "OWNER_ASSIGNMENT")
+        self.assertEqual(orn["failure_code"], "LINEAGE_INSUFFICIENT")
+        self.assertEqual(orn["candidate_owner"]["goal_id"], "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002")
+        self.assertEqual({m["failed_predicate"] for m in orn["unmet_predicates"]},
+                         {"EVERY_HISTORY_COMMIT_HAS_A_READ_BACK_LANDING_RECEIPT",
+                          "INTRODUCING_COMMIT_BOUND_TO_CANDIDATE_GOAL_BY_RECEIPT"})
+        self.assertEqual(len(names), 4)
+        for rec in names.values():
+            self.assertEqual(rec["record_kind"], "CUSTODY")
+            self.assertEqual(rec["failure_code"], "NO_REGISTERED_CANDIDATE_OWNER")
+            self.assertEqual(rec["custody"]["owner_status"], "UNOWNED_NOT_OBSERVED")
+            self.assertEqual(rec["candidate_derivation"]["source_numbers"], [61, 65, 66, 67, 69, 70])
+            self.assertEqual(rec["candidate_derivation"]["registered"], [])
 
     def test_records_replay_from_committed_inputs_without_ledger_copies(self):
         run, _ = self.load("run")
         req, req_sha = self.load("request")
         hist, _ = self.load("git-history")
+        src, _ = self.load("goal-reference-sources")
+        self.assertEqual(req["goal_reference_sources_sha256"], src["snapshot_sha256"])
         with open(os.path.join(ROOT, "data", "canonical-task-registry.json"), encoding="utf-8") as fh:
             registry = json.load(fh)
         replay = T.evaluate(req, hist, T.read_ledgers(None), registry,
-                            os.path.join(ROOT, "data", "canonical-task-records"), req_sha, run["registry_sha256"])
+                            os.path.join(ROOT, "data", "canonical-task-records"), req_sha, run["registry_sha256"], src)
         # no supplied ledger copy held a matching receipt, so the records are identical with none supplied
         self.assertEqual(T.canon(replay["records"]), T.canon(run["records"]))
 

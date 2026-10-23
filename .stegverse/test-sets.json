@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "cb12353e8358550f818e0b5318aa2db4d33bb18705566c472e3761bbe296504a"
+  "spec_sha256": "ae95d401ee62b54d04a548289d228ab5069a88775840eeebcee80643c4ab5d26"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -5205,6 +5205,7 @@
    "inputs": [],
    "surfaces": [
     "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.git-history.json",
+    "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.goal-reference-sources.json",
     "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.request.json",
     "control/owner-assignment/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001-closure.run.json",
     "data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json",
