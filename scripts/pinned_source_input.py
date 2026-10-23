@@ -13,6 +13,11 @@ SDK, say) declares it as an input; this tool supplies that input and proves it i
   * `verify` re-hashes a materialized root against the manifest (the selector calls it before it calls the input
     available, so a root that drifted after it was materialized is refused too).
 
+A pin may declare `shims`: a stdlib stand-in for a module the pinned commit imports without declaring (pin
+0028cab9 imports `requests`). A shim is a file of the consuming repository, sha256-pinned in the manifest beside the
+pin, copied to DIR/shim and put on the path after DIR/tree by the pin's `exports_append`, so only the run group of
+the set that declares the pin (and lists the shim in its check's `shims`) sees it. Nothing is installed.
+
 Anything that does not match - a different commit or tree, a file whose sha256 differs, a declared file absent, a
 file present that the manifest does not declare, a manifest whose seal does not verify - is FAIL_CLOSED with six
 fields and nothing is loaded. Nothing is skipped, nothing is published, no clock is read.
@@ -103,6 +108,22 @@ def hash_root(root: Path) -> dict[str, str]:
     return out
 
 
+def verify_shims(pin_id: str, pin: Mapping[str, Any], shim_root: Path, retry: str) -> dict[str, str]:
+    """Re-hash DIR/shim against the pin's declared shims (nothing more, nothing less)."""
+    shims = pin.get("shims", {})
+    got = hash_root(shim_root) if shim_root.is_dir() else {}
+    got = {p: h for p, h in got.items() if not p.endswith(".pyc")}
+    want = {f"{name}/__init__.py": s["sha256"] for name, s in shims.items()}
+    if got != want:
+        differ = sorted(p for p in want if p in got and got[p] != want[p])
+        raise refuse("PINNED_INPUT_SHIM_SHA256_MISMATCH", "PINNED_INPUT_SHIMS_MATCH_THE_DECLARED_SHA256",
+                     f"the shims at {shim_root} are not the ones pin {pin_id} declares ({sorted(shims) or 'none'}): "
+                     f"{len(differ)} differ, absent {sorted(set(want) - set(got))}, undeclared "
+                     f"{sorted(set(got) - set(want))}; re-materialize the pin from the committed shim files", retry,
+                     differ=differ)
+    return want
+
+
 def verify(manifest_path: Path, pin_id: str, root: Path, retry: str = "pinned_source_input.py verify") -> dict:
     """The verification record of a materialized root; raises PinRefused (six fields) on any mismatch."""
     manifest, pin = load_manifest(manifest_path, pin_id, retry)
@@ -133,10 +154,11 @@ def verify(manifest_path: Path, pin_id: str, root: Path, retry: str = "pinned_so
                          f"module {name} of pin {pin_id} declares sha256 {mod['sha256']} but its files hash to "
                          f"{digest}; regenerate the manifest with `pinned_source_input.py pin`", retry)
         modules[name] = digest
+    shims = verify_shims(pin_id, pin, root.parent / "shim", retry)
     return {"schema": RECEIPT_SCHEMA, "input": manifest["input"], "repository": manifest["repository"],
             "pin": pin_id, "commit": pin["commit"], "tree": pin["tree"], "root": str(root),
             "manifest": {"path": str(manifest_path), SEAL: manifest[SEAL]}, "modules": modules,
-            "files_verified": len(declared), "disposition": "ALLOW", "lowest_supported_mode": "E0",
+            "files_verified": len(declared), "shims": shims, "disposition": "ALLOW", "lowest_supported_mode": "E0",
             "derived_from_clock": False, "authority_effect": "NONE"}
 
 
@@ -194,6 +216,16 @@ def materialize(manifest_path: Path, pin_id: str, dest: Path, source: str | None
                      f"git archive {commit} -- {' '.join(sorted(pin['modules']))} failed "
                      f"({archive.stderr.decode(errors='replace').strip()[:300]})", retry)
     _extract(archive.stdout, tree, retry)
+    for name, shim in sorted(pin.get("shims", {}).items()):
+        src = manifest_path.parent / shim["path"]
+        blob = src.read_bytes() if src.is_file() else b""
+        if hashlib.sha256(blob).hexdigest() != shim["sha256"]:
+            raise refuse("PINNED_INPUT_SHIM_SHA256_MISMATCH", "PINNED_INPUT_SHIMS_MATCH_THE_DECLARED_SHA256",
+                         f"shim {name} of pin {pin_id} ({src}) is absent or does not hash to the declared "
+                         f"{shim['sha256']}; restore the committed shim or re-pin it with `pinned_source_input.py "
+                         "pin --shim`", retry)
+        (dest / "shim" / name).mkdir(parents=True)
+        (dest / "shim" / name / "__init__.py").write_bytes(blob)
     record = verify(manifest_path, pin_id, tree, retry)
     record["fetched_from"] = url
     (dest / "receipt.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -202,11 +234,18 @@ def materialize(manifest_path: Path, pin_id: str, dest: Path, source: str | None
 
 def exports(manifest_path: Path, pin_id: str, root: Path) -> dict[str, str]:
     manifest, pin = load_manifest(manifest_path, pin_id, "pinned_source_input.py env")
-    return {k: v.replace("{root}", str(root)) for k, v in sorted(manifest.get("exports", {}).items())}
+
+    def fill(v: str) -> str:
+        return v.replace("{root}", str(root)).replace("{shim_root}", str(root.parent / "shim"))
+
+    out = {k: fill(v) for k, v in sorted(manifest.get("exports", {}).items())}
+    for k, v in sorted(pin.get("exports_append", {}).items()):
+        out[k] = os.pathsep.join(x for x in (out.get(k, ""), fill(v)) if x)
+    return out
 
 
 def author_pin(manifest_path: Path, pin_id: str, repo: Path, commit: str, modules: list[str],
-               base: Mapping[str, Any], requires: list[str] | None = None, note: str | None = None) -> dict:
+               base: Mapping[str, Any], shims: list[str] | None = None, note: str | None = None) -> dict:
     full = subprocess.run(["git", "rev-parse", f"{commit}^{{commit}}"], cwd=repo, capture_output=True,
                           text=True, check=True).stdout.strip()
     tree = subprocess.run(["git", "rev-parse", f"{full}^{{tree}}"], cwd=repo, capture_output=True, text=True,
@@ -214,9 +253,16 @@ def author_pin(manifest_path: Path, pin_id: str, repo: Path, commit: str, module
     blob = subprocess.run(["git", "archive", "--format=tar", full, "--", *modules], cwd=repo, capture_output=True,
                           check=True).stdout
     entry: dict[str, Any] = {"commit": full, "tree": tree, "modules": {}}
-    if requires:
-        # modules the pinned commit itself needs at runtime from the job's interpreter; never installed by this input
-        entry["runtime_requires_importable"] = sorted(requires)
+    if shims:
+        # NAME=PATH (PATH relative to the manifest): a stdlib stand-in for a module the pinned commit imports without
+        # declaring; sha256-pinned here, put on the path after the tree (never installed)
+        entry["shims"] = {}
+        for item in sorted(shims):
+            name, _, rel = item.partition("=")
+            meta = dict(base.get("pins", {}).get(pin_id, {}).get("shims", {}).get(name, {}))
+            meta.update(path=rel, sha256=hashlib.sha256((manifest_path.parent / rel).read_bytes()).hexdigest())
+            entry["shims"][name] = meta
+        entry["exports_append"] = {"PYTHONPATH": "{shim_root}"}
     if note:
         entry["note"] = note
     with tarfile.open(fileobj=io.BytesIO(blob)) as tar:
@@ -277,8 +323,8 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--repo", required=True)
             p.add_argument("--commit", required=True)
             p.add_argument("--module", action="append", required=True)
-            p.add_argument("--requires", action="append", help="a runtime module the pinned commit itself declares "
-                           "and the job's interpreter must already provide (never installed)")
+            p.add_argument("--shim", action="append", help="NAME=PATH (relative to the manifest): a stdlib stand-in "
+                           "for a module the pinned commit imports without declaring (sha256-pinned, never installed)")
             p.add_argument("--note")
     d = sub.add_parser("declared")
     d.add_argument("--spec", required=True)
@@ -309,7 +355,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             base = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
             text = json.dumps(author_pin(manifest_path, a.pin, Path(a.repo), a.commit, a.module, base,
-                                             a.requires, a.note),
+                                             a.shim, a.note),
                               indent=1, sort_keys=True) + "\n"
             manifest_path.write_text(text, encoding="utf-8")
             print(f"pinned {a.pin} sha256={hashlib.sha256(text.encode()).hexdigest()}")

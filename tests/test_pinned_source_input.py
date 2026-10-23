@@ -5,6 +5,7 @@ refusal is FAIL_CLOSED with the six fields; nothing is skipped.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -132,15 +133,110 @@ class SelectorInputTests(Fixture):
         self.assertFalse(ok)
         self.assertIn("FAIL_CLOSED PINNED_INPUT_SHA256_MISMATCH", detail)
 
-    def test_a_runtime_module_the_pin_declares_must_already_be_importable(self) -> None:
+    def with_shim(self, body: str = "ORIGIN = __file__\n") -> Path:
+        shim = self.tmp / "shims/fakereq/__init__.py"
+        shim.parent.mkdir(parents=True, exist_ok=True)
+        shim.write_text(body)
         base = json.loads(self.manifest.read_text())
         self.manifest.write_text(json.dumps(psi.author_pin(self.manifest, "p1", self.src, self.commit, ["fakesdk"],
-                                                           base, ["no_such_module_p1_163"])))
+                                                           base, ["fakereq=shims/fakereq/__init__.py"])))
+        return shim
+
+    def test_a_shim_is_sha256_pinned_loaded_after_the_tree_and_only_for_a_set_that_declares_it(self) -> None:
+        self.with_shim()
         tree = self.materialize()
-        ok, detail = sel.input_available(self.tmp, {"check": self.check()}, sys.executable, {"FAKESDK_PIN": str(tree)})
+        env = {"FAKESDK_PIN": str(tree)}
+        exported = psi.exports(self.manifest, "p1", tree)["PYTHONPATH"].split(os.pathsep)
+        self.assertEqual([str(tree), str(tree.parent / "shim")], exported)   # the tree first, the shim after it
+        ok, detail = sel.input_available(self.tmp, {"check": self.check(shims=["fakereq"])}, sys.executable, env)
+        self.assertTrue(ok, detail)
+        self.assertIn("shims ['fakereq'] sha256-matched and loaded", detail)
+        ok, detail = sel.input_available(self.tmp, {"check": self.check()}, sys.executable, env)
         self.assertFalse(ok)
-        self.assertIn("PINNED_INPUT_RUNTIME_MODULE_UNAVAILABLE", detail)
-        self.assertIn("installs nothing", detail)
+        self.assertIn("FAIL_CLOSED PINNED_INPUT_SHIM_NOT_DECLARED_BY_THE_SET", detail)
+
+    def test_a_shim_that_differs_is_refused_at_materialize_and_at_verify(self) -> None:
+        shim = self.with_shim()
+        tree = self.materialize()
+        (tree.parent / "shim/fakereq/__init__.py").write_text("ORIGIN = 'tampered'\n")
+        self.refused(lambda: psi.verify(self.manifest, "p1", tree), "PINNED_INPUT_SHIM_SHA256_MISMATCH")
+        ok, detail = sel.input_available(self.tmp, {"check": self.check(shims=["fakereq"])}, sys.executable,
+                                         {"FAKESDK_PIN": str(tree)})
+        self.assertFalse(ok)
+        self.assertIn("FAIL_CLOSED PINNED_INPUT_SHIM_SHA256_MISMATCH", detail)
+        shim.write_text("ORIGIN = 'edited after pinning'\n")
+        self.refused(lambda: psi.materialize(self.manifest, "p1", self.tmp / "again", str(self.src)),
+                     "PINNED_INPUT_SHIM_SHA256_MISMATCH")
+
+    def test_an_undeclared_shim_beside_a_pin_without_shims_is_refused(self) -> None:
+        tree = self.materialize()
+        (tree.parent / "shim/requests").mkdir(parents=True)
+        (tree.parent / "shim/requests/__init__.py").write_text("")
+        self.refused(lambda: psi.verify(self.manifest, "p1", tree), "PINNED_INPUT_SHIM_SHA256_MISMATCH")
+
+
+class RequestsStandInTests(unittest.TestCase):
+    """The committed urllib stand-in for pin 0028cab9 (loaded by path, under a private name: never as `requests`)."""
+
+    PATH = ROOT / ".stegverse/verification-inputs/shims/stegverse-sdk-0028cab9/requests/__init__.py"
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("p1_163_requests_stand_in", cls.PATH)
+        cls.shim = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.shim)
+        import http.server
+        import threading
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_POST(self):  # noqa: N802
+                body = self.rfile.read(int(self.headers.get("Content-Length", 0)))
+                status, out = {"/ok": (200, json.dumps({"echo": json.loads(body), "auth": self.headers.get("X-T")})),
+                               "/bad": (502, "upstream"), "/notjson": (200, "<html>")}[self.path]
+                self.send_response(status)
+                self.end_headers()
+                self.wfile.write(out.encode())
+
+            def log_message(self, *a):  # noqa: D401
+                pass
+
+        cls.server = http.server.HTTPServer(("127.0.0.1", 0), Handler)
+        threading.Thread(target=cls.server.serve_forever, daemon=True).start()
+        cls.base = f"http://127.0.0.1:{cls.server.server_address[1]}"
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.server.shutdown()
+        cls.server.server_close()
+
+    def test_post_sends_json_and_headers_and_returns_the_parsed_body(self) -> None:
+        r = self.shim.post(self.base + "/ok", json={"a": 1}, headers={"X-T": "t"}, timeout=5)
+        r.raise_for_status()
+        self.assertEqual((200, True, {"echo": {"a": 1}, "auth": "t"}), (r.status_code, r.ok, r.json()))
+
+    def test_a_4xx_or_5xx_raises_from_raise_for_status_as_a_request_exception(self) -> None:
+        r = self.shim.post(self.base + "/bad", json={}, timeout=5)
+        self.assertEqual((502, "upstream"), (r.status_code, r.text))
+        with self.assertRaises(self.shim.RequestException) as ctx:
+            r.raise_for_status()
+        self.assertIsInstance(ctx.exception, self.shim.HTTPError)
+
+    def test_invalid_json_is_a_value_error_and_an_unreachable_host_a_request_exception(self) -> None:
+        with self.assertRaises(ValueError):
+            self.shim.post(self.base + "/notjson", json={}, timeout=5).json()
+        import socket
+        with socket.socket() as s:
+            s.bind(("127.0.0.1", 0))
+            port = s.getsockname()[1]
+        with self.assertRaises(self.shim.RequestException):
+            self.shim.post(f"http://127.0.0.1:{port}/", json={}, timeout=5)
+
+    def test_anything_outside_the_covered_calls_is_an_attribute_error(self) -> None:
+        for name in ("get", "Session", "put", "adapters"):
+            with self.assertRaises(AttributeError) as ctx:
+                getattr(self.shim, name)
+            self.assertIn("outside the scope", str(ctx.exception))
 
 
 class RunGroupTests(unittest.TestCase):
@@ -206,6 +302,11 @@ class ThisRepositoryTests(unittest.TestCase):
             self.assertTrue(pin["commit"].startswith(check["pin"]))
             for mod in pin["modules"].values():
                 self.assertEqual(psi.module_digest(mod["file_sha256"]), mod["sha256"])
+            self.assertNotIn("runtime_requires_importable", pin)   # nothing is required of the job's interpreter
+            self.assertEqual(sorted(check.get("shims", [])), sorted(pin.get("shims", {})))
+            for shim in pin.get("shims", {}).values():
+                blob = (ROOT / check["manifest"]).parent.joinpath(shim["path"]).read_bytes()
+                self.assertEqual(shim["sha256"], hashlib.sha256(blob).hexdigest())
 
 
 if __name__ == "__main__":

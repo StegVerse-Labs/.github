@@ -338,16 +338,17 @@ def input_available(root: Path, decl: Mapping[str, Any], python: str, env: Mappi
 IMPORT_FROM_ROOT = r"""
 import importlib, json, sys
 from pathlib import Path
-root, modules = Path(sys.argv[1]).resolve(), sys.argv[2:]
 out = {}
-for i, name in enumerate(modules):
+for arg in sys.argv[1:]:  # NAME=ROOT: NAME must import, and from under ROOT (not an installed copy)
+    name, root = arg.split("=", 1)
+    root = Path(root).resolve()
     try:
         mod = importlib.import_module(name)
     except Exception as exc:  # noqa: BLE001
         out[name] = f"not importable: {type(exc).__name__}: {exc}"[:300]
         continue
     origin = Path(getattr(mod, "__file__", "") or "/").resolve()
-    out[name] = "ok" if i or root in origin.parents else f"imported from {origin}, not from the pinned root"
+    out[name] = "ok" if root in origin.parents else f"imported from {origin}, not from {root}"
 print(json.dumps(out))
 """
 
@@ -366,8 +367,9 @@ def pinned_exports(root: Path, check: Mapping[str, Any], env: Mapping[str, str])
 def pinned_source_available(root: Path, check: Mapping[str, Any], python: str,
                             env: Mapping[str, str]) -> tuple[bool, str]:
     """Available only when the materialized tree re-hashes to the manifest's pin AND the module imports from that
-    tree (not from an installed copy) with nothing but the pin's exports - plus any runtime module the pin
-    declares it needs from the job's interpreter (never installed by this input)."""
+    tree (not from an installed copy) with nothing but the pin's exports. A shim the pin declares (a stdlib
+    stand-in for a module the pinned commit imports undeclared) must be listed in the set's check `shims`, re-hash
+    to its pinned sha256 and be the module that imports - never an installed copy, never installed."""
     tool = _pinned_tool()
     value = env.get(check["env"], "")
     if not value:
@@ -379,12 +381,17 @@ def pinned_source_available(root: Path, check: Mapping[str, Any], python: str,
     except tool.PinRefused as exc:
         r = exc.record
         return False, f"FAIL_CLOSED {r['failure_code']} ({r['failed_predicate']}): {r['required_evidence_or_repair']}"
+    pin = json.loads((root / check["manifest"]).read_text(encoding="utf-8"))["pins"][check["pin"]]
+    if sorted(check.get("shims", [])) != sorted(pin.get("shims", {})):
+        return False, (f"FAIL_CLOSED PINNED_INPUT_SHIM_NOT_DECLARED_BY_THE_SET: pin {check['pin']} declares shims "
+                       f"{sorted(pin.get('shims', {}))} and the input's check lists {sorted(check.get('shims', []))}; "
+                       "a shim is loaded only for a set that declares it")
     exports = pinned_exports(root, check, env)
     child = {k: v for k, v in env.items() if k not in ("PYTHONPATH", "PYTHONHOME")}
     child.update(exports)
-    pin = json.loads((root / check["manifest"]).read_text(encoding="utf-8"))["pins"][check["pin"]]
-    modules = [check["module"], *pin.get("runtime_requires_importable", [])]
-    done = subprocess.run([python, "-c", IMPORT_FROM_ROOT, value, *modules], cwd=root, env=child,
+    tree = Path(value).resolve()
+    probes = [f"{check['module']}={tree}", *(f"{n}={tree.parent / 'shim'}" for n in sorted(pin.get("shims", {})))]
+    done = subprocess.run([python, "-c", IMPORT_FROM_ROOT, *probes], cwd=root, env=child,
                           capture_output=True, text=True)
     try:
         status = json.loads(done.stdout.strip().splitlines()[-1])
@@ -392,14 +399,14 @@ def pinned_source_available(root: Path, check: Mapping[str, Any], python: str,
         return False, f"the import probe of pin {check['pin']} printed nothing ({done.stderr.strip()[-200:]})"
     bad = {m: v for m, v in status.items() if v != "ok"}
     if bad:
-        code = ("PINNED_INPUT_RUNTIME_MODULE_UNAVAILABLE" if check["module"] not in bad
+        code = ("PINNED_INPUT_SHIM_NOT_LOADED" if check["module"] not in bad
                 else "PINNED_INPUT_MODULE_NOT_FROM_THE_PINNED_ROOT")
         return False, (f"FAIL_CLOSED {code}: pin {check['pin']} ({record['commit'][:12]}) verified, but "
                        + "; ".join(f"{m} {v}" for m, v in sorted(bad.items()))
-                       + (" (a module the pinned commit itself declares; the job's interpreter must already "
-                          "provide it - this input installs nothing)" if code.endswith("UNAVAILABLE") else ""))
+                       + " (this input installs nothing)")
+    shims = f", shims {sorted(pin['shims'])} sha256-matched and loaded" if pin.get("shims") else ""
     return True, (f"pin {check['pin']} ({record['commit'][:12]}) verified: {record['files_verified']} files sha256-"
-                  f"matched, {check['module']} imported from the pinned root")
+                  f"matched, {check['module']} imported from the pinned root{shims}")
 
 
 # -- selection -----------------------------------------------------------------------------------------------

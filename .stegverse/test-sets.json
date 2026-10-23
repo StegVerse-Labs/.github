@@ -14396,6 +14396,7 @@
   ],
   "tests/test_pinned_source_input.py": [
    ".stegverse/test-set-spec.json",
+   ".stegverse/verification-inputs/shims/stegverse-sdk-0028cab9/requests/__init__.py",
    "scripts/pinned_source_input.py",
    "scripts/test_set_selection.py",
    "scripts/test_suite_baseline_drift.py",
