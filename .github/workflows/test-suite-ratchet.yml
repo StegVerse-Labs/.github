@@ -71,6 +71,17 @@ jobs:
       # set and the diff path / declared surface that selected it. A selected set whose input is
       # unavailable is not run: it is a six-field REQUIRED_VERIFICATION_INPUT_UNAVAILABLE item routed to
       # that input's owner, and blocks only changes that select it.
+      # Pinned SDK verification inputs (StegVerse-org/.github#163, P1): every pin a `pinned_source` input of the spec
+      # declares is fetched at its exact commit with one anonymous git fetch (no package index, nothing installed),
+      # only its declared module paths are extracted, and every file is re-hashed against
+      # .stegverse/verification-inputs/stegverse-sdk.json. A pin that does not verify is printed in six fields and its
+      # env is not set, so the selector reports the sets that need it as REQUIRED_VERIFICATION_INPUT_UNAVAILABLE.
+      - name: Pinned SDK verification inputs (exact commits, sha256-checked, read-only)
+        run: |
+          python scripts/pinned_source_input.py declared --spec .stegverse/test-set-spec.json \
+            --dest-root "$RUNNER_TEMP/pinned-inputs" --env-out "$GITHUB_ENV" \
+            --retry-entrypoint ".github/workflows/test-suite-ratchet.yml ratchet"
+
       - name: Select the test sets this change requires
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -91,13 +102,15 @@ jobs:
         env:
           # the checkout holds refs/stegverse/organization-ledger (step above): the live-repo known answer runs
           RTC014_LIVE_LABS_REPO: ${{ github.workspace }}
+        # each run group (the pinned inputs its sets declare) runs once, in its own process with only its pin's
+        # exports; sets that declare no pinned input run exactly as before. One output, one merged junit record.
         run: |
-          mapfile -t selected < /tmp/test-set-args.txt
           set +e
-          python -m pytest "${selected[@]}" -q --tb=no -p no:cacheprovider -rfEsxX --junitxml=/tmp/pytest-suite.xml > /tmp/pytest-suite.txt
+          python scripts/test_set_selection.py run --selection /tmp/test-set-selection.json \
+            --out /tmp/pytest-suite.txt --junit-xml /tmp/pytest-suite.xml -- -q --tb=no -p no:cacheprovider -rfEsxX
           status=$?
           set -e
-          tail -n 1 /tmp/pytest-suite.txt
+          grep -E '^### test-set run group |(passed|failed|error).* in [0-9.]+s' /tmp/pytest-suite.txt | tail -n 8
           test "$status" -le 1
 
       # The ratchet's own comparison (run_suite/compare), made drift-aware by
