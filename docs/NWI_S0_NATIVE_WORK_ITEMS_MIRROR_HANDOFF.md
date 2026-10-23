@@ -374,3 +374,16 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - A NATIVE hb_epoch string failing 726248a5 is DENY HB_EPOCH_MISMATCH.
   - `""` and `"null"` are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
 
+
+## Operating modes (E0..E3), p1/operating-mode-ladder
+
+Source: StegVerse-org/.github#160 issuecomment-6354238464 (ladder), issuecomment-6354202109 (correction), #163 issuecomment-6354245549 (SV-LLM deployment model).
+
+- `data/sv-work-items/operating-modes.json` (`stegverse.nwi-operating-modes/v1`) declares the lowest supported mode, the degraded form for each rung, and the E0 terminal state for every NWI stage S0..S4, every exit-gate predicate, and every SV-LLM path (SV-LLM/.github @a00a72ec, SV-LLM/sandbox @5e65e7a8).
+- `resident-runtime/sv_operating_modes.py::validate` enforces coverage of every stage manifest and predicate, requires_llms <= 1, a named degraded form at every lower rung, no provider-specific requirement, and no owner-must-act phrasing. An item with no E0 terminal must carry a six-field class B record. With the declared gaps open, the result is FAIL_CLOSED OPERATING_MODE_E0_TERMINAL_MISSING listing them; once they are built, the result is ALLOW.
+- Stage gate evaluation terminates at E0 for every stage (stage_gate.py is deterministic). NWI-S2 and NWI-S3 are not passable at E0 (exit_passable_at_e0 false).
+- Class B (owning goal #163):
+  - NWI-S2 SV_LLM_VERDICT_AGREEMENT_RATE: no E0 verdict producer is declared.
+  - NWI-S3 W05_TV_TVC_HELD_INVOCATION_ADMITTED: requires E1, and no E0 form is named.
+  - SV-LLM/sandbox work_cycle respond(): a request with no supplied entity surface stays outstanding.
+- Tests: `tests/test_nwi_operating_modes.py`.

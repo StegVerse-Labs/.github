@@ -1,0 +1,460 @@
+{
+  "schema": "stegverse.nwi-operating-modes/v1",
+  "owning_goal": "StegVerse-org/.github#163",
+  "source": [
+    "StegVerse-org/.github#160 issuecomment-6354238464 (operating-mode ladder, Oct 23)",
+    "StegVerse-org/.github#160 issuecomment-6354202109 (correction: progress with one LLM or none)",
+    "StegVerse-org/.github#163 issuecomment-6354245549 (SV-LLM deployment model: every SV-LLM task reaches a terminal state at E0)"
+  ],
+  "ladder": [
+    {
+      "mode": "E0",
+      "llms": 0,
+      "name": "ECOSYSTEM_ONLY",
+      "stands_in": "deterministic verifiers, ledger receipts, invariants, manifests, the Registry"
+    },
+    {
+      "mode": "E1",
+      "llms": 1,
+      "name": "ANY_ONE_LLM"
+    },
+    {
+      "mode": "E2",
+      "llms": 2,
+      "name": "ANY_TWO_LLMS"
+    },
+    {
+      "mode": "E3",
+      "llms": 3,
+      "name": "ALL_THREE"
+    }
+  ],
+  "rules": {
+    "ORDER": "E0 is the strongest target; a mode with fewer LLMs is a lower rung",
+    "LOWEST_SUPPORTED_MODE_DECLARED": "every stage, gate predicate and SV-LLM path declares lowest_supported_mode",
+    "DEGRADED_FORM_PER_RUNG": "an item requiring N LLMs names its degraded form at every rung below N, down to E0",
+    "STAGE_EVALUATION_VS_EXIT": "a stage's lowest_supported_mode is the lowest mode at which its gate evaluation terminates; exit_passable_at_e0 is true only when every exit predicate has an E0 terminal",
+    "E0_TERMINAL_OR_CLASS_B": "an item without e0_terminal is a class B (missing capability) gap under the owning goal; e0_terminal may be a six-field FAIL_CLOSED",
+    "AT_MOST_ONE_LLM": "no predicate or path may require more than one LLM (requires_llms <= 1)",
+    "NO_PROVIDER_REQUIREMENT": "no item may require a specific model or provider; providers are optional manifest-declared layers",
+    "NO_OWNER_MUST_ACT": "no terminal state or degraded form is an 'owner must act' / human-gated state",
+    "PROVIDER_UNAVAILABLE_IS_NORMAL": "provider unavailability degrades one rung and continues; it is never a blocker"
+  },
+  "stages": [
+    {
+      "stage_id": "NWI-S0",
+      "lowest_supported_mode": "E0",
+      "exit_passable_at_e0": true,
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "FAIL_CLOSED"
+        ],
+        "by": "resident-runtime/stage_gate.py::evaluate_gate over ledgered receipts (deterministic; no LLM input)",
+        "non_allow_codes": [
+          "STAGE_EVIDENCE_UNOBSERVED",
+          "STAGE_REGRESSION",
+          "STAGE_THRESHOLD_UNDECLARED"
+        ]
+      },
+      "predicates": [
+        {
+          "id": "SV_WORK_ITEM_SCHEMAS_VALIDATE",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
+          "degraded_forms": {},
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "FAIL_CLOSED"
+            ],
+            "by": "scripts/build_sv_native_fixtures.py --check; nwi-s0-exit-gate receipt from the NWI-S1 verifier (SV-LLM/.github#46, SV-LLM/.github@a00a72ec54055e11b23841e3718cfd7352ad8a8c:sandbox/s1_*.py): deterministic, offline, six-field receipts"
+          }
+        },
+        {
+          "id": "EVERY_MIGRATION_FIXTURE_LOADS",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
+          "degraded_forms": {},
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "FAIL_CLOSED"
+            ],
+            "by": "resident-runtime/sv_migration.py fixture loaders; nwi-s0-exit-gate receipt from the NWI-S1 verifier (SV-LLM/.github#46, SV-LLM/.github@a00a72ec54055e11b23841e3718cfd7352ad8a8c:sandbox/s1_*.py): deterministic, offline, six-field receipts"
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "NWI-S1",
+      "lowest_supported_mode": "E0",
+      "exit_passable_at_e0": true,
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "FAIL_CLOSED"
+        ],
+        "by": "resident-runtime/stage_gate.py::evaluate_gate over ledgered receipts (deterministic; no LLM input)",
+        "non_allow_codes": [
+          "STAGE_EVIDENCE_UNOBSERVED",
+          "STAGE_REGRESSION",
+          "STAGE_THRESHOLD_UNDECLARED"
+        ]
+      },
+      "predicates": [
+        {
+          "id": "SV_LLM_READS_REGISTRY_AND_LEDGER_AT_BOUND_GENERATION_AND_HEAD",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
+          "degraded_forms": {},
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "FAIL_CLOSED"
+            ],
+            "by": "the NWI-S1 verifier (SV-LLM/.github#46, SV-LLM/.github@a00a72ec54055e11b23841e3718cfd7352ad8a8c:sandbox/s1_*.py): deterministic, offline, six-field receipts"
+          },
+          "note": "'SV_LLM' names the organization, not a model: the reader is deterministic"
+        },
+        {
+          "id": "SV_LLM_RUNS_DETERMINISTIC_VERIFICATION_NO_CLOCK_NO_EXTERNAL_MACHINE",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
+          "degraded_forms": {},
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "DENY",
+              "FAIL_CLOSED"
+            ],
+            "by": "the NWI-S1 verifier (SV-LLM/.github#46, SV-LLM/.github@a00a72ec54055e11b23841e3718cfd7352ad8a8c:sandbox/s1_*.py): deterministic, offline, six-field receipts"
+          }
+        },
+        {
+          "id": "SV_LLM_EMITS_SIX_FIELD_DISPOSITIONS_AND_RECEIPTS",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
+          "degraded_forms": {},
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "FAIL_CLOSED"
+            ],
+            "by": "the NWI-S1 verifier (SV-LLM/.github#46, SV-LLM/.github@a00a72ec54055e11b23841e3718cfd7352ad8a8c:sandbox/s1_*.py): deterministic, offline, six-field receipts"
+          }
+        },
+        {
+          "id": "W04_SANDBOX_RUNTIME_OBSERVED",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
+          "degraded_forms": {},
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "FAIL_CLOSED"
+            ],
+            "by": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/work_cycle.py one pass; entities with no admitted invocation answer UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE"
+          },
+          "note": "observed on a canonical substrate; the substrate question is not an LLM-count question"
+        },
+        {
+          "id": "AI_ENTITY_REGISTRATION_ON_MAIN",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
+          "degraded_forms": {},
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "DENY",
+              "FAIL_CLOSED"
+            ],
+            "by": "SV-LLM/.github@a00a72ec54055e11b23841e3718cfd7352ad8a8c:org-runtime/sandbox_registration.py against the canonical organization tree"
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "NWI-S2",
+      "lowest_supported_mode": "E0",
+      "exit_passable_at_e0": false,
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "FAIL_CLOSED"
+        ],
+        "by": "resident-runtime/stage_gate.py::evaluate_gate over ledgered receipts (deterministic; no LLM input)",
+        "non_allow_codes": [
+          "STAGE_EVIDENCE_UNOBSERVED",
+          "STAGE_REGRESSION",
+          "STAGE_THRESHOLD_UNDECLARED"
+        ]
+      },
+      "predicates": [
+        {
+          "id": "SV_LLM_VERDICT_AGREEMENT_RATE",
+          "requires_llms": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+          "lowest_supported_mode": "NONE",
+          "degraded_forms": {},
+          "e0_terminal": null,
+          "class_b": {
+            "disposition": "FAIL_CLOSED",
+            "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
+            "failed_predicate": "VERIFY_ONLY_VERDICT_HAS_E0_PRODUCER",
+            "required_evidence_or_repair": "declare the verdict producer at E0 as the NWI-S1 verifier's six-field receipt per evaluated change, agreement = verdict disposition equals the ledgered admission disposition for the same change digest; LLM verdicts (E1..E3) are additive inputs counted separately; declare the threshold value in NWI-S2.json",
+            "retry_entrypoint": "resident-runtime/sv_operating_modes.py::validate",
+            "owning_existing_goal": "StegVerse-org/.github#163",
+            "next_attempt": "re-run validate after NWI-S2.json declares verdict_producer and threshold"
+          },
+          "note": "the manifest names no verdict producer and the threshold is null: the stage gate terminates (FAIL_CLOSED STAGE_THRESHOLD_UNDECLARED), but no E0 form of the verdict itself is declared"
+        }
+      ]
+    },
+    {
+      "stage_id": "NWI-S3",
+      "lowest_supported_mode": "E0",
+      "exit_passable_at_e0": false,
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "FAIL_CLOSED"
+        ],
+        "by": "resident-runtime/stage_gate.py::evaluate_gate over ledgered receipts (deterministic; no LLM input)",
+        "non_allow_codes": [
+          "STAGE_EVIDENCE_UNOBSERVED",
+          "STAGE_REGRESSION",
+          "STAGE_THRESHOLD_UNDECLARED"
+        ]
+      },
+      "predicates": [
+        {
+          "id": "W05_TV_TVC_HELD_INVOCATION_ADMITTED",
+          "requires_llms": 1,
+          "lowest_supported_mode": "NONE",
+          "degraded_forms": {},
+          "e0_terminal": null,
+          "class_b": {
+            "disposition": "FAIL_CLOSED",
+            "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
+            "failed_predicate": "BOUNDED_SOLVING_HAS_E0_DEGRADED_FORM",
+            "required_evidence_or_repair": "declare degraded_forms.E0 for bounded solving: a work item whose solution is resolved from invariants, reusable components and ledger receipts (resolved_at_mode E0) satisfies the predicate; with no resolving component and no admitted provider the item terminates as a six-field FAIL_CLOSED PROVIDER_LAYER_NOT_ADMITTED (retry: the next provider-transition receipt), never as an outstanding request",
+            "retry_entrypoint": "resident-runtime/sv_operating_modes.py::validate",
+            "owning_existing_goal": "StegVerse-org/.github#163",
+            "next_attempt": "re-run validate after NWI-S3.json names the E0 form"
+          },
+          "note": "a TV/TVC-held model invocation is an E1 requirement; no E0 degraded form is named"
+        },
+        {
+          "id": "ADMISSION_MISS_RATE",
+          "requires_llms": 0,
+          "lowest_supported_mode": "E0",
+          "degraded_forms": {},
+          "e0_terminal": {
+            "dispositions": [
+              "ALLOW",
+              "FAIL_CLOSED"
+            ],
+            "by": "admission outcomes ledgered by the org writer; the metric is computed from receipts",
+            "non_allow_codes": [
+              "STAGE_THRESHOLD_UNDECLARED"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "stage_id": "NWI-S4",
+      "lowest_supported_mode": "E0",
+      "exit_passable_at_e0": true,
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "FAIL_CLOSED"
+        ],
+        "by": "resident-runtime/stage_gate.py::evaluate_gate over ledgered receipts (deterministic; no LLM input)",
+        "non_allow_codes": [
+          "STAGE_EVIDENCE_UNOBSERVED",
+          "STAGE_REGRESSION",
+          "STAGE_THRESHOLD_UNDECLARED"
+        ]
+      },
+      "predicates": [],
+      "note": "NATIVE is the top stage with an empty exit gate; it is E0 by definition"
+    }
+  ],
+  "sv_llm_paths": [
+    {
+      "id": "S1_VERIFIER",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "DENY",
+          "FAIL_CLOSED"
+        ],
+        "by": "six-field head-bound receipts"
+      },
+      "source": "SV-LLM/.github@a00a72ec54055e11b23841e3718cfd7352ad8a8c:sandbox/s1_*.py"
+    },
+    {
+      "id": "SANDBOX_INTAKE_ADMIT",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "DENY",
+          "FAIL_CLOSED"
+        ],
+        "by": "every attempt is a Sandbox receipt propagated to the organization ledger"
+      },
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/work_cycle.py::intake"
+    },
+    {
+      "id": "CAPABILITY_ROUTING",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "FAIL_CLOSED"
+        ],
+        "by": "derives participants from declarations; a capability no entity declares is refused with six fields",
+        "non_allow_codes": [
+          "PARTICIPANTS_DERIVABLE_FROM_DECLARATIONS"
+        ]
+      },
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/capability_routing.py"
+    },
+    {
+      "id": "ENTITY_RESPOND",
+      "requires_llms": 0,
+      "lowest_supported_mode": "NONE",
+      "degraded_forms": {},
+      "e0_terminal": null,
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/work_cycle.py::respond",
+      "class_b": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
+        "failed_predicate": "EVERY_CONTRIBUTION_REQUEST_REACHES_A_TERMINAL_STATE_AT_E0",
+        "required_evidence_or_repair": "in respond(), when the pass's declared entity set does not include the requested entity, the Sandbox records ENTITY_CONTRIBUTION_RECORDED status UNAVAILABLE with reason ENTITY_SURFACE_NOT_SUPPLIED bound to the pass's entity-set digest (the same receipt the entity would emit), so close() synthesizes and completes; a later pass that supplies the surface may append a CONTRIBUTED successor",
+        "retry_entrypoint": "resident-runtime/sv_operating_modes.py::validate",
+        "owning_existing_goal": "StegVerse-org/.github#163",
+        "next_attempt": "re-run validate after SV-LLM/sandbox declares the E0 terminal for respond()"
+      },
+      "note": "a supplied entity surface answers UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE (terminal), but a request whose entity surface is not supplied 'stays outstanding' with no terminal state"
+    },
+    {
+      "id": "CLOSE_SYNTHESIZE_EGRESS",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "DENY",
+          "FAIL_CLOSED"
+        ],
+        "by": "synthesis preserves non-success; egress to return_to; the mesh is the durable queue"
+      },
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/work_cycle.py::close"
+    },
+    {
+      "id": "STEGBROWSER_LLM_V1_TOOL",
+      "requires_llms": 1,
+      "lowest_supported_mode": "E1",
+      "degraded_forms": {
+        "E0": "the tool attempt is recorded as a non-success observation and the work's synthesis carries it; the work completes without the contribution"
+      },
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "DENY",
+          "FAIL_CLOSED"
+        ],
+        "by": "SANDBOX_TOOL_OBSERVATION_RECORDED non-success: llm.v1 never waits; an unrendered answer or unavailable provider is a recorded non-success"
+      },
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/stegbrowser_tool.py"
+    },
+    {
+      "id": "PAGE_LOAD_V1_TOOL",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "DENY",
+          "FAIL_CLOSED"
+        ],
+        "by": "SANDBOX_TOOL_OBSERVATION_RECORDED with HTTP status and lease terminal receipt"
+      },
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/page_load_tool.py"
+    },
+    {
+      "id": "PROVIDER_CAPABILITY_VALIDATOR",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "DENY",
+          "FAIL_CLOSED"
+        ],
+        "by": "offline validator; contacts no provider"
+      },
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/provider_capability.py"
+    },
+    {
+      "id": "CONFORMANCE_PROPOSAL",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "DENY",
+          "FAIL_CLOSED"
+        ],
+        "by": "deterministic over caller-supplied canonical bytes"
+      },
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/conformance_proposal.py"
+    },
+    {
+      "id": "INVARIANT_EVALUATION",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "DENY",
+          "FAIL_CLOSED",
+          "UNDECIDABLE"
+        ],
+        "by": "every non-ALLOW answer carries six fields; UNDECIDABLE writes one write-once relay entry and nothing waits"
+      },
+      "source": "SV-LLM/sandbox@5e65e7a8b0cdf81a277845bf8082efd64626535d:runtime/invariant_evaluation.py",
+      "note": "UNDECIDABLE is not yet in the Labs validate_transition_disposition NON_ALLOW vocabulary (open binding owned by SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005); not an operating-mode gap"
+    },
+    {
+      "id": "PROVIDER_LAYER_TRANSITION",
+      "requires_llms": 0,
+      "lowest_supported_mode": "E0",
+      "degraded_forms": {},
+      "e0_terminal": {
+        "dispositions": [
+          "ALLOW",
+          "FAIL_CLOSED"
+        ],
+        "by": "no admitted provider transition: entities answer UNAVAILABLE NO_ADMITTED_INVOCATION_SURFACE"
+      },
+      "source": "Labs#3291 / SV-LLM/sandbox#39 (manifest-declared provider transition; E1..E3 are optional additive layers)"
+    }
+  ]
+}
