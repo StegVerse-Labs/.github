@@ -31,6 +31,10 @@ on:
       - 'scripts/adjacency_ruling.py'
       - 'tests/test_adjacency_ruling.py'
       - 'control/adjacency-rulings/**'
+      # candidate targets.components derived from observed evidence (record-data repair draft)
+      - 'scripts/derive_candidate_components.py'
+      - 'tests/test_derive_candidate_components.py'
+      - 'data/registry-record-data/adjacency-candidate-components.draft.json'
   push:
     branches: [main]
     paths:
@@ -56,7 +60,9 @@ jobs:
           python-version: '3.12'
       - name: Unit tests
         # callable set for the paths this workflow is selected by; 0 skipped
-        run: python -m unittest -v tests.test_canonical_task_registration_transition tests.test_goal_scope_seal tests.test_i1_goal_registration_manifests tests.test_adjacency_ruling
+        run: python -m unittest -v tests.test_canonical_task_registration_transition tests.test_goal_scope_seal tests.test_i1_goal_registration_manifests tests.test_adjacency_ruling tests.test_derive_candidate_components
+      - name: Candidate components draft re-derives from its recorded observations (no generation bump)
+        run: python scripts/derive_candidate_components.py check --proposal data/registry-record-data/adjacency-candidate-components.draft.json
       - name: Goal scope freeze (GOAL_SCOPE_SEALED) against the live base
         env:
           EVENT_NAME: ${{ github.event_name }}

@@ -1483,6 +1483,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_derive_candidate_components.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_derive_candidate_components.py"
+   ],
+   "tests": [
+    "tests/test_derive_candidate_components.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_device_kv_intr_event_materialization.py",
    "inputs": [],
    "surfaces": [
@@ -10641,6 +10653,10 @@
   "scripts/cosv_state_packet.py": [
    "scripts/cosv.py"
   ],
+  "scripts/derive_candidate_components.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json"
+  ],
   "scripts/dispatch_gadi_resident_execution.py": [
    "control/resident-execution-request.d/consume-gadi-resident-execution.py",
    "scripts/materialize_gadi_resident_runtime_bundle.py",
@@ -12613,6 +12629,12 @@
    "control/worker-registry.d/deepseek-intr-runtime-001.json",
    "scripts/dispatch_resident_execution_requests.py",
    "workers/deepseek_intr_runtime_worker.py"
+  ],
+  "tests/test_derive_candidate_components.py": [
+   "data/registry-record-data/**",
+   "data/registry-record-data/adjacency-candidate-components.draft.json",
+   "scripts/adjacency_ruling.py",
+   "scripts/derive_candidate_components.py"
   ],
   "tests/test_device_kv_intr_event_materialization.py": [
    "control/worker-registry.d/device-kv-intr-observation-001.json",

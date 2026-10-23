@@ -1,0 +1,570 @@
+{
+  "schema": "stegverse.registry-record-data-proposal/v1",
+  "registry_generation_base": 320,
+  "authority_effect": "NONE",
+  "draft": true,
+  "note": "Record-data repair DRAFT: targets.components derived from observed evidence only (scripts/derive_candidate_components.py). Applied, if ever, only by the record-data successor transition (scripts/apply_task_record_data.py, StegVerse-Labs/.github#3257) at tip + 1; this file bumps no generation and edits no record.",
+  "work_items": {},
+  "human_actions": [],
+  "register_from_record": [],
+  "row_fields": [
+    {
+      "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "path": [
+        "targets"
+      ],
+      "before": {
+        "$absent": true
+      },
+      "after": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/TVC"
+        ],
+        "components": [
+          "payment-provider-authentic-ingress",
+          "payment-provider-read-profiles",
+          "tvc-payment-provider-observation",
+          "tvc-payment-provider-read-profile"
+        ],
+        "repository_components": {
+          "StegVerse-Labs/TVC": [
+            "payment-provider-authentic-ingress",
+            "payment-provider-read-profiles",
+            "tvc-payment-provider-observation",
+            "tvc-payment-provider-read-profile"
+          ]
+        }
+      }
+    },
+    {
+      "task_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+      "path": [
+        "targets"
+      ],
+      "before": {
+        "$absent": true
+      },
+      "after": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/StegHealth"
+        ],
+        "components": [
+          "cli-independent-review",
+          "cli-independent-review-routing",
+          "cli-independent-review-routing-packet",
+          "consume-ecosystem-failure-map",
+          "ecosystem-failure-registry",
+          "steghealth-ecosystem-failure-registry",
+          "validate-cli-independent-review-routing",
+          "validate-ecosystem-failure-registry"
+        ],
+        "repository_components": {
+          "StegVerse-Labs/StegHealth": [
+            "cli-independent-review",
+            "cli-independent-review-routing",
+            "cli-independent-review-routing-packet",
+            "consume-ecosystem-failure-map",
+            "ecosystem-failure-registry",
+            "steghealth-ecosystem-failure-registry",
+            "validate-cli-independent-review-routing",
+            "validate-ecosystem-failure-registry"
+          ]
+        }
+      }
+    }
+  ],
+  "derivations": [
+    {
+      "schema": "stegverse.candidate-component-derivation/v1",
+      "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "record_sha256": "sha256:1ba1e017a323de98976f565d2f51f631d725e785151eb0db454dc86f4732c0c5",
+      "observation_sha256": "sha256:9c67f8f54032a6d70c1b3d2d6135a42de719ca1c0e61fb082713ec6dd3df1dde",
+      "observation": {
+        "schema": "stegverse.candidate-component-observation/v1",
+        "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+        "record_sha256": "sha256:1ba1e017a323de98976f565d2f51f631d725e785151eb0db454dc86f4732c0c5",
+        "source_commits": {},
+        "pull_requests": [
+          {
+            "ref": "StegVerse-Labs/TVC#438",
+            "merged": true,
+            "merge_commit": "c0a46b6b6c470b5a39499600678fc222822afc79",
+            "files": [
+              ".github/workflows/payment-provider-authentic-ingress.yml",
+              "docs/PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md",
+              "payment_ingress/README.md",
+              "scripts/tvc_payment_provider_observation.py",
+              "tests/test_payment_provider_observation.py"
+            ],
+            "files_sha256": "sha256:18f13cf8af32bc962d413d9b83d64bca08750ad40b34184adf764870fa862b6b"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC#440",
+            "merged": true,
+            "merge_commit": "fc5808f74adb0022e584007b7280f646805c1ed2",
+            "files": [
+              ".github/workflows/payment-provider-authentic-ingress.yml",
+              "config/payment_provider_read_profiles.json",
+              "docs/PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md",
+              "payment_ingress/README.md",
+              "tests/test_payment_provider_read_profile.py",
+              "tvc_payment_provider_read_profile.py"
+            ],
+            "files_sha256": "sha256:a25064ea6563d5e8deaea2ede0644eb5efeb306a5003b3e9c5977f7d7b8134a4"
+          }
+        ],
+        "task_file_paths": {},
+        "files": [
+          {
+            "ref": "StegVerse-Labs/TVC:.github/workflows/payment-provider-authentic-ingress.yml@c0a46b6b6c470b5a39499600678fc222822afc79",
+            "observed": true,
+            "sha256": "sha256:3c6a679641cc3306f4e424297ff865a1037293657bf662b6f899760a003f859e"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:.github/workflows/payment-provider-authentic-ingress.yml@fc5808f74adb0022e584007b7280f646805c1ed2",
+            "observed": true,
+            "sha256": "sha256:76178bb8912b512f2bab7189f88ff9b9990d406f45adc715b6eb2d4d97bb5544"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:config/payment_provider_read_profiles.json@fc5808f74adb0022e584007b7280f646805c1ed2",
+            "observed": true,
+            "sha256": "sha256:13e7e45fd4dae967f629cf3a85503cc4a7d6e58ca642005055e1c5eea70459ec"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:docs/PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md@c0a46b6b6c470b5a39499600678fc222822afc79",
+            "observed": true,
+            "sha256": "sha256:1d837b7f191611b28ab87892b5daf83b1d273b74013a14df355eec1e50e2eddc"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:docs/PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md@fc5808f74adb0022e584007b7280f646805c1ed2",
+            "observed": true,
+            "sha256": "sha256:021c378a2058e90c2f5546f1141e32f1a46801731531e399c51acb37fcae4beb"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:payment_ingress/README.md@c0a46b6b6c470b5a39499600678fc222822afc79",
+            "observed": true,
+            "sha256": "sha256:01072ca62f5875d1ff7413001d26c1bd8ce2340f9f11fdc62056c25e7173d3a8"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:payment_ingress/README.md@fc5808f74adb0022e584007b7280f646805c1ed2",
+            "observed": true,
+            "sha256": "sha256:c48eae077214ec42e0b6d3c2d84ae736f38aed8f29026c27f4f2ee205ed2cb8a"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:scripts/tvc_payment_provider_observation.py@c0a46b6b6c470b5a39499600678fc222822afc79",
+            "observed": true,
+            "sha256": "sha256:6db3c7b91f2be0bc3435c8a98a0e49243fa2a04e4098b8b57ed6cc9a7b8ff240"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:tests/test_payment_provider_observation.py@c0a46b6b6c470b5a39499600678fc222822afc79",
+            "observed": true,
+            "sha256": "sha256:03292062af9ac4c03cf42284d47fd1384986828e95646db2b1d7ad0c2450f53a"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:tests/test_payment_provider_read_profile.py@fc5808f74adb0022e584007b7280f646805c1ed2",
+            "observed": true,
+            "sha256": "sha256:a79637a73566054fed40ce6d392d322776304c7f7d3bf79b1fac07cc1b746118"
+          },
+          {
+            "ref": "StegVerse-Labs/TVC:tvc_payment_provider_read_profile.py@fc5808f74adb0022e584007b7280f646805c1ed2",
+            "observed": true,
+            "sha256": "sha256:6b63aaba33a2b7f412b8ebd5454f24896118b08edb5d747ef713eb9929f02135"
+          }
+        ]
+      },
+      "components": [
+        {
+          "component": "payment-provider-authentic-ingress",
+          "derived_from_observation": true,
+          "rules": [
+            "R2_RECORD_NAMED_PR"
+          ],
+          "paths": [
+            "StegVerse-Labs/TVC:.github/workflows/payment-provider-authentic-ingress.yml"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
+              "sha256": "sha256:1ba1e017a323de98976f565d2f51f631d725e785151eb0db454dc86f4732c0c5"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC#438 files",
+              "sha256": "sha256:18f13cf8af32bc962d413d9b83d64bca08750ad40b34184adf764870fa862b6b"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC#440 files",
+              "sha256": "sha256:a25064ea6563d5e8deaea2ede0644eb5efeb306a5003b3e9c5977f7d7b8134a4"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC:.github/workflows/payment-provider-authentic-ingress.yml@c0a46b6b6c470b5a39499600678fc222822afc79",
+              "sha256": "sha256:3c6a679641cc3306f4e424297ff865a1037293657bf662b6f899760a003f859e"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC:.github/workflows/payment-provider-authentic-ingress.yml@fc5808f74adb0022e584007b7280f646805c1ed2",
+              "sha256": "sha256:76178bb8912b512f2bab7189f88ff9b9990d406f45adc715b6eb2d4d97bb5544"
+            }
+          ]
+        },
+        {
+          "component": "payment-provider-read-profiles",
+          "derived_from_observation": true,
+          "rules": [
+            "R2_RECORD_NAMED_PR"
+          ],
+          "paths": [
+            "StegVerse-Labs/TVC:config/payment_provider_read_profiles.json"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
+              "sha256": "sha256:1ba1e017a323de98976f565d2f51f631d725e785151eb0db454dc86f4732c0c5"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC#440 files",
+              "sha256": "sha256:a25064ea6563d5e8deaea2ede0644eb5efeb306a5003b3e9c5977f7d7b8134a4"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC:config/payment_provider_read_profiles.json@fc5808f74adb0022e584007b7280f646805c1ed2",
+              "sha256": "sha256:13e7e45fd4dae967f629cf3a85503cc4a7d6e58ca642005055e1c5eea70459ec"
+            }
+          ]
+        },
+        {
+          "component": "tvc-payment-provider-observation",
+          "derived_from_observation": true,
+          "rules": [
+            "R2_RECORD_NAMED_PR"
+          ],
+          "paths": [
+            "StegVerse-Labs/TVC:scripts/tvc_payment_provider_observation.py"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
+              "sha256": "sha256:1ba1e017a323de98976f565d2f51f631d725e785151eb0db454dc86f4732c0c5"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC#438 files",
+              "sha256": "sha256:18f13cf8af32bc962d413d9b83d64bca08750ad40b34184adf764870fa862b6b"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC:scripts/tvc_payment_provider_observation.py@c0a46b6b6c470b5a39499600678fc222822afc79",
+              "sha256": "sha256:6db3c7b91f2be0bc3435c8a98a0e49243fa2a04e4098b8b57ed6cc9a7b8ff240"
+            }
+          ]
+        },
+        {
+          "component": "tvc-payment-provider-read-profile",
+          "derived_from_observation": true,
+          "rules": [
+            "R2_RECORD_NAMED_PR"
+          ],
+          "paths": [
+            "StegVerse-Labs/TVC:tvc_payment_provider_read_profile.py"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
+              "sha256": "sha256:1ba1e017a323de98976f565d2f51f631d725e785151eb0db454dc86f4732c0c5"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC#440 files",
+              "sha256": "sha256:a25064ea6563d5e8deaea2ede0644eb5efeb306a5003b3e9c5977f7d7b8134a4"
+            },
+            {
+              "ref": "StegVerse-Labs/TVC:tvc_payment_provider_read_profile.py@fc5808f74adb0022e584007b7280f646805c1ed2",
+              "sha256": "sha256:6b63aaba33a2b7f412b8ebd5454f24896118b08edb5d747ef713eb9929f02135"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "schema": "stegverse.candidate-component-derivation/v1",
+      "task_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+      "record_sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414",
+      "observation_sha256": "sha256:86e868480d9a710931a2146010fdc1edad398d8f6f9e6ea7e98ad89394d307d2",
+      "observation": {
+        "schema": "stegverse.candidate-component-observation/v1",
+        "task_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+        "record_sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414",
+        "source_commits": {
+          "StegVerse-Labs/StegHealth": "8508a43c8cb74753123f11ca0d103f18a318ea2f"
+        },
+        "pull_requests": [],
+        "task_file_paths": {
+          "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f": [
+            "StegVerse-Labs/.github/management/COSV_PROFILE_V1.json",
+            "programs/cli/review/cli-independent-review-routing.packet.json",
+            "receipts/ecosystem-failure/st021-post-cli-kv-runtime-owner-route-2026-09-14.json",
+            "registries/steghealth-ecosystem-failure-registry.json",
+            "schemas/cli-independent-review-routing.schema.json",
+            "schemas/cli-independent-review.schema.json",
+            "schemas/ecosystem-failure-registry.schema.json",
+            "tools/validate_cli_independent_review_routing.py",
+            "tools/validate_ecosystem_failure_registry.py"
+          ]
+        },
+        "files": [
+          {
+            "ref": "StegVerse-Labs/StegHealth:StegVerse-Labs/.github/management/COSV_PROFILE_V1.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": false,
+            "sha256": null
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:docs/remediation/STEGHEALTH_ECOSYSTEM_FAILURE_REMEDIATION_MIRROR_HANDOFF.md@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:5d0da27f82134effd439744dae40247a15a159fb1af1e612668ff8bf2bc85ce9"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:programs/cli/review/cli-independent-review-routing.packet.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:ab399a2342efcdb643818fa82485a45ca52e0ce56fd128752195634794b953d8"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:receipts/ecosystem-failure/st021-post-cli-kv-runtime-owner-route-2026-09-14.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:ab35b6a95dd463894b7fdae78258fb593051958dc3875622bcdf8a5fe9987905"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:registries/steghealth-ecosystem-failure-registry.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:2fbd93d1b147237b9822ded870b0a755e6917fe2eeee7cd800dc60678faf7f0b"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:schemas/cli-independent-review-routing.schema.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:9a5f43f074a47dc64e88416b2b07c49fa51b998b754deb62d0323bbb21af86f9"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:schemas/cli-independent-review.schema.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:1acbf43c0f8850eb6fe9336940e9bb3bc4d30c23497518d97b82aedd9fbb249f"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:schemas/ecosystem-failure-registry.schema.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:e2ad8ce8c17e1fe12c7eed7426643b6750abebc18cef92fa5772b616ed05ad53"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:38a83e34b6cc423cb70bb3836c80cc69eb61bfcd2a19014053927e3dc1f7c56b"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:tools/consume_ecosystem_failure_map.py@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:f8f54184994bb5f2093a5f5ce930271b3c9faee4ee150e5ec2de575ad4d966fa"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:tools/validate_cli_independent_review_routing.py@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:ef672097c2b72e0ddbd8ef111aed2781162b11dff6af94fae7de1a7de2754e49"
+          },
+          {
+            "ref": "StegVerse-Labs/StegHealth:tools/validate_ecosystem_failure_registry.py@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+            "observed": true,
+            "sha256": "sha256:befa240f33e17c535044a0267d1fff756c453e9293d7572431ee20ebdfdb4a56"
+          }
+        ]
+      },
+      "components": [
+        {
+          "component": "cli-independent-review",
+          "derived_from_observation": true,
+          "rules": [
+            "R3_OWN_TASK_FILE_PATH"
+          ],
+          "paths": [
+            "StegVerse-Labs/StegHealth:schemas/cli-independent-review.schema.json"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+              "sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:schemas/cli-independent-review.schema.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:1acbf43c0f8850eb6fe9336940e9bb3bc4d30c23497518d97b82aedd9fbb249f"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:38a83e34b6cc423cb70bb3836c80cc69eb61bfcd2a19014053927e3dc1f7c56b"
+            }
+          ]
+        },
+        {
+          "component": "cli-independent-review-routing",
+          "derived_from_observation": true,
+          "rules": [
+            "R3_OWN_TASK_FILE_PATH"
+          ],
+          "paths": [
+            "StegVerse-Labs/StegHealth:schemas/cli-independent-review-routing.schema.json"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+              "sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:schemas/cli-independent-review-routing.schema.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:9a5f43f074a47dc64e88416b2b07c49fa51b998b754deb62d0323bbb21af86f9"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:38a83e34b6cc423cb70bb3836c80cc69eb61bfcd2a19014053927e3dc1f7c56b"
+            }
+          ]
+        },
+        {
+          "component": "cli-independent-review-routing-packet",
+          "derived_from_observation": true,
+          "rules": [
+            "R3_OWN_TASK_FILE_PATH"
+          ],
+          "paths": [
+            "StegVerse-Labs/StegHealth:programs/cli/review/cli-independent-review-routing.packet.json"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+              "sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:programs/cli/review/cli-independent-review-routing.packet.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:ab399a2342efcdb643818fa82485a45ca52e0ce56fd128752195634794b953d8"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:38a83e34b6cc423cb70bb3836c80cc69eb61bfcd2a19014053927e3dc1f7c56b"
+            }
+          ]
+        },
+        {
+          "component": "consume-ecosystem-failure-map",
+          "derived_from_observation": true,
+          "rules": [
+            "R1_SOURCE_REF"
+          ],
+          "paths": [
+            "StegVerse-Labs/StegHealth:tools/consume_ecosystem_failure_map.py"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+              "sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tools/consume_ecosystem_failure_map.py@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:f8f54184994bb5f2093a5f5ce930271b3c9faee4ee150e5ec2de575ad4d966fa"
+            }
+          ]
+        },
+        {
+          "component": "ecosystem-failure-registry",
+          "derived_from_observation": true,
+          "rules": [
+            "R3_OWN_TASK_FILE_PATH"
+          ],
+          "paths": [
+            "StegVerse-Labs/StegHealth:schemas/ecosystem-failure-registry.schema.json"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+              "sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:schemas/ecosystem-failure-registry.schema.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:e2ad8ce8c17e1fe12c7eed7426643b6750abebc18cef92fa5772b616ed05ad53"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:38a83e34b6cc423cb70bb3836c80cc69eb61bfcd2a19014053927e3dc1f7c56b"
+            }
+          ]
+        },
+        {
+          "component": "steghealth-ecosystem-failure-registry",
+          "derived_from_observation": true,
+          "rules": [
+            "R3_OWN_TASK_FILE_PATH"
+          ],
+          "paths": [
+            "StegVerse-Labs/StegHealth:registries/steghealth-ecosystem-failure-registry.json"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+              "sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:registries/steghealth-ecosystem-failure-registry.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:2fbd93d1b147237b9822ded870b0a755e6917fe2eeee7cd800dc60678faf7f0b"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:38a83e34b6cc423cb70bb3836c80cc69eb61bfcd2a19014053927e3dc1f7c56b"
+            }
+          ]
+        },
+        {
+          "component": "validate-cli-independent-review-routing",
+          "derived_from_observation": true,
+          "rules": [
+            "R3_OWN_TASK_FILE_PATH"
+          ],
+          "paths": [
+            "StegVerse-Labs/StegHealth:tools/validate_cli_independent_review_routing.py"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+              "sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:38a83e34b6cc423cb70bb3836c80cc69eb61bfcd2a19014053927e3dc1f7c56b"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tools/validate_cli_independent_review_routing.py@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:ef672097c2b72e0ddbd8ef111aed2781162b11dff6af94fae7de1a7de2754e49"
+            }
+          ]
+        },
+        {
+          "component": "validate-ecosystem-failure-registry",
+          "derived_from_observation": true,
+          "rules": [
+            "R3_OWN_TASK_FILE_PATH"
+          ],
+          "paths": [
+            "StegVerse-Labs/StegHealth:tools/validate_ecosystem_failure_registry.py"
+          ],
+          "sources": [
+            {
+              "ref": "StegVerse-Labs/.github:data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+              "sha256": "sha256:77abdd447cb67803b13c47e1b21c746f09eb426343dfb8d948631f7136d0d414"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:38a83e34b6cc423cb70bb3836c80cc69eb61bfcd2a19014053927e3dc1f7c56b"
+            },
+            {
+              "ref": "StegVerse-Labs/StegHealth:tools/validate_ecosystem_failure_registry.py@8508a43c8cb74753123f11ca0d103f18a318ea2f",
+              "sha256": "sha256:befa240f33e17c535044a0267d1fff756c453e9293d7572431ee20ebdfdb4a56"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "not_derivable": []
+}
