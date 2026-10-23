@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "LANE-C-TVC-SIGNED-RECEIPT-FORM-ALLOCATION-REQUEST-20261023",
+  "state": "PROPOSED",
+  "issue": "StegVerse-org/.github#164",
+  "proposed_task_id": "TVC-SIGNED-RECEIPT-FORM-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "proposed_task_id_source": "Coordination class B item (2) of 2026-10-23 17:04, sourced from StegVerse-org/.github#162 comment 6370314312 (Lane B, StegVerse-org/LLM-adapter#432 @1cbad77eaff3254ea30fb9d3377d40abcf6728df)",
+  "cosv_task_vector": null,
+  "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 320,
+  "owning_task_found": false,
+  "scope": "PROPOSED, SCOPE ONLY: SCOPE ONLY (not built by this request): a signed-receipt form for TVC. A TVC-emitted receipt (for example stegverse.tvc.labs-conformance-receipt/v1 from StegVerse-Labs/TVC#539, TVC_SKAP_CUSTODY_REFERENCE_ISSUE from TVC#537, TVC_NODE_LEDGER_OPENED_SIGNER_PUBLISH from TVC#540) gains a detached Ed25519 signature envelope over its canonical body under a declared domain, by a signer whose key is generated and held in TV/TVC custody only and whose public-key reference is published by a TV/TVC transition with a publication receipt. A consumer (LLM-adapter#432, the Labs ratchet's TVC conformance consumer) may then cite a TVC receipt ref in place of a separate signature. No key material in any repository; no new dependency; verification is E0 (standard library, pinned public key); non-authorizing.",
+  "scope_digest": "sha256:808509693f419bfb7a570607ef3faf0723d8e76ed35655b7cc6376b26f9a21e3",
+  "requested_action": "Check the identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition. Do not build the form under this request.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "handoff_ref": "StegVerse-org/.github#162 comment 6370314312"
+}
