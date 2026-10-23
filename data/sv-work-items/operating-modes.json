@@ -281,15 +281,16 @@
               "ALLOW",
               "FAIL_CLOSED"
             ],
-            "by": "resident-runtime/stage_gate.py::evaluate_gate over the receipted admission_miss_rate metric (admission outcomes ledgered by the org writer)",
+            "by": "resident-runtime/admission_miss_rate.py::admission_miss_rate_e0: ledgered admission decisions joined with later observed outcomes under NWI-S3.json metric_definitions.admission_miss_rate (FALSE_ADMIT / FALSE_REFUSAL / HELD; UNKNOWN never counted), misses fed to SCENARIO_CORPUS_APPEND by learn_from_misses; the produced metric is then evaluated by stage_gate.py::evaluate_gate",
             "non_allow_codes": [
+              "ADMISSION_MISS_RATE_UNOBSERVED",
               "STAGE_THRESHOLD_UNDECLARED",
               "STAGE_EVIDENCE_UNOBSERVED"
             ],
             "witness": {
-              "entrypoint": "resident-runtime/sv_e0_terminals.py::stage_gate_witness",
+              "entrypoint": "resident-runtime/admission_miss_rate.py::witness_admission_miss_rate",
               "cases": "data/sv-work-items/e0-witnesses/nwi-s3-admission-miss-rate.json",
-              "cases_sha256": "sha256:3ec9f197758825f4b75bfebf5122d372482b82314ed6ccd933126df3d65902c0"
+              "cases_sha256": "sha256:b43ea56aa9843d7d5847c33bbb9c0fd2892360d2e830eea3873a882659949a0b"
             }
           }
         }

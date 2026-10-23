@@ -1,43 +1,535 @@
 {
  "cases": [
   {
-   "case_id": "metric-receipted-threshold-undeclared",
+   "case_id": "real-s1-era-ledgered-decisions-outcomes-unobserved",
+   "expect": {
+    "admission_miss_rate": "UNKNOWN",
+    "counts": {
+     "FALSE_ADMIT": 0,
+     "FALSE_REFUSAL": 0,
+     "HELD": 0,
+     "NOT_APPLICABLE": 0,
+     "UNKNOWN": 3
+    },
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "ADMISSION_MISS_RATE_UNOBSERVED"
+   },
+   "input": {
+    "decisions": [
+     {
+      "change": {
+       "head_commit": "e6ba9601933c1c9d58f6b704c2a119544d21cb4d",
+       "merge_commit": "3e7109e2bf3ff70450c7914f0fe862ae3ddb1482",
+       "pull_request": 3225,
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 18,
+      "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/4fccdef699c11a60599861f1b8d3bb1d92e929b30e6081db26bcdd7a662209f0.json",
+      "repo_receipt_sha256": "sha256:84db84c0cb3d55fbbff9699a4664cfdacf9a25f9d9bef03f24c2e8ad9bb46d1c",
+      "transition_class": "ORGANIZATION_MAIN_MERGE_TRANSFER"
+     },
+     {
+      "change": {
+       "head_commit": "f82c0324aa4b6ac74adc44a3541ac98b33826447",
+       "merge_commit": "89d40df739bf6e9ad9e57bd0f5fbdf3c94b35d57",
+       "pull_request": 3226,
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 19,
+      "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/73f7bc29fda05deee1dea497293c7f23fa3b0e800f8d3fa2d1345f84e07458a3.json",
+      "repo_receipt_sha256": "sha256:cda278993c4842e389fde3b9512c12c0add624962866d0a036fa5d61cf4aa77d",
+      "transition_class": "ORGANIZATION_MAIN_MERGE_TRANSFER"
+     },
+     {
+      "change": {
+       "head_commit": "e29493afce3ee7b50c663a0fd5499a489ecc644b",
+       "merge_commit": "0eb80d44285b6a108f71da9434fbca67f2a5c595",
+       "pull_request": 3234,
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 24,
+      "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/93a748cb0f5e1f1c0bf05a8a5d40c96b274e31dc3cdcb4422d28b02b742f93de.json",
+      "repo_receipt_sha256": "sha256:61b130d785262d4ee1348f030dc4fb5eab35dc2b1b7d598d6792c34b27ab3b49",
+      "transition_class": "ORGANIZATION_MAIN_MERGE_TRANSFER"
+     }
+    ],
+    "outcomes": []
+   }
+  },
+  {
+   "case_id": "observed-outcomes-joined",
+   "expect": {
+    "admission_miss_rate": 0.5,
+    "counts": {
+     "FALSE_ADMIT": 1,
+     "FALSE_REFUSAL": 1,
+     "HELD": 2,
+     "NOT_APPLICABLE": 1,
+     "UNKNOWN": 2
+    },
+    "disposition": "ALLOW",
+    "misses": 2,
+    "observed": 4
+   },
+   "input": {
+    "decisions": [
+     {
+      "change": {
+       "head_commit": "f29bc91bbdab169fc0c0a326965953d11c7dff83",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 1,
+      "receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1"
+     },
+     {
+      "change": {
+       "head_commit": "b9f85daa6f83cf02ce5c31913d1f64d3f5c8fade",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 2,
+      "receipt_ref": "fixture-ledger/receipts/a2.json#fixture:a2"
+     },
+     {
+      "change": {
+       "head_commit": "252bc06763afb3b6c2a0802f7346700ab55f46f5",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 3,
+      "receipt_ref": "fixture-ledger/receipts/a3.json#fixture:a3"
+     },
+     {
+      "change": {
+       "base": {
+        "ledger_head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "registry_generation": 319
+       },
+       "change_digest": "sha256:d0f631ca1ddba8db3bcfcb9e057cdc98d0379f1bee00e75a545147a27dadd982",
+       "head_commit": "ee17560c8b77385b5bb8d8687820f9b82f3fdcdf",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "DENY",
+      "ledger_seq": 4,
+      "receipt_ref": "fixture-ledger/receipts/d1.json#fixture:d1"
+     },
+     {
+      "change": {
+       "base": {
+        "ledger_head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "registry_generation": 319
+       },
+       "change_digest": "sha256:d0f631ca1ddba8db3bcfcb9e057cdc98d0379f1bee00e75a545147a27dadd982",
+       "head_commit": "21440dba05ffe31f6c6bf299dd8da0ff0a5fff52",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 5,
+      "receipt_ref": "fixture-ledger/receipts/a4.json#fixture:a4"
+     },
+     {
+      "change": {
+       "head_commit": "c09bb890b096f7306f688cc6d1dad34e7e52a223",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "FAIL_CLOSED",
+      "ledger_seq": 6,
+      "receipt_ref": "fixture-ledger/receipts/f1.json#fixture:f1"
+     },
+     {
+      "change": {
+       "head_commit": "0e8c4304837e44c4e8d02820617bcbf7306458f7",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 7,
+      "receipt_ref": "fixture-ledger/receipts/a5.json#fixture:a5"
+     }
+    ],
+    "fixture_mode": true,
+    "outcomes": [
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1",
+      "admitted_change": "svc:1111111111111111111111111111111111111111111111111111111111111111",
+      "admitted_change_digest": "sha256:2f2855450b92a41664176a0f06d0dea63f8e712ef266c82a001f5761644d2faa",
+      "class_ids": [],
+      "correcting_ref": "fixture-ledger/receipts/revert-a1.json#fixture:revert-a1",
+      "hb_epoch": "469411750",
+      "miss_kind": "REVERT",
+      "miss_sha256": "sha256:9ea076583ba6d4bb3b7d65db329e970a541e037de650471af57c9636b8f01097",
+      "predicate_gap": "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED",
+      "schema": "stegverse.admission_miss.v1",
+      "touched_surface_kinds": [
+       "workflow"
+      ]
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a2.json#fixture:a2",
+      "evidence_ref": "fixture-ledger/receipts/held-a2.json#fixture:held-a2",
+      "hb_epoch": "469411750",
+      "observed": "S1 verifier bundle ALLOW at a later main head containing it",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:83f8fb5d3acf468b37e63a8d669d7d7e7e4afda4c7e61fa53e69c8e0d4270e23",
+      "schema": "stegverse.admission_outcome.v1"
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a4.json#fixture:a4",
+      "evidence_ref": "fixture-ledger/receipts/held-a4.json#fixture:held-a4",
+      "hb_epoch": "469411750",
+      "observed": "S1 verifier bundle ALLOW at a later main head containing it",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:974bd9a1c0120c4697f15e3e78ba507a46afcbf10f8e021921dc5c26694bee7b",
+      "schema": "stegverse.admission_outcome.v1"
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1",
+      "evidence_ref": "fixture-ledger/receipts/held-a1.json#fixture:held-a1",
+      "hb_epoch": "469411750",
+      "observed": "a HELD claim contradicted by the ledgered revert",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:05cf0c464a32bebbcf558f4aeacdc931462141ae87a900b1b2a4965f2a5f56c2",
+      "schema": "stegverse.admission_outcome.v1"
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a3.json#fixture:a3",
+      "evidence_ref": "fixture-ledger/receipts/held-a2.json#fixture:held-a2",
+      "hb_epoch": "469411750",
+      "observed": "S1 verifier bundle ALLOW at a later main head containing it",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:83f8fb5d3acf468b37e63a8d669d7d7e7e4afda4c7e61fa53e69c8e0d4270e23",
+      "schema": "stegverse.admission_outcome.v1"
+     }
+    ]
+   }
+  },
+  {
+   "case_id": "fixture-refs-outside-fixture-mode-are-not-ledgered",
+   "expect": {
+    "admission_miss_rate": "UNKNOWN",
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "ADMISSION_MISS_RATE_UNOBSERVED"
+   },
+   "input": {
+    "decisions": [
+     {
+      "change": {
+       "head_commit": "f29bc91bbdab169fc0c0a326965953d11c7dff83",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 1,
+      "receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1"
+     },
+     {
+      "change": {
+       "head_commit": "b9f85daa6f83cf02ce5c31913d1f64d3f5c8fade",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 2,
+      "receipt_ref": "fixture-ledger/receipts/a2.json#fixture:a2"
+     },
+     {
+      "change": {
+       "head_commit": "252bc06763afb3b6c2a0802f7346700ab55f46f5",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 3,
+      "receipt_ref": "fixture-ledger/receipts/a3.json#fixture:a3"
+     },
+     {
+      "change": {
+       "base": {
+        "ledger_head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "registry_generation": 319
+       },
+       "change_digest": "sha256:d0f631ca1ddba8db3bcfcb9e057cdc98d0379f1bee00e75a545147a27dadd982",
+       "head_commit": "ee17560c8b77385b5bb8d8687820f9b82f3fdcdf",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "DENY",
+      "ledger_seq": 4,
+      "receipt_ref": "fixture-ledger/receipts/d1.json#fixture:d1"
+     },
+     {
+      "change": {
+       "base": {
+        "ledger_head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "registry_generation": 319
+       },
+       "change_digest": "sha256:d0f631ca1ddba8db3bcfcb9e057cdc98d0379f1bee00e75a545147a27dadd982",
+       "head_commit": "21440dba05ffe31f6c6bf299dd8da0ff0a5fff52",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 5,
+      "receipt_ref": "fixture-ledger/receipts/a4.json#fixture:a4"
+     },
+     {
+      "change": {
+       "head_commit": "c09bb890b096f7306f688cc6d1dad34e7e52a223",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "FAIL_CLOSED",
+      "ledger_seq": 6,
+      "receipt_ref": "fixture-ledger/receipts/f1.json#fixture:f1"
+     },
+     {
+      "change": {
+       "head_commit": "0e8c4304837e44c4e8d02820617bcbf7306458f7",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 7,
+      "receipt_ref": "fixture-ledger/receipts/a5.json#fixture:a5"
+     }
+    ],
+    "outcomes": [
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1",
+      "admitted_change": "svc:1111111111111111111111111111111111111111111111111111111111111111",
+      "admitted_change_digest": "sha256:2f2855450b92a41664176a0f06d0dea63f8e712ef266c82a001f5761644d2faa",
+      "class_ids": [],
+      "correcting_ref": "fixture-ledger/receipts/revert-a1.json#fixture:revert-a1",
+      "hb_epoch": "469411750",
+      "miss_kind": "REVERT",
+      "miss_sha256": "sha256:9ea076583ba6d4bb3b7d65db329e970a541e037de650471af57c9636b8f01097",
+      "predicate_gap": "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED",
+      "schema": "stegverse.admission_miss.v1",
+      "touched_surface_kinds": [
+       "workflow"
+      ]
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a2.json#fixture:a2",
+      "evidence_ref": "fixture-ledger/receipts/held-a2.json#fixture:held-a2",
+      "hb_epoch": "469411750",
+      "observed": "S1 verifier bundle ALLOW at a later main head containing it",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:83f8fb5d3acf468b37e63a8d669d7d7e7e4afda4c7e61fa53e69c8e0d4270e23",
+      "schema": "stegverse.admission_outcome.v1"
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a4.json#fixture:a4",
+      "evidence_ref": "fixture-ledger/receipts/held-a4.json#fixture:held-a4",
+      "hb_epoch": "469411750",
+      "observed": "S1 verifier bundle ALLOW at a later main head containing it",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:974bd9a1c0120c4697f15e3e78ba507a46afcbf10f8e021921dc5c26694bee7b",
+      "schema": "stegverse.admission_outcome.v1"
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1",
+      "evidence_ref": "fixture-ledger/receipts/held-a1.json#fixture:held-a1",
+      "hb_epoch": "469411750",
+      "observed": "a HELD claim contradicted by the ledgered revert",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:05cf0c464a32bebbcf558f4aeacdc931462141ae87a900b1b2a4965f2a5f56c2",
+      "schema": "stegverse.admission_outcome.v1"
+     }
+    ]
+   }
+  },
+  {
+   "case_id": "produced-rate-through-nwi-s3-gate-threshold-not-derived",
    "expect": {
     "disposition": "FAIL_CLOSED",
     "failure_code": "STAGE_THRESHOLD_UNDECLARED"
    },
    "input": {
-    "evidence": {
-     "ADMISSION_MISS_RATE": {
-      "admission_miss_rate": 0.0,
-      "receipt_ref": "fixture-ledger/receipts/miss-rate.json#fixture:miss-rate"
+    "decisions": [
+     {
+      "change": {
+       "head_commit": "f29bc91bbdab169fc0c0a326965953d11c7dff83",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 1,
+      "receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1"
      },
+     {
+      "change": {
+       "head_commit": "b9f85daa6f83cf02ce5c31913d1f64d3f5c8fade",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 2,
+      "receipt_ref": "fixture-ledger/receipts/a2.json#fixture:a2"
+     },
+     {
+      "change": {
+       "head_commit": "252bc06763afb3b6c2a0802f7346700ab55f46f5",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 3,
+      "receipt_ref": "fixture-ledger/receipts/a3.json#fixture:a3"
+     },
+     {
+      "change": {
+       "base": {
+        "ledger_head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "registry_generation": 319
+       },
+       "change_digest": "sha256:d0f631ca1ddba8db3bcfcb9e057cdc98d0379f1bee00e75a545147a27dadd982",
+       "head_commit": "ee17560c8b77385b5bb8d8687820f9b82f3fdcdf",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "DENY",
+      "ledger_seq": 4,
+      "receipt_ref": "fixture-ledger/receipts/d1.json#fixture:d1"
+     },
+     {
+      "change": {
+       "base": {
+        "ledger_head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "registry_generation": 319
+       },
+       "change_digest": "sha256:d0f631ca1ddba8db3bcfcb9e057cdc98d0379f1bee00e75a545147a27dadd982",
+       "head_commit": "21440dba05ffe31f6c6bf299dd8da0ff0a5fff52",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 5,
+      "receipt_ref": "fixture-ledger/receipts/a4.json#fixture:a4"
+     },
+     {
+      "change": {
+       "head_commit": "c09bb890b096f7306f688cc6d1dad34e7e52a223",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "FAIL_CLOSED",
+      "ledger_seq": 6,
+      "receipt_ref": "fixture-ledger/receipts/f1.json#fixture:f1"
+     },
+     {
+      "change": {
+       "head_commit": "0e8c4304837e44c4e8d02820617bcbf7306458f7",
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 7,
+      "receipt_ref": "fixture-ledger/receipts/a5.json#fixture:a5"
+     }
+    ],
+    "fixture_mode": true,
+    "hb_epoch": "469411750",
+    "other_evidence": {
      "W05_TV_TVC_HELD_INVOCATION_ADMITTED": {
       "disposition": "ALLOW",
       "receipt_ref": "fixture-ledger/receipts/w05.json#fixture:w05"
      }
     },
-    "hb_epoch": "32",
-    "stage": "NWI-S3",
-    "target": "NWI-S4"
+    "outcomes": [
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1",
+      "admitted_change": "svc:1111111111111111111111111111111111111111111111111111111111111111",
+      "admitted_change_digest": "sha256:2f2855450b92a41664176a0f06d0dea63f8e712ef266c82a001f5761644d2faa",
+      "class_ids": [],
+      "correcting_ref": "fixture-ledger/receipts/revert-a1.json#fixture:revert-a1",
+      "hb_epoch": "469411750",
+      "miss_kind": "REVERT",
+      "miss_sha256": "sha256:9ea076583ba6d4bb3b7d65db329e970a541e037de650471af57c9636b8f01097",
+      "predicate_gap": "MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED",
+      "schema": "stegverse.admission_miss.v1",
+      "touched_surface_kinds": [
+       "workflow"
+      ]
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a2.json#fixture:a2",
+      "evidence_ref": "fixture-ledger/receipts/held-a2.json#fixture:held-a2",
+      "hb_epoch": "469411750",
+      "observed": "S1 verifier bundle ALLOW at a later main head containing it",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:83f8fb5d3acf468b37e63a8d669d7d7e7e4afda4c7e61fa53e69c8e0d4270e23",
+      "schema": "stegverse.admission_outcome.v1"
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a4.json#fixture:a4",
+      "evidence_ref": "fixture-ledger/receipts/held-a4.json#fixture:held-a4",
+      "hb_epoch": "469411750",
+      "observed": "S1 verifier bundle ALLOW at a later main head containing it",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:974bd9a1c0120c4697f15e3e78ba507a46afcbf10f8e021921dc5c26694bee7b",
+      "schema": "stegverse.admission_outcome.v1"
+     },
+     {
+      "admission_receipt_ref": "fixture-ledger/receipts/a1.json#fixture:a1",
+      "evidence_ref": "fixture-ledger/receipts/held-a1.json#fixture:held-a1",
+      "hb_epoch": "469411750",
+      "observed": "a HELD claim contradicted by the ledgered revert",
+      "outcome": "HELD",
+      "outcome_sha256": "sha256:05cf0c464a32bebbcf558f4aeacdc931462141ae87a900b1b2a4965f2a5f56c2",
+      "schema": "stegverse.admission_outcome.v1"
+     }
+    ],
+    "rate_record_receipt_ref": "fixture-ledger/receipts/miss-rate-record.json#fixture:miss-rate-record",
+    "through_gate": true
    }
   },
   {
-   "case_id": "metric-unobserved",
+   "case_id": "unknown-rate-through-nwi-s3-gate",
    "expect": {
     "disposition": "FAIL_CLOSED",
     "failure_code": "STAGE_EVIDENCE_UNOBSERVED"
    },
    "input": {
-    "evidence": {
+    "decisions": [
+     {
+      "change": {
+       "head_commit": "e6ba9601933c1c9d58f6b704c2a119544d21cb4d",
+       "merge_commit": "3e7109e2bf3ff70450c7914f0fe862ae3ddb1482",
+       "pull_request": 3225,
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 18,
+      "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/4fccdef699c11a60599861f1b8d3bb1d92e929b30e6081db26bcdd7a662209f0.json",
+      "repo_receipt_sha256": "sha256:84db84c0cb3d55fbbff9699a4664cfdacf9a25f9d9bef03f24c2e8ad9bb46d1c",
+      "transition_class": "ORGANIZATION_MAIN_MERGE_TRANSFER"
+     },
+     {
+      "change": {
+       "head_commit": "f82c0324aa4b6ac74adc44a3541ac98b33826447",
+       "merge_commit": "89d40df739bf6e9ad9e57bd0f5fbdf3c94b35d57",
+       "pull_request": 3226,
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 19,
+      "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/73f7bc29fda05deee1dea497293c7f23fa3b0e800f8d3fa2d1345f84e07458a3.json",
+      "repo_receipt_sha256": "sha256:cda278993c4842e389fde3b9512c12c0add624962866d0a036fa5d61cf4aa77d",
+      "transition_class": "ORGANIZATION_MAIN_MERGE_TRANSFER"
+     },
+     {
+      "change": {
+       "head_commit": "e29493afce3ee7b50c663a0fd5499a489ecc644b",
+       "merge_commit": "0eb80d44285b6a108f71da9434fbca67f2a5c595",
+       "pull_request": 3234,
+       "repository": "StegVerse-Labs/.github"
+      },
+      "disposition": "ALLOW",
+      "ledger_seq": 24,
+      "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/93a748cb0f5e1f1c0bf05a8a5d40c96b274e31dc3cdcb4422d28b02b742f93de.json",
+      "repo_receipt_sha256": "sha256:61b130d785262d4ee1348f030dc4fb5eab35dc2b1b7d598d6792c34b27ab3b49",
+      "transition_class": "ORGANIZATION_MAIN_MERGE_TRANSFER"
+     }
+    ],
+    "hb_epoch": "469411750",
+    "other_evidence": {
      "W05_TV_TVC_HELD_INVOCATION_ADMITTED": {
       "disposition": "ALLOW",
       "receipt_ref": "fixture-ledger/receipts/w05.json#fixture:w05"
      }
     },
-    "hb_epoch": "32",
-    "stage": "NWI-S3",
-    "target": "NWI-S4"
+    "outcomes": [],
+    "through_gate": true
    }
   }
  ],

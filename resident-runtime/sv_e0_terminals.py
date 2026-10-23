@@ -18,7 +18,6 @@ machine, nothing waits and nothing polls. LLM layers (E1..E3) stay optional and 
                            pass as UNAVAILABLE ENTITY_SURFACE_NOT_SUPPLIED with a six-field FAIL_CLOSED, and that the work
                            completed: hashes, chain links, entity-set digest, contribution id and content digest are all
                            recomputed here, nothing is taken from a flag.
-  stage_gate_witness       runs resident-runtime/stage_gate.py::evaluate_gate on a supplied case.
 
 resident-runtime/sv_operating_modes.py::validate exercises these through each item's declared witness cases.
 """
@@ -304,9 +303,3 @@ def verify_respond_terminal(case: Mapping[str, Any]) -> dict[str, Any]:
     return {"disposition": "FAIL_CLOSED", **{k: first[k] for k in SIX}, "mode": MODE, "work_id": work_id,
             "entity_set_digest": set_digest, "terminals": terminals, "work_completed": True}
 
-
-# -- stage gate -------------------------------------------------------------------------------------------------------
-def stage_gate_witness(case: Mapping[str, Any]) -> dict[str, Any]:
-    """case: {stage, target, evidence, hb_epoch}; the gate's own outcome (deterministic, no LLM input) at mode E0."""
-    return {**sg.evaluate_gate(case.get("stage"), case.get("target"), case.get("evidence") or {}, hb_epoch=case.get("hb_epoch")),
-            "mode": MODE}
