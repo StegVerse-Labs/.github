@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "c6abe502b34aee10a8d14c851927353fea4cb68f41c4b85c43c8f1382ac65a1f"
+  "spec_sha256": "75c3a4b0faa8de07dee9913e493295417150cd9c35257d0b1e0ed61aa069cd65"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -19,12 +19,27 @@
   },
   "stegverse-sdk": {
    "check": {
-    "kind": "python_module",
-    "module": "stegverse"
+    "env": "STEGVERSE_SDK_PIN_74D9B473",
+    "kind": "pinned_source",
+    "manifest": ".stegverse/verification-inputs/stegverse-sdk.json",
+    "module": "stegverse",
+    "pin": "74d9b473"
    },
-   "finish_point": "the job that runs this set imports the pinned stegverse SDK and the set's tests run and pass at the exact head",
+   "finish_point": "the job materializes pin 74d9b473 (scripts/pinned_source_input.py materialize, sha256-checked against .stegverse/verification-inputs/stegverse-sdk.json), sets STEGVERSE_SDK_PIN_74D9B473 to its tree, and the set's tests run in that pin's run group and pass at the exact head with 0 skipped",
    "owner": "P1 (StegVerse-org/.github#163)",
-   "repair": "the pinned StegVerse SDK installed in the job that runs this set (P1 decides the pin and the install; this lane adds no dependency)"
+   "repair": "materialize pin 74d9b473 with scripts/pinned_source_input.py (one anonymous git fetch of the pinned commit; no package index, no install) and export STEGVERSE_SDK_PIN_74D9B473=<dest>/tree before selection; a sha256 mismatch is FAIL_CLOSED, never loaded"
+  },
+  "stegverse-sdk@c138cad4": {
+   "check": {
+    "env": "STEGVERSE_SDK_PIN_C138CAD4",
+    "kind": "pinned_source",
+    "manifest": ".stegverse/verification-inputs/stegverse-sdk.json",
+    "module": "stegverse",
+    "pin": "c138cad4"
+   },
+   "finish_point": "the job materializes pin c138cad4 (scripts/pinned_source_input.py materialize, sha256-checked against .stegverse/verification-inputs/stegverse-sdk.json), sets STEGVERSE_SDK_PIN_C138CAD4 to its tree, and the set's tests run in that pin's run group and pass at the exact head with 0 skipped",
+   "owner": "P1 (StegVerse-org/.github#163)",
+   "repair": "materialize pin c138cad4 with scripts/pinned_source_input.py (one anonymous git fetch of the pinned commit; no package index, no install) and export STEGVERSE_SDK_PIN_C138CAD4=<dest>/tree before selection; a sha256 mismatch is FAIL_CLOSED, never loaded"
   },
   "tvc": {
    "check": {
@@ -5222,6 +5237,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_pinned_source_input.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_pinned_source_input.py"
+   ],
+   "tests": [
+    "tests/test_pinned_source_input.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_portable_org_claim_allocator_collision.py",
    "inputs": [],
    "surfaces": [
@@ -7378,7 +7405,7 @@
    "exclude": [],
    "id": "tests/test_stegbrowser_universal_intr_materialization.py[stegverse-sdk]",
    "inputs": [
-    "stegverse-sdk"
+    "stegverse-sdk@c138cad4"
    ],
    "surfaces": [
     "tests/test_stegbrowser_universal_intr_materialization.py"
@@ -11660,6 +11687,9 @@
    "control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json",
    "control/resident-rendezvous-invocation.d/sdk-workspace-extcollab-authentic-runtime-004.json"
   ],
+  "scripts/test_set_selection.py": [
+   "scripts/pinned_source_input.py"
+  ],
   "scripts/test_suite_baseline_drift.py": [
    ".github/workflows/**",
    ".github/workflows/organization-ledger-merge-transfer.yml",
@@ -14364,6 +14394,13 @@
   "tests/test_personal_kv_provider_root_resolution.py": [
    "scripts/materialize_personal_kv_provider_root.py"
   ],
+  "tests/test_pinned_source_input.py": [
+   ".stegverse/test-set-spec.json",
+   "scripts/pinned_source_input.py",
+   "scripts/test_set_selection.py",
+   "scripts/test_suite_baseline_drift.py",
+   "tests/__init__.py"
+  ],
   "tests/test_portable_org_claim_allocator_collision.py": [
    "README.md",
    "control/portable-org-allocator/current-iphone-package.json",
@@ -16241,6 +16278,7 @@
    ".github/workflows/test-suite-ratchet.yml",
    ".stegverse/test-set-spec.json",
    ".stegverse/test-sets.json",
+   "scripts/pinned_source_input.py",
    "scripts/test_set_selection.py",
    "scripts/test_suite_baseline_drift.py",
    "tests/__init__.py"
