@@ -27,6 +27,15 @@ def test_x():
 def test_y():
     assert (HERE / "y.txt").read_text().strip() == "ok"
 '''
+UNITTEST_FILE = '''import unittest
+from pathlib import Path
+HERE = Path(__file__).resolve().parent.parent
+class U(unittest.TestCase):
+    def test_x(self):
+        self.assertEqual((HERE / "x.txt").read_text().strip(), "ok")
+    def test_y(self):
+        self.assertEqual((HERE / "y.txt").read_text().strip(), "ok")
+'''
 ENV = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@invalid", GIT_COMMITTER_NAME="t",
            GIT_COMMITTER_EMAIL="t@invalid", GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
 ENV.pop("PYTEST_ADDOPTS", None)
@@ -210,6 +219,74 @@ class BaselineDriftTests(unittest.TestCase):
         self.assertEqual(code, 0)
         record = json.loads((out / "pr-disposition.json").read_text())
         self.assertEqual(record["disposition"], "PRE_EXISTING_BASELINE_FAILURE")
+
+    # -- unittest-run jobs (cross-task-coordination-validation.yml) -----------------------------------------
+
+    def unittest_toy(self) -> None:
+        self.toy.write("tests/__init__.py", "")
+        self.toy.write("tests/test_u.py", UNITTEST_FILE)
+
+    def run_unittest(self) -> tuple[int, Path]:
+        done = subprocess.run([sys.executable, "-m", "unittest", "-v", "tests.test_u"], cwd=self.toy.path,
+                              capture_output=True, text=True)
+        out = Path(self.tmp.name) / "unittest.txt"
+        out.write_text(done.stdout + done.stderr)
+        return done.returncode, out
+
+    def pr_cli(self, base: str, out_file: Path, status: int) -> tuple[int, dict]:
+        out = Path(self.tmp.name) / "out-u"
+        code = drift.main(["pr", "--root", str(self.toy.path), "--base", base, "--hb-epoch", "469411750",
+                           "--unittest-output", str(out_file), "--suite-status", str(status), "--out-dir", str(out),
+                           "--retry-entrypoint", "toy.yml"])
+        return code, json.loads((out / "pr-disposition.json").read_text())
+
+    def test_unittest_outcome_lines_map_to_ratchet_node_ids(self) -> None:
+        node = drift.unittest_node
+        self.assertEqual(node("test_y", "tests.test_u.U.test_y"), "tests/test_u.py::U::test_y")
+        self.assertEqual(node("test_y", "tests.test_u.U"), "tests/test_u.py::U::test_y")
+        self.assertIsNone(node("setUpClass", "tests.test_u.U"))
+        self.assertIsNone(node("test_u", "unittest.loader._FailedTest.test_u"))
+
+    def test_unittest_job_pre_existing_failure_proceeds(self) -> None:
+        self.unittest_toy()
+        self.toy.write("y.txt", "broken\n")
+        base = self.toy.commit("main breaks y")
+        self.toy.write("docs.md", "unrelated\n")
+        self.toy.commit("pr: unrelated")
+        status, out_file = self.run_unittest()
+        self.assertNotEqual(status, 0)
+        code, record = self.pr_cli(base, out_file, status)
+        self.assertEqual(code, 0)
+        self.assertEqual(record["runner"], "unittest")
+        self.assertEqual(record["disposition"], "PRE_EXISTING_BASELINE_FAILURE")
+        self.assertEqual([r["test"] for r in record["tests"]], ["tests/test_u.py::U::test_y"])
+        self.assertEqual(record["tests"][0]["status_at_base"], "FAIL")
+        self.assert_six(record)
+
+    def test_unittest_job_introduced_failure_still_fails(self) -> None:
+        self.unittest_toy()
+        base = self.toy.commit("main")
+        self.toy.write("x.txt", "broken\n")
+        self.toy.commit("pr breaks x")
+        status, out_file = self.run_unittest()
+        code, record = self.pr_cli(base, out_file, status)
+        self.assertEqual(code, 1)
+        self.assertEqual(record["failure_code"], "TEST_FAILURE_INTRODUCED_BY_CHANGE")
+        self.assertEqual(record["retry_entrypoint"], "toy.yml")
+        self.assert_six(record)
+
+    def test_unittest_outcome_naming_no_test_fails_closed(self) -> None:
+        self.unittest_toy()
+        base = self.toy.commit("main")
+        out_file = Path(self.tmp.name) / "u.txt"
+        out_file.write_text("ERROR: setUpClass (tests.test_u.U)\n----\nFAILED (errors=1)\n")
+        code, record = self.pr_cli(base, out_file, 1)
+        self.assertEqual(code, 1)
+        self.assertEqual(record["failure_code"], "TEST_OUTCOME_NAMES_NO_TEST")
+        out_file.write_text("Traceback (most recent call last):\nSyntaxError\n")
+        code, record = self.pr_cli(base, out_file, 1)
+        self.assertEqual(code, 1)
+        self.assertEqual(record["failure_code"], "SUITE_FAILED_WITHOUT_TEST_OUTCOME")
 
 
 if __name__ == "__main__":

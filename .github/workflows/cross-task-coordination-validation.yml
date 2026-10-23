@@ -92,6 +92,8 @@ on:
       - 'tests/test_report_canonical_work_coordination_validation.py'
       - 'scripts/normalize_canonical_task_rows.py'
       - 'tests/test_normalize_canonical_task_rows.py'
+      - 'scripts/test_suite_baseline_drift.py'
+      - 'data/test-suite-baseline.json'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
@@ -189,6 +191,8 @@ on:
       - 'tests/test_report_canonical_work_coordination_validation.py'
       - 'scripts/normalize_canonical_task_rows.py'
       - 'tests/test_normalize_canonical_task_rows.py'
+      - 'scripts/test_suite_baseline_drift.py'
+      - 'data/test-suite-baseline.json'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
 permissions: {}
@@ -200,20 +204,53 @@ jobs:
       - name: Anonymous public checkout without GitHub token
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PUSH_BEFORE: ${{ github.event.before }}
         run: |
           set -euo pipefail
           test -z "${GITHUB_TOKEN:-}"
           test -z "${GH_TOKEN:-}"
           git init .
           git remote add origin https://github.com/StegVerse-Labs/.github.git
+          # depth 2: the merge (or pushed) commit and its parents, so the drift adjudication below can
+          # run a failing test on the exact base. The base is the merge ref's first parent (pull
+          # request) or the push's before (push to main).
           if [ -n "${PR_NUMBER:-}" ]; then
-            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=2 origin "refs/pull/${PR_NUMBER}/merge"
+            git checkout --detach FETCH_HEAD
+            echo "DRIFT_BASE=$(git rev-parse HEAD^1)" >> "$GITHUB_ENV"
           else
-            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=2 origin "${GITHUB_SHA}"
+            git checkout --detach FETCH_HEAD
+            base=$(git rev-parse HEAD^1)
+            if [ -n "${PUSH_BEFORE:-}" ] && [ "${PUSH_BEFORE}" != "0000000000000000000000000000000000000000" ] \
+                && env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${PUSH_BEFORE}"; then
+              base="${PUSH_BEFORE}"
+            fi
+            echo "DRIFT_BASE=${base}" >> "$GITHUB_ENV"
           fi
-          git checkout --detach FETCH_HEAD
-      - name: Validate Task Registry collision and generation fences
+      # Read-only inputs for the drift record: the organization ledger head (its hb_reference.epoch
+      # is the epoch; no clock is read) and StegVerse-org/.github's main-change receipt writer at its
+      # pin. Anonymous fetches; when either is unreadable the record says so, it never guesses.
+      - name: Organization ledger head and the pinned main-change receipt writer, read-only
         run: |
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --no-tags --quiet origin \
+            '+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger' || echo "organization ledger ref not fetched"
+          if env -u GITHUB_TOKEN -u GH_TOKEN git fetch --no-tags --quiet --depth=1 \
+              https://github.com/StegVerse-org/.github 7638b006ef9da2d65240576c706482b9ecc4153f; then
+            git show FETCH_HEAD:resident-runtime/main_change_receipt.py > "$RUNNER_TEMP/main_change_receipt.py"
+          else
+            echo "main-change receipt writer not fetched"
+          fi
+      # Drift-aware (StegVerse-Labs/.github#3317, scripts/test_suite_baseline_drift.py pr). A failing
+      # test that the baseline (data/test-suite-baseline.json) does not hold, that also fails on the
+      # exact base under unittest, and that the change's diff does not touch, is a receipted
+      # PRE_EXISTING_BASELINE_FAILURE (six fields) and the job proceeds. A failure the change
+      # introduces or touches, an outcome naming no test, or a red run naming none is FAIL_CLOSED.
+      # Nothing is appended to or dispatched at a ledger; the record is retained as an artifact.
+      - name: Validate Task Registry collision and generation fences (unit suite, drift-aware)
+        run: |
+          set -uo pipefail
+          status=0
           python -m unittest -v \
             tests.test_task_registry_collision_checkin \
             tests.test_cosv_task_vector_index \
@@ -249,7 +286,28 @@ jobs:
             tests.test_ecosystem_chat_reusable_composition \
             tests.test_registry_generation_fence \
             tests.test_report_canonical_work_coordination_validation \
-            tests.test_normalize_canonical_task_rows
+            tests.test_normalize_canonical_task_rows > "$RUNNER_TEMP/unittest-suite.txt" 2>&1 || status=$?
+          cat "$RUNNER_TEMP/unittest-suite.txt"
+          if [ "$status" -eq 0 ]; then
+            exit 0
+          fi
+          python scripts/test_suite_baseline_drift.py pr --base "$DRIFT_BASE" \
+            --unittest-output "$RUNNER_TEMP/unittest-suite.txt" --suite-status "$status" \
+            --writer "$RUNNER_TEMP/main_change_receipt.py" \
+            --writer-sha256 884168399f8ac54309aac86af6ab34481635de54426f635bb2229eb5073e2ebf \
+            --retry-entrypoint ".github/workflows/cross-task-coordination-validation.yml (pull_request / push to main) -> scripts/test_suite_baseline_drift.py pr --unittest-output" \
+            --out-dir "$RUNNER_TEMP/baseline-drift"
+      - name: Summarize the drift record
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -f "$RUNNER_TEMP/baseline-drift/pr-disposition.json" ]; then
+            { echo '### Test-suite baseline drift (unit suite)'; echo '```json'; cat "$RUNNER_TEMP/baseline-drift/pr-disposition.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "unit suite passed; no drift record" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Validate Task Registry sources (compile and repo-wide validators)
+        run: |
+          set -e
           python -m py_compile workers/ungoverned_ai_defensive_envelope_worker.py workers/erl_household_economic_conditions_worker.py scripts/consume_ungoverned_ai_defensive_envelope_request.py
           python scripts/validate_four_missing_cosv_tracking.py
           python scripts/validate_task_registration_substrate_resolution.py

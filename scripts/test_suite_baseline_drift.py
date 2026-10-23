@@ -16,6 +16,10 @@ It runs at E0: no LLM, stdlib only, no clock, no network.
   PRE_EXISTING_BASELINE_FAILURE when it also fails on the base and the change's own diff does not
   touch it. That disposition is receipted and does not block; the change proceeds one rung down
   the ladder. A failure the change introduces, or a pre-existing one it touches, is FAIL_CLOSED.
+  `pr --unittest-output` adjudicates a job that runs a named unittest module list (for example
+  .github/workflows/cross-task-coordination-validation.yml) the same way: each FAIL/ERROR line is
+  mapped to the ratchet's node id and probed at the base with unittest, the job's own runner. An
+  outcome line that names no test (an import error, setUpClass) is FAIL_CLOSED, never dropped.
 
 Every non-ALLOW record carries failure_code, failed_predicate, required_evidence_or_repair,
 retry_entrypoint, owning_existing_goal and next_attempt.
@@ -59,9 +63,12 @@ DEFAULT_GOAL = "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-0
 LEDGER_GOAL = "StegVerse-org/.github#162 (organization ledger) / StegVerse-org/.github#166"
 RETRY_DETECT = ".github/workflows/test-suite-ratchet.yml (push to main) -> scripts/test_suite_baseline_drift.py detect"
 RETRY_PR = ".github/workflows/test-suite-ratchet.yml (pull_request) -> scripts/test_suite_baseline_drift.py pr"
+UNITTEST, PYTEST = "unittest", "pytest"
 SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
        "owning_existing_goal", "next_attempt")
 OUTCOME = re.compile(r"^(?:FAILED|ERROR)\s+(\S+)")
+UNITTEST_OUTCOME = re.compile(r"^(FAIL|ERROR): (\S+) \(([^)\s]+)\)")
+IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 SUPPLIED_EPOCH = re.compile(r"^[0-9]+$")
 PR_SUBJECT = (re.compile(r"^Merge pull request #(\d+)\b"), re.compile(r"\(#(\d+)\)\s*$"))
 GOAL_REF = re.compile(r"(?:[A-Za-z0-9-]+/[A-Za-z0-9._-]+)?#\d+|\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}\b")
@@ -138,8 +145,8 @@ def parents(root: Path | str, commit: str) -> list[str]:
 class Prober:
     """Runs single tests at commits, each commit in its own detached worktree; results are cached."""
 
-    def __init__(self, root: Path | str, python: str = sys.executable) -> None:
-        self.root, self.python = Path(root), python
+    def __init__(self, root: Path | str, python: str = sys.executable, runner: str = PYTEST) -> None:
+        self.root, self.python, self.runner = Path(root), python, runner
         self.base = Path(tempfile.mkdtemp(prefix="baseline-drift-"))
         self.trees: dict[str, Path] = {}
         self.cache: dict[tuple[str, str], str] = {}
@@ -157,6 +164,8 @@ class Prober:
             test_file = test_id.split("::", 1)[0]
             if not git_ok(self.root, "cat-file", "-e", f"{commit}:{test_file}"):
                 self.cache[key] = ABSENT
+            elif self.runner == UNITTEST:
+                self.cache[key] = self._unittest_status(commit, test_id)
             else:
                 done = subprocess.run([self.python, "-m", "pytest", test_id, "-q", "--tb=no", "-p", "no:cacheprovider"],
                                       cwd=self.tree(commit), capture_output=True, text=True)
@@ -170,6 +179,21 @@ class Prober:
                 else:
                     self.cache[key] = UNOBSERVED
         return self.cache[key]
+
+    def _unittest_status(self, commit: str, test_id: str) -> str:
+        test_file, _, rest = test_id.partition("::")
+        name = rest.split("::")[-1]
+        source = git(self.root, "show", f"{commit}:{test_file}")
+        if not re.search(rf"^\s*(?:async\s+)?def {re.escape(name)}\(", source, re.M):
+            return ABSENT
+        dotted = test_file[:-3].replace("/", ".") + "." + rest.replace("::", ".")
+        done = subprocess.run([self.python, "-m", "unittest", dotted], cwd=self.tree(commit),
+                              capture_output=True, text=True)
+        if done.returncode == 0:
+            return PASS
+        if re.search(r"^FAILED \(", done.stderr, re.M) and re.search(r"^(?:FAIL|ERROR): ", done.stderr, re.M):
+            return FAIL
+        return UNOBSERVED
 
     def close(self) -> None:
         for path in self.trees.values():
@@ -443,7 +467,9 @@ def run_suite_at(root: Path, commit: str, python: str) -> set[str]:
 # -- pr -----------------------------------------------------------------------------------------------------
 
 def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, observed: set[str], goal: str,
-                   repository: str, epoch: str | None, python: str = sys.executable) -> dict:
+                   repository: str, epoch: str | None, python: str = sys.executable, runner: str = PYTEST,
+                   unparsed: list[str] | None = None, suite_status: int | None = None,
+                   retry_pr: str = RETRY_PR) -> dict:
     root = Path(root)
     base, head = rev(root, base), rev(root, head)
     baseline = json.loads((root / baseline_path).read_text(encoding="utf-8")) \
@@ -451,7 +477,18 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
     report = compare(observed, baseline)
     diff = set(changed_paths(root, base, head))
     rows = []
-    prober = Prober(root, python)
+    for line in unparsed or []:
+        rows.append({"test": None, "outcome_line": line, "disposition": "FAIL_CLOSED", "blocking": True, **item(
+            "TEST_OUTCOME_NAMES_NO_TEST", "EVERY_FAILING_OUTCOME_NAMES_A_TEST",
+            "the runner reported a failure that names no test (an import error, a setUpClass or module fixture); "
+            "it cannot be matched to the baseline, so fix it in this change", retry_pr, goal,
+            "the next push to this pull request")})
+    if suite_status not in (None, 0) and not observed and not unparsed:
+        rows.append({"test": None, "suite_status": suite_status, "disposition": "FAIL_CLOSED", "blocking": True,
+                     **item("SUITE_FAILED_WITHOUT_TEST_OUTCOME", "A_FAILED_SUITE_NAMES_ITS_FAILING_TESTS",
+                            f"the suite exited {suite_status} and reported no failing test; nothing can be judged "
+                            "pre-existing on no evidence", retry_pr, goal, "re-run the job")})
+    prober = Prober(root, python, runner)
     try:
         for test_id in report["newly_failing"]:
             test_file = test_id.split("::", 1)[0]
@@ -468,24 +505,24 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
                 row.update({"disposition": "FAIL_CLOSED", "blocking": True, **item(
                     "BASELINE_FAILURE_TOUCHED_BY_CHANGE", "CHANGE_DOES_NOT_TOUCH_A_FAILING_TEST_WITHOUT_FIXING_IT",
                     f"this change edits {test_file} and the test still fails: fix it in this change or leave it to "
-                    "the drift repair task", RETRY_PR, goal, "the next push to this pull request")})
+                    "the drift repair task", retry_pr, goal, "the next push to this pull request")})
             elif at_base in (PASS, ABSENT):
                 row.update({"disposition": "FAIL_CLOSED", "blocking": True, **item(
                     "TEST_FAILURE_INTRODUCED_BY_CHANGE", "NO_NEW_TEST_FAILURE",
-                    "fix the failing test in this change; it passes (or does not exist) on the base", RETRY_PR, goal,
+                    "fix the failing test in this change; it passes (or does not exist) on the base", retry_pr, goal,
                     "the next push to this pull request")})
             else:
                 row.update({"disposition": "FAIL_CLOSED", "blocking": True, **item(
                     "BASE_STATUS_UNOBSERVED", "BASE_STATUS_IS_OBSERVED",
                     "the test could not be run on the base commit; the change is not judged pre-existing on no "
-                    "evidence", RETRY_PR, goal, "re-run the job")})
+                    "evidence", retry_pr, goal, "re-run the job")})
             rows.append(row)
     finally:
         prober.close()
     blocking = [r for r in rows if r["blocking"]]
     body: dict[str, Any] = {"schema": PR_SCHEMA, "repository": repository, "base": base, "head": head,
                             "lowest_supported_mode": "E0", "hb_epoch": epoch, "derived_from_clock": False,
-                            "ratchet": report, "tests": rows, "authority_effect": "NONE"}
+                            "runner": runner, "ratchet": report, "tests": rows, "authority_effect": "NONE"}
     if blocking:
         first = blocking[0]
         body.update({"disposition": "FAIL_CLOSED", **{k: first[k] for k in SIX}})
@@ -498,6 +535,30 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
 
 
 # -- cli ----------------------------------------------------------------------------------------------------
+
+def unittest_node(name: str, dotted: str) -> str | None:
+    """`FAIL: name (tests.mod.Class.name)` (or the pre-3.11 `(tests.mod.Class)`) -> tests/mod.py::Class::name."""
+    parts = dotted.split(".")
+    if parts and parts[-1] == name:
+        parts = parts[:-1]
+    if len(parts) < 2 or not IDENT.match(name) or not name.startswith("test") or parts[0] == "unittest" \
+            or not all(IDENT.match(p) for p in parts):
+        return None
+    return "/".join(parts[:-1]) + ".py::" + parts[-1] + "::" + name
+
+
+def observed_unittest(path: str) -> tuple[set[str], list[str]]:
+    found, unparsed = set(), []
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        m = UNITTEST_OUTCOME.match(line)
+        if m:
+            node = unittest_node(m.group(2), m.group(3))
+            if node:
+                found.add(node)
+            else:
+                unparsed.append(line.strip())
+    return found, sorted(set(unparsed))
+
 
 def _observed(path: str | None) -> set[str] | None:
     if not path:
@@ -524,6 +585,10 @@ def main(argv: list[str] | None = None) -> int:
     d.add_argument("--open-prs", help="JSON list of {number, files} for the implication review")
     p = sub.add_parser("pr", parents=[common])
     p.add_argument("--base", required=True)
+    p.add_argument("--unittest-output", help="`python -m unittest -v` output already produced for --head; its "
+                   "FAIL/ERROR lines are the observed set and the base is probed with unittest")
+    p.add_argument("--suite-status", type=int, help="exit status of the run that produced the output")
+    p.add_argument("--retry-entrypoint", default=RETRY_PR, help="the workflow a blocked change re-runs")
     args = parser.parse_args(argv)
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -542,18 +607,26 @@ def main(argv: list[str] | None = None) -> int:
         for e in receipt["drift"]:
             print(f"DRIFT {e['test']} first_failing_commit={e.get('first_failing_commit')} {e['classification']}")
         return 0 if receipt["disposition"] == "ALLOW" else 1
-    observed = _observed(args.pytest_output)
-    if observed is None:
-        observed = run_suite("tests")
+    unparsed: list[str] = []
+    runner = PYTEST
+    if args.unittest_output:
+        observed, unparsed = observed_unittest(args.unittest_output)
+        runner = UNITTEST
+    else:
+        observed = _observed(args.pytest_output)
+        if observed is None:
+            observed = run_suite("tests")
     writer, _info = load_writer(args.writer, args.writer_sha256)
     epoch, _source, _items = resolve_epoch(root, args.hb_epoch, writer, args.owning_goal)
     record = pr_disposition(root, args.base, args.head, baseline_path=args.baseline, observed=observed,
-                            goal=args.owning_goal, repository=args.repository, epoch=epoch)
+                            goal=args.owning_goal, repository=args.repository, epoch=epoch, runner=runner,
+                            unparsed=unparsed, suite_status=args.suite_status, retry_pr=args.retry_entrypoint)
     (out / "pr-disposition.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n")
     print(json.dumps({k: record.get(k) for k in ("disposition", *SIX, SEAL) if record.get(k) is not None},
                      sort_keys=True))
     for row in record["tests"]:
-        print(f"{row['disposition']} {row['test']} blocking={row['blocking']}")
+        print(f"{row['disposition']} {row['test'] or row.get('outcome_line') or row.get('failure_code')} "
+              f"blocking={row['blocking']}")
     return 1 if record["disposition"] == "FAIL_CLOSED" else 0
 
 
