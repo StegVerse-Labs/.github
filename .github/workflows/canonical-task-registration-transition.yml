@@ -27,6 +27,14 @@ on:
       - 'tests/test_i1_goal_registration_manifests.py'
       - 'tests/fixtures/canonical_task_registration/**'
       - 'control/goal-task-allocation-requests/**'
+      # adjacency-ruling input to the collision check-in (recomputed, never trusted)
+      - 'scripts/adjacency_ruling.py'
+      - 'tests/test_adjacency_ruling.py'
+      - 'control/adjacency-rulings/**'
+      # WRITE_ADMISSION (generalizes the adjacency ruling to every governed surface)
+      - 'scripts/write_admission.py'
+      - 'tests/test_write_admission.py'
+      - 'control/write-admission/**'
   push:
     branches: [main]
     paths:
@@ -52,7 +60,7 @@ jobs:
           python-version: '3.12'
       - name: Unit tests
         # callable set for the paths this workflow is selected by; 0 skipped
-        run: python -m unittest -v tests.test_canonical_task_registration_transition tests.test_goal_scope_seal tests.test_i1_goal_registration_manifests
+        run: python -m unittest -v tests.test_canonical_task_registration_transition tests.test_goal_scope_seal tests.test_i1_goal_registration_manifests tests.test_adjacency_ruling tests.test_write_admission
       - name: Goal scope freeze (GOAL_SCOPE_SEALED) against the live base
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -100,6 +108,46 @@ jobs:
             python scripts/canonical_task_registration_transition.py verify --request "$manifest" \
               --base "$RUNNER_TEMP/base" --head . --receipt-out "$RUNNER_TEMP/receipts/$name.json" || status=1
             { echo "### $manifest"; echo '```json'; cat "$RUNNER_TEMP/receipts/$name.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          done
+          exit $status
+      - name: Recompute adjacency rulings (conditions a/b/c) at the pinned finish-point source
+        # For every ruling a pull request adds or changes: anonymously fetch the ruling's pinned finish-point
+        # commit (public source only; no token) and re-run the registration plan with the ruling. The plan
+        # recomputes component disjointness and the finish-point test's static closure itself; a ruling that
+        # does not hold leaves the plan FAIL_CLOSED (six fields). Read-only: plan mode writes nothing.
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/receipts"
+          if [ "$EVENT_NAME" != "pull_request" ]; then echo "push: no ruling input"; exit 0; fi
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch -q --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          changed=$(git diff --name-only --diff-filter=AM "origin/${BASE_REF}" HEAD -- 'control/adjacency-rulings/*.json' || true)
+          if [ -z "$changed" ]; then echo "no adjacency ruling added or changed"; exit 0; fi
+          status=0
+          for ruling in $changed; do
+            name=$(basename "$ruling" .json)
+            request="control/canonical-task-registration-requests/$name.json"
+            [ -f "$request" ] || request=$(find tests/fixtures/canonical_task_registration -name "$name.request.json" | head -1)
+            if [ -z "$request" ]; then echo "::error::no registration request for $ruling"; status=1; continue; fi
+            repo=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['subject']['finish_point']['repository'])" "$ruling")
+            commit=$(python -c "import json,sys;print(json.load(open(sys.argv[1]))['subject']['finish_point']['source_commit'])" "$ruling")
+            fp="$RUNNER_TEMP/finish-point-$name"
+            git init -q "$fp"
+            env -u GITHUB_TOKEN -u GH_TOKEN git -C "$fp" fetch -q --depth=1 "https://github.com/${repo}.git" "$commit" \
+              && git -C "$fp" checkout -q --detach FETCH_HEAD || echo "finish-point source unavailable; the plan fails closed"
+            # consumes pins: fetch each pinned commit into the same checkout, tokenless; a private or absent commit is
+            # UNKNOWN_NOT_AUTHENTICALLY_OBSERVED and the plan fails closed (ADJACENCY_RULING_CONSUMED_PIN_COMMIT_UNAVAILABLE)
+            pins=$(python -c "import json,re,sys;r=json.load(open(sys.argv[1]));c={str(d['pinned_source'].get('commit')) for d in r.get('consumes_dependencies') or [] if isinstance(d, dict) and isinstance(d.get('pinned_source'), dict)};print(' '.join(sorted(x for x in c if re.fullmatch('[0-9a-f]{40}', x))))" "$ruling")
+            for pin in $pins; do
+              env -u GITHUB_TOKEN -u GH_TOKEN git -C "$fp" fetch -q --depth=1 "https://github.com/${repo}.git" "$pin" \
+                || echo "pinned commit $pin unavailable tokenless (UNKNOWN_NOT_AUTHENTICALLY_OBSERVED); the plan fails closed"
+            done
+            python scripts/canonical_task_registration_transition.py plan --request "$request" \
+              --adjacency-ruling "$ruling" --finish-point-root "$fp" \
+              --receipt-out "$RUNNER_TEMP/receipts/adjacency-$name.json" || status=1
+            { echo "### adjacency ruling $ruling"; echo '```json'; cat "$RUNNER_TEMP/receipts/adjacency-$name.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           done
           exit $status
       - name: Upload receipts
