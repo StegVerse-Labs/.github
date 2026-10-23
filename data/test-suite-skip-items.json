@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.test-suite-skip-items/v1",
   "authority_effect": "NONE",
-  "note": "Every skip the full suite still has in CI, classified. An item here never hides, converts or deselects a skip: test_suite_skip_receipt.py still counts it and still fails closed with TEST_SUITE_SKIPPED_ON_HEAD. It only names who owns making the skip go away. Skips that CI can satisfy from an existing StegVerse source are satisfied in test-suite-ratchet.yml instead (pinned StegVerse-SDK c138cad4, the same pin org-runtime-boundary.yml installs; a clone of this public repository holding refs/stegverse/organization-ledger for the RTC014 KAT).",
+  "note": "Every skip the selected-tests job can still meet in CI, classified. An item here never hides, converts or deselects a skip: test_suite_skip_receipt.py still counts it and, when the test is in a change's selected set, still fails closed with TEST_SUITE_SKIPPED_ON_HEAD. It only names who owns making the skip go away. Skips CI can satisfy from an existing StegVerse source are satisfied in the job instead. Here: pinned StegVerse-SDK c138cad4 (the pin org-runtime-boundary.yml installs) and a clone of this public repository holding refs/stegverse/organization-ledger for the RTC014 KAT.",
   "items": [
     {
       "test_prefix": "tests.test_origin_attestation_tvc_conformance.",
