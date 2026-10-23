@@ -81,6 +81,7 @@ APPENDER_CANDIDATES = (
 )
 
 PASS, FAIL, ABSENT, UNOBSERVED = "PASS", "FAIL", "ABSENT", "UNOBSERVED"
+PROBE_SKIPPED = "SKIPPED"   # the probe ran nothing it could judge: skipped, xfail/xpass, or 0 tests
 
 
 # -- records ------------------------------------------------------------------------------------------------
@@ -170,7 +171,10 @@ class Prober:
                 done = subprocess.run([self.python, "-m", "pytest", test_id, "-q", "--tb=no", "-p", "no:cacheprovider"],
                                       cwd=self.tree(commit), capture_output=True, text=True)
                 failed = any(OUTCOME.match(l) for l in done.stdout.splitlines())
-                if done.returncode == 0:
+                tally = " ".join(done.stdout.splitlines()[-3:])
+                if re.search(r"\d+ (?:skipped|xfailed|xpassed)\b", tally) and not failed:
+                    self.cache[key] = PROBE_SKIPPED
+                elif done.returncode == 0:
                     self.cache[key] = PASS
                 elif done.returncode == 1 and failed:
                     self.cache[key] = FAIL
@@ -186,9 +190,14 @@ class Prober:
         source = git(self.root, "show", f"{commit}:{test_file}")
         if not re.search(rf"^\s*(?:async\s+)?def {re.escape(name)}\(", source, re.M):
             return ABSENT
+        if "::" not in rest:                    # a module-level function: unittest cannot run it
+            return PROBE_SKIPPED
         dotted = test_file[:-3].replace("/", ".") + "." + rest.replace("::", ".")
         done = subprocess.run([self.python, "-m", "unittest", dotted], cwd=self.tree(commit),
                               capture_output=True, text=True)
+        if re.search(r"^Ran 0 tests", done.stderr, re.M) or re.search(
+                r"(?:skipped|expected failures|unexpected successes)=\d+", done.stderr):
+            return PROBE_SKIPPED
         if done.returncode == 0:
             return PASS
         if re.search(r"^FAILED \(", done.stderr, re.M) and re.search(r"^(?:FAIL|ERROR): ", done.stderr, re.M):
@@ -351,7 +360,8 @@ def review_one(root: Path, head: str, entry: Mapping[str, Any], open_prs: list[M
 
 def detect(root: Path, head: str, *, baseline_path: str, observed: set[str] | None, epoch_arg: str | None,
            writer_path: str | None, writer_sha256: str | None, repository: str, goal: str,
-           open_prs: list[Mapping[str, Any]], python: str = sys.executable) -> dict:
+           open_prs: list[Mapping[str, Any]], python: str = sys.executable,
+           verification_rows: list[dict] | None = None, verification: Mapping[str, Any] | None = None) -> dict:
     root = Path(root)
     head = rev(root, head)
     baseline = json.loads(git(root, "show", f"{head}:{baseline_path}"))
@@ -420,7 +430,11 @@ def detect(root: Path, head: str, *, baseline_path: str, observed: set[str] | No
         "repair_task_id": task["task_id"] if task else None,
         "writer": writer_info, "ledger_append": ledger_append(goal), "authority_effect": "NONE",
     }
-    if drift:
+    vrows = list(verification_rows or [])
+    body["verification"] = {**(verification or {}), "required_verification_skipped": len(vrows), "rows": vrows}
+    if vrows:
+        body.update({"disposition": "FAIL_CLOSED", **{k: vrows[0][k] for k in SIX}})
+    elif drift:
         body.update({"disposition": "FAIL_CLOSED", **item(
             "TEST_SUITE_RATCHET_BASELINE_DRIFT_ON_MAIN", "MAIN_FAILING_SET_IS_WITHIN_BASELINE",
             f"complete repair task {task['task_id']}: {task['finish_point']}", RETRY_DETECT, goal,
@@ -469,29 +483,35 @@ def run_suite_at(root: Path, commit: str, python: str) -> set[str]:
 def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, observed: set[str], goal: str,
                    repository: str, epoch: str | None, python: str = sys.executable, runner: str = PYTEST,
                    unparsed: list[str] | None = None, suite_status: int | None = None,
-                   retry_pr: str = RETRY_PR) -> dict:
+                   retry_pr: str = RETRY_PR, verification_rows: list[dict] | None = None,
+                   verification: Mapping[str, Any] | None = None) -> dict:
     root = Path(root)
     base, head = rev(root, base), rev(root, head)
     baseline = json.loads((root / baseline_path).read_text(encoding="utf-8")) \
         if (root / baseline_path).is_file() else json.loads(git(root, "show", f"{head}:{baseline_path}"))
     report = compare(observed, baseline)
     diff = set(changed_paths(root, base, head))
-    rows = []
+    rows = list(verification_rows or [])
     for line in unparsed or []:
-        rows.append({"test": None, "outcome_line": line, "disposition": "FAIL_CLOSED", "blocking": True, **item(
-            "TEST_OUTCOME_NAMES_NO_TEST", "EVERY_FAILING_OUTCOME_NAMES_A_TEST",
-            "the runner reported a failure that names no test (an import error, a setUpClass or module fixture); "
-            "it cannot be matched to the baseline, so fix it in this change", retry_pr, goal,
-            "the next push to this pull request")})
+        rows.append(rvs_row("COLLECTION_ERROR", None,
+                            "the runner reported a failure that names no test (an import error, a setUpClass or module "
+                            "fixture), so the tests behind it did not run; fix it in this change", retry_pr, goal,
+                            "the next push to this pull request", outcome_line=line))
     if suite_status not in (None, 0) and not observed and not unparsed:
-        rows.append({"test": None, "suite_status": suite_status, "disposition": "FAIL_CLOSED", "blocking": True,
-                     **item("SUITE_FAILED_WITHOUT_TEST_OUTCOME", "A_FAILED_SUITE_NAMES_ITS_FAILING_TESTS",
-                            f"the suite exited {suite_status} and reported no failing test; nothing can be judged "
-                            "pre-existing on no evidence", retry_pr, goal, "re-run the job")})
+        rows.append(rvs_row("SUITE_ACCOUNTING_UNOBSERVED", None,
+                            f"the suite exited {suite_status} and reported no failing test, so it is not shown that "
+                            "the tests ran; nothing can be judged pre-existing on no evidence", retry_pr, goal,
+                            "re-run the job", suite_status=suite_status))
     prober = Prober(root, python, runner)
     try:
         for test_id in report["newly_failing"]:
             test_file = test_id.split("::", 1)[0]
+            if "::" not in test_id:                 # a module-level ERROR: the module did not collect
+                if not any(r.get("test") == test_id and r.get("kind") == "COLLECTION_ERROR" for r in rows):
+                    rows.append(rvs_row("COLLECTION_ERROR", test_id, "the module did not collect, so none of its "
+                                        "tests ran; fix the import or collection error", retry_pr, goal,
+                                        "the next push to this pull request"))
+                continue
             at_base = prober.status(base, test_id)
             touched = test_file in diff
             row: dict[str, Any] = {"test": test_id, "status_at_base": at_base, "test_file_in_change_diff": touched}
@@ -506,6 +526,11 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
                     "BASELINE_FAILURE_TOUCHED_BY_CHANGE", "CHANGE_DOES_NOT_TOUCH_A_FAILING_TEST_WITHOUT_FIXING_IT",
                     f"this change edits {test_file} and the test still fails: fix it in this change or leave it to "
                     "the drift repair task", retry_pr, goal, "the next push to this pull request")})
+            elif at_base == PROBE_SKIPPED:
+                row.update(rvs_row("BASE_PROBE_SKIPPED", test_id, "the test was skipped (or ran no test) on the "
+                                   "base, so it was never observed failing there; it is not pre-existing", retry_pr,
+                                   goal, "the next push to this pull request", status_at_base=at_base,
+                                   test_file_in_change_diff=touched))
             elif at_base in (PASS, ABSENT):
                 row.update({"disposition": "FAIL_CLOSED", "blocking": True, **item(
                     "TEST_FAILURE_INTRODUCED_BY_CHANGE", "NO_NEW_TEST_FAILURE",
@@ -522,7 +547,10 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
     blocking = [r for r in rows if r["blocking"]]
     body: dict[str, Any] = {"schema": PR_SCHEMA, "repository": repository, "base": base, "head": head,
                             "lowest_supported_mode": "E0", "hb_epoch": epoch, "derived_from_clock": False,
-                            "runner": runner, "ratchet": report, "tests": rows, "authority_effect": "NONE"}
+                            "runner": runner, "ratchet": report, "tests": rows, "authority_effect": "NONE",
+                            "verification": {**(verification or {}),
+                                             "required_verification_skipped": sum(1 for r in rows
+                                                                                  if r.get("failure_code") == RVS)}}
     if blocking:
         first = blocking[0]
         body.update({"disposition": "FAIL_CLOSED", **{k: first[k] for k in SIX}})
@@ -532,6 +560,435 @@ def pr_disposition(root: Path, base: str, head: str, *, baseline_path: str, obse
     else:
         body["disposition"] = "ALLOW"
     return seal(body, SEAL)
+
+
+# -- required verification: nothing skipped, nothing unrun, nothing missing ------------------------------------
+#
+# Rigel's standing rule (relayed by Coordination, Oct 23): merge readiness needs the full suite run on the
+# exact head with 0 skipped. Drift handling only ever marks a receipted pre-existing FAILURE non-blocking; a
+# test that was skipped, xfailed/xpassed, not collected, not run, or present at the base but missing at the
+# head, and a required job a path filter leaves unrun on a change in its scope, are each FAIL_CLOSED
+# REQUIRED_VERIFICATION_SKIPPED (six fields) and are never PRE_EXISTING_BASELINE_FAILURE.
+
+RVS = "REQUIRED_VERIFICATION_SKIPPED"
+SKIPPED, NOT_RUN = "SKIPPED", "NOT_RUN"
+PREDICATES = {
+    "SKIPPED": "REQUIRED_TEST_IS_NOT_SKIPPED",
+    "XFAIL": "REQUIRED_TEST_IS_NOT_SKIPPED",
+    "XPASS": "REQUIRED_TEST_IS_NOT_SKIPPED",
+    "EXPECTED_FAILURE": "REQUIRED_TEST_IS_NOT_SKIPPED",
+    "UNEXPECTED_SUCCESS": "REQUIRED_TEST_IS_NOT_SKIPPED",
+    "COLLECTION_ERROR": "REQUIRED_MODULE_IS_COLLECTED_AND_RUN",
+    "MODULE_NOT_RUN": "REQUIRED_MODULE_IS_COLLECTED_AND_RUN",
+    "TEST_NOT_RUN": "EVERY_REQUIRED_TEST_RUNS_AT_THE_EXACT_HEAD",
+    "REQUIRED_TEST_NOT_RUN_IN_REQUIRED_JOB": "EVERY_REQUIRED_TEST_RUNS_AT_THE_EXACT_HEAD",
+    "TEST_MISSING_AT_HEAD": "TEST_PRESENT_AT_BASE_RUNS_AT_HEAD",
+    "BASE_PROBE_SKIPPED": "BASE_STATUS_IS_OBSERVED_BY_RUNNING_THE_TEST",
+    "SUITE_ACCOUNTING_UNOBSERVED": "EVERY_TEST_OUTCOME_IS_ACCOUNTED",
+    "REQUIRED_JOB_PATH_FILTERED_OUT": "REQUIRED_JOB_RUNS_ON_A_CHANGE_IN_ITS_SCOPE",
+    "REQUIRED_JOB_MISSING": "EVERY_REQUIRED_JOB_AT_THE_BASE_EXISTS_AT_THE_HEAD",
+}
+JUNIT_SUMMARY = re.compile(r"(\d+) (passed|failed|skipped|xfailed|xpassed|errors?|deselected|warnings?)\b")
+XPASS_LINE = re.compile(r"^XPASS (\S+)")
+COLLECT_ERROR_LINE = re.compile(r"^ERROR (\S+\.py)(?:\s|$)")
+UNITTEST_RESULT = re.compile(r"^(\S+) \(([^)\s]+)\)(?:\n.*?)? \.\.\. (ok|FAIL|ERROR|skipped.*|expected failure|unexpected success)$")
+UNITTEST_HEAD = re.compile(r"^(\S+) \(([^)\s]+)\)(?: \.\.\. (.*))?$")
+UNITTEST_TAIL = re.compile(r" \.\.\. (ok|FAIL|ERROR|skipped.*|expected failure|unexpected success)$")
+UNITTEST_COUNTS = re.compile(r"^(?:OK|FAILED) \((.*)\)$|^OK$")
+UNITTEST_RAN = re.compile(r"^Ran (\d+) tests? in ")
+REFERENCED_PATH = re.compile(r"(?<![\w./-])((?:tests|scripts|resident-runtime|workers)/[\w./-]+\.py)\b")
+REFERENCED_MODULE = re.compile(r"(?<![\w.])(tests(?:\.\w+)+)\b")
+
+
+def rvs_row(kind: str, subject: str | None, repair: str, retry: str, goal: str, nxt: str, **detail: Any) -> dict:
+    return {"test": subject, "kind": kind, "disposition": "FAIL_CLOSED", "blocking": True,
+            **item(RVS, PREDICATES[kind], repair, retry, goal, nxt), **detail}
+
+
+def _module_path(root: Path, dotted_parts: list[str]) -> tuple[str, list[str]] | None:
+    """Longest prefix of dotted parts that is a .py file under root -> (path, remaining parts)."""
+    for k in range(len(dotted_parts), 0, -1):
+        rel = "/".join(dotted_parts[:k]) + ".py"
+        if (root / rel).is_file():
+            return rel, dotted_parts[k:]
+    return None
+
+
+def junit_cases(root: Path, junit_path: str) -> list[dict]:
+    """pytest --junitxml testcases as {node, outcome, kind, message}; outcome PASS/FAIL/SKIPPED/NOT_RUN."""
+    import xml.etree.ElementTree as ET
+    cases = []
+    for tc in ET.parse(junit_path).getroot().iter("testcase"):
+        classname, name = tc.get("classname") or "", tc.get("name") or ""
+        children = {c.tag: c for c in tc}
+        message = next((c.get("message") or "" for c in tc if c.tag in ("skipped", "error", "failure")), "")
+        if "error" in children and "collection failure" in message.lower() or (not classname and "error" in children):
+            path = name.replace(".", "/") + ".py" if not name.endswith(".py") else name
+            cases.append({"node": path, "outcome": NOT_RUN, "kind": "COLLECTION_ERROR", "message": message})
+            continue
+        if not classname:                      # a module-level skip: name is the dotted module
+            node = name if name.endswith(".py") else name.replace(".", "/") + ".py"
+        else:
+            split = _module_path(root, classname.split("."))
+            node = (split[0] + "::" + "::".join([*split[1], name])) if split else f"{classname}::{name}"
+        if "skipped" in children:
+            kind = "XFAIL" if (children["skipped"].get("type") or "").endswith("xfail") else "SKIPPED"
+            cases.append({"node": node, "outcome": SKIPPED, "kind": kind, "message": message})
+        elif "failure" in children or "error" in children:
+            cases.append({"node": node, "outcome": FAIL, "kind": None, "message": message})
+        else:
+            cases.append({"node": node, "outcome": PASS, "kind": None, "message": ""})
+    return cases
+
+
+def pytest_verification(root: Path, text: str, junit_path: str | None, retry: str, goal: str) -> tuple[list[dict], dict, set[str]]:
+    """Rows for every skipped / xfailed / xpassed / uncollected test of one pytest run, its counts, and the set
+    of node ids the run reported (any outcome)."""
+    counts: dict[str, int] = {}
+    for line in text.splitlines()[::-1]:
+        found = JUNIT_SUMMARY.findall(line)
+        if found and (" in " in line or "passed" in line or "failed" in line):
+            counts = {k if not k.startswith("error") else "errors": int(n) for n, k in found}
+            break
+    rows: list[dict] = []
+    nodes: set[str] = set()
+    nxt = "the next run of this job at the exact head"
+    if not junit_path or not Path(junit_path).is_file():
+        rows.append(rvs_row("SUITE_ACCOUNTING_UNOBSERVED", None,
+                            "run pytest with --junitxml so every test's outcome is accounted; skipped, xfailed and "
+                            "uncollected tests cannot be told from passing ones without it", retry, goal, nxt))
+        return rows, counts, nodes
+    for case in junit_cases(root, junit_path):
+        nodes.add(case["node"])
+        if case["outcome"] in (SKIPPED, NOT_RUN):
+            rows.append(rvs_row(case["kind"], case["node"],
+                                f"run this test at the exact head; it was {case['kind'].lower().replace('_', ' ')} "
+                                f"({case['message'][:200]}). A skipped run is unproven, not passed, and is never "
+                                "a pre-existing baseline failure", retry, goal, nxt))
+    for line in text.splitlines():
+        m = XPASS_LINE.match(line)
+        if m:
+            rows.append(rvs_row("XPASS", m.group(1), "an xfail-marked test passed: remove the marker so it runs as "
+                                "a required test", retry, goal, nxt))
+        m = COLLECT_ERROR_LINE.match(line)
+        if m and not any(r["test"] == m.group(1) and r["kind"] == "COLLECTION_ERROR" for r in rows):
+            rows.append(rvs_row("COLLECTION_ERROR", m.group(1), "the module did not collect, so none of its tests "
+                                "ran; fix the import or collection error", retry, goal, nxt))
+    for key, kind in (("skipped", "SKIPPED"), ("xfailed", "XFAIL"), ("xpassed", "XPASS")):
+        if counts.get(key, 0) > sum(1 for r in rows if r["kind"] == kind):
+            rows.append(rvs_row("SUITE_ACCOUNTING_UNOBSERVED", None, f"pytest reported {counts[key]} {key} but the "
+                                "junit record names fewer; every one must be named and run", retry, goal, nxt))
+    return rows, counts, nodes
+
+
+def unittest_results(text: str) -> tuple[dict[str, str], dict[str, int], int | None]:
+    """`python -m unittest -v` output -> ({dotted id: outcome word}, summary counts, Ran N)."""
+    results: dict[str, str] = {}
+    pending: str | None = None
+    counts: dict[str, int] = {}
+    ran = None
+    for line in text.splitlines():
+        m = UNITTEST_HEAD.match(line)
+        if m and m.group(3) is not None and UNITTEST_TAIL.search(line):
+            results[m.group(2) if m.group(2).endswith("." + m.group(1)) else m.group(2) + "." + m.group(1)] = \
+                UNITTEST_TAIL.search(line).group(1)
+            pending = None
+            continue
+        if m and m.group(3) is None:
+            pending = m.group(2) if m.group(2).endswith("." + m.group(1)) else m.group(2) + "." + m.group(1)
+            continue
+        t = UNITTEST_TAIL.search(line)
+        if t and pending:
+            results[pending] = t.group(1)
+            pending = None
+            continue
+        r = UNITTEST_RAN.match(line)
+        if r:
+            ran = int(r.group(1))
+        c = UNITTEST_COUNTS.match(line)
+        if c:
+            counts = {k.strip(): int(v) for k, v in (p.split("=") for p in (c.group(1) or "").split(",") if "=" in p)}
+    return results, counts, ran
+
+
+LIST_TESTS = r"""
+import ast, json, sys, unittest
+out = {}
+for mod in sys.argv[1:]:
+    entry = {"unittest": [], "import_error": None, "pytest_only": []}
+    try:
+        suite = unittest.defaultTestLoader.loadTestsFromName(mod)
+    except Exception as exc:
+        entry["import_error"] = repr(exc)[:300]
+        out[mod] = entry
+        continue
+    def walk(s):
+        for t in s:
+            if isinstance(t, unittest.TestSuite):
+                yield from walk(t)
+            else:
+                yield t
+    for t in walk(suite):
+        if type(t).__name__ in ("_FailedTest", "ModuleImportFailure"):
+            entry["import_error"] = t.id()
+        else:
+            entry["unittest"].append(t.id())
+    try:
+        tree = ast.parse(open(mod.replace(".", "/") + ".py", encoding="utf-8").read())
+        entry["pytest_only"] = [n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                                and n.name.startswith("test")]
+    except OSError:
+        pass
+    out[mod] = entry
+print(json.dumps(out))
+"""
+
+
+def list_unittest_tests(tree: Path, modules: list[str], python: str = sys.executable) -> dict[str, dict] | None:
+    done = subprocess.run([python, "-c", LIST_TESTS, *modules], cwd=tree, capture_output=True, text=True)
+    try:
+        return json.loads(done.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        return None
+
+
+def unittest_verification(root: Path, text: str, modules: list[str], retry: str, goal: str,
+                          python: str = sys.executable, pytest_proof: str | None = None) -> tuple[list[dict], dict]:
+    """Rows for every listed-module test the unittest run skipped or did not run. Module-level test functions
+    unittest cannot run are NOT_RUN unless `pytest_proof` names the required job that runs them at this head
+    (that job then fails closed itself if they do not run: --required-unittest-modules-from)."""
+    results, counts, ran = unittest_results(text)
+    nxt = "the next run of this job at the exact head"
+    rows: list[dict] = []
+    listing = list_unittest_tests(root, modules, python) if modules else {}
+    if listing is None:
+        return [rvs_row("SUITE_ACCOUNTING_UNOBSERVED", None, "the listed modules' tests could not be enumerated "
+                        "at the head, so nothing can be shown to have run", retry, goal, nxt)], {}
+    words = {"expected failure": "EXPECTED_FAILURE", "unexpected success": "UNEXPECTED_SUCCESS"}
+    for test_id, word in sorted(results.items()):
+        kind = "SKIPPED" if word.startswith("skipped") else words.get(word)
+        if kind:
+            rows.append(rvs_row(kind, test_id, f"run this test at the exact head; unittest reported '{word}'. A "
+                                "skipped run is unproven, not passed", retry, goal, nxt))
+    delegated: list[dict] = []
+    for mod, entry in listing.items():
+        if entry["import_error"]:
+            rows.append(rvs_row("COLLECTION_ERROR", mod, f"the module does not import ({entry['import_error']}); "
+                                "none of its tests ran", retry, goal, nxt))
+            continue
+        for test_id in entry["unittest"]:
+            if test_id not in results:
+                rows.append(rvs_row("TEST_NOT_RUN", test_id, "the listed module's test did not run in this job",
+                                    retry, goal, nxt))
+        if not entry["unittest"] and not entry["pytest_only"]:
+            rows.append(rvs_row("MODULE_NOT_RUN", mod, "the listed module defines no test this job can run", retry,
+                                goal, nxt))
+        for name in entry["pytest_only"]:
+            node = mod.replace(".", "/") + ".py::" + name
+            if pytest_proof:
+                delegated.append({"test": node, "kind": "PYTEST_ONLY_FUNCTION", "verified_by": pytest_proof})
+            else:
+                rows.append(rvs_row("TEST_NOT_RUN", node, "a module-level test function: unittest never runs it; run "
+                                    "it under pytest in a required job at this head", retry, goal, nxt))
+    if ran is None:
+        rows.append(rvs_row("SUITE_ACCOUNTING_UNOBSERVED", None, "the run printed no 'Ran N tests' line", retry,
+                            goal, nxt))
+    for key, kind in (("skipped", "SKIPPED"), ("expected failures", "EXPECTED_FAILURE"),
+                      ("unexpected successes", "UNEXPECTED_SUCCESS")):
+        if counts.get(key, 0) > sum(1 for r in rows if r["kind"] == kind):
+            rows.append(rvs_row("SUITE_ACCOUNTING_UNOBSERVED", None, f"unittest reported {key}={counts[key]} but "
+                                "named fewer; every one must be named and run", retry, goal, nxt))
+    return rows, {"ran": ran, "counts": counts, "results": len(results), "delegated": delegated,
+                  "modules": len(listing)}
+
+
+def collect_pytest(tree: Path, python: str = sys.executable) -> set[str] | None:
+    done = subprocess.run([python, "-m", "pytest", "tests", "--collect-only", "-q", "-p", "no:cacheprovider"],
+                          cwd=tree, capture_output=True, text=True)
+    if done.returncode not in (0, 1, 2, 5):
+        return None
+    return {l.strip() for l in done.stdout.splitlines() if "::" in l and not l.startswith(" ")}
+
+
+def missing_at_head(base_nodes: set[str] | None, head_nodes: set[str], retry: str, goal: str) -> list[dict]:
+    nxt = "the next push to this pull request"
+    if base_nodes is None:
+        return [rvs_row("SUITE_ACCOUNTING_UNOBSERVED", None, "the base's test set could not be collected, so a test "
+                        "removed by this change cannot be ruled out", retry, goal, "re-run the job")]
+    return [rvs_row("TEST_MISSING_AT_HEAD", node, "the test exists at the base and did not run at the head (removed, "
+                    "renamed or uncollected); restore it, or land its removal as its own reviewed change with the "
+                    "replacement test named", retry, goal, nxt)
+            for node in sorted(base_nodes - head_nodes)]
+
+
+def required_modules(workflow_text: str) -> list[str]:
+    """The dotted test modules a workflow names (handed to `python -m unittest` directly or through a
+    variable): every `tests.<...>.test_<name>` in its text."""
+    return list(dict.fromkeys(re.findall(r"(?<![\w./-])tests(?:\.\w+)*\.test_\w+\b", workflow_text)))
+
+
+def required_test_nodes(root: Path, modules: list[str]) -> list[str]:
+    """pytest node ids of every test the modules define (TestCase methods and module-level functions)."""
+    import ast
+    nodes = []
+    for mod in modules:
+        path = root / (mod.replace(".", "/") + ".py")
+        if not path.is_file():
+            nodes.append(mod.replace(".", "/") + ".py")
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        rel = mod.replace(".", "/") + ".py"
+        for n in tree.body:
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name.startswith("test"):
+                nodes.append(f"{rel}::{n.name}")
+            elif isinstance(n, ast.ClassDef) and (n.name.startswith("Test") or any(
+                    ast.unparse(b).endswith("TestCase") for b in n.bases)):
+                if any(isinstance(s, ast.Assign) and any(getattr(t, "id", "") == "__test__" for t in s.targets)
+                       for s in n.body):
+                    continue
+                for s in n.body:
+                    if isinstance(s, (ast.FunctionDef, ast.AsyncFunctionDef)) and s.name.startswith("test"):
+                        nodes.append(f"{rel}::{n.name}::{s.name}")
+    return nodes
+
+
+def required_nodes_rows(required: list[str], ran: set[str], skipped: set[str], workflow: str, retry: str,
+                        goal: str) -> list[dict]:
+    rows = []
+    for node in required:
+        hits = {n for n in ran if n == node or n.startswith(node + "[")}
+        if not hits or hits <= skipped:
+            rows.append(rvs_row("REQUIRED_TEST_NOT_RUN_IN_REQUIRED_JOB", node,
+                                f"{workflow} lists this module and delegates its pytest-only tests to this job; the "
+                                "test must run here at the exact head", retry, goal,
+                                "the next run of this job at the exact head", required_by=workflow))
+    return rows
+
+
+def _glob_regex(pattern: str) -> re.Pattern:
+    out, i = "", 0
+    while i < len(pattern):
+        if pattern.startswith("**/", i):
+            out, i = out + "(?:.*/)?", i + 3
+        elif pattern.startswith("**", i):
+            out, i = out + ".*", i + 2
+        elif pattern[i] == "*":
+            out, i = out + "[^/]*", i + 1
+        elif pattern[i] == "?":
+            out, i = out + "[^/]", i + 1
+        else:
+            out, i = out + re.escape(pattern[i]), i + 1
+    return re.compile(out + "$")
+
+
+def workflow_pr_filter(text: str) -> tuple[bool, list[str] | None, list[str]]:
+    """(triggers on pull_request, its `paths` list or None when unfiltered, its `paths-ignore` list)."""
+    lines = text.splitlines()
+    on_idx = next((i for i, l in enumerate(lines) if re.match(r"^(on|'on'|\"on\"|true):", l)), None)
+    if on_idx is None:
+        return False, None, []
+    head = lines[on_idx]
+    if "pull_request" in head:                                   # on: [push, pull_request] / on: pull_request
+        return bool(re.search(r"\bpull_request\b(?!_)", head)), None, []
+    block, i = [], on_idx + 1
+    while i < len(lines) and (not lines[i].strip() or lines[i].startswith((" ", "\t", "#"))):
+        block.append(lines[i])
+        i += 1
+    pr_at = next((j for j, l in enumerate(block) if re.match(r"^\s+pull_request\s*:", l)), None)
+    if pr_at is None:
+        return any(re.match(r"^\s+-\s*pull_request\s*$", l) for l in block), None, []
+    indent = len(block[pr_at]) - len(block[pr_at].lstrip())
+    sub, j = [], pr_at + 1
+    while j < len(block) and (not block[j].strip() or block[j].lstrip().startswith("#")
+                              or len(block[j]) - len(block[j].lstrip()) > indent):
+        sub.append(block[j])
+        j += 1
+    lists: dict[str, list[str]] = {}
+    key = None
+    for l in sub:
+        m = re.match(r"^\s+(paths|paths-ignore|branches|types|branches-ignore)\s*:\s*(\[.*\])?\s*$", l)
+        if m:
+            key = m.group(1)
+            lists[key] = [p.strip().strip("'\"") for p in m.group(2)[1:-1].split(",")] if m.group(2) else []
+            continue
+        m = re.match(r"^\s+-\s*['\"]?([^'\"#]+?)['\"]?\s*(?:#.*)?$", l)
+        if m and key:
+            lists[key].append(m.group(1))
+        elif l.strip() and not l.lstrip().startswith("#"):
+            key = None
+    return True, lists.get("paths"), lists.get("paths-ignore", [])
+
+
+def workflow_jobs(text: str) -> list[str]:
+    lines = text.splitlines()
+    at = next((i for i, l in enumerate(lines) if re.match(r"^jobs\s*:", l)), None)
+    if at is None:
+        return []
+    jobs = []
+    for l in lines[at + 1:]:
+        if l and not l.startswith((" ", "\t", "#")):
+            break
+        m = re.match(r"^  ([A-Za-z_][\w-]*)\s*:", l)
+        if m:
+            jobs.append(m.group(1))
+    return jobs
+
+
+def missing_job_rows(root: Path, base: str, head: str, retry: str, goal: str) -> list[dict]:
+    """Every pull_request job at the base must exist at the head: a deleted workflow or a removed job is a
+    required verification that no longer runs -> FAIL_CLOSED (its replacement lands as its own change)."""
+    def table(commit: str) -> dict[str, list[str]]:
+        out = {}
+        for wf in git(root, "ls-tree", "--name-only", commit, ".github/workflows/").split():
+            if wf.endswith((".yml", ".yaml")):
+                text = git(root, "show", f"{commit}:{wf}")
+                if workflow_pr_filter(text)[0]:
+                    out[wf] = workflow_jobs(text)
+        return out
+    at_base, at_head = table(base), table(head)
+    rows = []
+    for wf, jobs in sorted(at_base.items()):
+        for job in jobs:
+            if job not in at_head.get(wf, []):
+                rows.append(rvs_row("REQUIRED_JOB_MISSING", f"{wf}#{job}",
+                                    "this pull_request job runs at the base and is absent at the head (its workflow, "
+                                    "its pull_request trigger or the job was removed); restore it, or land its "
+                                    "retirement as its own reviewed change naming where its checks now run", retry,
+                                    goal, "the next push to this pull request"))
+    return rows
+
+
+def path_filter_rows(root: Path, head: str, diff: Iterable[str], retry: str, goal: str) -> tuple[list[dict], list[dict]]:
+    """For each path-filtered pull_request workflow at `head`: when this change edits a file the workflow's run
+    steps name (a test, script or module) and its filter does not match any changed path, the job is left
+    unrun on a change in its scope -> FAIL_CLOSED. Returns (rows, the per-workflow trigger table)."""
+    diff = sorted(diff)
+    rows, table = [], []
+    for wf in git(root, "ls-tree", "--name-only", head, ".github/workflows/").split():
+        if not wf.endswith((".yml", ".yaml")):
+            continue
+        text = git(root, "show", f"{head}:{wf}")
+        on_pr, paths, ignore = workflow_pr_filter(text)
+        if not on_pr:
+            continue
+        referenced = set(REFERENCED_PATH.findall(text)) | {m.replace(".", "/") + ".py" for m in REFERENCED_MODULE.findall(text)}
+        referenced.add(wf)
+        if paths is None:
+            triggered = bool(diff) and not (ignore and all(any(_glob_regex(p).match(f) for p in ignore) for f in diff))
+        else:
+            pats = [_glob_regex(p) for p in paths if not p.startswith("!")]
+            negs = [_glob_regex(p[1:]) for p in paths if p.startswith("!")]
+            triggered = any(any(r.match(f) for r in pats) and not any(n.match(f) for n in negs) for f in diff)
+        in_scope = sorted(set(diff) & referenced)
+        table.append({"workflow": wf, "path_filtered": paths is not None, "triggered": triggered,
+                      "changed_files_it_names": in_scope})
+        if in_scope and not triggered:
+            rows.append(rvs_row("REQUIRED_JOB_PATH_FILTERED_OUT", wf,
+                                f"this change edits {', '.join(in_scope)}, which {wf} runs, but its pull_request "
+                                "path filter does not match the change, so the job never runs: add those paths to "
+                                "its filter (or drop the filter)", retry, goal, "the next push to this pull request",
+                                changed_files=in_scope))
+    return rows, table
 
 
 # -- cli ----------------------------------------------------------------------------------------------------
@@ -581,6 +1038,11 @@ def main(argv: list[str] | None = None) -> int:
     common.add_argument("--out-dir", required=True)
     common.add_argument("--writer", help="StegVerse-org/.github resident-runtime/main_change_receipt.py")
     common.add_argument("--writer-sha256", help="the writer's pinned sha256; any other bytes are not loaded")
+    common.add_argument("--junit-xml", help="pytest --junitxml record of the --pytest-output run: every skipped, "
+                        "xfailed or uncollected test in it is FAIL_CLOSED REQUIRED_VERIFICATION_SKIPPED")
+    common.add_argument("--required-unittest-modules-from", action="append", default=[],
+                        help="a workflow whose `python -m unittest` module list must have every test run in this "
+                        "pytest run (its pytest-only functions are delegated here)")
     d = sub.add_parser("detect", parents=[common])
     d.add_argument("--open-prs", help="JSON list of {number, files} for the implication review")
     p = sub.add_parser("pr", parents=[common])
@@ -589,15 +1051,38 @@ def main(argv: list[str] | None = None) -> int:
                    "FAIL/ERROR lines are the observed set and the base is probed with unittest")
     p.add_argument("--suite-status", type=int, help="exit status of the run that produced the output")
     p.add_argument("--retry-entrypoint", default=RETRY_PR, help="the workflow a blocked change re-runs")
+    p.add_argument("--unittest-modules", nargs="*", default=[], help="the module list the unittest run was given; "
+                   "each listed test must have run, and none may be skipped")
+    p.add_argument("--pytest-proof", help="the required job at this head that runs the listed modules' pytest-only "
+                   "functions and fails closed if they do not run (e.g. test-suite-ratchet.yml ratchet)")
+    p.add_argument("--path-filter-check", action="store_true", help="fail closed when a path-filtered workflow "
+                   "that runs a file this change edits would not be triggered by the change")
     args = parser.parse_args(argv)
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     root = Path(args.root).resolve()
+    retry = RETRY_DETECT if args.command == "detect" else args.retry_entrypoint
+    vrows: list[dict] = []
+    vinfo: dict[str, Any] = {}
+    head_nodes: set[str] = set()
+    if not getattr(args, "unittest_output", None):
+        text = Path(args.pytest_output).read_text(encoding="utf-8") if args.pytest_output else ""
+        if args.pytest_output or args.junit_xml:
+            vrows, counts, head_nodes = pytest_verification(root, text, args.junit_xml, retry, args.owning_goal)
+            vinfo.update({"runner": PYTEST, "counts": counts, "tests_reported": len(head_nodes)})
+            skipped_nodes = {r["test"] for r in vrows if r.get("test")}
+            for wf in args.required_unittest_modules_from:
+                mods = required_modules((root / wf).read_text(encoding="utf-8"))
+                need = required_test_nodes(root, mods)
+                vrows += required_nodes_rows(need, head_nodes, skipped_nodes, wf, retry, args.owning_goal)
+                vinfo.setdefault("required_by_workflows", []).append(
+                    {"workflow": wf, "modules": len(mods), "tests_required": len(need)})
     if args.command == "detect":
         open_prs = json.loads(Path(args.open_prs).read_text()) if args.open_prs else []
         result = detect(root, args.head, baseline_path=args.baseline, observed=_observed(args.pytest_output),
                         epoch_arg=args.hb_epoch, writer_path=args.writer, writer_sha256=args.writer_sha256,
-                        repository=args.repository, goal=args.owning_goal, open_prs=open_prs)
+                        repository=args.repository, goal=args.owning_goal, open_prs=open_prs,
+                        verification_rows=vrows, verification=vinfo)
         for name, record in result.items():
             if record is not None:
                 (out / f"{name.replace('_', '-')}.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n")
@@ -606,27 +1091,68 @@ def main(argv: list[str] | None = None) -> int:
                           if receipt.get(k) is not None}, sort_keys=True))
         for e in receipt["drift"]:
             print(f"DRIFT {e['test']} first_failing_commit={e.get('first_failing_commit')} {e['classification']}")
+        for r in receipt["verification"]["rows"]:
+            print(f"FAIL_CLOSED {RVS}/{r['kind']} {r['test']}")
+        print(f"VERIFICATION counts={receipt['verification'].get('counts')} "
+              f"required_verification_skipped={receipt['verification']['required_verification_skipped']}")
         return 0 if receipt["disposition"] == "ALLOW" else 1
     unparsed: list[str] = []
     runner = PYTEST
+    base_sha, head_sha = rev(root, args.base), rev(root, args.head)
     if args.unittest_output:
         observed, unparsed = observed_unittest(args.unittest_output)
         runner = UNITTEST
+        text = Path(args.unittest_output).read_text(encoding="utf-8")
+        rows_u, info_u = unittest_verification(root, text, args.unittest_modules, retry, args.owning_goal,
+                                               pytest_proof=args.pytest_proof)
+        vrows += rows_u
+        vinfo.update({"runner": UNITTEST, **info_u})
+        if args.unittest_modules:
+            prober = Prober(root)
+            try:
+                base_list = list_unittest_tests(prober.tree(base_sha), args.unittest_modules)
+            finally:
+                prober.close()
+            head_list = list_unittest_tests(root, args.unittest_modules) or {}
+
+            def ids(listing: Mapping[str, Any]) -> set[str]:
+                return {t for m, e in listing.items() for t in e["unittest"]} | \
+                       {m.replace(".", "/") + ".py::" + n for m, e in listing.items() for n in e["pytest_only"]}
+            vrows += missing_at_head(ids(base_list) if base_list is not None else None, ids(head_list), retry,
+                                     args.owning_goal)
     else:
         observed = _observed(args.pytest_output)
         if observed is None:
             observed = run_suite("tests")
+        if args.junit_xml and Path(args.junit_xml).is_file():
+            prober = Prober(root)
+            try:
+                base_nodes = collect_pytest(prober.tree(base_sha))
+            finally:
+                prober.close()
+            vrows += missing_at_head(base_nodes, head_nodes, retry, args.owning_goal)
+            vinfo["base_tests_collected"] = len(base_nodes) if base_nodes is not None else None
+    if args.path_filter_check:
+        prow, table = path_filter_rows(root, head_sha, changed_paths(root, base_sha, head_sha), retry,
+                                       args.owning_goal)
+        vrows += prow + missing_job_rows(root, base_sha, head_sha, retry, args.owning_goal)
+        vinfo["workflows_triggered"] = table
     writer, _info = load_writer(args.writer, args.writer_sha256)
     epoch, _source, _items = resolve_epoch(root, args.hb_epoch, writer, args.owning_goal)
     record = pr_disposition(root, args.base, args.head, baseline_path=args.baseline, observed=observed,
                             goal=args.owning_goal, repository=args.repository, epoch=epoch, runner=runner,
-                            unparsed=unparsed, suite_status=args.suite_status, retry_pr=args.retry_entrypoint)
+                            unparsed=unparsed, suite_status=args.suite_status, retry_pr=args.retry_entrypoint,
+                            verification_rows=vrows, verification=vinfo)
     (out / "pr-disposition.json").write_text(json.dumps(record, indent=2, sort_keys=True) + "\n")
     print(json.dumps({k: record.get(k) for k in ("disposition", *SIX, SEAL) if record.get(k) is not None},
                      sort_keys=True))
     for row in record["tests"]:
-        print(f"{row['disposition']} {row['test'] or row.get('outcome_line') or row.get('failure_code')} "
-              f"blocking={row['blocking']}")
+        label = row.get("kind") if row.get("failure_code") == RVS else None
+        print(f"{row['disposition']}{' ' + RVS + '/' + label if label else ''} "
+              f"{row['test'] or row.get('outcome_line') or row.get('failure_code')} blocking={row['blocking']}")
+    v = record.get("verification", {})
+    print(f"VERIFICATION runner={v.get('runner')} counts={v.get('counts')} "
+          f"required_verification_skipped={v.get('required_verification_skipped')}")
     return 1 if record["disposition"] == "FAIL_CLOSED" else 0
 
 

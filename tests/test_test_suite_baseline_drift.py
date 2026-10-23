@@ -211,14 +211,17 @@ class BaselineDriftTests(unittest.TestCase):
         base = self.toy.commit("main breaks y")
         self.toy.write("docs.md", "unrelated\n")
         self.toy.commit("pr")
-        out = Path(self.tmp.name) / "out"
-        pytest_out = Path(self.tmp.name) / "pytest.txt"
-        pytest_out.write_text("FAILED tests/test_a.py::test_y - AssertionError\n1 failed, 1 passed\n")
-        code = drift.main(["pr", "--root", str(self.toy.path), "--base", base, "--hb-epoch", "469411750",
-                           "--pytest-output", str(pytest_out), "--out-dir", str(out)])
+        code, record = self.pr_pytest(base)
         self.assertEqual(code, 0)
-        record = json.loads((out / "pr-disposition.json").read_text())
         self.assertEqual(record["disposition"], "PRE_EXISTING_BASELINE_FAILURE")
+        self.assertEqual(record["verification"]["required_verification_skipped"], 0)
+        self.assertEqual(record["verification"]["counts"].get("skipped", 0), 0)
+        out = Path(self.tmp.name) / "out-nojunit"
+        code = drift.main(["pr", "--root", str(self.toy.path), "--base", base, "--hb-epoch", "469411750",
+                           "--pytest-output", str(Path(self.tmp.name) / "pytest.txt"), "--out-dir", str(out)])
+        record = json.loads((out / "pr-disposition.json").read_text())
+        self.assertEqual(code, 1)
+        self.assert_rvs(record, "SUITE_ACCOUNTING_UNOBSERVED")
 
     # -- unittest-run jobs (cross-task-coordination-validation.yml) -----------------------------------------
 
@@ -233,11 +236,13 @@ class BaselineDriftTests(unittest.TestCase):
         out.write_text(done.stdout + done.stderr)
         return done.returncode, out
 
-    def pr_cli(self, base: str, out_file: Path, status: int) -> tuple[int, dict]:
+    def pr_cli(self, base: str, out_file: Path, status: int, modules: list[str] | None = None,
+               extra: list[str] | None = None) -> tuple[int, dict]:
         out = Path(self.tmp.name) / "out-u"
         code = drift.main(["pr", "--root", str(self.toy.path), "--base", base, "--hb-epoch", "469411750",
                            "--unittest-output", str(out_file), "--suite-status", str(status), "--out-dir", str(out),
-                           "--retry-entrypoint", "toy.yml"])
+                           "--retry-entrypoint", "toy.yml", *(["--unittest-modules", *modules] if modules else []),
+                           *(extra or [])])
         return code, json.loads((out / "pr-disposition.json").read_text())
 
     def test_unittest_outcome_lines_map_to_ratchet_node_ids(self) -> None:
@@ -282,11 +287,249 @@ class BaselineDriftTests(unittest.TestCase):
         out_file.write_text("ERROR: setUpClass (tests.test_u.U)\n----\nFAILED (errors=1)\n")
         code, record = self.pr_cli(base, out_file, 1)
         self.assertEqual(code, 1)
-        self.assertEqual(record["failure_code"], "TEST_OUTCOME_NAMES_NO_TEST")
+        self.assert_rvs(record, "COLLECTION_ERROR")
         out_file.write_text("Traceback (most recent call last):\nSyntaxError\n")
         code, record = self.pr_cli(base, out_file, 1)
         self.assertEqual(code, 1)
-        self.assertEqual(record["failure_code"], "SUITE_FAILED_WITHOUT_TEST_OUTCOME")
+        self.assert_rvs(record, "SUITE_ACCOUNTING_UNOBSERVED")
+
+    # -- required verification: skipped, not run or missing is FAIL_CLOSED, never pre-existing ---------------
+
+    def assert_rvs(self, record: dict, kind: str) -> dict:
+        self.assertEqual(record["disposition"], "FAIL_CLOSED")
+        self.assertNotEqual(record["disposition"], "PRE_EXISTING_BASELINE_FAILURE")
+        rows = [r for r in record["tests"] if r.get("failure_code") == "REQUIRED_VERIFICATION_SKIPPED"]
+        hits = [r for r in rows if r["kind"] == kind]
+        self.assertTrue(hits, (kind, [r.get("kind") for r in rows]))
+        for r in hits:
+            self.assertEqual(r["disposition"], "FAIL_CLOSED")
+            self.assertTrue(r["blocking"])
+            self.assert_six(r)
+        self.assertEqual(record["failure_code"], "REQUIRED_VERIFICATION_SKIPPED")
+        self.assert_six(record)
+        return hits[0]
+
+    def run_pytest(self, *extra: str) -> tuple[Path, Path]:
+        out = Path(self.tmp.name) / "pytest.txt"
+        junit = Path(self.tmp.name) / "pytest.xml"
+        env = {k: v for k, v in os.environ.items() if not k.startswith("PYTEST_")}
+        done = subprocess.run([sys.executable, "-m", "pytest", "tests", "-q", "--tb=no", "-p", "no:cacheprovider",
+                               "-rfEsxX", f"--junitxml={junit}", *extra], cwd=self.toy.path, capture_output=True,
+                              text=True, env=env)
+        out.write_text(done.stdout)
+        return out, junit
+
+    def pr_pytest(self, base: str, *extra: str, run: tuple[str, ...] = ()) -> tuple[int, dict]:
+        out, junit = self.run_pytest(*run)
+        dest = Path(self.tmp.name) / "out-p"
+        code = drift.main(["pr", "--root", str(self.toy.path), "--base", base, "--hb-epoch", "469411750",
+                           "--pytest-output", str(out), "--junit-xml", str(junit), "--out-dir", str(dest),
+                           "--retry-entrypoint", "toy.yml", *extra])
+        return code, json.loads((dest / "pr-disposition.json").read_text())
+
+    def test_pytest_skip_present_on_main_too_is_never_pre_existing(self) -> None:
+        self.toy.write("tests/test_s.py", "import pytest\ndef test_s():\n    pytest.skip('tool not installed')\n")
+        base = self.toy.commit("main has a skipped test")
+        self.toy.write("docs.md", "unrelated\n")
+        self.toy.commit("pr: unrelated")
+        code, record = self.pr_pytest(base)
+        self.assertEqual(code, 1)
+        row = self.assert_rvs(record, "SKIPPED")
+        self.assertEqual(row["test"], "tests/test_s.py::test_s")
+        self.assertEqual(record["verification"]["counts"]["skipped"], 1)
+
+    def test_module_level_skip_names_the_module(self) -> None:
+        self.toy.write("tests/test_m.py", "import pytest\npytest.skip('sdk absent', allow_module_level=True)\n"
+                       "def test_m():\n    pass\n")
+        base = self.toy.commit("main")
+        self.toy.commit("pr")
+        code, record = self.pr_pytest(base)
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "SKIPPED")["test"], "tests/test_m.py")
+
+    def test_pytest_xfail_and_xpass_fail_closed(self) -> None:
+        self.toy.write("tests/test_s.py", "import pytest\n@pytest.mark.xfail(reason='r')\ndef test_xf():\n"
+                       "    assert False\n@pytest.mark.xfail(reason='r')\ndef test_xp():\n    assert True\n")
+        base = self.toy.commit("main")
+        self.toy.commit("pr")
+        code, record = self.pr_pytest(base)
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "XFAIL")["test"], "tests/test_s.py::test_xf")
+        self.assertEqual(self.assert_rvs(record, "XPASS")["test"], "tests/test_s.py::test_xp")
+
+    def test_collection_error_failing_on_base_too_is_never_pre_existing(self) -> None:
+        self.toy.write("tests/test_bad.py", "import not_a_module_anywhere\ndef test_b():\n    pass\n")
+        base = self.toy.commit("main has an uncollectable module")
+        self.toy.write("docs.md", "unrelated\n")
+        self.toy.commit("pr: unrelated")
+        code, record = self.pr_pytest(base)
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "COLLECTION_ERROR")["test"], "tests/test_bad.py")
+        self.assertNotIn("PRE_EXISTING_BASELINE_FAILURE", [r["disposition"] for r in record["tests"]])
+
+    def test_test_present_at_base_and_missing_at_head_fails_closed(self) -> None:
+        base = self.toy.commit("main")
+        self.toy.write("tests/test_a.py", TEST_FILE.split("def test_y")[0])
+        self.toy.commit("pr deletes test_y")
+        code, record = self.pr_pytest(base)
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "TEST_MISSING_AT_HEAD")["test"], "tests/test_a.py::test_y")
+
+    def test_deselected_test_is_missing_at_head(self) -> None:
+        base = self.toy.commit("main")
+        self.toy.commit("pr")
+        code, record = self.pr_pytest(base, run=("--deselect", "tests/test_a.py::test_x"))
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "TEST_MISSING_AT_HEAD")["test"], "tests/test_a.py::test_x")
+
+    def test_failure_skipped_on_the_base_is_not_pre_existing(self) -> None:
+        self.toy.write("tests/test_w.py", "import pytest\nfrom pathlib import Path\nHERE = Path(__file__).resolve()"
+                       ".parent.parent\ndef test_w():\n    v = (HERE / 'w.txt').read_text().strip()\n    if v == 'skip':\n"
+                       "        pytest.skip('w')\n    assert v == 'ok'\n")
+        self.toy.write("w.txt", "skip\n")
+        base = self.toy.commit("main skips w")
+        self.toy.write("w.txt", "broken\n")
+        self.toy.commit("pr flips w")
+        record = self.pr(base, ["tests/test_w.py::test_w"])
+        self.assert_rvs(record, "BASE_PROBE_SKIPPED")
+
+    def test_required_module_tests_must_run_in_the_pytest_job(self) -> None:
+        self.toy.write(".github/workflows/unit.yml", "name: unit\non:\n  pull_request:\n    paths:\n"
+                       "      - 'tests/test_f.py'\njobs:\n  validate:\n    runs-on: ubuntu-latest\n    steps:\n"
+                       "      - run: |\n          python -m unittest -v \\\n            tests.test_f\n")
+        self.toy.write("tests/test_f.py", "def test_f1():\n    assert True\n")
+        self.toy.write(".github/workflows/unit2.yml", "name: unit2\non: pull_request\njobs:\n  v:\n    runs-on: x\n"
+                       "    steps:\n      - env:\n          MODS: >-\n            tests.test_g\n"
+                       "        run: python -m unittest -v $MODS\n")
+        self.toy.write("tests/test_g.py", "import unittest\nclass G(unittest.TestCase):\n    def test_g1(self):\n"
+                       "        pass\n")
+        base = self.toy.commit("main")
+        self.toy.commit("pr")
+        self.assertEqual(drift.required_modules((self.toy.path / ".github/workflows/unit2.yml").read_text()),
+                         ["tests.test_g"])
+        code, record = self.pr_pytest(base, "--required-unittest-modules-from", ".github/workflows/unit2.yml",
+                                      run=("--deselect", "tests/test_g.py::G::test_g1"))
+        self.assertEqual(self.assert_rvs(record, "REQUIRED_TEST_NOT_RUN_IN_REQUIRED_JOB")["test"],
+                         "tests/test_g.py::G::test_g1")
+        args = ("--required-unittest-modules-from", ".github/workflows/unit.yml")
+        code, record = self.pr_pytest(base, *args, run=("--deselect", "tests/test_f.py::test_f1"))
+        self.assertEqual(self.assert_rvs(record, "REQUIRED_TEST_NOT_RUN_IN_REQUIRED_JOB")["test"],
+                         "tests/test_f.py::test_f1")
+        code, record = self.pr_pytest(base, *args)
+        self.assertEqual(code, 0, record)
+        self.assertEqual(record["verification"]["required_by_workflows"][0]["tests_required"], 1)
+
+    def test_path_filter_leaving_a_required_job_unrun_fails_closed(self) -> None:
+        wf = ("name: unit\non:\n  pull_request:\n    paths:\n      - 'tests/test_a.py'\n{extra}jobs:\n  v:\n"
+              "    runs-on: ubuntu-latest\n    steps:\n      - run: python scripts/tool.py && python -m pytest tests/test_a.py\n")
+        self.toy.write(".github/workflows/unit.yml", wf.format(extra=""))
+        self.toy.write("scripts/tool.py", "print(1)\n")
+        base = self.toy.commit("main")
+        self.toy.write("scripts/tool.py", "print(2)\n")
+        self.toy.commit("pr edits a file the filtered job runs")
+        code, record = self.pr_pytest(base, "--path-filter-check")
+        row = self.assert_rvs(record, "REQUIRED_JOB_PATH_FILTERED_OUT")
+        self.assertEqual(row["test"], ".github/workflows/unit.yml")
+        self.assertEqual(row["changed_files"], ["scripts/tool.py"])
+        self.toy.write(".github/workflows/unit.yml", wf.format(extra="").replace(
+            "      - 'tests/test_a.py'\n", "      - 'tests/test_a.py'\n      - 'scripts/**'\n"))
+        self.toy.commit("pr widens the filter")
+        code, record = self.pr_pytest(base, "--path-filter-check")
+        self.assertEqual(code, 0, record)
+        self.assertTrue(record["verification"]["workflows_triggered"][0]["triggered"])
+
+    def test_workflow_filter_forms(self) -> None:
+        f = drift.workflow_pr_filter
+        self.assertEqual(f("on:\n  pull_request:\n  push:\n"), (True, None, []))
+        self.assertEqual(f("on: [push, pull_request]\n"), (True, None, []))
+        self.assertEqual(f("on:\n  pull_request:\n    paths: ['a/**', 'b.py']\n"), (True, ["a/**", "b.py"], []))
+        self.assertEqual(f("on:\n  push:\n    paths:\n      - 'x'\n"), (False, None, []))
+        self.assertTrue(drift._glob_regex("tests/**").match("tests/a/b.py"))
+        self.assertTrue(drift._glob_regex("**/*.json").match("x.json"))
+        self.assertFalse(drift._glob_regex("tests/*.py").match("tests/a/b.py"))
+
+    def test_detect_on_main_with_a_skipped_test_fails_closed(self) -> None:
+        self.toy.write("tests/test_s.py", "import pytest\ndef test_s():\n    pytest.skip('r')\n")
+        self.toy.commit("main skips")
+        out, junit = self.run_pytest()
+        dest = Path(self.tmp.name) / "out-d"
+        code = drift.main(["detect", "--root", str(self.toy.path), "--hb-epoch", "469411750", "--pytest-output",
+                           str(out), "--junit-xml", str(junit), "--out-dir", str(dest)])
+        receipt = json.loads((dest / "receipt.json").read_text())
+        self.assertEqual(code, 1)
+        self.assertEqual(receipt["failure_code"], "REQUIRED_VERIFICATION_SKIPPED")
+        self.assert_six(receipt)
+        self.assertEqual(receipt["verification"]["rows"][0]["kind"], "SKIPPED")
+
+    def test_unittest_skip_expected_failure_and_unexpected_success_fail_closed(self) -> None:
+        self.unittest_toy()
+        self.toy.write("tests/test_k.py", "import unittest\nclass K(unittest.TestCase):\n"
+                       "    @unittest.skip('r')\n    def test_skip(self):\n        pass\n"
+                       "    @unittest.expectedFailure\n    def test_xf(self):\n        self.fail()\n"
+                       "    @unittest.expectedFailure\n    def test_xp(self):\n        pass\n"
+                       "    def test_ok(self):\n        pass\n")
+        base = self.toy.commit("main")
+        self.toy.commit("pr")
+        done = subprocess.run([sys.executable, "-m", "unittest", "-v", "tests.test_k"], cwd=self.toy.path,
+                              capture_output=True, text=True)
+        out_file = Path(self.tmp.name) / "uk.txt"
+        out_file.write_text(done.stdout + done.stderr)
+        code, record = self.pr_cli(base, out_file, done.returncode, ["tests.test_k"])
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "SKIPPED")["test"], "tests.test_k.K.test_skip")
+        self.assert_rvs(record, "EXPECTED_FAILURE")
+        self.assert_rvs(record, "UNEXPECTED_SUCCESS")
+
+    def test_unittest_listed_pytest_only_module_is_not_run_unless_a_required_job_runs_it(self) -> None:
+        self.unittest_toy()
+        self.toy.write("tests/test_f.py", "def test_f1():\n    assert True\n")
+        base = self.toy.commit("main")
+        self.toy.commit("pr")
+        mods = ["tests.test_u", "tests.test_f"]
+        done = subprocess.run([sys.executable, "-m", "unittest", "-v", *mods], cwd=self.toy.path,
+                              capture_output=True, text=True)
+        out_file = Path(self.tmp.name) / "uf.txt"
+        out_file.write_text(done.stdout + done.stderr)
+        self.assertEqual(done.returncode, 0)
+        code, record = self.pr_cli(base, out_file, 0, mods)
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "TEST_NOT_RUN")["test"], "tests/test_f.py::test_f1")
+        code, record = self.pr_cli(base, out_file, 0, mods, ["--pytest-proof", "toy-ratchet"])
+        self.assertEqual(code, 0, record)
+        self.assertEqual(record["verification"]["delegated"][0]["verified_by"], "toy-ratchet")
+
+    def test_unittest_listed_module_that_does_not_import_fails_closed(self) -> None:
+        self.unittest_toy()
+        self.toy.write("tests/test_bad.py", "import not_a_module_anywhere\n")
+        base = self.toy.commit("main")
+        self.toy.commit("pr")
+        mods = ["tests.test_u", "tests.test_bad"]
+        done = subprocess.run([sys.executable, "-m", "unittest", "-v", *mods], cwd=self.toy.path,
+                              capture_output=True, text=True)
+        out_file = Path(self.tmp.name) / "ub.txt"
+        out_file.write_text(done.stdout + done.stderr)
+        code, record = self.pr_cli(base, out_file, done.returncode, mods)
+        self.assertEqual(code, 1)
+        self.assert_rvs(record, "COLLECTION_ERROR")
+
+    def test_unittest_test_missing_at_head_fails_closed(self) -> None:
+        self.unittest_toy()
+        base = self.toy.commit("main")
+        self.toy.write("tests/test_u.py", UNITTEST_FILE.split("    def test_y")[0])
+        self.toy.commit("pr removes test_y")
+        status, out_file = self.run_unittest()
+        code, record = self.pr_cli(base, out_file, status, ["tests.test_u"])
+        self.assertEqual(code, 1)
+        self.assertEqual(self.assert_rvs(record, "TEST_MISSING_AT_HEAD")["test"], "tests.test_u.U.test_y")
+
+    def test_unittest_clean_listed_run_is_allow(self) -> None:
+        self.unittest_toy()
+        base = self.toy.commit("main")
+        self.toy.commit("pr")
+        status, out_file = self.run_unittest()
+        code, record = self.pr_cli(base, out_file, status, ["tests.test_u"])
+        self.assertEqual((code, record["disposition"]), (0, "ALLOW"))
+        self.assertEqual(record["verification"]["ran"], 2)
 
 
 if __name__ == "__main__":
