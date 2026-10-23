@@ -24,7 +24,14 @@ This file projects a **request**. It is not the Task Registry, it mints no autho
 
 - STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 is the shell that consumes this goal.
 - STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 is the single-device lane. This goal depends on it.
-- TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001
-- SS-KV-SKAP-SOCIAL-RELEASE-001
+- TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 owns the durable sovereign-KV custody location (provider-neutral write and exact-hash readback). This goal consumes it as a class B dependency and does not re-implement it. The vault's KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND item names it as owning_existing_goal.
+- SS-KV-SKAP-SOCIAL-RELEASE-001 consumes KV/SKAP for StegSocials release grants. It does not own it.
 
-The collision check-in currently returns COORDINATE_CONVERGENCE with three of these (see MANIFEST.json `expected_plan`). The owners or Coordination need to confirm adjacency-not-equivalence before the identity can apply.
+Coordination ruled this adjacency class D (adjacent, not a duplicate) on 2026-10-23. The ruling is conditional on three checks, all verified:
+(a) the component sets are disjoint;
+(b) the finish-point test exercises none of the three goals' components. continuity-vault-kit#258's test loads only `runtime.kv_skap_vault` and `runtime.secret_field_policy`;
+(c) the custody relationship is a consumes-dependency.
+
+The evidence is in the request's `collision_analysis` and in MANIFEST.json `coordination_adjacency_ruling`.
+
+The collision check-in has no input for a ruling, so it still returns COORDINATE_CONVERGENCE with the three goals (see MANIFEST.json `expected_plan`). Applying the identity needs either that ruling admitted at apply time or a ruling input in the check-in. Both are owned by STEGVERSE-CANONICAL-WORK-COORDINATION-001.

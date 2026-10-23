@@ -134,7 +134,7 @@
       "basis": "NEW_IDENTITY_REQUEST",
       "registration_mode": "NEW_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
-      "request_sha256": "8e8ebfdf7ad496fc3c48749972c5fd43e22435adf2a8fc6794079826e9353fca",
+      "request_sha256": "781c653bd210df88e38bc350486f0113840a6b951154270376e9babca46f96a8",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
       "scope_digest": "sha256:d68e239bd1eeabe6558b52928632e9e1df35656e55b3f899755924e66b862ada",
       "finish_point": {
@@ -145,6 +145,23 @@
       },
       "plan_at_base": "StegVerse-Labs/.github main 86382e60 (registry generation 320) with the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
       "lowest_supported_mode": "E0",
+      "coordination_adjacency_ruling": {
+        "class": "D",
+        "ruling": "ADJACENT_NOT_DUPLICATE",
+        "adjacent_goals": [
+          "SS-KV-SKAP-SOCIAL-RELEASE-001",
+          "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+          "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001"
+        ],
+        "conditions_verified": {
+          "a_components_disjoint": true,
+          "b_finish_point_test_exercises_none_of_their_components": true,
+          "c_sovereign_kv_custody_is_consumes_dependency_class_B": true
+        },
+        "evidence": "collision_analysis in the request; continuity-vault-kit#258",
+        "ruling_record_ref": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "plan_effect": "none: the collision check-in has no ruling input, so the plan stays COORDINATE_CONVERGENCE"
+      },
       "expected_plan": {
         "disposition": "FAIL_CLOSED",
         "failure_class": "B",
