@@ -24,7 +24,8 @@
       "data/canonical-task-registry.json",
       "data/canonical-task-records/<task_id>.json",
       "control/task-vectors/<task_id>.json",
-      "control/task-vector-index.d/<task_id>.json"
+      "control/task-vector-index.d/<task_id>.json",
+      "control/goal-scope-seals/<task_id>.json"
     ]
   },
   "registration_modes": {
@@ -45,6 +46,18 @@
     "every_allow": "evidence.workercoordinator_claim_request: a request to WorkerCoordinator (claim_ref/fence_ref null, request_grants_claim_authority false); scripts/allocate_claims.py remains the claim authority",
     "collision_checkin": "plan and apply run scripts/check_registry_collision_checkin.py (Labs#3254) over predecessor -> derived successor with its event ledger empty and its clock pinned; a refusal writes nothing",
     "allocation": "allocation_request_ref binds a control/goal-task-allocation-requests proposal; it is checked against the derivation and never adopted",
+    "scope_seal": {
+      "predicate": "GOAL_SCOPE_SEALED",
+      "module": "scripts/goal_scope_seal.py",
+      "required_on": "NEW_IDENTITY (optional and checked on EXISTING_IDENTITY)",
+      "scope": "{goal, targets, expected_evidence_predicates, finish_point}; the first three equal the record",
+      "scope_digest": "sha256: + sha256(canonical JSON of scope: sorted keys, separators (',', ':'), UTF-8)",
+      "finish_point": "acceptance_test, predicate, verifier_entrypoint, lowest_supported_mode: a test decides done",
+      "derived_seal": "control/goal-scope-seals/<task_id>.json",
+      "scope_freeze_check": "python scripts/goal_scope_seal.py check --base <live base> --head <PR head> (read-only, pull_request, in .github/workflows/canonical-task-registration-transition.yml)",
+      "supersede": "a sealed scope changes only with a new scope_digest whose seal names supersedes_scope_digest and a committed stegverse.goal-scope-supersede-request/v1 under control/goal-scope-supersede-requests/",
+      "failure_codes": ["GOAL_SCOPE_NOT_SEALED", "GOAL_FINISH_POINT_NOT_TESTABLE", "GOAL_SCOPE_DIGEST_MISMATCH", "GOAL_SCOPE_DIVERGES_FROM_RECORD", "GOAL_SCOPE_SUPERSEDE_ON_NEW_IDENTITY", "GOAL_SCOPE_SEAL_REMOVED", "GOAL_SCOPE_SEAL_SCHEMA_INVALID", "GOAL_SCOPE_CHANGED_WITHOUT_SUPERSEDE", "GOAL_SCOPE_EXPANDED_WITHOUT_SUPERSEDE"]
+    },
     "decision_issue": "StegVerse-org/.github#167",
     "lowest_supported_mode": "E0"
   },
@@ -77,7 +90,8 @@
     "REGISTRATION_BYTES_DIVERGE",
     "ALLOCATION_REQUEST_NOT_BOUND",
     "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
-    "EXISTING_IDENTITY_NOT_ADMISSIBLE"
+    "EXISTING_IDENTITY_NOT_ADMISSIBLE",
+    "GOAL_SCOPE_SEALED"
   ],
   "non_allow_fields": [
     "failure_code",

@@ -77,7 +77,8 @@ class Allow(Base):
         self.assertEqual(body["disposition"], "ALLOW", body)
         tid = self.request["task_id"]
         self.assertEqual(sorted(body["derived_files"]), sorted([
-            crt.REGISTRY, f"{crt.RECORDS}/{tid}.json", f"{crt.VECTORS}/{tid}.json", f"{crt.INDEX_SHARDS}/{tid}.json"]))
+            crt.REGISTRY, f"{crt.RECORDS}/{tid}.json", f"{crt.VECTORS}/{tid}.json", f"{crt.INDEX_SHARDS}/{tid}.json",
+            f"{crt.SEALS}/{tid}.json"]))
         ev = body["evidence"]
         self.assertEqual((ev["predecessor_registry_generation"], ev["successor_registry_generation"]), (41, 42))
         self.assertEqual(ev["cosv_task_vector"], encode_task(self.request["vector"]["exact_metrics"]))
