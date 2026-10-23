@@ -8,6 +8,12 @@ pytest itself wrote for the run (pytest's built-in --junitxml; no plugin, no
 new dependency) and writes a machine-readable receipt naming each skipped test,
 its reason and the count.
 
+With --selection (scripts/select_tests_for_change.py's output for this
+change), only the tests the change selected are judged: counts, skips and
+failures are those of the selected test files, and every other test file is
+listed as not selected for this change - not run for this verdict and never
+reported as passing. A change that selects no test is ALLOW with nothing run.
+
 It never changes which tests run. It does not skip, deselect, convert or
 retry anything: it only reads what the run already recorded.
 
@@ -75,6 +81,25 @@ def read_run(path: Path) -> dict:
     return run
 
 
+def module_of(path: str) -> str:
+    """tests/test_x.py -> tests.test_x, the dotted name JUnit ids start with."""
+    return ".".join(Path(path).with_suffix("").parts)
+
+
+def in_selection(tid: str, modules: set[str]) -> bool:
+    classname, _, name = tid.partition("::") if "::" in tid else ("", "", tid)
+    probe = classname or name
+    parts = probe.split(".")
+    return any(".".join(parts[:i]) in modules for i in range(1, len(parts) + 1))
+
+
+def restrict(run: dict, modules: set[str]) -> dict:
+    out = {}
+    for key, rows in run.items():
+        out[key] = [r for r in rows if in_selection(r["test"] if isinstance(r, dict) else r, modules)]
+    return out
+
+
 def owner_item(row: dict, items: list[dict], retry: str) -> dict:
     """The six-field item recorded for this skip, by test-id prefix."""
     for item in items:
@@ -98,11 +123,28 @@ def refusal(code: str, predicate: str, repair: str, retry: str, goal: str) -> di
 
 
 def build(junit: Path, head: str, retry: str, goal: str, items: list[dict],
-          base_junit: Path | None = None, base: str | None = None) -> dict:
+          base_junit: Path | None = None, base: str | None = None,
+          selection: dict | None = None) -> dict:
     receipt = {"schema": SCHEMA, "head_sha": head, "authority_effect": "NONE",
                "skips_are_never_converted_or_deselected": True}
+    modules = None
+    if selection is not None:
+        receipt["selected_tests"] = selection["selected_tests"]
+        receipt["selected_because"] = selection.get("selected_because", {})
+        receipt["changed_paths"] = selection.get("changed_paths", [])
+        receipt["unmapped_changed_paths"] = selection.get("unmapped_changed_paths", [])
+        receipt["not_selected_for_this_change"] = selection["not_selected_for_this_change"]
+        receipt["not_selected_are_not_run_for_this_verdict_and_not_reported_as_passing"] = True
+        modules = {module_of(t) for t in selection["selected_tests"]}
+        if not modules:
+            receipt |= {"counts": {"tests": 0, "skipped": 0}, "skipped": [], "refusals": [],
+                        "disposition": "ALLOW",
+                        "note": "this change selects no test; nothing was run for this verdict"}
+            return receipt
     try:
         run = read_run(junit)
+        if modules is not None:
+            run = restrict(run, modules)
     except (OSError, ET.ParseError, ValueError) as exc:
         receipt |= {"disposition": "FAIL_CLOSED", "refusals": [refusal(
             "TEST_SUITE_NOT_OBSERVED_ON_HEAD", "FULL_SUITE_RAN_ON_EXACT_HEAD",
@@ -119,7 +161,9 @@ def build(junit: Path, head: str, retry: str, goal: str, items: list[dict],
     refusals = []
     if run["skipped"]:
         refusals.append(refusal(
-            "TEST_SUITE_SKIPPED_ON_HEAD", "FULL_SUITE_ON_EXACT_HEAD_ZERO_SKIPPED",
+            "TEST_SUITE_SKIPPED_ON_HEAD",
+            ("SELECTED_TESTS_ON_EXACT_HEAD_ZERO_SKIPPED" if modules is not None
+             else "FULL_SUITE_ON_EXACT_HEAD_ZERO_SKIPPED"),
             (f"{len(run['skipped'])} skipped; a run on this exact head with "
              "skipped=0: provide in CI what each listed skip names (a pinned "
              "checkout of an existing StegVerse repository, no new third-party "
@@ -134,6 +178,8 @@ def build(junit: Path, head: str, retry: str, goal: str, items: list[dict],
         receipt["base_sha"] = base
         try:
             base_run = read_run(base_junit)
+            if modules is not None:
+                base_run = restrict(base_run, modules)
         except (OSError, ET.ParseError, ValueError) as exc:
             refusals.append(refusal(
                 "TEST_SUITE_NOT_OBSERVED_ON_BASE", "FULL_SUITE_RAN_ON_BASE",
@@ -164,18 +210,27 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--skip-items", type=Path)
     p.add_argument("--base-junit", type=Path)
     p.add_argument("--base")
+    p.add_argument("--selection", type=Path,
+                   help="select_tests_for_change.py output; judge only the selected tests")
+    p.add_argument("--tested-commit", help="the commit the suite ran on, when it is not --head")
     a = p.parse_args(argv)
     items = []
     if a.skip_items is not None:
         items = json.loads(a.skip_items.read_text(encoding="utf-8"))["items"]
+    selection = (json.loads(a.selection.read_text(encoding="utf-8"))
+                 if a.selection is not None else None)
     receipt = build(a.junit, a.head, a.retry_entrypoint, a.owning_goal, items,
-                    a.base_junit, a.base)
+                    a.base_junit, a.base, selection)
+    if a.tested_commit:
+        receipt["tested_commit"] = a.tested_commit
     a.out.parent.mkdir(parents=True, exist_ok=True)
     a.out.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     counts = receipt.get("counts", {})
     print(f"TEST_SUITE_SKIP_RECEIPT head={a.head} disposition={receipt['disposition']} "
           f"skipped={counts.get('skipped', 'UNKNOWN')} tests={counts.get('tests', 'UNKNOWN')} "
-          f"failing={len(receipt.get('failing_on_head', []))}")
+          f"failing={len(receipt.get('failing_on_head', []))} "
+          f"selected_files={len(receipt.get('selected_tests', [])) if selection is not None else 'ALL'} "
+          f"not_selected_files={len(receipt.get('not_selected_for_this_change', []))}")
     for row in receipt.get("skipped", []):
         print(f"SKIPPED {row['test']} :: {row['reason']} :: owner={row['item']['owning_existing_goal']}")
     for r in receipt["refusals"]:

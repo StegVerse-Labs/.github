@@ -37,61 +37,8 @@ jobs:
       - name: RT-INVARIANT-EVALUATION-001 spec guard, the B-P6 probe set as data
         run: python -m unittest -v tests/test_invariant_evaluation_probes.py
 
-      # Skips the suite would otherwise have in CI, satisfied from existing
-      # StegVerse sources only (no new third-party dependency). The SDK is the
-      # same public pin org-runtime-boundary.yml fetches and installs, the
-      # same way; it declares no dependencies and --no-deps keeps it so.
-      # STEGVERSE_SDK_SOURCE_ROOT is how org-runtime-boundary.yml runs the
-      # Experiment 3 wire test against that same tree.
-      - name: The pinned StegVerse SDK the SDK-skipped tests name (org-runtime-boundary.yml's pin)
-        run: |
-          set -eu
-          SDK_SHA=c138cad4c37db0bb675bc2c66515b5558cc5fa7b
-          curl -fsSL "https://github.com/StegVerse-org/StegVerse-SDK/archive/${SDK_SHA}.tar.gz" -o "$RUNNER_TEMP/stegverse-sdk.tgz"
-          mkdir "$RUNNER_TEMP/stegverse-sdk"
-          tar -xzf "$RUNNER_TEMP/stegverse-sdk.tgz" -C "$RUNNER_TEMP/stegverse-sdk" --strip-components=1
-          python -m pip install --quiet --no-deps "$RUNNER_TEMP/stegverse-sdk"
-          python -c 'import stegverse.universal_intr_route_installer'
-          echo "STEGVERSE_SDK_SOURCE_ROOT=$RUNNER_TEMP/stegverse-sdk" >> "$GITHUB_ENV"
-
-      # The RTC014 known-answer test reads this repository's own organization
-      # ledger ref at a5bb54d8. An anonymous clone of this public repository,
-      # outside the workspace so no test sees it as part of the tree.
-      - name: A clone of this repository holding refs/stegverse/organization-ledger (RTC014 KAT)
-        run: |
-          set -eu
-          git clone --quiet --no-checkout "https://github.com/${GITHUB_REPOSITORY}" "$RUNNER_TEMP/labs-live"
-          git -C "$RUNNER_TEMP/labs-live" fetch --quiet origin "+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger"
-          git -C "$RUNNER_TEMP/labs-live" merge-base --is-ancestor a5bb54d81893b392a3ce28182986fc39857807e1 refs/stegverse/organization-ledger
-          echo "RTC014_LIVE_LABS_REPO=$RUNNER_TEMP/labs-live" >> "$GITHUB_ENV"
-
       - name: No pull request may add a test failure the baseline does not hold
-        run: python scripts/check_test_suite_ratchet.py --junit-out "$RUNNER_TEMP/test-suite-junit.xml"
-
-      # Separate from the failure ratchet and its baseline: this judges skips
-      # only. It reads pytest's JUnit XML of the same run above, so which tests
-      # run is unchanged, and it lists every skip with its reason and owner.
-      # Any skip on the head fails closed (TEST_SUITE_SKIPPED_ON_HEAD, six
-      # fields); a skip is never hidden, deselected or converted.
-      - name: Every head receipts its skipped tests; skipped > 0 fails closed
-        if: ${{ !cancelled() }}
-        env:
-          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: >-
-          python scripts/test_suite_skip_receipt.py
-          --junit "$RUNNER_TEMP/test-suite-junit.xml"
-          --head "$HEAD_SHA"
-          --out /tmp/test-suite-skip-receipt.json
-          --skip-items data/test-suite-skip-items.json
-          --retry-entrypoint "test-suite-ratchet.yml ratchet job on the next pull request head (python scripts/check_test_suite_ratchet.py --junit-out, then scripts/test_suite_skip_receipt.py)"
-          --owning-goal "StegVerse-org/.github#162 (full suite on the exact head, 0 skipped)"
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: test-suite-skip-receipt
-          path: /tmp/test-suite-skip-receipt.json
-          if-no-files-found: error
+        run: python scripts/check_test_suite_ratchet.py
 
       - name: Publish the run as Healer-intake findings
         if: always()
@@ -109,6 +56,127 @@ jobs:
           name: test-suite-ratchet
           path: /tmp/test-suite-ratchet.json
           if-no-files-found: warn
+
+  # Admission input, separate from the failure ratchet above (which is
+  # unchanged, as is its baseline and its drift handling). Rigel's rule: a
+  # pull request is admission-input-ready only when every test it needs ran
+  # on its exact head with 0 skipped, and the rule never blocks a pull
+  # request on tests it does not need. So this job checks out the exact head,
+  # selects the tests the change needs from the path-to-test-set map declared
+  # in data/test-selection-map.json (scripts/select_tests_for_change.py),
+  # runs exactly those, on the head and on the base, and receipts the result:
+  # the selected set, each skip with its reason and owner, the count, and the
+  # tests not selected for this change (not run for this verdict, never
+  # reported as passing). A skip in the selected set fails closed with
+  # TEST_SUITE_SKIPPED_ON_HEAD and the six fields; so does a selected test
+  # that fails on the head and not on the base. A selected failure the base
+  # already had is receipted as pre-existing and does not block. No test is
+  # skipped, deselected, converted or marked bypassable here.
+  selected-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest
+
+      # Skips satisfied from existing StegVerse sources only, no new
+      # third-party dependency: the public StegVerse-SDK at the pin
+      # org-runtime-boundary.yml installs, the same way (it declares no
+      # dependencies; --no-deps keeps it so), with STEGVERSE_SDK_SOURCE_ROOT
+      # as that workflow sets it for the Experiment 3 wire test.
+      - name: The pinned StegVerse SDK (org-runtime-boundary.yml's pin c138cad4)
+        run: |
+          set -eu
+          SDK_SHA=c138cad4c37db0bb675bc2c66515b5558cc5fa7b
+          curl -fsSL "https://github.com/StegVerse-org/StegVerse-SDK/archive/${SDK_SHA}.tar.gz" -o "$RUNNER_TEMP/stegverse-sdk.tgz"
+          mkdir "$RUNNER_TEMP/stegverse-sdk"
+          tar -xzf "$RUNNER_TEMP/stegverse-sdk.tgz" -C "$RUNNER_TEMP/stegverse-sdk" --strip-components=1
+          python -m pip install --quiet --no-deps "$RUNNER_TEMP/stegverse-sdk"
+          python -c 'import stegverse.universal_intr_route_installer'
+          echo "STEGVERSE_SDK_SOURCE_ROOT=$RUNNER_TEMP/stegverse-sdk" >> "$GITHUB_ENV"
+
+      # The RTC014 known-answer test reads this repository's own organization
+      # ledger ref at a5bb54d8: an anonymous clone of this public repository,
+      # outside the workspace so no test sees it as part of the tree.
+      - name: A clone of this repository holding refs/stegverse/organization-ledger (RTC014 KAT)
+        run: |
+          set -eu
+          git clone --quiet --no-checkout "https://github.com/${GITHUB_REPOSITORY}" "$RUNNER_TEMP/labs-live"
+          git -C "$RUNNER_TEMP/labs-live" fetch --quiet origin "+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger"
+          git -C "$RUNNER_TEMP/labs-live" merge-base --is-ancestor a5bb54d81893b392a3ce28182986fc39857807e1 refs/stegverse/organization-ledger
+          echo "RTC014_LIVE_LABS_REPO=$RUNNER_TEMP/labs-live" >> "$GITHUB_ENV"
+
+      - name: Select the tests this change needs (data/test-selection-map.json)
+        run: |
+          set -eu
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            BASE="$(git merge-base "$BASE_SHA" HEAD)"
+            git diff --name-only "$BASE" HEAD > "$RUNNER_TEMP/changed.txt"
+          else
+            BASE=""
+            echo "<no base commit: ${BASE_SHA}>" > "$RUNNER_TEMP/changed.txt"
+          fi
+          echo "DIFF_BASE=$BASE" >> "$GITHUB_ENV"
+          python scripts/select_tests_for_change.py --changed "$RUNNER_TEMP/changed.txt" \
+            --out "$RUNNER_TEMP/test-selection.json" --print-modules > "$RUNNER_TEMP/selected.txt"
+          wc -l < "$RUNNER_TEMP/selected.txt"
+
+      - name: Run the selected tests on the exact head
+        run: |
+          set -u
+          if [ -s "$RUNNER_TEMP/selected.txt" ]; then
+            xargs -a "$RUNNER_TEMP/selected.txt" python -m pytest -q --tb=no -p no:cacheprovider \
+              --junitxml="$RUNNER_TEMP/head-junit.xml" | tail -n 3 || true
+          fi
+
+      # The same selected files that exist on the base, in a worktree outside
+      # the workspace, so a selected failure the base already had is
+      # receipted as pre-existing rather than blocking.
+      - name: Run the same selected tests on the base
+        if: env.DIFF_BASE != ''
+        run: |
+          set -u
+          git worktree add --quiet --detach "$RUNNER_TEMP/base" "$DIFF_BASE"
+          ( cd "$RUNNER_TEMP/base"
+            while read -r f; do [ -f "$f" ] && echo "$f"; done < "$RUNNER_TEMP/selected.txt" > "$RUNNER_TEMP/selected-base.txt"
+            if [ -s "$RUNNER_TEMP/selected-base.txt" ]; then
+              xargs -a "$RUNNER_TEMP/selected-base.txt" python -m pytest -q --tb=no -p no:cacheprovider \
+                --junitxml="$RUNNER_TEMP/base-junit.xml" | tail -n 3 || true
+            else
+              printf '<?xml version="1.0"?><testsuites><testsuite name="pytest"/></testsuites>' > "$RUNNER_TEMP/base-junit.xml"
+            fi )
+
+      - name: Receipt the selected set; a skip in it, or a new failure, fails closed
+        if: ${{ !cancelled() }}
+        run: |
+          set -eu
+          base_args=""
+          if [ -n "${DIFF_BASE:-}" ]; then base_args="--base-junit $RUNNER_TEMP/base-junit.xml --base $DIFF_BASE"; fi
+          python scripts/test_suite_skip_receipt.py \
+            --junit "$RUNNER_TEMP/head-junit.xml" --head "$HEAD_SHA" --tested-commit "$(git rev-parse HEAD)" \
+            --selection "$RUNNER_TEMP/test-selection.json" $base_args \
+            --out /tmp/test-suite-skip-receipt.json --skip-items data/test-suite-skip-items.json \
+            --retry-entrypoint "test-suite-ratchet.yml selected-tests job on the next pull request head" \
+            --owning-goal "StegVerse-org/.github#162 (selected tests on the exact head, 0 skipped)"
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-suite-skip-receipt
+          path: /tmp/test-suite-skip-receipt.json
+          if-no-files-found: error
 
   # Source validators that are not tests under tests/, consolidated here from
   # the per-feature workflows retired under StegVerse-Labs/.github#3039 (H6b).

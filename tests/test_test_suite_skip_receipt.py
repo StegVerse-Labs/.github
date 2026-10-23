@@ -122,6 +122,34 @@ class SkipReceiptTests(unittest.TestCase):
     def test_the_receipt_is_deterministic(self):
         self.assertEqual(self.build(PASS + SKIP + FAIL), self.build(PASS + SKIP + FAIL))
 
+    def selection(self, selected, not_selected=()):
+        return {"selected_tests": list(selected), "not_selected_for_this_change": list(not_selected),
+                "selected_because": {}, "changed_paths": [], "unmapped_changed_paths": []}
+
+    def test_only_skips_in_the_selected_tests_fail_closed(self):
+        head = self.write("head.xml", junit(PASS + SKIP))
+        r = receipt_module.build(head, "h", "retry", "goal", [],
+                                 selection=self.selection(["tests/test_a.py"], ["tests/test_b.py"]))
+        self.assertEqual(r["disposition"], "ALLOW")
+        self.assertEqual(r["counts"]["skipped"], 0)
+        self.assertEqual(r["not_selected_for_this_change"], ["tests/test_b.py"])
+        r = receipt_module.build(head, "h", "retry", "goal", [],
+                                 selection=self.selection(["tests/test_a.py", "tests/test_b.py"]))
+        self.assertEqual(r["refusals"][0]["failure_code"], "TEST_SUITE_SKIPPED_ON_HEAD")
+        self.assertEqual(r["refusals"][0]["failed_predicate"], "SELECTED_TESTS_ON_EXACT_HEAD_ZERO_SKIPPED")
+
+    def test_a_change_that_selects_nothing_runs_nothing_and_reports_no_pass(self):
+        r = receipt_module.build(self.dir / "absent.xml", "h", "retry", "goal", [],
+                                 selection=self.selection([], ["tests/test_a.py"]))
+        self.assertEqual(r["disposition"], "ALLOW")
+        self.assertEqual(r["counts"], {"tests": 0, "skipped": 0})
+        self.assertNotIn("passed", r["counts"])
+
+    def test_a_selected_module_that_fails_to_import_is_counted(self):
+        r = receipt_module.build(self.write("h.xml", junit(ERR)), "h", "retry", "goal", [],
+                                 selection=self.selection(["tests/test_d.py"]))
+        self.assertEqual(r["failing_on_head"], ["tests.test_d"])
+
 
 if __name__ == "__main__":
     unittest.main()
