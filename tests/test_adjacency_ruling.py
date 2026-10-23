@@ -217,11 +217,15 @@ class AdjacencyRulingTests(unittest.TestCase):
     BY_PATH = ("import importlib.util\nfrom pathlib import Path\nROOT = Path(__file__).resolve().parents[1]\n"
                "spec = importlib.util.spec_from_file_location('g', ROOT / 'pkg/gate.py')\n")
 
+    RUNNER = "jobs:\n  fp:\n    steps:\n      - run: python -m unittest tests.test_fp -v\n"
+
     def stub_closure(self, gate, test=None, extra=None):
         files = dict(FILES, **{"tests/test_fp.py": test or self.BY_PATH, "pkg/gate.py": gate,
                                "pkg/__init__.py": "from . import danger\n", "pkg/danger.py": "D = 1\n",
                                "pkg/verifier.py": "from .helper import H\n", "pkg/helper.py": "H = 1\n",
-                               "pkg/other.py": "O = 1\n"}, **(extra or {}))
+                               "pkg/other.py": "O = 1\n", ".github/workflows/fp.yml": self.RUNNER})
+        files.update(extra or {})
+        files = {k: v for k, v in files.items() if v is not None}
         root, _ = self.fp(files)
         notes = {}
         return ar.static_closure(root, "tests/test_fp.py", notes), notes
@@ -274,7 +278,79 @@ class AdjacencyRulingTests(unittest.TestCase):
     def test_removal_from_sys_modules_in_the_closure_keeps_init(self) -> None:
         closure, notes = self.stub_closure(self.ENSURE + "def reset():\n    sys.modules.pop('pkg', None)\n")
         self.assert_init(closure)
-        self.assertEqual(notes["stub_contexts_disabled_by"], [("pkg/gate.py", 13)])
+        self.assertEqual(notes["stub_contexts_disabled_by"],
+                         [{"source": "pkg/gate.py", "reason": "SYS_MODULES_REMOVAL_IN_CLOSURE", "line": 13}])
+
+    def test_guarded_seed_with_a_normal_import_in_another_closure_file_keeps_init(self) -> None:
+        closure, notes = self.stub_closure(self.ENSURE, self.BY_PATH + "import side\n",
+                                           {"side.py": "import pkg.other\n"})
+        self.assert_init(closure)
+        self.assertIn("side.py", closure)
+        self.assertEqual(notes["stub_contexts_disabled_by"], [])  # kept by the closure itself: an N path imports pkg
+
+    def reasons(self, notes):
+        return [r["reason"] for r in notes["stub_contexts_disabled_by"]]
+
+    def test_preload_from_outside_the_closure_keeps_init(self) -> None:
+        cases = {
+            "conftest": ({"tests/conftest.py": "import pkg.other\n"}, "PRELOAD_IMPORTS_STUB_PACKAGE"),
+            "root conftest via helper": ({"conftest.py": "import side\n", "side.py": "from pkg import other\n"},
+                                         "PRELOAD_IMPORTS_STUB_PACKAGE"),
+            "test package": ({"tests/__init__.py": "import pkg\n"}, "PRELOAD_IMPORTS_STUB_PACKAGE"),
+            "pytest.ini -p": ({"pytest.ini": "[pytest]\naddopts = -q -p pkg.other\n"},
+                              "PYTEST_PLUGIN_IMPORTS_STUB_PACKAGE"),
+            "pyproject -p external": ({"pyproject.toml": "[tool.pytest.ini_options]\naddopts = ['-p', 'xdist']\n"},
+                                      "PYTEST_PLUGIN_NOT_IN_REPOSITORY"),
+            "setup.cfg pytest11": ({"setup.cfg": "[options.entry_points]\npytest11 =\n    p = pkg.other\n"},
+                                   "PYTEST_PLUGIN_IMPORTS_STUB_PACKAGE"),
+            "tox.ini redirect": ({"tox.ini": "[pytest]\naddopts = -c other.ini\n"}, "PYTEST_CONFIG_REDIRECTED"),
+            "sitecustomize": ({"sitecustomize.py": "import pkg.other\n"}, "PRELOAD_IMPORTS_STUB_PACKAGE"),
+            "pth import": ({"x.pth": "import pkg\n"}, "PTH_IMPORTS_STUB_PACKAGE"),
+            "pth code": ({"x.pth": "import os; os.environ.get('X')\n"}, "PTH_LINE_NOT_STATIC"),
+            "conftest dynamic": ({"tests/conftest.py": "import importlib, os\nimportlib.import_module(os.environ['M'])\n"},
+                                 "PRELOAD_LOAD_UNRESOLVED"),
+            "no runner": ({".github/workflows/fp.yml": None}, "FINISH_TEST_RUNNER_NOT_OBSERVED"),
+            "runner variable": ({".github/workflows/fp.yml": "steps:\n  - run: python -m unittest $T tests.test_fp\n"},
+                                "RUNNER_COMMAND_NOT_STATIC"),
+            "runner -W": ({".github/workflows/fp.yml": "steps:\n  - run: python -W error::pkg.W -m unittest tests.test_fp\n"},
+                          "RUNNER_COMMAND_NAMES_STUB_PACKAGE"),
+            "pytest autoload": ({".github/workflows/fp.yml": "steps:\n  - run: python -m pytest -q tests/test_fp.py\n"},
+                                "PYTEST_PLUGIN_AUTOLOAD_UNRESOLVED"),
+            "pytest env plugins": ({".github/workflows/fp.yml": "env:\n  PYTEST_DISABLE_PLUGIN_AUTOLOAD: 1\n"
+                                    "  PYTEST_PLUGINS: pkg.other\nsteps:\n  - run: pytest tests/test_fp.py\n"},
+                                   "PYTEST_PLUGIN_IMPORTS_STUB_PACKAGE"),
+            "repo runner": ({"runner.py": "import pkg.other\n",
+                             ".github/workflows/fp.yml": "steps:\n  - run: python runner.py tests/test_fp.py\n"},
+                            "PRELOAD_IMPORTS_STUB_PACKAGE"),
+            "repo -m shadow": ({"unittest/__init__.py": "", "unittest/__main__.py": "import pkg\n"},
+                               "PRELOAD_IMPORTS_STUB_PACKAGE"),
+            "unknown -m": ({".github/workflows/fp.yml": "steps:\n  - run: python -m nose2 tests.test_fp\n"},
+                           "RUNNER_MODULE_NOT_IN_REPOSITORY"),
+        }
+        for name, (extra, reason) in cases.items():
+            with self.subTest(name):
+                closure, notes = self.stub_closure(self.ENSURE, extra=extra)
+                self.assert_init(closure)
+                self.assertIn(reason, self.reasons(notes), notes["stub_contexts_disabled_by"])
+
+    def test_preload_sources_that_cannot_import_the_package_keep_the_stub(self) -> None:
+        cases = {
+            "conftest": {"tests/conftest.py": "import json\nfrom side import X\n", "side.py": "X = 1\n"},
+            "pytest.ini no:": {"pytest.ini": "[pytest]\naddopts = -q -p no:cacheprovider\n"},
+            "pytest no autoload": {".github/workflows/fp.yml": "env:\n  PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'\n"
+                                   "steps:\n  - run: python -m pytest -q tests/test_fp.py\n"},
+            "paths filter and runner": {".github/workflows/fp.yml": "on:\n  push:\n    paths:\n      - tests/test_fp.py\n"
+                                        "jobs:\n  t:\n    steps:\n      - run: |\n          python -m unittest \\\n"
+                                        "            tests.test_fp\n"},
+            "repo runner clean": {"runner.py": "import sys\n",
+                                  ".github/workflows/fp.yml": "steps:\n  - run: python runner.py tests/test_fp.py\n"},
+        }
+        for name, extra in cases.items():
+            with self.subTest(name):
+                closure, notes = self.stub_closure(self.ENSURE, extra=extra)
+                self.assert_stub(closure)
+                self.assertEqual(notes["stub_contexts_disabled_by"], [])
+                self.assertTrue(notes["finish_test_runners"])
 
     def assert_unresolved(self, gate, test=None) -> None:
         cand = candidate()
@@ -357,6 +433,70 @@ class AdjacencyRulingTests(unittest.TestCase):
             mutate(body)
         body["evidence_digest"] = ar.ruling_digest(body)
         return body, req
+
+    # -- (U) unowned consumed source: pinned, edit-guarded, routed to Coordination, never a candidate ------------
+    def unowned_ruling(self, commit, pin_commit, files, mutate=None):
+        cand = candidate()
+        self.put(cand)
+        req = request()
+        body = ruling(commit, req, [cand])
+        body["consumes_dependencies"].append({
+            "task_id": ar.UNOWNED, "consumed_by": "the finish test reads gate/*", "provenance": "Org/fp#70",
+            "pinned_source": {"repository": "Org/fp", "commit": pin_commit, "files": dict(files)}})
+        if mutate:
+            mutate(body)
+        body["evidence_digest"] = ar.ruling_digest(body)
+        return body, req
+
+    def test_unowned_consumed_pin_allows_and_is_not_a_candidate(self) -> None:
+        for carry in (True, False):
+            with self.subTest(carry_pin=carry):
+                root, pin, head, files = self.pinned_fixture(carry_pin=carry)
+                body, req = self.unowned_ruling(head, pin, files)
+                verdict = ar.verify(body, req, self.base, root)
+                self.assertEqual(verdict["disposition"], "ALLOW", verdict)
+                self.assertEqual(verdict["condition_unowned_pin"], "HELD")
+                row = next(r for r in verdict["consumed_pins"] if r["task_id"] == ar.UNOWNED)
+                self.assertEqual(row["edit_routed_to"], ar.OWNING_GOAL)
+                self.assertEqual(row["enforced_by_finish_test"], carry)
+                self.assertTrue(row["in_finish_point_closure"]["gate/gate_reader.py"])
+                self.assertNotIn(ar.UNOWNED, [c["task_id"] for c in verdict["candidates"]])
+                self.assertEqual(verdict["condition_routing"], "NOT_APPLICABLE")
+
+    def test_unowned_consumed_edit_fails_closed_to_coordination(self) -> None:
+        root, pin, head, files = self.pinned_fixture(edit_consumed=True)
+        body, req = self.unowned_ruling(head, pin, files)
+        verdict = ar.verify(body, req, self.base, root)
+        self.refused(verdict, "ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT")
+        self.assertEqual(verdict["owning_existing_goal"], "STEGVERSE-CANONICAL-WORK-COORDINATION-001")
+        self.assertEqual(verdict["detail"]["modified"], ["gate/gate_reader.py"])
+        change = ar.check_change(body, root, pin, head)
+        self.refused(change, "ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT")
+        clean_root, clean_pin, clean_head, clean_files = self.pinned_fixture()
+        clean, _ = self.unowned_ruling(clean_head, clean_pin, clean_files)
+        self.assertEqual(ar.check_change(clean, clean_root, clean_pin, clean_head)["disposition"], "ALLOW")
+
+    def test_unowned_consumed_pin_malformed_cases(self) -> None:
+        root, pin, head, files = self.pinned_fixture()
+        bad_sha = dict(files, **{"gate/step.yml": "0" * 64})
+        cases = [
+            (lambda b: b["consumes_dependencies"][-1].pop("pinned_source"), files, "ADJACENCY_RULING_CONSUMED_PIN_MALFORMED"),
+            (lambda b: b["consumes_dependencies"][-1]["pinned_source"].update(commit=pin[:12]), files,
+             "ADJACENCY_RULING_CONSUMED_PIN_MALFORMED"),
+            (lambda b: b["consumes_dependencies"].append(dict(b["consumes_dependencies"][-1])), files,
+             "ADJACENCY_RULING_CONSUMED_PIN_MALFORMED"),
+            (None, bad_sha, "ADJACENCY_RULING_CONSUMED_PIN_DIGEST_DIVERGES"),
+            (lambda b: b.__setitem__("protected_paths", [{
+                "repository": "Org/fp", "owner_task_id": ar.UNOWNED, "paths": sorted(files),
+                "on_modification": {"disposition": "FAIL_CLOSED", "failure_code": "X", "routed_to": ar.UNOWNED}}]),
+             files, "ADJACENCY_RULING_PROTECTED_PATHS_MALFORMED"),
+            (lambda b: b["candidates"].append(dict(b["candidates"][0], task_id=ar.UNOWNED)), files,
+             "ADJACENCY_RULING_SCHEMA_INVALID"),
+        ]
+        for i, (mutate, pinned, code) in enumerate(cases):
+            with self.subTest(case=i, code=code):
+                body, req = self.unowned_ruling(head, pin, pinned, mutate)
+                self.refused(ar.verify(body, req, self.base, root), code)
 
     def test_pinned_and_routed_consumed_paths_allow_and_are_exempt_from_b(self) -> None:
         root, pin, head, files = self.pinned_fixture()
