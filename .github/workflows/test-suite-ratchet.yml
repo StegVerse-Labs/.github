@@ -22,6 +22,9 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          # the drift bisection walks main's first-parent history back to the commit that wrote the baseline
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -37,24 +40,146 @@ jobs:
       - name: RT-INVARIANT-EVALUATION-001 spec guard, the B-P6 probe set as data
         run: python -m unittest -v tests/test_invariant_evaluation_probes.py
 
-      - name: No pull request may add a test failure the baseline does not hold
-        run: python scripts/check_test_suite_ratchet.py
+      # Read-only inputs, fetched before the suite runs: this repository's own organization ledger ref
+      # (one anonymous fetch of a public ref; no credential, no polling) - it is the drift receipt's
+      # epoch source (its hb_reference.epoch; no clock is read) and the clone
+      # tests/test_sv_change_base_state_readback_component.py's known-answer test needs
+      # (RTC014_LIVE_LABS_REPO, ledger head a5bb54d8 is on it), which was skipped while this checkout
+      # did not hold the ref - and StegVerse-org/.github's main-change receipt writer at its pin.
+      # When either is unreadable the receipt says so in six fields and the known-answer test fails; it
+      # never guesses.
+      - name: Organization ledger ref and the pinned main-change receipt writer, read-only
+        run: |
+          git -c 'http.https://github.com/.extraheader=' fetch --no-tags --quiet origin \
+            '+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger' || echo "organization ledger ref not fetched"
+          if git -c 'http.https://github.com/.extraheader=' fetch --no-tags --quiet --depth=1 \
+              https://github.com/StegVerse-org/.github 7638b006ef9da2d65240576c706482b9ecc4153f; then
+            git show FETCH_HEAD:resident-runtime/main_change_receipt.py > /tmp/main_change_receipt.py
+          else
+            echo "main-change receipt writer not fetched"
+          fi
+
+      # One suite run feeds the comparison. 0 is all passed and 1 is some failed; any other status
+      # (interrupted, internal error, usage error, nothing collected) is not a suite result. The junit
+      # record and -rfEsxX name every skipped, xfailed, xpassed and uncollected test, so the next step
+      # can fail closed on each (REQUIRED_VERIFICATION_SKIPPED); a skip is never a pass.
+      # The suite is split into callable test sets (.stegverse/test-sets.json, generated from
+      # .stegverse/test-set-spec.json by scripts/test_set_selection.py). A pull request runs the core set
+      # and every set a diff path reaches; a diff path no set declares, an unreadable diff, a change to
+      # what shapes selection, or a stale manifest selects EVERY set. A push to main selects every set.
+      # Unselected sets are not run and not reported as skipped; the sealed selection names each selected
+      # set and the diff path / declared surface that selected it. A selected set whose input is
+      # unavailable is not run: it is a six-field REQUIRED_VERIFICATION_INPUT_UNAVAILABLE item routed to
+      # that input's owner, and blocks only changes that select it.
+      # Pinned SDK verification inputs (StegVerse-org/.github#163, P1): every pin a `pinned_source` input of the spec
+      # declares is fetched at its exact commit with one anonymous git fetch (no package index, nothing installed),
+      # only its declared module paths are extracted, and every file is re-hashed against
+      # .stegverse/verification-inputs/stegverse-sdk.json. A pin that does not verify is printed in six fields and its
+      # env is not set, so the selector reports the sets that need it as REQUIRED_VERIFICATION_INPUT_UNAVAILABLE.
+      - name: Pinned SDK verification inputs (exact commits, sha256-checked, read-only)
+        run: |
+          python scripts/pinned_source_input.py declared --spec .stegverse/test-set-spec.json \
+            --dest-root "$RUNNER_TEMP/pinned-inputs" --env-out "$GITHUB_ENV" \
+            --retry-entrypoint ".github/workflows/test-suite-ratchet.yml ratchet"
+
+      - name: Select the test sets this change requires
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          RTC014_LIVE_LABS_REPO: ${{ github.workspace }}
+        run: |
+          # the sealed selection binds head_sha (this merge ref), its parents, base_sha and the PR head
+          base=()
+          if [ "$EVENT_NAME" = "pull_request" ]; then base=(--base "$BASE_SHA" --pr-head "$HEAD_SHA"); fi
+          python scripts/test_set_selection.py select --manifest .stegverse/test-sets.json \
+            --spec .stegverse/test-set-spec.json "${base[@]}" --head HEAD \
+            --retry-entrypoint ".github/workflows/test-suite-ratchet.yml ratchet" \
+            --out /tmp/test-set-selection.json --args-out /tmp/test-set-args.txt || true
+          test -s /tmp/test-set-args.txt
+
+      - name: Run the selected sets once
+        env:
+          # the checkout holds refs/stegverse/organization-ledger (step above): the live-repo known answer runs
+          RTC014_LIVE_LABS_REPO: ${{ github.workspace }}
+        # each run group (the pinned inputs its sets declare) runs once, in its own process with only its pin's
+        # exports; sets that declare no pinned input run exactly as before. One output, one merged junit record.
+        run: |
+          set +e
+          python scripts/test_set_selection.py run --selection /tmp/test-set-selection.json \
+            --out /tmp/pytest-suite.txt --junit-xml /tmp/pytest-suite.xml -- -q --tb=no -p no:cacheprovider -rfEsxX
+          status=$?
+          set -e
+          grep -E '^### test-set run group |(passed|failed|error).* in [0-9.]+s' /tmp/pytest-suite.txt | tail -n 8
+          test "$status" -le 1
+
+      # The ratchet's own comparison (run_suite/compare), made drift-aware by
+      # scripts/test_suite_baseline_drift.py. Pull request: a failure that also fails on the exact base
+      # and that the change's diff does not touch is a receipted PRE_EXISTING_BASELINE_FAILURE and the
+      # change proceeds; a failure the change introduces or touches is FAIL_CLOSED. Push to main: the
+      # drift receipt names each drifted test and its first failing commit (bisected), with the
+      # dependency review and the scoped repair task. Nothing is appended to or dispatched at a ledger.
+      # Required verification (Rigel's standing rule): every skipped, xfailed, xpassed or uncollected
+      # test, every test present at the base and not run at the head, every test of a module
+      # cross-task-coordination-validation.yml lists that did not run here (its pytest-only functions
+      # are delegated to this job), a path-filtered workflow left unrun on a change to a file it runs,
+      # and a pull_request job present at the base and missing at the head are each FAIL_CLOSED
+      # REQUIRED_VERIFICATION_SKIPPED, never PRE_EXISTING_BASELINE_FAILURE.
+      - name: No pull request may add a test failure the baseline does not hold, or skip a test
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            test "$(git rev-parse HEAD^2)" = "$HEAD_SHA"   # the merge ref was built from the exact head
+            mode=(pr --base "$BASE_SHA" --path-filter-check)
+          else
+            mode=(detect)
+          fi
+          python scripts/test_suite_baseline_drift.py "${mode[@]}" \
+            --pytest-output /tmp/pytest-suite.txt \
+            --junit-xml /tmp/pytest-suite.xml \
+            --selection /tmp/test-set-selection.json \
+            --required-unittest-modules-from .github/workflows/cross-task-coordination-validation.yml \
+            --writer /tmp/main_change_receipt.py \
+            --writer-sha256 884168399f8ac54309aac86af6ab34481635de54426f635bb2229eb5073e2ebf \
+            --out-dir /tmp/baseline-drift
 
       - name: Publish the run as Healer-intake findings
         if: always()
         run: |
-          python scripts/check_test_suite_ratchet.py --findings > /tmp/test-suite-ratchet.json || true
+          # findings from the one run above (the selected sets); nothing is run a second time
           python - <<'PY'
-          import json
-          report = json.load(open("/tmp/test-suite-ratchet.json", encoding="utf-8"))
-          print(f"TEST_SUITE_RATCHET findings={report['finding_count']}")
+          import json, re, sys
+          sys.path.insert(0, "scripts")
+          from check_test_suite_ratchet import BASELINE, GATE, REPAIR, compare, load_baseline
+          from registry_gate_findings import evaluation, finding
+          try:
+              text = open("/tmp/pytest-suite.txt", encoding="utf-8").read()
+          except OSError:
+              text = ""
+          observed = {m.group(1) for l in text.splitlines() if (m := re.match(r"^(?:FAILED|ERROR)\s+(\S+)", l))}
+          report = compare(observed, load_baseline(BASELINE))
+          rows = [finding(gate=GATE, task_id=t, predicate_id="NO_NEW_TEST_FAILURE",
+                          detail=f"{t} fails on this head and is not in the baseline", evidence=[str(BASELINE)],
+                          repair=REPAIR, retry_entrypoint="test-suite-ratchet.yml ratchet")
+                  for t in report["newly_failing"]]
+          out = evaluation(GATE, rows)
+          open("/tmp/test-suite-ratchet.json", "w", encoding="utf-8").write(json.dumps(out, indent=2, sort_keys=True))
+          print(f"TEST_SUITE_RATCHET findings={out['finding_count']}")
           PY
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-suite-ratchet
-          path: /tmp/test-suite-ratchet.json
+          path: |
+            /tmp/test-suite-ratchet.json
+            /tmp/test-set-selection.json
+            /tmp/pytest-suite.txt
+            /tmp/pytest-suite.xml
+            /tmp/baseline-drift/
           if-no-files-found: warn
 
   # Source validators that are not tests under tests/, consolidated here from
@@ -245,3 +370,31 @@ jobs:
             scripts/project_task_registry_event_to_sovereign_kv.py \
             scripts/task_registry_checkin_event_history.py \
             scripts/repository_hygiene_retire_merged_refs.py
+
+  # One job that is green only when every required job above completed and succeeded: a skipped,
+  # cancelled or failed job (or one an `if:` left unrun) fails this gate. Validation only.
+  required-verification:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [ratchet, consolidated-source-validators]
+    permissions: {}
+    steps:
+      - name: Every required job completed and succeeded
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          needs = json.loads(os.environ["RESULTS"])
+          bad = {k: v["result"] for k, v in needs.items() if v["result"] != "success"}
+          print(json.dumps({k: v["result"] for k, v in needs.items()}, sort_keys=True))
+          if bad or set(needs) != {"ratchet", "consolidated-source-validators"}:
+              print("FAIL_CLOSED REQUIRED_VERIFICATION_SKIPPED", json.dumps({
+                  "failure_code": "REQUIRED_VERIFICATION_SKIPPED",
+                  "failed_predicate": "EVERY_REQUIRED_JOB_COMPLETED_AND_SUCCEEDED",
+                  "required_evidence_or_repair": f"jobs not successful: {bad}",
+                  "retry_entrypoint": ".github/workflows/test-suite-ratchet.yml (pull_request)",
+                  "owning_existing_goal": "StegVerse-org/.github#166",
+                  "next_attempt": "the next push to this pull request"}, sort_keys=True))
+              raise SystemExit(1)
+          PY
