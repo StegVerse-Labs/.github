@@ -95,19 +95,19 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("LADDER_ACCESS_PATH_BYPASSES_LAYER", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
-        self.assertIn("74509feca062d5f17dbefe5730cbb1304ab6b318", anc["e0_terminal"]["by"])
+        self.assertIn("0eaa1de05320bc72ebb7db16a46431b4133b1b3d", anc["e0_terminal"]["by"])
         # revision 7: the null genesis pin (Lane B) and the EPHEMERAL signer (TV/TVC) are separate blockers of one item;
         # the org-ledger head signer is an external registered task (ORG-LEDGER-HEAD-SIGNER-001), not a scoped task here
         self.assertEqual([b["id"] for b in anc["allow_path"]["blockers"]],
                          ["ORG_GENESIS_PIN_NULL", "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER",
-                          "EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED"])
+                          "KV_LEDGER_ON_ORG_LEDGER_REF_MODEL_CONFLICT", "EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED"])
         self.assertEqual([r["ref"] for r in anc["external_dependency_refs"]], ["ORG-LEDGER-HEAD-SIGNER-001"])
         self.assertTrue(anc["external_dependency_refs"][0]["owner"].startswith("GitHub Product lane"))
         self.assertIn("LC-KV-13 finish point (a PERMANENT node) waits on it", anc["external_dependency_refs"][0]["evidence"])
         res = next(r for r in d["items"] if r["id"] == "H-KV-ENDPOINT-LEDGER-ANCHOR")
         self.assertEqual(sorted(r.get("blocker") for r in res["refusals"] if r["failure_code"] == "LADDER_ALLOW_PATH_UNBOUND"),
                          ["EPHEMERAL_NODE_LEDGER_OPENED_SIGNER_UNPUBLISHED", "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER",
-                          "ORG_GENESIS_PIN_NULL"])
+                          "KV_LEDGER_ON_ORG_LEDGER_REF_MODEL_CONFLICT", "ORG_GENESIS_PIN_NULL"])
         self.assertEqual([r["external_ref"] for r in res["refusals"] if r["failure_code"] == "LADDER_EXTERNAL_DEPENDENCY_PENDING"],
                          ["ORG-LEDGER-HEAD-SIGNER-001"])
         for s_ in ("CONTRACT_WITHOUT_GENESIS_PIN", "CONTRACT_GENESIS_PIN_FIELD_ABSENT"):
@@ -118,7 +118,8 @@ class CommittedArtifacts(unittest.TestCase):
                    "FORGED_CARRIER_BODY_IS_ANOTHER_SIGNAL", "PLANNER_DIRECT_AFTER_THE_PIN_OTHER_GENESIS"):
             self.assertEqual(anc["required_outcomes"][s_], ["FAIL_CLOSED"], s_)
         self.assertEqual(anc["required_outcomes"]["PLANNER_DIRECT_AFTER_THE_PIN_SAME_GENESIS"], ["ALLOW"])
-        self.assertNotIn("CALLER_WRITTEN_GENESIS_AND_CARRIER_ON_A_CALLER_LEDGER_COPY", anc["required_outcomes"])
+        # revision 9: #431 @66a098fa refuses the caller-written genesis on a caller copy (ACCEPTED at 1541d465)
+        self.assertEqual(anc["required_outcomes"]["CALLER_WRITTEN_GENESIS_AND_CARRIER_ON_A_CALLER_LEDGER_COPY"], ["FAIL_CLOSED"])
         self.assertNotIn("Observation, not a verdict", anc["observed_state"])
         self.assertIn("6371352606", anc["observed_state"])
         for s_ in ("PERMANENT_ROOT_ON_CALLER_CREATED_ORG_OBJECT_STORE", "CALLER_APPENDED_INGRESS_RECORD_CLAIMING_INSTALLED_INTR",
@@ -134,14 +135,23 @@ class CommittedArtifacts(unittest.TestCase):
                    "LAYER1_INGRESS_RECORD_NAMES_NO_INSTALLED_TRANSPORT"):
             self.assertIn(s_, decl[l1]["required_outcomes"])
         self.assertNotIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(d, l1))
-        # the caller-created unlabelled org store is observational at KV, never required
-        self.assertNotIn("LAYER1_PERMANENT_ON_CALLER_CREATED_UNLABELLED_ORG_STORE", decl[l1]["required_outcomes"])
-        # layer 2's TV/TVC bypass is observed at TVC#541: the custody chain's refusals are required, its caller-minted
-        # ALLOW rows are not
+        # revision 9: cvk#258 @9551edab refuses the caller-created unlabelled org store, so it is now required
+        self.assertEqual(decl[l1]["required_outcomes"]["LAYER1_PERMANENT_ON_CALLER_CREATED_UNLABELLED_ORG_STORE"], ["DENY", "FAIL_CLOSED"])
+        # layer 2's TV/TVC bypass is observed at TVC#541: the custody chain's refusals are required
         self.assertIn("skap-custody-chain-probe-tvc541", decl[l2]["observed_by"])
         self.assertIn("CHAIN_LAYER2_NOT_BOUND_TO_LAYER1", decl[l2]["required_outcomes"])
-        self.assertNotIn("CHAIN_CALLER_MINTED_LAYERS_WITH_TVC537_ISSUED_RECEIPT_AND_CALLER_CLIENT", decl[l2]["required_outcomes"])
-        self.assertIn("c7e4c1062b03dbdf08db53ea024d65eb9104c856", decl[l2]["bypass_paths"][0])
+        # revision 9: at TVC#541 @63705c86 the caller-minted rows are FAIL_CLOSED (no designated receipt ledger), so required
+        self.assertEqual(decl[l2]["required_outcomes"]["CHAIN_CALLER_MINTED_LAYERS_WITH_TVC537_ISSUED_RECEIPT_AND_CALLER_CLIENT"],
+                         ["DENY", "FAIL_CLOSED"])
+        self.assertIn("63705c86a7c6228db5acdbb342d9991bf93b99d5", decl[l2]["bypass_paths"][0])
+        # revision 9: TVC#541 @63705c86 takes no caller-minted layer receipts (mint-both tests witnessed as ALLOW = passed);
+        # the systemd units naming the legacy root are an external machine on layer 2 (LC-KV-22)
+        for s_ in ("TVC541_TEST_P1_MINT_BOTH_IS_FAIL_CLOSED_ON_GATE_READ_THROUGH_AND_PLACE",
+                   "TVC541_TEST_P1_MINT_BOTH_BUILD_AND_VALIDATE_FAIL_CLOSED"):
+            self.assertEqual(decl[l2]["required_outcomes"][s_], ["ALLOW"], s_)
+        self.assertIn("tvc541-mint-both-tests", decl[l2]["observed_by"])
+        self.assertIn("LADDER_EXTERNAL_MACHINE_REQUIRED", _codes(d, l2))
+        self.assertIn("9 systemd .service units and 1 .path unit", decl[l2]["external_requirements"][0])
         self.assertIn("LADDER_ACCESS_LAYERS_COLLAPSED", _codes(d, seq))
         self.assertTrue(set(decl[l1]["required_outcomes"]) and "e0_terminal" in decl[l1])
         # layer 2 now has its own E0 gate (SkapLayer2Gate), witnessed by required refusals, not a class_b record
@@ -163,18 +173,37 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("confirmed by Coordination", t["owning_lane_mapping"])
         self.assertTrue(t["owning_lane"].startswith("InTr and Mesh Destinations lane (Lane B"))
 
-    def test_lc_kv_15_needs_a_re_vendor_and_lc_kv_16_is_closed(self):
+    def test_lc_kv_15_is_closed_and_model_conflicts_are_recorded(self):
         tasks = {t["task_id"]: t for t in _inputs()["tasks"]}
-        t15 = tasks["LC-KV-15"]
-        self.assertTrue(t15["owning_lane"].startswith("Lane D"))
+        # revision 9: cvk#258 @9551edab vendors #432; LC-KV-15 closed, its remaining transport gap is LC-KV-13's
+        self.assertNotIn("LC-KV-15", tasks)
         self.assertNotIn("LC-KV-16", tasks)  # closed in revision 6: (a), (b) and (c) are FAIL_CLOSED at #432 @a2ee67e6
-        self.assertIn("1cbad77eaff3254ea30fb9d3377d40abcf6728df", t15["required_repair"])
-        self.assertIn("74509feca062d5f17dbefe5730cbb1304ab6b318", t15["required_repair"])
-        self.assertIn("clean-venv runs in their PR bodies", t15["required_repair"])
-        self.assertIn("b93b06a48e679290e5ff153d1da8f42ab9627465", t15["required_repair"])
-        self.assertIn("witnesses that refusal; it does not bind an ALLOW path", t15["required_repair"])
-        self.assertIn("re-vendor runtime/intr_pinned/ from #432's admitted head", t15["proposed_resolution"])
         self.assertNotIn("LC-KV-10", tasks)
+        m = tasks["LC-KV-21"]  # KV's ledger designated on the org ledger ref: model conflict with Rigel's ruling
+        self.assertEqual(m["blocker"], "KV_LEDGER_ON_ORG_LEDGER_REF_MODEL_CONFLICT")
+        self.assertEqual(m["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
+        self.assertEqual(m["failure_code"], "LADDER_ALLOW_PATH_UNBOUND")
+        self.assertEqual(m["failure_class"]["class"], "B")
+        self.assertTrue(m["owning_lane"].startswith("Lane D (KV and WorkSpace) for KV's ledger and endpoint"))
+        self.assertIn("Lane B", m["owning_lane"])
+        self.assertIn("MODEL CONFLICT", m["required_repair"])
+        self.assertIn("f5f971a5", m["required_repair"])
+        self.assertIn("accepted existing dependency", m["required_repair"])
+        self.assertIn("accepted existing dependency", m["proposed_resolution"])
+        self.assertNotIn("merge-ready", json.dumps(m))
+        x = tasks["LC-KV-22"]  # systemd units on TVC#541: an external machine
+        self.assertEqual((x["disposition"], x["failure_code"], x["failed_check"]),
+                         ("DENY", "LADDER_EXTERNAL_MACHINE_REQUIRED", "NO_EXTERNAL_MACHINE"))
+        self.assertEqual(x["items"], ["SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV"])
+        self.assertEqual(x["failure_class"]["class"], "A")
+        self.assertTrue(x["owning_lane"].startswith("GitHub Product lane as TV/TVC owner"))
+        for t in (m, x):
+            for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
+                self.assertTrue(str(t.get(k) or "").strip(), k)
+        f = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-13")
+        self.assertIn("finish_point_model_conflict_note", f)
+        for t in tasks.values():  # every open task carries a class, for the cross-goal blocker list
+            self.assertIn(t["failure_class"]["class"], ("A", "B", "C"), t["task_id"])
 
     def test_empty_tvc_signer_file_is_a_class_c_tvc_task(self):
         tasks = {t["task_id"]: t for t in _inputs()["tasks"]}
@@ -197,31 +226,33 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(g["failure_class"]["class"], "A")
         self.assertIn("genesis-observed record", g["next_attempt"])
         self.assertIn("REPOSITORY_LEDGER_GENESIS_PIN", g["next_attempt"])
-        self.assertIn("1541d465386d395dcd3034351b2db98e73d58b83", g["required_repair"])
+        self.assertIn("66a098fac891a782ad8175d8df3ae07e113a1db7", g["required_repair"])
         self.assertIn("StegVerse-org/.github#162 comment 6371352606", g["required_repair"])
         self.assertNotIn("6371144164", g["required_repair"])
         self.assertNotIn("Observation, not a verdict", g["required_repair"])
-        self.assertIn("no conflict with LC-GOV-04", g["required_repair"])
-        self.assertIn("CALLER_WRITTEN_GENESIS_AND_CARRIER_ON_A_CALLER_LEDGER_COPY", g["required_repair"])
-        self.assertIn("bind the copy", g["proposed_resolution"])
+        self.assertIn("no clock conflict with LC-GOV-04", g["required_repair"])
+        # revision 9: the caller-copy hole is closed in #431 @66a098fa (head attestation by a published signer)
+        self.assertIn("caller-written genesis and carrier on a caller copy", g["required_repair"])
+        self.assertIn("a caller copy is refused", g["proposed_resolution"])
         e = tasks["LC-KV-20"]  # the org emitter cannot carry the genesis-observed signal
         self.assertEqual(e["blocker"], "GENESIS_OBSERVED_SIGNAL_NOT_CARRIED_BY_ORG_EMITTER")
         self.assertEqual(e["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
-        self.assertTrue(e["owning_lane"].startswith("pending Coordination ruling; Lane B (InTr) proposed"))
-        self.assertEqual(e["failure_class"]["class"], "C")
+        # revision 9: Coordination's ruling 6371704941: class B, owner Lane B, INTR-PATH-TRANSFER-TYPED-BODY-001
+        self.assertTrue(e["owning_lane"].startswith("InTr and Mesh Destinations lane (Lane B"))
+        self.assertIn("6371704941", e["owning_lane"])
+        self.assertEqual(e["failure_class"]["class"], "B")
         self.assertIn("907f4305ddd4f39b16d96638744304de9ef0b67d", e["required_repair"])
-        self.assertIn("CANNOT_CARRY", e["required_repair"])
+        self.assertIn("69eae86e405fc06f0e1487c6a263765ee1e542a7", e["required_repair"])
         for x in (g, e):
             for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
                 self.assertTrue(str(x.get(k) or "").strip(), k)
         self.assertIn("ORG-LEDGER-HEAD-SIGNER-001", tasks["LC-KV-13"]["required_repair"])
-        self.assertIn("mint-both case", tasks["LC-KV-07"]["proposed_resolution"])
         for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
             self.assertTrue(str(t.get(k) or "").strip(), k)
         self.assertNotIn("LC-KV-17", tasks)  # closed in revision 6: cvk#258 @b93b06a4 refuses the unsigned anchor
         for tid in ("LC-KV-07", "LC-KV-08"):
             self.assertTrue(tasks[tid]["owning_lane"].startswith("GitHub Product lane as TV/TVC owner"), tid)
-        self.assertIn("c7e4c1062b03dbdf08db53ea024d65eb9104c856", tasks["LC-KV-07"]["required_repair"])
+        self.assertIn("63705c86a7c6228db5acdbb342d9991bf93b99d5", tasks["LC-KV-07"]["required_repair"])
 
     def test_withdrawn_git_ref_custody_adapter_is_not_proposed(self):
         t = next(t for t in _inputs()["tasks"] if t["task_id"] == "LC-KV-03")
@@ -378,7 +409,7 @@ class Refusals(unittest.TestCase):
 
     def test_task_without_gap_is_a_mismatch(self):
         extra = dict(next(t for t in self.tasks if t["goal"] == KV), task_id="LC-KV-99",
-                     failure_code="LADDER_EXTERNAL_MACHINE_REQUIRED")
+                     failure_code="OPERATING_MODE_OWNER_MUST_ACT")
         self.tasks.append(extra)
         d = self.run_()
         self.assertTrue(any(f["failed_predicate"] == "SCOPED_TASK_COVERS_A_GAP" for f in d["consistency_refusals"]))
@@ -455,7 +486,7 @@ class Refusals(unittest.TestCase):
         self.assertIn("OPERATING_MODE_E0_WITNESS_UNBOUND", _codes(self.run_(), self.allowed))
 
     def test_tasks_sharing_a_code_must_cover_disjoint_items(self):
-        t = copy.deepcopy(next(t for t in self.tasks if t["task_id"] == "LC-KV-15"))
+        t = copy.deepcopy(next(t for t in self.tasks if t["task_id"] == "LC-KV-19"))
         t["task_id"] = "LC-KV-99"
         self.tasks.append(t)
         self.assertEqual(self.run_()["consistency"], "FAIL_CLOSED")
@@ -464,7 +495,7 @@ class Refusals(unittest.TestCase):
         it = self.item(self.allowed)
         it["allow_path"] = {"state": "UNBOUND", "evidence": "two things", "blockers": [
             {"id": "B1", "evidence": "first"}, {"id": "B2", "evidence": "second"}]}
-        tmpl = next(t for t in self.tasks if t["task_id"] == "LC-KV-15")
+        tmpl = next(t for t in self.tasks if t["task_id"] == "LC-KV-19")
         for b in ("B1", "B2"):
             self.tasks.append(dict(copy.deepcopy(tmpl), task_id="LC-KV-9" + b[-1], items=[self.allowed], blocker=b))
         d = self.run_()
@@ -489,7 +520,7 @@ class Refusals(unittest.TestCase):
         self.assertEqual([(r["failure_code"], r["external_ref"]) for r in res["refusals"]],
                          [("LADDER_EXTERNAL_DEPENDENCY_PENDING", "X-001")])
         self.assertEqual(d["consistency"], "ALLOW", d["consistency_refusals"])
-        t = dict(copy.deepcopy(next(t for t in self.tasks if t["task_id"] == "LC-KV-15")), task_id="LC-KV-99",
+        t = dict(copy.deepcopy(next(t for t in self.tasks if t["task_id"] == "LC-KV-19")), task_id="LC-KV-99",
                  failure_code="LADDER_EXTERNAL_DEPENDENCY_PENDING", items=[self.allowed])
         self.tasks.append(t)  # the referenced registered task covers it; a scoped task here is a mismatch
         self.assertEqual(self.run_()["consistency"], "FAIL_CLOSED")

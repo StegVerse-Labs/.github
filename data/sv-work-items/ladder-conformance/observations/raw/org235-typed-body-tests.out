@@ -1,0 +1,35 @@
+$ {python} -m unittest -v tests.test_intr_path_transfer
+--- exit 0
+--- stdout
+--- stderr
+test_a_ledgered_path_is_answered_from_the_ledger_on_a_later_push (tests.test_intr_path_transfer.Append.test_a_ledgered_path_is_answered_from_the_ledger_on_a_later_push) ... ok
+test_a_transfer_without_a_ledgered_main_merge_writes_nothing (tests.test_intr_path_transfer.Append.test_a_transfer_without_a_ledgered_main_merge_writes_nothing) ... ok
+test_append_links_the_transfer_and_the_source_half_verifies (tests.test_intr_path_transfer.Append.test_append_links_the_transfer_and_the_source_half_verifies) ... ok
+test_contradicted_path_receipts_are_denied (tests.test_intr_path_transfer.Append.test_contradicted_path_receipts_are_denied) ... ok
+test_declaration_covers_every_path_from_this_organization_once (tests.test_intr_path_transfer.DeclaredPaths.test_declaration_covers_every_path_from_this_organization_once) ... ok
+test_messages_conform_to_the_protocol (tests.test_intr_path_transfer.DeclaredPaths.test_messages_conform_to_the_protocol) ... ok
+test_paths_are_ordered_pairs_of_conformant_organizations (tests.test_intr_path_transfer.DeclaredPaths.test_paths_are_ordered_pairs_of_conformant_organizations) ... ok
+test_both_halves_verify_only_with_a_destination_readback (tests.test_intr_path_transfer.DestinationHalf.test_both_halves_verify_only_with_a_destination_readback) ... ok
+test_destination_refusals (tests.test_intr_path_transfer.DestinationHalf.test_destination_refusals) ... ok
+test_every_path_is_fail_closed_at_the_pinned_tip (tests.test_intr_path_transfer.RealState.test_every_path_is_fail_closed_at_the_pinned_tip) ... ok
+test_a_gateway_endpoint_never_carries_an_external_ledger_ref (tests.test_intr_path_transfer.TypedBody.test_a_gateway_endpoint_never_carries_an_external_ledger_ref) ... ok
+test_a_read_back_without_a_genesis_emits_nothing (tests.test_intr_path_transfer.TypedBody.test_a_read_back_without_a_genesis_emits_nothing) ... ok
+test_a_typed_row_on_an_undeclared_intra_org_path_is_refused (tests.test_intr_path_transfer.TypedBody.test_a_typed_row_on_an_undeclared_intra_org_path_is_refused) ... ok
+test_any_other_typed_schema_is_refused_with_six_fields (tests.test_intr_path_transfer.TypedBody.test_any_other_typed_schema_is_refused_with_six_fields) ... ok
+test_endpoint_kinds_are_432s_endpoint_kind_v1_enum (tests.test_intr_path_transfer.TypedBody.test_endpoint_kinds_are_432s_endpoint_kind_v1_enum) ... ok
+test_no_new_workflow_and_the_path_workflows_are_unchanged (tests.test_intr_path_transfer.TypedBody.test_no_new_workflow_and_the_path_workflows_are_unchanged) ... ok
+test_the_emitted_source_half_has_the_receivers_carrier_shape (tests.test_intr_path_transfer.TypedBody.test_the_emitted_source_half_has_the_receivers_carrier_shape)
+intr_transport_carrier.verify's source-half predicates (LLM-adapter#431/#432/#433, sha256 9f460c07...). ... ok
+test_the_genesis_append_read_back_emits_the_typed_row (tests.test_intr_path_transfer.TypedBody.test_the_genesis_append_read_back_emits_the_typed_row)
+Reuse-first trigger: the genesis append's own read-back yields exactly the typed row; landing it in ... ok
+test_the_genesis_observed_row_is_allowlisted_sealed_and_typed (tests.test_intr_path_transfer.TypedBody.test_the_genesis_observed_row_is_allowlisted_sealed_and_typed) ... ok
+test_the_intra_org_path_is_a_data_row_of_the_existing_path_schema (tests.test_intr_path_transfer.TypedBody.test_the_intra_org_path_is_a_data_row_of_the_existing_path_schema) ... ok
+test_typed_append_emits_the_cross_repo_fixture_byte_identically (tests.test_intr_path_transfer.TypedBody.test_typed_append_emits_the_cross_repo_fixture_byte_identically) ... ok
+test_unsealed_or_nonconformant_typed_rows_are_refused (tests.test_intr_path_transfer.TypedBody.test_unsealed_or_nonconformant_typed_rows_are_refused) ... ok
+test_a_typed_row_alongside_leaves_untyped_rows_byte_identical (tests.test_intr_path_transfer.UntypedTransfersAreByteIdentical.test_a_typed_row_alongside_leaves_untyped_rows_byte_identical) ... ok
+test_golden_is_main_output_and_untyped_output_is_byte_identical (tests.test_intr_path_transfer.UntypedTransfersAreByteIdentical.test_golden_is_main_output_and_untyped_output_is_byte_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in <t>s
+
+OK

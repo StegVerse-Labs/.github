@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "NON_ALLOW_CARRIES_SIX_FIELDS",
+ "failure_class": {
+  "class": "A",
+  "reason": "a repair inside the item's own surface: six-field returns instead of a bare status"
+ },
  "failure_code": "LADDER_E0_TERMINAL_NOT_SIX_FIELD",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [

@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "DENY",
  "failed_check": "NO_OWNER_MUST_ACT",
+ "failure_class": {
+  "class": "C",
+  "reason": "waits on a ruling that turns the five HUMAN_ACTION decisions into manifest defaults (tag, license, distribution, entitlement, rollback)"
+ },
  "failure_code": "OPERATING_MODE_OWNER_MUST_ACT",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [

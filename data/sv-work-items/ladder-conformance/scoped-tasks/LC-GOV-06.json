@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "E0_TERMINAL_IS_EXERCISED_NOT_FLAGGED",
+ "failure_class": {
+  "class": "A",
+  "reason": "decided by an existing transition: SV_CHANGE_ADMIT, once #3313 is admitted"
+ },
  "failure_code": "OPERATING_MODE_E0_WITNESS_UNBOUND",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [

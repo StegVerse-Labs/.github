@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "HANDOFF_SURFACE_ADMITTED",
+ "failure_class": {
+  "class": "A",
+  "reason": "decided by an existing transition: each draft's exact-head SV_CHANGE_ADMIT"
+ },
  "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [

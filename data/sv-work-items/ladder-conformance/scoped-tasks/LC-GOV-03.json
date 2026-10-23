@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
+ "failure_class": {
+  "class": "A",
+  "reason": "a repair inside the item's own surface: the finish-point workflow reads its ref from the TV/TVC release receipt"
+ },
  "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [

@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "FINISH_APPENDS_ORGANIZATION_LEDGER_RECEIPT",
+ "failure_class": {
+  "class": "B",
+  "reason": "waits on the organization-ledger writer split (#3255 draft) that the finish transition appends through"
+ },
  "failure_code": "LADDER_FINISH_NOT_LEDGER_BOUND",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [

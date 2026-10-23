@@ -31,11 +31,20 @@ Nothing ALLOWs until the append route is admitted: the E0 positive controls, wit
 test_transport_only_row_passes_the_anchor_then_fails_on_transport (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_transport_only_row_passes_the_anchor_then_fails_on_transport) ... ok
 test_evaluator_is_untouched (tests.test_endpoint_ledger_anchor.DeterminismTests.test_evaluator_is_untouched) ... ok
 test_no_clock_network_or_randomness (tests.test_endpoint_ledger_anchor.DeterminismTests.test_no_clock_network_or_randomness) ... ok
+test_no_production_module_imports_a_test_module (tests.test_endpoint_ledger_anchor.DeterminismTests.test_no_production_module_imports_a_test_module)
+Lane D finding 1: tests/org_ledger_harness.py and the other test helpers are test-only. ... ok
+test_the_dissolution_writer_is_what_the_anchor_reads (tests.test_endpoint_ledger_anchor.DeterminismTests.test_the_dissolution_writer_is_what_the_anchor_reads)
+Lane D finding 2: node_ledger_dissolution is the event-driven write side (it imports the anchor, so ... ok
 test_the_org_ledger_reader_is_the_one_local_io_boundary (tests.test_endpoint_ledger_anchor.DeterminismTests.test_the_org_ledger_reader_is_the_one_local_io_boundary) ... ok
 test_disburse_read_back_then_root_inadmissible (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disburse_read_back_then_root_inadmissible) ... ok
 test_disbursement_not_read_back_fails_closed (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disbursement_not_read_back_fails_closed) ... ok
 test_dissolution_is_an_event_not_a_timer (tests.test_endpoint_ledger_anchor.DissolutionTests.test_dissolution_is_an_event_not_a_timer) ... ok
 test_only_ephemeral_dissolves (tests.test_endpoint_ledger_anchor.DissolutionTests.test_only_ephemeral_dissolves) ... ok
+test_an_unanchored_ledger_per_kind (tests.test_endpoint_ledger_anchor.FailureCodePerKindTests.test_an_unanchored_ledger_per_kind) ... ok
+test_org_ledger_head_not_pinned_per_kind (tests.test_endpoint_ledger_anchor.FailureCodePerKindTests.test_org_ledger_head_not_pinned_per_kind) ... ok
+test_production_store_without_an_append_route_per_kind (tests.test_endpoint_ledger_anchor.FailureCodePerKindTests.test_production_store_without_an_append_route_per_kind)
+No head signer published: MERGE_APPEND_PATH_NOT_ADMITTED is the code for every kind but EPHEMERAL. ... ok
+test_the_rule (tests.test_endpoint_ledger_anchor.FailureCodePerKindTests.test_the_rule) ... ok
 test_431s_null_genesis_pin_is_six_field_not_pinned (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_431s_null_genesis_pin_is_six_field_not_pinned)
 #431 sets expected_genesis_receipt_sha256 to null (it cannot be known before observation). ... ok
 test_carrier_stage_is_last_and_fails_closed (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_carrier_stage_is_last_and_fails_closed) ... ok
@@ -63,6 +72,6 @@ test_unsigned_anchor_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAs
 test_wrong_org_ledger_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_wrong_org_ledger_is_refused) ... ok
 
 ----------------------------------------------------------------------
-Ran 54 tests in <t>s
+Ran 60 tests in <t>s
 
 OK

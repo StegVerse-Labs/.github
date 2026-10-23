@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "FAIL_CLOSED",
  "failed_check": "E0_TERMINAL_OR_CLASS_B",
+ "failure_class": {
+  "class": "B",
+  "reason": "a missing capability the GitHub Product lane builds: one deterministic verifier per sealed predicate"
+ },
  "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [

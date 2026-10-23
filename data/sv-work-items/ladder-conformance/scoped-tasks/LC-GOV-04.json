@@ -2,6 +2,10 @@
  "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
  "disposition": "DENY",
  "failed_check": "NO_EXTERNAL_MACHINE",
+ "failure_class": {
+  "class": "A",
+  "reason": "decided by an existing transition: the manifest-driven TVC portable publisher, which declares no third-party machine"
+ },
  "failure_code": "LADDER_EXTERNAL_MACHINE_REQUIRED",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [
