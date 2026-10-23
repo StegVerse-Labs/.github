@@ -19,6 +19,13 @@ selected set is REQUIRED_VERIFICATION_SKIPPED (scripts/test_suite_baseline_drift
   generate  --spec .stegverse/test-set-spec.json            -> the manifest (sets, surfaces, inputs), deterministic
   select    --manifest .stegverse/test-sets.json --base B --head H --out selection.json
   set       --manifest ... --id ID                          -> one set's runnable test arguments ("callable")
+  run       --selection S --runner R --out TEXT [--junit-xml J] -> runs the selection's run groups, one process each
+
+A pinned source input (check kind `pinned_source`, StegVerse-org/.github#163) is a tree fetched at an exact commit and
+re-hashed against .stegverse/verification-inputs/<input>.json by scripts/pinned_source_input.py before it is called
+available; it is never installed. Sets are grouped by the pinned inputs they declare and each group runs in its own
+process with only its pin's exports (two pins of one package never share an interpreter); sets that declare none run
+exactly as before, with no pinned tree on their path.
 
 Surfaces are found statically and conservatively: the test file, every repository path a string literal or a
 `ROOT / "a" / "b"` chain names, and the local modules it imports, closed transitively over the Python files found.
@@ -321,9 +328,78 @@ def input_available(root: Path, decl: Mapping[str, Any], python: str, env: Mappi
                                 capture_output=True).returncode == 0
         return ok, f"{check['ref']} {'present' if ok else 'absent'}" + (
             f" (must contain {check['contains'][:12]})" if check.get("contains") else "")
+    if kind == "pinned_source":
+        return pinned_source_available(root, check, python, env)
     if kind == "unavailable":
         return False, check.get("reason", "declared unavailable")
     return False, f"unknown input check {kind!r}: an input that cannot be checked is unavailable"
+
+
+IMPORT_FROM_ROOT = r"""
+import importlib, json, sys
+from pathlib import Path
+root, modules = Path(sys.argv[1]).resolve(), sys.argv[2:]
+out = {}
+for i, name in enumerate(modules):
+    try:
+        mod = importlib.import_module(name)
+    except Exception as exc:  # noqa: BLE001
+        out[name] = f"not importable: {type(exc).__name__}: {exc}"[:300]
+        continue
+    origin = Path(getattr(mod, "__file__", "") or "/").resolve()
+    out[name] = "ok" if i or root in origin.parents else f"imported from {origin}, not from the pinned root"
+print(json.dumps(out))
+"""
+
+
+def _pinned_tool():
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import pinned_source_input  # noqa: E402  (stdlib only; ships beside this file and is sha256-pinned with it)
+    return pinned_source_input
+
+
+def pinned_exports(root: Path, check: Mapping[str, Any], env: Mapping[str, str]) -> dict[str, str]:
+    tool = _pinned_tool()
+    return tool.exports(root / check["manifest"], check["pin"], Path(env.get(check["env"], "")).resolve())
+
+
+def pinned_source_available(root: Path, check: Mapping[str, Any], python: str,
+                            env: Mapping[str, str]) -> tuple[bool, str]:
+    """Available only when the materialized tree re-hashes to the manifest's pin AND the module imports from that
+    tree (not from an installed copy) with nothing but the pin's exports - plus any runtime module the pin
+    declares it needs from the job's interpreter (never installed by this input)."""
+    tool = _pinned_tool()
+    value = env.get(check["env"], "")
+    if not value:
+        return False, (f"{check['env']} unset: materialize pin {check['pin']} first (scripts/pinned_source_input.py "
+                       f"materialize --manifest {check['manifest']} --pin {check['pin']} --dest DIR, then "
+                       f"{check['env']}=DIR/tree)")
+    try:
+        record = tool.verify(root / check["manifest"], check["pin"], Path(value).resolve())
+    except tool.PinRefused as exc:
+        r = exc.record
+        return False, f"FAIL_CLOSED {r['failure_code']} ({r['failed_predicate']}): {r['required_evidence_or_repair']}"
+    exports = pinned_exports(root, check, env)
+    child = {k: v for k, v in env.items() if k not in ("PYTHONPATH", "PYTHONHOME")}
+    child.update(exports)
+    pin = json.loads((root / check["manifest"]).read_text(encoding="utf-8"))["pins"][check["pin"]]
+    modules = [check["module"], *pin.get("runtime_requires_importable", [])]
+    done = subprocess.run([python, "-c", IMPORT_FROM_ROOT, value, *modules], cwd=root, env=child,
+                          capture_output=True, text=True)
+    try:
+        status = json.loads(done.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        return False, f"the import probe of pin {check['pin']} printed nothing ({done.stderr.strip()[-200:]})"
+    bad = {m: v for m, v in status.items() if v != "ok"}
+    if bad:
+        code = ("PINNED_INPUT_RUNTIME_MODULE_UNAVAILABLE" if check["module"] not in bad
+                else "PINNED_INPUT_MODULE_NOT_FROM_THE_PINNED_ROOT")
+        return False, (f"FAIL_CLOSED {code}: pin {check['pin']} ({record['commit'][:12]}) verified, but "
+                       + "; ".join(f"{m} {v}" for m, v in sorted(bad.items()))
+                       + (" (a module the pinned commit itself declares; the job's interpreter must already "
+                          "provide it - this input installs nothing)" if code.endswith("UNAVAILABLE") else ""))
+    return True, (f"pin {check['pin']} ({record['commit'][:12]}) verified: {record['files_verified']} files sha256-"
+                  f"matched, {check['module']} imported from the pinned root")
 
 
 # -- selection -----------------------------------------------------------------------------------------------
@@ -426,6 +502,7 @@ def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, m
     excludes: set[str] = set()
     included: set[str] = set()
     unavailable: list[dict] = []
+    groups: dict[str, dict] = {}
     for s in sets:
         if s["id"] not in selected:
             continue
@@ -443,6 +520,14 @@ def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, m
             run_tests += s["tests"]
             included |= set(s["tests"])
             excludes |= set(s.get("exclude", []))
+            pinned = sorted(n for n in s["inputs"] if decls.get(n, {}).get("check", {}).get("kind") == "pinned_source")
+            g = groups.setdefault("+".join(pinned) or "no-pinned-input",
+                                  {"inputs": pinned, "env": {}, "tests": [], "exclude": set()})
+            if pinned and not g["env"]:
+                for n in pinned:
+                    g["env"].update(pinned_exports(root, decls[n]["check"], env))
+            g["tests"] += s["tests"]
+            g["exclude"] |= set(s.get("exclude", []))
         else:
             for i in inputs:
                 if not i["available"]:
@@ -472,6 +557,10 @@ def select(root: Path, manifest: Mapping[str, Any], diff: list[str] | None, *, m
             "not_selected_note": "not selected means not run by this change and not reported as skipped",
             "selected": out_sets,
             "run": {"tests": run_tests, "deselect": sorted(excludes - included)},
+            # one process per group: a group is the pinned source inputs its sets declare, with only their exports
+            "run_groups": [{"id": gid, "inputs": g["inputs"], "env": dict(sorted(g["env"].items())),
+                            "tests": g["tests"], "deselect": sorted(g["exclude"] - set(g["tests"]))}
+                           for gid, g in sorted(groups.items(), key=lambda kv: (bool(kv[1]["inputs"]), kv[0]))],
             "input_unavailable": unavailable, "rows": rows,
             "unlisted_test_files": stale_listing}
     blocking = rows + unavailable
@@ -489,6 +578,51 @@ def run_args(selection: Mapping[str, Any]) -> list[str]:
         for node in selection["run"]["deselect"]:
             args += ["--deselect", node]
     return args
+
+
+GROUP_MARKER = "### test-set run group "
+
+
+def group_args(runner: str, group: Mapping[str, Any]) -> list[str]:
+    return run_args({"runner": runner, "run": {"tests": group["tests"], "deselect": group["deselect"]}})
+
+
+def run_groups(selection: Mapping[str, Any], out: Path, junit: Path | None, python: str = sys.executable,
+               extra: Iterable[str] = ()) -> int:
+    """Run each run group once, in its own process with only its pins' exports, appending to one output file; the
+    pytest junit records are merged into one. The status is the worst group status (a runner error dominates)."""
+    import xml.etree.ElementTree as ET
+    runner, status, records = selection["runner"], 0, []
+    groups = selection.get("run_groups") or [{"id": "no-pinned-input", "inputs": [], "env": {},
+                                              "tests": selection["run"]["tests"],
+                                              "deselect": selection["run"]["deselect"]}]
+    with out.open("w", encoding="utf-8") as fh:
+        for i, g in enumerate(groups):
+            args = group_args(runner, g)
+            if not args:
+                continue
+            env = {k: v for k, v in os.environ.items() if not (g["inputs"] and k in ("PYTHONPATH", "PYTHONHOME"))}
+            env.update(g["env"])
+            if runner == "pytest":
+                rec = junit.with_name(f"{junit.name}.group{i}") if junit else None
+                cmd = [python, "-m", "pytest", *args, *extra] + ([f"--junitxml={rec}"] if rec else [])
+                records += [rec] if rec else []
+            else:
+                cmd = [python, "-m", "unittest", "-v", *args, *extra]
+            fh.write(f"{GROUP_MARKER}{g['id']} inputs={','.join(g['inputs']) or '-'} tests={len(g['tests'])}\n")
+            fh.flush()
+            done = subprocess.run(cmd, stdout=fh, stderr=subprocess.STDOUT, env=env)
+            fh.write("\n")
+            print(f"GROUP {g['id']} status={done.returncode}")
+            status = max(status, done.returncode)
+    if junit is not None:
+        merged = ET.Element("testsuites")
+        for rec in records:
+            if rec.is_file():
+                top = ET.parse(rec).getroot()
+                merged.extend(top.findall("testsuite") if top.tag == "testsuites" else [top])
+        ET.ElementTree(merged).write(junit, encoding="utf-8", xml_declaration=True)
+    return status
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -514,7 +648,19 @@ def main(argv: list[str] | None = None) -> int:
     c.add_argument("--root", default=".")
     c.add_argument("--manifest", required=True)
     c.add_argument("--id", required=True)
+    r = sub.add_parser("run")
+    r.add_argument("--selection", required=True)
+    r.add_argument("--out", required=True, help="every group's runner output, in order, each after a group marker")
+    r.add_argument("--junit-xml", help="pytest: the merged junit record of every group")
+    r.add_argument("--status-out", help="write the worst group status here")
+    r.add_argument("extra", nargs="*", help="extra runner arguments (after --)")
     a = parser.parse_args(argv)
+    if a.command == "run":
+        record = json.loads(Path(a.selection).read_text(encoding="utf-8"))
+        status = run_groups(record, Path(a.out), Path(a.junit_xml) if a.junit_xml else None, extra=a.extra)
+        if a.status_out:
+            Path(a.status_out).write_text(f"{status}\n", encoding="utf-8")
+        return status
     root = Path(a.root).resolve()
     if a.command == "generate":
         spec = json.loads((root / a.spec).read_text(encoding="utf-8"))
