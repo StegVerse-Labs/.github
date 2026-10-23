@@ -209,7 +209,81 @@
    ]
   },
   {
+   "candidate_owners": [
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1707",
+      "StegVerse-Labs/.github#2680",
+      "StegVerse-Labs/.github#2707"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+     "test_count": 6,
+     "tests": [
+      "tests/test_task_registry_collision_checkin.py::test_session_branch_pr_and_intended_targets_are_bound_into_disposition",
+      "tests/test_task_registry_collision_checkin.py::test_unregistered_stops_before_mutation",
+      "tests/test_task_registry_general_checkin_caller_inventory.py::test_general_checkin_production_callers_are_source_classified_without_runtime_upgrade",
+      "tests/test_task_registry_recent_event_collision_integration.py::test_predecessor_readback_chains_two_independent_checkins",
+      "tests/test_task_registry_recent_event_collision_integration.py::test_rejected_checkin_readback_chains_seed_checkin_and_stopped",
+      "tests/test_task_registry_recent_event_collision_integration.py::test_tampered_retained_predecessor_refuses_new_checkin"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1781"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_stegbrowser_runtime_consumption_checkin.py::test_stegbrowser_runtime_consumption_exact_registry_checkin_is_continue"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2233"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_canonical_work_registered_task_ingress.py::CanonicalWorkRegisteredTaskIngressTests::test_bootstrap_validates_registry_task_instead_of_hard_coding_one_identity"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2121",
+      "StegVerse-Labs/.github#2147"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+     "test_count": 4,
+     "tests": [
+      "tests/test_task_registry_checkin_registry_authority.py::test_registry_only_identity_is_loaded_without_shard",
+      "tests/test_task_registry_checkin_registry_authority.py::test_shard_cannot_override_registry_state",
+      "tests/test_task_registry_checkin_registry_authority.py::test_shard_only_identity_is_not_registered_work",
+      "tests/test_task_registry_collision_checkin.py::test_current_registry_generation_is_admitted_to_normal_collision_evaluation"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1629"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_task_registry_global_verifier_node_invariant.py::test_active_signer_task_no_longer_requires_device_or_channel_user_verifier"
+     ]
+    }
+   ],
    "carried_by": [],
+   "custody_tests": 14,
    "dependency": "Task Registry check-in, collision and registry-generation semantics moved (STOP_* dispositions, observed_registry_generation, caller_surface attestation, generation must be a non-negative integer) while the tests kept earlier contracts",
    "failed_predicate": "BASELINE_TEST_PASSES_AT_MAIN_HEAD",
    "failure_code": "TEST_SUITE_BASELINE_PRE_EXISTING_FAILURE",
@@ -222,7 +296,9 @@
     },
     {
      "commit": "0e2c9b94e4ffc224a2b3cfc1ac25bef36bb6eeb5",
-     "pull_request": null
+     "pull_request": [
+      1390
+     ]
     },
     {
      "commit": "1048bcec92fd57513615bb5540bf3a1e76f1c557",
@@ -238,11 +314,15 @@
     },
     {
      "commit": "3ecf0737be9c20c530c2c47d7d51dad6359dfa7a",
-     "pull_request": null
+     "pull_request": [
+      2121
+     ]
     },
     {
      "commit": "449e9c543a3b2558fea708d42bb3c9a495f91faa",
-     "pull_request": null
+     "pull_request": [
+      2233
+     ]
     },
     {
      "commit": "45c5ca3ed50bd403c999b05a68be681484ba934c",
@@ -266,7 +346,9 @@
     },
     {
      "commit": "925fc17e6875dda99f356fa417b346868ae5a0c2",
-     "pull_request": null
+     "pull_request": [
+      1443
+     ]
     },
     {
      "commit": "9d7602df46b798afd2f4116845c39a07fa46779e",
@@ -278,15 +360,21 @@
     },
     {
      "commit": "aa8fe348846c78937a536b6a84f3e11ecd8df984",
-     "pull_request": null
+     "pull_request": [
+      2680
+     ]
     },
     {
      "commit": "cf83f9efa438014e7dc71bb16a4ca6d55e35efd0",
-     "pull_request": null
+     "pull_request": [
+      1778
+     ]
     },
     {
      "commit": "d75ddb18ffb51f3131f3bde54fc9582f57991471",
-     "pull_request": null
+     "pull_request": [
+      1781
+     ]
     },
     {
      "commit": "de53bdfb6c4bc5cec06cd982107823694df88df6",
@@ -308,7 +396,12 @@
     "rule": "the ratchet judges only nodes a runnable selected set runs (test_suite_baseline_drift.in_selection); a set is selected only when the diff reaches its closure, so a PR that does not reach these files does not run or judge these tests; a PR that does reach them and leaves them failing on its base is PRE_EXISTING_BASELINE_FAILURE when its diff does not touch the test",
     "verified_by": "tests/test_test_suite_ratchet_repair_task.py"
    },
-   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); subject-area Goal NOT_RESOLVED_FROM_SOURCE - neither the test nor its first-failing change names one (implicated_goal_refs per test)",
+   "owner_derivation_counts": {
+    "CANDIDATE_DERIVED_FROM_PR_BODY": 13,
+    "CANDIDATE_OWNER_AMBIGUOUS": 8,
+    "NO_INTRODUCING_PR_BODY": 6
+   },
+   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); custody of the 14 of 27 tests with no single registered Goal in the introducing PR body, as non-blocking PRE_EXISTING; candidate_owners lists Goals derived from introducing PR bodies by the Labs#3329 lineage rule (observed text, not assignments)",
    "ratchet_classes": [
     "PRE_EXISTING_RECORDED_IN_BASELINE"
    ],
@@ -360,7 +453,75 @@
    ]
   },
   {
+   "candidate_owners": [
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2291"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+     "test_count": 4,
+     "tests": [
+      "tests/test_admissible_source_generation_cosv.py::AdmissibleSourceGenerationCOSVTests::test_bindings_and_global_coverage_remain_structurally_consistent",
+      "tests/test_formalism_source_discovery_cosv.py::FormalismSourceDiscoveryCOSVTests::test_index_and_coverage_advance_exactly_one_task",
+      "tests/test_kv_connection_observers_cosv.py::KVConnectionObserverCOSVTests::test_source_bindings_and_index_coverage_are_canonical",
+      "tests/test_local_source_generation_cosv.py::LocalSourceGenerationCOSVTests::test_bindings_and_global_coverage_are_structurally_consistent"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2750"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "ECOSYSTEM-OPEN-SOURCE-STRATEGY-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_ecosystem_open_source_census.py::TestEcosystemOpenSourceCensus::test_two_additional_organizations_audited"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2018"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_reusable_task_cosv_index_shard_resolution.py::test_child_pointer_resolves_from_canonical_index_shard"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2150"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_ae_retrospective_conformance.py::AERetrospectiveConformanceTests::test_exact_effective_denominator"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2347"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+     "test_count": 3,
+     "tests": [
+      "tests/test_kv_connection_revalidation_cosv.py::KVConnectionRevalidationCOSVTests::test_coverage_moves_task_from_gap_to_index_without_denominator_change",
+      "tests/test_kv_revalidation_proof_intake_cosv.py::KVRevalidationProofIntakeCOSVTests::test_index_and_global_coverage_bind_exactly_once",
+      "tests/test_worker_denominator_closure_cosv.py::WorkerDenominatorClosureCOSVTests::test_active_worker_denominator_is_closed"
+     ]
+    }
+   ],
    "carried_by": [],
+   "custody_tests": 0,
    "dependency": "COSV index/global-coverage counts and denominators moved (84!=85, 77!=78, 1!=0) as later tasks were indexed; the tests pin exact counts",
    "failed_predicate": "BASELINE_TEST_PASSES_AT_MAIN_HEAD",
    "failure_code": "TEST_SUITE_BASELINE_PRE_EXISTING_FAILURE",
@@ -379,7 +540,9 @@
     },
     {
      "commit": "ba9b497eb376220dcd29fbcc9ad386fc961f4e28",
-     "pull_request": null
+     "pull_request": [
+      2347
+     ]
     },
     {
      "commit": "d26ab008adb7fbbcfe4393a84608b98ab4d13060",
@@ -401,7 +564,10 @@
     "rule": "the ratchet judges only nodes a runnable selected set runs (test_suite_baseline_drift.in_selection); a set is selected only when the diff reaches its closure, so a PR that does not reach these files does not run or judge these tests; a PR that does reach them and leaves them failing on its base is PRE_EXISTING_BASELINE_FAILURE when its diff does not touch the test",
     "verified_by": "tests/test_test_suite_ratchet_repair_task.py"
    },
-   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); subject-area Goal NOT_RESOLVED_FROM_SOURCE - neither the test nor its first-failing change names one (implicated_goal_refs per test)",
+   "owner_derivation_counts": {
+    "CANDIDATE_DERIVED_FROM_PR_BODY": 10
+   },
+   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); custody of the 0 of 10 tests with no single registered Goal in the introducing PR body, as non-blocking PRE_EXISTING; candidate_owners lists Goals derived from introducing PR bodies by the Labs#3329 lineage rule (observed text, not assignments)",
    "ratchet_classes": [
     "PRE_EXISTING_RECORDED_IN_BASELINE"
    ],
@@ -434,14 +600,69 @@
    ]
   },
   {
+   "candidate_owners": [
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2847"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_ephemeral_stegbrowser_external_ai_activation.py::EphemeralExternalAITaskTests::test_single_canonical_owner_and_no_mykv_dependency"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1533"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_stegbrowser_tvc_source_promotion_request.py::test_portable_dispatch_preserves_exact_source_git_head_and_selection"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1923"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+     "test_count": 3,
+     "tests": [
+      "tests/test_stegbrowser_node_interlock_runtime_binding.py::test_lease_state_identity_binds_manifest_node_interlock_goal_cosv",
+      "tests/test_stegbrowser_node_interlock_runtime_binding.py::test_reusable_task_has_no_external_host_discovery_repair",
+      "tests/test_stegbrowser_node_interlock_runtime_binding.py::test_runner_validates_receipt_one_before_existing_materializer"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1908"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_stegbrowser_runtime_consumption_component_profile.py::test_active_remediation_uses_ephemeral_stegos_without_reopening_retired_goal"
+     ]
+    }
+   ],
    "carried_by": [],
+   "custody_tests": 5,
    "dependency": "StegBrowser runtime-consumption registry, reusable binding, node-interlock and healer-routing records were rewritten; the tests assert earlier record fields and ids",
    "failed_predicate": "BASELINE_TEST_PASSES_AT_MAIN_HEAD",
    "failure_code": "TEST_SUITE_BASELINE_PRE_EXISTING_FAILURE",
    "first_failing_commits": [
     {
      "commit": "0098bc793865fd1db835c400b502dad5f8a5e32d",
-     "pull_request": null
+     "pull_request": [
+      1923
+     ]
     },
     {
      "commit": "0fdac00dd761da61fbd6f2f0e9c5d60463b1b924",
@@ -473,15 +694,21 @@
     },
     {
      "commit": "c007972246cbbc92dc1d42cd2d8efb4a97fcd920",
-     "pull_request": null
+     "pull_request": [
+      2339
+     ]
     },
     {
      "commit": "cf99d01f12ca9a52ee4cc328dc2e41297d44a92a",
-     "pull_request": null
+     "pull_request": [
+      1901
+     ]
     },
     {
      "commit": "e971f7e9c34f1cc2665fdc9a54f49ca12c654a4d",
-     "pull_request": null
+     "pull_request": [
+      1897
+     ]
     }
    ],
    "group_id": "G8_STEGBROWSER_RUNTIME_CONSUMPTION_BINDING_DRIFT",
@@ -491,7 +718,12 @@
     "rule": "the ratchet judges only nodes a runnable selected set runs (test_suite_baseline_drift.in_selection); a set is selected only when the diff reaches its closure, so a PR that does not reach these files does not run or judge these tests; a PR that does reach them and leaves them failing on its base is PRE_EXISTING_BASELINE_FAILURE when its diff does not touch the test",
     "verified_by": "tests/test_test_suite_ratchet_repair_task.py"
    },
-   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); subject-area Goal NOT_RESOLVED_FROM_SOURCE - neither the test nor its first-failing change names one (implicated_goal_refs per test)",
+   "owner_derivation_counts": {
+    "CANDIDATE_DERIVED_FROM_PR_BODY": 6,
+    "CANDIDATE_OWNER_AMBIGUOUS": 4,
+    "NO_INTRODUCING_PR_BODY": 1
+   },
+   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); custody of the 5 of 11 tests with no single registered Goal in the introducing PR body, as non-blocking PRE_EXISTING; candidate_owners lists Goals derived from introducing PR bodies by the Labs#3329 lineage rule (observed text, not assignments)",
    "ratchet_classes": [
     "PRE_EXISTING_RECORDED_IN_BASELINE"
    ],
@@ -522,18 +754,61 @@
    ]
   },
   {
+   "candidate_owners": [
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2290"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_sv002_event_ephemeral_materialization.py::SV002EventEphemeralTests::test_profile_preserves_hil_and_advertises_sv002"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1240"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_hil_portable_workercoordinator_package.py::test_hil_portable_package_is_bound_to_current_canonical_source_blobs"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#3004"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+     "test_count": 1,
+     "tests": [
+      "tests/test_sdk_evaluator_dispatch_master_records_custody.py::test_sdk_evaluator_dispatch_visit_enters_existing_master_records_organization_record"
+     ]
+    }
+   ],
    "carried_by": [],
+   "custody_tests": 9,
    "dependency": "HIL / SV001 / SV002 / Master Records handoffs and scripts were reconciled (renamed attributes, new dispositions, re-pinned sources); the tests assert the earlier wording and pins",
    "failed_predicate": "BASELINE_TEST_PASSES_AT_MAIN_HEAD",
    "failure_code": "TEST_SUITE_BASELINE_PRE_EXISTING_FAILURE",
    "first_failing_commits": [
     {
      "commit": "3a3032375e745fb955dfd4e86c8b63eb192b08e4",
-     "pull_request": null
+     "pull_request": [
+      2290
+     ]
     },
     {
      "commit": "3bd8e24a0fb3a892c5b0bc42a188dfd87065570c",
-     "pull_request": null
+     "pull_request": [
+      410
+     ]
     },
     {
      "commit": "400447b66847f2ef390990988e8335ff3a4e28c9",
@@ -543,7 +818,9 @@
     },
     {
      "commit": "4f27ac9fceed1f1ef44029da2293c5eee5f33009",
-     "pull_request": null
+     "pull_request": [
+      1057
+     ]
     },
     {
      "commit": "5ea79e76576a6d12e29f65d372c20140ca6dd4e9",
@@ -593,7 +870,12 @@
     "rule": "the ratchet judges only nodes a runnable selected set runs (test_suite_baseline_drift.in_selection); a set is selected only when the diff reaches its closure, so a PR that does not reach these files does not run or judge these tests; a PR that does reach them and leaves them failing on its base is PRE_EXISTING_BASELINE_FAILURE when its diff does not touch the test",
     "verified_by": "tests/test_test_suite_ratchet_repair_task.py"
    },
-   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); subject-area Goal NOT_RESOLVED_FROM_SOURCE - neither the test nor its first-failing change names one (implicated_goal_refs per test)",
+   "owner_derivation_counts": {
+    "CANDIDATE_DERIVED_FROM_PR_BODY": 3,
+    "NO_INTRODUCING_PR_BODY": 2,
+    "NO_REGISTERED_GOAL_IN_PR_BODY": 7
+   },
+   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); custody of the 9 of 12 tests with no single registered Goal in the introducing PR body, as non-blocking PRE_EXISTING; candidate_owners lists Goals derived from introducing PR bodies by the Labs#3329 lineage rule (observed text, not assignments)",
    "ratchet_classes": [
     "PRE_EXISTING_RECORDED_IN_BASELINE"
    ],
@@ -628,7 +910,34 @@
    ]
   },
   {
+   "candidate_owners": [
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2018"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_kv_revalidation_reusable_tvc_runtime_binding.py::test_registry_uses_local_admitted_runner"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1342"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_native_email_resident_integration.py::test_standing_request_binds_existing_hb_resident_path"
+     ]
+    }
+   ],
    "carried_by": [],
+   "custody_tests": 10,
    "dependency": "MIR, native email, KV evidence-reuse and TVC resident consumers were refactored; the tests assert earlier source substrings, script names and pins",
    "failed_predicate": "BASELINE_TEST_PASSES_AT_MAIN_HEAD",
    "failure_code": "TEST_SUITE_BASELINE_PRE_EXISTING_FAILURE",
@@ -641,7 +950,9 @@
     },
     {
      "commit": "2abeb8ebb9f805664486dc57e8107d347cf585b8",
-     "pull_request": null
+     "pull_request": [
+      685
+     ]
     },
     {
      "commit": "32146da9f4aa13a8bb56a509103c2f28ffcb90cb",
@@ -695,7 +1006,12 @@
     "rule": "the ratchet judges only nodes a runnable selected set runs (test_suite_baseline_drift.in_selection); a set is selected only when the diff reaches its closure, so a PR that does not reach these files does not run or judge these tests; a PR that does reach them and leaves them failing on its base is PRE_EXISTING_BASELINE_FAILURE when its diff does not touch the test",
     "verified_by": "tests/test_test_suite_ratchet_repair_task.py"
    },
-   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); subject-area Goal NOT_RESOLVED_FROM_SOURCE - neither the test nor its first-failing change names one (implicated_goal_refs per test)",
+   "owner_derivation_counts": {
+    "CANDIDATE_DERIVED_FROM_PR_BODY": 2,
+    "NO_INTRODUCING_PR_BODY": 6,
+    "NO_REGISTERED_GOAL_IN_PR_BODY": 4
+   },
+   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); custody of the 10 of 12 tests with no single registered Goal in the introducing PR body, as non-blocking PRE_EXISTING; candidate_owners lists Goals derived from introducing PR bodies by the Labs#3329 lineage rule (observed text, not assignments)",
    "ratchet_classes": [
     "PRE_EXISTING_RECORDED_IN_BASELINE"
    ],
@@ -727,7 +1043,126 @@
    ]
   },
   {
+   "candidate_owners": [
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2568"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_ecosystem_ingress_ai_component_projection.py::test_component_projection_preserves_goal_and_runtime_nonclaim"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2480"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+     "test_count": 5,
+     "tests": [
+      "tests/test_resident_rendezvous_native_integration.py::test_native_worker_service_receives_non_secret_rendezvous_config",
+      "tests/test_sovereign_heartbeat_service.py::SovereignHeartbeatServiceTests::test_worker_service_preserves_direct_stegindex_root",
+      "tests/test_sovereign_heartbeat_service.py::SovereignHeartbeatServiceTests::test_worker_service_preserves_safe_local_runtime_bindings",
+      "tests/test_sovereign_heartbeat_service.py::SovereignHeartbeatServiceTests::test_worker_service_preserves_universal_governance_local_source_bindings",
+      "tests/test_sovereign_heartbeat_service.py::SovereignHeartbeatServiceTests::test_worker_service_receives_distinct_canonical_local_source_root"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2635"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_erl_household_economic_conditions_runtime_binding.py::test_no_device_inventory_gate_or_new_runtime_plane"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1293"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_runtime_failure_boundaries.py::test_failure_classifier_is_in_worker_tree_that_resident_refresh_already_copies"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1801",
+      "StegVerse-Labs/.github#1816"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+     "test_count": 2,
+     "tests": [
+      "tests/test_external_framework_roundtrip_rollout_contract.py::test_handoff_preserves_foreign_non_authority_and_transition_truth_boundary",
+      "tests/test_external_framework_roundtrip_rollout_contract.py::test_runtime_ineligible_frameworks_fail_closed_without_blocking_other_invocations"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1652"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+     "test_count": 1,
+     "tests": [
+      "tests/test_reusable_task_component_readme_projection.py::test_repository_readme_accepts_projection_without_losing_existing_tail"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2820"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_shwp_registry_and_original_envelope_replay.py::test_existing_shwp_task_is_projected_once_with_original_cosv"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#1748",
+      "StegVerse-Labs/.github#1782"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+     "test_count": 2,
+     "tests": [
+      "tests/test_neutral_reusable_task_scheduler.py::test_reusable_registry_resolves_scheduler_shard_once",
+      "tests/test_sovereign_source_refresh_reusable_task.py::test_source_refresh_reusable_task_resolves_from_shard"
+     ]
+    },
+    {
+     "assignment": "NOT_ASSIGNED",
+     "derived_from": [
+      "StegVerse-Labs/.github#2233"
+     ],
+     "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+     "goal_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+     "test_count": 1,
+     "tests": [
+      "tests/test_sharded_canonical_work_ingress.py::ShardedCanonicalWorkIngressTests::test_stegbrowser_superseded_parent_is_not_reingress_eligible"
+     ]
+    }
+   ],
    "carried_by": [],
+   "custody_tests": 11,
    "dependency": "resident worker, sovereign heartbeat, reusable-task and component-profile sources were refactored (env roots, scheduler resolution, profile fields); the tests assert earlier shapes",
    "failed_predicate": "BASELINE_TEST_PASSES_AT_MAIN_HEAD",
    "failure_code": "TEST_SUITE_BASELINE_PRE_EXISTING_FAILURE",
@@ -758,7 +1193,9 @@
     },
     {
      "commit": "449e9c543a3b2558fea708d42bb3c9a495f91faa",
-     "pull_request": null
+     "pull_request": [
+      2233
+     ]
     },
     {
      "commit": "44c6d88abb42351ec26a576e3136caec3400a613",
@@ -768,11 +1205,15 @@
     },
     {
      "commit": "49692b2fe410053fc1b0b83a7d27c39fca887d27",
-     "pull_request": null
+     "pull_request": [
+      1801
+     ]
     },
     {
      "commit": "56e191abfa0f8e8c6ff00c69c985be24b7c1df7f",
-     "pull_request": null
+     "pull_request": [
+      1759
+     ]
     },
     {
      "commit": "6c11abb58b527fe90bd0dc52fb74cfb1b7e5073d",
@@ -782,11 +1223,15 @@
     },
     {
      "commit": "70300377311b9a949fd0f126cf1f31dacaaf55cd",
-     "pull_request": null
+     "pull_request": [
+      2480
+     ]
     },
     {
      "commit": "75ff0d6a5a321ec4c413b240102116f2eb586c69",
-     "pull_request": null
+     "pull_request": [
+      1758
+     ]
     },
     {
      "commit": "8c2b40da6e7b1cc2508a5c741567a3825e0eb0f6",
@@ -824,7 +1269,9 @@
     },
     {
      "commit": "eb37e12d63850d820054e2c85c1ff35dc666a2c3",
-     "pull_request": null
+     "pull_request": [
+      138
+     ]
     },
     {
      "commit": "eeec8ba16a7e534dcd09143e359339ec90770667",
@@ -840,7 +1287,13 @@
     "rule": "the ratchet judges only nodes a runnable selected set runs (test_suite_baseline_drift.in_selection); a set is selected only when the diff reaches its closure, so a PR that does not reach these files does not run or judge these tests; a PR that does reach them and leaves them failing on its base is PRE_EXISTING_BASELINE_FAILURE when its diff does not touch the test",
     "verified_by": "tests/test_test_suite_ratchet_repair_task.py"
    },
-   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); subject-area Goal NOT_RESOLVED_FROM_SOURCE - neither the test nor its first-failing change names one (implicated_goal_refs per test)",
+   "owner_derivation_counts": {
+    "CANDIDATE_DERIVED_FROM_PR_BODY": 15,
+    "CANDIDATE_OWNER_AMBIGUOUS": 2,
+    "NO_INTRODUCING_PR_BODY": 1,
+    "NO_REGISTERED_GOAL_IN_PR_BODY": 8
+   },
+   "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 (P4 lane: holds this repair scope and the ratchet ceiling); custody of the 11 of 26 tests with no single registered Goal in the introducing PR body, as non-blocking PRE_EXISTING; candidate_owners lists Goals derived from introducing PR bodies by the Labs#3329 lineage rule (observed text, not assignments)",
    "ratchet_classes": [
     "PRE_EXISTING_RECORDED_IN_BASELINE"
    ],
@@ -935,7 +1388,16 @@
   "bisect": "every failing test bisected over origin/main's first-parent line (5458 commits) from the first-parent commit that last added its test file to the head; a test file absent at a probe counts as not failing; collection errors count as failing; assumes pass-then-fail monotonicity",
   "dependency_review": "scripts/test_suite_baseline_drift.py review_one per test (introducing PR, changed paths, goal refs, carrier PRs); changed paths reported where they fall inside the test's selection closure (.stegverse/test-sets.json surface_graph)",
   "first_seen_in_baseline": "oldest commit whose diff of data/test-suite-baseline.json adds the node id (git log -S)",
-  "grouping": "by the contract the assertion drifted from (failure message + first-failing change)"
+  "grouping": "by the contract the assertion drifted from (failure message + first-failing change)",
+  "owner_derivation": {
+   "effect": "a candidate is not an assignment; PR text never satisfies a receipt predicate; every test without a single registered candidate stays in custody of StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001 as non-blocking PRE_EXISTING",
+   "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+   "pull_request_association": "a commit's pull request is the merged PR whose merge_commit_sha equals the commit (GitHub commit-to-PR association); a commit with none is a direct push and has no PR body",
+   "registry_at": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "registry_sha256": "sha256:a2366fc6ad116f5e83d48379eb057cfd250ef42a92e7631399650a33f9f56448",
+   "rule": "StegVerse-Labs/.github#3329 scripts/owner_assignment_transition.py @e87fac76 (sha256:ec7992b74ffce09fe403d6fe1f815b33317c67e498c2ad5d0b659205aca13660): GOAL_ID over the introducing PR body; a goal is registered when resolve_goal finds data/canonical-task-records/<goal>.json or a task_id in data/canonical-task-registry.json; exactly one registered goal names a candidate, more than one is CANDIDATE_OWNER_AMBIGUOUS, none names no candidate",
+   "scope": "groups G6-G11"
+  }
  },
  "observation": {
   "ci": {
@@ -966,7 +1428,7 @@
  "observed_at_head": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
  "out_of_scope": "baseline edits that add tests (that records drift, it does not repair it); posting on item issues",
  "owning_existing_goal": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
- "receipt_sha256": "sha256:e274097c2e11297694c9a0c57464972b309eeaf0a76c4a8bb0564a8e889d00e5",
+ "receipt_sha256": "sha256:e0773a6e17e58f7c57196ed4550f9da9bab5166b31bec9620fdd06cad89095e1",
  "repository": "StegVerse-Labs/.github",
  "retry_entrypoint": ".github/workflows/test-suite-ratchet.yml (push to main) -> scripts/test_suite_baseline_drift.py detect",
  "schema": "stegverse.test-suite-baseline-repair-task/v1",
@@ -1001,6 +1463,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Reconcile active-worker invariant against authoritative handoffs",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "45c5ca3ed50bd403c999b05a68be681484ba934c",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_active_worker_state_policy.py::test_rejects_blocked_unbound_unresolved_task",
@@ -1027,9 +1499,26 @@
     "tests/test_admissible_source_generation_capability_worker.py",
     "workers/admissible_source_generation_capability_worker.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    138
+   ],
    "introducing_subject": "Bind source generation to canonical Admissible-Existence lifecycle",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "eb37e12d63850d820054e2c85c1ff35dc666a2c3",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:8199fe9c47140e30556392792be710e350eb11304e10bcaa2e953f217df6a92e",
+      "ref": "StegVerse-Labs/.github#138"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 3,
    "test": "tests/test_admissible_source_generation_capability_worker.py::test_activation_requires_proof_and_integration_evidence",
@@ -1058,6 +1547,31 @@
    "introducing_pull_request": 2291,
    "introducing_subject": "Stage synthetic conversation evidence through Canonical Work and WorkerCoordinator (#2291)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2291"
+      ],
+      "goal_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "e5f40728f92029c8f81fc543c3215e9ad98a0ad5",
+    "registered_goals_named": [
+     "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:3309cbd73d42b52509634d3b333988dfb6afe69cd847296a80085bc9ff347f01",
+      "ref": "StegVerse-Labs/.github#2291"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 14,
    "test": "tests/test_admissible_source_generation_cosv.py::AdmissibleSourceGenerationCOSVTests::test_bindings_and_global_coverage_remain_structurally_consistent",
@@ -1086,6 +1600,31 @@
    "introducing_pull_request": 2150,
    "introducing_subject": "Merge pull request #2150 from StegVerse-Labs/sdk-tt-purpose-bound-worker-runtime-proof-001",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2150"
+      ],
+      "goal_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "00d5cadd3048dc1e44d8877a65ddc1ebf8fc6a29",
+    "registered_goals_named": [
+     "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:de6e0765a20f4c2342e53b426af98dfef53ff6dd1a8fe96b25de2333eca98c48",
+      "ref": "StegVerse-Labs/.github#2150"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 7,
    "test": "tests/test_ae_retrospective_conformance.py::AERetrospectiveConformanceTests::test_exact_effective_denominator",
@@ -1116,9 +1655,36 @@
     "scripts/apply_admitted_canonical_work_projection.py",
     "scripts/run_canonical_work_event_bootstrap.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2233
+   ],
    "introducing_subject": "Repair StegHealth KV Interlock Canonical Work carriage",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2233"
+      ],
+      "goal_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "449e9c543a3b2558fea708d42bb3c9a495f91faa",
+    "registered_goals_named": [
+     "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:82f8237b61deab4304d7bbebd958672cc83b68d4411511de2ced40319e1395b1",
+      "ref": "StegVerse-Labs/.github#2233"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 399,
    "test": "tests/test_canonical_work_registered_task_ingress.py::CanonicalWorkRegisteredTaskIngressTests::test_bootstrap_validates_registry_task_instead_of_hard_coding_one_identity",
@@ -1245,6 +1811,21 @@
    "introducing_pull_request": 2858,
    "introducing_subject": "Merge pull request #2858 from StegVerse-Labs/task/reconcile-stale-runtime-prs-current-main-20260929",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "afcd46eb202d322b188d8cd79ab209acc2891a08",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:22397a0d4ea8bdeec831aa78bdb6bb86e3cd089480020259361b5f148084bfdf",
+      "ref": "StegVerse-Labs/.github#2858"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 397,
    "test": "tests/test_component011_portable_initiation.py::test_hosted_and_credential_inputs_fail_before_refresh_or_dispatch[unsafe_env0]",
@@ -1275,6 +1856,21 @@
    "introducing_pull_request": 2858,
    "introducing_subject": "Merge pull request #2858 from StegVerse-Labs/task/reconcile-stale-runtime-prs-current-main-20260929",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "afcd46eb202d322b188d8cd79ab209acc2891a08",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:22397a0d4ea8bdeec831aa78bdb6bb86e3cd089480020259361b5f148084bfdf",
+      "ref": "StegVerse-Labs/.github#2858"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 397,
    "test": "tests/test_component011_portable_initiation.py::test_hosted_and_credential_inputs_fail_before_refresh_or_dispatch[unsafe_env1]",
@@ -1343,6 +1939,38 @@
    "introducing_pull_request": 2568,
    "introducing_subject": "Reconcile AI ingress around defensive envelope (#2568)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2568"
+      ],
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2568"
+      ],
+      "goal_id": "RTC-NONCHATGPT-AI-DECISION-SANDBOX-011",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "eeec8ba16a7e534dcd09143e359339ec90770667",
+    "registered_goals_named": [
+     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:a908a1f1d908ccd332e43eec581e63022d9fa9903344dd714b21461d5f467618",
+      "ref": "StegVerse-Labs/.github#2568"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 7,
    "test": "tests/test_ecosystem_ingress_ai_component_projection.py::test_component_projection_preserves_goal_and_runtime_nonclaim",
@@ -1373,6 +2001,31 @@
    "introducing_pull_request": 2750,
    "introducing_subject": "Merge pull request #2750 from StegVerse-Labs/docs/open-source-source-owner-continuation-20260925",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-OPEN-SOURCE-STRATEGY-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2750"
+      ],
+      "goal_id": "ECOSYSTEM-OPEN-SOURCE-STRATEGY-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "3c8c7756fe4d6ebfbcafca7434b10611c22a2298",
+    "registered_goals_named": [
+     "ECOSYSTEM-OPEN-SOURCE-STRATEGY-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:4fbf84e2898410877d9087ba5cf33ae5fd80dbe255a561c5ba4c60352e1c0021",
+      "ref": "StegVerse-Labs/.github#2750"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_ecosystem_open_source_census.py::TestEcosystemOpenSourceCensus::test_two_additional_organizations_audited",
@@ -1402,6 +2055,31 @@
    "introducing_pull_request": 2847,
    "introducing_subject": "Continue Test 5 into authentic runtime closure (#2847)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2847"
+      ],
+      "goal_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "9172e2e140e0703587430a3ceaa809d0d3ef348d",
+    "registered_goals_named": [
+     "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:637dd379bd89caa4f914903578f6163b023638957b7856f6fdb009e3e1985a8f",
+      "ref": "StegVerse-Labs/.github#2847"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 7,
    "test": "tests/test_ephemeral_stegbrowser_external_ai_activation.py::EphemeralExternalAITaskTests::test_single_canonical_owner_and_no_mykv_dependency",
@@ -1431,6 +2109,31 @@
    "introducing_pull_request": 2635,
    "introducing_subject": "Repair household worker's first evidence transition fail-closed (#2635)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2635"
+      ],
+      "goal_id": "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "ddc01f4ee34bcc4b1f89173f2b703272b64fa234",
+    "registered_goals_named": [
+     "ERL-HOUSEHOLD-ECONOMIC-CONDITIONS-SITE-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:14943c6b2d300090858168768a32f21083b1a09f8eda0f26a6441ebb8bd3d044",
+      "ref": "StegVerse-Labs/.github#2635"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_erl_household_economic_conditions_runtime_binding.py::test_no_device_inventory_gate_or_new_runtime_plane",
@@ -1463,6 +2166,21 @@
    "introducing_pull_request": 2332,
    "introducing_subject": "Merge pull request #2332 from StegVerse-Labs/repair/hil-post-esrl-ready-carriage-20260920",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "5ea79e76576a6d12e29f65d372c20140ca6dd4e9",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:7884c453daf3962467c4c45150b23b34d014a76930c07fb4c4df7e6f26500e69",
+      "ref": "StegVerse-Labs/.github#2332"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 3,
    "test": "tests/test_evaluate_hil_post_esrl_readiness.py::test_accepted_esrl_advances_only_to_receiver_ready",
@@ -1492,6 +2210,38 @@
    "introducing_pull_request": 1816,
    "introducing_subject": "Reconcile external framework rollout source completion (#1816)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1816"
+      ],
+      "goal_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1816"
+      ],
+      "goal_id": "RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "3045a730464bcd1bf87d59765db6709bd06953fa",
+    "registered_goals_named": [
+     "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:e495dfd5ae0727997c551ff60d003eab67d394cda5ee1e575c944ac9f0f3a962",
+      "ref": "StegVerse-Labs/.github#1816"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_external_framework_roundtrip_rollout_contract.py::test_handoff_preserves_foreign_non_authority_and_transition_truth_boundary",
@@ -1519,9 +2269,50 @@
     "source-bundles/reusable-task-registry.d/RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001.json",
     "tests/test_external_framework_roundtrip_rollout_contract.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1801
+   ],
    "introducing_subject": "Add reusable external-framework round-trip rollout task",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1801"
+      ],
+      "goal_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1801"
+      ],
+      "goal_id": "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1801"
+      ],
+      "goal_id": "RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "49692b2fe410053fc1b0b83a7d27c39fca887d27",
+    "registered_goals_named": [
+     "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:1277ea0bd916699be23d9e6855eb0ba22c92ce824ea0002f9570137dcc4bab93",
+      "ref": "StegVerse-Labs/.github#1801"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_external_framework_roundtrip_rollout_contract.py::test_runtime_ineligible_frameworks_fail_closed_without_blocking_other_invocations",
@@ -1550,6 +2341,31 @@
    "introducing_pull_request": 2291,
    "introducing_subject": "Stage synthetic conversation evidence through Canonical Work and WorkerCoordinator (#2291)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2291"
+      ],
+      "goal_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "e5f40728f92029c8f81fc543c3215e9ad98a0ad5",
+    "registered_goals_named": [
+     "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:3309cbd73d42b52509634d3b333988dfb6afe69cd847296a80085bc9ff347f01",
+      "ref": "StegVerse-Labs/.github#2291"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 13,
    "test": "tests/test_formalism_source_discovery_cosv.py::FormalismSourceDiscoveryCOSVTests::test_index_and_coverage_advance_exactly_one_task",
@@ -1572,9 +2388,44 @@
    "implicated_goal_refs": [],
    "introducing_changed_paths_count": 3,
    "introducing_changed_paths_in_test_closure": [],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1897
+   ],
    "introducing_subject": "Bind runtime-bound StegBrowser carrier output pointer",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1897"
+      ],
+      "goal_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1897"
+      ],
+      "goal_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "e971f7e9c34f1cc2665fdc9a54f49ca12c654a4d",
+    "registered_goals_named": [
+     "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+     "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:b6bb8f5043e04583d079e03c2361ca8d35d36fe411c5bbb15ec35a8db4405fbb",
+      "ref": "StegVerse-Labs/.github#1897"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 4,
    "test": "tests/test_global_runtime_evidence_owner_binding.py::test_global_runtime_evidence_owner_binding",
@@ -1602,6 +2453,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Enforce retired terminal history-review-only semantics",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "84b15181391ff1065cb9a7e1617b1cac8a1bdd1a",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_goal_resolution_continuation.py::test_duplicate_multiline_task_returns_collapse_by_task_id",
@@ -1629,6 +2490,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Emit executable continuation request after COSV resolution",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "a7640a02f5420bfb68d785ee72747deaa746a851",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_goal_resolution_continuation.py::test_fifth_iteration_reports_but_does_not_stop_machine_work",
@@ -1656,6 +2527,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Implement canonical task lifecycle statuses",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "9d7602df46b798afd2f4116845c39a07fa46779e",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_goal_resolution_continuation.py::test_goal_completion_surfaces_immediately",
@@ -1683,6 +2564,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Implement canonical task lifecycle statuses",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "9d7602df46b798afd2f4116845c39a07fa46779e",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_goal_resolution_continuation.py::test_human_authority_boundary_surfaces_immediately",
@@ -1710,6 +2601,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Emit executable continuation request after COSV resolution",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "a7640a02f5420bfb68d785ee72747deaa746a851",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_goal_resolution_continuation.py::test_machine_owned_iterations_continue_without_user_reentry",
@@ -1742,6 +2643,29 @@
    "introducing_pull_request": 508,
    "introducing_subject": "Make SV002 public observation event-ephemeral on current main (#508)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#508"
+      ],
+      "goal_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "ba72bf1c70c14bd9e70a85de5f762da0d0a436bb",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:615f15d078d3dc63b9f72fcd3309488077a8c8328d0a4a231859ab7ca54fab94",
+      "ref": "StegVerse-Labs/.github#508"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 400,
    "test": "tests/test_hil_intr_profiled_ingress_current.py::test_profile_wrapper_preserves_existing_post_handler",
@@ -1772,6 +2696,38 @@
    "introducing_pull_request": 1240,
    "introducing_subject": "Reconcile canonical HIL G25 runtime state (#1240)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1240"
+      ],
+      "goal_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1240"
+      ],
+      "goal_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "6d5be30e71f824fc5cc0fc9ba27e2ecbcdc28c0f",
+    "registered_goals_named": [
+     "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:f03c92b55d261a730566c6d77f44639f810482139d89d6032f5c1a562ccdc08d",
+      "ref": "StegVerse-Labs/.github#1240"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_hil_portable_workercoordinator_package.py::test_hil_portable_package_is_bound_to_current_canonical_source_blobs",
@@ -1802,6 +2758,21 @@
    "introducing_pull_request": 522,
    "introducing_subject": "Reconcile HIL handoff after shared-Gateway ESRL closure (#522)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "98a6259546c12ee7679ebf18001af9fc6a9d1ab4",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:0a337b428e7daeace8bc543844dba2c9b271f11c5685136442cdf62f9b76d12a",
+      "ref": "StegVerse-Labs/.github#522"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 398,
    "test": "tests/test_hil_universal_intr_activation_order.py::test_hil_handoff_binds_merged_universal_intr_source_chain",
@@ -1833,9 +2804,34 @@
     "scripts/refresh_sovereign_worker_runtime_source.py",
     "tests/test_hil_universal_intr_activation_order.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    410
+   ],
    "introducing_subject": "Consume HIL Universal InTr materialization events",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#410"
+      ],
+      "goal_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "3bd8e24a0fb3a892c5b0bc42a188dfd87065570c",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:f6d6a6a87542dda22cf159c2d77be4600966f1856e38f5677b17b78ee969eb66",
+      "ref": "StegVerse-Labs/.github#410"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 398,
    "test": "tests/test_hil_universal_intr_activation_order.py::test_hil_universal_intr_transport_precedes_receiver_ready_and_g18",
@@ -1864,6 +2860,31 @@
    "introducing_pull_request": 2291,
    "introducing_subject": "Stage synthetic conversation evidence through Canonical Work and WorkerCoordinator (#2291)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2291"
+      ],
+      "goal_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "e5f40728f92029c8f81fc543c3215e9ad98a0ad5",
+    "registered_goals_named": [
+     "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:3309cbd73d42b52509634d3b333988dfb6afe69cd847296a80085bc9ff347f01",
+      "ref": "StegVerse-Labs/.github#2291"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 14,
    "test": "tests/test_kv_connection_observers_cosv.py::KVConnectionObserverCOSVTests::test_source_bindings_and_index_coverage_are_canonical",
@@ -1888,9 +2909,43 @@
    "introducing_changed_paths_in_test_closure": [
     "control/cosv-global-registry-coverage.json"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2347
+   ],
    "introducing_subject": "Bind StegHealth portable dispatch context safely",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2347"
+      ],
+      "goal_id": "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2347"
+      ],
+      "goal_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "ba9b497eb376220dcd29fbcc9ad386fc961f4e28",
+    "registered_goals_named": [
+     "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:ea676432df3b1223c83800ca4bbaf689cf018dd5903a9fa24ed94b14a67eaf7c",
+      "ref": "StegVerse-Labs/.github#2347"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_kv_connection_revalidation_cosv.py::KVConnectionRevalidationCOSVTests::test_coverage_moves_task_from_gap_to_index_without_denominator_change",
@@ -1922,6 +2977,21 @@
    "introducing_pull_request": 1699,
    "introducing_subject": "Merge pull request #1699 from StegVerse-Labs/kv-evidence-reuse-handoff-reconcile",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "f0560fadc17e3ff8e1b5dbfd149d862b769d42de",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ref": "StegVerse-Labs/.github#1699"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_kv_evidence_reuse_resident_dispatch.py::test_consumer_uses_runtime_input_without_user_interaction",
@@ -1953,6 +3023,21 @@
    "introducing_pull_request": 1692,
    "introducing_subject": "Merge pull request #1692 from StegVerse-Labs/kv-evidence-dispatch-bind",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "4071f0b51eaa71f050da935b681c5e965111353a",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ref": "StegVerse-Labs/.github#1692"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_kv_evidence_reuse_resident_dispatch.py::test_missing_node_connectivity_waits_without_user_step",
@@ -1977,9 +3062,43 @@
    "introducing_changed_paths_in_test_closure": [
     "control/cosv-global-registry-coverage.json"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2347
+   ],
    "introducing_subject": "Bind StegHealth portable dispatch context safely",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2347"
+      ],
+      "goal_id": "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2347"
+      ],
+      "goal_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "ba9b497eb376220dcd29fbcc9ad386fc961f4e28",
+    "registered_goals_named": [
+     "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:ea676432df3b1223c83800ca4bbaf689cf018dd5903a9fa24ed94b14a67eaf7c",
+      "ref": "StegVerse-Labs/.github#2347"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_kv_revalidation_proof_intake_cosv.py::KVRevalidationProofIntakeCOSVTests::test_index_and_global_coverage_bind_exactly_once",
@@ -2009,6 +3128,45 @@
    "introducing_pull_request": 2018,
    "introducing_subject": "Merge pull request #2018 from StegVerse-Labs/fix-mir-reusable-trigger-execution-20260916",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2018"
+      ],
+      "goal_id": "MIR-RUN2-EVENT-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2018"
+      ],
+      "goal_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2018"
+      ],
+      "goal_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "d26ab008adb7fbbcfe4393a84608b98ab4d13060",
+    "registered_goals_named": [
+     "MIR-TVC-PROVIDER-ROUNDTRIP-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:a2862d773ec24a85191563f9de2bccb66e67bf89c0aab5c13d7f09beb899d350",
+      "ref": "StegVerse-Labs/.github#2018"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 6,
    "test": "tests/test_kv_revalidation_reusable_tvc_runtime_binding.py::test_registry_uses_local_admitted_runner",
@@ -2037,6 +3195,31 @@
    "introducing_pull_request": 2291,
    "introducing_subject": "Stage synthetic conversation evidence through Canonical Work and WorkerCoordinator (#2291)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2291"
+      ],
+      "goal_id": "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "e5f40728f92029c8f81fc543c3215e9ad98a0ad5",
+    "registered_goals_named": [
+     "CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:3309cbd73d42b52509634d3b333988dfb6afe69cd847296a80085bc9ff347f01",
+      "ref": "StegVerse-Labs/.github#2291"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 15,
    "test": "tests/test_local_source_generation_cosv.py::LocalSourceGenerationCOSVTests::test_bindings_and_global_coverage_are_structurally_consistent",
@@ -2064,6 +3247,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Demote MIR transition probe to conformance comparator",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "c939dedc2e48ad7108a44a7c4c0436789dee9997",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_mir_live_transition_probe_worker.py::test_mir_process_adapter_uses_transition_probe_wrapper",
@@ -2091,6 +3284,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Validate MIR live transition probe wiring",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "55bf8679e3a36a2bfc063e8b436b5f300e44c751",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_mir_live_transition_probe_worker.py::test_probe_does_not_add_runtime_or_dispatch_plane",
@@ -2118,6 +3321,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Consume MIR standing event without WorkerCoordinator event-creation gate",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "ac6874998c860306268983ecf129a00e5081dbd4",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 399,
    "test": "tests/test_mir_roundtrip_egress_authenticity_runtime_contract.py::test_standing_request_is_attached_to_existing_canonical_work_cadence",
@@ -2145,6 +3358,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Route MIR worker through live transition probes",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "4fe1f751cabaf1a1ff5605868f0d40399295b006",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 399,
    "test": "tests/test_mir_roundtrip_egress_authenticity_runtime_contract.py::test_workercoordinator_binding_reuses_existing_authority_plane",
@@ -2172,6 +3395,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "email monitor: restore automatic corrective task ingress",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "32146da9f4aa13a8bb56a509103c2f28ffcb90cb",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_native_email_handoff_continuation.py::test_completion_does_not_follow_nonempty_successful_pass",
@@ -2199,6 +3432,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "email monitor: restore automatic corrective task ingress",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "32146da9f4aa13a8bb56a509103c2f28ffcb90cb",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_native_email_handoff_continuation.py::test_consumer_encodes_repeat_until_empty_semantics",
@@ -2233,6 +3476,38 @@
    "introducing_pull_request": 1342,
    "introducing_subject": "Merge pull request #1342 from StegVerse-Labs/fix/native-email-kv-persistence-current-main-20260910",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1342"
+      ],
+      "goal_id": "RT-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1342"
+      ],
+      "goal_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "1d4093e6266154a0552d942f3fc1b5fdafb71b70",
+    "registered_goals_named": [
+     "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:ff28e80677d9a49ffe8e708224dcb3bddc16c799c1d0a24d9db992ab66192771",
+      "ref": "StegVerse-Labs/.github#1342"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_native_email_resident_integration.py::test_standing_request_binds_existing_hb_resident_path",
@@ -2265,6 +3540,38 @@
    "introducing_pull_request": 1748,
    "introducing_subject": "Add neutral reusable-task scheduler (#1748)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1748"
+      ],
+      "goal_id": "RT-REUSABLE-TASK-SCHEDULER-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1748"
+      ],
+      "goal_id": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "035f2694e142d07a763c217311c6a558f034f3de",
+    "registered_goals_named": [
+     "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:5345821e2e0691c8fe5c06919e995dd0d80448b51fdf6f74096c4bf8df3c3a47",
+      "ref": "StegVerse-Labs/.github#1748"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 397,
    "test": "tests/test_neutral_reusable_task_scheduler.py::test_reusable_registry_resolves_scheduler_shard_once",
@@ -2323,9 +3630,51 @@
     "data/goal-task-component-profiles/STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001.json",
     "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1759
+   ],
    "introducing_subject": "Remove synthetic Interlock prerequisite from packet tunnel runtime goal",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1759"
+      ],
+      "goal_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1759"
+      ],
+      "goal_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1759"
+      ],
+      "goal_id": "STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "56e191abfa0f8e8c6ff00c69c985be24b7c1df7f",
+    "registered_goals_named": [
+     "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+     "STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:c3e0f629339698f3b1399cd0f1e902f8441d863616f0d06f4ad8f45c5972a418",
+      "ref": "StegVerse-Labs/.github#1759"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_packet_tunnel_reusable_component_reconciliation.py::test_host_activation_source_is_resolved_but_runtime_is_not_upgraded",
@@ -2352,9 +3701,51 @@
     "data/goal-task-component-profiles/STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001.json",
     "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1759
+   ],
    "introducing_subject": "Remove synthetic Interlock prerequisite from packet tunnel runtime goal",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1759"
+      ],
+      "goal_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1759"
+      ],
+      "goal_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1759"
+      ],
+      "goal_id": "STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "56e191abfa0f8e8c6ff00c69c985be24b7c1df7f",
+    "registered_goals_named": [
+     "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+     "STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:c3e0f629339698f3b1399cd0f1e902f8441d863616f0d06f4ad8f45c5972a418",
+      "ref": "StegVerse-Labs/.github#1759"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_packet_tunnel_reusable_component_reconciliation.py::test_profile_reuses_existing_owners_and_does_not_force_maximal_transport_chain",
@@ -2384,6 +3775,21 @@
    "introducing_pull_request": 874,
    "introducing_subject": "runtime: add exact portable organization allocator selector (#874)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "e0cc766c1392f3f272152ad4196c56f3b8cb1842",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:b7da8e982e3df9f262e7cade585339dc2585c8b986c9dde10faa0b6ac5d989ab",
+      "ref": "StegVerse-Labs/.github#874"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 1,
    "test": "tests/test_portable_resident_request_dispatch.py::test_refresh_then_dispatch_targets_only_org_claim_allocator",
@@ -2411,9 +3817,36 @@
     "README.md",
     "scripts/install_sovereign_heartbeat_service.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2480
+   ],
    "introducing_subject": "Repair carrier self-heal binding for HB receipt execution",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2480"
+      ],
+      "goal_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "70300377311b9a949fd0f126cf1f31dacaaf55cd",
+    "registered_goals_named": [
+     "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:9b7bb104e2134459e38016c10428a3b9cc9ccdb461c1636576aca2a1b656e5b5",
+      "ref": "StegVerse-Labs/.github#2480"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_resident_rendezvous_native_integration.py::test_native_worker_service_receives_non_secret_rendezvous_config",
@@ -2444,6 +3877,21 @@
    "introducing_pull_request": 2322,
    "introducing_subject": "Merge pull request #2322 from StegVerse-Labs/repair/hb-all-subsignal-worker-presence-trigger-20260919",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "3244ac7e91543920e499a49c0c92ba068aa0e3b2",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:ac8ab9c6656a5922764e63e5bda3e1ce5b09b2fa30ad7f3dd4cffd817908aa21",
+      "ref": "StegVerse-Labs/.github#2322"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_resident_worker_presence_self_heal.py::ResidentWorkerPresenceSelfHealTests::test_subsignal_supervision_preserves_periodic_fallback_and_authority_boundary",
@@ -2475,6 +3923,21 @@
    "introducing_pull_request": 2679,
    "introducing_subject": "Merge pull request #2679 from StegVerse-Labs/fix/four-missing-cosv-source-tracking-20260924",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "6c11abb58b527fe90bd0dc52fb74cfb1b7e5073d",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:6f7ca5f4454b310ae5c6e13295ca4d39c6a86d39a442e540e4a3c2146a6b62bb",
+      "ref": "StegVerse-Labs/.github#2679"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 16,
    "test": "tests/test_reusable_ai_ingress_component_contract.py::test_goal_profile_preserves_identity_and_does_not_force_maximal_transport",
@@ -2505,6 +3968,21 @@
    "introducing_pull_request": 2858,
    "introducing_subject": "Merge pull request #2858 from StegVerse-Labs/task/reconcile-stale-runtime-prs-current-main-20260929",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "afcd46eb202d322b188d8cd79ab209acc2891a08",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:22397a0d4ea8bdeec831aa78bdb6bb86e3cd089480020259361b5f148084bfdf",
+      "ref": "StegVerse-Labs/.github#2858"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 397,
    "test": "tests/test_reusable_canonical_work_portable_dispatch.py::test_reusable_definition_requires_exact_goal_scoped_canonical_work_semantics",
@@ -2536,6 +4014,31 @@
    "introducing_pull_request": 1652,
    "introducing_subject": "Establish Reusable Task Component Model and transport family (#1652)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1652"
+      ],
+      "goal_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "registered_goals_named": [
+     "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:dd84938b6b05aef02cf51401c3580ec04bca56fdd1aa578545214dbfc1e9d006",
+      "ref": "StegVerse-Labs/.github#1652"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 3,
    "test": "tests/test_reusable_task_component_readme_projection.py::test_repository_readme_accepts_projection_without_losing_existing_tail",
@@ -2565,6 +4068,45 @@
    "introducing_pull_request": 2018,
    "introducing_subject": "Merge pull request #2018 from StegVerse-Labs/fix-mir-reusable-trigger-execution-20260916",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2018"
+      ],
+      "goal_id": "MIR-RUN2-EVENT-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2018"
+      ],
+      "goal_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2018"
+      ],
+      "goal_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "d26ab008adb7fbbcfe4393a84608b98ab4d13060",
+    "registered_goals_named": [
+     "MIR-TVC-PROVIDER-ROUNDTRIP-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:a2862d773ec24a85191563f9de2bccb66e67bf89c0aab5c13d7f09beb899d350",
+      "ref": "StegVerse-Labs/.github#2018"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 398,
    "test": "tests/test_reusable_task_cosv_index_shard_resolution.py::test_child_pointer_resolves_from_canonical_index_shard",
@@ -2598,6 +4140,31 @@
    "introducing_pull_request": 1293,
    "introducing_subject": "Merge pull request #1293 from StegVerse-Labs/fix/runtime-failure-boundary-prerun-hardening-20260909",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1293"
+      ],
+      "goal_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "44c6d88abb42351ec26a576e3136caec3400a613",
+    "registered_goals_named": [
+     "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:8f3b49a676bc23d9ae463af87802341c9a25b969cbf360382bae466f2d624171",
+      "ref": "StegVerse-Labs/.github#1293"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_runtime_failure_boundaries.py::test_failure_classifier_is_in_worker_tree_that_resident_refresh_already_copies",
@@ -2637,6 +4204,21 @@
    "introducing_pull_request": 3007,
    "introducing_subject": "Merge pull request #3007 from StegVerse-Labs/claude/master-records-org-record-residual",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "f9b149c1f77b5039e803bcb568a9278261cb5b3d",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:47b7ad8113ac78c99f10998cd4a84d677a466ea03ec1f5b5b4f303375f93efff",
+      "ref": "StegVerse-Labs/.github#3007"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_runtime_presence_master_records_bundle_floor.py::RuntimePresenceMasterRecordsBundleFloorTests::test_master_records_floor_contains_runtime_presence_organization_record_merge",
@@ -2751,6 +4333,31 @@
    "introducing_pull_request": 3004,
    "introducing_subject": "Merge pull request #3004 from StegVerse-Labs/claude/master-records-org-record-wording",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#3004"
+      ],
+      "goal_id": "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "400447b66847f2ef390990988e8335ff3a4e28c9",
+    "registered_goals_named": [
+     "MASTER-RECORDS-BULK-SEMANTIC-REMEDIATION-002"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:3c890adb3c344b04179237cf537c129f5bc162787a7c8a9b641d642c541b08b4",
+      "ref": "StegVerse-Labs/.github#3004"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_sdk_evaluator_dispatch_master_records_custody.py::test_sdk_evaluator_dispatch_visit_enters_existing_master_records_organization_record",
@@ -2775,9 +4382,34 @@
    "introducing_changed_paths_in_test_closure": [
     "data/reusable-task-components/RTC-RESIDENT-RENDEZVOUS-010.json"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1758
+   ],
    "introducing_subject": "Reconcile SDK external collaboration rendezvous source truth",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1758"
+      ],
+      "goal_id": "RTC-RESIDENT-RENDEZVOUS-010",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "75ff0d6a5a321ec4c413b240102116f2eb586c69",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:48bccb709ad9dd10bace021bd1c81fc8b403aa9d8c64a5567d1b5cbcf5c097ee",
+      "ref": "StegVerse-Labs/.github#1758"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 398,
    "test": "tests/test_sdk_extcollab_rendezvous_component_selection.py::test_rendezvous_registration_gap_remains_exact_and_does_not_create_duplicate_transport",
@@ -2802,9 +4434,44 @@
    "introducing_changed_paths_in_test_closure": [
     "data/canonical-task-records/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1443
+   ],
    "introducing_subject": "Activate SDK authentic runtime continuation at parent ceiling",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1443"
+      ],
+      "goal_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1443"
+      ],
+      "goal_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "925fc17e6875dda99f356fa417b346868ae5a0c2",
+    "registered_goals_named": [
+     "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+     "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:b7f5b10f0d7e5662de62e8cae722e9ecf3c53c156d74d90f133cf922b313a279",
+      "ref": "StegVerse-Labs/.github#1443"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 3,
    "test": "tests/test_sdk_generic_manifest_task_registry_registration.py::test_sdk_generic_manifest_goal_is_canonically_registered",
@@ -2834,9 +4501,36 @@
     "scripts/apply_admitted_canonical_work_projection.py",
     "scripts/run_canonical_work_event_bootstrap.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2233
+   ],
    "introducing_subject": "Repair StegHealth KV Interlock Canonical Work carriage",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2233"
+      ],
+      "goal_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "449e9c543a3b2558fea708d42bb3c9a495f91faa",
+    "registered_goals_named": [
+     "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:82f8237b61deab4304d7bbebd958672cc83b68d4411511de2ced40319e1395b1",
+      "ref": "StegVerse-Labs/.github#2233"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_sharded_canonical_work_ingress.py::ShardedCanonicalWorkIngressTests::test_stegbrowser_superseded_parent_is_not_reingress_eligible",
@@ -2866,6 +4560,31 @@
    "introducing_pull_request": 2820,
    "introducing_subject": "Merge pull request #2820 from StegVerse-Labs/fix/shwp-nonterminal-transition-state-20260928",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2820"
+      ],
+      "goal_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "293f8284fafbdddb1bd88e968d27d759a497cc51",
+    "registered_goals_named": [
+     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:67ca008fb4edda9fb0cc4027a70e8f03690924efbeafc5763b250741fd1c8a1c",
+      "ref": "StegVerse-Labs/.github#2820"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 4,
    "test": "tests/test_shwp_registry_and_original_envelope_replay.py::test_existing_shwp_task_is_projected_once_with_original_cosv",
@@ -2891,9 +4610,36 @@
     "README.md",
     "scripts/install_sovereign_heartbeat_service.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2480
+   ],
    "introducing_subject": "Repair carrier self-heal binding for HB receipt execution",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2480"
+      ],
+      "goal_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "70300377311b9a949fd0f126cf1f31dacaaf55cd",
+    "registered_goals_named": [
+     "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:9b7bb104e2134459e38016c10428a3b9cc9ccdb461c1636576aca2a1b656e5b5",
+      "ref": "StegVerse-Labs/.github#2480"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_sovereign_heartbeat_service.py::SovereignHeartbeatServiceTests::test_worker_service_preserves_direct_stegindex_root",
@@ -2919,9 +4665,36 @@
     "README.md",
     "scripts/install_sovereign_heartbeat_service.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2480
+   ],
    "introducing_subject": "Repair carrier self-heal binding for HB receipt execution",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2480"
+      ],
+      "goal_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "70300377311b9a949fd0f126cf1f31dacaaf55cd",
+    "registered_goals_named": [
+     "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:9b7bb104e2134459e38016c10428a3b9cc9ccdb461c1636576aca2a1b656e5b5",
+      "ref": "StegVerse-Labs/.github#2480"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_sovereign_heartbeat_service.py::SovereignHeartbeatServiceTests::test_worker_service_preserves_safe_local_runtime_bindings",
@@ -2947,9 +4720,36 @@
     "README.md",
     "scripts/install_sovereign_heartbeat_service.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2480
+   ],
    "introducing_subject": "Repair carrier self-heal binding for HB receipt execution",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2480"
+      ],
+      "goal_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "70300377311b9a949fd0f126cf1f31dacaaf55cd",
+    "registered_goals_named": [
+     "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:9b7bb104e2134459e38016c10428a3b9cc9ccdb461c1636576aca2a1b656e5b5",
+      "ref": "StegVerse-Labs/.github#2480"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_sovereign_heartbeat_service.py::SovereignHeartbeatServiceTests::test_worker_service_preserves_universal_governance_local_source_bindings",
@@ -2975,9 +4775,36 @@
     "README.md",
     "scripts/install_sovereign_heartbeat_service.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2480
+   ],
    "introducing_subject": "Repair carrier self-heal binding for HB receipt execution",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2480"
+      ],
+      "goal_id": "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "70300377311b9a949fd0f126cf1f31dacaaf55cd",
+    "registered_goals_named": [
+     "ECOSYSTEM-RECEIPT-HB-CREATION-RECORDING-STAMP-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:9b7bb104e2134459e38016c10428a3b9cc9ccdb461c1636576aca2a1b656e5b5",
+      "ref": "StegVerse-Labs/.github#2480"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_sovereign_heartbeat_service.py::SovereignHeartbeatServiceTests::test_worker_service_receives_distinct_canonical_local_source_root",
@@ -3008,6 +4835,38 @@
    "introducing_pull_request": 1782,
    "introducing_subject": "Materialize neutral scheduler during reusable source refresh (#1782)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1782"
+      ],
+      "goal_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1782"
+      ],
+      "goal_id": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "8c2b40da6e7b1cc2508a5c741567a3825e0eb0f6",
+    "registered_goals_named": [
+     "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:4ec9edc72629aa0ad7891d0f36f9e39416ad97ab29f354bc0e13866cb62ea77a",
+      "ref": "StegVerse-Labs/.github#1782"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 398,
    "test": "tests/test_sovereign_source_refresh_reusable_task.py::test_source_refresh_reusable_task_resolves_from_shard",
@@ -3037,6 +4896,39 @@
    "introducing_pull_request": 1739,
    "introducing_subject": "Restore shortest ERL InTr to DEVICE_KV runtime path (#1739)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1739"
+      ],
+      "goal_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1739"
+      ],
+      "goal_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "4ca1d9241b231ee021ba6c7a50e95783c556966e",
+    "registered_goals_named": [
+     "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+     "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:dbb55876f46ecf12a1459b0d6567ef55ed5950016d65e6fae1a6afa25acd4a42",
+      "ref": "StegVerse-Labs/.github#1739"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 400,
    "test": "tests/test_ss_erl_device_kv_task_registry_convergence.py::test_task_registry_exposes_current_convergence_without_runtime_authority",
@@ -3067,6 +4959,29 @@
    "introducing_pull_request": 1433,
    "introducing_subject": "Stage exact-byte HIL ESRL acceptance (#1433)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1433"
+      ],
+      "goal_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "e6a6ade66ee62c5b4a96e3ce9178c278601b23bb",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:7940e558765e748701e4c51e180010b4c75f4f2b55f78316153b74ae10dad7cb",
+      "ref": "StegVerse-Labs/.github#1433"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 7,
    "test": "tests/test_stage_hil_esrl_exact_byte_acceptance.py::test_stages_exact_bytes_and_builds_two_blocker_proposal",
@@ -3091,9 +5006,44 @@
    "introducing_changed_paths_in_test_closure": [
     "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2339
+   ],
    "introducing_subject": "Reconcile StegBrowser prompt-20 A3 observation handoff",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2339"
+      ],
+      "goal_id": "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2339"
+      ],
+      "goal_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "c007972246cbbc92dc1d42cd2d8efb4a97fcd920",
+    "registered_goals_named": [
+     "STEG-BROWSER-IMMUTABLE-NONCE-A3-RESULT-OBSERVATION-001",
+     "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:e2ddf52529a02e84556fbfc6af76335026f1979ac334583425fd7e6727b8a838",
+      "ref": "StegVerse-Labs/.github#2339"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 4,
    "test": "tests/test_stegbrowser_healer_routing_correction.py::test_parent_progression_no_longer_gated_on_healer_carrier",
@@ -3120,9 +5070,43 @@
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "workers/stegbrowser_manifest_intr_ingress.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1923
+   ],
    "introducing_subject": "Bind StegBrowser registered Node/Interlock into lease and A4 correlation",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1923"
+      ],
+      "goal_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1923"
+      ],
+      "goal_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "0098bc793865fd1db835c400b502dad5f8a5e32d",
+    "registered_goals_named": [
+     "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:70631ee23538e609ea1732802298f713298dc6569486502bf4e26bcc14588cb6",
+      "ref": "StegVerse-Labs/.github#1923"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 397,
    "test": "tests/test_stegbrowser_node_interlock_runtime_binding.py::test_lease_state_identity_binds_manifest_node_interlock_goal_cosv",
@@ -3149,9 +5133,43 @@
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "workers/stegbrowser_manifest_intr_ingress.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1923
+   ],
    "introducing_subject": "Bind StegBrowser registered Node/Interlock into lease and A4 correlation",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1923"
+      ],
+      "goal_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1923"
+      ],
+      "goal_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "0098bc793865fd1db835c400b502dad5f8a5e32d",
+    "registered_goals_named": [
+     "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:70631ee23538e609ea1732802298f713298dc6569486502bf4e26bcc14588cb6",
+      "ref": "StegVerse-Labs/.github#1923"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 397,
    "test": "tests/test_stegbrowser_node_interlock_runtime_binding.py::test_reusable_task_has_no_external_host_discovery_repair",
@@ -3178,9 +5196,43 @@
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "workers/stegbrowser_manifest_intr_ingress.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1923
+   ],
    "introducing_subject": "Bind StegBrowser registered Node/Interlock into lease and A4 correlation",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1923"
+      ],
+      "goal_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1923"
+      ],
+      "goal_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "0098bc793865fd1db835c400b502dad5f8a5e32d",
+    "registered_goals_named": [
+     "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:70631ee23538e609ea1732802298f713298dc6569486502bf4e26bcc14588cb6",
+      "ref": "StegVerse-Labs/.github#1923"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 397,
    "test": "tests/test_stegbrowser_node_interlock_runtime_binding.py::test_runner_validates_receipt_one_before_existing_materializer",
@@ -3205,9 +5257,36 @@
    "introducing_changed_paths_in_test_closure": [
     "tests/test_stegbrowser_runtime_consumption_checkin.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1781
+   ],
    "introducing_subject": "Verify StegBrowser runtime Task Registry continuation",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1781"
+      ],
+      "goal_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "d75ddb18ffb51f3131f3bde54fc9582f57991471",
+    "registered_goals_named": [
+     "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:1c266befd8fa233166874337240f2a11390618839300e129a60fcc5634b454e5",
+      "ref": "StegVerse-Labs/.github#1781"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_stegbrowser_runtime_consumption_checkin.py::test_stegbrowser_runtime_consumption_exact_registry_checkin_is_continue",
@@ -3238,6 +5317,38 @@
    "introducing_pull_request": 1908,
    "introducing_subject": "Merge pull request #1908 from StegVerse-Labs/fix/stegbrowser-two-roundtrip-mirror-return-model",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1908"
+      ],
+      "goal_id": "RTC-ROUNDTRIP-003",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1908"
+      ],
+      "goal_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "0fdac00dd761da61fbd6f2f0e9c5d60463b1b924",
+    "registered_goals_named": [
+     "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:874607d58b5791e8139de436c8e45e9befa09cc126d10a34f274adaa52633399",
+      "ref": "StegVerse-Labs/.github#1908"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_stegbrowser_runtime_consumption_component_profile.py::test_active_remediation_uses_ephemeral_stegos_without_reopening_retired_goal",
@@ -3264,9 +5375,44 @@
    "introducing_changed_paths_in_test_closure": [
     "data/goal-task-transport-profiles/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1901
+   ],
    "introducing_subject": "Merge PR #1901: StegBrowser governed transport terminal boundary",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1901"
+      ],
+      "goal_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1901"
+      ],
+      "goal_id": "STEG-BROWSER-TRANSPORT-BOUNDARY-IMPLEMENTATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "cf99d01f12ca9a52ee4cc328dc2e41297d44a92a",
+    "registered_goals_named": [
+     "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+     "STEG-BROWSER-TRANSPORT-BOUNDARY-IMPLEMENTATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:24e70a001304afbc2cadb6325bd53faa270006e087cfe4e628b92172788591aa",
+      "ref": "StegVerse-Labs/.github#1901"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 5,
    "test": "tests/test_stegbrowser_runtime_consumption_component_profile.py::test_runtime_consumption_reuses_only_needed_transport_components",
@@ -3300,6 +5446,46 @@
    "introducing_pull_request": 1907,
    "introducing_subject": "Merge pull request #1907 from StegVerse-Labs/fix/stegbrowser-active-remediation-reusable-binding",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1907"
+      ],
+      "goal_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1907"
+      ],
+      "goal_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1907"
+      ],
+      "goal_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "4834e0a8787b11a6d01872e39ba82773f9bdeda4",
+    "registered_goals_named": [
+     "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+     "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:3c325056a6de7bc9d0212517d68cc034c76498bae979fbf6b11273cc3252f8c8",
+      "ref": "StegVerse-Labs/.github#1907"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 401,
    "test": "tests/test_stegbrowser_runtime_consumption_reusable_binding.py::test_reusable_binding_targets_active_remediation_without_reopening_historical_goal",
@@ -3327,6 +5513,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Reconcile reusable StegBrowser Node Interlock binding after validated merge",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "38b3df1e52821c3a8ab293ee7cc18c50695de12f",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 401,
    "test": "tests/test_stegbrowser_runtime_consumption_reusable_binding.py::test_reusable_contract_records_implemented_node_interlock_binding_pending_validation",
@@ -3356,6 +5552,31 @@
    "introducing_pull_request": 1533,
    "introducing_subject": "Merge pull request #1533 from StegVerse-Labs/stegbrowser-consumption-evidence-bind-011",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1533"
+      ],
+      "goal_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "48b0027320c92f7a9cb8d0f86ee00d696e331497",
+    "registered_goals_named": [
+     "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:19ee14d58b2802463abc365fd8328a03069c85f52952982d5265deecfdcf291f",
+      "ref": "StegVerse-Labs/.github#1533"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_stegbrowser_tvc_source_promotion_request.py::test_portable_dispatch_preserves_exact_source_git_head_and_selection",
@@ -3383,6 +5604,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Activate StegNutrition continuation adapter v2",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "ea0e6e1b32b3e3b2a12d0d5db7a38e507e8f32c0",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 9,
    "test": "tests/test_stegnutrition_machine_continuation.py::test_registry_fragment_has_unique_capability_and_no_token_requirement",
@@ -3410,6 +5641,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Fail closed SV001 continuation on missing governed Site custody proof",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "fb26425243c05bc155972019beae474cd6b29d8f",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 4,
    "test": "tests/test_stegverse001_evidence_chain.py::test_missing_master_records_source_is_retryable",
@@ -3439,6 +5680,16 @@
    "introducing_pull_request": null,
    "introducing_subject": "Fail closed SV001 continuation on missing governed Site custody proof",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "fb26425243c05bc155972019beae474cd6b29d8f",
+    "registered_goals_named": [],
+    "sources": [],
+    "status": "NO_INTRODUCING_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 4,
    "test": "tests/test_stegverse001_evidence_chain.py::test_runtime_source_floor_constants_are_exact",
@@ -3465,9 +5716,26 @@
    "introducing_changed_paths_in_test_closure": [
     "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1057
+   ],
    "introducing_subject": "Retain emitted runtime presence in local Master Records",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "4f27ac9fceed1f1ef44029da2293c5eee5f33009",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:92fed3e09ffd633b3dae7b2237f36307067899c4f7f52e3c334dc4b401cc0842",
+      "ref": "StegVerse-Labs/.github#1057"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 3,
    "test": "tests/test_sv001_canonical_observability_binding.py::test_sv001_uses_current_canonical_runtime_presence_projection",
@@ -3492,9 +5760,43 @@
    "introducing_changed_paths_in_test_closure": [
     "workers/universal_intr_profiled_ingress.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2290
+   ],
    "introducing_subject": "Merge RTC008 MIR admission custody repair",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2290"
+      ],
+      "goal_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2290"
+      ],
+      "goal_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "3a3032375e745fb955dfd4e86c8b63eb192b08e4",
+    "registered_goals_named": [
+     "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:33a563d2954f39d7590457dcdf11a06ec354671ba425e51a933d705cdf1021e8",
+      "ref": "StegVerse-Labs/.github#2290"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 400,
    "test": "tests/test_sv002_event_ephemeral_materialization.py::SV002EventEphemeralTests::test_profile_preserves_hil_and_advertises_sv002",
@@ -3550,9 +5852,36 @@
     "data/task-registry-general-checkin-caller-policy.json",
     "scripts/evaluate_task_registry_collision_checkin.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2121
+   ],
    "introducing_subject": "Fence stale sessions by Task Registry generation",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2121"
+      ],
+      "goal_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "3ecf0737be9c20c530c2c47d7d51dad6359dfa7a",
+    "registered_goals_named": [
+     "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:6193e2a89b319882cfee66ffddfd4d931b8997a9a8a6125fbf6a1f42c0862f9b",
+      "ref": "StegVerse-Labs/.github#2121"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_task_registry_checkin_registry_authority.py::test_registry_only_identity_is_loaded_without_shard",
@@ -3579,9 +5908,36 @@
     "data/task-registry-general-checkin-caller-policy.json",
     "scripts/evaluate_task_registry_collision_checkin.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2121
+   ],
    "introducing_subject": "Fence stale sessions by Task Registry generation",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2121"
+      ],
+      "goal_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "3ecf0737be9c20c530c2c47d7d51dad6359dfa7a",
+    "registered_goals_named": [
+     "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:6193e2a89b319882cfee66ffddfd4d931b8997a9a8a6125fbf6a1f42c0862f9b",
+      "ref": "StegVerse-Labs/.github#2121"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_task_registry_checkin_registry_authority.py::test_shard_cannot_override_registry_state",
@@ -3608,9 +5964,36 @@
     "data/task-registry-general-checkin-caller-policy.json",
     "scripts/evaluate_task_registry_collision_checkin.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2121
+   ],
    "introducing_subject": "Fence stale sessions by Task Registry generation",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2121"
+      ],
+      "goal_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "3ecf0737be9c20c530c2c47d7d51dad6359dfa7a",
+    "registered_goals_named": [
+     "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:6193e2a89b319882cfee66ffddfd4d931b8997a9a8a6125fbf6a1f42c0862f9b",
+      "ref": "StegVerse-Labs/.github#2121"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_task_registry_checkin_registry_authority.py::test_shard_only_identity_is_not_registered_work",
@@ -3635,9 +6018,44 @@
    "introducing_changed_paths_in_test_closure": [
     "scripts/evaluate_task_registry_collision_checkin.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1778
+   ],
    "introducing_subject": "Canonicalize Task Registry collision check-in",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1778"
+      ],
+      "goal_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1778"
+      ],
+      "goal_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "cf83f9efa438014e7dc71bb16a4ca6d55e35efd0",
+    "registered_goals_named": [
+     "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+     "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:35f0ec22d7a8c30c59ef7bdb4372ab8e1190a9e62ad85b49e3ff65e090a282c3",
+      "ref": "StegVerse-Labs/.github#1778"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_task_registry_collision_checkin.py::test_checked_out_runtime_task_without_substrate_review_fails_closed",
@@ -3669,6 +6087,31 @@
    "introducing_pull_request": 2147,
    "introducing_subject": "Close completed Task Registry anti-collision goal (#2147)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2147"
+      ],
+      "goal_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "de53bdfb6c4bc5cec06cd982107823694df88df6",
+    "registered_goals_named": [
+     "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:8ab5be4bc8d2cfebf4939184f61cf9dc9acb74db7c4ea434041ff4a811b6409b",
+      "ref": "StegVerse-Labs/.github#2147"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_task_registry_collision_checkin.py::test_current_registry_generation_is_admitted_to_normal_collision_evaluation",
@@ -3702,6 +6145,71 @@
    "introducing_pull_request": 2087,
    "introducing_subject": "Merge pull request #2087 from StegVerse-Labs/fix/hygiene-repo-only-convergence-20260917",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2087"
+      ],
+      "goal_id": "AI-GOVERNANCE-OPPORTUNITY-ENGINE-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2087"
+      ],
+      "goal_id": "HYGIENE-CAUSAL-ROOTS-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2087"
+      ],
+      "goal_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2087"
+      ],
+      "goal_id": "SS-EVIDENCE-COMPARISON-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2087"
+      ],
+      "goal_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2087"
+      ],
+      "goal_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "1048bcec92fd57513615bb5540bf3a1e76f1c557",
+    "registered_goals_named": [
+     "AI-GOVERNANCE-OPPORTUNITY-ENGINE-001",
+     "HYGIENE-CAUSAL-ROOTS-001",
+     "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+     "SS-EVIDENCE-COMPARISON-001",
+     "STEGVERSE-002-EXPERIMENT-RERUN-001",
+     "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:d44e40e95cecd61389f7f0a76f975633238fc26760c1539ec32b112df6ebd7fb",
+      "ref": "StegVerse-Labs/.github#2087"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_task_registry_collision_checkin.py::test_hygiene_repository_only_overlaps_are_visible_but_nonblocking_when_component_scopes_are_disjoint",
@@ -3728,9 +6236,44 @@
    "introducing_changed_paths_in_test_closure": [
     "scripts/evaluate_task_registry_collision_checkin.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1778
+   ],
    "introducing_subject": "Canonicalize Task Registry collision check-in",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1778"
+      ],
+      "goal_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1778"
+      ],
+      "goal_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "cf83f9efa438014e7dc71bb16a4ca6d55e35efd0",
+    "registered_goals_named": [
+     "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+     "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:35f0ec22d7a8c30c59ef7bdb4372ab8e1190a9e62ad85b49e3ff65e090a282c3",
+      "ref": "StegVerse-Labs/.github#1778"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_task_registry_collision_checkin.py::test_retired_task_returns_stop_disposition",
@@ -3768,6 +6311,31 @@
     3298,
     3304
    ],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1707"
+      ],
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "1fc3789dfd4dfa8fe29941e8a3d815e396672ea5",
+    "registered_goals_named": [
+     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:0dadc1c233fc13e32141e51fed5b9fd48ea08334c411d774c8d5aa7d02323486",
+      "ref": "StegVerse-Labs/.github#1707"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_task_registry_collision_checkin.py::test_session_branch_pr_and_intended_targets_are_bound_into_disposition",
@@ -3805,6 +6373,31 @@
     3298,
     3304
    ],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1707"
+      ],
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "1fc3789dfd4dfa8fe29941e8a3d815e396672ea5",
+    "registered_goals_named": [
+     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:0dadc1c233fc13e32141e51fed5b9fd48ea08334c411d774c8d5aa7d02323486",
+      "ref": "StegVerse-Labs/.github#1707"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_task_registry_collision_checkin.py::test_unregistered_stops_before_mutation",
@@ -3840,6 +6433,31 @@
    "introducing_pull_request": 2707,
    "introducing_subject": "fix(component-010): reject unverified ChatGPT origin before event-ledger check-in (#2707)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2707"
+      ],
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "eba672e741ed871d10cd80a368155ae559cc8542",
+    "registered_goals_named": [
+     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:148b934e3d3701649e91d673bf49857854257d83d7941329175906a3c480ffae",
+      "ref": "StegVerse-Labs/.github#2707"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 398,
    "test": "tests/test_task_registry_general_checkin_caller_inventory.py::test_general_checkin_production_callers_are_source_classified_without_runtime_upgrade",
@@ -3901,6 +6519,31 @@
    "introducing_pull_request": 1629,
    "introducing_subject": "Reconcile signer child after admitted node transport merge (#1629)",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1629"
+      ],
+      "goal_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "5f73056e2239bf7cc367851214d9fe564492c2b1",
+    "registered_goals_named": [
+     "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:43b536101d52328781456f04544e41764c9a92276eebeb854e8d4be595a7e476",
+      "ref": "StegVerse-Labs/.github#1629"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 9,
    "test": "tests/test_task_registry_global_verifier_node_invariant.py::test_active_signer_task_no_longer_requires_device_or_channel_user_verifier",
@@ -3927,9 +6570,44 @@
     "scripts/task_registry_checkin_event_history.py",
     "tests/test_task_registry_recent_event_collision_integration.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1390
+   ],
    "introducing_subject": "Add durable Task Registry check-in event history",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1390"
+      ],
+      "goal_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1390"
+      ],
+      "goal_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "0e2c9b94e4ffc224a2b3cfc1ac25bef36bb6eeb5",
+    "registered_goals_named": [
+     "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+     "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:9d5061386b0c9c44ba2b030496258569798ac6399e4bbc58e70b64a4e6987f72",
+      "ref": "StegVerse-Labs/.github#1390"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_task_registry_recent_event_collision_integration.py::test_evaluator_records_checkin_event_before_returning",
@@ -3955,12 +6633,39 @@
     "scripts/evaluate_task_registry_collision_checkin.py",
     "tests/test_task_registry_recent_event_collision_integration.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2680
+   ],
    "introducing_subject": "fix(component-010): return exact retained event predecessor hashes",
    "open_carrier_prs_touching": [
     3298,
     3304
    ],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2680"
+      ],
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "aa8fe348846c78937a536b6a84f3e11ecd8df984",
+    "registered_goals_named": [
+     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:5b4a87fb625651dd27e7d09930239ce42d612f717bf3ab382cfd5da3aa87d63a",
+      "ref": "StegVerse-Labs/.github#2680"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_task_registry_recent_event_collision_integration.py::test_predecessor_readback_chains_two_independent_checkins",
@@ -3987,9 +6692,44 @@
     "scripts/task_registry_checkin_event_history.py",
     "tests/test_task_registry_recent_event_collision_integration.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    1390
+   ],
    "introducing_subject": "Add durable Task Registry check-in event history",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1390"
+      ],
+      "goal_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1390"
+      ],
+      "goal_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "0e2c9b94e4ffc224a2b3cfc1ac25bef36bb6eeb5",
+    "registered_goals_named": [
+     "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+     "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:9d5061386b0c9c44ba2b030496258569798ac6399e4bbc58e70b64a4e6987f72",
+      "ref": "StegVerse-Labs/.github#1390"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_task_registry_recent_event_collision_integration.py::test_recent_returned_session_augments_existing_evaluator",
@@ -4015,12 +6755,39 @@
     "scripts/evaluate_task_registry_collision_checkin.py",
     "tests/test_task_registry_recent_event_collision_integration.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2680
+   ],
    "introducing_subject": "fix(component-010): return exact retained event predecessor hashes",
    "open_carrier_prs_touching": [
     3298,
     3304
    ],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2680"
+      ],
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "aa8fe348846c78937a536b6a84f3e11ecd8df984",
+    "registered_goals_named": [
+     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:5b4a87fb625651dd27e7d09930239ce42d612f717bf3ab382cfd5da3aa87d63a",
+      "ref": "StegVerse-Labs/.github#2680"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_task_registry_recent_event_collision_integration.py::test_rejected_checkin_readback_chains_seed_checkin_and_stopped",
@@ -4046,12 +6813,39 @@
     "scripts/evaluate_task_registry_collision_checkin.py",
     "tests/test_task_registry_recent_event_collision_integration.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2680
+   ],
    "introducing_subject": "fix(component-010): return exact retained event predecessor hashes",
    "open_carrier_prs_touching": [
     3298,
     3304
    ],
+   "owner_derivation": {
+    "candidate_owner": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2680"
+      ],
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "aa8fe348846c78937a536b6a84f3e11ecd8df984",
+    "registered_goals_named": [
+     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:5b4a87fb625651dd27e7d09930239ce42d612f717bf3ab382cfd5da3aa87d63a",
+      "ref": "StegVerse-Labs/.github#2680"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 8,
    "test": "tests/test_task_registry_recent_event_collision_integration.py::test_tampered_retained_predecessor_refuses_new_checkin",
@@ -4083,6 +6877,67 @@
    "introducing_pull_request": 1678,
    "introducing_subject": "Merge pull request #1678 from StegVerse-Labs/ecosystem-ai-component-reconcile",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1678"
+      ],
+      "goal_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1678"
+      ],
+      "goal_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+      "registered": true
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1678"
+      ],
+      "goal_id": "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1678"
+      ],
+      "goal_id": "RTC-MANIFEST-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1678"
+      ],
+      "goal_id": "RTC-NONCHATGPT-AI-DECISION-SANDBOX-011",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#1678"
+      ],
+      "goal_id": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
+      "registered": false
+     }
+    ],
+    "introducing_commit": "069fe51538acfa4c29b0512262ea8ab2e155cae6",
+    "registered_goals_named": [
+     "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+     "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:8b7ffba6cdcb6d1d88abc4c18ae941321b551c5f55de8be5b28932f14f331aee",
+      "ref": "StegVerse-Labs/.github#1678"
+     }
+    ],
+    "status": "CANDIDATE_OWNER_AMBIGUOUS"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 4,
    "test": "tests/test_task_registry_session_return_recorder.py::test_return_recorder_appends_non_authorizing_event",
@@ -4116,6 +6971,21 @@
    "introducing_pull_request": 459,
    "introducing_subject": "Merge pull request #459 from StegVerse-Labs/fix/tvc-pr92-private-source-bootstrap-20260829",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "a129d1ac14e259e1316c9e11a5111ee1bed20936",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:c3cd2bc93edcb6a110ab24090679e77ea73ea27b99017891fc42b404643faeb2",
+      "ref": "StegVerse-Labs/.github#459"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_tvc_pr92_private_source_bootstrap.py::test_consumer_uses_bootstrap_only_when_exact_root_absent",
@@ -4143,9 +7013,26 @@
     "scripts/consume_tvc_broker_validation_request.py",
     "scripts/install_sovereign_heartbeat_service.py"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    685
+   ],
    "introducing_subject": "Stage TVC private-source requests through sovereign runtime",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": null,
+    "custody": "StegVerse-org/.github#166 ENTERPRISE-HOST-PROVIDER-ERADICATION-001",
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [],
+    "introducing_commit": "2abeb8ebb9f805664486dc57e8107d347cf585b8",
+    "registered_goals_named": [],
+    "sources": [
+     {
+      "body_sha256": "sha256:1887b8b97e4693b98a5ce392e1f708389c79cd80b49da8d31ee2056746a8511c",
+      "ref": "StegVerse-Labs/.github#685"
+     }
+    ],
+    "status": "NO_REGISTERED_GOAL_IN_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 396,
    "test": "tests/test_tvc_pr92_private_source_bootstrap.py::test_tvc_pr92_bootstrap_is_exact_and_credential_neutral",
@@ -4170,9 +7057,43 @@
    "introducing_changed_paths_in_test_closure": [
     "control/cosv-global-registry-coverage.json"
    ],
-   "introducing_pull_request": null,
+   "introducing_pull_request": [
+    2347
+   ],
    "introducing_subject": "Bind StegHealth portable dispatch context safely",
    "open_carrier_prs_touching": [],
+   "owner_derivation": {
+    "candidate_owner": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+    "custody": null,
+    "evidence_class": "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT",
+    "goal_references": [
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2347"
+      ],
+      "goal_id": "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001",
+      "registered": false
+     },
+     {
+      "found_in": [
+       "StegVerse-Labs/.github#2347"
+      ],
+      "goal_id": "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001",
+      "registered": true
+     }
+    ],
+    "introducing_commit": "ba9b497eb376220dcd29fbcc9ad386fc961f4e28",
+    "registered_goals_named": [
+     "STEGHEALTH-KV-INTERLOCK-PRODUCTION-ENDPOINT-001"
+    ],
+    "sources": [
+     {
+      "body_sha256": "sha256:ea676432df3b1223c83800ca4bbaf689cf018dd5903a9fa24ed94b14a67eaf7c",
+      "ref": "StegVerse-Labs/.github#2347"
+     }
+    ],
+    "status": "CANDIDATE_DERIVED_FROM_PR_BODY"
+   },
    "ratchet_class": "PRE_EXISTING_RECORDED_IN_BASELINE",
    "selection_closure_size": 11,
    "test": "tests/test_worker_denominator_closure_cosv.py::WorkerDenominatorClosureCOSVTests::test_active_worker_denominator_is_closed",

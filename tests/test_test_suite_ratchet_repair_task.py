@@ -86,5 +86,68 @@ class NonBlockingForUnrelatedChanges(unittest.TestCase):
         self.assertTrue(drift.in_selection(node, sel))
 
 
+OWNER_GROUPS = ("G6_", "G7_", "G8_", "G9_", "G10_", "G11_")
+
+
+class OwnerDerivationForG6ToG11(unittest.TestCase):
+    """Candidate owners follow the Labs#3329 lineage rule: one registered Goal in the introducing PR body."""
+
+    def setUp(self) -> None:
+        self.task = load(TASK_PATH)
+        self.custody = self.task["owning_existing_goal"]
+        self.groups = [g for g in self.task["groups"] if g["group_id"].startswith(OWNER_GROUPS)]
+        self.tests = [t for t in self.task["tests"] if t["group"].startswith(OWNER_GROUPS)]
+
+    def test_rule_is_recorded(self) -> None:
+        rule = self.task["method"]["owner_derivation"]
+        self.assertIn("#3329", rule["rule"])
+        self.assertEqual(rule["evidence_class"], "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT")
+
+    def test_every_test_status_follows_the_rule(self) -> None:
+        self.assertEqual(len(self.tests), sum(g["test_count"] for g in self.groups))
+        for t in self.tests:
+            o = t["owner_derivation"]
+            with self.subTest(test=t["test"]):
+                named = [r["goal_id"] for r in o["goal_references"] if r["registered"]]
+                self.assertEqual(o["registered_goals_named"], named)
+                self.assertEqual(o["introducing_commit"], t["bisect"]["first_failing_commit"])
+                self.assertEqual(o["evidence_class"], "OBSERVED_TEXT_NOT_A_LEDGER_RECEIPT")
+                if not o["sources"]:
+                    self.assertIsNone(t["introducing_pull_request"])
+                    expected = "NO_INTRODUCING_PR_BODY"
+                elif len(named) == 1:
+                    expected = "CANDIDATE_DERIVED_FROM_PR_BODY"
+                elif named:
+                    expected = "CANDIDATE_OWNER_AMBIGUOUS"
+                else:
+                    expected = "NO_REGISTERED_GOAL_IN_PR_BODY"
+                self.assertEqual(o["status"], expected)
+                if expected == "CANDIDATE_DERIVED_FROM_PR_BODY":
+                    self.assertEqual(o["candidate_owner"], named[0])
+                    self.assertIsNone(o["custody"])
+                else:
+                    self.assertIsNone(o["candidate_owner"])
+                    self.assertEqual(o["custody"], self.custody)
+
+    def test_group_candidates_aggregate_the_tests_and_custody_stays_non_blocking(self) -> None:
+        for g in self.groups:
+            mine = [t for t in self.tests if t["group"] == g["group_id"]]
+            with self.subTest(group=g["group_id"]):
+                expect: dict = {}
+                for t in mine:
+                    c = t["owner_derivation"]["candidate_owner"]
+                    if c:
+                        expect.setdefault(c, []).append(t["test"])
+                self.assertEqual({c["goal_id"]: c["tests"] for c in g["candidate_owners"]},
+                                 {k: sorted(v) for k, v in expect.items()})
+                for c in g["candidate_owners"]:
+                    self.assertEqual(c["assignment"], "NOT_ASSIGNED")
+                    self.assertEqual(c["test_count"], len(c["tests"]))
+                self.assertEqual(sum(g["owner_derivation_counts"].values()), len(mine))
+                self.assertEqual(g["custody_tests"], len(mine) - sum(len(v) for v in expect.values()))
+                self.assertTrue(g["owning_existing_goal"].startswith(self.custody))
+                self.assertEqual(g["failure_code"], "TEST_SUITE_BASELINE_PRE_EXISTING_FAILURE")
+
+
 if __name__ == "__main__":
     unittest.main()
