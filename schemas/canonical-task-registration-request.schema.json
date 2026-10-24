@@ -10,6 +10,7 @@
     "request_id": {"type": "string", "minLength": 1},
     "task_id": {"type": "string", "minLength": 1},
     "observed_registry_generation": {"type": "integer", "minimum": 0},
+    "registration_mode": {"enum": ["NEW_IDENTITY", "EXISTING_IDENTITY"]},
     "issue": {"type": "string"},
     "allocation_request_ref": {"type": ["string", "null"]},
     "collision_analysis": {"type": "array", "items": {"type": "string"}},
