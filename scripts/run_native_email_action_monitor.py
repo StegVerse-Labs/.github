@@ -324,48 +324,90 @@ def load_archive_authorization(continuation_path: Path | None) -> frozenset[str]
     proposed = state.get("archive_proposed") if isinstance(state, dict) else None
     if not isinstance(proposed, list):
         return frozenset()
-    return frozenset(v for v in proposed if isinstance(v, str) and v)
+    # Never treat a malformed or duplicate archive proposal as authority.
+    # A single invalid identity invalidates the entire batch, not just that row.
+    if not all(isinstance(v, str) and v and v.strip() == v for v in proposed):
+        return frozenset()
+    if len(proposed) != len(set(proposed)):
+        return frozenset()
+    return frozenset(proposed)
 
 
 def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: frozenset[str] = frozenset()) -> dict[str, Any]:
-    inspected = broker.call("SEARCH_MESSAGES", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
-    messages = stable_rows(inspected, "messages")
-    exact = broker.call("SEARCH_IDS", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
-    ids = exact.get("message_ids")
-    require(isinstance(ids, list) and all(isinstance(v, str) and v for v in ids), "broker message_ids invalid")
-    require(len(ids) <= batch_limit, "broker exceeded bounded batch")
-    require(len(ids) == len(set(ids)), "LIVE_INBOX_DUPLICATE_MESSAGE_IDS")
-    # Never archive a partial live-inbox page. Page tokens are an observation
-    # boundary, not an authorization to mutate unseen messages.
-    messages_more = inspected.get("next_page_token")
-    ids_more = exact.get("next_page_token")
-    require(messages_more is None or (isinstance(messages_more, str) and bool(messages_more)),
-            "LIVE_INBOX_MESSAGE_CURSOR_INVALID")
-    require(ids_more is None or (isinstance(ids_more, str) and bool(ids_more)),
-            "LIVE_INBOX_ID_CURSOR_INVALID")
-    if messages_more or ids_more:
-        return {
-            "state": "PAGINATION_INCOMPLETE_FAIL_CLOSED",
-            "provider": inspected.get("provider"),
-            "bounded_batch_limit": batch_limit,
-            "operational_query": INBOX_QUERY,
-            "inspected_visible_count": len(messages),
-            "processed_exact_count": 0,
-            "archived_count": 0,
-            "archive_failed_count": 0,
-            "archive_failed_ids": [],
-            "retained_unverified_count": len(ids),
-            "archive_authorization": "DENIED_UNTIL_COMPLETE_PAGINATION",
-            "incidents": cluster_incidents(messages),
-            "actionable_returned_count": 0,
-            "actionable_more_than_returned": True,
-            "actionable_minimum": 0,
-            "inbox": {"messagesTotal": None, "messagesUnread": None},
-            "failed_predicate": "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED",
-            "continuation_required": True,
-        }
+    """Read the full bounded provider result set before considering archive.
+
+    This remains non-authorizing: archive IDs must come from independently
+    verified continuation evidence, never from message content or paging.
+    """
+    messages: list[dict[str, Any]] = []
+    ids: list[str] = []
+    seen_messages: set[str] = set()
+    seen_ids: set[str] = set()
+    message_cursor: str | None = None
+    id_cursor: str | None = None
+    message_tokens: set[str] = set()
+    id_tokens: set[str] = set()
+    page_count = 0
+    # A bounded invocation cannot pretend full coverage after its page budget.
+    max_pages = 25
+    while True:
+        inspected = broker.call("SEARCH_MESSAGES", query=INBOX_QUERY, label_ids=["INBOX"],
+                                max_results=batch_limit, **({"next_page_token": message_cursor} if message_cursor else {}))
+        page = stable_rows(inspected, "messages")
+        require(len(page) <= batch_limit, "LIVE_INBOX_MESSAGE_BATCH_LIMIT_EXCEEDED")
+        page_ids = [message_id(row) for row in page]
+        require(not (seen_messages & set(page_ids)), "LIVE_INBOX_DUPLICATE_VISIBLE_MESSAGE_IDS")
+        require(len(page_ids) == len(set(page_ids)), "LIVE_INBOX_DUPLICATE_VISIBLE_MESSAGE_IDS")
+        seen_messages.update(page_ids)
+        messages.extend(page)
+        exact = broker.call("SEARCH_IDS", query=INBOX_QUERY, label_ids=["INBOX"],
+                            max_results=batch_limit, **({"next_page_token": id_cursor} if id_cursor else {}))
+        exact_ids = exact.get("message_ids")
+        require(isinstance(exact_ids, list) and all(isinstance(v, str) and v for v in exact_ids),
+                "broker message_ids invalid")
+        require(len(exact_ids) <= batch_limit, "broker exceeded bounded batch")
+        require(not (seen_ids & set(exact_ids)) and len(exact_ids) == len(set(exact_ids)),
+                "LIVE_INBOX_DUPLICATE_MESSAGE_IDS")
+        seen_ids.update(exact_ids)
+        ids.extend(exact_ids)
+        next_messages = inspected.get("next_page_token")
+        next_ids = exact.get("next_page_token")
+        for cursor, visited, name in ((next_messages, message_tokens, "MESSAGE"),
+                                      (next_ids, id_tokens, "ID")):
+            require(cursor is None or (isinstance(cursor, str) and bool(cursor)),
+                    f"LIVE_INBOX_{name}_CURSOR_INVALID")
+            require(cursor is None or cursor not in visited, f"LIVE_INBOX_{name}_CURSOR_REPLAY")
+            if cursor is not None:
+                visited.add(cursor)
+        page_count += 1
+        require(bool(next_messages) == bool(next_ids), "LIVE_INBOX_PAGINATION_COVERAGE_MISMATCH")
+        message_cursor, id_cursor = next_messages, next_ids
+        if not message_cursor and not id_cursor:
+            break
+        if page_count >= max_pages:
+            return {
+                "state": "PAGINATION_INCOMPLETE_FAIL_CLOSED",
+                "provider": inspected.get("provider"),
+                "bounded_batch_limit": batch_limit,
+                "pages_scanned": page_count,
+                "inspected_visible_count": len(messages),
+                "processed_exact_count": 0,
+                "archived_count": 0,
+                "archive_failed_count": 0,
+                "archive_failed_ids": [],
+                "retained_unverified_count": len(ids),
+                "archive_authorization": "DENIED_UNTIL_COMPLETE_PAGINATION",
+                "incidents": cluster_incidents(messages),
+                "actionable_returned_count": 0,
+                "actionable_more_than_returned": True,
+                "actionable_minimum": 0,
+                "inbox": {"messagesTotal": None, "messagesUnread": None},
+                "failed_predicate": "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED",
+                "continuation_required": True,
+            }
+    # The two independent broker searches must agree on exact membership.
+    require(seen_messages.issubset(seen_ids), "LIVE_INBOX_SEARCH_IDENTITY_MISMATCH")
     incidents = cluster_incidents(messages)
-    # Archive only IDs bound to verified resolution; everything else stays in INBOX.
     to_archive = [v for v in ids if v in authorized_archive_ids]
     retained = [v for v in ids if v not in authorized_archive_ids]
     archived: list[str] = []
@@ -374,22 +416,21 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
         archive = broker.call("ARCHIVE_IDS", message_ids=to_archive)
         archived = archive.get("archived_ids")
         failed = archive.get("failed_ids", [])
-        require(isinstance(archived, list), "broker archived_ids invalid")
-        require(isinstance(failed, list), "broker failed_ids invalid")
+        require(isinstance(archived, list) and isinstance(failed, list), "archive result invalid")
         require(all(isinstance(v, str) and v for v in archived + failed), "archive result identity invalid")
-        require(len(archived) == len(set(archived)) and len(failed) == len(set(failed)), "archive result duplicate identity")
+        require(len(archived) == len(set(archived)) and len(failed) == len(set(failed)),
+                "archive result duplicate identity")
         require(set(archived).isdisjoint(set(failed)), "archive result overlap")
         require(set(archived) | set(failed) == set(to_archive), "archive result does not cover exact authorized batch")
     actionable = broker.call("SEARCH_IDS", query=ACTIONABLE_QUERY, label_ids=["INBOX"], max_results=BATCH_LIMIT)
     actionable_ids = actionable.get("message_ids")
     require(isinstance(actionable_ids, list) and all(isinstance(v, str) and v for v in actionable_ids),
             "ACTIONABLE_INBOX_MESSAGE_IDS_INVALID")
-    require(len(actionable_ids) <= BATCH_LIMIT, "ACTIONABLE_INBOX_BATCH_LIMIT_EXCEEDED")
-    require(len(actionable_ids) == len(set(actionable_ids)), "ACTIONABLE_INBOX_DUPLICATE_MESSAGE_IDS")
+    require(len(actionable_ids) <= BATCH_LIMIT and len(actionable_ids) == len(set(actionable_ids)),
+            "ACTIONABLE_INBOX_DUPLICATE_MESSAGE_IDS")
     actionable_cursor = actionable.get("next_page_token")
     require(actionable_cursor is None or (isinstance(actionable_cursor, str) and actionable_cursor),
             "ACTIONABLE_INBOX_CURSOR_INVALID")
-    actionable_more = actionable_cursor is not None
     counts = broker.call("GET_LABEL_COUNTS", label_names=["INBOX"])
     labels = counts.get("labels")
     require(isinstance(labels, dict) and isinstance(labels.get("INBOX"), dict), "INBOX counts missing")
@@ -397,6 +438,7 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
         "state": "PASS" if not failed else "PARTIAL_ARCHIVE_FAILURE",
         "provider": inspected.get("provider"),
         "bounded_batch_limit": batch_limit,
+        "pages_scanned": page_count,
         "operational_query": INBOX_QUERY,
         "inspected_visible_count": len(messages),
         "processed_exact_count": len(ids),
@@ -407,8 +449,8 @@ def live_inbox_run(broker: Broker, batch_limit: int, authorized_archive_ids: fro
         "archive_authorization": "VERIFIED_RESOLUTION_ONLY",
         "incidents": incidents,
         "actionable_returned_count": len(actionable_ids),
-        "actionable_more_than_returned": actionable_more,
-        "actionable_minimum": len(actionable_ids) + (1 if actionable_more else 0),
+        "actionable_more_than_returned": actionable_cursor is not None,
+        "actionable_minimum": len(actionable_ids) + (1 if actionable_cursor else 0),
         "inbox": labels["INBOX"],
     }
 
