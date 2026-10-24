@@ -374,6 +374,35 @@
   },
   {
    "bad": [
+    {},
+    {
+     "a": 1
+    }
+   ],
+   "good": [
+    {
+     "a": 1,
+     "b": 2
+    },
+    {
+     "a": 1,
+     "b": 2,
+     "c": 3
+    },
+    [
+     1
+    ],
+    "ab"
+   ],
+   "keyword": "minProperties",
+   "kind": "assertion",
+   "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "minProperties": 2
+   }
+  },
+  {
+   "bad": [
     {
      "a": 1,
      "b": 2
