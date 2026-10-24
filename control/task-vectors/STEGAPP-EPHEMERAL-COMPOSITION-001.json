@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.cosv-task-vector/v0.1",
+  "identity": "StegVerse-Labs/.github:task:STEGAPP-EPHEMERAL-COMPOSITION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10300000011000",
+  "exact_metrics": {
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 3,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": false,
+    "thread_required": true,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "evidence_refs": [
+    "https://github.com/StegVerse-Labs/.github/issues/3291",
+    "https://github.com/StegVerse-Labs/StegApp/pull/1"
+  ],
+  "observed_at": "2026-10-19",
+  "authority_effect": "NONE",
+  "canonical_encoder_ref": "scripts/cosv.py"
+}

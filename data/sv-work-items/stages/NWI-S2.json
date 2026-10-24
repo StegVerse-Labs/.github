@@ -1,0 +1,20 @@
+{
+  "entry_transition": "STAGE_NWI_S2_ADMITTED",
+  "exit_gate": [
+    {
+      "evidence": "metric",
+      "predicate": "SV_LLM_VERDICT_AGREEMENT_RATE",
+      "threshold": {
+        "comparator": ">=",
+        "metric": "agreement_rate",
+        "value": null
+      }
+    }
+  ],
+  "name": "VERIFY_ONLY",
+  "ordinal": 2,
+  "schema": "stegverse.nwi-stage-manifest/v1",
+  "source": "KV INDEX.md 'STEPWISE GROWTH' (Rigel 12:44Z) and 'STAGE VERIFICATION' (12:53Z)",
+  "stage_id": "NWI-S2",
+  "thresholds_source": "this manifest only; a null value is undeclared and the gate FAIL_CLOSES STAGE_THRESHOLD_UNDECLARED"
+}

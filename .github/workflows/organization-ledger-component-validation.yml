@@ -1,0 +1,40 @@
+name: Validate Organization Ledger Component
+
+# CI for the reusable organization-ledger component (StegVerse-org/.github#163).
+# Validation only: it appends nothing to any ledger and dispatches nothing.
+# CI passing is not runtime ALLOW; runtime counts only when a manifest-directed
+# transition appends a receipt to refs/stegverse/organization-ledger.
+# Triggered only by state transitions (C1, ACTIONS_BY_MANIFEST_STATE_TRANSITION_TRIGGER_ONLY): a pull request or a
+# main push that changes the component, its manifest or the kernel. No workflow_dispatch, no schedule, no polling.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'org-kernel/organization-ledger/**'
+      - 'org-kernel/kernel.py'
+      - 'data/reusable-task-components/RTC-EVIDENCE-CUSTODY-004.json'
+      - '.github/workflows/organization-ledger-transition-reusable.yml'
+      - '.github/workflows/organization-ledger-component-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'org-kernel/organization-ledger/**'
+      - 'org-kernel/kernel.py'
+      - 'data/reusable-task-components/RTC-EVIDENCE-CUSTODY-004.json'
+      - '.github/workflows/organization-ledger-transition-reusable.yml'
+      - '.github/workflows/organization-ledger-component-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-organization-ledger-component:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify component digests
+        run: python3 org-kernel/organization-ledger/verify_component_manifest.py --root org-kernel/organization-ledger --manifest org-kernel/organization-ledger/component-manifest.json
+      - name: Component tests (stdlib only; no network, no clock)
+        run: python3 -m unittest discover -s org-kernel/organization-ledger/tests -v

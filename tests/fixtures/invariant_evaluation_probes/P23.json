@@ -1,0 +1,351 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 23,
+  "title": "17 sources are refused before any binding is checked and cite the question root line; 16 reach the sources",
+  "derived_from": {
+    "b_p16_bound": "max_sources",
+    "behaviour_at_4256cb6": "the refusal is emitted at 4256cb6 with citations [] (a SPEC:47 gap); this probe fails there on the citation and on the spec-quote check, and passes once the refusal cites the question root line"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "s00": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s00.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s01": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s01.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s02": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s02.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s03": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s03.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s04": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s04.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s05": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s05.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s06": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s06.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s07": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s07.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s08": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s08.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s09": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s09.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s10": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s10.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s11": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s11.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s12": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s12.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s13": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s13.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s14": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s14.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s15": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s15.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    },
+    "s16": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "s16.json",
+      "bytes": {
+        "text": "{}\n"
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "Q-PROBE",
+          "invariant_pointer": "/invariants/external_machine_awaiting_allowed",
+          "asserted_value": false
+        }
+      },
+      "supply": [
+        {
+          "source": "s00"
+        },
+        {
+          "source": "s01"
+        },
+        {
+          "source": "s02"
+        },
+        {
+          "source": "s03"
+        },
+        {
+          "source": "s04"
+        },
+        {
+          "source": "s05"
+        },
+        {
+          "source": "s06"
+        },
+        {
+          "source": "s07"
+        },
+        {
+          "source": "s08"
+        },
+        {
+          "source": "s09"
+        },
+        {
+          "source": "s10"
+        },
+        {
+          "source": "s11"
+        },
+        {
+          "source": "s12"
+        },
+        {
+          "source": "s13"
+        },
+        {
+          "source": "s14"
+        },
+        {
+          "source": "s15"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
+          "spec_quote": "SOURCE_AUTHORITY_EFFECT_NOT_ALLOWED"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "s00",
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:119",
+          "spec_quote": "cited at that member's line"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "Q-PROBE",
+          "invariant_pointer": "/invariants/external_machine_awaiting_allowed",
+          "asserted_value": false
+        }
+      },
+      "supply": [
+        {
+          "source": "s00"
+        },
+        {
+          "source": "s01"
+        },
+        {
+          "source": "s02"
+        },
+        {
+          "source": "s03"
+        },
+        {
+          "source": "s04"
+        },
+        {
+          "source": "s05"
+        },
+        {
+          "source": "s06"
+        },
+        {
+          "source": "s07"
+        },
+        {
+          "source": "s08"
+        },
+        {
+          "source": "s09"
+        },
+        {
+          "source": "s10"
+        },
+        {
+          "source": "s11"
+        },
+        {
+          "source": "s12"
+        },
+        {
+          "source": "s13"
+        },
+        {
+          "source": "s14"
+        },
+        {
+          "source": "s15"
+        },
+        {
+          "source": "s16"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "INPUT_SIZE_EXCEEDED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:77",
+          "spec_quote": "\"failed_predicate\": \"sources<=16\""
+        },
+        "citations": {
+          "value": [
+            {
+              "question": true,
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
+          "spec_quote": "question@<question_sha256>:question:line for the question bytes"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    }
+  ]
+}

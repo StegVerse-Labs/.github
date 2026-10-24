@@ -26,12 +26,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install test dependency
-        run: python -m pip install pytest
       - name: Validate request, consumer, and dispatcher binding
         run: |
           set -eu
-          python -m pytest -q tests/test_sdk_workspace_external_collab_client_secret_reseal_resident.py
+          python -m unittest -v tests.test_sdk_workspace_external_collab_client_secret_reseal_resident
           python -m py_compile control/resident-execution-request.d/consume-sdk-workspace-external-collab-client-secret-reseal.py scripts/dispatch_resident_execution_requests.py
           python -m json.tool control/resident-execution-request.d/sdk-workspace-external-collab-client-secret-reseal-001.json >/dev/null
       - name: Assert non-hosted non-authorizing boundary
