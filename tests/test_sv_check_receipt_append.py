@@ -612,7 +612,7 @@ class Declarations(unittest.TestCase):
         self.assertIs(out["consequence_committed"], False)
 
     def test_the_operation_is_declared_and_the_schema_is_pinned(self):
-        boundary = json.loads((ROOT / "org-runtime" / "interlock-intr.json").read_text(encoding="utf-8"))
+        boundary = json.loads((ROOT / ".stegverse" / "organization-ledger-ingest" / "operations.json").read_text(encoding="utf-8"))
         declared = boundary["organization_ledger_writer_operations"]
         entry, = [e for e in declared if e["operation"] == svc.OPERATION_ID]
         self.assertEqual(entry["operation_module"], "resident-runtime/sv_check_receipt_append.py")

@@ -34,9 +34,11 @@ Layout. These are the existing receipts, unchanged:
     file-by-file against P1's manifest data/sv-work-items/contract-pins.json (pinned by its sha256) before use; any
     mismatch refuses every append (FAIL_CLOSED P1_CONTRACT_PINS_UNVERIFIED).
 
-The append path is intr_destination_ingress._append (repository append, then
-aggregate_transition), under the writer workflow's ORGANIZATION_LEDGER_LOCK
-concurrency group. Validation happens before any write. Every refusal is a
+The append path is the self-closure's own two-level append, on this module's
+private instance of intr_destination_ingress: under its _two_level_atomic(),
+repository_ledger.append and then organization_ledger.aggregate_transition
+(see _append_two_level), under the writer workflow's ORGANIZATION_LEDGER_LOCK
+concurrency group. intr_destination_ingress.py itself is not edited. Validation happens before any write. Every refusal is a
 six-field FAIL_CLOSED with consequence_committed false, and nothing is written
 for it. Stdlib only.
 """
@@ -367,6 +369,29 @@ def _gate_refusal(receipt: Mapping[str, Any], subject: Any, readback: Any, ledge
     return None
 
 
+def _append_two_level(packet_id: str, evidence: Mapping[str, Any], hb_epoch: int | None,
+                      predecessor: str, successor: str, boundary: Mapping[str, Any]) -> tuple[dict[str, Any], bool]:
+    """intr_destination_ingress._append_halves for this operation's own digests and boundary evidence.
+
+    Both levels, all or nothing (ingress._two_level_atomic). A replay of the same receipt
+    returns the recorded pair; the organization receipt takes the repository receipt's epoch.
+    """
+    with ingress._two_level_atomic():
+        rl = ingress.repository_ledger
+        transition_id = TRANSITION_CLASS + ":" + packet_id
+        store = rl.repository_store()
+        prior = rl.recorded(store, store.get(rl.ledger_store.HEAD_KEY), transition_id, TRANSITION_CLASS)
+        repository_receipt = rl.append(transition_id, TRANSITION_CLASS, predecessor, successor, dict(evidence),
+                                       "NONE", hb_epoch=hb_epoch, idempotent_on=tuple(IDEMPOTENT_ON))
+        organization_receipt = ingress.organization_ledger.aggregate_transition(
+            receipt=repository_receipt, org_transition_class="REPO_STATE_PROPAGATION",
+            predecessor_org_state_sha256=predecessor, successor_org_state_sha256=successor,
+            boundary_evidence=dict(boundary), authority_effect="NONE",
+            hb_epoch=repository_receipt["hb_reference"]["epoch"])
+    return ({"repository_receipt": repository_receipt, "organization_receipt": organization_receipt},
+            prior is not None)
+
+
 def append_check_receipt(receipt: Any, *, hb_epoch: Any, subject: Any = None, readback: Any = None,
                          ledger_repository: Any = None) -> dict[str, Any]:
     """Append `receipt` as the repository receipt's $.evidence and aggregate it into the organization ledger.
@@ -400,10 +425,8 @@ def append_check_receipt(receipt: Any, *, hb_epoch: Any, subject: Any = None, re
                        "supply the repository and organization ledger locations the writer workflow declares",
                        "after the ledger locations resolve; nothing was written", detail=f"{type(exc).__name__}: {exc}")
     try:
-        appended, replayed = ingress._append(
-            TRANSITION_CLASS, packet_id, dict(receipt), hb_epoch,
-            predecessor=payload_sha256, successor=successor, boundary_evidence=boundary,
-            idempotent_on=IDEMPOTENT_ON)
+        appended, replayed = _append_two_level(packet_id, dict(receipt), hb_epoch, payload_sha256,
+                                               successor, boundary)
     except ValueError as exc:
         if str(exc) == "ledger_receipt_collision":
             return refusal("CHECK_RECEIPT_PACKET_COLLISION", "ONE_PACKET_ID_BINDS_ONE_CHECK_RECEIPT",
