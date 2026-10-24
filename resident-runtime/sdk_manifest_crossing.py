@@ -175,7 +175,7 @@ def _processor_record(stdout: str | None) -> dict | None:
     lines = (stdout or "").strip().splitlines()
     try:
         record = json.loads(lines[-1]) if lines else None
-    except ValueError:
+    except (ValueError, RecursionError, MemoryError):
         return None
     return record if isinstance(record, dict) else None
 

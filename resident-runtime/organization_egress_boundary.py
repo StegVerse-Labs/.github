@@ -561,11 +561,11 @@ def _record(transition_id: str, transition_class: str, predecessor: str, success
             record: Mapping[str, Any], hb_epoch: int | None) -> dict[str, Any]:
     """Append at both levels: the repository first, the organization consuming it.
 
-    With a supplied epoch the frame and the record are reproducible, so a replay
-    of the same emission returns the receipts already recorded instead of
-    minting a second pair; the frame and payload digests must match or it is a
-    collision. Without one the frame carries a
-    clock-derived epoch, a replay is a different frame, and each is recorded.
+    The epoch is the one the caller supplied (emit and close refuse an absent
+    one), so the frame and the record are reproducible: a replay of the same
+    emission returns the receipts already recorded instead of minting a second
+    pair, and the frame and payload digests must match or it is a collision.
+    The organization append takes the caller's epoch, never one read back.
     """
     idempotent = hb_epoch is not None
     repository_receipt = repository_ledger.append(
@@ -614,10 +614,13 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
     of an emission and carries the frame's digest. Minting it first would be a
     receipt claiming a crossing that had not happened yet.
 
-    A supplied `hb_epoch` is checked by the shared rule as given ("4096" is
-    4096); an invalid one raises the six-field SuppliedEpochRefused before
-    anything is built, published or recorded.
+    Without a supplied `hb_epoch` nothing is published or recorded. A
+    supplied one is checked by the shared rule as given ("4096" is 4096); an
+    invalid one raises the six-field SuppliedEpochRefused before anything is
+    built, published or recorded.
     """
+    if hb_epoch is None:
+        return no_epoch_result("emit")
     hb_epoch = _supplied_epoch(hb_epoch, "resident-runtime/organization_egress_boundary.py::emit (hb_epoch=)")
     origin = this_organization(root)
     try:
@@ -696,6 +699,18 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
         "emission_organization_receipt_sha256": appended["organization_receipt"]["receipt_sha256"],
         "authority_effect": "NONE_EGRESS_RECORD_ONLY",
     }
+
+
+def no_epoch_result(caller: str) -> dict[str, Any]:
+    """The unrecorded six-field refusal of an emission or closure with no supplied epoch.
+
+    Emit writes receipts, so this is the writer rule's own HB_EPOCH_NOT_SUPPLIED
+    (G-a). Nothing is published, recorded or derived from a clock (WU-B13 slice g).
+    """
+    refusal = kernel.writer_epoch_refusal(
+        None, retry_entrypoint="resident-runtime/organization_egress_boundary.py::" + caller + " (hb_epoch=, or --hb-epoch)")
+    return {"schema": RESULT_SCHEMA, "operation": OPERATION_ID, **refusal, "emitted": False,
+            "refusal_recorded": False, "authority_effect": "NONE_REFUSAL_ONLY"}
 
 
 def _refusal_result(record: Mapping[str, Any], appended: Mapping[str, Any]) -> dict[str, Any]:
@@ -843,7 +858,11 @@ def close(destination_organization: str, packet_id: str, communication_id: str, 
     absence is not an arrival: nothing crossed the boundary, so there is no
     disposition to record, and appending a refusal per poll would record the
     polling rather than the crossing.
+
+    Without a supplied `hb_epoch` nothing is collected or recorded.
     """
+    if hb_epoch is None:
+        return no_epoch_result("close")
     hb_epoch = _supplied_epoch(hb_epoch, "resident-runtime/organization_egress_boundary.py::close (hb_epoch=)")
     origin = this_organization(root)
     resolved = resolve_destination(destination_organization, root=root)

@@ -85,6 +85,7 @@
       "endpoint_adapter": "resident-runtime/remediation_endpoint.py",
       "endpoint_adapter_disposition": "ALLOW_DECLARED_ADAPTER",
       "endpoint_adapter_effect": "PURE",
+      "endpoint_adapter_hb_epoch": "CARRIER_SUPPLIED",
       "admits_processing": [
         {
           "capability": "remediation",

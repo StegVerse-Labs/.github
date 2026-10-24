@@ -345,6 +345,23 @@ def supplied_hb_reference(hb_epoch:Any, *, retry_entrypoint:str, source:str|None
         raise SuppliedEpochRefused(refusal)
     return hb_reference(epoch=int(str(hb_epoch)),source=source,head_receipt_sha=head_receipt_sha)
 
+#: A production caller with no supplied epoch in scope does not write and does
+#: not read a clock to make one up: it refuses six-field FAIL_CLOSED under this
+#: code (WU-B13 slice g). The shape is writer_epoch_refusal's.
+NO_EPOCH_CALLER_FAILS_CLOSED="NO_EPOCH_CALLER_FAILS_CLOSED"
+
+def no_epoch_caller_refusal(caller:str, *, retry_entrypoint:str)->dict[str,Any]:
+    """The six-field FAIL_CLOSED of a production caller that has no supplied epoch in scope."""
+    return {"disposition":"FAIL_CLOSED","failure_code":NO_EPOCH_CALLER_FAILS_CLOSED,
+            "failed_predicate":HB_EPOCH_PREDICATE,
+            "detail":caller+" has no supplied hb_epoch in scope; no clock is read and nothing is written",
+            "required_evidence_or_repair":("thread the carrier-supplied hb_epoch (ASCII digits with value >= "
+                                           +str(HB_ANCHOR_EPOCH)+") to "+caller+"; it is never derived from a clock"),
+            "retry_entrypoint":retry_entrypoint,
+            "owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"call again once the caller carries the supplied epoch; nothing was written",
+            "derived_from_clock":False,"consequence_committed":False}
+
 class CliInputRefused(ValueError):
     """A writer CLI's input file could not be read as declared: the caller's fault, terminal."""
     def __init__(self, record:dict[str,Any])->None:
@@ -641,7 +658,8 @@ __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame"
          "CAPABILITY_INGRESS_ROLE","crossing_custody",
          "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS",
          "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID","HB_EPOCH_PROVENANCE_UNMARKED",
-         "SuppliedEpochRefused","writer_epoch_refusal","supplied_hb_reference"]
+         "SuppliedEpochRefused","writer_epoch_refusal","supplied_hb_reference",
+         "NO_EPOCH_CALLER_FAILS_CLOSED","no_epoch_caller_refusal"]
 
 
 # --- Federation mesh v1.1 additions ---
@@ -771,16 +789,21 @@ def publish_packet(packet:dict[str,Any], *, root:Path|None=None, now_ns:int|None
 
 def consume_addressed_frames(repo_root:Path, *, mesh_root:Path|None=None, seen:set[str]|None=None,
                              node_state_root:Path|None=None, repo_ledger_root:Path|None=None,
-                             org_ledger_root:Path|None=None)->list[dict[str,Any]]:
+                             org_ledger_root:Path|None=None, hb_epoch:Any=None)->list[dict[str,Any]]:
     # The same custody as consume_and_respond: a crossing consumed here is a
     # transition within the organization and is recorded before it is returned.
+    # `hb_epoch` is the pass's own supplied epoch, as in consume_and_respond; a
+    # frame that lends none is recorded under it, and with neither nothing is
+    # recorded (ingest_recorded refuses NO_EPOCH_CALLER_FAILS_CLOSED).
+    cycle_epoch=(None if hb_epoch is None else
+                 int(supplied_hb_reference(hb_epoch,retry_entrypoint=CYCLE_EPOCH_RETRY_ENTRYPOINT)["epoch"]))
     custody=crossing_custody(repo_root,repo_ledger_root=repo_ledger_root,org_ledger_root=org_ledger_root)
     node_state=addressed_node_state_store(node_state_root) if node_state_root is not None else None
     registry=load_registry(repo_root)
     organization=registry["organization"]
     results=[]
     for item in scan_addressed_frames(organization,root=mesh_root,seen=seen):
-        epoch=_frame_epoch(item["frame"])
+        epoch=cycle_epoch if cycle_epoch is not None else _frame_epoch(item["frame"])
         result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
                                         node_state=node_state,epoch=epoch)
         results.append({"path":item["path"],"result":result,"organization_record":recorded})
@@ -1329,8 +1352,17 @@ def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], r
     raises: without it nothing can be recorded. A capability-address crossing
     still raises: its receiving operation records its own refusal at both levels.
     """
+    # Without a supplied epoch nothing can be recorded, so nothing is ingested
+    # either: the frame is refused six-field, unmarked, and no clock is read
+    # to stand in for the epoch (WU-B13 slice g).
+    if epoch is None:
+        refusal=no_epoch_caller_refusal("org-kernel/kernel.py::ingest_recorded",
+                                        retry_entrypoint="org-kernel/kernel.py::consume_and_respond")
+        return {"status":"REFUSED","disposition":refusal["disposition"],
+                "packet_id":item["frame"].get("packet_id"),
+                **{key:refusal[key] for key in SIX_FIELDS}},None
     # A frame whose epoch fails the shared rule is not recovered here: ingest_frame
-    # refuses it six-field (CarrierEpochRefusal) and the refusal is recorded.
+    # refuses it six-field (CarrierEpochRefusal).
     destination=(None if _frame_epoch_failure(item["frame"]) is not None
                  else (recover_packet(item["frame"]).get("destination") or {}).get("service"))
     service=next((svc for svc in registry["services"] if svc.get("service_id")==destination),None)

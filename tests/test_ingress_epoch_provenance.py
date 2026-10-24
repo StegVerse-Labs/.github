@@ -49,20 +49,24 @@ class IngressEpochProvenanceTests(unittest.TestCase):
         return [r for root in (self.repo_root, self.org_root) if root.exists() for r in receipts(root)
                 if isinstance(r.get("hb_reference"), dict)]
 
-    def test_an_absent_epoch_is_never_recorded_as_supplied(self):
+    def test_an_absent_epoch_is_never_recorded(self):
+        # WU-B13 slice g: absent, nothing is recorded at either level and no
+        # clock stands in for the epoch; the refusal is six-field.
         kernels = {emit.kernel, ingress.organization_ledger.kernel}
         patches = [mock.patch.object(k, "datetime", _FixedClock) for k in kernels]
         for patch in patches:
             patch.start()
         try:
-            ingress.receive(diagnostic(), registry=REGISTRY, packet_id="absent-epoch")
+            result = ingress.receive(diagnostic(), registry=REGISTRY, packet_id="absent-epoch")
         finally:
             for patch in patches:
                 patch.stop()
-        written = self.written()
-        self.assertTrue(written)
-        for receipt in written:
-            self.assertIs(receipt["hb_reference"]["derived_from_clock"], True, receipt.get("schema"))
+        self.assertEqual(result["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        self.assertIs(result["refusal_recorded"], False)
+        self.assertEqual(self.written(), [])
+        self.assertFalse(self.repo_root.exists())
+        self.assertFalse(self.org_root.exists())
 
     def test_a_supplied_4096_is_carried_at_both_levels(self):
         ingress.receive(diagnostic(), registry=REGISTRY, packet_id="supplied-epoch", hb_epoch=4096)

@@ -344,11 +344,14 @@ def organization_ledger_locus(organization: Any, org_ledger_root: Path | None) -
             getattr(exc, "repair", None) or "materialize this execution with " + exc.variable) from exc
 
 
-def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path | None) -> dict[str, Any]:
+def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path | None, *,
+                   hb_epoch: int | None = None) -> dict[str, Any]:
     """The existing emitters, at the ledger roots this execution was supplied.
 
     The Organization ledger is the supplied POSIX root only under a declared
     {store: posix}; otherwise it is the declared store (organization_ledger_locus).
+    `hb_epoch` is the epoch this execution was supplied; every append through
+    this custody carries it, and none is made without it.
     """
     emitter = _load_module("org_claim_repository_ledger", source / ".stegverse/transition-ledger/emit.py")
     organization = _load_module("org_claim_organization_ledger", source / "resident-runtime/aggregate_repo_transition.py")
@@ -373,6 +376,7 @@ def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path |
         "repository_store": emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
         "organization_root": organization_root,
         "organization_store": organization_store,
+        "hb_epoch": hb_epoch,
     }
 
 
@@ -715,6 +719,12 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
     A failed organization append raises OrganizationAppendFailed carrying the
     repository receipt; a retry reuses that exact receipt.
     """
+    hb_epoch = custody.get("hb_epoch")
+    if hb_epoch is None:
+        # No supplied epoch in scope: nothing is read, appended or derived from a clock.
+        kernel = custody["organization_ledger"].kernel
+        raise kernel.SuppliedEpochRefused(kernel.no_epoch_caller_refusal(
+            "scripts/consume_org_claim_allocator_request.py::record_transition", retry_entrypoint=RETRY_ENTRYPOINT))
     successor = "sha256:" + stable_hash({"transition_id": transition_id, "evidence": evidence})
     # The repository ledger compares the successor on every exact retry, and a
     # retry's evidence carries fields outside its identity (the Organization
@@ -730,7 +740,7 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
         successor = prior["successor_state_sha256"]
     repository_receipt = custody["emitter"].append(
         transition_id, transition_class, predecessor, successor, evidence, "NONE",
-        store=custody["repository_store"], idempotent_on=identity)
+        hb_epoch=hb_epoch, store=custody["repository_store"], idempotent_on=identity)
     organization_receipt = None
     if organization:
         recorded = repository_receipt.get("evidence") or {}
@@ -740,7 +750,7 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
             successor_org_state_sha256=repository_receipt["successor_state_sha256"],
             boundary_evidence={"operation": transition_class, **{key: recorded.get(key) for key in CARRIED},
                                **{key: recorded[key] for key in CARRIED_IF_RECORDED if key in recorded}},
-            authority_effect="NONE")
+            authority_effect="NONE", hb_epoch=hb_epoch)
         organization = custody["organization_ledger"]
         try:
             if lock_held:
@@ -1194,7 +1204,14 @@ def consume(
     org_ledger_root: Path | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
+    """Consume the allocator requests present, at the supplied ledger roots and epoch.
+
+    Without a supplied `hb_epoch` nothing is materialized, allocated or
+    appended: the result is the six-field NO_EPOCH_CALLER_FAILS_CLOSED, and no
+    clock is read to stand in for it.
+    """
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     present = [rel for rel in REQUEST_RELS if (runtime / rel).is_file()]
@@ -1209,12 +1226,20 @@ def consume(
     if repo_ledger_root is None:
         # Supplied, never derived: nothing is materialized or allocated without it.
         return _ledger_refusal(load_json(runtime / present[0]), "ledger roots not supplied")
+    if hb_epoch is None:
+        kernel = _load_module("org_claim_kernel", source / "org-kernel/kernel.py")
+        refusal = kernel.no_epoch_caller_refusal("scripts/consume_org_claim_allocator_request.py::consume",
+                                                 retry_entrypoint=RETRY_ENTRYPOINT + " (hb_epoch=, or --hb-epoch)")
+        return {**_ledger_refusal(load_json(runtime / present[0]), refusal["detail"],
+                                  predicate=refusal["failed_predicate"],
+                                  repair=refusal["required_evidence_or_repair"]),
+                **{key: refusal[key] for key in kernel.SIX_FIELDS}}
     safe_env = clean_env(env)
     try:
         # The Organization ledger is the supplied root only under a declared
         # {store: posix}; otherwise the declared store, and an explicit root is
         # FAIL_CLOSED before anything is read or appended (OL-3).
-        custody = ledger_custody(source, repo_ledger_root, org_ledger_root)
+        custody = ledger_custody(source, repo_ledger_root, org_ledger_root, hb_epoch=hb_epoch)
     except OrganizationLedgerNotAdmitted as exc:
         return _ledger_refusal(load_json(runtime / present[0]), exc.detail, predicate=exc.predicate, repair=exc.repair)
     except ClaimFailClosed as exc:
@@ -1242,10 +1267,19 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--repo-ledger-root", type=Path, default=None)
     parser.add_argument("--org-ledger-root", type=Path, default=None)
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; required to append, never coerced")
     args = parser.parse_args()
+    if args.hb_epoch is not None:
+        kernel = _load_module("org_claim_cli_kernel", args.source_root.expanduser().resolve() / "org-kernel/kernel.py")
+        refused = kernel.writer_epoch_refusal(args.hb_epoch, retry_entrypoint=RETRY_ENTRYPOINT + " (--hb-epoch)")
+        if refused is not None:
+            print(json.dumps(refused, sort_keys=True))
+            return 1
     try:
         receipt = consume(args.source_root, args.runtime_root,
-                          repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root)
+                          repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root,
+                          hb_epoch=int(args.hb_epoch) if args.hb_epoch is not None else None)
     except Exception as exc:
         receipt = {
             "schema": "stegverse.resident-execution-request-consumption/v1",

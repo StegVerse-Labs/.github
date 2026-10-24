@@ -65,7 +65,7 @@ def seed_rooted_chain(source: Path, org_root: Path, repo_root: Path) -> dict:
     No genesis is synthesized: the root is an ordinary DENY transition appended
     by the repository emitter and consumed by the organization aggregation.
     """
-    custody = consumer.ledger_custody(source, repo_root, org_root)
+    custody = consumer.ledger_custody(source, repo_root, org_root, hb_epoch=4096)
     evidence = {"disposition": "DENY", "task_id": "NONE", "request_sha256": "0" * 64,
                 "failed_predicate": "NO_ELIGIBLE_TASK", "fencing_token": None, "fence_issued": False,
                 "organization_head_sha256": None, "consequence_committed": False}
@@ -110,10 +110,10 @@ class Env:
     def consume(self, runner=subprocess.run, env=None, **kwargs):
         return consumer.consume(self.source, self.runtime, repo_ledger_root=kwargs.pop("repo", self.repo),
                                 org_ledger_root=kwargs.pop("org", self.org), runner=runner,
-                                env=env or {"PATH": os.environ.get("PATH", "/usr/bin:/bin")})
+                                env=env or {"PATH": os.environ.get("PATH", "/usr/bin:/bin")}, hb_epoch=4096)
 
     def custody(self):
-        return consumer.ledger_custody(self.source, self.repo, self.org)
+        return consumer.ledger_custody(self.source, self.repo, self.org, hb_epoch=4096)
 
     def chain(self):
         return consumer.verify_organization_chain(self.custody())
@@ -281,7 +281,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
             self.assertEqual(env.task("TASK-2026-0013")["status"], "queued", name)
         # Not supplied at all: refused before anything is materialized.
         bare = Env(self.base / "unsupplied")
-        refused = consumer.consume(bare.source, bare.runtime, env={"PATH": "/bin"})
+        refused = consumer.consume(bare.source, bare.runtime, env={"PATH": "/bin"}, hb_epoch=4096)
         self.assertEqual(refused["failed_predicate"], "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
         self.assertFalse((bare.runtime / "tasks").exists())
 
@@ -1341,9 +1341,9 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(env.chain()["head_sha256"], head)
         self.assertEqual(env.grants(), [])
 
-    def test_claim_receipt_hb_reference_declares_clock_source(self):
-        # The consumer supplies no frame epoch, so every repository receipt it
-        # appends derives its heartbeat from the host clock and must say so.
+    def test_claim_receipt_hb_reference_carries_the_supplied_epoch(self):
+        # The consumer is supplied epoch 4096, so every repository receipt it
+        # appends references exactly that heartbeat; none is derived from a clock.
         granted = Env(self.base / "granted")
         self.assertEqual(granted.consume()["disposition"], "ALLOW")
         empty = Env(self.base / "empty", seed=False)
@@ -1353,9 +1353,23 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertGreaterEqual(len(receipts), 3)
         for receipt in receipts:
             reference = receipt["hb_reference"]
-            self.assertIn("derived_from_clock", reference, receipt["transition_id"])
-            self.assertIs(reference["derived_from_clock"], True, receipt["transition_id"])
-            self.assertIn("sampled_unix_ns", reference, receipt["transition_id"])
+            self.assertEqual(reference["epoch"], 4096, receipt["transition_id"])
+            self.assertIs(reference["derived_from_clock"], False, receipt["transition_id"])
+            self.assertNotIn("sampled_unix_ns", reference, receipt["transition_id"])
+
+    def test_consume_without_a_supplied_epoch_fails_closed_writing_nothing(self):
+        env = Env(self.base / "no-epoch")
+        org_before = sorted(p.relative_to(env.org).as_posix() for p in env.org.rglob("*"))
+        refused = consumer.consume(env.source, env.runtime, repo_ledger_root=env.repo, org_ledger_root=env.org,
+                                   env={"PATH": "/bin"})
+        self.assertEqual(refused["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
+        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                      "retry_entrypoint", "owning_existing_goal", "next_attempt"):
+            self.assertTrue(refused[field], field)
+        self.assertFalse(env.repo.exists())
+        self.assertFalse((env.runtime / "tasks").exists())
+        self.assertEqual(sorted(p.relative_to(env.org).as_posix() for p in env.org.rglob("*")), org_before)
 
 if __name__ == "__main__":
     unittest.main()

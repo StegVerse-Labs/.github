@@ -38,7 +38,7 @@ class SDKEvaluatorGovernancePostureResidentTests(unittest.TestCase):
             runtime=Path(td)
             p=runtime/MOD.REQUEST_REL; p.parent.mkdir(parents=True)
             p.write_text((ROOT/MOD.REQUEST_REL).read_text())
-            result=MOD.consume(ROOT,runtime,env={})
+            result=MOD.consume(ROOT,runtime,env={}, hb_epoch=4096)
             self.assertEqual(result["state"],"INPUT_NOT_MATERIALIZED")
             self.assertFalse(result["runtime_execution_attempted"])
 
@@ -54,7 +54,7 @@ class SDKEvaluatorGovernancePostureResidentTests(unittest.TestCase):
             mp.write_text(json.dumps(manifest,sort_keys=True))
             org_root=Path(td)/"org-ledger"
             with patch.dict("os.environ",{"STEGVERSE_ORG_LEDGER_ROOT":str(org_root)}):
-                result=MOD.consume(ROOT,runtime,env={"STEGVERSE_SDK_SOURCE_ROOT":str(sdk)})
+                result=MOD.consume(ROOT,runtime,env={"STEGVERSE_SDK_SOURCE_ROOT":str(sdk)}, hb_epoch=4096)
             head=json.loads((org_root/"HEAD.json").read_text())
             org_receipt=json.loads((org_root/"receipts"/(head["receipt_sha256"][7:]+".json")).read_text())
             source=json.loads((org_root/"source-receipts"/(org_receipt["source_transition_sha256"][7:]+".json")).read_text())
@@ -90,7 +90,7 @@ class SDKEvaluatorGovernancePostureResidentTests(unittest.TestCase):
                 mp=runtime/"runtime-state/sdk-evaluator-governance-posture/manifest.json"; mp.parent.mkdir(parents=True)
                 mp.write_text(json.dumps({"schema":"x","manifest_sha256":"sha256:m","extensions":{"governance_reference_graph":{"graph_sha256":"sha256:g"}}},sort_keys=True))
                 with patch.dict("os.environ",{"STEGVERSE_ORG_LEDGER_ROOT":str(Path(td)/"org-ledger")}):
-                    result=MOD.consume(ROOT,runtime,env={"STEGVERSE_SDK_SOURCE_ROOT":str(sdk)})
+                    result=MOD.consume(ROOT,runtime,env={"STEGVERSE_SDK_SOURCE_ROOT":str(sdk)}, hb_epoch=4096)
                 self.assertEqual(result["state"],"COMPLETED")
                 self.assertEqual(result["transition_request_sha256"],"sha256:t")
                 # The caller's stegverse modules are restored exactly, and the
