@@ -121,6 +121,12 @@
       "classification": "REVIEW_REQUIRED",
       "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",
       "reason": "Validation-only verify of manifest-directed Goal Task registration (contracts/canonical-task-registration-transition.v1.json): for each registration manifest a PR adds, re-derives record, Registry row, generation bump and COSV vector/index entry from the live base tip and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/universal-intr-route-installation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162 (Lane B, Fix 4)",
+      "reason": "Byte-identical per-organization caller of the SDK-hosted reusable universal-intr-route-installation.yml, pinned to StegVerse-SDK c138cad4 (uses: ref and sdk_ref are the same commit), evaluating the committed control/universal-intr-route-installation-request.json (Q-B-F4 default (a)). It must be a workflow_call caller at this organization's own root, so it cannot ride the validation-only dispatchers. Evaluation only: contents: read, no secret, no push, no dispatch; the reusable workflow runs with permissions: {} and reads both trees as anonymous public archives. Registration is classification evidence and grants no authority."
     }
   ],
   "removed_in_hygiene_batch_1": [
