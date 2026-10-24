@@ -232,7 +232,7 @@ CLASS_ALIASES: dict[str, str] = {
 RULING_AXES: dict[tuple[str, str], list[tuple]] = {
     ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "UNKNOWN_IS_FAIL_CLOSED_NEVER_DENY"): [
         ("supplied_hb_epoch[UNKNOWN]", "the SV_CHANGE's hb_epoch is the UNKNOWN_NOT_AUTHENTICALLY_OBSERVED sentinel (FAIL_CLOSED, "
-         "never DENY; precedes 726248a5)", _unknown_epoch, "HB_EPOCH_SOURCE_UNOBSERVED")],
+         "never DENY; precedes c9192134)", _unknown_epoch, "HB_EPOCH_SOURCE_UNOBSERVED")],
     ("ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH", "NATIVE_RECORD_HB_EPOCH_IS_A_STRING"): [
         ("supplied_hb_epoch[int]", "the NATIVE SV_CHANGE's hb_epoch is a JSON integer, not the epoch string (observed, malformed: "
          "DENY, never FAIL_CLOSED)", _int_epoch, "HB_EPOCH_MISMATCH")],

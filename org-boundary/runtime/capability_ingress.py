@@ -89,6 +89,9 @@ BODY_FIELD = "body"
 PROCESSOR_SELECTION = "NO_PROCESSOR_SELECTED_AT_THE_CAPABILITY_ADDRESS"
 ROUTE_ADMISSIBILITY = "NOT_RESOLVED_AT_BOUNDARY_ROUTE_OWNER_IS_SDK"
 
+#: The kernel's supplied-epoch predicate, named the same here.
+HB_EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+
 
 def canon(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
@@ -256,13 +259,19 @@ def declared_manifest(payload: Any) -> dict[str, Any]:
 
 
 def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *, registry: Mapping[str, Any],
-            mesh_root: Path | None = None) -> dict[str, Any]:
+            mesh_root: Path | None = None, hb_epoch: int | None = None) -> dict[str, Any]:
     """Hand an addressed submission to the receiving operation the overlay binds.
 
     The operation records its own dispositions at both ledger levels; this
     returns what it reported. A refusal is returned as the operation stated it,
     not retried into an admission.
+
+    `hb_epoch` is the epoch the carrier supplied. The operation's receipts are
+    stamped with it; without one they would be stamped from the host clock, so
+    an absent epoch is refused before the operation is loaded. No clock is read.
     """
+    if hb_epoch is None:
+        raise _refuse(HB_EPOCH_PREDICATE, "HB_EPOCH_NOT_SUPPLIED")
     resolved = resolve(root, service)
     # The overlay says how this capability's submission is read. A payload the
     # binding does not admit is refused before the operation is loaded, so a
@@ -273,7 +282,7 @@ def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *
     module = load_operation(resolved)
     result = module.receive(submission, registry=registry, standing=packet.get("standing"),
                             packet_id=str(packet.get("packet_id") or resolved["receiving_operation_id"]),
-                            mesh_root=mesh_root)
+                            hb_epoch=hb_epoch, mesh_root=mesh_root)
     return {
         "capability_received": True,
         "capability_profile_id": resolved["capability_profile_id"],

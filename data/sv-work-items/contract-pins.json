@@ -9,36 +9,36 @@
   ],
   "files": {
     ".stegverse/transition-ledger/emit.py": {
-      "blob": "f2de8a1aa424eba64ea2ae96328bb9ecb5a625c9",
-      "sha256": "sha256:33a665ea35d3dc41c0844dcb6c67fb0fca301180846189632c0bfe815d456536"
+      "blob": "04ccd16d80f61381203ad5a8b506943c68967954",
+      "sha256": "sha256:2ddad8ebe7a3a9e254b1af35357751f96283af717d5f8420fa80495b712d7ff9"
     },
     "data/admission-scenarios/classes.jsonl": {
-      "blob": "f1c3f81d0a96c4e17d7118d6bf365e94beb85a60",
-      "sha256": "sha256:d69365a8788f143a3412e43e57fdf36713bbc73bb0e9790903f2f85080b7275e"
+      "blob": "2400d35a6735b2b080492da948d23e077edcd43f",
+      "sha256": "sha256:09419bcd2f5f802f3f98baafc73cd93cbcabf57e4305d54cc7f8c052e7eae184"
     },
     "data/admission-scenarios/corpus.jsonl": {
-      "blob": "91482936e7f83648fb719ae49aba7907f791166c",
-      "sha256": "sha256:0d96b5634370f6dca56bbb0bf428ec79d642ce63990174b5dc628f3c9a44ec5f"
+      "blob": "29d94abc78a7a5190e8777a21dd8efa617cf6d59",
+      "sha256": "sha256:25b064a3cf64d64eaaa28ad55e716c79a34d5b13b408dd51fe45f69c2450a9dd"
     },
     "data/admission-scenarios/seed-append-outcomes.jsonl": {
-      "blob": "d50731c862a88a78fe3386f9cfa6f7d858da8130",
-      "sha256": "sha256:d5fde3b78ff2a7e02963fd8603cadc403842d589a6e886afb1b483f1ed8d1ae5"
+      "blob": "29411123399a2584eef56ef46f074e64e678fc36",
+      "sha256": "sha256:e6e123f3041307951aaa3e8cda5ef4f217c6a92ccfd6f68bb6f95514436a0415"
     },
     "data/admission-scenarios/tvc-replay/replay-map.jsonl": {
-      "blob": "957f0a90be6d611cfc8b24efc547126c983c5b34",
-      "sha256": "sha256:fca45593a86e4478be5a3fc0d2ac37a10f9baa08b8ef585aed68a66d5a962d15"
+      "blob": "4f83303860a8c4a94ff7fcf77471bf006a1d7c75",
+      "sha256": "sha256:c6e2d92d6f99084c1392b1bb3d9d5c4b17e85106ddcca73101b9c6a64f73d1e1"
     },
     "data/admission-scenarios/tvc-replay/signoff-receipts.jsonl": {
       "blob": "b3c494fb31c3d469a1ce12871fd3864f86856e0e",
       "sha256": "sha256:b8e483cd1d85708743bf273b26d2e54e896f6d1ed95135e3f22554daf0711fc7"
     },
     "data/admission-scenarios/tvc-replay/sv-changes.jsonl": {
-      "blob": "055fb25fe9f223435b8029f0f311df5d498f90fb",
-      "sha256": "sha256:008b05b5b4745e0a7af362561061f4eb95c2364e3f5dfdf035016f00ebfb049e"
+      "blob": "246f8e0eaecc59c38f4f65e646f4c592f6c9f74a",
+      "sha256": "sha256:63283a27f0166d2af5d2847dfe47bed3b2cd29ceefc3e2bfe54e656caad3fc1d"
     },
     "data/sv-work-items/invariants.json": {
-      "blob": "551c709b0d6a94bb9f9fe844e818f6e28a4dad64",
-      "sha256": "sha256:cbcc722be3f8cd19cce97e495407ebf4fc8d0650b810b99e9ffa4af7df46c648"
+      "blob": "7d3e91d8eb42c63775588620a105e4ebd767d093",
+      "sha256": "sha256:e9548663dc66c4b0a934037b967c307ace3a2f6aa7b6080160953408f992ecae"
     },
     "data/sv-work-items/lifecycle-transitions.json": {
       "blob": "c3cc907791308c99c8e881d2535ab874339afc6c",
@@ -53,8 +53,8 @@
       "sha256": "sha256:184dd188da7073f3eebb12756a02af666f02520930f4b0f6b1e7e2b3ea4275b7"
     },
     "data/sv-work-items/required-checks.json": {
-      "blob": "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d",
-      "sha256": "sha256:468c08adc9f269f130217db51c8eb22260fbf2369fac48232fe9d3937e583110"
+      "blob": "482e3af945492d1cc6d6f80794729445199f88db",
+      "sha256": "sha256:8a735c6167007668da9981d616684421c235397d42d3effd18de8ba7e4e41587"
     },
     "data/sv-work-items/stages/NWI-S0.json": {
       "blob": "040570b5eb77dc0e9ee8821277b80afada1d0739",
@@ -85,20 +85,20 @@
       "sha256": "sha256:837343e7fae10ed39b8d2bf63355dcfdcf02277f9b9f944b3dff34e986164fd6"
     },
     "org-kernel/kernel.py": {
-      "blob": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
-      "sha256": "sha256:3463f1659ec849caf77b32263fbce0711b9c869faade8da2fcd05191e33a4b1f"
+      "blob": "0003eeae35ddb25919170ad853a11a0dcb53fcc0",
+      "sha256": "sha256:907c632469f26e8d8fb6bb0388477624c238b2bcfc4610d1c4b9f2533821b27a"
     },
     "org-kernel/node_store.py": {
       "blob": "10b9897847db7d734f47ccfe3c6422f02a7eee3b",
       "sha256": "sha256:7424b384d6c1116a9ca64290ac1f4f301613086032eea3f2bc878c5b5302aed2"
     },
     "resident-runtime/admission_learning.py": {
-      "blob": "b0a3d225ba3ce5a0d03e38d963d9d5ced67702e1",
-      "sha256": "sha256:8d76001a9046bce73f0e1a1ab530ea9db97f0a6bebfba6ba11faca4e74c3783a"
+      "blob": "20432817af53ec3e1ec0e16ebee73cf78b2c164c",
+      "sha256": "sha256:5917641e1036679b2eed56f300177f7cb9d98e67ca99b6cc84a0dc1857e2943b"
     },
     "resident-runtime/aggregate_repo_transition.py": {
-      "blob": "7660d2bc10231c68f9c8b1015caee558ee9423d8",
-      "sha256": "sha256:ff4a2dc76142988dffc63f3088ffe883fe526da03e323017aee4807d60ecd7f5"
+      "blob": "b67d12b27eeaacb162facfd2769313282a5900ea",
+      "sha256": "sha256:c0c490cd4b0ce882f5ee6461914c35500a0c5b6a9a733321408cec15b2bc40f9"
     },
     "resident-runtime/ledger_store.py": {
       "blob": "43d36e6adb2e10712c1db833dc0bb909b0abdb78",
@@ -121,8 +121,8 @@
       "sha256": "sha256:b3c56d21180e9a1bd749f9165072a757d765773c4dad384687f5c23abe84292b"
     },
     "resident-runtime/sv_work_items.py": {
-      "blob": "9e926ed41210963d4c5b6bc2000ce71c51cf6664",
-      "sha256": "sha256:ea36302d1fcdac0f2de01fa8b8f873e805959ae0f2cfe1c10f11d6d9d91ed1e0"
+      "blob": "a1f0f8322dcf11f0fdba8de8903317b7248cb37b",
+      "sha256": "sha256:921975fe9acfe8e91e0f03ab0f51ef16d265a9a6356b6c753df61d5db2cbd56b"
     },
     "schemas/admission-corpus.v1.schema.json": {
       "blob": "5aa5322c7c2b7cff5613996e5e5d33281ad3d53c",
@@ -137,8 +137,8 @@
       "sha256": "sha256:be9a7afc594ed6696ce557b5fca2aaf0e66453491bc891a14c435499d996fd62"
     },
     "schemas/sv-change.v1.schema.json": {
-      "blob": "6b43b6ecfa22c2f178de00f5c14121cb27bf1c5a",
-      "sha256": "sha256:c96fdb5b9a0bd7d0e5e71b546b46c7a54f3cd444c9b604837af63e45e0d59a35"
+      "blob": "6986d398315a478c968475310da83e9e2f8df4da",
+      "sha256": "sha256:0fcaf10c05ab524208a983e9a5ace142c067558747da80b8bf97c77d9d14db50"
     },
     "schemas/sv-check-receipt.v1.schema.json": {
       "blob": "a4934cc1afb5f9c65d12f4ab5ae29f462b76b3f3",
@@ -153,8 +153,8 @@
       "sha256": "sha256:38b4d32032cb96566f890906d2baa396913ff45c95c7bc7ae5f3ec4a1e0a805a"
     },
     "scripts/build_sv_native_fixtures.py": {
-      "blob": "bfc0daa139c57b7f4927b1b35c8336983ee97308",
-      "sha256": "sha256:e6dcb0b1ba5ba199f840dc459793d150bf947c3d5ea99baa31e6ff72a94840c9"
+      "blob": "cc7aa57c1cdfd08d8f9fc2c82d24d1aad4342b5a",
+      "sha256": "sha256:af7f01cf13a1b36517c3465666f42672f64a9e67e3c876d411d04c8936e31134"
     },
     "scripts/project_worker_claim_into_canonical_task.py": {
       "blob": "9573c5bb963d7c19f64a08173f7397f427ba32dd",
