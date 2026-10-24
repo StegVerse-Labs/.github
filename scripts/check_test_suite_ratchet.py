@@ -36,9 +36,8 @@ GATE = "TEST_SUITE_RATCHET"
 BASELINE = Path("data/test-suite-baseline.json")
 # pytest prints one of these per failing or erroring test in -q output.
 OUTCOME = re.compile(r"^(?:FAILED|ERROR)\s+(\S+)")
-REPAIR = ("fix the newly failing test, or - when the failure is genuinely "
-          "pre-existing and newly surfaced - add it to the baseline in the same "
-          "change, where a reviewer sees it")
+REPAIR = ("repair the actual failing test in its owning source lane; "
+          "do not add failures or exclusions to the ratchet baseline")
 
 
 def run_suite(target: str) -> set[str]:
@@ -69,6 +68,51 @@ def excluded_tests(baseline: dict) -> set[str]:
     return {row["test"] for row in (baseline.get("excluded") or [])}
 
 
+def baseline_integrity(current: dict, base: dict) -> dict:
+    """A PR may shrink known failures/exclusions, never add or reclassify them.
+
+    This is separate from the runtime test comparison: no PR can grant itself
+    a green ratchet by editing the benchmark it is measured against.
+    """
+    current_known = set(current.get("known_failing") or [])
+    base_known = set(base.get("known_failing") or [])
+    current_excluded = excluded_tests(current)
+    base_excluded = excluded_tests(base)
+    return {
+        "added_known_failures": sorted(current_known - base_known),
+        "added_exclusions": sorted(current_excluded - base_excluded),
+        "moved_from_known_to_excluded": sorted(current_excluded & base_known),
+        "removed_known_failures": sorted(base_known - current_known),
+        "removed_exclusions": sorted(base_excluded - current_excluded),
+    }
+
+
+def check_baseline_against_base(base_sha: str, path: Path) -> int:
+    if not re.fullmatch(r"[0-9a-f]{40}", base_sha):
+        print(f"{GATE}: FAIL_CLOSED invalid exact base commit SHA")
+        return 1
+    result = subprocess.run(["git", "show", f"{base_sha}:{path.as_posix()}"],
+                            capture_output=True, text=True)
+    if result.returncode:
+        print(f"{GATE}: FAIL_CLOSED cannot read benchmark from exact PR base")
+        return 1
+    try:
+        base = json.loads(result.stdout)
+        current = load_baseline(path)
+    except (ValueError, OSError) as exc:
+        print(f"{GATE}: FAIL_CLOSED invalid benchmark: {exc}")
+        return 1
+    delta = baseline_integrity(current, base)
+    if any(delta[k] for k in ("added_known_failures", "added_exclusions",
+                              "moved_from_known_to_excluded")):
+        print(f"{GATE}: FAIL_CLOSED BASELINE_EXPANSION_OR_EXCLUSION_FORBIDDEN "
+              + json.dumps(delta, sort_keys=True))
+        return 1
+    print(f"{GATE}: BASELINE_INTEGRITY_PASS (existing failures are NOT passes) "
+          + json.dumps(delta, sort_keys=True))
+    return 0
+
+
 def compare(observed: set[str], baseline: dict) -> dict:
     """Classify the run against the baseline.
 
@@ -87,32 +131,28 @@ def compare(observed: set[str], baseline: dict) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--base-sha", help="validate baseline monotonicity against exact PR base")
     parser.add_argument("--target", default="tests")
     parser.add_argument("--baseline", default=str(BASELINE))
     parser.add_argument("--write-baseline", action="store_true",
-                        help="record the current failing set as the baseline")
+                        help="deprecated and prohibited: cannot regenerate the failure baseline")
     parser.add_argument("--findings", action="store_true",
                         help="emit Healer-intake findings instead of prose")
     args = parser.parse_args()
     path = Path(args.baseline)
 
+    if args.base_sha:
+        if args.write_baseline or args.findings:
+            print(f"{GATE}: FAIL_CLOSED --base-sha cannot mutate or mask evidence")
+            return 1
+        return check_baseline_against_base(args.base_sha, path)
+
     observed = run_suite(args.target)
 
     if args.write_baseline:
-        existing = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({
-            "schema": "stegverse.test-suite-baseline/v1",
-            "target": args.target,
-            "known_failing": sorted(x for x in observed
-                                    if x not in {r["test"] for r in (existing.get("excluded") or [])}),
-            # Preserved across regeneration: an exclusion and its reason survive.
-            "excluded": existing.get("excluded") or [],
-            "baseline_is_a_ceiling_not_an_endorsement": True,
-            "authority_effect": "NONE",
-        }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"{GATE}: wrote baseline of {len(observed)} failing tests to {path}")
-        return 0
+        print(f"{GATE}: FAIL_CLOSED automatic baseline regeneration is prohibited; "
+              "repair the actual tests and separately review any baseline reduction")
+        return 1
 
     report = compare(observed, load_baseline(path))
 
@@ -131,6 +171,7 @@ def main() -> int:
         print(f"{GATE}: NEW_FAILURE {test_id}")
     for test_id in report["newly_passing"]:
         print(f"{GATE}: NEWLY_PASSING {test_id} - tighten the baseline")
+    print("TEST_SUITE_RATCHET_STATUS=REGRESSION_COMPARISON_ONLY_NOT_FULL_SUITE_PASS")
     print(
         f"{GATE}_AUDIT observed={report['observed_failing_count']} "
         f"baseline={report['baseline_failing_count']} "

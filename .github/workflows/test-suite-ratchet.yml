@@ -39,6 +39,12 @@ jobs:
       - name: RT-INVARIANT-EVALUATION-001 spec guard, the B-P6 probe set as data
         run: python -m unittest -v tests/test_invariant_evaluation_probes.py
 
+      - name: Reject PR expansion of known failures or exclusions against exact base
+        if: github.event_name == 'pull_request'
+        env:
+          RATCHET_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: python scripts/check_test_suite_ratchet.py --base-sha "$RATCHET_BASE_SHA"
+
       - name: No pull request may add a test failure the baseline does not hold
         run: python scripts/check_test_suite_ratchet.py
 
