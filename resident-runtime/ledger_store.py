@@ -103,11 +103,14 @@ class PosixLedgerStore:
 
     def put(self, key, value):
         path = self._path(key)
+        # Encoded before anything is created: a non-finite number is not JSON
+        # and is refused with nothing written (row 5).
+        data = json.dumps(value, indent=2, sort_keys=True, allow_nan=False).encode() + b"\n"
         path.parent.mkdir(parents=True, exist_ok=True)
         fd, temp = tempfile.mkstemp(prefix=".org-append-", suffix=".tmp", dir=str(path.parent))
         try:
             with os.fdopen(fd, "wb") as stream:
-                stream.write(json.dumps(value, indent=2, sort_keys=True).encode() + b"\n")
+                stream.write(data)
                 stream.flush()
                 os.fsync(stream.fileno())
             os.replace(temp, path)
@@ -684,7 +687,7 @@ class GitLedgerStore:
 
     @staticmethod
     def _encode(value):
-        return json.dumps(value, indent=2, sort_keys=True).encode() + b"\n"
+        return json.dumps(value, indent=2, sort_keys=True, allow_nan=False).encode() + b"\n"
 
     def append_transaction(self, receipt_key_name, receipt, expected_head, new_head, immutable=None):
         """Publish receipt, immutable documents and HEAD as one commit by ref CAS.

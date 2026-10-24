@@ -5,7 +5,7 @@ Organization-neutral runtime behavior extracted from StegVerse-Labs/.github.
 No GitHub, hosted scheduler, provider, or carrier grants authority.
 """
 from __future__ import annotations
-import base64, hashlib, importlib.util, json, subprocess, sys, tempfile
+import base64, hashlib, importlib.util, json, math, subprocess, sys, tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -380,10 +380,27 @@ def cli_input_json(path:Any, argument:str, *, retry_entrypoint:str, expect:type|
         raise _cli_input_refused(exc,argument,retry_entrypoint) from None
     return cli_json_text(text,argument,retry_entrypoint=retry_entrypoint,expect=expect)
 
+def _non_finite(literal:str)->Any:
+    raise ValueError("non-finite number "+literal+" is not JSON")
+
+def _finite_float(literal:str)->float:
+    value=float(literal)
+    if not math.isfinite(value):
+        _non_finite(literal)
+    return value
+
+def strict_json_loads(text:str)->Any:
+    """json.loads refusing NaN, Infinity, -Infinity and an overflowing literal such as 1e999.
+
+    None of them is JSON (RFC 8259), and a receipt canon cannot serialise
+    them (allow_nan=False), so they are refused where the input is read (row 5).
+    """
+    return json.loads(text,parse_constant=_non_finite,parse_float=_finite_float)
+
 def cli_json_text(text:str, argument:str, *, retry_entrypoint:str, expect:type|tuple[type,...]=dict)->Any:
     """Parse one CLI argument's JSON text, as cli_input_json does a file's."""
     try:
-        value=json.loads(text)
+        value=strict_json_loads(text)
         if expect is not None and not isinstance(value,expect):
             raise ValueError("top-level value is "+type(value).__name__)
     except (ValueError,RecursionError,MemoryError) as exc:

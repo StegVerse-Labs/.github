@@ -16,7 +16,7 @@ kernel=importlib.util.module_from_spec(_kspec);_kspec.loader.exec_module(kernel)
 _sspec=importlib.util.spec_from_file_location("ledger_store",ROOT/"resident-runtime/ledger_store.py")
 ledger_store=importlib.util.module_from_spec(_sspec);_sspec.loader.exec_module(ledger_store)
 
-def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
+def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False,allow_nan=False).encode()
 def sha(v): return "sha256:"+hashlib.sha256(canon(v)).hexdigest()
 class LedgerLocationRequired(ValueError):
     """No ledger root was supplied; nothing is appended and nothing is derived."""
@@ -611,7 +611,7 @@ def retain_source(root, receipt, verified):
     fd,name=tempfile.mkstemp(prefix=".source-",dir=str(directory))
     try:
         with os.fdopen(fd,"w",encoding="utf-8") as stream:
-            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False)+"\n")
+            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False,allow_nan=False)+"\n")
             stream.flush()
             os.fsync(stream.fileno())
         if path.exists():

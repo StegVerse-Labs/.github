@@ -66,7 +66,7 @@ class CliTraceTests(unittest.TestCase):
 
     def test_a_bad_input_file_is_terminal_six_field_and_writes_nothing(self):
         for script, argument, rest in INPUTS:
-            for kind in ("missing", "not-json", "a-list", "too-deep"):
+            for kind in ("missing", "not-json", "a-list", "too-deep", "NaN", "-Infinity", "1e999"):
                 with self.subTest(script=script, argument=argument, kind=kind), \
                         tempfile.TemporaryDirectory() as work:
                     work = Path(work)
@@ -80,6 +80,9 @@ class CliTraceTests(unittest.TestCase):
                         bad.write_text("[1, 2, 3]", encoding="utf-8")
                     elif kind == "too-deep":
                         bad.write_text('{"a":' + "[" * 200000, encoding="utf-8")
+                    elif kind != "missing":
+                        # Not JSON (RFC 8259): a non-finite number never reaches a receipt (row 5).
+                        bad.write_text('{"a": ' + kind + "}", encoding="utf-8")
                     args = [argument, bad] + [str(work / (a[1:] + ".json")) if a.startswith("@") else a for a in rest]
                     before = sorted(p.name for p in work.rglob("*"))
                     record = self.assertSixField(self.run_cli(work, script, *args), terminal=True)
@@ -88,13 +91,15 @@ class CliTraceTests(unittest.TestCase):
                     self.assertEqual(sorted(p.name for p in work.rglob("*")), before)
 
     def test_a_bad_evidence_json_argument_is_terminal(self):
-        with tempfile.TemporaryDirectory() as work:
-            completed = self.run_cli(Path(work), ".stegverse/transition-ledger/emit.py",
-                                     "--transition-id", "t", "--transition-class", "TEST",
-                                     "--predecessor-state-sha256", SHA_A, "--successor-state-sha256", SHA_B,
-                                     "--evidence-json", "{not json", "--hb-epoch", "4096")
-            record = self.assertSixField(completed, terminal=True)
-            self.assertEqual(record["failure_code"], "CLI_INPUT_INVALID")
+        for evidence in ("{not json", '{"a": NaN}', '{"a": Infinity}', '{"a": 1e999}', '{"a": [-1E400]}'):
+            with self.subTest(evidence=evidence), tempfile.TemporaryDirectory() as work:
+                completed = self.run_cli(Path(work), ".stegverse/transition-ledger/emit.py",
+                                         "--transition-id", "t", "--transition-class", "TEST",
+                                         "--predecessor-state-sha256", SHA_A, "--successor-state-sha256", SHA_B,
+                                         "--evidence-json", evidence, "--hb-epoch", "4096")
+                record = self.assertSixField(completed, terminal=True)
+                self.assertEqual(record["failure_code"], "CLI_INPUT_INVALID")
+                self.assertEqual(list(Path(work).rglob("*")), [])
 
     def test_a_fault_in_the_writers_own_write_is_non_terminal_and_the_next_run_completes(self):
         with tempfile.TemporaryDirectory() as work:
