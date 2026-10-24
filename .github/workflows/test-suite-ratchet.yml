@@ -10,6 +10,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Least privilege: nothing at workflow scope. Each job declares the only scope
+# it uses (contents: read, for actions/checkout); artifact upload uses the
+# runner's ACTIONS_RUNTIME_TOKEN, not GITHUB_TOKEN.
+permissions: {}
+
 jobs:
   ratchet:
     runs-on: ubuntu-latest
@@ -27,6 +32,10 @@ jobs:
 
       - name: Verify physical-emission canonical golden vectors GV-A1 through GV-C3
         run: python -m unittest -v tests/patents/test_physical_emission_golden_vectors_2626.py
+
+      # Run directly so a spec-guard failure is never absorbed into the baseline.
+      - name: RT-INVARIANT-EVALUATION-001 spec guard, the B-P6 probe set as data
+        run: python -m unittest -v tests/test_invariant_evaluation_probes.py
 
       - name: No pull request may add a test failure the baseline does not hold
         run: python scripts/check_test_suite_ratchet.py
@@ -158,7 +167,7 @@ jobs:
           python - <<'PY'
           import tests.test_stegbrowser_universal_intr_materialization as t
           tests = [
-              t.test_installer_reuses_shared_listener_and_is_idempotent,
+              t.test_router_is_read_never_written_and_the_route_is_decided_by_the_sdk_installer,
               t.test_node_trigger_is_admitted_write_once_without_authority,
               t.test_tampered_node_trigger_fails_closed,
               t.test_consumer_dispatches_existing_manifest_runner_only_after_exact_binding,

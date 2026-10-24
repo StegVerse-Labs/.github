@@ -26,6 +26,19 @@ Modes:
                   (PROVIDER_DEPLOY_WITHOUT_AUTHORIZATION_RECEIPT classification).
 Authority effect: NONE. The allocator stays claim and fence authority; InTr
 stays transition authority; this transition records, it does not deploy.
+
+Fail-open correction (StegVerse-org/.github#167 c6249647656, against #3244):
+caller-supplied evidence may refuse a promotion, never authorize one. Every
+authorizing predicate (P1, P3-P7) PASSes only on an organization receipt that
+is on the verified organization chain, was emitted by the repository the
+existing declarations name as that evidence's issuer, binds the exact sha, and
+whose readback custody basis authenticates. Evidence that is absent, off the
+chain, or on a chain whose custody basis does not authenticate is UNKNOWN, and
+decide() never turns UNKNOWN into AUTHORIZED: anything short of every predicate
+PASS at its required authenticity is at most FAIL_CLOSED. No custody basis the
+existing verifier reports authenticates today (organization_batch_custody
+Q74-01: a verified readback never proves authentic custody, InTr admission or
+an authorized ALLOW), so AUTHORIZED is unreachable until one is declared.
 """
 from __future__ import annotations
 
@@ -62,6 +75,29 @@ REACHABLE_COMPARE_STATUSES = ("identical", "behind")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
+UNKNOWN_STATE = "UNKNOWN"
+AUTHENTICATED = "AUTHENTICATED"
+DECLARATION_BOUND = "DECLARATION_BOUND"
+# Readback custody bases that authenticate an evidence receipt. Empty: every
+# basis organization_batch_custody.readback_custody_basis reports today is
+# "NO_CUSTODY_AUTHORITY_CLAIMED" (Q74-01), and CUSTODY_AUTHENTICATION on the
+# chain is HASH_CHAIN_CONTINUITY_ONLY. Adding a basis here is its own reviewed
+# transition; no request, manifest or caller can supply one.
+AUTHENTICATING_CUSTODY_BASES: frozenset[str] = frozenset()
+# Issuer declarations read from the source tree (never from the request).
+INTR_BOUNDARY_DECLARATION = "org-runtime/interlock-intr.json"            # owner_repository: org ingress/egress + InTr
+TVC_ISSUER_DECLARATION = "control/formalism-tvc-repository-transport.json"  # tvc_broker.repository: TV/TVC
+# Organization receipt operations each predicate consumes (boundary_evidence.operation).
+OP_SOURCE_REACHABILITY = "SITE_SOURCE_REACHABILITY_OBSERVED"
+OP_EXACT_HEAD_CHECKS = "SITE_EXACT_HEAD_CHECKS_OBSERVED"
+OP_INTR_ADMITTED = "SITE_PRODUCTION_PROMOTION_INTR_ADMITTED"   # <SUBJECT>_INTR_ADMITTED, as SDK_MANIFEST_INTR_ADMITTED
+OP_TVC_ISSUED = "TVC_CREDENTIAL_ISSUED"
+OP_PROVIDER_BUILD = "SITE_PROVIDER_BUILD_OBSERVED"
+# Check conclusions, reconciled with scripts/evaluate_pr_precreation_gate.py and the
+# INDEX exact-head rule (12:09Z): a required check that did not run and pass is not satisfied.
+CHECK_FAILED_CONCLUSIONS = frozenset({"failure", "failed", "cancelled", "timed_out", "action_required",
+                                      "startup_failure", "stale"})
+
 # Refusal codes (lane file §18.3). FENCE_GENERATION_BEHIND_ISSUED_FENCES is the existing allocator code.
 SOURCE_NOT_ON_REF = "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF"
 MANIFEST_MISSING = "PROMOTION_MANIFEST_MISSING"
@@ -73,24 +109,45 @@ CREDENTIAL_NOT_TVC = "PROMOTION_CREDENTIAL_AUTHORITY_NOT_TVC"
 IDENTITY_MISMATCH = "PROVIDER_DEPLOY_IDENTITY_MISMATCH"
 WITHOUT_RECEIPT = "PROVIDER_DEPLOY_WITHOUT_AUTHORIZATION_RECEIPT"
 READBACK_NOT_VERIFIED = "PROMOTION_READBACK_NOT_VERIFIED"
+# Fail-open correction codes (#167 c6249647656).
+SOURCE_UNAUTHENTICATED = "PROMOTION_SOURCE_REACHABILITY_NOT_AUTHENTICALLY_OBSERVED"
+CHECKS_UNAUTHENTICATED = "PROMOTION_EXACT_HEAD_CHECKS_NOT_AUTHENTICALLY_OBSERVED"
+REQUIRED_CHECK_FAILED = "PROMOTION_REQUIRED_CHECK_FAILED"
+REQUIRED_CHECK_NOT_PASSED = "PROMOTION_REQUIRED_CHECK_PENDING_SKIPPED_OR_MISSING"
+REQUIRED_CHECK_POLICY_UNOBSERVED = "PROMOTION_REQUIRED_CHECK_POLICY_NOT_OBSERVED"
+INTR_UNAUTHENTICATED = "PROMOTION_INTR_ADMISSION_NOT_AUTHENTICATED"
+ISSUER_UNVERIFIED = "PROMOTION_CREDENTIAL_ISSUER_UNVERIFIABLE"
+ISSUER_NOT_TVC = "PROMOTION_CREDENTIAL_ISSUER_NOT_TVC"
+BUILD_UNAUTHENTICATED = "PROVIDER_BUILD_IDENTITY_NOT_AUTHENTICALLY_OBSERVED"
+EVIDENCE_CUSTODY_UNAUTHENTICATED = "PROMOTION_EVIDENCE_CUSTODY_NOT_AUTHENTICATED"
+PREDICATE_SET_INCOMPLETE = "PROMOTION_PREDICATE_SET_INCOMPLETE"
 REFUSAL_CODES = (SOURCE_NOT_ON_REF, MANIFEST_MISSING, MANIFEST_SHA_MISMATCH, CLAIM_MISSING, FENCE_BEHIND,
-                 INTR_MISSING, CREDENTIAL_NOT_TVC, IDENTITY_MISMATCH, WITHOUT_RECEIPT, READBACK_NOT_VERIFIED)
+                 INTR_MISSING, CREDENTIAL_NOT_TVC, IDENTITY_MISMATCH, WITHOUT_RECEIPT, READBACK_NOT_VERIFIED,
+                 SOURCE_UNAUTHENTICATED, CHECKS_UNAUTHENTICATED, REQUIRED_CHECK_FAILED, REQUIRED_CHECK_NOT_PASSED,
+                 REQUIRED_CHECK_POLICY_UNOBSERVED, INTR_UNAUTHENTICATED, ISSUER_UNVERIFIED, ISSUER_NOT_TVC,
+                 BUILD_UNAUTHENTICATED, EVIDENCE_CUSTODY_UNAUTHENTICATED, PREDICATE_SET_INCOMPLETE)
 # Evidence that is present and contradicts the promotion is a DENY in PROMOTE
 # mode; absent or unverifiable evidence is FAIL_CLOSED. A deploy that already
 # happened (RETRO_CLASSIFY) is always FAIL_CLOSED: nothing can be refused after the fact.
-DENY_CODES = frozenset({SOURCE_NOT_ON_REF, MANIFEST_SHA_MISMATCH, CREDENTIAL_NOT_TVC, IDENTITY_MISMATCH})
+DENY_CODES = frozenset({SOURCE_NOT_ON_REF, MANIFEST_SHA_MISMATCH, CREDENTIAL_NOT_TVC, IDENTITY_MISMATCH,
+                        REQUIRED_CHECK_FAILED, ISSUER_NOT_TVC})
 
 PREDICATES = (
     ("P1", "PROMOTION_SOURCE_ON_PROMOTION_REF"),
     ("P2", "PROMOTION_MANIFEST_BINDS_SHA"),
     ("P3", "PROMOTION_CLAIM_AND_FENCE_ISSUED"),
-    ("P4", "EXACT_SHA_CHECKS_SUCCESS"),
-    ("P5", "INTR_ADMISSION_PRESENT"),
-    ("P6", "CREDENTIAL_AUTHORITY_TVC"),
+    ("P4", "EXACT_SHA_REQUIRED_CHECKS_SUCCESS"),
+    ("P5", "INTR_ADMISSION_AUTHENTICATED"),
+    ("P6", "CREDENTIAL_ISSUED_BY_TVC"),
     ("P7", "PROVIDER_BUILD_MATCHES_MANIFEST"),
     ("P8", "FRESH_FETCH_READBACK_VERIFIED"),
 )
 PREDICATE_NAME = dict(PREDICATES)
+# The authenticity each predicate must carry for AUTHORIZED. P2 binds the caller's
+# own declaration (the manifest) by recomputation; every other predicate needs an
+# authenticated organization receipt.
+REQUIRED_AUTHENTICITY = {"P1": AUTHENTICATED, "P2": DECLARATION_BOUND, "P3": AUTHENTICATED, "P4": AUTHENTICATED,
+                         "P5": AUTHENTICATED, "P6": AUTHENTICATED, "P7": AUTHENTICATED}
 MANIFEST_REQUIRED = ("schema", "repository", "sha", "promotion_ref", "environment", "route", "service",
                      "worker_main", "assets_directory", "d1_bindings", "wrangler_config_sha256",
                      "dependency_surface", "claim_task_id", "claim_scope", "owning_existing_goal")
@@ -109,6 +166,23 @@ REPAIR = {
     IDENTITY_MISMATCH: "promote the provider build whose service, environment and commit equal the manifest",
     WITHOUT_RECEIPT: "record a SITE_PRODUCTION_PROMOTION_AUTHORIZED receipt before any production promotion",
     READBACK_NOT_VERIFIED: "re-read the appended receipt from a fresh fetch of the organization ledger; do not promote until it verifies",
+    SOURCE_UNAUTHENTICATED: ("supply the organization receipt (" + OP_SOURCE_REACHABILITY + ") recording an authenticated "
+                             "compare of the promotion ref to the exact sha; a caller-supplied compare can only refuse"),
+    CHECKS_UNAUTHENTICATED: ("supply the organization receipt (" + OP_EXACT_HEAD_CHECKS + ") recording the required-check "
+                             "policy and the check runs observed at the exact sha"),
+    REQUIRED_CHECK_FAILED: "fix the failing required check at the exact sha and observe it again; a failed required check refuses",
+    REQUIRED_CHECK_NOT_PASSED: "every required check must have run and concluded success at the exact sha (pending, skipped or missing is not success)",
+    REQUIRED_CHECK_POLICY_UNOBSERVED: "observe the promotion ref's required-check policy into the checks receipt; an empty or absent policy is never satisfied",
+    INTR_UNAUTHENTICATED: ("supply the InTr admission organization receipt (" + OP_INTR_ADMITTED + ") emitted at the InTr "
+                           "boundary declared in " + INTR_BOUNDARY_DECLARATION + " for this exact sha"),
+    ISSUER_UNVERIFIED: ("supply the TV/TVC issuance organization receipt (" + OP_TVC_ISSUED + ") emitted by the issuer "
+                        "declared in " + TVC_ISSUER_DECLARATION + " for this credential reference and surface"),
+    ISSUER_NOT_TVC: "obtain the credential from the TV/TVC issuer declared in " + TVC_ISSUER_DECLARATION + "; any other or self-issued credential refuses",
+    BUILD_UNAUTHENTICATED: ("supply the provider build organization receipt (" + OP_PROVIDER_BUILD + "); the build identity "
+                            "must not come from the same caller input as the manifest"),
+    EVIDENCE_CUSTODY_UNAUTHENTICATED: ("the evidence receipt is on the verified chain but its readback custody basis does "
+                                       "not authenticate (Q74-01); declare an authenticating custody basis by its own transition"),
+    PREDICATE_SET_INCOMPLETE: "evaluate every predicate P1-P7; a missing predicate is never satisfied",
 }
 
 
@@ -129,17 +203,117 @@ def _result(pid: str, state: str, code: str | None = None, detail: str = "", **e
             "detail": detail, **extra}
 
 
-def p1_source_on_ref(request: Mapping[str, Any]) -> dict[str, Any]:
+def _unknown(pid: str, code: str, detail: str, **extra: Any) -> dict[str, Any]:
+    """Not authentically observed: never PASS, at most FAIL_CLOSED (decide())."""
+    return _result(pid, UNKNOWN_STATE, code, detail, authenticity=UNKNOWN, **extra)
+
+
+def declared_issuers(source: Path) -> dict[str, str | None]:
+    """Issuer repositories read from the existing declarations in the source tree, never from the request.
+
+    boundary: org-runtime/interlock-intr.json owner_repository, where all organization
+              ingress/egress and InTr admission are generated (observations P1/P4/P7, admission P5).
+    tvc:      control/formalism-tvc-repository-transport.json tvc_broker.repository, the TV/TVC
+              credential authority (canonical task TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826).
+    An unreadable declaration leaves its issuer None, so evidence it would vouch for stays UNKNOWN.
+    """
+    issuers: dict[str, str | None] = {"boundary": None, "tvc": None}
+    try:
+        value = json.loads((source / INTR_BOUNDARY_DECLARATION).read_text(encoding="utf-8")).get("owner_repository")
+        issuers["boundary"] = value if isinstance(value, str) and "/" in value else None
+    except (OSError, ValueError, AttributeError):
+        pass
+    try:
+        broker = json.loads((source / TVC_ISSUER_DECLARATION).read_text(encoding="utf-8")).get("tvc_broker") or {}
+        value = broker.get("repository") if isinstance(broker, Mapping) else None
+        issuers["tvc"] = value if isinstance(value, str) and "/" in value else None
+    except (OSError, ValueError, AttributeError):
+        pass
+    return issuers
+
+
+def evidence_custody_basis(custody: Mapping[str, Any] | None, row: Mapping[str, Any]) -> str | None:
+    """The existing verifier's readback custody basis for an evidence receipt (never custody authority)."""
+    if custody is None:
+        return None
+    return custody["organization_receipt_custody"].readback_custody_basis(row)
+
+
+def _context(chain_rows: list[dict[str, Any]] | None = None, *, issuers: Mapping[str, str | None] | None = None,
+             basis_of=None) -> dict[str, Any]:
+    return {"chain_rows": chain_rows, "issuers": dict(issuers or {}), "basis_of": basis_of or (lambda row: None)}
+
+
+def _authenticated(ctx: Mapping[str, Any], row: Mapping[str, Any]) -> tuple[bool, str | None]:
+    basis = ctx["basis_of"](row)
+    return basis in AUTHENTICATING_CUSTODY_BASES, basis
+
+
+def chain_evidence(ctx: Mapping[str, Any], pid: str, digest: Any, *, operation: str, issuer_key: str,
+                   unverified_code: str, subject: Mapping[str, Any], wrong_issuer_code: str | None = None):
+    """(row, None) when `digest` names a receipt on the verified chain, from the declared issuer, recording
+    `operation` for exactly `subject`; (None, result) otherwise. Authenticity is decided by the caller."""
+    if not isinstance(digest, str) or not digest:
+        return None, _unknown(pid, unverified_code, "no organization receipt referenced; caller-supplied evidence "
+                                                   "may refuse a promotion, never authorize one")
+    rows = ctx["chain_rows"]
+    if rows is None:
+        return None, _unknown(pid, unverified_code, "no verified organization chain to read " + operation + " from")
+    row = next((r for r in rows if r.get("receipt_sha256") == digest), None)
+    if row is None:
+        return None, _unknown(pid, unverified_code, f"{digest} is not on the verified organization chain")
+    issuer = ctx["issuers"].get(issuer_key)
+    if not issuer:
+        return None, _unknown(pid, unverified_code, f"{issuer_key} issuer declaration unreadable")
+    if row.get("source_repository") != issuer:
+        detail = f"receipt emitted by {row.get('source_repository')!r}, not the declared issuer {issuer!r}"
+        if wrong_issuer_code is not None:
+            return None, _result(pid, "FAIL", wrong_issuer_code, detail, authenticity=UNKNOWN)
+        return None, _unknown(pid, unverified_code, detail)
+    evidence = row.get("boundary_evidence") or {}
+    if evidence.get("operation") != operation:
+        # Also refuses the SPPA's own receipts (which carry caller input) as observations.
+        return None, _unknown(pid, unverified_code, f"receipt operation {evidence.get('operation')!r} is not {operation}")
+    for key, expected in subject.items():
+        if expected in (None, "") or evidence.get(key) != expected:
+            return None, _unknown(pid, unverified_code, f"receipt {key} {evidence.get(key)!r} does not observe {expected!r}")
+    return row, None
+
+
+def _custody_unknown(ctx: Mapping[str, Any], pid: str, row: Mapping[str, Any], code: str):
+    ok, basis = _authenticated(ctx, row)
+    if ok:
+        return None
+    return _unknown(pid, code, f"receipt {row.get('receipt_sha256')} custody basis {basis!r} does not authenticate "
+                               "(organization_batch_custody Q74-01)", evidence_receipt_sha256=row.get("receipt_sha256"))
+
+
+def p1_source_on_ref(request: Mapping[str, Any], ctx: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    ctx = ctx or _context()
     sha, ref = request.get("sha"), request.get("promotion_ref")
-    observed = request.get("source_reachability")
-    if not isinstance(observed, Mapping) or observed.get("head_sha") != sha or observed.get("base_ref") != ref:
-        return _result("P1", "FAIL", SOURCE_NOT_ON_REF, "no reachability observation for this sha on the promotion ref")
-    status = observed.get("compare_status")
-    if status not in REACHABLE_COMPARE_STATUSES:
+    supplied = request.get("source_reachability")
+    if isinstance(supplied, Mapping) and supplied.get("head_sha") == sha and supplied.get("base_ref") == ref \
+            and supplied.get("compare_status") not in REACHABLE_COMPARE_STATUSES:
+        # Unauthenticated evidence against the promotion may refuse it.
         return _result("P1", "FAIL", SOURCE_NOT_ON_REF,
-                       f"{sha} is not reachable from {ref} at {observed.get('base_sha')} (compare status {status}, "
-                       f"ahead_by {observed.get('ahead_by')}, behind_by {observed.get('behind_by')})")
-    return _result("P1", "PASS", detail=f"{sha} reachable from {ref} ({status})")
+                       f"{sha} is not reachable from {ref} at {supplied.get('base_sha')} (supplied compare status "
+                       f"{supplied.get('compare_status')}, ahead_by {supplied.get('ahead_by')}, "
+                       f"behind_by {supplied.get('behind_by')})", authenticity=UNKNOWN)
+    row, unknown = chain_evidence(ctx, "P1", (request.get("source_observation") or {}).get("organization_receipt_sha256"),
+                                  operation=OP_SOURCE_REACHABILITY, issuer_key="boundary",
+                                  unverified_code=SOURCE_UNAUTHENTICATED,
+                                  subject={"repository": request.get("repository"), "head_sha": sha, "base_ref": ref})
+    if unknown is not None:
+        return unknown
+    observed = row["boundary_evidence"]
+    if observed.get("compare_status") not in REACHABLE_COMPARE_STATUSES:
+        return _result("P1", "FAIL", SOURCE_NOT_ON_REF, f"{sha} is not reachable from {ref} (observed compare status "
+                                                        f"{observed.get('compare_status')})", authenticity=UNKNOWN)
+    unknown = _custody_unknown(ctx, "P1", row, SOURCE_UNAUTHENTICATED)
+    if unknown is not None:
+        return unknown
+    return _result("P1", "PASS", detail=f"{sha} reachable from {ref} ({observed.get('compare_status')})",
+                   authenticity=AUTHENTICATED, evidence_receipt_sha256=row["receipt_sha256"])
 
 
 def p2_manifest_binds_sha(request: Mapping[str, Any]) -> dict[str, Any]:
@@ -160,11 +334,13 @@ def p2_manifest_binds_sha(request: Mapping[str, Any]) -> dict[str, Any]:
             return _result("P2", "FAIL", MANIFEST_SHA_MISMATCH, f"manifest {key} {manifest.get(key)!r} != {expected!r}")
     if not SHA256.match(str(manifest.get("wrangler_config_sha256"))):
         return _result("P2", "FAIL", MANIFEST_SHA_MISMATCH, "wrangler_config_sha256 is not a sha256")
-    return _result("P2", "PASS", detail="manifest " + declared + " binds the sha")
+    # The manifest is the request's own declaration: it binds, it does not authenticate.
+    return _result("P2", "PASS", detail="manifest " + declared + " binds the sha", authenticity=DECLARATION_BOUND)
 
 
 def p3_claim_and_fence(request: Mapping[str, Any], grants: list[dict[str, Any]] | None,
-                       floor_fence: int | None) -> dict[str, Any]:
+                       floor_fence: int | None, ctx: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    ctx = ctx or _context()
     claim, manifest = request.get("claim"), request.get("manifest") or {}
     if not isinstance(claim, Mapping):
         return _result("P3", "FAIL", CLAIM_MISSING, "no claim or fence supplied")
@@ -190,61 +366,160 @@ def p3_claim_and_fence(request: Mapping[str, Any], grants: list[dict[str, Any]] 
     if fence <= floor_fence or later:
         return _result("P3", "FAIL", FENCE_BEHIND,
                        f"fence {fence} is not beyond the issued floor {floor_fence} or a later grant superseded it")
+    unknown = _custody_unknown(ctx, "P3", row, EVIDENCE_CUSTODY_UNAUTHENTICATED)
+    if unknown is not None:
+        unknown["fencing_token"] = fence
+        return unknown
     return _result("P3", "PASS", detail=f"allocator grant {digest} fence {fence} > floor {floor_fence}",
-                   fencing_token=fence)
+                   fencing_token=fence, authenticity=AUTHENTICATED, evidence_receipt_sha256=digest)
 
 
-def p4_checks(request: Mapping[str, Any]) -> dict[str, Any]:
-    """Evidence only (§18.3): recorded, never authorizing; CI grants no runtime authority."""
+def p4_checks(request: Mapping[str, Any], ctx: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Required checks at the exact sha gate the promotion; non-required checks are informational.
+
+    Reconciled with scripts/evaluate_pr_precreation_gate.py (a failed required check refuses; a pending
+    or missing one is not satisfied) and the INDEX exact-head rule (every required job ran and passed:
+    skipped and neutral are not success). The policy and the runs come from one authenticated
+    observation; caller-supplied check runs are recorded, never authorizing.
+    """
+    ctx = ctx or _context()
     sha = request.get("sha")
-    checks = request.get("checks") or []
-    on_sha = [c for c in checks if c.get("head_sha") == sha]
-    success = bool(on_sha) and all(c.get("conclusion") == "success" for c in on_sha)
-    return _result("P4", "EVIDENCE_ONLY", detail=f"{len(on_sha)} check runs on the exact sha, all success: {success}",
-                   exact_sha_check_run_ids=sorted(c.get("id") for c in on_sha), all_success=success,
-                   grants_authority=False)
+    supplied_ids = sorted(c.get("id") for c in (request.get("checks") or [])
+                          if isinstance(c, Mapping) and c.get("head_sha") == sha and c.get("id") is not None)
+    extra = {"exact_sha_check_run_ids": supplied_ids, "grants_authority": False}
+    row, unknown = chain_evidence(ctx, "P4", (request.get("checks_observation") or {}).get("organization_receipt_sha256"),
+                                  operation=OP_EXACT_HEAD_CHECKS, issuer_key="boundary",
+                                  unverified_code=CHECKS_UNAUTHENTICATED,
+                                  subject={"repository": request.get("repository"), "head_sha": sha})
+    if unknown is not None:
+        unknown.update(extra)
+        return unknown
+    observed = row["boundary_evidence"]
+    required = observed.get("required_checks")
+    runs = [r for r in (observed.get("check_runs") or []) if isinstance(r, Mapping) and r.get("head_sha") == sha]
+    extra["exact_sha_check_run_ids"] = sorted({*supplied_ids, *(r.get("id") for r in runs if r.get("id") is not None)})
+    if not isinstance(required, list) or not required or not all(isinstance(n, str) and n for n in required):
+        return _unknown("P4", REQUIRED_CHECK_POLICY_UNOBSERVED, "the observation records no required-check policy",
+                        **extra)
+    failed, unsatisfied = [], []
+    for name in sorted(set(required)):
+        conclusions = [str(r.get("conclusion") or "").lower() for r in runs if r.get("name") == name]
+        if any(c in CHECK_FAILED_CONCLUSIONS for c in conclusions):
+            failed.append(name)
+        elif not conclusions or any(c != "success" for c in conclusions):
+            unsatisfied.append(f"{name}={'/'.join(conclusions) or 'missing'}")
+    extra.update(required_checks=sorted(set(required)),
+                 informational_checks=sorted({r.get("name") for r in runs if r.get("name") not in required}))
+    if failed:
+        return _result("P4", "FAIL", REQUIRED_CHECK_FAILED, "required checks failed at the exact sha: " + ", ".join(failed),
+                       authenticity=UNKNOWN, **extra)
+    if unsatisfied:
+        return _result("P4", "FAIL", REQUIRED_CHECK_NOT_PASSED,
+                       "required checks not run-and-passed at the exact sha: " + ", ".join(unsatisfied),
+                       authenticity=UNKNOWN, **extra)
+    unknown = _custody_unknown(ctx, "P4", row, CHECKS_UNAUTHENTICATED)
+    if unknown is not None:
+        unknown.update(extra)
+        return unknown
+    return _result("P4", "PASS", detail=f"{len(extra['required_checks'])} required checks success at the exact sha",
+                   authenticity=AUTHENTICATED, evidence_receipt_sha256=row["receipt_sha256"], **extra)
 
 
-def p5_intr(request: Mapping[str, Any]) -> dict[str, Any]:
+def p5_intr(request: Mapping[str, Any], ctx: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    ctx = ctx or _context()
     admission = request.get("intr_admission")
     if not isinstance(admission, Mapping) or admission.get("admitted_sha") != request.get("sha") \
-            or admission.get("transition") != "SITE_PRODUCTION_PROMOTION" \
-            or not SHA256.match(str(admission.get("admission_receipt_sha256"))):
+            or admission.get("transition") != "SITE_PRODUCTION_PROMOTION":
         return _result("P5", "FAIL", INTR_MISSING, "no InTr admission reference for this sha")
-    return _result("P5", "PASS", detail="InTr admission " + admission["admission_receipt_sha256"],
-                   authenticity=UNKNOWN)
+    row, unknown = chain_evidence(ctx, "P5", admission.get("organization_receipt_sha256"), operation=OP_INTR_ADMITTED,
+                                  issuer_key="boundary", unverified_code=INTR_UNAUTHENTICATED,
+                                  subject={"admitted_sha": request.get("sha"), "transition": "SITE_PRODUCTION_PROMOTION"})
+    if unknown is not None:
+        return unknown
+    if row["boundary_evidence"].get("manifest_sha256") != request.get("manifest_sha256"):
+        return _result("P5", "FAIL", INTR_MISSING, "the InTr admission admits a different manifest", authenticity=UNKNOWN)
+    unknown = _custody_unknown(ctx, "P5", row, INTR_UNAUTHENTICATED)
+    if unknown is not None:
+        return unknown
+    return _result("P5", "PASS", detail="InTr admission " + row["receipt_sha256"], authenticity=AUTHENTICATED,
+                   evidence_receipt_sha256=row["receipt_sha256"])
 
 
-def p6_credential(request: Mapping[str, Any]) -> dict[str, Any]:
+def p6_credential(request: Mapping[str, Any], ctx: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    ctx = ctx or _context()
     credential = request.get("credential")
     if not isinstance(credential, Mapping):
         return _result("P6", "FAIL", CREDENTIAL_NOT_TVC, "no credential reference")
     if credential.get("authority") != CREDENTIAL_AUTHORITY or credential.get("github_token_runtime_authority") != "NONE":
         return _result("P6", "FAIL", CREDENTIAL_NOT_TVC, "credential authority is not TV/TVC with GitHub token authority NONE")
-    return _result("P6", "PASS", detail="TV/TVC reference " + str(credential.get("reference")))
+    tvc = ctx["issuers"].get("tvc")
+    declared = credential.get("issuer")
+    if declared is not None and tvc and declared != tvc:
+        # A declared issuer other than TV/TVC (forged, or the requester itself) refuses.
+        return _result("P6", "FAIL", ISSUER_NOT_TVC, f"credential declares issuer {declared!r}, not TV/TVC {tvc!r}",
+                       authenticity=UNKNOWN)
+    reference = credential.get("reference")
+    row, unknown = chain_evidence(ctx, "P6", credential.get("issuance_receipt_sha256"), operation=OP_TVC_ISSUED,
+                                  issuer_key="tvc", unverified_code=ISSUER_UNVERIFIED, wrong_issuer_code=ISSUER_NOT_TVC,
+                                  subject={"credential_reference": reference, "dependency_surface": DEPENDENCY_SURFACE})
+    if unknown is not None:
+        return unknown
+    issued = row["boundary_evidence"]
+    if issued.get("credential_authority") != CREDENTIAL_AUTHORITY or issued.get("github_token_runtime_authority") != "NONE":
+        return _result("P6", "FAIL", ISSUER_NOT_TVC, "the issuance does not record TV/TVC authority with GitHub token NONE",
+                       authenticity=UNKNOWN)
+    unknown = _custody_unknown(ctx, "P6", row, ISSUER_UNVERIFIED)
+    if unknown is not None:
+        return unknown
+    return _result("P6", "PASS", detail=f"TV/TVC issuance {row['receipt_sha256']} for {reference}",
+                   authenticity=AUTHENTICATED, evidence_receipt_sha256=row["receipt_sha256"], issuer=tvc)
 
 
-def p7_provider_build(request: Mapping[str, Any]) -> dict[str, Any]:
+def p7_provider_build(request: Mapping[str, Any], ctx: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    ctx = ctx or _context()
     build, manifest = request.get("provider_build"), request.get("manifest")
-    if not isinstance(build, Mapping) or not build.get("build_id"):
-        return _result("P7", "FAIL", IDENTITY_MISMATCH, "no provider build identity")
     if not isinstance(manifest, Mapping):
         return _result("P7", "FAIL", IDENTITY_MISMATCH, "no manifest to match the provider build against")
+    build = build if isinstance(build, Mapping) else {}
     for key, expected in (("service", manifest.get("service")), ("environment", manifest.get("environment")),
                           ("commit_sha", request.get("sha"))):
-        if build.get(key) != expected:
-            return _result("P7", "FAIL", IDENTITY_MISMATCH, f"provider build {key} {build.get(key)!r} != {expected!r}")
-    if manifest.get("provider_build_id") not in (None, build.get("build_id")):
-        return _result("P7", "FAIL", IDENTITY_MISMATCH, "provider build id differs from the manifest")
-    return _result("P7", "PASS", detail="provider build " + str(build.get("build_id")))
+        if key in build and build.get(key) != expected:
+            # Supplied identity that contradicts the manifest may refuse.
+            return _result("P7", "FAIL", IDENTITY_MISMATCH, f"provider build {key} {build.get(key)!r} != {expected!r}",
+                           authenticity=UNKNOWN)
+    build_id = build.get("build_id") or manifest.get("provider_build_id")
+    row, unknown = chain_evidence(ctx, "P7", build.get("observation_receipt_sha256"), operation=OP_PROVIDER_BUILD,
+                                  issuer_key="boundary", unverified_code=BUILD_UNAUTHENTICATED,
+                                  subject={"repository": request.get("repository"), "build_id": build_id})
+    if unknown is not None:
+        if unknown["detail"].startswith("no organization receipt referenced"):
+            unknown["detail"] = ("build identity comes only from the request, the same caller input as the manifest "
+                                 "(self-referential): " + unknown["detail"])
+        return unknown
+    observed = row["boundary_evidence"]
+    for key, expected in (("service", manifest.get("service")), ("environment", manifest.get("environment")),
+                          ("commit_sha", request.get("sha"))):
+        if observed.get(key) != expected:
+            return _result("P7", "FAIL", IDENTITY_MISMATCH, f"observed provider build {key} {observed.get(key)!r} != "
+                                                            f"{expected!r}", authenticity=UNKNOWN)
+    if manifest.get("provider_build_id") not in (None, observed.get("build_id")):
+        return _result("P7", "FAIL", IDENTITY_MISMATCH, "observed provider build id differs from the manifest",
+                       authenticity=UNKNOWN)
+    unknown = _custody_unknown(ctx, "P7", row, BUILD_UNAUTHENTICATED)
+    if unknown is not None:
+        return unknown
+    return _result("P7", "PASS", detail="observed provider build " + str(observed.get("build_id")),
+                   authenticity=AUTHENTICATED, evidence_receipt_sha256=row["receipt_sha256"])
 
 
 def evaluate(request: Mapping[str, Any], *, grants: list[dict[str, Any]] | None = None,
-             floor_fence: int | None = None) -> list[dict[str, Any]]:
+             floor_fence: int | None = None, chain_rows: list[dict[str, Any]] | None = None,
+             issuers: Mapping[str, str | None] | None = None, basis_of=None) -> list[dict[str, Any]]:
     """P1-P7 over the supplied evidence; P8 is decided by the readback after an append. No clock, no network."""
-    return [p1_source_on_ref(request), p2_manifest_binds_sha(request),
-            p3_claim_and_fence(request, grants, floor_fence), p4_checks(request), p5_intr(request),
-            p6_credential(request), p7_provider_build(request)]
+    ctx = _context(chain_rows, issuers=issuers, basis_of=basis_of)
+    return [p1_source_on_ref(request, ctx), p2_manifest_binds_sha(request),
+            p3_claim_and_fence(request, grants, floor_fence, ctx), p4_checks(request, ctx), p5_intr(request, ctx),
+            p6_credential(request, ctx), p7_provider_build(request, ctx)]
 
 
 def validate_request(request: Any) -> None:
@@ -260,14 +535,29 @@ def validate_request(request: Any) -> None:
         raise ValueError("promotion_ref must be a full refs/heads/ ref")
 
 
+def unsatisfied_predicates(predicates: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Every predicate short of PASS at its required authenticity, plus any required predicate missing.
+
+    Global invariant: UNKNOWN (or any state other than PASS, or PASS without the required authenticity)
+    is never satisfied, so it can never contribute to AUTHORIZED.
+    """
+    present = {p.get("predicate") for p in predicates}
+    out = [p for p in predicates if p.get("predicate") in REQUIRED_AUTHENTICITY
+           and not (p.get("state") == "PASS" and p.get("authenticity") == REQUIRED_AUTHENTICITY[p["predicate"]])]
+    out += [_unknown(pid, PREDICATE_SET_INCOMPLETE, "predicate not evaluated")
+            for pid in REQUIRED_AUTHENTICITY if pid not in present]
+    return out
+
+
 def decide(request: Mapping[str, Any], predicates: list[dict[str, Any]], *,
            prior_authorization: Mapping[str, Any] | None) -> dict[str, Any]:
-    failed = [p for p in predicates if p["state"] == "FAIL"]
+    failed = [p for p in predicates if p.get("state") == "FAIL"]
+    unsatisfied = unsatisfied_predicates(predicates)
+    first = (failed or unsatisfied or [None])[0]
     mode = request["mode"]
     if mode == RETRO:
-        if failed:
-            first = failed[0]
-            return {"transition_class": FAIL_CLOSED, "failure_code": first["failure_code"],
+        if first is not None:
+            return {"transition_class": FAIL_CLOSED, "failure_code": first["failure_code"] or PREDICATE_SET_INCOMPLETE,
                     "failed_predicate": first["name"], "classification": WITHOUT_RECEIPT}
         if prior_authorization is None:
             return {"transition_class": FAIL_CLOSED, "failure_code": WITHOUT_RECEIPT,
@@ -275,9 +565,12 @@ def decide(request: Mapping[str, Any], predicates: list[dict[str, Any]], *,
                     "classification": WITHOUT_RECEIPT}
         return {"transition_class": None, "classification": "AUTHORIZED_RECEIPT_PRESENT"}
     if failed:
-        first = failed[0]
         cls = REFUSED if first["failure_code"] in DENY_CODES else FAIL_CLOSED
         return {"transition_class": cls, "failure_code": first["failure_code"], "failed_predicate": first["name"]}
+    if first is not None:
+        # UNKNOWN never yields PASS: at most FAIL_CLOSED.
+        return {"transition_class": FAIL_CLOSED, "failure_code": first["failure_code"] or PREDICATE_SET_INCOMPLETE,
+                "failed_predicate": first["name"]}
     return {"transition_class": AUTHORIZED, "failure_code": None, "failed_predicate": None}
 
 
@@ -319,14 +612,18 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
             floor_fence = consumer.provenance_floor(source)["fence"]
         except consumer.ClaimFailClosed as exc:
             chain_refusal = exc.predicate + ": " + exc.detail
-    predicates = evaluate(request, grants=grants, floor_fence=floor_fence)
+    verified_rows = chain_rows if chain is not None and chain_refusal is None else None
+    predicates = evaluate(request, grants=grants, floor_fence=floor_fence, chain_rows=verified_rows,
+                          issuers=declared_issuers(source), basis_of=lambda row: evidence_custody_basis(custody, row))
     if chain_refusal is not None:
         predicates[2] = _result("P3", "FAIL", CLAIM_MISSING, "organization chain unverified: " + chain_refusal)
-    decision = decide(request, predicates, prior_authorization=prior_authorization_for(chain_rows, request))
+    decision = decide(request, predicates, prior_authorization=prior_authorization_for(verified_rows or [], request))
     manifest = request.get("manifest") if isinstance(request.get("manifest"), Mapping) else None
     build = request.get("provider_build") or {}
     failed = [p for p in predicates if p["state"] == "FAIL"]
-    detail = "; ".join(f"{p['predicate']} {p['failure_code']}: {p['detail']}" for p in failed)
+    unsatisfied = unsatisfied_predicates(predicates)
+    detail = "; ".join(f"{p['predicate']} {p['failure_code']}: {p['detail']}"
+                       for p in failed + [p for p in unsatisfied if p not in failed])
     epoch_failure = kernel.supplied_epoch_failure(hb_epoch) if hb_epoch is not None else None
     if decision["transition_class"] == AUTHORIZED and (hb_epoch is None or epoch_failure is not None):
         # An authorizing receipt carries the carrier's epoch; none is derived from a clock.
@@ -351,11 +648,15 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
         "provider_route_serving": build.get("route_serving", UNKNOWN),
         "claim_receipt_sha256": (request.get("claim") or {}).get("organization_receipt_sha256"),
         "fencing_token": (request.get("claim") or {}).get("fencing_token"),
-        "intr_admission_receipt_sha256": (request.get("intr_admission") or {}).get("admission_receipt_sha256"),
+        "intr_admission_receipt_sha256": (request.get("intr_admission") or {}).get("organization_receipt_sha256"),
         "credential_authority": (request.get("credential") or {}).get("authority"),
-        "exact_sha_check_run_ids": predicates[3]["exact_sha_check_run_ids"],
-        "predicates": [{k: p[k] for k in ("predicate", "name", "state", "failure_code")} for p in predicates],
+        "exact_sha_check_run_ids": predicates[3].get("exact_sha_check_run_ids", []),
+        "predicates": [{k: p.get(k) for k in ("predicate", "name", "state", "failure_code", "authenticity")}
+                       for p in predicates],
         "failed_predicates": [p["name"] for p in failed],
+        "unknown_predicates": [p["name"] for p in unsatisfied if p.get("state") != "FAIL"],
+        "evidence_receipts": {p["predicate"]: p.get("evidence_receipt_sha256") for p in predicates
+                              if p.get("evidence_receipt_sha256")},
         "classification": decision.get("classification"),
         "predecessor_receipt_sha256": (chain or {}).get("head_sha256"),
         "owning_existing_goal": request.get("owning_existing_goal") or OWNING_EXISTING_GOAL,
@@ -375,7 +676,7 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
         result.update({k: evidence[k] for k in SIX_FIELDS})
     if cls is None:
         result["prior_authorization_receipt_sha256"] = \
-            prior_authorization_for(chain_rows, request)["receipt_sha256"]
+            prior_authorization_for(verified_rows or [], request)["receipt_sha256"]
         return result
     if custody is None or chain_refusal is not None:
         result["organization_readback"] = "NOT_PERFORMED"

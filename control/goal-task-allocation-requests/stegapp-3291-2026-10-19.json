@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "STEGAPP-3291-ALLOCATION-REQUEST-20261019",
+  "state": "PROPOSED",
+  "issue": "StegVerse-Labs/.github#3291",
+  "proposed_task_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "cosv_task_vector": "10300000011000",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 319,
+  "owning_task_found": false,
+  "scope": "Implement StegApp non-authorizing ephemeral composition: permitted SV-LLM Sandbox StegBrowser tool observations for governed Ecosystem Chat, and independent fictional LDC continuity; repair existing StegApp PR #1 without new runtime or authority.",
+  "requested_action": "Review proposed canonical identity/COSV, resolve owner scope and publish via protected canonical registration; then evaluate existing WorkerCoordinator admission.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "owner_authorization": {
+    "status": "EXPLICIT_BUILD_AND_IDENTITY_RESOLUTION_REQUEST_IN_CHAT",
+    "authority_limit": "OWNER_INTENT_ONLY_NOT_ALLOCATOR_OUTPUT_OR_RUNTIME_ADMISSION"
+  },
+  "handoff_ref": "docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md"
+}

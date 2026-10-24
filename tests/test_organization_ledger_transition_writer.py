@@ -253,7 +253,8 @@ class WriterContract(unittest.TestCase):
 
     def test_the_workflow_appends_pushes_and_reads_back_without_rewriting(self):
         text = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("workflow_dispatch:", text)
+        self.assertIn("on:\n  push:\n    branches: [main]\n", text)
+        self.assertNotIn("workflow_dispatch", text)
         self.assertIn("--self-close", text)
         self.assertIn("organization_ledger_readback.py", text)
         self.assertIn('git push origin "$LEDGER_REF:$LEDGER_REF"', text)

@@ -18,7 +18,32 @@ from heartbeat_runtime.intr_subsignal_runtime import (
     recover_local_intr_subsignal,
     signal_sha256,
 )
-from refresh_sovereign_worker_runtime_source import refresh
+
+
+def _load_sibling_script(module_name: str, file_name: str):
+    """Load a sibling script from this file's own directory by exact location.
+
+    A bare ``import refresh_sovereign_worker_runtime_source`` only resolved when
+    scripts/ was already on sys.path: true when this file runs as a script, false
+    when it is loaded by path (tests, consumers) unless an earlier import had put
+    scripts/ there. Binding by file location makes the import independent of
+    sys.path, of sys.modules and of anything imported earlier in the process.
+    """
+    import importlib.util
+
+    path = Path(__file__).resolve().parent / file_name
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"sibling script not loadable: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+refresh = _load_sibling_script(
+    "run_sv_dn1_first_round_chain._refresh_sovereign_worker_runtime_source",
+    "refresh_sovereign_worker_runtime_source.py",
+).refresh
 RUNNER_REL = Path("scripts/run_worker_runtime.py")
 REGISTRY_REL = Path("control/worker-registry.json")
 CARRIER_REL = Path("control/heartbeat-carrier-runtime-state.json")
