@@ -9,7 +9,9 @@ activation manifest binds the epoch for its declared resident cycle entrypoint.
 
 Source validation only. No authority effect is claimed.
 """
+import contextlib
 import importlib.util
+import io
 import json
 import tempfile
 import unittest
@@ -29,6 +31,7 @@ def _load(name, relative):
 
 
 fc = _load("federation_cycle_epoch", "resident-runtime/federation_cycle.py")
+rc = _load("resident_cycle_request", "resident-runtime/resident_cycle_request.py")
 
 
 class _ClockRead:
@@ -70,12 +73,75 @@ class FederationCycleEpochTests(unittest.TestCase):
         self.assertEqual(manifest["resident_cycle_entrypoint"], "resident-runtime/federation_cycle.py")
         binding = manifest["resident_cycle_hb_epoch"]
         self.assertEqual(binding["argument"], "--hb-epoch")
-        self.assertEqual(binding["from"], "dispatch_input")
+        # Row 16: the epoch is committed before the cycle reads it (COMMITTED_REQUEST).
+        self.assertEqual((binding["from"], binding["dispatch_pattern"]), ("committed_request", "COMMITTED_REQUEST"))
+        self.assertIs(binding["workflow_inputs"], False)
+        self.assertEqual(binding["request_path"], rc.REQUEST_PATH)
+        self.assertEqual(binding["request_schema"], rc.SCHEMA)
         self.assertTrue((ROOT / binding["dispatcher"]).is_file())
-        # Hosted dispatch is prohibited while Actions is not runtime authority (row 16).
-        self.assertIs(manifest["github_actions_is_runtime_authority"], False)
-        self.assertEqual(binding["dispatcher_status"], "PROHIBITED_ON_HOSTED")
+        self.assertNotIn("dispatcher_status", binding)
+        text = (ROOT / binding["dispatch_workflow"]).read_text(encoding="utf-8")
+        lines = [line for line in text.splitlines() if line.strip() and not line.lstrip().startswith("#")]
+        trigger = lines[lines.index("on:") + 1:lines.index("permissions:")]
+        self.assertEqual(trigger, ["  push:", "    branches: [main]", "    paths:", "      - '" + rc.REQUEST_PATH + "'"])
+        self.assertFalse([line for line in lines if "workflow_dispatch" in line or "inputs" in line])
+        self.assertIn("        run: python " + binding["dispatcher"], lines)
 
+
+class CommittedRequestDispatchTests(unittest.TestCase):
+    def dispatch(self, request, *argv):
+        """Run the dispatcher on a request file; return (exit, stdout record, argv the cycle got)."""
+        with tempfile.TemporaryDirectory() as work:
+            path = Path(work) / "request.json"
+            if request is not None:
+                path.write_text(request if isinstance(request, str) else json.dumps(request), encoding="utf-8")
+            calls = []
+
+            class Cycle:
+                @staticmethod
+                def main(cycle_argv):
+                    calls.append(cycle_argv)
+                    return 0
+
+            out = io.StringIO()
+            with mock.patch.object(rc, "_cycle", lambda: Cycle), contextlib.redirect_stdout(out):
+                code = rc.K.run_writer_cli(lambda: rc.main(["--request", str(path), *argv]),
+                                           retry_entrypoint="test")
+        text = out.getvalue().strip()
+        return code, json.loads(text) if text else None, calls
+
+    def test_the_cycle_runs_at_the_committed_epoch_and_locations_pass_through(self):
+        for epoch in ("4096", 4096):
+            with self.subTest(epoch=epoch):
+                code, record, calls = self.dispatch({"schema": rc.SCHEMA, "hb_epoch": epoch}, "--mesh-root", "/m")
+                self.assertEqual((code, record), (0, None))
+                self.assertEqual(calls, [["--mesh-root", "/m", "--hb-epoch", "4096"]])
+
+    def test_a_refused_epoch_is_six_fields_and_the_cycle_never_runs(self):
+        for epoch in ("31", "+33", "33.0", None, True):
+            with self.subTest(epoch=epoch):
+                code, record, calls = self.dispatch({"schema": rc.SCHEMA, "hb_epoch": epoch})
+                self.assertEqual((code, record["disposition"], calls), (1, "FAIL_CLOSED", []))
+                for field in SIX:
+                    self.assertTrue(record[field], field)
+
+    def test_a_malformed_request_or_an_argument_epoch_is_terminal_cli_input_invalid(self):
+        cases = {
+            "absent": (None, ()),
+            "not json": ("{", ()),
+            "no epoch": ({"schema": rc.SCHEMA}, ()),
+            "wrong schema": ({"schema": "other/v1", "hb_epoch": "4096"}, ()),
+            "extra key": ({"schema": rc.SCHEMA, "hb_epoch": "4096", "mesh_root": "/m"}, ()),
+            "argument epoch": ({"schema": rc.SCHEMA, "hb_epoch": "4096"}, ("--hb-epoch", "5000")),
+            "argument epoch joined": ({"schema": rc.SCHEMA, "hb_epoch": "4096"}, ("--hb-epoch=5000",)),
+        }
+        for name, (request, argv) in cases.items():
+            with self.subTest(name):
+                code, record, calls = self.dispatch(request, *argv)
+                self.assertEqual((code, record["failure_code"], record["terminal"], calls),
+                                 (2, "CLI_INPUT_INVALID", True, []))
+                for field in SIX:
+                    self.assertTrue(record[field], field)
 
 if __name__ == "__main__":
     unittest.main()
