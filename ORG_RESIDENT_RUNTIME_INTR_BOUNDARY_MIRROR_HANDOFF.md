@@ -9,7 +9,7 @@ This `.github` is the organization-level owner of resident-runtime activation so
 
 Application repositories expose endpoint/runtime profiles only. Cross-organization traffic is generated here as Interlock/InTr envelopes.
 
-Authentic runtime execution remains a sovereign resident process. GitHub and GitHub Actions are source/evidence/validation surfaces only.
+Authentic runtime execution is a committed transition cycle (`runtime_execution_surface: COMMITTED_TRANSITION_CYCLE`, checked as `runtime_transition_bound`); its evidence is the committed request digest in the cycle record, not a resident process identity. GitHub and GitHub Actions are source/evidence/validation surfaces only.
 
 HB/HB-derived carriers may synchronize and carry packets but grant no admission, execution, credential, routing, transition, receiving, publication, or release authority.
 
