@@ -83,7 +83,7 @@ class UndeclaredCommandReceiptTests(unittest.TestCase):
                                                        "FAIL_CLOSED" if v["check_id"] == check_id else "ALLOW")
                                      for v in ch["validation_receipts"]]
         ch = base.reseal_change(ch)
-        return wi.admit(wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), resolved_issues=fx.fixture_resolved_issues(ch)),
+        return wi.admit(fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), resolved_issues=fx.fixture_resolved_issues(ch)),
                         fixture_mode=True)
 
     def test_admission_names_check_command_undeclared(self):
