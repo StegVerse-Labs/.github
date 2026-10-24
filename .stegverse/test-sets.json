@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "324549fdce18cef4e262f804a717c3e233abf471eaf98e50dbf86444a30e7ade"
+  "spec_sha256": "2a3a2161dd1b4bf45584951a2583f454fce57c69a49fa20f16c3d301c7e9e8d1"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -52,7 +52,7 @@
      "{root}"
     ],
     "consumer": "scripts/tvc_conformance_receipt.py",
-    "consumer_source": "StegVerse-Labs/.github#3332, not merged: until it is, this input is unavailable",
+    "consumer_source": "StegVerse-Labs/.github#3342, merged to main as 14b8dfd6 (supersedes #3332)",
     "kind": "receipt_consumer"
    },
    "finish_point": "scripts/tvc_conformance_receipt.py consume returns ALLOW at the exact head: a TVC conformance test receipt on refs/stegverse/organization-ledger (sealed by StegVerse-Labs/TVC#539's CI, appended by the organization ledger writer) whose consumed Labs surface has the same sha256 as this head; the [tvc] sets are then verified by that receipt and not run here",
@@ -5133,6 +5133,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_organization_ledger_ingest.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_organization_ledger_ingest.py"
+   ],
+   "tests": [
+    "tests/test_organization_ledger_ingest.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_ledger_same_store_readback.py",
    "inputs": [],
    "surfaces": [
@@ -8379,6 +8391,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_sv_check_receipt_append.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_sv_check_receipt_append.py"
+   ],
+   "tests": [
+    "tests/test_sv_check_receipt_append.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_sv_dn1_browser_evidence_dispatch_source.py",
    "inputs": [],
    "surfaces": [
@@ -9250,6 +9274,18 @@
    ],
    "tests": [
     "tests/test_tvc_coinbase_resident_activation_cosv.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_tvc_conformance_receipt.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_tvc_conformance_receipt.py"
+   ],
+   "tests": [
+    "tests/test_tvc_conformance_receipt.py"
    ]
   },
   {
@@ -10171,6 +10207,15 @@
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/mesh_source_binding.py"
   ],
+  "resident-runtime/organization_ledger_ingest.py": [
+   ".github/workflows/organization-ledger-transition.yml",
+   ".stegverse/organization-ledger-ingest/accepted-sealed-receipts.json",
+   ".stegverse/organization-ledger-ingest/request.json",
+   "resident-runtime/intr_destination_ingress.py",
+   "resident-runtime/ledger_store.py",
+   "resident-runtime/merge_transfer_gitstore.py",
+   "resident-runtime/organization_ledger_readback.py"
+  ],
   "resident-runtime/organization_ledger_readback.py": [
    ".stegverse/transition-ledger/**",
    ".stegverse/transition-ledger/contract.json",
@@ -10226,6 +10271,21 @@
    "org-kernel/kernel.py",
    "resident-runtime/ledger_store.py",
    "resident-runtime/organization_ledger_readback.py"
+  ],
+  "resident-runtime/sv_check_receipt_append.py": [
+   "data/sv-work-items/contract-pins.json",
+   "data/sv-work-items/lifecycle-transitions.json",
+   "data/sv-work-items/required-checks.json",
+   "data/sv-work-items/stages/NWI-S0.json",
+   "data/sv-work-items/stages/NWI-S1.json",
+   "data/sv-work-items/stages/NWI-S2.json",
+   "data/sv-work-items/stages/NWI-S3.json",
+   "data/sv-work-items/stages/NWI-S4.json",
+   "org-kernel/kernel.py",
+   "resident-runtime/intr_destination_ingress.py",
+   "resident-runtime/sv_push_receipt.py",
+   "resident-runtime/sv_work_items.py",
+   "schemas/sv-check-receipt.v1.schema.json"
   ],
   "resident-runtime/sv_e0_terminals.py": [
    "resident-runtime/stage_gate.py",
@@ -12079,6 +12139,13 @@
    "workers/reusable_task_lifecycle.py",
    "workers/reusable_task_master_records_roundtrip.py"
   ],
+  "scripts/tvc_conformance_receipt.py": [
+   ".stegverse/verification-inputs/**",
+   ".stegverse/verification-inputs/tvc-conformance-receipt.json",
+   "resident-runtime/ledger_store.py",
+   "resident-runtime/organization_ledger_readback.py",
+   "scripts/test_set_selection.py"
+  ],
   "scripts/user_facing_explanation.py": [
    "schemas/user-facing-explanation.v1.schema.json"
   ],
@@ -12210,6 +12277,10 @@
   ],
   "scripts/validate_worker_blocker_fallback_adoption.py": [
    "control/worker-blocker-fallback-adoption.json"
+  ],
+  "scripts/validate_workflow_surface_hygiene.py": [
+   ".github/workflows/**",
+   "control/workflow-surface-registry.json"
   ],
   "scripts/verify_hil_post_restart_reconstruction.py": [
    "workers/hil_sovereign_receiver_bridge.py"
@@ -14723,6 +14794,17 @@
    "tests/test_org_claim_custody.py",
    "workers/canonical_state_transition_custody.py"
   ],
+  "tests/test_organization_ledger_ingest.py": [
+   ".github/workflows/organization-ledger-transition-validation.yml",
+   ".github/workflows/organization-ledger-transition.yml",
+   ".stegverse/transition-ledger/org-contract.json",
+   ".stegverse/verification-inputs/tvc-conformance-receipt.json",
+   "resident-runtime/aggregate_repo_transition.py",
+   "resident-runtime/organization_ledger_ingest.py",
+   "resident-runtime/sv_check_receipt_append.py",
+   "scripts/tvc_conformance_receipt.py",
+   "tests/test_sv_check_receipt_append.py"
+  ],
   "tests/test_organization_ledger_same_store_readback.py": [
    "heartbeat_runtime/worker_runtime_legacy.py",
    "resident-runtime/aggregate_repo_transition.py",
@@ -16360,6 +16442,23 @@
    "tests/__init__.py",
    "tests/test_sv_native_work_items.py"
   ],
+  "tests/test_sv_check_receipt_append.py": [
+   ".github/workflows/**",
+   ".github/workflows/organization-ledger-transition-validation.yml",
+   ".github/workflows/organization-ledger-transition.yml",
+   ".stegverse/organization-ledger-ingest/**",
+   ".stegverse/organization-ledger-ingest/operations.json",
+   "control/workflow-surface-registry.json",
+   "data/sv-work-items/stages/NWI-S0.json",
+   "org-boundary/registry/services.json",
+   "org-kernel/kernel.py",
+   "resident-runtime/organization_ledger_readback.py",
+   "resident-runtime/sv_check_receipt_append.py",
+   "resident-runtime/sv_work_items.py",
+   "schemas/sv-check-receipt.v1.schema.json",
+   "scripts/validate_workflow_surface_hygiene.py",
+   "tests/sv_ledger_fixtures.py"
+  ],
   "tests/test_sv_dn1_browser_evidence_dispatch_source.py": [
    "control/worker-registry.json",
    "heartbeat_runtime/worker_runtime.py",
@@ -16785,6 +16884,7 @@
    "scripts/pinned_source_input.py",
    "scripts/test_set_selection.py",
    "scripts/test_suite_baseline_drift.py",
+   "scripts/tvc_conformance_receipt.py",
    "tests/__init__.py",
    "tests/conftest.py",
    "tests/test_origin_attestation_tvc_conformance.py"
@@ -16833,6 +16933,14 @@
    "handoffs/TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001.json",
    "management/SHWP_RUNTIME_ACTIVATION_BLOCKER.json",
    "scripts/cosv.py"
+  ],
+  "tests/test_tvc_conformance_receipt.py": [
+   ".github/workflows/**",
+   ".github/workflows/test-suite-ratchet.yml",
+   ".stegverse/verification-inputs/**",
+   ".stegverse/verification-inputs/tvc-conformance-receipt.json",
+   "org-kernel/kernel.py",
+   "scripts/tvc_conformance_receipt.py"
   ],
   "tests/test_tvc_pr92_private_source_bootstrap.py": [
    "control/resident-execution-request.d/tvc-repository-broker-validation-001.json",

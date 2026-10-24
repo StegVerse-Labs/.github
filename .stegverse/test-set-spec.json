@@ -73,7 +73,7 @@
      "{root}"
     ],
     "consumer": "scripts/tvc_conformance_receipt.py",
-    "consumer_source": "StegVerse-Labs/.github#3332, not merged: until it is, this input is unavailable",
+    "consumer_source": "StegVerse-Labs/.github#3342, merged to main as 14b8dfd6 (supersedes #3332)",
     "kind": "receipt_consumer"
    },
    "finish_point": "scripts/tvc_conformance_receipt.py consume returns ALLOW at the exact head: a TVC conformance test receipt on refs/stegverse/organization-ledger (sealed by StegVerse-Labs/TVC#539's CI, appended by the organization ledger writer) whose consumed Labs surface has the same sha256 as this head; the [tvc] sets are then verified by that receipt and not run here",
