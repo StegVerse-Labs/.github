@@ -330,7 +330,7 @@
           "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
         }
       ],
-      "description": "supplied; ASCII digits with value >= 32, leading zeros allowed, compared by integer value (the shared rule org-kernel/kernel.py::supplied_epoch_failure, 726248a5); SF-1: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL. Schema invalidity carries no disposition: validate_change refuses a NATIVE hb_epoch that is absent, null, '', 'null' or the sentinel with FAIL_CLOSED (never DENY), and admission with FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED"
+      "description": "supplied; ASCII digits with value >= 32, leading zeros allowed, compared by integer value (the shared rule org-kernel/kernel.py::supplied_epoch_failure, c9192134); SF-1: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL. Schema invalidity carries no disposition: validate_change refuses a NATIVE hb_epoch that is absent, null, '', 'null' or the sentinel with FAIL_CLOSED (never DENY), and admission with FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED"
     },
     "head": {
       "additionalProperties": false,

@@ -17,6 +17,7 @@ network, no environment read.
 """
 from __future__ import annotations
 
+import ast
 import hashlib
 import importlib.util
 import json
@@ -31,12 +32,19 @@ _spec.loader.exec_module(kernel)
 
 
 def supplied_epoch_rule_sha256(source: str) -> str | None:
-    """sha256 hex of the supplied_epoch_failure source segment in `source` (kernel.py text), else None."""
-    if "def supplied_epoch_failure" not in source:
+    """sha256 hex of the supplied_epoch_failure source segment in `source` (kernel.py text), else None.
+
+    The segment is the function's own ast source segment, as Labs#3266 hashes it. Cutting at the next top-level
+    def gave the same digest only while a def followed; the class #3282 places after it would be hashed too.
+    """
+    try:
+        tree = ast.parse(source)
+    except (SyntaxError, ValueError):
         return None
-    a = source.index("def supplied_epoch_failure")
-    b = source.find("\ndef ", a + 5)
-    return hashlib.sha256(source[a:b if b >= 0 else len(source)].rstrip().encode("utf-8")).hexdigest()
+    node = next((n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "supplied_epoch_failure"), None)
+    if node is None:
+        return None
+    return hashlib.sha256(ast.get_source_segment(source, node).encode("utf-8")).hexdigest()
 
 
 KERNEL_RULE_SHA256 = supplied_epoch_rule_sha256((ROOT / "org-kernel/kernel.py").read_text(encoding="utf-8"))
@@ -110,9 +118,10 @@ NOT_CROSS_CHECKED_DETAIL = "HB_EPOCH_NOT_CROSS_CHECKED"  # the canonical marker'
 READBACK_SUPPLIED_FIELD = "supplied_hb_epoch"
 # Explicit unobserved values: FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY)
 SUPPLIED_EPOCH_UNOBSERVED_VALUES = (None, "", "null", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
-# sha256 of the source segment of org-kernel/kernel.py::supplied_epoch_failure (from "def supplied_epoch_failure" to the
-# next top-level def, trailing whitespace stripped): the shared rule pinned as 726248a5 by SV-LLM/.github#46 and Labs#3266
-SUPPLIED_EPOCH_RULE_SHA256 = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
+# sha256 of the ast source segment of org-kernel/kernel.py::supplied_epoch_failure: the shared rule as #3282 (B-P36h)
+# re-pins it, whose function text (inspect.getsource, trailing newline included) is ad8ff529. Was 726248a5
+# (SV-LLM/.github#46, Labs#3266) before the HB_EPOCH_PROVENANCE_UNMARKED tightening.
+SUPPLIED_EPOCH_RULE_SHA256 = "c91921348741cc1139553d5e4ad3d4f8f1c44fc67537eee4629c5bf63d49041d"
 CHECK_DERIVED_ISSUE_INVARIANT = "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT"
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 LEDGER_HEAD_KEY = "HEAD.json"  # ledger_store.HEAD_KEY
@@ -568,14 +577,14 @@ def native_epoch_type_check(rec: Mapping[str, Any], e: str) -> None:
     (schemas/sv-change.v1.schema.json 6b43b6ec). An observed value of another JSON type (an int such as 1024, a float, a
     bool, an array or object) is malformed and is DENY HB_EPOCH_MISMATCH, as admission's supplied-epoch rule already gives
     for bools and non-digits (verify_admission_hb_epoch). Absent / null stays unobserved (FAIL_CLOSED, unchanged).
-    NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED (commit 5): a string that fails 726248a5 ('abc', '+33', '31', ' 44') is DENY
+    NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED (commit 5): a string that fails c9192134 ('abc', '+33', '31', ' 44') is DENY
     HB_EPOCH_MISMATCH, as in admission; "" and "null" are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED, as in admission."""
     if rec.get("record_mode") != "NATIVE" or "hb_epoch" not in rec or rec["hb_epoch"] is None:
         return
     v = rec["hb_epoch"]
     if isinstance(v, str):
         # commit 5 (open item closed): a malformed epoch STRING is DENY HB_EPOCH_MISMATCH here too, as admission gives
-        # (verify_admission_hb_epoch: 726248a5 failures other than the unobserved values are DENY); "", "null" and the
+        # (verify_admission_hb_epoch: c9192134 failures other than the unobserved values are DENY); "", "null" and the
         # UNKNOWN sentinel stay unobserved (FAIL_CLOSED, never DENY), checked first, as in admission
         if v == UNKNOWN:
             return  # mode_check: UNKNOWN_IN_NATIVE_RECORD (FAIL_CLOSED)
@@ -1130,17 +1139,17 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
         DENY HB_EPOCH_MISMATCH (a FAIL_CLOSED readback seals hb_epoch and hb_epoch_source as null), hb_epoch_source.receipt
         not receipts/<hex>.json,
         a fixture_only receipt outside fixture_mode, bound to another ledger head, no hb_epoch_source naming
-        $.hb_reference.epoch at that head, or an hb_epoch slot that fails the shared supplied-epoch rule (726248a5:
+        $.hb_reference.epoch at that head, or an hb_epoch slot that fails the shared supplied-epoch rule (c9192134:
         ASCII digits, >= 32, the source reference's derived_from_clock exactly false), or that rule is not the pinned one.
       FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY): the supplied hb_epoch,
         where it is the epoch source (an SV_CHANGE record's hb_epoch; absent reads as null), is null, "", "null" or the
-        literal UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; checked BEFORE 726248a5 (a deliberate, recorded precedence).
+        literal UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; checked BEFORE c9192134 (a deliberate, recorded precedence).
       ALLOW with cross_checked false and detail HB_EPOCH_NOT_CROSS_CHECKED: `supplied` is HB_EPOCH_NOT_CROSS_CHECKED (an optional
         cross-check left out; the canonical not-cross-checked marker).
       FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (READBACK_SHAPE_MATCHES_PINNED_PRODUCER): the readback carries hb_epoch_cross_check,
         has no cross_checked key (the producer always emits it; a self-seal cannot prove which path ran), or a non-canonical
         cross_checked / marker combination (readback_shape_violation): not produced by the pinned readback.
-      DENY HB_EPOCH_MISMATCH: any other supplied hb_epoch that fails 726248a5 (non-digit, coerced such as '+33', below 32,
+      DENY HB_EPOCH_MISMATCH: any other supplied hb_epoch that fails c9192134 (non-digit, coerced such as '+33', below 32,
         an int or bool rather than ASCII text) or is not equal by integer value to the sealed epoch."""
     if KERNEL_RULE_SHA256 != SUPPLIED_EPOCH_RULE_SHA256:
         raise _readback_epoch_unobserved("org-kernel/kernel.py::supplied_epoch_failure is not the pinned rule "
@@ -1178,7 +1187,11 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
             and not (receipt == UNKNOWN and rb.get("fixture_only") is True and fixture_mode):
         raise _readback_epoch_unobserved("hb_epoch_source.receipt is not the head receipt's ledger path receipts/<hex>.json "
                                          "(UNKNOWN only in a fixture_only readback in fixture_mode)", ledger_head)
-    bad = kernel.supplied_epoch_failure(rb.get("hb_epoch"), src)
+    # hb_epoch_source is a pointer to the head receipt, checked field by field above, not a carrier heartbeat
+    # reference: c9192134 refuses a reference with no derived_from_clock as unmarked, which 726248a5 did not. It is
+    # passed to the rule only when it carries a clock marking, so the value rule decides exactly as before.
+    clock_marked = "derived_from_clock" in src or "sampled_unix_ns" in src
+    bad = kernel.supplied_epoch_failure(rb.get("hb_epoch"), src if clock_marked else None)
     if rb.get("hb_epoch") is None or bad is not None:
         raise _readback_epoch_unobserved("the sealed hb_epoch slot fails the shared supplied-epoch rule: "
                                          + (bad[0] + ": " + bad[1] if bad else "absent"), ledger_head)
@@ -1192,12 +1205,12 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
     # Contract invariant (orchestrator 15:59Z, narrowed 16:03Z): anything not observed is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED,
     # which is FAIL_CLOSED, never DENY. Where the supplied value IS the epoch source (an SV_CHANGE record's hb_epoch), an
     # absent field (read as null), JSON null, "", "null" or the UNKNOWN sentinel is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
-    # This precedes the kernel rule: 726248a5 alone would call None HB_EPOCH_NOT_SUPPLIED and "", "null" and the sentinel
+    # This precedes the kernel rule: c9192134 alone would call None HB_EPOCH_NOT_SUPPLIED and "", "null" and the sentinel
     # HB_EPOCH_INVALID (malformed, i.e. DENY here). The pin is unchanged; the precedence is recorded in the row.
     if any(supplied is v if v is None else (isinstance(supplied, str) and supplied == v) for v in SUPPLIED_EPOCH_UNOBSERVED_VALUES):
         raise _readback_epoch_unobserved("the supplied hb_epoch %r is not observed (UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED, "
-                                         "never DENY; checked before 726248a5)" % (supplied,), ledger_head)
-    # Ruling (orchestrator, both verifiers, 60 cases): any other SUPPLIED epoch that fails 726248a5 is DENY
+                                         "never DENY; checked before c9192134)" % (supplied,), ledger_head)
+    # Ruling (orchestrator, both verifiers, 60 cases): any other SUPPLIED epoch that fails c9192134 is DENY
     # HB_EPOCH_MISMATCH, as is a well-formed one that differs from the sealed epoch.
     supplied_failure = kernel.supplied_epoch_failure(supplied)
     if supplied_failure is not None or not (isinstance(supplied, str) and re.fullmatch(r"[0-9]+", supplied) and int(supplied) == want):
