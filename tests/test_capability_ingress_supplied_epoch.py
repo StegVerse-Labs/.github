@@ -129,19 +129,47 @@ class CapabilityCrossingEpochTests(unittest.TestCase):
             self.assertEqual(receipt["hb_reference"]["epoch"], 4096)
             self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
 
-    def test_the_capability_surface_refuses_an_absent_epoch_before_loading_the_operation(self):
+    def direct(self, packet_id, hb_epoch):
+        """capability_ingress.receive called directly, not through kernel.dispatch."""
         service = next(s for s in REGISTRY["services"] if s["service_id"] == ADDRESS)
+        return capability.receive(ROOT, service, packet(packet_id), registry=REGISTRY, hb_epoch=hb_epoch)
+
+    def files_written(self):
+        return sorted(str(p) for p in Path(self._work.name).rglob("*") if p.is_file())
+
+    # CAPABILITY_INGRESS_DIRECT_CALL_NOT_SIX_FIELD (V-P11 OPEN 1): a direct call is held to the kernel's shared
+    # rule and refused with the six fields, never a bare ValueError or SystemExit(str), with nothing written.
+    REFUSED = (("absent", None, "HB_EPOCH_NOT_SUPPLIED"), ("signed", "+33", "HB_EPOCH_INVALID"),
+               ("below-anchor", 31, "HB_EPOCH_INVALID"), ("bool", True, "HB_EPOCH_INVALID"),
+               ("nan", float("nan"), "HB_EPOCH_INVALID"), ("non-digit", "abc", "HB_EPOCH_INVALID"))
+
+    def test_a_direct_call_refuses_each_bad_epoch_six_field_before_anything_is_loaded_or_written(self):
         loaded = []
         original = capability.load_operation
         capability.load_operation = lambda resolved: loaded.append(resolved) or original(resolved)
         self.addCleanup(setattr, capability, "load_operation", original)
-        with self.assertRaises(SystemExit) as refused:
-            capability.receive(ROOT, service, packet("direct-no-epoch"), registry=REGISTRY)
-        self.assertEqual(str(refused.exception),
-                         "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH:HB_EPOCH_NOT_SUPPLIED")
-        self.assertEqual(loaded, [])
-        self.assertFalse(self.ledger_opened())
+        for name, value, code in self.REFUSED:
+            with self.subTest(probe=name, hb_epoch=value):
+                with self.assertRaises(capability.CapabilityEpochRefused) as refused:
+                    self.direct("direct-" + name, value)
+                self.assertIs(type(refused.exception), capability.CapabilityEpochRefused)
+                self.assertNotIsInstance(refused.exception, SystemExit)
+                self.assert_refused(refused, code)
+                self.assertEqual(refused.exception.record["retry_entrypoint"], capability.HB_EPOCH_RETRY_ENTRYPOINT)
+                self.assertEqual(refused.exception.refusal, refused.exception.record)
+                self.assertEqual(loaded, [])
+                self.assertEqual(self.files_written(), [])
 
+    def test_a_direct_call_at_an_epoch_the_shared_rule_accepts_still_passes(self):
+        self.assertIsNone(kernel.supplied_epoch_failure("4096"))
+        result = self.direct("direct-4096", "4096")
+        operation = result["receiving_operation_result"]
+        self.assertEqual(operation["disposition"], "ALLOW", operation.get("detail"))
+        repository, = [r for r in self.receipts("STEGVERSE_REPO_LEDGER_ROOT",
+                                                 "stegverse.repo-transition-receipt/v1")
+                       if r.get("transition_class") == OPERATION_ID]
+        self.assertEqual(repository["hb_reference"]["epoch"], 4096)
+        self.assertIs(repository["hb_reference"]["derived_from_clock"], False)
 
 if __name__ == "__main__":
     unittest.main()
