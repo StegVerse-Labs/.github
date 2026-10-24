@@ -1,10 +1,10 @@
 {
-  "main_sha": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
-  "main_tree_sha": "aa03459f7ead08113a08692aea279ec05a0ea195",
-  "note": "one read of GitHub on 2026-10-18 ~13:0xZ (gh pr view / gh pr checks); blob digests computed from the fetched head commits; GitHub CI is projection only, never a validation receipt",
+  "main_sha": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+  "main_tree_sha": "910a8504ae41b0f7edae3d3c772c40809adc9956",
+  "note": "PR rows: one read of GitHub on 2026-10-18 ~13:0xZ (gh pr view / gh pr checks); blob digests computed from the fetched head commits; GitHub CI is projection only, never a validation receipt. Base (main_sha, main_tree_sha, registry_generation_observed, organization_ledger_head_observed): re-observed 2026-10-23 by Lane D (C7, gen 319 -> 320); previously main 978b8880, tree aa03459f, generation 319, ledger head a5bb54d8. The PR rows were not re-read.",
   "organization_ledger_head_observed": {
     "source": "git ls-remote https://github.com/StegVerse-Labs/.github refs/stegverse/organization-ledger",
-    "value": "a5bb54d81893b392a3ce28182986fc39857807e1"
+    "value": "9a407561062757a30f90818ec6c8105b04331a39"
   },
   "prs": [
     {
@@ -884,8 +884,8 @@
     }
   ],
   "registry_generation_observed": {
-    "source": "data/canonical-task-registry.json#generation @ main 978b8880",
-    "value": 319
+    "source": "data/canonical-task-registry.json#generation @ main 86382e60 (blob 8731d45a5ade9d9ed91c65ba1debacb05060390c)",
+    "value": 320
   },
   "schema": "stegverse.lane-d.s0-github-pr-snapshot/v1"
 }
