@@ -17,6 +17,8 @@ import re
 import shutil
 import subprocess
 import sys
+
+from tests.ledgered_org_receipt import ledger_env
 import tempfile
 import unittest
 from types import SimpleNamespace
@@ -572,6 +574,24 @@ class HeartbeatReferenceTest(LedgerRoots):
         self.assertEqual(batch_custody._verified_receipt(self.org_root, historical["receipt_sha256"]),
                          historical)
 
+        # Consumer: resident-runtime/submit_org_transition_to_master_records.py, while the chain
+        # from HEAD is intact (row 4: it publishes only a receipt reachable from HEAD).
+        receipt_path = Path(self._temp.name) / "historical.json"
+        receipt_path.write_text(json.dumps(historical))
+        standing = Path(self._temp.name) / "standing.json"
+        standing.write_text(json.dumps({"mode": "ESTABLISH_GENESIS",
+                                        "node_ref": "StegVerse-Labs-test-node", "predecessor": None}))
+        completed = subprocess.run(
+            [sys.executable, str(ROOT / "resident-runtime/submit_org_transition_to_master_records.py"),
+             "--org-receipt", str(receipt_path),
+             "--predecessor-ecosystem-state-sha256", "sha256:" + "a" * 64,
+             "--successor-ecosystem-state-sha256", "sha256:" + "b" * 64,
+             "--standing", str(standing), "--mesh-root", str(Path(self._temp.name) / "mesh")],
+            # The ledger the historical receipt is on (row 4: only its own receipt is published).
+            capture_output=True, text=True, timeout=60, env=ledger_env(dict(os.environ), self.org_root))
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertEqual(json.loads(completed.stdout)["status"], "PUBLISHED_FOR_ORGANIZATION_RECORD")
+
         # Consumer: workers/canonical_state_transition_custody (exact source reuse).
         from workers import canonical_state_transition_custody as custody
         recorded = custody._record_organization_transition(self._canonical_source("CUSTODY"), hb_epoch=4096)
@@ -586,21 +606,6 @@ class HeartbeatReferenceTest(LedgerRoots):
         self.assertEqual(again["state"], "RECORDED", again)
         self.assertEqual(again["organization_receipt"], legacy)
 
-        # Consumer: resident-runtime/submit_org_transition_to_master_records.py.
-        receipt_path = Path(self._temp.name) / "historical.json"
-        receipt_path.write_text(json.dumps(historical))
-        standing = Path(self._temp.name) / "standing.json"
-        standing.write_text(json.dumps({"mode": "ESTABLISH_GENESIS",
-                                        "node_ref": "StegVerse-Labs-test-node", "predecessor": None}))
-        completed = subprocess.run(
-            [sys.executable, str(ROOT / "resident-runtime/submit_org_transition_to_master_records.py"),
-             "--org-receipt", str(receipt_path),
-             "--predecessor-ecosystem-state-sha256", "sha256:" + "a" * 64,
-             "--successor-ecosystem-state-sha256", "sha256:" + "b" * 64,
-             "--standing", str(standing), "--mesh-root", str(Path(self._temp.name) / "mesh")],
-            capture_output=True, text=True, timeout=60)
-        self.assertEqual(completed.returncode, 0, completed.stderr)
-        self.assertEqual(json.loads(completed.stdout)["status"], "PUBLISHED_FOR_ORGANIZATION_RECORD")
 
 
 class PartialCommitTest(LedgerRoots):

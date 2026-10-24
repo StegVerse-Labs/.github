@@ -101,6 +101,12 @@ def cycle(*, mesh_root:Path|None, node_state_root:Path|None,
     if refused is not None:
         return refused
     epoch=int(str(hb_epoch))
+    # In a request run every receipt binds the committed request (row 1); an
+    # unverifiable pair is refused here, before anything is consumed.
+    try:
+        bound=K.committed_request()
+    except K.CommittedRequestRefused as exc:
+        return exc.record
     results=K.consume_and_respond(ROOT,mesh_root=mesh_root,node_state_root=node_state_root,
                                   repo_ledger_root=repo_ledger_root,org_ledger_root=org_ledger_root,
                                   hb_epoch=epoch)
@@ -119,6 +125,8 @@ def cycle(*, mesh_root:Path|None, node_state_root:Path|None,
       "transport":"FEDERATION_MESH",
       "carrier":CARRIER
     }
+    if bound is not None:
+        receipt[K.COMMITTED_REQUEST_KEY]=bound
     # Recorded in this node's own supplied state rather than the checkout, so a
     # run does not mutate committed space and every pass is kept.
     recorded=K.record_federation_cycle(receipt,root=node_state_root)

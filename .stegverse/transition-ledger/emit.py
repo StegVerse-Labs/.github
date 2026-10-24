@@ -107,6 +107,10 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
  stand in for it.
  """
  ref=kernel.supplied_hb_reference(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+ # Before the store opens: a caller cannot supply committed_request (row 5), and
+ # in a request run the receipt binds the verified committed request (row 1).
+ kernel.refuse_caller_committed_request(evidence,"evidence")
+ bound=kernel.committed_request()
  target=store or repository_store();target.initialize()
  for _attempt in range(128):
   expected_head=target.get(ledger_store.HEAD_KEY)
@@ -122,6 +126,7 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
     raise ValueError("ledger_receipt_collision")
    return prior
   b={"schema":"stegverse.repo-transition-receipt/v1","repository":C["repository"],"transition_id":transition_id,"transition_class":transition_class,"predecessor_state_sha256":predecessor_state_sha256,"successor_state_sha256":successor_state_sha256,"evidence":evidence if evidence is not None else {},"authority_effect":authority_effect,"hb_reference":ref,"previous_receipt_sha256":prev}
+  if bound is not None:b[kernel.COMMITTED_REQUEST_KEY]=bound
   dg=sha(b);r={**b,"receipt_sha256":dg};key=ledger_store.receipt_key(dg)
   new_head={"repository":C["repository"],"receipt_sha256":dg,"receipt_path":target.locator(key)}
   try: published=target.append_transaction(key,r,expected_head,new_head)

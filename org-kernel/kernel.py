@@ -446,6 +446,8 @@ def run_writer_cli(main:Any, *, retry_entrypoint:str)->int:
             print(json.dumps(exc.refusal,sort_keys=True)); return 1
         if name=="CarrierEpochRefusal":
             print(json.dumps(exc.record,sort_keys=True)); return 1
+        if name=="CommittedRequestRefused":
+            print(json.dumps(exc.record,sort_keys=True)); return 1
         print(json.dumps(writer_fault_record(exc,retry_entrypoint),sort_keys=True)); return 1
 
 def carrier_epoch(heartbeat_reference:Any)->int:
@@ -486,6 +488,71 @@ def refuse_reference(heartbeat_reference:Any)->None:
             raise CarrierEpochRefusal(HB_REFERENCE_INVALID,
                 required_evidence_or_repair=(reason+"; generation and heartbeat_id follow from the epoch"),
                 next_attempt="re-publish the packet in a coherent carrier frame") from None
+
+#: A request run (COMMITTED_REQUEST, row 16) binds every receipt it writes to
+#: the committed request that started it (VALIDATOR row 1, route A): a top-level
+#: `committed_request` {path, sha256 of the committed file's bytes}. The run's
+#: dispatcher exports the pair below; the digest is recomputed from the file,
+#: never taken from caller input, and a caller cannot supply the key (row 5).
+COMMITTED_REQUEST_KEY="committed_request"
+COMMITTED_REQUEST_PATH_ENV="STEGVERSE_COMMITTED_REQUEST_PATH"
+COMMITTED_REQUEST_SHA256_ENV="STEGVERSE_COMMITTED_REQUEST_SHA256"
+COMMITTED_REQUEST_PREDICATE="RECEIPT_BINDS_THE_COMMITTED_REQUEST_THAT_STARTED_ITS_RUN"
+COMMITTED_REQUEST_RETRY="commit the request and dispatch it (resident-runtime/resident_cycle_request.py)"
+
+class CommittedRequestRefused(ValueError):
+    """A six-field refusal of a committed-request binding; raised before anything is built or written."""
+    def __init__(self, failure_code:str, detail:str, *, terminal:bool=True, repair:str|None=None)->None:
+        super().__init__(failure_code+": "+detail)
+        self.record={"disposition":"FAIL_CLOSED","failure_code":failure_code,
+                     "failed_predicate":COMMITTED_REQUEST_PREDICATE,"detail":detail,"terminal":terminal,
+                     "required_evidence_or_repair":repair or ("the run's dispatcher exports "+COMMITTED_REQUEST_PATH_ENV
+                         +" and "+COMMITTED_REQUEST_SHA256_ENV+" for the committed request file, both or neither; "
+                         "a caller never supplies committed_request"),
+                     "retry_entrypoint":COMMITTED_REQUEST_RETRY,"owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+                     "next_attempt":"run again from the committed request; nothing was written or published",
+                     "derived_from_clock":False,"consequence_committed":False}
+
+def committed_request()->dict[str,str]|None:
+    """The committed request this run was started from, verified against the file, or None outside a request run.
+
+    Both variables absent: not a request run. One without the other, a digest
+    that is not sha256:<64 hex>, an unreadable file, or a file whose bytes do
+    not hash to the digest: CommittedRequestRefused, six fields.
+    """
+    import os, re
+    path,digest=os.environ.get(COMMITTED_REQUEST_PATH_ENV),os.environ.get(COMMITTED_REQUEST_SHA256_ENV)
+    if path is None and digest is None:
+        return None
+    if not path or not digest:
+        raise CommittedRequestRefused("COMMITTED_REQUEST_ENV_PAIR_INCOMPLETE",
+                                      "only one of "+COMMITTED_REQUEST_PATH_ENV+" and "+COMMITTED_REQUEST_SHA256_ENV+" is set")
+    if not re.fullmatch(r"sha256:[0-9a-f]{64}",digest):
+        raise CommittedRequestRefused("COMMITTED_REQUEST_DIGEST_MALFORMED",COMMITTED_REQUEST_SHA256_ENV+" is not sha256:<64 hex>")
+    try:
+        data=Path(path).read_bytes()
+    except OSError as exc:
+        raise CommittedRequestRefused("COMMITTED_REQUEST_UNREADABLE",type(exc).__name__+": "+str(exc),terminal=False) from None
+    if "sha256:"+hashlib.sha256(data).hexdigest()!=digest:
+        raise CommittedRequestRefused("COMMITTED_REQUEST_DIGEST_MISMATCH","the committed request file does not hash to "+digest)
+    own=Path(__file__).resolve().parents[1]
+    resolved=Path(path).resolve()
+    shown=resolved.relative_to(own).as_posix() if resolved.is_relative_to(own) else str(resolved)
+    return {"path":shown,"sha256":digest}
+
+def refuse_caller_committed_request(value:Any, argument:str)->None:
+    """CommittedRequestRefused when a caller's evidence carries a committed_request key at any depth (row 5)."""
+    pending=[value]
+    while pending:
+        item=pending.pop()
+        if isinstance(item,dict):
+            if COMMITTED_REQUEST_KEY in item:
+                raise CommittedRequestRefused("FORGED_COMMITTED_REQUEST_FROM_EVIDENCE",
+                    argument+" carries a committed_request key; only the run's dispatcher binds one",
+                    repair="remove committed_request from "+argument+"; the binding is the dispatcher's, never a caller's")
+            pending.extend(item.values())
+        elif isinstance(item,list):
+            pending.extend(item)
 
 ADAPTER_WRITE_FAULT_EXIT=75
 ADAPTER_INPUT_FAULT_EXIT=65

@@ -9,8 +9,8 @@
   ],
   "files": {
     ".stegverse/transition-ledger/emit.py": {
-      "blob": "a6b50052d258277079a9ad63f8b6f2805a862e15",
-      "sha256": "sha256:511f45513b6ba01c7a2dbc56d18cddea992c161774bb9d90f8ad07171a9ff8cb"
+      "blob": "92e6d986190eea03ef8d5b26b2a64aec13b65326",
+      "sha256": "sha256:76d8242a7044cf372c6abe6b6a9cb81fba020f6737084493fe55d00545cca40e"
     },
     "data/admission-scenarios/classes.jsonl": {
       "blob": "2400d35a6735b2b080492da948d23e077edcd43f",
@@ -85,8 +85,8 @@
       "sha256": "sha256:837343e7fae10ed39b8d2bf63355dcfdcf02277f9b9f944b3dff34e986164fd6"
     },
     "org-kernel/kernel.py": {
-      "blob": "07eb826d840bdb3788d8abc56960e2323243fcae",
-      "sha256": "sha256:15523612f2848772bbcd6096a3f9027e074105974d5fac9e332650875b3eae5a"
+      "blob": "c771eadda650c7a9892c4cb76d28b3fec1d3ce5b",
+      "sha256": "sha256:f3e9e6a4d7ba4920633d73a76a68beadb80831c8a8014e8a84c3d72ac8aa4286"
     },
     "org-kernel/node_store.py": {
       "blob": "10b9897847db7d734f47ccfe3c6422f02a7eee3b",
@@ -97,8 +97,8 @@
       "sha256": "sha256:5917641e1036679b2eed56f300177f7cb9d98e67ca99b6cc84a0dc1857e2943b"
     },
     "resident-runtime/aggregate_repo_transition.py": {
-      "blob": "f1b7a9a4a2057ddf9c7884ebda1daf725cd14579",
-      "sha256": "sha256:7184437fb2e3bb592ba4e1378d6901be7eb0969c151f47aff2e0f7a11bbd88a0"
+      "blob": "d03d2f269f2399444c9d11873c2dd281681e7432",
+      "sha256": "sha256:44895452dff325e8b19ffa1db0cad4de618ecc477c7fb645d1510a8a9b950841"
     },
     "resident-runtime/ledger_store.py": {
       "blob": "5803414986de4dc3fea72e12f5eff885cd991405",

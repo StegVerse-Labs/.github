@@ -13,7 +13,7 @@ The request names no location: the mesh, node state and ledgers are supplied by
 the node materializer, and federation_cycle reads them as it always has.
 """
 from __future__ import annotations
-import argparse, importlib.util, json
+import argparse, hashlib, importlib.util, json, os
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -48,6 +48,10 @@ def main(argv:list[str]|None=None)->int:
     refusal=K.writer_epoch_refusal(epoch,retry_entrypoint=RETRY_ENTRYPOINT)
     if refusal is not None:
         print(json.dumps(refusal,sort_keys=True)); return 1
+    # The run is bound to this exact committed request (row 1): every receipt it
+    # writes carries {path, sha256 of these bytes}, verified again by the kernel.
+    os.environ[K.COMMITTED_REQUEST_PATH_ENV]=str(args.request.resolve())
+    os.environ[K.COMMITTED_REQUEST_SHA256_ENV]="sha256:"+hashlib.sha256(args.request.read_bytes()).hexdigest()
     return _cycle().main([*locations,"--hb-epoch",str(epoch)])
 
 if __name__=="__main__":

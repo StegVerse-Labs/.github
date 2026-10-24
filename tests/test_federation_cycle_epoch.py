@@ -13,6 +13,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -104,7 +105,8 @@ class CommittedRequestDispatchTests(unittest.TestCase):
                     return 0
 
             out = io.StringIO()
-            with mock.patch.object(rc, "_cycle", lambda: Cycle), contextlib.redirect_stdout(out):
+            with mock.patch.object(rc, "_cycle", lambda: Cycle), contextlib.redirect_stdout(out), \
+                    mock.patch.dict(os.environ):
                 code = rc.K.run_writer_cli(lambda: rc.main(["--request", str(path), *argv]),
                                            retry_entrypoint="test")
         text = out.getvalue().strip()

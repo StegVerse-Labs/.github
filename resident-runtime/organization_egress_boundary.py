@@ -622,6 +622,11 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
     if hb_epoch is None:
         return no_epoch_result("emit")
     hb_epoch = _supplied_epoch(hb_epoch, "resident-runtime/organization_egress_boundary.py::emit (hb_epoch=)")
+    # Before anything is built, published or recorded (row 6): a half-set or
+    # unverifiable committed-request pair, or a committed_request a caller put
+    # in the payload, is refused six-field (CommittedRequestRefused), 0 frames.
+    kernel.committed_request()
+    kernel.refuse_caller_committed_request(payload, "payload")
     origin = this_organization(root)
     try:
         unclosable = closability_refusal(payload or {})

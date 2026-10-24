@@ -773,6 +773,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     """
     _refuse_invalid_epoch(hb_epoch)
     _refuse_clock_source(receipt)
+    _refuse_unbound_request(receipt, boundary_evidence)
     _refuse_source_not_on_ledger(receipt, repository_ledger)
     store = organization_store(ledger)
     if _is_posix(store):
@@ -1060,6 +1061,7 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
     """
     _refuse_invalid_epoch(hb_epoch)
     _refuse_clock_source(receipt)
+    _refuse_unbound_request(receipt, boundary_evidence)
     _refuse_source_not_on_ledger(receipt, repository_ledger)
     source=verify_source(receipt)
     if store is None:
@@ -1266,6 +1268,23 @@ def organization_receipt_ledger_refusal(receipt, store=None, *, retry_entrypoint
 #: receipt aggregate_transition() already checked against the repository ledger.
 _SOURCE_LEDGER_CHECKED=object()
 
+def _refuse_unbound_request(receipt, boundary_evidence):
+    """CommittedRequestRefused before any store opens (rows 5 and 7).
+
+    A caller's boundary evidence never carries committed_request. A source
+    receipt that carries one was written in a request run, so it must name the
+    committed request this run was started from, verified against its file.
+    """
+    kernel.refuse_caller_committed_request(boundary_evidence,"boundary_evidence")
+    if not isinstance(receipt,dict) or kernel.COMMITTED_REQUEST_KEY not in receipt:
+        return
+    bound=kernel.committed_request()
+    if bound is None or receipt[kernel.COMMITTED_REQUEST_KEY]!=bound:
+        raise kernel.CommittedRequestRefused("COMMITTED_REQUEST_DIGEST_UNVERIFIED",
+            "the source receipt's committed_request "+json.dumps(receipt[kernel.COMMITTED_REQUEST_KEY],sort_keys=True)
+            +" is not this run's "+json.dumps(bound,sort_keys=True),
+            repair="consume the source receipt in the request run it was written in, from that committed request")
+
 def _refuse_source_not_on_ledger(receipt, repository_ledger=None):
     """OrgLedgerEpochRefused (SOURCE_RECEIPT_NOT_ON_LEDGER) before any organization store opens."""
     if repository_ledger is _SOURCE_LEDGER_CHECKED:
@@ -1328,6 +1347,9 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         "previous_receipt_sha256":prev,
         "custody_generation":generation,
     }
+    # In a request run the organization receipt binds the verified committed request too (row 1).
+    bound=kernel.committed_request()
+    if bound is not None: body[kernel.COMMITTED_REQUEST_KEY]=bound
     if attestation is not None: body["custody_exclusivity_attestation_sha256"]=sha(attestation)
     if generation==0: body["custody_authority_basis"]=CUSTODY_AUTHORITY_BASIS_GENERATION_0
     digest=sha(body); record={**body,"receipt_sha256":digest}; key=ledger_store.receipt_key(digest)
