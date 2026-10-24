@@ -97,7 +97,8 @@ class CarrierEpochForwardingTests(unittest.TestCase):
         self.assertEqual(argv[argv.index("--hb-epoch") + 1], "1000")
 
     def test_a_leading_zero_epoch_is_forwarded_as_its_value(self):
-        argv = self.run_adapter(dict(supplied(1000), epoch="0033"))["argv"]
+        # A coherent reference: generation and heartbeat_id follow from the epoch (row 12).
+        argv = self.run_adapter(dict(supplied(33), epoch="0033"))["argv"]
         self.assertEqual(argv[argv.index("--hb-epoch") + 1], "33")
 
     def test_a_digit_string_epoch_is_forwarded_as_supplied(self):
@@ -152,9 +153,13 @@ class CarrierEpochForwardingTests(unittest.TestCase):
                           dict(supplied(1000), sampled_unix_ns=K.HB_ANCHOR_UNIX_NS)):
             with self.subTest(reference=reference):
                 self.assertEqual(self.refused(reference)["failure_code"], "HB_EPOCH_INVALID")
+        # This destination does not accept CARRIED crossings on any route (B-P36m option 1, row 7).
         carried = dict(supplied(1000), source="StegVerse-Labs/.github", head_receipt_sha="ab" * 32)
-        argv = self.run_adapter(carried)["argv"]
-        self.assertEqual(argv[argv.index("--hb-epoch") + 1], "1000")
+        with self.assertRaises(K.CarrierEpochRefusal) as raised:
+            self.run_adapter(carried)
+        self.assertFalse(self.ran.exists())
+        self.assertEqual(raised.exception.record["failure_code"], "CARRIED_NOT_ACCEPTED_BY_DESTINATION")
+        self.assertEqual(raised.exception.record["failed_predicate"], "DESTINATION_ACCEPTS_CARRIED_CROSSINGS")
 
     def test_no_clock_is_read_on_this_path(self):
         class NoClock:

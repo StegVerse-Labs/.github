@@ -109,5 +109,32 @@ class CliTraceTests(unittest.TestCase):
             self.assertEqual(json.loads(completed.stdout)["hb_reference"]["epoch"], 4096)
 
 
+#: Every CLI here that writes a ledger or this node's state, or publishes for it.
+WRITER_CLIS = (
+    ".stegverse/transition-ledger/emit.py",
+    "resident-runtime/intr_destination_ingress.py",
+    "resident-runtime/organization_egress_boundary.py",
+    "resident-runtime/organization_manifest_ingress.py",
+    "resident-runtime/governance_endpoint.py",
+    "resident-runtime/aggregate_repo_transition.py",
+    "resident-runtime/organization_batch_custody.py",
+    "resident-runtime/federation_cycle.py",
+    "resident-runtime/submit_org_transition_to_master_records.py",
+    "resident-runtime/ecosystem_control.py",
+    "resident-runtime/organization_governance_decision.py",
+    "scripts/authorize_site_production_promotion.py",
+    "scripts/manage_heartbeat_subsignal.py",
+)
+
+
+class WriterCliSweepTests(unittest.TestCase):
+    def test_every_writer_cli_runs_under_the_six_field_runner(self):
+        for relative in WRITER_CLIS:
+            with self.subTest(cli=relative):
+                text = (ROOT / relative).read_text(encoding="utf-8")
+                main_block = text[text.rindex("if __name__"):]
+                self.assertIn("run_writer_cli(", main_block)
+
+
 if __name__ == "__main__":
     unittest.main()

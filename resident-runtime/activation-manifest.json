@@ -32,7 +32,9 @@
     "from": "dispatch_input",
     "dispatcher": "resident-runtime/resident_cycle.py",
     "rule": "org-kernel/kernel.py::writer_epoch_refusal",
-    "clock_fallback": false
+    "clock_fallback": false,
+    "dispatcher_status": "PROHIBITED_ON_HOSTED",
+    "dispatcher_status_reason": "github_actions_is_runtime_authority is false: the resident cycle runs on the materialized node, whose operator invokes resident_cycle.py --hb-epoch; no hosted workflow dispatches it"
   },
   "federation_poll_mode": "OUTBOUND_ONLY",
   "federation_network_route": "SUPPLIED_FEDERATION_MESH"

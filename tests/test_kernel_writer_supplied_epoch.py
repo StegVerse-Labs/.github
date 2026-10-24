@@ -148,7 +148,11 @@ class UnmarkedReferenceTest(NoClockCase):
             with self.subTest(reference=reference):
                 self.assertIsNone(K.supplied_epoch_failure(40, reference))
                 self.assertIsNone(K.writer_epoch_refusal(40, retry_entrypoint=ENTRY, reference=reference))
-        self.assertEqual(K.carrier_epoch(self.CARRIED), 4096)
+        # The shared rule passes CARRIED; this destination's carrier_epoch does not
+        # accept a CARRIED crossing (B-P36m option 1, #3290 row 7).
+        with self.assertRaises(K.CarrierEpochRefusal) as raised:
+            K.carrier_epoch(self.CARRIED)
+        self.assertEqual(raised.exception.record["failure_code"], "CARRIED_NOT_ACCEPTED_BY_DESTINATION")
 
     def test_the_kernel_emits_the_marker_shapes(self):
         """SUPPLIED and CARRIED from a supplied epoch; CLOCK from a sample."""

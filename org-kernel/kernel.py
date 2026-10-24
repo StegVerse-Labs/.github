@@ -424,7 +424,42 @@ def carrier_epoch(heartbeat_reference:Any)->int:
                                          "ASCII digits with value >= 32 (the HB32 anchor), with any "
                                          "derived_from_clock exactly false; no clock is read"),
             next_attempt="re-publish the packet in a frame stamped with a supplied epoch >= 32")
+    refuse_reference(heartbeat_reference)
     return int(str(epoch))
+
+def refuse_reference(heartbeat_reference:Any)->None:
+    """Refuse, six-field, a reference that claims CARRIED or is incoherent with its epoch.
+
+    CARRIED: this kernel's writers cannot record source/head_receipt_sha, so the
+    destination does not accept a CARRIED crossing (B-P36m option 1) on any
+    route. Incoherent: a generation or heartbeat_id that does not follow from
+    the epoch (HB_REFERENCE_INVALID, B-P36o). No clock is read.
+    """
+    if not isinstance(heartbeat_reference,dict):
+        return
+    if "source" in heartbeat_reference or "head_receipt_sha" in heartbeat_reference:
+        refusal=CarrierEpochRefusal(CARRIED_NOT_ACCEPTED_BY_DESTINATION,
+            required_evidence_or_repair="re-send with the SUPPLIED epoch",
+            next_attempt="the sender re-publishes the packet in a SUPPLIED frame; nothing was written")
+        refusal.record["failed_predicate"]="DESTINATION_ACCEPTS_CARRIED_CROSSINGS"
+        raise refusal
+    try:
+        validate_hb_reference(heartbeat_reference)
+    except ValueError as exc:
+        reason=str(exc)
+        if reason in ("heartbeat_generation_mismatch","heartbeat_id_mismatch"):
+            raise CarrierEpochRefusal(HB_REFERENCE_INVALID,
+                required_evidence_or_repair=(reason+"; generation and heartbeat_id follow from the epoch"),
+                next_attempt="re-publish the packet in a coherent carrier frame") from None
+
+ADAPTER_WRITE_FAULT_EXIT=75
+ADAPTER_INPUT_FAULT_EXIT=65
+
+class EndpointWriteFault(RuntimeError):
+    """The adapter's own write faulted (exit 75): non-terminal, the frame stays pending."""
+
+class EndpointInputFault(ValueError):
+    """The adapter refused or failed on this frame (exit 65, 1, other, crash): terminal."""
 
 def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
                          service:dict[str,Any]|None=None, node_state:Any|None=None,
@@ -451,7 +486,13 @@ def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
         completed=subprocess.run(command,cwd=root,capture_output=True,text=True,check=False)
         if completed.returncode!=0 or not out.is_file():
             detail=(completed.stderr or completed.stdout or "").strip().splitlines()
-            raise ValueError("endpoint_adapter_execution_failed"+(":"+detail[-1] if detail else ""))
+            reason=("endpoint_adapter_execution_failed"+(":"+detail[-1] if detail else "")
+                    +" (exit "+str(completed.returncode)+")")
+            # DC#10's split: 75 is the adapter's own write fault, non-terminal;
+            # 65, 1, any other exit and a crash are terminal for this frame.
+            if completed.returncode==ADAPTER_WRITE_FAULT_EXIT:
+                raise EndpointWriteFault(reason)
+            raise EndpointInputFault(reason)
         result=json.loads(out.read_text())
     if not isinstance(result,dict): raise ValueError("endpoint_adapter_result_invalid")
     return result
@@ -467,6 +508,9 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
     `root` is the organization's materialized source: it is read, never written.
     Anything the crossing records (work intake) goes to `node_state`.
     """
+    # Every route: a CARRIED or incoherent reference is refused before anything
+    # is loaded or written (rows 7 and 12).
+    refuse_reference(heartbeat_reference)
     registry=load_registry(root)
     if packet["destination"]["org"]!=registry["organization"]: raise ValueError("wrong_destination_org")
     service=next((s for s in registry["services"] if s["service_id"]==packet["destination"]["service"]),None)
@@ -551,7 +595,7 @@ def persist_outbox(root:Path, frame:dict[str,Any], *, store:Any|None=None)->Path
     return Path(target.locator(key))
 
 def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None,
-                 carried_head_verified:bool=False, crossing_reference:dict[str,Any]|None=None)->dict[str,Any]:
+                 crossing_reference:dict[str,Any]|None=None)->dict[str,Any]:
     # The shared epoch rule first: an absent or invalid carrier epoch is the
     # six-field CarrierEpochRefusal, not a bare heartbeat_* error from recovery.
     failure=_frame_epoch_failure(frame)
@@ -561,9 +605,6 @@ def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, no
             required_evidence_or_repair=(detail+"; the carrier frame supplies heartbeat_reference.epoch as "
                                          "ASCII digits with value >= 32 (the HB32 anchor); no clock is read"),
             next_attempt="re-publish the packet in a frame stamped with a supplied epoch >= 32")
-    # A self-asserted CARRIED claim is verified against this organization's
-    # verified head (ingest_recorded does, holding custody) or refused; it is
-    # never stripped and accepted as SUPPLIED (B-P36k).
     try:
         packet=recover_packet(frame)
     except ValueError as exc:
@@ -575,7 +616,10 @@ def ingest_frame(root:Path, frame:dict[str,Any], *, mesh_root:Path|None=None, no
             required_evidence_or_repair=(reason+"; the carrier frame's heartbeat_reference carries generation "
                                          "and heartbeat_id consistent with its epoch"),
             next_attempt="re-publish the packet in a coherent carrier frame") from None
-    if _claims_carried(frame) and not carried_head_verified:
+    # A CARRIED claim is never consumed here: this destination does not accept
+    # CARRIED crossings (B-P36m option 1), and the claim is never stripped and
+    # accepted as SUPPLIED (B-P36k).
+    if _claims_carried(frame):
         raise CarrierEpochRefusal(CARRIED_PROVENANCE_UNVERIFIED,
             required_evidence_or_repair=("the frame's heartbeat_reference asserts source/head_receipt_sha; "
                                          "it is admitted only when head_receipt_sha is this organization's "
@@ -1138,6 +1182,14 @@ def _frame_quarantine(frame:dict[str,Any], custody:dict[str,Any],
     record source/head_receipt_sha downstream, and {epoch, false} reads as SUPPLIED.
     """
     ref=frame.get("heartbeat_reference") if isinstance(frame,dict) else None
+    # A field of the wrong type is a malformed frame, whatever it would have
+    # meant (F-TYPE): FRAME_INGEST_FAILED, not an integrity or epoch code.
+    mistyped=[name for name,kind in (("heartbeat_reference",dict),("frame_sha256",str),("packet_sha256",str),
+                                     ("packet_base64",str),("packet_id",str),("destination_org",str))
+              if isinstance(frame,dict) and name in frame and not isinstance(frame[name],kind)]
+    if mistyped:
+        return _quarantine_record(frame,FRAME_INGEST_FAILED,"wrong type: "+", ".join(mistyped),
+                                  failed_predicate="FRAME_IS_INGESTED_AS_PUBLISHED:TypeError")
     failure=_frame_epoch_failure(frame)
     if failure is None and _is_clock_reference(ref):
         return None
@@ -1284,11 +1336,11 @@ def ingest_recorded(repo_root:Path, item:dict[str,Any], custody:dict[str,Any], r
     service=next((svc for svc in registry["services"] if svc.get("service_id")==destination),None)
     try:
         result=ingest_frame(repo_root,item["frame"],mesh_root=mesh_root,node_state=node_state,
-                            carried_head_verified=_claims_carried(item["frame"])
-                                                  and _carried_head_verified(item["frame"],custody),
                             crossing_reference=crossing_reference)
     except ValueError as exc:
         reason=str(exc)
+        if isinstance(exc,EndpointInputFault):
+            raise
         if (any(marker in reason for marker in CUSTODY_REFUSALS)
                 or (service or {}).get("boundary_role")==CAPABILITY_INGRESS_ROLE):
             raise
@@ -1404,7 +1456,7 @@ def consume_and_respond(repo_root:Path, *, mesh_root:Path|None=None, node_state_
                 result,recorded=ingest_recorded(repo_root,item,custody,registry,mesh_root=mesh_root,
                                                 node_state=node_state,epoch=epoch,
                                                 crossing_reference=crossing_reference)
-            except CarrierEpochRefusal as exc:
+            except (CarrierEpochRefusal,EndpointInputFault) as exc:
                 quarantined=_ingest_failure_quarantine(item["frame"],exc)
             except Exception as exc:  # noqa: BLE001 -- this node's own failure: the frame stays pending
                 if any(marker in str(exc) for marker in CUSTODY_REFUSALS):

@@ -72,6 +72,9 @@ class FederationCycleEpochTests(unittest.TestCase):
         self.assertEqual(binding["argument"], "--hb-epoch")
         self.assertEqual(binding["from"], "dispatch_input")
         self.assertTrue((ROOT / binding["dispatcher"]).is_file())
+        # Hosted dispatch is prohibited while Actions is not runtime authority (row 16).
+        self.assertIs(manifest["github_actions_is_runtime_authority"], False)
+        self.assertEqual(binding["dispatcher_status"], "PROHIBITED_ON_HOSTED")
 
 
 if __name__ == "__main__":
