@@ -116,3 +116,34 @@ def test_a_broken_repository_chain_is_refused(ledgers):
     receipt = on_ledger(ledger, "own")
     (ledger.root / org.ledger_store.receipt_key(first["receipt_sha256"])).unlink()
     assert_refused_before_any_write(receipt, org_root, "REPO_LEDGER_CHAIN_BREAK")
+
+
+# --- Row 9: a corrupt or unreadable repository ledger never crashes the walk ---
+
+@pytest.mark.parametrize("corruption", ["{not json", '{"a":' + "[" * 200000 + "]" * 200000 + "}"])
+def test_a_corrupt_stored_receipt_is_a_terminal_refusal_not_a_traceback(ledgers, corruption):
+    ledger, org_root = ledgers
+    first = on_ledger(ledger, "first")
+    receipt = on_ledger(ledger, "own")
+    (ledger.root / org.ledger_store.receipt_key(first["receipt_sha256"])).write_text(corruption)
+    with pytest.raises(org.OrgLedgerEpochRefused) as raised:
+        aggregate(receipt, org_root)
+    assert raised.value.refusal["failure_code"] == "SOURCE_RECEIPT_NOT_ON_LEDGER"
+    assert raised.value.refusal["terminal"] is True
+    assert not org_root.exists()
+
+
+def test_an_unreadable_repository_ledger_is_a_non_terminal_refusal(ledgers, monkeypatch):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+
+    def unreadable(self, key):
+        raise OSError("simulated EIO reading " + key)
+
+    monkeypatch.setattr(org.ledger_store.PosixLedgerStore, "get", unreadable)
+    with pytest.raises(org.OrgLedgerEpochRefused) as raised:
+        aggregate(receipt, org_root, repository_ledger=ledger)
+    refusal = raised.value.refusal
+    assert (refusal["failure_code"], refusal["terminal"]) == ("SOURCE_RECEIPT_NOT_ON_LEDGER", False)
+    assert "retry" in refusal["next_attempt"]
+    assert not org_root.exists()

@@ -72,7 +72,7 @@ class SubmissionProvenanceTests(unittest.TestCase):
     def test_a_reference_edited_to_carried_with_a_stale_hash_is_refused(self):
         forged = json.loads(json.dumps(self.receipt))
         forged["hb_reference"].update({"source": "ORGANIZATION_LEDGER_HEAD", "head_receipt_sha": "ff" * 32})
-        self.assertRefusedWithNoFrame(self.submit(forged), "ORGANIZATION_RECEIPT_SELF_HASH_INVALID")
+        self.assertRefusedWithNoFrame(self.submit(forged), "CARRIED_REFERENCE_SELF_HASH_MISMATCH")
 
     def test_a_reference_edited_to_carried_and_rehashed_is_not_the_ledgers_own(self):
         forged = json.loads(json.dumps(self.receipt))
@@ -82,7 +82,7 @@ class SubmissionProvenanceTests(unittest.TestCase):
 
     def test_an_altered_body_is_refused(self):
         altered = dict(self.receipt, boundary_evidence={"injected": True})
-        self.assertRefusedWithNoFrame(self.submit(altered), "ORGANIZATION_RECEIPT_SELF_HASH_INVALID")
+        self.assertRefusedWithNoFrame(self.submit(altered), "CARRIED_REFERENCE_SELF_HASH_MISMATCH")
 
     def test_no_organization_ledger_supplied_is_refused(self):
         env = {k: v for k, v in self.env.items() if k != "STEGVERSE_ORG_LEDGER_ROOT"}

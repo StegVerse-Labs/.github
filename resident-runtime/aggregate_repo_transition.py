@@ -1178,14 +1178,15 @@ def source_ledger_refusal(receipt, repository_ledger=None):
     if not isinstance(receipt,dict) or receipt.get("schema")!="stegverse.repo-transition-receipt/v1":
         return None
     digest=receipt.get("receipt_sha256")
-    def refused(detail):
-        return {"disposition":"FAIL_CLOSED","failure_code":SOURCE_NOT_ON_LEDGER,
+    def refused(detail,terminal=True):
+        return {"disposition":"FAIL_CLOSED","failure_code":SOURCE_NOT_ON_LEDGER,"terminal":terminal,
                 "failed_predicate":SOURCE_ON_LEDGER_PREDICATE,"detail":"source receipt "+str(digest)+": "+detail,
                 "required_evidence_or_repair":("consume the receipt the repository ledger holds, byte-for-byte, reachable "
                                                "from its HEAD, with that ledger supplied (STEGVERSE_REPO_LEDGER_ROOT)"),
                 "retry_entrypoint":SOURCE_PROVENANCE_RETRY_ENTRYPOINT,
                 "owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
-                "next_attempt":"append again consuming the repository ledger's own receipt; nothing was written",
+                "next_attempt":("retry once the repository ledger is readable; nothing was written" if not terminal
+                                else "append again consuming the repository ledger's own receipt; nothing was written"),
                 "derived_from_clock":False,"consequence_committed":False}
     repository=_repository_ledger()
     if repository_ledger is None and not os.getenv("STEGVERSE_REPO_LEDGER_ROOT"):
@@ -1200,9 +1201,12 @@ def source_ledger_refusal(receipt, repository_ledger=None):
         held=None
         for row in repository.chain(store,head):
             if held is None and row.get("receipt_sha256")==digest: held=row
-    except ValueError as exc:
-        # No ledger supplied, or a chain that does not verify: nothing is believed.
+    except (ValueError,RecursionError,MemoryError) as exc:
+        # A chain that does not verify, or a corrupt stored receipt: terminal, nothing is believed.
         return refused(type(exc).__name__+": "+str(exc))
+    except OSError as exc:
+        # The ledger could not be read this time (row 9): non-terminal, the same append may be retried.
+        return refused(type(exc).__name__+": "+str(exc),terminal=False)
     if held is None:
         return refused("not reachable from the repository ledger's HEAD")
     if held!=receipt:
@@ -1224,8 +1228,9 @@ def organization_receipt_ledger_refusal(receipt, store=None, *, retry_entrypoint
     No ledger, an unreadable one or a broken chain is a refusal, never a pass.
     """
     digest=receipt.get("receipt_sha256") if isinstance(receipt,dict) else None
-    def refused(code,detail,repair):
+    def refused(code,detail,repair,terminal=True):
         return {"disposition":"FAIL_CLOSED","failure_code":code,"failed_predicate":ORG_RECEIPT_ON_LEDGER_PREDICATE,
+                "terminal":terminal,
                 "detail":"organization receipt "+str(digest)+": "+detail,"required_evidence_or_repair":repair,
                 "retry_entrypoint":retry_entrypoint,"owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
                 "next_attempt":"submit the organization ledger's own receipt; nothing was published",
@@ -1233,9 +1238,9 @@ def organization_receipt_ledger_refusal(receipt, store=None, *, retry_entrypoint
     repair=("submit the receipt this organization ledger holds, byte-for-byte, reachable from its HEAD, "
             "with that ledger supplied by the materializer")
     if not isinstance(receipt,dict) or not isinstance(digest,str):
-        return refused("ORGANIZATION_RECEIPT_SELF_HASH_INVALID","no receipt_sha256",repair)
+        return refused("CARRIED_REFERENCE_SELF_HASH_MISMATCH","no receipt_sha256",repair)
     if digest!=sha({k:v for k,v in receipt.items() if k!="receipt_sha256"}):
-        return refused("ORGANIZATION_RECEIPT_SELF_HASH_INVALID","receipt_sha256 is not the hash of its body "
+        return refused("CARRIED_REFERENCE_SELF_HASH_MISMATCH","receipt_sha256 is not the hash of its body "
                        "(edited after it was minted)",repair)
     try:
         store=store if store is not None else organization_store()
@@ -1247,7 +1252,9 @@ def organization_receipt_ledger_refusal(receipt, store=None, *, retry_entrypoint
             seen.add(cursor)
             if cursor==digest: held=rows[cursor]
             cursor=rows[cursor].get("previous_receipt_sha256")
-    except (OSError,ValueError) as exc:
+    except OSError as exc:
+        return refused(ORG_RECEIPT_NOT_ON_LEDGER,type(exc).__name__+": "+str(exc),repair,terminal=False)
+    except (ValueError,RecursionError,MemoryError) as exc:
         return refused(ORG_RECEIPT_NOT_ON_LEDGER,type(exc).__name__+": "+str(exc),repair)
     if held is None:
         return refused(ORG_RECEIPT_NOT_ON_LEDGER,"not reachable from the organization ledger's HEAD",repair)
