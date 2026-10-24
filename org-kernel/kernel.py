@@ -519,8 +519,8 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
     """Dispatch a recovered packet. `node_state` is this node's supplied state store.
 
     `heartbeat_reference` is the reference of the carrier frame that delivered
-    the packet; an endpoint adapter declared to take the carrier epoch is handed
-    its epoch and is refused without a supplied one.
+    the packet; an endpoint adapter and a capability-ingress operation requiring
+    the carrier epoch are handed its supplied epoch and refused without one.
 
     `root` is the organization's materialized source: it is read, never written.
     Anything the crossing records (work intake) goes to `node_state`.
