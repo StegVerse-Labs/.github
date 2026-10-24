@@ -1,0 +1,970 @@
+From 8440f25036c0861448507186d0eea9caf240fd5c Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 18 Oct 2026 23:52:28 +0000
+Subject: [PATCH] WU-B13h: callers carry the frame epoch to the supplied-epoch
+ writers
+
+Ordered after WU-B13 slice g. Base rule as WU-B13: applies after
+StegVerse-Labs/.github #3241, #3263, #3230 and #3207 merge, on top of
+slices a-g. Three caller transitions the supplied-HB-epoch slices leave red:
+
+1. Claim-allocator workflow: both consume steps supply --hb-epoch from the
+   receipt-chain frame epoch, the epoch the verified Organization ledger HEAD
+   records (new scripts/organization_ledger_head_epoch.py, reusing the
+   consumer's ledger_custody/verify_organization_chain and the kernel's
+   supplied_epoch_failure). A HEAD without a supplied epoch, or with a
+   clock-derived one, is refused six-field FAIL_CLOSED; nothing is consumed.
+   The tests that forbade the --hb-epoch string are narrowed to their intent:
+   no date/time source feeds the epoch, and only the ledger-derived epoch is
+   accepted. New tests: reproducing (red on the #3241 workflow), clock-derived
+   epochs still rejected, helper refusals.
+2. scripts/dispatch_resident_execution_requests.py: dispatch(hb_epoch=) and
+   --hb-epoch carry the frame epoch to the component-011 observation
+   (aggregate_transition(hb_epoch=)) and to the claim-allocator consumer.
+   A missing or invalid epoch is six-field FAIL_CLOSED before any append.
+   The 6 group-A tests the fixture cannot reach supply the epoch.
+3. kernel.dispatch: the capability-address operation is handed the carrier
+   frame's epoch (carrier_epoch), and a frame without a supplied one is
+   refused CarrierEpochRefusal (six fields) before the operation runs.
+
+No clock reads in runtime code. Stdlib only, no new dependencies.
+
+Evidence class: SOURCE_IMPLEMENTED, validation pending.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_016DnidhwsfxoGnpBiWgymET
+---
+ ...rganization-claim-allocator-transition.yml |  20 +-
+ org-kernel/kernel.py                          |  12 +-
+ .../dispatch_resident_execution_requests.py   |  55 ++++-
+ scripts/organization_ledger_head_epoch.py     |  99 +++++++++
+ .../test_claim_allocator_ledger_head_epoch.py | 205 ++++++++++++++++++
+ .../test_component011_org_dispatch_custody.py | 106 ++++++++-
+ tests/test_intr_destination_capability.py     |   4 +-
+ tests/test_kernel_dispatch_frame_epoch.py     | 108 +++++++++
+ ...organization_ledger_same_store_readback.py |   6 +-
+ tests/test_resident_org_claim_allocator.py    |  10 +-
+ ...est_transition_job_runs_on_pull_request.py |  10 +-
+ 11 files changed, 613 insertions(+), 22 deletions(-)
+ create mode 100644 scripts/organization_ledger_head_epoch.py
+ create mode 100644 tests/test_claim_allocator_ledger_head_epoch.py
+ create mode 100644 tests/test_kernel_dispatch_frame_epoch.py
+
+diff --git a/.github/workflows/organization-claim-allocator-transition.yml b/.github/workflows/organization-claim-allocator-transition.yml
+index d6848de..d36851c 100644
+--- a/.github/workflows/organization-claim-allocator-transition.yml
++++ b/.github/workflows/organization-claim-allocator-transition.yml
+@@ -21,7 +21,9 @@ on:
+       - '.github/workflows/organization-claim-allocator-transition.yml'
+       - 'scripts/consume_org_claim_allocator_request.py'
+       - 'scripts/allocate_claims.py'
++      - 'scripts/organization_ledger_head_epoch.py'
+       - 'tests/test_resident_org_claim_allocator.py'
++      - 'tests/test_claim_allocator_ledger_head_epoch.py'
+       - 'tests/test_org_claim_custody.py'
+       - 'tests/test_organization_ledger_explicit_root_guard.py'
+       - 'tests/test_transition_job_runs_on_pull_request.py'
+@@ -59,10 +61,12 @@ jobs:
+ 
+       - name: Validate the consumer and allocator against temporary ledgers
+         run: |
+-          python -m py_compile scripts/consume_org_claim_allocator_request.py scripts/allocate_claims.py
++          python -m py_compile scripts/consume_org_claim_allocator_request.py scripts/allocate_claims.py \
++            scripts/organization_ledger_head_epoch.py
+           python -m pip install pytest
+           python -m pytest -q --tb=short \
+             tests/test_resident_org_claim_allocator.py \
++            tests/test_claim_allocator_ledger_head_epoch.py \
+             tests/test_org_claim_custody.py \
+             tests/test_organization_ledger_explicit_root_guard.py
+           python scripts/validate_task_registry_global_invariants.py
+@@ -159,11 +163,18 @@ jobs:
+           set -euo pipefail
+           export STEGVERSE_ORG_LEDGER_GIT_DIR="$DRY_RUN_LEDGER"
+           mkdir -p "$RUNNER_TEMP/results"
++          # The frame this run continues is the Organization receipt chain: the
++          # epoch is the one its verified HEAD records, never a clock or date.
++          LEDGER_HEAD_HB_EPOCH=$(python scripts/organization_ledger_head_epoch.py \
++            --source-root "$GITHUB_WORKSPACE" \
++            --repo-ledger-root "git+$DRY_RUN_LEDGER#$LEDGER_REF:$REPO_LEDGER_NAMESPACE") || {
++            echo "$LEDGER_HEAD_HB_EPOCH"; exit 1; }
+           status=0
+           python scripts/consume_org_claim_allocator_request.py \
+             --source-root "$GITHUB_WORKSPACE" \
+             --runtime-root "$RUNNER_TEMP/runtime" \
+             --repo-ledger-root "git+$DRY_RUN_LEDGER#$LEDGER_REF:$REPO_LEDGER_NAMESPACE" \
++            --hb-epoch "$LEDGER_HEAD_HB_EPOCH" \
+             > "$RUNNER_TEMP/results/consumption.json" || status=$?
+           cat "$RUNNER_TEMP/results/consumption.json"
+           python - <<'PY'
+@@ -275,11 +286,18 @@ jobs:
+           export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
+           mkdir -p "$RUNNER_TEMP/results"
+           # No explicit Organization root: the Organization ledger is the declared store.
++          # The epoch is the one the declared ledger's verified HEAD records,
++          # never a clock or date; without one nothing is consumed.
++          LEDGER_HEAD_HB_EPOCH=$(python scripts/organization_ledger_head_epoch.py \
++            --source-root "$GITHUB_WORKSPACE" \
++            --repo-ledger-root "git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE") || {
++            echo "$LEDGER_HEAD_HB_EPOCH"; exit 1; }
+           status=0
+           python scripts/consume_org_claim_allocator_request.py \
+             --source-root "$GITHUB_WORKSPACE" \
+             --runtime-root "$RUNNER_TEMP/runtime" \
+             --repo-ledger-root "git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE" \
++            --hb-epoch "$LEDGER_HEAD_HB_EPOCH" \
+             > "$RUNNER_TEMP/results/consumption.json" || status=$?
+           cat "$RUNNER_TEMP/results/consumption.json"
+           # ALLOW, DENY and FAIL_CLOSED are all terminal dispositions; only a
+diff --git a/org-kernel/kernel.py b/org-kernel/kernel.py
+--- a/org-kernel/kernel.py
++++ b/org-kernel/kernel.py
+@@ -356,8 +356,9 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
+     """Dispatch a recovered packet. `node_state` is this node's supplied state store.
+ 
+     `heartbeat_reference` is the reference of the carrier frame that delivered
+-    the packet; an endpoint adapter declared to take the carrier epoch is handed
+-    its epoch and is refused without a supplied one.
++    the packet; an endpoint adapter declared to take the carrier epoch, and the
++    operation behind a capability address, is handed its epoch and is refused
++    without a supplied one.
+ 
+     `root` is the organization's materialized source: it is read, never written.
+     Anything the crossing records (work intake) goes to `node_state`.
+@@ -394,6 +395,11 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
+     # Also before any receipt: an adapter that takes the carrier epoch is not
+     # run, and no chain implies it was, without one the carrier supplied.
+     if endpoint and adapter_takes_carrier_epoch(service): carrier_epoch(heartbeat_reference)
++    # Also before any receipt: the operation behind a capability address writes
++    # receipts that reference the carrier frame's epoch, so it is handed that
++    # epoch and is not run, nor any chain implying it was, without a supplied one
++    # (FAIL_CLOSED, six fields; a clock-derived reference is not supplied).
++    frame_epoch=carrier_epoch(heartbeat_reference) if role==CAPABILITY_INGRESS_ROLE else None
+     # Also before any receipt: a work request is recorded in node state, so a
+     # node materialized without one cannot consume it.
+     if (role=="BOUNDARY_LOCAL_CONTROL" and node_state is None
+@@ -417,7 +423,7 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
+         # defective for having no capability resolver.
+         try:
+             application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
+-                                                                mesh_root=mesh_root)
++                                                                mesh_root=mesh_root,hb_epoch=frame_epoch)
+         except SystemExit as refused:
+             raise ValueError("capability_ingress_refused:"+str(refused)) from None
+     else:
+diff --git a/scripts/dispatch_resident_execution_requests.py b/scripts/dispatch_resident_execution_requests.py
+index 7a858e9..99928ea 100644
+--- a/scripts/dispatch_resident_execution_requests.py
++++ b/scripts/dispatch_resident_execution_requests.py
+@@ -36,6 +36,11 @@ COMPONENT011_SELECTOR = "ungoverned_ai_defensive_envelope"
+ COMPONENT011_TASK_ID = "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
+ COMPONENT011_REQUEST_ID = "RESIDENT-EXEC-UNGOVERNED-AI-DEFENSIVE-ENVELOPE-001"
+ COMPONENT011_REQUEST_REL = Path("control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json")
++# The component-011 observation references the heartbeat epoch of the frame
++# this dispatch carries (dispatch(hb_epoch=) / --hb-epoch); absent or invalid it
++# is refused six-field FAIL_CLOSED before anything is appended. No clock is read.
++COMPONENT011_EPOCH_RETRY_ENTRYPOINT = "scripts/dispatch_resident_execution_requests.py::dispatch (hb_epoch=, or --hb-epoch)"
++COMPONENT011_EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+ AWARENESS_AGGREGATE_REL = Path("receipts/sovereign-host/astra-class-resilience-awareness.latest.json")
+ AWARENESS_STATE_DIR = Path("runtime-state/entity-awareness")
+ AWARENESS_PROTECTED = {
+@@ -335,8 +340,35 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
+ 
+ 
+ 
++def component011_epoch_refusal(org: Any, hb_epoch: Any) -> dict[str, Any] | None:
++    """The six-field FAIL_CLOSED of the observation's epoch, or None when it is supplied.
++
++    The rule is the kernel's shared `supplied_epoch_failure`; nothing is
++    derived from a clock to stand in for an absent epoch.
++    """
++    failure = org.kernel.supplied_epoch_failure(hb_epoch)
++    if failure is None:
++        return None
++    code, detail = failure
++    return {
++        "state": "BOUNDARY",
++        "reason": code,
++        "disposition": "FAIL_CLOSED",
++        "failure_code": code,
++        "failed_predicate": COMPONENT011_EPOCH_PREDICATE,
++        "detail": detail,
++        "required_evidence_or_repair": "the dispatch carries the frame's heartbeat epoch (hb_epoch= or --hb-epoch): ASCII digits with value >= 32; it is never derived from a clock",
++        "retry_entrypoint": COMPONENT011_EPOCH_RETRY_ENTRYPOINT,
++        "owning_existing_goal": COMPONENT011_TASK_ID,
++        "next_attempt": "dispatch again with the frame's epoch; nothing was appended",
++        "derived_from_clock": False,
++        "consequence_committed": False,
++        "authority_effect": "NONE",
++    }
++
++
+ def retain_component011_dispatch_in_organization(
+-    source: Path, runtime: Path, outcomes: list[dict[str, Any]],
++    source: Path, runtime: Path, outcomes: list[dict[str, Any]], *, hb_epoch: Any = None,
+ ) -> dict[str, Any] | None:
+     """Record the exact component-011 selector outcome in the EXISTING org ledger.
+ 
+@@ -344,6 +376,8 @@ def retain_component011_dispatch_in_organization(
+     a WorkerCoordinator claim/fence. The org predecessor is verified by readback.
+     A missing runtime request is recorded as missing ONLY when its canonical
+     already-local source request is available for exact identity validation.
++    `hb_epoch` is the epoch of the frame this dispatch carries; the receipt
++    references it, and without a supplied one nothing is appended.
+     """
+     row = next((item for item in outcomes if item.get("consumer") == COMPONENT011_SELECTOR), None)
+     if row is None:
+@@ -401,6 +435,9 @@ def retain_component011_dispatch_in_organization(
+         # store the Organization manifest declares; no raw ledger root is read.
+         store = org.organization_store()
+         current_chain(store)
++        refused = component011_epoch_refusal(org, hb_epoch)
++        if refused is not None:
++            return refused
+ 
+         # A fresh actual visit receives its own non-authorizing identity.
+         visit_id = uuid.uuid4().hex
+@@ -461,6 +498,7 @@ def retain_component011_dispatch_in_organization(
+             },
+             authority_effect="NONE",
+             ledger=store,
++            hb_epoch=int(str(hb_epoch)),
+         )
+         digest = recorded["receipt_sha256"]
+         stored = store.get(org.ledger_store.receipt_key(digest))
+@@ -634,7 +672,14 @@ def dispatch(
+     goal_task_id: str | None = None,
+     request_id: str | None = None,
+     execution_attempt_id: str | None = None,
++    hb_epoch: str | int | None = None,
+ ) -> dict[str, Any]:
++    """Dispatch the selected consumers. `hb_epoch` is the carried frame's heartbeat epoch.
++
++    It is handed, as supplied, to the consumers that write receipts and to the
++    component-011 observation; it is never derived here, and a writer reached
++    without one refuses six-field FAIL_CLOSED.
++    """
+     source = source_root.expanduser().resolve()
+     runtime = runtime_root.expanduser().resolve()
+     source_env = dict(os.environ if env is None else env)
+@@ -682,6 +727,8 @@ def dispatch(
+                                    ("--org-ledger-root", "STEGVERSE_ORG_LEDGER_ROOT")):
+                 if str(source_env.get(variable) or "").strip():
+                     command.extend([flag, str(source_env[variable])])
++            if hb_epoch is not None:
++                command.extend(["--hb-epoch", str(hb_epoch)])
+         try:
+             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
+             result = parse_last_json(completed.stdout)
+@@ -734,7 +781,8 @@ def dispatch(
+         or richard_dispatch_master_records.get("state") != "RECORDED"
+     ):
+         exact_selector_failure = True
+-    component011_organization_dispatch = retain_component011_dispatch_in_organization(source, runtime, outcomes)
++    component011_organization_dispatch = retain_component011_dispatch_in_organization(
++        source, runtime, outcomes, hb_epoch=hb_epoch)
+     component011_custody_failure = bool(
+         component011_organization_dispatch is not None
+         and component011_organization_dispatch.get("state") != "RECORDED"
+@@ -781,6 +829,8 @@ def main() -> int:
+     parser.add_argument("--goal-task-id")
+     parser.add_argument("--request-id")
+     parser.add_argument("--execution-attempt-id")
++    parser.add_argument("--hb-epoch", type=str, default=None,
++                        help="heartbeat epoch of the carried frame, as supplied: ASCII digits with value >= 32; absent or invalid, receipt writers refuse HB_EPOCH_NOT_SUPPLIED/HB_EPOCH_INVALID")
+     args = parser.parse_args()
+     receipt = dispatch(
+         args.source_root,
+@@ -789,6 +839,7 @@ def main() -> int:
+         goal_task_id=args.goal_task_id,
+         request_id=args.request_id,
+         execution_attempt_id=args.execution_attempt_id,
++        hb_epoch=args.hb_epoch,
+     )
+     print(json.dumps(receipt, sort_keys=True))
+     return 0 if receipt["state"] == "DISPATCH_COMPLETE" else 1
+diff --git a/scripts/organization_ledger_head_epoch.py b/scripts/organization_ledger_head_epoch.py
+new file mode 100644
+index 0000000..52d008d
+--- /dev/null
++++ b/scripts/organization_ledger_head_epoch.py
+@@ -0,0 +1,99 @@
++#!/usr/bin/env python3
++"""Print the heartbeat epoch the Organization ledger HEAD records, or refuse it.
++
++The organization claim allocator workflow has no carrier frame of its own. The
++frame it continues is the Organization receipt chain, so the epoch it supplies
++(`--hb-epoch`) is the one the verified chain's HEAD receipt records in
++`hb_reference.epoch` -- read from the ledger, never from a clock or a date.
++
++The chain is verified with the consumer's EXISTING `ledger_custody` and
++`verify_organization_chain`; the epoch is checked with the kernel's shared
++`supplied_epoch_failure`, so a HEAD whose `derived_from_clock` is not exactly
++false is refused like any other unsupplied epoch. Every refusal is a six-field
++FAIL_CLOSED printed as JSON with exit status 1; nothing is appended. Stdlib only.
++"""
++from __future__ import annotations
++
++import argparse
++import importlib.util
++import json
++from pathlib import Path
++from typing import Any, Mapping
++
++CONSUMER_REL = Path("scripts/consume_org_claim_allocator_request.py")
++FAILED_PREDICATE = "ORGANIZATION_LEDGER_HEAD_RECORDS_A_SUPPLIED_HB_EPOCH"
++RETRY_ENTRYPOINT = ".github/workflows/organization-claim-allocator-transition.yml (scripts/organization_ledger_head_epoch.py)"
++OWNING_EXISTING_GOAL = "SHWP-ORG-CLAIM-ALLOCATOR-001"
++NEXT_ATTEMPT = "on the next request event after the Organization ledger HEAD records a supplied epoch; nothing was appended"
++
++
++def refusal(failure_code: str, detail: str, repair: str) -> dict[str, Any]:
++    return {
++        "disposition": "FAIL_CLOSED",
++        "failure_code": failure_code,
++        "failed_predicate": FAILED_PREDICATE,
++        "detail": detail,
++        "required_evidence_or_repair": repair,
++        "retry_entrypoint": RETRY_ENTRYPOINT,
++        "owning_existing_goal": OWNING_EXISTING_GOAL,
++        "next_attempt": NEXT_ATTEMPT,
++        "derived_from_clock": False,
++        "consequence_committed": False,
++        "authority_effect": "NONE_REFUSAL_ONLY",
++    }
++
++
++def head_epoch(chain: Mapping[str, Any], kernel: Any) -> tuple[str | None, dict[str, Any] | None]:
++    """(epoch digits, None) for the verified chain's HEAD receipt, or (None, six-field refusal)."""
++    receipts = chain.get("receipts") or []
++    head = receipts[-1] if receipts else None
++    if not isinstance(head, dict) or head.get("receipt_sha256") != chain.get("head_sha256"):
++        return None, refusal("LEDGER_HEAD_UNVERIFIED", "the verified chain carries no HEAD receipt",
++                             "supply an Organization ledger whose HEAD and chain verify")
++    reference = head.get("hb_reference")
++    epoch = reference.get("epoch") if isinstance(reference, dict) else None
++    failure = kernel.supplied_epoch_failure(epoch, reference)
++    if failure is not None:
++        code, detail = failure
++        return None, refusal(code, "HEAD " + str(head.get("receipt_sha256")) + ": " + detail,
++                             "the Organization ledger HEAD records hb_reference.epoch as a supplied epoch "
++                             "(ASCII digits, value >= 32, derived_from_clock exactly false); it is never "
++                             "filled from a clock")
++    return str(epoch), None
++
++
++def ledger_head_epoch(source_root: Path, repo_ledger_root: str) -> tuple[str | None, dict[str, Any] | None]:
++    source = source_root.expanduser().resolve()
++    spec = importlib.util.spec_from_file_location("organization_ledger_head_epoch_consumer", source / CONSUMER_REL)
++    if spec is None or spec.loader is None:
++        return None, refusal("LEDGER_HEAD_UNVERIFIED", "consumer not materialized: " + str(CONSUMER_REL),
++                             "materialize " + str(CONSUMER_REL) + " in the source root")
++    consumer = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(consumer)
++    try:
++        custody = consumer.ledger_custody(
++            source, repo_ledger_root, None,
++            event_ephemeral=consumer.event_ephemeral_materialization(source, repo_ledger_root, None))
++        chain = consumer.verify_organization_chain(custody)
++    except consumer.OrganizationLedgerNotAdmitted as exc:
++        return None, refusal("LEDGER_HEAD_UNVERIFIED", exc.predicate + ": " + exc.detail, exc.repair)
++    except consumer.ClaimFailClosed as exc:
++        return None, refusal("LEDGER_HEAD_UNVERIFIED", exc.predicate + ": " + exc.detail, exc.repair)
++    return head_epoch(chain, custody["organization_ledger"].kernel)
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
++    parser.add_argument("--source-root", type=Path, required=True)
++    parser.add_argument("--repo-ledger-root", type=str, required=True)
++    args = parser.parse_args(argv)
++    epoch, refused = ledger_head_epoch(args.source_root, args.repo_ledger_root)
++    if refused is not None:
++        print(json.dumps(refused, sort_keys=True))
++        return 1
++    print(epoch)
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tests/test_claim_allocator_ledger_head_epoch.py b/tests/test_claim_allocator_ledger_head_epoch.py
+new file mode 100644
+index 0000000..b28cc2a
+--- /dev/null
++++ b/tests/test_claim_allocator_ledger_head_epoch.py
+@@ -0,0 +1,205 @@
++"""The claim-allocator workflow supplies the Organization ledger HEAD's epoch, never a clock's.
++
++The workflow has no carrier frame of its own; the frame it continues is the
++Organization receipt chain, so `--hb-epoch` is the epoch the verified chain's
++HEAD receipt records (scripts/organization_ledger_head_epoch.py). The old guard
++forbade the `--hb-epoch` string outright; its intent was "no clock-derived
++epoch", and that is what is checked here: no date/time source may feed the
++epoch, and the only epoch accepted is the ledger-derived one. Stdlib only.
++"""
++from __future__ import annotations
++
++import importlib.util
++import re
++import unittest
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++ALLOCATOR = ROOT / ".github/workflows/organization-claim-allocator-transition.yml"
++HELPER_REL = "scripts/organization_ledger_head_epoch.py"
++EPOCH_VARIABLE = "LEDGER_HEAD_HB_EPOCH"
++SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
++              "owning_existing_goal", "next_attempt")
++TEST_HB_EPOCH = 4096
++
++# A date/time source anywhere in the statement that produces the epoch.
++CLOCK_SOURCES = (
++    re.compile(r"\bdate\b"),
++    re.compile(r"\$\(\s*date"),
++    re.compile(r"datetime"),
++    re.compile(r"\btime\.(time|monotonic|perf_counter|gmtime|localtime|strftime)"),
++    re.compile(r"github\.event\.[\w.]*timestamp"),
++    re.compile(r"\bnow\b"),
++    re.compile(r"%s"),
++    re.compile(r"\$\{?EPOCHSECONDS\b|\$\{?EPOCHREALTIME\b|\$\{?SECONDS\b"),
++    re.compile(r"hb_reference\("),
++)
++
++
++def load(name: str, rel: str):
++    spec = importlib.util.spec_from_file_location(name, ROOT / rel)
++    assert spec and spec.loader
++    module = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(module)
++    return module
++
++
++def statements(text: str) -> list[str]:
++    """Shell statements with backslash continuations joined; an open `(` or `{` keeps one going."""
++    out: list[str] = []
++    buffer = ""
++    depth = 0
++    for line in text.splitlines():
++        buffer += line.rstrip().rstrip("\\") + " "
++        depth = max(0, depth + line.count("(") - line.count(")") + line.count("{") - line.count("}"))
++        if line.rstrip().endswith("\\") or depth > 0:
++            continue
++        out.append(buffer.strip())
++        buffer, depth = "", 0
++    if buffer.strip():
++        out.append(buffer.strip())
++    return out
++
++
++def clock_fed_epoch_violations(text: str) -> list[str]:
++    """Every way a date/time source could feed `--hb-epoch` in `text`; empty when none can.
++
++    `--hb-epoch` may take only "$LEDGER_HEAD_HB_EPOCH", and every assignment of
++    that variable must come from the ledger-HEAD helper with no clock source.
++    """
++    violations = []
++    for statement in statements(text):
++        for value in re.findall(r"--hb-epoch[ =](\S+)", statement):
++            if value != '"$' + EPOCH_VARIABLE + '"':
++                violations.append("--hb-epoch takes " + value + ", not the ledger-HEAD epoch")
++        if re.search(r"\b" + EPOCH_VARIABLE + r"=", statement):
++            producer = statement.split(EPOCH_VARIABLE + "=", 1)[1].split("||", 1)[0]
++            if HELPER_REL not in producer:
++                violations.append(EPOCH_VARIABLE + " is not produced by " + HELPER_REL)
++            for pattern in CLOCK_SOURCES:
++                if pattern.search(producer):
++                    violations.append(EPOCH_VARIABLE + " is fed by a clock source: " + pattern.pattern)
++        if "--hb-epoch" in statement or re.search(r"\b" + EPOCH_VARIABLE + r"=", statement):
++            continue
++        # A clock read assigned to any name that later reaches --hb-epoch indirectly.
++        for name in re.findall(r"\b([A-Za-z_][A-Za-z0-9_]*)=\$\(", statement):
++            if any(pattern.search(statement) for pattern in CLOCK_SOURCES) and \
++                    re.search(r"--hb-epoch[ =]\"?\$\{?" + name + r"\b", text):
++                violations.append(name + " carries a clock source into --hb-epoch")
++    return violations
++
++
++def consume_invocations(text: str) -> list[str]:
++    return [s for s in statements(text)
++            if "consume_org_claim_allocator_request.py" in s and "--source-root" in s
++            and "--readback-result" not in s and "py_compile" not in s]
++
++
++class WorkflowSuppliesTheLedgerHeadEpoch(unittest.TestCase):
++    @unittest.skipUnless(ALLOCATOR.is_file(), "allocator workflow not on this tree (arrives with Labs#3241)")
++    def test_every_consumption_carries_the_ledger_head_epoch(self):
++        # Reproducing: red on the #3241 workflow, which passes no --hb-epoch, so a
++        # supplied-epoch writer (WU-B13) fails every request closed.
++        consumes = consume_invocations(ALLOCATOR.read_text(encoding="utf-8"))
++        self.assertEqual(len(consumes), 2, consumes)
++        for statement in consumes:
++            self.assertIn('--hb-epoch "$' + EPOCH_VARIABLE + '"', statement)
++
++    @unittest.skipUnless(ALLOCATOR.is_file(), "allocator workflow not on this tree (arrives with Labs#3241)")
++    def test_the_epoch_comes_from_the_ledger_head_and_no_clock_feeds_it(self):
++        text = ALLOCATOR.read_text(encoding="utf-8")
++        self.assertEqual(clock_fed_epoch_violations(text), [])
++        producers = [s for s in statements(text) if EPOCH_VARIABLE + "=$(" in s]
++        self.assertEqual(len(producers), 2, producers)
++        for producer in producers:
++            self.assertIn("python " + HELPER_REL, producer)
++            self.assertIn('echo "$' + EPOCH_VARIABLE + '"; exit 1;', producer)
++
++    def test_a_clock_derived_epoch_is_still_rejected(self):
++        clocked = (
++            'python scripts/consume_org_claim_allocator_request.py --hb-epoch "$(date +%s)"',
++            "python scripts/consume_org_claim_allocator_request.py --hb-epoch $(date -u +%s)",
++            'LEDGER_HEAD_HB_EPOCH=$(date +%s)\npython c.py --hb-epoch "$LEDGER_HEAD_HB_EPOCH"',
++            'LEDGER_HEAD_HB_EPOCH=$(python -c "import time; print(int(time.time()))")\n'
++            'python c.py --hb-epoch "$LEDGER_HEAD_HB_EPOCH"',
++            'LEDGER_HEAD_HB_EPOCH=$(python -c "import datetime; print(datetime.datetime.now())")\n'
++            'python c.py --hb-epoch "$LEDGER_HEAD_HB_EPOCH"',
++            "python c.py --hb-epoch ${{ github.event.head_commit.timestamp }}",
++            'python c.py --hb-epoch "$EPOCHSECONDS"',
++            'STAMP=$(date +%s)\npython c.py --hb-epoch "$STAMP"',
++            'LEDGER_HEAD_HB_EPOCH=$(python scripts/organization_ledger_head_epoch.py --now)\n'
++            'python c.py --hb-epoch "$LEDGER_HEAD_HB_EPOCH"',
++        )
++        for text in clocked:
++            self.assertNotEqual(clock_fed_epoch_violations(text), [], text)
++
++    def test_the_ledger_derived_epoch_is_accepted(self):
++        text = ('LEDGER_HEAD_HB_EPOCH=$(python scripts/organization_ledger_head_epoch.py \\\n'
++                '  --source-root "$GITHUB_WORKSPACE" \\\n'
++                '  --repo-ledger-root "git+$GITHUB_WORKSPACE#$LEDGER_REF:$NS") || {\n'
++                '  echo "$LEDGER_HEAD_HB_EPOCH"; exit 1; }\n'
++                'python scripts/consume_org_claim_allocator_request.py \\\n'
++                '  --source-root "$GITHUB_WORKSPACE" \\\n'
++                '  --hb-epoch "$LEDGER_HEAD_HB_EPOCH" \\\n'
++                '  > out.json\n')
++        self.assertEqual(clock_fed_epoch_violations(text), [])
++
++
++class LedgerHeadEpochHelper(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.helper = load("organization_ledger_head_epoch_test", HELPER_REL)
++        cls.kernel = load("organization_ledger_head_epoch_kernel_test", "org-kernel/kernel.py")
++
++    def chain(self, hb_reference, *, include=True):
++        head = {"receipt_sha256": "sha256:" + "a" * 64}
++        if include:
++            head["hb_reference"] = hb_reference
++        return {"head_sha256": head["receipt_sha256"], "receipts": [{"receipt_sha256": "sha256:" + "b" * 64}, head]}
++
++    def assert_six_field_refusal(self, refused, failure_code):
++        self.assertIsNotNone(refused)
++        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
++        self.assertEqual(refused["failure_code"], failure_code)
++        for field in SIX_FIELDS:
++            self.assertTrue(refused.get(field), field)
++        self.assertIs(refused["derived_from_clock"], False)
++        self.assertIs(refused["consequence_committed"], False)
++
++    def test_the_head_epoch_as_recorded_is_returned(self):
++        reference = self.kernel.hb_reference(epoch=TEST_HB_EPOCH)
++        epoch, refused = self.helper.head_epoch(self.chain(reference), self.kernel)
++        self.assertIsNone(refused)
++        self.assertEqual(epoch, str(TEST_HB_EPOCH))
++
++    def test_a_clock_derived_head_epoch_is_refused(self):
++        reference = dict(self.kernel.hb_reference(epoch=TEST_HB_EPOCH), derived_from_clock=True)
++        epoch, refused = self.helper.head_epoch(self.chain(reference), self.kernel)
++        self.assertIsNone(epoch)
++        self.assert_six_field_refusal(refused, "HB_EPOCH_INVALID")
++
++    def test_a_head_without_an_epoch_is_refused(self):
++        for chain in (self.chain(None, include=False), self.chain(None), self.chain({"generation": 64})):
++            epoch, refused = self.helper.head_epoch(chain, self.kernel)
++            self.assertIsNone(epoch)
++            self.assert_six_field_refusal(refused, "HB_EPOCH_NOT_SUPPLIED")
++
++    def test_an_invalid_head_epoch_is_refused(self):
++        for value in (31, True, "0x40", " 64", 64.0):
++            epoch, refused = self.helper.head_epoch(self.chain({"epoch": value}), self.kernel)
++            self.assertIsNone(epoch, value)
++            self.assert_six_field_refusal(refused, "HB_EPOCH_INVALID")
++
++    def test_a_chain_without_its_head_receipt_is_refused(self):
++        epoch, refused = self.helper.head_epoch({"head_sha256": "sha256:" + "c" * 64, "receipts": []}, self.kernel)
++        self.assertIsNone(epoch)
++        self.assert_six_field_refusal(refused, "LEDGER_HEAD_UNVERIFIED")
++
++    def test_the_helper_reads_no_clock(self):
++        source = (ROOT / HELPER_REL).read_text(encoding="utf-8")
++        for forbidden in ("import time", "from time", "datetime", "time.time", "hb_reference(", "date +%s"):
++            self.assertNotIn(forbidden, source)
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tests/test_component011_org_dispatch_custody.py b/tests/test_component011_org_dispatch_custody.py
+index d7252b0..c02720b 100644
+--- a/tests/test_component011_org_dispatch_custody.py
++++ b/tests/test_component011_org_dispatch_custody.py
+@@ -13,6 +13,10 @@ from scripts import dispatch_resident_execution_requests as dispatch
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+ REQUEST = ROOT / dispatch.COMPONENT011_REQUEST_REL
++# The carried frame's heartbeat epoch (kernel HB32 anchor is 32); supplied, never derived from a clock.
++FRAME_HB_EPOCH = 4096
++SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
++              "owning_existing_goal", "next_attempt")
+ 
+ 
+ def _outcome(*, attempted=True, state="ATTEMPT_RECORDED"):
+@@ -43,7 +47,8 @@ def test_attempt_creates_exact_org_receipt_and_immediate_predecessor(tmp_path, m
+     _request_at(runtime)
+     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+ 
+-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
++    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(),
++                                                                  hb_epoch=FRAME_HB_EPOCH)
+     assert first["state"] == "RECORDED", first
+     assert first["classification"] == "RESIDENT_REQUEST_DISPATCH_OBSERVATION_ONLY"
+     assert first["exact_receipt_readback"] == "PASS"
+@@ -55,12 +60,14 @@ def test_attempt_creates_exact_org_receipt_and_immediate_predecessor(tmp_path, m
+     source = json.loads((ledger / "source-receipts" / (first["source_transition_sha256"][7:] + ".json")).read_text())
+     row = _stored(ledger, first["organization_receipt_sha256"])
+     assert row["org_transition_class"] == "RESIDENT_REQUEST_DISPATCH_OBSERVATION"
++    assert row["hb_reference"]["epoch"] == FRAME_HB_EPOCH
++    assert row["hb_reference"]["derived_from_clock"] is False
+     assert row["source_transition_sha256"] == first["source_transition_sha256"]
+     assert source["transition_evidence"]["dispatch_grants_authority"] is False
+     assert source["required_evidence_manifest"][0]["content"]["request_id"] == dispatch.COMPONENT011_REQUEST_ID
+ 
+     second = dispatch.retain_component011_dispatch_in_organization(
+-        ROOT, runtime, _outcome(state="FAIL_CLOSED")
++        ROOT, runtime, _outcome(state="FAIL_CLOSED"), hb_epoch=FRAME_HB_EPOCH
+     )
+     assert second["state"] == "RECORDED", second
+     assert second["immediate_predecessor_sha256"] == first["organization_receipt_sha256"]
+@@ -72,7 +79,8 @@ def test_missing_runtime_request_and_consumer_still_retains_exact_source_bound_o
+     ledger = tmp_path / "ledger"
+     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+     record = dispatch.retain_component011_dispatch_in_organization(
+-        ROOT, tmp_path / "runtime", _outcome(attempted=False, state="CONSUMER_NOT_MATERIALIZED")
++        ROOT, tmp_path / "runtime", _outcome(attempted=False, state="CONSUMER_NOT_MATERIALIZED"),
++        hb_epoch=FRAME_HB_EPOCH,
+     )
+     assert record["state"] == "RECORDED", record
+     assert record["runtime_request_present"] is False
+@@ -103,13 +111,15 @@ def test_corrupted_org_predecessor_fails_before_appending(tmp_path, monkeypatch)
+     runtime = tmp_path / "runtime"
+     _request_at(runtime)
+     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
++    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(),
++                                                                  hb_epoch=FRAME_HB_EPOCH)
+     assert first["state"] == "RECORDED", first
+     path = ledger / "receipts" / (first["organization_receipt_sha256"][7:] + ".json")
+     row = json.loads(path.read_text())
+     row["source_transition_id"] = "FORGED_RECORDED_TRANSITION"
+     path.write_text(json.dumps(row))
+-    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
++    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(),
++                                                                   hb_epoch=FRAME_HB_EPOCH)
+     assert result["state"] == "BOUNDARY", result
+     assert result["reason"] == "COMPONENT011_ORGANIZATION_DISPATCH_CUSTODY_FAILED"
+     assert len(list((ledger / "receipts").glob("*.json"))) == 1
+@@ -132,7 +142,7 @@ def test_dispatch_same_existing_path_retains_component011_org_outcome(tmp_path,
+         )
+     result = dispatch.dispatch(
+         ROOT, runtime, only_consumers=(dispatch.COMPONENT011_SELECTOR,),
+-        runner=runner, env={"PATH": "/bin"},
++        runner=runner, env={"PATH": "/bin"}, hb_epoch=FRAME_HB_EPOCH,
+     )
+     assert result["state"] == "DISPATCH_COMPLETE", result
+     proof = result["component011_organization_dispatch"]
+@@ -169,12 +179,92 @@ def test_orphaned_existing_org_receipt_prevents_new_observation(tmp_path, monkey
+     runtime = tmp_path / "runtime"
+     _request_at(runtime)
+     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
++    first = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(),
++                                                                  hb_epoch=FRAME_HB_EPOCH)
+     assert first["state"] == "RECORDED", first
+     orphan = ledger / "receipts" / ("f" * 64 + ".json")
+     orphan.write_text(json.dumps({"schema": "forged-orphan"}))
+-    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
++    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(),
++                                                                   hb_epoch=FRAME_HB_EPOCH)
+     assert result["state"] == "BOUNDARY", result
+     assert result["reason"] == "COMPONENT011_ORGANIZATION_DISPATCH_CUSTODY_FAILED"
+     assert len(list((ledger / "receipts").glob("*.json"))) == 2
+     assert json.loads((ledger / "HEAD.json").read_text())["receipt_sha256"] == first["organization_receipt_sha256"]
++
++
++def test_observation_without_the_frame_epoch_fails_closed_and_appends_nothing(tmp_path, monkeypatch):
++    ledger = tmp_path / "ledger"
++    runtime = tmp_path / "runtime"
++    _request_at(runtime)
++    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
++    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
++    assert result["state"] == "BOUNDARY", result
++    assert result["disposition"] == "FAIL_CLOSED"
++    assert result["failure_code"] == "HB_EPOCH_NOT_SUPPLIED"
++    for field in SIX_FIELDS:
++        assert result.get(field), field
++    assert result["retry_entrypoint"] == dispatch.COMPONENT011_EPOCH_RETRY_ENTRYPOINT
++    assert result["derived_from_clock"] is False
++    assert not (ledger / "HEAD.json").exists()
++    assert not (ledger / "receipts").is_dir() or not list((ledger / "receipts").glob("*.json"))
++
++
++def test_observation_with_an_invalid_epoch_fails_closed_and_appends_nothing(tmp_path, monkeypatch):
++    ledger = tmp_path / "ledger"
++    runtime = tmp_path / "runtime"
++    _request_at(runtime)
++    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
++    for value in (31, True, "+64", " 64", "0x40", 64.0):
++        result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(), hb_epoch=value)
++        assert result["state"] == "BOUNDARY", (value, result)
++        assert result["failure_code"] == "HB_EPOCH_INVALID", value
++        for field in SIX_FIELDS:
++            assert result.get(field), (value, field)
++    assert not (ledger / "HEAD.json").exists()
++
++
++def test_dispatch_without_the_frame_epoch_reports_the_six_field_refusal(tmp_path, monkeypatch):
++    ledger = tmp_path / "ledger"
++    runtime = tmp_path / "runtime"
++    _request_at(runtime)
++    consumer = runtime / dict(dispatch.CONSUMERS)[dispatch.COMPONENT011_SELECTOR]
++    consumer.parent.mkdir(parents=True, exist_ok=True)
++    consumer.write_text("# inert consumer fixture\n")
++    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
++    def runner(*args, **kwargs):
++        return SimpleNamespace(returncode=0, stdout='{"state":"ATTEMPT_RECORDED"}\n', stderr="")
++    result = dispatch.dispatch(
++        ROOT, runtime, only_consumers=(dispatch.COMPONENT011_SELECTOR,),
++        runner=runner, env={"PATH": "/bin"},
++    )
++    assert result["state"] == "DISPATCH_INCOMPLETE"
++    assert result["component011_organization_custody_failure"] is True
++    refused = result["component011_organization_dispatch"]
++    assert refused["failure_code"] == "HB_EPOCH_NOT_SUPPLIED"
++    for field in SIX_FIELDS:
++        assert refused.get(field), field
++    assert not (ledger / "HEAD.json").exists()
++
++
++def test_dispatch_hands_the_frame_epoch_to_the_claim_allocator_consumer(tmp_path):
++    runtime = tmp_path / "runtime"
++    consumer = runtime / dict(dispatch.CONSUMERS)["org_claim_allocator"]
++    consumer.parent.mkdir(parents=True, exist_ok=True)
++    consumer.write_text("# inert consumer fixture\n")
++    commands = []
++    def runner(command, **kwargs):
++        commands.append(command)
++        return SimpleNamespace(returncode=0, stdout='{"state":"NO_REQUEST"}\n', stderr="")
++    dispatch.dispatch(ROOT, runtime, only_consumers=("org_claim_allocator",), runner=runner,
++                      env={"PATH": "/bin"}, hb_epoch=str(FRAME_HB_EPOCH))
++    dispatch.dispatch(ROOT, runtime, only_consumers=("org_claim_allocator",), runner=runner,
++                      env={"PATH": "/bin"})
++    assert commands[0][-2:] == ["--hb-epoch", str(FRAME_HB_EPOCH)]
++    # Without a supplied epoch none is synthesized; the consumer refuses on its own.
++    assert "--hb-epoch" not in commands[1]
++
++
++def test_dispatcher_reads_no_clock_for_the_epoch():
++    source = (ROOT / "scripts/dispatch_resident_execution_requests.py").read_text(encoding="utf-8")
++    for forbidden in ("hb_reference()", "time.time", "datetime.now", "date +%s"):
++        assert forbidden not in source
+diff --git a/tests/test_intr_destination_capability.py b/tests/test_intr_destination_capability.py
+--- a/tests/test_intr_destination_capability.py
++++ b/tests/test_intr_destination_capability.py
+@@ -303,7 +303,9 @@ class AddressedAndClosedTests(RedirectedLedgers):
+             payload=payload, standing=GENESIS,
+             transition_reference="intr:transition:" + packet_id,
+             authority_effect="NONE", packet_id=packet_id)
+-        kernel.publish_packet(packet, root=self.mesh)
++        # The carrier frame supplies its epoch: kernel.dispatch hands it to the
++        # capability operation and refuses a frame without one, or a clock-derived one.
++        kernel.publish_packet(packet, root=self.mesh, epoch=32)
+         return packet
+ 
+     def consume(self):
+diff --git a/tests/test_kernel_dispatch_frame_epoch.py b/tests/test_kernel_dispatch_frame_epoch.py
+new file mode 100644
+index 0000000..049e84a
+--- /dev/null
++++ b/tests/test_kernel_dispatch_frame_epoch.py
+@@ -0,0 +1,108 @@
++"""`kernel.dispatch` hands a capability-address operation the carrier frame's epoch.
++
++The receiving operation behind a capability address writes receipts at both
++ledger levels, and a receipt references the epoch its caller supplies. The
++epoch a crossing has is the one its carrier frame carries
++(`heartbeat_reference.epoch`). Dispatch checks it with the kernel's shared rule
++(`carrier_epoch`) and hands it on; a frame without a supplied one, or with a
++clock-derived one, is refused six-field FAIL_CLOSED (CarrierEpochRefusal)
++before the operation runs. No clock is read. The registry, standing contract,
++processing selection and capability resolver are stubbed: nothing here is a
++live crossing.
++"""
++from __future__ import annotations
++
++import importlib.util
++import unittest
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++FRAME_HB_EPOCH = 4096
++ORGANIZATION = "StegVerse-Labs"
++ADDRESS = "stegverse-labs.intr-destination"
++
++
++def load(name: str, rel: str):
++    spec = importlib.util.spec_from_file_location(name, ROOT / rel)
++    assert spec and spec.loader
++    module = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(module)
++    return module
++
++
++class _Standing:
++    def load_contract(self, root):
++        return {}
++
++    def require(self, contract, packet):
++        return {}
++
++
++class _Selection:
++    def select_processing(self, service, payload):
++        return {}
++
++
++class _Receiver:
++    def __init__(self):
++        self.calls = []
++
++    def receive(self, root, service, packet, **kwargs):
++        self.calls.append(kwargs)
++        return {"capability_received": True}
++
++
++class KernelDispatchPassesTheFrameEpoch(unittest.TestCase):
++    def setUp(self):
++        self.kernel = load("kernel_dispatch_frame_epoch_test", "org-kernel/kernel.py")
++        self.receiver = _Receiver()
++        registry = {"organization": ORGANIZATION,
++                    "services": [{"service_id": ADDRESS, "boundary_role": self.kernel.CAPABILITY_INGRESS_ROLE}]}
++        self.kernel.load_registry = lambda root: registry
++        self.kernel.node_standing = lambda root: _Standing()
++        self.kernel.manifest_selection = lambda root: _Selection()
++        self.kernel.capability_ingress = lambda root: self.receiver
++        self.packet = {"packet_id": "frame-epoch-packet", "destination": {"org": ORGANIZATION, "service": ADDRESS},
++                       "payload": {"schema": "stub"}, "transition": {"authority_effect": "NONE"}}
++
++    def dispatch(self, heartbeat_reference):
++        return self.kernel.dispatch(ROOT, self.packet, heartbeat_reference=heartbeat_reference)
++
++    def test_the_frame_epoch_reaches_the_receiving_operation(self):
++        # Reproducing: red before WU-B13h, when receive() was handed no epoch at all.
++        reference = self.kernel.hb_reference(epoch=FRAME_HB_EPOCH)
++        result = self.dispatch(reference)
++        self.assertIs(result["consumed"], True)
++        self.assertEqual(len(self.receiver.calls), 1)
++        self.assertEqual(self.receiver.calls[0].get("hb_epoch", "ABSENT"), FRAME_HB_EPOCH)
++
++    def test_a_frame_without_a_supplied_epoch_is_refused_before_the_operation_runs(self):
++        clocked = dict(self.kernel.hb_reference(epoch=FRAME_HB_EPOCH), derived_from_clock=True)
++        cases = ((None, "HB_EPOCH_NOT_SUPPLIED"), ({}, "HB_EPOCH_NOT_SUPPLIED"),
++                 ({"generation": 64}, "HB_EPOCH_NOT_SUPPLIED"), ("HB:64", "HB_EPOCH_INVALID"),
++                 ({"epoch": 31}, "HB_EPOCH_INVALID"), ({"epoch": True}, "HB_EPOCH_INVALID"),
++                 ({"epoch": "+64"}, "HB_EPOCH_INVALID"), (clocked, "HB_EPOCH_INVALID"))
++        for reference, code in cases:
++            self.receiver.calls.clear()
++            with self.assertRaises(self.kernel.CarrierEpochRefusal) as refused:
++                self.dispatch(reference)
++            record = refused.exception.record
++            self.assertEqual(record["disposition"], "FAIL_CLOSED", reference)
++            self.assertEqual(record["failure_code"], code, reference)
++            for field in self.kernel.SIX_FIELDS:
++                self.assertTrue(record.get(field), (reference, field))
++            self.assertIs(record["derived_from_clock"], False)
++            self.assertIs(record["consequence_committed"], False)
++            # Not run: no receipt-writing operation was reached.
++            self.assertEqual(self.receiver.calls, [], reference)
++
++    def test_other_roles_are_not_handed_an_epoch(self):
++        service = self.kernel.load_registry(ROOT)["services"][0]
++        service["boundary_role"] = "BOUNDARY_LOCAL_DIAGNOSTIC"
++        result = self.dispatch(None)
++        self.assertEqual(result["application_result"], {"echo": self.packet["payload"]})
++        self.assertEqual(self.receiver.calls, [])
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tests/test_organization_ledger_same_store_readback.py b/tests/test_organization_ledger_same_store_readback.py
+index 97c4b48..eca2c27 100644
+--- a/tests/test_organization_ledger_same_store_readback.py
++++ b/tests/test_organization_ledger_same_store_readback.py
+@@ -148,11 +148,13 @@ def _outcome(dispatch, state="ATTEMPT_RECORDED"):
+ def test_dispatcher_append_and_readback_use_the_same_declared_git_store(git_declared, tmp_path):
+     node, posix, before = git_declared
+     dispatch = _dispatch()
+-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, tmp_path / "runtime", _outcome(dispatch))
++    # The carried frame's epoch, supplied (HB32 anchor is 32); never derived from a clock.
++    first = dispatch.retain_component011_dispatch_in_organization(ROOT, tmp_path / "runtime", _outcome(dispatch),
++                                                                  hb_epoch=4096)
+     assert first["state"] == "RECORDED", first
+     assert first["exact_receipt_readback"] == "PASS"
+     second = dispatch.retain_component011_dispatch_in_organization(
+-        ROOT, tmp_path / "runtime", _outcome(dispatch, "FAIL_CLOSED"))
++        ROOT, tmp_path / "runtime", _outcome(dispatch, "FAIL_CLOSED"), hb_epoch=4096)
+     assert second["state"] == "RECORDED", second
+     assert second["immediate_predecessor_sha256"] == first["organization_receipt_sha256"]
+     assert second["immediate_predecessor_readback"] == "PASS"
+diff --git a/tests/test_resident_org_claim_allocator.py b/tests/test_resident_org_claim_allocator.py
+--- a/tests/test_resident_org_claim_allocator.py
++++ b/tests/test_resident_org_claim_allocator.py
+@@ -670,11 +670,15 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
+             self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
+ 
+     def test_hosted_workflow_synthesizes_no_heartbeat_epoch(self):
+-        # The hosted path has no carrier, so it supplies no epoch and derives none;
+-        # its grants are FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED until a carrier does.
++        # The hosted path derives no epoch from a clock. The only epoch it supplies is
++        # the one the verified Organization ledger HEAD records
++        # (scripts/organization_ledger_head_epoch.py); without one it consumes nothing.
+         text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
+-        for forbidden in ("--hb-epoch", "date +%s", "hb_reference(", "time.time", "datetime.now"):
++        for forbidden in ("date +%s", "hb_reference(", "time.time", "datetime.now"):
+             self.assertNotIn(forbidden, text)
++        for line in text.splitlines():
++            if "--hb-epoch" in line:
++                self.assertEqual(line.strip(), '--hb-epoch "$LEDGER_HEAD_HB_EPOCH" \\')
+ 
+     def test_workflow_refusals_carry_the_six_fields(self):
+         text = (ROOT / ".github/workflows/organization-claim-allocator-transition.yml").read_text(encoding="utf-8")
+diff --git a/tests/test_transition_job_runs_on_pull_request.py b/tests/test_transition_job_runs_on_pull_request.py
+index 7f146b6..8fa3ac0 100644
+--- a/tests/test_transition_job_runs_on_pull_request.py
++++ b/tests/test_transition_job_runs_on_pull_request.py
+@@ -87,13 +87,19 @@ class TransitionJobRunsOnPullRequest(unittest.TestCase):
+         self.assertIn(LEDGER, WORKFLOWS)
+ 
+     @unittest.skipUnless(ALLOCATOR.is_file(), "allocator workflow not on this tree (arrives with Labs#3241)")
+-    def test_allocator_dry_run_runs_the_same_consumer_without_an_epoch(self):
++    def test_allocator_dry_run_runs_the_same_consumer_with_the_ledger_head_epoch(self):
++        # The dry run supplies the epoch the temporary ledger's verified HEAD
++        # records, as the publishing run does; it synthesizes none from a clock.
+         text = ALLOCATOR.read_text(encoding="utf-8")
+         pr_steps = "\n".join(s for s in steps(transition_job(text)) if PR in s)
+         self.assertIn("scripts/consume_org_claim_allocator_request.py", pr_steps)
+         self.assertIn('--repo-ledger-root "git+$DRY_RUN_LEDGER#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"', pr_steps)
+         self.assertIn("--readback-result", pr_steps)
+-        self.assertNotIn("--hb-epoch", pr_steps)
++        self.assertIn("scripts/organization_ledger_head_epoch.py", pr_steps)
++        for line in pr_steps.splitlines():
++            if "--hb-epoch" in line:
++                self.assertEqual(line.strip(), '--hb-epoch "$LEDGER_HEAD_HB_EPOCH" \\')
++        self.assertNotIn("date +%s", pr_steps)
+         self.assertNotIn("--org-ledger-root", pr_steps)
+ 
+     def test_ledger_verify_appends_nothing_and_synthesizes_no_epoch(self):

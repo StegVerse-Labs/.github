@@ -1,6 +1,6 @@
 # MIR / StegVerse Experiment 3 — canonical mirror handoff
 
-Updated: 2026-09-24
+Updated: 2026-10-18
 Goal Task ID: `MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003`
 COSV ID: `50000000100000` (task.v1, documentary/source active; no claim of authentic runtime)
 Registry source generation at intake: 226; canonical registration MERGED at generation 227 and independently read back from main (one Registry row, one COSV index row, exact task vector 50000000100000).
@@ -68,7 +68,7 @@ Existing SDK owner repair [SDK PR #318](https://github.com/StegVerse-org/StegVer
 
 **Experiment 3 application:** the previously supplied PDF and ten original PNGs were independently SHA-256 checked 11/11 against the existing canonical evidence manifest. A local **reviewer source-intake package** was produced in this conversation (`mir-sv-exp3-reviewer-intake.zip`, exact ZIP SHA-256 `f7cb383094573eac08fa0dfcb15768e4521e093d74c96931609f0f0daaf0008a`) containing all eleven original bytes, an evaluator source inventory and an SDK-transfer-compatible base64 `evaluator-assets.json`. The zip remains **local conversation output**, not an authorized publisher transfer, public release or persistent GitHub binary. Its original PDF hash remains `1e2f134ab60144bb4c5a4de135c6f76d460f22995a0e0b2df1ef071f7e8c8ffe` and image hashes remain in `RECOVERED_CONVERSATION_EVIDENCE.md`. The original frozen SDK manifest and diagnostic from PR #317 remain unchanged; a future review-facing manifest must be its new independently identified successor.
 
-**Authentic runtime remaining:** this environment cannot retrieve authentic resident Universal InTr ingress/organization-ledger HEAD, matching Master Records organization record or actual Publisher destination/return/far-side receipts. The old isolated source-CI failure `UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED` is an environment-specific observation, **not evidence that resident InTr is universally unavailable**. Neither Publisher PR #73 nor SDK PR #318 claims to have transported the original Experiment 3 user bytes through the sovereign path; the source-only packet/demo cannot stand in for authentic Publisher production/custody or evaluator delivery. These remain explicit open experiment evidence predicates. The distinction between independently observed physical work and reported/software activity is unchanged.
+**Authentic runtime remaining (historical 2026-09-24 ceiling; reconciled by the 2026-10-18 section below — Publisher, Master Records, native lease and resident InTr are not the native runtime-observation predicate):** this environment cannot retrieve authentic resident Universal InTr ingress/organization-ledger HEAD, matching Master Records organization record or actual Publisher destination/return/far-side receipts. The old isolated source-CI failure `UNIVERSAL_INTR_INGRESS_NOT_CONFIGURED` is an environment-specific observation, **not evidence that resident InTr is universally unavailable**. Neither Publisher PR #73 nor SDK PR #318 claims to have transported the original Experiment 3 user bytes through the sovereign path; the source-only packet/demo cannot stand in for authentic Publisher production/custody or evaluator delivery. These remain explicit open experiment evidence predicates. The distinction between independently observed physical work and reported/software activity is unchanged.
 
 ## Reviewer intake exact-root strengthening and original SDK artifact inclusion (2026-09-24)
 
@@ -226,3 +226,40 @@ Canonical Registry generation 259 retains ACTIVE / UNCLAIMED / COSV 500000001000
 **The guards could not have reported this at merge time.** Both `.github/workflows/mir-sv-exp3-sdk-manifest.yml` and `.github/workflows/svg-governance-cycle-manifest-route.yml` trigger only on `pull_request` and `workflow_dispatch`. Neither runs on the SDK default branch, so a merge can break the frozen guard and nothing reports until a later unrelated pull request happens to touch one of their filtered paths — which is how this surfaced, on [SDK #406](https://github.com/StegVerse-org/StegVerse-SDK/pull/406), a change to capability declaration that does not touch this experiment. Twelve source tests currently fail: all nine in `tests/test_mir_sv_exp3_manifest.py` and three of seven in `tests/test_universal_manifest_state_transition_runtime.py`.
 
 **Nothing here is a runtime finding.** This is source validation of the builder against its own frozen declaration. No authentic ingress, Master Records organization record, resident execution or Publisher return is claimed, observed or disclaimed by it, and the `ACTIVE / UNCLAIMED` documentary posture of this experiment is unchanged. The contradiction is recorded so that it accumulates as evidence with a named repair rather than persisting as a red check on unrelated work.
+
+## 2026-10-18 runtime-observation path reconciled to the organization-ledger receipt rule (WU-B20)
+
+**This section supersedes the "authentic runtime remaining" ceiling recorded on 2026-09-24 and the "remaining real execution boundary" of 2026-09-26** wherever they list Publisher destination/return receipts, a matched Master Records organization record, a native authority/lease producer or resident Universal InTr ingress as the *runtime* still owed by this goal. Those surfaces are not the native runtime observation for `MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003`. The historical text above is retained unchanged as history.
+
+**Registry rule (exact text).** `data/task-registry-global-invariants.json` line 118, `organization_runtime_reality`:
+
+> Runtime reality for an organization is the organization ledger root: the append-only hash-linked organization receipt chain written under the organization ledger lock by manifest-directed append. A transition within the organization is real when it is appended there. Shipping, releasing, recording or reconstructing it downstream preserves and verifies that reality; it does not constitute it.
+
+Same file, line 49: `"master_records_role": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"`; line 52: `"master_records_may_gate_organization_runtime_reality": false`; line 119, `master_records_batch_recording`: Master Records "holds no transition, execution, credential, routing or runtime-reality authority, is not a gate on an organization's runtime reality, and is never awaited by a transition."
+
+Same file, line 120, `actions_by_manifest`:
+
+> Destination liveness, receiver availability, an always-on listener, an external machine, a second user-operated device and a post-closure authentic observer are all prohibited as transition predicates.
+
+The owning organization states the same rule in `StegVerse-org/.github` `docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md` (read at `40a5d235551077185d9f7849a2c866ff5acf2796`), line 53: "There are no and will be no external machines awaiting anything. This ecosystem is state-transition dependent for all ACTIONS BY MANIFEST." and line 60: "No surface requires an external machine, a second user-operated device, or a remote computer, and none may be introduced as a completion predicate, machine dependency or substrate-unsuitability finding." Line 47 keeps Master Records "organization records/reconstruction only".
+
+**Applied to this goal.**
+
+| Surface | Role for this goal's runtime observation |
+|---|---|
+| Organization-ledger receipt appended by `StegVerse-org/.github` `.github/workflows/organization-ledger-transition.yml` on ref `refs/stegverse/organization-ledger` | **The native runtime observation.** Appended by the manifest-directed transition that runs when the owner merges [StegVerse-org/.github#198](https://github.com/StegVerse-org/.github/pull/198) (head `189d7e61aa8324c567ba8f04334f230d8ae16644`, adds `.stegverse/transition-requests/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003-001.json`; the workflow triggers on push to `main` under `.stegverse/transition-requests/**`) and read back from a fresh fetch. |
+| Master Records | Reconstruction only. Not a predicate and not awaited. |
+| Publisher destination/return receipts, MIR far-side acknowledgement | Communication-specific later stages (already orthogonal per the 2026-09-26 sections). Not the runtime predicate. |
+| Native authority/lease producer, resident Universal InTr ingress | Not predicates of this goal's runtime observation. No resident host, listener or second device is awaited. |
+| Any external machine | Prohibited as a predicate (line 120 above). |
+
+**Current state — no receipt is claimed.** This goal's task vector remains `SOURCE_ONLY_ACTIVE` (documentary/source active). The organization-ledger receipt **does not exist yet**: #198 is an open draft awaiting the owner's merge, which waits on owner decision OQ-C12. Until it is appended and read back, the runtime-observation predicate for this goal is a non-ALLOW:
+
+- `failure_code`: `ORGANIZATION_LEDGER_RECEIPT_NOT_YET_APPENDED`
+- `failed_predicate`: organization receipt for `MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003-001` present on `StegVerse-org/.github` `refs/stegverse/organization-ledger` and read back from a fresh fetch
+- `required_evidence_or_repair`: owner merge of StegVerse-org/.github#198 (waits on OQ-C12), then the receipt digest and ledger commit read back
+- `retry_entrypoint`: `StegVerse-org/.github` `.github/workflows/organization-ledger-transition.yml` (push to `main` under `.stegverse/transition-requests/**`)
+- `owning_existing_goal`: `MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003` (owner issue StegVerse-Labs/.github#2682)
+- `next_attempt`: on the owner's merge of #198; no external machine or resident device is awaited
+
+**Follow-up S3 (not done here).** After #198 merges and the receipt is read back, update `control/task-vectors/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003.json` from `SOURCE_ONLY_ACTIVE`, citing the receipt digest and ledger commit. Coordination claim for this path: `control/cross-task-coordination.d/mir-sv-exp3-org-ledger-observation-path.json` (`COORDINATION_ONLY`).

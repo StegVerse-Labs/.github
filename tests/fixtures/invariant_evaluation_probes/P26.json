@@ -1,0 +1,110 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 26,
+  "title": "a 513-code-point question_id is refused and cites the question root line; 512 non-ASCII code points (3072 question bytes) are within the bound",
+  "derived_from": {
+    "b_p16_bound": "max_field_chars",
+    "behaviour_at_4256cb6": "both runs answer the same at 4256cb6, citation included; the spec-quote check fails there because bounds.max_field_chars is not declared"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "canon": {
+      "repo": "StegVerse-Labs/.github",
+      "rev": "main",
+      "path": "data/task-registry-global-invariants.json",
+      "bytes": {
+        "labs_file": "data/task-registry-global-invariants.json"
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€",
+          "invariant_pointer": "/invariants/external_machine_awaiting_allowed",
+          "asserted_value": false
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "ALLOW",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+          "invariant_pointer": "/invariants/external_machine_awaiting_allowed",
+          "asserted_value": false
+        }
+      },
+      "supply": [
+        {
+          "source": "canon"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "INPUT_FIELD_INVALID",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:112",
+          "spec_quote": "\"failure_code\": \"INPUT_FIELD_INVALID\""
+        },
+        "citations": {
+          "value": [
+            {
+              "question": true,
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
+          "spec_quote": "question@<question_sha256>:question:line for the question bytes"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    }
+  ]
+}

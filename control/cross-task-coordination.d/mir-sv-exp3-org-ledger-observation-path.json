@@ -1,0 +1,61 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "MIR-SV-EXP3-ORG-LEDGER-OBSERVATION-PATH-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "claims": [
+    {
+      "claim_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003-ORG-LEDGER-OBSERVATION-PATH",
+      "task_id": "MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003",
+      "state": "ACTIVE",
+      "scope": {
+        "repositories": ["StegVerse-org/.github", "StegVerse-Labs/.github"],
+        "paths": [
+          "StegVerse-org/.github/.stegverse/transition-requests/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003-001.json",
+          "StegVerse-org/.github/.github/workflows/organization-ledger-transition.yml",
+          "control/task-vectors/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003.json",
+          "docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md"
+        ],
+        "modules": ["mir-sv-capability-boundary-experiment-003"],
+        "runtime_surfaces": ["StegVerse-org/.github:refs/stegverse/organization-ledger"],
+        "evidence_responsibilities": ["exp3-organization-ledger-receipt-readback"]
+      },
+      "canonical_owner_ref": "StegVerse-Labs/.github#2682 + StegVerse-org/.github#198 + docs/MIR_SV_CAPABILITY_BOUNDARY_EXPERIMENT_003_MIRROR_HANDOFF.md",
+      "authority_effect": "COORDINATION_ONLY",
+      "note": "Claims the organization-ledger observation path for this goal for collision detection only: the native runtime observation is the organization receipt that StegVerse-org/.github organization-ledger-transition.yml appends when the owner merges StegVerse-org/.github#198 (data/task-registry-global-invariants.json organization_runtime_reality). Not a WorkerCoordinator claim; no worker, fence or lease is held. Master Records is reconstruction only and no external machine is a predicate. This record does not prove the receipt exists, admit a transition or grant authority."
+    }
+  ],
+  "predicates": [
+    {
+      "predicate_id": "PRED-MIR-SV-EXP3-ORG-LEDGER-RECEIPT-READBACK-001",
+      "semantic_predicate_id": "organization_ledger_receipt_read_back",
+      "subject_binding": {
+        "repository": "StegVerse-org/.github",
+        "ledger_ref": "refs/stegverse/organization-ledger",
+        "transition_request": ".stegverse/transition-requests/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003-001.json",
+        "pull_request": "198"
+      },
+      "state": "UNSATISFIED",
+      "description": "Organization receipt for the Experiment 3 transition request is appended to the organization ledger by the manifest-directed transition and read back from a fresh fetch. Pending the owner's merge of StegVerse-org/.github#198, which waits on OQ-C12.",
+      "authoritative_producer": "StegVerse-org/.github/.github/workflows/organization-ledger-transition.yml",
+      "required_schema": null,
+      "required_scope": "StegVerse-org organization ledger",
+      "required_execution_instance": null,
+      "max_age_seconds": null,
+      "expected_output_ref": "StegVerse-org/.github:refs/stegverse/organization-ledger"
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-MIR-SV-EXP3-ORG-LEDGER-RECEIPT-READBACK-001",
+      "semantic_predicate_id": "organization_ledger_receipt_read_back",
+      "existing_evidence_refs": ["StegVerse-org/.github#198@189d7e61aa8324c567ba8f04334f230d8ae16644"],
+      "rejected_because": ["ORGANIZATION_LEDGER_RECEIPT_NOT_YET_APPENDED: transition request is in an open draft PR, not on main"],
+      "missing_observation": "organization receipt digest and ledger commit read back from refs/stegverse/organization-ledger",
+      "required_producer": "StegVerse-org/.github/.github/workflows/organization-ledger-transition.yml",
+      "required_output_ref": "StegVerse-org/.github:refs/stegverse/organization-ledger",
+      "required_schema": null,
+      "collision_refs": ["StegVerse-org/.github#198"],
+      "action_without_collision": "Owner merges StegVerse-org/.github#198 (waits on OQ-C12); then read back the receipt and update control/task-vectors/MIR-SV-CAPABILITY-BOUNDARY-EXPERIMENT-003.json from SOURCE_ONLY_ACTIVE citing it (S3). No external machine or resident device is awaited."
+    }
+  ]
+}

@@ -13,7 +13,9 @@ reported by master_records_evidence() and never produce a validation error.
 from __future__ import annotations
 from typing import Any, Mapping
 
-NON_ALLOW = {"DENY", "FAIL_CLOSED", "STOP", "DEFER"}
+# UNDECIDABLE: the supplied sources do not determine the answer
+# (scripts/invariant_evaluation.py). It is a refusal like the rest.
+NON_ALLOW = {"DENY", "FAIL_CLOSED", "STOP", "DEFER", "UNDECIDABLE"}
 DISPOSITIONS = NON_ALLOW | {"ALLOW"}
 EVIDENCE_CLASSES = {
     "SOURCE_VALIDATION", "SYNTHETIC_TEST", "ATTEMPTED_INGRESS",
