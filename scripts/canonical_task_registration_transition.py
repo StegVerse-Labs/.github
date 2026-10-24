@@ -89,6 +89,15 @@ def _cosv() -> Any:
     return module
 
 
+def _parent_existence() -> Any:
+    spec = importlib.util.spec_from_file_location("registration_parent_existence",
+                                                  ROOT / "scripts" / "registration_parent_existence.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def canon(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
 
@@ -202,6 +211,7 @@ def collisions(root: Path, task_id: str, registry: dict[str, Any]) -> list[str]:
 def derive(root: Path, request: dict[str, Any]) -> tuple[dict[str, bytes], dict[str, Any]]:
     """Return the successor bytes for each derived path, and the receipt evidence."""
     validate_request(request)
+    _parent_existence().require_registry_readable(root, Refusal)  # REGISTRATION_PARENT_REGISTRY_UNREADABLE
     task_id = request["task_id"]
     registry_path = root / REGISTRY
     registry_bytes = registry_path.read_bytes()
@@ -213,6 +223,7 @@ def derive(root: Path, request: dict[str, Any]) -> tuple[dict[str, bytes], dict[
     found = collisions(root, task_id, registry)
     require(not found, "TASK_IDENTITY_NOT_UNIQUE", f"{task_id} already present in {found}",
             "reuse the existing task (adjacent_task_derivation_contract reuse_existing_equivalent_task_first) or choose a distinct task_id")
+    _parent_existence().check(root, request, Refusal)  # REGISTRATION_PARENT_NOT_REGISTERED
 
     record = copy.deepcopy(request["record"])
     errors = schema_errors(record, load(root / RECORD_SCHEMA_PATH))
