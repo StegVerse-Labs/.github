@@ -80,8 +80,8 @@ class ReplayEvaluationTests(unittest.TestCase):
     def evaluate(self, m, rebind=True):
         mut = m["mutation"] if rebind or m["mutation"] is None else {**m["mutation"], "rebind_request_digest": False}
         ch = fx.apply_replay_mutation(self.CH[m["sv_change_id"]], mut)
-        obs = wi.admission_inputs(ch, m["current_base"], [self.SIGN[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"],
-                                  m["resolved_issues"])
+        obs = fx.observe(ch, m["current_base"], [self.SIGN[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"],
+                         m["resolved_issues"], push_receipts=m["push_receipts"], change_commits=m["change_commits"])
         out = wi.admit(obs, fixture_mode=True)
         return out["disposition"], out.get("failure_code")
 
@@ -160,7 +160,7 @@ class CheckDispositionSplitTests(unittest.TestCase):
         ch = fx.known_good_change(fx.SURFACE_PATH["transition"])
         ch["validation_receipts"][0] = fx.ledger_receipt(ch["validation_receipts"][0]["check_id"], ch["head"]["change_digest"], disposition)
         ch = base.reseal_change(ch)
-        return wi.admission_inputs(ch, fx.LABS_BASE, resolved_issues=fx.fixture_resolved_issues(ch))
+        return fx.observe(ch, fx.LABS_BASE, resolved_issues=fx.fixture_resolved_issues(ch))
 
     def test_deny_and_fail_closed_codes(self):
         d = wi.admit(self.obs("DENY"), fixture_mode=True)
@@ -302,9 +302,11 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
         return ch
 
     def test_negative_tree_verified_refetch_is_not_writer_evidence(self):
+        # Lane C alignment: the writer is derived from the sv-push-receipt chain only; a re-fetched tree, a commit author
+        # or a range base never stands in for it. No chain survived -> FAIL_CLOSED in both modes.
         for session in (None, fx.SESSION):  # lost, or filled from the commit author / range base
             ch = self.unknown_writer_change(session)
-            obs = wi.admission_inputs(ch, ch["base_ref"], fx.signoff_receipts_for(ch))
+            obs = fx.observe(ch, ch["base_ref"], fx.signoff_receipts_for(ch), push_receipts=None)
             self.assertEqual(obs["current_base"], obs["base_ref"])  # the range base is exactly current
             for fixture_mode in (False, True):
                 out = wi.admit(obs, fixture_mode=fixture_mode)
@@ -315,8 +317,8 @@ class HarvestedWriterEvidenceLostTests(unittest.TestCase):
 
     def test_negative_range_base_writer_claim_never_overrides(self):
         ch = self.unknown_writer_change(None)
-        obs = wi.admission_inputs(ch, ch["base_ref"], fx.signoff_receipts_for(ch))
-        forged = {**obs, "writer_sessions": [fx.SESSION], "declared_session_matches_writers": True}
+        obs = fx.observe(ch, ch["base_ref"], fx.signoff_receipts_for(ch), push_receipts=None)
+        forged = {**obs, "writer_sessions": [fx.SESSION]}
         out = wi.admit(forged, fixture_mode=True)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "BRANCH_WRITER_UNOBSERVED"))
         prop = wi.transition("SV_CHANGE_PROPOSE", ch, hb_epoch=base.EPOCH, context={"issues": []})
