@@ -58,7 +58,7 @@ def _set(obj: dict, field: str, value: Any) -> None:
 
 # predicate -> (failure_code, surface kinds it applies to, [(field, mutation, mutate(obs))])
 def _foreign(o):
-    o["writer_sessions"] = sorted(set(o["writer_sessions"]) | {"FOREIGN-SESSION"}); o["declared_session_matches_writers"] = False
+    o["writer_sessions"] = sorted(set(o["writer_sessions"]) | {"FOREIGN-SESSION"})
 
 
 def _stale_gen(o): o["current_base"] = {**o["current_base"], "registry_generation": o["current_base"]["registry_generation"] + 1}
@@ -68,12 +68,12 @@ def _unreceipt(o): o["validation_receipts"] = [{**v, "ref": ""} for v in o["vali
 def _artifact_only(o): o["validation_receipts"] = [{**v, "evidence_class": "OBSERVED_ARTIFACT"} for v in o["validation_receipts"]]
 def _off_head(o): o["validation_receipts"] = [{**v, "change_digest": "sha256:" + "0" * 64} for v in o["validation_receipts"]]
 def _req_digest(o): o["bound_request_digest"] = "sha256:" + "1" * 64
-def _no_session(o): o["declared_session"] = ""
+def _declared_label_only(o): o["push_receipts"] = None  # the record still carries declared_session; no push-receipt chain
 def _drop_signoff(o): o["signoffs"] = []
 def _unreceipt_signoff(o): o["signoffs"] = [{**s, "receipt_ref": ""} for s in o["signoffs"]]
 def _fail_check(o): o["validation_receipts"] = [{**v, "disposition": "DENY"} if i == 0 else v for i, v in enumerate(o["validation_receipts"])]
-def _writer_evidence_lost(o):  # every content writer_session -> {session: null, evidence_class: UNKNOWN}, as admission_inputs reads it
-    o["writer_unobserved_paths"] = sorted(o["touched_paths"]); o["writer_sessions"] = []; o["declared_session_matches_writers"] = False
+def _writer_evidence_lost(o):  # snapshot restore: every content writer_session UNKNOWN and no sv-push-receipt chain survives
+    o["writer_sessions"] = []; o["push_receipts"] = None
 def _fail_closed_check(o): o["validation_receipts"] = [{**v, "disposition": "FAIL_CLOSED"} if i == 0 else v for i, v in enumerate(o["validation_receipts"])]
 # ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: the Labs#3266 base-state readback receipt and the supplied epoch
 def _reseal_readback(o, **change):
@@ -95,7 +95,9 @@ def _receipt_not_ledgered(o): o["resolved_issues"] = []
 def _extra_unobserved(o): o["resolves"] = sorted(o["resolves"] + ["svi:" + "f" * 64])
 def _touches_receipt_path(o): _f0(o, receipt_ledger_paths=sorted(o["resolved_issues"][0]["receipt_ledger_paths"] + [o["touched_paths"][0]]))
 def _carries_receipt(o): _f0(o, receipt_file_sha256=sorted(o["resolved_issues"][0]["receipt_file_sha256"] + [o["content_blob_digests"][0]]))
-def _writer_is_emitter(o): _f0(o, emitter_session=o["declared_session"])
+def _writer_is_emitter(o): _f0(o, emitter_session=wi.derive_branch_writer(o["push_receipts"], o["change_commits"],
+                                                                         target_repository=o["target_repository"],
+                                                                         change_id=o["change_id"])["session"])
 def _not_s1(o): _f0(o, verifier_ref="SV-LLM/.github#460")
 def _second_issue(o): _f0(o, derived_issue_ids_from_receipt=sorted(o["resolved_issues"][0]["derived_issue_ids_from_receipt"] + ["svi:" + "e" * 64]))
 def _already_resolved(o): _f0(o, resolved_by="svc:" + "e" * 64)
@@ -134,7 +136,7 @@ def _pair_commits_unobserved(o): _pair(o)["change_commits"] = {"base_commit": No
 
 PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
     "BRANCH_WRITER_IS_BRANCH_OWNER": ("BRANCH_HAS_FOREIGN_WRITER", [
-        ("writer_sessions", "add a writer that is not the declared session", _foreign)]),
+        ("writer_sessions", "add a writer that is not the session derived from the sv-push-receipt chain", _foreign)]),
     "BASE_IS_CURRENT": ("BASE_STALE", [
         ("current_base.registry_generation", "registry generation moved after proposal", _stale_gen),
         ("current_base.ledger_head", "organization-ledger head moved after proposal", _stale_head)]),
@@ -146,8 +148,12 @@ PREDICATE_BINDINGS: dict[str, tuple[str, list[tuple[str, str, Callable]]]] = {
         ("validation_receipts[*].change_digest", "receipts from another head", _off_head)]),
     "AUTHORIZATION_BINDS_FULL_REQUEST": ("REQUEST_DIGEST_MISMATCH", [
         ("bound_request_digest", "decision bound to a different request", _req_digest)]),
-    "PR_AUTHOR_SESSION_DECLARED": ("AUTHOR_SESSION_NOT_DECLARED", [
-        ("declared_session", "author session empty", _no_session)]),
+    # RETIRED as an admission predicate (Lane C alignment, TVC#531): the PR-body / record author-session declaration grants
+    # nothing; the branch writer is derived from the sv-push-receipt chain (sv_work_items.derive_branch_writer). The key stays
+    # only so the frozen class id ASC-PR_AUTHOR_SESSION_DECLARED@schema and its scenario ids never move (CORPUS_IS_APPEND_ONLY);
+    # its one axis is re-derived: a declared_session label with no push-receipt chain FAIL_CLOSEs BRANCH_WRITER_UNOBSERVED.
+    "PR_AUTHOR_SESSION_DECLARED": ("BRANCH_WRITER_UNOBSERVED", [
+        ("declared_session", "declared_session present but no sv-push-receipt chain: a declaration is not writer evidence", _declared_label_only)]),
     "REQUIRED_SIGNOFF_RECORDED": ("SIGNOFF_RECEIPT_ABSENT", [
         ("signoffs", "required role sign-off absent", _drop_signoff),
         ("signoffs[*].receipt_ref", "sign-off claimed without receipt", _unreceipt_signoff)]),
@@ -219,7 +225,7 @@ PREDICATE_ALIASES: dict[str, str] = {}
 # only when a harvested candidate carries that code; a seed generalized from the predicate alone does not get them.
 SECONDARY_AXES: dict[tuple[str, str], list[tuple[str, str, Callable]]] = {
     ("BRANCH_WRITER_IS_BRANCH_OWNER", "BRANCH_WRITER_UNOBSERVED"): [
-        ("content[*].writer_session.evidence_class", "writer evidence lost: every writer_session UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        ("content[*].writer_session.evidence_class", "writer evidence lost: every writer_session UNKNOWN_NOT_AUTHENTICALLY_OBSERVED and no sv-push-receipt chain",
          _writer_evidence_lost)]}
 # A harvested class name that the class rule (failed predicate + surface kind) maps onto an existing class id is
 # recorded as an alias of that class, never as a duplicate class.

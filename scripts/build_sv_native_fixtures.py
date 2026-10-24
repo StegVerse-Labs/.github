@@ -260,15 +260,59 @@ def known_good_paired(kind_path: str) -> dict:
     return obs
 
 
+# FIXTURE ONLY: the change's commits and the sv-push-receipt.v1 chain (Labs#3267 shape, sealed) its push left; the branch
+# writer is derived from it (sv_work_items.derive_branch_writer). Two pushes by SESSION: base -> c1 -> head.
+FIXTURE_PUSH_REF = "refs/heads/p1/fixture-sv-change"
+FIXTURE_CHANGE_COMMITS = {"base_commit": LANE_B_BASE_COMMIT, "head_commit": LANE_B_HEAD_COMMIT}  # the gate pair's commits
+FIXTURE_MID_COMMIT = "c1" * 20
+
+
+def push_receipt(ch: dict, old_sha: str, new_sha: str, commits: list[str], session: str = SESSION,
+                 repository: str | None = None, ref: str = FIXTURE_PUSH_REF, change_id: str | None = None) -> dict:
+    """A sealed sv-push-receipt.v1 (the shape resident-runtime/sv_push_receipt.py::emit seals). change_id is optional in
+    sv-push-receipt.v1 (a push precedes the record that cites it), so the fixture chain omits it unless one is given."""
+    return wi.push_receipt.seal({"schema": wi.push_receipt.RECEIPT_SCHEMA, "repository": repository or ch["target_repository"], "ref": ref,
+                                 "old_sha": old_sha, "new_sha": new_sha, "pusher_session": session,
+                                 **({"change_id": change_id} if change_id else {}),
+                                 "pushed_commits": list(commits), "hb_epoch": FIXTURE_HB_EPOCH})
+
+
+def fixture_push_receipts(ch: dict, change_commits: dict | None = None, session: str = SESSION) -> list[dict]:
+    cc = change_commits or FIXTURE_CHANGE_COMMITS
+    if cc == FIXTURE_CHANGE_COMMITS:
+        return [push_receipt(ch, cc["base_commit"], FIXTURE_MID_COMMIT, [FIXTURE_MID_COMMIT], session),
+                push_receipt(ch, FIXTURE_MID_COMMIT, cc["head_commit"], [cc["head_commit"]], session)]
+    return [push_receipt(ch, cc["base_commit"], cc["head_commit"], [cc["head_commit"]], session)]
+
+
+_DEFAULT = object()
+
+
+def writer_context(ch: dict, change_commits: dict | None = None, session: str = SESSION) -> dict:
+    """transition() context naming the change's fixture push-receipt chain and commits (FIXTURE ONLY)."""
+    cc = change_commits or FIXTURE_CHANGE_COMMITS
+    return {"push_receipts": fixture_push_receipts(ch, cc, session), "change_commits": cc}
+
+
+def observe(ch: dict, *args, push_receipts=_DEFAULT, change_commits=_DEFAULT, **kw) -> dict:
+    """wi.admission_inputs with the change's fixture push-receipt chain (FIXTURE ONLY) unless push_receipts is supplied.
+    With ledger bytes the commits are the caller's (as admission_inputs takes them once), else FIXTURE_CHANGE_COMMITS."""
+    if change_commits is _DEFAULT:
+        change_commits = None if kw.get("ledger_objects") is not None else FIXTURE_CHANGE_COMMITS
+    rs = fixture_push_receipts(ch, change_commits or FIXTURE_CHANGE_COMMITS) if push_receipts is _DEFAULT else push_receipts
+    return wi.admission_inputs(ch, *args, push_receipts=rs, change_commits=change_commits, **kw)
+
+
 def known_good(kind_path: str) -> dict:
     """A known-good SV_CHANGE observation touching one surface kind (positive control)."""
     ch = known_good_change(kind_path)
-    return wi.admission_inputs(ch, LABS_BASE, signoff_receipts_for(ch), fixture_base_state_readback(), fixture_resolved_issues(ch))
+    return observe(ch, LABS_BASE, signoff_receipts_for(ch), fixture_base_state_readback(), fixture_resolved_issues(ch))
 
 
 # (d) TVC#519 replay: which SV_CHANGE field (or replay input) each mutation axis changes
 AXIS_TARGET = {
-    "writer_sessions": ("SV_CHANGE", "/content/0/writer_session", "the content entry's writer is a session other than declared_session"),
+    "writer_sessions": ("SV_CHANGE", "/content/0/writer_session",
+                        "the content entry's writer is a session other than the one derived from the sv-push-receipt chain"),
     "current_base.registry_generation": ("REPLAY_INPUT", "/current_base/registry_generation", "current base moved; the SV_CHANGE is unchanged"),
     "current_base.ledger_head": ("REPLAY_INPUT", "/current_base/ledger_head", "current base moved; the SV_CHANGE is unchanged"),
     "validation_receipts[required_check_ids[0]]": ("SV_CHANGE", "/validation_receipts", "drop the receipt of the first required check id"),
@@ -276,12 +320,13 @@ AXIS_TARGET = {
     "validation_receipts[*].evidence_class": ("SV_CHANGE", "/validation_receipts/*/evidence_class", "set every evidence_class to OBSERVED_ARTIFACT"),
     "validation_receipts[*].change_digest": ("SV_CHANGE", "/validation_receipts/*/change_digest", "bind every receipt to another digest"),
     "bound_request_digest": ("SV_CHANGE", "/request_digest", "bind the decision to a different request digest"),
-    "declared_session": ("SV_CHANGE", "/declared_session", "empty the declared session"),
+    "declared_session": ("REPLAY_INPUT", "/push_receipts", "the SV_CHANGE keeps its declared_session; the replay input push_receipts is null"),
     "signoffs": ("SV_CHANGE", "/signoffs", "drop every sign-off"),
     "signoffs[*].receipt_ref": ("SV_CHANGE", "/signoffs/*/receipt_ref", "set every sign-off receipt_ref to the empty string"),
     "validation_receipts[0].disposition": ("SV_CHANGE", "/validation_receipts/0/disposition", "the first receipt is not ALLOW"),
     "content[*].writer_session.evidence_class": ("SV_CHANGE", "/content/*/writer_session",
-                                                 "every writer_session -> {session: null, evidence_class: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED}"),
+                                                 "every writer_session -> {session: null, evidence_class: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED}; "
+                                                 "the replay input push_receipts is null (no chain survived)"),
     "hb_epoch_readback": ("REPLAY_INPUT", "/hb_epoch_readback", "no base-state readback receipt (null)"),
     "hb_epoch_readback.result_sha256": ("REPLAY_INPUT", "/hb_epoch_readback/result_sha256", "break the readback's seal"),
     "hb_epoch_readback.hb_epoch_source.derived_from_clock": ("REPLAY_INPUT", "/hb_epoch_readback/hb_epoch_source/derived_from_clock",
@@ -294,7 +339,7 @@ AXIS_TARGET = {
     "resolves[+unobserved]": ("SV_CHANGE", "/resolves", "also cite svi:fff...f, which no observed issue carries"),
     "resolved_issues[0].receipt_ledger_paths": ("REPLAY_INPUT", "/resolved_issues/0/receipt_ledger_paths", "the receipt's ledger paths include a path the change touches"),
     "resolved_issues[0].receipt_file_sha256": ("REPLAY_INPUT", "/resolved_issues/0/receipt_file_sha256", "the receipt's bytes are a blob the change carries"),
-    "resolved_issues[0].emitter_session": ("REPLAY_INPUT", "/resolved_issues/0/emitter_session", "the receipt's emitter is the change's declared session"),
+    "resolved_issues[0].emitter_session": ("REPLAY_INPUT", "/resolved_issues/0/emitter_session", "the receipt's emitter is the change's branch writer (derived from the push receipts)"),
     "resolved_issues[0].verifier_ref": ("REPLAY_INPUT", "/resolved_issues/0/verifier_ref", "the receipt's verifier_ref is SV-LLM/.github#460"),
     "resolved_issues[0].derived_issue_ids_from_receipt": ("REPLAY_INPUT", "/resolved_issues/0/derived_issue_ids_from_receipt", "a second issue names the receipt"),
     "resolved_issues[0].resolved_by": ("REPLAY_INPUT", "/resolved_issues/0/resolved_by", "another change (svc:eee...e) resolved the issue"),
@@ -325,7 +370,7 @@ def axis_value(axis: str, expected_code: str | None):
     return {"writer_sessions": {"session": FOREIGN_SESSION, "evidence_class": "DECLARED"},
             "validation_receipts[*].ref": "", "validation_receipts[*].evidence_class": "OBSERVED_ARTIFACT",
             "validation_receipts[*].change_digest": "sha256:" + "0" * 64, "bound_request_digest": "sha256:" + "1" * 64,
-            "declared_session": "", "signoffs": [], "signoffs[*].receipt_ref": "",
+            "declared_session": None, "signoffs": [], "signoffs[*].receipt_ref": "",
             "content[*].writer_session.evidence_class": {"session": None, "evidence_class": wi.UNKNOWN},
             "validation_receipts[0].disposition": "DENY" if expected_code == "REQUIRED_CHECK_DENIED" else "FAIL_CLOSED",
             "supplied_hb_epoch": str(int(FIXTURE_HB_EPOCH) + 1), "resolves": [], "resolves[+unobserved]": ["svi:" + "f" * 64],
@@ -354,8 +399,6 @@ def apply_replay_mutation(ch: dict, m: dict | None) -> dict:
         ch["validation_receipts"][0] = {**ch["validation_receipts"][0], "disposition": v}
     elif axis == "bound_request_digest":
         ch["request_digest"] = v
-    elif axis == "declared_session":
-        ch["declared_session"] = v
     elif axis == "signoffs":
         ch["signoffs"] = list(v)
     elif axis == "signoffs[*].receipt_ref":
@@ -394,6 +437,7 @@ def replay(scenarios: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
                      "signoff_receipts": [r["receipt_sha256"] for r in signoff_receipts_for(ch)],
                      "hb_epoch_readback": sc["observed_inputs"]["hb_epoch_readback"],
                      "resolved_issues": sc["observed_inputs"]["resolved_issues"],
+                     "push_receipts": sc["observed_inputs"]["push_receipts"], "change_commits": sc["observed_inputs"]["change_commits"],
                      "mutation": mut, "expected_disposition": sc["expected_disposition"], "expected_failure_code": sc["expected_failure_code"]})
     signoffs = {r["receipt_sha256"]: r for ch in changes.values() for r in signoff_receipts_for(ch)}
     return sorted(changes.values(), key=lambda c: c["change_id"]), rows, [signoffs[k] for k in sorted(signoffs)]
@@ -419,6 +463,8 @@ SEEDS = [
     ("RECEIPT_CHANGE_DIGEST_EQUALS_HEAD", "transition", ["StegVerse-Labs/.github#3246 SDK_ENTRYPOINT_RESOLVED_FROM_PROCESS_MODULE_CACHE"]),
     ("REQUIRED_SIGNOFF_RECORDED", "ledger_writer", ["StegVerse-org/.github#189 merged without ledger-component-owner sign-off (merge 40a5d235)"]),
     ("MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED", "ledger_writer", ["StegVerse-org/.github#189 epoch binder gaps (189-binder-check rows 1, 5b, 6, 8, 13, 15)"]),
+    # ASC-PR_AUTHOR_SESSION_DECLARED@schema keeps its id (append-only); its axis is re-derived (Lane C alignment, TVC#531):
+    # the declaration is not writer evidence, the branch writer is derived from the sv-push-receipt chain.
     ("PR_AUTHOR_SESSION_DECLARED", "schema", ["KV INDEX MERGE AUTHORITY PR_AUTHOR_SESSION_DECLARED (12:47Z)"]),
     ("MERGE_READY_REQUIRES_EVERY_JOB_RAN_AND_PASSED", "registry", ["Labs registry gen 319 fence (ST019 generation_fenced_files)"]),
 ]
@@ -714,6 +760,7 @@ CONTRACT_FILES = sorted([
     "data/admission-scenarios/tvc-replay/signoff-receipts.jsonl",
     "resident-runtime/sv_work_items.py", "resident-runtime/admission_learning.py", "resident-runtime/stage_gate.py",
     "resident-runtime/sv_migration.py", "resident-runtime/schema_subset.py", "scripts/build_sv_native_fixtures.py",
+    "resident-runtime/sv_push_receipt.py", "schemas/sv-push-receipt.v1.schema.json",  # the branch writer's evidence (Labs#3267)
     "tests/sv_ledger_fixtures.py",  # orchestrator 16:58Z: Lane D pins it (blob 30a9fe89)
     "tests/fixtures/base-state-readback/labs-main-978b8880-producer-7ad6d81f.json",  # commit 5: shared readback (blob cfaaec20)
     *IMPORT_CLOSURE_FILES])
