@@ -13,6 +13,22 @@ name: Organization Ledger Transition
 # subtree of that same ref. Existing commits on the ref are parents of any
 # new commit; this workflow does not rewrite them.
 #
+# A push to main that changes .stegverse/organization-ledger-ingest/request.json
+# (the committed ingest request; resident-runtime/organization_ledger_ingest.py
+# reads it) performs the one operation the request names:
+#   sv_check_receipt     resident-runtime/sv_check_receipt_append.py records the
+#                        stegverse.sv_check_receipt.v1 receipt as the repository
+#                        receipt's evidence and aggregates it into the
+#                        organization receipt on the same ref;
+#   sealed_test_receipt  a test receipt sealed by its producer's CI (TVC's
+#                        conformance receipt) is admitted against
+#                        .stegverse/organization-ledger-ingest/accepted-sealed-receipts.json
+#                        and retained unchanged as a source receipt consumed by
+#                        one organization receipt, at the ledger head's supplied epoch.
+# Either is read back from a fresh fetch. A push that changes both the packet and
+# the request performs both, under one lock and one fast-forward publish. Each
+# operation runs only when its own file changed in the pushed range.
+#
 # The federation directory is not an input. Governance and remediation routes
 # are not selected here.
 # Writer only, on push to main. Its pull_request checks run in
@@ -23,6 +39,7 @@ on:
     branches: [main]
     paths:
       - '.stegverse/intr-destination/self-closure-packet.json'
+      - '.stegverse/organization-ledger-ingest/request.json'
 
 permissions:
   contents: read
@@ -57,7 +74,9 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile resident-runtime/organization_ledger_readback.py \
-            resident-runtime/intr_destination_ingress.py
+            resident-runtime/intr_destination_ingress.py \
+            resident-runtime/organization_ledger_ingest.py \
+            resident-runtime/sv_check_receipt_append.py
           python - <<'PY'
           import json
           from pathlib import Path
@@ -88,13 +107,37 @@ jobs:
           fi
           git rev-parse "$LEDGER_REF" > "$RUNNER_TEMP/ledger-before"
 
+      - name: Select the operations whose committed file this push changed
+        env:
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if ! git cat-file -e "$PUSH_BEFORE^{commit}" 2>/dev/null || ! git merge-base --is-ancestor "$PUSH_BEFORE" "$GITHUB_SHA"; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"PUSHED_RANGE_UNRESOLVED","failed_predicate":"PUSH_BEFORE_IS_AN_ANCESTOR_OF_THE_PUSHED_COMMIT","required_evidence_or_repair":"a fast-forward push to main whose before commit is in this checkout; nothing is appended","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001","next_attempt":"the next fast-forward push to main touching a packet","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+          changed=$(git diff --name-only "$PUSH_BEFORE" "$GITHUB_SHA" -- \
+            .stegverse/intr-destination/self-closure-packet.json .stegverse/organization-ledger-ingest/request.json)
+          sc=0; sv=0
+          if printf '%s\n' "$changed" | grep -qx '.stegverse/intr-destination/self-closure-packet.json'; then sc=1; fi
+          if printf '%s\n' "$changed" | grep -qx '.stegverse/organization-ledger-ingest/request.json'; then sv=1; fi
+          echo "SELF_CLOSURE_PACKET_CHANGED=$sc" >> "$GITHUB_ENV"
+          echo "INGEST_REQUEST_CHANGED=$sv" >> "$GITHUB_ENV"
+          echo "{\"self_closure\": $sc, \"ingest_request\": $sv}"
+          if [ "$sc$sv" = "00" ]; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"NO_COMMITTED_PACKET_CHANGED","failed_predicate":"PUSHED_RANGE_CHANGES_A_PACKET","required_evidence_or_repair":"a push that changes a packet file (a deletion records nothing); nothing is appended","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001","next_attempt":"commit a packet or ingest request to main","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+            exit 1
+          fi
+
       - name: Read the self-closure inputs from the pushed commit's packet
+        if: env.SELF_CLOSURE_PACKET_CHANGED == '1'
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           python resident-runtime/self_closure_packet.py --packet .stegverse/intr-destination/self-closure-packet.json --require-hb-epoch --github-env "$GITHUB_ENV"
 
       - name: Append the diagnostic self-closure to the repository and organization ledgers
+        if: env.SELF_CLOSURE_PACKET_CHANGED == '1'
         run: |
           set -euo pipefail
           export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
@@ -130,6 +173,49 @@ jobs:
               raise SystemExit(1)
           PY
 
+      - name: Read the ingest request from the pushed commit
+        if: env.INGEST_REQUEST_CHANGED == '1'
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p "$RUNNER_TEMP/results"
+          python resident-runtime/organization_ledger_ingest.py read --request .stegverse/organization-ledger-ingest/request.json \
+            --materialize "$RUNNER_TEMP/sv-check" --github-env "$GITHUB_ENV"
+
+      - name: Append the check receipt to the repository and organization ledgers (operation sv_check_receipt)
+        if: env.INGEST_OPERATION == 'sv_check_receipt'
+        run: |
+          set -euo pipefail
+          export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
+          export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
+          # Time is supplied in the committed packet. It is not sampled from a clock;
+          # the operation refuses anything but an integer epoch >= 32 that passes
+          # kernel.py::supplied_epoch_failure and equals the receipt's own hb_epoch.
+          # A stage-gate receipt is appended only into the subject repository's own
+          # ledger: --ledger-repository is this repository.
+          gate_args=()
+          if [ -f "$RUNNER_TEMP/sv-check/evaluation-subject.json" ]; then gate_args+=(--subject "$RUNNER_TEMP/sv-check/evaluation-subject.json"); fi
+          if [ -f "$RUNNER_TEMP/sv-check/base-state-readback.json" ]; then gate_args+=(--readback "$RUNNER_TEMP/sv-check/base-state-readback.json"); fi
+          python resident-runtime/sv_check_receipt_append.py append \
+            --check-receipt "$RUNNER_TEMP/sv-check/check-receipt.json" \
+            --hb-epoch "$HB_EPOCH" \
+            --ledger-repository "$GITHUB_REPOSITORY" \
+            "${gate_args[@]}" \
+            --out "$RUNNER_TEMP/results/check-receipt-append.json"
+
+      - name: Append the sealed test receipt to the organization ledger (operation sealed_test_receipt)
+        if: env.INGEST_OPERATION == 'sealed_test_receipt'
+        run: |
+          set -euo pipefail
+          export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
+          # Admitted before any write: its own seal, an accepted kind, ALLOW with
+          # zero skipped, failed and errored tests, this ledger as target, and the
+          # request's provenance. The epoch is the ledger head's supplied epoch.
+          python resident-runtime/organization_ledger_ingest.py append-sealed \
+            --request .stegverse/organization-ledger-ingest/request.json \
+            --ledger-repository "$GITHUB_REPOSITORY" \
+            --out "$RUNNER_TEMP/results/sealed-receipt-append.json"
+
       - name: Require the append to fast-forward the existing ref
         run: |
           set -euo pipefail
@@ -150,6 +236,7 @@ jobs:
           fi
 
       - name: Read the organization and repository ledgers back from a fresh fetch
+        if: env.SELF_CLOSURE_PACKET_CHANGED == '1'
         run: |
           set -euo pipefail
           fresh="$RUNNER_TEMP/readback.git"
@@ -170,6 +257,54 @@ jobs:
             echo "### intr-destination diagnostic self-closure"
             echo '```json'
             cat "$RUNNER_TEMP/results/readback.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Read the appended check receipt back from a fresh fetch
+        if: env.INGEST_OPERATION == 'sv_check_receipt'
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/readback-sv-check.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          if [ -z "$auth_header" ]; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            exit 1
+          fi
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+            fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
+          python resident-runtime/sv_check_receipt_append.py readback \
+            --location "git+$fresh#$LEDGER_REF" \
+            --result "$RUNNER_TEMP/results/check-receipt-append.json" \
+            --out "$RUNNER_TEMP/results/check-receipt-readback.json"
+          {
+            echo "### sv_check_receipt append"
+            echo '```json'
+            cat "$RUNNER_TEMP/results/check-receipt-readback.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Read the appended sealed test receipt back from a fresh fetch
+        if: env.INGEST_OPERATION == 'sealed_test_receipt'
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/readback-sealed.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          if [ -z "$auth_header" ]; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            exit 1
+          fi
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+            fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
+          python resident-runtime/organization_ledger_ingest.py readback-sealed \
+            --request .stegverse/organization-ledger-ingest/request.json \
+            --location "git+$fresh#$LEDGER_REF" \
+            --out "$RUNNER_TEMP/results/sealed-receipt-readback.json"
+          {
+            echo "### sealed_test_receipt append"
+            echo '```json'
+            cat "$RUNNER_TEMP/results/sealed-receipt-readback.json"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 

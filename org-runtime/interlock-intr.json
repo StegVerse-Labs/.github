@@ -282,5 +282,47 @@
   "github_token_runtime_authority": "NONE",
   "authority_transfer_assumed": false,
   "authority_effect_resolution": "DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS",
-  "repository_endpoint_rule": "APPLICATION_REPOSITORIES_EXPOSE_PROFILES_ONLY_ORG_DOT_GITHUB_OWNS_ORG_COMMUNICATION"
+  "repository_endpoint_rule": "APPLICATION_REPOSITORIES_EXPOSE_PROFILES_ONLY_ORG_DOT_GITHUB_OWNS_ORG_COMMUNICATION",
+  "organization_ledger_writer_operations": [
+    {
+      "operation": "sv_check_receipt",
+      "operation_module": "resident-runtime/sv_check_receipt_append.py",
+      "entrypoint": "resident-runtime/sv_check_receipt_append.py::append_check_receipt",
+      "append_path": "resident-runtime/intr_destination_ingress.py::_append",
+      "transition_class": "SV_CHECK_RECEIPT_APPEND",
+      "evidence_schema": "stegverse.sv_check_receipt.v1",
+      "evidence_schema_file": "tests/vendor/p1_f28c3a76/schemas/sv-check-receipt.v1.schema.json (P1 schemas/sv-check-receipt.v1.schema.json, blob a4934cc1, pinned by P1 data/sv-work-items/contract-pins.json sha256 5c0c98d4)",
+      "evidence_location": "repository receipt $.evidence (the complete check receipt, self-identified by $.evidence.schema), retained beside the organization receipt at source-receipts/<hex>.json",
+      "organization_receipt_boundary_operation": "sv_check_receipt",
+      "ledger_ref": "refs/stegverse/organization-ledger",
+      "invoked_by": ".github/workflows/organization-ledger-transition.yml (push to main touching .stegverse/organization-ledger-ingest/request.json with operation sv_check_receipt, read by resident-runtime/organization_ledger_ingest.py; ORGANIZATION_LEDGER_LOCK); no dispatch input",
+      "hb_reference": "supplied epoch only, from the committed ingest request (integer >= 32); derived_from_clock false or the operation fails closed",
+      "stage_gate_receipts": "a stage manifest exit_gate_check receipt (nwi-s0-exit-gate) binds to the stage-evaluation subject: change_digest = sv_work_items.stage_evaluation_digest(subject), head_sha = subject.evaluated_commit; validated with P1 validate_gate_receipt(receipt, subject, readback, fixture_mode=False) and appended only into the subject repository's own ledger (receipts/<org hex>.json plus source-receipts/<repo hex>.json); any failure -> six-field FAIL_CLOSED before any write",
+      "p1_contract_pins": "tests/vendor/p1_f28c3a76/data/sv-work-items/contract-pins.json, sha256 5c0c98d4349274b547a7c4ba8154e77e930e55e0a8dc1827344229661957a4cb; every vendored file used is verified against it before any append (else FAIL_CLOSED P1_CONTRACT_PINS_UNVERIFIED)",
+      "epoch_rule": "org-kernel/kernel.py::supplied_epoch_failure (L236-269), SHARED_RULE_SHA256 726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef; stored at kernel.py:68-74 hb_reference.epoch",
+      "epoch_tie": "append epoch or receipt hb_epoch (both epoch-source fields) absent, null, \"\", \"null\" or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; any other malformed value or a differing value -> DENY HB_EPOCH_MISMATCH; a stored hb_reference that is unsealed or clock-derived -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED",
+      "command_rule": "P1 sv_work_items.command_declared @f28c3a76 (row data/sv-work-items/required-checks.json plus the stage manifests' exit_gate_check built-ins, e.g. nwi-s0-exit-gate): an undeclared command -> FAIL_CLOSED CHECK_COMMAND_UNDECLARED (except the verifier's own CHECK_COMMAND_UNDECLARED receipt)",
+      "ingress_capability": false,
+      "addressable_from_the_service_registry": false,
+      "authority_effect": "NONE_DECLARATION_ONLY"
+    },
+    {
+      "operation": "sealed_test_receipt",
+      "operation_module": "resident-runtime/organization_ledger_ingest.py",
+      "entrypoint": "resident-runtime/organization_ledger_ingest.py::append_sealed",
+      "append_path": "resident-runtime/aggregate_repo_transition.py::_append_locked under the store's exclusive section (source bound by resident-runtime/organization_ledger_ingest.py::sealed_source; aggregate_repo_transition.py and org-contract.json are TVC-observed surface and unchanged)",
+      "transition_class": "ORGANIZATION_SEALED_TEST_RECEIPT_INGEST",
+      "evidence_schema": "stegverse.test-suite-skip-receipt/v1",
+      "evidence_location": "the producer's sealed receipt unchanged at source-receipts/<receipt_sha256>.json, consumed by one organization receipt whose source_transition_sha256 is that receipt_sha256",
+      "admission": ".stegverse/organization-ledger-ingest/accepted-sealed-receipts.json kinds only; seal over the canonical body; ALLOW, no refusals, tests >= 1 and skipped/failed/errors 0; ledger_candidate.target this organization's ledger; request provenance names the producer repository, head and run; any failure -> six-field FAIL_CLOSED before any write",
+      "organization_receipt_boundary_operation": "sealed_test_receipt",
+      "ledger_ref": "refs/stegverse/organization-ledger",
+      "invoked_by": ".github/workflows/organization-ledger-transition.yml (push to main touching .stegverse/organization-ledger-ingest/request.json with operation sealed_test_receipt; ORGANIZATION_LEDGER_LOCK); no dispatch input",
+      "hb_reference": "the supplied epoch the ledger head carries (merge_transfer_gitstore.head_epoch); no clock",
+      "readback": "resident-runtime/organization_ledger_ingest.py readback-sealed on a fresh fetch of the published ref",
+      "ingress_capability": false,
+      "addressable_from_the_service_registry": false,
+      "authority_effect": "NONE_DECLARATION_ONLY"
+    }
+  ]
 }
