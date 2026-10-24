@@ -40,7 +40,9 @@ GATE = ROOT / "scripts" / "check_dispatch_hb_epoch.py"
 WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
 ENTRY = ".github/workflows/organization-ledger-transition.yml (committed self-closure packet hb_epoch)"
 #: workflow_call reusables that keep an inline epoch check, with their OPEN record (see the docstring).
-INLINE_EPOCH_CHECK_EXCEPTIONS = {"organization-ledger-transition-reusable.yml": "REUSABLE_WORKFLOW_INLINE_EPOCH_CHECK"}
+INLINE_EPOCH_CHECK_EXCEPTIONS = {
+    ".github/workflows/organization-ledger-transition-reusable.yml": "REUSABLE_WORKFLOW_INLINE_EPOCH_CHECK",
+}
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
               "retry_entrypoint", "owning_existing_goal", "next_attempt")
 
@@ -109,17 +111,23 @@ class DispatchEpochGateTests(unittest.TestCase):
     def test_no_workflow_keeps_an_inline_epoch_check(self):
         inline = re.compile(r'case "\$\{?(HB_EPOCH|STEGVERSE_HB_EPOCH)|int\(os\.environ\[["\'](HB_EPOCH|STEGVERSE_HB_EPOCH)')
         for path in WORKFLOWS:
-            if path.name in INLINE_EPOCH_CHECK_EXCEPTIONS:
+            if path.relative_to(ROOT).as_posix() in INLINE_EPOCH_CHECK_EXCEPTIONS:
                 continue
             with self.subTest(workflow=path.name):
                 self.assertIsNone(inline.search(path.read_text(encoding="utf-8")))
 
     def test_the_only_inline_check_exception_is_the_recorded_workflow_call_reusable(self):
         inline = re.compile(r'case "\$\{?(HB_EPOCH|STEGVERSE_HB_EPOCH)')
-        self.assertEqual(set(INLINE_EPOCH_CHECK_EXCEPTIONS), {"organization-ledger-transition-reusable.yml"})
+        self.assertEqual(set(INLINE_EPOCH_CHECK_EXCEPTIONS),
+                         {".github/workflows/organization-ledger-transition-reusable.yml"})
+        # It is the ONLY workflow_call file with an inline epoch check: a second one fails here.
+        offenders = {path.relative_to(ROOT).as_posix() for path in WORKFLOWS
+                     if "workflow_call" in workflow_triggers(path.read_text(encoding="utf-8"))
+                     and inline.search(path.read_text(encoding="utf-8"))}
+        self.assertEqual(offenders, set(INLINE_EPOCH_CHECK_EXCEPTIONS))
         for name, code in INLINE_EPOCH_CHECK_EXCEPTIONS.items():
             with self.subTest(workflow=name):
-                text = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
+                text = (ROOT / name).read_text(encoding="utf-8")
                 # Runs only in a caller's checkout, so the gate script is not on disk.
                 self.assertEqual(workflow_triggers(text), {"workflow_call"})
                 # Still carries the inline check: once fixed, the exception is removed.
