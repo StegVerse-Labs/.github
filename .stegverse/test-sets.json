@@ -217,6 +217,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_apply_task_record_data.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_apply_task_record_data.py"
+   ],
+   "tests": [
+    "tests/test_apply_task_record_data.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_ara_graph_resident_execution_request.py",
    "inputs": [],
    "surfaces": [
@@ -2220,6 +2232,18 @@
    ],
    "tests": [
     "tests/test_evaluator_intr_runtime.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_exact_invocation_superseded_record_data.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_exact_invocation_superseded_record_data.py"
+   ],
+   "tests": [
+    "tests/test_exact_invocation_superseded_record_data.py"
    ]
   },
   {
@@ -5734,6 +5758,18 @@
    ],
    "tests": [
     "tests/test_remediation_endpoint.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_render_task_handoff_projection.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_render_task_handoff_projection.py"
+   ],
+   "tests": [
+    "tests/test_render_task_handoff_projection.py"
    ]
   },
   {
@@ -10262,6 +10298,17 @@
    "receipts/runtime-profile-map/task-resolutions/**",
    "scripts/apply_task_runtime_resolution_projection.py"
   ],
+  "scripts/apply_task_record_data.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/audit_canonical_task_projections.py",
+   "scripts/audit_execution_substrate_resolution.py",
+   "scripts/validate_four_missing_cosv_tracking.py",
+   "scripts/validate_org_control_plane.py",
+   "scripts/validate_task_record_actionable_disposition.py",
+   "scripts/validate_task_registration_substrate_resolution.py",
+   "scripts/validate_task_registry_global_invariants.py"
+  ],
   "scripts/apply_task_runtime_resolution_projection.py": [
    "control/runtime-profile-map.json",
    "data/canonical-task-records/**",
@@ -11727,6 +11774,13 @@
   "scripts/render_cross_task_coordination_handoff.py": [
    "heartbeat_runtime/coordination_ledger.py"
   ],
+  "scripts/render_task_handoff_projection.py": [
+   "control/task-vectors/**",
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "data/goal-task-component-profiles/**",
+   "source-bundles/reusable-task-registry.d/**"
+  ],
   "scripts/render_user_facing_explanation_examples.py": [
    "data/user-facing-explanation/examples.d/**",
    "data/user-facing-explanation/fixtures.d/**",
@@ -12075,6 +12129,9 @@
    "data/canonical-task-records/**",
    "data/task-registry-global-invariants.json"
   ],
+  "scripts/validate_cosv_ecosystem_adoption.py": [
+   "control/cosv-ecosystem-adoption-manifest.json"
+  ],
   "scripts/validate_current_engineering_state.py": [
    "data/current-engineering-state.json"
   ],
@@ -12095,6 +12152,14 @@
    "schemas/heartbeat-carrier-observation.schema.json",
    "schemas/worker-control-plane-coordination.schema.json",
    "tests/test_oscillator_producer.py"
+  ],
+  "scripts/validate_org_control_plane.py": [
+   "control/org-state.json",
+   "examples/repository_operational_state.example.json",
+   "scripts/repository_operational_state.py",
+   "scripts/validate_cosv_ecosystem_adoption.py",
+   "scripts/validate_task_registration_substrate_resolution.py",
+   "scripts/validate_task_registry_global_invariants.py"
   ],
   "scripts/validate_quantum_resilience_contract.py": [
    "control/quantum-crypto-census.json",
@@ -12268,6 +12333,11 @@
   "tests/test_aex_stcm_chf_native_capability_review.py": [
    "data/aex-native-math-processing-census.json",
    "data/aex-stcm-chf-native-math-capability-review.json"
+  ],
+  "tests/test_apply_task_record_data.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/apply_task_record_data.py"
   ],
   "tests/test_ara_graph_resident_execution_request.py": [
    "control/resident-execution-request.d/ara-graph-runtime-086.json",
@@ -13208,6 +13278,13 @@
   ],
   "tests/test_evaluator_intr_runtime.py": [
    "scripts/serve_evaluator_intr_runtime.py"
+  ],
+  "tests/test_exact_invocation_superseded_record_data.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "data/registry-record-data/**",
+   "data/registry-record-data/exact-invocation-superseded-by-cycle-closure.v1.json",
+   "scripts/apply_task_record_data.py"
   ],
   "tests/test_execution_spine_regression_reconstruction.py": [
    "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
@@ -14928,6 +15005,13 @@
    "org-boundary/registry/services.json",
    "resident-runtime/remediation_endpoint.py",
    "tests/pytest.py"
+  ],
+  "tests/test_render_task_handoff_projection.py": [
+   "control/task-vectors/**",
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/render_task_handoff_projection.py",
+   "source-bundles/reusable-task-registry.d/**"
   ],
   "tests/test_repo_heartbeat_federation_cosv.py": [
    "control/task-vectors/**",
