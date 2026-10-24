@@ -1,0 +1,27 @@
+$ {python} -m unittest -v tests.test_sovereign_kv_vault_lineage_record
+--- exit 0
+--- stdout
+--- stderr
+test_git_ref_custody_adapter_is_withdrawn (tests.test_sovereign_kv_vault_lineage_record.CustodyRequiresBothAccessLayers.test_git_ref_custody_adapter_is_withdrawn) ... ok
+test_no_layer1_receipt (tests.test_sovereign_kv_vault_lineage_record.CustodyRequiresBothAccessLayers.test_no_layer1_receipt) ... ok
+test_no_layer2_receipt (tests.test_sovereign_kv_vault_lineage_record.CustodyRequiresBothAccessLayers.test_no_layer2_receipt) ... ok
+test_well_formed_but_unverified_hashes (tests.test_sovereign_kv_vault_lineage_record.CustodyRequiresBothAccessLayers.test_well_formed_but_unverified_hashes) ... ok
+test_allow_carries_a_disposition (tests.test_sovereign_kv_vault_lineage_record.CustodyValidationIsADispositionNeverARaise.test_allow_carries_a_disposition) ... ok
+test_malformed_inputs_fail_closed (tests.test_sovereign_kv_vault_lineage_record.CustodyValidationIsADispositionNeverARaise.test_malformed_inputs_fail_closed) ... ok
+test_strict_core_still_raises_internally (tests.test_sovereign_kv_vault_lineage_record.CustodyValidationIsADispositionNeverARaise.test_strict_core_still_raises_internally) ... ok
+test_unbound_receipt_observed_by_the_ladder_check_fails_closed (tests.test_sovereign_kv_vault_lineage_record.CustodyValidationIsADispositionNeverARaise.test_unbound_receipt_observed_by_the_ladder_check_fails_closed) ... ok
+test_existing_event_binding_and_receipt_bytes_unchanged (tests.test_sovereign_kv_vault_lineage_record.ExistingContractBytesUnchanged.test_existing_event_binding_and_receipt_bytes_unchanged) ... ok
+test_existing_function_sources_unchanged (tests.test_sovereign_kv_vault_lineage_record.ExistingContractBytesUnchanged.test_existing_function_sources_unchanged) ... ok
+test_lineage_record_cannot_pass_as_projection_request (tests.test_sovereign_kv_vault_lineage_record.ExistingContractBytesUnchanged.test_lineage_record_cannot_pass_as_projection_request) ... ok
+test_projection_request_schema_and_constants (tests.test_sovereign_kv_vault_lineage_record.ExistingContractBytesUnchanged.test_projection_request_schema_and_constants) ... ok
+test_broken_lineages_refused (tests.test_sovereign_kv_vault_lineage_record.VaultLineageRecord.test_broken_lineages_refused) ... ok
+test_credential_material_refused (tests.test_sovereign_kv_vault_lineage_record.VaultLineageRecord.test_credential_material_refused) ... ok
+test_edited_record_does_not_rederive (tests.test_sovereign_kv_vault_lineage_record.VaultLineageRecord.test_edited_record_does_not_rederive) ... ok
+test_readback_and_receipt_must_match (tests.test_sovereign_kv_vault_lineage_record.VaultLineageRecord.test_readback_and_receipt_must_match) ... ok
+test_readback_request_is_the_v1_read (tests.test_sovereign_kv_vault_lineage_record.VaultLineageRecord.test_readback_request_is_the_v1_read) ... ok
+test_round_trip_write_and_exact_readback (tests.test_sovereign_kv_vault_lineage_record.VaultLineageRecord.test_round_trip_write_and_exact_readback) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in <t>s
+
+OK

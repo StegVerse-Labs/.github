@@ -1,0 +1,86 @@
+$ {python} -c import os,sys,tempfile,unittest; os.environ['STEGVERSE_REPO_LEDGER_ROOT']=tempfile.mkdtemp(prefix='lc-test-ledger-'); os.environ['STEGVERSE_GATEWAY_FORWARD_DB']=os.path.join(tempfile.mkdtemp(prefix='lc-test-fwd-'),'gateway-forward.db'); sys.path[:0]=['.']; import tests; sys.path.append(sys.argv[1]); sys.argv=[sys.argv[0],'-v','tests.test_endpoint_ledger_anchor']; unittest.main(module=None) {root:sdk080}
+--- exit 0
+--- stdout
+--- stderr
+test_a_message_copying_org_record_is_refused (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_a_message_copying_org_record_is_refused)
+Rule (1): an Org record on the node's path that carries the endpoint's message is not digest-only. ... ok
+test_anchor_naming_another_genesis (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_anchor_naming_another_genesis) ... ok
+test_ephemeral_needs_the_stegos_record (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_ephemeral_needs_the_stegos_record) ... ok
+test_foreign_producer_receipts (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_foreign_producer_receipts) ... ok
+test_kind_names (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_kind_names) ... ok
+test_mismatched_genesis (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_mismatched_genesis) ... ok
+test_mismatched_key_in_a_permanent_anchor (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_mismatched_key_in_a_permanent_anchor) ... ok
+test_mismatched_key_in_the_anchor (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_mismatched_key_in_the_anchor) ... ok
+test_mismatched_key_on_the_chain (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_mismatched_key_on_the_chain) ... ok
+test_org_head_must_be_pinned_and_current (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_org_head_must_be_pinned_and_current) ... ok
+test_pinned_code_digests (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_pinned_code_digests) ... ok
+test_report_that_does_not_re_derive_is_foreign (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_report_that_does_not_re_derive_is_foreign) ... ok
+test_unanchored_scratch_ledger (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_unanchored_scratch_ledger) ... ok
+test_unsealed_node_ledger_opened (tests.test_endpoint_ledger_anchor.AnchorRefusalTests.test_unsealed_node_ledger_opened) ... ok
+test_431_designation_suite_passes_against_432_anchors (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_431_designation_suite_passes_against_432_anchors)
+Rerun #431's designation tests here (byte-identical module), with #431's contract designation. ... ok
+test_a_valid_both_sides_crossing_fires_neither_endpoint_code (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_a_valid_both_sides_crossing_fires_neither_endpoint_code)
+Coordination ruling (crossings): the endpoint's side is on its own chain, the Org records only its own ... ok
+test_ephemeral_node_anchored_by_stegos_node_ledger_opened_reaches_layer1_allow (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_ephemeral_node_anchored_by_stegos_node_ledger_opened_reaches_layer1_allow) ... ok
+test_gateway_chain_is_never_anchored_on_the_org_ledger (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_gateway_chain_is_never_anchored_on_the_org_ledger)
+Rule (1): no gateway location is opened inside the org ledger; six fields, nothing written. ... ok
+test_kv_and_skap_name_stegverse_kv_and_never_anchor_on_the_org_ledger (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_kv_and_skap_name_stegverse_kv_and_never_anchor_on_the_org_ledger) ... ok
+test_permanent_own_ledger_reaches_layer1_allow (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_permanent_own_ledger_reaches_layer1_allow) ... ok
+test_the_lc_kv_15_hole_is_closed (tests.test_endpoint_ledger_anchor.AnchoredEndToEndTests.test_the_lc_kv_15_hole_is_closed) ... ok
+test_a_carrier_older_than_the_anchor_does_not_count (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_a_carrier_older_than_the_anchor_does_not_count) ... ok
+test_a_permanent_root_on_a_caller_created_store_is_refused (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_a_permanent_root_on_a_caller_created_store_is_refused)
+Row (a), PERMANENT_ROOT_ON_CALLER_CREATED_ORG_OBJECT_STORE. ... ok
+test_a_stale_head_attestation_is_refused (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_a_stale_head_attestation_is_refused) ... ok
+test_b_a_caller_appended_ingress_record_claiming_installed_intr_is_refused (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_b_a_caller_appended_ingress_record_claiming_installed_intr_is_refused)
+Row (b), CALLER_APPENDED_INGRESS_RECORD_CLAIMING_INSTALLED_INTR: the anchor passes, transport refuses. ... ok
+test_c_caller_store_and_caller_appended_ingress_without_the_transport_patch_is_refused (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_c_caller_store_and_caller_appended_ingress_without_the_transport_patch_is_refused)
+Row (c), PERMANENT_CALLER_STORE_AND_CALLER_APPENDED_INGRESS_NO_TRANSPORT_PATCH. ... ok
+test_production_refuses_every_positive_control (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_production_refuses_every_positive_control)
+Nothing ALLOWs until the append route is admitted: the E0 positive controls, without the harness. ... ok
+test_transport_only_row_passes_the_anchor_then_fails_on_transport (tests.test_endpoint_ledger_anchor.CallerStoreAndIngressTests.test_transport_only_row_passes_the_anchor_then_fails_on_transport) ... ok
+test_evaluator_is_untouched (tests.test_endpoint_ledger_anchor.DeterminismTests.test_evaluator_is_untouched) ... ok
+test_no_clock_network_or_randomness (tests.test_endpoint_ledger_anchor.DeterminismTests.test_no_clock_network_or_randomness) ... ok
+test_no_production_module_imports_a_test_module (tests.test_endpoint_ledger_anchor.DeterminismTests.test_no_production_module_imports_a_test_module)
+Lane D finding 1: tests/org_ledger_harness.py and the other test helpers are test-only. ... ok
+test_the_dissolution_writer_is_what_the_anchor_reads (tests.test_endpoint_ledger_anchor.DeterminismTests.test_the_dissolution_writer_is_what_the_anchor_reads)
+Lane D finding 2: node_ledger_dissolution is the event-driven write side (it imports the anchor, so ... ok
+test_the_org_ledger_reader_is_the_one_local_io_boundary (tests.test_endpoint_ledger_anchor.DeterminismTests.test_the_org_ledger_reader_is_the_one_local_io_boundary) ... ok
+test_disburse_read_back_then_root_inadmissible (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disburse_read_back_then_root_inadmissible) ... ok
+test_disbursement_not_read_back_fails_closed (tests.test_endpoint_ledger_anchor.DissolutionTests.test_disbursement_not_read_back_fails_closed) ... ok
+test_dissolution_is_an_event_not_a_timer (tests.test_endpoint_ledger_anchor.DissolutionTests.test_dissolution_is_an_event_not_a_timer) ... ok
+test_only_ephemeral_dissolves (tests.test_endpoint_ledger_anchor.DissolutionTests.test_only_ephemeral_dissolves) ... ok
+test_an_unanchored_ledger_per_kind (tests.test_endpoint_ledger_anchor.FailureCodePerKindTests.test_an_unanchored_ledger_per_kind) ... ok
+test_org_ledger_head_not_pinned_per_kind (tests.test_endpoint_ledger_anchor.FailureCodePerKindTests.test_org_ledger_head_not_pinned_per_kind) ... ok
+test_production_store_without_an_append_route_per_kind (tests.test_endpoint_ledger_anchor.FailureCodePerKindTests.test_production_store_without_an_append_route_per_kind)
+No head signer published: MERGE_APPEND_PATH_NOT_ADMITTED is the code for every kind but EPHEMERAL. ... ok
+test_the_rule (tests.test_endpoint_ledger_anchor.FailureCodePerKindTests.test_the_rule) ... ok
+test_431s_null_genesis_pin_is_six_field_not_pinned (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_431s_null_genesis_pin_is_six_field_not_pinned)
+#431 sets expected_genesis_receipt_sha256 to null (it cannot be known before observation). ... ok
+test_carrier_stage_is_last_and_fails_closed (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_carrier_stage_is_last_and_fails_closed) ... ok
+test_no_health_report_is_health_report_missing_not_transport (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_no_health_report_is_health_report_missing_not_transport) ... ok
+test_not_designated_six_fields_name_431 (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_not_designated_six_fields_name_431) ... ok
+test_not_pinned_next_attempt_is_the_genesis_pin_transition (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_not_pinned_next_attempt_is_the_genesis_pin_transition) ... ok
+test_refused_at_ingress_is_node_not_admitted_not_transport (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_refused_at_ingress_is_node_not_admitted_not_transport) ... ok
+test_repository_is_passed_through_to_the_evaluator_and_ingress_read (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_repository_is_passed_through_to_the_evaluator_and_ingress_read) ... ok
+test_the_order_is_fixed_and_documented (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_the_order_is_fixed_and_documented) ... ok
+test_transport_is_reported_only_when_health_and_admission_pass (tests.test_endpoint_ledger_anchor.FailurePrecedenceTests.test_transport_is_reported_only_when_health_and_admission_pass) ... ok
+test_a_proof_must_verify_under_the_anchored_key_over_the_current_challenge (tests.test_endpoint_ledger_anchor.IdentityAndTransportTests.test_a_proof_must_verify_under_the_anchored_key_over_the_current_challenge) ... ok
+test_asserted_identity_with_no_proof_is_refused (tests.test_endpoint_ledger_anchor.IdentityAndTransportTests.test_asserted_identity_with_no_proof_is_refused) ... ok
+test_asserted_transport_is_refused (tests.test_endpoint_ledger_anchor.IdentityAndTransportTests.test_asserted_transport_is_refused) ... ok
+test_transport_unobserved_without_an_installed_intr_ingress (tests.test_endpoint_ledger_anchor.IdentityAndTransportTests.test_transport_unobserved_without_an_installed_intr_ingress) ... ok
+test_issued_anchor_shape_and_organization_ledger_verifier (tests.test_endpoint_ledger_anchor.IssuedAnchorTests.test_issued_anchor_shape_and_organization_ledger_verifier) ... ok
+test_pinned_digests_match_lane_d (tests.test_endpoint_ledger_anchor.IssuedAnchorTests.test_pinned_digests_match_lane_d) ... ok
+test_published_schemas_match_the_code (tests.test_endpoint_ledger_anchor.IssuedAnchorTests.test_published_schemas_match_the_code) ... ok
+test_anchor_signed_under_a_published_key_id_by_another_key_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_anchor_signed_under_a_published_key_id_by_another_key_is_refused) ... ok
+test_asserted_node_id_decides_nothing (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_asserted_node_id_decides_nothing) ... ok
+test_caller_minted_anchor_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_caller_minted_anchor_is_refused) ... ok
+test_defaulted_transport_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_defaulted_transport_is_refused) ... ok
+test_production_publishes_no_signer_yet (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_production_publishes_no_signer_yet) ... ok
+test_the_evaluator_gets_the_receipts_transport_explicitly (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_the_evaluator_gets_the_receipts_transport_explicitly) ... ok
+test_unsigned_anchor_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_unsigned_anchor_is_refused) ... ok
+test_wrong_org_ledger_is_refused (tests.test_endpoint_ledger_anchor.SelfMintAndAssertionTests.test_wrong_org_ledger_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 65 tests in <t>s
+
+OK

@@ -1,0 +1,23 @@
+$ {python} -c import json, sys, io, contextlib
+import pytest
+six={"failure_code":"LADDER_E0_VERIFIER_TESTS_NOT_GREEN","failed_predicate":"E0_VERIFIER_SUITE_PASSES_WITH_ZERO_SKIPPED","required_evidence_or_repair":"repair the selected KV suite at the pinned commit","retry_entrypoint":"python scripts/ladder_conformance.py observe","owning_existing_goal":"KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)","next_attempt":"on the next observe run"}
+files=['tests/test_kv_interlock_runtime_endpoint.py', 'tests/test_endpoint_fanout_probe.py', 'tests/test_kv_skap_vault_finish_point.py', 'tests/test_kv_skap_vault_e0_witnesses.py', 'tests/test_sovereign_kv_vault_lineage_record.py', 'tests/test_skap_kv_persistence.py', 'tests/test_vault_store.py', 'tests/test_persistent_session_interlock.py', 'tests/test_kv_storage_provider_adapter.py', 'tests/test_task_registry_event_sovereign_kv_binding.py', 'tests/test_kv_interlock_contract.py', 'tests/test_kv_interlock_intr_envelope.py', 'tests/test_kv_skap_account_transfer.py', 'tests/test_secret_field_policy.py', 'tests/test_portable_direct_source_ingress.py', 'tests/test_portable_directory_projection.py', 'tests/test_intr_lifecycle_closure.py', 'tests/test_cloud_peer_adoption_provider_binding.py', 'tests/test_kv_provider_operation_store.py', 'tests/test_kv_my_kv_projection.py', 'tests/test_storage_endpoint_v2.py', 'tests/test_communication_runtime.py', 'tests/test_admit_tvc_readiness_evidence.py', 'tests/test_cross_edge_selection_receipt.py', 'tests/test_kv_auri_peripheral_profiles.py', 'tests/test_skap_intr_reconstruction.py', 'tests/test_skap_loader_js.py', 'tests/test_kv_ladder_conformance_lc_kv.py']
+class C:
+    def __init__(s): s.c={'passed':0,'failed':0,'skipped':0,'error':0,'subtests_passed':0}
+    def pytest_runtest_logreport(s, report):
+        if 'subtest' in type(report).__name__.lower():
+            s.c['subtests_passed' if report.outcome=='passed' else ('skipped' if report.outcome=='skipped' else 'failed')]+=1; return
+        if report.when=='call' or (report.when=='setup' and report.outcome!='passed'):
+            k={'passed':'passed','failed':'failed' if report.when=='call' else 'error','skipped':'skipped'}[report.outcome]; s.c[k]+=1
+c=C(); buf=io.StringIO()
+with contextlib.redirect_stdout(buf):
+    rc=pytest.main(['-q','-p','no:cacheprovider']+files, plugins=[c])
+ok = rc==0 and c.c['failed']==0 and c.c['error']==0 and c.c['skipped']==0 and c.c['passed']>0
+r={'subject':'LANE_D_SELECTED_28_FILE_SET','disposition':'ALLOW' if ok else 'FAIL_CLOSED','files':len(files),'pytest_rc':int(rc),**c.c}
+if not ok: r.update(six)
+print(json.dumps({'rows':[r]}))
+
+--- exit 0
+--- stdout
+{"rows": [{"subject": "LANE_D_SELECTED_28_FILE_SET", "disposition": "ALLOW", "files": 28, "pytest_rc": 0, "passed": 366, "failed": 0, "skipped": 0, "error": 0, "subtests_passed": 31}]}
+--- stderr

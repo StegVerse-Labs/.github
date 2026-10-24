@@ -1,0 +1,33 @@
+$ {python} -c import json
+from runtime.kv_skap_vault import KVSkapVault, VaultRefusal, CUSTODY_REF_PREFIX, CREDENTIAL_AUTHORITY
+rows = []
+def probe(subject, fn):
+    try:
+        fn()
+        rows.append({"subject": subject, "disposition": "ALLOW"})
+    except VaultRefusal as exc:
+        rows.append(dict({k: v for k, v in exc.fields.items() if isinstance(v, str)}, subject=subject, disposition="FAIL_CLOSED", raised="VaultRefusal"))
+    except Exception as exc:
+        rows.append({"subject": subject, "disposition": "EXCEPTION", "exception": type(exc).__name__})
+ref = CUSTODY_REF_PREFIX + "ladder-probe"
+def skap_bind():
+    KVSkapVault("principal:ladder-probe").bind_custody_key_reference(custody_key_ref=ref, issued_by=CREDENTIAL_AUTHORITY, tvc_issuance_receipt_ref="probe:no-layer1-receipt")
+def kv_read():
+    v = KVSkapVault("principal:ladder-probe")
+    v.bind_custody_key_reference(custody_key_ref=ref, issued_by=CREDENTIAL_AUTHORITY, tvc_issuance_receipt_ref="probe:x")
+    c = v.grant_consent(purposes=["WRITE", "READ"], projection_ids=["p"], observed_at="probe")["receipt_hash"]
+    v.write_projection(projection_id="p", content={"a": 1}, consent_receipt_hash=c, custody_key_ref=ref, intr_transition_ref="intr:not-a-receipt")
+    v.read_projection(projection_id="p", consent_receipt_hash=c)
+    return v, c
+def reconstruct_read():
+    v, c = kv_read()
+    KVSkapVault.reconstruct(v.export_lineage()).read_projection(projection_id="p", consent_receipt_hash=c)
+probe("SKAP_BIND_WITHOUT_LAYER1_KV_ACCESS_RECEIPT", skap_bind)
+probe("KV_WRITE_READ_WITHOUT_HEALTHY_NODE_OR_VERIFIED_INTR", kv_read)
+probe("KV_RECONSTRUCT_AND_READ_FROM_EXPORT_WITHOUT_INTR", reconstruct_read)
+print(json.dumps({"rows": rows}, sort_keys=True))
+
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "FAIL_CLOSED", "failed_predicate": "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV", "failure_class": "B", "failure_code": "SKAP_ACCESS_LAYER2_REFUSED", "next_attempt": "on the next SKAP operation admitted by the layer-2 gate", "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)", "raised": "VaultRefusal", "required_evidence_or_repair": "the SKAP Vault is reachable only through InTr from inside KV: construct the vault with the layer-2 gate (runtime.kv_skap_layer2.SkapLayer2Gate over KVInterlockRuntime) and enter through skap_entry", "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)", "subject": "SKAP_BIND_WITHOUT_LAYER1_KV_ACCESS_RECEIPT"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV", "failure_class": "B", "failure_code": "SKAP_ACCESS_LAYER2_REFUSED", "next_attempt": "on the next SKAP operation admitted by the layer-2 gate", "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)", "raised": "VaultRefusal", "required_evidence_or_repair": "the SKAP Vault is reachable only through InTr from inside KV: construct the vault with the layer-2 gate (runtime.kv_skap_layer2.SkapLayer2Gate over KVInterlockRuntime) and enter through skap_entry", "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)", "subject": "KV_WRITE_READ_WITHOUT_HEALTHY_NODE_OR_VERIFIED_INTR"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV", "failure_class": "B", "failure_code": "SKAP_ACCESS_LAYER2_REFUSED", "next_attempt": "on the next SKAP operation admitted by the layer-2 gate", "owning_existing_goal": "StegVerse-Labs/.github#3324 (KV-SKAP-VAULT-FUNCTIONAL-001, PROPOSED)", "raised": "VaultRefusal", "required_evidence_or_repair": "the SKAP Vault is reachable only through InTr from inside KV: construct the vault with the layer-2 gate (runtime.kv_skap_layer2.SkapLayer2Gate over KVInterlockRuntime) and enter through skap_entry", "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)", "subject": "KV_RECONSTRUCT_AND_READ_FROM_EXPORT_WITHOUT_INTR"}]}
+--- stderr

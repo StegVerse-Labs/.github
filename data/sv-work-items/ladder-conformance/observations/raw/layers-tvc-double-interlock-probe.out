@@ -1,0 +1,27 @@
+$ {python} -c import json, sys
+sys.path.insert(0, "tools")
+import coinbase_intr_double_interlock as d
+rows = []
+def probe(subject, fn):
+    try:
+        fn()
+        rows.append({"subject": subject, "disposition": "ALLOW"})
+    except Exception as exc:
+        rows.append({"subject": subject, "disposition": "EXCEPTION", "exception": type(exc).__name__, "message": str(exc)})
+kw = dict(ingress_id="ladder-probe", credential_ref="tvc://probe", payload_hash="sha256:" + "0" * 64)
+def l1_no_health():
+    d.validate_chain(d.build_chain(**kw))
+def l2_no_l1():
+    d.build_kv_skap_receipt(device_kv_receipt={}, **kw)
+def l2_caller_minted_l1():
+    first = d.build_device_kv_receipt(**kw)  # minted by the caller itself: no gate, no node, no InTr exchange
+    d.build_kv_skap_receipt(device_kv_receipt=first, **kw)
+probe("LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE", l1_no_health)
+probe("LAYER2_WITHOUT_LAYER1_RECEIPT", l2_no_l1)
+probe("LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT", l2_caller_minted_l1)
+print(json.dumps({"rows": rows}, sort_keys=True))
+
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "ALLOW", "subject": "LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE"}, {"disposition": "EXCEPTION", "exception": "DoubleInterlockError", "message": "boundary_receipt_schema_invalid", "subject": "LAYER2_WITHOUT_LAYER1_RECEIPT"}, {"disposition": "ALLOW", "subject": "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT"}]}
+--- stderr

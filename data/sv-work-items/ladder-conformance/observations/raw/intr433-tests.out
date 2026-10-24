@@ -1,0 +1,46 @@
+$ {python} -c import os,sys,tempfile,unittest; os.environ['STEGVERSE_REPO_LEDGER_ROOT']=tempfile.mkdtemp(prefix='lc-test-ledger-'); os.environ['STEGVERSE_GATEWAY_FORWARD_DB']=os.path.join(tempfile.mkdtemp(prefix='lc-test-fwd-'),'gateway-forward.db'); sys.path[:0]=['.']; import tests; sys.path.append(sys.argv[1]); sys.argv=[sys.argv[0],'-v','tests.test_intr_transport_enablement']; unittest.main(module=None) {root:sdk080}
+--- exit 0
+--- stdout
+--- stderr
+test_a_carrier_does_not_readmit_after_dissolution (tests.test_intr_transport_enablement.CarrierBindingTests.test_a_carrier_does_not_readmit_after_dissolution)
+(b) A pre-dissolution carrier is refused once NODE_LEDGER_DISSOLVED for the node is on the org ledger. ... ok
+test_a_carrier_for_node_a_does_not_admit_node_b (tests.test_intr_transport_enablement.CarrierBindingTests.test_a_carrier_for_node_a_does_not_admit_node_b)
+(a) B is healthy on its own receipts; A's carrier still refuses it, six fields. ... ok
+test_another_nodes_dissolution_does_not_refuse (tests.test_intr_transport_enablement.CarrierBindingTests.test_another_nodes_dissolution_does_not_refuse) ... ok
+test_same_node_same_head_is_idempotent (tests.test_intr_transport_enablement.CarrierBindingTests.test_same_node_same_head_is_idempotent) ... ok
+test_http_admits_without_a_carrier_and_records_no_carrier (tests.test_intr_transport_enablement.HttpIsUnchangedTests.test_http_admits_without_a_carrier_and_records_no_carrier) ... ok
+test_http_ignores_a_cited_carrier (tests.test_intr_transport_enablement.HttpIsUnchangedTests.test_http_ignores_a_cited_carrier) ... ok
+test_http_refusal_keeps_the_health_six (tests.test_intr_transport_enablement.HttpIsUnchangedTests.test_http_refusal_keeps_the_health_six) ... ok
+test_a_source_half_missing_endpoint_kind_fails_closed_not_keyerror (tests.test_intr_transport_enablement.InvariantTests.test_a_source_half_missing_endpoint_kind_fails_closed_not_keyerror)
+LC-KV-20 (carrier 81ad9d3b): an incomplete retained source half is refused, never a KeyError. ... ok
+test_carrier_core_reads_no_clock_network_or_process (tests.test_intr_transport_enablement.InvariantTests.test_carrier_core_reads_no_clock_network_or_process) ... ok
+test_classes_are_the_existing_intr_classes (tests.test_intr_transport_enablement.InvariantTests.test_classes_are_the_existing_intr_classes) ... ok
+test_destination_evidence_refuses_with_six_fields_never_keyerror (tests.test_intr_transport_enablement.InvariantTests.test_destination_evidence_refuses_with_six_fields_never_keyerror)
+Carrier 81ad9d3b: destination_evidence() on an incomplete source half returns the six-field FAIL_CLOSED. ... ok
+test_evaluator_is_pinned (tests.test_intr_transport_enablement.InvariantTests.test_evaluator_is_pinned) ... ok
+test_shared_modules_are_432s_copies (tests.test_intr_transport_enablement.InvariantTests.test_shared_modules_are_432s_copies) ... ok
+test_transport_table (tests.test_intr_transport_enablement.InvariantTests.test_transport_table) ... ok
+test_a_caller_created_store_is_refused (tests.test_intr_transport_enablement.OrgLedgerStoreIsAuthenticatedTests.test_a_caller_created_store_is_refused) ... ok
+test_a_store_with_its_own_genesis_is_refused (tests.test_intr_transport_enablement.OrgLedgerStoreIsAuthenticatedTests.test_a_store_with_its_own_genesis_is_refused) ... ok
+test_production_refuses_every_carrier_until_the_append_route_is_admitted (tests.test_intr_transport_enablement.OrgLedgerStoreIsAuthenticatedTests.test_production_refuses_every_carrier_until_the_append_route_is_admitted) ... ok
+test_body_digest_is_not_the_signal (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_body_digest_is_not_the_signal) ... ok
+test_destination_message_is_not_the_source_message (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_destination_message_is_not_the_source_message) ... ok
+test_destination_not_on_the_published_ref (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_destination_not_on_the_published_ref) ... ok
+test_head_not_pinned (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_head_not_pinned) ... ok
+test_named_only (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_named_only) ... ok
+test_named_with_a_cite_but_no_object_store (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_named_with_a_cite_but_no_object_store) ... ok
+test_production_contract_has_no_designation (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_production_contract_has_no_designation) ... ok
+test_pure_verify_refuses_a_non_ingress (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_pure_verify_refuses_a_non_ingress) ... ok
+test_source_not_retained (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_source_not_retained) ... ok
+test_tampered_destination_breaks_its_seal (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_tampered_destination_breaks_its_seal) ... ok
+test_unlinked_source (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_unlinked_source) ... ok
+test_unsealed_source_copy (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_unsealed_source_copy) ... ok
+test_wrong_location (tests.test_intr_transport_enablement.UnverifiedInTrIsRefusedTests.test_wrong_location) ... ok
+test_the_pair_for_one_signal_does_not_carry_another (tests.test_intr_transport_enablement.VerifiedInTrIsAdmittedTests.test_the_pair_for_one_signal_does_not_carry_another) ... ok
+test_verified_carrier_does_not_bypass_health (tests.test_intr_transport_enablement.VerifiedInTrIsAdmittedTests.test_verified_carrier_does_not_bypass_health) ... ok
+test_verified_pair_is_admitted (tests.test_intr_transport_enablement.VerifiedInTrIsAdmittedTests.test_verified_pair_is_admitted) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in <t>s
+
+OK

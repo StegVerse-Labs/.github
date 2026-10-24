@@ -1,0 +1,27 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "CONSTRAINT_IS_A_SEALED_PREDICATE",
+ "failure_class": {
+  "class": "A",
+  "reason": "an existing transition (the sealed-scope re-seal through the goal's own request) under a given rule, sequenced after #3335; not a missing capability"
+ },
+ "failure_code": "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
+  "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
+  "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+  "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
+ ],
+ "next_attempt": "on the next push to the KV request branch (StegVerse-Labs/.github#3324)",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "Lane D (KV and WorkSpace)",
+ "proposed_resolution": "re-seal the #3324 request with KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE, SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV and SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT and ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER as predicates (new scope digest), and have runtime.kv_skap_vault finish-point evaluate each; this check then moves them from CONSTRAINT to PREDICATE",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "re-classed (revision 11, continuity-vault-kit#263 @bf684aad, LLM-adapter#431 @e9d45e6c, #432 @8e87c6b0, #433 @d9164df9, StegVerse-org/.github#235 @1f973485, TVC#541 @72decca1, TVC#540 @7802ddb3, TVC#542 @5b70bf01): the membership rule is given (Rigel) and enforcement is class A per Coordination's provisional ruling (#167 comment 6373412055); the re-seal is the existing scope transition sequenced after StegVerse-Labs/.github#3335 (draft @3cca0bbd, planner admission predicate) lands; #3324 @32a4f344 stays FAIL_CLOSED until then. The SCOPE_DIGEST pairing is verified: #3324's request, allocation, handoff and MANIFEST and continuity-vault-kit#263 runtime/kv_skap_vault.py all carry d68e239b... (runs kv-scope-digest-pairing, kv-scope-digest-cvk263, pr-labs3324, pr-labs3335). Disagrees with Lane D's class B. revision 10 adds ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER (Rigel's rule (revision 10): no endpoint, whether externally maintained or ecosystem maintained, can be a member of a GitHub Organization, because membership defeats the Inter-Org InTr data transfer protocol and its boundaries). Add the three access-path constraints and the membership constraint to KV-SKAP-VAULT-FUNCTIONAL-001's sealed expected_evidence_predicates so the finish point must evaluate them",
+ "retry_point": "python scripts/canonical_task_registration_transition.py plan (StegVerse-Labs/.github), then python scripts/ladder_conformance.py observe/check",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-09"
+}
