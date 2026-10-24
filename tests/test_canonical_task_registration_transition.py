@@ -380,7 +380,8 @@ class Surface(unittest.TestCase):
         self.assertEqual(contract["manifest"]["schema"], crt.REQUEST_SCHEMA)
         self.assertEqual(contract["receipt"]["schema"], crt.RECEIPT_SCHEMA)
         self.assertEqual(contract["non_allow_fields"], list(SIX))
-        source = SCRIPT.read_text()
+        # The parent-existence predicate (REGISTRATION_PARENT_*) is defined in its own module, which derive() calls.
+        source = SCRIPT.read_text() + (ROOT / "scripts" / "registration_parent_existence.py").read_text()
         for predicate in contract["predicates"]:
             self.assertIn(f'"{predicate}"', source)
 
