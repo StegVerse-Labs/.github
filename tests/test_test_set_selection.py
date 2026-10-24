@@ -470,7 +470,9 @@ class ThisRepositoryTests(unittest.TestCase):
     def test_the_ratchet_runs_the_selection_and_nothing_else(self) -> None:
         text = (ROOT / ".github/workflows/test-suite-ratchet.yml").read_text(encoding="utf-8")
         self.assertIn("scripts/test_set_selection.py select", text)
-        self.assertIn('python -m pytest "${selected[@]}"', text)
+        # the selection's run groups run once each (scripts/test_set_selection.py run), nothing else
+        self.assertIn("scripts/test_set_selection.py run --selection /tmp/test-set-selection.json", text)
+        self.assertIn("scripts/pinned_source_input.py declared --spec .stegverse/test-set-spec.json", text)
         self.assertIn("--selection /tmp/test-set-selection.json", text)
         self.assertNotIn("python -m pytest tests ", text)
         self.assertNotIn("check_test_suite_ratchet.py --findings", text)   # no second, unselected run
