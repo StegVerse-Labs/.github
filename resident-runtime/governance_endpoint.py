@@ -156,10 +156,17 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
            hb_epoch: int | None = None) -> dict[str, str]:
     """Append the decision at both ledger levels: repository first, organization consuming it.
 
-    `hb_epoch` is the carrier's heartbeat epoch, supplied by the caller; when
-    supplied both receipts carry that exact reference, as every other boundary
-    writer does. Absent, emit.py and aggregate_transition derive it and say so.
+    `hb_epoch` is the carrier's heartbeat epoch, supplied by the caller; both
+    receipts carry that exact reference, as every other boundary writer does.
+    It is checked by the shared rule as given, never coerced: absent, '+33',
+    ' 33', 33.7 or True is the six-field refusal (HB_EPOCH_NOT_SUPPLIED when
+    absent), raised before either ledger is touched; no clock is read.
     """
+    kernel = _module("org_kernel_record_epoch", "org-kernel/kernel.py")
+    refused = kernel.writer_epoch_refusal(
+        hb_epoch, retry_entrypoint="resident-runtime/governance_endpoint.py::record (hb_epoch=)")
+    if refused is not None:
+        raise SystemExit(json.dumps(refused, sort_keys=True))
     transition_id = TRANSITION_CLASS + ":" + hashlib.sha256(
         str(packet.get("packet_id")).encode()).hexdigest()[:24]
     predecessor = "sha256:" + str(decision.get("governance_request_sha256"))
@@ -171,8 +178,11 @@ def record(packet: Mapping[str, Any], decision: Mapping[str, Any], *,
         [sys.executable, str(ROOT / ".stegverse/transition-ledger/emit.py"),
          "--transition-id", transition_id, "--transition-class", TRANSITION_CLASS,
          "--predecessor-state-sha256", predecessor, "--successor-state-sha256", successor,
-         "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE"]
-        + (["--hb-epoch", str(int(hb_epoch))] if hb_epoch is not None else []),
+         "--evidence-json", json.dumps(evidence, sort_keys=True), "--authority-effect", "NONE",
+         # A crossing retried after a later fault records its decision once:
+         # the retry returns the receipt already recorded.
+         "--idempotent-on", "request_packet_id"]
+        + ["--hb-epoch", str(hb_epoch)],
         cwd=ROOT, capture_output=True, text=True, check=False)
     if completed.returncode != 0:
         raise SystemExit("governance-decision-repository-receipt-failed:"
@@ -197,12 +207,14 @@ def cli_hb_epoch(text: str | None) -> tuple[int | None, dict[str, Any] | None]:
 
     argparse hands over the raw text (type=str), so the shared validator (the
     kernel's supplied_epoch_failure) sees it uncoerced: '+33', ' 33' and '3_3'
-    are HB_EPOCH_INVALID, and '0033' is 33. An absent --hb-epoch stays None,
-    as before.
+    are HB_EPOCH_INVALID, and '0033' is 33. An absent --hb-epoch is refused
+    HB_EPOCH_NOT_SUPPLIED with the shared rule's own six-field dict
+    (writer_epoch_refusal); no clock is read.
     """
-    if text is None:
-        return None, None
     kernel = _module("org_kernel_cli_epoch", "org-kernel/kernel.py")
+    if text is None:
+        return None, kernel.writer_epoch_refusal(
+            None, retry_entrypoint="resident-runtime/governance_endpoint.py (--hb-epoch)")
     failure = kernel.supplied_epoch_failure(text)
     if failure is None:
         return int(text), None  # admitted as ASCII digits
@@ -227,14 +239,15 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--hb-epoch", type=str, default=None,
                         help="carrier heartbeat epoch, supplied by the caller as ASCII digits; "
-                             "never sampled here")
+                             "required, never sampled here")
     args = parser.parse_args()
     hb_epoch, epoch_refused = cli_hb_epoch(args.hb_epoch)
     if epoch_refused is not None:
         # Nothing is decided, appended or written (no --out); the exit is 1.
         print(json.dumps(epoch_refused, sort_keys=True))
         return 1
-    packet = json.loads(args.packet.read_text(encoding="utf-8"))
+    kernel = _module("org_kernel_cli_input", "org-kernel/kernel.py")
+    packet = kernel.cli_input_json(args.packet, "--packet", retry_entrypoint="resident-runtime/governance_endpoint.py")
     decision = decide(packet)
     receipts = record(packet, decision, hb_epoch=hb_epoch)
     result = {**decision, **receipts, "records_authority": "ORGANIZATION_RECORDS_ONLY"}
@@ -244,4 +257,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(_module("org_kernel_cli", "org-kernel/kernel.py").run_writer_cli(
+        main, retry_entrypoint="resident-runtime/governance_endpoint.py"))

@@ -152,10 +152,9 @@ class MeshIsSuppliedTests(HostIsolated):
             now_ns=K.HB_ANCHOR_UNIX_NS + 1_000_000_000)
         self.assertEqual(sent["published_count"], 1)
         state = self.scratch / "node-b"
-        first = peer.consume(mesh_root=mesh, node_state_root=state,
-                             now_ns=K.HB_ANCHOR_UNIX_NS + 2_000_000_000)
-        second = peer.consume(mesh_root=mesh, node_state_root=state,
-                              now_ns=K.HB_ANCHOR_UNIX_NS + 3_000_000_000)
+        # The broadcast frame is CLOCK and lends no epoch: the cycle supplies one.
+        first = peer.consume(mesh_root=mesh, node_state_root=state, hb_epoch=4096)
+        second = peer.consume(mesh_root=mesh, node_state_root=state, hb_epoch=4096)
         self.assertEqual(len(first), 1)
         self.assertEqual(second, [])
         self.assertTrue((state / "federation/seen.d").is_dir())
@@ -283,7 +282,7 @@ class CallersTakeASuppliedMeshTests(HostIsolated):
         completed = self.run_cli(ROOT / "resident-runtime/federation_cycle.py",
                                  "--mesh-root", mesh, "--node-state-root", node,
                                  "--repo-ledger-root", self.scratch / "ledgers/repo",
-                                 "--org-ledger-root", self.scratch / "ledgers/org")
+                                 "--org-ledger-root", self.scratch / "ledgers/org", "--hb-epoch", "4096")
         self.assertEqual(completed.returncode, 0, completed.stderr)
         receipt = json.loads(completed.stdout)
         self.assertEqual(receipt["frames_seen"], 0)

@@ -22,7 +22,13 @@ from typing import Any, Mapping
 
 from heartbeat_runtime.worker_runtime import WorkerCoordinator
 from scripts.run_worker_runtime import load_adapters
-from workers.canonical_state_transition_custody import build_state_receipt, organization_receipt_gate, submit_state_receipt
+from workers.canonical_state_transition_custody import (
+    build_state_receipt, no_epoch_caller_boundary, organization_receipt_gate, submit_state_receipt,
+)
+
+#: A transition this worker records without a supplied epoch fails closed before
+#: any receipt is built or written; no clock stands in for it (WU-B13 slice g).
+NO_EPOCH_CALLER_FAILS_CLOSED = "NO_EPOCH_CALLER_FAILS_CLOSED"
 
 REQUEST_SCHEMA = "stegverse.sdk.manifest-state-transition-request/v1"
 RESULT_SCHEMA = "stegverse.sdk.manifest-state-transition-result/v1"
@@ -118,7 +124,8 @@ def organization_record_status(governance: Mapping[str, Any]) -> Any:
 
 
 def _require_organization_receipt(row: Mapping[str, Any], label: str, transition_id: str | None = None,
-                                  *, record_refusal: bool = False, with_basis: bool = False):
+                                  *, record_refusal: bool = False, with_basis: bool = False,
+                                  hb_epoch: int | None = None):
     """The verified Organization receipt of this exact state receipt closes a transition.
 
     Master Records reconstruction fields are evidence only and never gate it.
@@ -126,7 +133,8 @@ def _require_organization_receipt(row: Mapping[str, Any], label: str, transition
     failed predicate; nothing is committed. `record_refusal` is set where the
     gate sits inside the transition this worker just attempted.
     """
-    gate = organization_receipt_gate(row, expected_transition_id=transition_id, record_refusal=record_refusal)
+    gate = organization_receipt_gate(row, expected_transition_id=transition_id, record_refusal=record_refusal,
+                                     hb_epoch=hb_epoch)
     refusal = gate["refusal"]
     require(gate["verified"], f"{label}_organization_receipt_refused:"
             f"{(refusal or {}).get('disposition')}:{(refusal or {}).get('failed_predicate')}")
@@ -500,7 +508,10 @@ def _custody_transition(*, transition_id: str, sequence: int, task_id: str,
                         # StegBrowser fan, and it no longer lives here. A caller that
                         # omitted this would have inherited a proof scope naming a
                         # capability this worker does not own.
-                        proof_scope: str) -> dict[str, Any]:
+                        proof_scope: str, hb_epoch: int | None) -> dict[str, Any]:
+    # The supplied epoch, checked before a receipt is built: build_state_receipt
+    # stamps the time, so without one nothing is built, read or written.
+    require(hb_epoch is not None, f"{transition_id}_{NO_EPOCH_CALLER_FAILS_CLOSED}")
     receipt = build_state_receipt(
         transition_id=transition_id,
         transition_sequence=sequence,
@@ -513,10 +524,10 @@ def _custody_transition(*, transition_id: str, sequence: int, task_id: str,
         proof_scope=proof_scope,
         proof_ceiling="ORGANIZATION_FIRST_THEN_MASTER_RECORDS_RECONSTRUCTION",
     )
-    custody = submit_state_receipt(receipt)
+    custody = submit_state_receipt(receipt, hb_epoch=hb_epoch)
     # Gate first so that any refusal of this attempted transition, including an
     # append that did not record, is appended as its non-ALLOW record.
-    _require_organization_receipt(custody, transition_id, transition_id, record_refusal=True)
+    _require_organization_receipt(custody, transition_id, transition_id, record_refusal=True, hb_epoch=hb_epoch)
     require(custody.get("state") == "RECORDED", f"{transition_id}_organization_not_recorded")
     org = custody.get("organization_receipt")
     require(isinstance(org, Mapping) and org.get("receipt_sha256"), f"{transition_id}_organization_receipt_missing")
@@ -622,6 +633,7 @@ def _governance_disposition_record(
     evidence: Mapping[str, Any],
     reason_code: str | None = None,
     failed_predicate: str | None = None,
+    hb_epoch: int | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Record the one parent governance disposition and return its exact custody row."""
     subject = _manifest_subject(validated)
@@ -633,6 +645,7 @@ def _governance_disposition_record(
         prior=prior_organization_receipt_sha256,
         evidence=evidence,
         proof_scope="SDK_MANIFEST_SELECTED_GOVERNANCE_TRANSITION_ONLY",
+            hb_epoch=hb_epoch,
     )
     closure = _closure_projection(
         governed,
@@ -678,6 +691,7 @@ def _governance_disposition(
     evidence: Mapping[str, Any],
     reason_code: str | None = None,
     failed_predicate: str | None = None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     return _governance_disposition_record(
         runtime_root,
@@ -689,6 +703,7 @@ def _governance_disposition(
         evidence=evidence,
         reason_code=reason_code,
         failed_predicate=failed_predicate,
+        hb_epoch=hb_epoch,
     )[0]
 
 
@@ -744,6 +759,8 @@ def _execute_organization_batch_after_allow(
     result: Mapping[str, Any],
     governed: Mapping[str, Any],
     governance: Mapping[str, Any],
+    *,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     """Execute the declared organization action as a consequence of the parent ALLOW."""
     parent_manifest = _organization_batch_parent_manifest(validated)
@@ -772,6 +789,7 @@ def _execute_organization_batch_after_allow(
         prior=str(governance_org["receipt_sha256"]),
         evidence=parent_evidence,
         proof_scope="MANIFEST_DIRECTED_ORGANIZATION_ACTION_DISPATCH_ONLY",
+            hb_epoch=hb_epoch,
     )
     dispatch_closure = _closure_projection(
         dispatch, predecessor_receipt_sha256=governance_receipt_sha256
@@ -834,6 +852,7 @@ def _execute_organization_batch_after_allow(
             },
             authority_effect="NONE",
             parent_manifest=parent_manifest,
+            hb_epoch=hb_epoch,
         )
     except Exception as exc:
         failure = _custody_transition(
@@ -852,6 +871,7 @@ def _execute_organization_batch_after_allow(
                 ),
             },
             proof_scope="MANIFEST_DIRECTED_ORGANIZATION_ACTION_FAILURE_ONLY",
+            hb_epoch=hb_epoch,
         )
         failure_closure = _closure_projection(
             failure, predecessor_receipt_sha256=dispatch_receipt_sha256
@@ -901,6 +921,8 @@ def _execute_governance(
     runtime_root: Path,
     validated: Mapping[str, Any],
     transport: Mapping[str, Any] | None,
+    *,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     require(validated.get("route_id") == GOVERNANCE_ROUTE_ID, "CANONICAL_GOVERNANCE_ROUTE_REQUIRED")
     require(isinstance(transport, Mapping), "AUTHENTIC_INTR_TRANSPORT_EVIDENCE_REQUIRED")
@@ -908,6 +930,12 @@ def _execute_governance(
     authorization_id = transport.get("authorization_id")
     require(isinstance(authorization_id, str) and authorization_id,
             "CANONICAL_GOVERNANCE_TVC_RELAY_AUTHORIZATION_REQUIRED")
+    if hb_epoch is None:
+        # No supplied epoch in scope: nothing is recorded, so nothing is executed.
+        return {**no_epoch_caller_boundary("workers/manifest_state_transition_intr_ingress.py::_execute_governance"),
+                "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+                "request_sha256": validated.get("request_sha256"),
+                "canonical_manifest_sha256": validated.get("canonical_manifest_sha256")}
     subject = _manifest_subject(validated)
     ingress = _custody_transition(
         transition_id="INGRESS_ADMITTED",
@@ -925,6 +953,7 @@ def _execute_governance(
             "transport_payload_sha256": transport.get("payload_sha256"),
         },
         proof_scope="SDK_MANIFEST_SELECTED_GOVERNANCE_TRANSITION_ONLY",
+            hb_epoch=hb_epoch,
     )
     ingress_closure = _closure_projection(ingress)
     prior_org = str((ingress["custody"]["organization_receipt"])["receipt_sha256"])
@@ -939,6 +968,7 @@ def _execute_governance(
             prior_organization_receipt_sha256=prior_org,
             ingress_closure=ingress_closure,
             reason_code="CANONICAL_GOVERNANCE_OWNER_EXECUTION_FAILED",
+            hb_epoch=hb_epoch,
             failed_predicate="MANIFEST_SELECTED_CAPABILITY_EXECUTION_OWNER_BOUND_AND_EXECUTABLE",
             evidence={
                 "request_sha256": validated["request_sha256"],
@@ -959,6 +989,7 @@ def _execute_governance(
             prior_organization_receipt_sha256=prior_org,
             ingress_closure=ingress_closure,
             reason_code="CANONICAL_GOVERNANCE_DISPOSITION_INVALID",
+            hb_epoch=hb_epoch,
             failed_predicate="EXACT_CANONICAL_GOVERNANCE_DISPOSITION_ALLOW_OR_DENY",
             evidence={
                 "request_sha256": validated["request_sha256"],
@@ -970,6 +1001,7 @@ def _execute_governance(
     result, governed = _governance_disposition_record(
         runtime_root,
         validated,
+        hb_epoch=hb_epoch,
         disposition=raw_disposition,
         transition_id="GOVERNANCE_DISPOSITION",
         prior_organization_receipt_sha256=prior_org,
@@ -989,7 +1021,7 @@ def _execute_governance(
     )
     if raw_disposition == "ALLOW" and validated.get("canonical_task_id") == ORGANIZATION_BATCH_TASK_ID:
         return _execute_organization_batch_after_allow(
-            runtime_root, validated, result, governed, governance
+            runtime_root, validated, result, governed, governance, hb_epoch=hb_epoch
         )
     return result
 
@@ -999,6 +1031,7 @@ def execute(
     request: Mapping[str, Any],
     *,
     transport: Mapping[str, Any] | None = None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     validated = validate_request(request)
     task_id = validated.get("canonical_task_id")
@@ -1019,7 +1052,7 @@ def execute(
             DiagnosticAdmissionError, DiagnosticExecutionFailClosed, consume,
         )
         try:
-            return consume(Path(__file__).resolve().parents[1], runtime_root, validated)
+            return consume(Path(__file__).resolve().parents[1], runtime_root, validated, hb_epoch=hb_epoch)
         except DiagnosticAdmissionError as exc:
             return _nonworker_diagnostic_deny(runtime_root, validated, reason_code=exc.predicate)
         except DiagnosticExecutionFailClosed as exc:
@@ -1027,7 +1060,7 @@ def execute(
                 runtime_root, validated, reason_code=exc.predicate, terminal=True,
                 organization_receipt_refusal=exc.refusal)
     if validated.get("processing_capability") == "governance":
-        return _execute_governance(runtime_root, validated, transport)
+        return _execute_governance(runtime_root, validated, transport, hb_epoch=hb_epoch)
     require(isinstance(task_id, str) and task_id, "canonical_task_id_required")
     capability = validated.get("processing_capability")
     graph = validated.get("state_graph") or {}

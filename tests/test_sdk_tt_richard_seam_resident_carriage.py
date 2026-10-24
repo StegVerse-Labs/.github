@@ -311,9 +311,9 @@ def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(t
         return real.build_state_receipt(**kwargs)
 
     forged_organization_receipt = [False]
-    def submit(receipt):
+    def submit(receipt, **kwargs):
         receipt_calls.append(receipt)
-        recorded = real.submit_state_receipt(receipt)
+        recorded = real.submit_state_receipt(receipt, **kwargs)
         assert recorded["reconstruction_status"] == "NOT_REQUESTED"
         if forged_organization_receipt[0]:
             recorded = dict(recorded, organization_receipt=dict(
@@ -329,7 +329,7 @@ def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(t
         return subprocess.CompletedProcess(command, 0, stdout=json.dumps(result) + "\n", stderr="")
 
     closed = dispatcher.dispatch(source, runtime, runner=runner, env={"PATH": "/usr/bin"},
-                                 only_consumers=(dispatcher.RICHARD_SELECTOR,))
+                                 only_consumers=(dispatcher.RICHARD_SELECTOR,), hb_epoch=4096)
     assert closed["state"] == "DISPATCH_COMPLETE"
     assert closed["richard_dispatch_master_records"]["state"] == "RECORDED"
     assert closed["richard_dispatch_master_records"]["first_failed_cycle"] == result["first_failed_cycle"]
@@ -339,7 +339,7 @@ def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(t
 
     forged_organization_receipt[0] = True
     rejected = dispatcher.dispatch(source, runtime, runner=runner, env={"PATH": "/usr/bin"},
-                                   only_consumers=(dispatcher.RICHARD_SELECTOR,))
+                                   only_consumers=(dispatcher.RICHARD_SELECTOR,), hb_epoch=4096)
     assert rejected["state"] == "DISPATCH_INCOMPLETE"
     assert rejected["richard_dispatch_master_records"]["state"] == "BOUNDARY"
     assert rejected["richard_dispatch_master_records"]["refusal"]["disposition"] == "FAIL_CLOSED"
@@ -350,7 +350,7 @@ def test_richard_dispatch_visit_closes_only_with_exact_master_records_readback(t
     request["cosv_task_vector"] = "00000000000000"
     (runtime / load_consumer().REQUEST_REL).write_text(json.dumps(request))
     unknown = dispatcher.dispatch(source, runtime, runner=runner, env={"PATH": "/usr/bin"},
-                                  only_consumers=(dispatcher.RICHARD_SELECTOR,))
+                                  only_consumers=(dispatcher.RICHARD_SELECTOR,), hb_epoch=4096)
     assert unknown["state"] == "DISPATCH_INCOMPLETE"
     assert unknown["richard_dispatch_master_records"]["reason"] == "RICHARD_DISPATCH_REQUEST_IDENTITY_INVALID"
 
@@ -402,7 +402,7 @@ def test_custody_exception_preserves_actual_selector_result_in_dispatch_receipt(
         return "sha256:diagnostic"
     def build(**kwargs):
         return kwargs
-    def submit(receipt):
+    def submit(receipt, **kwargs):
         raise ConnectionError("fixture only: canonical custody unreachable")
     monkeypatch.setitem(sys.modules, "canonical_state_transition_custody",
         types.SimpleNamespace(build_state_receipt=build, sha256_uri=sha, submit_state_receipt=submit,
@@ -412,7 +412,7 @@ def test_custody_exception_preserves_actual_selector_result_in_dispatch_receipt(
         return subprocess.CompletedProcess(command, 1, stdout=json.dumps(machine) + "\n", stderr="")
     receipt = dispatcher.dispatch(
         source, runtime, runner=runner, env={"PATH": "/usr/bin"},
-        only_consumers=(dispatcher.RICHARD_SELECTOR,),
+        only_consumers=(dispatcher.RICHARD_SELECTOR,), hb_epoch=4096,
     )
     assert receipt["state"] == "DISPATCH_INCOMPLETE"
     assert receipt["richard_dispatch_master_records"]["reason"] == "RICHARD_DISPATCH_CUSTODY_EXCEPTION"

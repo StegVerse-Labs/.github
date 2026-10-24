@@ -25,6 +25,21 @@
   "federation_mesh_location": "SUPPLIED_BY_NODE_MATERIALIZER",
   "hosted_service_required": false,
   "resident_cycle_entrypoint": "resident-runtime/federation_cycle.py",
+  "accepts_carried_crossings": false,
+  "resident_cycle_hb_epoch": {
+    "argument": "--hb-epoch",
+    "environment": "HB_EPOCH",
+    "from": "committed_request",
+    "dispatch_pattern": "COMMITTED_REQUEST",
+    "request_path": ".stegverse/resident-cycle/request.json",
+    "request_schema": "stegverse.resident-cycle-request/v1",
+    "dispatcher": "resident-runtime/resident_cycle_request.py",
+    "dispatch_workflow": ".github/workflows/resident-cycle-request.yml",
+    "dispatch_trigger": "push to main changing request_path",
+    "workflow_inputs": false,
+    "rule": "org-kernel/kernel.py::writer_epoch_refusal",
+    "clock_fallback": false
+  },
   "federation_poll_mode": "OUTBOUND_ONLY",
   "federation_network_route": "SUPPLIED_FEDERATION_MESH"
 }

@@ -116,7 +116,8 @@ class DispatchedSppaRunTests(unittest.TestCase):
     def test_site_1607_retro_request_records_and_reads_back(self):
         ledger = materialized_ledger(self.base)
         self.commit(resident_request(sppa_tests.fixture()))
-        result = self.run_consumer(ledger)
+        # A refusal is recorded only at a supplied epoch; without one nothing is written.
+        result = self.run_consumer(ledger, hb_epoch="4096")
         self.assertEqual(result["state"], "ATTEMPT_RECORDED")
         self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
         self.assertEqual(result["failure_code"], "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF")
@@ -127,7 +128,7 @@ class DispatchedSppaRunTests(unittest.TestCase):
             self.assertTrue(result[field], field)
         latest = json.loads((self.runtime / consumer.RECEIPT_REL).read_text(encoding="utf-8"))
         self.assertEqual(latest["organization_receipt_sha256"], result["organization_receipt_sha256"])
-        self.assertEqual(self.run_consumer(ledger), result)
+        self.assertEqual(self.run_consumer(ledger, hb_epoch="4096"), result)
 
     def test_first_real_promotion_run_is_fail_closed_on_unauthenticated_evidence(self):
         """Under the real custody verifier no evidence receipt authenticates (SPPA correction, Q74-01)."""

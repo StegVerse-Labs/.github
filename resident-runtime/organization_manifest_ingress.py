@@ -406,16 +406,16 @@ def _append_both_levels(transition_id: str, transition_class: str, predecessor: 
     `aggregate_transition`, under its own lock. With `idempotent_on` a
     transition the repository chain already records is returned rather than
     minted again (a mismatch raises `ledger_receipt_collision` before anything
-    is written). The organization receipt takes its epoch from the repository
-    receipt it consumes, so one ingress carries one heartbeat epoch at both
-    levels, and a replay completing a partial commit carries the first
-    attempt's. If the organization append raises, the result is the typed
+    is written). The organization receipt is handed the epoch this ingress was
+    supplied (`forwarded_epoch`), never one read back from the repository
+    receipt, so a replay completing a partial commit takes the epoch its own
+    caller supplies. If the organization append raises, the result is the typed
     partial-commit record.
     """
     repository_receipt = repository_ledger.append(
         transition_id, transition_class, predecessor, successor, dict(evidence),
         "NONE", hb_epoch=hb_epoch, idempotent_on=idempotent_on)
-    hb_epoch = repository_receipt["hb_reference"]["epoch"]
+    hb_epoch = repository_ledger.forwarded_epoch(repository_receipt, hb_epoch)
     try:
         organization_receipt = organization_ledger.aggregate_transition(
             receipt=repository_receipt,
@@ -478,6 +478,16 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
          **dict(organization_evidence or {})},
         hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
         idempotent_on=("failed_predicate", "detail"))
+
+
+def no_epoch_refusal(caller: str) -> dict[str, Any]:
+    """The unrecorded six-field FAIL_CLOSED of a receipt with no supplied epoch (WU-B13 slice g)."""
+    refusal = organization_ledger.kernel.no_epoch_caller_refusal(
+        caller, retry_entrypoint="resident-runtime/organization_manifest_ingress.py::receive (hb_epoch=, or --hb-epoch)")
+    return {"schema": RESULT_SCHEMA_ORG, "organization": "StegVerse-Labs",
+            "receiving_operation": OPERATION_ID, "received": False,
+            "organization_receipt_observed": False, "refusal_recorded": False,
+            **refusal, "authority_effect": "NONE_REFUSAL_ONLY"}
 
 
 def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str,
@@ -989,7 +999,11 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
 
     `mesh_root` is the federation mesh the node was materialized with. Only a
     capability another organization decides needs it: the request leaves on it.
+    `hb_epoch` is the epoch the carrier supplied; without one nothing is
+    received or appended, and no clock is read to stand in for it.
     """
+    if hb_epoch is None:
+        return no_epoch_refusal("resident-runtime/organization_manifest_ingress.py::receive")
     # Resolved before anything is appended: an unresolvable revision fails
     # closed here, with no receipt written that could not name its rule.
     rule_ref = recomputation_rule_ref()
@@ -1046,6 +1060,20 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         # recorded here rather than leaving the operation by exception with
         # nothing written.
         return refused("CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED", str(exc))
+    if not crossing.get("crossing_completed") and crossing.get("retry_permitted") is True:
+        # The processor's own write faulted (exit 75): non-terminal. Nothing is
+        # recorded, so the redelivered submission is consumed exactly once.
+        fault = crossing.get("far_side_fault") or {}
+        return {"disposition": "FAIL_CLOSED", "failure_code": "PROCESS_BOUNDARY_WRITE_FAULT", "terminal": False,
+                "failed_predicate": fault.get("failed_predicate") or "PROCESS_BOUNDARY_COMPLETES_ITS_OWN_WRITE",
+                "detail": fault.get("detail") or "process_boundary exited 75",
+                "required_evidence_or_repair": (fault.get("required_evidence_or_repair")
+                                                or "the processor's own write completes"),
+                "retry_entrypoint": fault.get("retry_entrypoint") or RETRY_ENTRYPOINT,
+                "owning_existing_goal": fault.get("owning_existing_goal") or "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+                "next_attempt": "redeliver the submission; nothing was recorded",
+                "request_sha256": request["request_sha256"], "receipt_written": False,
+                "consequence_committed": False}
     if not crossing.get("crossing_completed"):
         # The far side refused. That is its disposition to state, not something
         # this operation rewrites into an admission -- but the submission still
@@ -1156,10 +1184,9 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
                 "delivery_attempt": delivery}
     repository_receipt = appended["repository_receipt"]
     organization_receipt = appended["organization_receipt"]
-    # Everything after the repository receipt takes its epoch from that receipt,
-    # so a replay rebuilds the same organization receipt and the same outbound
-    # frame rather than ones stamped with whatever epoch this attempt carried.
-    hb_epoch = repository_receipt["hb_reference"]["epoch"]
+    # Everything after the repository receipt takes the epoch this ingress was
+    # supplied, never one read back from that receipt (B-P36f/m).
+    hb_epoch = repository_ledger.forwarded_epoch(repository_receipt, hb_epoch)
 
     if conformance is not None:
         return {**role_conformance_result(
@@ -1361,19 +1388,23 @@ def main() -> int:
                         help="JSON declaring mode, node_ref and the predecessor key; "
                              "required unless the manifest declares its own chain position")
     parser.add_argument("--packet-id", default="organization-sdk-manifest-ingress")
-    parser.add_argument("--hb-epoch", type=int, default=None,
-                        help="heartbeat epoch; derived from the host clock, and marked as "
-                             "derived, when absent")
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; never coerced")
     parser.add_argument("--mesh-root", type=Path, default=None,
                         help="federation mesh this node was materialized with; a governance "
                              "request leaves on it")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
+    args.hb_epoch, refused = repository_ledger.cli_epoch(
+        args.hb_epoch, "resident-runtime/organization_manifest_ingress.py")
+    if refused is not None:
+        print(json.dumps(refused, sort_keys=True))
+        return 1
 
     if args.outbox_root is not None:
         try:
             consumed = consume_outbox(args.outbox_root,
-                                      registry=json.loads(args.registry.read_text(encoding="utf-8")),
+                                      registry=repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
                                       mesh_root=args.mesh_root)
         except RuntimeError as exc:
             consumed = {"schema": OUTBOX_CONSUMPTION_SCHEMA, "state": "FAIL_CLOSED",
@@ -1386,9 +1417,9 @@ def main() -> int:
         return 0 if consumed["state"] in {"NO_EVENT", "CONSUMED"} else 1
     try:
         result = receive(
-            json.loads(args.manifest.read_text(encoding="utf-8")),
-            registry=json.loads(args.registry.read_text(encoding="utf-8")),
-            standing=(json.loads(args.standing.read_text(encoding="utf-8"))
+            repository_ledger.kernel.cli_input_json(args.manifest, "--manifest", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
+            registry=repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
+            standing=(repository_ledger.kernel.cli_input_json(args.standing, "--standing", retry_entrypoint="resident-runtime/organization_manifest_ingress.py")
                       if args.standing else None),
             packet_id=args.packet_id, hb_epoch=args.hb_epoch, mesh_root=args.mesh_root)
     except RuntimeError as exc:
@@ -1422,4 +1453,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(repository_ledger.kernel.run_writer_cli(main, retry_entrypoint="resident-runtime/organization_manifest_ingress.py"))

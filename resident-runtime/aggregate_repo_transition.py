@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import argparse,base64,hashlib,importlib.util,json,os,tempfile
-from datetime import datetime,timezone
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -17,7 +16,7 @@ kernel=importlib.util.module_from_spec(_kspec);_kspec.loader.exec_module(kernel)
 _sspec=importlib.util.spec_from_file_location("ledger_store",ROOT/"resident-runtime/ledger_store.py")
 ledger_store=importlib.util.module_from_spec(_sspec);_sspec.loader.exec_module(ledger_store)
 
-def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
+def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False,allow_nan=False).encode()
 def sha(v): return "sha256:"+hashlib.sha256(canon(v)).hexdigest()
 class LedgerLocationRequired(ValueError):
     """No ledger root was supplied; nothing is appended and nothing is derived."""
@@ -612,7 +611,7 @@ def retain_source(root, receipt, verified):
     fd,name=tempfile.mkstemp(prefix=".source-",dir=str(directory))
     try:
         with os.fdopen(fd,"w",encoding="utf-8") as stream:
-            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False)+"\n")
+            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False,allow_nan=False)+"\n")
             stream.flush()
             os.fsync(stream.fileno())
         if path.exists():
@@ -669,6 +668,9 @@ def _caller_context(boundary_evidence):
     """
     evidence=dict(boundary_evidence or {})
     evidence.pop(RETAINED_SUBMISSION_KEY,None)
+    # Which batch this append released is ledger state too: an exact retry after
+    # the release committed derives no release of its own (B-P36q).
+    evidence.pop("parent_manifest_released_batch",None)
     return evidence
 
 def _existing_exact_source(store, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
@@ -754,14 +756,18 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     execution. Either way it is supplied, never derived.
 
     `hb_epoch` is the carrier's heartbeat epoch. Supplied, every receipt this
-    call writes carries that exact reference; absent, the reference is derived
-    from the host clock and says so. An exact retry returns the original
-    receipt whatever epoch it arrives at.
+    call writes carries that exact reference; an absent or invalid one raises
+    OrgLedgerEpochRefused (six-field FAIL_CLOSED; HB_EPOCH_NOT_SUPPLIED when
+    absent) before the store is resolved or created, and no clock is read to
+    stand in for it. An exact retry returns the original receipt whatever
+    epoch it arrives at.
 
     `custody_exclusivity_verifier` is the only way an existing authority's
     attestation of unique custody reaches a successor's consequential append
     (require_custody_exclusivity); a root never released does not need it.
     """
+    _refuse_invalid_epoch(hb_epoch)
+    _refuse_clock_source(receipt)
     store = organization_store(ledger)
     if _is_posix(store):
         store.root.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -855,17 +861,43 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
             effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
                 parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
             )
+        # An exact retry is recognised before anything is released: under an
+        # establishment-bound manifest the release's establishment receipt
+        # and this one already fill the successor packet, so releasing first
+        # would close it again (W4). The recorded receipt is returned.
+        if _existing_exact_source(
+            store, verify_source(receipt), org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+        ) is not None:
+            return _aggregate_transition_locked(
+                receipt, store=store, org_transition_class=org_transition_class,
+                predecessor_org_state_sha256=predecessor_org_state_sha256,
+                successor_org_state_sha256=successor_org_state_sha256,
+                boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+                hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
+            )
         # The last released batch's post-commit submission outcome, read from
         # this store before any release moves BATCH_HEAD, is retained on this
         # receipt once (#3012). Read-only and derived from the ledger, so an
         # exact retry derives the same value and it is not caller context.
+        # An unindexed batch a faulted release wrote is indexed first (B-P36q).
+        batches.adopt_unindexed_batch(store)
         retained = batches.retained_submission_evidence(store)
         if retained is not None:
             effective_boundary_evidence[batches.RELEASED_BATCH_SUBMISSION_KEY] = retained
-        released = batches.release_satisfied_packet_before_next_transition(
-            parent_manifest, root=store, now_ns=now_ns,
-            custody_exclusivity_verifier=custody_exclusivity_verifier,
-        )
+        # A release a faulted attempt committed is resumed, not repeated: a
+        # released batch whose carrying receipt never landed is carried by
+        # this one (B-P36q).
+        released = batches.pending_manifest_release(store)
+        if released is None:
+            # Expiry and release read the supplied epoch when one is in hand, never a clock.
+            released = batches.release_satisfied_packet_before_next_transition(
+                parent_manifest, root=store, now_ns=now_ns,
+                custody_exclusivity_verifier=custody_exclusivity_verifier,
+                epoch=int(str(hb_epoch)) if hb_epoch is not None else None,
+            )
         if released is not None:
             if establishes_packet:
                 raise ValueError("t(0) establishment cannot also release a prior packet")
@@ -901,7 +933,8 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
         hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
     )
     if released is not None:
-        state = batches.open_packet_state(parent_manifest, root=store, now_ns=now_ns)
+        state = batches.open_packet_state(parent_manifest, root=store, now_ns=now_ns,
+                                          epoch=int(str(hb_epoch)) if hb_epoch is not None else None)
         if state["receipt_count"] != (2 if manifest_establishes else 1):
             raise ValueError("successor organization receipt packet did not initialize correctly")
     return record
@@ -916,6 +949,7 @@ def release_custody(parent_manifest, *, ledger=None, hb_epoch=None, custody_excl
     root taken before the release from being written elsewhere: that copy is
     detected where its receipts meet this release, not prevented.
     """
+    _refuse_invalid_epoch(hb_epoch)
     transfer = custody_transfer(parent_manifest)
     store = organization_store(ledger)
     record = {
@@ -946,6 +980,7 @@ def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch
     materialization, the manifest's HEAD and generation, and this manifest.
     """
     import organization_batch_custody as batches
+    _refuse_invalid_epoch(hb_epoch)
     transfer = custody_transfer(parent_manifest)
     store = organization_store(ledger)
     root = store.root if _is_posix(store) else None
@@ -1015,6 +1050,8 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
     a networked store it is the store's own compare-and-swap, and a lost race
     is a typed FAIL_CLOSED with nothing published.
     """
+    _refuse_invalid_epoch(hb_epoch)
+    _refuse_clock_source(receipt)
     source=verify_source(receipt)
     if store is None:
         store=organization_store(root)
@@ -1028,6 +1065,21 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
             boundary_evidence=boundary_evidence,authority_effect=authority_effect,hb_epoch=hb_epoch,
             custody_exclusivity_verifier=custody_exclusivity_verifier)
 
+#: An append's epoch is supplied by its caller and checked by the kernel's
+#: shared rule (SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH); an absent or invalid
+#: one is refused six-field FAIL_CLOSED before anything is written, as
+#: StegVerse-org/.github#189 does for the organization ledger there.
+EPOCH_RETRY_ENTRYPOINT="resident-runtime/aggregate_repo_transition.py::aggregate_transition (hb_epoch=, or --hb-epoch)"
+OrgLedgerEpochRefused=kernel.SuppliedEpochRefused
+
+def epoch_refusal(hb_epoch):
+    """The six-field FAIL_CLOSED refusal of an append's epoch, or None."""
+    return kernel.writer_epoch_refusal(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+
+def require_supplied_epoch(hb_epoch):
+    """The heartbeat reference of the supplied epoch, or OrgLedgerEpochRefused."""
+    return kernel.supplied_hb_reference(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+
 def _retained_in_store(store, receipt, source):
     """The exact source receipt an earlier append committed beside its receipt."""
     stored=store.get(ledger_store.source_key(source["source_transition_sha256"]))
@@ -1035,7 +1087,68 @@ def _retained_in_store(store, receipt, source):
     if stored!=receipt or verify_source(stored)["source_transition_sha256"]!=source["source_transition_sha256"]:
         raise ValueError("retained organization source receipt conflict")
 
+def _refuse_invalid_epoch(hb_epoch):
+    """OrgLedgerEpochRefused for an absent or invalid epoch, before any store opens. No clock is read."""
+    require_supplied_epoch(hb_epoch)
+
+#: O-1: a repository source receipt is consumed only when its own heartbeat
+#: reference is SUPPLIED (or CARRIED), never CLOCK or unmarked. Checked by the
+#: kernel's shared rule on the receipt's reference, before any store opens.
+SOURCE_CLOCK_PROVENANCE="SOURCE_RECEIPT_IS_CLOCK_PROVENANCE"
+SOURCE_PROVENANCE_RETRY_ENTRYPOINT=(".stegverse/transition-ledger/emit.py::append (hb_epoch=, or --hb-epoch), "
+                                    "then resident-runtime/aggregate_repo_transition.py::aggregate_transition")
+
+def source_provenance_refusal(receipt):
+    """The six-field FAIL_CLOSED of a repository source receipt stamped from a clock, or None.
+
+    Only a repo-transition receipt carries an hb_reference. A CLOCK reference
+    (derived_from_clock not False, or a sampled_unix_ns) and an unmarked one
+    are refused; nothing is written and no clock is read. A legacy CLOCK
+    receipt is never mutated: its transition is re-emitted under a supplied epoch.
+    """
+    if not isinstance(receipt,dict) or receipt.get("schema")!="stegverse.repo-transition-receipt/v1":
+        return None
+    reference=receipt.get("hb_reference")
+    epoch=reference.get("epoch") if isinstance(reference,dict) else None
+    failure=kernel.supplied_epoch_failure(epoch,reference if reference is not None else {})
+    if failure is None and isinstance(reference,dict) and ("source" in reference or "head_receipt_sha" in reference):
+        # The shared rule passes a CARRIED reference; this destination does not
+        # accept CARRIED crossings at its writers either (B-P36m option 1, row 7),
+        # so a source receipt claiming one is refused before anything is written.
+        return {"disposition":"FAIL_CLOSED","failure_code":kernel.CARRIED_NOT_ACCEPTED_BY_DESTINATION,
+                "failed_predicate":"DESTINATION_ACCEPTS_CARRIED_CROSSINGS",
+                "detail":"source receipt "+str(receipt.get("receipt_sha256"))+" claims CARRIED provenance",
+                "required_evidence_or_repair":"re-send with the SUPPLIED epoch",
+                "retry_entrypoint":SOURCE_PROVENANCE_RETRY_ENTRYPOINT,
+                "owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+                "next_attempt":"append again consuming a receipt minted with a SUPPLIED epoch; nothing was written",
+                "derived_from_clock":False,"consequence_committed":False}
+    if failure is None:
+        return None
+    code,detail=failure
+    return {"disposition":"FAIL_CLOSED","failure_code":SOURCE_CLOCK_PROVENANCE,
+            "failed_predicate":kernel.HB_EPOCH_PREDICATE,
+            "detail":"source receipt "+str(receipt.get("receipt_sha256"))+": "+code+": "+detail,
+            "required_evidence_or_repair":("the repository receipt this append consumes carries a SUPPLIED "
+                                           "hb_reference (digits >= "+str(kernel.HB_ANCHOR_EPOCH)+", "
+                                           "derived_from_clock false); a CLOCK or unmarked one is re-emitted "
+                                           "under a supplied epoch, never mutated"),
+            "retry_entrypoint":SOURCE_PROVENANCE_RETRY_ENTRYPOINT,
+            "owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"append again consuming a receipt minted with the supplied epoch; nothing was written",
+            "derived_from_clock":False,"consequence_committed":False}
+
+def _refuse_clock_source(receipt):
+    """OrgLedgerEpochRefused (SOURCE_RECEIPT_IS_CLOCK_PROVENANCE) before any store opens."""
+    refusal=source_provenance_refusal(receipt)
+    if refusal is not None:
+        raise OrgLedgerEpochRefused(refusal)
+
+def _append_reference(hb_epoch):
+    return require_supplied_epoch(hb_epoch)
+
 def _append_locked(receipt, source, store, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect, hb_epoch, custody_exclusivity_verifier=None):
+    reference=_append_reference(hb_epoch)
     posix=_is_posix(store)
     store.initialize()
     rows=verify_custody_lineage(store)
@@ -1079,8 +1192,9 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         "successor_org_state_sha256":successor,
         "boundary_evidence":dict(boundary_evidence or {}),
         "authority_effect":authority_effect,
-        "hb_reference":kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference(),
-        "observed_at":datetime.now(timezone.utc).isoformat(),
+        "hb_reference":reference,
+        # The supplied heartbeat, not a host clock reading.
+        "observed_at":reference["heartbeat_id"],
         "previous_receipt_sha256":prev,
         "custody_generation":generation,
     }
@@ -1106,22 +1220,37 @@ def main():
     p.add_argument("--parent-manifest")
     p.add_argument("--release-custody",action="store_true")
     p.add_argument("--assume-custody-as")
+    p.add_argument("--hb-epoch",type=str,default=None,
+                   help="carrier-supplied heartbeat epoch, ASCII digits >= 32; required, never coerced")
     a=p.parse_args()
+    # The epoch is checked as typed, before any receipt is read or store opened.
+    refused=epoch_refusal(a.hb_epoch)
+    if refused is not None:
+        print(json.dumps(refused,sort_keys=True)); raise SystemExit(1)
+    hb_epoch=int(a.hb_epoch)
+    # Inputs are read with #3290's kernel.cli_input_json / cli_json_text before
+    # any writer is called; an unreadable one is CLI_INPUT_INVALID (F-INPUT-TRACE),
+    # reported by kernel.run_writer_cli in __main__.
+    entry="resident-runtime/aggregate_repo_transition.py"
+    boundary_evidence=kernel.cli_json_text(a.boundary_evidence_json,"--boundary-evidence-json",retry_entrypoint=entry)
+    parent_manifest=kernel.cli_input_json(a.parent_manifest,"--parent-manifest",retry_entrypoint=entry) if a.parent_manifest else None
     if a.release_custody or a.assume_custody_as:
         if not a.parent_manifest: raise SystemExit("governing parent manifest required")
         try:
-            if a.release_custody: record=release_custody(load(a.parent_manifest))
-            else: record=assume_custody(load(a.parent_manifest),materialization_id=a.assume_custody_as)
+            if a.release_custody: record=release_custody(parent_manifest,hb_epoch=hb_epoch)
+            else: record=assume_custody(parent_manifest,materialization_id=a.assume_custody_as,hb_epoch=hb_epoch)
         except LedgerLocationRequired as exc:
             print(json.dumps(location_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except ledger_store.LedgerStoreRefused as exc:
             print(json.dumps(store_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except CustodyRefused as exc:
             print(json.dumps(exc.refusal(),sort_keys=True)); raise SystemExit(1)
+        except OrgLedgerEpochRefused as exc:
+            print(json.dumps(exc.refusal,sort_keys=True)); raise SystemExit(1)
         print(json.dumps(record,sort_keys=True)); return
     source_path=a.transition_receipt or a.repo_receipt
     if not source_path: raise SystemExit("transition receipt required")
-    receipt=load(source_path)
+    receipt=kernel.cli_input_json(source_path,"--transition-receipt/--repo-receipt",retry_entrypoint=entry)
     default_class="REPO_STATE_PROPAGATION" if receipt.get("schema")=="stegverse.repo-transition-receipt/v1" else "ORGANIZATION_STATE_TRANSITION"
     try:
         record=aggregate_transition(
@@ -1129,9 +1258,10 @@ def main():
             org_transition_class=a.org_transition_class or default_class,
             predecessor_org_state_sha256=a.predecessor_org_state_sha256,
             successor_org_state_sha256=a.successor_org_state_sha256,
-            boundary_evidence=json.loads(a.boundary_evidence_json),
+            boundary_evidence=boundary_evidence,
             authority_effect=a.authority_effect,
-            parent_manifest=load(a.parent_manifest) if a.parent_manifest else None,
+            parent_manifest=parent_manifest,
+            hb_epoch=hb_epoch,
         )
     except LedgerLocationRequired as exc:
         print(json.dumps(location_refusal(exc),sort_keys=True))
@@ -1142,8 +1272,12 @@ def main():
     except CustodyRefused as exc:
         print(json.dumps(exc.refusal(),sort_keys=True))
         raise SystemExit(1)
+    except OrgLedgerEpochRefused as exc:
+        # The six fields of a refused epoch or a CLOCK source (O-1); nothing was written.
+        print(json.dumps(exc.refusal,sort_keys=True))
+        raise SystemExit(1)
     except ValueError as exc:
         raise SystemExit(str(exc))
     print(json.dumps(record,sort_keys=True))
 
-if __name__=="__main__": main()
+if __name__=="__main__": raise SystemExit(kernel.run_writer_cli(lambda: main() or 0, retry_entrypoint="resident-runtime/aggregate_repo_transition.py"))

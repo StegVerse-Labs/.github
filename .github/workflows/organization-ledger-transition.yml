@@ -101,11 +101,9 @@ jobs:
           export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
           mkdir -p "$RUNNER_TEMP/results"
           # Time is supplied in the committed packet. It is not sampled from a clock.
-          case "$HB_EPOCH" in
-            ''|*[!0-9]*)
-              echo '{"disposition":"FAIL_CLOSED","failure_code":"SELF_CLOSURE_HB_EPOCH_INVALID","failed_predicate":"HB_EPOCH_IS_SUPPLIED_AS_A_NON_NEGATIVE_INTEGER","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false}'
-              exit 1 ;;
-          esac
+          # The kernel's shared rule decides it, six-field, before any append.
+          python scripts/check_dispatch_hb_epoch.py HB_EPOCH \
+            ".github/workflows/organization-ledger-transition.yml (committed self-closure packet hb_epoch)"
           python resident-runtime/intr_destination_ingress.py \
             --self-close \
             --hb-epoch "$HB_EPOCH" \

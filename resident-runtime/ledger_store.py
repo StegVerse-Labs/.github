@@ -61,6 +61,10 @@ def source_key(digest):
     return SOURCE_PREFIX + digest.split(":", 1)[1] + ".json"
 
 
+class HeadCommittedDurabilityFault(OSError):
+    """HEAD was published; a durability step after it failed. The append is committed."""
+
+
 class PosixLedgerStore:
     """A ledger store on one POSIX filesystem.
 
@@ -99,11 +103,14 @@ class PosixLedgerStore:
 
     def put(self, key, value):
         path = self._path(key)
+        # Encoded before anything is created: a non-finite number is not JSON
+        # and is refused with nothing written (row 5).
+        data = json.dumps(value, indent=2, sort_keys=True, allow_nan=False).encode() + b"\n"
         path.parent.mkdir(parents=True, exist_ok=True)
         fd, temp = tempfile.mkstemp(prefix=".org-append-", suffix=".tmp", dir=str(path.parent))
         try:
             with os.fdopen(fd, "wb") as stream:
-                stream.write(json.dumps(value, indent=2, sort_keys=True).encode() + b"\n")
+                stream.write(data)
                 stream.flush()
                 os.fsync(stream.fileno())
             os.replace(temp, path)
@@ -198,9 +205,29 @@ class PosixLedgerStore:
                     raise ValueError("ledger_receipt_collision")
                 if existing is None:
                     missing.append(key)
-            for key in missing:
-                self.put(key, documents[key])
-            self.put(HEAD_KEY, new_head)
+            written = []
+            try:
+                for key in missing:
+                    self.put(key, documents[key])
+                    written.append(key)
+                self.put(HEAD_KEY, new_head)
+            except BaseException as exc:
+                if self.get(HEAD_KEY) == new_head:
+                    # HEAD was replaced and only a durability step after it
+                    # failed: the append is committed and nothing is removed.
+                    # A retry returns the recorded receipt.
+                    raise HeadCommittedDurabilityFault(
+                        "HEAD committed; durability step failed; retry is idempotent: "
+                        + type(exc).__name__ + ": " + str(exc)) from exc
+                # A torn write: HEAD did not advance, so the documents this
+                # attempt wrote are removed and no orphan is left for a later
+                # chain walk to read as a fork. The caller's retry rebuilds them.
+                for key in written:
+                    try:
+                        self._path(key).unlink()
+                    except FileNotFoundError:
+                        pass
+                raise
             return True
 
     @staticmethod
@@ -660,7 +687,7 @@ class GitLedgerStore:
 
     @staticmethod
     def _encode(value):
-        return json.dumps(value, indent=2, sort_keys=True).encode() + b"\n"
+        return json.dumps(value, indent=2, sort_keys=True, allow_nan=False).encode() + b"\n"
 
     def append_transaction(self, receipt_key_name, receipt, expected_head, new_head, immutable=None):
         """Publish receipt, immutable documents and HEAD as one commit by ref CAS.

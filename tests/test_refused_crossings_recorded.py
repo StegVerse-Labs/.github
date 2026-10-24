@@ -98,29 +98,31 @@ class RefusedCrossingTests(unittest.TestCase):
         self.assertIn("PROCESSING_SELECTED_ONLY_BY_ADMITTED_PROCESSING_CAPABILITY_AND_ROUTE_ID",
                       refused["result"]["failed_predicate"])
 
-    def test_an_adapter_that_fails_to_execute_is_fail_closed_retried_and_recorded_once(self):
+    def test_an_adapter_that_fails_on_the_frame_is_quarantined_terminally(self):
+        """PB-EXIT-SPLIT: an adapter exit other than 75 (here 1) is terminal for the frame."""
         self.publish(ENDPOINT, {"processing": {"capability": "ecosystem_diagnostic", "route_id": ROUTE}},
                      packet_id="adapter-1")
         first, = self.consume()
-        self.assertEqual(first["result"]["disposition"], "FAIL_CLOSED")
-        self.assertIsNone(first["seen_marker"])
-        self.assertEqual(len(self.offered()), 1)
-        second, = self.consume()
-        self.assertEqual(second["organization_record"], first["organization_record"])
-        refused, = self.by_class(self.k.CROSSING_REFUSED_CLASS)
-        self.assertEqual(refused["evidence"]["retry_entrypoint"],
-                         "org-kernel/kernel.py::consume_and_respond")
+        self.assertEqual(first["result"]["status"], "REFUSED")
+        self.assertEqual(first["result"]["frame_failure_code"], "FRAME_INGEST_FAILED")
+        self.assertIs(first["result"]["terminal"], True)
+        self.assertIsNotNone(first["seen_marker"])
+        self.assertEqual(self.offered(), [])
+        self.assertEqual(self.consume(), [])
 
-    def test_a_crossing_refused_then_admitted_is_two_transitions(self):
+    def test_an_adapter_write_fault_stays_pending_and_is_consumed_once(self):
+        """PB-EXIT-SPLIT: exit 75 is the adapter's own write fault, non-terminal."""
+        (self.peer.root / "adapter.py").write_text("import sys; sys.exit(75)\n")
         self.publish(ENDPOINT, {"processing": {"capability": "ecosystem_diagnostic", "route_id": ROUTE}},
                      packet_id="adapter-2")
-        self.consume()
+        pending, = self.consume()
+        self.assertEqual(pending["result"]["status"], "PENDING")
+        self.assertIsNone(pending["seen_marker"])
         (self.peer.root / "adapter.py").write_text(WORKING_ADAPTER)
         admitted, = self.consume()
         self.assertEqual(admitted["result"]["status"], "CONSUMED")
-        self.assertEqual(len(self.by_class(self.k.CROSSING_REFUSED_CLASS)), 1)
+        self.assertEqual(self.by_class(self.k.CROSSING_REFUSED_CLASS), [])
         self.assertEqual(len(self.by_class(self.k.CROSSING_CONSUMED_CLASS)), 1)
-        self.assertEqual(len(self.peer.receipts("org")), 2)
         self.assertEqual(self.offered(), [])
 
     def test_a_refusal_does_not_stop_the_frames_behind_it(self):

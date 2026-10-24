@@ -381,7 +381,7 @@ class ResolvedIssueFactsTests(unittest.TestCase):
 class SvChangeSchemaEpochTests(unittest.TestCase):
     S = json.loads((ROOT / "schemas/sv-change.v1.schema.json").read_text())
 
-    def test_schema_matches_726248a5_for_strings(self):
+    def test_schema_matches_c9192134_for_strings(self):
         kg = fx.known_good_change(fx.SURFACE_PATH["transition"])
         for v in ("32", "1024", "01024", "469411750", "31", "0031", "00", "abc", "", "+33", " 1024"):
             schema_ok = ss.validate(dict(kg, hb_epoch=v), self.S) == []

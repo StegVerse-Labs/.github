@@ -130,7 +130,7 @@ def test_an_explicit_posix_root_is_refused_by_every_organization_store_entry(git
     assert refusal["required_evidence_or_repair"] == org.EXPLICIT_ROOT_REPAIR
     assert refusal["retry_entrypoint"]
     with pytest.raises(org.LedgerStoreKindMismatch):
-        org.aggregate_transition(receipt("FORK"), ledger=posix)
+        org.aggregate_transition(receipt("FORK"), ledger=posix, hb_epoch=4096)
     with pytest.raises(org.LedgerStoreKindMismatch):
         batch_custody.current_chain(posix)
     with pytest.raises(batch_custody.OrganizationReceiptRefused) as readback:
@@ -187,7 +187,7 @@ def test_federation_cycle_without_an_explicit_root_appends_to_the_declared_store
     node, posix, before = git_declared
     mesh, state, repo = tmp_path / "mesh", tmp_path / "node-state", tmp_path / "repo-ledger"
     publish(mesh, "ol3-declared")
-    report = cycle.cycle(mesh_root=mesh, node_state_root=state, repo_ledger_root=repo)
+    report = cycle.cycle(mesh_root=mesh, node_state_root=state, repo_ledger_root=repo, hb_epoch=kernel.HB_ANCHOR_EPOCH + 700)
     assert report["frames_consumed"] == 1
     assert report["organization_receipts_recorded"] == 1
     head = git_store(node).get(org.ledger_store.HEAD_KEY)
@@ -218,7 +218,7 @@ def test_federation_cycle_explicit_root_under_posix_is_unchanged(tmp_path):
     mesh, ledgers = tmp_path / "mesh", tmp_path / "ledgers"
     publish(mesh, "ol3-posix")
     report = cycle.cycle(mesh_root=mesh, node_state_root=tmp_path / "node-state",
-                         repo_ledger_root=ledgers / "repo", org_ledger_root=ledgers / "org")
+                         repo_ledger_root=ledgers / "repo", org_ledger_root=ledgers / "org", hb_epoch=kernel.HB_ANCHOR_EPOCH + 700)
     assert report["frames_consumed"] == 1
     assert report["organization_receipts_recorded"] == 1
     assert len(list((ledgers / "org" / "receipts").glob("*.json"))) == 1
@@ -250,7 +250,7 @@ def test_claim_consumer_refuses_an_explicit_posix_root_under_git(git_declared, t
     assert ref_tip(node) is None
     assert snapshot(posix) == before
     with pytest.raises(claim.consumer.OrganizationLedgerNotAdmitted):
-        claim.consumer.ledger_custody(env.source, env.repo, posix)
+        claim.consumer.ledger_custody(env.source, env.repo, posix, hb_epoch=4096)
 
 
 @pytest.mark.repository_ledger_locus
@@ -272,7 +272,7 @@ def test_claim_consumer_without_an_explicit_root_grants_on_the_declared_store(gi
     assert store.get(org.ledger_store.HEAD_KEY)["receipt_sha256"] == result["organization_receipt_sha256"]
     assert ref_tip(node) != seeded
     # The chain the next attempt verifies is the declared store's.
-    custody = claim.consumer.ledger_custody(env.source, env.repo, None)
+    custody = claim.consumer.ledger_custody(env.source, env.repo, None, hb_epoch=4096)
     assert custody["organization_root"] is None and custody["organization_store"].kind == "GIT_REF"
     assert [row["boundary_evidence"]["fencing_token"] for row in claim.consumer.chain_grants(
         claim.consumer.verify_organization_chain(custody))] == [8]
@@ -310,6 +310,6 @@ def test_claim_consumer_explicit_root_under_posix_is_unchanged(tmp_path):
     # Without the explicit root a posix declaration still refuses, as before.
     bare_env = claim.Env(tmp_path / "unsupplied", seed=False)
     refused = claim.consumer.consume(bare_env.source, bare_env.runtime, repo_ledger_root=bare_env.repo,
-                                     env={"PATH": os.environ.get("PATH", "/usr/bin:/bin")})
+                                     env={"PATH": os.environ.get("PATH", "/usr/bin:/bin")}, hb_epoch=4096)
     assert refused["failed_predicate"] == "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"
     assert refused["required_evidence_or_repair"] == "supply --repo-ledger-root and --org-ledger-root"

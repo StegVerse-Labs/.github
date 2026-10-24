@@ -26,7 +26,7 @@ def append_case(args):
         source, org_transition_class="HOLD_ATTEMPT_OBSERVATION",
         boundary_evidence={"task_id": source["subject_or_correlation_id"],
                            "transition_id": source["transition_id"],
-                           "failed_predicate": source["failed_predicate"]},
+                           "failed_predicate": source["failed_predicate"]}, hb_epoch=4096,
     )["receipt_sha256"]
 
 

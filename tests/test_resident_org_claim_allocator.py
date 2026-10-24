@@ -88,11 +88,12 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             # An empty chain never mints a fence: root it with a prior recorded
             # refusal through the existing emitters; no genesis is synthesized.
             consumer.record_transition(
-                consumer.ledger_custody(source, ledgers / "seed-repo", ledgers / "org"), consumer.REFUSED,
+                consumer.ledger_custody(source, ledgers / "seed-repo", ledgers / "org", hb_epoch=4096), consumer.REFUSED,
                 "ORGANIZATION-WORKER-CLAIM-REFUSED-prior-attempt", "sha256:" + "0" * 64,
                 {"disposition": "DENY", "task_id": "NONE", "request_sha256": "0" * 64,
                  "failed_predicate": "NO_ELIGIBLE_TASK", "fencing_token": None, "consequence_committed": False},
                 organization=True, identity=("task_id", "request_sha256", "failed_predicate"))
+        kwargs.setdefault("hb_epoch", 4096)
         return consumer.consume(source, runtime, repo_ledger_root=ledgers / "repo",
                                 org_ledger_root=ledgers / "org", **kwargs)
 

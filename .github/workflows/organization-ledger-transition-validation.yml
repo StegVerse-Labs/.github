@@ -11,6 +11,8 @@ on:
       - '.stegverse/intr-destination/self-closure-packet.json'
       - 'resident-runtime/self_closure_packet.py'
       - 'tests/test_self_closure_packet.py'
+      - 'scripts/check_dispatch_hb_epoch.py'
+      - 'tests/test_dispatch_hb_epoch_gate.py'
       - '.stegverse/transition-ledger/contract.json'
       - '.stegverse/transition-ledger/emit.py'
       - 'resident-runtime/intr_destination_ingress.py'
@@ -42,12 +44,14 @@ jobs:
             resident-runtime/intr_destination_ingress.py \
             resident-runtime/ledger_store.py \
             resident-runtime/self_closure_packet.py \
+            scripts/check_dispatch_hb_epoch.py \
             .stegverse/transition-ledger/emit.py
           python -m pip install pytest
           python -m pytest -q --tb=short \
             tests/test_organization_ledger_transition_writer.py \
             tests/test_intr_destination_capability.py \
-            tests/test_self_closure_packet.py
+            tests/test_self_closure_packet.py \
+            tests/test_dispatch_hb_epoch_gate.py
 
       - name: The committed self-closure packet, if any, is what the push-to-main writer accepts
         run: |

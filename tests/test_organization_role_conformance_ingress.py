@@ -181,6 +181,7 @@ class ConformanceIngressCase(unittest.TestCase):
                 "application_result": conformance.respond(packet, root=self.source)}
 
     def receive(self, manifest=None, **options):
+        options.setdefault("hb_epoch", 4096)
         return ingress.receive(manifest or self.manifest(), registry=REGISTRY, **options)
 
     def receipts(self, root):
@@ -481,13 +482,13 @@ class RealCrossingTests(unittest.TestCase):
         registry = json.loads((ROOT / "org-boundary/registry/services.json").read_text())
         # No standing is supplied: the destination's registry row declares it.
         result = ingress.receive(manifest, registry=registry,
-                                 packet_id="role-conformance-real-crossing")
+                                 packet_id="role-conformance-real-crossing", hb_epoch=4096)
         self.assertEqual(result["disposition"], "ALLOW", result.get("detail"))
         self.assertEqual(result["resolved_service_id"], conformance.SERVICE_ID)
         self.assertIs(result["boundary_receipt_chain_reconstructed_independently"], True)
         self.assertIs(result["disposition_committed_in_organization_ledger"], True)
         replay = ingress.receive(manifest, registry=registry,
-                                 packet_id="role-conformance-real-crossing")
+                                 packet_id="role-conformance-real-crossing", hb_epoch=4096)
         self.assertIs(replay["transition_replayed"], True)
         self.assertEqual(replay["organization_receipt_sha256"], result["organization_receipt_sha256"])
 
@@ -547,6 +548,7 @@ class AuthenticBoundaryAdmissionTests(unittest.TestCase):
 
     def enqueue(self, manifest, name, **extra) -> Path:
         """Write the event once into its own durable queue, as StegDB's materialize does."""
+        extra.setdefault("hb_epoch", 4096)
         durable = self.base / ("durable-" + name)
         outbox = durable / "intr-outbox" / ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE
         outbox.mkdir(parents=True)
@@ -619,7 +621,7 @@ class AuthenticBoundaryAdmissionTests(unittest.TestCase):
         self.assertEqual(len(list((self.repo_root / "receipts").glob("*.json"))), 1)
 
     def test_the_terminal_disposition_awaits_no_receiver(self):
-        result = ingress.receive(self.stegdb_manifest(), registry=REGISTRY, packet_id="i11-direct")
+        result = ingress.receive(self.stegdb_manifest(), registry=REGISTRY, packet_id="i11-direct", hb_epoch=4096)
         self.assertEqual(result["disposition"], "ALLOW", result.get("detail"))
         self.assertIs(result["disposition_committed_in_organization_ledger"], True)
         self.assertIs(result["master_records_organization_record_observed"], False)
@@ -791,7 +793,7 @@ class OutboxTests(ConformanceIngressCase):
         outbox = self.durable / "intr-outbox" / ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE
         outbox.mkdir(parents=True, exist_ok=True)
         event = {"schema": ingress.OUTBOX_EVENT_SCHEMA, "route": ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE,
-                 "manifest": self.manifest(), "packet_id": name, **override}
+                 "manifest": self.manifest(), "packet_id": name, "hb_epoch": 4096, **override}
         (outbox / (name + ".json")).write_text(json.dumps(event))
         return outbox / (name + ".json")
 
@@ -954,7 +956,8 @@ class MainTests(ConformanceIngressCase):
         registry.write_text(json.dumps(REGISTRY))
         with mock.patch.dict(os.environ):
             os.environ.pop("STEGVERSE_REPO_LEDGER_ROOT")
-            code, printed = self.main("--manifest", str(manifest), "--registry", str(registry))
+            code, printed = self.main("--manifest", str(manifest), "--registry", str(registry),
+                                      "--hb-epoch", "4096")
         self.assertEqual(code, 1)
         self.assertEqual(printed["disposition"], "FAIL_CLOSED")
         self.assertEqual(printed["failed_predicate"], "ledger_location_required_from_materializer")

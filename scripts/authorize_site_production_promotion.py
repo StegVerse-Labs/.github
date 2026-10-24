@@ -602,7 +602,9 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     chain_rows: list[dict[str, Any]] = []
     chain_refusal = None
     if repo_ledger_root is not None:
-        custody = consumer.ledger_custody(source, repo_ledger_root, org_ledger_root)
+        custody = consumer.ledger_custody(source, repo_ledger_root, org_ledger_root,
+                                          hb_epoch=int(str(hb_epoch)) if hb_epoch is not None
+                                          and kernel.supplied_epoch_failure(hb_epoch) is None else None)
         try:
             chain = consumer.verify_organization_chain(custody)
             chain_rows = list(chain["receipts"])
@@ -679,6 +681,15 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     if custody is None or chain_refusal is not None:
         result["organization_readback"] = "NOT_PERFORMED"
         return result
+    if hb_epoch is None or epoch_failure is not None:
+        # No supplied epoch in scope: the disposition is returned, not recorded,
+        # and no clock is read to stamp a receipt (WU-B13 slice g). The six
+        # fields are in the result; record_refusal says why nothing was written.
+        result.update({"receipt_appended": False, "organization_readback": "NOT_PERFORMED"})
+        result["record_refusal"] = kernel.no_epoch_caller_refusal(
+            "scripts/authorize_site_production_promotion.py::authorize",
+            retry_entrypoint=RETRY_ENTRYPOINT + " (hb_epoch=, or --hb-epoch)")
+        return result
     transition_id = f"{cls}-{request['sha'][:12]}-" + stable_hash(
         {"mode": request["mode"], "sha": request["sha"], "build": build.get("build_id"),
          "manifest": evidence["manifest_sha256"], "failure_code": evidence.get("failure_code")})[:16]
@@ -689,7 +700,7 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     prior = emitter.recorded(store, store.get(emitter.ledger_store.HEAD_KEY), transition_id, cls)
     if prior is not None:
         successor = prior["successor_state_sha256"]
-    epoch = int(str(hb_epoch)) if hb_epoch is not None and epoch_failure is None else None
+    epoch = int(str(hb_epoch))
     repository_receipt = emitter.append(transition_id, cls, predecessor, successor, evidence, "NONE",
                                         hb_epoch=epoch, store=store, idempotent_on=identity)
     # Carried from the RECORDED repository evidence, so a retry consumes the same source with the same context.
@@ -736,7 +747,8 @@ def main() -> int:
     parser.add_argument("--org-ledger-root", type=Path, default=None)
     parser.add_argument("--hb-epoch", type=str, default=None, help="carrier-supplied heartbeat epoch; never sampled")
     args = parser.parse_args()
-    request = json.loads(args.request.read_text(encoding="utf-8"))
+    request = _load("sppa_cli_kernel", ROOT / "org-kernel/kernel.py").cli_input_json(
+        args.request, "--request", retry_entrypoint="scripts/authorize_site_production_promotion.py")
     result = authorize(request, source=args.source_root.resolve(), repo_ledger_root=args.repo_ledger_root,
                        org_ledger_root=args.org_ledger_root, hb_epoch=args.hb_epoch)
     print(json.dumps(result, sort_keys=True))
@@ -744,4 +756,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(_load("sppa_cli_kernel", ROOT / "org-kernel/kernel.py").run_writer_cli(
+        main, retry_entrypoint="scripts/authorize_site_production_promotion.py"))
