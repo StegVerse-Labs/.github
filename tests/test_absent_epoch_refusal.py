@@ -319,12 +319,17 @@ class AbsentEpochTests(unittest.TestCase):
                     self.assertNothingWrittenNoClock(before)
 
     def test_a_supplied_source_receipt_is_accepted(self):
-        receipt = self.source("o1-supplied", hb_reference=org.kernel.hb_reference(epoch=4096))
+        receipt = self.source("o1-supplied", hb_reference=org.kernel.hb_reference(epoch=4096),
+                              previous_receipt_sha256=None)
         self.assertIsNone(org.source_provenance_refusal(receipt))
+        # The source is the repository ledger's own receipt, reachable from its HEAD (row 8).
+        ledger = org.ledger_store.PosixLedgerStore(self.repo_root)
+        ledger.put(org.ledger_store.receipt_key(receipt["receipt_sha256"]), receipt)
+        ledger.put(org.ledger_store.HEAD_KEY, {"receipt_sha256": receipt["receipt_sha256"]})
         with self.clock.patches(emit.kernel, org.kernel):
             record = org.aggregate_transition(
                 receipt, predecessor_org_state_sha256=SHA_A, successor_org_state_sha256=SHA_B,
-                hb_epoch=4096, ledger=self.org_root)
+                hb_epoch=4096, ledger=self.org_root, repository_ledger=ledger)
         self.assertEqual(record["repo_receipt_sha256"], receipt["receipt_sha256"])
         self.assertEqual(self.clock.calls, 0)
 

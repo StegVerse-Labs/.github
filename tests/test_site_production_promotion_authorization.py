@@ -104,13 +104,20 @@ class Ledger:
                 # A SUPPLIED source reference: a CLOCK or unmarked one is refused (O-1).
                 "hb_reference": org.kernel.hb_reference(epoch=4096),
                 "previous_receipt_sha256": None}
+        # The receipt is that repository's own: a chained node on its repository
+        # ledger, reachable from HEAD, which aggregate is handed (row 8).
+        ledger = org.ledger_store.PosixLedgerStore(self.base / "observed-repo-ledgers" / repository.replace("/", "--"))
+        head = ledger.get(org.ledger_store.HEAD_KEY)
+        body["previous_receipt_sha256"] = head["receipt_sha256"] if head else None
         receipt = dict(body, receipt_sha256=org.sha(body))
+        ledger.put(org.ledger_store.receipt_key(receipt["receipt_sha256"]), receipt)
+        ledger.put(org.ledger_store.HEAD_KEY, {"receipt_sha256": receipt["receipt_sha256"]})
         row = org.aggregate_transition(
             receipt, org_transition_class="REPO_STATE_PROPAGATION",
             predecessor_org_state_sha256=receipt["predecessor_state_sha256"],
             successor_org_state_sha256=receipt["successor_state_sha256"],
             boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
-            ledger=self.consumer.organization_target(self.custody), hb_epoch=4096)
+            ledger=self.consumer.organization_target(self.custody), hb_epoch=4096, repository_ledger=ledger)
         return row["receipt_sha256"]
 
     def run(self, request: dict, **kwargs) -> dict:
