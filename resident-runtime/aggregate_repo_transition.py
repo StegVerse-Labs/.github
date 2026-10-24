@@ -861,6 +861,23 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
             effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
                 parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
             )
+        # An exact retry is recognised before anything is released: under an
+        # establishment-bound manifest the release's establishment receipt
+        # and this one already fill the successor packet, so releasing first
+        # would close it again (W4). The recorded receipt is returned.
+        if _existing_exact_source(
+            store, verify_source(receipt), org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+        ) is not None:
+            return _aggregate_transition_locked(
+                receipt, store=store, org_transition_class=org_transition_class,
+                predecessor_org_state_sha256=predecessor_org_state_sha256,
+                successor_org_state_sha256=successor_org_state_sha256,
+                boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+                hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
+            )
         # The last released batch's post-commit submission outcome, read from
         # this store before any release moves BATCH_HEAD, is retained on this
         # receipt once (#3012). Read-only and derived from the ledger, so an
