@@ -166,6 +166,22 @@ class FrameQuarantineTests(unittest.TestCase):
             self.assertIsNone(entry["organization_record"])
         self.assertEqual(self.cycle(), [])
 
+    def test_a_deeply_nested_frame_file_is_quarantined_and_the_valid_frame_is_consumed_once(self):
+        self.with_stegcore()
+        frames = self.work / "mesh" / "frames.d"
+        frames.mkdir(parents=True, exist_ok=True)
+        deep = '{"a":' + "[" * 200000
+        self.assertLess(len(deep), K.FRAME_SIZE_CAP_BYTES)
+        (frames / "000-deep.json").write_text(deep, encoding="utf-8")
+        self.publish("after-the-deep-file")
+        with mock.patch.object(K, "datetime", _ClockRead):
+            entries = self.cycle()
+        statuses = sorted(e["result"]["status"] for e in entries)
+        self.assertEqual(statuses, ["CONSUMED", "REFUSED"])
+        refused = next(e for e in entries if e["result"]["status"] == "REFUSED")
+        self.assertEqual(refused["result"]["frame_failure_code"], "FRAME_INGEST_FAILED")
+        self.assertEqual(self.cycle(), [])
+
     def test_a_wrong_typed_field_is_quarantined_before_and_after_a_valid_frame(self):
         self.with_stegcore()
         for name in ("typed-before", "valid", "typed-after"):

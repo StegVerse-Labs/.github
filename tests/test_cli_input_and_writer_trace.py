@@ -66,7 +66,7 @@ class CliTraceTests(unittest.TestCase):
 
     def test_a_bad_input_file_is_terminal_six_field_and_writes_nothing(self):
         for script, argument, rest in INPUTS:
-            for kind in ("missing", "not-json", "a-list"):
+            for kind in ("missing", "not-json", "a-list", "too-deep"):
                 with self.subTest(script=script, argument=argument, kind=kind), \
                         tempfile.TemporaryDirectory() as work:
                     work = Path(work)
@@ -78,6 +78,8 @@ class CliTraceTests(unittest.TestCase):
                         bad.write_text("{not json", encoding="utf-8")
                     elif kind == "a-list":
                         bad.write_text("[1, 2, 3]", encoding="utf-8")
+                    elif kind == "too-deep":
+                        bad.write_text('{"a":' + "[" * 200000, encoding="utf-8")
                     args = [argument, bad] + [str(work / (a[1:] + ".json")) if a.startswith("@") else a for a in rest]
                     before = sorted(p.name for p in work.rglob("*"))
                     record = self.assertSixField(self.run_cli(work, script, *args), terminal=True)

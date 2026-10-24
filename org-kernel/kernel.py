@@ -386,7 +386,8 @@ def cli_json_text(text:str, argument:str, *, retry_entrypoint:str, expect:type|t
         value=json.loads(text)
         if expect is not None and not isinstance(value,expect):
             raise ValueError("top-level value is "+type(value).__name__)
-    except ValueError as exc:
+    except (ValueError,RecursionError,MemoryError) as exc:
+        # A nesting deep enough to exhaust the parser is bad input too (F-SCAN-RECURSION).
         raise _cli_input_refused(exc,argument,retry_entrypoint) from None
     return value
 
