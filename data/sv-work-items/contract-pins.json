@@ -41,8 +41,8 @@
       "sha256": "sha256:b44b13e7a6af3de947ad9a2d5c9e306c3e9261f4e702e3fc3db8bdf2512faab6"
     },
     "data/sv-work-items/lifecycle-transitions.json": {
-      "blob": "9b8c9ec020fa8a86dfb33d7e39f88b20d467a481",
-      "sha256": "sha256:fef58d31991b5f8204a2e9ea455e0b52405536e4d269693f0eb63968a2a8e152"
+      "blob": "aed301bce950429788876a3c096d82326b9d3824",
+      "sha256": "sha256:b05ca55bef7f4ff994c859fbed0108129d155e392c3439397c0d85c62ca30611"
     },
     "data/sv-work-items/migration/sv-changes.jsonl": {
       "blob": "78c7e77d478ce478282a290154b4b87d1b5e3df2",
@@ -65,12 +65,12 @@
       "sha256": "sha256:2f7a3b958442cf19d4d9c2bd38f9c223d8cc683bdd6c75510133251cbfc612e9"
     },
     "data/sv-work-items/stages/NWI-S2.json": {
-      "blob": "db13a09a6b7929dd912829ea93b083800c5d4bc9",
-      "sha256": "sha256:eea0b73fdedb507131a5077d422812b9c0184f9b695ec2952911e74e3903222b"
+      "blob": "9a6f2f88eae67a0ea4293387a187caa25fd7076e",
+      "sha256": "sha256:309b800e73860bb7d72bbd1c1afe0c7a89818fb3731bc8b37bd6c52141121403"
     },
     "data/sv-work-items/stages/NWI-S3.json": {
-      "blob": "b4e6be6d969cf96b36b3684b72d9cedfb0a6188b",
-      "sha256": "sha256:0b4a40911afa1f808abc6f19f1d32f879fd46b13bb9e1703e557c31b21966b4e"
+      "blob": "4eec7edf090a6e3536740428b181cf3b6905bec1",
+      "sha256": "sha256:692342a847efc88e782d84421be84f26e90886b152faadf41d3f5451b48380ec"
     },
     "data/sv-work-items/stages/NWI-S4.json": {
       "blob": "199b03aed17c367e0d9c4203d18ac978afcfdb4f",

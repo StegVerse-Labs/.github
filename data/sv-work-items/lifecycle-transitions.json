@@ -828,6 +828,21 @@
       "record_type": "ADMISSION_SCENARIO_CLASS",
       "to_state": "APPENDED",
       "transition_class": "SCENARIO_CORPUS_APPEND"
+    },
+    {
+      "from_states": [
+        "UNDECLARED",
+        "DERIVED"
+      ],
+      "predicates": [
+        "THRESHOLD_DERIVATION_IS_DECLARED_IN_STAGE_MANIFEST",
+        "STAGE_THRESHOLD_INPUT_IS_THE_PINNED_S1_CORPUS",
+        "STAGE_THRESHOLD_IS_DERIVED_FROM_OBSERVED_S1_BASELINE",
+        "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+      ],
+      "record_type": "STAGE_MANIFEST_THRESHOLD",
+      "to_state": "DERIVED",
+      "transition_class": "STAGE_THRESHOLD_DERIVE"
     }
   ]
 }
