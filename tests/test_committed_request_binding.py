@@ -86,7 +86,7 @@ class LedgerBindingTests(Refusals, unittest.TestCase):
         with self.in_run():
             repository = self.append()
             organization = self.aggregate(repository)
-        binding = {"path": str(self.request.resolve()), "sha256": self.digest}
+        binding = {"path": str(self.request.resolve()), "sha256": self.digest, "hb_epoch_source": "COMMITTED_REQUEST"}
         self.assertEqual(repository["committed_request"], binding)
         self.assertEqual(organization["committed_request"], binding)
         # The binding is inside the hashed body of both receipts.
@@ -99,15 +99,16 @@ class LedgerBindingTests(Refusals, unittest.TestCase):
         self.assertNotIn("committed_request", self.aggregate(repository))
 
     def test_a_half_set_malformed_or_mismatched_pair_is_refused_before_any_write(self):
-        cases = {
-            "COMMITTED_REQUEST_ENV_PAIR_INCOMPLETE": {PATH_ENV: str(self.request)},
-            "COMMITTED_REQUEST_DIGEST_MALFORMED": {PATH_ENV: str(self.request), SHA_ENV: "md5:00"},
-            "COMMITTED_REQUEST_DIGEST_MISMATCH": {PATH_ENV: str(self.request), SHA_ENV: "sha256:" + "0" * 64},
-        }
-        for code, pair in cases.items():
-            with self.subTest(code=code), mock.patch.dict(os.environ, pair):
+        cases = [
+            ("half-set", "COMMITTED_REQUEST_INVALID", {PATH_ENV: str(self.request)}),
+            ("malformed", "COMMITTED_REQUEST_INVALID", {PATH_ENV: str(self.request), SHA_ENV: "md5:00"}),
+            ("mismatched", "COMMITTED_REQUEST_DIGEST_MISMATCH",
+             {PATH_ENV: str(self.request), SHA_ENV: "sha256:" + "0" * 64}),
+        ]
+        for label, code, pair in cases:
+            with self.subTest(label), mock.patch.dict(os.environ, pair):
                 with self.assertRaises(Exception) as raised:
-                    self.append("t-" + code)
+                    self.append("t-" + label)
                 self.assertCommittedRequestRefused(raised.exception, code)
                 self.assertEqual(self.written(), [])
 
@@ -174,7 +175,8 @@ class CycleBindingTests(unittest.TestCase):
 
             with mock.patch.object(rc, "_cycle", lambda: Cycle):
                 self.assertEqual(rc.main(["--request", str(request)]), 0)
-        self.assertEqual(seen["bound"], {"path": str(request.resolve()), "sha256": digest})
+        self.assertEqual(seen["bound"], {"path": str(request.resolve()), "sha256": digest,
+                                         "hb_epoch_source": "COMMITTED_REQUEST"})
 
 
 class EgressBindingTests(Refusals, route.ReverseIntrRouteCase):
@@ -192,7 +194,7 @@ class EgressBindingTests(Refusals, route.ReverseIntrRouteCase):
         with tempfile.TemporaryDirectory() as work:
             request, digest = request_file(work)
             cases = {
-                "COMMITTED_REQUEST_ENV_PAIR_INCOMPLETE": ({PATH_ENV: str(request)}, self.payload()),
+                "COMMITTED_REQUEST_INVALID": ({PATH_ENV: str(request)}, self.payload()),
                 "COMMITTED_REQUEST_DIGEST_MISMATCH": ({PATH_ENV: str(request), SHA_ENV: "sha256:" + "0" * 64},
                                                       self.payload()),
                 "FORGED_COMMITTED_REQUEST_FROM_EVIDENCE": ({}, {**self.payload(), "body": {

@@ -89,11 +89,11 @@ ORG_RECEIPT_SCHEMA = "stegverse.organization-transition-receipt/v1"  # aggregate
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py:22
 # Rule source: org-kernel/kernel.py:83-92 (hb_reference(epoch=...): int, not bool, >= 32, derived_from_clock False).
 # Was lines 68-74 of blob ffec5d64; re-cited at the #3290 main merge with the c9192134 re-pin (lead ruling 2026-10-24).
-EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "83-92", "git_blob_sha": "c771eadda650c7a9892c4cb76d28b3fec1d3ce5b"}
+EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "83-92", "git_blob_sha": "118bd3b548750c1e7aa9e147f3c955e0ba8e6679"}
 # P1 cites the supplied-epoch rule as the sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 266-301 of the
 # same blob); verified: sha256(ast.get_source_segment(...).encode("utf-8")).
 EPOCH_RULE_FUNCTION = {"file": "org-kernel/kernel.py", "function": "supplied_epoch_failure", "lines": "266-301",
-                       "git_blob_sha": "c771eadda650c7a9892c4cb76d28b3fec1d3ce5b",
+                       "git_blob_sha": "118bd3b548750c1e7aa9e147f3c955e0ba8e6679",
                        "source_segment_sha256": "c91921348741cc1139553d5e4ad3d4f8f1c44fc67537eee4629c5bf63d49041d"}
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
               "owning_existing_goal", "next_attempt")

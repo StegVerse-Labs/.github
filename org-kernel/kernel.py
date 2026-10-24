@@ -491,7 +491,8 @@ def refuse_reference(heartbeat_reference:Any)->None:
 
 #: A request run (COMMITTED_REQUEST, row 16) binds every receipt it writes to
 #: the committed request that started it (VALIDATOR row 1, route A): a top-level
-#: `committed_request` {path, sha256 of the committed file's bytes}. The run's
+#: `committed_request` {path, sha256 of the committed file's bytes, hb_epoch_source
+#: COMMITTED_REQUEST} (the AE#101 / StegGhost#28 shape). The run's
 #: dispatcher exports the pair below; the digest is recomputed from the file,
 #: never taken from caller input, and a caller cannot supply the key (row 5).
 COMMITTED_REQUEST_KEY="committed_request"
@@ -516,19 +517,20 @@ class CommittedRequestRefused(ValueError):
 def committed_request()->dict[str,str]|None:
     """The committed request this run was started from, verified against the file, or None outside a request run.
 
-    Both variables absent: not a request run. One without the other, a digest
-    that is not sha256:<64 hex>, an unreadable file, or a file whose bytes do
-    not hash to the digest: CommittedRequestRefused, six fields.
+    Both variables absent: not a request run. One without the other, or a
+    digest that is not sha256:<64 hex>: COMMITTED_REQUEST_INVALID (terminal).
+    An unreadable file (non-terminal) or one whose bytes do not hash to the
+    digest: CommittedRequestRefused, six fields.
     """
     import os, re
     path,digest=os.environ.get(COMMITTED_REQUEST_PATH_ENV),os.environ.get(COMMITTED_REQUEST_SHA256_ENV)
     if path is None and digest is None:
         return None
     if not path or not digest:
-        raise CommittedRequestRefused("COMMITTED_REQUEST_ENV_PAIR_INCOMPLETE",
+        raise CommittedRequestRefused("COMMITTED_REQUEST_INVALID",
                                       "only one of "+COMMITTED_REQUEST_PATH_ENV+" and "+COMMITTED_REQUEST_SHA256_ENV+" is set")
     if not re.fullmatch(r"sha256:[0-9a-f]{64}",digest):
-        raise CommittedRequestRefused("COMMITTED_REQUEST_DIGEST_MALFORMED",COMMITTED_REQUEST_SHA256_ENV+" is not sha256:<64 hex>")
+        raise CommittedRequestRefused("COMMITTED_REQUEST_INVALID",COMMITTED_REQUEST_SHA256_ENV+" is not sha256:<64 hex>")
     try:
         data=Path(path).read_bytes()
     except OSError as exc:
@@ -538,7 +540,7 @@ def committed_request()->dict[str,str]|None:
     own=Path(__file__).resolve().parents[1]
     resolved=Path(path).resolve()
     shown=resolved.relative_to(own).as_posix() if resolved.is_relative_to(own) else str(resolved)
-    return {"path":shown,"sha256":digest}
+    return {"path":shown,"sha256":digest,"hb_epoch_source":"COMMITTED_REQUEST"}
 
 def refuse_caller_committed_request(value:Any, argument:str)->None:
     """CommittedRequestRefused when a caller's evidence carries a committed_request key at any depth (row 5)."""
