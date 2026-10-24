@@ -1094,6 +1094,18 @@ def source_provenance_refusal(receipt):
     reference=receipt.get("hb_reference")
     epoch=reference.get("epoch") if isinstance(reference,dict) else None
     failure=kernel.supplied_epoch_failure(epoch,reference if reference is not None else {})
+    if failure is None and isinstance(reference,dict) and ("source" in reference or "head_receipt_sha" in reference):
+        # The shared rule passes a CARRIED reference; this destination does not
+        # accept CARRIED crossings at its writers either (B-P36m option 1, row 7),
+        # so a source receipt claiming one is refused before anything is written.
+        return {"disposition":"FAIL_CLOSED","failure_code":kernel.CARRIED_NOT_ACCEPTED_BY_DESTINATION,
+                "failed_predicate":"DESTINATION_ACCEPTS_CARRIED_CROSSINGS",
+                "detail":"source receipt "+str(receipt.get("receipt_sha256"))+" claims CARRIED provenance",
+                "required_evidence_or_repair":"re-send with the SUPPLIED epoch",
+                "retry_entrypoint":SOURCE_PROVENANCE_RETRY_ENTRYPOINT,
+                "owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+                "next_attempt":"append again consuming a receipt minted with a SUPPLIED epoch; nothing was written",
+                "derived_from_clock":False,"consequence_committed":False}
     if failure is None:
         return None
     code,detail=failure

@@ -165,6 +165,26 @@ class WriterEpochRefusalOrderTests(unittest.TestCase):
         self.assertEqual(organization["observed_at"], "HB:4096")
 
 
+class CarriedSourceAtWriterTests(unittest.TestCase):
+    """Row 7 at the writers: a source receipt claiming CARRIED is refused, 0 writes."""
+
+    def test_a_forged_carried_source_receipt_is_refused_before_any_write(self):
+        forged = {**org.kernel.hb_reference(epoch=4096), "source": "ORGANIZATION_LEDGER_HEAD",
+                  "head_receipt_sha": "f" * 64}
+        body = {"schema": "stegverse.repo-transition-receipt/v1", "repository": "StegVerse-Labs/.github",
+                "transition_id": "forged", "transition_class": "TEST", "predecessor_state_sha256": SHA_A,
+                "successor_state_sha256": SHA_B, "evidence": {}, "authority_effect": "NONE",
+                "hb_reference": forged, "previous_receipt_sha256": None}
+        receipt = {**body, "receipt_sha256": org.sha(body)}
+        with tempfile.TemporaryDirectory() as work, no_clock():
+            ledger = Path(work) / "org"
+            with self.assertRaises(org.OrgLedgerEpochRefused) as raised:
+                org.aggregate_transition(receipt, hb_epoch=4096, ledger=ledger)
+            self.assertEqual(raised.exception.refusal["failure_code"], "CARRIED_NOT_ACCEPTED_BY_DESTINATION")
+            self.assertEqual(raised.exception.refusal["failed_predicate"], "DESTINATION_ACCEPTS_CARRIED_CROSSINGS")
+            self.assertFalse(ledger.exists() and any(ledger.rglob("*.json")))
+
+
 class PacketExpiryEpochTests(unittest.TestCase):
     """N1: packet expiry and release read the supplied epoch, never a clock, when one is in hand."""
 
