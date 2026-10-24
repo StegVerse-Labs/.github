@@ -64,12 +64,21 @@
   },
   "tvc": {
    "check": {
-    "env": "STEGVERSE_TVC_ROOT",
-    "kind": "env_path"
+    "allow": "ALLOW",
+    "argv": [
+     "consume",
+     "--ledger",
+     "git+{root}#refs/stegverse/organization-ledger",
+     "--head-root",
+     "{root}"
+    ],
+    "consumer": "scripts/tvc_conformance_receipt.py",
+    "consumer_source": "StegVerse-Labs/.github#3332, not merged: until it is, this input is unavailable",
+    "kind": "receipt_consumer"
    },
-   "finish_point": "STEGVERSE_TVC_ROOT names a TVC checkout in the job and the conformance exchange tests run and pass at the exact head",
-   "owner": "GitHub Product, Lane C (StegVerse-org/.github#164)",
-   "repair": "a TV/TVC checkout supplied as STEGVERSE_TVC_ROOT to the job that runs this set"
+   "finish_point": "scripts/tvc_conformance_receipt.py consume returns ALLOW at the exact head: a TVC conformance test receipt on refs/stegverse/organization-ledger (sealed by StegVerse-Labs/TVC#539's CI, appended by the organization ledger writer) whose consumed Labs surface has the same sha256 as this head; the [tvc] sets are then verified by that receipt and not run here",
+   "owner": "GitHub Product, Lane C (StegVerse-org/.github#164); consumer StegVerse-Labs/.github#3332; append: the organization ledger writer",
+   "repair": "land the receipt consumer (StegVerse-Labs/.github#3332) and have the organization ledger writer append an ALLOW TVC conformance receipt observed against this head's surface bytes; a TVC checkout in this job does not satisfy it"
   }
  },
  "manifest": ".stegverse/test-sets.json",
@@ -86,6 +95,7 @@
   ".github/workflows/test-suite-ratchet.yml",
   "pyproject.toml",
   "pytest.ini",
+  "scripts/test_set_selection.py",
   "setup.cfg",
   "tests/*__init__.py",
   "tox.ini"

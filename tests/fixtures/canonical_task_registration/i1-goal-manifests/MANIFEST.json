@@ -1,0 +1,136 @@
+{
+  "schema": "stegverse.lane-d.i1-goal-registration-manifest/v1",
+  "authority_effect": "NONE_DRAFT_MANIFEST",
+  "consumed_by": "scripts/canonical_task_registration_transition.py (plan/apply; StegVerse-Labs/.github#3311)",
+  "registry_edit": false,
+  "registry_generation_bump": false,
+  "observed_registry_generation": 320,
+  "observed_base": {
+    "main": "86382e60",
+    "registry_blob": "8731d45a"
+  },
+  "issue": "StegVerse-org/.github#160 issuecomment-6354238464 I1",
+  "goals": [
+    {
+      "task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "basis": "SHARD_ONLY",
+      "registration_mode": "EXISTING_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.request.json",
+      "request_sha256": "daeadbf3dcb206ea284eabcb14252b8563c2c3e0fad60041e2ce5a7ce7392770",
+      "plan_at_base": "StegVerse-Labs/.github main 86382e60 (registry generation 320) with the #3311 transition (9e00a16e)",
+      "lowest_supported_mode": "E0",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "WORKER_CLAIM_NOT_PROJECTION_ONLY",
+        "failed_predicate": "WORKER_CLAIM_NOT_PROJECTION_ONLY",
+        "required_evidence_or_repair": "WorkerCoordinator mints claims (scripts/allocate_claims.py); register the identity without the claim",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded",
+        "detail": "state 'ACTIVE' / worker_claim {'authority': 'WORKERCOORDINATOR', 'claim_ref': None, 'fence_ref': 'TASK-2026-0011:FENCE7', 'projection_only': True} asserts a claim WorkerCoordinator did not issue"
+      }
+    },
+    {
+      "task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+      "basis": "SHARD_ONLY",
+      "registration_mode": "EXISTING_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.request.json",
+      "request_sha256": "4753fe7088c305388cd9c1c2ddf1425d64dedba6948b7ebd557473bd5766000d",
+      "plan_at_base": "StegVerse-Labs/.github main 86382e60 (registry generation 320) with the #3311 transition (9e00a16e)",
+      "lowest_supported_mode": "E0",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "C",
+        "failure_code": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+        "failed_predicate": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+        "required_evidence_or_repair": "coordinate CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001 with ['CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001'] (END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER) or narrow its targets before merge",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded",
+        "detail": "[{\"task_id\": \"CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001\", \"head_disposition\": \"STOP_COLLISION\", \"failure_code\": \"REGISTRY_COLLISION_CHECKIN_STOP_COLLISION\", \"evidence\": {\"new_collision_candidate_ids\": [], \"new_hard_collision_task_ids\": [], \"hard_collision_task_ids\": [\"CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001\"], \"collision_candidate_ids\": [\"CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001\"], \"session_action\": \"END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER\", \"substrate_review_error\": null}}]"
+      }
+    },
+    {
+      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "basis": "SHARD_ONLY",
+      "registration_mode": "EXISTING_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.request.json",
+      "request_sha256": "f1ee8f315951b56e7ab302a07294c58fdfd22b4f0918db39bea1c1518f83edee",
+      "plan_at_base": "StegVerse-Labs/.github main 86382e60 (registry generation 320) with the #3311 transition (9e00a16e)",
+      "lowest_supported_mode": "E0",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "CANONICAL_RECORD_SCHEMA_INVALID",
+        "failed_predicate": "CANONICAL_RECORD_SCHEMA_INVALID",
+        "required_evidence_or_repair": "set it false through the record-data successor transition (TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY)",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded",
+        "detail": "authority_model.task_registry_mints_execution_authority must be false"
+      }
+    },
+    {
+      "task_id": "TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
+      "basis": "NO_SHARD_NO_ROW",
+      "referenced_by": [
+        "StegVerse-Labs/.github@86382e60:control/formalism-tvc-repository-transport.json",
+        "StegVerse-Labs/.github@86382e60:handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+        "StegVerse-Labs/.github@86382e60:control/worker-registry.d/tvc-repository-broker-validation-001.json"
+      ],
+      "lowest_supported_mode": "E0",
+      "expected_plan": null,
+      "fail_closed": {
+        "failure_class": "B",
+        "failure_code": "GOAL_RECORD_CONTENT_NOT_AUTHENTICALLY_OBSERVED",
+        "failed_predicate": "REGISTRATION_REQUEST_RECORD_IS_OBSERVED_NOT_INVENTED",
+        "required_evidence_or_repair": "the Goal owner (or the producer that names TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001) supplies its record content (goal, targets, dependencies, parent) and exact COSV metrics; then a NEW_IDENTITY request with allocation_request_ref goes through the #3311 transition. Lane D does not invent the record, the COSV vector or a Task ID",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan --request <request>",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event that carries the observed record content"
+      }
+    },
+    {
+      "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+      "basis": "NO_SHARD_NO_ROW",
+      "referenced_by": [
+        "StegVerse-Labs/.github@86382e60:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md"
+      ],
+      "lowest_supported_mode": "E0",
+      "expected_plan": null,
+      "fail_closed": {
+        "failure_class": "B",
+        "failure_code": "GOAL_RECORD_CONTENT_NOT_AUTHENTICALLY_OBSERVED",
+        "failed_predicate": "REGISTRATION_REQUEST_RECORD_IS_OBSERVED_NOT_INVENTED",
+        "required_evidence_or_repair": "the Goal owner (or the producer that names GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001) supplies its record content (goal, targets, dependencies, parent) and exact COSV metrics; then a NEW_IDENTITY request with allocation_request_ref goes through the #3311 transition. Lane D does not invent the record, the COSV vector or a Task ID",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan --request <request>",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event that carries the observed record content"
+      }
+    },
+    {
+      "task_id": "TVC-PRIVATE-SOURCE-READ-001",
+      "basis": "NO_SHARD_NO_ROW",
+      "referenced_by": [
+        "StegVerse-Labs/.github@86382e60:data/canonical-task-records/ORG-GITHUB-FLEET-FUNCTIONALIZATION-001.json",
+        "StegVerse-Labs/.github@86382e60:handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+        "StegVerse-Labs/.github@86382e60:data/intr-protocol/v1/protocol.json"
+      ],
+      "lowest_supported_mode": "E0",
+      "expected_plan": null,
+      "fail_closed": {
+        "failure_class": "B",
+        "failure_code": "GOAL_RECORD_CONTENT_NOT_AUTHENTICALLY_OBSERVED",
+        "failed_predicate": "REGISTRATION_REQUEST_RECORD_IS_OBSERVED_NOT_INVENTED",
+        "required_evidence_or_repair": "the Goal owner (or the producer that names TVC-PRIVATE-SOURCE-READ-001) supplies its record content (goal, targets, dependencies, parent) and exact COSV metrics; then a NEW_IDENTITY request with allocation_request_ref goes through the #3311 transition. Lane D does not invent the record, the COSV vector or a Task ID",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan --request <request>",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event that carries the observed record content"
+      }
+    }
+  ],
+  "unknown": {
+    "_": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED: no request here was planned against a successor tree; no apply was run"
+  }
+}

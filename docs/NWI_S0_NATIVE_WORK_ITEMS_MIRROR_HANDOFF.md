@@ -13,7 +13,7 @@ Author session: P1 Ecosystem AI Lane (d8cbc58c). Invariants: WORK_ITEMS_ARE_TASK
 - `schemas/sv-issue.v1`, `sv-change.v1` (Lane C consumer schema + B1-B7), `canonical-task-work-items.v1`, `admission-corpus.v1` (A1-A7).
 - `resident-runtime/sv_work_items.py`: validators, `admission_inputs` and the native predicate, which Lane C's reference implementation can replace by injection. Also lifecycle `transition`/`record`, `claim_projection` and `work_items_projection`.
 - `resident-runtime/admission_learning.py`: harvest, generalize, generate, SCENARIO_CORPUS_APPEND, ADMISSION_MISS, and the derived miss counts.
-- `resident-runtime/stage_gate.py` plus `data/sv-work-items/stages/NWI-S0..S4.json`: G5. There is no skipping, an observed failure drops back one stage, and thresholds are read only from the manifests. The S2 and S3 values are null and fail closed as STAGE_THRESHOLD_UNDECLARED.
+- `resident-runtime/stage_gate.py` plus `data/sv-work-items/stages/NWI-S0..S4.json`: G5. There is no skipping, an observed failure drops back one stage, and thresholds are read only from the manifests. The S2 and S3 values are written only by STAGE_THRESHOLD_DERIVE (see Operating modes below). Until then they are null and fail closed as STAGE_THRESHOLD_UNDECLARED.
 - `data/sv-work-items/required-checks.json`, row SV-CHANGE-REQUIRED-CHECKS-001 (B7). It is the native successor of ST019-MERGE-ADMISSION-001 `required_status_checks`, which is GitHub-bound.
 - Migration fixtures:
   - `data/sv-work-items/migration/sv-issues.jsonl`: 20 issues, derived from the P1 FAIL_CLOSED register and the org#189 binder check. The sources are copied under `sources/`.
@@ -374,3 +374,56 @@ Recorded in `data/sv-work-items/required-checks.json#check_receipt_invariant`:
   - A NATIVE hb_epoch string failing 726248a5 is DENY HB_EPOCH_MISMATCH.
   - `""` and `"null"` are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
 
+
+## Operating modes (E0..E3), p1/operating-mode-ladder
+
+Source: StegVerse-org/.github#160 issuecomment-6354238464 (ladder), issuecomment-6354202109 (correction), #163 issuecomment-6354245549 (SV-LLM deployment model).
+
+- `data/sv-work-items/operating-modes.json` (`stegverse.nwi-operating-modes/v1`) declares the lowest supported mode, the degraded form for each rung, and the E0 terminal state for every NWI stage S0..S4, every exit-gate predicate, and every SV-LLM path (SV-LLM/.github @a00a72ec, SV-LLM/sandbox @5814d5c1).
+- `resident-runtime/sv_operating_modes.py::validate` enforces coverage of every stage manifest and predicate, requires_llms <= 1, a named degraded form at every lower rung, no provider-specific requirement, and no owner-must-act phrasing. An item with no E0 terminal must carry a six-field class B record, and the result is then FAIL_CLOSED OPERATING_MODE_E0_TERMINAL_MISSING listing the gaps.
+- An E0 terminal is proven, not flagged. An item either declares a `witness` (entrypoint `resident-runtime/<module>.py::<function>`, cases under `data/sv-work-items/e0-witnesses/`, bound by `cases_sha256`) or pins its component as `<org>/<repo>@<40-hex>`. validate() executes every witness case: the outcome must be in the declared dispositions, at mode E0, with six fields and a declared non_allow_code on every non-ALLOW, and must match the case's expectation; at least one case must be non-ALLOW. Each non-final stage gate is also evaluated with no evidence and must terminate as a six-field non-ALLOW naming every exit predicate. Otherwise the result is FAIL_CLOSED OPERATING_MODE_E0_WITNESS_UNBOUND, OPERATING_MODE_E0_WITNESS_FAILED or OPERATING_MODE_E0_TERMINAL_UNPROVEN.
+- Current result: ALLOW at E0. Every stage is exit-passable at E0. The three class B items are closed by `resident-runtime/sv_e0_terminals.py`:
+  - NWI-S2 SV_LLM_VERDICT_AGREEMENT_RATE: `verdict_agreement_e0`. The verdict producer is the NWI-S1 verifier's six-field check receipts per change. Agreement means that verdict equals the ledgered admission disposition for the same change digest. LLM verdicts are additive and never move the metric. With no evaluated change, the result is FAIL_CLOSED VERDICT_AGREEMENT_EVIDENCE_UNOBSERVED. The threshold in NWI-S2.json is written only by STAGE_THRESHOLD_DERIVE and is still null, so the gate terminates FAIL_CLOSED STAGE_THRESHOLD_UNDECLARED.
+  - NWI-S3 W05_TV_TVC_HELD_INVOCATION_ADMITTED: the E1 form, with degraded form E0 `bounded_solve_e0`. Classes in E0_SOLVERS are resolved at E0. Any other class terminates FAIL_CLOSED PROVIDER_LAYER_NOT_ADMITTED with a deferral record, re-evaluated on the next PROVIDER_LAYER_TRANSITION receipt.
+  - SV-LLM/sandbox respond(): an unsupplied entity surface is recorded in the same pass as UNAVAILABLE ENTITY_SURFACE_NOT_SUPPLIED with a six-field FAIL_CLOSED (SV-LLM/sandbox p1/respond-e0-terminal @5814d5c1). `verify_respond_terminal` recomputes the sandbox receipts (hashes, chain, entity-set digest, contribution id, content digest).
+- NWI-S3 ADMISSION_MISS_RATE: produced by `resident-runtime/admission_miss_rate.py::admission_miss_rate_e0`, which replaces the stage-gate-only witness. The miss is defined in `NWI-S3.json` `metric_definitions.admission_miss_rate` (NWI-S3-ADMISSION-MISS/v1):
+  - Population: ledgered admission decisions, i.e. organization-ledger receipt refs.
+  - FALSE_ADMIT: an ALLOW with a sealed `stegverse.admission_miss.v1` record of kind REVERT, CORRECTION or REFUSAL whose correcting_ref is a ledger receipt.
+  - FALSE_REFUSAL: a DENY later contradicted by a ledgered ALLOW of the same change_digest at the same base.
+  - HELD: a sealed `stegverse.admission_outcome.v1` whose evidence_ref is a ledger receipt.
+  - FAIL_CLOSED decisions are NOT_APPLICABLE. Anything else is UNKNOWN and is never counted.
+  - rate = misses / (misses + held), with min_observed_outcomes 1. Below that the result is FAIL_CLOSED ADMISSION_MISS_RATE_UNOBSERVED and the rate is "UNKNOWN".
+  - `learn_from_misses` feeds counted misses through harvest -> generalize -> generate and appends an ADMISSION_MISS-origin scenario via SCENARIO_CORPUS_APPEND.
+  - Current value (`data/sv-work-items/stage-thresholds/admission-miss-rate.current.json`): UNKNOWN. All 42 ledgered decisions are UNKNOWN because the organization ledger holds no admission outcome records.
+- STAGE_THRESHOLD_DERIVE (`resident-runtime/stage_threshold_derive.py`, `scripts/derive_stage_thresholds.py`, transition in `lifecycle-transitions.json`):
+  - Each threshold's rule is declared in its stage manifest under `threshold.derivation`:
+    - NWI-S2-AGREEMENT-FLOOR-FROM-S1-BASELINE/v1: FLOOR_4DP(agreed/evaluated).
+    - NWI-S3-MISS-CEILING-FROM-S1-BASELINE/v1: CEIL_4DP((misses+1)/(observed+1)).
+    - Both have min_observations 3 and must be non-vacuous.
+  - Input: the vendored S1 corpus (SV-LLM/.github@a00a72ec evidence/sv-check-receipts), corpus_digest sha256:8c8bffc716531fd8e4172d9253236fb589256435ae9899441b1a1e5e9f74ebe3, plus the observed S1 metrics joined to ledgered admission decisions (organization ledger @9a407561).
+  - Output: the values and a sealed receipt (rule id, rule text, rule digest, corpus digest, computed values). The run is all-or-nothing, and only generated output is committed. `--check` re-runs it and must give no change.
+  - Current result: FAIL_CLOSED STAGE_THRESHOLD_BASELINE_INSUFFICIENT.
+    - S2 is BASELINE_UNOBSERVED: the 4 S1 verifier receipts are not ledgered, and the no-PR bundle has no change digest.
+    - S3 is BASELINE_UNOBSERVED: the 3 joined decisions have UNKNOWN outcomes.
+  - Both thresholds stay null, so the gates terminate STAGE_THRESHOLD_UNDECLARED with metric evidence and STAGE_EVIDENCE_UNOBSERVED without it.
+- Tests: `tests/test_nwi_operating_modes.py`, `tests/test_nwi_stage_thresholds.py`, `tests/test_nwi_admission_miss_rate.py`.
+
+## Round 11: the branch writer is derived from the sv-push-receipt chain (Lane C alignment, TVC#531)
+
+Invariant **BRANCH_WRITER_IS_DERIVED_FROM_THE_PUSH_RECEIPT_CHAIN** (owning goal StegVerse-org/.github#163). It retires PR_AUTHOR_SESSION_DECLARED.
+
+- `sv_work_items.derive_branch_writer(push_receipts, change_commits, target_repository=, change_id=)` reads sealed sv-push-receipt.v1 receipts (Labs#3267, `resident-runtime/sv_push_receipt.py`).
+  - The chain must be one repository and one ref, contiguous from `change_commits.base_commit` to `head_commit`.
+  - The authoring session is the `pusher_session` of the receipt at the head.
+- `verify_branch_writer` keeps **BRANCH_WRITER_IS_BRANCH_OWNER**. Every pusher and every named `content[*].writer_session` must be the derived session or a receipted co-author grant; anything else is FAIL_CLOSED BRANCH_HAS_FOREIGN_WRITER.
+- **A gap in the chain is never a DENY.** It is a six-field FAIL_CLOSED BRANCH_WRITER_UNOBSERVED, and `writer_evidence` names the gap. A chain that stops short of the head is FAIL_CLOSED WRITER_EVIDENCE_NOT_AT_HEAD. `retry_entrypoint` names the push-time producer and the org-ledger append (#3255).
+- **No PR body line, commit trailer or `declared_session` grants or refuses anything.** `declared_session` and `opened_by_session` stay schema-required attribution labels (an empty one is a schema mismatch). sv-change.v1 is unchanged.
+- **Mode declarations:**
+  - `lifecycle-transitions.json` has a `predicate_modes` entry and every invariant has a `modes` entry. Both use TVC#531's `modes` shape.
+  - The ladder is `data/sv-work-items/operating-modes.json` from #3308 (merged to main as 6fe3cf84). It is referenced by path and not duplicated.
+- **Corpus:**
+  - The class id ASC-PR_AUTHOR_SESSION_DECLARED@schema and its scenario ids are frozen, as the corpus is append-only.
+  - Its single axis was re-derived: a `declared_session` with no push-receipt chain is FAIL_CLOSED BRANCH_WRITER_UNOBSERVED.
+  - Every scenario now carries `push_receipts` and `change_commits`, so every seal and the corpus head moved, but no id moved.
+- **Runtime status:** this is admission input only. It does not count at runtime until the receipts are appended to refs/stegverse/organization-ledger by the org writer (#3255, not admitted), and until then the evidence is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED.
+- **Follow-up:** WITHDRAW_BY_DECLARED_SESSION keeps its name. A withdraw-by-branch-writer predicate is not claimed here.

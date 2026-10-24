@@ -1,0 +1,335 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.existing-identity.gen320",
+  "task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "registration_mode": "EXISTING_IDENTITY",
+  "observed_registry_generation": 320,
+  "allocation_request_ref": null,
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "issue": "StegVerse-org/.github#160 issuecomment-6354238464 I1 (Lane D: register the no-row Goals by manifest; draft, consumed by the registry transition)",
+  "collision_analysis": [
+    "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json exists (sha256 1d43459c2d02ae8e039601594e1e3d23963fb6f6a76b41979c020315544a87e8); no aggregate row at gen 320; control/task-vectors and task-vector-index.d entries exist (vector 50000000100000): existing-identity reconcile, not a new identity"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "root_correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "parent_task_id": null,
+    "goal": "Converge all StegVerse ecosystem capabilities that are source-implemented or integration-ready but still require authentic runtime execution evidence, custody/reconstruction, runtime-bound validation, or downstream propagation proof; bind every child to the single shared runtime-evidence owner and resume each child from its exact first unresolved predicate without physical-device identity gates.",
+    "coordination_state": "ACTIVE",
+    "checkout_state": "CLAIMED_INTEGRATION",
+    "cosv_task_vector": "50000000100000",
+    "source_state_vector_ref": "control/task-vectors/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
+    "shared_runtime_evidence_owner_for_profiled_lanes": true,
+    "global_invariant_ref": "data/task-registry-global-invariants.json",
+    "device_interchangeability_enforced": true,
+    "physical_device_identity_gate": "NONE_PROHIBITED",
+    "user_verification_authority": "KV/SKAP Vault",
+    "source_refs": [
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md",
+      "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
+      "data/canonical-task-records/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+      "data/task-registry-global-invariants.json",
+      "control/runtime-node-profiles.json",
+      "control/runtime-profile-sources.json",
+      "control/runtime-profile-map.json",
+      "tools/validate_global_runtime_evidence_owner_binding.py",
+      "tests/test_global_runtime_evidence_owner_binding.py",
+      "scripts/build_runtime_profile_map.py",
+      "scripts/run_global_runtime_evidence_convergence.py",
+      "scripts/run_global_runtime_node_profile_convergence.py",
+      "scripts/install_and_run_canonical_work_event_bootstrap.py",
+      "scripts/refresh_sovereign_worker_runtime_source.py",
+      "scripts/refresh_sovereign_worker_runtime_source_base.py",
+      "StegVerse-Labs/.github#1260",
+      "StegVerse-Labs/.github#1294"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs",
+        "StegVerse-org",
+        "Data-Continuation",
+        "Admissible-Existence"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "components": [
+        "runtime-evidence-inventory",
+        "resident-runtime-convergence",
+        "hb32-retained-stegos-runtime-node-profiles",
+        "cross-lane-evidence-reuse",
+        "runtime-predicate-comparison",
+        "master-records-reconstruction",
+        "downstream-propagation-verification",
+        "single-shared-runtime-evidence-owner-invariant",
+        "interchangeable-stegos-runtime-root"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DEP-TASK-2026-0011-CANONICAL-ALLOCATION",
+        "kind": "AUTHENTIC_RUNTIME_ROOT_PREDICATE",
+        "state": "SATISFIED_AUTHENTIC_G7_FENCE7",
+        "ref": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001;TASK-2026-0011:G7:FENCE7",
+        "disposition": "TASK-2026-0011 has authentic generation 7 / fence 7 claim evidence. Historical physical-device metadata is provenance only and does not constrain future execution to that device."
+      },
+      {
+        "dependency_id": "DEP-GLOBAL-RUNTIME-AUTHENTIC-RESIDENT-CYCLE",
+        "kind": "RUNTIME_PREDICATE",
+        "state": "PENDING_AUTHENTIC_ADMITTED_STEGOS_RUNTIME",
+        "ref": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RETAINED_STEGOS_STEGBROWSER_RUNTIME",
+        "disposition": "The next runtime evidence may come from any eligible StegOS execution/transport surface after KV/SKAP continuity, exact WorkerCoordinator claim/fence lineage, and Interlock/InTr admission are bound. No named physical device or current-iPhone TestFlight event is a global prerequisite.",
+        "superseded_ref": {
+          "value": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+          "superseded_at_generation": 301,
+          "superseded_by": "dependencies[1].ref",
+          "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+          "authority_effect": "NONE_HISTORY_ONLY"
+        }
+      },
+      {
+        "dependency_id": "DEP-GLOBAL-RUNTIME-MEASUREMENT",
+        "kind": "EVIDENCE",
+        "state": "PENDING_AUTHENTIC_RETAINED_RUNTIME",
+        "ref": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001;docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md",
+        "disposition": "No frozen measurement run ID and no authentic global-runtime-node-profile-convergence.latest.json are observed. Do not infer lane execution from G7 allocation or source state."
+      },
+      {
+        "dependency_id": "DEP-GLOBAL-RUNTIME-CHILD-EVIDENCE-CLOSURE",
+        "kind": "EVIDENCE",
+        "state": "UNRESOLVED",
+        "ref": "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+        "disposition": "All 18 lane profiles remain bound to the shared owner and retain their exact first unresolved subject-bound predicates until authentic measurement/fan-out evidence exists."
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+      "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+      "CRYPTO-LIVE-AUTO-001",
+      "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001",
+      "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023",
+      "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+      "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+      "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+      "DATA-CONTINUATION-STEGCLAW-P4",
+      "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+      "GADI-RESIDENT-EXECUTION-001",
+      "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+      "SHWP-GLM53-SOVEREIGN-LANE-001",
+      "SV011-PHASE5-RESIDENT-BRIDGE-001",
+      "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+      "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "DECISION-ENVELOPE-DE006",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "existing_evidence_refs": [
+      "TASK-2026-0011:G7:FENCE7:CLAIM_GRANT_OBSERVED:ALLOCATION_COMPLETE:JOURNAL_REPLAY_PASS",
+      "StegVerse-Labs/Site#1236:MERGED:841ab0298741fd5152c9cf88211468c3b86093d3",
+      "StegVerse-Labs/Site#1237:MERGED:b847d4e408571efb9ff511f1facbc3f38128846d",
+      "StegVerse-Labs/TVC#424:MERGED:80db8f1e90168a54e4d44f6b7c3b0ce014c2ebba",
+      "StegVerse-Labs/TVC#428:MERGED:46878481c23efd9b7d2cd17fc9f701616e687b22",
+      "StegVerse-Labs/StegOS#379:MERGED:c064c7542e113703a9fd0efe9eb08106de956937",
+      "StegVerse-Labs/Site#1299:MERGED:6c1f267b49ab6e36618a2eccc8afceaf4544fbe0"
+    ],
+    "expected_evidence_predicates": [
+      "GLOBAL_CHILD_INVENTORY_CURRENT",
+      "ALL_18_RUNTIME_LANES_BOUND_TO_SINGLE_SHARED_RUNTIME_EVIDENCE_OWNER",
+      "AUTHENTIC_TASK_2026_0011_G7_FENCE7_ALLOCATION_OBSERVED",
+      "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+      "MEASUREMENT_RUN_ID_FROZEN",
+      "AUTHENTIC_RESIDENT_EXECUTION_OBSERVED_FOR_ELIGIBLE_CHILDREN",
+      "MASTER_RECORDS_RECONCILIATION_OBSERVED_WHERE_REQUIRED",
+      "PROPAGATION_VERIFIED_WHERE_REQUIRED"
+    ],
+    "runtime_requirements": {
+      "capabilities": [
+        "runtime_observation",
+        "task_registry_reconciliation",
+        "master_records_reconciliation",
+        "bounded_process_execution",
+        "runtime_profile_discovery",
+        "retained_stegos_node_state",
+        "hb_runtime_profile_sync",
+        "exact_subject_binding",
+        "resident_source_refresh"
+      ],
+      "environment": "SOVEREIGN_RESIDENT_OR_ADMITTED_EPHEMERAL_STEGOS_NODE",
+      "direction": "INTERNAL",
+      "mutation_required": true,
+      "deployment_required": false,
+      "current_observation_required": true
+    },
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": [
+            "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+            "control/runtime-node-profiles.json"
+          ]
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "ELIGIBLE_WHEN_ADMITTED",
+          "limitation_class": "NONE",
+          "evidence_refs": [
+            "data/task-registry-global-invariants.json"
+          ]
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": [
+            "control/runtime-node-profiles.json"
+          ]
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "ELIGIBLE_WHEN_ADMITTED",
+          "limitation_class": "NONE",
+          "evidence_refs": [
+            "https://stegverse.org/task0011-same-device-kv-recovery.html"
+          ]
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "ELIGIBLE_WHEN_ADMITTED",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": [
+            "data/task-registry-global-invariants.json"
+          ]
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "NOT_APPLICABLE",
+          "limitation_class": "NOT_APPLICABLE",
+          "evidence_refs": []
+        }
+      ],
+      "selected_substrate_id": null,
+      "physical_device_identity_required": false,
+      "external_device_required": false,
+      "second_user_operated_device_allowed": false,
+      "authority_effect": "NONE"
+    },
+    "runtime_resolution": {
+      "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "profile_registry": "control/runtime-node-profiles.json",
+      "profile_count": 18,
+      "duplicate_runtime_materialization_owner_for_profiled_lane_prohibited": true,
+      "profiled_convergence_runner": "scripts/run_global_runtime_node_profile_convergence.py",
+      "profiled_receipt": "receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json",
+      "authentic_root_state": "TASK_2026_0011_G7_FENCE7_ALLOCATION_OBSERVED",
+      "current_first_unresolved_predicate": "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:RETAINED_STEGOS_STEGBROWSER_RUNTIME",
+      "physical_device_gate": "NONE_PROHIBITED",
+      "global_measurement_loop_entered": false,
+      "source_profile_binding_proves_runtime": false,
+      "source_refresh_proves_runtime": false,
+      "next_runtime_action": "Use the first reachable eligible StegOS execution surface in canonical substrate order; bind KV/SKAP continuity, TASK-2026-0011 G7/fence7 lineage, and Interlock/InTr admission; observe authentic retained runtime evidence; then perform Master Records reconstruction and exactly one frozen measurement-only convergence pass.",
+      "superseded_current_first_unresolved_predicate": {
+        "value": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+        "superseded_at_generation": 301,
+        "superseded_by": "runtime_resolution.current_first_unresolved_predicate",
+        "reason": "StegVerse-Labs/.github#3012 affirmative observer follow-up: a progression predicate naming an affirmative observer (*_OBSERVED) is a post-closure observer gate; it is replaced by the Organization append predicate ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:<transition> naming the same transition (NO_POST_CLOSURE_AUTHENTIC_OBSERVER_GATE; runtime reality is the Organization receipt appended under ORGANIZATION_LEDGER_LOCK and read back by verified_organization_receipt).",
+        "authority_effect": "NONE_HISTORY_ONLY"
+      }
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": "TASK-2026-0011:FENCE7",
+      "projection_only": true
+    },
+    "human_action_ref": null,
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "shared_runtime_evidence_owner_binding_validated": true,
+      "authentic_g7_fence7_root_observed": true,
+      "activation_proof_complete": false
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED"
+    ],
+    "handoff_projection_refs": [
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "runtime_profile_match_grants_execution_authority": false,
+      "source_refresh_grants_execution_authority": false,
+      "hb_grants_execution_authority": false,
+      "physical_device_identity_grants_authority": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "credential_authority": "TV/TVC",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "vector": {
+    "evidence_refs": [
+      "StegVerse-Labs/.github@86382e60:control/task-vectors/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
+      "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+      "control/runtime-node-profiles.json",
+      "control/runtime-profile-sources.json",
+      "control/runtime-observability-consumers/stegbrowser-ephemeral-runtime-binding-001.json",
+      "scripts/run_global_runtime_node_profile_convergence.py",
+      "scripts/refresh_sovereign_worker_runtime_source.py",
+      "scripts/refresh_sovereign_worker_runtime_source_base.py",
+      "tests/test_global_runtime_node_profile_convergence.py",
+      "tests/test_runtime_node_profile_resident_source_refresh.py",
+      "docs/milestones/STEGBROWSER_FIRST_EPHEMERAL_STEGOS_NODE_2026-09-09.md",
+      "StegVerse-Labs/.github#1260",
+      "StegVerse-Labs/.github#1288",
+      "StegVerse-Labs/.github@c22f0f347bb91e77b81d78e6e5e9b9ce7eea7409",
+      "management/COSV_PROFILE_V1.json"
+    ],
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "MACHINE_OWNED",
+      "archive_ready": false,
+      "unassigned_work": 0,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 1,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": false,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "observed_at": "2026-09-09T15:33:00Z",
+    "metric_evidence": {
+      "source": "StegVerse-Labs/.github@86382e60:control/task-vectors/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json (vector 50000000100000, index entry EMITTED)"
+    }
+  }
+}
