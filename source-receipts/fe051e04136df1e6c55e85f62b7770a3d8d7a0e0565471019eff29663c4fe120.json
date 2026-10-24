@@ -1,0 +1,48 @@
+{
+  "authority_effect": "NONE",
+  "evidence": {
+    "addressed_service": "stegverse-labs.intr-destination",
+    "communication_id": "intr-path-v1:SV-LLM->StegVerse-Labs",
+    "disposition": "ALLOW",
+    "message": {
+      "body": {
+        "path_id": "SV-LLM->StegVerse-Labs:intr-destination",
+        "schema": "stegverse.org-intr-destination-diagnostic/v1",
+        "transfer_commit": "a6503e37c4ba554470446347f972972d5cbffbc2"
+      },
+      "communication_id": "intr-path-v1:SV-LLM->StegVerse-Labs",
+      "message_class": "ecosystem.communication"
+    },
+    "message_sha256": "sha256:4a1cdc20c72928d701fee56bb3e355d60b64d49e31eab4f782702ec9ad384ec5",
+    "path_id": "SV-LLM->StegVerse-Labs:intr-destination",
+    "payload_sha256": "sha256:a84cc1b1bdda2ac30b2a421e1239579d798de7280441eb779d12a4afad31c61e",
+    "repository": "StegVerse-Labs/.github",
+    "schema": "stegverse.intr-path-ingress-evidence/v1",
+    "source_inclusion": {
+      "source_ledger_tip": "ca2cb39f12942df9b7184ba700e741c51979af50",
+      "state": "VERIFIED_BY_ANONYMOUS_PUBLIC_LEDGER_READ",
+      "tvc_read_receipt": null
+    },
+    "source_organization_receipt_sha256": "sha256:dfcbacff25a118e17d7682c113b160e6e961d4d74cde01ba271e453f9ddb62c0",
+    "source_repository": "SV-LLM/.github",
+    "source_repository_receipt_sha256": "sha256:b7207a5aa87a85e95296beba0fdef2b2db6339317e632601370ec35a316ca354"
+  },
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 469411750,
+    "frequency_hz": 100,
+    "generation": 469411750,
+    "heartbeat_id": "HB:469411750",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "predecessor_state_sha256": "sha256:a84cc1b1bdda2ac30b2a421e1239579d798de7280441eb779d12a4afad31c61e",
+  "previous_receipt_sha256": "sha256:fda302617337147cdf5c3e5dae1c79bab5246c3a53188fa6f6a02d1915484138",
+  "receipt_sha256": "sha256:fe051e04136df1e6c55e85f62b7770a3d8d7a0e0565471019eff29663c4fe120",
+  "repository": "StegVerse-Labs/.github",
+  "schema": "stegverse.repo-transition-receipt/v1",
+  "successor_state_sha256": "sha256:89a1527101445e3f2694b9317ed5abef9ffab3d2595349bb6fc5d56793f34135",
+  "transition_class": "INTR_MESH_PATH_INGRESS",
+  "transition_id": "INTR_MESH_PATH_INGRESS:SV-LLM->StegVerse-Labs:intr-destination@intr-path-v1:SV-LLM->StegVerse-Labs"
+}
