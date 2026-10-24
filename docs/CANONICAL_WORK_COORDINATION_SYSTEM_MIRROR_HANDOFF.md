@@ -20,8 +20,8 @@ This file is the bounded continuation record for the StegVerse Canonical Work Co
 - `control/worker-registry.json`
 - `master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md`
 
-Current Task Registry generation observed from canonical `main`: `130`.
-Current WorkerCoordinator registry generation observed from canonical `main`: `22`.
+Historical Task Registry generation observed on 2026-09-19: `130` (historical observation, NOT current).
+WorkerCoordinator registry generation observed on 2026-09-19: `22` (reverify for each transition).
 
 ## Authority model
 
@@ -382,3 +382,10 @@ Successor handoff: `docs/CANONICAL_WORK_END_TO_END_CYCLE_CLOSURE_MIRROR_HANDOFF.
 The successor owns only one current end-to-end verification/closure cycle using the already-built parent substrate and exact parent task/request/COSV lineage. It may not reimplement Canonical Work, manufacture a new parent request, reset the parent evidence chain, or introduce another runtime, scheduler, dispatcher, credential route, device requirement, ledger, WorkerCoordinator, transition authority, persistent endpoint, receiver-liveness gate, LLM-adapter prerequisite, or AI_SESSION_GATE.
 
 Parent completion remains `claimed=false / validated=false`. The decomposition changes prompt ownership of the remaining verification obligation, not canonical runtime truth.
+
+
+## 2026-10-20 current registry reconciliation checkpoint (non-authorizing)
+
+This dated section supersedes historical `current` generation descriptions above for source-coordination purposes only. The canonical `main` aggregate Task Registry was independently read at blob `8731d45a5ade9d9ed91c65ba1debacb05060390c`, generation **320**, 119 tasks. The registered parent `STEGVERSE-CANONICAL-WORK-COORDINATION-001` is **PROPOSED** and not completed. The existing closure successor `CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001` is **absent** from that aggregate although its canonical shard blob `d0c61972aa6411cb502207201cc4998ccdb05e93` declares **ACTIVE / CHECKED_OUT**; absence does not authorize new-task registration. Worker Registry blob `d860e4c09aaeffaf896a3a95b440334984547dce` reports generation **22**, without an authenticated corresponding closure claim/fence. Existing COSV `10100000100000` also appears on other tasks; inspect component, lineage and claim collisions rather than assume vector uniqueness or silently modify it.
+
+The existing owner must evaluate the **registered parent** against the latest authoritative generation using `scripts/evaluate_task_registry_collision_checkin.py`, retain omitted checked-out shard collision evidence, and reconcile the existing successor through the authorized Registry producer before checking the successor. The general caller policy still lists the prohibited `AI_SESSION_GATE`; remove its production-admitted declaration under the existing authorized ingress owner, retain historical test evidence, and validate explicit internal caller and missing/stale-generation refusals. Policy edits or standalone evaluator execution do not establish authenticated origin, WorkerCoordinator authority, InTr ALLOW or Organization Ledger/Master Records reconstruction. Existing issue: https://github.com/StegVerse-Labs/.github/issues/3195. No new machine, hosted runtime, branch, task, credential plane or alternative governance authority is required. Historical sections remain evidence of their respective dated observations, not current admission.

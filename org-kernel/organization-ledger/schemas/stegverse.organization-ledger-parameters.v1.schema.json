@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.organization-ledger-parameters/v1",
+  "title": "Organization-ledger component parameters (one file per consuming organization)",
+  "description": "DRAFT. Parameter names are taken from InTr H29 §2.2 (StegVerse-org/.github#163 issuecomment-6234609427); #163 wins on naming, and these are those names. Fields marked derived must not be typed; the component computes them and refuses a typed override. Dispatch-time inputs (hb_epoch, communication_id, packet_id) are never stored here.",
+  "type": "object",
+  "required": ["schema", "organization", "designation_source", "genesis_mode", "owning_existing_goal"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {"const": "stegverse.organization-ledger-parameters/v1"},
+    "organization": {"type": "string", "description": "H29 #1. Exact GitHub org login."},
+    "owner_repository": {"type": "string", "description": "H29 #3. Default <organization>/.github."},
+    "organization_ledger_repository": {"type": "string", "description": "H29 #5. Default <organization>/.github."},
+    "organization_ledger_ref": {"const": "refs/stegverse/organization-ledger", "description": "H29 #6. Constant; component default."},
+    "designation_source": {"type": "string", "minLength": 1, "description": "H29 #9. The #163 comment or request_id that adopts this organization."},
+    "repository_ledger_designation_source": {"type": "string", "description": "Optional. Repository-level designation string; defaults to designation_source."},
+    "repository_ledger_rule": {"type": "string", "description": "Optional. Overrides the template rule text (StegVerse-org's text by default)."},
+    "propagation_target": {"type": ["string", "null"], "description": "H29 #10. Default master-records/.github. Downstream recorder only; never gates (propagation_gates_organization_runtime_reality is fixed false). OWNER DECISION for master-records itself."},
+    "consumes": {"type": "array", "minItems": 1, "items": {"enum": ["stegverse.repo-transition-receipt/v1", "stegverse.canonical-state-transition-receipt/v1"]}, "description": "H29 #11. Default [repo-transition-receipt/v1]."},
+    "organization_record_service_declared": {"type": "boolean", "description": "H29 #12. When false, the contract records DENY_ORGANIZATION_RECORD_SERVICE_NOT_DECLARED_FOR_THE_PROPAGATION_TARGET (StegGhost precedent)."},
+    "genesis_mode": {"enum": ["SELF_CLOSURE_OPENS_CHAIN", "REQUEST_GENESIS"], "description": "H29 #18. Default SELF_CLOSURE_OPENS_CHAIN."},
+    "owning_existing_goal": {"type": "string", "minLength": 1, "description": "H29 #19. Carried on every six-field non-ALLOW the component emits for this organization."},
+    "test_modules": {"type": "array", "items": {"type": "string"}, "description": "H29 #20. Defaults to the component suite; per-org tests are additive only."},
+    "install_step": {"const": "none", "description": "H29 #21. Stdlib only. Request mode installs only the pinned SDK (an existing dependency)."},
+    "source_receipt_retention": {"type": "object", "description": "Optional (G4/H45). Carried verbatim into org-contract.json. legacy_pre_retention_segment declares the receipts written before source retention began: receipts (a contiguous prefix from genesis, in chain order), waived_predicate (exactly SOURCE_RECEIPT_RETAINED_AND_VERIFIES), six_fields, ledger_tip_commit (40-hex ledger commit whose HEAD is the last declared receipt), re_minted=false, reported_as_source_retained=false, declaration_sha256 (sha256 of the canonical segment without that member). The readback never reports such a ledger as ALLOW."}
+  },
+  "x-derived-never-typed": {
+    "organization_slug": "H29 #2. kernel.organization_slug(organization). Must equal the federation row's org_control_service prefix.",
+    "addressed_service": "H29 #4. <organization_slug>.intr-destination (InTr-owned interface)",
+    "repository_ledger_namespace": "H29 #7. repository-ledger/<owner_repository>",
+    "repository_ledger_locator_form": "H29 #8. git+<checkout>#<organization_ledger_ref>:<repository_ledger_namespace>",
+    "capability_endpoint_bindings[intr-destination]": "H29 #13. Fixed body owned by InTr & Mesh. Generated with owner_repository and addressed_service substituted.",
+    "services.json <slug>.intr-destination entry": "H29 #14. Owned by InTr & Mesh."
+  },
+  "x-dispatch-inputs-never-stored": {
+    "hb_epoch": "H29 #15. ASCII digits only, >= 32 (HB_ANCHOR_EPOCH). Required on every append, on both repo and org receipts. No clock fallback.",
+    "communication_id": "H29 #16. Required for self-closure. Default convention intr-selfclose-<organization>-HB<hb_epoch>.",
+    "packet_id": "H29 #17. Default intr-destination-self-closure:<communication_id>, which makes redelivery idempotent."
+  }
+}

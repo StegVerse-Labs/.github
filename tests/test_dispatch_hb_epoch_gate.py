@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 GATE = ROOT / "scripts" / "check_dispatch_hb_epoch.py"
 WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
-ENTRY = ".github/workflows/organization-ledger-transition.yml (workflow_dispatch input hb_epoch)"
+ENTRY = ".github/workflows/organization-ledger-transition.yml (committed self-closure packet hb_epoch)"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
               "retry_entrypoint", "owning_existing_goal", "next_attempt")
 
