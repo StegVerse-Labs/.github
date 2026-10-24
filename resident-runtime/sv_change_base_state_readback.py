@@ -87,13 +87,14 @@ HB_EPOCH_OPEN_QUESTION = "JD-P4-3"
 HB_EPOCH_INVARIANT = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 ORG_RECEIPT_SCHEMA = "stegverse.organization-transition-receipt/v1"  # aggregate_repo_transition.py:1074
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py:22
-# Rule source: org-kernel/kernel.py:68-74 (hb_reference(epoch=...): int, not bool, >= 32, derived_from_clock False).
-EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "68-74", "git_blob_sha": "ffec5d648d7fa4aead1f44f76df936a2da21bb96"}
-# P1 cites the supplied-epoch rule as the sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 236-269 of the
+# Rule source: org-kernel/kernel.py:80-89 (hb_reference(epoch=...): int, not bool, >= 32, derived_from_clock False).
+# Was lines 68-74 of blob ffec5d64; re-cited on #3282 (B-P36h) with the c9192134 re-pin (lead ruling 2026-10-24).
+EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "80-89", "git_blob_sha": "0003eeae35ddb25919170ad853a11a0dcb53fcc0"}
+# P1 cites the supplied-epoch rule as the sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 263-298 of the
 # same blob); verified: sha256(ast.get_source_segment(...).encode("utf-8")).
-EPOCH_RULE_FUNCTION = {"file": "org-kernel/kernel.py", "function": "supplied_epoch_failure", "lines": "236-269",
-                       "git_blob_sha": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
-                       "source_segment_sha256": "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"}
+EPOCH_RULE_FUNCTION = {"file": "org-kernel/kernel.py", "function": "supplied_epoch_failure", "lines": "263-298",
+                       "git_blob_sha": "0003eeae35ddb25919170ad853a11a0dcb53fcc0",
+                       "source_segment_sha256": "c91921348741cc1139553d5e4ad3d4f8f1c44fc67537eee4629c5bf63d49041d"}
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
               "owning_existing_goal", "next_attempt")
 HERE = Path(__file__).resolve().parent
