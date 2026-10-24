@@ -30,6 +30,8 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
     def test_every_goal_has_six_fields_and_a_class(self) -> None:
         for goal in self.manifest["goals"]:
             outcome = goal["expected_plan"] or goal["fail_closed"]
+            if outcome.get("disposition") == "ALLOW":
+                continue  # an ALLOW plan carries no refusal; test_new_identity_requests_plan_as_recorded pins it
             for field in SIX:
                 self.assertTrue(outcome.get(field), (goal["task_id"], field))
             self.assertIn(outcome["failure_class"], ("A", "B", "C", "D"))
@@ -76,9 +78,19 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
             receipt = self._plan(goal["request"])
             expected = goal["expected_plan"]
             self.assertEqual(receipt["disposition"], expected["disposition"], goal["task_id"])
-            for field in SIX:
-                self.assertEqual(receipt[field], expected[field], (goal["task_id"], field))
-            for flag in ("consequence_committed", "organization_ledger_appended", "execution_authority_minted",
+            if expected["disposition"] == "ALLOW":
+                evidence = receipt["evidence"]
+                self.assertEqual(evidence["cosv_task_vector"], expected["cosv_task_vector"], goal["task_id"])
+                self.assertEqual(evidence["scope_digest"], expected["scope_digest"], goal["task_id"])
+                self.assertEqual(evidence["successor_registry_generation"], expected["successor_registry_generation"])
+                self.assertEqual(sorted(receipt["derived_files"]), expected["derived_files"], goal["task_id"])
+                self.assertIs(expected["applied"], False)
+                self.assertEqual(receipt["mode"], "plan")
+            else:
+                self.assertFalse(receipt["consequence_committed"], goal["task_id"])
+                for field in SIX:
+                    self.assertEqual(receipt[field], expected[field], (goal["task_id"], field))
+            for flag in ("organization_ledger_appended", "execution_authority_minted",
                          "workercoordinator_claim_or_fence_minted", "intr_admission_minted"):
                 self.assertFalse(receipt[flag], (goal["task_id"], flag))
 
