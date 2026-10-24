@@ -1,0 +1,45 @@
+{
+  "authority_effect": "NONE",
+  "evidence": {
+    "capability": "intr-destination",
+    "communication_id": "intr-path-v1:StegVerse-Labs->Triad-Test",
+    "destination_address": "triad-test.intr-destination",
+    "destination_organization": "Triad-Test",
+    "disposition": "ALLOW",
+    "merge_transfer_organization_receipt_sha256": "sha256:d1b42c51317f0285b1b2f81f1b37347763c6dc90354077a1bdfb20b62a0e3efd",
+    "message": {
+      "body": {
+        "path_id": "StegVerse-Labs->Triad-Test:intr-destination",
+        "schema": "stegverse.org-intr-destination-diagnostic/v1",
+        "transfer_commit": "ca9d6cb13f45e15da2a50eded96c1833c3653faf"
+      },
+      "communication_id": "intr-path-v1:StegVerse-Labs->Triad-Test",
+      "message_class": "ecosystem.communication"
+    },
+    "message_sha256": "sha256:35a1e53c5dfe832df74862f78a58c80f8861d007a1c239240b497e0f7fac06a4",
+    "path_id": "StegVerse-Labs->Triad-Test:intr-destination",
+    "payload_sha256": "sha256:cd4046a6f21c01ac7c51924f859e2368b97cec3240c286a19c987a58b2ee2796",
+    "repository": "StegVerse-Labs/.github",
+    "schema": "stegverse.intr-path-transfer-evidence/v1",
+    "source_organization": "StegVerse-Labs",
+    "transfer_commit": "ca9d6cb13f45e15da2a50eded96c1833c3653faf"
+  },
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 469411750,
+    "frequency_hz": 100,
+    "generation": 469411750,
+    "heartbeat_id": "HB:469411750",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "predecessor_state_sha256": "sha256:cd4046a6f21c01ac7c51924f859e2368b97cec3240c286a19c987a58b2ee2796",
+  "previous_receipt_sha256": "sha256:c07d7ef0655b54f54aa15b9017d0ac82df8ba326ced603c8f3dad785a29e1959",
+  "receipt_sha256": "sha256:be27b5d02f15e4c623f50d341136c2a8942dbfd9d9259d5458acbe1d81e3205f",
+  "repository": "StegVerse-Labs/.github",
+  "schema": "stegverse.repo-transition-receipt/v1",
+  "successor_state_sha256": "sha256:7f2921b220782c43dbf51196b461dde90bcf995e6bce010f390413b3e44595dd",
+  "transition_class": "INTR_MESH_PATH_TRANSFER",
+  "transition_id": "INTR_MESH_PATH_TRANSFER:StegVerse-Labs->Triad-Test:intr-destination@intr-path-v1:StegVerse-Labs->Triad-Test"
+}
