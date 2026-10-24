@@ -1,0 +1,41 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "communication_id": "intr-path-v1:AdmittedCode->StegVerse-Labs",
+    "disposition": "ALLOW",
+    "operation": "ORGANIZATION_INTR_DESTINATION_INGRESS",
+    "path_id": "AdmittedCode->StegVerse-Labs:intr-destination",
+    "profile_id": "intr-destination",
+    "source_organization_receipt_sha256": "sha256:f7b9137b95f11b4519ccc783cea3e63e96e295422a53a1e6c1276e890f42560b",
+    "source_repository": "AdmittedCode/.github",
+    "source_repository_receipt_sha256": "sha256:24a2d0e4678dc342039536942cb5905941d464114672512294ca9ace09df08e9"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 469411750,
+    "frequency_hz": 100,
+    "generation": 469411750,
+    "heartbeat_id": "HB:469411750",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "observed_at": "2026-10-24T21:30:04.856579+00:00",
+  "org_transition_class": "REPO_STATE_PROPAGATION",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:5971afc2665ce6c99bbd3bdba02acca8309d6a479b3b2fe32e616f8e1d8acb8d",
+  "previous_receipt_sha256": "sha256:e40fd96e2ea5c7dd53bc77ca91f0cce77be5750dbbb7a94c73427284314e1882",
+  "receipt_sha256": "sha256:1379af7d8d94eedc9a17ea04562d5d0cffc74e78c2474e288553aac993b132ed",
+  "repo_receipt_sha256": "sha256:7f948016e3ebfb11ce23d3ee90aab01d4d2ec38e637ddb0dabc4a91354d4baac",
+  "repo_transition_id": "INTR_MESH_PATH_INGRESS:AdmittedCode->StegVerse-Labs:intr-destination@intr-path-v1:AdmittedCode->StegVerse-Labs",
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.repo-transition-receipt/v1",
+  "source_repository": "StegVerse-Labs/.github",
+  "source_transition_id": "INTR_MESH_PATH_INGRESS:AdmittedCode->StegVerse-Labs:intr-destination@intr-path-v1:AdmittedCode->StegVerse-Labs",
+  "source_transition_sha256": "sha256:7f948016e3ebfb11ce23d3ee90aab01d4d2ec38e637ddb0dabc4a91354d4baac",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:eecf94776c05d63ec57021c81dc539602cea2b2ae41244326b9d4bd01e99e320"
+}
