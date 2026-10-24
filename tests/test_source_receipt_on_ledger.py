@@ -210,3 +210,61 @@ def test_another_repositorys_receipt_is_a_cross_repo_refusal(ledgers):
     body = {**{k: v for k, v in minted("site").items() if k != "receipt_sha256"}, "repository": "StegVerse-Labs/Site"}
     foreign = {**body, "receipt_sha256": org.sha(body)}
     assert_refused(foreign, org_root, "SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED")
+
+
+# --- Lead conditions 21:23Z: the internal channel is the materializer's only, and forged roots are refused ---
+
+def test_the_internal_channel_is_not_reachable_from_cli_env_or_request(ledgers, monkeypatch, tmp_path):
+    import re
+    import subprocess
+    # Only the kernel's custody and the two materialized consumers pass it, and only their custody's store.
+    passers = {}
+    for path in ROOT.glob("**/*.py"):
+        relative = path.relative_to(ROOT).as_posix()
+        if relative.startswith(("tests/", "receipts/")) or relative == "resident-runtime/aggregate_repo_transition.py":
+            continue
+        for match in re.finditer(r"_materialized_repository_ledger=([^,)\n]+)", path.read_text(encoding="utf-8")):
+            passers.setdefault(relative, set()).add(match.group(1).strip())
+    assert passers == {"org-kernel/kernel.py": {'custody["repository_store"]'},
+                       "scripts/consume_org_claim_allocator_request.py": {'custody["repository_store"]'},
+                       "scripts/authorize_site_production_promotion.py": {'custody["repository_store"]'}}, passers
+    # No CLI option reaches it.
+    helped = subprocess.run([sys.executable, "-B", str(ROOT / "resident-runtime/aggregate_repo_transition.py"), "--help"],
+                            capture_output=True, text=True, timeout=60).stdout
+    assert "materialized" not in helped and "repository-ledger" not in helped and "source-ledger" not in helped
+    # No environment variable reaches it: a decoy pointing at a ledger that holds the receipt changes nothing.
+    ledger, org_root = ledgers
+    on_ledger(ledger, "own")
+    decoy = org.ledger_store.PosixLedgerStore(tmp_path / "decoy")
+    forged = on_ledger(decoy, "forged-only-in-decoy")
+    for name in ("STEGVERSE_MATERIALIZED_REPOSITORY_LEDGER", "STEGVERSE_REPO_LEDGER_HOME", "STEGVERSE_SOURCE_LEDGER"):
+        monkeypatch.setenv(name, str(decoy.root))
+    assert_refused(forged, org_root, "SOURCE_RECEIPT_NOT_ON_LEDGER")
+    # A committed request naming a ledger is refused before the cycle runs (tests/test_federation_cycle_epoch.py).
+
+
+def _bare_store(path, location):
+    import subprocess
+    subprocess.run(["git", "init", "-q", "--bare", str(path)], check=True)
+    return org.ledger_store.GitLedgerStore(path, location["ref"], namespace=location["namespace"])
+
+
+def test_a_forged_materializer_root_with_a_foreign_realpath_is_refused(tmp_path):
+    location = org._repository_ledger().C["repository_ledger_location"]
+    organization = _bare_store(tmp_path / "organization.git", location)
+    foreign = _bare_store(tmp_path / "foreign.git", location)
+    receipt = minted("own")
+    refusal = org.source_ledger_refusal(receipt, organization=organization, materialized=foreign)
+    assert refusal["failure_code"] == "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED", refusal
+    # The paired one passes the pair check and is then held to the chain like any other.
+    paired = org.ledger_store.GitLedgerStore(tmp_path / "organization.git", location["ref"],
+                                             namespace=location["namespace"])
+    refusal = org.source_ledger_refusal(receipt, organization=organization, materialized=paired)
+    assert refusal["failure_code"] == "SOURCE_RECEIPT_NOT_ON_LEDGER", refusal
+
+
+def test_a_forged_materializer_root_holding_tracked_files_is_refused(ledgers):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+    assert_refused(receipt, org_root, "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED",
+                   _materialized_repository_ledger=org.ledger_store.PosixLedgerStore(TRACKED))
