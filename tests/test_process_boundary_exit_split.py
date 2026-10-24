@@ -83,6 +83,20 @@ class EndpointAdapterExitSplitTests(unittest.TestCase):
                 self.run_adapter(body)
 
 
+class AdapterResultTests(unittest.TestCase):
+    """An adapter that exits 0 with a result that is not a JSON object is terminal."""
+
+    def test_an_unparseable_non_object_or_deep_result_is_an_input_fault(self):
+        for result in ("{not json", "[1, 2]", '{"a":' + "[" * 200000):
+            with self.subTest(result=result[:12]), tempfile.TemporaryDirectory() as work:
+                adapter = Path(work) / "adapter.py"
+                adapter.write_text("import argparse, pathlib\nap=argparse.ArgumentParser(); ap.add_argument('--packet');"
+                                   " ap.add_argument('--out'); a=ap.parse_args()\n"
+                                   "pathlib.Path(a.out).write_text(" + repr(result) + ")\n", encoding="utf-8")
+                with self.assertRaises(K.EndpointInputFault):
+                    K.run_endpoint_adapter(Path(work), adapter, {"packet_id": "p"})
+
+
 class ConsumeExitSplitTests(frame_case.FrameQuarantineTests):
     def test_a_write_fault_leaves_the_frame_pending_and_an_input_fault_quarantines_it(self):
         self.with_stegcore()
@@ -100,6 +114,15 @@ class ConsumeExitSplitTests(frame_case.FrameQuarantineTests):
         self.with_stegcore()
         self.publish("adapter-65")
         with mock.patch.object(K, "run_endpoint_adapter", side_effect=K.EndpointInputFault("exit 65")):
+            quarantined, = self.cycle()
+        self.assertQuarantined(quarantined, "FRAME_INGEST_FAILED")
+        self.assertEqual(self.cycle(), [])
+
+    def test_a_bad_adapter_result_is_quarantined_once_and_never_reoffered(self):
+        self.with_stegcore()
+        self.publish("adapter-bad-result")
+        with mock.patch.object(K, "run_endpoint_adapter",
+                               side_effect=K.EndpointInputFault("endpoint_adapter_result_invalid: JSONDecodeError")):
             quarantined, = self.cycle()
         self.assertQuarantined(quarantined, "FRAME_INGEST_FAILED")
         self.assertEqual(self.cycle(), [])

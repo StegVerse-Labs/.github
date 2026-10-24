@@ -511,8 +511,14 @@ def run_endpoint_adapter(root:Path, adapter:Path, packet:dict[str,Any], *,
             if completed.returncode==ADAPTER_WRITE_FAULT_EXIT:
                 raise EndpointWriteFault(reason)
             raise EndpointInputFault(reason)
-        result=json.loads(out.read_text())
-    if not isinstance(result,dict): raise ValueError("endpoint_adapter_result_invalid")
+        # An adapter that exits 0 but leaves a result that is not a JSON object
+        # (unparseable, non-object, too deep) failed on this frame: terminal.
+        try:
+            result=json.loads(out.read_text(encoding="utf-8"))
+        except (ValueError,RecursionError,MemoryError) as exc:
+            raise EndpointInputFault("endpoint_adapter_result_invalid: "+type(exc).__name__) from None
+    if not isinstance(result,dict):
+        raise EndpointInputFault("endpoint_adapter_result_invalid: "+type(result).__name__)
     return result
 
 def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_state:Any|None=None,
