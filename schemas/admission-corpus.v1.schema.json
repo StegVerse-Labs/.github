@@ -58,7 +58,7 @@
           "type": "string"
         },
         "observed_inputs": {
-          "description": "sv_work_items.admission_inputs(): declared_session, base_ref, current_base, head_change_digest, writer_sessions, co_author_grants, declared_session_matches_writers (A7), required_check_ids, validation_receipts, required_signoff_roles, signoffs, bound_request_digest, recomputed_request_digest, touched_paths, touched_surface_kinds, admission_order_slot"
+          "description": "sv_work_items.admission_inputs(): base_ref, current_base, head_change_digest, writer_sessions, co_author_grants, push_receipts and change_commits (the branch writer is derived from the sv-push-receipt chain), required_check_ids, validation_receipts, required_signoff_roles, signoffs, bound_request_digest, recomputed_request_digest, touched_paths, touched_surface_kinds, admission_order_slot"
         },
         "origin": {
           "enum": [
