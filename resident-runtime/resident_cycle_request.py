@@ -29,9 +29,25 @@ def _cycle():
     module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     return module
 
+class SourceLedgerRequested(ValueError):
+    """CALLER_CHOSEN_SOURCE_LEDGER_REJECTED: a committed request named a ledger. Nothing runs."""
+    def __init__(self, keys:list)->None:
+        super().__init__("CALLER_CHOSEN_SOURCE_LEDGER_REJECTED: "+",".join(keys))
+        self.record={"disposition":"FAIL_CLOSED","failure_code":"CALLER_CHOSEN_SOURCE_LEDGER_REJECTED",
+                     "failed_predicate":"SOURCE_LEDGER_IS_THE_MATERIALIZERS_DESIGNATED_LEDGER",
+                     "detail":"the committed request names "+", ".join(keys),"terminal":True,
+                     "required_evidence_or_repair":"commit the request as exactly {schema, hb_epoch}; ledgers are supplied by the materializer",
+                     "retry_entrypoint":RETRY_ENTRYPOINT,"owning_existing_goal":K.HB_EPOCH_OWNING_EXISTING_GOAL,
+                     "next_attempt":"commit a request without a ledger field; the cycle did not run",
+                     "derived_from_clock":False,"consequence_committed":False}
+
 def request_epoch(path:Path)->str:
     """The epoch a committed request carries, or CliInputRefused for a malformed request."""
     request=K.cli_input_json(path,"--request",retry_entrypoint=RETRY_ENTRYPOINT)
+    if any("ledger" in str(key).lower() for key in request):
+        # A request never names the ledger a run reads or writes: that is the
+        # materializer's (lead ruling 21:13Z, no request override).
+        raise SourceLedgerRequested(sorted(k for k in request if "ledger" in str(k).lower()))
     if request.get("schema")!=SCHEMA or set(request)!={"schema","hb_epoch"}:
         raise K._cli_input_refused(ValueError("request is not exactly {schema: "+SCHEMA+", hb_epoch}"),
                                    "--request",RETRY_ENTRYPOINT)
@@ -44,7 +60,10 @@ def main(argv:list[str]|None=None)->int:
     if any(a=="--hb-epoch" or a.startswith("--hb-epoch=") for a in locations):
         raise K._cli_input_refused(ValueError("the epoch comes from the committed request, not an argument"),
                                    "--hb-epoch",RETRY_ENTRYPOINT)
-    epoch=request_epoch(args.request)
+    try:
+        epoch=request_epoch(args.request)
+    except SourceLedgerRequested as exc:
+        print(json.dumps(exc.record,sort_keys=True)); return 1
     refusal=K.writer_epoch_refusal(epoch,retry_entrypoint=RETRY_ENTRYPOINT)
     if refusal is not None:
         print(json.dumps(refusal,sort_keys=True)); return 1

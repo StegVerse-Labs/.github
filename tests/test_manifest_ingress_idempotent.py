@@ -446,7 +446,7 @@ class ConcurrentAppendTests(unittest.TestCase):
                        predecessor_org_state_sha256="sha256:" + "a" * 64,
                        successor_org_state_sha256="sha256:" + "b" * 64,
                        boundary_evidence={}, authority_effect="NONE", ledger=org_root,
-                       repository_ledger=self.store)
+                       _materialized_repository_ledger=self.store)
         first = organization_ledger.aggregate_transition(source, **options)
         again = organization_ledger.aggregate_transition(source, **options)
         self.assertEqual(first["receipt_sha256"], again["receipt_sha256"])

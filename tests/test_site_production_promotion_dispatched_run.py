@@ -130,6 +130,8 @@ class DispatchedSppaRunTests(unittest.TestCase):
         self.assertEqual(latest["organization_receipt_sha256"], result["organization_receipt_sha256"])
         self.assertEqual(self.run_consumer(ledger, hb_epoch="4096"), result)
 
+    # TVC issuer evidence is another repository's receipt (lead ruling 21:00Z).
+    @sppa_tests.refused_until_cross_repo_route
     def test_first_real_promotion_run_is_fail_closed_on_unauthenticated_evidence(self):
         """Under the real custody verifier no evidence receipt authenticates (SPPA correction, Q74-01)."""
         ledger = materialized_ledger(self.base)
@@ -142,6 +144,8 @@ class DispatchedSppaRunTests(unittest.TestCase):
             for field in SIX:
                 self.assertTrue(result[field], field)
 
+    # TVC issuer evidence is another repository's receipt (lead ruling 21:00Z).
+    @sppa_tests.refused_until_cross_repo_route
     def test_authenticated_promotion_run_is_fail_closed_until_a_carrier_epoch_arrives(self):
         ledger = materialized_ledger(self.base)
         self.commit(resident_request(sppa_tests.promote_request(ledger)))

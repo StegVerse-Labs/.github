@@ -1191,7 +1191,7 @@ def _record_both(custody:dict[str,Any], name:str, transition_class:str, predeces
         boundary_evidence={"operation":repository_receipt["transition_class"],
                            **{key:recorded.get(key) for key in carried}},
         authority_effect="NONE",ledger=custody["organization_root"],hb_epoch=epoch,
-        repository_ledger=custody["repository_store"])
+        _materialized_repository_ledger=custody["repository_store"])
     return {"repository_receipt_sha256":repository_receipt["receipt_sha256"],
             "organization_receipt_sha256":organization_receipt["receipt_sha256"]}
 

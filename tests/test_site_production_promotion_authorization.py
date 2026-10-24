@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import contextlib
 import copy
+import functools
 import importlib.util
 import itertools
 import json
@@ -67,6 +68,28 @@ def authenticated_custody():
         yield
 
 
+
+def refused_until_cross_repo_route(test):
+    """Run `test` and require it to end in SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED (lead ruling 21:00Z).
+
+    Each of these tests feeds an observation from another repository (the TVC
+    issuer, an undeclared repository). No route yet verifies such a receipt on
+    that repository's own contract-designated ledger, so aggregate refuses it
+    and the test can never reach authorization. The body still runs up to that
+    refusal and stays as the specification the route restores.
+    OPEN SPPA_CROSS_REPO_OBSERVATION_NEEDS_OWN_ROUTE: a #3290 follow-up PR.
+    """
+    @functools.wraps(test)
+    def expecting_refusal(self, *args, **kwargs):
+        with self.assertRaises(Exception) as raised:
+            test(self, *args, **kwargs)
+        refusal = getattr(raised.exception, "refusal", None) or {}
+        self.assertEqual(refusal.get("failure_code"), "SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED", raised.exception)
+        self.assertNotIn("'" + BOUNDARY + "'s,", refusal["detail"], "only another repository's receipt is refused")
+        self.assertIs(refusal["consequence_committed"], False)
+    return expecting_refusal
+
+
 class Ledger:
     """A copied source and supplied POSIX ledger roots, rooted by an allocator grant (never the real ledger)."""
 
@@ -93,31 +116,37 @@ class Ledger:
         self._seq = 0
 
     def observe(self, repository: str, operation: str, evidence: dict) -> str:
-        """Append an organization receipt sourced from `repository` (its own repository receipt)."""
+        """Append an organization receipt sourced from `repository`'s own repository receipt.
+
+        This repository's observation is a real receipt on the custody's
+        materialized repository ledger, handed to aggregate through its internal
+        channel. Another repository's receipt cannot be verified on that
+        repository's own designated ledger yet, so aggregate refuses it
+        SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED (lead ruling 21:00Z) and this raises.
+        """
         org = self.custody["organization_ledger"]
         self._seq += 1
-        body = {"schema": "stegverse.repo-transition-receipt/v1", "repository": repository,
-                "transition_id": f"{operation}-{self._seq}", "transition_class": operation,
-                "predecessor_state_sha256": "sha256:" + "1" * 64,
-                "successor_state_sha256": org.sha({"op": operation, "n": self._seq, "e": evidence}),
-                "evidence": evidence, "authority_effect": "NONE", "observed_at": "fixture",
-                # A SUPPLIED source reference: a CLOCK or unmarked one is refused (O-1).
-                "hb_reference": org.kernel.hb_reference(epoch=4096),
-                "previous_receipt_sha256": None}
-        # The receipt is that repository's own: a chained node on its repository
-        # ledger, reachable from HEAD, which aggregate is handed (row 8).
-        ledger = org.ledger_store.PosixLedgerStore(self.base / "observed-repo-ledgers" / repository.replace("/", "--"))
-        head = ledger.get(org.ledger_store.HEAD_KEY)
-        body["previous_receipt_sha256"] = head["receipt_sha256"] if head else None
-        receipt = dict(body, receipt_sha256=org.sha(body))
-        ledger.put(org.ledger_store.receipt_key(receipt["receipt_sha256"]), receipt)
-        ledger.put(org.ledger_store.HEAD_KEY, {"receipt_sha256": receipt["receipt_sha256"]})
+        transition_id = f"{operation}-{self._seq}"
+        successor = org.sha({"op": operation, "n": self._seq, "e": evidence})
+        if repository == self.custody["emitter"].C["repository"]:
+            store = self.custody["repository_store"]
+            receipt = self.custody["emitter"].append(transition_id, operation, "sha256:" + "1" * 64, successor,
+                                                     evidence, "NONE", hb_epoch=4096, store=store)
+        else:
+            store = None
+            body = {"schema": "stegverse.repo-transition-receipt/v1", "repository": repository,
+                    "transition_id": transition_id, "transition_class": operation,
+                    "predecessor_state_sha256": "sha256:" + "1" * 64, "successor_state_sha256": successor,
+                    "evidence": evidence, "authority_effect": "NONE",
+                    "hb_reference": org.kernel.hb_reference(epoch=4096), "previous_receipt_sha256": None}
+            receipt = dict(body, receipt_sha256=org.sha(body))
         row = org.aggregate_transition(
             receipt, org_transition_class="REPO_STATE_PROPAGATION",
             predecessor_org_state_sha256=receipt["predecessor_state_sha256"],
             successor_org_state_sha256=receipt["successor_state_sha256"],
             boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
-            ledger=self.consumer.organization_target(self.custody), hb_epoch=4096, repository_ledger=ledger)
+            ledger=self.consumer.organization_target(self.custody), hb_epoch=4096,
+            _materialized_repository_ledger=store)
         return row["receipt_sha256"]
 
     def run(self, request: dict, **kwargs) -> dict:
@@ -274,6 +303,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                          (sppa.FAIL_CLOSED, "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF"))
 
     # PROMOTE: the one authorizing path ------------------------------------------
+    @refused_until_cross_repo_route
     def test_fully_authenticated_evidence_with_carrier_epoch_authorizes_and_reads_back(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -298,6 +328,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertFalse(result["evidence"]["deployment_performed"])
         self.assertFalse(result["evidence"]["provider_settings_changed"])
 
+    @refused_until_cross_repo_route
     def test_fully_evidenced_request_fails_closed_under_the_real_custody_verifier(self):
         """No custody basis the existing verifier reports authenticates: AUTHORIZED is unreachable on main."""
         self.assertEqual(sppa.AUTHENTICATING_CUSTODY_BASES, frozenset())
@@ -313,6 +344,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual({p["state"] for p in result["predicates"][:7] if p["predicate"] != "P2"}, {"UNKNOWN"})
         self.assertIn("custody basis", result["evidence"]["detail"])
 
+    @refused_until_cross_repo_route
     def test_authorization_without_carrier_epoch_fails_closed(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -347,6 +379,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
             self.assertEqual(sppa.decide(retro, predicates, prior_authorization={"receipt_sha256": "x"})
                              ["transition_class"], sppa.FAIL_CLOSED, pid)
 
+    @refused_until_cross_repo_route
     def test_each_predicate_unknown_fails_closed_never_pass(self):
         ledger = Ledger(self.base)
         cases = {
@@ -411,6 +444,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
         self.assertFalse(result["promotion_may_proceed"])
 
+    @refused_until_cross_repo_route
     def test_sppa_own_receipt_is_not_a_provider_observation(self):
         """Self-referential: a prior SPPA receipt (built from caller input) cannot stand in for the provider."""
         ledger = Ledger(self.base)
@@ -423,6 +457,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                          (sppa.FAIL_CLOSED, sppa.BUILD_UNAUTHENTICATED))
 
     # P6 issuer binding -----------------------------------------------------------
+    @refused_until_cross_repo_route
     def test_issuer_bound_negative_cases(self):
         ledger = Ledger(self.base)
         cases = [
@@ -450,6 +485,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                 for field in SIX:
                     self.assertTrue(result[field], (name, field))
 
+    @refused_until_cross_repo_route
     def test_unreadable_tvc_issuer_declaration_is_unverifiable(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -460,6 +496,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual(sppa.declared_issuers(ROOT), {"boundary": BOUNDARY, "tvc": TVC})
 
     # P4 required-check policy ------------------------------------------------------
+    @refused_until_cross_repo_route
     def test_required_check_policy(self):
         ledger = Ledger(self.base)
         ok = {"id": 11, "name": "validate", "head_sha": SHA, "conclusion": "success"}
@@ -496,6 +533,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                              (sppa.CHECKS_UNAUTHENTICATED, sppa.FAIL_CLOSED))
 
     # Refusals and dispositions ---------------------------------------------------------
+    @refused_until_cross_repo_route
     def test_each_refusal_code_and_disposition(self):
         ledger = Ledger(self.base)
         cases = []
@@ -533,6 +571,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                 self.assertFalse(result["promotion_may_proceed"], name)
                 self.assertEqual(result["organization_readback"], "VERIFIED", name)
 
+    @refused_until_cross_repo_route
     def test_observed_contradictions_refuse(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -550,6 +589,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
             result = ledger.run(request, hb_epoch=str(CARRIER_HB_EPOCH))
         self.assertEqual((result["failure_code"], result["transition_class"]), (sppa.IDENTITY_MISMATCH, sppa.REFUSED))
 
+    @refused_until_cross_repo_route
     def test_observation_from_an_undeclared_repository_is_unknown(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -562,6 +602,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual((result["failure_code"], result["transition_class"]),
                          (sppa.BUILD_UNAUTHENTICATED, sppa.FAIL_CLOSED))
 
+    @refused_until_cross_repo_route
     def test_fence_at_or_below_the_issued_floor_is_behind(self):
         ledger = Ledger(self.base, fence=7)
         with authenticated_custody():
@@ -569,6 +610,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual(result["failure_code"], sppa.FENCE_BEHIND)
         self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
 
+    @refused_until_cross_repo_route
     def test_readback_refusal_withholds_promotion(self):
         ledger = Ledger(self.base)
         real_load = sppa._load
@@ -591,6 +633,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertFalse(result["promotion_may_proceed"])
 
     # Retro after an authorization --------------------------------------------
+    @refused_until_cross_repo_route
     def test_retro_finds_the_authorization_for_the_same_build_only(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)

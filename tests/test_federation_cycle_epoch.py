@@ -127,6 +127,14 @@ class CommittedRequestDispatchTests(unittest.TestCase):
                 for field in SIX:
                     self.assertTrue(record[field], field)
 
+    def test_a_request_naming_a_ledger_is_a_caller_chosen_source_ledger(self):
+        for key in ("repo_ledger_root", "source_ledger", "org_ledger_root"):
+            with self.subTest(key=key):
+                code, record, calls = self.dispatch({"schema": rc.SCHEMA, "hb_epoch": "4096", key: "/elsewhere"})
+                self.assertEqual((code, record["failure_code"], calls), (1, "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED", []))
+                for field in SIX:
+                    self.assertTrue(record[field], field)
+
     def test_a_malformed_request_or_an_argument_epoch_is_terminal_cli_input_invalid(self):
         cases = {
             "absent": (None, ()),

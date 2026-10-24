@@ -142,8 +142,71 @@ def test_an_unreadable_repository_ledger_is_a_non_terminal_refusal(ledgers, monk
 
     monkeypatch.setattr(org.ledger_store.PosixLedgerStore, "get", unreadable)
     with pytest.raises(org.OrgLedgerEpochRefused) as raised:
-        aggregate(receipt, org_root, repository_ledger=ledger)
+        aggregate(receipt, org_root, _materialized_repository_ledger=ledger)
     refusal = raised.value.refusal
     assert (refusal["failure_code"], refusal["terminal"]) == ("SOURCE_RECEIPT_NOT_ON_LEDGER", False)
     assert "retry" in refusal["next_attempt"]
     assert not org_root.exists()
+
+
+# --- Lead ruling 21:13Z: the source ledger is the materializer's, paired with the organization ledger ---
+
+TRACKED = ROOT / "tests" / "fixtures" / "base-state-readback"  # a committed directory: never a ledger
+
+
+def assert_refused(receipt, org_root, code, **kwargs):
+    with pytest.raises(org.OrgLedgerEpochRefused) as raised:
+        aggregate(receipt, org_root, **kwargs)
+    refusal = raised.value.refusal
+    assert refusal["failure_code"] == code, refusal
+    for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                  "owning_existing_goal", "next_attempt"):
+        assert str(refusal[field]).strip(), field
+    assert not org_root.exists(), "nothing is written for a refused source"
+
+
+def test_a_public_ledger_kwarg_pointing_elsewhere_is_refused(ledgers, tmp_path):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+    elsewhere = org.ledger_store.PosixLedgerStore(tmp_path / "elsewhere")
+    on_ledger(elsewhere, "own")
+    assert_refused(receipt, org_root, "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED", repository_ledger=elsewhere)
+
+
+def test_a_symlink_to_the_designated_ledger_is_the_same_ledger(ledgers, tmp_path):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+    link = tmp_path / "link"
+    link.symlink_to(ledger.root)
+    assert aggregate(receipt, org_root, repository_ledger=org.ledger_store.PosixLedgerStore(link))
+
+
+def test_a_lone_git_repository_ledger_override_that_does_not_pair_is_refused(ledgers, monkeypatch, tmp_path):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+    bare = tmp_path / "foreign.git"
+    __import__("subprocess").run(["git", "init", "-q", "--bare", str(bare)], check=True)
+    location = org._repository_ledger().C["repository_ledger_location"]
+    monkeypatch.setenv("STEGVERSE_REPO_LEDGER_ROOT", "git+%s#%s:%s" % (bare, location["ref"], location["namespace"]))
+    # A git repository ledger with a POSIX organization ledger pairs with nothing.
+    assert_refused(receipt, org_root, "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED")
+
+
+@pytest.mark.parametrize("via_symlink", [False, True])
+def test_a_root_holding_tracked_files_is_not_contract_designated(ledgers, monkeypatch, tmp_path, via_symlink):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+    root = TRACKED
+    if via_symlink:
+        root = tmp_path / "looks-like-a-ledger"
+        root.symlink_to(TRACKED)
+    monkeypatch.setenv("STEGVERSE_REPO_LEDGER_ROOT", str(root))
+    assert_refused(receipt, org_root, "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED")
+
+
+def test_another_repositorys_receipt_is_a_cross_repo_refusal(ledgers):
+    ledger, org_root = ledgers
+    on_ledger(ledger, "own")
+    body = {**{k: v for k, v in minted("site").items() if k != "receipt_sha256"}, "repository": "StegVerse-Labs/Site"}
+    foreign = {**body, "receipt_sha256": org.sha(body)}
+    assert_refused(foreign, org_root, "SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED")
