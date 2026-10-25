@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Build and dispatch one canonical KV -> SKAP Vault InTr custody event.
+"""Build and dispatch one canonical KV -> SKAP Vault custody event, delivered to the in-KV SKAP gate.
 
-The legacy DEVICE->KV boundary-transition receipt remains present for TVC double-
-Interlock compatibility. A canonical Universal-InTr DEVICE_SYSTEM->KV hop receipt
-is separately required for the end-to-end Device->KV->SKAP->KV->Device chain.
-Neither receipt grants execution or credential authority.
+The SKAP Vault sits inside KV, so the KV -> SKAP Vault step is the in-KV SKAP gate, never an InTr hop; the one
+InTr hop on this chain is Device -> KV. The legacy DEVICE->KV boundary-transition receipt remains present for TVC
+double-Interlock compatibility, and a canonical DEVICE_SYSTEM->KV hop receipt is separately required for the
+end-to-end Device->KV->SKAP->KV->Device chain. The StegOS connector profile and modules below keep the names StegOS
+publishes (owned outside this repository). Neither receipt grants execution or credential authority.
 """
 from __future__ import annotations
 
@@ -100,6 +101,8 @@ def dispatch(*,runtime_root:Path,stegos_root:Path,capsule:dict[str,Any],device_k
     if not authorization_id: raise KVSkapDispatchError("tvc_relay_authorization_id_required")
     request=build_request(stegos_root=stegos_root,capsule=capsule,device_kv_receipt=device_kv_receipt,canonical_device_kv_receipt=canonical_device_kv_receipt)
     raw=canonical(request)
+    # The relay delivery headers are the ones the shared ingress validator (hil.validate_transport_headers) requires
+    # for a TVC_RELAY_EGRESS delivery; they describe that relay delivery, not the in-KV KV -> SKAP Vault gate step.
     headers={"Content-Type":"application/json","X-StegVerse-Transport":"InTr","X-StegVerse-Transport-Origin":"TVC_RELAY_EGRESS","X-StegVerse-Authorization-Id":authorization_id,"X-StegVerse-Payload-SHA256":hashlib.sha256(raw).hexdigest()}
     admitted=admit_kv_skap(runtime_root=runtime_root.expanduser().resolve(),body=raw,headers=headers)
     if admitted.get("state")!="INGRESS_ADMITTED": raise KVSkapDispatchError("kv_skap_ingress_not_admitted")

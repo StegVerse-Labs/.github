@@ -60,7 +60,7 @@
         "canonical-event-ephemeral-domain-binding",
         "device-kv-bidirectional-intr",
         "exact-packet-verification",
-        "kv-skap-bidirectional-intr",
+        "kv-skap-gate-roundtrip",
         "single-roundtrip-receipt-lineage",
         "tvc-skap-credential-reference"
       ],
@@ -124,7 +124,7 @@
     "b": "finish-point test exercises none of the candidates' components",
     "c": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 is a consumes-dependency"
   },
-  "evidence_digest": "sha256:5fd65e9bd5709906b604c2998f1235a13dbb1715272eaadaaf61e68fee328d4a",
+  "evidence_digest": "sha256:72cd84f4a7d0b1c909c679222bd3db41c011b62b37caf695ce37e82f334697d6",
   "protected_paths": [
     {
       "repository": "StegVerse-Labs/continuity-vault-kit",

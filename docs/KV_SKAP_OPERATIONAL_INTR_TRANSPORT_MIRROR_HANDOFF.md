@@ -1,4 +1,4 @@
-# KV -> SKAP Vault Operational InTr Transport Mirror Handoff
+# KV -> SKAP Vault Operational In-KV SKAP Gate Transport Mirror Handoff
 
 Repository: `StegVerse-Labs/.github`
 Canonical merge: `3ec15ed7937fa621a215f78b4992a6e3af63566f`
@@ -9,7 +9,7 @@ Authority effect: NONE
 
 ## Goal
 
-Make the organization-resident Universal InTr transport layer operational across the complete credential-custody path:
+Make the organization-resident transport layer operational across the complete credential-custody path, with InTr only on the Device -> KV hop and the in-KV SKAP gate on the KV -> SKAP Vault step:
 
 ```text
 DEVICE_SYSTEM
@@ -23,7 +23,7 @@ The `.github` organization boundary owns transport ingress/egress and event disp
 
 ## Canonical upstream contracts
 
-- StegOS Universal InTr profile: `kv-skap-custody`
+- StegOS connector profile (named as StegOS publishes it; owned outside this repository): `kv-skap-custody`
   - request class: `KV_SKAP_CIPHERTEXT_CUSTODY`
   - operation: `ADMIT_CIPHERTEXT`
   - source: `KV / KnowledgeVault:SKAPClient`
@@ -34,11 +34,11 @@ The `.github` organization boundary owns transport ingress/egress and event disp
 - TVC double-Interlock gate:
   - DEVICE -> KV receipt must validate;
   - KV -> SKAP_VAULT receipt must chain to DEVICE -> KV;
-  - both connectors are InTr;
+  - DEVICE -> KV connector is InTr; KV -> SKAP_VAULT connector is the in-KV SKAP gate `KV_INTERNAL_SKAP_GATE`, never InTr (InTr runs only between distinct orgs; the SKAP Vault sits inside KV; TVC#544);
   - secret plaintext forbidden;
   - authority transfer forbidden.
 - TVC SKAP store:
-  - storage backend id must begin `KV_SKAP_INTR_`;
+  - storage backend id must begin `KV_SKAP_GATE_` (TVC#544);
   - resident compatibility backend writes under `<STEGVERSE_KV_ROOT>/_Vault/SKAP`;
   - exact ciphertext readback required;
   - replay denied.
@@ -123,3 +123,20 @@ observe:
 ```
 
 Only that authentic execution and exact readback may upgrade this lane from merged/validated source to runtime-observed SKAP custody.
+
+## KV -> SKAP Vault gate naming (laned/kv-skap-gate-roundtrip-rename)
+
+The KV -> SKAP Vault step is the in-KV SKAP gate (the SKAP Vault sits inside KV), not an InTr hop, so the client names
+here describe that gate. Retired names, held absent by `tests/test_kv_skap_gate_client_naming.py` with no aliases:
+
+- env `STEGVERSE_DEVICE_KV_SKAP_INTR_MATERIALIZATION` -> `STEGVERSE_DEVICE_KV_SKAP_MATERIALIZATION` (read by
+  `workers/run_device_kv_skap_canonical_runtime_worker.py`; not secret- or variable-backed in any workflow, so renamed in code;
+  a resident host that exported the old name must export the new one);
+- `scripts/dispatch_kv_skap_custody_materialization.py` no longer describes the event as an InTr custody event (file name kept).
+
+Registry component `kv-skap-bidirectional-intr` -> `kv-skap-gate-roundtrip` (Coordination ruling (1), StegVerse-org/.github#167
+c6393224851): renamed at canonical-task-registry generation 321 in the registry, the STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 record and
+the KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling (evidence_digest re-sealed with `scripts/adjacency_ruling.py digest`); the six
+i1 goal manifest requests are re-sealed at observed generation 321 in the same change. No alias.
+
+Kept unchanged: the StegOS-owned profile/module names (`specs/universal-intr-connector-profiles.v1.json`, `stegos/universal_intr_*`).
