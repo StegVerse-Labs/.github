@@ -18,7 +18,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
   "organization_ledger_entrypoint": ".stegverse/transition-ledger/emit.py via .github/workflows/organization-ledger-transition.yml",
   "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
   "request_id": "lane-d-kv-skap-vault-functional-2026-10-23",
-  "request_sha256": "sha256:781c653bd210df88e38bc350486f0113840a6b951154270376e9babca46f96a8",
+  "request_sha256": "sha256:3c9246df6c775ee7c9fff4b9d928c9f9ed845fed481f44246f36122eb70415f6",
   "required_evidence_or_repair": "coordinate KV-SKAP-VAULT-FUNCTIONAL-001 with ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] (COORDINATE_BEFORE_MUTATION) or narrow its targets before merge",
   "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
   "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
