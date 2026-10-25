@@ -1189,7 +1189,7 @@
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
    "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:0417314ecd1b74591dfcfb55b3b5c76eaf5a84fe1bc76a221b2c631e5b07fa2c",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:e65da117593459c266c544f52071ff2a041842c56595f836e0c5794eaa05816c",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0321557a226e37110bc3d85b6fd9284000234c4ad1bf9bd49d721c52472f2c94",
    "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:8e8bd49341ffa92be7973a44ee7d9746f82fc6302ba6269b655910dfe3a5481f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:becdc08760762e5398c5512bcc86b7290687878b4dafd617b13a325b5fdbdb0b",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-02.json": "sha256:5dc38459690343e8a49759bcdc7ca8e8d1afdfca18f0705127733560fcadb51e",
@@ -1199,8 +1199,8 @@
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-06.json": "sha256:636d0d94aa2a387c2744229d1b3c4098a737947810a4f8e9717513965206dfeb",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-07.json": "sha256:d0f727d3b3e50425554ec2b90babd176d823503bc45ccb4c95106c054497dd24",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-08.json": "sha256:3bd80a55940865b8d1317a6ae165fdffb3ce9f20541292b58896d23095070aa8",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-09.json": "sha256:34a33301f47f4bdb18215cb68695aa276428c21d09ef8daada5365a508662176",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-10.json": "sha256:1a8a51a72266bfc819cb006a7e71ee348aafe3dacc378d7e9905a5a957a6abff"
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-09.json": "sha256:56a74bd022c7d28227dd17b73c206b53a089213c500324b1ae2f118ce751ea6a",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-10.json": "sha256:53599a55b78185172d72b3bbfa4657a348e379342207372b5c69a0d2ab13f7f9"
   },
   "note": "not a ledger receipt: runtime counts only when a manifest-directed transition appends a receipt to refs/stegverse/organization-ledger",
   "runtime_completion": false,

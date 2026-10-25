@@ -1,0 +1,25 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "blocker": "ORG_CROSSING_READER_NOT_INSTALLED",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
+ "failure_class": {
+  "class": "B",
+  "reason": "the Org side's crossing record exists only after an inter-org crossing to KV's intr-destination path_ids; the reader wiring is a code change once its entrypoint is named"
+ },
+ "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "H-KV-ENDPOINT-LEDGER-ANCHOR"
+ ],
+ "next_attempt": "on Lane B's readback entrypoint post on StegVerse-org/.github#162, then on the cvk change that installs it",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "InTr and Mesh Destinations lane (Lane B, StegVerse-org/.github#162) for the Org side's digest-only crossing record readback; Lane D wires ORG_CROSSING_READER in continuity-vault-kit",
+ "proposed_resolution": "Lane B: name the existing InTr readback entrypoint for the Org side's digest-only crossing record (path_id, receipt_sha256, endpoint_head_sha256, supplied_hb_epoch); Lane D: set ORG_CROSSING_READER to it in continuity-vault-kit",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "new (revision 16, continuity-vault-kit main @77d28d83, run cvk263-anchor-production-prerequisites row ORG_CROSSING_READER_INSTALLED): ORG_CROSSING_READER is None, so every production read-back is six-field FAIL_CLOSED KV_CROSSING_RECORD_NOT_OBSERVED (failed_predicate KV_HEAD_RECORDED_AT_BOTH_ENDS). The owner rule (#162 comment 6372641743): \"the far end of every InTr egress from InTr and ingress into <destination> is recorded by both sides\"; the crossing is between distinct orgs (Org and KV), never a hop inside one org; the Org record stays refuse-only and is never the watermark (ruling A).",
+ "retry_point": "continuity-vault-kit runtime/kv_receipt_ledgers.py ORG_CROSSING_READER (Lane D) over the Org side's InTr readback (Lane B)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-29"
+}
