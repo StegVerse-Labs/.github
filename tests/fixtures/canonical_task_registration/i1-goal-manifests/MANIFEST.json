@@ -117,22 +117,23 @@
         "failure_class": "B",
         "failure_code": "GOAL_RECORD_CONTENT_NOT_AUTHENTICALLY_OBSERVED",
         "failed_predicate": "REGISTRATION_REQUEST_RECORD_IS_OBSERVED_NOT_INVENTED",
-        "required_evidence_or_repair": "GitHub Product (Lane C) filed the NEW_IDENTITY request with sealed_scope as StegVerse-Labs/.github#3326 @c92b0e02 (stacked on laned/tvc-new-identity-requests); Lane D files no duplicate. Its plan is FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE, which GitHub Product coordinates. Lane D does not invent the record, the COSV vector or a Task ID",
+        "required_evidence_or_repair": "GitHub Product (Lane C) filed the NEW_IDENTITY request with sealed_scope as StegVerse-Labs/.github#3326 @c92b0e02 (stacked on laned/tvc-new-identity-requests); Lane D files no duplicate. Its plan is FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE, which GitHub Product coordinates. Lane D does not invent the record, the COSV vector or a Task ID. Under Coordination ruling B (#167), Lane D re-sealed that request at generation 321 as StegVerse-Labs/.github#3358 (#3326 itself is unchanged, and Lane C is stopped)",
         "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan --request <request>",
         "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-        "next_attempt": "on the next plan of #3326's request after GitHub Product records its collision coordination"
+        "next_attempt": "on the next plan of #3358's request after GitHub Product records its collision coordination"
       },
       "registering_owner": "GitHub Product (Lane C, agent 6329a668-958c-4d3f-a0b4-083acca8f51f)",
       "registration_request": {
-        "pr": "StegVerse-Labs/.github#3326",
-        "head": "c92b0e0256afa971e625940d9e1c763c41615b8e",
+        "pr": "StegVerse-Labs/.github#3358",
+        "head": "229ac85ec3d1470b0869a0ac6e4613854fd2ba88",
         "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
-        "request_sha256": "88a5f774ad8e6867307eecc35b1ac9fcdda67f0547ec4883445307cf5c52eb99",
-        "observed_registry_generation": 320,
+        "request_sha256": "a53864e87561fc2ed3f3adb52f473235ed097bc4fc083b7508235dc411baa37c",
+        "observed_registry_generation": 321,
         "registration_mode": "NEW_IDENTITY",
-        "scope_digest": "sha256:27909085ddc6d08f35d5ebb58cfaf6ed8152f2f3c2826b015a932c28334ed764",
-        "observed_by": "Lane D at #3326 head c92b0e02 (sha256 recomputed)",
-        "plan": "FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (owned by GitHub Product)"
+        "scope_digest": "sha256:f6d69ee7e294e54401e7367d06fc51e10b0865198da22af1ca4890f2d1171fbb",
+        "observed_by": "Lane D at #3358 head 229ac85e (sha256 recomputed)",
+        "plan": "FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (owned by GitHub Product)",
+        "supersedes": "StegVerse-Labs/.github#3326 request @e9085315410f26252214dc64429be19d835886ab (observed_registry_generation 320), under Coordination ruling B (StegVerse-org/.github#167)"
       }
     },
     {
