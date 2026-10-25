@@ -2921,6 +2921,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_goal_scope_seal.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_goal_scope_seal.py"
+   ],
+   "tests": [
+    "tests/test_goal_scope_seal.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_governance_endpoint.py",
    "inputs": [],
    "surfaces": [
@@ -10689,6 +10701,7 @@
    "scripts/check_registry_collision_checkin.py",
    "scripts/consume_org_claim_allocator_request.py",
    "scripts/cosv.py",
+   "scripts/goal_scope_seal.py",
    "scripts/registration_parent_existence.py"
   ],
   "scripts/check_iphone_hb30_inline_capsule.py": [
@@ -11165,6 +11178,11 @@
    "scripts/build_runtime_profile_map_custody_package.py",
    "scripts/evaluate_task_runtime_routing_readiness.py",
    "scripts/validate_canonical_work_coordination.py"
+  ],
+  "scripts/goal_scope_seal.py": [
+   ".github/workflows/canonical-task-registration-transition.yml",
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json"
   ],
   "scripts/hil_explanation_experiment.py": [
    "data/user-facing-explanation/fixtures.d/**",
@@ -13665,6 +13683,21 @@
   ],
   "tests/test_goal_resolution_continuation.py": [
    "scripts/evaluate_goal_resolution_continuation.py"
+  ],
+  "tests/test_goal_scope_seal.py": [
+   "contracts/canonical-task-registration-transition.v1.json",
+   "data/canonical-task-registry.json",
+   "data/task-registry-general-checkin-caller-policy.json",
+   "data/task-registry-global-invariants.json",
+   "scripts/canonical_task_registration_transition.py",
+   "scripts/check_registry_collision_checkin.py",
+   "scripts/evaluate_task_registry_collision_checkin.py",
+   "scripts/goal_scope_seal.py",
+   "scripts/task_registry_checkin_event_history.py",
+   "scripts/validate_task_registration_substrate_resolution.py",
+   "tests/fixtures/**",
+   "tests/fixtures/canonical_task_registration/**",
+   "tests/fixtures/canonical_task_registration/fixture.request.json"
   ],
   "tests/test_governance_endpoint.py": [
    ".stegverse/transition-ledger/contract.json",

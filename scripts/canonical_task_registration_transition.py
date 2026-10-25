@@ -36,7 +36,12 @@ Predicates (every non-ALLOW carries the six standard fields):
   REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (plan and apply: the existing check-in,
   scripts/check_registry_collision_checkin.py, Labs#3254, over base -> successor),
   EXISTING_IDENTITY_NOT_ADMISSIBLE (registration_mode EXISTING_IDENTITY),
-  REGISTRATION_NOT_APPLIED / REGISTRATION_BYTES_DIVERGE (verify).
+  REGISTRATION_NOT_APPLIED / REGISTRATION_BYTES_DIVERGE (verify),
+  GOAL_SCOPE_SEALED (scripts/goal_scope_seal.py: a NEW_IDENTITY request carries
+  sealed_scope {goal, targets, expected_evidence_predicates, finish_point} with
+  scope_digest = sha256 over its canonical JSON; the transition derives
+  control/goal-scope-seals/<task_id>.json and the scope-freeze check refuses any
+  later scope change that does not supersede the digest).
 
 registration_mode EXISTING_IDENTITY (default NEW_IDENTITY) registers the
 aggregate Registry row for a canonical record shard that already exists and has
@@ -116,9 +121,31 @@ VECTOR_KEYS = ("exact_metrics", "metric_evidence", "evidence_refs", "observed_at
 
 
 class Refusal(Exception):
-    def __init__(self, predicate: str, detail: str, repair: str):
-        super().__init__(f"{predicate}: {detail}")
+    def __init__(self, predicate: str, detail: str, repair: str, code: str | None = None):
+        super().__init__(f"{code or predicate}: {detail}")
         self.predicate, self.detail, self.repair = predicate, detail, repair
+        self.code = code or predicate
+
+
+SCOPE_SEALED = "GOAL_SCOPE_SEALED"
+SEALS = "control/goal-scope-seals"
+
+
+def _scope_seal() -> Any:
+    spec = importlib.util.spec_from_file_location("goal_scope_seal_for_registration", ROOT / "scripts" / "goal_scope_seal.py")
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def seal_scope(request: dict[str, Any], task_id: str, record: dict[str, Any], new_identity: bool) -> dict[str, Any]:
+    """GOAL_SCOPE_SEALED: check the request's sealed_scope against the record; return the seal file body."""
+    gss = _scope_seal()
+    try:
+        return gss.validate_sealed_scope(request.get("sealed_scope"), task_id, record, new_identity=new_identity)
+    except gss.ScopeRefusal as exc:
+        raise Refusal(SCOPE_SEALED, exc.detail, exc.repair, code=exc.code) from exc
 
 
 def _cosv() -> Any:
@@ -154,9 +181,9 @@ def load(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def require(ok: bool, predicate: str, detail: str, repair: str) -> None:
+def require(ok: bool, predicate: str, detail: str, repair: str, code: str | None = None) -> None:
     if not ok:
-        raise Refusal(predicate, detail, repair)
+        raise Refusal(predicate, detail, repair, code)
 
 
 # --- stdlib subset of JSON Schema used by schemas/canonical-task-record.schema.json
@@ -244,7 +271,8 @@ def validate_request(request: Any) -> dict[str, Any]:
 
 def collisions(root: Path, task_id: str, registry: dict[str, Any]) -> list[str]:
     found = [f"{REGISTRY}#tasks" for row in registry.get("tasks", []) if row.get("task_id") == task_id]
-    for rel in (f"{RECORDS}/{task_id}.json", f"{VECTORS}/{task_id}.json", f"{INDEX_SHARDS}/{task_id}.json"):
+    for rel in (f"{RECORDS}/{task_id}.json", f"{VECTORS}/{task_id}.json", f"{INDEX_SHARDS}/{task_id}.json",
+                f"{SEALS}/{task_id}.json"):
         if (root / rel).exists():
             found.append(rel)
     index = root / INDEX
@@ -390,6 +418,7 @@ def derive_new(root: Path, request: dict[str, Any], registry: dict[str, Any], re
     require(record.get("authority_model", {}).get("task_registry_mints_execution_authority") is False,
             "CANONICAL_RECORD_SCHEMA_INVALID", "authority_model.task_registry_mints_execution_authority must be false",
             "set it false (TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY)")
+    seal = seal_scope(request, task_id, record, new_identity=True)
 
     cosv = _cosv()
     vector = encode(cosv, request["vector"]["exact_metrics"])
@@ -409,6 +438,7 @@ def derive_new(root: Path, request: dict[str, Any], registry: dict[str, Any], re
         record_rel: dump(record),
         vector_rel: dump(vector_record),
         f"{INDEX_SHARDS}/{task_id}.json": dump(shard),
+        f"{SEALS}/{task_id}.json": dump(seal),
     }
     evidence = {
         "task_id": task_id,
@@ -421,6 +451,8 @@ def derive_new(root: Path, request: dict[str, Any], registry: dict[str, Any], re
         "registration_mode": NEW_IDENTITY,
         "lowest_supported_mode": LOWEST_SUPPORTED_MODE,
         "allocation": allocation,
+        "scope_digest": seal["scope_digest"],
+        "finish_point": seal["scope"]["finish_point"],
         "workercoordinator_claim_request": claim_request(task_id, record, tip + 1),
     }
     return outputs, evidence
@@ -513,6 +545,15 @@ def derive_existing(root: Path, request: dict[str, Any], registry: dict[str, Any
                       f"no exact_metrics declared and {record_rel} records no valid task.v1 vector ({recorded!r})",
                       "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS); no vector is assigned by hand")
     allocation = bind_allocation(root, request, vector)
+    scope_digest = None
+    if request.get("sealed_scope") is not None:  # optional on an existing identity; checked when carried
+        seal = seal_scope(request, task_id, shard, new_identity=False)
+        seal_rel = f"{SEALS}/{task_id}.json"
+        require(not (root / seal_rel).exists() or (root / seal_rel).read_bytes() == dump(seal), SCOPE_SEALED,
+                f"{seal_rel} already seals another scope", "supersede the sealed scope (scripts/goal_scope_seal.py)",
+                code="GOAL_SCOPE_CHANGED_WITHOUT_SUPERSEDE")
+        outputs[seal_rel] = dump(seal)
+        scope_digest = seal["scope_digest"]
 
     row = copy.deepcopy(shard)  # row == record: the shard verbatim
     successor = copy.deepcopy(registry)
@@ -539,6 +580,7 @@ def derive_existing(root: Path, request: dict[str, Any], registry: dict[str, Any
         "existing_record_preflight": "StegVerse-Labs/.github#3306 requires exactly one aggregate row equal to the shard "
                                      "with a matching COSV; this successor supplies exactly that row",
         "allocation": allocation,
+        "scope_digest": scope_digest,
         "residuals": residuals,
         "workercoordinator_claim_request": claim_request(task_id, row, tip + 1),
     }
@@ -619,7 +661,7 @@ def receipt(request: dict[str, Any], request_bytes: bytes, mode: str, dispositio
         body["derived_files"] = {path: sha(data) for path, data in sorted(outputs.items())}
     if refusal is not None:
         body.update({
-            "failure_code": refusal.predicate,
+            "failure_code": refusal.code,
             "failed_predicate": refusal.predicate,
             "detail": refusal.detail,
             "required_evidence_or_repair": refusal.repair,
