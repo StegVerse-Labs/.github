@@ -18,11 +18,14 @@ test_an_invalid_bound_intr_receipt_is_refused (tests.test_kv_skap_vault_finish_p
 test_each_access_layer_gap_is_a_six_field_fail_closed (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_each_access_layer_gap_is_a_six_field_fail_closed)
 LC-KV-09/10/11: the three access constraints, each evidence-bound and named by its own layer. ... ok
 test_each_evidence_gap_is_a_six_field_fail_closed (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_each_evidence_gap_is_a_six_field_fail_closed) ... ok
+test_endpoint_not_an_org_member_reuses_the_closed_membership_schema (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_endpoint_not_an_org_member_reuses_the_closed_membership_schema)
+LC-KV-09 P4 (ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER): decided by runtime.kv_receipt_ledgers' closed ... ok
+test_endpoint_org_membership_fails_closed (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_endpoint_org_membership_fails_closed) ... ok
 test_every_access_row_failure_fails_its_mapped_sealed_predicate (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_every_access_row_failure_fails_its_mapped_sealed_predicate)
 LC-KV-09 E1 condition (Coordination, Oct 23): for each access row, if the row fails, the sealed predicate ... ok
 test_evidence_reaches_allow_without_a_code_edit (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_evidence_reaches_allow_without_a_code_edit) ... ok
 test_the_finish_point_expects_a_permanent_node (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_the_finish_point_expects_a_permanent_node)
-LC-KV-13 completes with a PERMANENT node. Another own-ledger kind (here SKAP_VAULT) binds at layer 1, but its ... ok
+LC-KV-13 completes with a PERMANENT node. Since #432 @c4cfc145 (rule 1) a SKAP_VAULT is a STEGVERSE_KV:<location> ... ok
 test_cli_exit_code_matches_disposition (tests.test_kv_skap_vault_finish_point.KvSkapVaultFinishPoint.test_cli_exit_code_matches_disposition) ... ok
 test_cli_unreadable_evidence_fails_closed (tests.test_kv_skap_vault_finish_point.KvSkapVaultFinishPoint.test_cli_unreadable_evidence_fails_closed) ... ok
 test_finish_point_verdict (tests.test_kv_skap_vault_finish_point.KvSkapVaultFinishPoint.test_finish_point_verdict) ... ok
@@ -41,6 +44,6 @@ test_skap_entry_is_deterministic_and_returns_dispositions (tests.test_kv_skap_va
 test_write_read_revoke_round_trip_is_exact (tests.test_kv_skap_vault_finish_point.RoundTrip.test_write_read_revoke_round_trip_is_exact) ... ok
 
 ----------------------------------------------------------------------
-Ran 32 tests in <t>s
+Ran 34 tests in <t>s
 
 OK

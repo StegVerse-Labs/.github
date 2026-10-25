@@ -456,21 +456,21 @@
   "KV-SKAP-VAULT-FUNCTIONAL-001": {
    "roots": {
     "cvk258": {
-     "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
+     "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
      "kind": "git",
-     "ref": "continuity-vault-kit#258",
+     "ref": "continuity-vault-kit main @9d56bc7b (revision 13 re-pin from continuity-vault-kit#258 @9551edab: contains #263 6751d36e, #259 1e8cd49e, #270 cdc50149 and #271 9d56bc7b; #258 closed, its commits are ancestors via #263)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk259": {
-     "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
+     "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
      "kind": "git",
-     "ref": "continuity-vault-kit#259",
+     "ref": "continuity-vault-kit main @9d56bc7b (revision 13 re-pin from continuity-vault-kit#259 @d052d652: contains #263 6751d36e, #259 1e8cd49e, #270 cdc50149 and #271 9d56bc7b; #258 closed, its commits are ancestors via #263)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk263": {
-     "commit": "bf684aada366e227714c6f67ac52a7a4ec6933d4",
+     "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
      "kind": "git",
-     "ref": "continuity-vault-kit#263 (stacked draft on #258, KV-SKAP-LEDGER-LOCATION-001; recorded receipt chains on the storage endpoint, closed contract key schema, required rollback watermark from KV's own recorded receipt chain head; moved from 543e8c32 via c5db331a)",
+     "ref": "continuity-vault-kit main @9d56bc7b (revision 13 re-pin from continuity-vault-kit#263 @bf684aad: contains #263 6751d36e, #259 1e8cd49e, #270 cdc50149 and #271 9d56bc7b; #258 closed, its commits are ancestors via #263)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "labs3324": {
@@ -540,9 +540,9 @@
      "repo": "StegVerse-org/StegVerse-SDK"
     },
     "tvc": {
-     "commit": "c4845bea704949c46658042963e8c532c9559939",
+     "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main",
+     "ref": "StegVerse-Labs/TVC main @b686a60b (revision 13 re-pin from StegVerse-Labs/TVC main @c4845bea: contains #540 6fd76b7e, #541 b241ed32, #542 129d00a5 and #544 b686a60b)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc537": {
@@ -552,21 +552,21 @@
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc540": {
-     "commit": "7802ddb364c1af7297bb01755d7fb31ae39dbcc9",
+     "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC#540 (draft, LC-KV-18: NODE_LEDGER_OPENED sign and signer publish; merges #542 a680d027; moved from b0ba93e3)",
+     "ref": "StegVerse-Labs/TVC main @b686a60b (revision 13 re-pin from StegVerse-Labs/TVC#540 @7802ddb3: contains #540 6fd76b7e, #541 b241ed32, #542 129d00a5 and #544 b686a60b)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc541": {
-     "commit": "72decca1c0e1d0d60b5801cb01f0fab70ea038dc",
+     "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC#541 (draft, GitHub Product lane as TV/TVC owner per Coordination; LC-KV-22/08/21 commit 6206949 and 72decca1; moved from f75e3e7c)",
+     "ref": "StegVerse-Labs/TVC main @b686a60b (revision 13 re-pin from StegVerse-Labs/TVC#541 @72decca1: contains #540 6fd76b7e, #541 b241ed32, #542 129d00a5 and #544 b686a60b)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc542": {
-     "commit": "5b70bf010d1999f51b4b95412644dd6760ae9d4e",
+     "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC#542 (draft, ORG-LEDGER-HEAD-SIGNER-001 and the kv_ledger_head_signer entry; moved from 4c2504da via 45429376 and a680d027)",
+     "ref": "StegVerse-Labs/TVC main @b686a60b (revision 13 re-pin from StegVerse-Labs/TVC#542 @5b70bf01: contains #540 6fd76b7e, #541 b241ed32, #542 129d00a5 and #544 b686a60b)",
      "repo": "StegVerse-Labs/TVC"
     }
    },
@@ -894,7 +894,7 @@
       "    def (bind_custody_key_reference|read_projection|write_projection|grant_consent|reconstruct)\\(",
       "^def _require_intr",
       "startswith\\(\"intr:\"\\)",
-      "kv_access_receipt|layer_1|INTR_DEVICE_KV|INTR_KV_SKAP",
+      "kv_access_receipt|layer_1|INTR_DEVICE_KV|KV_INTERNAL_SKAP_GATE",
       "kv_interlock|KVInterlockRuntime|response_hash"
      ],
      "root": "cvk258",
@@ -1002,7 +1002,7 @@
      ],
      "kind": "grep",
      "patterns": [
-      "boundary=\"INTR_(DEVICE_KV|KV_SKAP)\"",
+      "boundary=\"(INTR_DEVICE_KV|KV_INTERNAL_SKAP_GATE)\"",
       "\"boundary_verification\": \"VERIFIED\"",
       "^def (build_chain|build_device_kv_receipt|build_kv_skap_receipt|validate_chain)\\(",
       "prior_receipt_hash=device_kv_receipt",
@@ -1023,7 +1023,7 @@
       "(?i)healthy.node",
       "HEALTHY_NODE",
       "(?i)reachable only",
-      "INTR_DEVICE_KV|INTR_KV_SKAP",
+      "INTR_DEVICE_KV|KV_INTERNAL_SKAP_GATE",
       "(?i)kv.access.receipt",
       "(?i)Interlock/InTr"
      ],

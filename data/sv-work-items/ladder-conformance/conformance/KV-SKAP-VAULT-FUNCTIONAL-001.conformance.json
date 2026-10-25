@@ -30,17 +30,17 @@
  "inspected": {
   "roots": {
    "cvk258": {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
     "kind": "git",
     "repo": "StegVerse-Labs/continuity-vault-kit"
    },
    "cvk259": {
-    "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
     "kind": "git",
     "repo": "StegVerse-Labs/continuity-vault-kit"
    },
    "cvk263": {
-    "commit": "bf684aada366e227714c6f67ac52a7a4ec6933d4",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
     "kind": "git",
     "repo": "StegVerse-Labs/continuity-vault-kit"
    },
@@ -100,7 +100,7 @@
     "repo": "StegVerse-org/StegVerse-SDK"
    },
    "tvc": {
-    "commit": "c4845bea704949c46658042963e8c532c9559939",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    },
@@ -110,56 +110,56 @@
     "repo": "StegVerse-Labs/TVC"
    },
    "tvc540": {
-    "commit": "7802ddb364c1af7297bb01755d7fb31ae39dbcc9",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    },
    "tvc541": {
-    "commit": "72decca1c0e1d0d60b5801cb01f0fab70ea038dc",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    },
    "tvc542": {
-    "commit": "5b70bf010d1999f51b4b95412644dd6760ae9d4e",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    }
   },
   "sources": [
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "782f590f4bcd597bf4ae22506ecb98dbe6d2074f",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "8baae27d615ce40fb4ee5c248d297574ee4efe97",
     "path": "runtime/kv_skap_vault.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:16e5d0e1faa3db6dc303ec085c1e735be39ff32647b245a2dc8bcc85d55cf3a5"
+    "sha256": "sha256:9dcb4c76fc51c433f7a4dc7e2ba91907df37f031279b140d776c2c00e02b3e91"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "db9601d3c5a24e530441f21c33eeacf94a273501",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "ce343c9212cb0bd06601607a6643450f23a20519",
     "path": "execution/vault_store.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:84682029c0553c093be92e433f8ead572f76d9afcea6a6b8c45fb7ff42109a6a"
+    "sha256": "sha256:a94a058a07158004229367e13d465f197101de5accd8077a4cb5c5a9f3499265"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "2d207e578c2f37e52785338710224c5911d21427",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "d7b6953055e42ba7578b40f546896a0bfc81dc64",
     "path": "runtime/kv_interlock_endpoint.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:0904128804d04267f9e34c40e3f1510f1ab68d2dddb7399f00e00dc30a53ff17"
+    "sha256": "sha256:4cc603809df54e8a74c63ff6d3a9976294eb9e05524997a7ec28a8e2dac7a43e"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "478dc6057ba0a8ce11694a703b05b065646e65d3",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "80235e427a5c98f0044146fb5ecc9e065621416f",
     "path": "runtime/kv_skap_layer2.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:d16a2e580961ded2083fee519da36446046f4c1272c86ebdf9bc100180f3cf8d"
+    "sha256": "sha256:1a2a83ada55d65a7ee9f758c91fa6a74227dbdb2eaaf05f56bbc80762ae3e8d7"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
     "git_blob": "3e433b27b3d1a65b15e60a1614c2961dce210140",
     "path": "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -167,28 +167,28 @@
     "sha256": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "27a0a4163119bbccf408d75112fb11767d2b57ae",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "c18e659a323a15759cf01eaf99819e145015be5e",
     "path": "runtime/intr_pinned/llm_adapter/endpoint_ledger_anchor.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:d47cd0a4a0409ae79161be64c79e28e147f98ead55687ddeb2e744d3537fc6f4"
+    "sha256": "sha256:153cf121a51199da8432735d4b2fb34b396f7eaa24da80f1bf9c77040013ac09"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "953a0c3d5fc634e9d57e63b4ccb1983f80bc14e3",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "24b863bda36d01bf7356ee473150081452274a68",
     "path": "runtime/intr_pinned/PINNED.md",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:b1af19803794039a319d0aec36aaa84433941f1bc18024baba1919e5614664d5"
+    "sha256": "sha256:4bbfc931f0e4e9998c6a75ebca839f0bff8c0add10fd2e64642f02bafe725585"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "c538b4560090dc65349068ecf9ff4321b5aff759",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "131dfb456c2a19fcf1beb13a292b3f39d241ab30",
     "path": "tests/kv_two_layer_e0.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:7f81c674d31943704886216150a07503c6021ac273861f512649a642dcf40199"
+    "sha256": "sha256:d011bb451e04e9cee2331fc39135255e1d0179091b94e8243b00e5ef131c9c7e"
    },
    {
     "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
@@ -239,79 +239,79 @@
     "sha256": "sha256:11d1df2de8d8e38c67545d22aac4bb65626bf8d956b79989d7cdf7bb0bde6477"
    },
    {
-    "commit": "c4845bea704949c46658042963e8c532c9559939",
-    "git_blob": "49528da6843814b763459814061844a12a8c5825",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "b54ce94f88236fa054936625cb7fd9feb747270a",
     "path": "tools/coinbase_intr_double_interlock.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc",
-    "sha256": "sha256:f3c6eadae4a836df6c4c63b4152c8454260530caeeb54db3b161207e7f3aa7af"
+    "sha256": "sha256:ca08af11d054b5d791f03eb155690fa7b76e365b1c0c585f1c9ce68d0b4c1c3e"
    },
    {
-    "commit": "c4845bea704949c46658042963e8c532c9559939",
-    "git_blob": "33503af149e013068f189c16e24ae30ef85a25c3",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "c135faa6ccb63794d9d81f8f701ad524db4d8103",
     "path": "tools/skap_resident_sealed_object.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc",
-    "sha256": "sha256:70867944ce67cc28c8360586b02821ddcdde3da1f06628b5efa7dae1593c8585"
+    "sha256": "sha256:1ef4d5611cb73b65145b4b09f837fe484bc571cccd28268d77b75af8dee442f0"
    },
    {
-    "commit": "c4845bea704949c46658042963e8c532c9559939",
-    "git_blob": "535bf104d67ae6416e66f4f0233ff01fe07621db",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "b056df64ee877b1c4f45d2bb7fc9b0d69530a851",
     "path": "skap_resident_seal_activation.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc",
-    "sha256": "sha256:a249c8a0b479ca1b08f3783edeab6ed5ae7d7fd1a4037e9912387dee34b4625e"
+    "sha256": "sha256:78c7583f78ea6fb1588946f060460ab7162be71cd724b9af9dc7a29a4f784c2f"
    },
    {
-    "commit": "c4845bea704949c46658042963e8c532c9559939",
-    "git_blob": "733a5e1a8b80ac45138c567047877fc9f271bdf1",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "57198f41c5ab29063a7af10836d8681ebdfb35b6",
     "path": "tvc_google_drive_skap_refresh_store.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc",
-    "sha256": "sha256:4763547a7b2fb6b27d440d21aadbc4fa093892eb27514f34c78d772deb405e1f"
+    "sha256": "sha256:7bd7d50be8e75972e784774e3299f28213969d4c3cbf125f5332a373d0b7bdf1"
    },
    {
-    "commit": "c4845bea704949c46658042963e8c532c9559939",
-    "git_blob": "2c85862d8ebc01b1e760ffcec2b650493705afcf",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "61095a380c4c4f1b2518279d27f97837b980a3be",
     "path": "tvc_google_drive_client_secret_use.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc",
-    "sha256": "sha256:3f9ea80d58d7a03fc237ebdf8defd641010f28134c217ef1e4e2284542a59a51"
+    "sha256": "sha256:f9920515c955ab3b3d4e94474c17c6300692fd4664fc73eae219dc90abdee3c5"
    },
    {
-    "commit": "72decca1c0e1d0d60b5801cb01f0fab70ea038dc",
-    "git_blob": "bb2c99dd0811988251cf9c89c61cc14df9b9e36c",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "af6e5c8cab2363b53e5b9c2f38c417273a133fc9",
     "path": "tools/skap_custody_chain.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc541",
-    "sha256": "sha256:637fa4a735e26ab1b6981e45b476bf1b02600e46a33ee214a8297fb540694af8"
+    "sha256": "sha256:9c5a4a5e2dabe84e5cece2a6a9727d02ee4b7df343ff419da0860afd7d7de4c3"
    },
    {
-    "commit": "72decca1c0e1d0d60b5801cb01f0fab70ea038dc",
-    "git_blob": "b52e465172e0c5d7e73a7dac643d6ae14aa16561",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "ebce7f9847e3fe2aa4b435891b71119f842a647c",
     "path": "tools/kv_two_layer_receipts.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc541",
-    "sha256": "sha256:128602761bfa1903f945f595814f57bef5452de28164b7691bb526281ffbc669"
+    "sha256": "sha256:9fef1f727b650dc918215dd81a4674efb6c12102c761b5de1dcba458a60cdb48"
    },
    {
-    "commit": "72decca1c0e1d0d60b5801cb01f0fab70ea038dc",
-    "git_blob": "4a42a54c14252a1d3b05b9ee19408ea21081be85",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "b54ce94f88236fa054936625cb7fd9feb747270a",
     "path": "tools/coinbase_intr_double_interlock.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc541",
-    "sha256": "sha256:a70c2f83ba9d77550197881b887d2900b862fc4de4f6887a756ee4d2681db1ee"
+    "sha256": "sha256:ca08af11d054b5d791f03eb155690fa7b76e365b1c0c585f1c9ce68d0b4c1c3e"
    },
    {
-    "commit": "72decca1c0e1d0d60b5801cb01f0fab70ea038dc",
-    "git_blob": "d34597a92980c61443affab3348f715b11d5423d",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "c135faa6ccb63794d9d81f8f701ad524db4d8103",
     "path": "tools/skap_resident_sealed_object.py",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc541",
-    "sha256": "sha256:6e286a56b5fcdcf9858408e9d0a33f4ad5a76161c2a94256a83e742a6bb0ca7c"
+    "sha256": "sha256:1ef4d5611cb73b65145b4b09f837fe484bc571cccd28268d77b75af8dee442f0"
    },
    {
-    "commit": "72decca1c0e1d0d60b5801cb01f0fab70ea038dc",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
     "git_blob": "dc5d70f369567c89061a3000652c1b287842cd79",
     "path": "config/skap-custody-chain.manifest.json",
     "repo": "StegVerse-Labs/TVC",
@@ -319,12 +319,12 @@
     "sha256": "sha256:81db79295d91c54700a0d31614cf8f87cf5cea12edc86200a756a56d9c1f3d3c"
    },
    {
-    "commit": "72decca1c0e1d0d60b5801cb01f0fab70ea038dc",
-    "git_blob": "6a4c5d04a64ccd85c942fec3d3242f5dbadd68a0",
+    "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+    "git_blob": "0ca2c46a65d844e298a62360eae8f6833fad4837",
     "path": "config/skap-resident-store-residuals.json",
     "repo": "StegVerse-Labs/TVC",
     "root": "tvc541",
-    "sha256": "sha256:ba10f9f45ba63876f1e8ff8a3a9d4b1add22f6fd00c280eb3702870e000f5a61"
+    "sha256": "sha256:08d776838fce2fa2079aa46fc938f6c64c1f0b0dc31f50492dd5cd9691e2f2af"
    },
    {
     "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
@@ -359,7 +359,7 @@
     "sha256": "sha256:1b3a7e7efccf81369353e53d16a17590b9bef90cf3006dc27a549c1ed7b426c3"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
     "git_blob": "33c7e04b0498eff30d1fd87b659109aff003854f",
     "path": "runtime/secret_field_policy.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -367,36 +367,36 @@
     "sha256": "sha256:c6fb0a9a5fe4083c1c7b7f0b28f6a4bf70885a581a39f533af3faeacca4e4dbc"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "9f565a4a5b9ecc7ca06ec8529302380a641de9fd",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "fad9517e68e909830cc18a8465366aaff11397c1",
     "path": "tests/test_kv_skap_vault_finish_point.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:36efba9c57cdba0bd2e876386e1233adfe32311e809950f71a5a70b6f251b9e0"
+    "sha256": "sha256:91a38b715cd7c5cf7ad905b6e5b6d4c52f795ab263e877e05fa461215048363c"
    },
    {
-    "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
-    "git_blob": "72e2921bff2682a4811852d400debe80387347d1",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "b7b576ce7bcf6026f4efd96a98d8fac6b951ea50",
     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk259",
-    "sha256": "sha256:a4b6323cc3291700c326903dc77961b85770c183bb45f169a264e412b40db67d"
+    "sha256": "sha256:83fd3f1d73a365a72fee5be65b54157bc5fc6cee562981abfb68e196519ab2a7"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "4c933f8f126653a5a35ed1805d765c6985cfb1d1",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "b7b576ce7bcf6026f4efd96a98d8fac6b951ea50",
     "path": "runtime/task_registry_event_sovereign_kv_binding.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:d304ee58f3ede2732467e49c31465e83fa08d1a8eb7f0216ac0d22b0c848b90f"
+    "sha256": "sha256:83fd3f1d73a365a72fee5be65b54157bc5fc6cee562981abfb68e196519ab2a7"
    },
    {
-    "commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-    "git_blob": "06f4493e861305fa25f165b273c4d072cb4b944d",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "8ef27068f4314876828438c1cb623fe47c15578f",
     "path": "tests/test_kv_ladder_conformance_lc_kv.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk258",
-    "sha256": "sha256:8dc8924bb748df055af3e42d471b41ec68c3015f5718eeba485020fc0adb070f"
+    "sha256": "sha256:5e11e9e0a51b15e5ded22166734d3ffa0bcfd2dd2ca3acd14c59b66064675dc4"
    },
    {
     "commit": "8e87c6b0c96d0728883e6945383514b06588f68c",
@@ -543,20 +543,20 @@
     "sha256": "sha256:e173371f0d95038f3a94c4bccee1af0f84baf78cef01052326e078529436c98a"
    },
    {
-    "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
-    "git_blob": "18b376ee7c4a397cfb2f3ab3d89a22538f2ac905",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "65ed7c070c336e40afc69afd943828de548dfc88",
     "path": "runtime/kv_storage_provider_adapter.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk259",
-    "sha256": "sha256:c18da2a3dc418f96419e4efe83270676e860af8e46542eedba85bd608d6c1ddc"
+    "sha256": "sha256:d6ab2d2395e045d703787917388cf9656261424e1f1ae78cfc36c4b41b08e1ee"
    },
    {
-    "commit": "d052d65241fbe4b52e4a98ed1b9bea3f66e1f477",
-    "git_blob": "bce8f1484d40b10ab058446a5b7cdc73d0824a6d",
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "git_blob": "5bec8187f3bc0d7afa475c8f95f5914cb4aaca6a",
     "path": "tests/test_sovereign_kv_vault_lineage_record.py",
     "repo": "StegVerse-Labs/continuity-vault-kit",
     "root": "cvk259",
-    "sha256": "sha256:09e7f3c7a324b8e334ce0a4f7122b992e050cdc1a4af8098ea235d2b33321c8f"
+    "sha256": "sha256:2ffb419500a700537e181aae4acbc2e7374ef45f9cbc2f3dc4508d8d3024fe2e"
    },
    {
     "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
@@ -1561,8 +1561,8 @@
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
      "next_attempt": "on the next observe run",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD_KV",
-     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD_KV the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "probe": "CURRENT_HEAD_WITHOUT_WATERMARK_KV",
+     "required_evidence_or_repair": "for CURRENT_HEAD_WITHOUT_WATERMARK_KV the component must return FAIL_CLOSED; it returned ALLOW",
      "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
      "run_id": "cvk263-chain-probe"
     },
@@ -1574,8 +1574,8 @@
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
      "next_attempt": "on the next observe run",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD_SKAP_VIA_GATE",
-     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD_SKAP_VIA_GATE the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "probe": "CURRENT_HEAD_WITHOUT_WATERMARK_SKAP_VIA_GATE",
+     "required_evidence_or_repair": "for CURRENT_HEAD_WITHOUT_WATERMARK_SKAP_VIA_GATE the component must return FAIL_CLOSED; it returned ALLOW",
      "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
      "run_id": "cvk263-chain-probe"
     },
@@ -1583,12 +1583,12 @@
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
      "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
-     "got": "ALLOW",
+     "got": "DENY",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
      "next_attempt": "on the next observe run",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_REGRESSED_TO_PRESENTED_HEAD_KV",
-     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_REGRESSED_TO_PRESENTED_HEAD_KV the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_BARE_STRING_NEWEST_KV",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_BARE_STRING_NEWEST_KV the component must return FAIL_CLOSED; it returned DENY",
      "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
      "run_id": "cvk263-chain-probe"
     },
@@ -1596,12 +1596,142 @@
      "disposition": "FAIL_CLOSED",
      "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
      "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
-     "got": "ALLOW",
+     "got": "DENY",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
      "next_attempt": "on the next observe run",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_REGRESSED_TO_PRESENTED_HEAD_SKAP_VIA_GATE",
-     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_REGRESSED_TO_PRESENTED_HEAD_SKAP_VIA_GATE the component must return DENY/FAIL_CLOSED; it returned ALLOW",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_BARE_STRING_NEWEST_SKAP_VIA_GATE",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_BARE_STRING_NEWEST_SKAP_VIA_GATE the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_EXTRA_KEY_KV",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_EXTRA_KEY_KV the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_EXTRA_KEY_SKAP_VIA_GATE",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_EXTRA_KEY_SKAP_VIA_GATE the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_MALFORMED_SHORT_KV",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_MALFORMED_SHORT_KV the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_MALFORMED_SHORT_SKAP_VIA_GATE",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_MALFORMED_SHORT_SKAP_VIA_GATE the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_MALFORMED_UPPERCASE_KV",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_MALFORMED_UPPERCASE_KV the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_MALFORMED_UPPERCASE_SKAP_VIA_GATE",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_MALFORMED_UPPERCASE_SKAP_VIA_GATE the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_NONE_KV",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_NONE_KV the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_NONE_SKAP_VIA_GATE",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_NONE_SKAP_VIA_GATE the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_SOURCED_KV",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_SOURCED_KV the component must return FAIL_CLOSED; it returned DENY",
+     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
+     "run_id": "cvk263-chain-probe"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "E0_TERMINAL_DECIDES_AS_REQUIRED",
+     "failure_code": "OPERATING_MODE_E0_WITNESS_FAILED",
+     "got": "DENY",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ENDPOINT-LEDGER-ANCHOR",
+     "next_attempt": "on the next observe run",
+     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "probe": "REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_SOURCED_SKAP_VIA_GATE",
+     "required_evidence_or_repair": "for REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_SOURCED_SKAP_VIA_GATE the component must return FAIL_CLOSED; it returned DENY",
      "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)",
      "run_id": "cvk263-chain-probe"
     },
@@ -1758,12 +1888,12 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:b101d25642894b0eec1f07623a98e80a15ebec9fd5fd7d03cd1aa02d301329f8",
+  "document_sha256": "sha256:ffc09becb6578730cad1310f41b12b1fd683a4991dd0daf4ddabce9c7c3b3ec8",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:c52fd0d3211a2ab86728d91c3c7c9446036eecf4d7a13f38862fe08994ebd260",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:6f551bb744be89b0d0f7c5060e76828f1c23ca9076dd6e03df43d5fbe3a12d7f",
-   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:e1fe0c3286f7890ce0d25a5fe6f117ac9a957fc7b5d19034c5c41a64993f0705",
+   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:452d174fb953cf6fa063cc8741eed93ddd5bec1d9f52bf0357710f07a6b697b4",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:15d553f569efc91f859c32a1a913c930e5799600984949dffe49c2e1cf478268",
+   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:36814d9024b62294a4b146cf188d02f470b19cc3e2c5528626b8e15ce9b047c5",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:dddab4dbca7b5cc2e53abe5854272966f27d63cb88d25935def10a4b04df0b26",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-04.json": "sha256:234d07b90a9e6b9297addc910b95ec5944f41adf59755afd17e4a7e3ace1b11d",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-05.json": "sha256:03ae34d57609eb6b693831d327ea1e7f513439928a3f20d34bf6ae69535e5955",
@@ -1776,7 +1906,7 @@
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-19.json": "sha256:d9c665f29c6536fb1bf333f740516d8501f9b53b4d6a007845853766ea8f4d4d",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-20.json": "sha256:b44f2fb74b4338a540e546a673761c6344892c89bf00f23516a7efd3c6c3609d",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-21.json": "sha256:ccd6a10950411337e18fab200196e494c3458b69c0549b24e7af301dd6b4900b",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-23.json": "sha256:e59d4393fb4a8ee42d8491e3cfe4921a7f7bdca6b876d2bf909b2c756733648c",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-23.json": "sha256:c34d83566a783052ab7dcd9f1ff3c8eb4dcd9379ffe85dfcf8cc119d733aacaa",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-25.json": "sha256:1cf1c7f8faaa89fe6a7fefefe5b31f30436387fe9d1f61e968213096da6ba91f"
   },
   "note": "not a ledger receipt: runtime counts only when a manifest-directed transition appends a receipt to refs/stegverse/organization-ledger",

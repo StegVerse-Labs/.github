@@ -12,5 +12,5 @@ print(json.dumps({'rows':[r]}))
 
 --- exit 0
 --- stdout
-{"rows": [{"subject": "STDLIB_ONLY_21_MODULE_SET", "disposition": "ALLOW", "modules": 21, "tests_run": 255, "failures": 0, "errors": 0, "skipped": 0, "blocked_imports": ["cryptography", "pytest"]}]}
+{"rows": [{"subject": "STDLIB_ONLY_21_MODULE_SET", "disposition": "ALLOW", "modules": 21, "tests_run": 262, "failures": 0, "errors": 0, "skipped": 0, "blocked_imports": ["cryptography", "pytest"]}]}
 --- stderr

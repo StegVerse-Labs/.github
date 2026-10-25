@@ -24,10 +24,18 @@ test_an_unknown_designation_key_is_refused_by_the_closed_schema (tests.test_kv_l
 test_consumer_config_and_the_superseded_org_rule (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_consumer_config_and_the_superseded_org_rule) ... ok
 test_contracts_designate_stegverse_kv_on_the_documented_storage_endpoint (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_contracts_designate_stegverse_kv_on_the_documented_storage_endpoint) ... ok
 test_correspondence_not_storage_an_org_receipt_is_not_kv_input (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_correspondence_not_storage_an_org_receipt_is_not_kv_input) ... ok
+test_cross_check_path_ids_end_in_intr_destination (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_cross_check_path_ids_end_in_intr_destination)
+Lane B's stricter rule (#432 @c4cfc145 endpoint_ledger_designation), adopted: KV reaches the Orgs only ... ok
 test_e0_read_back_through_the_device_local_storage_endpoint (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_e0_read_back_through_the_device_local_storage_endpoint) ... ok
 test_external_storage_records_are_refused (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_external_storage_records_are_refused)
 The provider's own records (Drive metadata files, revisions) never cross into KV. ... ok
 test_layer2_refuses_a_layer1_receipt_naming_another_chain (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_layer2_refuses_a_layer1_receipt_naming_another_chain) ... ok
+test_lc_kv_23_whole_chain_rollback_is_refused_by_the_org_crossing_record (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_lc_kv_23_whole_chain_rollback_is_refused_by_the_org_crossing_record)
+LC-KV-23 (class A, ruling StegVerse-org/.github#167 comment 6374130335). The storage, its HEAD.json and ... ok
+test_lc_kv_26_rollback_after_the_last_crossing_is_a_documented_residual (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_lc_kv_26_rollback_after_the_last_crossing_is_a_documented_residual)
+LC-KV-26 (class B, owner Lane B on the node side; StegVerse-org/.github#162). This is a witness of a ... ok
+test_n1_the_binding_in_an_allow_receipt_is_a_note_not_a_refusal (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_n1_the_binding_in_an_allow_receipt_is_a_note_not_a_refusal)
+P4 review N-1 (#166 6375605423). receipt_ledger_binding() is embedded in every minted layer-1 and ... ok
 test_no_chain_on_any_org_ledger_ref_and_the_head_digest_name (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_no_chain_on_any_org_ledger_ref_and_the_head_digest_name)
 LC-KV-21 (.github#163 comment 6372658597); TVC#542 @4c2504da kv_ledger_head_signer.signs. ... ok
 test_no_cryptography_import_and_vendored_intr_untouched (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_no_cryptography_import_and_vendored_intr_untouched) ... ok
@@ -39,8 +47,8 @@ test_skap_genesis_is_the_two_event_crossing_model_and_reads_back_via_kv_intr (te
 C-1 withdrawn: ENVELOPE v2 line 55 (d749bb2) is CAPTURE's two-event crossing model; no fence FAIL_CLOSED. ... ok
 test_the_documented_storage_endpoint_is_reused_not_duplicated (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_the_documented_storage_endpoint_is_reused_not_duplicated) ... ok
 test_the_rollback_watermark_comes_from_kv_own_chain_never_the_org_ledger (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_the_rollback_watermark_comes_from_kv_own_chain_never_the_org_ledger)
-Coordination's provisional class A repair (.github#167): KV is independent of the Orgs, so the watermark is ... ok
-test_the_skap_chain_is_reached_only_via_kv_intr (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_the_skap_chain_is_reached_only_via_kv_intr) ... ok
+Coordination's ruling (.github#167 6374130335): KV is independent of the Orgs, so the watermark is ... ok
+test_the_skap_chain_is_reached_only_from_inside_kv (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_the_skap_chain_is_reached_only_from_inside_kv) ... ok
 test_arbitrary_callables_and_gate_subclasses_are_not_the_gate (tests.test_kv_ladder_conformance_lc_kv.LcKv03OnlyTheRealGateAttests.test_arbitrary_callables_and_gate_subclasses_are_not_the_gate) ... ok
 test_append_extension_refuses_skap_records (tests.test_kv_ladder_conformance_lc_kv.LcKv07GatedStreams.test_append_extension_refuses_skap_records) ... ok
 test_forged_records_are_refused_by_the_gated_read (tests.test_kv_ladder_conformance_lc_kv.LcKv07GatedStreams.test_forged_records_are_refused_by_the_gated_read) ... ok
@@ -73,6 +81,6 @@ test_sealed_credentials_are_unreachable_without_both_layers (test_skap_kv_persis
 test_stored_record_tamper_is_detected_before_readback (test_skap_kv_persistence.SkapKvPersistenceTests.test_stored_record_tamper_is_detected_before_readback) ... ok
 
 ----------------------------------------------------------------------
-Ran 60 tests in <t>s
+Ran 64 tests in <t>s
 
 OK

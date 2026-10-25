@@ -310,9 +310,13 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("SAME_SIGNAL_REPLAYED_AFTER_THE_PIN", ro)  # an idempotent read-back at #431 @e9d45e6c, recorded
         wf = {r.get("probe") for r in next(i for i in d["items"] if i["id"] == "H-KV-ENDPOINT-LEDGER-ANCHOR")["refusals"]
               if r["failure_code"] == "OPERATING_MODE_E0_WITNESS_FAILED"}
+        # revision 13 (cvk main @9d56bc7b): Lane D's resolution (a) refuses the two REGRESSED rows; the caller watermark is
+        # optional there, so the declared caller-watermark rows differ until the C-review rules (LC-KV-23 stays class C)
         self.assertEqual(wf, {"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s" % (f_, w_)
-                              for f_ in ("REGRESSED_TO_PRESENTED_HEAD", "ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD")
-                              for w_ in ("KV", "SKAP_VIA_GATE")})
+                              for f_ in ("NONE", "BARE_STRING_NEWEST", "MALFORMED_SHORT", "MALFORMED_UPPERCASE", "ORG_SOURCED",
+                                         "EXTRA_KEY")
+                              for w_ in ("KV", "SKAP_VIA_GATE")}
+                         | {"CURRENT_HEAD_WITHOUT_WATERMARK_" + w_ for w_ in ("KV", "SKAP_VIA_GATE")})
         self.assertIn("6373694285", tasks["LC-KV-23"]["required_repair"])
         self.assertIn("C-review", tasks["LC-KV-23"]["proposed_resolution"])
         # Lane B: the shared carrier is byte-identical and destination_evidence refuses six-field

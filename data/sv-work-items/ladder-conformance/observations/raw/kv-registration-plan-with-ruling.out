@@ -1,214 +1,27 @@
 $ {python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258}
---- exit 0
+--- exit 1
 --- stdout
+--- stderr
 {
   "authority_effect": "NONE_REGISTRATION_ONLY",
   "clock_read": false,
-  "derived_files": {
-    "control/goal-scope-seals/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:2d4971fe8734b1c7dd3baa86c145100bf9e8d7a0b2f3c67507dc2f664ad61929",
-    "control/task-vector-index.d/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:85e13c4b7ea049ef1685deeb6e0a79f1ad042fbe2428524fcc4c2676be89d535",
-    "control/task-vectors/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:68c14500f040433bc3c811b3d81a02da6ec03e90610f395058d7a38e06393244",
-    "data/canonical-task-records/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:7a2fc0c1bd67865705b7c981923180f339bf0777c47a36c7e77b274796debbd7",
-    "data/canonical-task-registry.json": "sha256:205388ad878260895d7ad38abccfe5e30fe4a791ba35f7be598115834b85280a"
-  },
-  "disposition": "ALLOW",
-  "evidence": {
-    "adjacency_ruling": {
-      "authority_effect": "NONE_REGISTRATION_ONLY",
-      "candidates": [
-        {
-          "components": [
-            "bounded-group-atomic-use-state",
-            "bounded-group-event-publication-bridge",
-            "bounded-group-execution-evidence-reconciler",
-            "bounded-group-execution-to-site-cas-projection",
-            "bounded-group-pre-admission-intr-intent",
-            "bounded-group-universal-interlock-received-ingress",
-            "bounded-scope-post-group-grant",
-            "event-ephemeral-intr-execution",
-            "facebook-stegverse-transport",
-            "instagram-stegverse-ai-transport",
-            "linkedin-stegverse-transport",
-            "master-records-organization-record",
-            "personal-kv-private-draft-reference",
-            "publication-receipt",
-            "single-use-public-release-grant",
-            "stegbrowser-event-ephemeral-session",
-            "tv-tvc-skap-social-credential-custody"
-          ],
-          "condition_a": "HELD",
-          "condition_b": "HELD",
-          "footprint_in_finish_point_repository": [],
-          "overlap": {
-            "adjacent": true,
-            "components": [],
-            "execution_substrates": [],
-            "lineage": false,
-            "repositories": [],
-            "user_action_surface_conflicts": []
-          },
-          "pinned_consumed_paths": [],
-          "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001"
-        },
-        {
-          "components": [
-            "canonical-event-ephemeral-domain-binding",
-            "device-kv-bidirectional-intr",
-            "exact-packet-verification",
-            "kv-skap-bidirectional-intr",
-            "single-roundtrip-receipt-lineage",
-            "tvc-skap-credential-reference"
-          ],
-          "condition_a": "HELD",
-          "condition_b": "HELD",
-          "footprint_in_finish_point_repository": [],
-          "overlap": {
-            "adjacent": true,
-            "components": [],
-            "execution_substrates": [],
-            "lineage": false,
-            "repositories": [],
-            "user_action_surface_conflicts": []
-          },
-          "pinned_consumed_paths": [],
-          "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
-        },
-        {
-          "components": [
-            "current-verification-evidence-selection",
-            "custody-projection",
-            "interlock-intr",
-            "provider-adapter",
-            "reusable-task-component-composition",
-            "runtime-intake",
-            "session-event-history",
-            "sovereign-kv",
-            "task-registry"
-          ],
-          "condition_a": "HELD",
-          "condition_b": "HELD",
-          "footprint_in_finish_point_repository": [
-            "runtime/task_registry_event_sovereign_kv_binding.py"
-          ],
-          "overlap": {
-            "adjacent": true,
-            "components": [],
-            "execution_substrates": [],
-            "lineage": false,
-            "repositories": [
-              "StegVerse-Labs/continuity-vault-kit"
-            ],
-            "user_action_surface_conflicts": []
-          },
-          "pinned_consumed_paths": [],
-          "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001"
-        }
-      ],
-      "clears": "COORDINATE_CONVERGENCE",
-      "clock_read": false,
-      "condition_c": "HELD",
-      "condition_pin": "NOT_APPLICABLE",
-      "condition_routing": "NOT_APPLICABLE",
-      "condition_unowned_pin": "NOT_APPLICABLE",
-      "consumed_pins": [],
-      "consumes_dependencies": [
-        {
-          "consumed_by": "KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND (continuity-vault-kit runtime/kv_skap_vault.py)",
-          "failure_class": "B",
-          "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001"
-        }
-      ],
-      "disposition": "ALLOW",
-      "finish_point": {
-        "closure": {
-          ".git": "sha256:a82df0b8fd92b6fdc83fe673808f6c0d1133cbfa0e0ed96110c69972ed8f5889",
-          "runtime/intr_pinned/.stegverse/transition-ledger/emit.py": "sha256:9579726de7ef915ac8cd61be1ba1c5ef6e34de4ca996504374b0dce7f7c2c9c3",
-          "runtime/intr_pinned/llm_adapter/ed25519_verify.py": "sha256:ab05e39a3e40b99f02ff199b178554e0ba435c3ff387dca3f896619770770232",
-          "runtime/intr_pinned/llm_adapter/endpoint_ledger_anchor.py": "sha256:d47cd0a4a0409ae79161be64c79e28e147f98ead55687ddeb2e744d3537fc6f4",
-          "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58",
-          "runtime/intr_pinned/llm_adapter/intr_transport_carrier.py": "sha256:9f460c078f5aba3a25edfecaf7e240334d943c3bf0b0cecc5972fc59e47501bf",
-          "runtime/intr_pinned/llm_adapter/node_existence_readback.py": "sha256:cbed113d7fe59fc0919953bad5a0a08cdaeba3ad70a4e728e572c360f6fb2fb7",
-          "runtime/intr_pinned/llm_adapter/node_health_check_projection.py": "sha256:97cb7043c3f43d9aab2f0a591e1eefb94d3b127efc542d75be8d7574ce561ae8",
-          "runtime/intr_pinned/llm_adapter/node_health_report_producer.py": "sha256:21249f2505505afd60eb14188ea638202f2926b207d64cfcf8c3bc5db2d9f361",
-          "runtime/intr_pinned/llm_adapter/node_identity_binding_producer.py": "sha256:ab578c921c6de5f50b9ecca50a71645e10582a051d2dd3417faa62d0dfdec01a",
-          "runtime/intr_pinned/llm_adapter/node_receipt_common.py": "sha256:7e73b65b649c7238aa6ae47409282b2fb729157de083c093fe595611966e43c7",
-          "runtime/intr_pinned/llm_adapter/org_ledger_location.py": "sha256:b51e6a8bd39ba6fd83044222a3858a2cb0c437020e3e9abbe97c4494d41f2681",
-          "runtime/kv_interlock_endpoint.py": "sha256:0904128804d04267f9e34c40e3f1510f1ab68d2dddb7399f00e00dc30a53ff17",
-          "runtime/kv_skap_layer2.py": "sha256:d16a2e580961ded2083fee519da36446046f4c1272c86ebdf9bc100180f3cf8d",
-          "runtime/kv_skap_vault.py": "sha256:16e5d0e1faa3db6dc303ec085c1e735be39ff32647b245a2dc8bcc85d55cf3a5",
-          "runtime/secret_field_policy.py": "sha256:c6fb0a9a5fe4083c1c7b7f0b28f6a4bf70885a581a39f533af3faeacca4e4dbc",
-          "tests/fixtures/intr_pinned_test_only/ed25519_test_signer.py": "sha256:3173bfcfca33129cd31942783b9e3e4c9380022f308f2fc31ccdda3dc2f6fe52",
-          "tests/kv_two_layer_e0.py": "sha256:7f81c674d31943704886216150a07503c6021ac273861f512649a642dcf40199",
-          "tests/test_kv_skap_vault_finish_point.py": "sha256:36efba9c57cdba0bd2e876386e1233adfe32311e809950f71a5a70b6f251b9e0"
-        },
-        "closure_digest": "sha256:30b79088df8ddc60fb630039ba6426c135b63a49178ff9f4881b83e9df651b4b",
-        "finish_test_runners": [],
-        "hashed_pin_data_paths": [],
-        "repository": "StegVerse-Labs/continuity-vault-kit",
-        "source_commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
-        "stub_contexts_disabled_by": [],
-        "stub_preload_sources": [],
-        "stub_seeded_contexts": {},
-        "test": "tests/test_kv_skap_vault_finish_point.py"
-      },
-      "llm_used": false,
-      "lowest_supported_mode": "E0",
-      "network_used": false,
-      "protected_paths": [],
-      "ruled_by": "Coordination (STEGVERSE-CANONICAL-WORK-COORDINATION-001), relayed to Lane D 2026-10-23; ruling record ref UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "ruling_digest": "sha256:37ded38295da188848c7c97ce6a8ffd1a7931266a025b6f888b5ae1756b07f5e",
-      "schema": "stegverse.adjacency-ruling-verification/v1",
-      "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001"
-    },
-    "allocation": {
-      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
-      "allocation_request_sha256": "sha256:019ea91c3f3d54a1c328d3eca0eee84ce2cb2857b7c25265cf6fa7496674d303",
-      "proposal_adopted": false,
-      "proposed_cosv_task_vector": null,
-      "proposed_task_id_matches": true
-    },
-    "collision_checkin": "CONTINUE_BY_VERIFIED_ADJACENCY_RULING (scripts/check_registry_collision_checkin.py COORDINATE_CONVERGENCE over ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] cleared by scripts/adjacency_ruling.py; ruling sha256:37ded38295da188848c7c97ce6a8ffd1a7931266a025b6f888b5ae1756b07f5e, conditions a/b/c recomputed)",
-    "cosv_derivation": "scripts/cosv.py encode_task(exact_metrics)",
-    "cosv_task_vector": "10800000110000",
-    "finish_point": {
-      "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
-      "lowest_supported_mode": "E0",
-      "predicate": "KV_SKAP_VAULT_FINISH_POINT: python -m runtime.kv_skap_vault finish-point returns disposition ALLOW (every expected_evidence_predicate ALLOW over one receipt-hash lineage); until then it returns six-field FAIL_CLOSED naming each unmet predicate",
-      "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_skap_vault finish-point"
-    },
-    "lowest_supported_mode": "E0",
-    "predecessor_registry_generation": 320,
-    "predecessor_registry_sha256": "sha256:a2366fc6ad116f5e83d48379eb057cfd250ef42a92e7631399650a33f9f56448",
-    "registration_mode": "NEW_IDENTITY",
-    "row_equals_record": true,
-    "scope_digest": "sha256:d68e239bd1eeabe6558b52928632e9e1df35656e55b3f899755924e66b862ada",
-    "successor_registry_generation": 321,
-    "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
-    "workercoordinator_claim_request": {
-      "allocator_remains_claim_authority": true,
-      "authority_effect": "NONE_REQUEST_ONLY",
-      "canonical_allocator": "scripts/allocate_claims.py",
-      "claim_ref": null,
-      "consumer_entrypoint": "scripts/consume_org_claim_allocator_request.py",
-      "fence_ref": null,
-      "registry_generation": 321,
-      "registry_row_sha256": "sha256:5cece464fbafd7c49cb75d23c14461cdc4b9d86812196f0994761c568298b504",
-      "request_grants_claim_authority": false,
-      "requested_of": "WORKERCOORDINATOR",
-      "schema": "stegverse.workercoordinator-claim-request/v1",
-      "state": "REQUESTED",
-      "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001"
-    }
-  },
+  "consequence_committed": false,
+  "detail": "{\"checkin\": [{\"task_id\": \"KV-SKAP-VAULT-FUNCTIONAL-001\", \"head_disposition\": \"COORDINATE_CONVERGENCE\", \"failure_code\": \"REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE\", \"evidence\": {\"new_collision_candidate_ids\": [], \"new_hard_collision_task_ids\": [], \"hard_collision_task_ids\": [], \"collision_candidate_ids\": [\"SS-KV-SKAP-SOCIAL-RELEASE-001\", \"STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001\", \"TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001\"], \"session_action\": \"COORDINATE_BEFORE_MUTATION\", \"substrate_review_error\": null}}], \"ruling_detail\": {\"observed_head\": \"9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1\"}}",
+  "disposition": "FAIL_CLOSED",
   "execution_authority_minted": false,
+  "failed_predicate": "FINISH_POINT_SOURCE_AT_PINNED_COMMIT",
+  "failure_code": "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
   "intr_admission_minted": false,
   "mode": "plan",
+  "next_attempt": "on the next registration request event after the repair is recorded",
   "organization_ledger_appended": false,
   "organization_ledger_entrypoint": ".stegverse/transition-ledger/emit.py via .github/workflows/organization-ledger-transition.yml",
+  "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
   "request_id": "lane-d-kv-skap-vault-functional-2026-10-23",
   "request_sha256": "sha256:781c653bd210df88e38bc350486f0113840a6b951154270376e9babca46f96a8",
+  "required_evidence_or_repair": "the finish-point root must be StegVerse-Labs/continuity-vault-kit checked out at 9551edab3a152ec0741274b109b3e0de84a23ff8",
+  "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
   "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
   "transition": "CANONICAL_TASK_REGISTRATION",
   "workercoordinator_claim_or_fence_minted": false
 }
---- stderr

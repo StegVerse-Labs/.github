@@ -23,5 +23,5 @@ print(json.dumps({"rows": rows}, sort_keys=True))
 
 --- exit 0
 --- stdout
-{"rows": [{"disposition": "ALLOW", "subject": "LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE"}, {"disposition": "EXCEPTION", "exception": "DoubleInterlockError", "message": "boundary_receipt_schema_invalid", "subject": "LAYER2_WITHOUT_LAYER1_RECEIPT"}, {"disposition": "ALLOW", "subject": "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT"}]}
+{"rows": [{"disposition": "EXCEPTION", "exception": "AttributeError", "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_chain'", "subject": "LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE"}, {"disposition": "EXCEPTION", "exception": "AttributeError", "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_kv_skap_receipt'", "subject": "LAYER2_WITHOUT_LAYER1_RECEIPT"}, {"disposition": "EXCEPTION", "exception": "AttributeError", "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_device_kv_receipt'", "subject": "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT"}]}
 --- stderr

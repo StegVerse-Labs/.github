@@ -9,5 +9,5 @@ except Exception as exc:
 
 --- exit 0
 --- stdout
-{"rows": [{"subject": "CUSTODY_VERIFIER_ARBITRARY_CALLABLE_AT_259", "disposition": "ALLOW", "note": "an arbitrary callable returning ALLOW was accepted as the access-layer verifier, with never-minted receipt hashes"}]}
+{"rows": [{"subject": "CUSTODY_VERIFIER_ARBITRARY_CALLABLE_AT_259", "disposition": "FAIL_CLOSED", "failure_code": "VaultLineageAccessLayerRefused"}]}
 --- stderr

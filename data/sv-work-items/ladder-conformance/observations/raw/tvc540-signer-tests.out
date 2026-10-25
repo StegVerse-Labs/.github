@@ -16,8 +16,17 @@ test_e1_is_a_provisional_pending_receipt_never_an_allow (tests.test_tvc_node_led
 test_every_predicate_declares_lowest_mode_e0_and_a_degraded_form (tests.test_tvc_node_ledger_opened_signer_publication.CommittedManifestE0.test_every_predicate_declares_lowest_mode_e0_and_a_degraded_form) ... ok
 test_membership_audit_of_this_transitions_signer_entries (tests.test_tvc_node_ledger_opened_signer_publication.CommittedManifestE0.test_membership_audit_of_this_transitions_signer_entries) ... ok
 test_org_ref_location_and_org_member_binding_are_refused_under_this_transition (tests.test_tvc_node_ledger_opened_signer_publication.CommittedManifestE0.test_org_ref_location_and_org_member_binding_are_refused_under_this_transition) ... ok
+test_p1_rev11_org_member_indicators_are_refused_top_level_and_nested_under_both_transitions (tests.test_tvc_node_ledger_opened_signer_publication.CommittedManifestE0.test_p1_rev11_org_member_indicators_are_refused_top_level_and_nested_under_both_transitions) ... ok
 test_reader_is_the_pinned_tvc542_module (tests.test_tvc_node_ledger_opened_signer_publication.CommittedManifestE0.test_reader_is_the_pinned_tvc542_module) ... ok
 test_undesignated_refusal_names_the_owning_goal_once (tests.test_tvc_node_ledger_opened_signer_publication.CommittedManifestE0.test_undesignated_refusal_names_the_owning_goal_once) ... ok
+test_cli_takes_the_epoch_as_input (tests.test_tvc_node_ledger_opened_signer_publication.CrossingReceiptEpoch.test_cli_takes_the_epoch_as_input) ... ok
+test_e1_lists_the_epoch_residual_only_when_missing (tests.test_tvc_node_ledger_opened_signer_publication.CrossingReceiptEpoch.test_e1_lists_the_epoch_residual_only_when_missing) ... ok
+test_malformed_epochs_are_refused (tests.test_tvc_node_ledger_opened_signer_publication.CrossingReceiptEpoch.test_malformed_epochs_are_refused) ... ok
+test_missing_epoch_fails_closed_with_six_fields_class_b (tests.test_tvc_node_ledger_opened_signer_publication.CrossingReceiptEpoch.test_missing_epoch_fails_closed_with_six_fields_class_b) ... ok
+test_no_clock_is_read (tests.test_tvc_node_ledger_opened_signer_publication.CrossingReceiptEpoch.test_no_clock_is_read) ... ok
+test_plan_and_sign_with_a_supplied_epoch_carry_crossings (tests.test_tvc_node_ledger_opened_signer_publication.CrossingReceiptEpoch.test_plan_and_sign_with_a_supplied_epoch_carry_crossings) ... ok
+test_retry_names_the_refusing_transition (tests.test_tvc_node_ledger_opened_signer_publication.CrossingReceiptEpoch.test_retry_names_the_refusing_transition) ... ok
+test_shape_is_exactly_the_four_keys (tests.test_tvc_node_ledger_opened_signer_publication.CrossingReceiptEpoch.test_shape_is_exactly_the_four_keys) ... ok
 test_designated_but_unpinned_ledger_waits_on_genesis_pin (tests.test_tvc_node_ledger_opened_signer_publication.Ledgers.test_designated_but_unpinned_ledger_waits_on_genesis_pin) ... ok
 test_l1_on_the_skap_vault_ledger_does_not_count (tests.test_tvc_node_ledger_opened_signer_publication.Ledgers.test_l1_on_the_skap_vault_ledger_does_not_count) ... ok
 test_no_store_named_is_unreadable (tests.test_tvc_node_ledger_opened_signer_publication.Ledgers.test_no_store_named_is_unreadable) ... ok
@@ -44,6 +53,6 @@ test_sign_without_stegos_record_fails_closed (tests.test_tvc_node_ledger_opened_
 test_signature_over_another_record_fails_closed (tests.test_tvc_node_ledger_opened_signer_publication.Signing.test_signature_over_another_record_fails_closed) ... ok
 
 ----------------------------------------------------------------------
-Ran 40 tests in <t>s
+Ran 49 tests in <t>s
 
 OK
