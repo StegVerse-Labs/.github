@@ -4,8 +4,24 @@
   "rule": "Each row declares one InTr transfer over a declared mesh path whose source is this organization. Landing a row on main is the transition: after that push's main-merge transfer is ledgered, .github/workflows/intr-path-transfer.yml appends the path's source receipt, linked to that main-merge transfer receipt. A row already ledgered is answered from the ledger. No dispatch.",
   "transfers": [
     {
+      "path_id": "StegVerse-Labs->AaCT-E:intr-destination",
+      "communication_id": "intr-path-v1:StegVerse-Labs->AaCT-E"
+    },
+    {
       "path_id": "StegVerse-Labs->Admissible-Existence:intr-destination",
       "communication_id": "intr-path-v1:StegVerse-Labs->Admissible-Existence"
+    },
+    {
+      "path_id": "StegVerse-Labs->AdmittedCode:intr-destination",
+      "communication_id": "intr-path-v1:StegVerse-Labs->AdmittedCode"
+    },
+    {
+      "path_id": "StegVerse-Labs->Data-Continuation:intr-destination",
+      "communication_id": "intr-path-v1:StegVerse-Labs->Data-Continuation"
+    },
+    {
+      "path_id": "StegVerse-Labs->ECAT-ICAT-Formal:intr-destination",
+      "communication_id": "intr-path-v1:StegVerse-Labs->ECAT-ICAT-Formal"
     },
     {
       "path_id": "StegVerse-Labs->GCAT-BCAT-Engine:intr-destination",
@@ -30,6 +46,10 @@
     {
       "path_id": "StegVerse-Labs->StegVerse-org:intr-destination",
       "communication_id": "intr-path-v1:StegVerse-Labs->StegVerse-org"
+    },
+    {
+      "path_id": "StegVerse-Labs->Triad-Test:intr-destination",
+      "communication_id": "intr-path-v1:StegVerse-Labs->Triad-Test"
     }
   ]
 }

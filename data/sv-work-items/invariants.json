@@ -53,6 +53,14 @@
         "schema_effect": "schemas/sv-check-receipt.v1.schema.json check_id is a closed enum, so the gate check id was added to it (the only schema change)"
       },
       "invariant_id": "STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::verify_resolutions (every NATIVE admission, after the writer checks and before the check receipts) over admission_inputs(..., resolved_issues=resolved_issue_facts(issues, ledger_objects)); validate_issue_set; resident-runtime/stage_gate.py::gate_check -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "observation_rule": "a receipt-derived issue is observed only if derive_issue_from_check_receipt yields exactly it from the supplied ledger bytes at its ledger_ref; otherwise no fact is emitted",
       "owning_goal": "StegVerse-org/.github#163",
       "statement": "A stage gate is an admitted transition (STAGE_GATES_ARE_ADMITTED_TRANSITIONS), so a failing gate receipt is a ledgered failing check receipt, and derive_issue_from_check_receipt (CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT) derives the NATIVE SV_ISSUE from it unchanged. A change that resolves that issue is admitted by the ordinary predicate.",
@@ -61,6 +69,14 @@
     {
       "enforced_by": "resident-runtime/sv_work_items.py::verify_admission_hb_epoch(target_repository=...) from evaluate_admission: another repository's readback is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (the target's epoch was not observed)",
       "invariant_id": "CHANGE_BINDS_TARGET_REPOSITORY_LEDGER",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::verify_admission_hb_epoch(target_repository=...) from evaluate_admission: another repository's readback is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (the target's epoch was not observed) -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "observed": "2026-10-18 read-only git ls-remote: StegVerse-Labs/.github refs/stegverse/organization-ledger = a5bb54d81893b392a3ce28182986fc39857807e1 (HEAD.json organization StegVerse-Labs); StegVerse-org/.github's = 2acec0e1cfd158a6a3313ad422737caf41badda3. #3264 targets StegVerse-Labs/.github, so it binds a5bb54d8.",
       "owning_goal": "StegVerse-org/.github#163",
       "statement": "An SV_CHANGE's base_ref.ledger_head is the head of the TARGET repository's own refs/stegverse/organization-ledger; the base-state readback that seals its epoch must have read that repository (readback.repository == target_repository).",
@@ -84,6 +100,14 @@
         "disposition_source": "orchestrator ruling 2026-10-18 (both verifiers, 60 cases) and the contract invariant refinement 15:59Z (narrowed 16:03Z); Lane C's Labs#3266 @7ad6d81f (readback blob 17ef4401; DENY semantics unchanged since 2ba0e329, cross_checked true since 7ad6d81f) emits DENY HB_EPOCH_MISMATCH for a contradicting --hb-epoch (alignment item closed)",
         "failure_code": "HB_EPOCH_MISMATCH",
         "why_deny": "a sealed epoch that contradicts the record is an observed contradiction, not an unobservation"
+      },
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::verify_admission_hb_epoch(supplied, readback, ledger_head) -- the in-repo reference of the supplied-epoch-binder-check predicate (built into the NWI-S1 verifier, SV-LLM/.github#46); evaluate_admission applies it to every admission (the row requires the check on the 'all' surface; every SV_CHANGE carries hb_epoch); admission_inputs carries supplied_hb_epoch and hb_epoch_readback -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
       },
       "native_record_application": "NATIVE_RECORD_HB_EPOCH_IS_BASE_LEDGER_HEAD_EPOCH",
       "readback_pin": {
@@ -184,6 +208,14 @@
         "disposition": "DENY",
         "failure_code": "HB_EPOCH_MISMATCH"
       },
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::verify_native_hb_epoch (pure over supplied ledger bytes); validate_change/validate_issue(rec, ledger_objects) apply it when ledger bytes are supplied; without them behavior is unchanged (UNKNOWN in a NATIVE record stays DENY UNKNOWN_IN_NATIVE_RECORD) -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "source_layout": "resident-runtime/aggregate_repo_transition.py:1073-1089 (body incl. hb_reference, seal), :1092 (HEAD.json); resident-runtime/ledger_store.py:44-56 (HEAD_KEY, receipt_key); org-kernel/kernel.py:22 (HB_ANCHOR_EPOCH=32), :68-74",
       "statement": "A NATIVE record's hb_epoch (ASCII digits) equals, by integer value, $.hb_reference.epoch of the stegverse.organization-transition-receipt/v1 at its base ledger head (SV_CHANGE base_ref.ledger_head, SV_ISSUE observed_base.ledger_head), read from refs/stegverse/organization-ledger: HEAD.json at that commit -> receipts/<receipt_sha256 hex>.json, seal verified (receipt_sha256 = sha256 of the canonical body without it). The epoch is an int >= 32 (not bool, no coercion from other types) from a reference not derived from a clock (kernel.hb_reference, org-kernel/kernel.py:68-74); there is no top-level hb_epoch on the org receipt. Never read from a clock.",
       "status": "DECIDED (native-record application of ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH; JD-P4-3, partial)",
@@ -202,6 +234,14 @@
       "enforced_by": "resident-runtime/sv_work_items.py::derive_issue_from_check_receipt(ledger_objects, ledger_ref, row, observed_base=...) (ledger_objects: '<commit>:<path>' -> bytes of a read of refs/stegverse/organization-ledger); rule details in data/sv-work-items/required-checks.json#check_derived_issue_rule",
       "invariant_id": "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT",
       "ledger_object_shape": "ledger_ref = refs/stegverse/organization-ledger@<commit>:receipts/<hex>.json names the sealed stegverse.organization-transition-receipt/v1 (aggregate_repo_transition.py:1073-1089). It carries no `evidence`; it carries boundary_evidence {operation, profile_id, disposition, communication_id} and repo_receipt_sha256 (verify_source, :627-651). The org ledger retains that sealed stegverse.repo-transition-receipt/v1 beside it at source-receipts/<hex>.json in the same commit (ledger_store.source_key, ledger_store.py:59-61; :1064-1066; organization_ledger_readback.py:89-91). The check receipt is the repo receipt's $.evidence (.stegverse/transition-ledger/emit.py:116), placed there by Lane D's sv_check_receipt append operation and self-identified by $.evidence.schema == stegverse.sv_check_receipt.v1 or $.evidence.kind == 'sv_check_receipt' (then the object minus kind must be the pinned receipt shape). boundary_evidence.operation, when present, must be 'sv_check_receipt'.",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::derive_issue_from_check_receipt(ledger_objects, ledger_ref, row, observed_base=...) (ledger_objects: '<commit>:<path>' -> bytes of a read of refs/stegverse/organization-ledger); rule details in data/sv-work-items/required-checks.json#check_derived_issue_rule -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "not_a_check_receipt": {
         "disposition": "FAIL_CLOSED",
         "failed_predicate": "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT",
@@ -228,6 +268,14 @@
       "corpus_class": "ASC-NATIVE_RECORD_FIELDS_ARE_OBSERVED@transition v1: owning_goal[UNKNOWN] -> FAIL_CLOSED UNKNOWN_IN_NATIVE_RECORD (SCENARIO_CORPUS_APPEND, appended last)",
       "enforced_by": "resident-runtime/sv_work_items.py::mode_check (validate_change and validate_issue, shared) and evaluate_admission over admission_inputs().native_unknown_pointers (checked right after record_mode; a missing list is itself FAIL_CLOSED)",
       "invariant_id": "NATIVE_RECORD_FIELDS_ARE_OBSERVED",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::mode_check (validate_change and validate_issue, shared) and evaluate_admission over admission_inputs().native_unknown_pointers (checked right after record_mode; a missing list is itself FAIL_CLOSED) -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "parity": "open item for Lane B/Lane C: any external validator that still emits DENY UNKNOWN_IN_NATIVE_RECORD should move to FAIL_CLOSED",
       "previously": "DENY UNKNOWN_IN_NATIVE_RECORD (rounds 1-7 epoch commit ae8b105d); the failure code is unchanged, only the disposition",
       "statement": "every field of a NATIVE SV_CHANGE or SV_ISSUE is authentically observed. A field holding UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (exact or embedded; /projection and writer_session.evidence_class, an enum, are not scanned) was not observed, so the record is FAIL_CLOSED UNKNOWN_IN_NATIVE_RECORD (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY). DENY stays only for values that were observed and are wrong (RECORD_MODE_INVALID, MIGRATION_FIELDS_ON_NATIVE_RECORD).",
@@ -253,6 +301,14 @@
         "supplied_hb_epoch": "<the supplied value, ASCII digits equal to the sealed hb_epoch>"
       },
       "invariant_id": "NOT_CROSS_CHECKED_MARKER",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py and scripts/build_sv_native_fixtures.py --check -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "producers_aligned": [
         "P1 sv_work_items.verify_admission_hb_epoch output (commit 4)",
         "Labs#3266 @7ad6d81f (readback blob 17ef4401): cross_checked always emitted; supplied_hb_epoch on a cross-checked ALLOW (confirmed field name), on DENY HB_EPOCH_MISMATCH and on a FAIL_CLOSED whose flag was given; FAIL_CLOSED carries cross_checked false and no detail",
@@ -294,6 +350,14 @@
       "import_closure": "transitively closed (commit 4): every repo-local module a listed Python file loads (import, import_module, importlib spec_from_file_location with a statically resolvable path; eagerly or on call) is listed; kernel.py's loads from a caller-supplied dispatch root (org-boundary/runtime/{node_standing,manifest_selection,capability_ingress}.py) are not repo-local by construction and are declared under import_closure.dispatch_root_loads_excluded; tests/test_nwi_gate_declaration.py recomputes the closure and fails on any missing member or undeclared unresolved load",
       "invariant_id": "CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN",
       "manifest": "data/sv-work-items/contract-pins.json",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py and scripts/build_sv_native_fixtures.py --check -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "statement": "data/sv-work-items/contract-pins.json lists the git blob sha and sha256 of every canonical contract file of the native work-items path (the schemas, invariants.json, required-checks.json, lifecycle and surface-alias data, the stage manifests, the migration fixtures, the corpus and replay files, and the runtime modules). A consumer pins the manifest's own blob and sha256 and re-pins a listed file only when its entry changes; the manifest never lists itself. scripts/build_sv_native_fixtures.py generates it and --check reports it stale when any entry differs from the tree",
       "status": "DECIDED (orchestrator 2026-10-18T16:30Z)"
     },
@@ -305,6 +369,14 @@
         "sv_work_items.check_command (gate check ids)"
       ],
       "invariant_id": "STAGE_GATE_DECLARATION_IS_COMPLETE",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::validate_gate_declaration; stage_gate.gate_check / evaluate_gate; sv_work_items.check_command (gate check ids) -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "statement": "a stage manifest that declares exit_gate_check also declares: evidence_producers (one NWI-S1 row check per receipt predicate, with the row's offline_command, command_paths and expected), receipt_form (how the closed sv-check-receipt.v1 is filled: change_digest = the stage-evaluation subject digest, head_sha = its evaluated_commit, the target repository's own ledger), evaluation_subject ({repository, stage_id, manifest_blob, evaluated_commit, base_ref}, digested with the change_id serialization), hb_epoch (the pinned Labs#3266 readback at the subject's ledger head) and cadence (per stage evaluation, never per head, not in the required-checks row; one failing receipt derives one issue). Otherwise FAIL_CLOSED STAGE_GATE_DECLARATION_INCOMPLETE (stage_gate.gate_check, check_command)",
       "status": "DECLARED (commit 3, for Lane B #46)",
       "subject": {
@@ -325,6 +397,14 @@
       "corpus": "ASC-ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH@ledger_writer v3, axis supplied_hb_epoch[int] (appended last)",
       "enforced_by": "resident-runtime/sv_work_items.py::native_epoch_type_check (validate_change)",
       "invariant_id": "NATIVE_RECORD_HB_EPOCH_IS_A_STRING",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::native_epoch_type_check (validate_change) -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "open": "a malformed epoch STRING ('31', 'abc') in validate_change is still FAIL_CLOSED HB_EPOCH_INVALID (kernel rule), while admission gives DENY HB_EPOCH_MISMATCH; not changed here",
       "statement": "a NATIVE SV_CHANGE's hb_epoch is a JSON string of ASCII digits (schemas/sv-change.v1.schema.json 6b43b6ec). An observed value of any other JSON type (an integer such as 1024, a float, a bool, an array, an object) is malformed: validate_change gives DENY HB_EPOCH_MISMATCH (native_epoch_type_check), as admission's supplied-epoch rule gives for bools and non-digits. Absent or null stays unobserved (FAIL_CLOSED)",
       "status": "DECIDED (orchestrator 2026-10-18T16:55Z)",
@@ -351,6 +431,14 @@
       "inputs": "derive_resolved_issue_facts(ledger_objects, ledger_ref, change, issues, evaluations=[{subject, receipt_ref}], change_commits={base_commit, head_commit}, contract_pins=<the gate declaration's contract-pins.json>); change_commits are observed in git by the caller (the GitHub projection is never authority); evaluations are the STAGE_GATE outcomes (evaluation_subject + the org ledger ref of their gate receipt)",
       "invariant_id": "GATE_RECEIPT_PAIR_RESOLVES_GATE_DERIVED_ISSUE",
       "manifest_match": "exact (orchestrator ~17:10Z, replacing the earlier equivalence rule): both subjects carry the same stage_id and exactly the contract-pinned manifest_blob (GATE_MANIFEST_IS_THE_CONTRACT_PINNED_MANIFEST)",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::resolution_pair, verify_resolution_pair (from verify_resolutions) -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "order": "commits observed, base present, head present, receipts bind subjects, head ALLOW, repository, exact manifest match, pinned manifest observed, manifest is the pinned one, commits",
       "statement": "a stage-gate-derived NATIVE SV_ISSUE is SOURCED by the BASE-side failing nwi-s0-exit-gate receipt (stage-evaluation subject at the change's base commit; derive_issue_from_check_receipt) and RESOLVED only by the HEAD-side ALLOW gate receipt (subject at the change's head commit). Both subjects name the change's target repository and exactly the same contract-pinned manifest (manifest_match); both receipts are on that repository's refs/stegverse/organization-ledger at the change's base_ref.ledger_head. The base receipt is never minted or ledgered by the resolving change (condition a, RESOLVING_CHANGE_DID_NOT_SOURCE_ITS_ISSUE, also applied to the head receipt) and one source receipt resolves at most once (condition b)",
       "status": "DECIDED (orchestrator 2026-10-18T16:58Z)"
@@ -368,10 +456,43 @@
         "validate_gate_declaration (evaluation_subject.manifest_source and receipt_form.manifest_source = CONTRACT_PINS)"
       ],
       "invariant_id": "GATE_MANIFEST_IS_THE_CONTRACT_PINNED_MANIFEST",
+      "modes": {
+        "E0": "mechanical: resident-runtime/sv_work_items.py::pinned_gate_manifest; validate_gate_receipt(..., contract_pins=); verify_resolution_pair; validate_gate_declaration (evaluation_subject.manifest_source and receipt_form.manifest_source = CONTRACT_PINS) -- over supplied records, receipts and ledger bytes; no clock, no network, no LLM; a non-ALLOW is six-field",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none at any rung: deterministic over observed state",
+        "lowest_supported_mode": "E0"
+      },
       "statement": "the gate manifest a stage evaluation applies is the one the gate declaration's data/sv-work-items/contract-pins.json pins (manifest_source CONTRACT_PINS), never the blob at evaluated_commit: evaluated_commit identifies the subject only. The subject's manifest_blob is that pinned blob; a receipt whose subject's manifest was read from the subject is DENY GATE_MANIFEST_READ_FROM_SUBJECT; base and head receipts of a resolution pair carry exactly the same pinned manifest (no equivalence)",
       "status": "DECIDED (orchestrator 2026-10-18 ~17:10Z, under SUBJECT_NEVER_SUPPLIES_ITS_OWN_ACCEPTANCE_CRITERIA)"
+    },
+    {
+      "decided_by": "Lane C (GitHub Product) alignment ask on SV_CHANGE_ADMIT, relayed to P1 2026-10-23; TVC#531 manifest v2 BRANCH_WRITER_IS_BRANCH_OWNER; producer Labs#3267 (bb780200)",
+      "enforced_by": "resident-runtime/sv_work_items.py::verify_branch_writer / derive_branch_writer (evaluate_admission, SV_CHANGE_PROPOSE)",
+      "invariant_id": "BRANCH_WRITER_IS_DERIVED_FROM_THE_PUSH_RECEIPT_CHAIN",
+      "modes": {
+        "E0": "mechanical: sv_work_items.derive_branch_writer over a contiguous chain of sealed sv-push-receipt.v1 receipts (StegVerse-Labs/.github#3267 schema) read from the organization ledger: one repository (the change's target_repository) and one branch ref, from change_commits.base_commit to change_commits.head_commit, covering every pushed commit; the authoring session is DERIVED as the pusher_session of the receipt sealed at the head; every pusher and every named content[*].writer_session is that session or a receipted co-author grant. No PR body line, commit trailer or declared_session is read.",
+        "E1": "E0 form",
+        "E2": "E0 form",
+        "E3": "E0 form",
+        "llm_inputs": "none: the session is derived from receipts, not declared",
+        "lowest_supported_mode": "E0",
+        "unavailable": "no receipt chain or a gap in it: FAIL_CLOSED BRANCH_WRITER_UNOBSERVED (chain not at the head: FAIL_CLOSED WRITER_EVIDENCE_NOT_AT_HEAD); retry_entrypoint names the push-time producer (resident-runtime/sv_push_receipt.py::emit) and its org-ledger append (StegVerse-Labs/.github#3255)"
+      },
+      "owning_goal": "StegVerse-org/.github#163",
+      "retires": [
+        "PR_AUTHOR_SESSION_DECLARED",
+        "ASC-PR_AUTHOR_SESSION_DECLARED@schema"
+      ],
+      "statement": "SV_CHANGE_PROPOSE, SV_CHANGE_VERIFY and SV_CHANGE_ADMIT derive the authoring session as the pusher_session of the sealed sv-push-receipt.v1 at the change's head (sv_work_items.derive_branch_writer); PR_AUTHOR_SESSION_DECLARED is retired and no PR body line, commit trailer or declared_session grants or refuses anything. A gap is six-field FAIL_CLOSED BRANCH_WRITER_UNOBSERVED (retry: resident-runtime/sv_push_receipt.py::emit and the org-ledger append, StegVerse-Labs/.github#3255), never DENY; a per-path writer_session can only refuse.",
+      "status": "DECIDED (Lane C alignment, relayed to P1 2026-10-23; admission-input-ready, not runtime until the receipts are ledgered via #3255)"
     }
   ],
+  "modes_rule": {
+    "ladder": "data/sv-work-items/operating-modes.json (stegverse.nwi-operating-modes/v1, StegVerse-Labs/.github#3308 branch p1/operating-mode-ladder @81f8a8ca, not yet on main): referenced for the rung names and rules, not duplicated",
+    "rule": "every SV_ISSUE and SV_CHANGE predicate (lifecycle transitions, runtime refusals, corpus bindings) declares its lowest_supported_mode and its form at every rung down to E0 (TVC#531 manifest v2 'modes' shape); an E0 form may be a six-field FAIL_CLOSED terminal ('unavailable'), never an owner-must-act state"
+  },
   "note": "Invariants of the native work-items path that are not schema keywords; enforced in resident-runtime/sv_work_items.py. sv-change.v1, sv-issue.v1 and sv-check-receipt.v1 are unchanged (734968c0 / 62ee5307 / 070f13f4).",
   "owning_goal": "StegVerse-org/.github#163",
   "schema": "stegverse.sv-work-items-invariants/v1"
