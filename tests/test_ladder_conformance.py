@@ -256,7 +256,10 @@ class CommittedArtifacts(unittest.TestCase):
                       "owning_existing_goal", "next_attempt"):
                 self.assertTrue(str(o.get(k) or "").strip(), (o["subject"], k))
 
-    def test_empty_tvc_signer_file_is_an_external_dependency(self):
+    def test_empty_tvc_signer_file_is_a_class_c_tvc_task(self):
+        # Name kept from main for the test ratchet (a test at base must run at head).
+        # Revision 16: the empty TVC signer file is no longer a class C TVC task; it is the
+        # external dependency ORG-LEDGER-HEAD-SIGNER-001, whose key step is owner-only.
         tasks = {t["task_id"]: t for t in _inputs()["tasks"]}
         self.assertIn("ORG-LEDGER-HEAD-SIGNER-001", tasks["LC-KV-13"]["required_repair"])
         t = tasks["LC-KV-13"]
