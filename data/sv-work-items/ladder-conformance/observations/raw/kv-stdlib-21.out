@@ -1,0 +1,16 @@
+$ {python} -c import json, sys, io, unittest
+sys.path.insert(0,'.')
+sys.modules['cryptography']=None; sys.modules['pytest']=None
+six={"failure_code":"LADDER_E0_VERIFIER_TESTS_NOT_GREEN","failed_predicate":"E0_VERIFIER_SUITE_PASSES_WITH_ZERO_SKIPPED","required_evidence_or_repair":"repair the selected KV suite at the pinned commit","retry_entrypoint":"python scripts/ladder_conformance.py observe","owning_existing_goal":"KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)","next_attempt":"on the next observe run"}
+mods=['tests.test_kv_interlock_runtime_endpoint', 'tests.test_endpoint_fanout_probe', 'tests.test_kv_skap_vault_finish_point', 'tests.test_kv_skap_vault_e0_witnesses', 'tests.test_sovereign_kv_vault_lineage_record', 'tests.test_skap_kv_persistence', 'tests.test_vault_store', 'tests.test_task_registry_event_sovereign_kv_binding', 'tests.test_kv_interlock_contract', 'tests.test_kv_interlock_intr_envelope', 'tests.test_kv_skap_account_transfer', 'tests.test_portable_direct_source_ingress', 'tests.test_portable_directory_projection', 'tests.test_kv_provider_operation_store', 'tests.test_storage_endpoint_v2', 'tests.test_communication_runtime', 'tests.test_cross_edge_selection_receipt', 'tests.test_kv_auri_peripheral_profiles', 'tests.test_skap_intr_reconstruction', 'tests.test_skap_loader_js', 'tests.test_kv_ladder_conformance_lc_kv']
+suite=unittest.defaultTestLoader.loadTestsFromNames(mods)
+res=unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)
+ok = res.wasSuccessful() and not res.skipped and res.testsRun>0
+r={'subject':'STDLIB_ONLY_21_MODULE_SET','disposition':'ALLOW' if ok else 'FAIL_CLOSED','modules':len(mods),'tests_run':res.testsRun,'failures':len(res.failures),'errors':len(res.errors),'skipped':len(res.skipped),'blocked_imports':['cryptography','pytest']}
+if not ok: r.update(six)
+print(json.dumps({'rows':[r]}))
+
+--- exit 0
+--- stdout
+{"rows": [{"subject": "STDLIB_ONLY_21_MODULE_SET", "disposition": "ALLOW", "modules": 21, "tests_run": 262, "failures": 0, "errors": 0, "skipped": 0, "blocked_imports": ["cryptography", "pytest"]}]}
+--- stderr

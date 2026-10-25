@@ -1,0 +1,33 @@
+$ {python} -m unittest -v tests.test_endpoint_ledger_designation
+--- exit 0
+--- stdout
+--- stderr
+test_a_crossing_record_without_a_supplied_epoch_is_refused (tests.test_endpoint_ledger_designation.BothSidesRecordTests.test_a_crossing_record_without_a_supplied_epoch_is_refused) ... ok
+test_a_node_ledger_is_never_designated_on_the_org_ledger (tests.test_endpoint_ledger_designation.BothSidesRecordTests.test_a_node_ledger_is_never_designated_on_the_org_ledger) ... ok
+test_an_endpoint_ingress_record_without_the_org_record_is_refused (tests.test_endpoint_ledger_designation.BothSidesRecordTests.test_an_endpoint_ingress_record_without_the_org_record_is_refused) ... ok
+test_an_org_crossing_receipt_is_digest_only_and_never_endpoint_originated (tests.test_endpoint_ledger_designation.BothSidesRecordTests.test_an_org_crossing_receipt_is_digest_only_and_never_endpoint_originated)
+No endpoint is an Organization member or a source of org-ledger records (#160 comment 6372871021). ... ok
+test_an_org_side_record_without_the_endpoint_record_is_refused (tests.test_endpoint_ledger_designation.BothSidesRecordTests.test_an_org_side_record_without_the_endpoint_record_is_refused) ... ok
+test_the_paired_records_are_admitted (tests.test_endpoint_ledger_designation.BothSidesRecordTests.test_the_paired_records_are_admitted) ... ok
+test_fixtures_are_sealed_and_kv_designates_its_own_storage_endpoint (tests.test_endpoint_ledger_designation.DesignationTests.test_fixtures_are_sealed_and_kv_designates_its_own_storage_endpoint) ... ok
+test_kv_and_skap_on_a_git_ref_are_refused (tests.test_endpoint_ledger_designation.DesignationTests.test_kv_and_skap_on_a_git_ref_are_refused) ... ok
+test_malformed_designations_are_refused_with_six_fields (tests.test_endpoint_ledger_designation.DesignationTests.test_malformed_designations_are_refused_with_six_fields) ... ok
+test_one_provider_now_more_than_one_is_not_yet_supported (tests.test_endpoint_ledger_designation.DesignationTests.test_one_provider_now_more_than_one_is_not_yet_supported) ... ok
+test_no_clock_network_randomness_or_new_dependency (tests.test_endpoint_ledger_designation.DeterminismTests.test_no_clock_network_randomness_or_new_dependency) ... ok
+test_an_empty_or_missing_ledger_is_never_a_genesis_for_every_store_type (tests.test_endpoint_ledger_designation.EmptyLedgerTests.test_an_empty_or_missing_ledger_is_never_a_genesis_for_every_store_type) ... ok
+test_genesis_pin_and_seals (tests.test_endpoint_ledger_designation.EmptyLedgerTests.test_genesis_pin_and_seals) ... ok
+test_a_membership_team_or_app_installation_binding_is_refused_with_six_fields (tests.test_endpoint_ledger_designation.OrgMembershipTests.test_a_membership_team_or_app_installation_binding_is_refused_with_six_fields) ... ok
+test_a_valid_both_sides_crossing_fires_neither_endpoint_code (tests.test_endpoint_ledger_designation.OrgMembershipTests.test_a_valid_both_sides_crossing_fires_neither_endpoint_code)
+Coordination ruling (crossings): the endpoint's side is in its own chain, the Org records only its own side, ... ok
+test_the_code_predicate_and_keys_are_lane_ds (tests.test_endpoint_ledger_designation.OrgMembershipTests.test_the_code_predicate_and_keys_are_lane_ds) ... ok
+test_a_plugged_in_reader_still_passes_every_check (tests.test_endpoint_ledger_designation.ReaderSeamTests.test_a_plugged_in_reader_still_passes_every_check) ... ok
+test_git_ref_uses_the_unchanged_git_reader (tests.test_endpoint_ledger_designation.ReaderSeamTests.test_git_ref_uses_the_unchanged_git_reader) ... ok
+test_the_reader_id_is_not_documented (tests.test_endpoint_ledger_designation.ReaderSeamTests.test_the_reader_id_is_not_documented) ... ok
+test_a_head_older_than_the_newest_recorded_is_rollback_detected (tests.test_endpoint_ledger_designation.RollbackTests.test_a_head_older_than_the_newest_recorded_is_rollback_detected) ... ok
+test_the_watermark_is_the_newest_org_recorded_head_for_this_endpoint (tests.test_endpoint_ledger_designation.RollbackTests.test_the_watermark_is_the_newest_org_recorded_head_for_this_endpoint) ... ok
+test_every_kv_head_is_signed_by_kv_ledger_head_signer (tests.test_endpoint_ledger_designation.SignedHeadTests.test_every_kv_head_is_signed_by_kv_ledger_head_signer) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in <t>s
+
+OK

@@ -3,10 +3,15 @@
 # (blob 5a9df86b). It follows the reusable-workflow pattern of StegVerse-Labs/.github
 # repository-hygiene-reusable.yml (blob 9d4cc99d), with one change: the component is fetched at a
 # pinned 40-hex commit and digest-checked, never cloned at HEAD.
-# Ownership: the ledger steps belong to P1 component reuse (#163). The receive and self-closure steps
-# call InTr & Mesh-owned interfaces (#162) at their own pinned ref, intr_interface_repository StegVerse-org/.github
+# Ownership: the ledger steps belong to P1 component reuse (#163). The receive step
+# calls InTr & Mesh-owned interfaces (#162) at their own pinned ref, intr_interface_repository StegVerse-org/.github
 # at the head of InTr's D6/D7 ingress draft PR (C7 six-field pass-through, --hb-epoch), not 10d14104.
 # This workflow does not implement them.
+# The intr-destination self-closure mode is retired, not pending: it addressed this organization's own
+# InTr destination, an InTr hop inside one organization. Rigel's rule (2026-10-25, relayed by
+# Coordination): InTr paths exist only between distinct organizations; there is never an InTr hop
+# inside one organization. Its mode, steps and inputs are removed, as SV-LLM/.github#62 and
+# StegVerse-org/.github#251 removed them from the organization writers.
 # Runtime counts only as the ledger receipt read back from a fresh fetch. This run's success proves nothing.
 name: Organization ledger transition (reusable)
 
@@ -16,15 +21,13 @@ on:
       organization:            {type: string, required: true,  description: "H29 #1, exact org login; must equal the parameter file"}
       component_ref:           {type: string, required: true,  description: "40-hex commit of the component home (owner decision D1)"}
       component_repository:    {type: string, required: false, default: "StegVerse-Labs/.github"}
-      intr_interface_repository: {type: string, required: false, default: "StegVerse-org/.github", description: "InTr & Mesh-owned ingress/self-closure interface (agreed home)"}
+      intr_interface_repository: {type: string, required: false, default: "StegVerse-org/.github", description: "InTr & Mesh-owned ingress interface (agreed home)"}
       intr_interface_ref:      {type: string, required: false, default: "0f9481af324fc0cf8e46c2446ad69de07f9a8a9d", description: "40-hex InTr & Mesh interface commit: StegVerse-org/.github main merge commit of #185 (head 78ae1f8e, same tree; C7/C8 signatures on #163 issuecomment-6235428412); flat --ledger-component accepted"}
       sdk_ref:                 {type: string, required: false, default: "74d9b473aa415b06a9d550c28b2779a691b4ba32", description: "request mode only; existing pinned dependency"}
-      mode:                    {type: string, required: false, default: "request", description: "request | self-closure | readback (P1-FC-11: read the designated ledger back under this run id; appends and publishes nothing)"}
+      mode:                    {type: string, required: false, default: "request", description: "request | readback (P1-FC-11: read the designated ledger back under this run id; appends and publishes nothing)"}
       request:                 {type: string, required: false, default: ""}
       mesh_root:               {type: string, required: false, default: ""}
-      communication_id:        {type: string, required: false, default: "", description: "H29 #16"}
       hb_epoch:                {type: string, required: false, default: "", description: "H29 #15. Digits only, >= 32, supplied by the dispatcher from the carrier. On push (request mode), it is read from the committed request's hb_epoch instead. Absent in both places: FAIL_CLOSED. No clock fallback in any mode."}
-      packet_id:               {type: string, required: false, default: "", description: "H29 #17; default intr-destination-self-closure:<communication_id>"}
       owning_existing_goal:    {type: string, required: true,  description: "H29 #19; carried on every six-field non-ALLOW"}
 
 permissions:
@@ -56,7 +59,7 @@ jobs:
           for r in "${{ inputs.component_ref }}" "${{ inputs.intr_interface_ref }}"; do
             [[ "$r" =~ ^[0-9a-f]{40}$ ]] || fail COMPONENT_REF_NOT_PINNED REF_IS_A_40_HEX_COMMIT "pass the published commit SHA, not a branch or tag" "re-dispatch with the pinned SHA"
           done
-          case "$MODE" in request|self-closure|readback) ;; *) fail MODE_INVALID MODE_IS_REQUEST_SELF_CLOSURE_OR_READBACK "mode must be request, self-closure or readback" "re-dispatch with a declared mode; nothing was appended";; esac
+          case "$MODE" in request|readback) ;; *) fail MODE_INVALID MODE_IS_REQUEST_OR_READBACK "mode must be request or readback (self-closure is retired: an InTr hop inside one organization; InTr paths exist only between distinct organizations)" "call with mode request or readback; nothing was appended";; esac
           if [ "$MODE" = readback ]; then
             # P1-FC-11: a readback appends nothing, so it carries no epoch; nothing below writes.
             echo "mode readback: no epoch is required because nothing is appended"
@@ -319,68 +322,6 @@ jobs:
             echo "no request received ($listed listed, ${#deferred[@]} deferred); recorded results/NO_REQUESTS.json"
           fi
 
-      # mode=self-closure: this organization's own intr-destination, at the
-      # supplied epoch. No peer is named; the address is derived from this
-      # organization's own name.
-      - name: Close an intr-destination diagnostic against this organization
-        if: inputs.mode == 'self-closure'
-        env:
-          INPUT_COMMUNICATION_ID: ${{ inputs.communication_id }}
-          INPUT_PACKET_ID: ${{ inputs.packet_id }}
-        run: |
-          set -euo pipefail
-          export STEGVERSE_ORG_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF"
-          export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
-          out="$RUNNER_TEMP/results/self-closure"
-          mkdir -p "$out"
-          communication_id="$INPUT_COMMUNICATION_ID"
-          if [ -z "$communication_id" ]; then
-            # Agreed new-org default (InTr c). The 7 existing closures keep their
-            # legacy intr-selfclose-<Org>-20261017 ids; both forms are accepted on readback.
-            communication_id="intr-selfclose-${{ inputs.organization }}-HB${HB_EPOCH}"
-          fi
-          INPUT_COMMUNICATION_ID="$communication_id"
-          packet_id="$INPUT_PACKET_ID"
-          if [ -z "$packet_id" ]; then
-            # Agreed default (InTr c): redelivery with the same communication_id is idempotent.
-            packet_id="intr-destination-self-closure:${INPUT_COMMUNICATION_ID}"
-          fi
-          # Time is supplied with the dispatch. It is not sampled from a clock.
-          # (the first step already refused an absent epoch as HB_EPOCH_NOT_SUPPLIED; this is defence in depth)
-          case "$HB_EPOCH" in
-            ''|*[!0123456789]*)
-              python3 -c 'import json,os; print(json.dumps({"disposition":"FAIL_CLOSED","failure_code":"HB_EPOCH_INVALID","failed_predicate":"SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH","required_evidence_or_repair":"supply hb_epoch as digits only, >= 32; no clock is read","retry_entrypoint":os.environ["RETRY"],"owning_existing_goal":os.environ["GOAL"],"next_attempt":"re-dispatch with a valid hb_epoch; nothing was appended","consequence_committed":False,"derived_from_clock":False},sort_keys=True))'
-              exit 1 ;;
-          esac
-          # A refusal is recorded too; the publish step below carries it, and
-          # the readback step fails the run on any closure that is not ALLOW.
-          # C8 as merged on org main (0f9481af), flat --ledger-component: --self-close --communication-id --registry --packet-id --hb-epoch
-          # --ledger-component --consumer-root. --hb-epoch is always passed (P1-FC-8 never reached).
-          python "$INTR/resident-runtime/intr_destination_ingress.py" \
-            --ledger-component "$COMPONENT" --consumer-root "$GITHUB_WORKSPACE" \
-            --self-close \
-            --hb-epoch "$HB_EPOCH" \
-            --registry org-boundary/registry/services.json \
-            --communication-id "$INPUT_COMMUNICATION_ID" \
-            --packet-id "$packet_id" \
-            --out "$out/closure.json" || true
-          test -f "$out/closure.json"
-          python -c 'import json,sys; x=json.load(open(sys.argv[1])); print("closure disposition:", x["disposition"], x.get("communication_id"), x.get("organization_receipt_sha256"))' "$out/closure.json"
-          # Item (5), INDEX H51: right after the append, carry this repository's receipts onto the organization
-          # chain with the component's propagate_repository_receipts.propagate() (digest-pinned), handed the
-          # already-validated epoch as text through the shared validator. A refusal is six-field FAIL_CLOSED in
-          # $out/propagation.json; it never rolls back or blocks the receipt just appended (publish and
-          # readback still run), and the last step fails the run on it.
-          home="$RUNNER_TEMP/repository-ledger-home"; rm -rf "$home"; mkdir -p "$home"
-          if git cat-file -e "$LEDGER_REF:$REPO_LEDGER_NAMESPACE/HEAD.json" 2>/dev/null; then
-            git archive "$LEDGER_REF" "$REPO_LEDGER_NAMESPACE" | tar -x -C "$home"
-          fi
-          # Not `|| true`: the exit status is recorded next to the record, and the last step requires 0 and ALLOW.
-          rc=0
-          python "$COMPONENT/propagate_after_append.py" --repository "$GITHUB_REPOSITORY" \
-            --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?
-          echo "$rc" > "$out/propagation.exit"
-
       # The frames a request left on the designated mesh are published before
       # the ledger that says they were emitted: a receipt never claims an
       # emission whose frame did not outlive this run.
@@ -437,34 +378,6 @@ jobs:
             } >> "$GITHUB_STEP_SUMMARY"
           done
           exit $status
-
-      - name: Read the intr-destination self-closure back from a fresh fetch
-        if: inputs.mode == 'self-closure'
-        run: |
-          set -euo pipefail
-          out="$RUNNER_TEMP/results/self-closure"
-          fresh="$RUNNER_TEMP/self-closure-readback.git"
-          git init -q --bare "$fresh"
-          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
-          if [ -z "$auth_header" ]; then
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"AUTHENTICATED_LEDGER_READBACK_UNAVAILABLE","failed_predicate":"FRESH_FETCH_AUTHENTICATED","required_evidence_or_repair":"checkout credentials unavailable for independent sovereign ref fetch","retry_entrypoint":"'"$RETRY"'","owning_existing_goal":"'"$GOAL"'","next_attempt":"retry with authorized existing repository contents token"}'
-            exit 1
-          fi
-          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
-          python "$INTR/resident-runtime/intr_destination_ingress.py" \
-            --ledger-component "$COMPONENT" --consumer-root "$GITHUB_WORKSPACE" \
-            --verify-self-closure \
-            --location "git+$fresh#$LEDGER_REF" \
-            --repository-namespace "$REPO_LEDGER_NAMESPACE" \
-            --org-contract "$GITHUB_WORKSPACE/.stegverse/transition-ledger/org-contract.json" \
-            --closure "$out/closure.json" \
-            --out "$out/readback.json"
-          {
-            echo "### intr-destination self-closure"
-            echo '```json'
-            cat "$out/readback.json"
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
 
       # P1-FC-11 (INDEX H51): the readback sweep as an ecosystem step. The designated ref is
       # fetched fresh and the component's readback runs on it unchanged; readback_only.py records
