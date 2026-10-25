@@ -44,6 +44,11 @@
     "kind": "git",
     "repo": "StegVerse-Labs/continuity-vault-kit"
    },
+   "cvkruling": {
+    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+    "kind": "git",
+    "repo": "StegVerse-Labs/continuity-vault-kit"
+   },
    "labs3324": {
     "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
     "kind": "git",
@@ -56,6 +61,11 @@
    },
    "labsmain": {
     "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+    "kind": "git",
+    "repo": "StegVerse-Labs/.github"
+   },
+   "labsruling": {
+    "commit": "64ba618affd86f275417becf048b929ad1494d1e",
     "kind": "git",
     "repo": "StegVerse-Labs/.github"
    },
@@ -505,6 +515,14 @@
     "repo": "StegVerse-org/.github",
     "root": "org",
     "sha256": "sha256:6d373913af7bd13a53c71beffbe617aa80c284df73d4f25ec3c466547b4ceda8"
+   },
+   {
+    "commit": "64ba618affd86f275417becf048b929ad1494d1e",
+    "git_blob": "2fc6fc6ed50ef3ffcabacc7ef6759b40b5035037",
+    "path": "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+    "repo": "StegVerse-Labs/.github",
+    "root": "labsruling",
+    "sha256": "sha256:89d4265fdb8df62bd73ab33933b2a624c16389becce4d8209ef1b1f2dcea2cd4"
    }
   ]
  },
@@ -790,7 +808,7 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "ALLOW with the ruling and the finish-point root at the current #258 head @9551edab, which Labs#3327 @7bdb8a2e's ruling names (run kv-registration-plan-with-ruling). Lane D's 'verify ALLOW' for #3327 is CI-vacuous (the CI step reports no registration manifest added or changed); a local verify of the request is REGISTRATION_NOT_APPLIED, as expected before the transition runs; without the ruling the plan stays six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (run kv-registration-plan-without-ruling)",
+   "observed_state": "revision 16: both kv-registration-plan runs re-observed at Labs main @64ba618a (registry generation 321, after #3352 renamed the retired KV-SKAP InTr component to kv-skap-gate-client; the ruling at #3353 @cff426f1 is on main as fadccc2f): with the ruling ALLOW (predecessor generation 321, successor 322), without it six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE, both unchanged; the raw output no longer names the retired component. Main's revision 15 (Labs#3360) re-pinned cvk258 to continuity-vault-kit @77d28d83, at which the ruling's finish-point check fails closed ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE (the ruling names @9d56bc7b), so the with-ruling run's finish-point root is the new root cvkruling @9d56bc7b, the commit the ruling names; layers-tvc-double-interlock-probe is re-observed at TVC main @b686a60b on the merged plan. Revision 15 text: main @fadccc2f merged in (it carries P1's revision 14, 49575917, the H-KV-ENDPOINT-LEDGER-ANCHOR outcome table; Labs#3353 @cff426f1 is now on main); this hypothesis is not re-observed and its revision 14 observation stands. Revision 14 text: ALLOW with the ruling re-pinned to continuity-vault-kit main @9d56bc7b (the #271 merge; Labs#3353 @cff426f1, evidence_digest 5fd65e9b, consumes pin @859f1cf7 kept) and the finish-point root at @9d56bc7b (run kv-registration-plan-with-ruling); without the ruling the plan stays six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (run kv-registration-plan-without-ruling). Revision 13 text: ALLOW with the ruling and the finish-point root at the current #258 head @9551edab, which Labs#3327 @7bdb8a2e's ruling names (run kv-registration-plan-with-ruling). Lane D's 'verify ALLOW' for #3327 is CI-vacuous (the CI step reports no registration manifest added or changed); a local verify of the request is REGISTRATION_NOT_APPLIED, as expected before the transition runs; without the ruling the plan stays six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (run kv-registration-plan-without-ruling)",
    "refusals": [],
    "scoped_tasks": [],
    "verdict": "ALLOW"
@@ -1170,7 +1188,7 @@
    "refusals": [
     {
      "disposition": "DENY",
-     "evidence": "revision 11: TVC#541 @72decca1 retires build_chain (none in tools/; coinbase_intr_double_interlock now has gate_device_kv :85, gate_kv_skap :118 and link_gates :165 and refuses a self-asserted boundary_verification :213-216; run tvc541-build-chain-and-org-ref), but tools/app_store_connect_skap_custody.py still collapses the layers: _boundary (:39) writes boundary_verification VERIFIED (:52) and _chain (:63) mints INTR_DEVICE_KV and KV->SKAP in one call, which admit_unchanged calls at :116 and records double_interlock_verified True (run tvc541-one-call-chains-elsewhere). Revision 10 text: TVC build_chain (tools/coinbase_intr_double_interlock.py:74 @c4845bea704949c46658042963e8c532c9559939) still mints the DEVICE->KV and KV->SKAP hops in one call, and build_device_kv_receipt (:45) self-asserts boundary_verification VERIFIED (:36), so any caller of that chain mints layer 1 itself and passes layer 2 - run layers-tvc-double-interlock-probe LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT (ALLOW); continuity-vault-kit no longer uses it, but it remains the reused INTR_DEVICE_KV -> in-KV SKAP gate shape on TV/TVC's credential side. At TVC#541 @72decca1c0e1d0d60b5801cb01f0fab70ea038dc build_chain no longer takes layer receipts from the caller; it reads both from the designated KV / SKAP Vault ledgers, and with none designated it is six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED (run skap-custody-chain-probe-tvc541 DOUBLE_INTERLOCK_*), so the collapse remains only on TVC main until #541 is admitted; at @f75e3e7c build_chain still exists (tools/coinbase_intr_double_interlock.py:130) and tools/coinbase_browser_skap_custody.py:51 still calls it - the build_chain removal promised for the next push has not landed (run tvc541-build-chain-and-org-ref)",
+     "evidence": "revision 14: run layers-tvc-double-interlock-probe now drives the in-KV gate path at TVC main @b686a60b (TVC#544 retired build_chain, build_device_kv_receipt and build_kv_skap_receipt, which the revision 13 probe still called and got AttributeError): gate_device_kv (INTR_DEVICE_KV, hop 0) with no KV recorded receipt chain is six-field FAIL_CLOSED KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR; gate_kv_skap (KV_INTERNAL_SKAP_GATE, hop 1, no InTr for KV->SKAP) refuses an absent hop-0 receipt (DOUBLE_INTERLOCK_REFUSED boundary_receipt_schema_invalid) and a caller-minted one (BOUNDARY_RECEIPT_LEDGER_READ_ABSENT); a KV->SKAP hop receipt claiming InTr transport is refused (boundary_receipt_transport_invalid); BOUNDARY_TRANSPORT maps KV_INTERNAL_SKAP_GATE to KV_INTERNAL. revision 11: TVC#541 @72decca1 retires build_chain (none in tools/; coinbase_intr_double_interlock now has gate_device_kv :85, gate_kv_skap :118 and link_gates :165 and refuses a self-asserted boundary_verification :213-216; run tvc541-build-chain-and-org-ref), but tools/app_store_connect_skap_custody.py still collapses the layers: _boundary (:39) writes boundary_verification VERIFIED (:52) and _chain (:63) mints INTR_DEVICE_KV and KV->SKAP in one call, which admit_unchanged calls at :116 and records double_interlock_verified True (run tvc541-one-call-chains-elsewhere). Revision 10 text: TVC build_chain (tools/coinbase_intr_double_interlock.py:74 @c4845bea704949c46658042963e8c532c9559939) still mints the DEVICE->KV and KV->SKAP hops in one call, and build_device_kv_receipt (:45) self-asserts boundary_verification VERIFIED (:36), so any caller of that chain mints layer 1 itself and passes layer 2 - run layers-tvc-double-interlock-probe LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT (ALLOW); continuity-vault-kit no longer uses it, but it remains the reused INTR_DEVICE_KV -> in-KV SKAP gate shape on TV/TVC's credential side. At TVC#541 @72decca1c0e1d0d60b5801cb01f0fab70ea038dc build_chain no longer takes layer receipts from the caller; it reads both from the designated KV / SKAP Vault ledgers, and with none designated it is six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED (run skap-custody-chain-probe-tvc541 DOUBLE_INTERLOCK_*), so the collapse remains only on TVC main until #541 is admitted; at @f75e3e7c build_chain still exists (tools/coinbase_intr_double_interlock.py:130) and tools/coinbase_browser_skap_custody.py:51 still calls it - the build_chain removal promised for the next push has not landed (run tvc541-build-chain-and-org-ref)",
      "failed_predicate": "TWO_SEQUENTIAL_GATES_EACH_WITH_ITS_OWN_RECEIPT",
      "failure_code": "LADDER_ACCESS_LAYERS_COLLAPSED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
@@ -1423,12 +1441,12 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:63fcc88b1cffe707a5fd31ec1ff481317d632815c2a165fac48e5c326550c4dd",
+  "document_sha256": "sha256:d33a9873c44b3c06487fb16b46d1e73f7e2f0c2eedd5cb30d2175f53bc533cf5",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:3f5555c37968868e7b57595d634b915cd2936c54d84bd614ea357945ae95bf5d",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0321557a226e37110bc3d85b6fd9284000234c4ad1bf9bd49d721c52472f2c94",
-   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:145cc18b3cfaf38216b1dbeb5354b6b3d91751ee7f67df98aabe2b4b0b277336",
+   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:0601c3049bf406ffd24ebca8ae636a376ae874af63052d66dfee033aed82a978",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:9428a5d306031f55620989534db6bb0882b94c0759408efe5d3ebc0fe22e684e",
+   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:7fe452c215aef6cb38e94f6bbb29c936a86284271dbd63b6d3e2907203a463d7",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:2d215d2083b2769b78e464ce9e9497d379c3bfbdf0084fda8c60dded49cef11a",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-04.json": "sha256:577eabb0045df97a783d7285c6d5644fbe71db58fe2484804f66b822f066cc5f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-05.json": "sha256:daa28feb5c8e0ba07d655997d13afc9004a07ff7412c75da5706063eb070f1e7",

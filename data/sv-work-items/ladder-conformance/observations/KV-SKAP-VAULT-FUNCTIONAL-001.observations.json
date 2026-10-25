@@ -17,6 +17,11 @@
    "kind": "git",
    "repo": "StegVerse-Labs/continuity-vault-kit"
   },
+  "cvkruling": {
+   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "kind": "git",
+   "repo": "StegVerse-Labs/continuity-vault-kit"
+  },
   "labs3324": {
    "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
    "kind": "git",
@@ -29,6 +34,11 @@
   },
   "labsmain": {
    "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
+  "labsruling": {
+   "commit": "64ba618affd86f275417becf048b929ad1494d1e",
    "kind": "git",
    "repo": "StegVerse-Labs/.github"
   },
@@ -375,34 +385,28 @@
      "subject": "REGISTRATION_PLAN"
     }
    ],
-   "pin": "StegVerse-Labs/.github@7bdb8a2eadf302bc8ef1cd90eb30c0e48f9222de",
+   "pin": "StegVerse-Labs/.github@64ba618affd86f275417becf048b929ad1494d1e",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-without-ruling.out",
-   "raw_sha256": "sha256:b11cb288af5995075d666b9835e1c6c502146161a6c54be6a548edc5fd1c45b4",
+   "raw_sha256": "sha256:9c748154bc486c64f73f734a5f834a382bbadc12989c935c7c21d63760dd95a3",
    "run_id": "kv-registration-plan-without-ruling",
    "status": "OBSERVED",
-   "what": "registration plan, no adjacency ruling"
+   "what": "registration plan, no adjacency ruling (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
   },
   {
-   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258}",
-   "exit_code": 1,
+   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvkruling}",
+   "exit_code": 0,
    "outcomes": [
     {
-     "disposition": "FAIL_CLOSED",
-     "failed_predicate": "FINISH_POINT_SOURCE_AT_PINNED_COMMIT",
-     "failure_code": "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
-     "next_attempt": "on the next registration request event after the repair is recorded",
-     "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-     "required_evidence_or_repair": "the finish-point root must be StegVerse-Labs/continuity-vault-kit checked out at 9551edab3a152ec0741274b109b3e0de84a23ff8",
-     "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+     "disposition": "ALLOW",
      "subject": "REGISTRATION_PLAN"
     }
    ],
-   "pin": "StegVerse-Labs/.github@7bdb8a2eadf302bc8ef1cd90eb30c0e48f9222de",
+   "pin": "StegVerse-Labs/.github@64ba618affd86f275417becf048b929ad1494d1e",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-with-ruling.out",
-   "raw_sha256": "sha256:b7073f513c830b2d4487b6b4c03390077078e4c2164eda972f8fbc5cda22f455",
+   "raw_sha256": "sha256:9d3ce5834c0db194f3c0e1bdf108d16ca3746be398752d0b81658328bdc63808",
    "run_id": "kv-registration-plan-with-ruling",
    "status": "OBSERVED",
-   "what": "registration plan with the Coordination class-D adjacency ruling and the finish-point root at the #258 head, which the ruling @7bdb8a2e names (9551edab)"
+   "what": "registration plan with the Coordination class-D adjacency ruling re-pinned to cvk main @9d56bc7b (Labs#3353) and the finish-point root at that commit (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
   },
   {
    "files_scanned": 2,
@@ -3305,34 +3309,68 @@
    "what": "TVC#541 @72decca1 skap_custody_chain.gate (read, skap_resident_sealed_object, the shipped manifest): no chain, an unlisted store, an out-of-scope subject, layer 1 absent, an edited layer-1 hash, layer 2 not bound to layer 1, caller-minted self-hashed layer receipts with TVC#537 absent; then with TVC#537 @c87272cf on the path: the same caller-minted receipts plus a caller-requested issuance receipt and a caller-supplied client, an edited issuance receipt, no client; read_through_chain on the caller-minted chain; the TVC#538/#541 double interlock build_chain/validate_chain on the same caller-minted receipts"
   },
   {
-   "command": "{python} -c import json, sys\nsys.path.insert(0, \"tools\")\nimport coinbase_intr_double_interlock as d\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nkw = dict(ingress_id=\"ladder-probe\", credential_ref=\"tvc://probe\", payload_hash=\"sha256:\" + \"0\" * 64)\ndef l1_no_health():\n    d.validate_chain(d.build_chain(**kw))\ndef l2_no_l1():\n    d.build_kv_skap_receipt(device_kv_receipt={}, **kw)\ndef l2_caller_minted_l1():\n    first = d.build_device_kv_receipt(**kw)  # minted by the caller itself: no gate, no node, no InTr exchange\n    d.build_kv_skap_receipt(device_kv_receipt=first, **kw)\nprobe(\"LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE\", l1_no_health)\nprobe(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", l2_no_l1)\nprobe(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", l2_caller_minted_l1)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "command": "{python} -c import json\nfrom tools import coinbase_intr_double_interlock as d\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except d.DoubleInterlockError as exc:\n        rows.append(dict({k: exc.refusal.get(k) for k in (\"disposition\", \"failure_class\") + d.SIX_FIELDS}, subject=subject, message=str(exc)))\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nEPOCH = \"ladder-probe-hb-epoch-1\"\nkw = dict(ingress_id=\"ladder-probe\", credential_ref=\"tvc://probe\", payload_hash=\"sha256:\" + \"0\" * 64)\ndef minted(boundary, hop, transport):\n    # minted by the caller itself: no gate, no ledger read-back, no healthy node\n    body = {\"schema\": d.RECEIPT_SCHEMA, \"receipt_id\": \"ladder-probe:\" + boundary, \"operation_id\": \"ladder-probe\",\n            \"credential_ref\": kw[\"credential_ref\"], \"boundary\": boundary, \"hop_index\": hop, \"direction\": \"FORWARD\",\n            \"from_role\": (\"DEVICE\", \"KV\")[hop], \"to_role\": (\"KV\", \"SKAP_VAULT\")[hop], \"payload_hash\": kw[\"payload_hash\"],\n            \"prior_receipt_hash\": None, \"readback_receipt_schema\": \"caller-minted\",\n            \"readback_receipt_hash\": {\"digest\": \"sha256:\" + \"1\" * 64, \"observed_at\": EPOCH},\n            \"ledger_read_receipt\": {\"ledger\": (\"kv\", \"skap_vault\")[hop]}, \"transition_state\": \"FORWARDED\",\n            \"secret_plaintext_present\": False, \"authority_transfer\": False, \"credential_authority\": \"TV/TVC\",\n            \"transport_protocol\": transport}\n    return dict(body, receipt_hash=d.digest(body))\ndef l1_no_health():  # gate 1 (INTR_DEVICE_KV) with no KV recorded receipt chain to read layer 1 from\n    d.gate_device_kv(org_ledger_git_dir=None, supplied_hb_epoch=EPOCH, **kw)\ndef l2_no_l1():  # gate 2 (in-KV SKAP gate) with no hop-0 receipt\n    d.gate_kv_skap(device_kv_receipt={}, org_ledger_git_dir=None, supplied_hb_epoch=EPOCH)\ndef l2_caller_minted_l1():\n    d.gate_kv_skap(device_kv_receipt=minted(\"INTR_DEVICE_KV\", 0, \"InTr\"), org_ledger_git_dir=None,\n                   supplied_hb_epoch=EPOCH)\ndef kv_skap_hop_claims_intr():  # KV->SKAP never leaves KV: a hop-1 receipt claiming InTr transport is refused\n    d.validate_boundary_receipt(minted(\"KV_INTERNAL_SKAP_GATE\", 1, \"InTr\"), expected_boundary=\"KV_INTERNAL_SKAP_GATE\")\ndef kv_skap_hop_transport():\n    if d.BOUNDARY_TRANSPORT != {\"INTR_DEVICE_KV\": \"InTr\", \"KV_INTERNAL_SKAP_GATE\": \"KV_INTERNAL\"}:\n        raise ValueError(\"boundary_transport_not_in_kv_gate: %r\" % (d.BOUNDARY_TRANSPORT,))\nprobe(\"LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE\", l1_no_health)\nprobe(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", l2_no_l1)\nprobe(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", l2_caller_minted_l1)\nprobe(\"KV_SKAP_HOP_CLAIMING_INTR_TRANSPORT\", kv_skap_hop_claims_intr)\nprobe(\"KV_SKAP_HOP_IS_IN_KV_GATE_NOT_INTR\", kv_skap_hop_transport)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
    "exit_code": 0,
    "outcomes": [
     {
-     "disposition": "EXCEPTION",
-     "exception": "AttributeError",
-     "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_chain'",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_STORAGE_ENDPOINT_PROVIDER_EXECUTION_ADMITTED",
+     "failure_class": "B",
+     "failure_code": "KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR",
+     "message": "kv2_storage_endpoint_pending_interlock_intr:KV_STORAGE_ENDPOINT_PROVIDER_EXECUTION_ADMITTED",
+     "next_attempt": "on the KV #2 governance/provider-execution event in the canonical runtime lane (event-driven)",
+     "owning_existing_goal": "KV-CONNECTION-REVALIDATION-WORKER-001 (KV #2 request SITE-CLOUD-KV-4347408852127319cbda574f02e03edb; SV-KV-AI-PERSISTENCE-001, TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001)",
+     "required_evidence_or_repair": "authentic Interlock/InTr governance and provider execution of the existing KV #2 request SITE-CLOUD-KV-4347408852127319cbda574f02e03edb (KV_STORAGE_ENDPOINT_V2_MIRROR_HANDOFF.md), then a READ of the recorded receipt chain through that storage endpoint",
+     "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)",
      "subject": "LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE"
     },
     {
-     "disposition": "EXCEPTION",
-     "exception": "AttributeError",
-     "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_kv_skap_receipt'",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND",
+     "failure_class": "B",
+     "failure_code": "DOUBLE_INTERLOCK_REFUSED",
+     "message": "boundary_receipt_schema_invalid",
+     "next_attempt": "on a chain rebuilt from both read-back receipts",
+     "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)",
+     "required_evidence_or_repair": "repair the double-interlock chain: boundary_receipt_schema_invalid",
+     "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)",
      "subject": "LAYER2_WITHOUT_LAYER1_RECEIPT"
     },
     {
-     "disposition": "EXCEPTION",
-     "exception": "AttributeError",
-     "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_device_kv_receipt'",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND",
+     "failure_class": "B",
+     "failure_code": "BOUNDARY_RECEIPT_LEDGER_READ_ABSENT",
+     "message": "boundary_receipt_ledger_read_absent:COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND",
+     "next_attempt": "on hop receipts produced by the two gates",
+     "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)",
+     "required_evidence_or_repair": "each hop receipt must carry the read receipt of its own recorded receipt chain (hop 0: KV's; hop 1: the SKAP Vault's)",
+     "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)",
      "subject": "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND",
+     "failure_class": "B",
+     "failure_code": "DOUBLE_INTERLOCK_REFUSED",
+     "message": "boundary_receipt_transport_invalid",
+     "next_attempt": "on a chain rebuilt from both read-back receipts",
+     "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)",
+     "required_evidence_or_repair": "repair the double-interlock chain: boundary_receipt_transport_invalid",
+     "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)",
+     "subject": "KV_SKAP_HOP_CLAIMING_INTR_TRANSPORT"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "KV_SKAP_HOP_IS_IN_KV_GATE_NOT_INTR"
     }
    ],
    "pin": "StegVerse-Labs/TVC@b686a60b959ebffd165bc38ef011d0f50a6bb935",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/layers-tvc-double-interlock-probe.out",
-   "raw_sha256": "sha256:d243df7426db45d8b7f69dc7762aaeae7a3a242a28d24b7f65c073bbf8849c48",
+   "raw_sha256": "sha256:1eea121e785dc277760dfa55596708be8c42ca94e66c78afbb868ca647680703",
    "run_id": "layers-tvc-double-interlock-probe",
    "status": "OBSERVED",
-   "what": "TVC double interlock INTR_DEVICE_KV -> in-KV SKAP gate: layer 1 without healthy-node evidence, layer 2 without layer 1, layer 2 on a caller-minted layer-1 receipt"
+   "what": "TVC double interlock on the in-KV gate path (revision 14: TVC#544 retired build_chain): gate_device_kv (INTR_DEVICE_KV, hop 0) without a KV recorded receipt chain, gate_kv_skap (KV_INTERNAL_SKAP_GATE, hop 1, no InTr) without a hop-0 receipt and on a caller-minted hop-0 receipt, a KV->SKAP hop claiming InTr transport, and the boundary transport table"
   },
   {
    "files_scanned": 1,
@@ -5909,7 +5947,7 @@
      "failure_code": "KV_RECEIPT_CHAIN_STORE_NOT_STORAGE_ENDPOINT_V2",
      "next_attempt": "on a KV-owned contract whose single store is a documented storage endpoint v2 descriptor",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "/tmp/e0-kv-chain-mgoufidc/contract.json at sha256:077eadc6bb201447001f43739f613fb3acb35e2f83ff5e626a1532cb87a5b4ef: #431 repository_ledger_location keys designating STEGVERSE_KV#KV_INTR_ENDPOINT:_StegVerse/Receipts, plus a one-store KV_STORAGE_ENDPOINT ledger_designation",
+     "required_evidence_or_repair": "/tmp/e0-kv-chain-7noqja3q/contract.json at sha256:077eadc6bb201447001f43739f613fb3acb35e2f83ff5e626a1532cb87a5b4ef: #431 repository_ledger_location keys designating STEGVERSE_KV#KV_INTR_ENDPOINT:_StegVerse/Receipts, plus a one-store KV_STORAGE_ENDPOINT ledger_designation",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "MEMBERSHIP_WATERMARK_SOURCE_VALUE_OTHER_KV"
     },
@@ -6239,7 +6277,7 @@
      "failure_code": "KV_RECEIPT_CHAIN_STORE_NOT_STORAGE_ENDPOINT_V2",
      "next_attempt": "on a KV-owned contract whose single store is a documented storage endpoint v2 descriptor",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "/tmp/e0-kv-chain-cyjk9ap0/contract.json at sha256:f1d553f09b058ab45cad3f218e9dfca14e04f8ad7f81f4239b620306b2b87a78: #431 repository_ledger_location keys designating STEGVERSE_KV#KV_INTR_ENDPOINT:_Vault/SKAP/Receipts, plus a one-store KV_STORAGE_ENDPOINT ledger_designation",
+     "required_evidence_or_repair": "/tmp/e0-kv-chain-1csfkyat/contract.json at sha256:f1d553f09b058ab45cad3f218e9dfca14e04f8ad7f81f4239b620306b2b87a78: #431 repository_ledger_location keys designating STEGVERSE_KV#KV_INTR_ENDPOINT:_Vault/SKAP/Receipts, plus a one-store KV_STORAGE_ENDPOINT ledger_designation",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "MEMBERSHIP_WATERMARK_SOURCE_VALUE_OTHER_SKAP_VAULT"
     },
@@ -6782,7 +6820,7 @@
    ],
    "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/cvk263-chain-probe.out",
-   "raw_sha256": "sha256:5ee7dde39a3bed043fe66b645ade1d803be993add725ba5f442d8f885e618fc9",
+   "raw_sha256": "sha256:6bb80eb6133b74ee1b22a935b9f92961b30c6249d0f7ac0e98782c759c43da9b",
    "run_id": "cvk263-chain-probe",
    "status": "OBSERVED",
    "what": "continuity-vault-kit main @77d28d83 (revision 15; was #263 @bf684aad) runtime.kv_receipt_ledgers and SkapLayer2Gate.receipt_ledger: production reads of both committed contracts (designation, org membership, org ref, prerequisites), then Lane D's own TEST-ONLY harness (tests/test_kv_ladder_conformance_lc_kv.py kv_chain_e0, e0_kv_root, e0_kv_attestation; genesis re-pinned in memory) for org-membership forms (Lane D's five plus a capitalised key, top-level organization, github_app_installation_id, permissions and owner keys, and a binding inside designation_notes), E0 positive controls, a caller-seed head signature, an attestation naming the other chain, org-ledger receipts presented as the KV chain, a provider record in the chain location, an older genuinely signed head replayed with and without the Org watermark (kv, and skap_vault through the gate), a never-minted layer-1 hash, and a clock-stamped observed_at; revision 15: every E0 read runs with the Org side recording each head of its chain (held at both ends, LC-KV-26), and LC-KV-26 rows withhold the Org record (KV end only), narrow it to an older head, record every head, and roll back after the last crossing"
@@ -8322,6 +8360,14 @@
    "repo": "StegVerse-org/.github",
    "root": "org",
    "sha256": "sha256:6d373913af7bd13a53c71beffbe617aa80c284df73d4f25ec3c466547b4ceda8"
+  },
+  {
+   "commit": "64ba618affd86f275417becf048b929ad1494d1e",
+   "git_blob": "2fc6fc6ed50ef3ffcabacc7ef6759b40b5035037",
+   "path": "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsruling",
+   "sha256": "sha256:89d4265fdb8df62bd73ab33933b2a624c16389becce4d8209ef1b1f2dcea2cd4"
   }
  ],
  "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001"

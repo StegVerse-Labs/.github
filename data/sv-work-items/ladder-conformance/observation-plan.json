@@ -473,6 +473,12 @@
      "ref": "continuity-vault-kit main @77d28d83 (revision 15 re-pin from main @9d56bc7b: contains #275 77d28d83, LC-KV-26 closed by P1 - a KV head is readable only when recorded at both ends; and #274; contains #263 6751d36e, #259 1e8cd49e, #270 cdc50149 and #271 9d56bc7b; #258 closed, its commits are ancestors via #263)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
+    "cvkruling": {
+     "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+     "kind": "git",
+     "ref": "continuity-vault-kit main @9d56bc7b (the #271 merge), the finish-point source the KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling at Labs main names; revision 16 keeps the with-ruling plan's finish-point root here while cvk258 follows main's revision 15 re-pin to @77d28d83, at which the ruling's finish-point check fails closed ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
+     "repo": "StegVerse-Labs/continuity-vault-kit"
+    },
     "labs3324": {
      "commit": "32a4f3449385995c7e60439abcf795bebdefacb1",
      "kind": "git",
@@ -489,6 +495,12 @@
      "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
      "kind": "git",
      "ref": "StegVerse-Labs/.github main",
+     "repo": "StegVerse-Labs/.github"
+    },
+    "labsruling": {
+     "commit": "64ba618affd86f275417becf048b929ad1494d1e",
+     "kind": "git",
+     "ref": "StegVerse-Labs/.github main @64ba618a (revision 16 re-pin from #3353 @cff426f1, now merged as fadccc2f: main carries the same KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling, registry generation 321 and the #3352 rename of the retired KV-SKAP InTr component to kv-skap-gate-client)",
      "repo": "StegVerse-Labs/.github"
     },
     "llmad": {
@@ -660,10 +672,10 @@
      ],
      "kind": "command",
      "parse": "disposition",
-     "root": "labs3327",
+     "root": "labsruling",
      "run_id": "kv-registration-plan-without-ruling",
      "subject": "REGISTRATION_PLAN",
-     "what": "registration plan, no adjacency ruling"
+     "what": "registration plan, no adjacency ruling (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
     },
     {
      "argv": [
@@ -677,14 +689,14 @@
       "--adjacency-ruling",
       "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
       "--finish-point-root",
-      "{root:cvk258}"
+      "{root:cvkruling}"
      ],
      "kind": "command",
      "parse": "disposition",
-     "root": "labs3327",
+     "root": "labsruling",
      "run_id": "kv-registration-plan-with-ruling",
      "subject": "REGISTRATION_PLAN",
-     "what": "registration plan with the Coordination class-D adjacency ruling and the finish-point root at the #258 head, which the ruling @7bdb8a2e names (9551edab)"
+     "what": "registration plan with the Coordination class-D adjacency ruling re-pinned to cvk main @9d56bc7b (Labs#3353) and the finish-point root at that commit (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
     },
     {
      "globs": [
@@ -964,13 +976,13 @@
      "argv": [
       "{python}",
       "-c",
-      "import json, sys\nsys.path.insert(0, \"tools\")\nimport coinbase_intr_double_interlock as d\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nkw = dict(ingress_id=\"ladder-probe\", credential_ref=\"tvc://probe\", payload_hash=\"sha256:\" + \"0\" * 64)\ndef l1_no_health():\n    d.validate_chain(d.build_chain(**kw))\ndef l2_no_l1():\n    d.build_kv_skap_receipt(device_kv_receipt={}, **kw)\ndef l2_caller_minted_l1():\n    first = d.build_device_kv_receipt(**kw)  # minted by the caller itself: no gate, no node, no InTr exchange\n    d.build_kv_skap_receipt(device_kv_receipt=first, **kw)\nprobe(\"LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE\", l1_no_health)\nprobe(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", l2_no_l1)\nprobe(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", l2_caller_minted_l1)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n"
+      "import json\nfrom tools import coinbase_intr_double_interlock as d\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except d.DoubleInterlockError as exc:\n        rows.append(dict({k: exc.refusal.get(k) for k in (\"disposition\", \"failure_class\") + d.SIX_FIELDS}, subject=subject, message=str(exc)))\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nEPOCH = \"ladder-probe-hb-epoch-1\"\nkw = dict(ingress_id=\"ladder-probe\", credential_ref=\"tvc://probe\", payload_hash=\"sha256:\" + \"0\" * 64)\ndef minted(boundary, hop, transport):\n    # minted by the caller itself: no gate, no ledger read-back, no healthy node\n    body = {\"schema\": d.RECEIPT_SCHEMA, \"receipt_id\": \"ladder-probe:\" + boundary, \"operation_id\": \"ladder-probe\",\n            \"credential_ref\": kw[\"credential_ref\"], \"boundary\": boundary, \"hop_index\": hop, \"direction\": \"FORWARD\",\n            \"from_role\": (\"DEVICE\", \"KV\")[hop], \"to_role\": (\"KV\", \"SKAP_VAULT\")[hop], \"payload_hash\": kw[\"payload_hash\"],\n            \"prior_receipt_hash\": None, \"readback_receipt_schema\": \"caller-minted\",\n            \"readback_receipt_hash\": {\"digest\": \"sha256:\" + \"1\" * 64, \"observed_at\": EPOCH},\n            \"ledger_read_receipt\": {\"ledger\": (\"kv\", \"skap_vault\")[hop]}, \"transition_state\": \"FORWARDED\",\n            \"secret_plaintext_present\": False, \"authority_transfer\": False, \"credential_authority\": \"TV/TVC\",\n            \"transport_protocol\": transport}\n    return dict(body, receipt_hash=d.digest(body))\ndef l1_no_health():  # gate 1 (INTR_DEVICE_KV) with no KV recorded receipt chain to read layer 1 from\n    d.gate_device_kv(org_ledger_git_dir=None, supplied_hb_epoch=EPOCH, **kw)\ndef l2_no_l1():  # gate 2 (in-KV SKAP gate) with no hop-0 receipt\n    d.gate_kv_skap(device_kv_receipt={}, org_ledger_git_dir=None, supplied_hb_epoch=EPOCH)\ndef l2_caller_minted_l1():\n    d.gate_kv_skap(device_kv_receipt=minted(\"INTR_DEVICE_KV\", 0, \"InTr\"), org_ledger_git_dir=None,\n                   supplied_hb_epoch=EPOCH)\ndef kv_skap_hop_claims_intr():  # KV->SKAP never leaves KV: a hop-1 receipt claiming InTr transport is refused\n    d.validate_boundary_receipt(minted(\"KV_INTERNAL_SKAP_GATE\", 1, \"InTr\"), expected_boundary=\"KV_INTERNAL_SKAP_GATE\")\ndef kv_skap_hop_transport():\n    if d.BOUNDARY_TRANSPORT != {\"INTR_DEVICE_KV\": \"InTr\", \"KV_INTERNAL_SKAP_GATE\": \"KV_INTERNAL\"}:\n        raise ValueError(\"boundary_transport_not_in_kv_gate: %r\" % (d.BOUNDARY_TRANSPORT,))\nprobe(\"LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE\", l1_no_health)\nprobe(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", l2_no_l1)\nprobe(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", l2_caller_minted_l1)\nprobe(\"KV_SKAP_HOP_CLAIMING_INTR_TRANSPORT\", kv_skap_hop_claims_intr)\nprobe(\"KV_SKAP_HOP_IS_IN_KV_GATE_NOT_INTR\", kv_skap_hop_transport)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n"
      ],
      "kind": "command",
      "parse": "rows",
      "root": "tvc",
      "run_id": "layers-tvc-double-interlock-probe",
-     "what": "TVC double interlock INTR_DEVICE_KV -> in-KV SKAP gate: layer 1 without healthy-node evidence, layer 2 without layer 1, layer 2 on a caller-minted layer-1 receipt"
+     "what": "TVC double interlock on the in-KV gate path (revision 14: TVC#544 retired build_chain): gate_device_kv (INTR_DEVICE_KV, hop 0) without a KV recorded receipt chain, gate_kv_skap (KV_INTERNAL_SKAP_GATE, hop 1, no InTr) without a hop-0 receipt and on a caller-minted hop-0 receipt, a KV->SKAP hop claiming InTr transport, and the boundary transport table"
     },
     {
      "globs": [
@@ -1943,6 +1955,10 @@
     {
      "path": ".stegverse/transition-ledger/org-contract.json",
      "root": "org"
+    },
+    {
+     "path": "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+     "root": "labsruling"
     }
    ]
   }
