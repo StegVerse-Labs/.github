@@ -2,7 +2,7 @@
 """Materialize the canonical DEVICE->KV->DEVICE return around the in-KV SKAP gate.
 
 KV and the SKAP Vault are one organisation, so KV<->SKAP is the in-KV SKAP gate, not
-an InTr hop (StegVerse-org/.github#167 ruling c6393224851 (3); PROVISIONAL_ON_RULING_C).
+an InTr hop (StegVerse-org/.github#167 ruling c6393224851 (3); ruling C accepted, c6393756343).
 No KV->SKAP or SKAP->KV InTr packet is prepared, and no retired StegOS connector profile
 (kv-skap, kv-skap-custody or kv-skap-account-metadata) is resolved. Only the genuine
 cross-boundary device-kv profile is used, for the KV->DEVICE return leg.
@@ -11,8 +11,9 @@ This bridge keeps the TVC double-Interlock custody admission as it is. Once that
 admission has persisted the ciphertext, it:
 
 1. requires an exact readback of the SKAP Vault object;
-2. binds the in-KV gate exchange to the canonical DEVICE->KV terminal receipt, by the
-   sha256 of the exchange's exact bytes;
+2. binds the in-KV gate exchange, which is the cvk layer-2 SKAP-access receipt re-derived from its
+   bytes and chained to the layer-1 KV-access receipt of the canonical DEVICE->KV hop (C1, C2), by
+   the sha256 of its exact bytes;
 3. emits the final KV->DEVICE leg carrying that hash.
 
 No plaintext, credential resolution, provider operation or execution authority is introduced.
@@ -70,17 +71,17 @@ def materialize(*, request: Mapping[str, Any], persisted: Mapping[str, Any], run
     stored = credential_path.read_bytes()
     if stored != canonical(dict(capsule)): raise CanonicalKVSkapReturnError("skap_exact_readback_mismatch")
     if sha_uri(stored) != request.get("payload_hash"): raise CanonicalKVSkapReturnError("skap_exact_readback_payload_hash_mismatch")
-    gate_exchange = device_return.build_gate_exchange(
-        operation_id=str(request["operation_id"]), credential_ref=capsule.get("credential_ref"),
-        device_kv_terminal=device_hash, stored_object_sha256=sha_uri(stored),
-        custody_evidence={"gate_request_hash": request.get("request_hash"), "custody_receipt_ref": str(persisted.get("custody_receipt_path") or ""), "skap_vault_storage_backend": persisted.get("backend_id")},
-    )
-    returned = device_return.materialize(runtime_root=runtime_root, stegos_root=stegos_root, materialization_id=str(request["materialization_id"]), device_kv_receipt=canonical_device, gate_exchange_bytes=gate_exchange, operation_id=str(request["operation_id"]))
+    try:
+        returned = device_return.materialize(runtime_root=runtime_root, stegos_root=stegos_root, materialization_id=str(request["materialization_id"]), device_kv_receipt=canonical_device, kv_access_receipt=request.get("kv_access_receipt"), skap_access_receipt=request.get("skap_access_receipt"), stored_object_sha256=sha_uri(stored), operation_id=str(request["operation_id"]))
+    except device_return.KVDeviceReturnError as exc:
+        err = CanonicalKVSkapReturnError(str(exc)); err.fail_closed = getattr(exc, "fail_closed", None)
+        raise err from exc
     result = {
         "schema": "stegverse.kv-skap.gate-roundtrip/v1", "state": "KV_TO_DEVICE_RETURN_PERSISTED",
         "materialization_id": request["materialization_id"], "operation_id": request["operation_id"],
         "canonical_device_kv_receipt_hash": device_hash,
         "kv_skap_gate_exchange_hash": returned["kv_skap_gate_exchange_hash"],
+        "kv_access_receipt_hash": returned["kv_access_receipt_hash"], "skap_access_receipt_hash": returned["skap_access_receipt_hash"],
         "kv_device_terminal_receipt_hash": returned["kv_device_terminal_receipt_hash"],
         "boundary_stack": ["DEVICE_SYSTEM", "KV", "DEVICE_SYSTEM"], "kv_skap_path": "IN_KV_GATE", "kv_skap_intr_hop": False,
         "exact_ciphertext_readback_verified": True, "kv_exact_readback_verified": returned["kv_exact_readback_verified"],

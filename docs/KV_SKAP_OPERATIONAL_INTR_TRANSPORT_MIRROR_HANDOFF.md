@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`
 Canonical merge: `3ec15ed7937fa621a215f78b4992a6e3af63566f` (original transport, PR #716)
-Updated: 2026-10-25 (laned/kv-skap-roundtrip-device-kv-consumer, PROVISIONAL_ON_RULING_C)
+Updated: 2026-10-25 (laned/kv-skap-roundtrip-device-kv-consumer; ruling C accepted with conditions C1-C3, StegVerse-org/.github#167 c6393756343)
 State: SOURCE_REBOUND_TO_TWO_LEG_ROUNDTRIP / AUTHENTIC_RESIDENT_KV_SKAP_EVENT_NOT_YET_OBSERVED
 Credential authority: TV/TVC
 Authority effect: NONE
@@ -10,16 +10,24 @@ Authority effect: NONE
 ## Goal
 
 KV and the SKAP Vault are one organisation, so KV <-> SKAP is the in-KV SKAP gate and never an InTr hop
-(StegVerse-org/.github#167 ruling c6393224851 (3); Coordination ruling C, PROVISIONAL_ON_RULING_C). The
-credential-custody round trip has two InTr legs. The in-KV gate exchange between them is bound by the sha256
-of its exact bytes:
+(StegVerse-org/.github#167 ruling c6393224851 (3); Coordination ruling C, accepted with conditions C1-C3 in c6393756343).
+The credential-custody round trip has two InTr legs. The in-KV gate exchange between them is the
+continuity-vault-kit layer-2 SKAP-access receipt (`stegverse.skap-access-receipt/v1`, boundary
+`KV_INTERNAL_SKAP_GATE`, minted by `SkapLayer2Gate.admit`, from `KV`), re-derived from its bytes and never
+caller-asserted (C1). Its `prior_receipt_hash` must be the layer-1 KV-access receipt minted by
+`KVInterlockRuntime.handle` (`INTR_DEVICE_KV`) for the same DEVICE->KV hop, whose `intr_receipt_ref` is the
+DEVICE->KV terminal receipt (C2). Any mismatch is the six-field FAIL_CLOSED
+`KV_SKAP_LAYER2_ACCESS_RECEIPT_BINDING_REFUSED`, never a fallback. There is no `kv-skap` load, no KV->SKAP or
+SKAP->KV packet, and no four-leg `LEG_ORDER`, with no alias (C3). The gate exchange is bound by the sha256 of
+its exact bytes:
 
 ```text
 DEVICE_SYSTEM
   -> device-kv (InTr leg 1)
   -> KV / KnowledgeVault:Interlock
        in-KV SKAP gate: KnowledgeVault:SKAPClient -> SKAP:Vault (TVC custody, exact readback)
-       gate exchange record, kv_skap_gate_exchange_hash = sha256(exact bytes)
+       layer-2 SKAP-access receipt (prior = layer-1 KV-access receipt of leg 1)
+       kv_skap_gate_exchange_hash = sha256(exact layer-2 receipt bytes)
   -> device-kv response (InTr leg 2, prior = DEVICE->KV terminal receipt, payload carries the gate hash)
   -> DEVICE_SYSTEM
 ```

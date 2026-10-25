@@ -2,12 +2,15 @@
 """Materialize the KV->DEVICE_SYSTEM return leg from the in-KV SKAP gate exchange.
 
 KV and the SKAP Vault are one organisation, so KV<->SKAP is the in-KV SKAP gate, not
-an InTr hop (StegVerse-org/.github#167 ruling c6393224851 (3); PROVISIONAL_ON_RULING_C).
-The round trip has two InTr legs, DEVICE_SYSTEM->KV and KV->DEVICE_SYSTEM:
+an InTr hop (StegVerse-org/.github#167 ruling c6393224851 (3); ruling C accepted with conditions
+C1-C3, c6393756343). The round trip has two InTr legs, DEVICE_SYSTEM->KV and KV->DEVICE_SYSTEM:
 
 1. the DEVICE->KV terminal receipt is validated first;
-2. the in-KV gate exchange must name that receipt and is bound by the sha256 of its
-   exact bytes (``kv_skap_gate_exchange_hash``);
+2. the in-KV gate exchange is the continuity-vault-kit layer-2 SKAP-access receipt
+   (SkapLayer2Gate.admit, KV_INTERNAL_SKAP_GATE), re-derived from its bytes, whose prior is the
+   layer-1 KV-access receipt (KVInterlockRuntime.handle, INTR_DEVICE_KV) of that same DEVICE->KV hop.
+   It is bound by the sha256 of its exact bytes (``kv_skap_gate_exchange_hash``). No SKAP->KV InTr
+   packet is taken as input;
 3. the return payload carries that hash. It is persisted and read back at KV, and
    only then is the device-kv response packet built, with
    prior_transport_receipt_hash equal to the DEVICE->KV terminal receipt.
@@ -25,9 +28,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
+from workers.device_kv_skap_roundtrip_verifier import GATE_EXCHANGE_FIELD, Layer2BindingRefused, bind_layer2_skap_access_receipt
+
 PROFILE_ID = "device-kv"
-GATE_EXCHANGE_SCHEMA = "stegverse.kv-skap.gate-exchange/v1"
-GATE_EXCHANGE_FIELD = "kv_skap_gate_exchange_hash"
 RETURN_SCHEMA = "stegverse.kv-skap.gate-return/v1"
 OUT_REL = Path("receipts/sovereign-host/device-kv-skap-roundtrip")
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
@@ -105,74 +110,37 @@ def validate_device_kv_receipt(receipt: Any) -> str:
     return claimed
 
 
-def validate_gate_exchange(raw: bytes, *, device_kv_terminal: str) -> dict[str, Any]:
-    """Validate the in-KV gate exchange bytes and their binding to the DEVICE->KV terminal receipt."""
-    if not isinstance(raw, (bytes, bytearray)) or not raw:
-        raise KVDeviceReturnError("kv_skap_gate_exchange_required")
+def bind_gate_exchange(*, kv_access_receipt: Any, skap_access_receipt: Any, device_kv_terminal: str) -> tuple[bytes, str]:
+    """C1/C2: the exact layer-2 SKAP-access receipt bytes and their hash, or KVDeviceReturnError carrying the six-field FAIL_CLOSED."""
     try:
-        exchange = json.loads(bytes(raw).decode("utf-8"))
-    except (UnicodeDecodeError, ValueError) as exc:
-        raise KVDeviceReturnError("kv_skap_gate_exchange_invalid_json") from exc
-    if not isinstance(exchange, dict) or exchange.get("schema") != GATE_EXCHANGE_SCHEMA:
-        raise KVDeviceReturnError("kv_skap_gate_exchange_schema_invalid")
-    if exchange.get("kv_skap_path") != "IN_KV_GATE" or exchange.get("kv_skap_intr_hop") is not False:
-        raise KVDeviceReturnError("kv_skap_gate_exchange_must_not_be_intr")
-    if exchange.get("canonical_device_kv_receipt_hash") != device_kv_terminal:
-        raise KVDeviceReturnError("kv_skap_gate_not_bound_to_device_kv")
-    if exchange.get("exact_ciphertext_readback_verified") is not True:
-        raise KVDeviceReturnError("kv_skap_gate_exact_readback_not_verified")
-    stored = exchange.get("stored_object_sha256")
-    if not isinstance(stored, str) or not stored.startswith("sha256:") or len(stored) != 71:
-        raise KVDeviceReturnError("kv_skap_gate_stored_object_hash_invalid")
-    if exchange.get("secret_plaintext_present") is not False or exchange.get("credential_material_present") is not False:
-        raise KVDeviceReturnError("kv_skap_gate_exchange_secret_material_forbidden")
-    if exchange.get("credential_authority") != "TV/TVC":
-        raise KVDeviceReturnError("kv_skap_gate_credential_authority_invalid")
-    return exchange
+        return bind_layer2_skap_access_receipt(kv_access_receipt=kv_access_receipt, skap_access_receipt=skap_access_receipt, device_kv_terminal_receipt_hash=device_kv_terminal)
+    except Layer2BindingRefused as exc:
+        err = KVDeviceReturnError(str(exc)); err.fail_closed = exc.fail_closed
+        raise err from exc
 
 
-def build_gate_exchange(*, operation_id: str, credential_ref: Any, device_kv_terminal: str, stored_object_sha256: str, custody_evidence: Mapping[str, Any]) -> bytes:
-    """Return the exact bytes of one in-KV KV<->SKAP gate exchange record (not an InTr packet)."""
-    exchange = {
-        "schema": GATE_EXCHANGE_SCHEMA,
-        "gate": {"boundary": "KV", "from_subsystem": "KnowledgeVault:SKAPClient", "to_subsystem": "SKAP:Vault"},
-        "kv_skap_path": "IN_KV_GATE",
-        "kv_skap_intr_hop": False,
-        "operation_id": str(operation_id),
-        "credential_ref": credential_ref,
-        "canonical_device_kv_receipt_hash": device_kv_terminal,
-        "stored_object_sha256": stored_object_sha256,
-        "exact_ciphertext_readback_verified": True,
-        "custody_writer": "StegVerse-Labs/TVC",
-        "custody_evidence": dict(custody_evidence),
-        "secret_plaintext_present": False,
-        "credential_material_present": False,
-        "credential_authority": "TV/TVC",
-        "authority_effect": "NONE_EVIDENCE_ONLY",
-    }
-    raw = canonical(exchange)
-    validate_gate_exchange(raw, device_kv_terminal=device_kv_terminal)
-    return raw
-
-
-def materialize(*, runtime_root: Path, stegos_root: Path, materialization_id: str, device_kv_receipt: Mapping[str, Any], gate_exchange_bytes: bytes, operation_id: str | None = None) -> dict[str, Any]:
+def materialize(*, runtime_root: Path, stegos_root: Path, materialization_id: str, device_kv_receipt: Mapping[str, Any], kv_access_receipt: Mapping[str, Any], skap_access_receipt: Mapping[str, Any], stored_object_sha256: str, operation_id: str | None = None) -> dict[str, Any]:
     if any(os.environ.get(name) for name in HOSTED_ENV):
         raise KVDeviceReturnError("hosted_runtime_forbidden")
     terminal = validate_device_kv_receipt(device_kv_receipt)
-    exchange = validate_gate_exchange(gate_exchange_bytes, device_kv_terminal=terminal)
-    gate_hash = sha_uri(bytes(gate_exchange_bytes))
+    gate_bytes, gate_hash = bind_gate_exchange(kv_access_receipt=kv_access_receipt, skap_access_receipt=skap_access_receipt, device_kv_terminal=terminal)
+    if not isinstance(stored_object_sha256, str) or not stored_object_sha256.startswith("sha256:") or len(stored_object_sha256) != 71:
+        raise KVDeviceReturnError("kv_skap_gate_stored_object_hash_invalid")
     connector, backbone, transport = _load_stegos(stegos_root)
 
     base = runtime_root.expanduser().resolve() / OUT_REL / materialization_id
-    atomic_bytes(base / "kv-skap-gate-exchange.json", bytes(gate_exchange_bytes))
-    op = str(operation_id or exchange.get("operation_id") or materialization_id)
+    atomic_bytes(base / "kv-skap-gate-exchange.json", gate_bytes)
+    atomic_bytes(base / "kv-access-receipt.json", canonical(dict(kv_access_receipt)))
+    op = str(operation_id or materialization_id)
     return_payload = {
         "schema": RETURN_SCHEMA,
         "state": "KV_SKAP_GATE_EXCHANGE_BOUND",
         "operation_id": op,
         GATE_EXCHANGE_FIELD: gate_hash,
         "device_kv_terminal_receipt_hash": terminal,
-        "stored_object_sha256": exchange["stored_object_sha256"],
+        "kv_access_receipt_hash": kv_access_receipt["receipt_hash"],
+        "skap_access_receipt_hash": skap_access_receipt["receipt_hash"],
+        "stored_object_sha256": stored_object_sha256,
         "exact_ciphertext_readback_verified": True,
         "kv_skap_path": "IN_KV_GATE",
         "kv_skap_intr_hop": False,
@@ -233,6 +201,9 @@ def materialize(*, runtime_root: Path, stegos_root: Path, materialization_id: st
         "kv_exact_readback_verified": True,
         "kv_object_sha256": readback["object_sha256"],
         "kv_skap_gate_exchange_ref": str(base / "kv-skap-gate-exchange.json"),
+        "kv_access_receipt_ref": str(base / "kv-access-receipt.json"),
+        "kv_access_receipt_hash": kv_access_receipt["receipt_hash"],
+        "skap_access_receipt_hash": skap_access_receipt["receipt_hash"],
         "kv_device_intent_ref": str(base / "kv-to-device.intent.json"),
         "kv_device_payload_ref": str(base / "kv-to-device.payload.bin"),
         "kv_device_receipt_ref": str(base / "kv-to-device.receipt.json"),
@@ -255,12 +226,13 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--runtime-root", type=Path, required=True); p.add_argument("--stegos-root", type=Path, required=True)
     p.add_argument("--materialization-id", required=True); p.add_argument("--device-kv-receipt", type=Path, required=True)
-    p.add_argument("--kv-skap-gate-exchange", type=Path, required=True)
+    p.add_argument("--kv-access-receipt", type=Path, required=True); p.add_argument("--skap-access-receipt", type=Path, required=True)
+    p.add_argument("--stored-object-sha256", required=True)
     a = p.parse_args()
     try:
-        result = materialize(runtime_root=a.runtime_root, stegos_root=a.stegos_root, materialization_id=a.materialization_id, device_kv_receipt=load_json(a.device_kv_receipt), gate_exchange_bytes=a.kv_skap_gate_exchange.read_bytes())
+        result = materialize(runtime_root=a.runtime_root, stegos_root=a.stegos_root, materialization_id=a.materialization_id, device_kv_receipt=load_json(a.device_kv_receipt), kv_access_receipt=load_json(a.kv_access_receipt), skap_access_receipt=load_json(a.skap_access_receipt), stored_object_sha256=a.stored_object_sha256)
     except Exception as exc:
-        print(json.dumps({"state": "BLOCKED", "reason": str(exc), "authority_effect": "NONE"}, sort_keys=True)); return 1
+        print(json.dumps({"state": "BLOCKED", "reason": str(exc), "fail_closed": getattr(exc, "fail_closed", None), "authority_effect": "NONE"}, sort_keys=True)); return 1
     print(json.dumps(result, sort_keys=True)); return 0
 
 

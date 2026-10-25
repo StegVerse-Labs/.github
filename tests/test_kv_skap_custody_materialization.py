@@ -12,6 +12,8 @@ RETURN=ROOT/"scripts/materialize_kv_skap_canonical_return.py"
 def load_module():
     spec=importlib.util.spec_from_file_location("kv_skap_consumer",SCRIPT);module=importlib.util.module_from_spec(spec);assert spec.loader is not None;spec.loader.exec_module(module);return module
 
+_spec=importlib.util.spec_from_file_location("kv_skap_layer_receipts",Path(__file__).resolve().parent/"kv_skap_layer_receipts.py");LAYERS=importlib.util.module_from_spec(_spec);_spec.loader.exec_module(LAYERS)
+
 RETIRED_PROFILE_TOKENS=('"kv-skap"','"kv-skap-custody"','"kv-skap-account-metadata"')
 
 def load_dispatcher():
@@ -19,8 +21,8 @@ def load_dispatcher():
 
 class KVSkapCustodyTransportTests(unittest.TestCase):
     """Method names are kept from base (TEST_PRESENT_AT_BASE_RUNS_AT_HEAD). Under #167 ruling (3) c6393224851
-    (PROVISIONAL_ON_RULING_C), KV->SKAP is the in-KV SKAP gate, not an InTr hop, so the bodies now assert the
-    gate request and the two-leg DEVICE->KV->DEVICE return."""
+    and ruling C (accepted with conditions C1-C3, c6393756343), KV->SKAP is the in-KV SKAP gate, not an InTr hop,
+    so the bodies now assert the gate request and the two-leg DEVICE->KV->DEVICE return."""
     @classmethod
     def setUpClass(cls):
         cls.mod=load_module();cls.ingress=INGRESS.read_text(encoding="utf-8");cls.dispatcher=(ROOT/"scripts/dispatch_kv_skap_custody_materialization.py").read_text(encoding="utf-8");cls.returner=RETURN.read_text(encoding="utf-8")
@@ -30,8 +32,9 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
     def canonical_receipt(self):
         canonical_body={"schema":"stegverse.intr.hop_receipt/v1","receipt_id":"device-kv-1","packet_id":"packet-device","hop_index":1,"direction":"FORWARD","from_role":"DEVICE_SYSTEM","to_role":"KV","operation_hash":"sha256:"+"4"*64,"payload_hash":"sha256:"+"5"*64,"prior_receipt_hash":None,"boundary_identity_ref":"kv://test","boundary_verification":"VERIFIED","transition_state":"RECEIVED","secret_plaintext_present":False,"authority_transfer":False,"recorded_at":"2026-09-10T19:00:00Z"}
         return {**canonical_body,"receipt_hash":self.mod.sha_uri(canonical_body)}
-    def request(self):
-        return load_dispatcher().build_request(capsule=self.capsule(),device_kv_receipt={"schema":"stegverse.intr.boundary_transition_receipt/v1","receipt_hash":"sha256:"+"3"*64},canonical_device_kv_receipt=self.canonical_receipt())
+    def request(self,kv_access=None,skap_access=None):
+        canonical_receipt=self.canonical_receipt();l1,l2=LAYERS.pair(canonical_receipt["receipt_hash"])
+        return load_dispatcher().build_request(capsule=self.capsule(),device_kv_receipt={"schema":"stegverse.intr.boundary_transition_receipt/v1","receipt_hash":"sha256:"+"3"*64},canonical_device_kv_receipt=canonical_receipt,kv_access_receipt=kv_access or l1,skap_access_receipt=skap_access or l2)
     def reseal(self,value):
         value["request_hash"]=self.mod.sha_uri({k:v for k,v in value.items() if k!="request_hash"});return value
 
@@ -63,9 +66,9 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
         self.assertNotIn("requests.",self.dispatcher);self.assertNotIn("github.com",self.dispatcher)
     def test_canonical_return_uses_backbone_and_exact_readback(self):
         """The return requires the exact SKAP readback, binds the gate exchange by hash and emits only the device-kv leg."""
-        for marker in ('PROFILE_ID = "device-kv"','skap_exact_readback_mismatch','build_gate_exchange(','device_return.materialize(','KV_TO_DEVICE_RETURN_PERSISTED','"kv_skap_intr_hop": False'):
+        for marker in ('PROFILE_ID = "device-kv"','skap_exact_readback_mismatch','skap_access_receipt=request.get("skap_access_receipt")','kv_access_receipt=request.get("kv_access_receipt")','device_return.materialize(','KV_TO_DEVICE_RETURN_PERSISTED','"kv_skap_intr_hop": False'):
             self.assertIn(marker,self.returner)
-        for marker in ('connector.prepare(','connector.prepare_response(','boundary_identity_ref="tvc://SKAP_VAULT"','SKAP_TO_KV_RETURN_PERSISTED'):self.assertNotIn(marker,self.returner)
+        for marker in ('connector.prepare(','connector.prepare_response(','boundary_identity_ref="tvc://SKAP_VAULT"','SKAP_TO_KV_RETURN_PERSISTED','build_gate_exchange('):self.assertNotIn(marker,self.returner)
         self.assertNotIn("requests.",self.returner)
         device=(ROOT/"scripts/materialize_kv_device_from_skap_return.py").read_text(encoding="utf-8")
         for marker in ('connector.accept_hop(','connector.validate_complete(','prior_transport_receipt_hash=terminal','GATE_EXCHANGE_FIELD: gate_hash','kv_exact_readback_mismatch'):self.assertIn(marker,device)
@@ -78,12 +81,24 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
             other=self.request();other["operation_id"]="ingress-2";self.reseal(other)
             with self.assertRaises(self.mod.KVSkapMaterializationError):self.mod.admit(runtime_root=Path(tmp),request=other,dispatch=False)
 
+    def _device_return(self):
+        spec=importlib.util.spec_from_file_location("kv_device_return",ROOT/"scripts/materialize_kv_device_from_skap_return.py");mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);return mod
     def test_gate_exchange_binds_device_receipt_by_hash(self):
-        spec=importlib.util.spec_from_file_location("kv_device_return",ROOT/"scripts/materialize_kv_device_from_skap_return.py");mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
-        receipt=self.canonical_receipt();terminal=mod.validate_device_kv_receipt(receipt)
-        raw=mod.build_gate_exchange(operation_id="ingress-1",credential_ref="skap://APIs/coinbase/owner/1",device_kv_terminal=terminal,stored_object_sha256="sha256:"+"a"*64,custody_evidence={})
-        exchange=json.loads(raw);self.assertEqual(exchange["canonical_device_kv_receipt_hash"],terminal);self.assertIs(exchange["kv_skap_intr_hop"],False)
-        with self.assertRaisesRegex(mod.KVDeviceReturnError,"kv_skap_gate_not_bound_to_device_kv"):mod.validate_gate_exchange(raw,device_kv_terminal="sha256:"+"0"*64)
+        """C1/C2: the gate exchange is the exact bytes of the layer-2 receipt chained to this hop's layer-1 receipt."""
+        mod=self._device_return();receipt=self.canonical_receipt();terminal=mod.validate_device_kv_receipt(receipt)
+        l1,l2=LAYERS.pair(terminal);raw,gate_hash=mod.bind_gate_exchange(kv_access_receipt=l1,skap_access_receipt=l2,device_kv_terminal=terminal)
+        self.assertEqual(json.loads(raw),l2);self.assertEqual(gate_hash,mod.sha_uri(raw));self.assertFalse(hasattr(mod,"build_gate_exchange"));self.assertFalse(hasattr(mod,"validate_gate_exchange"))
+        with self.assertRaisesRegex(mod.KVDeviceReturnError,"layer1_not_for_this_device_kv_hop") as ctx:mod.bind_gate_exchange(kv_access_receipt=l1,skap_access_receipt=l2,device_kv_terminal="sha256:"+"0"*64)
+        self.assertEqual(sorted(ctx.exception.fail_closed),["BLOCKS","CLASS","CODE","EXPECTED","NEXT","OBSERVED"])
+    def test_gate_request_rederives_the_layer_receipts(self):
+        """C1/C2: the gate request is refused unless its layer-2 receipt re-derives and chains to this hop's layer-1 receipt."""
+        terminal=self.canonical_receipt()["receipt_hash"];l1=LAYERS.layer1(terminal)
+        with self.assertRaisesRegex(Exception,"layer2_not_chained_to_layer1"):self.request(kv_access=l1,skap_access=LAYERS.seal({**LAYERS.layer2(l1),"prior_receipt_hash":"sha256:"+"9"*64}))
+        value=self.request();value["skap_access_receipt"]={**value["skap_access_receipt"],"operation":"SKAP_READ"};self.reseal(value)
+        with self.assertRaisesRegex(self.mod.KVSkapMaterializationError,"layer2_skap_access_receipt_not_rederived") as ctx:self.mod.validate_request(value)
+        self.assertEqual(ctx.exception.fail_closed["CODE"],"KV_SKAP_LAYER2_ACCESS_RECEIPT_BINDING_REFUSED")
+        value=self.request();value.pop("kv_access_receipt");self.reseal(value)
+        with self.assertRaisesRegex(self.mod.KVSkapMaterializationError,"layer1_kv_access_receipt_not_rederived"):self.mod.validate_request(value)
 
     def test_no_labs_source_resolves_a_retired_kv_skap_profile(self):
         found=[]
