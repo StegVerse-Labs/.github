@@ -34,11 +34,11 @@ The `.github` organization boundary owns transport ingress/egress and event disp
 - TVC double-Interlock gate:
   - DEVICE -> KV receipt must validate;
   - KV -> SKAP_VAULT receipt must chain to DEVICE -> KV;
-  - DEVICE -> KV connector is InTr; KV -> SKAP_VAULT connector is the in-KV SKAP gate `KV_INTERNAL_SKAP_GATE`, never InTr (InTr runs only between distinct orgs; the SKAP Vault sits inside KV; TVC#544);
+  - both connectors are InTr;
   - secret plaintext forbidden;
   - authority transfer forbidden.
 - TVC SKAP store:
-  - storage backend id must begin `KV_SKAP_GATE_` (TVC#544);
+  - storage backend id must begin `KV_SKAP_INTR_`;
   - resident compatibility backend writes under `<STEGVERSE_KV_ROOT>/_Vault/SKAP`;
   - exact ciphertext readback required;
   - replay denied.
