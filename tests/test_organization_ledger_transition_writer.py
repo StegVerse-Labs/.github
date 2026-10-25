@@ -255,8 +255,10 @@ class WriterContract(unittest.TestCase):
         text = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("on:\n  push:\n    branches: [main]\n", text)
         self.assertNotIn("workflow_dispatch", text)
-        self.assertIn("--self-close", text)
-        self.assertIn("organization_ledger_readback.py", text)
+        # The self-closure is retired (Rigel's rule, 2026-10-25: no InTr hop inside one organization).
+        self.assertNotIn("--self-close", text)
+        self.assertNotIn("self-closure-packet.json'", text.split("\njobs:", 1)[0].split("\non:", 1)[1])
+        self.assertIn("readback", text)
         self.assertIn('git push origin "$LEDGER_REF:$LEDGER_REF"', text)
         self.assertNotIn("--force", text)
         self.assertNotIn("federation.json", text)

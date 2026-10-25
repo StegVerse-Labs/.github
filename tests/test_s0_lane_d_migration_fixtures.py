@@ -137,7 +137,17 @@ class LaneDS0MigrationFixtures(unittest.TestCase):
 
     def test_pinned_sources_match_repository_files(self):
         for pin in self.manifest["pinned_sources"]:
-            raw = (ROOT / pin["path"]).read_bytes()
+            # These are MIGRATED_HISTORICAL frozen source pins. Current main may
+            # lawfully evolve; validate bytes at the original pinned commit,
+            # not at the mutable working-tree tip. Never silently re-pin.
+            self.assertTrue((ROOT / pin["path"]).is_file(), pin["path"])
+            self.assertRegex(pin["commit"], r"^[0-9a-f]{40}$")
+            historical = subprocess.run(
+                ["git", "-C", str(ROOT), "show",
+                 pin["commit"] + ":" + pin["path"]],
+                capture_output=True, check=False)
+            self.assertEqual(historical.returncode, 0, pin["path"])
+            raw = historical.stdout
             self.assertEqual(_git_blob(raw), pin["git_blob"], pin["path"])
             self.assertEqual("sha256:" + hashlib.sha256(raw).hexdigest(), pin["sha256"], pin["path"])
         self.assertEqual(self.mg.SURFACE_ALIASES_BLOB, next(p["git_blob"] for p in self.manifest["pinned_sources"]
