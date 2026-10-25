@@ -289,8 +289,10 @@ class Triggers(unittest.TestCase):
                         "organization_ledger_ingest.py append-sealed", "organization_ledger_ingest.py readback-sealed"):
             self.assertIn("resident-runtime/" + command, text)
         for gate in ("env.INGEST_REQUEST_CHANGED == '1'", "env.INGEST_OPERATION == 'sv_check_receipt'",
-                     "env.INGEST_OPERATION == 'sealed_test_receipt'", "env.SELF_CLOSURE_PACKET_CHANGED == '1'"):
+                     "env.INGEST_OPERATION == 'sealed_test_receipt'"):
             self.assertIn("if: " + gate, text)
+        # The self-closure branch is retired (Rigel's rule, 2026-10-25: no InTr hop inside one organization).
+        self.assertNotIn("SELF_CLOSURE_PACKET_CHANGED", text)
         self.assertIn('git diff --name-only "$PUSH_BEFORE" "$GITHUB_SHA"', text)
         self.assertIn("NO_COMMITTED_PACKET_CHANGED", text)
         self.assertIn("concurrency:\n  group: organization-ledger\n  cancel-in-progress: false\n", text)

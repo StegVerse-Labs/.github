@@ -178,9 +178,9 @@
       "basis": "NEW_IDENTITY_REQUEST",
       "registration_mode": "NEW_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
-      "request_sha256": "13e67a801ac67fdddec5ca58390ac0e65eef13c6a511fec5d262ff3aff1564b3",
+      "request_sha256": "3c9246df6c775ee7c9fff4b9d928c9f9ed845fed481f44246f36122eb70415f6",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
-      "scope_digest": "sha256:d4a98dc0c0ff9db7dbc05b1b97d93573dda7b59dcd2a7628e2cf6620e26c7ef2",
+      "scope_digest": "sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc",
       "finish_point": {
         "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
         "predicate": "KV_SKAP_VAULT_FINISH_POINT: python -m runtime.kv_skap_vault finish-point returns disposition ALLOW (every expected_evidence_predicate ALLOW over one receipt-hash lineage); until then it returns six-field FAIL_CLOSED naming each unmet predicate",
