@@ -1,0 +1,119 @@
+{
+  "schema": "stegverse.adjacency-ruling/v1",
+  "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+  "ruling_class": "D",
+  "ruling": "ADJACENT_NOT_DUPLICATE",
+  "ruled_by": "Coordination (STEGVERSE-CANONICAL-WORK-COORDINATION-001), relayed to Lane D 2026-10-23; ruling record ref UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+  "subject": {
+    "components": [
+      "any-device-continuity",
+      "authority-non-duplication",
+      "consent-receipt",
+      "kv-projection-write-read-revoke",
+      "kv-skap-vault-module",
+      "receipt-hash-lineage",
+      "revocation-receipt",
+      "skap-custody-key-reference"
+    ],
+    "finish_point": {
+      "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
+      "repository": "StegVerse-Labs/continuity-vault-kit",
+      "source_commit": "9551edab3a152ec0741274b109b3e0de84a23ff8",
+      "source_ref": "StegVerse-Labs/continuity-vault-kit#258"
+    }
+  },
+  "candidates": [
+    {
+      "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "components": [
+        "bounded-group-atomic-use-state",
+        "bounded-group-event-publication-bridge",
+        "bounded-group-execution-evidence-reconciler",
+        "bounded-group-execution-to-site-cas-projection",
+        "bounded-group-pre-admission-intr-intent",
+        "bounded-group-universal-interlock-received-ingress",
+        "bounded-scope-post-group-grant",
+        "event-ephemeral-intr-execution",
+        "facebook-stegverse-transport",
+        "instagram-stegverse-ai-transport",
+        "linkedin-stegverse-transport",
+        "master-records-organization-record",
+        "personal-kv-private-draft-reference",
+        "publication-receipt",
+        "single-use-public-release-grant",
+        "stegbrowser-event-ephemeral-session",
+        "tv-tvc-skap-social-credential-custody"
+      ],
+      "finish_point_paths": [],
+      "candidate_owned_paths": [
+        "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
+        "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site/docs/STEGSOCIALS_BOUNDED_GROUP_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
+        "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md"
+      ],
+      "record_finish_point": "NONE_DECLARED_IN_RECORD"
+    },
+    {
+      "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "components": [
+        "canonical-event-ephemeral-domain-binding",
+        "device-kv-bidirectional-intr",
+        "exact-packet-verification",
+        "kv-skap-bidirectional-intr",
+        "single-roundtrip-receipt-lineage",
+        "tvc-skap-credential-reference"
+      ],
+      "finish_point_paths": [],
+      "candidate_owned_paths": [
+        "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+        "workers/run_device_kv_skap_roundtrip_worker.py",
+        "workers/run_device_kv_skap_canonical_runtime_worker.py",
+        "scripts/execute_device_kv_skap_roundtrip_event.py",
+        "scripts/continue_device_kv_skap_from_tvc_custody.py",
+        "StegVerse-Labs/StegOS/stegos/canonical_runtime_lane.py",
+        "StegVerse-Labs/StegOS/stegos/ephemeral_runtime_lease.py",
+        "StegVerse-Labs/StegOS/stegos/node_event_execution_broker.py",
+        "StegVerse-Labs/StegOS/stegos/sovereign_local_event_runtime.py",
+        "StegVerse-Labs/StegOS/stegos/device_kv_skap_canonical_runtime.py",
+        "StegVerse-Labs/StegOS/stegos/device_kv_skap_roundtrip.py",
+        "StegVerse-Labs/TVC/tools/coinbase_gateway_stage_drain.py"
+      ],
+      "record_finish_point": "NONE_DECLARED_IN_RECORD"
+    },
+    {
+      "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "components": [
+        "current-verification-evidence-selection",
+        "custody-projection",
+        "interlock-intr",
+        "provider-adapter",
+        "reusable-task-component-composition",
+        "runtime-intake",
+        "session-event-history",
+        "sovereign-kv",
+        "task-registry"
+      ],
+      "finish_point_paths": [],
+      "candidate_owned_paths": [
+        "scripts/task_registry_checkin_event_history.py",
+        "scripts/project_task_registry_event_to_sovereign_kv.py",
+        "StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py"
+      ],
+      "record_finish_point": "NONE_DECLARED_IN_RECORD"
+    }
+  ],
+  "consumes_dependencies": [
+    {
+      "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "failure_class": "B",
+      "consumed_by": "KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND (continuity-vault-kit runtime/kv_skap_vault.py)"
+    }
+  ],
+  "conditions_claimed": {
+    "a": "components disjoint",
+    "b": "finish-point test exercises none of the candidates' components",
+    "c": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 is a consumes-dependency"
+  },
+  "evidence_digest": "sha256:37ded38295da188848c7c97ce6a8ffd1a7931266a025b6f888b5ae1756b07f5e"
+}

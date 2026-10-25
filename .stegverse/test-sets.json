@@ -157,6 +157,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_adjacency_ruling.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_adjacency_ruling.py"
+   ],
+   "tests": [
+    "tests/test_adjacency_ruling.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_admissible_source_generation_capability_worker.py",
    "inputs": [],
    "surfaces": [
@@ -9743,6 +9755,18 @@
    "tests": [
     "tests/test_workspace_registry_row_reconciliation.py"
    ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_write_admission.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_write_admission.py"
+   ],
+   "tests": [
+    "tests/test_write_admission.py"
+   ]
   }
  ],
  "surface_graph": {
@@ -10364,6 +10388,12 @@
    "scripts/install_stegfin_continuity_machine_service.py",
    "scripts/run_stegfin_continuity_machine_executor.py"
   ],
+  "scripts/adjacency_ruling.py": [
+   ".github/workflows/**",
+   "data/canonical-task-records/**",
+   "scripts/evaluate_task_registry_collision_checkin.py",
+   "scripts/write_admission.py"
+  ],
   "scripts/advance_heartbeat_transition.py": [
    "control/heartbeat-carrier-runtime-state.json",
    "control/heartbeat-state.json",
@@ -10716,6 +10746,7 @@
    "data/canonical-task-registry.json",
    "schemas/canonical-task-record.schema.json",
    "schemas/canonical-task-registration-request.schema.json",
+   "scripts/adjacency_ruling.py",
    "scripts/allocate_claims.py",
    "scripts/check_registry_collision_checkin.py",
    "scripts/consume_org_claim_allocator_request.py",
@@ -12358,6 +12389,9 @@
   "scripts/watch_hil_tvc_lifecycle_outbox.py": [
    "scripts/consume_hil_tvc_lifecycle_outbox.py"
   ],
+  "scripts/write_admission.py": [
+   "scripts/adjacency_ruling.py"
+  ],
   "state_language/__init__.py": [
    "state_language/reconcile.py",
    "state_language/vector.py"
@@ -12412,6 +12446,18 @@
   ],
   "tests/test_active_worker_state_policy.py": [
    "tools/validate_active_worker_states.py"
+  ],
+  "tests/test_adjacency_ruling.py": [
+   "control/adjacency-rulings/**",
+   "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+   "scripts/adjacency_ruling.py",
+   "scripts/canonical_task_registration_transition.py",
+   "tests/__init__.py",
+   "tests/conftest.py",
+   "tests/fixtures/**",
+   "tests/fixtures/canonical_task_registration/**",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/**",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json"
   ],
   "tests/test_admissible_source_generation_capability_worker.py": [
    "workers/admissible_source_generation_capability_worker.py"
@@ -17181,6 +17227,10 @@
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json",
    "data/organization-role-exemption-register.json"
+  ],
+  "tests/test_write_admission.py": [
+   "control/write-admission/**",
+   "scripts/write_admission.py"
   ],
   "tools/validate_active_worker_states.py": [
    "control/active-worker-state-policy.json",
