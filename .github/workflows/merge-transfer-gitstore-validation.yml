@@ -14,6 +14,7 @@ on:
       - '.stegverse/merge-transfer/**'
       - '.stegverse/transition-ledger/**'
       - 'resident-runtime/merge_transfer_gitstore.py'
+      - 'resident-runtime/merge_transfer_gitstore_sweep.py'
       - 'resident-runtime/ledger_gitstore.py'
       - 'resident-runtime/intr_destination_ingress.py'
       - 'resident-runtime/merge_transfer.py'

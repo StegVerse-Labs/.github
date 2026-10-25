@@ -4529,6 +4529,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_merge_transfer_gitstore_sweep.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_merge_transfer_gitstore_sweep.py"
+   ],
+   "tests": [
+    "tests/test_merge_transfer_gitstore_sweep.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_mir_exp3_original_resident_request.py",
    "inputs": [],
    "surfaces": [
@@ -10237,6 +10249,9 @@
    ".stegverse/transition-ledger/org-contract.json",
    "resident-runtime/aggregate_repo_transition.py"
   ],
+  "resident-runtime/merge_transfer_gitstore_sweep.py": [
+   "resident-runtime/merge_transfer_gitstore.py"
+  ],
   "resident-runtime/mesh_source_binding.py": [
    ".github/workflows/organization-governance-decision.yml"
   ],
@@ -14565,6 +14580,12 @@
    ".stegverse/merge-transfer/pending.json",
    "resident-runtime/merge_transfer_gitstore.py",
    "tests/fixtures/merge-transfer-gitstore/**",
+   "tests/pytest.py"
+  ],
+  "tests/test_merge_transfer_gitstore_sweep.py": [
+   ".github/workflows/organization-ledger-merge-transfer.yml",
+   ".stegverse/merge-transfer/pending.json",
+   "resident-runtime/merge_transfer_gitstore_sweep.py",
    "tests/pytest.py"
   ],
   "tests/test_mir_exp3_original_resident_request.py": [
