@@ -1,4 +1,4 @@
-$ {python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258}
+$ {python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvkruling}
 --- exit 0
 --- stdout
 {
