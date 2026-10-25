@@ -19,11 +19,6 @@
   "read_profile_merge": "StegVerse-Labs/TVC@fc5808f74adb0022e584007b7280f646805c1ed2",
   "read_profile_validation_run": "StegVerse-Labs/TVC/actions/runs/35047891729",
   "implementation_repository": "StegVerse-Labs/TVC",
-  "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/TVC"],
-    "components": ["payment-provider-observation", "payment-provider-read-profile"]
-  },
   "parent_handoff": "docs/STRIPE_GODADDY_PROVIDER_EQUIVALENCE_MIRROR_HANDOFF.md",
   "authority_effect": "NONE_COORDINATION_ONLY",
   "credential_authority": "TV/TVC",
@@ -47,5 +42,19 @@
     "webhook_evaluation_admissible": false,
     "failover_evaluation_admissible": false,
     "authentic_completed_evidence_pending": true
+  },
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/TVC"
+    ],
+    "components": [
+      "payment-provider-authentic-ingress",
+      "payment-provider-read-profiles",
+      "tvc-payment-provider-observation",
+      "tvc-payment-provider-read-profile"
+    ]
   }
 }
