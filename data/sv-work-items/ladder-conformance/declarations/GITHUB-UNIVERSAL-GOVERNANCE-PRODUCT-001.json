@@ -551,14 +551,11 @@
    "kind": "HANDOFF",
    "lowest_supported_mode": "E0",
    "observed_by": [],
-   "observed_state": "admission not exercised; consequence path pending drafts",
+   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb). Still not admitted: StegVerse-Labs/.github#3326 (draft @e9085315), StegVerse-SDK#556 (draft). admission not exercised; consequence path pending drafts",
    "requires_llms": 0,
    "unadmitted_dependencies": [
-    "StegVerse-Labs/.github#3313 (branch-writer derivation for SV_CHANGE_ADMIT) draft @86578deb",
-    "StegVerse-Labs/.github#3255 (organization-ledger writer split; push receipts) draft @d6659962",
-    "StegVerse-Labs/.github#3311 (EXISTING_IDENTITY + WorkerCoordinator claim; PROPOSED -> ACTIVE) draft @9e00a16e",
     "StegVerse-Labs/.github#3326 draft @e9085315",
-    "StegVerse-org/StegVerse-SDK#556 draft @2db2ad2e"
+    "StegVerse-org/StegVerse-SDK#556 draft @406774e7 (revision 15: head moved from 2db2ad2e; the plan root sdk556 stays pinned at 2db2ad2e)"
    ],
    "what": "the draft surfaces on the path reach main through the ecosystem SV_CHANGE_ADMIT transition, not a person"
   },
