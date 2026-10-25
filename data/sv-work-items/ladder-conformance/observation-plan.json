@@ -492,9 +492,9 @@
      "repo": "StegVerse-Labs/.github"
     },
     "labsruling": {
-     "commit": "cff426f157c83b03f112ff070d09ad01360f628d",
+     "commit": "64ba618affd86f275417becf048b929ad1494d1e",
      "kind": "git",
-     "ref": "StegVerse-Labs/.github#3353 (revision 14: KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling re-pinned from cvk 9551edab (as named at main @86382e60 and #3327 @7bdb8a2e) to continuity-vault-kit main @9d56bc7b, the #271 merge; consumes pin @859f1cf7 kept)",
+     "ref": "StegVerse-Labs/.github main @64ba618a (revision 16 re-pin from #3353 @cff426f1, now merged as fadccc2f: main carries the same KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling, registry generation 321 and the #3352 rename of the retired KV-SKAP InTr component to kv-skap-gate-client)",
      "repo": "StegVerse-Labs/.github"
     },
     "llmad": {
@@ -693,7 +693,7 @@
      "root": "labsruling",
      "run_id": "kv-registration-plan-without-ruling",
      "subject": "REGISTRATION_PLAN",
-     "what": "registration plan, no adjacency ruling (revision 14: at the re-pinned ruling commit, Labs#3353)"
+     "what": "registration plan, no adjacency ruling (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
     },
     {
      "argv": [
@@ -714,7 +714,7 @@
      "root": "labsruling",
      "run_id": "kv-registration-plan-with-ruling",
      "subject": "REGISTRATION_PLAN",
-     "what": "registration plan with the Coordination class-D adjacency ruling re-pinned to cvk main @9d56bc7b (Labs#3353) and the finish-point root at that commit"
+     "what": "registration plan with the Coordination class-D adjacency ruling re-pinned to cvk main @9d56bc7b (Labs#3353) and the finish-point root at that commit (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
     },
     {
      "globs": [

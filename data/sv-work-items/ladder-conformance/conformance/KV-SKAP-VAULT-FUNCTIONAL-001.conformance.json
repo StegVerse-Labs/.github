@@ -60,7 +60,7 @@
     "repo": "StegVerse-Labs/.github"
    },
    "labsruling": {
-    "commit": "cff426f157c83b03f112ff070d09ad01360f628d",
+    "commit": "64ba618affd86f275417becf048b929ad1494d1e",
     "kind": "git",
     "repo": "StegVerse-Labs/.github"
    },
@@ -660,12 +660,12 @@
     "sha256": "sha256:6d373913af7bd13a53c71beffbe617aa80c284df73d4f25ec3c466547b4ceda8"
    },
    {
-    "commit": "cff426f157c83b03f112ff070d09ad01360f628d",
-    "git_blob": "9e0f334d9055f154db60c8021b172ca586c05f19",
+    "commit": "64ba618affd86f275417becf048b929ad1494d1e",
+    "git_blob": "2fc6fc6ed50ef3ffcabacc7ef6759b40b5035037",
     "path": "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
     "repo": "StegVerse-Labs/.github",
     "root": "labsruling",
-    "sha256": "sha256:d5316c11e167313367e54872efd2a631beea8f850ccefb80d012b7671d45e89b"
+    "sha256": "sha256:89d4265fdb8df62bd73ab33933b2a624c16389becce4d8209ef1b1f2dcea2cd4"
    }
   ]
  },
@@ -951,7 +951,7 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "revision 15: main @fadccc2f merged in (it carries P1's revision 14, 49575917, the H-KV-ENDPOINT-LEDGER-ANCHOR outcome table; Labs#3353 @cff426f1 is now on main); this hypothesis is not re-observed and its revision 14 observation stands. Revision 14 text: ALLOW with the ruling re-pinned to continuity-vault-kit main @9d56bc7b (the #271 merge; Labs#3353 @cff426f1, evidence_digest 5fd65e9b, consumes pin @859f1cf7 kept) and the finish-point root at @9d56bc7b (run kv-registration-plan-with-ruling); without the ruling the plan stays six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (run kv-registration-plan-without-ruling). Revision 13 text: ALLOW with the ruling and the finish-point root at the current #258 head @9551edab, which Labs#3327 @7bdb8a2e's ruling names (run kv-registration-plan-with-ruling). Lane D's 'verify ALLOW' for #3327 is CI-vacuous (the CI step reports no registration manifest added or changed); a local verify of the request is REGISTRATION_NOT_APPLIED, as expected before the transition runs; without the ruling the plan stays six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (run kv-registration-plan-without-ruling)",
+   "observed_state": "revision 16: both kv-registration-plan runs re-observed at Labs main @64ba618a (registry generation 321, after #3352 renamed the retired KV-SKAP InTr component to kv-skap-gate-client; the ruling at #3353 @cff426f1 is on main as fadccc2f): with the ruling ALLOW (predecessor generation 321, successor 322), without it six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE, both unchanged; the raw output no longer names the retired component. Revision 15 text: main @fadccc2f merged in (it carries P1's revision 14, 49575917, the H-KV-ENDPOINT-LEDGER-ANCHOR outcome table; Labs#3353 @cff426f1 is now on main); this hypothesis is not re-observed and its revision 14 observation stands. Revision 14 text: ALLOW with the ruling re-pinned to continuity-vault-kit main @9d56bc7b (the #271 merge; Labs#3353 @cff426f1, evidence_digest 5fd65e9b, consumes pin @859f1cf7 kept) and the finish-point root at @9d56bc7b (run kv-registration-plan-with-ruling); without the ruling the plan stays six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (run kv-registration-plan-without-ruling). Revision 13 text: ALLOW with the ruling and the finish-point root at the current #258 head @9551edab, which Labs#3327 @7bdb8a2e's ruling names (run kv-registration-plan-with-ruling). Lane D's 'verify ALLOW' for #3327 is CI-vacuous (the CI step reports no registration manifest added or changed); a local verify of the request is REGISTRATION_NOT_APPLIED, as expected before the transition runs; without the ruling the plan stays six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (run kv-registration-plan-without-ruling)",
    "refusals": [],
    "scoped_tasks": [],
    "verdict": "ALLOW"
@@ -1718,12 +1718,12 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:788b0c7fbf97886342c6206ada3bf51a89616d4db43f5237d537ef12c3294682",
+  "document_sha256": "sha256:1eb1c5d72de54a6c88a31e0221ade737cce5b9b67d853ffa256f475491ec00bc",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:4a11e91d7071dacc50913c8def899e5c80d9f0fca9e608b7edba5001a43fec84",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:164e83c0ed3bb6d35fa76d63d9bf556e2aa235eddaa15cee7572202779ae55c0",
-   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:116b0a4c648772aa4fabd4a198f8b83727ddee055a7bb9de3614002ef2ad8f6d",
+   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:9116c200d97d3140b53a51073bab96196fe45dd8ba5321306bcd110acb70899f",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:464932c64eedaaebb757728d396942adedffd0bf63bbbb37036ffae3dd3b31b6",
+   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:2a9311e205feb46149a78be7fd3ee467132e97bc45f1456bc7b6abadbea2ea47",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:dddab4dbca7b5cc2e53abe5854272966f27d63cb88d25935def10a4b04df0b26",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-04.json": "sha256:234d07b90a9e6b9297addc910b95ec5944f41adf59755afd17e4a7e3ace1b11d",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-05.json": "sha256:03ae34d57609eb6b693831d327ea1e7f513439928a3f20d34bf6ae69535e5955",
