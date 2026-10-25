@@ -1,0 +1,39 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "operation": "sealed_test_receipt",
+    "producer_head_sha": "821fa57d009bb3f25a3ba4ca60ba937d0629ccc8",
+    "producer_repository": "StegVerse-Labs/TVC",
+    "producer_run_id": 40160000328,
+    "receipt_kind": "TVC_LABS_CONFORMANCE_TEST_RECEIPT",
+    "request_path": ".stegverse/organization-ledger-ingest/request.json"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 469411750,
+    "frequency_hz": 100,
+    "generation": 469411750,
+    "heartbeat_id": "HB:469411750",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "observed_at": "2026-10-25T04:47:58.990631+00:00",
+  "org_transition_class": "ORGANIZATION_SEALED_TEST_RECEIPT_INGEST",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:0fe9fc69774ba499a289b557e70f9a5d10bde517d1fb86b4d1b352b82344fe40",
+  "previous_receipt_sha256": "sha256:0fe9fc69774ba499a289b557e70f9a5d10bde517d1fb86b4d1b352b82344fe40",
+  "receipt_sha256": "sha256:b5bd81e08b340560d45b61fb6974cb1949fb131a2a001574b2312aad1c40f8a1",
+  "repo_receipt_sha256": null,
+  "repo_transition_id": null,
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.test-suite-skip-receipt/v1",
+  "source_repository": null,
+  "source_transition_id": "TVC_LABS_CONFORMANCE_TEST_RECEIPT@StegVerse-Labs/TVC@821fa57d009bb3f25a3ba4ca60ba937d0629ccc8",
+  "source_transition_sha256": "sha256:7ef22d0422243b6dfb6ebb1cb56248835084d2bfcfade67382464c36990ad931",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:7ef22d0422243b6dfb6ebb1cb56248835084d2bfcfade67382464c36990ad931"
+}
