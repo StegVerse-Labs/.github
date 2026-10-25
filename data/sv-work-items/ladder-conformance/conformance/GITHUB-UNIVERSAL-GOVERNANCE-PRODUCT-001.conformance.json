@@ -1032,7 +1032,7 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "admission not exercised; consequence path pending drafts",
+   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb). Still not admitted: StegVerse-Labs/.github#3326 (draft @e9085315), StegVerse-SDK#556 (draft). admission not exercised; consequence path pending drafts",
    "refusals": [
     {
      "disposition": "FAIL_CLOSED",
@@ -1042,39 +1042,6 @@
      "next_attempt": "on the next observe run",
      "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
      "required_evidence_or_repair": "bind observed_by to a run of the component pinned in by/source (scripts/ladder_conformance.py observe at the exact commit)",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/.github#3313 (branch-writer derivation for SV_CHANGE_ADMIT) draft @86578deb",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:H-GOV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/.github#3255 (organization-ledger writer split; push receipts) draft @d6659962",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:H-GOV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/.github#3311 (EXISTING_IDENTITY + WorkerCoordinator claim; PROPOSED -> ACTIVE) draft @9e00a16e",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:H-GOV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
      "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
     },
     {
@@ -1090,7 +1057,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-org/StegVerse-SDK#556 draft @2db2ad2e",
+     "evidence": "StegVerse-org/StegVerse-SDK#556 draft @406774e7 (revision 15: head moved from 2db2ad2e; the plan root sdk556 stays pinned at 2db2ad2e)",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:H-GOV-ADMISSION",
@@ -1218,10 +1185,10 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:5405a1c850ae1649da271c0c099130eeff565357be86f0175f835695752b2042",
+  "document_sha256": "sha256:9407f98ee7aa6be19aa87876a96f25864e9acd038066a43736fe3688b847d9bf",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:f11d8b97286182dd7861578bf9c57e4cccf02111793a24b2611d579b075aa2f0",
+   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:0417314ecd1b74591dfcfb55b3b5c76eaf5a84fe1bc76a221b2c631e5b07fa2c",
    "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:e65da117593459c266c544f52071ff2a041842c56595f836e0c5794eaa05816c",
    "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:8e8bd49341ffa92be7973a44ee7d9746f82fc6302ba6269b655910dfe3a5481f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:becdc08760762e5398c5512bcc86b7290687878b4dafd617b13a325b5fdbdb0b",

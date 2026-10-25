@@ -345,6 +345,10 @@ class CommittedArtifacts(unittest.TestCase):
         for ref_ in ("StegVerse-org/LLM-adapter#431 ", "StegVerse-org/LLM-adapter#432 ", "StegVerse-org/LLM-adapter#433 ",
                      "StegVerse-org/.github#235 "):
             self.assertIn("CLOSED unmerged", next(u for u in deps if u.startswith(ref_)), ref_)
+        # revision 15 live-state refresh: merged or superseded dependencies are no longer listed as unadmitted
+        adm = " ".join(decl["H-KV-ADMISSION"]["unadmitted_dependencies"]) + " ".join(gdecl["H-GOV-ADMISSION"]["unadmitted_dependencies"])
+        for ref_ in ("#3313 ", "#3311 ", "#3255 ", "#3324 ", "continuity-vault-kit#263"):
+            self.assertNotIn(ref_, adm, ref_)
         # Lane B: the shared carrier is byte-identical and destination_evidence refuses six-field
         for n_ in ("431", "432", "433"):
             self.assertEqual(ro["CARRIER_SHA_" + n_], ["ALLOW"])

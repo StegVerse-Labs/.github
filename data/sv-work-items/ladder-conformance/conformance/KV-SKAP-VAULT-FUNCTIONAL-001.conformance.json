@@ -1085,7 +1085,7 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "admission not exercised; consequence path pending drafts",
+   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb), #3324 (merged a2dc600b), #3327 (merged efd0908c), continuity-vault-kit#259 (merged 1e8cd49e) and #263 (merged; in the cvk pin @77d28d83), #258 (closed; its commits are ancestors via #263). Still not admitted: LLM-adapter#428, #429 (drafts), StegOS#427 (draft), TVC#537 (draft). admission not exercised; consequence path pending drafts",
    "refusals": [
     {
      "disposition": "FAIL_CLOSED",
@@ -1099,62 +1099,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/.github#3313 (branch-writer derivation for SV_CHANGE_ADMIT) draft @86578deb",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/.github#3255 (organization-ledger writer split; push receipts) draft @d6659962",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/.github#3311 (EXISTING_IDENTITY + WorkerCoordinator claim; PROPOSED -> ACTIVE) draft @9e00a16e",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/.github#3324 draft @32a4f344, #3327 draft @7bdb8a2e",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/continuity-vault-kit#258 draft @9551edab, #259 draft @d052d652, #263 draft @f5f971a5 (KV-SKAP-LEDGER-LOCATION-001)",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-org/LLM-adapter#428 draft @0b37fe3b, #429 draft @5f5f7bbe, #431 draft @66a098fa, #432 draft @0eaa1de0 (cvk#258 @9551edab vendors the previous head 74509fec byte-identical; one commit behind, baseline drift), #433 draft @8babb87a",
+     "evidence": "StegVerse-org/LLM-adapter#428 (healthy-node evaluator) draft @0b37fe3b, #429 (NODE_HEALTH_REPORTED producer) draft @5f5f7bbe; revision 15 (live state): #431, #432 and #433 were CLOSED unmerged at 2026-10-25T01:13Z by Lane B under Rigel's rule (#162 c6391743862; LLM-adapter#432 c6391809965) and can never be admitted",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
@@ -1176,7 +1121,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/TVC#537 draft @c87272cf, #541 draft @63705c86 (stacked on #538 @af4e3c12)",
+     "evidence": "StegVerse-Labs/TVC#537 (TVC_SKAP_CUSTODY_REFERENCE_ISSUE) draft @c87272cf (revision 15: TVC#541 merged b241ed32, #538 merged f9aa1b8d)",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
@@ -1694,10 +1639,10 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:bdae39e5adb5dd880fb67fb3570829bb7a83a3a09d6db9b5cd4137b1502023a0",
+  "document_sha256": "sha256:3fd52306960e06f3df681eb234245e47c8f48c707df1a1da1bd9e7ec55ae698c",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:2db02add9e26cd1d00a3d0133829fb853cb0ee8c45abef0fdceafc0c04989034",
+   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:2c84a8dc3d0996717920ed0c4141a675558c4521a434142584ea39d52ed33675",
    "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:e65da117593459c266c544f52071ff2a041842c56595f836e0c5794eaa05816c",
    "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:79a953abe6df2a54247fa3cf48e34e9d97970d3c951130614bbcd2eab1710e07",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:dddab4dbca7b5cc2e53abe5854272966f27d63cb88d25935def10a4b04df0b26",

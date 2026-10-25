@@ -486,17 +486,12 @@
    "kind": "HANDOFF",
    "lowest_supported_mode": "E0",
    "observed_by": [],
-   "observed_state": "admission not exercised; consequence path pending drafts",
+   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb), #3324 (merged a2dc600b), #3327 (merged efd0908c), continuity-vault-kit#259 (merged 1e8cd49e) and #263 (merged; in the cvk pin @77d28d83), #258 (closed; its commits are ancestors via #263). Still not admitted: LLM-adapter#428, #429 (drafts), StegOS#427 (draft), TVC#537 (draft). admission not exercised; consequence path pending drafts",
    "requires_llms": 0,
    "unadmitted_dependencies": [
-    "StegVerse-Labs/.github#3313 (branch-writer derivation for SV_CHANGE_ADMIT) draft @86578deb",
-    "StegVerse-Labs/.github#3255 (organization-ledger writer split; push receipts) draft @d6659962",
-    "StegVerse-Labs/.github#3311 (EXISTING_IDENTITY + WorkerCoordinator claim; PROPOSED -> ACTIVE) draft @9e00a16e",
-    "StegVerse-Labs/.github#3324 draft @32a4f344, #3327 draft @7bdb8a2e",
-    "StegVerse-Labs/continuity-vault-kit#258 draft @9551edab, #259 draft @d052d652, #263 draft @f5f971a5 (KV-SKAP-LEDGER-LOCATION-001)",
-    "StegVerse-org/LLM-adapter#428 draft @0b37fe3b, #429 draft @5f5f7bbe, #431 draft @66a098fa, #432 draft @0eaa1de0 (cvk#258 @9551edab vendors the previous head 74509fec byte-identical; one commit behind, baseline drift), #433 draft @8babb87a",
+    "StegVerse-org/LLM-adapter#428 (healthy-node evaluator) draft @0b37fe3b, #429 (NODE_HEALTH_REPORTED producer) draft @5f5f7bbe; revision 15 (live state): #431, #432 and #433 were CLOSED unmerged at 2026-10-25T01:13Z by Lane B under Rigel's rule (#162 c6391743862; LLM-adapter#432 c6391809965) and can never be admitted",
     "StegVerse-Labs/StegOS#427 (NODE_LEDGER_OPENED at EPHEMERAL generation) draft @ac9a1532",
-    "StegVerse-Labs/TVC#537 draft @c87272cf, #541 draft @63705c86 (stacked on #538 @af4e3c12)"
+    "StegVerse-Labs/TVC#537 (TVC_SKAP_CUSTODY_REFERENCE_ISSUE) draft @c87272cf (revision 15: TVC#541 merged b241ed32, #538 merged f9aa1b8d)"
    ],
    "what": "the draft surfaces on the path reach main through the ecosystem SV_CHANGE_ADMIT transition, not a person"
   },
