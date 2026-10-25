@@ -5193,18 +5193,6 @@
   {
    "always": false,
    "exclude": [],
-   "id": "tests/test_organization_ledger_self_close_deny_closure.py",
-   "inputs": [],
-   "surfaces": [
-    "tests/test_organization_ledger_self_close_deny_closure.py"
-   ],
-   "tests": [
-    "tests/test_organization_ledger_self_close_deny_closure.py"
-   ]
-  },
-  {
-   "always": false,
-   "exclude": [],
    "id": "tests/test_organization_ledger_transition_writer.py",
    "inputs": [],
    "surfaces": [
@@ -6794,18 +6782,6 @@
    ],
    "tests": [
     "tests/test_sdk_workspace_runtime_resolver_fallback.py"
-   ]
-  },
-  {
-   "always": false,
-   "exclude": [],
-   "id": "tests/test_self_closure_packet.py",
-   "inputs": [],
-   "surfaces": [
-    "tests/test_self_closure_packet.py"
-   ],
-   "tests": [
-    "tests/test_self_closure_packet.py"
    ]
   },
   {
@@ -10302,9 +10278,6 @@
   "resident-runtime/sdk_manifest_crossing.py": [
    "org-boundary/runtime/intr_transport.py",
    "org-boundary/runtime/process_boundary.py"
-  ],
-  "resident-runtime/self_closure_packet.py": [
-   ".github/workflows/organization-ledger-transition.yml"
   ],
   "resident-runtime/stage_gate.py": [
    "data/sv-work-items/stages/**",
@@ -14929,13 +14902,6 @@
    "tests/test_organization_record_gates_not_master_records.py",
    "workers/canonical_state_transition_custody.py"
   ],
-  "tests/test_organization_ledger_self_close_deny_closure.py": [
-   ".github/workflows/**",
-   ".github/workflows/organization-ledger-transition.yml",
-   "org-boundary/registry/**",
-   "org-boundary/registry/services.json",
-   "resident-runtime/intr_destination_ingress.py"
-  ],
   "tests/test_organization_ledger_transition_writer.py": [
    ".github/workflows/**",
    ".github/workflows/organization-ledger-transition.yml",
@@ -15691,11 +15657,6 @@
   "tests/test_sdk_workspace_runtime_resolver_fallback.py": [
    "control/runtime-profile-map.json",
    "data/canonical-task-records/**"
-  ],
-  "tests/test_self_closure_packet.py": [
-   ".github/workflows/organization-ledger-transition-validation.yml",
-   ".github/workflows/organization-ledger-transition.yml",
-   "resident-runtime/self_closure_packet.py"
   ],
   "tests/test_session_assistance_scope.py": [
    "control/session-assistance-scope-policy.json",
