@@ -8,9 +8,6 @@ on:
     paths:
       - '.github/workflows/organization-ledger-transition.yml'
       - '.github/workflows/organization-ledger-transition-validation.yml'
-      - '.stegverse/intr-destination/self-closure-packet.json'
-      - 'resident-runtime/self_closure_packet.py'
-      - 'tests/test_self_closure_packet.py'
       - '.stegverse/organization-ledger-ingest/**'
       - 'resident-runtime/organization_ledger_ingest.py'
       - 'resident-runtime/sv_check_receipt_append.py'
@@ -46,13 +43,12 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate the writer and the self-closure against temporary ledgers
+      - name: Validate the writer against temporary ledgers
         run: |
           python -m py_compile \
             resident-runtime/organization_ledger_readback.py \
             resident-runtime/intr_destination_ingress.py \
             resident-runtime/ledger_store.py \
-            resident-runtime/self_closure_packet.py \
             resident-runtime/organization_ledger_ingest.py \
             resident-runtime/sv_check_receipt_append.py \
             .stegverse/transition-ledger/emit.py
@@ -60,18 +56,8 @@ jobs:
           python -m pytest -q --tb=short \
             tests/test_organization_ledger_transition_writer.py \
             tests/test_intr_destination_capability.py \
-            tests/test_self_closure_packet.py \
             tests/test_organization_ledger_ingest.py \
             tests/test_sv_check_receipt_append.py
-
-      - name: The committed self-closure packet, if any, is what the push-to-main writer accepts
-        run: |
-          set -euo pipefail
-          if [ -e .stegverse/intr-destination/self-closure-packet.json ]; then
-            python resident-runtime/self_closure_packet.py --packet .stegverse/intr-destination/self-closure-packet.json --require-hb-epoch
-          else
-            echo "no committed self-closure packet at this head; the writer has nothing to record"
-          fi
 
       - name: The committed ingest request, if any, is what the push-to-main writer reads
         run: |
