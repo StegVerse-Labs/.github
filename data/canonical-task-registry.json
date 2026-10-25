@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 321,
+  "generation": 322,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -14739,6 +14739,18 @@
       "read_profile_merge": "StegVerse-Labs/TVC@fc5808f74adb0022e584007b7280f646805c1ed2",
       "read_profile_validation_run": "StegVerse-Labs/TVC/actions/runs/35047891729",
       "implementation_repository": "StegVerse-Labs/TVC",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/TVC"
+        ],
+        "components": [
+          "payment-provider-observation",
+          "payment-provider-read-profile"
+        ]
+      },
       "parent_handoff": "docs/STRIPE_GODADDY_PROVIDER_EQUIVALENCE_MIRROR_HANDOFF.md",
       "authority_effect": "NONE_COORDINATION_ONLY",
       "credential_authority": "TV/TVC",

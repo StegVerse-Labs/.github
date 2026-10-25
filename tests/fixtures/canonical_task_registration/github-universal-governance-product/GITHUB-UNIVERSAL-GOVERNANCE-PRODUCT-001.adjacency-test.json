@@ -47,9 +47,9 @@
     },
     "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001": {
       "a_components_disjoint": true,
-      "a_evidence": "neither its shard nor its registry row declares targets.components; its goal is read-only Stripe/GoDaddy provider ingress in StegVerse-Labs/TVC with entitlement_authority false, which none of this Goal's components claim",
+      "a_evidence": "its shard and registry row declare targets.components [payment-provider-observation, payment-provider-read-profile] (declared by Lane D under Coordination's ruling at registry generation 322, from StegVerse-Labs/TVC#438 scripts/tvc_payment_provider_observation.py and TVC#440 tvc_payment_provider_read_profile.py); none of this Goal's components is among them",
       "b_finish_point_exercises_none": true,
-      "b_evidence": "the sealed finish-point closure contains no payment or provider-ingress module; vacuous for components because none are declared",
+      "b_evidence": "the sealed finish-point closure contains no payment or provider-ingress module and no module whose path carries payment_provider_observation or payment_provider_read_profile",
       "c_reliance_is_consumes_dependency": true,
       "outcome": "ADJACENT",
       "kept_as": "adjacent_task_refs entry and dependency CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (revenue-ops input)"
