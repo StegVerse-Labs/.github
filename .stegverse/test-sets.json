@@ -10889,7 +10889,8 @@
    "workers/universal_intr_profiled_ingress.py"
   ],
   "scripts/consume_kv_skap_custody_materialization_request.py": [
-   "scripts/materialize_kv_skap_canonical_return.py"
+   "scripts/materialize_kv_skap_canonical_return.py",
+   "workers/device_kv_skap_roundtrip_verifier.py"
   ],
   "scripts/consume_mir_exp3_original_request.py": [
    "workers/manifest_state_transition_intr_ingress.py"
@@ -11081,8 +11082,7 @@
    "scripts/run_gadi_targeted_runtime_if_ready.py"
   ],
   "scripts/dispatch_kv_skap_custody_materialization.py": [
-   "heartbeat_runtime/intr_carrier_profile.py",
-   "workers/universal_intr_profiled_ingress.py"
+   "scripts/consume_kv_skap_custody_materialization_request.py"
   ],
   "scripts/dispatch_resident_execution_requests.py": [
    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
@@ -11497,6 +11497,9 @@
    "control/worker-registry.json",
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json"
+  ],
+  "scripts/materialize_kv_device_from_skap_return.py": [
+   "workers/device_kv_skap_roundtrip_verifier.py"
   ],
   "scripts/materialize_kv_skap_canonical_return.py": [
    "scripts/materialize_kv_device_from_skap_return.py"
@@ -13147,6 +13150,9 @@
    "scripts/run_worker_runtime.py"
   ],
   "tests/test_device_kv_skap_roundtrip_verifier.py": [
+   "scripts/continue_device_kv_skap_from_tvc_custody.py",
+   "scripts/materialize_kv_device_from_skap_return.py",
+   "tests/kv_skap_layer_receipts.py",
    "workers/device_kv_skap_roundtrip_verifier.py"
   ],
   "tests/test_device_kv_skap_roundtrip_worker_source.py": [
@@ -14422,7 +14428,9 @@
   "tests/test_kv_skap_custody_materialization.py": [
    "scripts/consume_kv_skap_custody_materialization_request.py",
    "scripts/dispatch_kv_skap_custody_materialization.py",
+   "scripts/materialize_kv_device_from_skap_return.py",
    "scripts/materialize_kv_skap_canonical_return.py",
+   "tests/kv_skap_layer_receipts.py",
    "workers/universal_intr_profiled_ingress.py"
   ],
   "tests/test_kv_skap_gate_client_naming.py": [
@@ -17686,7 +17694,6 @@
    "heartbeat_runtime/intr_subsignal_runtime.py",
    "scripts/consume_device_kv_intr_materialization_request.py",
    "scripts/consume_kv_publisher_return_materialization_request.py",
-   "scripts/consume_kv_skap_custody_materialization_request.py",
    "scripts/consume_publisher_intr_materialization_request.py",
    "scripts/serve_hil_intr_materialization_ingress.py",
    "workers/canonical_state_transition_custody.py",
