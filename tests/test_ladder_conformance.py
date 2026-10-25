@@ -256,6 +256,18 @@ class CommittedArtifacts(unittest.TestCase):
                       "owning_existing_goal", "next_attempt"):
                 self.assertTrue(str(o.get(k) or "").strip(), (o["subject"], k))
 
+    def test_kv_admission_lists_no_barred_ephemeral_dependency(self):
+        # #167 c6394287652: H-KV-ADMISSION no longer lists the barred EPHEMERAL StegOS#427; no external machine may be a
+        # completion requirement (ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md:53,60)
+        decl = {i["id"]: i for i in _inputs()["declarations"][KV]["items"]}
+        adm = decl["H-KV-ADMISSION"]
+        for dep in adm["unadmitted_dependencies"]:
+            self.assertNotIn("StegOS#427", dep)
+            self.assertNotIn("EPHEMERAL", dep)
+        self.assertIn("the EPHEMERAL path is barred", adm["observed_state"])
+        conf = json.loads((cli.BASE / "conformance" / (KV + ".conformance.json")).read_text())
+        self.assertNotIn("StegOS#427 (NODE_LEDGER_OPENED at EPHEMERAL generation) draft", json.dumps(conf))
+
     def test_empty_tvc_signer_file_is_a_class_c_tvc_task(self):
         # Name kept from main for the test ratchet (a test at base must run at head).
         # Revision 16: the empty TVC signer file is no longer a class C TVC task; it is the
