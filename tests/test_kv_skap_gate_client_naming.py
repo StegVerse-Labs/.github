@@ -17,18 +17,19 @@ RETIRED = (
     "SKAP Vault InTr custody event",
 )
 
-# FAIL_CLOSED KV_SKAP_GATE_COMPONENT_RENAME_BLOCKED_BY_REGISTRY_GENERATION_FENCE (class B): renaming the registry
-# component needs canonical-task-registry generation 321 (scripts/check_registry_generation_fence.py), which makes
-# every sealed i1 goal manifest request (observed_registry_generation 320) stale. Until that is coordinated, the
-# component keeps its name in exactly these files, with these counts, and may not spread.
-PENDING_COMPONENT = "kv-skap-bidirectional-" + "intr"
-PENDING_COMPONENT_RESIDUALS = {
-    "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json": 1,
-    "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json": 1,
-    "data/canonical-task-registry.json": 1,
-    "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md": 1,
-    "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json": 1,
-}
+# Registry component kv-skap-bidirectional-intr -> kv-skap-gate-roundtrip (Coordination ruling (1), #167 c6393224851):
+# renamed at canonical-task-registry generation 321 in the registry, the STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 record,
+# the KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling and its i1 request, with the six i1 requests re-sealed at 321.
+RETIRED_COMPONENT = "kv-skap-bidirectional-" + "intr"
+RENAMED_COMPONENT = "kv-skap-gate-roundtrip"
+RENAMED_COMPONENT_FILES = (
+    "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+    "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+    "data/canonical-task-registry.json",
+    "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+)
+# Files that name the retired component only to retire it.
+RETIRING_COMPONENT = {"tests/test_kv_skap_gate_client_naming.py", "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md"}
 
 # Sealed text that may keep a retired token: request.json is a sealed observation of main 86382e60 whose
 # request_sha256 is pinned in the i1 MANIFEST; this test and the handoff doc name the retired tokens to retire them.
@@ -58,18 +59,23 @@ class KvSkapGateClientNamingTests(unittest.TestCase):
             found.extend(f"{rel}:{token}" for token in RETIRED if token in text)
         self.assertEqual(found, [])
 
-    def test_pending_component_name_does_not_spread(self) -> None:
-        found = {}
+    def test_retired_component_name_is_gone_with_no_alias(self) -> None:
+        found = []
         for rel in _tracked():
+            if rel in RETIRING_COMPONENT:
+                continue
             try:
                 text = (ROOT / rel).read_text(encoding="utf-8")
             except (UnicodeDecodeError, FileNotFoundError, IsADirectoryError):
                 continue
-            if text.count(PENDING_COMPONENT):
-                found[rel] = text.count(PENDING_COMPONENT)
-        self.assertEqual(found, PENDING_COMPONENT_RESIDUALS)
+            if RETIRED_COMPONENT in text:
+                found.append(rel)
+        self.assertEqual(found, [])
+        for rel in RENAMED_COMPONENT_FILES:
+            self.assertEqual((ROOT / rel).read_text(encoding="utf-8").count(RENAMED_COMPONENT), 1, rel)
         record = json.loads((ROOT / "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json").read_text())
         self.assertIn("device-kv-bidirectional-intr", json.dumps(record))  # Device -> KV is the one InTr hop
+        self.assertIn('"%s"' % RENAMED_COMPONENT, json.dumps(record))
 
     def test_worker_reads_the_gate_env_only(self) -> None:
         worker = (ROOT / "workers/run_device_kv_skap_canonical_runtime_worker.py").read_text()

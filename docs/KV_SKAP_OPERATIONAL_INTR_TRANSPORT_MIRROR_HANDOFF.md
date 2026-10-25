@@ -134,9 +134,9 @@ here describe that gate. Retired names, held absent by `tests/test_kv_skap_gate_
   a resident host that exported the old name must export the new one);
 - `scripts/dispatch_kv_skap_custody_materialization.py` no longer describes the event as an InTr custody event (file name kept).
 
-Pending (FAIL_CLOSED KV_SKAP_GATE_COMPONENT_RENAME_BLOCKED_BY_REGISTRY_GENERATION_FENCE, class B): the registry component
-`kv-skap-bidirectional-intr` -> `kv-skap-gate-roundtrip`. A registry edit must take generation 321, which stales every sealed
-i1 goal manifest request (observed generation 320); its five current occurrences are pinned so they cannot spread.
+Registry component `kv-skap-bidirectional-intr` -> `kv-skap-gate-roundtrip` (Coordination ruling (1), StegVerse-org/.github#167
+c6393224851): renamed at canonical-task-registry generation 321 in the registry, the STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 record and
+the KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling (evidence_digest re-sealed with `scripts/adjacency_ruling.py digest`); the six
+i1 goal manifest requests are re-sealed at observed generation 321 in the same change. No alias.
 
-Kept unchanged: the sealed request text of `KV-SKAP-VAULT-FUNCTIONAL-001.request.json` (a sealed observation of main 86382e60),
-and the StegOS-owned profile/module names (`specs/universal-intr-connector-profiles.v1.json`, `stegos/universal_intr_*`).
+Kept unchanged: the StegOS-owned profile/module names (`specs/universal-intr-connector-profiles.v1.json`, `stegos/universal_intr_*`).
