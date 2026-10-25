@@ -129,12 +129,14 @@ Only that authentic execution and exact readback may upgrade this lane from merg
 The KV -> SKAP Vault step is the in-KV SKAP gate (the SKAP Vault sits inside KV), not an InTr hop, so the client names
 here describe that gate. Retired names, held absent by `tests/test_kv_skap_gate_client_naming.py` with no aliases:
 
-- registry component `kv-skap-bidirectional-intr` -> `kv-skap-gate-roundtrip` (STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 record,
-  canonical registry, KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling resealed: evidence_digest 158ec097 -> 88e2c4b1, verify ALLOW);
 - env `STEGVERSE_DEVICE_KV_SKAP_INTR_MATERIALIZATION` -> `STEGVERSE_DEVICE_KV_SKAP_MATERIALIZATION` (read by
   `workers/run_device_kv_skap_canonical_runtime_worker.py`; not secret- or variable-backed in any workflow, so renamed in code;
   a resident host that exported the old name must export the new one);
 - `scripts/dispatch_kv_skap_custody_materialization.py` no longer describes the event as an InTr custody event (file name kept).
+
+Pending (FAIL_CLOSED KV_SKAP_GATE_COMPONENT_RENAME_BLOCKED_BY_REGISTRY_GENERATION_FENCE, class B): the registry component
+`kv-skap-bidirectional-intr` -> `kv-skap-gate-roundtrip`. A registry edit must take generation 321, which stales every sealed
+i1 goal manifest request (observed generation 320); its five current occurrences are pinned so they cannot spread.
 
 Kept unchanged: the sealed request text of `KV-SKAP-VAULT-FUNCTIONAL-001.request.json` (a sealed observation of main 86382e60),
 and the StegOS-owned profile/module names (`specs/universal-intr-connector-profiles.v1.json`, `stegos/universal_intr_*`).
