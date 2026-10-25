@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Verify one authentic DEVICE_SYSTEM -> KV -> SKAP_VAULT -> KV -> DEVICE_SYSTEM lineage.
+"""Verify one authentic two-leg DEVICE_SYSTEM -> KV -> DEVICE_SYSTEM lineage with its in-KV SKAP gate exchange.
+
+KV and the SKAP Vault are one organisation, so KV<->SKAP is the in-KV SKAP gate, not an InTr hop
+(StegVerse-org/.github#167 ruling c6393224851 (3); PROVISIONAL_ON_RULING_C). The two InTr legs are:
+
+- device_kv, DEVICE_SYSTEM -> KV;
+- kv_device, KV -> DEVICE_SYSTEM, whose prior is the device_kv receipt.
+
+The in-KV gate exchange in between must be bound to the device_kv receipt. It is bound by the sha256 of
+its exact bytes, and the kv_device payload must carry that hash. A manifest that still carries kv_skap or
+skap_kv InTr legs fails closed.
 
 This worker consumes existing canonical InTr evidence only. It cannot mint hop
 receipts, grant transition/credential authority, or convert CI/source state into
@@ -15,8 +25,8 @@ from pathlib import Path
 from typing import Any, Mapping
 
 TASK_ID = "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
-INPUT_SCHEMA = "stegverse.device-kv-skap.runtime-roundtrip-input/v1"
-PROOF_SCHEMA = "stegverse.device-kv-skap.runtime-roundtrip-proof/v1"
+INPUT_SCHEMA = "stegverse.device-kv-skap.runtime-roundtrip-input/v2"
+PROOF_SCHEMA = "stegverse.device-kv-skap.runtime-roundtrip-proof/v2"
 INTENT_SCHEMA = "stegverse.universal-intr-transport/v1"
 RECEIPT_SCHEMA = "stegverse.intr.hop_receipt/v1"
 HOSTED_ENV = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
@@ -28,10 +38,11 @@ RECEIPT_FIELDS = {
 }
 LEG_ORDER = (
     ("device_kv", "DEVICE_SYSTEM", "KV"),
-    ("kv_skap", "KV", "SKAP_VAULT"),
-    ("skap_kv", "SKAP_VAULT", "KV"),
     ("kv_device", "KV", "DEVICE_SYSTEM"),
 )
+RETIRED_KV_SKAP_LEGS = ("kv_skap", "skap_kv")
+GATE_EXCHANGE_SCHEMA = "stegverse.kv-skap.gate-exchange/v1"
+GATE_EXCHANGE_FIELD = "kv_skap_gate_exchange_hash"
 
 
 class RoundTripEvidenceError(ValueError):
@@ -115,17 +126,37 @@ def _validate_leg(*, name: str, expected_from: str, expected_to: str, intent: Ma
     return claimed
 
 
-def _validate_readback(value: Any, *, label: str, expected_receipt: str) -> dict[str, Any]:
+def _validate_readback(value: Any, *, label: str, gate_hash: str, expected_object: str) -> dict[str, Any]:
     require(isinstance(value, Mapping), f"{label}_readback_required")
     require(value.get("observed") is True and value.get("exact_readback") is True, f"{label}_exact_readback_not_observed")
-    require(value.get("source_receipt_hash") == expected_receipt, f"{label}_readback_receipt_mismatch")
+    require(value.get(GATE_EXCHANGE_FIELD) == gate_hash, f"{label}_readback_gate_exchange_mismatch")
     require(_valid_sha(value.get("object_sha256")), f"{label}_readback_object_hash_invalid")
+    require(value.get("object_sha256") == expected_object, f"{label}_readback_object_mismatch")
     require(value.get("credential_material_present") is False, f"{label}_credential_material_forbidden")
     return {
-        "source_receipt_hash": value["source_receipt_hash"],
+        GATE_EXCHANGE_FIELD: gate_hash,
         "object_sha256": value["object_sha256"],
         "exact_readback": True,
     }
+
+
+def _validate_gate_exchange(manifest: Mapping[str, Any], *, runtime_root: Path, device_kv_receipt_hash: str) -> tuple[str, dict[str, Any]]:
+    entry = manifest.get("kv_skap_gate_exchange")
+    require(isinstance(entry, Mapping), "kv_skap_gate_exchange_required")
+    path = _resolve_file(runtime_root, entry.get("path"), "kv_skap_gate_exchange")
+    raw = path.read_bytes()
+    gate_hash = sha_uri(raw)
+    require(entry.get(GATE_EXCHANGE_FIELD) == gate_hash, "kv_skap_gate_exchange_hash_mismatch")
+    exchange = _load_json(path, "kv_skap_gate_exchange")
+    require(canonical(exchange) == raw, "kv_skap_gate_exchange_not_canonical_bytes")
+    require(exchange.get("schema") == GATE_EXCHANGE_SCHEMA, "kv_skap_gate_exchange_schema_invalid")
+    require(exchange.get("kv_skap_path") == "IN_KV_GATE" and exchange.get("kv_skap_intr_hop") is False, "kv_skap_gate_exchange_must_not_be_intr")
+    require(exchange.get("canonical_device_kv_receipt_hash") == device_kv_receipt_hash, "kv_skap_gate_not_bound_to_device_kv")
+    require(exchange.get("exact_ciphertext_readback_verified") is True, "kv_skap_gate_exact_readback_not_verified")
+    require(_valid_sha(exchange.get("stored_object_sha256")), "kv_skap_gate_stored_object_hash_invalid")
+    require(exchange.get("secret_plaintext_present") is False and exchange.get("credential_material_present") is False, "kv_skap_gate_secret_material_forbidden")
+    require(exchange.get("credential_authority") == "TV/TVC", "kv_skap_gate_credential_authority_invalid")
+    return gate_hash, exchange
 
 
 def verify_manifest(manifest: Mapping[str, Any], *, runtime_root: Path) -> dict[str, Any]:
@@ -135,7 +166,11 @@ def verify_manifest(manifest: Mapping[str, Any], *, runtime_root: Path) -> dict[
     require(manifest.get("hosted_runtime_used") is False, "hosted_runtime_forbidden")
     require(manifest.get("second_user_operated_device_used") is False, "second_user_device_forbidden")
 
+    retired = [name for name in RETIRED_KV_SKAP_LEGS if name in manifest]
+    require(not retired, "kv_skap_intr_leg_retired:" + ",".join(retired))
+
     previous: str | None = None
+    payloads: dict[str, bytes] = {}
     receipt_hashes: dict[str, str] = {}
     packet_hashes: dict[str, str] = {}
     for name, expected_from, expected_to in LEG_ORDER:
@@ -158,17 +193,31 @@ def verify_manifest(manifest: Mapping[str, Any], *, runtime_root: Path) -> dict[
         )
         receipt_hashes[name] = previous
         packet_hashes[name] = intent["payload_hash"]
+        payloads[name] = payload
+
+    gate_hash, exchange = _validate_gate_exchange(manifest, runtime_root=runtime_root, device_kv_receipt_hash=receipt_hashes["device_kv"])
+    try:
+        returned = json.loads(payloads["kv_device"].decode("utf-8"))
+    except Exception as exc:
+        raise RoundTripEvidenceError("kv_device_payload_json_invalid") from exc
+    require(isinstance(returned, Mapping), "kv_device_payload_object_required")
+    require(returned.get(GATE_EXCHANGE_FIELD) == gate_hash, "kv_device_payload_gate_exchange_mismatch")
+    require(returned.get("device_kv_terminal_receipt_hash") == receipt_hashes["device_kv"], "kv_device_payload_device_kv_binding_mismatch")
+    require(returned.get("kv_skap_intr_hop") is False, "kv_device_payload_must_not_claim_kv_skap_intr")
 
     readback = manifest.get("readback")
     require(isinstance(readback, Mapping), "roundtrip_readback_required")
-    skap_readback = _validate_readback(readback.get("skap"), label="skap", expected_receipt=receipt_hashes["kv_skap"])
-    kv_readback = _validate_readback(readback.get("kv"), label="kv", expected_receipt=receipt_hashes["skap_kv"])
+    skap_readback = _validate_readback(readback.get("skap"), label="skap", gate_hash=gate_hash, expected_object=exchange["stored_object_sha256"])
+    kv_readback = _validate_readback(readback.get("kv"), label="kv", gate_hash=gate_hash, expected_object=sha_uri(payloads["kv_device"]))
 
     proof = {
         "schema": PROOF_SCHEMA,
         "task_id": TASK_ID,
         "state": "DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED",
-        "boundary_stack": ["DEVICE_SYSTEM", "KV", "SKAP_VAULT", "KV", "DEVICE_SYSTEM"],
+        "boundary_stack": ["DEVICE_SYSTEM", "KV", "DEVICE_SYSTEM"],
+        "kv_skap_path": "IN_KV_GATE",
+        "kv_skap_intr_hop": False,
+        GATE_EXCHANGE_FIELD: gate_hash,
         "receipt_hashes": receipt_hashes,
         "packet_hashes": packet_hashes,
         "skap_readback": skap_readback,

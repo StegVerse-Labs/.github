@@ -1,128 +1,85 @@
 # KV -> SKAP Vault Operational In-KV SKAP Gate Transport Mirror Handoff
 
 Repository: `StegVerse-Labs/.github`
-Canonical merge: `3ec15ed7937fa621a215f78b4992a6e3af63566f`
-Updated: 2026-08-31T17:50:00-05:00
-State: MERGED_ORGANIZATION_VALIDATED / AUTHENTIC_RESIDENT_KV_SKAP_EVENT_NOT_YET_OBSERVED
+Canonical merge: `3ec15ed7937fa621a215f78b4992a6e3af63566f` (original transport, PR #716)
+Updated: 2026-10-25 (laned/kv-skap-roundtrip-device-kv-consumer, PROVISIONAL_ON_RULING_C)
+State: SOURCE_REBOUND_TO_TWO_LEG_ROUNDTRIP / AUTHENTIC_RESIDENT_KV_SKAP_EVENT_NOT_YET_OBSERVED
 Credential authority: TV/TVC
 Authority effect: NONE
 
 ## Goal
 
-Make the organization-resident transport layer operational across the complete credential-custody path, with InTr only on the Device -> KV hop and the in-KV SKAP gate on the KV -> SKAP Vault step:
+KV and the SKAP Vault are one organisation, so KV <-> SKAP is the in-KV SKAP gate and never an InTr hop
+(StegVerse-org/.github#167 ruling c6393224851 (3); Coordination ruling C, PROVISIONAL_ON_RULING_C). The
+credential-custody round trip has two InTr legs. The in-KV gate exchange between them is bound by the sha256
+of its exact bytes:
 
 ```text
 DEVICE_SYSTEM
-  -> device-kv
+  -> device-kv (InTr leg 1)
   -> KV / KnowledgeVault:Interlock
-  -> kv-skap-custody
-  -> SKAP_VAULT / SKAP:Vault
+       in-KV SKAP gate: KnowledgeVault:SKAPClient -> SKAP:Vault (TVC custody, exact readback)
+       gate exchange record, kv_skap_gate_exchange_hash = sha256(exact bytes)
+  -> device-kv response (InTr leg 2, prior = DEVICE->KV terminal receipt, payload carries the gate hash)
+  -> DEVICE_SYSTEM
 ```
 
-The `.github` organization boundary owns transport ingress/egress and event dispatch. It does not own credential plaintext, credential authority, provider execution, or SKAP admission policy.
+The `.github` organization boundary owns ingress/egress and event dispatch. It does not own credential
+plaintext, credential authority, provider execution or SKAP admission policy. No Labs source resolves the
+retired StegOS profiles `kv-skap`, `kv-skap-custody` or `kv-skap-account-metadata` (retired in
+StegVerse-Labs/StegOS#428). The only StegOS connector profile used is `device-kv`.
 
 ## Canonical upstream contracts
 
-- StegOS connector profile (named as StegOS publishes it; owned outside this repository): `kv-skap-custody`
-  - request class: `KV_SKAP_CIPHERTEXT_CUSTODY`
-  - operation: `ADMIT_CIPHERTEXT`
-  - source: `KV / KnowledgeVault:SKAPClient`
-  - destination: `SKAP_VAULT / SKAP:Vault`
-  - downstream owner: `StegVerse-Labs/TVC`
-  - custody mode: `EXACT_BYTES`
-  - materialization extensions: `sealed_capsule`, `device_kv_receipt`
+- StegOS `device-kv` connector profile (owned outside this repository), used for both InTr legs.
 - TVC double-Interlock gate:
-  - DEVICE -> KV receipt must validate;
-  - KV -> SKAP_VAULT receipt must chain to DEVICE -> KV;
-  - DEVICE -> KV connector is InTr; KV -> SKAP_VAULT connector is the in-KV SKAP gate `KV_INTERNAL_SKAP_GATE`, never InTr (InTr runs only between distinct orgs; the SKAP Vault sits inside KV; TVC#544);
-  - secret plaintext forbidden;
-  - authority transfer forbidden.
+  - the DEVICE -> KV receipt must validate;
+  - the KV -> SKAP_VAULT receipt must chain to DEVICE -> KV;
+  - the KV -> SKAP_VAULT connector is the in-KV SKAP gate `KV_INTERNAL_SKAP_GATE`, never InTr (TVC#544);
+  - secret plaintext is forbidden;
+  - authority transfer is forbidden.
 - TVC SKAP store:
-  - storage backend id must begin `KV_SKAP_GATE_` (TVC#544);
-  - resident compatibility backend writes under `<STEGVERSE_KV_ROOT>/_Vault/SKAP`;
-  - exact ciphertext readback required;
-  - replay denied.
+  - the storage backend id must begin `KV_SKAP_GATE_`;
+  - exact ciphertext readback is required;
+  - replay is denied.
 
 ## Operational source path
 
 ```text
-validated DEVICE -> KV boundary receipt
+validated DEVICE -> KV boundary receipt + canonical DEVICE_SYSTEM -> KV hop receipt
 + exact sealed capsule
-  -> scripts/dispatch_kv_skap_custody_materialization.py
-  -> canonical StegOS kv-skap-custody transport intent
-  -> canonical event-ephemeral materialization request
-  -> HB-derived non-authorizing carrier binding
-  -> TVC_RELAY_EGRESS
-  -> workers/universal_intr_profiled_ingress.py
-  -> write-once KV/SKAP ingress receipt
-  -> direct credential-scrubbed event dispatch
-  -> scripts/consume_kv_skap_custody_materialization_request.py
-  -> current local TVC double-Interlock validation
-  -> same resident STEGVERSE_KV_ROOT
-  -> _Vault/SKAP exact ciphertext custody + receipts
+  -> scripts/dispatch_kv_skap_custody_materialization.py   (gate request stegverse.kv-skap-gate.custody-request/v1; no InTr intent)
+  -> scripts/consume_kv_skap_custody_materialization_request.py admit()   (write-once gate admission, credential-scrubbed dispatch)
+  -> consume_one: current local TVC double-Interlock validation, _Vault/SKAP exact ciphertext custody + readback
+  -> scripts/materialize_kv_skap_canonical_return.py        (gate exchange bound to the DEVICE->KV receipt)
+  -> scripts/materialize_kv_device_from_skap_return.py      (KV persist/readback, device-kv response leg)
 ```
 
-No second WorkerCoordinator task is introduced for this transport hop. Event admission does not mint a claim or fence. No GitHub runner, Render, Vercel, Cloudflare, HB carrier, or request grants execution or credential authority.
+The TVC-drain continuation `scripts/continue_device_kv_skap_from_tvc_custody.py` follows the same two-leg
+shape. `workers/device_kv_skap_roundtrip_verifier.py` (input/proof v2) verifies it and fails closed on any
+`kv_skap` or `skap_kv` InTr leg.
 
-## Implemented surfaces
-
-- `scripts/dispatch_kv_skap_custody_materialization.py`
-- `scripts/consume_kv_skap_custody_materialization_request.py`
-- `workers/universal_intr_profiled_ingress.py`
-- `tests/test_kv_skap_custody_materialization.py`
-- `tests/test_sv002_event_ephemeral_materialization.py`
-- this handoff
-
-## Validation / merge evidence
-
-- PR: `StegVerse-Labs/.github#716`
-- merge: `3ec15ed7937fa621a215f78b4992a6e3af63566f`
-- final source head: `98b717150879913bb84222bac2d0cde4b45d421f`
-- organization control validation: run `33448181170` — SUCCESS
-- heavyweight Heartbeat Worker Project run `33448181186` remained queued at merge time and is not treated as passed or failed.
-- An earlier heavyweight run compiled the new ingress/consumer source and exposed one stale exact profile-list assertion; that assertion was updated before merge. Its other failures were concurrent COSV/Healer/federation baseline drift and were not changed by this transport task.
-
-## Source completion predicates
-
-1. canonical StegOS `kv-skap-custody` intent/materialization construction from exact sealed capsule + DEVICE->KV receipt;
-2. HB-derived non-authorizing carrier binding and TVC relay egress admission;
-3. write-once ingress receipt;
-4. direct event dispatch without claim/fence minting or a second WorkerCoordinator task;
-5. TVC current-source double-Interlock validation;
-6. exact sealed ciphertext persistence path under `_Vault/SKAP`;
-7. DEVICE -> KV -> SKAP receipt lineage;
-8. replay denial inherited from the TVC SKAP store;
-9. organization control validation passing.
+The shared ingress `workers/universal_intr_profiled_ingress.py` no longer advertises or routes
+`KV:SKAPCiphertextCustody`. No second WorkerCoordinator task is introduced, and admission mints no claim or
+fence. No GitHub runner, Render, Vercel, Cloudflare, HB carrier or request grants execution or credential
+authority.
 
 ## Runtime evidence still required
 
-No authentic `stegverse.kv-skap-custody.materialization-consumption/v1` receipt with state `ADMITTED_TO_SKAP_VAULT` has yet been observed in the organization repository evidence.
-
-The next runtime goal is therefore one concrete event, not additional architecture:
+No authentic `stegverse.kv-skap-gate.custody-consumption/v1` receipt with state `ADMITTED_TO_SKAP_VAULT` and
+`canonical_return_state` `KV_TO_DEVICE_RETURN_PERSISTED` has been observed yet. The first concrete event
+runs the dispatcher on a resident host (STEGVERSE_STEGOS_ROOT, STEGVERSE_TVC_ROOT and STEGVERSE_KV_ROOT
+present). It is then observed at:
 
 ```text
-current resident roots present:
-  STEGVERSE_STEGOS_ROOT
-  STEGVERSE_TVC_ROOT
-  STEGVERSE_KV_ROOT
-
-plus:
-  exact owner-sealed capsule
-  validated DEVICE -> KV receipt
-  TVC relay authorization reference
-
-execute:
-  scripts/dispatch_kv_skap_custody_materialization.py
-
-observe:
-  receipts/sovereign-network/kv-skap-custody-egress/<materialization_id>.json
-  receipts/sovereign-network/kv-skap-custody-ingress/<materialization_id>.json
-  receipts/sovereign-host/kv-skap-custody/<materialization_id>.json
-  <STEGVERSE_KV_ROOT>/_Vault/SKAP/Credentials/coinbase/<operation_id>.json
-  <STEGVERSE_KV_ROOT>/_Vault/SKAP/Receipts/coinbase/*
+receipts/sovereign-network/kv-skap-gate-dispatch/<materialization_id>.json
+receipts/sovereign-host/kv-skap-gate-admission/<materialization_id>.json
+receipts/sovereign-host/kv-skap-gate-custody/<materialization_id>.json
+receipts/sovereign-host/device-kv-skap-roundtrip/<materialization_id>/kv-skap-gate-exchange.json
+<STEGVERSE_KV_ROOT>/_Vault/SKAP/Credentials/coinbase/<operation_id>.json
 ```
 
-Only that authentic execution and exact readback may upgrade this lane from merged/validated source to runtime-observed SKAP custody.
+Only that authentic execution and its exact readback may upgrade this lane to runtime-observed SKAP custody.
 
 ## KV -> SKAP Vault gate naming (laned/kv-skap-gate-roundtrip-rename)
 

@@ -11081,8 +11081,7 @@
    "scripts/run_gadi_targeted_runtime_if_ready.py"
   ],
   "scripts/dispatch_kv_skap_custody_materialization.py": [
-   "heartbeat_runtime/intr_carrier_profile.py",
-   "workers/universal_intr_profiled_ingress.py"
+   "scripts/consume_kv_skap_custody_materialization_request.py"
   ],
   "scripts/dispatch_resident_execution_requests.py": [
    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
@@ -14422,6 +14421,7 @@
   "tests/test_kv_skap_custody_materialization.py": [
    "scripts/consume_kv_skap_custody_materialization_request.py",
    "scripts/dispatch_kv_skap_custody_materialization.py",
+   "scripts/materialize_kv_device_from_skap_return.py",
    "scripts/materialize_kv_skap_canonical_return.py",
    "workers/universal_intr_profiled_ingress.py"
   ],
@@ -17686,7 +17686,6 @@
    "heartbeat_runtime/intr_subsignal_runtime.py",
    "scripts/consume_device_kv_intr_materialization_request.py",
    "scripts/consume_kv_publisher_return_materialization_request.py",
-   "scripts/consume_kv_skap_custody_materialization_request.py",
    "scripts/consume_publisher_intr_materialization_request.py",
    "scripts/serve_hil_intr_materialization_ingress.py",
    "workers/canonical_state_transition_custody.py",
