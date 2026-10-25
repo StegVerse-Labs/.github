@@ -13,20 +13,20 @@
       "sha256": "sha256:33a665ea35d3dc41c0844dcb6c67fb0fca301180846189632c0bfe815d456536"
     },
     "data/admission-scenarios/classes.jsonl": {
-      "blob": "f1c3f81d0a96c4e17d7118d6bf365e94beb85a60",
-      "sha256": "sha256:d69365a8788f143a3412e43e57fdf36713bbc73bb0e9790903f2f85080b7275e"
+      "blob": "ac7de68d4b512e7ee65982ae4f056bfd77b8a859",
+      "sha256": "sha256:1ba7f213db5eebc15bc75a7d9e684a5ea70208ce5e15ff367dd240a5b99b6d22"
     },
     "data/admission-scenarios/corpus.jsonl": {
-      "blob": "91482936e7f83648fb719ae49aba7907f791166c",
-      "sha256": "sha256:0d96b5634370f6dca56bbb0bf428ec79d642ce63990174b5dc628f3c9a44ec5f"
+      "blob": "772c100847937725aada3d48d1b937667379a6d7",
+      "sha256": "sha256:0afa7bd5a90d117501a30a813be4763260aa2890b475da60c8b5c3f322a10b66"
     },
     "data/admission-scenarios/seed-append-outcomes.jsonl": {
-      "blob": "d50731c862a88a78fe3386f9cfa6f7d858da8130",
-      "sha256": "sha256:d5fde3b78ff2a7e02963fd8603cadc403842d589a6e886afb1b483f1ed8d1ae5"
+      "blob": "6aab786ed4e8d770ea2a097089de5cf3a33067d4",
+      "sha256": "sha256:3e067dd9742564b50aba97c27f09589b871596f6495ada1d45c815c722fc5211"
     },
     "data/admission-scenarios/tvc-replay/replay-map.jsonl": {
-      "blob": "957f0a90be6d611cfc8b24efc547126c983c5b34",
-      "sha256": "sha256:fca45593a86e4478be5a3fc0d2ac37a10f9baa08b8ef585aed68a66d5a962d15"
+      "blob": "051f33b22131471d058989792e8dfab0449f2579",
+      "sha256": "sha256:de8238419a2ad85a39ce989cc24e688a7a4a73f21e1d7d107b315b50200d866e"
     },
     "data/admission-scenarios/tvc-replay/signoff-receipts.jsonl": {
       "blob": "b3c494fb31c3d469a1ce12871fd3864f86856e0e",
@@ -37,12 +37,12 @@
       "sha256": "sha256:008b05b5b4745e0a7af362561061f4eb95c2364e3f5dfdf035016f00ebfb049e"
     },
     "data/sv-work-items/invariants.json": {
-      "blob": "551c709b0d6a94bb9f9fe844e818f6e28a4dad64",
-      "sha256": "sha256:cbcc722be3f8cd19cce97e495407ebf4fc8d0650b810b99e9ffa4af7df46c648"
+      "blob": "f1c5e7c1cf5797b9ad639d2a810b0a04466ea69f",
+      "sha256": "sha256:b44b13e7a6af3de947ad9a2d5c9e306c3e9261f4e702e3fc3db8bdf2512faab6"
     },
     "data/sv-work-items/lifecycle-transitions.json": {
-      "blob": "c66de6e86c9ec7d167f0e5edf74e717af0688224",
-      "sha256": "sha256:853c5545bf306eea48c66150ca42d323f130531519112d69e19c4f472556675f"
+      "blob": "aed301bce950429788876a3c096d82326b9d3824",
+      "sha256": "sha256:b05ca55bef7f4ff994c859fbed0108129d155e392c3439397c0d85c62ca30611"
     },
     "data/sv-work-items/migration/sv-changes.jsonl": {
       "blob": "78c7e77d478ce478282a290154b4b87d1b5e3df2",
@@ -65,12 +65,12 @@
       "sha256": "sha256:2f7a3b958442cf19d4d9c2bd38f9c223d8cc683bdd6c75510133251cbfc612e9"
     },
     "data/sv-work-items/stages/NWI-S2.json": {
-      "blob": "db13a09a6b7929dd912829ea93b083800c5d4bc9",
-      "sha256": "sha256:eea0b73fdedb507131a5077d422812b9c0184f9b695ec2952911e74e3903222b"
+      "blob": "9a6f2f88eae67a0ea4293387a187caa25fd7076e",
+      "sha256": "sha256:309b800e73860bb7d72bbd1c1afe0c7a89818fb3731bc8b37bd6c52141121403"
     },
     "data/sv-work-items/stages/NWI-S3.json": {
-      "blob": "b4e6be6d969cf96b36b3684b72d9cedfb0a6188b",
-      "sha256": "sha256:0b4a40911afa1f808abc6f19f1d32f879fd46b13bb9e1703e557c31b21966b4e"
+      "blob": "4eec7edf090a6e3536740428b181cf3b6905bec1",
+      "sha256": "sha256:692342a847efc88e782d84421be84f26e90886b152faadf41d3f5451b48380ec"
     },
     "data/sv-work-items/stages/NWI-S4.json": {
       "blob": "199b03aed17c367e0d9c4203d18ac978afcfdb4f",
@@ -93,8 +93,8 @@
       "sha256": "sha256:7424b384d6c1116a9ca64290ac1f4f301613086032eea3f2bc878c5b5302aed2"
     },
     "resident-runtime/admission_learning.py": {
-      "blob": "b0a3d225ba3ce5a0d03e38d963d9d5ced67702e1",
-      "sha256": "sha256:8d76001a9046bce73f0e1a1ab530ea9db97f0a6bebfba6ba11faca4e74c3783a"
+      "blob": "9405ef5184396ee93b3362edd98e843c5ba36d3d",
+      "sha256": "sha256:58e6ec82b168cb9db95361c1a2f68bacfac5a027dc6a218d99f84714e2ad21b7"
     },
     "resident-runtime/aggregate_repo_transition.py": {
       "blob": "7660d2bc10231c68f9c8b1015caee558ee9423d8",
@@ -120,13 +120,17 @@
       "blob": "508ebf15b6882efa5a5420849773151f241e8cfe",
       "sha256": "sha256:b3c56d21180e9a1bd749f9165072a757d765773c4dad384687f5c23abe84292b"
     },
+    "resident-runtime/sv_push_receipt.py": {
+      "blob": "0ea4ff4cafd127bbd18b2ee62d51cd344a1488ef",
+      "sha256": "sha256:67e9d037a63fe46079c1fa59a7c2935a69946ded3e3945dbd58800de1f88993a"
+    },
     "resident-runtime/sv_work_items.py": {
-      "blob": "9e926ed41210963d4c5b6bc2000ce71c51cf6664",
-      "sha256": "sha256:ea36302d1fcdac0f2de01fa8b8f873e805959ae0f2cfe1c10f11d6d9d91ed1e0"
+      "blob": "9544c53b1237f8b0b89f14916aaf22bffa7aa5af",
+      "sha256": "sha256:97fd7b6db71b59410f80d6e8ab5a726c0279db2d4806c669b3e0b8d2823328ec"
     },
     "schemas/admission-corpus.v1.schema.json": {
-      "blob": "5aa5322c7c2b7cff5613996e5e5d33281ad3d53c",
-      "sha256": "sha256:4777b54dfe591d9d8eff99d6f0b827aa9c62b6cd700cc12528e1c3b839537052"
+      "blob": "f846148f1fee596dd1cc50ba7ad197c4ca78e361",
+      "sha256": "sha256:92516e048ff250e366f6bcea19ece326aa0df2a1bca2c8ee6ad1443d63af2040"
     },
     "schemas/canonical-task-work-items.v1.schema.json": {
       "blob": "92adebe15cbae5671b55bc30d89fc715fa288d51",
@@ -148,13 +152,17 @@
       "blob": "62ee530793a2aab6c87542d82e525e90b46d31fb",
       "sha256": "sha256:ff2f4804cb1b603294f189e7a2351aee6f0a74957614be637bd0df2fe202946d"
     },
+    "schemas/sv-push-receipt.v1.schema.json": {
+      "blob": "67b9f7d3b3536dd686f7703dff609283c6035af7",
+      "sha256": "sha256:5892048af26a166f3b53cfec6bbed7f8cb45f26c604fbe9b1dd1049c39d5cfea"
+    },
     "schemas/sv-surface-aliases.v1.schema.json": {
       "blob": "930261dfc23cb75607e3db55e6a1db3d3357647f",
       "sha256": "sha256:38b4d32032cb96566f890906d2baa396913ff45c95c7bc7ae5f3ec4a1e0a805a"
     },
     "scripts/build_sv_native_fixtures.py": {
-      "blob": "bfc0daa139c57b7f4927b1b35c8336983ee97308",
-      "sha256": "sha256:e6dcb0b1ba5ba199f840dc459793d150bf947c3d5ea99baa31e6ff72a94840c9"
+      "blob": "7746ea48f319b5a639922089f41e85924eae5df1",
+      "sha256": "sha256:042143c1013932811bb3507384dd79a447d41f075c283e43a31aafd8cf87a3e1"
     },
     "scripts/project_worker_claim_into_canonical_task.py": {
       "blob": "9573c5bb963d7c19f64a08173f7397f427ba32dd",
