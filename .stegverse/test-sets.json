@@ -2333,6 +2333,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_federation_projection_census.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_federation_projection_census.py"
+   ],
+   "tests": [
+    "tests/test_federation_projection_census.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_final_structured_worker_cohort_cosv.py",
    "inputs": [],
    "surfaces": [
@@ -9886,6 +9898,9 @@
   "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py": [
    "control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json"
   ],
+  "data/federation-projection-census/reference/federation_projection.py": [
+   "org-boundary/registry/federation.json"
+  ],
   "heartbeat_runtime/__init__.py": [
    "heartbeat_runtime/admitted_worker_runtime.py",
    "heartbeat_runtime/engine_v11.py",
@@ -10063,6 +10078,10 @@
   ],
   "org-boundary/runtime/capability_ingress.py": [
    "org-runtime/interlock-intr.json"
+  ],
+  "org-boundary/runtime/federation_projection_census.py": [
+   "data/federation-projection-census/census.json",
+   "org-boundary/registry/federation.json"
   ],
   "org-boundary/runtime/node_standing.py": [
    "docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json"
@@ -13395,6 +13414,18 @@
    "resident-runtime/ecosystem_control.py",
    "resident-runtime/federation_cycle.py",
    "tests/posix_ledger_locus/**"
+  ],
+  "tests/test_federation_projection_census.py": [
+   "data/federation-projection-census/**",
+   "data/federation-projection-census/census.json",
+   "data/federation-projection-census/observed/**",
+   "data/federation-projection-census/reference/**",
+   "data/federation-projection-census/reference/federation_projection.py",
+   "docs/FEDERATION_DIRECTORY.md",
+   "org-boundary/registry/**",
+   "org-boundary/registry/federation.json",
+   "org-boundary/runtime/**",
+   "org-boundary/runtime/federation_projection_census.py"
   ],
   "tests/test_final_structured_worker_cohort_cosv.py": [
    "control/cosv-global-registry-coverage.json",
