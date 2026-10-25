@@ -278,8 +278,8 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(sorted(set(_codes(g, mem))), ["LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE", "OPERATING_MODE_E0_TERMINAL_MISSING"])
         self.assertNotIn("LC-KV-24", tasks)
         self.assertNotIn("LC-KV-22", tasks)
-        exp = {"LC-KV-23": ("H-KV-ENDPOINT-LEDGER-ANCHOR", "OPERATING_MODE_E0_WITNESS_FAILED", "C", "Lane D"),
-               "LC-KV-25": (mem, "LADDER_ACCESS_PATH_BYPASSES_LAYER", "A", "InTr and Mesh Destinations lane"),
+        self.assertNotIn("LC-KV-23", tasks)  # closed in revision 14 (Coordination ruling (A), #167 c6392982821)
+        exp = {"LC-KV-25": (mem, "LADDER_ACCESS_PATH_BYPASSES_LAYER", "A", "InTr and Mesh Destinations lane"),
                "LC-GOV-09": (mem, "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE", "C", "GitHub Product lane"),
                "LC-GOV-10": (mem, "OPERATING_MODE_E0_TERMINAL_MISSING", "B", "GitHub Product lane")}
         for tid, (item, code, cls, lane) in exp.items():
@@ -296,29 +296,29 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertIn("6373412055", tasks[tid]["required_repair"], tid)
         self.assertIn("ENDPOINT_NOT_AN_ORG_LEDGER_SOURCE", tasks["LC-KV-25"]["required_repair"])
         self.assertIn("ENDPOINT_ORG_MEMBERSHIP_REFUSED", tasks["LC-KV-25"]["proposed_resolution"])
-        # the watermark: required and KV-sourced; a regressed self-watermark still gets ALLOW, so LC-KV-23 goes to C-review
+        # revision 14, Coordination C-review ruling (A) (#167 c6392982821): KV's own head record is the authority and the caller
+        # watermark is an optional claim; an older head is DENY whatever the claim, and the claim is still validated on the current head
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
         self.assertIn("cvk263-chain-probe", anc["observed_by"])
         self.assertIn("carrier-shared-sha", anc["observed_by"])
+        self.assertIn("6392982821", anc["observed_state"])
         ro = anc["required_outcomes"]
-        for w_ in ("KV", "SKAP_VAULT_VIA_GATE".replace("_VAULT", "")):
+        for w_ in ("KV", "SKAP_VIA_GATE"):
             for f_ in ("NONE", "BARE_STRING_NEWEST", "MALFORMED_SHORT", "MALFORMED_UPPERCASE", "ORG_SOURCED", "EXTRA_KEY"):
-                self.assertEqual(ro["REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s" % (f_, w_)], ["FAIL_CLOSED"], (f_, w_))
+                self.assertEqual(ro["REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s" % (f_, w_)], ["DENY"], (f_, w_))
             for f_ in ("KV_OWN_NEWEST", "FOREIGN_DIGEST", "REGRESSED_TO_PRESENTED_HEAD", "ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD"):
                 self.assertEqual(ro["REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s" % (f_, w_)], ["DENY", "FAIL_CLOSED"], (f_, w_))
+            self.assertEqual(ro["CURRENT_HEAD_WITHOUT_WATERMARK_" + w_], ["ALLOW"])
+            self.assertEqual(ro["CURRENT_HEAD_WATERMARK_MATCHED_" + w_], ["ALLOW"])
+            self.assertEqual(ro["CURRENT_HEAD_WATERMARK_FOREIGN_DIGEST_" + w_], ["DENY"])
+            self.assertEqual(ro["CURRENT_HEAD_HEAD_RECORD_ABSENT_" + w_], ["FAIL_CLOSED"])
+            for f_ in ("BARE_STRING", "MALFORMED_SHORT", "MALFORMED_UPPERCASE", "EXTRA_KEY", "ORG_SOURCED"):
+                self.assertEqual(ro["CURRENT_HEAD_WATERMARK_%s_%s" % (f_, w_)], ["FAIL_CLOSED"], (f_, w_))
         self.assertEqual(ro["E0_SKAP_READ_BACK_VIA_SKAPLAYER2GATE"], ["ALLOW"])
         self.assertNotIn("SAME_SIGNAL_REPLAYED_AFTER_THE_PIN", ro)  # an idempotent read-back at #431 @e9d45e6c, recorded
         wf = {r.get("probe") for r in next(i for i in d["items"] if i["id"] == "H-KV-ENDPOINT-LEDGER-ANCHOR")["refusals"]
               if r["failure_code"] == "OPERATING_MODE_E0_WITNESS_FAILED"}
-        # revision 13 (cvk main @9d56bc7b): Lane D's resolution (a) refuses the two REGRESSED rows; the caller watermark is
-        # optional there, so the declared caller-watermark rows differ until the C-review rules (LC-KV-23 stays class C)
-        self.assertEqual(wf, {"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s" % (f_, w_)
-                              for f_ in ("NONE", "BARE_STRING_NEWEST", "MALFORMED_SHORT", "MALFORMED_UPPERCASE", "ORG_SOURCED",
-                                         "EXTRA_KEY")
-                              for w_ in ("KV", "SKAP_VIA_GATE")}
-                         | {"CURRENT_HEAD_WITHOUT_WATERMARK_" + w_ for w_ in ("KV", "SKAP_VIA_GATE")})
-        self.assertIn("6373694285", tasks["LC-KV-23"]["required_repair"])
-        self.assertIn("C-review", tasks["LC-KV-23"]["proposed_resolution"])
+        self.assertEqual(wf, set())  # every observed watermark row decides as required at @9d56bc7b
         # Lane B: the shared carrier is byte-identical and destination_evidence refuses six-field
         for n_ in ("431", "432", "433"):
             self.assertEqual(ro["CARRIER_SHA_" + n_], ["ALLOW"])
