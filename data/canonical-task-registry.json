@@ -16608,7 +16608,7 @@
         ],
         "components": [
           "device-kv-bidirectional-intr",
-          "kv-skap-bidirectional-intr",
+          "kv-skap-gate-roundtrip",
           "canonical-event-ephemeral-domain-binding",
           "single-roundtrip-receipt-lineage",
           "tvc-skap-credential-reference",
