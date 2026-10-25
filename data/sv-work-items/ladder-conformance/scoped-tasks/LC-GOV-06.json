@@ -11,13 +11,14 @@
  "items": [
   "H-GOV-ADMISSION"
  ],
- "next_attempt": "on the admission event of StegVerse-Labs/.github#3313",
+ "next_attempt": "on the SV_CHANGE_PROPOSE of a NATIVE record for each remaining head (StegVerse-Labs/.github#3326 @e9085315 and StegVerse-org/StegVerse-SDK#556 @406774e7), then add the admission observe run",
  "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
  "owning_lane": "GitHub Product lane (Lane C)",
  "proposed_resolution": "after #3313 is admitted, add an observe run that evaluates sv_work_items.admit for each path head and binds H-GOV-ADMISSION to it",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "exercise SV_CHANGE_ADMIT on the exact heads of #3326 and StegVerse-SDK#556 and record its dispositions",
+ "required_repair": "exercise SV_CHANGE_ADMIT on the exact heads of #3326 and StegVerse-org/StegVerse-SDK#556 and record its dispositions",
  "retry_point": "python scripts/ladder_conformance.py observe (add an admission run once the branch-writer derivation is on main)",
+ "revision_15_live_state": "P1 revision 15 (#163): the original wait is over - StegVerse-Labs/.github#3313 merged as 370ea596 (2026-10-24T21:20:06Z) and #3255 was superseded by #3344 (merged ba2677cb). What is left: SV_CHANGE_ADMIT (resident-runtime/sv_work_items.py evaluate_admission) refuses anything that is not record_mode NATIVE (HISTORICAL_RECORD_NOT_ADMISSIBLE), and data/sv-work-items holds no NATIVE SV_CHANGE record for the remaining heads (StegVerse-Labs/.github#3326 @e9085315 and StegVerse-org/StegVerse-SDK#556 @406774e7). An observe run that built admission inputs for those heads by hand would be fabricated evidence, so the run is not added. The next attempt is when each head's author proposes its NATIVE record (SV_CHANGE_PROPOSE).",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",
  "task_id": "LC-GOV-06"
