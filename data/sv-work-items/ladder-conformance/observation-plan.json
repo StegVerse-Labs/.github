@@ -994,7 +994,7 @@
      "parse": "rows",
      "root": "tvc",
      "run_id": "layers-tvc-double-interlock-probe",
-     "what": "TVC double interlock INTR_DEVICE_KV -> INTR_KV_SKAP: layer 1 without healthy-node evidence, layer 2 without layer 1, layer 2 on a caller-minted layer-1 receipt"
+     "what": "TVC double interlock INTR_DEVICE_KV -> in-KV SKAP gate: layer 1 without healthy-node evidence, layer 2 without layer 1, layer 2 on a caller-minted layer-1 receipt"
     },
     {
      "globs": [
@@ -1771,7 +1771,7 @@
      ],
      "root": "tvc541",
      "run_id": "tvc541-one-call-chains-elsewhere",
-     "what": "TVC#541 @72decca1: other credential paths that still mint the INTR_DEVICE_KV and INTR_KV_SKAP receipts in one call with a self-asserted boundary_verification VERIFIED (LC-KV-08 residual): tools/app_store_connect_skap_custody.py"
+     "what": "TVC#541 @72decca1: other credential paths that still mint the INTR_DEVICE_KV and KV->SKAP receipts in one call with a self-asserted boundary_verification VERIFIED (LC-KV-08 residual): tools/app_store_connect_skap_custody.py"
     },
     {
      "globs": [

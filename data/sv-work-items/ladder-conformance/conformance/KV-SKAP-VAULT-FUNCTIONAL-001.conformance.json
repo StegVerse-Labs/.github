@@ -1005,7 +1005,7 @@
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-DURABLE-CUSTODY-PROVIDER",
      "next_attempt": "on the next record change of TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "an E0 custody path reached only through the two credential layers: layer 1 (KV via InTr from a node passing REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE, minting a KV-access receipt) then layer 2 (the SKAP Vault via InTr only from inside KV, consuming that receipt); custody records are appended inside the KV lineage by those InTr transitions and read back by exact lineage hash through the same two gates; durability comes from replicating the sealed lineage as InTr payloads to the KV of other currently admitted healthy nodes, never from a directly addressable store (a bare git ref, cloud drive, NAS or removable medium is at most a ciphertext carrier below the gates, never an access path); validate_vault_lineage_custody_result must be called with SkapLayer2Gate.verify_access_chain as its access_receipt_verifier, not an arbitrary callable; the git-ref adapter proposed in the first revision is withdrawn as non-conforming",
+     "required_evidence_or_repair": "an E0 custody path reached only through the two credential layers: layer 1 (KV via InTr from a node passing REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE, minting a KV-access receipt) then layer 2 (the SKAP Vault, which sits inside KV, reached only through the in-KV SKAP gate, never by an InTr hop, consuming that receipt); custody records are appended inside the KV lineage by that in-KV gate and read back by exact lineage hash through the same two gates; durability comes from replicating the sealed lineage to the KV of other currently admitted healthy nodes (over InTr only where the receiving node is in a distinct organization; never an InTr hop inside one org), never from a directly addressable store (a bare git ref, cloud drive, NAS or removable medium is at most a ciphertext carrier below the gates, never an access path); validate_vault_lineage_custody_result must be called with SkapLayer2Gate.verify_access_chain as its access_receipt_verifier, not an arbitrary callable; the git-ref adapter proposed in the first revision is withdrawn as non-conforming",
      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point --evidence <file> (StegVerse-Labs/continuity-vault-kit)"
     }
    ],
@@ -1295,11 +1295,11 @@
    "verdict": "FAIL_CLOSED"
   },
   {
-   "id": "SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
+   "id": "SKAP_VAULT_REACHABLE_ONLY_FROM_INSIDE_KV",
    "kind": "CONSTRAINT",
    "ladder": {
     "E0": {
-     "form": "no LLM: SkapLayer2Gate admits an INTR_KV_SKAP transition only on a layer-1 receipt held by the layer-1 runtime and returns six-field FAIL_CLOSED SKAP_ACCESS_LAYER2_REFUSED otherwise; KVSkapVault bind/write/read/reconstruct and VaultStore append/read_skap_sealed_credential consume it (observed)",
+     "form": "no LLM: SkapLayer2Gate (the in-KV SKAP gate) admits a layer-2 request only on a layer-1 receipt held by the layer-1 runtime and returns six-field FAIL_CLOSED SKAP_ACCESS_LAYER2_REFUSED otherwise; KVSkapVault bind/write/read/reconstruct and VaultStore append/read_skap_sealed_credential consume it (observed)",
      "llms": 0
     },
     "E1": {
@@ -1323,7 +1323,7 @@
      "evidence": "TV/TVC SKAP access still does not require KV's gates (StegVerse-Labs/TVC#541 @72decca1c0e1d0d60b5801cb01f0fab70ea038dc, narrowed in revision 11 from 11 files to 3: tools/coinbase_intr_execution_request_drain.py (2 lines), portfolio_request_drain.py (5), settlement_watch_drain.py (5) still name /var/lib/stegverse/skap; residuals file: 2 structural blockers, 3 residuals, 29 routed). Revision 10 text: narrowed from 40 to 11: 11 tracked files still name the legacy resident root /var/lib/stegverse/skap - 5 non-test Python files (tools/coinbase_intr_{execution_request,portfolio_request,settlement_watch}_drain.py, scripts/install_coinbase_intr_{observe,portfolio_request}_service.py) and 6 systemd units (config/skap-resident-store-residuals.json: 11 residuals, all class B, 2 structural blockers TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT and SKAP_VAULT_INTR_READ_CLIENT_NOT_BOUND; runs skap-resident-residuals-tvc541, tvc541-residual-units); the workflow assertion is gone; the legacy data stays in place. The caller-minted-receipt bypass of revision 6 stays closed (run tvc541-mint-both-tests). TVC main @c4845bea704949c46658042963e8c532c9559939 is unchanged (run skap-direct-store-tvc)",
      "failed_predicate": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
      "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
-     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_VAULT_REACHABLE_ONLY_FROM_INSIDE_KV",
      "next_attempt": "on the next record change of the owning goal",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "required_evidence_or_repair": "remove the path or route it through the layer's InTr gate",
@@ -1334,7 +1334,7 @@
      "evidence": "the sealed scope of #3324 (expected_evidence_predicates, scope_digest unchanged) names neither layer nor the healthy-node predicate; the request, allocation and handoff mention only 'Interlock/InTr' as transition authority (run layers-sealed-scope-search)",
      "failed_predicate": "CONSTRAINT_IS_A_SEALED_PREDICATE",
      "failure_code": "LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE",
-     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_VAULT_REACHABLE_ONLY_VIA_INTR_FROM_KV",
+     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_VAULT_REACHABLE_ONLY_FROM_INSIDE_KV",
      "next_attempt": "on the next record change of the owning goal",
      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
      "required_evidence_or_repair": "add the constraint to the goal's sealed expected_evidence_predicates (a re-seal through the goal's own request)",
@@ -1373,7 +1373,7 @@
    "refusals": [
     {
      "disposition": "DENY",
-     "evidence": "revision 11: TVC#541 @72decca1 retires build_chain (none in tools/; coinbase_intr_double_interlock now has gate_device_kv :85, gate_kv_skap :118 and link_gates :165 and refuses a self-asserted boundary_verification :213-216; run tvc541-build-chain-and-org-ref), but tools/app_store_connect_skap_custody.py still collapses the layers: _boundary (:39) writes boundary_verification VERIFIED (:52) and _chain (:63) mints INTR_DEVICE_KV and KV->SKAP in one call, which admit_unchanged calls at :116 and records double_interlock_verified True (run tvc541-one-call-chains-elsewhere). Revision 10 text: TVC build_chain (tools/coinbase_intr_double_interlock.py:74 @c4845bea704949c46658042963e8c532c9559939) still mints the DEVICE->KV and KV->SKAP hops in one call, and build_device_kv_receipt (:45) self-asserts boundary_verification VERIFIED (:36), so any caller of that chain mints layer 1 itself and passes layer 2 - run layers-tvc-double-interlock-probe LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT (ALLOW); continuity-vault-kit no longer uses it, but it remains the reused INTR_DEVICE_KV -> INTR_KV_SKAP shape on TV/TVC's credential side. At TVC#541 @72decca1c0e1d0d60b5801cb01f0fab70ea038dc build_chain no longer takes layer receipts from the caller; it reads both from the designated KV / SKAP Vault ledgers, and with none designated it is six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED (run skap-custody-chain-probe-tvc541 DOUBLE_INTERLOCK_*), so the collapse remains only on TVC main until #541 is admitted; at @f75e3e7c build_chain still exists (tools/coinbase_intr_double_interlock.py:130) and tools/coinbase_browser_skap_custody.py:51 still calls it - the build_chain removal promised for the next push has not landed (run tvc541-build-chain-and-org-ref)",
+     "evidence": "revision 11: TVC#541 @72decca1 retires build_chain (none in tools/; coinbase_intr_double_interlock now has gate_device_kv :85, gate_kv_skap :118 and link_gates :165 and refuses a self-asserted boundary_verification :213-216; run tvc541-build-chain-and-org-ref), but tools/app_store_connect_skap_custody.py still collapses the layers: _boundary (:39) writes boundary_verification VERIFIED (:52) and _chain (:63) mints INTR_DEVICE_KV and KV->SKAP in one call, which admit_unchanged calls at :116 and records double_interlock_verified True (run tvc541-one-call-chains-elsewhere). Revision 10 text: TVC build_chain (tools/coinbase_intr_double_interlock.py:74 @c4845bea704949c46658042963e8c532c9559939) still mints the DEVICE->KV and KV->SKAP hops in one call, and build_device_kv_receipt (:45) self-asserts boundary_verification VERIFIED (:36), so any caller of that chain mints layer 1 itself and passes layer 2 - run layers-tvc-double-interlock-probe LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT (ALLOW); continuity-vault-kit no longer uses it, but it remains the reused INTR_DEVICE_KV -> in-KV SKAP gate shape on TV/TVC's credential side. At TVC#541 @72decca1c0e1d0d60b5801cb01f0fab70ea038dc build_chain no longer takes layer receipts from the caller; it reads both from the designated KV / SKAP Vault ledgers, and with none designated it is six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED (run skap-custody-chain-probe-tvc541 DOUBLE_INTERLOCK_*), so the collapse remains only on TVC main until #541 is admitted; at @f75e3e7c build_chain still exists (tools/coinbase_intr_double_interlock.py:130) and tools/coinbase_browser_skap_custody.py:51 still calls it - the build_chain removal promised for the next push has not landed (run tvc541-build-chain-and-org-ref)",
      "failed_predicate": "TWO_SEQUENTIAL_GATES_EACH_WITH_ITS_OWN_RECEIPT",
      "failure_code": "LADDER_ACCESS_LAYERS_COLLAPSED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
@@ -1754,23 +1754,23 @@
  "owning_lane": "Lane D (KV and WorkSpace)",
  "receipt": {
   "code": {
-   "resident-runtime/ladder_conformance.py": "sha256:559272b29cadda411d7b72138c78b80afb505a76dc8b56d5c48c40ff7fdaed12",
+   "resident-runtime/ladder_conformance.py": "sha256:88eb2bf516edae255e89a2c83da8ce8f64e8322d4b590cab197cdf7512eb21c5",
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:ef2fd7efead79269426eb3fb28f444592aee4c2ef3e01bfeb1e6e27b8d1055e9",
+  "document_sha256": "sha256:b101d25642894b0eec1f07623a98e80a15ebec9fd5fd7d03cd1aa02d301329f8",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:d87dea5056981714ca823c8d1dd4844b94662e0a38c344b9936f740b3dd6e8c6",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0549b08e54f5a8e02d179e3bf709cea998a9514b11212ff73f64d18e058269ca",
+   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:c52fd0d3211a2ab86728d91c3c7c9446036eecf4d7a13f38862fe08994ebd260",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:6f551bb744be89b0d0f7c5060e76828f1c23ca9076dd6e03df43d5fbe3a12d7f",
    "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:e1fe0c3286f7890ce0d25a5fe6f117ac9a957fc7b5d19034c5c41a64993f0705",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:7d9551ba7732dc9b370a28a890dc44827aa70997fcf4a9d644bdab350485f348",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:dddab4dbca7b5cc2e53abe5854272966f27d63cb88d25935def10a4b04df0b26",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-04.json": "sha256:234d07b90a9e6b9297addc910b95ec5944f41adf59755afd17e4a7e3ace1b11d",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-05.json": "sha256:03ae34d57609eb6b693831d327ea1e7f513439928a3f20d34bf6ae69535e5955",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-06.json": "sha256:9082238b592d4c3d78e8661ef7a667e9d7af7a10af201e28bf3602c77c5cabeb",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-07.json": "sha256:a9dfdf571ffa6928aeb4ee89bc301720395180c6d2a7bde3168ee3e730c7da9d",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-08.json": "sha256:25d77d86a8510f640f342366d18c69f27bdd38be933a24599a8b4e24946ae3da",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-09.json": "sha256:d8669be2268348d2d78c3df66bbae2735ef6af214d81bad6df3a7dd046605138",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-07.json": "sha256:9750808da9764dd8d1ee3b03fb650e8b856e5a8982816e1ca98bf5ce6ab0c483",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-08.json": "sha256:6cb194753a8205d4f11e24dc99cd513ecf1fcaa76dcfb1e18ce5e2948fb34d0d",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-09.json": "sha256:6b14a8b37382cdc244f77c682b6d45f23fae6eb56e4018e8fe04ce0ff303c65c",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-13.json": "sha256:4eb1111d208cfd7d622eea62b4ed952481c9da68679d849e16496654c26b7acd",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-18.json": "sha256:16bc5a8e27f8b355ed30634e29000914a540f94f1b5f789e73c4e7b7e8b14fa4",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-19.json": "sha256:d9c665f29c6536fb1bf333f740516d8501f9b53b4d6a007845853766ea8f4d4d",

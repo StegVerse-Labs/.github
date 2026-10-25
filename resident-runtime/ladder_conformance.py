@@ -16,7 +16,7 @@ also run through its _item_problems. This module adds only what a cross-reposito
 * a finish that appends no organization-ledger receipt is FAIL_CLOSED LADDER_FINISH_NOT_LEDGER_BOUND (runtime counts only
   when a manifest-directed transition appends a receipt to refs/stegverse/organization-ledger);
 * an access-path CONSTRAINT (e.g. the two credential layers: KV via InTr from a currently admitted healthy node, then the
-  SKAP Vault via InTr only from inside KV, in that order) is DENY LADDER_ACCESS_PATH_BYPASSES_LAYER when an observed path
+  SKAP Vault through the in-KV gate only, in that order) is DENY LADDER_ACCESS_PATH_BYPASSES_LAYER when an observed path
   reaches the protected surface without its gate, DENY LADDER_ACCESS_LAYERS_COLLAPSED when one step mints or skips both
   layers, and FAIL_CLOSED LADDER_CONSTRAINT_NOT_IN_SEALED_SCOPE when the goal's sealed scope does not name it;
 * an observed run whose outcome for a named probe differs from what the item requires is OPERATING_MODE_E0_WITNESS_FAILED
