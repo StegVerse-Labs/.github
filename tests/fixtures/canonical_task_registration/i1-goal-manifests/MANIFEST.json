@@ -6,7 +6,7 @@
   "registry_generation_bump": false,
   "observed_registry_generation": 322,
   "observed_base": {
-    "main": "8c15ae34",
+    "main": "c95e62f5",
     "registry_blob": "7f0ff9ec"
   },
   "issue": "StegVerse-org/.github#160 issuecomment-6354238464 I1",
@@ -17,7 +17,7 @@
       "registration_mode": "EXISTING_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.request.json",
       "request_sha256": "28b60006f3ef5c89383940841e91178cc89b46b64773c0ad1468e7ee1657c65f",
-      "plan_at_base": "StegVerse-Labs/.github main 8c15ae34 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition (9e00a16e)",
+      "plan_at_base": "StegVerse-Labs/.github main c95e62f5 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition (9e00a16e)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
         "disposition": "FAIL_CLOSED",
@@ -37,7 +37,7 @@
       "registration_mode": "EXISTING_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.request.json",
       "request_sha256": "9e96d3ca0b52728d82328a647adc79b08cd9e66d5795ca2d6999eeafa3292eec",
-      "plan_at_base": "StegVerse-Labs/.github main 8c15ae34 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition (9e00a16e)",
+      "plan_at_base": "StegVerse-Labs/.github main c95e62f5 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition (9e00a16e)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
         "disposition": "FAIL_CLOSED",
@@ -57,7 +57,7 @@
       "registration_mode": "EXISTING_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.request.json",
       "request_sha256": "d4bebad363e245716b29827076c0ba40a04ed897fbf62db172ff2804e701d1d4",
-      "plan_at_base": "StegVerse-Labs/.github main 8c15ae34 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition (9e00a16e)",
+      "plan_at_base": "StegVerse-Labs/.github main c95e62f5 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition (9e00a16e)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
         "disposition": "FAIL_CLOSED",
@@ -91,7 +91,7 @@
         "verifier_entrypoint": "StegVerse-Labs/TVC: tvc.github_repository_operation_broker.verify",
         "lowest_supported_mode": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
       },
-      "plan_at_base": "StegVerse-Labs/.github main 8c15ae34 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
+      "plan_at_base": "StegVerse-Labs/.github main c95e62f5 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
         "disposition": "FAIL_CLOSED",
@@ -156,7 +156,7 @@
         "verifier_entrypoint": "StegVerse-Labs/TVC: scripts/advance_sdk_proof_prerequisites.py",
         "lowest_supported_mode": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
       },
-      "plan_at_base": "StegVerse-Labs/.github main 8c15ae34 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
+      "plan_at_base": "StegVerse-Labs/.github main c95e62f5 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
         "disposition": "ALLOW",
@@ -188,7 +188,7 @@
         "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_skap_vault finish-point",
         "lowest_supported_mode": "E0"
       },
-      "plan_at_base": "StegVerse-Labs/.github main 8c15ae34 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
+      "plan_at_base": "StegVerse-Labs/.github main c95e62f5 with #3358's registry generation 322 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
       "lowest_supported_mode": "E0",
       "coordination_adjacency_ruling": {
         "class": "D",
