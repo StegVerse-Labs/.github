@@ -24,8 +24,15 @@ SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry
        "owning_existing_goal", "next_attempt")
 LABS = "StegVerse-Labs/.github"
 # TVC push run 40137248073 at StegVerse-Labs/TVC 8c8ec518 (TVC#539) printed this receipt between
-# TVC_LABS_CONFORMANCE_RECEIPT_JSON_BEGIN/END; its seal names Labs#3317's head 006b32a0.
+# TVC_LABS_CONFORMANCE_RECEIPT_JSON_BEGIN/END; its seal names Labs#3317's head 006b32a0. The contract's
+# surface_paths_observed_at still records it: its surface is byte-identical to Labs main.
 TVC_LABS_RECEIPT_SHA256 = "sha256:9823142846b9a4cb98b6ef48bc2d652c9efe7be908e24fa2502eb8e397560270"
+# The committed request: TVC push run 40160000328 at StegVerse-Labs/TVC 821fa57d (TVC#546 merged) printed this
+# receipt in the same block; its seal names Labs#3348's head b8e4665a (ALLOW, 25 tests, 0 skipped).
+COMMITTED_RUN_ID = 40160000328
+COMMITTED_RECEIPT_SHA256 = "sha256:7ef22d0422243b6dfb6ebb1cb56248835084d2bfcfade67382464c36990ad931"
+COMMITTED_LABS_COMMIT = "b8e4665ae9db9b43f76f53d1470192daafd91974"
+COMMITTED_TVC_HEAD = "821fa57d009bb3f25a3ba4ca60ba937d0629ccc8"
 
 
 def _load(name, path):
@@ -205,13 +212,18 @@ class Admission(Refusals, unittest.TestCase):
         self.assertFalse(hasattr(org, "SEALED_TEST_RECEIPT_SCHEMA"))
 
     def test_the_committed_request_is_tvc_run_40137248073s_labs_receipt_and_is_admitted(self):
+        """The committed request's TVC receipt is admitted. The method name is kept so the test-suite ratchet sees the
+        same test at the head (TEST_PRESENT_AT_BASE_RUNS_AT_HEAD); the request now carries run COMMITTED_RUN_ID
+        (40160000328, TVC#546), which supersedes run 40137248073 (TVC#539)."""
         request = ing.read_request(ROOT / ing.REQUEST_PATH)
         self.assertEqual(request["operation"], ing.SEALED)
         receipt = request["receipt"]
         self.assertTrue(ing.seal_verifies(receipt))
-        self.assertEqual(receipt["receipt_sha256"], TVC_LABS_RECEIPT_SHA256)
-        self.assertEqual(receipt["consumed_source"]["commit"], "006b32a0016ce4cb950cf3a5c8af21167a3917f7")
-        self.assertEqual(request["provenance"]["run_id"], 40137248073)
+        self.assertEqual(receipt["receipt_sha256"], COMMITTED_RECEIPT_SHA256)
+        self.assertEqual(receipt["consumed_source"]["commit"], COMMITTED_LABS_COMMIT)
+        self.assertEqual((receipt["head_sha"], request["provenance"]["head_sha"]), (COMMITTED_TVC_HEAD,) * 2)
+        self.assertEqual(request["provenance"]["run_id"], COMMITTED_RUN_ID)
+        self.assertEqual((receipt["counts"]["tests"], receipt["counts"]["skipped"], receipt["skipped"]), (25, 0, []))
         self.assertIsNone(ing.admit_sealed(receipt, request["provenance"], ledger_repository=LABS))
         self.assertTrue(consumer.is_conformance_receipt(receipt, CONTRACT))
         self.assertEqual(CONTRACT["surface_paths_observed_at"]["receipt_sha256"], TVC_LABS_RECEIPT_SHA256)
