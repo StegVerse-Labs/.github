@@ -1,0 +1,58 @@
+$ {python} -c # P1 rev 11: TV/TVC readers (TVC#542/#540 scripts/tvc_org_ledger_head_signer.py ledger_location) against the
+# custody_ledgers_config() continuity-vault-kit#263 returns at the head checked out in argv[1]; the committed
+# config/kv_custody_receipt_chains.json; membership forms on the committed entry; the kv_ledger_head_signer state;
+# and the cvk contract digests at that head. Pure reads; cvk imported from argv[1] in a subprocess.
+import copy, hashlib, json, subprocess, sys
+from pathlib import Path
+sys.path[:0] = [".", "scripts"]
+import tvc_org_ledger_head_signer as H
+cvk = Path(sys.argv[1])
+rows = []
+SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt")
+def row(subject, disp, note=None, **extra):
+    r = {"subject": subject, "disposition": disp}
+    if note: r["note"] = note
+    r.update(extra); rows.append(r)
+def state_row(subject, entry, which, note=None):
+    _, state, detail = H.ledger_location(entry, which)
+    disp = "ALLOW" if state in ("OK", "NOT_PINNED") else "FAIL_CLOSED"
+    row(subject, disp, note, state=state, detail=detail[:300])
+live = json.loads(subprocess.run([sys.executable, "-c", "import json,sys; sys.path.insert(0,'.'); from runtime import kv_receipt_ledgers as rl; print(json.dumps(rl.custody_ledgers_config()))"],
+                                 cwd=cvk, capture_output=True, text=True, check=True).stdout)
+head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=cvk, capture_output=True, text=True).stdout.strip()
+cfg = json.loads(Path("config/kv_custody_receipt_chains.json").read_text())
+for which, f in (("kv", "stegverse-kv-receipts.contract.json"), ("skap_vault", "skap-receipts.contract.json")):
+    got = "sha256:" + hashlib.sha256((cvk / ".stegverse/receipt-chains" / f).read_bytes()).hexdigest()
+    row("CVK_CONTRACT_DIGEST_VS_TVC_PIN_" + which.upper(), "ALLOW" if got == H.KV_CONTRACT_PINS[which] else "FAIL_CLOSED",
+        note="the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS", cvk_head=head[:8], cvk_contract_sha256=got, tvc_pin=H.KV_CONTRACT_PINS[which])
+    entries = live.get("custody_ledgers", live) if isinstance(live, dict) else {}
+    e = entries.get(which) if isinstance(entries, dict) else None
+    state_row("TVC_READER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_" + which.upper(), e, which,
+              note="TVC's reader on the entry cvk's own custody_ledgers_config() returns at the checked-out head")
+    committed = cfg["custody_ledgers"][which]
+    state_row("TVC_READER_ON_COMMITTED_CONFIG_" + which.upper(), committed, which, note="positive control (pinned at the head TVC bound)")
+    forms = {
+        "TOP_LEVEL_ORGANIZATION": lambda e: e.__setitem__("organization", "StegVerse-org"),
+        "TOP_LEVEL_PERMISSIONS": lambda e: e.__setitem__("permissions", {"organization_members": "write"}),
+        "TOP_LEVEL_OWNER": lambda e: e.__setitem__("owner", "StegVerse-org"),
+        "TOP_LEVEL_GITHUB_APP_INSTALLATION_ID": lambda e: e.__setitem__("github_app_installation_id", 1),
+        "TOP_LEVEL_TEAM": lambda e: e.__setitem__("team", "kv"),
+        "ORG_LEDGER_REF_IN_LOCATION": lambda e: e["repository_ledger_location"].__setitem__("ref", "refs/stegverse/organization-ledger"),
+        "ORG_REPOSITORY_IN_LOCATION": lambda e: e["repository_ledger_location"].__setitem__("repository", "StegVerse-org/LLM-adapter"),
+    }
+    for nm, edit in forms.items():
+        e2 = copy.deepcopy(committed); edit(e2)
+        state_row("TVC_MEMBERSHIP_%s_%s" % (nm, which.upper()), e2, which)
+k = H.kv_ledger_head_signer()
+row("TVC_KV_LEDGER_HEAD_SIGNER_STATE", k.get("disposition"), failure_code=k.get("failure_code"),
+    signers=cfg["kv_ledger_head_signer"]["signer_source"].get("signers"), ledger_location=cfg["kv_ledger_head_signer"].get("ledger_location"))
+sf = cvk / ".stegverse/node-ledger/kv-ledger-head-signers.v1.json"
+got = "sha256:" + hashlib.sha256(sf.read_bytes()).hexdigest()
+pin = cfg["kv_ledger_head_signer"]["signer_source"].get("file_sha256")
+row("TVC_KV_SIGNER_FILE_PIN_VS_CVK_HEAD", "ALLOW" if got == pin else "FAIL_CLOSED", cvk_head=head[:8], cvk_file_sha256=got, tvc_pin=pin)
+print(json.dumps({"rows": rows}, sort_keys=True))
+ {root:cvk263}
+--- exit 0
+--- stdout
+{"rows": [{"cvk_contract_sha256": "sha256:c9cc8913de21183fb23774cd155fee84fd6d275c003e71b2712ad44d30d89ce1", "cvk_head": "9d56bc7b", "disposition": "ALLOW", "note": "the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS", "subject": "CVK_CONTRACT_DIGEST_VS_TVC_PIN_KV", "tvc_pin": "sha256:c9cc8913de21183fb23774cd155fee84fd6d275c003e71b2712ad44d30d89ce1"}, {"detail": "kv: designation sha256:e3a5ce8482ebefdec20645d8a82cdf55033e9bf2706923eec6b18387ba4a1e48, pinned sha256:e3a5ce8482ebefdec20645d8a82cdf55033e9bf2706923eec6b18387ba4a1e48; contract None, pinned sha256:c9cc8913de21183fb23774cd155fee84fd6d275c003e71b2712ad44d30d89ce1", "disposition": "FAIL_CLOSED", "note": "TVC's reader on the entry cvk's own custody_ledgers_config() returns at the checked-out head", "state": "KV_RECEIPT_CHAIN_DESIGNATION_DIGEST_MISMATCH", "subject": "TVC_READER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_KV"}, {"detail": "", "disposition": "ALLOW", "note": "positive control (pinned at the head TVC bound)", "state": "NOT_PINNED", "subject": "TVC_READER_ON_COMMITTED_CONFIG_KV"}, {"detail": "organization is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_ORGANIZATION_KV"}, {"detail": "permissions is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_PERMISSIONS_KV"}, {"detail": "owner is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_OWNER_KV"}, {"detail": "github_app_installation_id is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_GITHUB_APP_INSTALLATION_ID_KV"}, {"detail": "team is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_TEAM_KV"}, {"detail": "repository_ledger_location.ref 'refs/stegverse/organization-ledger' is an org-ledger ref, org repository or git-ref location", "disposition": "FAIL_CLOSED", "state": "KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER", "subject": "TVC_MEMBERSHIP_ORG_LEDGER_REF_IN_LOCATION_KV"}, {"detail": "repository_ledger_location.repository 'StegVerse-org/LLM-adapter' is an org-ledger ref, org repository or git-ref location", "disposition": "FAIL_CLOSED", "state": "KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER", "subject": "TVC_MEMBERSHIP_ORG_REPOSITORY_IN_LOCATION_KV"}, {"cvk_contract_sha256": "sha256:1e886348a7a84fb148bb91e84d84f99cb5101d86dfb34ab84104e54982e0bc13", "cvk_head": "9d56bc7b", "disposition": "FAIL_CLOSED", "note": "the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS", "subject": "CVK_CONTRACT_DIGEST_VS_TVC_PIN_SKAP_VAULT", "tvc_pin": "sha256:7f0a0536214213b6dfc74074fec9c2375d130d875fc7fcc6c7796a77b901a86f"}, {"detail": "skap_vault: designation sha256:77ca4ad390a7428a494bbf08098a72140cfadc1f9b0affd5a5be7be3f25b9bf3, pinned sha256:3b01624531092ce6a2c3cc422e537083a7bdd40366ba025560db42238e4acb08; contract None, pinned sha256:7f0a0536214213b6dfc74074fec9c2375d130d875fc7fcc6c7796a77b901a86f", "disposition": "FAIL_CLOSED", "note": "TVC's reader on the entry cvk's own custody_ledgers_config() returns at the checked-out head", "state": "KV_RECEIPT_CHAIN_DESIGNATION_DIGEST_MISMATCH", "subject": "TVC_READER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_SKAP_VAULT"}, {"detail": "", "disposition": "ALLOW", "note": "positive control (pinned at the head TVC bound)", "state": "NOT_PINNED", "subject": "TVC_READER_ON_COMMITTED_CONFIG_SKAP_VAULT"}, {"detail": "organization is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_ORGANIZATION_SKAP_VAULT"}, {"detail": "permissions is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_PERMISSIONS_SKAP_VAULT"}, {"detail": "owner is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_OWNER_SKAP_VAULT"}, {"detail": "github_app_installation_id is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_GITHUB_APP_INSTALLATION_ID_SKAP_VAULT"}, {"detail": "team is an org-member indicator (org-membership, organization, owner, permissions, team, app-installation or org-ledger-writer binding)", "disposition": "FAIL_CLOSED", "state": "ENDPOINT_ORG_MEMBERSHIP_REFUSED", "subject": "TVC_MEMBERSHIP_TOP_LEVEL_TEAM_SKAP_VAULT"}, {"detail": "repository_ledger_location.ref 'refs/stegverse/organization-ledger' is an org-ledger ref, org repository or git-ref location", "disposition": "FAIL_CLOSED", "state": "KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER", "subject": "TVC_MEMBERSHIP_ORG_LEDGER_REF_IN_LOCATION_SKAP_VAULT"}, {"detail": "repository_ledger_location.repository 'StegVerse-org/LLM-adapter' is an org-ledger ref, org repository or git-ref location", "disposition": "FAIL_CLOSED", "state": "KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER", "subject": "TVC_MEMBERSHIP_ORG_REPOSITORY_IN_LOCATION_SKAP_VAULT"}, {"disposition": "FAIL_CLOSED", "failure_code": "KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED", "ledger_location": {"kv": "STEGVERSE_KV#KV_INTR_ENDPOINT:_StegVerse/Receipts", "skap_vault": "STEGVERSE_KV#KV_INTR_ENDPOINT:_Vault/SKAP/Receipts"}, "signers": [], "subject": "TVC_KV_LEDGER_HEAD_SIGNER_STATE"}, {"cvk_file_sha256": "sha256:758d798388599171c145e3d19ca4eb155ad3d3762a3721804da65c08ebc1fe72", "cvk_head": "9d56bc7b", "disposition": "ALLOW", "subject": "TVC_KV_SIGNER_FILE_PIN_VS_CVK_HEAD", "tvc_pin": "sha256:758d798388599171c145e3d19ca4eb155ad3d3762a3721804da65c08ebc1fe72"}]}
+--- stderr

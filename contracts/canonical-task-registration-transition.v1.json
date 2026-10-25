@@ -12,7 +12,11 @@
   },
   "transition": {
     "entrypoint": "scripts/canonical_task_registration_transition.py",
-    "modes": ["plan", "apply", "verify"],
+    "modes": [
+      "plan",
+      "apply",
+      "verify"
+    ],
     "workflow": ".github/workflows/canonical-task-registration-transition.yml",
     "predecessor": "live base tip of data/canonical-task-registry.json (generation N)",
     "successor": "generation N + 1 with exactly one appended row equal to the derived record",
@@ -20,8 +24,42 @@
       "data/canonical-task-registry.json",
       "data/canonical-task-records/<task_id>.json",
       "control/task-vectors/<task_id>.json",
-      "control/task-vector-index.d/<task_id>.json"
+      "control/task-vector-index.d/<task_id>.json",
+      "control/goal-scope-seals/<task_id>.json"
     ]
+  },
+  "registration_modes": {
+    "field": "registration_mode (default NEW_IDENTITY)",
+    "NEW_IDENTITY": "no surface may hold the task_id; record, row, vector and index entry are derived from the manifest",
+    "EXISTING_IDENTITY": {
+      "precondition": "exactly one data/canonical-task-records/<task_id>.json and no aggregate row (CHECKED_OUT_SHARD_OMITTED_FROM_AGGREGATE); the manifest record equals the shard",
+      "row": "the shard record verbatim (row == record); the shard bytes are not rewritten; generation N -> N + 1",
+      "cosv_source": [
+        "scripts/cosv.py encode_task(declared exact_metrics), which must equal any vector the shard records; then the vector record and index entry are emitted",
+        "else the shard's own recorded task.v1 vector, with residual COSV_EXACT_METRICS_NOT_OBSERVED",
+        "else FAIL_CLOSED COSV_NOT_DERIVABLE; no vector is ever assigned by the manifest"
+      ],
+      "schema_conformance": "the authority floor is enforced; current-schema conformance is reported and, when absent, residual CANONICAL_RECORD_SCHEMA_SUCCESSOR_REQUIRED names the record-data successor transition",
+      "state": "the recorded coordination_state is projected as recorded; claim-asserting states (CLAIMED, IN_PROGRESS, COMPLETION_CLAIMED) or a worker_claim with claim_ref/fence_ref are refused; an unclaimed non-PROPOSED state is residual CLAIM_NOT_ISSUED_BY_WORKERCOORDINATOR",
+      "existing_record_preflight": "StegVerse-Labs/.github#3306 consumes the resulting single row (row == shard, matching COSV)"
+    },
+    "every_allow": "evidence.workercoordinator_claim_request: a request to WorkerCoordinator (claim_ref/fence_ref null, request_grants_claim_authority false); scripts/allocate_claims.py remains the claim authority",
+    "collision_checkin": "plan and apply run scripts/check_registry_collision_checkin.py (Labs#3254) over predecessor -> derived successor with its event ledger empty and its clock pinned; a refusal writes nothing",
+    "allocation": "allocation_request_ref binds a control/goal-task-allocation-requests proposal; it is checked against the derivation and never adopted",
+    "scope_seal": {
+      "predicate": "GOAL_SCOPE_SEALED",
+      "module": "scripts/goal_scope_seal.py",
+      "required_on": "NEW_IDENTITY (optional and checked on EXISTING_IDENTITY)",
+      "scope": "{goal, targets, expected_evidence_predicates, finish_point}; the first three equal the record",
+      "scope_digest": "sha256: + sha256(canonical JSON of scope: sorted keys, separators (',', ':'), UTF-8)",
+      "finish_point": "acceptance_test, predicate, verifier_entrypoint, lowest_supported_mode: a test decides done",
+      "derived_seal": "control/goal-scope-seals/<task_id>.json",
+      "scope_freeze_check": "python scripts/goal_scope_seal.py check --base <live base> --head <PR head> (read-only, pull_request, in .github/workflows/canonical-task-registration-transition.yml)",
+      "supersede": "a sealed scope changes only with a new scope_digest whose seal names supersedes_scope_digest and a committed stegverse.goal-scope-supersede-request/v1 under control/goal-scope-supersede-requests/",
+      "failure_codes": ["GOAL_SCOPE_NOT_SEALED", "GOAL_FINISH_POINT_NOT_TESTABLE", "GOAL_SCOPE_DIGEST_MISMATCH", "GOAL_SCOPE_DIVERGES_FROM_RECORD", "GOAL_SCOPE_SUPERSEDE_ON_NEW_IDENTITY", "GOAL_SCOPE_SEAL_REMOVED", "GOAL_SCOPE_SEAL_SCHEMA_INVALID", "GOAL_SCOPE_CHANGED_WITHOUT_SUPERSEDE", "GOAL_SCOPE_EXPANDED_WITHOUT_SUPERSEDE"]
+    },
+    "decision_issue": "StegVerse-org/.github#167",
+    "lowest_supported_mode": "E0"
   },
   "receipt": {
     "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
@@ -51,15 +89,27 @@
     "UNQUALIFIED_COMPLETION_PROHIBITED",
     "COSV_NOT_DERIVABLE",
     "REGISTRATION_NOT_APPLIED",
-    "REGISTRATION_BYTES_DIVERGE"
+    "REGISTRATION_BYTES_DIVERGE",
+    "ALLOCATION_REQUEST_NOT_BOUND",
+    "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+    "EXISTING_IDENTITY_NOT_ADMISSIBLE",
+    "GOAL_SCOPE_SEALED"
   ],
-  "non_allow_fields": ["failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt"],
+  "non_allow_fields": [
+    "failure_code",
+    "failed_predicate",
+    "required_evidence_or_repair",
+    "retry_entrypoint",
+    "owning_existing_goal",
+    "next_attempt"
+  ],
   "clock_free": true,
   "external_machine_required": false,
   "authority_effect": "NONE_REGISTRATION_ONLY",
   "nonclaims": [
     "Registration is not admission, claim, fence or execution authority.",
     "A green verify run is source validation, not runtime reality.",
-    "This contract does not amend schemas/canonical-task-record.schema.json; the derived record adds the registry's existing cosv_task_vector and source_state_vector_ref binding fields."
+    "This contract does not amend schemas/canonical-task-record.schema.json; the derived record adds the registry's existing cosv_task_vector and source_state_vector_ref binding fields.",
+    "EXISTING_IDENTITY registers a row for an identity that already exists; it is not an admission, claim, schema migration or COSV derivation for that identity."
   ]
 }

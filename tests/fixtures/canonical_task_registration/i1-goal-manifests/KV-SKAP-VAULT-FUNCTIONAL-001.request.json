@@ -1,0 +1,283 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "lane-d-kv-skap-vault-functional-2026-10-23",
+  "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+  "observed_registry_generation": 320,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-org/.github#160",
+  "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
+  "collision_analysis": [
+    "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001: the WorkSpace shell/tab host over admitted KV projections (UI composition); this Goal is the KV store + SKAP Vault custody-key layer that shell consumes. Adjacent, not equivalent.",
+    "Coordination ruling, class D (adjacency invariant), relayed 2026-10-23: KV-SKAP-VAULT-FUNCTIONAL-001 is ADJACENT, not a duplicate, of SS-KV-SKAP-SOCIAL-RELEASE-001, STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 and TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001, provided (a) components disjoint, (b) the finish-point test exercises none of their components, (c) the relationship to TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 is a consumes-dependency. Ruling record ref: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (relayed, not observed as a ledger entry).",
+    "Evidence (a): component overlap computed by scripts/evaluate_task_registry_collision_checkin.py overlap() = [] against all three (observed at Labs main 86382e60). This Goal's components: kv-skap-vault-module, skap-custody-key-reference, kv-projection-write-read-revoke, consent-receipt, revocation-receipt, receipt-hash-lineage, any-device-continuity, authority-non-duplication.",
+    "Evidence SS-KV-SKAP-SOCIAL-RELEASE-001 (ACTIVE, main 86382e60): components personal-kv-private-draft-reference, single-use-public-release-grant, bounded-scope-post-group-grant, bounded-group-atomic-use-state, bounded-group-pre-admission-intr-intent, bounded-group-universal-interlock-received-ingress, bounded-group-event-publication-bridge, bounded-group-execution-evidence-reconciler, bounded-group-execution-to-site-cas-projection, event-ephemeral-intr-execution, tv-tvc-skap-social-credential-custody, stegbrowser-event-ephemeral-session, facebook-stegverse-transport, linkedin-stegverse-transport, instagram-stegverse-ai-transport, publication-receipt, master-records-organization-record; repositories exclude continuity-vault-kit; no finish_point field in the record; handoff paths StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md, docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md, Site/docs/STEGSOCIALS_BOUNDED_GROUP_RUNTIME_PROOF_MIRROR_HANDOFF.md, StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md, master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md.",
+    "Evidence STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 (ACTIVE, main 86382e60): components device-kv-bidirectional-intr, kv-skap-bidirectional-intr, canonical-event-ephemeral-domain-binding, single-roundtrip-receipt-lineage, tvc-skap-credential-reference, exact-packet-verification; repositories .github, StegOS, TVC, Site (not continuity-vault-kit); no finish_point field; handoff docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md; code paths workers/run_device_kv_skap_roundtrip_worker.py, workers/run_device_kv_skap_canonical_runtime_worker.py, scripts/execute_device_kv_skap_roundtrip_event.py, scripts/continue_device_kv_skap_from_tvc_custody.py, StegOS/stegos/device_kv_skap_roundtrip.py, StegOS/stegos/device_kv_skap_canonical_runtime.py. Remains a TASK dependency for the device lane.",
+    "Evidence TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 (ACTIVE, main 86382e60): components task-registry, session-event-history, sovereign-kv, interlock-intr, provider-adapter, custody-projection, runtime-intake, reusable-task-component-composition, current-verification-evidence-selection; no finish_point field; first_unresolved_predicate AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV; code paths scripts/project_task_registry_event_to_sovereign_kv.py, continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py (+ runtime/kv_storage_provider_adapter.py it imports). Relationship: class B consumes-dependency. The vault's durable custody location (KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND) is owned by this Goal and is not re-implemented here.",
+    "Evidence (b): continuity-vault-kit#258 finish-point test (tests/test_kv_skap_vault_finish_point.py, 14 tests, 0 skipped) loads only runtime.kv_skap_vault and runtime.secret_field_policy from the repository (sys.modules trace); neither is a source/code path of the three Goals; task_registry_event_sovereign_kv_binding and kv_storage_provider_adapter are not loaded.",
+    "Decided mechanically by scripts/check_registry_collision_checkin.py in plan; the check-in has no input for a Coordination adjacency ruling, so declared adjacency still yields COORDINATE_CONVERGENCE (recorded plan in MANIFEST.json)."
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+    "correlation_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+    "root_correlation_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+    "parent_task_id": null,
+    "goal": "Make KnowledgeVault (KV) functional with a SKAP Vault inside KV: a principal's KV projection is written, read back exactly and revoked only through governed Interlock/InTr transitions; the SKAP Vault inside KV holds custody-key references (never credential or key material) while TV/TVC remains the credential authority and the sole SKAP ciphertext custody writer; every write and read is preceded by a consent receipt and every revoke produces a revocation receipt that ends read access, all on one continuous receipt-hash lineage; the same principal's projection reconstructs exactly on any eligible device with no connected device, second user-operated device or external machine required; and no governance, credential, verifier, claim or KV authority is duplicated. Done is decided by the acceptance test named in the sealed finish point, which must reach its verdict at E0 (ecosystem only, no LLM) and degrade gracefully down the operating-mode ladder.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "StegVerse-org/.github#160 (Coordination relay 2026-10-23 of the owner's priority: after the operating-mode ladder, a functional KV with a SKAP Vault inside KV)",
+      "StegVerse-org/.github#167 (Lane D: KV continuity, WorkSpace AI, consent and revocation, TVC/SKAP custody)",
+      "StegVerse-Labs/.github:docs/TASK_REGISTRY_KV_SKAP_VERIFIER_NODE_INVARIANT_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/.github:docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/.github:docs/STEGVERSE_WORKSPACE_ANY_DEVICE_KV_SURFACE_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/continuity-vault-kit@bcc2d75168b84b3d35b7f831df0b4fe039119631:runtime/kv_skap_account_transfer.py",
+      "StegVerse-Labs/continuity-vault-kit@bcc2d75168b84b3d35b7f831df0b4fe039119631:execution/vault_store.py"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/continuity-vault-kit"
+      ],
+      "components": [
+        "kv-skap-vault-module",
+        "skap-custody-key-reference",
+        "kv-projection-write-read-revoke",
+        "consent-receipt",
+        "revocation-receipt",
+        "receipt-hash-lineage",
+        "any-device-continuity",
+        "authority-non-duplication"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "TASK-STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+      },
+      {
+        "dependency_id": "TASK-TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001"
+      },
+      {
+        "dependency_id": "CAPABILITY-TV-TVC-CREDENTIAL-AUTHORITY",
+        "kind": "CAPABILITY",
+        "state": "UNKNOWN",
+        "ref": "StegVerse-Labs/TVC (credential authority; sole SKAP ciphertext custody writer)"
+      },
+      {
+        "dependency_id": "CAPABILITY-INTERLOCK-INTR-GOVERNED-TRANSITION",
+        "kind": "CAPABILITY",
+        "state": "UNKNOWN",
+        "ref": "Interlock/InTr"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "SS-KV-SKAP-SOCIAL-RELEASE-001"
+    ],
+    "existing_evidence_refs": [
+      "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md"
+    ],
+    "expected_evidence_predicates": [
+      "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+      "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY",
+      "CONSENT_RECEIPT_PRECEDES_EVERY_KV_WRITE_AND_READ",
+      "REVOCATION_RECEIPT_ENDS_READ_ACCESS",
+      "RECEIPT_HASH_LINEAGE_CONTINUOUS_ACROSS_WRITE_READ_REVOKE",
+      "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+      "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER",
+      "NO_DUPLICATED_GOVERNANCE_CREDENTIAL_VERIFIER_OR_KV_AUTHORITY",
+      "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
+      "SKAP_VAULT_REACHABLE_ONLY_FROM_INSIDE_KV",
+      "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+      "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+      "FINISH_POINT_VERDICT_REACHED_AT_E0_WITHOUT_LLM"
+    ],
+    "runtime_requirements": {
+      "capabilities": [
+        "kv-projection-store",
+        "skap-custody-key-reference",
+        "interlock-intr-governed-transition",
+        "tv-tvc-credential-authority"
+      ],
+      "mutation_required": true,
+      "deployment_required": false,
+      "current_observation_required": true
+    },
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "NOT_APPLICABLE",
+          "limitation_class": "NOT_APPLICABLE",
+          "evidence_refs": [
+            "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md"
+          ]
+        }
+      ],
+      "selected_substrate_id": null,
+      "external_device_required": false,
+      "second_user_operated_device_allowed": false,
+      "authority_effect": "NONE"
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+      "PROPOSED_TO_SUPERSEDED_IF_MERGED_INTO_AN_EXISTING_OWNER",
+      "SCOPE_CHANGE_ONLY_BY_GOAL_SCOPE_SUPERSEDE_REQUEST"
+    ],
+    "handoff_projection_refs": [
+      "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "Make KnowledgeVault (KV) functional with a SKAP Vault inside KV: a principal's KV projection is written, read back exactly and revoked only through governed Interlock/InTr transitions; the SKAP Vault inside KV holds custody-key references (never credential or key material) while TV/TVC remains the credential authority and the sole SKAP ciphertext custody writer; every write and read is preceded by a consent receipt and every revoke produces a revocation receipt that ends read access, all on one continuous receipt-hash lineage; the same principal's projection reconstructs exactly on any eligible device with no connected device, second user-operated device or external machine required; and no governance, credential, verifier, claim or KV authority is duplicated. Done is decided by the acceptance test named in the sealed finish point, which must reach its verdict at E0 (ecosystem only, no LLM) and degrade gracefully down the operating-mode ladder.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/continuity-vault-kit"
+        ],
+        "components": [
+          "kv-skap-vault-module",
+          "skap-custody-key-reference",
+          "kv-projection-write-read-revoke",
+          "consent-receipt",
+          "revocation-receipt",
+          "receipt-hash-lineage",
+          "any-device-continuity",
+          "authority-non-duplication"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+        "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY",
+        "CONSENT_RECEIPT_PRECEDES_EVERY_KV_WRITE_AND_READ",
+        "REVOCATION_RECEIPT_ENDS_READ_ACCESS",
+        "RECEIPT_HASH_LINEAGE_CONTINUOUS_ACROSS_WRITE_READ_REVOKE",
+        "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+        "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER",
+        "NO_DUPLICATED_GOVERNANCE_CREDENTIAL_VERIFIER_OR_KV_AUTHORITY",
+        "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
+        "SKAP_VAULT_REACHABLE_ONLY_FROM_INSIDE_KV",
+        "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+        "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+        "FINISH_POINT_VERDICT_REACHED_AT_E0_WITHOUT_LLM"
+      ],
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
+        "predicate": "KV_SKAP_VAULT_FINISH_POINT: python -m runtime.kv_skap_vault finish-point returns disposition ALLOW (every expected_evidence_predicate ALLOW over one receipt-hash lineage); until then it returns six-field FAIL_CLOSED naming each unmet predicate",
+        "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_skap_vault finish-point",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 8,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "no WorkerCoordinator claim or fence exists for this identity (record worker_claim claim_ref/fence_ref null)",
+      "archive_ready": "nonterminal: PROPOSED",
+      "unassigned_work": "8 target components (record targets.components), none admitted on StegVerse-Labs/continuity-vault-kit main bcc2d751",
+      "chat_owned_counts": "no chat-owned implementation, validation, integration, observation or credential role is asserted",
+      "canonical_owner_installed": "the Registry row this transition derives is the canonical owner (same reading as STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 M=1)",
+      "thread_required": "durable coordination continues on StegVerse-org/.github#160 / #167",
+      "blocker_count": "record blockers [] (dependencies are UNKNOWN/UNRESOLVED, not blockers)",
+      "evidence_complete": "finish-point verdict is not ALLOW",
+      "activated": "no runtime activation observed",
+      "propagated": "no downstream completion observed"
+    },
+    "evidence_refs": [
+      "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md",
+      "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json"
+    ],
+    "observed_at": "2026-10-23T05:45:00Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

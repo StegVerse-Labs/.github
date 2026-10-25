@@ -1,0 +1,182 @@
+{
+ "authority_effect": "NONE",
+ "core": {
+  "inputs": [],
+  "surfaces": [
+   ".github/workflows/test-suite-ratchet.yml",
+   "data/test-suite-baseline.json",
+   "scripts/test_set_selection.py",
+   "scripts/test_suite_baseline_drift.py"
+  ],
+  "tests": [
+   "tests/test_test_set_selection.py",
+   "tests/test_test_suite_baseline_drift.py"
+  ]
+ },
+ "import_roots": [
+  "control",
+  "heartbeat_runtime",
+  "org-boundary",
+  "org-kernel",
+  "org-runtime",
+  "resident-runtime",
+  "scripts",
+  "state_language",
+  "tests",
+  "tools",
+  "workers"
+ ],
+ "inputs": {
+  "labs-ledger-ref": {
+   "check": {
+    "contains": "a5bb54d81893b392a3ce28182986fc39857807e1",
+    "env": "RTC014_LIVE_LABS_REPO",
+    "kind": "git_ref",
+    "ref": "refs/stegverse/organization-ledger"
+   },
+   "finish_point": "the checkout holds the ledger ref containing a5bb54d8 and the known-answer test runs and passes at the exact head",
+   "owner": "StegVerse-org/.github#166 (P4 lane: wired in test-suite-ratchet.yml)",
+   "repair": "the ratchet fetches refs/stegverse/organization-ledger anonymously before the suite and sets RTC014_LIVE_LABS_REPO to the checkout"
+  },
+  "stegverse-sdk": {
+   "check": {
+    "env": "STEGVERSE_SDK_PIN_74D9B473",
+    "kind": "pinned_source",
+    "manifest": ".stegverse/verification-inputs/stegverse-sdk.json",
+    "module": "stegverse",
+    "pin": "74d9b473"
+   },
+   "finish_point": "the job materializes pin 74d9b473 (scripts/pinned_source_input.py materialize, sha256-checked against .stegverse/verification-inputs/stegverse-sdk.json), sets STEGVERSE_SDK_PIN_74D9B473 to its tree, and the set's tests run in that pin's run group and pass at the exact head with 0 skipped",
+   "owner": "P1 (StegVerse-org/.github#163)",
+   "repair": "materialize pin 74d9b473 with scripts/pinned_source_input.py (one anonymous git fetch of the pinned commit; no package index, no install) and export STEGVERSE_SDK_PIN_74D9B473=<dest>/tree before selection; a sha256 mismatch is FAIL_CLOSED, never loaded"
+  },
+  "stegverse-sdk@c138cad4": {
+   "check": {
+    "env": "STEGVERSE_SDK_PIN_C138CAD4",
+    "kind": "pinned_source",
+    "manifest": ".stegverse/verification-inputs/stegverse-sdk.json",
+    "module": "stegverse",
+    "pin": "c138cad4"
+   },
+   "finish_point": "the job materializes pin c138cad4 (scripts/pinned_source_input.py materialize, sha256-checked against .stegverse/verification-inputs/stegverse-sdk.json), sets STEGVERSE_SDK_PIN_C138CAD4 to its tree, and the set's tests run in that pin's run group and pass at the exact head with 0 skipped",
+   "owner": "P1 (StegVerse-org/.github#163)",
+   "repair": "materialize pin c138cad4 with scripts/pinned_source_input.py (one anonymous git fetch of the pinned commit; no package index, no install) and export STEGVERSE_SDK_PIN_C138CAD4=<dest>/tree before selection; a sha256 mismatch is FAIL_CLOSED, never loaded"
+  },
+  "tvc": {
+   "check": {
+    "allow": "ALLOW",
+    "argv": [
+     "consume",
+     "--ledger",
+     "git+{root}#refs/stegverse/organization-ledger",
+     "--head-root",
+     "{root}"
+    ],
+    "consumer": "scripts/tvc_conformance_receipt.py",
+    "consumer_source": "StegVerse-Labs/.github#3342, merged to main as 14b8dfd6 (supersedes #3332)",
+    "kind": "receipt_consumer"
+   },
+   "finish_point": "scripts/tvc_conformance_receipt.py consume returns ALLOW at the exact head: a TVC conformance test receipt on refs/stegverse/organization-ledger (sealed by StegVerse-Labs/TVC#539's CI, appended by the organization ledger writer) whose consumed Labs surface has the same sha256 as this head; the [tvc] sets are then verified by that receipt and not run here",
+   "owner": "GitHub Product, Lane C (StegVerse-org/.github#164); consumer StegVerse-Labs/.github#3332; append: the organization ledger writer",
+   "repair": "land the receipt consumer (StegVerse-Labs/.github#3332) and have the organization ledger writer append an ALLOW TVC conformance receipt observed against this head's surface bytes; a TVC checkout in this job does not satisfy it"
+  }
+ },
+ "manifest": ".stegverse/test-sets.json",
+ "module_inputs": {
+  "tests/test_organization_role_conformance_ingress.py": [
+   "stegverse-sdk"
+  ]
+ },
+ "repository": "StegVerse-Labs/.github",
+ "runner": "pytest",
+ "schema": "stegverse.test-set-spec/v1",
+ "selects_all": [
+  "*conftest.py",
+  ".github/workflows/test-suite-ratchet.yml",
+  "pyproject.toml",
+  "pytest.ini",
+  "scripts/test_set_selection.py",
+  "setup.cfg",
+  "tests/*__init__.py",
+  "tox.ini"
+ ],
+ "splits": [
+  {
+   "file": "tests/test_build_optical_component_010_org_request.py",
+   "id": "tests/test_build_optical_component_010_org_request.py[stegverse-sdk]",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "tests": [
+    "tests/test_build_optical_component_010_org_request.py::test_a_capability_its_route_does_not_select_is_refused_with_six_fields",
+    "tests/test_build_optical_component_010_org_request.py::test_a_manifest_the_real_sdk_admits_reaches_the_pin_stage"
+   ]
+  },
+  {
+   "file": "tests/test_canonical_work_in_process_admission.py",
+   "id": "tests/test_canonical_work_in_process_admission.py[tvc]",
+   "inputs": [
+    "tvc"
+   ],
+   "tests": [
+    "tests/test_canonical_work_in_process_admission.py::CanonicalWorkInProcessAdmissionTests::test_relay_attested_statement_admits_only_exact_request",
+    "tests/test_canonical_work_in_process_admission.py::CanonicalWorkInProcessAdmissionTests::test_relay_origin_positive_case_admits_on_tvc_conformance_receipt",
+    "tests/test_canonical_work_in_process_admission.py::CanonicalWorkInProcessAdmissionTests::test_relay_signature_valid_without_bilateral_emission_receipt_fails_closed",
+    "tests/test_canonical_work_in_process_admission.py::CanonicalWorkInProcessAdmissionTests::test_relay_with_moved_signature_refused"
+   ]
+  },
+  {
+   "file": "tests/test_mir_sv_exp3_cross_owner_wire_binding.py",
+   "id": "tests/test_mir_sv_exp3_cross_owner_wire_binding.py[stegverse-sdk]",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "tests": [
+    "tests/test_mir_sv_exp3_cross_owner_wire_binding.py::OriginalExperiment3CrossOwnerTests"
+   ]
+  },
+  {
+   "file": "tests/test_origin_attestation_tvc_conformance.py",
+   "id": "tests/test_origin_attestation_tvc_conformance.py[tvc]",
+   "inputs": [
+    "tvc"
+   ],
+   "tests": [
+    "tests/test_origin_attestation_tvc_conformance.py::TvcConformanceTests"
+   ]
+  },
+  {
+   "file": "tests/test_sdk_manifest_diagnostic_admitted_consumer.py",
+   "id": "tests/test_sdk_manifest_diagnostic_admitted_consumer.py[stegverse-sdk]",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "tests": [
+    "tests/test_sdk_manifest_diagnostic_admitted_consumer.py::InstalledSdkDiagnosticOutputTests"
+   ]
+  },
+  {
+   "file": "tests/test_stegbrowser_universal_intr_materialization.py",
+   "id": "tests/test_stegbrowser_universal_intr_materialization.py[stegverse-sdk]",
+   "inputs": [
+    "stegverse-sdk@c138cad4"
+   ],
+   "tests": [
+    "tests/test_stegbrowser_universal_intr_materialization.py::RealSdkRouteDecisionTests"
+   ]
+  },
+  {
+   "file": "tests/test_sv_change_base_state_readback_component.py",
+   "id": "tests/test_sv_change_base_state_readback_component.py[labs-ledger-ref]",
+   "inputs": [
+    "labs-ledger-ref"
+   ],
+   "tests": [
+    "tests/test_sv_change_base_state_readback_component.py::BaseStateReadbackTests::test_known_answer_live_labs_head"
+   ]
+  }
+ ],
+ "test_globs": [
+  "tests/**"
+ ]
+}
