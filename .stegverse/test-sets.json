@@ -14032,6 +14032,7 @@
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json",
    "scripts/canonical_task_registration_transition.py",
+   "scripts/goal_scope_seal.py",
    "tests/fixtures/**",
    "tests/fixtures/canonical_task_registration/**",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/**",

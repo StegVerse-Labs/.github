@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "LANE-D-KV-SKAP-VAULT-ALLOCATION-REQUEST-20261023",
+  "state": "PROPOSED",
+  "issue": "StegVerse-org/.github#160",
+  "proposed_task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "cosv_task_vector": null,
+  "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics (scripts/cosv.py encode_task)",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 320,
+  "owning_task_found": false,
+  "scope": "Make KnowledgeVault (KV) functional with a SKAP Vault inside KV: a principal's KV projection is written, read back exactly and revoked only through governed Interlock/InTr transitions; the SKAP Vault inside KV holds custody-key references (never credential or key material) while TV/TVC remains the credential authority and the sole SKAP ciphertext custody writer; every write and read is preceded by a consent receipt and every revoke produces a revocation receipt that ends read access, all on one continuous receipt-hash lineage; the same principal's projection reconstructs exactly on any eligible device with no connected device, second user-operated device or external machine required; and no governance, credential, verifier, claim or KV authority is duplicated. Done is decided by the acceptance test named in the sealed finish point, which must reach its verdict at E0 (ecosystem only, no LLM) and degrade gracefully down the operating-mode ladder.",
+  "scope_digest": "sha256:d4a98dc0c0ff9db7dbc05b1b97d93573dda7b59dcd2a7628e2cf6620e26c7ef2",
+  "requested_action": "Check the proposed identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition; then WorkerCoordinator evaluates its claim request.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "owner_authorization": {
+    "status": "OWNER_PRIORITY_RELAYED_BY_COORDINATION_2026-10-23",
+    "authority_limit": "OWNER_INTENT_ONLY_NOT_ALLOCATOR_OUTPUT_OR_RUNTIME_ADMISSION"
+  },
+  "handoff_ref": "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md"
+}
