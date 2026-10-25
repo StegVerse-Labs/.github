@@ -18,8 +18,8 @@
     "finish_point": {
       "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
       "repository": "StegVerse-Labs/continuity-vault-kit",
-      "source_commit": "ad32708972dbe749cf6d9b27085ad97657a96060",
-      "source_ref": "StegVerse-Labs/continuity-vault-kit laned/kv-skap-finish-pin-adapter (finish-point pin PR, after the no-intra-org-InTr PR)"
+      "source_commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+      "source_ref": "StegVerse-Labs/continuity-vault-kit main @9d56bc7b (continuity-vault-kit#271 merge of laned/kv-skap-finish-pin-adapter ad327089; tree identical)"
     }
   },
   "candidates": [
@@ -124,7 +124,7 @@
     "b": "finish-point test exercises none of the candidates' components",
     "c": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 is a consumes-dependency"
   },
-  "evidence_digest": "sha256:158ec09735fe2433d16b9d6916dfe23387d4b5e4391bf5b4805cfd95631e1ac7",
+  "evidence_digest": "sha256:5fd65e9bd5709906b604c2998f1235a13dbb1715272eaadaaf61e68fee328d4a",
   "protected_paths": [
     {
       "repository": "StegVerse-Labs/continuity-vault-kit",
