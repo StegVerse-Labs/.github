@@ -211,7 +211,10 @@ class Admission(Refusals, unittest.TestCase):
         self.assertNotIn("stegverse.test-suite-skip-receipt/v1", org.C["consumes"])
         self.assertFalse(hasattr(org, "SEALED_TEST_RECEIPT_SCHEMA"))
 
-    def test_the_committed_request_is_tvc_run_40160000328s_labs_receipt_and_is_admitted(self):
+    def test_the_committed_request_is_tvc_run_40137248073s_labs_receipt_and_is_admitted(self):
+        """The committed request's TVC receipt is admitted. The method name is kept so the test-suite ratchet sees the
+        same test at the head (TEST_PRESENT_AT_BASE_RUNS_AT_HEAD); the request now carries run COMMITTED_RUN_ID
+        (40160000328, TVC#546), which supersedes run 40137248073 (TVC#539)."""
         request = ing.read_request(ROOT / ing.REQUEST_PATH)
         self.assertEqual(request["operation"], ing.SEALED)
         receipt = request["receipt"]
