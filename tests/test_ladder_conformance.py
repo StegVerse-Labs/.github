@@ -318,7 +318,37 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("SAME_SIGNAL_REPLAYED_AFTER_THE_PIN", ro)  # an idempotent read-back at #431 @e9d45e6c, recorded
         wf = {r.get("probe") for r in next(i for i in d["items"] if i["id"] == "H-KV-ENDPOINT-LEDGER-ANCHOR")["refusals"]
               if r["failure_code"] == "OPERATING_MODE_E0_WITNESS_FAILED"}
-        self.assertEqual(wf, set())  # every observed watermark row decides as required at @9d56bc7b
+        self.assertEqual(wf, set())  # every observed watermark row decides as required at @77d28d83 (revision 15)
+        # revision 15 (P1, #163): LC-KV-26 closed by continuity-vault-kit#275 @77d28d83 (Coordination 05:03Z via #167
+        # c6393119202: "a crossing record held at both ends (the org side and KV's own ledger), never an InTr hop inside one org")
+        self.assertIn("6393119202", anc["observed_state"])
+        self.assertIn("continuity-vault-kit#275", anc["observed_state"])
+        for w_ in ("KV", "SKAP_VIA_GATE"):
+            self.assertEqual(ro["LC_KV_26_BOTH_ENDS_KV_END_ONLY_" + w_], ["FAIL_CLOSED"])
+            self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ORG_RECORDS_AN_OLDER_HEAD_ONLY_" + w_], ["FAIL_CLOSED"])
+            self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ORG_RECORDS_EVERY_HEAD_" + w_], ["ALLOW"])
+            self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_" + w_], ["DENY"])
+        obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
+        probe = next(r for r in obs["runs"] if r["run_id"] == "cvk263-chain-probe")
+        self.assertTrue(probe["pin"].endswith("@77d28d838ec6714044a192d4f549c3ca9366ff3f"))
+        rows = {o["subject"]: o for o in probe["outcomes"]}
+        for w_ in ("KV", "SKAP_VIA_GATE"):
+            for c_ in ("KV_END_ONLY", "ORG_RECORDS_AN_OLDER_HEAD_ONLY"):
+                r_ = rows["LC_KV_26_BOTH_ENDS_%s_%s" % (c_, w_)]
+                self.assertEqual((r_["disposition"], r_["failure_code"], r_["failed_predicate"]),
+                                 ("FAIL_CLOSED", "KV_CROSSING_RECORD_NOT_OBSERVED", "KV_HEAD_RECORDED_AT_BOTH_ENDS"), (c_, w_))
+            self.assertEqual(rows["LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_" + w_]["failure_code"],
+                             "KV_LEDGER_HEAD_ROLLBACK_DETECTED")
+        # live dependency state: cvk#263 merged (removed); the four Lane B drafts closed unmerged under Rigel's rule
+        deps = anc["unadmitted_dependencies"]
+        self.assertFalse(any(u.startswith("StegVerse-Labs/continuity-vault-kit#263") for u in deps))
+        for ref_ in ("StegVerse-org/LLM-adapter#431 ", "StegVerse-org/LLM-adapter#432 ", "StegVerse-org/LLM-adapter#433 ",
+                     "StegVerse-org/.github#235 "):
+            self.assertIn("CLOSED unmerged", next(u for u in deps if u.startswith(ref_)), ref_)
+        # revision 15 live-state refresh: merged or superseded dependencies are no longer listed as unadmitted
+        adm = " ".join(decl["H-KV-ADMISSION"]["unadmitted_dependencies"]) + " ".join(gdecl["H-GOV-ADMISSION"]["unadmitted_dependencies"])
+        for ref_ in ("#3313 ", "#3311 ", "#3255 ", "#3324 ", "continuity-vault-kit#263"):
+            self.assertNotIn(ref_, adm, ref_)
         # Lane B: the shared carrier is byte-identical and destination_evidence refuses six-field
         for n_ in ("431", "432", "433"):
             self.assertEqual(ro["CARRIER_SHA_" + n_], ["ALLOW"])

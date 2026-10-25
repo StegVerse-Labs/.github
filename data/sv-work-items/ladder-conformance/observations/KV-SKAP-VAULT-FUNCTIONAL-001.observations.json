@@ -3,16 +3,21 @@
  "observed_by": "scripts/ladder_conformance.py observe",
  "roots": {
   "cvk258": {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "kind": "git",
    "repo": "StegVerse-Labs/continuity-vault-kit"
   },
   "cvk259": {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "kind": "git",
    "repo": "StegVerse-Labs/continuity-vault-kit"
   },
   "cvk263": {
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
+   "kind": "git",
+   "repo": "StegVerse-Labs/continuity-vault-kit"
+  },
+  "cvkruling": {
    "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
    "kind": "git",
    "repo": "StegVerse-Labs/continuity-vault-kit"
@@ -29,6 +34,11 @@
   },
   "labsmain": {
    "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
+  "labsruling": {
+   "commit": "64ba618affd86f275417becf048b929ad1494d1e",
    "kind": "git",
    "repo": "StegVerse-Labs/.github"
   },
@@ -218,7 +228,7 @@
      ]
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-finish-point.out",
    "raw_sha256": "sha256:b5c0cd5f221d67abec365ee827244e476ccc8f51a519a647ea1395929501d404",
    "run_id": "kv-finish-point",
@@ -237,7 +247,7 @@
      "tests_ran": 34
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-finish-point-tests.out",
    "raw_sha256": "sha256:bc7516c32b8431442590b49a5b778e600417b106705f5c622114c94856d09fed",
    "run_id": "kv-finish-point-tests",
@@ -280,7 +290,7 @@
     "^NOT_YET_BUILT = \\{",
     "tvc_issuance_receipt_ref=\"fixture:"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-finish-point-evidence-input",
    "status": "OBSERVED",
    "what": "does the finish point take any evidence input (receipts) or only constants?"
@@ -297,7 +307,7 @@
      "tests_ran": 19
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-lineage-tests.out",
    "raw_sha256": "sha256:d4c00d3176a61c71d0011d444189afb21ad4d1bfe3808e473254e6b26e649e1d",
    "run_id": "kv-lineage-tests",
@@ -319,7 +329,7 @@
      "subject": "DURABLE_CUSTODY_VALIDATION"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-lineage-validate-unbound-receipt.out",
    "raw_sha256": "sha256:1e488d65a5307c9eaa8eaa0ab24ec8978434e9181ccef0f4d79b8503e99d0da0",
    "run_id": "kv-lineage-validate-unbound-receipt",
@@ -375,7 +385,7 @@
    "patterns": [
     "DeclarativeStorageProviderAdapter\\(\""
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-provider-registry",
    "status": "OBSERVED",
    "what": "the durable-custody provider adapters the lineage can be written to"
@@ -395,34 +405,28 @@
      "subject": "REGISTRATION_PLAN"
     }
    ],
-   "pin": "StegVerse-Labs/.github@7bdb8a2eadf302bc8ef1cd90eb30c0e48f9222de",
+   "pin": "StegVerse-Labs/.github@64ba618affd86f275417becf048b929ad1494d1e",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-without-ruling.out",
-   "raw_sha256": "sha256:b11cb288af5995075d666b9835e1c6c502146161a6c54be6a548edc5fd1c45b4",
+   "raw_sha256": "sha256:9c748154bc486c64f73f734a5f834a382bbadc12989c935c7c21d63760dd95a3",
    "run_id": "kv-registration-plan-without-ruling",
    "status": "OBSERVED",
-   "what": "registration plan, no adjacency ruling"
+   "what": "registration plan, no adjacency ruling (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
   },
   {
-   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvk258}",
-   "exit_code": 1,
+   "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base . --adjacency-ruling control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json --finish-point-root {root:cvkruling}",
+   "exit_code": 0,
    "outcomes": [
     {
-     "disposition": "FAIL_CLOSED",
-     "failed_predicate": "FINISH_POINT_SOURCE_AT_PINNED_COMMIT",
-     "failure_code": "ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
-     "next_attempt": "on the next registration request event after the repair is recorded",
-     "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-     "required_evidence_or_repair": "the finish-point root must be StegVerse-Labs/continuity-vault-kit checked out at 9551edab3a152ec0741274b109b3e0de84a23ff8",
-     "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+     "disposition": "ALLOW",
      "subject": "REGISTRATION_PLAN"
     }
    ],
-   "pin": "StegVerse-Labs/.github@7bdb8a2eadf302bc8ef1cd90eb30c0e48f9222de",
+   "pin": "StegVerse-Labs/.github@64ba618affd86f275417becf048b929ad1494d1e",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-registration-plan-with-ruling.out",
-   "raw_sha256": "sha256:87ece0a048e69f52d4dcb17dbf6df4d35737d898b27ce408277181278b3d5aad",
+   "raw_sha256": "sha256:d959f3199324f23bde2a3ca3493d56384af7c873c8fd3ffb85c50cfb8fbee093",
    "run_id": "kv-registration-plan-with-ruling",
    "status": "OBSERVED",
-   "what": "registration plan with the Coordination class-D adjacency ruling and the finish-point root at the #258 head, which the ruling @7bdb8a2e names (9551edab)"
+   "what": "registration plan with the Coordination class-D adjacency ruling re-pinned to cvk main @9d56bc7b (Labs#3353) and the finish-point root at that commit (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
   },
   {
    "files_scanned": 2,
@@ -502,7 +506,7 @@
     "remote\\b.*stdout|_git\\(scratch_ledger_git_dir, \"remote\"\\)",
     "^LEDGER_GENESIS_OWNER = "
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-ledger-binding",
    "status": "OBSERVED",
    "what": "any organization-ledger receipt in the KV finish point or request"
@@ -1078,7 +1082,7 @@
     "healthy_node_evaluator=",
     "healthy_node_ledger_root"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "layer1-healthy-node-search-kv",
    "status": "OBSERVED",
    "what": "any healthy-node / node-health gate in the KV code (#258 and #259 heads)"
@@ -1735,13 +1739,13 @@
      "text": "``healthy_node_evaluator.read_chain`` (unchanged). Nothing here writes a receipt chain."
     },
     {
-     "line": 484,
+     "line": 488,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "healthy_node",
      "text": "message = HEAD_ATTESTATION_SCHEMA.encode(\"utf-8\") + b\"\\n\" + modules[\"healthy_node_evaluator\"].canon(body)"
     },
     {
-     "line": 697,
+     "line": 717,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "healthy_node",
      "text": "hne = modules[\"healthy_node_evaluator\"]"
@@ -2233,18 +2237,6 @@
      "text": "\"intr_receipt_ref\": intr_ref,"
     },
     {
-     "line": 127,
-     "path": "runtime/kv_skap_account_transfer.py",
-     "pattern": "intr_receipt_ref",
-     "text": "def build_intr_boundary_envelope(packet: dict[str, Any], request: dict[str, Any], *, task_id: str, intr_receipt_ref: str | None = None) -> dict[str, Any]:"
-    },
-    {
-     "line": 149,
-     "path": "runtime/kv_skap_account_transfer.py",
-     "pattern": "intr_receipt_ref",
-     "text": "\"intr_receipt_ref\": intr_receipt_ref,"
-    },
-    {
      "line": 207,
      "path": "runtime/kv_skap_layer2.py",
      "pattern": "intr_receipt_ref",
@@ -2348,7 +2340,7 @@
     "CURRENT_NODE_HEALTH",
     "intr_receipt_ref"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "layer1-healthy-node-search-kv259",
    "status": "OBSERVED",
    "what": "same search, #259 head"
@@ -2438,7 +2430,7 @@
      "subject": "KV_RECONSTRUCT_AND_READ_FROM_EXPORT_WITHOUT_INTR"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-layers-probe.out",
    "raw_sha256": "sha256:bf4eda795d93297f898cb40811b32ca4209c6e6359558bcd4c36b1c8f50ba126",
    "run_id": "kv-layers-probe",
@@ -2727,7 +2719,7 @@
     "kv_access_receipt|layer_1|INTR_DEVICE_KV|KV_INTERNAL_SKAP_GATE",
     "kv_interlock|KVInterlockRuntime|response_hash"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-layers-structure",
    "status": "OBSERVED",
    "what": "KVSkapVault entry points: which take an InTr reference, what _require_intr checks, any layer-1 receipt"
@@ -2879,7 +2871,7 @@
     "self.vault_root = ",
     "intr|InTr|healthy"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "skap-direct-store-cvk",
    "status": "OBSERVED",
    "what": "direct SKAP sealed-credential read/write in continuity-vault-kit (no InTr, no KV gate)"
@@ -3337,34 +3329,68 @@
    "what": "TVC#541 @72decca1 skap_custody_chain.gate (read, skap_resident_sealed_object, the shipped manifest): no chain, an unlisted store, an out-of-scope subject, layer 1 absent, an edited layer-1 hash, layer 2 not bound to layer 1, caller-minted self-hashed layer receipts with TVC#537 absent; then with TVC#537 @c87272cf on the path: the same caller-minted receipts plus a caller-requested issuance receipt and a caller-supplied client, an edited issuance receipt, no client; read_through_chain on the caller-minted chain; the TVC#538/#541 double interlock build_chain/validate_chain on the same caller-minted receipts"
   },
   {
-   "command": "{python} -c import json, sys\nsys.path.insert(0, \"tools\")\nimport coinbase_intr_double_interlock as d\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nkw = dict(ingress_id=\"ladder-probe\", credential_ref=\"tvc://probe\", payload_hash=\"sha256:\" + \"0\" * 64)\ndef l1_no_health():\n    d.validate_chain(d.build_chain(**kw))\ndef l2_no_l1():\n    d.build_kv_skap_receipt(device_kv_receipt={}, **kw)\ndef l2_caller_minted_l1():\n    first = d.build_device_kv_receipt(**kw)  # minted by the caller itself: no gate, no node, no InTr exchange\n    d.build_kv_skap_receipt(device_kv_receipt=first, **kw)\nprobe(\"LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE\", l1_no_health)\nprobe(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", l2_no_l1)\nprobe(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", l2_caller_minted_l1)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "command": "{python} -c import json\nfrom tools import coinbase_intr_double_interlock as d\nrows = []\ndef probe(subject, fn):\n    try:\n        fn()\n        rows.append({\"subject\": subject, \"disposition\": \"ALLOW\"})\n    except d.DoubleInterlockError as exc:\n        rows.append(dict({k: exc.refusal.get(k) for k in (\"disposition\", \"failure_class\") + d.SIX_FIELDS}, subject=subject, message=str(exc)))\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)})\nEPOCH = \"ladder-probe-hb-epoch-1\"\nkw = dict(ingress_id=\"ladder-probe\", credential_ref=\"tvc://probe\", payload_hash=\"sha256:\" + \"0\" * 64)\ndef minted(boundary, hop, transport):\n    # minted by the caller itself: no gate, no ledger read-back, no healthy node\n    body = {\"schema\": d.RECEIPT_SCHEMA, \"receipt_id\": \"ladder-probe:\" + boundary, \"operation_id\": \"ladder-probe\",\n            \"credential_ref\": kw[\"credential_ref\"], \"boundary\": boundary, \"hop_index\": hop, \"direction\": \"FORWARD\",\n            \"from_role\": (\"DEVICE\", \"KV\")[hop], \"to_role\": (\"KV\", \"SKAP_VAULT\")[hop], \"payload_hash\": kw[\"payload_hash\"],\n            \"prior_receipt_hash\": None, \"readback_receipt_schema\": \"caller-minted\",\n            \"readback_receipt_hash\": {\"digest\": \"sha256:\" + \"1\" * 64, \"observed_at\": EPOCH},\n            \"ledger_read_receipt\": {\"ledger\": (\"kv\", \"skap_vault\")[hop]}, \"transition_state\": \"FORWARDED\",\n            \"secret_plaintext_present\": False, \"authority_transfer\": False, \"credential_authority\": \"TV/TVC\",\n            \"transport_protocol\": transport}\n    return dict(body, receipt_hash=d.digest(body))\ndef l1_no_health():  # gate 1 (INTR_DEVICE_KV) with no KV recorded receipt chain to read layer 1 from\n    d.gate_device_kv(org_ledger_git_dir=None, supplied_hb_epoch=EPOCH, **kw)\ndef l2_no_l1():  # gate 2 (in-KV SKAP gate) with no hop-0 receipt\n    d.gate_kv_skap(device_kv_receipt={}, org_ledger_git_dir=None, supplied_hb_epoch=EPOCH)\ndef l2_caller_minted_l1():\n    d.gate_kv_skap(device_kv_receipt=minted(\"INTR_DEVICE_KV\", 0, \"InTr\"), org_ledger_git_dir=None,\n                   supplied_hb_epoch=EPOCH)\ndef kv_skap_hop_claims_intr():  # KV->SKAP never leaves KV: a hop-1 receipt claiming InTr transport is refused\n    d.validate_boundary_receipt(minted(\"KV_INTERNAL_SKAP_GATE\", 1, \"InTr\"), expected_boundary=\"KV_INTERNAL_SKAP_GATE\")\ndef kv_skap_hop_transport():\n    if d.BOUNDARY_TRANSPORT != {\"INTR_DEVICE_KV\": \"InTr\", \"KV_INTERNAL_SKAP_GATE\": \"KV_INTERNAL\"}:\n        raise ValueError(\"boundary_transport_not_in_kv_gate: %r\" % (d.BOUNDARY_TRANSPORT,))\nprobe(\"LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE\", l1_no_health)\nprobe(\"LAYER2_WITHOUT_LAYER1_RECEIPT\", l2_no_l1)\nprobe(\"LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT\", l2_caller_minted_l1)\nprobe(\"KV_SKAP_HOP_CLAIMING_INTR_TRANSPORT\", kv_skap_hop_claims_intr)\nprobe(\"KV_SKAP_HOP_IS_IN_KV_GATE_NOT_INTR\", kv_skap_hop_transport)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
    "exit_code": 0,
    "outcomes": [
     {
-     "disposition": "EXCEPTION",
-     "exception": "AttributeError",
-     "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_chain'",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_STORAGE_ENDPOINT_PROVIDER_EXECUTION_ADMITTED",
+     "failure_class": "B",
+     "failure_code": "KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR",
+     "message": "kv2_storage_endpoint_pending_interlock_intr:KV_STORAGE_ENDPOINT_PROVIDER_EXECUTION_ADMITTED",
+     "next_attempt": "on the KV #2 governance/provider-execution event in the canonical runtime lane (event-driven)",
+     "owning_existing_goal": "KV-CONNECTION-REVALIDATION-WORKER-001 (KV #2 request SITE-CLOUD-KV-4347408852127319cbda574f02e03edb; SV-KV-AI-PERSISTENCE-001, TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001)",
+     "required_evidence_or_repair": "authentic Interlock/InTr governance and provider execution of the existing KV #2 request SITE-CLOUD-KV-4347408852127319cbda574f02e03edb (KV_STORAGE_ENDPOINT_V2_MIRROR_HANDOFF.md), then a READ of the recorded receipt chain through that storage endpoint",
+     "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)",
      "subject": "LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE"
     },
     {
-     "disposition": "EXCEPTION",
-     "exception": "AttributeError",
-     "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_kv_skap_receipt'",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND",
+     "failure_class": "B",
+     "failure_code": "DOUBLE_INTERLOCK_REFUSED",
+     "message": "boundary_receipt_schema_invalid",
+     "next_attempt": "on a chain rebuilt from both read-back receipts",
+     "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)",
+     "required_evidence_or_repair": "repair the double-interlock chain: boundary_receipt_schema_invalid",
+     "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)",
      "subject": "LAYER2_WITHOUT_LAYER1_RECEIPT"
     },
     {
-     "disposition": "EXCEPTION",
-     "exception": "AttributeError",
-     "message": "module 'coinbase_intr_double_interlock' has no attribute 'build_device_kv_receipt'",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND",
+     "failure_class": "B",
+     "failure_code": "BOUNDARY_RECEIPT_LEDGER_READ_ABSENT",
+     "message": "boundary_receipt_ledger_read_absent:COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND",
+     "next_attempt": "on hop receipts produced by the two gates",
+     "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)",
+     "required_evidence_or_repair": "each hop receipt must carry the read receipt of its own recorded receipt chain (hop 0: KV's; hop 1: the SKAP Vault's)",
+     "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)",
      "subject": "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND",
+     "failure_class": "B",
+     "failure_code": "DOUBLE_INTERLOCK_REFUSED",
+     "message": "boundary_receipt_transport_invalid",
+     "next_attempt": "on a chain rebuilt from both read-back receipts",
+     "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)",
+     "required_evidence_or_repair": "repair the double-interlock chain: boundary_receipt_transport_invalid",
+     "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)",
+     "subject": "KV_SKAP_HOP_CLAIMING_INTR_TRANSPORT"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "KV_SKAP_HOP_IS_IN_KV_GATE_NOT_INTR"
     }
    ],
    "pin": "StegVerse-Labs/TVC@b686a60b959ebffd165bc38ef011d0f50a6bb935",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/layers-tvc-double-interlock-probe.out",
-   "raw_sha256": "sha256:d243df7426db45d8b7f69dc7762aaeae7a3a242a28d24b7f65c073bbf8849c48",
+   "raw_sha256": "sha256:1eea121e785dc277760dfa55596708be8c42ca94e66c78afbb868ca647680703",
    "run_id": "layers-tvc-double-interlock-probe",
    "status": "OBSERVED",
-   "what": "TVC double interlock INTR_DEVICE_KV -> in-KV SKAP gate: layer 1 without healthy-node evidence, layer 2 without layer 1, layer 2 on a caller-minted layer-1 receipt"
+   "what": "TVC double interlock on the in-KV gate path (revision 14: TVC#544 retired build_chain): gate_device_kv (INTR_DEVICE_KV, hop 0) without a KV recorded receipt chain, gate_kv_skap (KV_INTERNAL_SKAP_GATE, hop 1, no InTr) without a hop-0 receipt and on a caller-minted hop-0 receipt, a KV->SKAP hop claiming InTr transport, and the boundary transport table"
   },
   {
    "files_scanned": 1,
@@ -4092,7 +4118,7 @@
      "subject": "CUSTODY_VERIFIER_SUBCLASSED_GATE"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/layer1-two-layer-probe.out",
    "raw_sha256": "sha256:0e0b94e2e2b93e4c7f5aa718ce4e1d0c3ccb6ec374e718ae6853206c3db4d0a8",
    "run_id": "layer1-two-layer-probe",
@@ -4139,7 +4165,7 @@
     "decider is not loaded\\[\"object\"\\]",
     "_EXERCISE_ONLY_UNPINNED_DECIDER = "
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-evaluator-identity",
    "status": "OBSERVED",
    "what": "how layer 1/2 identify the pinned decider (#258): object identity plus load-time code digest, the exercise-only flag"
@@ -4271,7 +4297,7 @@
     "^GENESIS_DERIVATION = ",
     "^EPHEMERAL_SIGNER_OWNER = "
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-anchor-schema",
    "status": "OBSERVED",
    "what": "what KV vendors and passes for the anchored-root check (#258): the vendored #432 commit and digest, the anchor refusal code, the trust anchors"
@@ -4905,7 +4931,7 @@
      "note": "a caller-created bare repo with the caller's own genesis and its own self-sealed InTr pair, citing the published (TEST-ONLY) signer's genuine attestation of the positive-control copy",
      "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431",
      "planned_pin_is_caller_genesis": false,
-     "required_evidence_or_repair": "the attestation names another genesis, head or namespace tree than the store holds (head sha256:9e361cdcfd730e4f44cd0f15d4a6afacf8d64bef6453d753101dfd5b4f845859, tree 528b4fe29ea844c668845c3b6a29af95b846bdcb). the genesis may be authenticated only from the published refs/stegverse/organization-ledger read-back plus an org-ledger head attestation: a stegverse.org-ledger-head-attestation/v1 over {org_ledger_location, genesis_receipt_sha256, head_receipt_sha256, namespace_tree_oid, appended_through} signed by a key published in .stegverse/node-ledger/org-ledger-head-signers.v1.json (ORG-LEDGER-HEAD-SIGNER-001; TV/TVC custody, StegVerse-org/TVC#542; publication only by an admitted change carrying TV/TVC's publication receipt). A caller-built ledger copy with its own genesis is never accepted",
+     "required_evidence_or_repair": "the attestation names another genesis, head or namespace tree than the store holds (head sha256:9e361cdcfd730e4f44cd0f15d4a6afacf8d64bef6453d753101dfd5b4f845859, tree c4aa594a296391c69e8ab92d8405b66214af938e). the genesis may be authenticated only from the published refs/stegverse/organization-ledger read-back plus an org-ledger head attestation: a stegverse.org-ledger-head-attestation/v1 over {org_ledger_location, genesis_receipt_sha256, head_receipt_sha256, namespace_tree_oid, appended_through} signed by a key published in .stegverse/node-ledger/org-ledger-head-signers.v1.json (ORG-LEDGER-HEAD-SIGNER-001; TV/TVC custody, StegVerse-org/TVC#542; publication only by an admitted change carrying TV/TVC's publication receipt). A caller-built ledger copy with its own genesis is never accepted",
      "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256, org_ledger_head_attestation} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>",
      "six_fields_present": true,
      "subject": "CALLER_WRITTEN_GENESIS_AND_CARRIER_ON_A_CALLER_LEDGER_COPY"
@@ -4949,7 +4975,7 @@
      "failure_code": "ORG_LEDGER_HEAD_NOT_AUTHENTICATED",
      "next_attempt": "event-triggered: when ORG-LEDGER-HEAD-SIGNER-001 is published by its admitted change and the append route attests the head that holds the receipted genesis; no clock, no polling, no person",
      "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431",
-     "required_evidence_or_repair": "the attestation names another genesis, head or namespace tree than the store holds (head sha256:02be1a2cf3b4f8682c50e1091e2430196341383ee2930efdbfed128b0919d845, tree fa476e8565aebf1805175f113c30e09152ea3700). the genesis may be authenticated only from the published refs/stegverse/organization-ledger read-back plus an org-ledger head attestation: a stegverse.org-ledger-head-attestation/v1 over {org_ledger_location, genesis_receipt_sha256, head_receipt_sha256, namespace_tree_oid, appended_through} signed by a key published in .stegverse/node-ledger/org-ledger-head-signers.v1.json (ORG-LEDGER-HEAD-SIGNER-001; TV/TVC custody, StegVerse-org/TVC#542; publication only by an admitted change carrying TV/TVC's publication receipt). A caller-built ledger copy with its own genesis is never accepted",
+     "required_evidence_or_repair": "the attestation names another genesis, head or namespace tree than the store holds (head sha256:02be1a2cf3b4f8682c50e1091e2430196341383ee2930efdbfed128b0919d845, tree d4857241de296a781ff60b905d2923d279f579b2). the genesis may be authenticated only from the published refs/stegverse/organization-ledger read-back plus an org-ledger head attestation: a stegverse.org-ledger-head-attestation/v1 over {org_ledger_location, genesis_receipt_sha256, head_receipt_sha256, namespace_tree_oid, appended_through} signed by a key published in .stegverse/node-ledger/org-ledger-head-signers.v1.json (ORG-LEDGER-HEAD-SIGNER-001; TV/TVC custody, StegVerse-org/TVC#542; publication only by an admitted change carrying TV/TVC's publication receipt). A caller-built ledger copy with its own genesis is never accepted",
      "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256, org_ledger_head_attestation} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>",
      "six_fields_present": true,
      "subject": "ATTESTATION_NAMING_ANOTHER_NAMESPACE_TREE"
@@ -4960,7 +4986,7 @@
      "failure_code": "ORG_LEDGER_HEAD_NOT_AUTHENTICATED",
      "next_attempt": "event-triggered: when ORG-LEDGER-HEAD-SIGNER-001 is published by its admitted change and the append route attests the head that holds the receipted genesis; no clock, no polling, no person",
      "owning_existing_goal": "StegVerse-org/.github#162 (Lane B; GENESIS_PIN trigger over InTr, option (b)); StegVerse-org/LLM-adapter#431",
-     "required_evidence_or_repair": "the attestation names another genesis, head or namespace tree than the store holds (head sha256:02be1a2cf3b4f8682c50e1091e2430196341383ee2930efdbfed128b0919d845, tree fa476e8565aebf1805175f113c30e09152ea3700). the genesis may be authenticated only from the published refs/stegverse/organization-ledger read-back plus an org-ledger head attestation: a stegverse.org-ledger-head-attestation/v1 over {org_ledger_location, genesis_receipt_sha256, head_receipt_sha256, namespace_tree_oid, appended_through} signed by a key published in .stegverse/node-ledger/org-ledger-head-signers.v1.json (ORG-LEDGER-HEAD-SIGNER-001; TV/TVC custody, StegVerse-org/TVC#542; publication only by an admitted change carrying TV/TVC's publication receipt). A caller-built ledger copy with its own genesis is never accepted",
+     "required_evidence_or_repair": "the attestation names another genesis, head or namespace tree than the store holds (head sha256:02be1a2cf3b4f8682c50e1091e2430196341383ee2930efdbfed128b0919d845, tree d4857241de296a781ff60b905d2923d279f579b2). the genesis may be authenticated only from the published refs/stegverse/organization-ledger read-back plus an org-ledger head attestation: a stegverse.org-ledger-head-attestation/v1 over {org_ledger_location, genesis_receipt_sha256, head_receipt_sha256, namespace_tree_oid, appended_through} signed by a key published in .stegverse/node-ledger/org-ledger-head-signers.v1.json (ORG-LEDGER-HEAD-SIGNER-001; TV/TVC custody, StegVerse-org/TVC#542; publication only by an admitted change carrying TV/TVC's publication receipt). A caller-built ledger copy with its own genesis is never accepted",
      "retry_entrypoint": "scripts/llm_adapter_genesis_pin_ingress.py receive --signal <genesis-observed signal json> --carrier <{destination_receipt_sha256, org_ledger_head_receipt_sha256, org_ledger_head_attestation} json> --org-ledger <read-only copy of refs/stegverse/organization-ledger>",
      "six_fields_present": true,
      "subject": "ATTESTATION_NAMING_ANOTHER_LOCATION"
@@ -5403,7 +5429,7 @@
    ],
    "pin": "StegVerse-org/LLM-adapter@e9d45e6cfb5cd081726978e147ef5d5945c40f3d",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/genesis-pin-probe.out",
-   "raw_sha256": "sha256:b5bd890e3b710b886c936013a6f97e5fa1bfcc84f60e988a91821b7ec59761a6",
+   "raw_sha256": "sha256:6c88cc840e58c26a8a87651a536c27c01a217b30ec3d583bb22ccdc8919ddd3e",
    "run_id": "genesis-pin-probe",
    "status": "OBSERVED",
    "what": "LLM-adapter#431 @e9d45e6c REPOSITORY_LEDGER_GENESIS_PIN planner and pre-pin InTr ingress receiver over temporary ledger copies built with #431's own emit.py and carrier builders, with the TEST-ONLY head signer published unless production: a positive control, a caller copy unattested / attested by the caller's own key / by an unpublished seed under the published key id / citing the genuine attestation of another copy, attestations naming another tree or location, production (no published signer) for the genuine and the caller copy, the committed signers file, a caller-written genesis and carrier on a caller copy, signals naming an absent or different genesis, the signal replayed and a real-shaped signal from another copy after the pin, the planner alone after the pin, other signal classes while the pin is null, forged carriers (edited destination, source not retained, another body, wrong head, destination off-chain), the org emitter at StegVerse-org/.github@907f4305 (declared paths, message body, source evidence linked by the carrier), the typed writer at StegVerse-org/.github#235 @1f973485 (typed body vs the receiver's signal, carrier rebuild keys, linking, path as data vs code constant, destination-half writer, GATEWAY external ref, unlisted schema, unsealed body), the contract-path parameter (traversal, unlisted, the two cvk#263 contracts), the receiver with the pin-gated reads stubbed to raise and the import graph, the written pin against the digest read back, apply_write on a changed contract, and production without a ledger copy"
@@ -5415,7 +5441,7 @@
     {
      "disposition": "ABSENT",
      "ledger_ref": "StegVerse-org/.github refs/stegverse/organization-ledger",
-     "ledger_tip_at_observation": "cdf52cee51430508cb9fb1a62fa7b0427c77028b",
+     "ledger_tip_at_observation": "07307cb748e93283fbd236047f8c13cbd1d8002f",
      "note": "the genesis-observed record that triggers REPOSITORY_LEDGER_GENESIS_PIN needs this namespace's REPOSITORY_LEDGER_INITIALIZATION genesis",
      "repository_ledger_StegVerse_org_entries": [
       ".github"
@@ -5425,7 +5451,7 @@
    ],
    "pin": "StegVerse-org/.github@907f4305ddd4f39b16d96638744304de9ef0b67d",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/org-ledger-llmad-namespace.out",
-   "raw_sha256": "sha256:1cdca082e8b81c1c03b06d6db15655c16cef8a48645dfffb1fa5995e997f2ccd",
+   "raw_sha256": "sha256:4b2c26b5d74ccbaf5a0a3eca1b2fa329d33a193673eebf18332e115dcf5cd858",
    "run_id": "org-ledger-llmad-namespace",
    "status": "OBSERVED",
    "what": "read-only GitHub API: StegVerse-org/.github refs/stegverse/organization-ledger tip and the repository-ledger/StegVerse-org entries (is LLM-adapter's REPOSITORY_LEDGER_INITIALIZATION genesis on the published ledger?)"
@@ -5679,7 +5705,7 @@
      "subject": "CUSTODY_VERIFIER_ARBITRARY_CALLABLE_AT_259"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/custody-verifier-259.out",
    "raw_sha256": "sha256:d9c7c9f63258dd261ebf21822a9fcf50c08cb01c29be6aac30cddb9c47d0b9af",
    "run_id": "custody-verifier-259",
@@ -5915,7 +5941,7 @@
     "healthy_node_evaluator: Any = None",
     "healthy_node_ledger_root: Any = None"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "layer2-structure",
    "status": "OBSERVED",
    "what": "SkapLayer2Gate: what verify_kv_access_receipt checks on a layer-1 receipt (schema, boundary, minted_by, healthy_node_established) and whether it checks the evaluator identity or source sha"
@@ -5971,7 +5997,7 @@
     "_consume_skap_access\\(",
     "record.get\\(\"schema\"\\) == SKAP_KV_RECORD_SCHEMA"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-store-extension-structure",
    "status": "OBSERVED",
    "what": "KnowledgeVaultExecutionStore public append_extension/read_stream next to the gated SKAP read/write"
@@ -6028,7 +6054,7 @@
     "LOCAL_EXERCISE_LABEL = ",
     "^TRUST_ANCHORS"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-ledger-root-binding",
    "status": "OBSERVED",
    "what": "which non-test code constructs KVInterlockRuntime and what ledger root it binds"
@@ -6132,7 +6158,7 @@
     "verify_access_chain",
     "^def _require_access_layers\\("
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-lineage-verifier-binding",
    "status": "OBSERVED",
    "what": "#259 custody validator: the access_receipt_verifier parameter and any non-test caller that wires SkapLayer2Gate.verify_access_chain"
@@ -6300,16 +6326,16 @@
      "error": 0,
      "failed": 0,
      "files": 28,
-     "passed": 393,
+     "passed": 396,
      "pytest_rc": 0,
      "skipped": 0,
      "subject": "LANE_D_SELECTED_28_FILE_SET",
      "subtests_passed": 100
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-selected-28.out",
-   "raw_sha256": "sha256:e41970339e954674cc4a47b97fa4f5f776bc54eb3ea0b715db0a021b3100636b",
+   "raw_sha256": "sha256:a5e3ce18f6794047bafcc07d29ebc3b209bfa5f44854931903f2781c7d231986",
    "run_id": "kv-selected-28",
    "status": "OBSERVED",
    "what": "Lane D's selected 28-file pytest set at #258 (claim: 366 passed, 0 skipped)"
@@ -6329,12 +6355,12 @@
      "modules": 21,
      "skipped": 0,
      "subject": "STDLIB_ONLY_21_MODULE_SET",
-     "tests_run": 262
+     "tests_run": 265
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-stdlib-21.out",
-   "raw_sha256": "sha256:479e271b216eace4c04addadfe66d672b358c1a30ea0faf88759920285c6c171",
+   "raw_sha256": "sha256:68f51b233f59e09a4be966eb4ef4255e86884a700851cfaba109632baec59f86",
    "run_id": "kv-stdlib-21",
    "status": "OBSERVED",
    "what": "the 21-module unittest set at #258 with cryptography and pytest blocked in sys.modules (claim: 236 OK)"
@@ -6425,7 +6451,7 @@
     "^\\s*(import|from)\\s+cryptography",
     "UNDECLARED_RUNTIME_DEPENDENCY_CRYPTOGRAPHY"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-cryptography-imports",
    "status": "OBSERVED",
    "what": "every cryptography import in continuity-vault-kit at #258 (claim: only pre-existing skap/* and their tests)"
@@ -6442,9 +6468,9 @@
      "tests_ran": 64
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/kv-lc-kv-tests.out",
-   "raw_sha256": "sha256:9f3c3a614a94014e16d1359fe352dbfb43dfcc8144affc32c788fd0d9f081bbe",
+   "raw_sha256": "sha256:a6b1a1449ef209084f314d58e1dc788c8ca63a5db5964670f292bf2dc64cf134",
    "run_id": "kv-lc-kv-tests",
    "status": "OBSERVED",
    "what": "tests.test_kv_ladder_conformance_lc_kv at #258 (Lane D's LC-KV-15 negative and ALLOW-path binding tests)"
@@ -6461,9 +6487,9 @@
      "tests_ran": 64
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/cvk263-lc-kv-tests.out",
-   "raw_sha256": "sha256:9f3c3a614a94014e16d1359fe352dbfb43dfcc8144affc32c788fd0d9f081bbe",
+   "raw_sha256": "sha256:a6b1a1449ef209084f314d58e1dc788c8ca63a5db5964670f292bf2dc64cf134",
    "run_id": "cvk263-lc-kv-tests",
    "status": "OBSERVED",
    "what": "tests.test_kv_ladder_conformance_lc_kv at cvk#263 (KvSkapLedgerLocation)"
@@ -6477,16 +6503,16 @@
      "error": 0,
      "failed": 0,
      "files": 28,
-     "passed": 393,
+     "passed": 396,
      "pytest_rc": 0,
      "skipped": 0,
      "subject": "LANE_D_SELECTED_28_FILE_SET",
      "subtests_passed": 100
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/cvk263-selected-28.out",
-   "raw_sha256": "sha256:e41970339e954674cc4a47b97fa4f5f776bc54eb3ea0b715db0a021b3100636b",
+   "raw_sha256": "sha256:a5e3ce18f6794047bafcc07d29ebc3b209bfa5f44854931903f2781c7d231986",
    "run_id": "cvk263-selected-28",
    "status": "OBSERVED",
    "what": "P1's 28-file pytest selection at cvk#263 @bf684aad (Lane D's own diff-selected claim: 173 passed, 41 subtests, 0 skipped)"
@@ -6506,12 +6532,12 @@
      "modules": 21,
      "skipped": 0,
      "subject": "STDLIB_ONLY_21_MODULE_SET",
-     "tests_run": 262
+     "tests_run": 265
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/cvk263-stdlib-21.out",
-   "raw_sha256": "sha256:479e271b216eace4c04addadfe66d672b358c1a30ea0faf88759920285c6c171",
+   "raw_sha256": "sha256:68f51b233f59e09a4be966eb4ef4255e86884a700851cfaba109632baec59f86",
    "run_id": "cvk263-stdlib-21",
    "status": "OBSERVED",
    "what": "P1's 21-module stdlib-only selection at cvk#263 @bf684aad with cryptography and pytest blocked (Lane D's own diff-selected claim: 162 OK)"
@@ -6635,7 +6661,7 @@
      ]
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/cvk263-finish-point.out",
    "raw_sha256": "sha256:b5c0cd5f221d67abec365ee827244e476ccc8f51a519a647ea1395929501d404",
    "run_id": "cvk263-finish-point",
@@ -6670,25 +6696,25 @@
      "text": "\"repository\": \"STEGVERSE_KV\","
     },
     {
-     "line": 121,
+     "line": 125,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "\"repository\": ",
      "text": "\"repository\": \"STEGVERSE_KV:_StegVerse/Receipts\","
     },
     {
-     "line": 132,
+     "line": 136,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "\"repository\": ",
      "text": "\"repository\": \"STEGVERSE_KV:_Vault/SKAP/Receipts\","
     },
     {
-     "line": 219,
+     "line": 223,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "\"repository\": ",
      "text": "\"schema\": None, \"repository\": None, \"ledger_level\": None, \"receipt_schema\": None, \"append_only_receipts\": None,"
     },
     {
-     "line": 402,
+     "line": 406,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "\"repository\": ",
      "text": "\"storage_location\": spec[\"storage_location\"], \"repository\": spec[\"repository\"],"
@@ -6718,7 +6744,7 @@
      "text": "\"namespace\": \"_StegVerse/Receipts\","
     },
     {
-     "line": 404,
+     "line": 408,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "\"namespace\": ",
      "text": "\"namespace\": loc[\"namespace\"], \"location\": f\"{loc['repository']}#{loc['ref']}:{loc['namespace']}\","
@@ -6808,19 +6834,19 @@
      "text": "PATH_ID_SUFFIX = \":intr-destination\""
     },
     {
-     "line": 208,
+     "line": 212,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "intr-destination",
      "text": "#: GitHub Organization member. KV reaches the Orgs only through InTr (KV_INTR_ENDPOINT, intr-destination path_ids)."
     },
     {
-     "line": 288,
+     "line": 292,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "intr-destination",
      "text": "f\"binding and no org ref; KV reaches the Orgs only through InTr ({KV_ROUTE}, intr-destination \""
     },
     {
-     "line": 615,
+     "line": 627,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "intr-destination",
      "text": "\"supplied_hb_epoch) for this endpoint's intr-destination path_ids, read by the reader itself from \""
@@ -6848,13 +6874,13 @@
     "\"head_signer_source\": ",
     "^\\s*(import|from)\\s+cryptography"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "cvk263-contracts",
    "status": "OBSERVED",
    "what": "cvk#263 @bf684aad recorded receipt chain contracts (.stegverse/receipt-chains): repository, ref, namespace, store type, genesis pin, watermark path and head signer source"
   },
   {
-   "command": "{python} -c # P1 rev 11 probe (current-head rows added in rev 14): continuity-vault-kit#263 (head given by the plan) KV / SKAP Vault recorded receipt chains on the storage endpoint.\n# Production rows read the committed contracts unchanged; E0 rows reuse Lane D's own TEST-ONLY harness\n# (tests/test_kv_ladder_conformance_lc_kv.py kv_chain_e0 / e0_kv_root / e0_kv_attestation), in memory only.\nimport base64, contextlib, io, json, os, sys, tempfile\nWM = lambda x: {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": x}\nfrom pathlib import Path\nsys.path[:0] = [\".\", \"tests\"]\nimport test_kv_ladder_conformance_lc_kv as T\nfrom runtime import kv_receipt_ledgers as rl\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None, **extra):\n    r = {\"subject\": subject}\n    if isinstance(out, dict):\n        r[\"disposition\"] = out.get(\"disposition\")\n        for k in SIX + (\"failure_class\",):\n            if isinstance(out.get(k), str):\n                r[k] = out[k]\n    else:\n        r[\"disposition\"] = out\n    if note: r[\"note\"] = note\n    r.update(extra)\n    rows.append(r)\ndef guard(subject, fn, note=None):\n    try:\n        out = fn()\n        row(subject, out, note)\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:300]})\nT.setUpModule()\ntry:\n    # --- production (committed contracts, nothing patched)\n    for which in (\"kv\", \"skap_vault\"):\n        d, ref = rl.designation(which)\n        if ref:\n            row(\"PROD_DESIGNATION_\" + which.upper(), ref)\n        else:\n            row(\"PROD_DESIGNATION_\" + which.upper(), \"DESIGNATED\", note=\"informational\", location=d[\"location\"],\n                store_type=d[\"store\"][\"store_type\"], provider_id=d[\"store\"][\"provider_id\"], store_location=d[\"store_location\"],\n                rollback_watermark_source=d[\"ledger_designation\"][\"rollback_watermark_source\"])\n        c = json.loads((T.ROOT / rl.RECEIPT_LEDGERS[which][\"contract_path\"]).read_text())\n        m = rl._org_membership(c)\n        row(\"PROD_ORG_MEMBERSHIP_\" + which.upper(), \"ALLOW\" if m is None else \"FAIL_CLOSED\",\n            note=\"committed contract: no org repository, org ref, membership, team or app-installation binding\" if m is None else m)\n        org = rl._org_designation(c)\n        row(\"PROD_NO_ORG_LEDGER_REF_\" + which.upper(), \"ALLOW\" if org is None else \"FAIL_CLOSED\",\n            note=\"no org ledger ref / git-ref store in the committed contract\" if org is None else org)\n    row(\"PROD_READ_KV\", rl.read_receipt_ledger(\"kv\"))\n    row(\"PROD_READ_SKAP_DIRECT\", rl.read_receipt_ledger(\"skap_vault\"))\n    for p in rl.receipt_ledger_prerequisites():\n        row(\"PROD_PREREQUISITES_\" + p[\"receipt_ledger\"].upper(), {k: p.get(k) for k in (\"disposition\",) + SIX + (\"failure_class\",)},\n            note=\"informational\", codes=[(b[\"failure_code\"], b[\"failure_class\"]) for b in p.get(\"fail_closed\", [])])\n    # --- org membership forms (Lane D's harness, genesis pinned so only the membership check can refuse)\n    def forms():\n        return {\n         \"ORG_REPOSITORY\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"repository\", \"StegVerse-org/LLM-adapter\"),\n         \"ORG_REF\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"ref\", \"refs/heads/main\"),\n         \"ORG_LEDGER_REF\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"ref\", \"refs/stegverse/organization-ledger\"),\n         \"TEAM_IN_DESIGNATION\": lambda c: c[\"ledger_designation\"].__setitem__(\"team_slug\", \"kv-endpoints\"),\n         \"APP_INSTALLATION_IN_STORE\": lambda c: c[\"ledger_designation\"][\"stores\"][0].__setitem__(\"installation_id\", 1),\n         \"ORG_MEMBERSHIP_TOP_LEVEL\": lambda c: c.__setitem__(\"org_membership\", {\"org\": \"StegVerse-org\", \"role\": \"member\"}),\n         \"UPPERCASE_KEY_MEMBERS\": lambda c: c.__setitem__(\"Members\", [\"kv-endpoint\"]),\n         \"TOP_LEVEL_ORGANIZATION_KEY\": lambda c: c.__setitem__(\"organization\", \"StegVerse-org\"),\n         \"TOP_LEVEL_GITHUB_APP_INSTALLATION_ID\": lambda c: c.__setitem__(\"github_app_installation_id\", 139890227),\n         \"TOP_LEVEL_ORG_PERMISSIONS\": lambda c: c.__setitem__(\"permissions\", {\"organization_members\": \"write\"}),\n         \"TOP_LEVEL_OWNER_ORG\": lambda c: c.__setitem__(\"owner\", \"StegVerse-org\"),\n         \"BINDING_INSIDE_DESIGNATION_NOTES\": lambda c: c[\"designation_notes\"].__setitem__(\"team\", \"kv-endpoints\"),\n         \"NESTED_WATERMARK_SOURCE_ORGANIZATION\": lambda c: c[\"ledger_designation\"][\"rollback_watermark_source\"].__setitem__(\"organization\", \"StegVerse-org\"),\n         \"NESTED_LOCATION_OWNER\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"owner\", \"StegVerse-org\"),\n         \"NESTED_STORE_PERMISSIONS\": lambda c: c[\"ledger_designation\"][\"stores\"][0].__setitem__(\"permissions\", [\"read\"]),\n         \"NESTED_DICT_UNDER_A_LEAF\": lambda c: c.__setitem__(\"authority_effect\", {\"github_app_installation_id\": 1}),\n         \"NESTED_DICT_IN_LIST_LEAF\": lambda c: c.__setitem__(\"required_fields\", [{\"org_member\": True}]),\n         \"CASING_ORGANIZATION_UPPER\": lambda c: c.__setitem__(\"ORGANIZATION\", \"StegVerse-org\"),\n         \"CASING_CAMEL_GITHUBAPPINSTALLATIONID\": lambda c: c.__setitem__(\"GitHubAppInstallationId\", 1),\n         \"CASING_INSTALLATIONID\": lambda c: c[\"ledger_designation\"].__setitem__(\"installationID\", 1),\n         \"ALIAS_ORG_DASH_MEMBER\": lambda c: c.__setitem__(\"org-member\", True),\n         \"ALIAS_SPACE_ORG_ROLE\": lambda c: c.__setitem__(\"Org Role\", \"member\"),\n         \"ALIAS_GH_APP_ID\": lambda c: c.__setitem__(\"gh_app_id\", 1),\n         \"ALIAS_CONCATENATED_ORGMEMBER\": lambda c: c.__setitem__(\"orgmember\", True),\n         \"ALIAS_TENANT\": lambda c: c.__setitem__(\"tenant\", \"StegVerse-org\"),\n         \"ALIAS_HOMOGLYPH_CYRILLIC_ORG\": lambda c: c.__setitem__(\"\\u043erganization\", \"StegVerse-org\"),\n         \"ALLOWED_KEY_WRONG_CASE_REPOSITORY\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"Repository\", \"StegVerse-org/.github\"),\n         \"UNKNOWN_KEY_RETENTION_DAYS\": lambda c: c.__setitem__(\"retention_days\", 30),\n         \"WATERMARK_SOURCE_VALUE_ORG_LINKED\": lambda c: c[\"ledger_designation\"][\"rollback_watermark_source\"].__setitem__(\"source\", \"ORG_LEDGER_LINKED_RECEIPTS_ENDPOINT_HEAD\"),\n         \"WATERMARK_SOURCE_VALUE_OTHER\": lambda c: c[\"ledger_designation\"][\"rollback_watermark_source\"].__setitem__(\"source\", \"CALLER_SUPPLIED_HEAD\"),\n        }\n    for which in (\"kv\", \"skap_vault\"):\n        for name, edit in forms().items():\n            def run(which=which, edit=edit):\n                root, chain = T.e0_kv_root(which)\n                with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]):\n                    att = T.e0_kv_attestation(which, chain)   # genuine attestation, made before the edit\n                with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"], edit):\n                    if which == \"kv\":\n                        return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, WM(chain[0][\"receipt_sha256\"]))\n                    layers = T.TwoLayers()\n                    return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, WM(chain[0][\"receipt_sha256\"]))\n            guard(\"MEMBERSHIP_%s_%s\" % (name, which.upper()), run)\n    # --- E0 positive controls (Lane D's claim: skap_vault reads back to ALLOW at E0 through SkapLayer2Gate)\n    carried = \"sha256:\" + \"ab\" * 32\n    def kv_ok():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]):\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, T.e0_kv_attestation(\"kv\", chain), WM(chain[0][\"receipt_sha256\"]))\n    guard(\"E0_KV_READ_BACK_WITH_WATERMARK\", kv_ok)\n    def skap_ok():\n        root, chain = T.e0_kv_root(\"skap_vault\", (carried,))\n        with T.kv_chain_e0(\"skap_vault\", chain[-1][\"receipt_sha256\"]):\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, T.e0_kv_attestation(\"skap_vault\", chain), WM(chain[0][\"receipt_sha256\"]))\n    guard(\"E0_SKAP_READ_BACK_VIA_SKAPLAYER2GATE\", skap_ok)\n    # --- forged carriers and replays\n    def forged_sig():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]):\n            att = dict(T.e0_kv_attestation(\"kv\", chain))\n            from kv_two_layer_e0 import signer\n            d = rl.designation(\"kv\")[0]\n            body = {k: att[k] for k in rl.HEAD_ATTESTATION_FIELDS}\n            msg = rl.HEAD_ATTESTATION_SCHEMA.encode() + b\"\\n\" + T.pinned()[\"healthy_node_evaluator\"].canon(body)\n            att[\"signature_b64\"] = signer().sign_b64(msg, b\"\\x07\" * 32)\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, WM(chain[0][\"receipt_sha256\"]))\n    guard(\"FORGED_HEAD_SIGNATURE_CALLER_SEED\", forged_sig)\n    def other_endpoint():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]):\n            att = T.e0_kv_attestation(\"kv\", chain, endpoint_id=\"STEGVERSE_KV:_Vault/SKAP/Receipts\")\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, WM(chain[0][\"receipt_sha256\"]))\n    guard(\"FORGED_ATTESTATION_NAMES_THE_SKAP_CHAIN\", other_endpoint)\n    def foreign():\n        root, chain = T.e0_kv_root(\"kv\", (carried,), repository=\"StegVerse-org/.github\")\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]):\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, None, None)\n    guard(\"ORG_LEDGER_RECEIPTS_PRESENTED_AS_KV_CHAIN\", foreign)\n    def stray():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        (root / \"_StegVerse/Receipts/receipts/1DriveFileId.json\").write_text(json.dumps({\"kind\": \"drive#file\"}))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]):\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, T.e0_kv_attestation(\"kv\", chain), WM(chain[0][\"receipt_sha256\"]))\n    guard(\"PROVIDER_RECORD_IN_CHAIN_LOCATION\", stray)\n    def rolled_back(which, watermark):\n        root, chain = T.e0_kv_root(which, (carried, \"sha256:\" + \"cd\" * 32))\n        where = root / rl.RECEIPT_LEDGERS[which][\"storage_location\"]\n        (where / \"receipts\" / (chain[0][\"receipt_sha256\"][7:] + \".json\")).unlink()\n        (where / \"HEAD.json\").write_text(json.dumps({\"receipt_sha256\": chain[1][\"receipt_sha256\"]}))\n        old = chain[1:]\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]):\n            att = T.e0_kv_attestation(which, old)   # a genuine signed head, one receipt older than the newest\n            rec = WM(chain[0][\"receipt_sha256\"]) if watermark else None\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, rec)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, rec)\n    def rolled_back_wm(which, wm):\n        root, chain = T.e0_kv_root(which, (carried, \"sha256:\" + \"cd\" * 32))\n        where = root / rl.RECEIPT_LEDGERS[which][\"storage_location\"]\n        (where / \"receipts\" / (chain[0][\"receipt_sha256\"][7:] + \".json\")).unlink()\n        (where / \"HEAD.json\").write_text(json.dumps({\"receipt_sha256\": chain[1][\"receipt_sha256\"]}))\n        old = chain[1:]\n        rec = {\"NONE\": None, \"KV_OWN_NEWEST\": WM(chain[0][\"receipt_sha256\"]), \"REGRESSED_TO_PRESENTED_HEAD\": WM(chain[1][\"receipt_sha256\"]),\n               \"BARE_STRING_NEWEST\": chain[0][\"receipt_sha256\"], \"MALFORMED_SHORT\": WM(\"77\"),\n               \"MALFORMED_UPPERCASE\": WM(chain[0][\"receipt_sha256\"].upper().replace(\"SHA256:\", \"sha256:\")),\n               \"FOREIGN_DIGEST\": WM(\"sha256:\" + \"ee\" * 32),\n               \"ORG_SOURCED\": {\"source\": \"ORG_LEDGER_LINKED_RECEIPTS_ENDPOINT_HEAD\", \"head_receipt_sha256\": chain[0][\"receipt_sha256\"]},\n               \"ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD\": dict(WM(chain[1][\"receipt_sha256\"]), org_crossing_cross_check=chain[0][\"receipt_sha256\"]),\n               \"EXTRA_KEY\": dict(WM(chain[0][\"receipt_sha256\"]), organization=\"StegVerse-org\")}[wm]\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]):\n            att = T.e0_kv_attestation(which, old)   # a genuine signed head, one receipt older than the newest\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, rec)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, rec)\n    for which, tag in ((\"kv\", \"KV\"), (\"skap_vault\", \"SKAP_VIA_GATE\")):\n        for wm in (\"NONE\", \"KV_OWN_NEWEST\", \"BARE_STRING_NEWEST\", \"MALFORMED_SHORT\", \"MALFORMED_UPPERCASE\", \"FOREIGN_DIGEST\", \"ORG_SOURCED\", \"EXTRA_KEY\"):\n            guard(\"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s\" % (wm, tag), lambda which=which, wm=wm: rolled_back_wm(which, wm))\n        guard(\"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_REGRESSED_TO_PRESENTED_HEAD_%s\" % tag,\n              lambda which=which: rolled_back_wm(which, \"REGRESSED_TO_PRESENTED_HEAD\"),\n              note=\"the watermark is a caller-supplied mapping {source KV_RECORDED_RECEIPT_CHAIN_HEAD, head_receipt_sha256}; a caller that regresses it to the older head it presents is not refused: nothing ties head_receipt_sha256 to a record the rollback cannot reach\")\n        guard(\"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD_%s\" % tag,\n              lambda which=which: rolled_back_wm(which, \"ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD\"),\n              note=\"the digest-only org_crossing_cross_check names the newest head while head_receipt_sha256 regresses: the cross-check is never compared (authority NONE)\")\n    def positive_no_wm(which):\n        root, chain = T.e0_kv_root(which, (carried,))\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]):\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, T.e0_kv_attestation(\"kv\", chain), None)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, T.e0_kv_attestation(which, chain), None)\n    guard(\"CURRENT_HEAD_WITHOUT_WATERMARK_KV\", lambda: positive_no_wm(\"kv\"))\n    guard(\"CURRENT_HEAD_WITHOUT_WATERMARK_SKAP_VIA_GATE\", lambda: positive_no_wm(\"skap_vault\"))\n    # rev 14 (Coordination C-review ruling (A), #167 c6392982821): KV's own head record is the authority; the caller's\n    # watermark is an optional claim. Current-head rows keep the claim's validation witnessed.\n    def current_head(which, wm):\n        root, chain = T.e0_kv_root(which, (carried,))\n        head = chain[0][\"receipt_sha256\"]\n        rec = {\"MATCHED\": WM(head), \"BARE_STRING\": head, \"MALFORMED_SHORT\": WM(\"77\"),\n               \"MALFORMED_UPPERCASE\": WM(head.upper().replace(\"SHA256:\", \"sha256:\")),\n               \"EXTRA_KEY\": dict(WM(head), organization=\"StegVerse-org\"),\n               \"ORG_SOURCED\": {\"source\": \"ORG_LEDGER_LINKED_RECEIPTS_ENDPOINT_HEAD\", \"head_receipt_sha256\": head},\n               \"FOREIGN_DIGEST\": WM(\"sha256:\" + \"ee\" * 32), \"HEAD_RECORD_ABSENT\": None}[wm]\n        if wm == \"HEAD_RECORD_ABSENT\":\n            (root / rl.RECEIPT_LEDGERS[which][\"storage_location\"] / rl.HEAD_RECORD).unlink()\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]):\n            att = T.e0_kv_attestation(which, chain)\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, rec)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, rec)\n    for which, tag in ((\"kv\", \"KV\"), (\"skap_vault\", \"SKAP_VIA_GATE\")):\n        for wm in (\"BARE_STRING\", \"MALFORMED_SHORT\", \"MALFORMED_UPPERCASE\", \"EXTRA_KEY\", \"ORG_SOURCED\", \"FOREIGN_DIGEST\", \"MATCHED\"):\n            guard(\"CURRENT_HEAD_WATERMARK_%s_%s\" % (wm, tag), lambda which=which, wm=wm: current_head(which, wm))\n        guard(\"CURRENT_HEAD_HEAD_RECORD_ABSENT_%s\" % tag, lambda which=which: current_head(which, \"HEAD_RECORD_ABSENT\"))\n    def forged_layer1():\n        root, chain = T.e0_kv_root(\"skap_vault\", (carried,))\n        with T.kv_chain_e0(\"skap_vault\", chain[-1][\"receipt_sha256\"]):\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(\"sha256:\" + \"11\" * 32, T.device_local(), root, T.e0_kv_attestation(\"skap_vault\", chain), WM(chain[0][\"receipt_sha256\"]))\n    guard(\"SKAP_READ_ON_A_NEVER_MINTED_LAYER1_HASH\", forged_layer1)\n    def clock_obs():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]):\n            out = rl.read_receipt_ledger(\"kv\", T.device_local(), root, T.e0_kv_attestation(\"kv\", chain), WM(chain[0][\"receipt_sha256\"]))\n        return out\n    o = None\n    try:\n        o = clock_obs()\n    except Exception as exc:\n        o = {\"disposition\": \"EXCEPTION\"}\n    row(\"KV_CHAIN_RECEIPT_OBSERVED_AT_CLOCK_STAMP_ACCEPTED\", o.get(\"disposition\"), note=\"informational: Lane D's E0 receipts carry observed_at '2026-10-23T12:00:00Z' (a clock stamp); runtime/kv_receipt_ledgers.py never checks observed_at, so nothing binds it to SUPPLIED_HB_EPOCH\")\nfinally:\n    T.tearDownModule()\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "command": "{python} -c # P1 rev 11 probe (current-head rows added in rev 14; rev 15: every E0 read runs with the Org side recording each head of its chain (LC-KV-26 both ends), plus LC-KV-26 rows): continuity-vault-kit#263 (head given by the plan) KV / SKAP Vault recorded receipt chains on the storage endpoint.\n# Production rows read the committed contracts unchanged; E0 rows reuse Lane D's own TEST-ONLY harness\n# (tests/test_kv_ladder_conformance_lc_kv.py kv_chain_e0 / e0_kv_root / e0_kv_attestation), in memory only.\nimport base64, contextlib, io, json, os, sys, tempfile\nWM = lambda x: {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": x}\nfrom pathlib import Path\nsys.path[:0] = [\".\", \"tests\"]\nimport test_kv_ladder_conformance_lc_kv as T\nfrom runtime import kv_receipt_ledgers as rl\n# rev 15 (LC-KV-26, continuity-vault-kit#275): the Org side records every head of the E0 chain, so a read-back head\n# is held at both ends; the LC-KV-26 rows below withhold or narrow that record.\nBE = lambda which, chain: T.both_ends(which, *[c[\"receipt_sha256\"] for c in chain])\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\nrows = []\ndef row(subject, out, note=None, **extra):\n    r = {\"subject\": subject}\n    if isinstance(out, dict):\n        r[\"disposition\"] = out.get(\"disposition\")\n        for k in SIX + (\"failure_class\",):\n            if isinstance(out.get(k), str):\n                r[k] = out[k]\n    else:\n        r[\"disposition\"] = out\n    if note: r[\"note\"] = note\n    r.update(extra)\n    rows.append(r)\ndef guard(subject, fn, note=None):\n    try:\n        out = fn()\n        row(subject, out, note)\n    except Exception as exc:\n        rows.append({\"subject\": subject, \"disposition\": \"EXCEPTION\", \"exception\": type(exc).__name__, \"message\": str(exc)[:300]})\nT.setUpModule()\ntry:\n    # --- production (committed contracts, nothing patched)\n    for which in (\"kv\", \"skap_vault\"):\n        d, ref = rl.designation(which)\n        if ref:\n            row(\"PROD_DESIGNATION_\" + which.upper(), ref)\n        else:\n            row(\"PROD_DESIGNATION_\" + which.upper(), \"DESIGNATED\", note=\"informational\", location=d[\"location\"],\n                store_type=d[\"store\"][\"store_type\"], provider_id=d[\"store\"][\"provider_id\"], store_location=d[\"store_location\"],\n                rollback_watermark_source=d[\"ledger_designation\"][\"rollback_watermark_source\"])\n        c = json.loads((T.ROOT / rl.RECEIPT_LEDGERS[which][\"contract_path\"]).read_text())\n        m = rl._org_membership(c)\n        row(\"PROD_ORG_MEMBERSHIP_\" + which.upper(), \"ALLOW\" if m is None else \"FAIL_CLOSED\",\n            note=\"committed contract: no org repository, org ref, membership, team or app-installation binding\" if m is None else m)\n        org = rl._org_designation(c)\n        row(\"PROD_NO_ORG_LEDGER_REF_\" + which.upper(), \"ALLOW\" if org is None else \"FAIL_CLOSED\",\n            note=\"no org ledger ref / git-ref store in the committed contract\" if org is None else org)\n    row(\"PROD_READ_KV\", rl.read_receipt_ledger(\"kv\"))\n    row(\"PROD_READ_SKAP_DIRECT\", rl.read_receipt_ledger(\"skap_vault\"))\n    for p in rl.receipt_ledger_prerequisites():\n        row(\"PROD_PREREQUISITES_\" + p[\"receipt_ledger\"].upper(), {k: p.get(k) for k in (\"disposition\",) + SIX + (\"failure_class\",)},\n            note=\"informational\", codes=[(b[\"failure_code\"], b[\"failure_class\"]) for b in p.get(\"fail_closed\", [])])\n    # --- org membership forms (Lane D's harness, genesis pinned so only the membership check can refuse)\n    def forms():\n        return {\n         \"ORG_REPOSITORY\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"repository\", \"StegVerse-org/LLM-adapter\"),\n         \"ORG_REF\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"ref\", \"refs/heads/main\"),\n         \"ORG_LEDGER_REF\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"ref\", \"refs/stegverse/organization-ledger\"),\n         \"TEAM_IN_DESIGNATION\": lambda c: c[\"ledger_designation\"].__setitem__(\"team_slug\", \"kv-endpoints\"),\n         \"APP_INSTALLATION_IN_STORE\": lambda c: c[\"ledger_designation\"][\"stores\"][0].__setitem__(\"installation_id\", 1),\n         \"ORG_MEMBERSHIP_TOP_LEVEL\": lambda c: c.__setitem__(\"org_membership\", {\"org\": \"StegVerse-org\", \"role\": \"member\"}),\n         \"UPPERCASE_KEY_MEMBERS\": lambda c: c.__setitem__(\"Members\", [\"kv-endpoint\"]),\n         \"TOP_LEVEL_ORGANIZATION_KEY\": lambda c: c.__setitem__(\"organization\", \"StegVerse-org\"),\n         \"TOP_LEVEL_GITHUB_APP_INSTALLATION_ID\": lambda c: c.__setitem__(\"github_app_installation_id\", 139890227),\n         \"TOP_LEVEL_ORG_PERMISSIONS\": lambda c: c.__setitem__(\"permissions\", {\"organization_members\": \"write\"}),\n         \"TOP_LEVEL_OWNER_ORG\": lambda c: c.__setitem__(\"owner\", \"StegVerse-org\"),\n         \"BINDING_INSIDE_DESIGNATION_NOTES\": lambda c: c[\"designation_notes\"].__setitem__(\"team\", \"kv-endpoints\"),\n         \"NESTED_WATERMARK_SOURCE_ORGANIZATION\": lambda c: c[\"ledger_designation\"][\"rollback_watermark_source\"].__setitem__(\"organization\", \"StegVerse-org\"),\n         \"NESTED_LOCATION_OWNER\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"owner\", \"StegVerse-org\"),\n         \"NESTED_STORE_PERMISSIONS\": lambda c: c[\"ledger_designation\"][\"stores\"][0].__setitem__(\"permissions\", [\"read\"]),\n         \"NESTED_DICT_UNDER_A_LEAF\": lambda c: c.__setitem__(\"authority_effect\", {\"github_app_installation_id\": 1}),\n         \"NESTED_DICT_IN_LIST_LEAF\": lambda c: c.__setitem__(\"required_fields\", [{\"org_member\": True}]),\n         \"CASING_ORGANIZATION_UPPER\": lambda c: c.__setitem__(\"ORGANIZATION\", \"StegVerse-org\"),\n         \"CASING_CAMEL_GITHUBAPPINSTALLATIONID\": lambda c: c.__setitem__(\"GitHubAppInstallationId\", 1),\n         \"CASING_INSTALLATIONID\": lambda c: c[\"ledger_designation\"].__setitem__(\"installationID\", 1),\n         \"ALIAS_ORG_DASH_MEMBER\": lambda c: c.__setitem__(\"org-member\", True),\n         \"ALIAS_SPACE_ORG_ROLE\": lambda c: c.__setitem__(\"Org Role\", \"member\"),\n         \"ALIAS_GH_APP_ID\": lambda c: c.__setitem__(\"gh_app_id\", 1),\n         \"ALIAS_CONCATENATED_ORGMEMBER\": lambda c: c.__setitem__(\"orgmember\", True),\n         \"ALIAS_TENANT\": lambda c: c.__setitem__(\"tenant\", \"StegVerse-org\"),\n         \"ALIAS_HOMOGLYPH_CYRILLIC_ORG\": lambda c: c.__setitem__(\"\\u043erganization\", \"StegVerse-org\"),\n         \"ALLOWED_KEY_WRONG_CASE_REPOSITORY\": lambda c: c[\"repository_ledger_location\"].__setitem__(\"Repository\", \"StegVerse-org/.github\"),\n         \"UNKNOWN_KEY_RETENTION_DAYS\": lambda c: c.__setitem__(\"retention_days\", 30),\n         \"WATERMARK_SOURCE_VALUE_ORG_LINKED\": lambda c: c[\"ledger_designation\"][\"rollback_watermark_source\"].__setitem__(\"source\", \"ORG_LEDGER_LINKED_RECEIPTS_ENDPOINT_HEAD\"),\n         \"WATERMARK_SOURCE_VALUE_OTHER\": lambda c: c[\"ledger_designation\"][\"rollback_watermark_source\"].__setitem__(\"source\", \"CALLER_SUPPLIED_HEAD\"),\n        }\n    for which in (\"kv\", \"skap_vault\"):\n        for name, edit in forms().items():\n            def run(which=which, edit=edit):\n                root, chain = T.e0_kv_root(which)\n                with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]), BE(which, chain):\n                    att = T.e0_kv_attestation(which, chain)   # genuine attestation, made before the edit\n                with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"], edit), BE(which, chain):\n                    if which == \"kv\":\n                        return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, WM(chain[0][\"receipt_sha256\"]))\n                    layers = T.TwoLayers()\n                    return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, WM(chain[0][\"receipt_sha256\"]))\n            guard(\"MEMBERSHIP_%s_%s\" % (name, which.upper()), run)\n    # --- E0 positive controls (Lane D's claim: skap_vault reads back to ALLOW at E0 through SkapLayer2Gate)\n    carried = \"sha256:\" + \"ab\" * 32\n    def kv_ok():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]), BE(\"kv\", chain):\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, T.e0_kv_attestation(\"kv\", chain), WM(chain[0][\"receipt_sha256\"]))\n    guard(\"E0_KV_READ_BACK_WITH_WATERMARK\", kv_ok)\n    def skap_ok():\n        root, chain = T.e0_kv_root(\"skap_vault\", (carried,))\n        with T.kv_chain_e0(\"skap_vault\", chain[-1][\"receipt_sha256\"]), BE(\"skap_vault\", chain):\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, T.e0_kv_attestation(\"skap_vault\", chain), WM(chain[0][\"receipt_sha256\"]))\n    guard(\"E0_SKAP_READ_BACK_VIA_SKAPLAYER2GATE\", skap_ok)\n    # --- forged carriers and replays\n    def forged_sig():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]), BE(\"kv\", chain):\n            att = dict(T.e0_kv_attestation(\"kv\", chain))\n            from kv_two_layer_e0 import signer\n            d = rl.designation(\"kv\")[0]\n            body = {k: att[k] for k in rl.HEAD_ATTESTATION_FIELDS}\n            msg = rl.HEAD_ATTESTATION_SCHEMA.encode() + b\"\\n\" + T.pinned()[\"healthy_node_evaluator\"].canon(body)\n            att[\"signature_b64\"] = signer().sign_b64(msg, b\"\\x07\" * 32)\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, WM(chain[0][\"receipt_sha256\"]))\n    guard(\"FORGED_HEAD_SIGNATURE_CALLER_SEED\", forged_sig)\n    def other_endpoint():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]), BE(\"kv\", chain):\n            att = T.e0_kv_attestation(\"kv\", chain, endpoint_id=\"STEGVERSE_KV:_Vault/SKAP/Receipts\")\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, WM(chain[0][\"receipt_sha256\"]))\n    guard(\"FORGED_ATTESTATION_NAMES_THE_SKAP_CHAIN\", other_endpoint)\n    def foreign():\n        root, chain = T.e0_kv_root(\"kv\", (carried,), repository=\"StegVerse-org/.github\")\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]), BE(\"kv\", chain):\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, None, None)\n    guard(\"ORG_LEDGER_RECEIPTS_PRESENTED_AS_KV_CHAIN\", foreign)\n    def stray():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        (root / \"_StegVerse/Receipts/receipts/1DriveFileId.json\").write_text(json.dumps({\"kind\": \"drive#file\"}))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]), BE(\"kv\", chain):\n            return rl.read_receipt_ledger(\"kv\", T.device_local(), root, T.e0_kv_attestation(\"kv\", chain), WM(chain[0][\"receipt_sha256\"]))\n    guard(\"PROVIDER_RECORD_IN_CHAIN_LOCATION\", stray)\n    def rolled_back(which, watermark):\n        root, chain = T.e0_kv_root(which, (carried, \"sha256:\" + \"cd\" * 32))\n        where = root / rl.RECEIPT_LEDGERS[which][\"storage_location\"]\n        (where / \"receipts\" / (chain[0][\"receipt_sha256\"][7:] + \".json\")).unlink()\n        (where / \"HEAD.json\").write_text(json.dumps({\"receipt_sha256\": chain[1][\"receipt_sha256\"]}))\n        old = chain[1:]\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]), BE(which, chain):\n            att = T.e0_kv_attestation(which, old)   # a genuine signed head, one receipt older than the newest\n            rec = WM(chain[0][\"receipt_sha256\"]) if watermark else None\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, rec)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, rec)\n    def rolled_back_wm(which, wm):\n        root, chain = T.e0_kv_root(which, (carried, \"sha256:\" + \"cd\" * 32))\n        where = root / rl.RECEIPT_LEDGERS[which][\"storage_location\"]\n        (where / \"receipts\" / (chain[0][\"receipt_sha256\"][7:] + \".json\")).unlink()\n        (where / \"HEAD.json\").write_text(json.dumps({\"receipt_sha256\": chain[1][\"receipt_sha256\"]}))\n        old = chain[1:]\n        rec = {\"NONE\": None, \"KV_OWN_NEWEST\": WM(chain[0][\"receipt_sha256\"]), \"REGRESSED_TO_PRESENTED_HEAD\": WM(chain[1][\"receipt_sha256\"]),\n               \"BARE_STRING_NEWEST\": chain[0][\"receipt_sha256\"], \"MALFORMED_SHORT\": WM(\"77\"),\n               \"MALFORMED_UPPERCASE\": WM(chain[0][\"receipt_sha256\"].upper().replace(\"SHA256:\", \"sha256:\")),\n               \"FOREIGN_DIGEST\": WM(\"sha256:\" + \"ee\" * 32),\n               \"ORG_SOURCED\": {\"source\": \"ORG_LEDGER_LINKED_RECEIPTS_ENDPOINT_HEAD\", \"head_receipt_sha256\": chain[0][\"receipt_sha256\"]},\n               \"ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD\": dict(WM(chain[1][\"receipt_sha256\"]), org_crossing_cross_check=chain[0][\"receipt_sha256\"]),\n               \"EXTRA_KEY\": dict(WM(chain[0][\"receipt_sha256\"]), organization=\"StegVerse-org\")}[wm]\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]), BE(which, chain):\n            att = T.e0_kv_attestation(which, old)   # a genuine signed head, one receipt older than the newest\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, rec)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, rec)\n    for which, tag in ((\"kv\", \"KV\"), (\"skap_vault\", \"SKAP_VIA_GATE\")):\n        for wm in (\"NONE\", \"KV_OWN_NEWEST\", \"BARE_STRING_NEWEST\", \"MALFORMED_SHORT\", \"MALFORMED_UPPERCASE\", \"FOREIGN_DIGEST\", \"ORG_SOURCED\", \"EXTRA_KEY\"):\n            guard(\"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_%s_%s\" % (wm, tag), lambda which=which, wm=wm: rolled_back_wm(which, wm))\n        guard(\"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_REGRESSED_TO_PRESENTED_HEAD_%s\" % tag,\n              lambda which=which: rolled_back_wm(which, \"REGRESSED_TO_PRESENTED_HEAD\"),\n              note=\"the watermark is a caller-supplied mapping {source KV_RECORDED_RECEIPT_CHAIN_HEAD, head_receipt_sha256}; a caller that regresses it to the older head it presents is not refused: nothing ties head_receipt_sha256 to a record the rollback cannot reach\")\n        guard(\"REPLAY_OLDER_SIGNED_HEAD_WATERMARK_ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD_%s\" % tag,\n              lambda which=which: rolled_back_wm(which, \"ORG_CROSS_CHECK_NEWEST_WITH_REGRESSED_HEAD\"),\n              note=\"the digest-only org_crossing_cross_check names the newest head while head_receipt_sha256 regresses: the cross-check is never compared (authority NONE)\")\n    def positive_no_wm(which):\n        root, chain = T.e0_kv_root(which, (carried,))\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]), BE(which, chain):\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, T.e0_kv_attestation(\"kv\", chain), None)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, T.e0_kv_attestation(which, chain), None)\n    guard(\"CURRENT_HEAD_WITHOUT_WATERMARK_KV\", lambda: positive_no_wm(\"kv\"))\n    guard(\"CURRENT_HEAD_WITHOUT_WATERMARK_SKAP_VIA_GATE\", lambda: positive_no_wm(\"skap_vault\"))\n    # rev 14 (Coordination C-review ruling (A), #167 c6392982821): KV's own head record is the authority; the caller's\n    # watermark is an optional claim. Current-head rows keep the claim's validation witnessed.\n    def current_head(which, wm):\n        root, chain = T.e0_kv_root(which, (carried,))\n        head = chain[0][\"receipt_sha256\"]\n        rec = {\"MATCHED\": WM(head), \"BARE_STRING\": head, \"MALFORMED_SHORT\": WM(\"77\"),\n               \"MALFORMED_UPPERCASE\": WM(head.upper().replace(\"SHA256:\", \"sha256:\")),\n               \"EXTRA_KEY\": dict(WM(head), organization=\"StegVerse-org\"),\n               \"ORG_SOURCED\": {\"source\": \"ORG_LEDGER_LINKED_RECEIPTS_ENDPOINT_HEAD\", \"head_receipt_sha256\": head},\n               \"FOREIGN_DIGEST\": WM(\"sha256:\" + \"ee\" * 32), \"HEAD_RECORD_ABSENT\": None}[wm]\n        if wm == \"HEAD_RECORD_ABSENT\":\n            (root / rl.RECEIPT_LEDGERS[which][\"storage_location\"] / rl.HEAD_RECORD).unlink()\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]), BE(which, chain):\n            att = T.e0_kv_attestation(which, chain)\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, rec)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, rec)\n    for which, tag in ((\"kv\", \"KV\"), (\"skap_vault\", \"SKAP_VIA_GATE\")):\n        for wm in (\"BARE_STRING\", \"MALFORMED_SHORT\", \"MALFORMED_UPPERCASE\", \"EXTRA_KEY\", \"ORG_SOURCED\", \"FOREIGN_DIGEST\", \"MATCHED\"):\n            guard(\"CURRENT_HEAD_WATERMARK_%s_%s\" % (wm, tag), lambda which=which, wm=wm: current_head(which, wm))\n        guard(\"CURRENT_HEAD_HEAD_RECORD_ABSENT_%s\" % tag, lambda which=which: current_head(which, \"HEAD_RECORD_ABSENT\"))\n    # rev 15: LC-KV-26 (Coordination 05:03Z via StegVerse-org/.github#167 c6393119202: \"a crossing record held at both\n    # ends (the org side and KV's own ledger), never an InTr hop inside one org\"), closed by continuity-vault-kit#275\n    def both_ends_case(which, case):\n        root, chain = T.e0_kv_root(which, (carried, \"sha256:\" + \"cd\" * 32))\n        heads = [c[\"receipt_sha256\"] for c in chain]\n        org = {\"KV_END_ONLY\": None, \"ORG_RECORDS_AN_OLDER_HEAD_ONLY\": heads[1:], \"ORG_RECORDS_EVERY_HEAD\": heads,\n               \"ROLLBACK_AFTER_LAST_CROSSING\": heads}[case]\n        present = chain\n        if case == \"ROLLBACK_AFTER_LAST_CROSSING\":\n            where = root / rl.RECEIPT_LEDGERS[which][\"storage_location\"]\n            (where / \"receipts\" / (heads[0][7:] + \".json\")).unlink()\n            (where / \"HEAD.json\").write_text(json.dumps({\"receipt_sha256\": heads[1]}))\n            present = chain[1:]\n        side = T.org_side(None) if org is None else T.both_ends(which, *org)\n        with T.kv_chain_e0(which, chain[-1][\"receipt_sha256\"]), side:\n            att = T.e0_kv_attestation(which, present)\n            if which == \"kv\":\n                return rl.read_receipt_ledger(\"kv\", T.device_local(), root, att, None)\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(layers.kv_hash(), T.device_local(), root, att, None)\n    for which, tag in ((\"kv\", \"KV\"), (\"skap_vault\", \"SKAP_VIA_GATE\")):\n        for case in (\"KV_END_ONLY\", \"ORG_RECORDS_AN_OLDER_HEAD_ONLY\", \"ORG_RECORDS_EVERY_HEAD\", \"ROLLBACK_AFTER_LAST_CROSSING\"):\n            guard(\"LC_KV_26_BOTH_ENDS_%s_%s\" % (case, tag), lambda which=which, case=case: both_ends_case(which, case))\n    def forged_layer1():\n        root, chain = T.e0_kv_root(\"skap_vault\", (carried,))\n        with T.kv_chain_e0(\"skap_vault\", chain[-1][\"receipt_sha256\"]), BE(\"skap_vault\", chain):\n            layers = T.TwoLayers()\n            return layers.gate.receipt_ledger(\"sha256:\" + \"11\" * 32, T.device_local(), root, T.e0_kv_attestation(\"skap_vault\", chain), WM(chain[0][\"receipt_sha256\"]))\n    guard(\"SKAP_READ_ON_A_NEVER_MINTED_LAYER1_HASH\", forged_layer1)\n    def clock_obs():\n        root, chain = T.e0_kv_root(\"kv\", (carried,))\n        with T.kv_chain_e0(\"kv\", chain[-1][\"receipt_sha256\"]), BE(\"kv\", chain):\n            out = rl.read_receipt_ledger(\"kv\", T.device_local(), root, T.e0_kv_attestation(\"kv\", chain), WM(chain[0][\"receipt_sha256\"]))\n        return out\n    o = None\n    try:\n        o = clock_obs()\n    except Exception as exc:\n        o = {\"disposition\": \"EXCEPTION\"}\n    row(\"KV_CHAIN_RECEIPT_OBSERVED_AT_CLOCK_STAMP_ACCEPTED\", o.get(\"disposition\"), note=\"informational: Lane D's E0 receipts carry observed_at '2026-10-23T12:00:00Z' (a clock stamp); runtime/kv_receipt_ledgers.py never checks observed_at, so nothing binds it to SUPPLIED_HB_EPOCH\")\nfinally:\n    T.tearDownModule()\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
    "exit_code": 0,
    "outcomes": [
     {
@@ -7323,7 +7349,7 @@
      "failure_code": "KV_RECEIPT_CHAIN_STORE_NOT_STORAGE_ENDPOINT_V2",
      "next_attempt": "on a KV-owned contract whose single store is a documented storage endpoint v2 descriptor",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "/tmp/e0-kv-chain-np400sya/contract.json at sha256:077eadc6bb201447001f43739f613fb3acb35e2f83ff5e626a1532cb87a5b4ef: #431 repository_ledger_location keys designating STEGVERSE_KV#KV_INTR_ENDPOINT:_StegVerse/Receipts, plus a one-store KV_STORAGE_ENDPOINT ledger_designation",
+     "required_evidence_or_repair": "/tmp/e0-kv-chain-yhs95v1c/contract.json at sha256:077eadc6bb201447001f43739f613fb3acb35e2f83ff5e626a1532cb87a5b4ef: #431 repository_ledger_location keys designating STEGVERSE_KV#KV_INTR_ENDPOINT:_StegVerse/Receipts, plus a one-store KV_STORAGE_ENDPOINT ledger_designation",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "MEMBERSHIP_WATERMARK_SOURCE_VALUE_OTHER_KV"
     },
@@ -7653,7 +7679,7 @@
      "failure_code": "KV_RECEIPT_CHAIN_STORE_NOT_STORAGE_ENDPOINT_V2",
      "next_attempt": "on a KV-owned contract whose single store is a documented storage endpoint v2 descriptor",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "/tmp/e0-kv-chain-jv32cx8v/contract.json at sha256:f1d553f09b058ab45cad3f218e9dfca14e04f8ad7f81f4239b620306b2b87a78: #431 repository_ledger_location keys designating STEGVERSE_KV#KV_INTR_ENDPOINT:_Vault/SKAP/Receipts, plus a one-store KV_STORAGE_ENDPOINT ledger_designation",
+     "required_evidence_or_repair": "/tmp/e0-kv-chain-blxz041b/contract.json at sha256:f1d553f09b058ab45cad3f218e9dfca14e04f8ad7f81f4239b620306b2b87a78: #431 repository_ledger_location keys designating STEGVERSE_KV#KV_INTR_ENDPOINT:_Vault/SKAP/Receipts, plus a one-store KV_STORAGE_ENDPOINT ledger_designation",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "MEMBERSHIP_WATERMARK_SOURCE_VALUE_OTHER_SKAP_VAULT"
     },
@@ -7946,9 +7972,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_WATERMARK_BARE_STRING_KV"
     },
@@ -7957,9 +7983,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_WATERMARK_MALFORMED_SHORT_KV"
     },
@@ -7968,9 +7994,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_WATERMARK_MALFORMED_UPPERCASE_KV"
     },
@@ -7979,9 +8005,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_WATERMARK_EXTRA_KEY_KV"
     },
@@ -8016,9 +8042,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_HEAD_RECORD_ABSENT_KV"
     },
@@ -8027,9 +8053,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_WATERMARK_BARE_STRING_SKAP_VIA_GATE"
     },
@@ -8038,9 +8064,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_WATERMARK_MALFORMED_SHORT_SKAP_VIA_GATE"
     },
@@ -8049,9 +8075,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_WATERMARK_MALFORMED_UPPERCASE_SKAP_VIA_GATE"
     },
@@ -8060,9 +8086,9 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_WATERMARK_EXTRA_KEY_SKAP_VIA_GATE"
     },
@@ -8097,11 +8123,85 @@
      "failed_predicate": "ROLLBACK_WATERMARK_SUPPLIED",
      "failure_class": "A",
      "failure_code": "KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING",
-     "next_attempt": "on the corrected call",
+     "next_attempt": "on the next read after KV's head record is repaired, or on a corrected claim",
      "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "recorded_head = {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"}: the newest head KV recorded on its own receipt chain (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
+     "required_evidence_or_repair": "KV's own append-only head record (head-record.v1.jsonl, hash-linked and monotonic) read back by the reader itself; a caller recorded_head is an optional claim and, when given, must be {\"source\": \"KV_RECORDED_RECEIPT_CHAIN_HEAD\", \"head_receipt_sha256\": \"sha256:<64 hex>\"} (optionally with a digest-only \"org_crossing_cross_check\" of the Org's side of a crossing, never the watermark)",
      "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
      "subject": "CURRENT_HEAD_HEAD_RECORD_ABSENT_SKAP_VIA_GATE"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_HEAD_RECORDED_AT_BOTH_ENDS",
+     "failure_class": "B",
+     "failure_code": "KV_CROSSING_RECORD_NOT_OBSERVED",
+     "next_attempt": "on the read-back of the Org side of the crossing (event-triggered)",
+     "owning_existing_goal": "StegVerse-org/.github#162 (both sides record each InTr crossing; #162 comment 6372641743; Lane B)",
+     "required_evidence_or_repair": "the Org's digest-only crossing record (path_id, receipt_sha256, endpoint_head_sha256, supplied_hb_epoch) for this endpoint's intr-destination path_ids, read by the reader itself from the Org side of the crossing (the existing InTr readback), naming KV's read-back head so the head is held at both ends (LC-KV-26); a caller-supplied digest is never relied on",
+     "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
+     "subject": "LC_KV_26_BOTH_ENDS_KV_END_ONLY_KV"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_HEAD_RECORDED_AT_BOTH_ENDS",
+     "failure_class": "B",
+     "failure_code": "KV_CROSSING_RECORD_NOT_OBSERVED",
+     "next_attempt": "on the read-back of the Org side of the crossing (event-triggered)",
+     "owning_existing_goal": "StegVerse-org/.github#162 (both sides record each InTr crossing; #162 comment 6372641743; Lane B)",
+     "required_evidence_or_repair": "the Org's digest-only crossing record (path_id, receipt_sha256, endpoint_head_sha256, supplied_hb_epoch) for this endpoint's intr-destination path_ids, read by the reader itself from the Org side of the crossing (the existing InTr readback), naming KV's read-back head so the head is held at both ends (LC-KV-26); a caller-supplied digest is never relied on",
+     "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
+     "subject": "LC_KV_26_BOTH_ENDS_ORG_RECORDS_AN_OLDER_HEAD_ONLY_KV"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "LC_KV_26_BOTH_ENDS_ORG_RECORDS_EVERY_HEAD_KV"
+    },
+    {
+     "disposition": "DENY",
+     "failed_predicate": "ENDPOINT_HEAD_NOT_OLDER_THAN_THE_NEWEST_KV_RECORDED_HEAD",
+     "failure_class": "C",
+     "failure_code": "KV_LEDGER_HEAD_ROLLBACK_DETECTED",
+     "next_attempt": "on a read-back at or after the recorded head (event-triggered)",
+     "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "present a chain that contains the newest head KV recorded on its own receipt chain (KV_RECORDED_RECEIPT_CHAIN_HEAD, read back from head-record.v1.jsonl) and every head the Org's digest-only crossing records name; an older or forked head is refused",
+     "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
+     "subject": "LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_KV"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_HEAD_RECORDED_AT_BOTH_ENDS",
+     "failure_class": "B",
+     "failure_code": "KV_CROSSING_RECORD_NOT_OBSERVED",
+     "next_attempt": "on the read-back of the Org side of the crossing (event-triggered)",
+     "owning_existing_goal": "StegVerse-org/.github#162 (both sides record each InTr crossing; #162 comment 6372641743; Lane B)",
+     "required_evidence_or_repair": "the Org's digest-only crossing record (path_id, receipt_sha256, endpoint_head_sha256, supplied_hb_epoch) for this endpoint's intr-destination path_ids, read by the reader itself from the Org side of the crossing (the existing InTr readback), naming KV's read-back head so the head is held at both ends (LC-KV-26); a caller-supplied digest is never relied on",
+     "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
+     "subject": "LC_KV_26_BOTH_ENDS_KV_END_ONLY_SKAP_VIA_GATE"
+    },
+    {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "KV_HEAD_RECORDED_AT_BOTH_ENDS",
+     "failure_class": "B",
+     "failure_code": "KV_CROSSING_RECORD_NOT_OBSERVED",
+     "next_attempt": "on the read-back of the Org side of the crossing (event-triggered)",
+     "owning_existing_goal": "StegVerse-org/.github#162 (both sides record each InTr crossing; #162 comment 6372641743; Lane B)",
+     "required_evidence_or_repair": "the Org's digest-only crossing record (path_id, receipt_sha256, endpoint_head_sha256, supplied_hb_epoch) for this endpoint's intr-destination path_ids, read by the reader itself from the Org side of the crossing (the existing InTr readback), naming KV's read-back head so the head is held at both ends (LC-KV-26); a caller-supplied digest is never relied on",
+     "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
+     "subject": "LC_KV_26_BOTH_ENDS_ORG_RECORDS_AN_OLDER_HEAD_ONLY_SKAP_VIA_GATE"
+    },
+    {
+     "disposition": "ALLOW",
+     "subject": "LC_KV_26_BOTH_ENDS_ORG_RECORDS_EVERY_HEAD_SKAP_VIA_GATE"
+    },
+    {
+     "disposition": "DENY",
+     "failed_predicate": "ENDPOINT_HEAD_NOT_OLDER_THAN_THE_NEWEST_KV_RECORDED_HEAD",
+     "failure_class": "C",
+     "failure_code": "KV_LEDGER_HEAD_ROLLBACK_DETECTED",
+     "next_attempt": "on a read-back at or after the recorded head (event-triggered)",
+     "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+     "required_evidence_or_repair": "present a chain that contains the newest head KV recorded on its own receipt chain (KV_RECORDED_RECEIPT_CHAIN_HEAD, read back from head-record.v1.jsonl) and every head the Org's digest-only crossing records name; an older or forked head is refused",
+     "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger",
+     "subject": "LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_SKAP_VIA_GATE"
     },
     {
      "disposition": "FAIL_CLOSED",
@@ -8120,12 +8220,12 @@
      "subject": "KV_CHAIN_RECEIPT_OBSERVED_AT_CLOCK_STAMP_ACCEPTED"
     }
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/cvk263-chain-probe.out",
-   "raw_sha256": "sha256:4611f6317fd36c62e01fdcff81ce94eb028354ff2f82154481b010eb429a0b35",
+   "raw_sha256": "sha256:729fed9c37ad26a53db356237ffa8cb4ef45d83bad66ef092c7c7455c7ab146a",
    "run_id": "cvk263-chain-probe",
    "status": "OBSERVED",
-   "what": "continuity-vault-kit#263 @bf684aad runtime.kv_receipt_ledgers and SkapLayer2Gate.receipt_ledger: production reads of both committed contracts (designation, org membership, org ref, prerequisites), then Lane D's own TEST-ONLY harness (tests/test_kv_ladder_conformance_lc_kv.py kv_chain_e0, e0_kv_root, e0_kv_attestation; genesis re-pinned in memory) for org-membership forms (Lane D's five plus a capitalised key, top-level organization, github_app_installation_id, permissions and owner keys, and a binding inside designation_notes), E0 positive controls, a caller-seed head signature, an attestation naming the other chain, org-ledger receipts presented as the KV chain, a provider record in the chain location, an older genuinely signed head replayed with and without the Org watermark (kv, and skap_vault through the gate), a never-minted layer-1 hash, and a clock-stamped observed_at"
+   "what": "continuity-vault-kit main @77d28d83 (revision 15; was #263 @bf684aad) runtime.kv_receipt_ledgers and SkapLayer2Gate.receipt_ledger: production reads of both committed contracts (designation, org membership, org ref, prerequisites), then Lane D's own TEST-ONLY harness (tests/test_kv_ladder_conformance_lc_kv.py kv_chain_e0, e0_kv_root, e0_kv_attestation; genesis re-pinned in memory) for org-membership forms (Lane D's five plus a capitalised key, top-level organization, github_app_installation_id, permissions and owner keys, and a binding inside designation_notes), E0 positive controls, a caller-seed head signature, an attestation naming the other chain, org-ledger receipts presented as the KV chain, a provider record in the chain location, an older genuinely signed head replayed with and without the Org watermark (kv, and skap_vault through the gate), a never-minted layer-1 hash, and a clock-stamped observed_at; revision 15: every E0 read runs with the Org side recording each head of its chain (held at both ends, LC-KV-26), and LC-KV-26 rows withhold the Org record (KV end only), narrow it to an older head, record every head, and roll back after the last crossing"
   },
   {
    "files_scanned": 2,
@@ -8143,49 +8243,49 @@
      "text": "ORG_CROSS_CHECK_SOURCE = \"ORG_LEDGER_LINKED_RECEIPTS_ENDPOINT_HEAD\""
     },
     {
-     "line": 97,
+     "line": 100,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "^CROSS_CHECK_ROLE = ",
      "text": "CROSS_CHECK_ROLE = \"DIGEST_ONLY_CROSS_CHECK_NEVER_WATERMARK\""
     },
     {
-     "line": 98,
+     "line": 101,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "^ORG_SOURCED_CODE = ",
      "text": "ORG_SOURCED_CODE = \"KV_ROLLBACK_WATERMARK_ORG_LEDGER_SOURCED\""
     },
     {
-     "line": 541,
+     "line": 550,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "^WATERMARK_INPUT_KEYS = ",
      "text": "WATERMARK_INPUT_KEYS = (\"source\", \"head_receipt_sha256\", \"org_crossing_cross_check\")"
     },
     {
-     "line": 549,
+     "line": 558,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "^def _watermark\\(",
      "text": "def _watermark(which: str, recorded_head: Any) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:"
     },
     {
-     "line": 507,
+     "line": 514,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "return _refuse\\(which, WATERMARK_MISSING_CODE, \"A\"",
      "text": "return _refuse(which, WATERMARK_MISSING_CODE, \"A\","
     },
     {
-     "line": 667,
+     "line": 687,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "recorded_head: Any = None",
      "text": "recorded_head: Any = None) -> dict[str, Any]:"
     },
     {
-     "line": 742,
+     "line": 762,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "recorded_head: Any = None",
      "text": "head_attestation: Any = None, recorded_head: Any = None) -> dict[str, Any]:"
     },
     {
-     "line": 766,
+     "line": 787,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "recorded_head: Any = None",
      "text": "head_attestation: Any = None, recorded_head: Any = None, *,"
@@ -8208,7 +8308,7 @@
     "if watermark\\[\"head_receipt_sha256\"\\] not in",
     "recorded_head: Any = None"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "cvk263-watermark-required",
    "status": "OBSERVED",
    "what": "continuity-vault-kit#263 @bf684aad: the rollback watermark (recorded_head) is a required caller-supplied mapping {source KV_RECORDED_RECEIPT_CHAIN_HEAD, head_receipt_sha256, optional digest-only org_crossing_cross_check} (absent or malformed: FAIL_CLOSED KV_LEDGER_HEAD_ROLLBACK_WATERMARK_MISSING, class A; Org-sourced: FAIL_CLOSED KV_ROLLBACK_WATERMARK_ORG_LEDGER_SOURCED, class A); not on the chain: DENY KV_LEDGER_HEAD_ROLLBACK_DETECTED; the reader does not itself read KV's recorded head from any record"
@@ -8271,7 +8371,7 @@
     "c82be896",
     "^PREDICATES = |^SEALED_PREDICATES = "
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "kv-scope-digest-cvk263",
    "status": "OBSERVED",
    "what": "continuity-vault-kit#263 @bf684aad runtime/kv_skap_vault.py SCOPE_DIGEST and the sealed predicates it evaluates"
@@ -8769,43 +8869,43 @@
    "files_scanned": 2,
    "hits": [
     {
-     "line": 206,
+     "line": 210,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "ENDPOINT_ORG_MEMBERSHIP_REFUSED",
      "text": "MEMBERSHIP_CODE = \"ENDPOINT_ORG_MEMBERSHIP_REFUSED\""
     },
     {
-     "line": 211,
+     "line": 215,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "ENDPOINT_ORG_MEMBERSHIP_REFUSED",
      "text": "#: refuses: ENDPOINT_ORG_MEMBERSHIP_REFUSED when the key is membership-like (MEMBERSHIP_TOKENS), otherwise"
     },
     {
-     "line": 876,
+     "line": 882,
      "path": "tests/test_kv_ladder_conformance_lc_kv.py",
      "pattern": "ENDPOINT_ORG_MEMBERSHIP_REFUSED",
      "text": "self.assertIn(\"ENDPOINT_ORG_MEMBERSHIP_REFUSED\", contract[\"designation_notes\"][\"org_membership\"])"
     },
     {
-     "line": 917,
+     "line": 923,
      "path": "tests/test_kv_ladder_conformance_lc_kv.py",
      "pattern": "ENDPOINT_ORG_MEMBERSHIP_REFUSED",
      "text": "self.assertSix(out, \"ENDPOINT_ORG_MEMBERSHIP_REFUSED\", \"C\")"
     },
     {
-     "line": 293,
+     "line": 297,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
      "text": "predicate=\"ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER\")"
     },
     {
-     "line": 919,
+     "line": 925,
      "path": "tests/test_kv_ladder_conformance_lc_kv.py",
      "pattern": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
      "text": "self.assertEqual(out[\"failed_predicate\"], \"ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER\")"
     },
     {
-     "line": 866,
+     "line": 872,
      "path": "tests/test_kv_ladder_conformance_lc_kv.py",
      "pattern": "def test_no_endpoint_is_a_github_organization_member",
      "text": "def test_no_endpoint_is_a_github_organization_member(self):"
@@ -8818,7 +8918,7 @@
     "if str\\(key\\)\\.lower\\(\\) in MEMBERSHIP_KEYS|in MEMBERSHIP_KEYS",
     "def test_no_endpoint_is_a_github_organization_member"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "endpoint-org-membership-kv",
    "status": "OBSERVED",
    "what": "Rigel's rule (no endpoint, externally or ecosystem maintained, is a member of a GitHub Organization): where the KV path's endpoint readers refuse a membership binding"
@@ -9110,7 +9210,7 @@
    "outcomes": [
     {
      "cvk_contract_sha256": "sha256:c9cc8913de21183fb23774cd155fee84fd6d275c003e71b2712ad44d30d89ce1",
-     "cvk_head": "9d56bc7b",
+     "cvk_head": "77d28d83",
      "disposition": "ALLOW",
      "note": "the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS",
      "subject": "CVK_CONTRACT_DIGEST_VS_TVC_PIN_KV",
@@ -9174,7 +9274,7 @@
     },
     {
      "cvk_contract_sha256": "sha256:1e886348a7a84fb148bb91e84d84f99cb5101d86dfb34ab84104e54982e0bc13",
-     "cvk_head": "9d56bc7b",
+     "cvk_head": "77d28d83",
      "disposition": "FAIL_CLOSED",
      "note": "the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS",
      "subject": "CVK_CONTRACT_DIGEST_VS_TVC_PIN_SKAP_VAULT",
@@ -9248,7 +9348,7 @@
     },
     {
      "cvk_file_sha256": "sha256:758d798388599171c145e3d19ca4eb155ad3d3762a3721804da65c08ebc1fe72",
-     "cvk_head": "9d56bc7b",
+     "cvk_head": "77d28d83",
      "disposition": "ALLOW",
      "subject": "TVC_KV_SIGNER_FILE_PIN_VS_CVK_HEAD",
      "tvc_pin": "sha256:758d798388599171c145e3d19ca4eb155ad3d3762a3721804da65c08ebc1fe72"
@@ -9256,7 +9356,7 @@
    ],
    "pin": "StegVerse-Labs/TVC@b686a60b959ebffd165bc38ef011d0f50a6bb935",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/tvc542-bind-cvk263.out",
-   "raw_sha256": "sha256:61539ae6111f3ddc2abb908da56286c5698efbb890f0bea02aa7270e4dc80d29",
+   "raw_sha256": "sha256:802389c58c0038ba261742537ee31e6ca1419d0eaad1eb2246e9afed115584e3",
    "run_id": "tvc542-bind-cvk263",
    "status": "OBSERVED",
    "what": "TVC#542 @5b70bf01 scripts/tvc_org_ledger_head_signer.py ledger_location on (a) the custody_ledgers_config() entries continuity-vault-kit#263 returns at @bf684aad, (b) the committed config/kv_custody_receipt_chains.json entries (positive control), (c) the committed entries plus a top-level organization, permissions, owner, github_app_installation_id or team key, an org-ledger ref or an org repository; the cvk contract file digests at @bf684aad against TVC's KV_CONTRACT_PINS; kv_ledger_head_signer(); the signer file digest pin"
@@ -9267,7 +9367,7 @@
    "outcomes": [
     {
      "cvk_contract_sha256": "sha256:c9cc8913de21183fb23774cd155fee84fd6d275c003e71b2712ad44d30d89ce1",
-     "cvk_head": "9d56bc7b",
+     "cvk_head": "77d28d83",
      "disposition": "ALLOW",
      "note": "the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS",
      "subject": "CVK_CONTRACT_DIGEST_VS_TVC_PIN_KV",
@@ -9331,7 +9431,7 @@
     },
     {
      "cvk_contract_sha256": "sha256:1e886348a7a84fb148bb91e84d84f99cb5101d86dfb34ab84104e54982e0bc13",
-     "cvk_head": "9d56bc7b",
+     "cvk_head": "77d28d83",
      "disposition": "FAIL_CLOSED",
      "note": "the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS",
      "subject": "CVK_CONTRACT_DIGEST_VS_TVC_PIN_SKAP_VAULT",
@@ -9405,7 +9505,7 @@
     },
     {
      "cvk_file_sha256": "sha256:758d798388599171c145e3d19ca4eb155ad3d3762a3721804da65c08ebc1fe72",
-     "cvk_head": "9d56bc7b",
+     "cvk_head": "77d28d83",
      "disposition": "ALLOW",
      "subject": "TVC_KV_SIGNER_FILE_PIN_VS_CVK_HEAD",
      "tvc_pin": "sha256:758d798388599171c145e3d19ca4eb155ad3d3762a3721804da65c08ebc1fe72"
@@ -9413,7 +9513,7 @@
    ],
    "pin": "StegVerse-Labs/TVC@b686a60b959ebffd165bc38ef011d0f50a6bb935",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/tvc540-bind-cvk263.out",
-   "raw_sha256": "sha256:61539ae6111f3ddc2abb908da56286c5698efbb890f0bea02aa7270e4dc80d29",
+   "raw_sha256": "sha256:802389c58c0038ba261742537ee31e6ca1419d0eaad1eb2246e9afed115584e3",
    "run_id": "tvc540-bind-cvk263",
    "status": "OBSERVED",
    "what": "the same binding probe at TVC#540 @7802ddb3 (merges #542 a680d027; reader byte-identical)"
@@ -9567,13 +9667,13 @@
      "text": "\"refuses\": \"Any org ledger ref or git-ref designation (store_type GIT_REF, StegVerse-org/.github, refs/stegverse/organization-ledger, repository-ledger/...): KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER."
     },
     {
-     "line": 113,
+     "line": 117,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "refs/stegverse/organization-ledger",
      "text": "ORG_MARKERS = (\"GIT_REF\", \"StegVerse-org/.github\", \"refs/stegverse/organization-ledger\","
     },
     {
-     "line": 186,
+     "line": 190,
      "path": "runtime/kv_receipt_ledgers.py",
      "pattern": "refs/stegverse/organization-ledger",
      "text": "\"require StegVerse-org/.github refs/stegverse/organization-ledger; per #167 comment 6372442705 \""
@@ -9586,7 +9686,7 @@
     "subprocess",
     "refs/stegverse/organization-ledger"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "model-conflict-kv-ledger-location",
    "status": "OBSERVED",
    "what": "Rigel's ruling (KV keeps its own recorded receipt chain behind its own InTr endpoint, never on an org ledger): any remaining org git ref in cvk#263 @bf684aad contracts or reader, other than the refusal markers"
@@ -9683,7 +9783,7 @@
     "consumer_bearer_token_path_retired_use_tvc_broker_materialization",
     "(?i)encrypt|ciphertext"
    ],
-   "pin": "StegVerse-Labs/continuity-vault-kit@9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "pin": "StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "run_id": "model-conflict-kv-user-storage",
    "status": "OBSERVED",
    "what": "KV over user-owned storage (e.g. Google Drive) through the storage endpoint / access adapter: what cvk#263 @bf684aad has (no ledger-wide encryption is required, #167 comment 6372442705 item 3)"
@@ -9931,7 +10031,7 @@
  "schema": "stegverse.ladder-conformance-observations/v1",
  "sources": [
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "8baae27d615ce40fb4ee5c248d297574ee4efe97",
    "path": "runtime/kv_skap_vault.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -9939,7 +10039,7 @@
    "sha256": "sha256:9dcb4c76fc51c433f7a4dc7e2ba91907df37f031279b140d776c2c00e02b3e91"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "ce343c9212cb0bd06601607a6643450f23a20519",
    "path": "execution/vault_store.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -9947,7 +10047,7 @@
    "sha256": "sha256:a94a058a07158004229367e13d465f197101de5accd8077a4cb5c5a9f3499265"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "d7b6953055e42ba7578b40f546896a0bfc81dc64",
    "path": "runtime/kv_interlock_endpoint.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -9955,7 +10055,7 @@
    "sha256": "sha256:4cc603809df54e8a74c63ff6d3a9976294eb9e05524997a7ec28a8e2dac7a43e"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "80235e427a5c98f0044146fb5ecc9e065621416f",
    "path": "runtime/kv_skap_layer2.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -9963,7 +10063,7 @@
    "sha256": "sha256:1a2a83ada55d65a7ee9f758c91fa6a74227dbdb2eaaf05f56bbc80762ae3e8d7"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "3e433b27b3d1a65b15e60a1614c2961dce210140",
    "path": "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -9971,7 +10071,7 @@
    "sha256": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "c18e659a323a15759cf01eaf99819e145015be5e",
    "path": "runtime/intr_pinned/llm_adapter/endpoint_ledger_anchor.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -9979,7 +10079,7 @@
    "sha256": "sha256:153cf121a51199da8432735d4b2fb34b396f7eaa24da80f1bf9c77040013ac09"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "24b863bda36d01bf7356ee473150081452274a68",
    "path": "runtime/intr_pinned/PINNED.md",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -9987,7 +10087,7 @@
    "sha256": "sha256:4bbfc931f0e4e9998c6a75ebca839f0bff8c0add10fd2e64642f02bafe725585"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "131dfb456c2a19fcf1beb13a292b3f39d241ab30",
    "path": "tests/kv_two_layer_e0.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -10163,7 +10263,7 @@
    "sha256": "sha256:1b3a7e7efccf81369353e53d16a17590b9bef90cf3006dc27a549c1ed7b426c3"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "33c7e04b0498eff30d1fd87b659109aff003854f",
    "path": "runtime/secret_field_policy.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -10171,7 +10271,7 @@
    "sha256": "sha256:c6fb0a9a5fe4083c1c7b7f0b28f6a4bf70885a581a39f533af3faeacca4e4dbc"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "fad9517e68e909830cc18a8465366aaff11397c1",
    "path": "tests/test_kv_skap_vault_finish_point.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -10179,7 +10279,7 @@
    "sha256": "sha256:91a38b715cd7c5cf7ad905b6e5b6d4c52f795ab263e877e05fa461215048363c"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "b7b576ce7bcf6026f4efd96a98d8fac6b951ea50",
    "path": "runtime/task_registry_event_sovereign_kv_binding.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -10187,7 +10287,7 @@
    "sha256": "sha256:83fd3f1d73a365a72fee5be65b54157bc5fc6cee562981abfb68e196519ab2a7"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "b7b576ce7bcf6026f4efd96a98d8fac6b951ea50",
    "path": "runtime/task_registry_event_sovereign_kv_binding.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -10195,12 +10295,12 @@
    "sha256": "sha256:83fd3f1d73a365a72fee5be65b54157bc5fc6cee562981abfb68e196519ab2a7"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
-   "git_blob": "8ef27068f4314876828438c1cb623fe47c15578f",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
+   "git_blob": "4a2ba0fd03b2ecb58b2f017f9dce2de4b7cf3111",
    "path": "tests/test_kv_ladder_conformance_lc_kv.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
    "root": "cvk258",
-   "sha256": "sha256:5e11e9e0a51b15e5ded22166734d3ffa0bcfd2dd2ca3acd14c59b66064675dc4"
+   "sha256": "sha256:80e5d11b2c036a87dcd93904fba952201601db4f9c4cab7689933592f087bb54"
   },
   {
    "commit": "8e87c6b0c96d0728883e6945383514b06588f68c",
@@ -10347,7 +10447,7 @@
    "sha256": "sha256:e173371f0d95038f3a94c4bccee1af0f84baf78cef01052326e078529436c98a"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "65ed7c070c336e40afc69afd943828de548dfc88",
    "path": "runtime/kv_storage_provider_adapter.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -10355,7 +10455,7 @@
    "sha256": "sha256:d6ab2d2395e045d703787917388cf9656261424e1f1ae78cfc36c4b41b08e1ee"
   },
   {
-   "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+   "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
    "git_blob": "5bec8187f3bc0d7afa475c8f95f5914cb4aaca6a",
    "path": "tests/test_sovereign_kv_vault_lineage_record.py",
    "repo": "StegVerse-Labs/continuity-vault-kit",
@@ -10457,6 +10557,14 @@
    "repo": "StegVerse-org/.github",
    "root": "org",
    "sha256": "sha256:6d373913af7bd13a53c71beffbe617aa80c284df73d4f25ec3c466547b4ceda8"
+  },
+  {
+   "commit": "64ba618affd86f275417becf048b929ad1494d1e",
+   "git_blob": "2fc6fc6ed50ef3ffcabacc7ef6759b40b5035037",
+   "path": "control/adjacency-rulings/KV-SKAP-VAULT-FUNCTIONAL-001.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsruling",
+   "sha256": "sha256:89d4265fdb8df62bd73ab33933b2a624c16389becce4d8209ef1b1f2dcea2cd4"
   }
  ],
  "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001"
