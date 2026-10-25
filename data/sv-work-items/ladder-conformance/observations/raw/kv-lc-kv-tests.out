@@ -32,8 +32,8 @@ The provider's own records (Drive metadata files, revisions) never cross into KV
 test_layer2_refuses_a_layer1_receipt_naming_another_chain (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_layer2_refuses_a_layer1_receipt_naming_another_chain) ... ok
 test_lc_kv_23_whole_chain_rollback_is_refused_by_the_org_crossing_record (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_lc_kv_23_whole_chain_rollback_is_refused_by_the_org_crossing_record)
 LC-KV-23 (class A, ruling StegVerse-org/.github#167 comment 6374130335). The storage, its HEAD.json and ... ok
-test_lc_kv_26_rollback_after_the_last_crossing_is_a_documented_residual (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_lc_kv_26_rollback_after_the_last_crossing_is_a_documented_residual)
-LC-KV-26 (class B, owner Lane B on the node side; StegVerse-org/.github#162). This is a witness of a ... ok
+test_lc_kv_26_rollback_after_the_last_crossing_is_refused_both_ends (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_lc_kv_26_rollback_after_the_last_crossing_is_refused_both_ends)
+LC-KV-26 (closed). P1's joint review of #263 @34496af5 found ... ok
 test_n1_the_binding_in_an_allow_receipt_is_a_note_not_a_refusal (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_n1_the_binding_in_an_allow_receipt_is_a_note_not_a_refusal)
 P4 review N-1 (#166 6375605423). receipt_ledger_binding() is embedded in every minted layer-1 and ... ok
 test_no_chain_on_any_org_ledger_ref_and_the_head_digest_name (tests.test_kv_ladder_conformance_lc_kv.KvSkapLedgerLocation.test_no_chain_on_any_org_ledger_ref_and_the_head_digest_name)
