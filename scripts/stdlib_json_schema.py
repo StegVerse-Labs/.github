@@ -7,7 +7,7 @@ StegVerse-org/.github) were enumerated keyword by keyword; this module implement
 semantics and nothing else:
 
   assertions   type enum const properties required additionalProperties items minItems uniqueItems contains
-               minLength pattern minimum maximum maxProperties allOf anyOf not if then
+               minLength pattern minimum maximum minProperties maxProperties allOf anyOf not if then
   annotations  $schema $id $comment title description format
 
 Fail closed, never silently accept:
@@ -38,7 +38,7 @@ DRAFT_2020_12 = "https://json-schema.org/draft/2020-12/schema"
 ANNOTATIONS = frozenset({"$schema", "$id", "$comment", "title", "description", "format"})
 ASSERTIONS = frozenset({"type", "enum", "const", "properties", "required", "additionalProperties", "items",
                         "minItems", "uniqueItems", "contains", "minLength", "pattern", "minimum", "maximum",
-                        "maxProperties", "allOf", "anyOf", "not", "if", "then"})
+                        "minProperties", "maxProperties", "allOf", "anyOf", "not", "if", "then"})
 SUPPORTED = ANNOTATIONS | ASSERTIONS
 TYPES = frozenset({"null", "boolean", "object", "array", "number", "string", "integer"})
 REFUSAL = {"failure_code": "SCHEMA_KEYWORD_UNSUPPORTED", "failed_predicate": "EVERY_SCHEMA_KEYWORD_IS_IMPLEMENTED",
@@ -114,7 +114,7 @@ def _check(schema: Any, path: str, root: bool = False) -> None:
     if "required" in schema and not (isinstance(schema["required"], list) and
                                      all(isinstance(x, str) for x in schema["required"])):
         raise SchemaUnsupported(f"{path}/required", "required must be an array of strings")
-    for k in ("minItems", "minLength", "maxProperties"):
+    for k in ("minItems", "minLength", "minProperties", "maxProperties"):
         if k in schema and not _nonneg_int(schema[k]):
             raise SchemaUnsupported(f"{path}/{k}", f"{k} must be a non-negative integer")
     for k in ("minimum", "maximum"):
@@ -173,6 +173,8 @@ def _errors(v: Any, s: Any, path: str) -> Iterator[str]:
             for name in v:
                 if name not in props:
                     yield from _errors(v[name], s["additionalProperties"], f"{path}/{name}")
+        if "minProperties" in s and len(v) < s["minProperties"]:
+            yield f"{path}: minProperties"
         if "maxProperties" in s and len(v) > s["maxProperties"]:
             yield f"{path}: maxProperties"
     if isinstance(v, list):
