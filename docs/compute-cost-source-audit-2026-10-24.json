@@ -1,0 +1,120 @@
+{
+  "schema": "stegverse.compute-cost-source-audit/v1",
+  "date": "2026-10-24",
+  "status": "PARTIAL_SOURCE_AUDIT_NON_AUTHORIZING",
+  "goal_task_id": null,
+  "cosv_id": null,
+  "registry_status": "UNVERIFIED",
+  "verification": [
+    {
+      "component": "estimator",
+      "repository": "StegVerse-Labs/.github",
+      "path": "scripts/estimate_worker_cost_basis.py",
+      "blob_sha": "552f0e083704d2b8cfccba829efea869d0e0cab4",
+      "symbol": "is_complete",
+      "predicate": "bool(cost.get(\"completed\")) or transition in {\"COMPLETE\", \"COMPLETED\", \"TASK_COMPLETED\"}",
+      "disposition": "ALLOW",
+      "scope": "SOURCE_PREDICATE_MATCH_ONLY"
+    }
+  ],
+  "findings": [
+    {
+      "component": "WorkerCoordinator/.github worker-cost log",
+      "repo": "StegVerse-Labs/.github",
+      "path": "control/worker-cost-observations.json",
+      "blob_sha": "3f161803e733fed4966dfb746c6f8c518be421b6",
+      "record_count": 67,
+      "generation": 67,
+      "compute_units_values": [
+        1
+      ],
+      "completed_under_estimator_predicate": 0,
+      "measurement_class": "ASSIGNED_LOGICAL_UNITS",
+      "disposition": "SOURCE_OBSERVED_NOT_RUNTIME_VERIFIED"
+    },
+    {
+      "component": "Worker cost observation producer",
+      "repo": "StegVerse-Labs/.github",
+      "path": "workers/heartbeat_receipt_canary.py",
+      "blob_sha": "e69e0d71be74e6f17b859f4f6bc38f5ab12e1d5a",
+      "line": 107,
+      "source_expression": "compute_units: 1",
+      "measurement_class": "CONSTANT_ASSIGNED_UNIT",
+      "disposition": "SOURCE_OBSERVED"
+    },
+    {
+      "component": "StegAgents",
+      "repo": "StegVerse-Labs/StegAgents",
+      "path": "src/purpose_bound_worker_runtime.py",
+      "blob_sha": "3b3310fed43e9e7e203bf9ff06188477d2d29e4c",
+      "lines": [
+        66,
+        72
+      ],
+      "fields": [
+        "expected_compute_units",
+        "external_cost_usd_ceiling",
+        "task_cost_basis"
+      ],
+      "measurement_class": "REQUEST_ESTIMATE_AND_CEILING_VALIDATION",
+      "disposition": "SOURCE_OBSERVED"
+    },
+    {
+      "component": "LLM-adapter",
+      "repo": "StegVerse-org/LLM-adapter",
+      "path": "schemas/provider_usage_event.schema.json",
+      "blob_sha": "87256ee91f75da37a17883db1b4a5554bb14f354",
+      "lines": [
+        40,
+        46
+      ],
+      "fields": [
+        "input_tokens",
+        "output_tokens",
+        "total_tokens",
+        "latency_ms",
+        "compute_units"
+      ],
+      "measurement_class": "PROVIDER_USAGE_EVENT_SCHEMA_NOT_LIVE_METER",
+      "disposition": "SOURCE_OBSERVED"
+    },
+    {
+      "component": "LLM-adapter fixture",
+      "repo": "StegVerse-org/LLM-adapter",
+      "path": "fixtures/provider_usage_event.json",
+      "blob_sha": "504aab9bfff437b3e8bb1a74c02b06030fe876d7",
+      "lines": [
+        20,
+        24
+      ],
+      "token_usage": {
+        "input_tokens": 12,
+        "output_tokens": 8,
+        "total_tokens": 20
+      },
+      "compute_units": null,
+      "measurement_class": "TEST_FIXTURE",
+      "disposition": "SOURCE_OBSERVED"
+    }
+  ],
+  "unverified_components": [
+    "SDK cost producer",
+    "StegCore cost producer",
+    "SV-LLM/sandbox cost producer",
+    "live WorkerCoordinator resource meter",
+    "live provider token accounting and rate-card settlement"
+  ],
+  "open_tests": [
+    "verify estimator invocation history and generated cost-basis outputs",
+    "trace producer of each worker-cost observation and generation increment",
+    "trace task/manifest/receipt join from provider usage to worker cost",
+    "inspect exact repository revisions and source for remaining components",
+    "authenticate Task Registry/COSV/WorkerCoordinator before governed transitions"
+  ],
+  "constraints": [
+    "Do not equate constant compute_units=1 to physical resource usage",
+    "Do not equate fixture tokens with billed usage",
+    "No new device, framework or external machine prerequisites",
+    "No runtime ALLOW claimed from source inspection"
+  ]
+}
