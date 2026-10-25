@@ -4289,6 +4289,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_ladder_conformance.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_ladder_conformance.py"
+   ],
+   "tests": [
+    "tests/test_ladder_conformance.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_ledger_gitstore.py",
    "inputs": [],
    "surfaces": [
@@ -10209,6 +10221,11 @@
   "resident-runtime/intr_path_tvc_read.py": [
    ".stegverse/intr-path-transfer/**"
   ],
+  "resident-runtime/ladder_conformance.py": [
+   "data/sv-work-items/ladder-conformance/**",
+   "resident-runtime/sv_operating_modes.py",
+   "scripts/ladder_conformance.py"
+  ],
   "resident-runtime/ledger_gitstore.py": [
    "resident-runtime/merge_transfer_gitstore.py"
   ],
@@ -11461,6 +11478,11 @@
   ],
   "scripts/invariant_evaluation.py": [
    "data/task-registry-global-invariants.json"
+  ],
+  "scripts/ladder_conformance.py": [
+   "data/sv-work-items/ladder-conformance/observations/raw/**",
+   "resident-runtime/ladder_conformance.py",
+   "resident-runtime/sv_operating_modes.py"
   ],
   "scripts/match_runtime_profile.py": [
    "control/runtime-profile-map.json"
@@ -14411,6 +14433,10 @@
    "scripts/dispatch_kv_skap_custody_materialization.py",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
    "workers/run_device_kv_skap_canonical_runtime_worker.py"
+  ],
+  "tests/test_ladder_conformance.py": [
+   "resident-runtime/ladder_conformance.py",
+   "scripts/ladder_conformance.py"
   ],
   "tests/test_ledger_gitstore.py": [
    "resident-runtime/intr_destination_ingress.py",

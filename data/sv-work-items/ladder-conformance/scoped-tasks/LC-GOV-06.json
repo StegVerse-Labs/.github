@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "E0_TERMINAL_IS_EXERCISED_NOT_FLAGGED",
+ "failure_class": {
+  "class": "A",
+  "reason": "decided by an existing transition: SV_CHANGE_ADMIT, once #3313 is admitted"
+ },
+ "failure_code": "OPERATING_MODE_E0_WITNESS_UNBOUND",
+ "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+ "items": [
+  "H-GOV-ADMISSION"
+ ],
+ "next_attempt": "on the admission event of StegVerse-Labs/.github#3313",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_lane": "GitHub Product lane (Lane C)",
+ "proposed_resolution": "after #3313 is admitted, add an observe run that evaluates sv_work_items.admit for each path head and binds H-GOV-ADMISSION to it",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "exercise SV_CHANGE_ADMIT on the exact heads of #3326 and StegVerse-SDK#556 and record its dispositions",
+ "retry_point": "python scripts/ladder_conformance.py observe (add an admission run once the branch-writer derivation is on main)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-GOV-06"
+}
