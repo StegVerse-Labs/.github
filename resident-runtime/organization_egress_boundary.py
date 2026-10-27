@@ -625,7 +625,7 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
     # Before anything is built, published or recorded (row 6): a half-set or
     # unverifiable committed-request pair, or a committed_request a caller put
     # in the payload, is refused six-field (CommittedRequestRefused), 0 frames.
-    kernel.committed_request()
+    kernel.committed_request(hb_epoch)
     kernel.refuse_caller_committed_request(payload, "payload")
     origin = this_organization(root)
     try:

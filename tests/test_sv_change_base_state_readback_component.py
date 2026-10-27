@@ -311,11 +311,11 @@ class BaseStateReadbackTests(unittest.TestCase):
                     self.assertTrue(component.seal_verifies(r))
 
     def test_epoch_rule_source_is_kernel_hb_reference(self):
-        self.assertEqual(component.EPOCH_RULE_SOURCE["lines"], "83-92")
+        self.assertEqual(component.EPOCH_RULE_SOURCE["lines"], "84-93")
         kernel = (ROOT / "org-kernel" / "kernel.py").read_bytes()
         blob = hashlib.sha1(b"blob %d\0" % len(kernel) + kernel).hexdigest()
         self.assertEqual(blob, component.EPOCH_RULE_SOURCE["git_blob_sha"])
-        # P1's citation: sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 266-301).
+        # P1's citation: sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 267-302).
         import ast
         src = kernel.decode("utf-8")
         fn = [n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == component.EPOCH_RULE_FUNCTION["function"]][0]

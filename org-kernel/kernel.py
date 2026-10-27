@@ -9,6 +9,7 @@ import base64, hashlib, importlib.util, json, math, subprocess, sys, tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from collections.abc import Mapping
 
 # StegOS node state is addressed by key, not located by path. The seam lives
 # beside this module so the kernel loads it without depending on a package
@@ -514,13 +515,17 @@ class CommittedRequestRefused(ValueError):
                      "next_attempt":"run again from the committed request; nothing was written or published",
                      "derived_from_clock":False,"consequence_committed":False}
 
-def committed_request()->dict[str,str]|None:
+def committed_request(hb_epoch:Any=None)->dict[str,str]|None:
     """The committed request this run was started from, verified against the file, or None outside a request run.
 
     Both variables absent: not a request run. One without the other, or a
     digest that is not sha256:<64 hex>: COMMITTED_REQUEST_INVALID (terminal).
     An unreadable file (non-terminal) or one whose bytes do not hash to the
     digest: CommittedRequestRefused, six fields.
+
+    The binding says hb_epoch_source COMMITTED_REQUEST, so a writer that hands
+    its `hb_epoch` must be writing at the request's own hb_epoch: any other is
+    COMMITTED_REQUEST_EPOCH_SOURCE_UNVERIFIED (V-P11 final grade, row 2).
     """
     import os, re
     path,digest=os.environ.get(COMMITTED_REQUEST_PATH_ENV),os.environ.get(COMMITTED_REQUEST_SHA256_ENV)
@@ -537,6 +542,15 @@ def committed_request()->dict[str,str]|None:
         raise CommittedRequestRefused("COMMITTED_REQUEST_UNREADABLE",type(exc).__name__+": "+str(exc),terminal=False) from None
     if "sha256:"+hashlib.sha256(data).hexdigest()!=digest:
         raise CommittedRequestRefused("COMMITTED_REQUEST_DIGEST_MISMATCH","the committed request file does not hash to "+digest)
+    if hb_epoch is not None:
+        try:
+            requested=strict_json_loads(data.decode("utf-8")).get("hb_epoch")
+        except (ValueError,AttributeError,RecursionError,MemoryError):
+            requested=None
+        if requested is None or supplied_epoch_failure(requested) is not None or int(str(requested))!=int(str(hb_epoch)):
+            raise CommittedRequestRefused("COMMITTED_REQUEST_EPOCH_SOURCE_UNVERIFIED",
+                "the writer's epoch "+repr(hb_epoch)+" is not the committed request's hb_epoch "+repr(requested),
+                repair="write at the committed request's own hb_epoch; the binding records it as the epoch source")
     own=Path(__file__).resolve().parents[1]
     resolved=Path(path).resolve()
     shown=resolved.relative_to(own).as_posix() if resolved.is_relative_to(own) else str(resolved)
@@ -547,13 +561,14 @@ def refuse_caller_committed_request(value:Any, argument:str)->None:
     pending=[value]
     while pending:
         item=pending.pop()
-        if isinstance(item,dict):
+        # Every container is walked: mappings, and lists, tuples and sets alike (row 3).
+        if isinstance(item,Mapping):
             if COMMITTED_REQUEST_KEY in item:
                 raise CommittedRequestRefused("FORGED_COMMITTED_REQUEST_FROM_EVIDENCE",
                     argument+" carries a committed_request key; only the run's dispatcher binds one",
                     repair="remove committed_request from "+argument+"; the binding is the dispatcher's, never a caller's")
-            pending.extend(item.values())
-        elif isinstance(item,list):
+            pending.extend(item.keys()); pending.extend(item.values())
+        elif isinstance(item,(list,tuple,set,frozenset)):
             pending.extend(item)
 
 ADAPTER_WRITE_FAULT_EXIT=75
@@ -1184,14 +1199,16 @@ def _record_both(custody:dict[str,Any], name:str, transition_class:str, predeces
         transition_class,predecessor,successor,evidence,"NONE",hb_epoch=epoch,
         store=custody["repository_store"],idempotent_on=("frame_sha256","packet_id"))
     recorded=repository_receipt.get("evidence") or {}
-    organization_receipt=custody["organization_ledger"].aggregate_transition(
-        repository_receipt,org_transition_class="REPO_STATE_PROPAGATION",
-        predecessor_org_state_sha256=repository_receipt["predecessor_state_sha256"],
-        successor_org_state_sha256=repository_receipt["successor_state_sha256"],
-        boundary_evidence={"operation":repository_receipt["transition_class"],
-                           **{key:recorded.get(key) for key in carried}},
-        authority_effect="NONE",ledger=custody["organization_root"],hb_epoch=epoch,
-        _materialized_repository_ledger=custody["repository_store"])
+    # The materializer-supplied repository ledger reaches aggregate only through its
+    # private channel, where it is paired with the organization ledger and checked.
+    with custody["organization_ledger"]._materialized_repository_ledger(custody["repository_store"]):
+        organization_receipt=custody["organization_ledger"].aggregate_transition(
+            repository_receipt,org_transition_class="REPO_STATE_PROPAGATION",
+            predecessor_org_state_sha256=repository_receipt["predecessor_state_sha256"],
+            successor_org_state_sha256=repository_receipt["successor_state_sha256"],
+            boundary_evidence={"operation":repository_receipt["transition_class"],
+                               **{key:recorded.get(key) for key in carried}},
+            authority_effect="NONE",ledger=custody["organization_root"],hb_epoch=epoch)
     return {"repository_receipt_sha256":repository_receipt["receipt_sha256"],
             "organization_receipt_sha256":organization_receipt["receipt_sha256"]}
 

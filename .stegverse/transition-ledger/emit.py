@@ -110,7 +110,7 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
  # Before the store opens: a caller cannot supply committed_request (row 5), and
  # in a request run the receipt binds the verified committed request (row 1).
  kernel.refuse_caller_committed_request(evidence,"evidence")
- bound=kernel.committed_request()
+ bound=kernel.committed_request(hb_epoch)
  target=store or repository_store();target.initialize()
  for _attempt in range(128):
   expected_head=target.get(ledger_store.HEAD_KEY)

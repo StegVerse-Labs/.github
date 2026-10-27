@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse,base64,hashlib,importlib.util,json,os,tempfile
+import argparse,base64,contextlib,contextvars,hashlib,importlib.util,json,os,tempfile
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -742,8 +742,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                          predecessor_org_state_sha256=None, successor_org_state_sha256=None,
                          boundary_evidence=None, authority_effect="NONE", parent_manifest=None,
                          establishes_packet=False, now_ns=None, ledger=None, hb_epoch=None,
-                         custody_exclusivity_verifier=None, repository_ledger=None,
-                         _materialized_repository_ledger=None):
+                         custody_exclusivity_verifier=None, repository_ledger=None):
     """Serialize appends; the governing parent manifest owns packet release.
 
     A manifested receipt packet's first receipt records its own establishment.
@@ -770,9 +769,10 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     A repository source receipt must be its designated repository ledger's own,
     reachable from its HEAD, and that ledger must pair with this organization
     store (source_ledger_refusal). The designated ledger is the materializer's
-    STEGVERSE_REPO_LEDGER_ROOT, or `_materialized_repository_ledger`: the kernel
-    custody's materializer-supplied store, through this internal channel only.
-    A public `repository_ledger` is accepted only when it is that same ledger.
+    STEGVERSE_REPO_LEDGER_ROOT, or the kernel custody's materializer-supplied
+    store, bound by `with _materialized_repository_ledger(store):` -- a private
+    channel, never a keyword, an environment variable or a request field. A
+    public `repository_ledger` is accepted only when it is that same ledger.
     """
     _refuse_invalid_epoch(hb_epoch)
     _refuse_clock_source(receipt)
@@ -780,7 +780,24 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     store = organization_store(ledger)
     # Resolved, not opened or written: the source's repository ledger must pair with it.
     _refuse_source_not_on_ledger(receipt, repository_ledger, organization=store,
-                                 materialized=_materialized_repository_ledger)
+                                 materialized=_MATERIALIZED.get())
+    checked = _SOURCE_CHECKED.set(True)
+    try:
+        return _aggregate_transition_checked(receipt, store, org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=boundary_evidence, authority_effect=authority_effect,
+            parent_manifest=parent_manifest, establishes_packet=establishes_packet,
+            now_ns=now_ns, hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier)
+    finally:
+        _SOURCE_CHECKED.reset(checked)
+
+
+def _aggregate_transition_checked(receipt, store, *, org_transition_class, predecessor_org_state_sha256,
+                                  successor_org_state_sha256, boundary_evidence, authority_effect,
+                                  parent_manifest, establishes_packet, now_ns, hb_epoch,
+                                  custody_exclusivity_verifier):
+    """aggregate_transition() after its source was checked: the lock, the packet release and the append."""
     if _is_posix(store):
         store.root.mkdir(mode=0o700, parents=True, exist_ok=True)
         with store.exclusive():
@@ -889,7 +906,6 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
                 successor_org_state_sha256=successor_org_state_sha256,
                 boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
                 hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
-                _materialized_repository_ledger=_SOURCE_LEDGER_CHECKED,
             )
         # The last released batch's post-commit submission outcome, read from
         # this store before any release moves BATCH_HEAD, is retained on this
@@ -944,7 +960,6 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
         successor_org_state_sha256=successor_org_state_sha256,
         boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
         hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
-        _materialized_repository_ledger=_SOURCE_LEDGER_CHECKED,
     )
     if released is not None:
         state = batches.open_packet_state(parent_manifest, root=store, now_ns=now_ns,
@@ -1056,7 +1071,7 @@ def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch
         )
 
 
-def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None, custody_exclusivity_verifier=None, repository_ledger=None, _materialized_repository_ledger=None):
+def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None, custody_exclusivity_verifier=None, repository_ledger=None):
     """The append itself, for a caller already holding the organization append lock.
 
     The receipt and HEAD are published by the store's append_transaction on
@@ -1073,8 +1088,9 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
         held=store.assume_exclusive()
     else:
         held=store.exclusive()
-    _refuse_source_not_on_ledger(receipt, repository_ledger, organization=store,
-                                 materialized=_materialized_repository_ledger)
+    if not _SOURCE_CHECKED.get():
+        _refuse_source_not_on_ledger(receipt, repository_ledger, organization=store,
+                                     materialized=_MATERIALIZED.get())
     with held:
         return _append_locked(receipt,source,store,org_transition_class=org_transition_class,
             predecessor_org_state_sha256=predecessor_org_state_sha256,
@@ -1345,9 +1361,23 @@ def organization_receipt_ledger_refusal(receipt, store=None, *, retry_entrypoint
         return refused(ORG_RECEIPT_NOT_ON_LEDGER,"differs from the receipt the ledger holds at that address",repair)
     return None
 
-#: Passed by this module's own calls into _aggregate_transition_locked for a
-#: receipt aggregate_transition() already checked against the repository ledger.
-_SOURCE_LEDGER_CHECKED=object()
+#: The kernel custody's materializer-supplied repository ledger, bound only by
+#: `with _materialized_repository_ledger(store):` (lead rulings 21:13Z, 21:23Z):
+#: never a keyword, an environment variable or a request field. Its in-tree
+#: users are the kernel's crossing custody, the claim consumer and SPPA.
+_MATERIALIZED=contextvars.ContextVar("aggregate_materialized_repository_ledger",default=None)
+#: Set by aggregate_transition() while it appends a receipt it already checked,
+#: so its own nested _aggregate_transition_locked calls do not check again.
+_SOURCE_CHECKED=contextvars.ContextVar("aggregate_source_ledger_checked",default=False)
+
+@contextlib.contextmanager
+def _materialized_repository_ledger(store):
+    """Bind the materializer-supplied repository ledger for the appends inside this block (still paired and checked)."""
+    token=_MATERIALIZED.set(store)
+    try:
+        yield store
+    finally:
+        _MATERIALIZED.reset(token)
 
 def _refuse_unbound_request(receipt, boundary_evidence):
     """CommittedRequestRefused before any store opens (rows 5 and 7).
@@ -1368,8 +1398,6 @@ def _refuse_unbound_request(receipt, boundary_evidence):
 
 def _refuse_source_not_on_ledger(receipt, repository_ledger=None, *, organization=None, materialized=None):
     """OrgLedgerEpochRefused (source_ledger_refusal) before anything is written to the organization store."""
-    if materialized is _SOURCE_LEDGER_CHECKED:
-        return
     refusal=source_ledger_refusal(receipt,repository_ledger,organization=organization,materialized=materialized)
     if refusal is not None:
         raise OrgLedgerEpochRefused(refusal)
@@ -1428,8 +1456,9 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         "previous_receipt_sha256":prev,
         "custody_generation":generation,
     }
-    # In a request run the organization receipt binds the verified committed request too (row 1).
-    bound=kernel.committed_request()
+    # In a request run the organization receipt binds the verified committed request too (row 1),
+    # written at the request's own epoch.
+    bound=kernel.committed_request(reference["epoch"])
     if bound is not None: body[kernel.COMMITTED_REQUEST_KEY]=bound
     if attestation is not None: body["custody_exclusivity_attestation_sha256"]=sha(attestation)
     if generation==0: body["custody_authority_basis"]=CUSTODY_AUTHORITY_BASIS_GENERATION_0

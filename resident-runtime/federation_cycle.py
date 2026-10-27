@@ -104,7 +104,7 @@ def cycle(*, mesh_root:Path|None, node_state_root:Path|None,
     # In a request run every receipt binds the committed request (row 1); an
     # unverifiable pair is refused here, before anything is consumed.
     try:
-        bound=K.committed_request()
+        bound=K.committed_request(epoch)
     except K.CommittedRequestRefused as exc:
         return exc.record
     results=K.consume_and_respond(ROOT,mesh_root=mesh_root,node_state_root=node_state_root,

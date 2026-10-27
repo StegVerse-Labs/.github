@@ -445,15 +445,16 @@ class ConcurrentAppendTests(unittest.TestCase):
         options = dict(hb_epoch=4096, org_transition_class="REPO_STATE_PROPAGATION",
                        predecessor_org_state_sha256="sha256:" + "a" * 64,
                        successor_org_state_sha256="sha256:" + "b" * 64,
-                       boundary_evidence={}, authority_effect="NONE", ledger=org_root,
-                       _materialized_repository_ledger=self.store)
-        first = organization_ledger.aggregate_transition(source, **options)
-        again = organization_ledger.aggregate_transition(source, **options)
-        self.assertEqual(first["receipt_sha256"], again["receipt_sha256"])
-        self.assertEqual(len(list((org_root / "receipts").glob("*.json"))), 1)
-        with self.assertRaises(ValueError):
-            organization_ledger.aggregate_transition(
-                source, **{**options, "org_transition_class": "SOME_OTHER_CLASS"})
+                       boundary_evidence={}, authority_effect="NONE", ledger=org_root)
+        # The harness binds the repository ledger the source was appended to (the materializer's channel).
+        with organization_ledger._materialized_repository_ledger(self.store):
+            first = organization_ledger.aggregate_transition(source, **options)
+            again = organization_ledger.aggregate_transition(source, **options)
+            self.assertEqual(first["receipt_sha256"], again["receipt_sha256"])
+            self.assertEqual(len(list((org_root / "receipts").glob("*.json"))), 1)
+            with self.assertRaises(ValueError):
+                organization_ledger.aggregate_transition(
+                    source, **{**options, "org_transition_class": "SOME_OTHER_CLASS"})
 
 
 if __name__ == "__main__":

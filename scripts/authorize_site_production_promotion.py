@@ -709,13 +709,13 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
         "disposition", "mode", "repository", "sha", "promotion_ref", "manifest_sha256", "environment", "route",
         "provider_service", "provider_build_id", "claim_receipt_sha256", "fencing_token",
         "predecessor_receipt_sha256", "classification", *SIX_FIELDS)}
-    organization_receipt = custody["organization_ledger"].aggregate_transition(
-        repository_receipt, org_transition_class="REPO_STATE_PROPAGATION",
-        predecessor_org_state_sha256=repository_receipt["predecessor_state_sha256"],
-        successor_org_state_sha256=repository_receipt["successor_state_sha256"],
-        boundary_evidence={"operation": cls, **carried}, authority_effect="NONE",
-        ledger=consumer.organization_target(custody), hb_epoch=epoch,
-        _materialized_repository_ledger=custody["repository_store"])
+    with custody["organization_ledger"]._materialized_repository_ledger(custody["repository_store"]):
+        organization_receipt = custody["organization_ledger"].aggregate_transition(
+            repository_receipt, org_transition_class="REPO_STATE_PROPAGATION",
+            predecessor_org_state_sha256=repository_receipt["predecessor_state_sha256"],
+            successor_org_state_sha256=repository_receipt["successor_state_sha256"],
+            boundary_evidence={"operation": cls, **carried}, authority_effect="NONE",
+            ledger=consumer.organization_target(custody), hb_epoch=epoch)
     result.update({"receipt_appended": True, "transition_id": transition_id,
                    "repository_receipt_sha256": repository_receipt["receipt_sha256"],
                    "organization_receipt_sha256": organization_receipt["receipt_sha256"]})

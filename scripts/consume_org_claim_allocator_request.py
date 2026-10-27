@@ -751,20 +751,22 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
             successor_org_state_sha256=repository_receipt["successor_state_sha256"],
             boundary_evidence={"operation": transition_class, **{key: recorded.get(key) for key in CARRIED},
                                **{key: recorded[key] for key in CARRIED_IF_RECORDED if key in recorded}},
-            authority_effect="NONE", hb_epoch=hb_epoch,
-            _materialized_repository_ledger=custody["repository_store"])
+            authority_effect="NONE", hb_epoch=hb_epoch)
         organization = custody["organization_ledger"]
+        # The materializer-supplied repository ledger reaches aggregate only through its private channel.
+        channel = organization._materialized_repository_ledger(custody["repository_store"])
         try:
-            if lock_held:
-                # Already inside the existing append lock: the same locked append
-                # aggregate_transition performs, without re-taking the lock.
-                held = ({"root": custody["organization_root"]} if custody["organization_root"] is not None
-                        else {"store": custody["organization_store"]})
-                organization_receipt = organization._aggregate_transition_locked(
-                    repository_receipt, **held, **context)
-            else:
-                organization_receipt = organization.aggregate_transition(
-                    repository_receipt, ledger=organization_target(custody), **context)
+            with channel:
+                if lock_held:
+                    # Already inside the existing append lock: the same locked append
+                    # aggregate_transition performs, without re-taking the lock.
+                    held = ({"root": custody["organization_root"]} if custody["organization_root"] is not None
+                            else {"store": custody["organization_store"]})
+                    organization_receipt = organization._aggregate_transition_locked(
+                        repository_receipt, **held, **context)
+                else:
+                    organization_receipt = organization.aggregate_transition(
+                        repository_receipt, ledger=organization_target(custody), **context)
         except Exception as exc:
             raise OrganizationAppendFailed(repository_receipt, exc) from exc
     return {"repository_receipt": repository_receipt, "organization_receipt": organization_receipt}

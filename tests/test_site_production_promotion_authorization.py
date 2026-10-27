@@ -140,13 +140,13 @@ class Ledger:
                     "evidence": evidence, "authority_effect": "NONE",
                     "hb_reference": org.kernel.hb_reference(epoch=4096), "previous_receipt_sha256": None}
             receipt = dict(body, receipt_sha256=org.sha(body))
-        row = org.aggregate_transition(
-            receipt, org_transition_class="REPO_STATE_PROPAGATION",
-            predecessor_org_state_sha256=receipt["predecessor_state_sha256"],
-            successor_org_state_sha256=receipt["successor_state_sha256"],
-            boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
-            ledger=self.consumer.organization_target(self.custody), hb_epoch=4096,
-            _materialized_repository_ledger=store)
+        with org._materialized_repository_ledger(store):
+            row = org.aggregate_transition(
+                receipt, org_transition_class="REPO_STATE_PROPAGATION",
+                predecessor_org_state_sha256=receipt["predecessor_state_sha256"],
+                successor_org_state_sha256=receipt["successor_state_sha256"],
+                boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
+                ledger=self.consumer.organization_target(self.custody), hb_epoch=4096)
         return row["receipt_sha256"]
 
     def run(self, request: dict, **kwargs) -> dict:
@@ -242,6 +242,42 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
     def setUp(self) -> None:
         self._td = tempfile.TemporaryDirectory()
         self.base = Path(self._td.name)
+
+
+    # --- Lead ruling 21:00Z: an SPPA observation of another repository is refused until its route exists ---
+
+    def assertCrossRepoObservationRefused(self, repository, operation, evidence):
+        ledger = Ledger(self.base)
+        before = sorted(p.name for p in (ledger.org / "receipts").glob("*.json"))
+        with self.assertRaises(Exception) as raised:
+            ledger.observe(repository, operation, evidence)
+        refusal = getattr(raised.exception, "refusal", None) or {}
+        self.assertEqual(refusal.get("failure_code"), "SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED", raised.exception)
+        self.assertIn(repr(repository), refusal["detail"])
+        for field in ("failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(str(refusal[field]).strip(), field)
+        self.assertIs(refusal["consequence_committed"], False)
+        self.assertEqual(sorted(p.name for p in (ledger.org / "receipts").glob("*.json")), before)
+
+    def test_a_tvc_issuance_observation_is_refused_cross_repo(self):
+        self.assertCrossRepoObservationRefused(TVC, sppa.OP_TVC_ISSUED, {
+            "credential_reference": "tvc:site-deploy", "dependency_surface": "site:production-deploy",
+            "credential_authority": "TV/TVC", "github_token_runtime_authority": "NONE"})
+
+    def test_a_site_repository_build_observation_is_refused_cross_repo(self):
+        self.assertCrossRepoObservationRefused("StegVerse-Labs/Site", sppa.OP_PROVIDER_BUILD, {
+            "repository": "StegVerse-Labs/Site", "build_id": "build-ok", "service": "site",
+            "environment": "production", "commit_sha": SHA, "provider": "cloudflare-workers-builds"})
+
+    def test_a_site_repository_checks_observation_is_refused_cross_repo(self):
+        self.assertCrossRepoObservationRefused("StegVerse-Labs/Site", sppa.OP_EXACT_HEAD_CHECKS, {
+            "repository": "StegVerse-Labs/Site", "head_sha": SHA, "required_checks": REQUIRED, "check_runs": []})
+
+    def test_this_repositorys_observation_is_admitted(self):
+        ledger = Ledger(self.base)
+        self.assertTrue(ledger.observe(BOUNDARY, sppa.OP_INTR_ADMITTED, {
+            "admitted_sha": SHA, "transition": "SITE_PRODUCTION_PROMOTION", "manifest_sha256": "0" * 64}))
 
     def tearDown(self) -> None:
         self._td.cleanup()

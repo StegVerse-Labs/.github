@@ -142,7 +142,8 @@ def test_an_unreadable_repository_ledger_is_a_non_terminal_refusal(ledgers, monk
 
     monkeypatch.setattr(org.ledger_store.PosixLedgerStore, "get", unreadable)
     with pytest.raises(org.OrgLedgerEpochRefused) as raised:
-        aggregate(receipt, org_root, _materialized_repository_ledger=ledger)
+        with org._materialized_repository_ledger(ledger):
+            aggregate(receipt, org_root)
     refusal = raised.value.refusal
     assert (refusal["failure_code"], refusal["terminal"]) == ("SOURCE_RECEIPT_NOT_ON_LEDGER", False)
     assert "retry" in refusal["next_attempt"]
@@ -223,11 +224,18 @@ def test_the_internal_channel_is_not_reachable_from_cli_env_or_request(ledgers, 
         relative = path.relative_to(ROOT).as_posix()
         if relative.startswith(("tests/", "receipts/")) or relative == "resident-runtime/aggregate_repo_transition.py":
             continue
-        for match in re.finditer(r"_materialized_repository_ledger=([^,)\n]+)", path.read_text(encoding="utf-8")):
+        for match in re.finditer(r"_materialized_repository_ledger\((custody\[\"repository_store\"\]|[^)\n]+)\)",
+                                 path.read_text(encoding="utf-8")):
             passers.setdefault(relative, set()).add(match.group(1).strip())
     assert passers == {"org-kernel/kernel.py": {'custody["repository_store"]'},
                        "scripts/consume_org_claim_allocator_request.py": {'custody["repository_store"]'},
                        "scripts/authorize_site_production_promotion.py": {'custody["repository_store"]'}}, passers
+    # It is not a keyword of either append entry point: passing one is a TypeError, never a binding.
+    import inspect
+    for entry in (org.aggregate_transition, org._aggregate_transition_locked):
+        assert "_materialized_repository_ledger" not in inspect.signature(entry).parameters
+    with pytest.raises(TypeError):
+        aggregate(minted("x"), tmp_path / "org-never", _materialized_repository_ledger=ledgers[0])
     # No CLI option reaches it.
     helped = subprocess.run([sys.executable, "-B", str(ROOT / "resident-runtime/aggregate_repo_transition.py"), "--help"],
                             capture_output=True, text=True, timeout=60).stdout
@@ -266,8 +274,8 @@ def test_a_forged_materializer_root_with_a_foreign_realpath_is_refused(tmp_path)
 def test_a_forged_materializer_root_holding_tracked_files_is_refused(ledgers):
     ledger, org_root = ledgers
     receipt = on_ledger(ledger, "own")
-    assert_refused(receipt, org_root, "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED",
-                   _materialized_repository_ledger=org.ledger_store.PosixLedgerStore(TRACKED))
+    with org._materialized_repository_ledger(org.ledger_store.PosixLedgerStore(TRACKED)):
+        assert_refused(receipt, org_root, "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED")
 
 
 # --- Lead ruling 21:42Z: a mixed pair is refused in both directions ---

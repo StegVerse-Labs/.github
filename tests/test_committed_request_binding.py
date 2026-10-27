@@ -129,6 +129,32 @@ class LedgerBindingTests(Refusals, unittest.TestCase):
                 self.assertCommittedRequestRefused(raised.exception, "FORGED_COMMITTED_REQUEST_FROM_EVIDENCE")
                 self.assertFalse(self.org_root.exists())
 
+    def test_a_committed_request_inside_a_tuple_or_set_is_refused(self):
+        forged = {"committed_request": {"path": "x", "sha256": self.digest}}
+        hidden = [{"a": (1, forged)}, {"a": ((forged,),)}, {"a": [(2, [forged])]}, ({"a": [forged]},)]
+        for evidence in hidden:
+            with self.subTest(evidence=repr(evidence)[:60]):
+                with self.assertRaises(Exception) as raised:
+                    org.kernel.refuse_caller_committed_request(evidence, "evidence")
+                self.assertCommittedRequestRefused(raised.exception, "FORGED_COMMITTED_REQUEST_FROM_EVIDENCE")
+
+    # Row 2 (final grade) -----------------------------------------------------
+    def test_a_request_run_writes_only_at_the_committed_requests_epoch(self):
+        with self.in_run():
+            for epoch in (5000, 6000):
+                with self.subTest(epoch=epoch):
+                    with self.assertRaises(Exception) as raised:
+                        emit.append("t-" + str(epoch), "TEST", SHA_A, SHA_B, {}, "NONE", hb_epoch=epoch, store=self.repo)
+                    self.assertCommittedRequestRefused(raised.exception, "COMMITTED_REQUEST_EPOCH_SOURCE_UNVERIFIED")
+                    self.assertEqual(self.written(), [])
+            repository = self.append()  # the request's own 4096
+            with self.assertRaises(Exception) as raised:
+                org.aggregate_transition(repository, predecessor_org_state_sha256=SHA_A, successor_org_state_sha256=SHA_B,
+                                         hb_epoch=6000, ledger=self.org_root, repository_ledger=self.repo)
+            self.assertCommittedRequestRefused(raised.exception, "COMMITTED_REQUEST_EPOCH_SOURCE_UNVERIFIED")
+            self.assertEqual(sorted(p.name for p in (self.org_root / "receipts").glob("*.json"))
+                             if (self.org_root / "receipts").is_dir() else [], [])
+
     def test_the_cli_refuses_a_forged_committed_request_in_evidence_json(self):
         env = {**os.environ, "STEGVERSE_REPO_LEDGER_ROOT": str(self.work / "repo")}
         completed = subprocess.run(
