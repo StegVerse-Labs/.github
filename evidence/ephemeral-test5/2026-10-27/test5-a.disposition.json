@@ -1,0 +1,519 @@
+{
+  "authority_effect": "NONE",
+  "canonical_entrypoint": "stegverse.manifest_execution.execute_manifest",
+  "canonical_manifest_sha256": "265a68cc4e48d782ca0c39e8ca04d3b31baf543bee560fc0ce8b97fdb18c3d49",
+  "dispatched": false,
+  "disposition": "FAIL_CLOSED",
+  "draft_preserved": true,
+  "evidence": {
+    "failing_nodes": [
+      {
+        "component": "EXISTING_UNIVERSAL_INTR",
+        "contract_ref": "f6faa0423195218eaa52de8462afc3584faa0cbe0e4690fc99d90b9567b1830c",
+        "depends_on": [],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#ingress",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "ingress",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "TVC_RELAY_AUTHORIZATION_INTERLOCK_INTR",
+        "contract_ref": "a8d6249ae33578200351dde884672acc2885681409503cfa86470dd365e4b93b",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#ingress"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#authorization",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "authorization",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.route.stegbrowser.v1",
+        "contract_ref": "118e5ddfd1e42cd5bdc0036a9ba086727aa937e054b6804dae05a36db6e45465",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#authorization"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#route",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "route",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.manifest_state_transition_runtime.execute_manifest",
+        "contract_ref": "964405beb6042694b4b631d15ac673bee1ea6f6352f390941e8fd98450a4fa7a",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#route"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#processor",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "processor",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "EXISTING_STEGBROWSER_RUNTIME_OWNER",
+        "contract_ref": "3868c81637f0a4d5babbf9ab3ffb61e1fdddd25953783dea84dd79d2b1bf9ac9",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#processor"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#consequence",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "consequence",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "ORGANIZATION_LEDGER_CUSTODY",
+        "contract_ref": "51733ffedc62878161ed811b8871802fd66f769f2d9fab0393c2b007babe2b18",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#consequence"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#custody",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "custody",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.manifest_state_transition_runtime.admit_runtime_result",
+        "contract_ref": "87b1838afc67760631edec62c2a8d377721daff1e6c975897ebe64837131f959",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#custody"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#return",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "return",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      }
+    ],
+    "qualification": "NOT_READY",
+    "workarounds": {
+      "automatic_selection_permitted": false,
+      "caller_requested_routes": [],
+      "candidates": [],
+      "declared_alternative_routes": [],
+      "preferred_verified_route_id": null,
+      "remediation_reference": {
+        "intake": "EXISTING_STEGHEALTH_FAILURE_MAP_INTAKE",
+        "issue": "StegVerse-Labs/StegHealth#51",
+        "owner_task": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+        "repository": "StegVerse-Labs/StegHealth"
+      },
+      "selection_requires": [
+        "EXPLICIT_USER_SELECTION",
+        "NEW_MANIFEST_DIGEST",
+        "FRESH_READINESS_QUALIFICATION"
+      ],
+      "state": "NO_VERIFIED_WORKAROUND"
+    }
+  },
+  "executable": false,
+  "failed_predicate": "MANIFEST_READINESS_QUALIFIED",
+  "readiness_qualification": {
+    "attempt_id": "test5-a",
+    "authority_effect": "NONE_QUALIFICATION_ONLY",
+    "disposition": "FAIL_CLOSED",
+    "disposition_scope": "READINESS_QUALIFICATION_ONLY",
+    "draft_preserved": true,
+    "evaluated_at": "2026-10-27T18:22:32.835595Z",
+    "executable": false,
+    "execution_authorized": false,
+    "failed_predicate": "REQUIRED_NODES_READY",
+    "failing_nodes": [
+      {
+        "component": "EXISTING_UNIVERSAL_INTR",
+        "contract_ref": "f6faa0423195218eaa52de8462afc3584faa0cbe0e4690fc99d90b9567b1830c",
+        "depends_on": [],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#ingress",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "ingress",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "TVC_RELAY_AUTHORIZATION_INTERLOCK_INTR",
+        "contract_ref": "a8d6249ae33578200351dde884672acc2885681409503cfa86470dd365e4b93b",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#ingress"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#authorization",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "authorization",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.route.stegbrowser.v1",
+        "contract_ref": "118e5ddfd1e42cd5bdc0036a9ba086727aa937e054b6804dae05a36db6e45465",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#authorization"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#route",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "route",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.manifest_state_transition_runtime.execute_manifest",
+        "contract_ref": "964405beb6042694b4b631d15ac673bee1ea6f6352f390941e8fd98450a4fa7a",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#route"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#processor",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "processor",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "EXISTING_STEGBROWSER_RUNTIME_OWNER",
+        "contract_ref": "3868c81637f0a4d5babbf9ab3ffb61e1fdddd25953783dea84dd79d2b1bf9ac9",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#processor"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#consequence",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "consequence",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "ORGANIZATION_LEDGER_CUSTODY",
+        "contract_ref": "51733ffedc62878161ed811b8871802fd66f769f2d9fab0393c2b007babe2b18",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#consequence"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#custody",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "custody",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.manifest_state_transition_runtime.admit_runtime_result",
+        "contract_ref": "87b1838afc67760631edec62c2a8d377721daff1e6c975897ebe64837131f959",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#custody"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#return",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "return",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      }
+    ],
+    "incident_notification_delivery": [],
+    "incident_notifications": [],
+    "invocation_binding_sha256": "0bf09eda01f2effec2390b37515934b423a714bbfac088de43cda05bca3788c9",
+    "manifest_sha256": "265a68cc4e48d782ca0c39e8ca04d3b31baf543bee560fc0ce8b97fdb18c3d49",
+    "nodes": [
+      {
+        "component": "EXISTING_UNIVERSAL_INTR",
+        "contract_ref": "f6faa0423195218eaa52de8462afc3584faa0cbe0e4690fc99d90b9567b1830c",
+        "depends_on": [],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#ingress",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "ingress",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "TVC_RELAY_AUTHORIZATION_INTERLOCK_INTR",
+        "contract_ref": "a8d6249ae33578200351dde884672acc2885681409503cfa86470dd365e4b93b",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#ingress"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#authorization",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "authorization",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.route.stegbrowser.v1",
+        "contract_ref": "118e5ddfd1e42cd5bdc0036a9ba086727aa937e054b6804dae05a36db6e45465",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#authorization"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#route",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "route",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.manifest_state_transition_runtime.execute_manifest",
+        "contract_ref": "964405beb6042694b4b631d15ac673bee1ea6f6352f390941e8fd98450a4fa7a",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#route"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#processor",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "processor",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "EXISTING_STEGBROWSER_RUNTIME_OWNER",
+        "contract_ref": "3868c81637f0a4d5babbf9ab3ffb61e1fdddd25953783dea84dd79d2b1bf9ac9",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#processor"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#consequence",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "consequence",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "ORGANIZATION_LEDGER_CUSTODY",
+        "contract_ref": "51733ffedc62878161ed811b8871802fd66f769f2d9fab0393c2b007babe2b18",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#consequence"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#custody",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "custody",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": "stegverse.manifest_state_transition_runtime.admit_runtime_result",
+        "contract_ref": "87b1838afc67760631edec62c2a8d377721daff1e6c975897ebe64837131f959",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#custody"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": "AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+        "node_id": "stegverse.route.stegbrowser.v1#return",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": true,
+        "role": "return",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": true,
+        "state": "UNVERIFIED"
+      },
+      {
+        "component": null,
+        "contract_ref": "d6d7ca0cc035858b73f8ee0178287112eab39f762e31897f2a418b67919fe732",
+        "depends_on": [
+          "stegverse.route.stegbrowser.v1#return"
+        ],
+        "evidence_ref": null,
+        "evidence_sha256": null,
+        "failed_predicate": null,
+        "node_id": "stegverse.route.stegbrowser.v1#publisher",
+        "observed_at": null,
+        "proven_failure": false,
+        "provenance": null,
+        "required": false,
+        "role": "publisher",
+        "route_id": "stegverse.route.stegbrowser.v1",
+        "runtime_installed_is_readiness": false,
+        "source_runtime_installed": false,
+        "state": "NOT_REQUIRED"
+      }
+    ],
+    "qualification": "NOT_READY",
+    "qualification_sha256": "023901d39f06bc9cf97d3ba54bdda5386df258707a4724c4e375cce24e4f0120",
+    "reassessment": {
+      "device_discovery": false,
+      "passive_polling": false,
+      "scheduled": false,
+      "trigger": "NEW_AUTHENTICATED_EVIDENCE_OR_NEW_ATTEMPTED_TRANSITION"
+    },
+    "route_id": "stegverse.route.stegbrowser.v1",
+    "route_substitution_permitted": false,
+    "runtime_allow_claimed": false,
+    "schema": "stegverse.manifest-readiness-qualification/v1",
+    "workarounds": {
+      "automatic_selection_permitted": false,
+      "caller_requested_routes": [],
+      "candidates": [],
+      "declared_alternative_routes": [],
+      "preferred_verified_route_id": null,
+      "remediation_reference": {
+        "intake": "EXISTING_STEGHEALTH_FAILURE_MAP_INTAKE",
+        "issue": "StegVerse-Labs/StegHealth#51",
+        "owner_task": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+        "repository": "StegVerse-Labs/StegHealth"
+      },
+      "selection_requires": [
+        "EXPLICIT_USER_SELECTION",
+        "NEW_MANIFEST_DIGEST",
+        "FRESH_READINESS_QUALIFICATION"
+      ],
+      "state": "NO_VERIFIED_WORKAROUND"
+    }
+  },
+  "schema": "stegverse.sdk.run-manifest-readiness-refusal.v1"
+}
