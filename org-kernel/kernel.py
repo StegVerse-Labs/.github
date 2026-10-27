@@ -1168,6 +1168,11 @@ def crossing_custody(repo_root:Path, *, repo_ledger_root:Path|None, org_ledger_r
     """
     if repo_ledger_root is None or org_ledger_root is None:
         raise ValueError("ledger_location_required_from_materializer")
+    # A root is supplied as given, never derived from a home directory (coordinator
+    # 2026-10-27, R2): an unexpanded ~ names no contract-designated ledger.
+    for supplied in (repo_ledger_root,org_ledger_root):
+        if isinstance(supplied,(str,Path)) and str(supplied).startswith("~"):
+            raise ValueError("LEDGER_ROOT_NOT_CONTRACT_DESIGNATED: unexpanded ~ in "+str(supplied))
     own=Path(__file__).resolve().parents[1]
     emitter=_own_module("crossing_repository_ledger",".stegverse/transition-ledger/emit.py")
     organization_ledger=_own_module("crossing_organization_ledger","resident-runtime/aggregate_repo_transition.py")
@@ -1179,8 +1184,11 @@ def crossing_custody(repo_root:Path, *, repo_ledger_root:Path|None, org_ledger_r
     else:
         organization_ledger.refuse_explicit_posix_root()
         organization_root=Path(org_ledger_root).expanduser().resolve()
+    # A git locator opens the repository subtree of the designated ref; any other
+    # root is a POSIX directory. Either way aggregate pairs it with the organization
+    # ledger it appends to and refuses a mixed or unpaired one.
     return {"emitter":emitter,"organization_ledger":organization_ledger,
-            "repository_store":emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
+            "repository_store":emitter.ledger_store.open_store(str(repo_ledger_root)),
             "organization_root":organization_root}
 
 def _record_both(custody:dict[str,Any], name:str, transition_class:str, predecessor:str, successor:str,

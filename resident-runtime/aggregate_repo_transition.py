@@ -1264,14 +1264,28 @@ def source_ledger_refusal(receipt, repository_ledger=None, *, organization=None,
                        code=CROSS_REPO_UNVERIFIED,
                        repair=("verify the receipt on its own repository's contract-designated ledger (that repository's "
                                "contract.json ref and namespace, fetched fresh) before it is consumed here"))
-    if materialized is None and not os.getenv("STEGVERSE_REPO_LEDGER_ROOT"):
+    supplied=os.getenv("STEGVERSE_REPO_LEDGER_ROOT")
+    if supplied and supplied.startswith("~"):
+        # Never derived from a home directory (coordinator 2026-10-27, R2).
+        return refused("STEGVERSE_REPO_LEDGER_ROOT "+repr(supplied)+" is an unexpanded ~",code=ROOT_NOT_DESIGNATED)
+    if materialized is None and not supplied:
         # Nothing designated to check against is a refusal, never a pass: the same
         # location refusal every writer gives when its materializer supplied no ledger.
         raise LedgerLocationRequired("STEGVERSE_REPO_LEDGER_ROOT")
     try:
         designated=materialized if materialized is not None else repository.repository_store()
         identity=_ledger_identity(designated)
+        if materialized is not None and supplied and _ledger_identity(repository.repository_store())!=identity:
+            # Both the materializer's variable and the custody's root are present and
+            # name different ledgers (realpath): one of them is an override.
+            return refused("the custody's repository ledger "+repr(identity)+" is not STEGVERSE_REPO_LEDGER_ROOT's "
+                           +repr(_ledger_identity(repository.repository_store())),code=CALLER_CHOSEN_LEDGER)
         paired=_ledger_identity(organization) if organization is not None else None
+        if paired is None:
+            # A repository ledger with no organization ledger to pair with is a lone
+            # root, refused from any source (coordinator 2026-10-27, R2).
+            return refused("LONE_REPOSITORY_LEDGER: "+repr(identity)+" is not half of a verified pair",
+                           code=CALLER_CHOSEN_LEDGER)
         # Lead ruling 21:42Z: both halves of a pair are the same kind. A git
         # repository ledger is the subtree of the organization ledger ref it pairs
         # with; a POSIX one pairs only with a POSIX organization ledger, and

@@ -227,9 +227,10 @@ def test_the_internal_channel_is_not_reachable_from_cli_env_or_request(ledgers, 
         for match in re.finditer(r"_materialized_repository_ledger\((custody\[\"repository_store\"\]|[^)\n]+)\)",
                                  path.read_text(encoding="utf-8")):
             passers.setdefault(relative, set()).add(match.group(1).strip())
+    # SPPA's CLI never reaches it (coordinator 2026-10-27, R2): only the kernel's crossing custody and the
+    # claim consumer bind it.
     assert passers == {"org-kernel/kernel.py": {'custody["repository_store"]'},
-                       "scripts/consume_org_claim_allocator_request.py": {'custody["repository_store"]'},
-                       "scripts/authorize_site_production_promotion.py": {'custody["repository_store"]'}}, passers
+                       "scripts/consume_org_claim_allocator_request.py": {'custody["repository_store"]'}}, passers
     # It is not a keyword of either append entry point: passing one is a TypeError, never a binding.
     import inspect
     for entry in (org.aggregate_transition, org._aggregate_transition_locked):
@@ -271,9 +272,10 @@ def test_a_forged_materializer_root_with_a_foreign_realpath_is_refused(tmp_path)
     assert refusal["failure_code"] == "SOURCE_RECEIPT_NOT_ON_LEDGER", refusal
 
 
-def test_a_forged_materializer_root_holding_tracked_files_is_refused(ledgers):
+def test_a_forged_materializer_root_holding_tracked_files_is_refused(ledgers, monkeypatch):
     ledger, org_root = ledgers
     receipt = on_ledger(ledger, "own")
+    monkeypatch.delenv("STEGVERSE_REPO_LEDGER_ROOT")  # the channel alone carries the forged root
     with org._materialized_repository_ledger(org.ledger_store.PosixLedgerStore(TRACKED)):
         assert_refused(receipt, org_root, "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED")
 
@@ -303,3 +305,65 @@ def test_a_posix_organization_root_holding_tracked_files_is_not_contract_designa
     organization = org.ledger_store.PosixLedgerStore(TRACKED)
     refusal = org.source_ledger_refusal(minted("own"), organization=organization, materialized=repository)
     assert refusal["failure_code"] == "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED", refusal
+
+
+# --- Coordinator 2026-10-27 (R2): lone roots, an unexpanded ~, symlinks, the materializer's two channels ---
+
+def test_an_unexpanded_home_root_is_refused(ledgers, monkeypatch):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+    monkeypatch.setenv("STEGVERSE_REPO_LEDGER_ROOT", "~/repo-ledger")
+    assert_refused(receipt, org_root, "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED")
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("kernel_home_probe", ROOT / "org-kernel/kernel.py")
+    kernel = importlib.util.module_from_spec(spec); spec.loader.exec_module(kernel)
+    for repo_root, org_root_arg in (("~/repo", str(org_root)), (str(ledger.root), "~/org")):
+        with pytest.raises(ValueError, match="LEDGER_ROOT_NOT_CONTRACT_DESIGNATED"):
+            kernel.crossing_custody(ROOT, repo_ledger_root=repo_root, org_ledger_root=org_root_arg)
+
+
+def test_a_lone_repository_ledger_with_no_organization_ledger_is_refused():
+    refusal = org.source_ledger_refusal(minted("own"), organization=None,
+                                        materialized=org.ledger_store.PosixLedgerStore("/nonexistent-lone-root"))
+    assert refusal["failure_code"] == "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED", refusal
+    assert "LONE_REPOSITORY_LEDGER" in refusal["detail"]
+
+
+def test_the_custody_root_and_the_materializers_variable_must_name_one_ledger(ledgers, tmp_path):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+    other = org.ledger_store.PosixLedgerStore(tmp_path / "other")
+    on_ledger(other, "own")
+    with org._materialized_repository_ledger(other):
+        assert_refused(receipt, org_root, "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED")
+
+
+def test_a_symlink_is_accepted_only_when_its_realpath_is_the_designated_ledger(ledgers, tmp_path):
+    ledger, org_root = ledgers
+    receipt = on_ledger(ledger, "own")
+    foreign = org.ledger_store.PosixLedgerStore(tmp_path / "foreign")
+    on_ledger(foreign, "own")
+    to_foreign = tmp_path / "to-foreign"
+    to_foreign.symlink_to(foreign.root)
+    assert_refused(receipt, org_root, "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED",
+                   repository_ledger=org.ledger_store.PosixLedgerStore(to_foreign))
+    with org._materialized_repository_ledger(org.ledger_store.PosixLedgerStore(to_foreign)):
+        assert_refused(receipt, org_root, "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED")
+    to_designated = tmp_path / "to-designated"
+    to_designated.symlink_to(ledger.root)
+    with org._materialized_repository_ledger(org.ledger_store.PosixLedgerStore(to_designated)):
+        assert aggregate(receipt, org_root)["repo_receipt_sha256"] == receipt["receipt_sha256"]
+
+
+def test_federation_cycles_root_is_admitted_only_as_half_of_a_same_kind_pair(tmp_path):
+    location = org._repository_ledger().C["repository_ledger_location"]
+    organization = _bare_store(tmp_path / "organization.git", location)
+    # federation_cycle --repo-ledger-root as a POSIX directory beside the git organization ledger: refused.
+    refusal = org.source_ledger_refusal(minted("own"), organization=organization,
+                                        materialized=org.ledger_store.PosixLedgerStore(tmp_path / "repo"))
+    assert "MIXED_LEDGER_KIND_PAIR" in refusal["detail"], refusal
+    # As the subtree of that same ref, it pairs and is then held to the chain like any other.
+    subtree = org.ledger_store.open_store("git+%s#%s:%s" % (tmp_path / "organization.git", location["ref"],
+                                                            location["namespace"]))
+    refusal = org.source_ledger_refusal(minted("own"), organization=organization, materialized=subtree)
+    assert refusal["failure_code"] == "SOURCE_RECEIPT_NOT_ON_LEDGER", refusal

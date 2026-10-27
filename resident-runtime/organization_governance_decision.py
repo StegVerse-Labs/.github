@@ -273,11 +273,24 @@ def _item(entry: dict[str, Any]) -> dict[str, Any]:
             "seen_marker": entry.get("seen_marker")}
 
 
-def run_cycle(*, mesh: Path, node_state: Path, repo_ledger: Path,
+def _same_ledger_location(supplied: str, given: Any) -> bool:
+    """A git locator is compared as written; a POSIX root by its resolved path."""
+    given = str(given)
+    if supplied.startswith("git+") or given.startswith("git+"):
+        return supplied == given
+    return Path(supplied).resolve() == Path(given).resolve()
+
+
+def run_cycle(*, mesh: Path, node_state: Path, repo_ledger: Any,
               materialization: dict[str, Any]) -> dict[str, Any]:
-    """consume_and_respond over the materialized queue, with the declared organization store."""
+    """consume_and_respond over the materialized queue, with the declared organization store.
+
+    The repository ledger is the git subtree of the organization ledger ref
+    (`git+<checkout>#refs/stegverse/organization-ledger:repository-ledger/...`),
+    so the pair aggregate verifies is git with git (lead ruling 2026-10-24T21:42Z).
+    """
     supplied = os.environ.get("STEGVERSE_REPO_LEDGER_ROOT")
-    if not supplied or Path(supplied).resolve() != Path(repo_ledger).resolve():
+    if not supplied or not _same_ledger_location(supplied, repo_ledger):
         raise Refusal("ORGANIZATION_REPOSITORY_LEDGER_NOT_SUPPLIED",
                       "STEGVERSE_REPO_LEDGER_ROOT_must_equal_repo_ledger_root",
                       "set STEGVERSE_REPO_LEDGER_ROOT to the repository ledger root passed to the cycle")
@@ -292,7 +305,7 @@ def run_cycle(*, mesh: Path, node_state: Path, repo_ledger: Path,
         store = aggregate.organization_store()
         _materialize_ledger(store)
         results = kernel.consume_and_respond(ROOT, mesh_root=mesh, node_state_root=node_state,
-                                             repo_ledger_root=repo_ledger, org_ledger_root=store, seen=seen)
+                                             repo_ledger_root=str(repo_ledger), org_ledger_root=store, seen=seen)
     except (ValueError, KeyError, OSError) as exc:
         raise Refusal("ORGANIZATION_GOVERNANCE_CYCLE_REFUSED", type(exc).__name__ + ":" + str(exc)[:300],
                       "repair the named custody or ledger precondition and re-run")
@@ -728,7 +741,8 @@ def main(argv: list[str] | None = None) -> int:
     c = sub.add_parser("cycle")
     c.add_argument("--mesh", type=Path, required=True)
     c.add_argument("--node-state", type=Path, required=True)
-    c.add_argument("--repo-ledger", type=Path, required=True)
+    c.add_argument("--repo-ledger", required=True,
+                   help="the repository ledger: the git subtree locator of the organization ledger ref")
     p = sub.add_parser("publish")
     p.add_argument("--mesh", type=Path, required=True)
     p.add_argument("--work", type=Path, required=True)

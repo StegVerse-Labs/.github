@@ -11,6 +11,7 @@ import functools
 import importlib.util
 import itertools
 import json
+import os
 import shutil
 import tempfile
 import unittest
@@ -151,8 +152,11 @@ class Ledger:
 
     def run(self, request: dict, **kwargs) -> dict:
         kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
-        return sppa.authorize(request, source=self.source, repo_ledger_root=self.repo,
-                              org_ledger_root=self.org, **kwargs)
+        # The materializer supplies the repository ledger SPPA's receipts are checked against;
+        # SPPA's own --repo-ledger-root never reaches aggregate's private channel.
+        with mock.patch.dict(os.environ, {"STEGVERSE_REPO_LEDGER_ROOT": str(self.repo)}):
+            return sppa.authorize(request, source=self.source, repo_ledger_root=self.repo,
+                                  org_ledger_root=self.org, **kwargs)
 
     def chain_rows(self) -> list:
         custody = self.consumer.ledger_custody(self.source, self.repo, self.org, hb_epoch=4096)

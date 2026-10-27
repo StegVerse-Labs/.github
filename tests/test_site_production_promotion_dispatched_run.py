@@ -9,6 +9,7 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -76,6 +77,9 @@ class DispatchedSppaRunTests(unittest.TestCase):
         if ledger is not None:
             kwargs.setdefault("repo_ledger_root", ledger.repo)
             kwargs.setdefault("org_ledger_root", ledger.org)
+            # The materializer's repository ledger: SPPA's CLI root never reaches aggregate's channel.
+            with mock.patch.dict(os.environ, {"STEGVERSE_REPO_LEDGER_ROOT": str(ledger.repo)}):
+                return consumer.consume(source, self.runtime, **kwargs)
         return consumer.consume(source, self.runtime, **kwargs)
 
     def test_no_committed_request_is_no_run(self):
