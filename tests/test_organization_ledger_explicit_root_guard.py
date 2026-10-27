@@ -183,18 +183,20 @@ def test_federation_cycle_refuses_an_explicit_posix_root_under_git(git_declared,
 
 
 @pytest.mark.repository_ledger_locus
-def test_federation_cycle_without_an_explicit_root_appends_to_the_declared_store(git_declared, tmp_path):
+def test_federation_cycle_without_an_explicit_root_refuses_a_posix_repository_ledger_with_the_git_store(git_declared, tmp_path):
+    """A POSIX repository ledger does not pair with the declared git organization ledger (lead ruling 21:42Z).
+
+    The crossing is refused CALLER_CHOSEN_SOURCE_LEDGER_REJECTED (MIXED_LEDGER_KIND_PAIR)
+    before anything is appended: the frame stays unconsumed in the mesh, the
+    declared ref is never created, and the materializer's POSIX root is untouched.
+    """
     node, posix, before = git_declared
     mesh, state, repo = tmp_path / "mesh", tmp_path / "node-state", tmp_path / "repo-ledger"
     publish(mesh, "ol3-declared")
     report = cycle.cycle(mesh_root=mesh, node_state_root=state, repo_ledger_root=repo, hb_epoch=kernel.HB_ANCHOR_EPOCH + 700)
-    assert report["frames_consumed"] == 1
-    assert report["organization_receipts_recorded"] == 1
-    head = git_store(node).get(org.ledger_store.HEAD_KEY)
-    assert head is not None and ref_tip(node) is not None
-    rows = git_store(node).list_prefix(org.ledger_store.RECEIPT_PREFIX)
-    assert len(rows) == 1
-    # The materializer's STEGVERSE_ORG_LEDGER_ROOT is not the declared store and is untouched.
+    assert (report["frames_seen"], report["frames_consumed"], report["organization_receipts_recorded"]) == (1, 0, 0)
+    assert len(kernel.scan_addressed_frames(ORGANIZATION, root=mesh)) == 1
+    assert ref_tip(node) is None
     assert snapshot(posix) == before
 
 
@@ -254,36 +256,26 @@ def test_claim_consumer_refuses_an_explicit_posix_root_under_git(git_declared, t
 
 
 @pytest.mark.repository_ledger_locus
-def test_claim_consumer_without_an_explicit_root_grants_on_the_declared_store(git_declared, tmp_path):
+def test_claim_consumer_without_an_explicit_root_refuses_a_posix_repository_ledger_with_the_git_store(git_declared, tmp_path):
+    """The claim consumer's POSIX repository ledger does not pair with the declared git store (lead ruling 21:42Z).
+
+    Seeding the declared chain appends through the same pair check, so it is
+    refused CALLER_CHOSEN_SOURCE_LEDGER_REJECTED (MIXED_LEDGER_KIND_PAIR): the
+    declared ref is never created and the materializer's POSIX root is untouched.
+    """
     node, posix, _ = git_declared
     env = claim_env(tmp_path, posix)
     before = snapshot(posix)
-    # Root the declared chain through the existing emitters, as the POSIX tests do.
-    claim.seed_rooted_chain(env.source, None, tmp_path / "seed-repo-ledger")
-    seeded = ref_tip(node)
-    assert seeded is not None
-    result = env.consume(org=None)
-    assert result["disposition"] == "ALLOW", result
-    assert result["fence_issued"] is True and result["fencing_token"] == 8
-    assert result["organization_readback"] == "VERIFIED"
-    store = git_store(node)
-    granted = store.get(org.ledger_store.receipt_key(result["organization_receipt_sha256"]))
-    assert granted["boundary_evidence"]["fencing_token"] == 8
-    assert store.get(org.ledger_store.HEAD_KEY)["receipt_sha256"] == result["organization_receipt_sha256"]
-    assert ref_tip(node) != seeded
-    # The chain the next attempt verifies is the declared store's.
-    custody = claim.consumer.ledger_custody(env.source, env.repo, None, hb_epoch=4096)
-    assert custody["organization_root"] is None and custody["organization_store"].kind == "GIT_REF"
-    assert [row["boundary_evidence"]["fencing_token"] for row in claim.consumer.chain_grants(
-        claim.consumer.verify_organization_chain(custody))] == [8]
-    # Consuming the same request again returns the retained grant; no fence is reissued.
-    tip = ref_tip(node)
-    again = env.consume(org=None)
-    assert again["fencing_token"] == 8
-    assert again["organization_receipt_sha256"] == result["organization_receipt_sha256"]
-    assert ref_tip(node) == tip
+    with pytest.raises(Exception) as raised:
+        claim.seed_rooted_chain(env.source, None, tmp_path / "seed-repo-ledger")
+    cause = raised.value
+    while getattr(cause, "refusal", None) is None and cause.__cause__ is not None:
+        cause = cause.__cause__
+    refusal = cause.refusal if isinstance(getattr(cause, "refusal", None), dict) else {}
+    assert refusal.get("failure_code") == "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED", raised.value
+    assert "MIXED_LEDGER_KIND_PAIR" in refusal["detail"]
+    assert ref_tip(node) is None
     assert snapshot(posix) == before
-
 
 @pytest.mark.repository_ledger_locus
 def test_claim_consumer_on_an_empty_declared_store_fails_closed_unextended(git_declared, tmp_path):

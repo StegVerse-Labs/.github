@@ -1220,7 +1220,9 @@ def source_ledger_refusal(receipt, repository_ledger=None, *, organization=None,
     users). Either way it must PAIR with `organization`, the organization store
     being appended: a git repository ledger is the same git repository (by
     realpath) and the same ref as the git organization ledger, at contract.json's
-    namespace; a POSIX one holds no git-tracked files. An unpaired ledger, or a public
+    namespace; a POSIX one pairs only with a POSIX organization ledger, neither
+    root holding git-tracked files (a mixed pair is MIXED_LEDGER_KIND_PAIR,
+    lead ruling 21:42Z). An unpaired ledger, or a public
     `repository_ledger` that is not the designated one, is
     CALLER_CHOSEN_SOURCE_LEDGER_REJECTED. None supplied is the location
     refusal, never a pass. The walk is emit.chain, which proves every node is
@@ -1254,10 +1256,18 @@ def source_ledger_refusal(receipt, repository_ledger=None, *, organization=None,
         designated=materialized if materialized is not None else repository.repository_store()
         identity=_ledger_identity(designated)
         paired=_ledger_identity(organization) if organization is not None else None
-        # A git repository ledger is the subtree of the organization ledger ref it pairs with.
-        if identity[0]=="git" and (paired is None or paired[0]!="git" or identity[1:3]!=paired[1:3]):
+        # Lead ruling 21:42Z: both halves of a pair are the same kind. A git
+        # repository ledger is the subtree of the organization ledger ref it pairs
+        # with; a POSIX one pairs only with a POSIX organization ledger, and
+        # neither root holds git-tracked files.
+        if paired is not None and identity[0]!=paired[0]:
+            return refused("MIXED_LEDGER_KIND_PAIR: a "+identity[0]+" repository ledger "+repr(identity)
+                           +" with a "+paired[0]+" organization ledger "+repr(paired),code=CALLER_CHOSEN_LEDGER)
+        if identity[0]=="git" and (paired is None or identity[1:3]!=paired[1:3]):
             return refused("the repository ledger "+repr(identity)+" does not pair with the organization ledger "
                            +repr(paired)+" being appended",code=CALLER_CHOSEN_LEDGER)
+        if paired is not None and paired[0]=="posix" and _tracked_files_under(paired[1]):
+            return refused("the organization ledger root "+paired[1]+" holds git-tracked files",code=ROOT_NOT_DESIGNATED)
         location=repository.C.get("repository_ledger_location") or {}
         if identity[0]=="git" and (identity[2],identity[3])!=(location.get("ref"),location.get("namespace")):
             return refused("the supplied git ledger "+repr(identity[2:])+" is not contract.json's "

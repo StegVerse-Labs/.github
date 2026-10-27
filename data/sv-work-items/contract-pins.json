@@ -97,8 +97,8 @@
       "sha256": "sha256:7adb8a9d728a8746c5bfa774f33402ce44fdb163765a717e88de756734c48928"
     },
     "resident-runtime/aggregate_repo_transition.py": {
-      "blob": "78853dda9a6895238cea208422f87b672fa56d9d",
-      "sha256": "sha256:9b6ffc0452ed4a5a4fd1cfa88a7cb9a76710a50e0397535d68898610312c7059"
+      "blob": "52632b6112064406902996cd2340f02a44bf837e",
+      "sha256": "sha256:7b029136407c7a786b1e1a8a08a8b7084857bed8efe6141d39a560375a80613d"
     },
     "resident-runtime/ledger_store.py": {
       "blob": "5803414986de4dc3fea72e12f5eff885cd991405",

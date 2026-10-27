@@ -268,3 +268,30 @@ def test_a_forged_materializer_root_holding_tracked_files_is_refused(ledgers):
     receipt = on_ledger(ledger, "own")
     assert_refused(receipt, org_root, "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED",
                    _materialized_repository_ledger=org.ledger_store.PosixLedgerStore(TRACKED))
+
+
+# --- Lead ruling 21:42Z: a mixed pair is refused in both directions ---
+
+def test_a_posix_repository_ledger_with_a_git_organization_ledger_is_a_mixed_pair(tmp_path):
+    location = org._repository_ledger().C["repository_ledger_location"]
+    organization = _bare_store(tmp_path / "organization.git", location)
+    repository = org.ledger_store.PosixLedgerStore(tmp_path / "repo")
+    refusal = org.source_ledger_refusal(minted("own"), organization=organization, materialized=repository)
+    assert refusal["failure_code"] == "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED", refusal
+    assert "MIXED_LEDGER_KIND_PAIR" in refusal["detail"]
+
+
+def test_a_git_repository_ledger_with_a_posix_organization_ledger_is_a_mixed_pair(tmp_path):
+    location = org._repository_ledger().C["repository_ledger_location"]
+    repository = _bare_store(tmp_path / "repository.git", location)
+    organization = org.ledger_store.PosixLedgerStore(tmp_path / "org")
+    refusal = org.source_ledger_refusal(minted("own"), organization=organization, materialized=repository)
+    assert refusal["failure_code"] == "CALLER_CHOSEN_SOURCE_LEDGER_REJECTED", refusal
+    assert "MIXED_LEDGER_KIND_PAIR" in refusal["detail"]
+
+
+def test_a_posix_organization_root_holding_tracked_files_is_not_contract_designated(tmp_path):
+    repository = org.ledger_store.PosixLedgerStore(tmp_path / "repo")
+    organization = org.ledger_store.PosixLedgerStore(TRACKED)
+    refusal = org.source_ledger_refusal(minted("own"), organization=organization, materialized=repository)
+    assert refusal["failure_code"] == "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED", refusal
