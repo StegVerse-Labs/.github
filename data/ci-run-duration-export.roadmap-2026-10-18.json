@@ -1,0 +1,566 @@
+{
+  "schema": "stegverse.ci-run-duration-export.v1",
+  "source": "GitHub Actions workflow-run records (list_workflow_runs) for branch claude/stegverse-roadmap-execution-9zq18t, read 2026-10-18 ~18:20Z; completed_at is the run record's updated_at",
+  "runs": [
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39127496164,
+      "workflow": "validate-economic-paper-sdk-consumer.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "3041241c03ba6924a66dc215a97974f3b7c0d8a4",
+      "run_started_at": "2026-10-18T12:29:36Z",
+      "completed_at": "2026-10-18T12:29:42Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39127496165,
+      "workflow": "architecture-guard.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "3041241c03ba6924a66dc215a97974f3b7c0d8a4",
+      "run_started_at": "2026-10-18T12:29:36Z",
+      "completed_at": "2026-10-18T12:29:52Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39127496175,
+      "workflow": "validate-economic-roadmap-evidence-export.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "3041241c03ba6924a66dc215a97974f3b7c0d8a4",
+      "run_started_at": "2026-10-18T12:29:36Z",
+      "completed_at": "2026-10-18T12:29:43Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39127496185,
+      "workflow": "publisher-check.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "3041241c03ba6924a66dc215a97974f3b7c0d8a4",
+      "run_started_at": "2026-10-18T12:29:36Z",
+      "completed_at": "2026-10-18T12:29:45Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39127496249,
+      "workflow": "publisher-readiness.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "3041241c03ba6924a66dc215a97974f3b7c0d8a4",
+      "run_started_at": "2026-10-18T12:29:36Z",
+      "completed_at": "2026-10-18T12:29:46Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39130793969,
+      "workflow": "validate-economic-paper-sdk-consumer.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "ec86a370be0dca8848c198df74f5f352be64b4c5",
+      "run_started_at": "2026-10-18T13:16:05Z",
+      "completed_at": "2026-10-18T13:16:13Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39130793983,
+      "workflow": "publisher-readiness.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "ec86a370be0dca8848c198df74f5f352be64b4c5",
+      "run_started_at": "2026-10-18T13:16:05Z",
+      "completed_at": "2026-10-18T13:16:13Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39130793991,
+      "workflow": "architecture-guard.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "ec86a370be0dca8848c198df74f5f352be64b4c5",
+      "run_started_at": "2026-10-18T13:16:05Z",
+      "completed_at": "2026-10-18T13:16:15Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39130794004,
+      "workflow": "publisher-check.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "ec86a370be0dca8848c198df74f5f352be64b4c5",
+      "run_started_at": "2026-10-18T13:16:05Z",
+      "completed_at": "2026-10-18T13:16:18Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39130794005,
+      "workflow": "validate-economic-roadmap-evidence-export.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "ec86a370be0dca8848c198df74f5f352be64b4c5",
+      "run_started_at": "2026-10-18T13:16:05Z",
+      "completed_at": "2026-10-18T13:16:12Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39130794007,
+      "workflow": "validate-economic-treasury-stress-test.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "ec86a370be0dca8848c198df74f5f352be64b4c5",
+      "run_started_at": "2026-10-18T13:16:05Z",
+      "completed_at": "2026-10-18T13:16:13Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39131730709,
+      "workflow": "publisher-readiness.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "f13d46f66cd89bb8aed608153dbc2406c12c1cb9",
+      "run_started_at": "2026-10-18T13:28:58Z",
+      "completed_at": "2026-10-18T13:29:06Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39131730718,
+      "workflow": "validate-economic-treasury-stress-test.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "f13d46f66cd89bb8aed608153dbc2406c12c1cb9",
+      "run_started_at": "2026-10-18T13:28:58Z",
+      "completed_at": "2026-10-18T13:29:07Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39131730724,
+      "workflow": "publisher-check.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "f13d46f66cd89bb8aed608153dbc2406c12c1cb9",
+      "run_started_at": "2026-10-18T13:28:58Z",
+      "completed_at": "2026-10-18T13:29:06Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39131730733,
+      "workflow": "architecture-guard.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "f13d46f66cd89bb8aed608153dbc2406c12c1cb9",
+      "run_started_at": "2026-10-18T13:28:58Z",
+      "completed_at": "2026-10-18T13:29:12Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39131730737,
+      "workflow": "validate-economic-paper-sdk-consumer.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "f13d46f66cd89bb8aed608153dbc2406c12c1cb9",
+      "run_started_at": "2026-10-18T13:28:58Z",
+      "completed_at": "2026-10-18T13:29:08Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39131730746,
+      "workflow": "validate-economic-roadmap-evidence-export.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "f13d46f66cd89bb8aed608153dbc2406c12c1cb9",
+      "run_started_at": "2026-10-18T13:28:58Z",
+      "completed_at": "2026-10-18T13:29:07Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39131730793,
+      "workflow": "validate-economic-benchmark-evaluators.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "f13d46f66cd89bb8aed608153dbc2406c12c1cb9",
+      "run_started_at": "2026-10-18T13:28:58Z",
+      "completed_at": "2026-10-18T13:29:05Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39132004022,
+      "workflow": "validate-economic-roadmap-evidence-export.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "85214ac1fea4957e29703d2d763cb94c3b2cad9d",
+      "run_started_at": "2026-10-18T13:32:37Z",
+      "completed_at": "2026-10-18T13:32:44Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39132004027,
+      "workflow": "validate-economic-paper-sdk-consumer.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "85214ac1fea4957e29703d2d763cb94c3b2cad9d",
+      "run_started_at": "2026-10-18T13:32:37Z",
+      "completed_at": "2026-10-18T13:32:46Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39132004038,
+      "workflow": "validate-economic-benchmark-evaluators.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "85214ac1fea4957e29703d2d763cb94c3b2cad9d",
+      "run_started_at": "2026-10-18T13:32:37Z",
+      "completed_at": "2026-10-18T13:32:44Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39132004051,
+      "workflow": "publisher-readiness.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "85214ac1fea4957e29703d2d763cb94c3b2cad9d",
+      "run_started_at": "2026-10-18T13:32:37Z",
+      "completed_at": "2026-10-18T13:32:47Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39132004053,
+      "workflow": "architecture-guard.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "85214ac1fea4957e29703d2d763cb94c3b2cad9d",
+      "run_started_at": "2026-10-18T13:32:37Z",
+      "completed_at": "2026-10-18T13:32:50Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39132004068,
+      "workflow": "validate-economic-treasury-stress-test.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "85214ac1fea4957e29703d2d763cb94c3b2cad9d",
+      "run_started_at": "2026-10-18T13:32:37Z",
+      "completed_at": "2026-10-18T13:32:47Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "GCAT-BCAT-Engine/Publisher",
+      "run_id": 39132004128,
+      "workflow": "publisher-check.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "85214ac1fea4957e29703d2d763cb94c3b2cad9d",
+      "run_started_at": "2026-10-18T13:32:37Z",
+      "completed_at": "2026-10-18T13:32:47Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39128318635,
+      "workflow": "workspace-device-kv-validation.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "c9f7c84194e67bb6cf478b8ac2344ed0be6222b3",
+      "run_started_at": "2026-10-18T12:41:10Z",
+      "completed_at": "2026-10-18T12:41:20Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39128318703,
+      "workflow": "validate-kv-ai-memory-resident.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "c9f7c84194e67bb6cf478b8ac2344ed0be6222b3",
+      "run_started_at": "2026-10-18T12:41:10Z",
+      "completed_at": "2026-10-18T12:41:24Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39128335640,
+      "workflow": "test-suite-ratchet.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "c9f7c84194e67bb6cf478b8ac2344ed0be6222b3",
+      "run_started_at": "2026-10-18T12:41:24Z",
+      "completed_at": "2026-10-18T12:45:42Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39129016183,
+      "workflow": "test-suite-ratchet.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "d675102769d4debb3fa5f901e4c71b01713a3514",
+      "run_started_at": "2026-10-18T12:51:06Z",
+      "completed_at": "2026-10-18T12:55:57Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39130175830,
+      "workflow": "test-suite-ratchet.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "50b2b745fd3889d216ba2f10b19b843f12308053",
+      "run_started_at": "2026-10-18T13:07:36Z",
+      "completed_at": "2026-10-18T13:12:44Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39132276953,
+      "workflow": "test-suite-ratchet.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "e36af51b4198ed2d00102cee75bc2e5a46bbbb94",
+      "run_started_at": "2026-10-18T13:36:20Z",
+      "completed_at": "2026-10-18T13:41:41Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39151073142,
+      "workflow": "test-suite-ratchet.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "5ea052a6505fc0b69dc448bcbb6451fc983a2c54",
+      "run_started_at": "2026-10-18T17:45:51Z",
+      "completed_at": "2026-10-18T17:50:55Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39151407968,
+      "workflow": "test-suite-ratchet.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "02516c9a2606468e435da2bb09dce35314f8dd83",
+      "run_started_at": "2026-10-18T17:50:21Z",
+      "completed_at": "2026-10-18T17:54:27Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/.github",
+      "run_id": 39152320940,
+      "workflow": "test-suite-ratchet.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "167b8ef8d4e201f74a2aa111b1df1c2e45ad5de8",
+      "run_started_at": "2026-10-18T18:02:26Z",
+      "completed_at": "2026-10-18T18:06:16Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127274879,
+      "workflow": "validate.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "009beda7b14257ade0ef6dce0dede9644ef6271a",
+      "run_started_at": "2026-10-18T12:26:20Z",
+      "completed_at": "2026-10-18T12:26:38Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127277862,
+      "workflow": "site-handoff-orchestrator.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "009beda7b14257ade0ef6dce0dede9644ef6271a",
+      "run_started_at": "2026-10-18T12:26:23Z",
+      "completed_at": "2026-10-18T12:26:35Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127277879,
+      "workflow": "ecosystem-heartbeat-orchestration.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "009beda7b14257ade0ef6dce0dede9644ef6271a",
+      "run_started_at": "2026-10-18T12:26:23Z",
+      "completed_at": "2026-10-18T12:26:36Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127277898,
+      "workflow": "validate.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "009beda7b14257ade0ef6dce0dede9644ef6271a",
+      "run_started_at": "2026-10-18T12:26:23Z",
+      "completed_at": "2026-10-18T12:26:45Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127289717,
+      "workflow": "site-handoff-orchestrator.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "009beda7b14257ade0ef6dce0dede9644ef6271a",
+      "run_started_at": "2026-10-18T12:26:34Z",
+      "completed_at": "2026-10-18T12:26:47Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127745420,
+      "workflow": "site-handoff-orchestrator.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "009beda7b14257ade0ef6dce0dede9644ef6271a",
+      "run_started_at": "2026-10-18T12:33:01Z",
+      "completed_at": "2026-10-18T12:33:18Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127753715,
+      "workflow": "site-handoff-orchestrator.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "009beda7b14257ade0ef6dce0dede9644ef6271a",
+      "run_started_at": "2026-10-18T12:33:07Z",
+      "completed_at": "2026-10-18T12:33:33Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127802082,
+      "workflow": "validate.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "20b04c5943a1d34f7a828ecec67f20b6c1f4e089",
+      "run_started_at": "2026-10-18T12:33:52Z",
+      "completed_at": "2026-10-18T12:34:15Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127814922,
+      "workflow": "validate.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "20b04c5943a1d34f7a828ecec67f20b6c1f4e089",
+      "run_started_at": "2026-10-18T12:34:02Z",
+      "completed_at": "2026-10-18T12:34:25Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127814929,
+      "workflow": "site-handoff-orchestrator.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "20b04c5943a1d34f7a828ecec67f20b6c1f4e089",
+      "run_started_at": "2026-10-18T12:34:02Z",
+      "completed_at": "2026-10-18T12:34:17Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-Labs/Site",
+      "run_id": 39127814971,
+      "workflow": "ecosystem-heartbeat-orchestration.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "20b04c5943a1d34f7a828ecec67f20b6c1f4e089",
+      "run_started_at": "2026-10-18T12:34:02Z",
+      "completed_at": "2026-10-18T12:34:15Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131143863,
+      "workflow": "portable-package-source-validation.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:20:54Z",
+      "completed_at": "2026-10-18T13:21:02Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131143875,
+      "workflow": "connect-llm-source-validation.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:20:54Z",
+      "completed_at": "2026-10-18T13:21:02Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131187709,
+      "workflow": "principal-class-conformance.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:30Z",
+      "completed_at": "2026-10-18T13:21:41Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131187734,
+      "workflow": "framework-naming-guard.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:30Z",
+      "completed_at": "2026-10-18T13:21:43Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131187815,
+      "workflow": "package-artifact-validation.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:30Z",
+      "completed_at": "2026-10-18T13:21:51Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131187830,
+      "workflow": "capability-map-conformance.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:30Z",
+      "completed_at": "2026-10-18T13:21:46Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131187832,
+      "workflow": "validate-economic-publisher-paper-manifest.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:30Z",
+      "completed_at": "2026-10-18T13:21:39Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131187838,
+      "workflow": "intr-destination-hop-lane.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:30Z",
+      "completed_at": "2026-10-18T13:21:53Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131187841,
+      "workflow": "served-surface-assertion.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:30Z",
+      "completed_at": "2026-10-18T13:21:39Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131187842,
+      "workflow": "test-suite-ratchet.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:30Z",
+      "completed_at": "2026-10-18T13:22:37Z",
+      "conclusion": "success"
+    },
+    {
+      "repo": "StegVerse-org/StegVerse-SDK",
+      "run_id": 39131188019,
+      "workflow": "s4-cost-benchmark-validation.yml",
+      "head_branch": "claude/stegverse-roadmap-execution-9zq18t",
+      "head_sha": "61c59a10386a29618971abde2c1f82cb70f5bcbe",
+      "run_started_at": "2026-10-18T13:21:31Z",
+      "completed_at": "2026-10-18T13:21:39Z",
+      "conclusion": "success"
+    }
+  ]
+}

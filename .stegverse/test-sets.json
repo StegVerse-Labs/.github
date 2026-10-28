@@ -1133,6 +1133,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_compute_ecosystem_offload_ratio.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_compute_ecosystem_offload_ratio.py"
+   ],
+   "tests": [
+    "tests/test_compute_ecosystem_offload_ratio.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_consume_stegsocials_bounded_intr_admission_request.py",
    "inputs": [],
    "surfaces": [
@@ -2280,6 +2292,18 @@
    ],
    "tests": [
     "tests/test_executor_discovery.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_export_ci_run_durations.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_export_ci_run_durations.py"
+   ],
+   "tests": [
+    "tests/test_export_ci_run_durations.py"
    ]
   },
   {
@@ -5049,6 +5073,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_org_runtime_transition_bound.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_org_runtime_transition_bound.py"
+   ],
+   "tests": [
+    "tests/test_org_runtime_transition_bound.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_batch_custody.py",
    "inputs": [],
    "surfaces": [
@@ -5806,6 +5842,18 @@
    ],
    "tests": [
     "tests/test_registry_generation_fence.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_rehearse_owner_apply.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_rehearse_owner_apply.py"
+   ],
+   "tests": [
+    "tests/test_rehearse_owner_apply.py"
    ]
   },
   {
@@ -6574,6 +6622,18 @@
    ],
    "tests": [
     "tests/test_sdk_generic_manifest_task_registry_registration.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_sdk_install_constraints_guard.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_sdk_install_constraints_guard.py"
+   ],
+   "tests": [
+    "tests/test_sdk_install_constraints_guard.py"
    ]
   },
   {
@@ -10773,6 +10833,9 @@
    "data/task-coordination-policy.json",
    "scripts/evaluate_task_registry_collision_checkin.py"
   ],
+  "scripts/check_sdk_install_constraints.py": [
+   ".github/workflows/**"
+  ],
   "scripts/check_sdk_reusable_workflow_pins.py": [
    ".github/workflows/**"
   ],
@@ -11909,6 +11972,9 @@
    "docs/ECOSYSTEM_CONTINUITY_HEALER_INTAKE_CONTRACT.md",
    "scripts/evaluate_ecosystem_continuity.py"
   ],
+  "scripts/rehearse_owner_apply.py": [
+   "scripts/apply_task_record_data.py"
+  ],
   "scripts/render_cross_task_coordination_handoff.py": [
    "heartbeat_runtime/coordination_ledger.py"
   ],
@@ -12920,6 +12986,9 @@
    "scripts/refresh_sovereign_worker_runtime_source.py",
    "tests/pytest.py"
   ],
+  "tests/test_compute_ecosystem_offload_ratio.py": [
+   "scripts/compute_ecosystem_offload_ratio.py"
+  ],
   "tests/test_consume_stegsocials_bounded_intr_admission_request.py": [
    "scripts/consume_stegsocials_bounded_intr_admission_request.py",
    "workers/stegsocials_bounded_intr_ingress.py"
@@ -13465,6 +13534,10 @@
    "control/worker-registry.json",
    "heartbeat_runtime/__init__.py",
    "tests/test_heartbeat_runtime.py"
+  ],
+  "tests/test_export_ci_run_durations.py": [
+   "scripts/compute_ecosystem_offload_ratio.py",
+   "scripts/export_ci_run_durations.py"
   ],
   "tests/test_external_framework_registry_rollout_planner.py": [
    "scripts/plan_external_framework_registry_rollout.py"
@@ -14850,6 +14923,10 @@
    "tasks/TASK-2026-0013.json",
    "tasks/TASK-2026-0014.json"
   ],
+  "tests/test_org_runtime_transition_bound.py": [
+   "org-runtime/activation.json",
+   "org-runtime/runtime_boundary.py"
+  ],
   "tests/test_organization_batch_custody.py": [
    "heartbeat_runtime/__init__.py",
    "heartbeat_runtime/independent_oscillator.py",
@@ -15214,6 +15291,9 @@
   ],
   "tests/test_registry_generation_fence.py": [
    "scripts/check_registry_generation_fence.py"
+  ],
+  "tests/test_rehearse_owner_apply.py": [
+   "scripts/rehearse_owner_apply.py"
   ],
   "tests/test_remediation_endpoint.py": [
    "org-boundary/registry/services.json",
@@ -15588,6 +15668,9 @@
   "tests/test_sdk_generic_manifest_task_registry_registration.py": [
    "data/canonical-task-records/**",
    "data/canonical-task-records/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json"
+  ],
+  "tests/test_sdk_install_constraints_guard.py": [
+   "scripts/check_sdk_install_constraints.py"
   ],
   "tests/test_sdk_manifest_diagnostic_admitted_consumer.py": [
    "heartbeat_runtime/worker_runtime_legacy.py",
@@ -16031,6 +16114,7 @@
   ],
   "tests/test_state_language_reconciliation.py": [
    "control/state-projections/**",
+   "data/canonical-task-registry.json",
    "heartbeat_runtime/worker_runtime.py",
    "state_language/__init__.py"
   ],
