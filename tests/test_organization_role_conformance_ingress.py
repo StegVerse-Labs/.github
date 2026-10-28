@@ -880,10 +880,17 @@ class GitDeclaredOutboxTests(OutboxTests):
     with the git dir unset -- each one leaving a repository receipt and an
     ORGANIZATION_APPEND_NOT_COMMITTED partial -- and refused, for the wrong
     variable, when only the posix root was unset.
+
+    The repository ledger is the git subtree of that same organization ledger
+    ref (contract.json's ref and namespace), as the production writers supply
+    it: a POSIX repository root with a git organization ledger is a mixed pair,
+    refused CALLER_CHOSEN_SOURCE_LEDGER_REJECTED (MIXED_LEDGER_KIND_PAIR).
     """
 
     GIT_LOCUS = json.loads((ROOT / ".stegverse/transition-ledger/org-contract.json").read_text())[
         organization_ledger.LEDGER_LOCUS_KEY]
+    REPO_LOCATION = json.loads((ROOT / ".stegverse/transition-ledger/contract.json").read_text())[
+        "repository_ledger_location"]
 
     def setUp(self):
         super().setUp()
@@ -892,7 +899,10 @@ class GitDeclaredOutboxTests(OutboxTests):
         subprocess.run(["git", "init", "--bare", "-q", str(self.node)], check=True)
         for patch in (mock.patch.dict(organization_ledger.C,
                                       {organization_ledger.LEDGER_LOCUS_KEY: dict(self.GIT_LOCUS)}),
-                      mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_GIT_DIR": str(self.node)})):
+                      mock.patch.dict(os.environ, {
+                          "STEGVERSE_ORG_LEDGER_GIT_DIR": str(self.node),
+                          "STEGVERSE_REPO_LEDGER_ROOT": "git+" + str(self.node) + "#" + self.REPO_LOCATION["ref"]
+                                                        + ":" + self.REPO_LOCATION["namespace"]})):
             patch.start()
             self.addCleanup(patch.stop)
         os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
