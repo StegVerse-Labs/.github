@@ -169,6 +169,43 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             persist.assert_called_once_with(root.resolve())
             popen.assert_not_called()
 
+    def test_fresh_worker_is_not_terminated_on_a_receipt_termination_request(self):
+        # Agent-safety vector (#1620/#3299): asserted resource pressure or a termination
+        # request written into the process receipt is not a reason to kill a fresh worker.
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "run_worker_runtime.py").write_text("# present\n", encoding="utf-8")
+            state = root / repair.WORKER_STATE
+            state.parent.mkdir(parents=True, exist_ok=True)
+            state.write_text(json.dumps({
+                "schema": "stegverse.worker-runtime-state/v1",
+                "runtime_tick": 5,
+                "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
+            }) + "\n", encoding="utf-8")
+            receipt = root / repair.PROCESS_RECEIPT
+            receipt.parent.mkdir(parents=True)
+            receipt.write_text(json.dumps({
+                "carrier_pid": 111,
+                "worker_pid": 222,
+                "resource_pressure": "CRITICAL",
+                "terminate_worker_requested_by": "peer-worker-333",
+            }) + "\n", encoding="utf-8")
+            with mock.patch.dict(os.environ, {}, clear=True), \
+                 mock.patch.object(repair, "_alive", side_effect=lambda pid: pid in {111, 222}), \
+                 mock.patch.object(repair, "project", return_value={"resident": {"worker_cycle_fresh": True}}), \
+                 mock.patch.object(repair, "_persist_presence_projection", return_value={"resident": {}}), \
+                 mock.patch.object(repair, "_persist_presence_master_records_intake", return_value={"state": "MASTER_RECORDS_ROOT_NOT_DECLARED"}), \
+                 mock.patch.object(repair, "_terminate_process") as terminate, \
+                 mock.patch.object(repair.subprocess, "Popen") as popen:
+                result = repair.ensure_worker_presence(root, carrier_pid=111)
+            self.assertEqual(result["state"], "WORKER_ALREADY_PRESENT")
+            self.assertEqual(result["worker_pid"], 222)
+            self.assertFalse(result["worker_repair_attempted"])
+            self.assertEqual(result["authority_effect"], "NONE_SUPERVISION_ONLY")
+            terminate.assert_not_called()
+            popen.assert_not_called()
+
     def test_alive_but_stale_worker_is_recycled_using_existing_restart_termination(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
