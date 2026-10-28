@@ -955,7 +955,7 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb), #3324 (merged a2dc600b), #3327 (merged efd0908c), continuity-vault-kit#259 (merged 1e8cd49e) and #263 (merged; in the cvk pin @77d28d83), #258 (closed; its commits are ancestors via #263). Still not admitted: LLM-adapter#428, #429 (drafts), StegOS#427 (draft), TVC#537 (draft). admission not exercised; consequence path pending drafts",
+   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb), #3324 (merged a2dc600b), #3327 (merged efd0908c), continuity-vault-kit#259 (merged 1e8cd49e) and #263 (merged; in the cvk pin @77d28d83), #258 (closed; its commits are ancestors via #263). Still not admitted: LLM-adapter#428, #429 (drafts), TVC#537 (draft). StegOS#427 (NODE_LEDGER_OPENED at EPHEMERAL generation) is removed by Lane D (#167 c6394287652): the EPHEMERAL path is barred and no external machine may be a completion requirement (docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md:53,60). admission not exercised; consequence path pending drafts",
    "refusals": [
     {
      "disposition": "FAIL_CLOSED",
@@ -970,17 +970,6 @@
     {
      "disposition": "FAIL_CLOSED",
      "evidence": "StegVerse-org/LLM-adapter#428 (healthy-node evaluator) draft @0b37fe3b, #429 (NODE_HEALTH_REPORTED producer) draft @5f5f7bbe",
-     "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
-     "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
-     "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
-     "next_attempt": "on the dependency's admission event",
-     "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
-     "required_evidence_or_repair": "admit the dependency through its own exact-head admission",
-     "retry_entrypoint": "python scripts/ladder_conformance.py check (StegVerse-Labs/.github)"
-    },
-    {
-     "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/StegOS#427 (NODE_LEDGER_OPENED at EPHEMERAL generation) draft @ac9a1532",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "KV-SKAP-VAULT-FUNCTIONAL-001:H-KV-ADMISSION",
@@ -1441,10 +1430,10 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:d33a9873c44b3c06487fb16b46d1e73f7e2f0c2eedd5cb30d2175f53bc533cf5",
+  "document_sha256": "sha256:0e925979958442273bd7bfee2602e584e58e4ec541ab0638cc7d75c66e5be637",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:0601c3049bf406ffd24ebca8ae636a376ae874af63052d66dfee033aed82a978",
+   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:ec931339f2ce2b68bec76685dcfca04dd0c71ff1ddbb8f811b974fed1a0cb4ec",
    "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:9428a5d306031f55620989534db6bb0882b94c0759408efe5d3ebc0fe22e684e",
    "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:7fe452c215aef6cb38e94f6bbb29c936a86284271dbd63b6d3e2907203a463d7",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:2d215d2083b2769b78e464ce9e9497d379c3bfbdf0084fda8c60dded49cef11a",

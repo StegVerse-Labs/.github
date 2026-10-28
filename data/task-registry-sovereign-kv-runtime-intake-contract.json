@@ -37,7 +37,7 @@
   },
   "execution_ownership": {
     "provider_execution_owner": "KV-CONNECTION-REVALIDATION-WORKER-001",
-    "device_kv_skap_intr_evidence_owner": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "device_kv_skap_roundtrip_evidence_owner": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
     "custody_projection_owner": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
     "new_provider_executor_created": false
   },

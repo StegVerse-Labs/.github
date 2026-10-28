@@ -27,12 +27,12 @@ LABS = "StegVerse-Labs/.github"
 # TVC_LABS_CONFORMANCE_RECEIPT_JSON_BEGIN/END; its seal names Labs#3317's head 006b32a0. The contract's
 # surface_paths_observed_at still records it: its surface is byte-identical to Labs main.
 TVC_LABS_RECEIPT_SHA256 = "sha256:9823142846b9a4cb98b6ef48bc2d652c9efe7be908e24fa2502eb8e397560270"
-# The committed request: TVC push run 40160000328 at StegVerse-Labs/TVC 821fa57d (TVC#546 merged) printed this
-# receipt in the same block; its seal names Labs#3348's head b8e4665a (ALLOW, 25 tests, 0 skipped).
-COMMITTED_RUN_ID = 40160000328
-COMMITTED_RECEIPT_SHA256 = "sha256:7ef22d0422243b6dfb6ebb1cb56248835084d2bfcfade67382464c36990ad931"
-COMMITTED_LABS_COMMIT = "b8e4665ae9db9b43f76f53d1470192daafd91974"
-COMMITTED_TVC_HEAD = "821fa57d009bb3f25a3ba4ca60ba937d0629ccc8"
+# The committed request: TVC push run 40166845193 at StegVerse-Labs/TVC fa3e067a (TVC#551 merged) printed this
+# receipt in the same block; its seal names Labs#3359's head 97319a5e (ALLOW, 25 tests, 0 skipped).
+COMMITTED_RUN_ID = 40166845193
+COMMITTED_RECEIPT_SHA256 = "sha256:fd5dd53e42677c3e868c81271f450fbb51db4c53cccb151df727b3654e12268a"
+COMMITTED_LABS_COMMIT = "97319a5e16d1984082d0e76be650d82207f4a7da"
+COMMITTED_TVC_HEAD = "fa3e067a1b8121145bb4e3033c0cff8a88abd1df"
 
 
 def _load(name, path):
@@ -214,7 +214,7 @@ class Admission(Refusals, unittest.TestCase):
     def test_the_committed_request_is_tvc_run_40137248073s_labs_receipt_and_is_admitted(self):
         """The committed request's TVC receipt is admitted. The method name is kept so the test-suite ratchet sees the
         same test at the head (TEST_PRESENT_AT_BASE_RUNS_AT_HEAD); the request now carries run COMMITTED_RUN_ID
-        (40160000328, TVC#546), which supersedes run 40137248073 (TVC#539)."""
+        (40166845193, TVC#551), which supersedes runs 40160000328 (TVC#546) and 40137248073 (TVC#539)."""
         request = ing.read_request(ROOT / ing.REQUEST_PATH)
         self.assertEqual(request["operation"], ing.SEALED)
         receipt = request["receipt"]
