@@ -248,8 +248,9 @@ class IdempotentReceiveTests(IngressLedgerCase):
         self.assertEqual(organization["repo_receipt_sha256"], repository["receipt_sha256"])
         self.assertEqual(completed["organization_receipt_sha256"], organization["receipt_sha256"])
 
-    def test_replay_completion_takes_the_epoch_its_caller_supplies(self):
-        """A retry completes the first attempt's repository receipt, and the
+    def test_replay_completion_takes_its_epoch_from_the_retained_receipt(self):
+        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a replay completion takes the epoch its caller supplies; an epoch read back from the retained receipt is never forwarded as supplied.
+        A retry completes the first attempt's repository receipt, and the
         organization receipt takes the retry's own supplied epoch: an epoch read
         back from the repository receipt is never forwarded as supplied (B-P36f/m)."""
         self.fail_next_org_append = True

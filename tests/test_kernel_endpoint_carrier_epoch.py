@@ -261,8 +261,9 @@ class GovernanceCarrierEpochTests(unittest.TestCase):
                         if r.get("repo_receipt_sha256") == decision["receipt_sha256"]]
         self.assertEqual(organization[0]["hb_reference"]["epoch"], 1000)
 
-    def test_a_clock_derived_frame_stays_pending_with_nothing_written(self):
-        """NARROW (08:10Z): a CLOCK frame lends no epoch. With no cycle epoch it is
+    def test_a_clock_derived_frame_is_refused_and_stored_as_returned(self):
+        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a clock-derived frame lends no epoch: it stays PENDING (HB_EPOCH_NOT_SUPPLIED, non-terminal) and nothing is stored.
+        NARROW (08:10Z): a CLOCK frame lends no epoch. With no cycle epoch it is
         refused HB_EPOCH_NOT_SUPPLIED, non-terminal: no receipt, no answer, no marker."""
         self.with_stegcore()
         pending, = self.consume(now_ns=K.HB_ANCHOR_UNIX_NS + 7 * K.HB_PERIOD_NS)

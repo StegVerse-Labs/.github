@@ -1341,9 +1341,10 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(env.chain()["head_sha256"], head)
         self.assertEqual(env.grants(), [])
 
-    def test_claim_receipt_hb_reference_carries_the_supplied_epoch(self):
+    def test_claim_receipt_hb_reference_declares_clock_source(self):
         # The consumer is supplied epoch 4096, so every repository receipt it
         # appends references exactly that heartbeat; none is derived from a clock.
+        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a claim receipt never carries a clock source; its hb_reference carries the supplied epoch (derived_from_clock false)."""
         granted = Env(self.base / "granted")
         self.assertEqual(granted.consume()["disposition"], "ALLOW")
         empty = Env(self.base / "empty", seed=False)

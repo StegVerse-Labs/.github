@@ -15415,6 +15415,7 @@
    "workers/stegagents_governed_runtime_worker.py"
   ],
   "tests/test_organization_role_conformance_ingress.py": [
+   ".stegverse/transition-ledger/contract.json",
    ".stegverse/transition-ledger/emit.py",
    ".stegverse/transition-ledger/org-contract.json",
    "org-boundary/registry/services.json",

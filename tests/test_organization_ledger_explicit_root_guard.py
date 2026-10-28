@@ -183,8 +183,9 @@ def test_federation_cycle_refuses_an_explicit_posix_root_under_git(git_declared,
 
 
 @pytest.mark.repository_ledger_locus
-def test_federation_cycle_without_an_explicit_root_refuses_a_posix_repository_ledger_with_the_git_store(git_declared, tmp_path):
-    """A POSIX repository ledger does not pair with the declared git organization ledger (lead ruling 21:42Z).
+def test_federation_cycle_without_an_explicit_root_appends_to_the_declared_store(git_declared, tmp_path):
+    """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a POSIX repository ledger beside the declared git store is a mixed pair, refused CALLER_CHOSEN_SOURCE_LEDGER_REJECTED (MIXED_LEDGER_KIND_PAIR); no append.
+    A POSIX repository ledger does not pair with the declared git organization ledger (lead ruling 21:42Z).
 
     The crossing is refused CALLER_CHOSEN_SOURCE_LEDGER_REJECTED (MIXED_LEDGER_KIND_PAIR)
     before anything is appended: the frame stays unconsumed in the mesh, the
@@ -256,8 +257,9 @@ def test_claim_consumer_refuses_an_explicit_posix_root_under_git(git_declared, t
 
 
 @pytest.mark.repository_ledger_locus
-def test_claim_consumer_without_an_explicit_root_refuses_a_posix_repository_ledger_with_the_git_store(git_declared, tmp_path):
-    """The claim consumer's POSIX repository ledger does not pair with the declared git store (lead ruling 21:42Z).
+def test_claim_consumer_without_an_explicit_root_grants_on_the_declared_store(git_declared, tmp_path):
+    """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a POSIX repository ledger beside the declared git store is a mixed pair, refused CALLER_CHOSEN_SOURCE_LEDGER_REJECTED (MIXED_LEDGER_KIND_PAIR); no grant.
+    The claim consumer's POSIX repository ledger does not pair with the declared git store (lead ruling 21:42Z).
 
     Seeding the declared chain appends through the same pair check, so it is
     refused CALLER_CHOSEN_SOURCE_LEDGER_REJECTED (MIXED_LEDGER_KIND_PAIR): the

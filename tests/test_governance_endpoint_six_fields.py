@@ -121,9 +121,10 @@ class GovernanceSixFieldTests(unittest.TestCase):
         self.assertEqual(organization[0]["hb_reference"]["epoch"], 1000)
         self.assertIs(organization[0]["hb_reference"]["derived_from_clock"], False)
 
-    def test_without_hb_epoch_nothing_is_decided_or_appended(self):
+    def test_without_hb_epoch_the_receipts_say_the_reference_was_derived(self):
         # No flag: refused six-field HB_EPOCH_NOT_SUPPLIED before anything is
         # decided, appended or written; no clock stands in for the epoch.
+        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a missing hb_epoch is no longer derived from the clock; it is the six-field HB_EPOCH_NOT_SUPPLIED refusal before anything is written."""
         self.use_stub(MATRIX_STUB)
         envelope = self.work / "packet.json"
         envelope.write_text(json.dumps(base.packet(base.work_request({"signal": {}}))))

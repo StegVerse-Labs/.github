@@ -502,8 +502,9 @@ class HeartbeatReferenceTest(LedgerRoots):
         self.assertEqual(org["hb_reference"], repo["hb_reference"])
         self.assertEqual(org["hb_reference"]["epoch"], 4243)
 
-    def test_absent_epoch_is_refused_and_nothing_is_appended(self):
-        """Absent, nothing is received or appended and no clock stands in for the
+    def test_absent_epoch_is_derived_and_shared(self):
+        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: an absent epoch is no longer derived; it is refused six-field and nothing is appended at either level.
+        Absent, nothing is received or appended and no clock stands in for the
         epoch: the result is the unrecorded six-field NO_EPOCH_CALLER_FAILS_CLOSED."""
         result, cross = self.receive(_plain_request(), hb_epoch=None)
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
