@@ -57,6 +57,8 @@ ORG_RECEIPT_SCHEMA = "stegverse.organization-transition-receipt/v1"
 GRANTED = "ORGANIZATION_WORKER_CLAIM_GRANTED"
 WORKER_REGISTRY = "control/worker-registry.json"
 ORG_CONTRACT = ".stegverse/transition-ledger/org-contract.json"
+REPO_CONTRACT = ".stegverse/transition-ledger/contract.json"
+SOURCE_RECEIPT_SCHEMA = "stegverse.repo-transition-receipt/v1"
 REQUESTS = "control/worker-claim-grant-projection-requests"
 ENTRYPOINT = "scripts/worker_claim_grant_projection_transition.py"
 WORKFLOW = ".github/workflows/worker-claim-grant-projection-transition.yml"
@@ -157,6 +159,48 @@ def read_chain(opened: Any, organization: str) -> list[dict[str, Any]]:
     return chain
 
 
+def verify_grant_source(opened: Any, receipt: dict[str, Any], issuer: str) -> dict[str, Any]:
+    """The retained source of the GRANTED receipt, read back through the existing Organization verifier.
+
+    organization_batch_custody.verified_organization_source_receipt binds the receipt to its
+    source_transition_sha256 and transition id, reads the exact source bytes the Organization append
+    retained, and recomputes their digest and schema (aggregate_repo_transition.verify_source). The
+    source must then be the allocator's own repository receipt recording this grant. A chain that only
+    recomputes is not enough. What this establishes is the recorded issuer evidence, never authenticated
+    custody (readback_custody_basis is reported beside it), and it authorizes nothing.
+    """
+    repair = ("project a GRANTED receipt whose exact source receipt the Organization ledger retains "
+              "(source-receipts/), as aggregate_transition recorded it")
+    require(opened is not None, "ORGANIZATION_CHAIN_MEMBERSHIP_UNVERIFIED", "no Organization ledger supplied", repair)
+    resident = str(ROOT / "resident-runtime")
+    if resident not in sys.path:
+        sys.path.insert(0, resident)
+    custody = importlib.import_module("organization_batch_custody")
+    try:
+        row, source = custody.verified_organization_source_receipt(
+            opened[0], receipt["receipt_sha256"], state_receipt_sha256=receipt.get("source_transition_sha256"),
+            expected_transition_id=receipt.get("source_transition_id"))
+    except custody.OrganizationReceiptRefused as exc:
+        raise Refusal("GRANT_SOURCE_RECEIPT_UNVERIFIED", f"{exc.disposition} {exc.failed_predicate}: {exc.detail}",
+                      repair) from exc
+    ev, recorded = receipt["boundary_evidence"], source.get("evidence") or {}
+    hb = source.get("hb_reference") or {}
+    mismatched = [name for name, ok in (
+        ("schema", source.get("schema") == SOURCE_RECEIPT_SCHEMA),
+        ("repository", source.get("repository") == issuer),
+        ("transition_id", source.get("transition_id") == receipt["source_transition_id"]),
+        ("transition_class", source.get("transition_class") == GRANTED),
+        *((f"evidence.{key}", recorded.get(key) == ev.get(key)) for key in ("disposition", "task_id", "fencing_token")),
+        ("hb_reference", isinstance(hb.get("epoch"), int) and not isinstance(hb.get("epoch"), bool)
+         and hb.get("derived_from_clock") is False),
+    ) if not ok]
+    require(not mismatched, "GRANT_SOURCE_ISSUER_EVIDENCE_MISMATCH",
+            f"retained source {receipt['source_transition_sha256']} does not record this grant: {mismatched}",
+            f"project only a grant the allocator recorded in {issuer} with its carrier epoch; re-run the allocator")
+    return {"source_transition_sha256": row["source_transition_sha256"], "source_repository": issuer,
+            "organization_readback_custody_basis": custody.readback_custody_basis(row)}
+
+
 # --- the transition
 def validate_request(root: Path, request: Any) -> dict[str, Any]:
     fix = f"commit a {REQUEST_SCHEMA} manifest under {REQUESTS}/ (contracts/worker-claim-grant-projection-transition.v1.json)"
@@ -220,6 +264,7 @@ def derive(root: Path, request: dict[str, Any], opened: Any) -> tuple[dict[str, 
     organization = load(root / ORG_CONTRACT)["organization"]
     chain = read_chain(opened, organization)
     grant = verify_grant(root, request, chain, floor)
+    source = verify_grant_source(opened, request["organization_receipt"], load(root / REPO_CONTRACT)["repository"])
 
     registry_bytes = (root / WORKER_REGISTRY).read_bytes()
     registry = json.loads(registry_bytes)
@@ -234,6 +279,7 @@ def derive(root: Path, request: dict[str, Any], opened: Any) -> tuple[dict[str, 
         "predecessor_worker_registry_generation": generation,
         "predecessor_worker_registry_sha256": "sha256:" + hashlib.sha256(registry_bytes).hexdigest(),
         "organization_head_sha256": chain[-1]["receipt_sha256"],
+        **source,
     }
     if rows and (rows[0].get("assignment_timer") or {}).get("grant_receipt_sha256") == digest:
         evidence.update(successor_worker_registry_generation=generation, replayed=True)

@@ -12,7 +12,8 @@
     "tasks/<allocator_task_id>.json",
     "tasks/TASK-2026-0012.json#/predecessor_provenance/allocator_fence",
     ".stegverse/transition-ledger/org-contract.json#/organization",
-    "refs/stegverse/organization-ledger (HEAD.json and receipts/, read only)"
+    ".stegverse/transition-ledger/contract.json#/repository",
+    "refs/stegverse/organization-ledger (HEAD.json, receipts/ and source-receipts/, read only; the source through resident-runtime/organization_batch_custody.py::verified_organization_source_receipt)"
   ],
   "derived_outputs": ["control/worker-registry.json"],
   "downstream": "scripts/project_worker_claim_into_canonical_task.py projects the derived worker row into the canonical task record; it requires the canonical task to be admitted (coordination_state not PROPOSED) and remains its own transition.",
@@ -28,13 +29,13 @@
       {"id": "R3_GENERATION_EXCLUSIVE_OF_FENCE", "rule": "successor generation = max(generation + 1, fence + 1): never lowered, and no later WorkerCoordinator mint can reuse an integer at or below a projected allocator fence", "decided_by": ["heartbeat_runtime/worker_runtime_legacy.py minimum_fencing_token_exclusive (generation <= minimum -> minimum + 1)", "data/task-coordination-policy.json session_mutation_generation_fence"]},
       {"id": "R4_NO_REISSUE", "rule": "an allocator fence already projected from another receipt, a superseded grant, or a task already holding a claim is FAIL_CLOSED; the same receipt replays with no change", "decided_by": ["scripts/consume_org_claim_allocator_request.py verify_fence_history (fences strictly increase)", "docs/WORKER_BLOCKER_FALLBACK_INVARIANT.md collision constraint"]},
       {"id": "R5_EPOCH_NOT_CLOCK", "rule": "ordering is the registry generation and the receipt hb_reference.epoch; a receipt with derived_from_clock true is refused and updated_at is left as found", "decided_by": ["org-kernel/kernel.py hb_reference (progression OSCILLATOR_ONLY; epoch from the carrier)", "resident-runtime/aggregate_repo_transition.py observed_at (non-ordering)"]},
-      {"id": "R6_EVIDENCE_AS_BYTES", "rule": "the receipt travels inline and is re-verified by digest and by Organization chain membership; without a ledger read the transition fails closed", "decided_by": ["StegVerse-org/.github docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md Conformance rules", "data/task-registry-global-invariants.json completion_language_requires_evidence_class"]}
+      {"id": "R6_EVIDENCE_AS_BYTES", "rule": "the receipt travels inline and is re-verified by digest and by Organization chain membership; its retained source receipt is read back through the existing Organization verifier, bound to source_transition_sha256, and must be the allocator repository's own GRANTED receipt for the same task, fence and disposition with a carrier epoch; without a ledger read the transition fails closed", "decided_by": ["StegVerse-org/.github docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md Conformance rules", "data/task-registry-global-invariants.json completion_language_requires_evidence_class"]}
     ],
     "undecided": "Whether the two domains should become one counter is not decided by these invariants; JDQ-3 in the coordination INDEX joint discovery queue. Default until decided: namespaced, as above."
   },
   "dispositions": {
     "ALLOW": "derived bytes and evidence; no ledger append",
-    "FAIL_CLOSED": ["PROJECTION_REQUEST_SCHEMA_INVALID", "FENCE_FLOOR_UNVERIFIED", "ORGANIZATION_CHAIN_MEMBERSHIP_UNVERIFIED", "GRANT_RECEIPT_DIGEST_MISMATCH", "RECEIPT_NOT_A_CLAIM_GRANT", "FENCE_AT_OR_BELOW_PROVENANCE_FLOOR", "GRANT_EPOCH_NOT_CARRIER_SUPPLIED", "GRANT_SUPERSEDED_ON_CHAIN", "ALLOCATOR_TASK_UNRESOLVED", "WORKER_REGISTRY_GENERATION_NOT_OBSERVED_TIP", "WORKER_REGISTRY_TASK_AMBIGUOUS", "TASK_ALREADY_HELD_IN_WORKER_REGISTRY", "FENCE_REISSUED", "PROJECTION_BYTES_DIVERGE", "PROJECTION_INTERNAL_ERROR"],
+    "FAIL_CLOSED": ["PROJECTION_REQUEST_SCHEMA_INVALID", "FENCE_FLOOR_UNVERIFIED", "ORGANIZATION_CHAIN_MEMBERSHIP_UNVERIFIED", "GRANT_RECEIPT_DIGEST_MISMATCH", "RECEIPT_NOT_A_CLAIM_GRANT", "GRANT_SOURCE_RECEIPT_UNVERIFIED", "GRANT_SOURCE_ISSUER_EVIDENCE_MISMATCH", "FENCE_AT_OR_BELOW_PROVENANCE_FLOOR", "GRANT_EPOCH_NOT_CARRIER_SUPPLIED", "GRANT_SUPERSEDED_ON_CHAIN", "ALLOCATOR_TASK_UNRESOLVED", "WORKER_REGISTRY_GENERATION_NOT_OBSERVED_TIP", "WORKER_REGISTRY_TASK_AMBIGUOUS", "TASK_ALREADY_HELD_IN_WORKER_REGISTRY", "FENCE_REISSUED", "PROJECTION_BYTES_DIVERGE", "PROJECTION_INTERNAL_ERROR"],
     "six_fields": ["failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt"]
   },
   "execution_locus": "AUTHORIZED_EXTERNAL: the workflow only verifies; apply runs where the worker registry's own write path is authorized",

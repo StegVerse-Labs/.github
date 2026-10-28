@@ -12425,6 +12425,7 @@
   ],
   "scripts/worker_claim_grant_projection_transition.py": [
    ".github/workflows/worker-claim-grant-projection-transition.yml",
+   ".stegverse/transition-ledger/contract.json",
    ".stegverse/transition-ledger/org-contract.json",
    "contracts/worker-claim-grant-projection-transition.v1.json",
    "control/worker-claim-grant-projection-requests/**",
@@ -17217,6 +17218,7 @@
    "contracts/worker-claim-grant-projection-transition.v1.json",
    "control/worker-registry.json",
    "data/canonical-task-records/**",
+   "resident-runtime/aggregate_repo_transition.py",
    "scripts/project_worker_claim_into_canonical_task.py",
    "scripts/worker_claim_grant_projection_transition.py",
    "tasks/TASK-2026-0012.json"

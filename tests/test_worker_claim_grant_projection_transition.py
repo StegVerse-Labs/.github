@@ -3,10 +3,12 @@ from __future__ import annotations
 
 import ast
 import copy
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
 import shutil
+import sys
 import tempfile
 import unittest
 
@@ -20,18 +22,32 @@ TASK = "TASK-2099-0001"
 GOAL = "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001"
 
 
-def org_receipt(previous, operation, task, fence, *, epoch=900000, from_clock=False, transition_id=None):
+ISSUER = "StegVerse-Labs/.github"
+
+# The Organization ledger as the allocator writes it: a repository receipt per transition, consumed by the
+# existing Organization append (aggregate_transition), which retains the exact source bytes beside the receipt.
+# tests/__init__.py and tests/conftest.py declare the POSIX ledger locus for the run.
+sys.path.insert(0, str(ROOT / "resident-runtime"))
+import aggregate_repo_transition as LEDGER  # noqa: E402
+
+
+def repository_receipt(transition_id, transition_class, evidence, *, epoch=900000, repository=ISSUER):
     body = {
-        "schema": T.ORG_RECEIPT_SCHEMA, "organization": ORG,
-        "source_transition_id": transition_id or f"ORGANIZATION-WORKER-CLAIM-GRANTED-{task}-G{fence}",
-        "org_transition_class": operation,
-        "boundary_evidence": {"operation": operation, "disposition": "ALLOW", "task_id": task, "fencing_token": fence,
-                              "claim_scope_sha256": "a" * 64, "organization_head_sha256": "b" * 64},
-        "authority_effect": "NONE",
-        "hb_reference": {"epoch": epoch, "generation": epoch, "derived_from_clock": from_clock},
-        "observed_at": "wall-clock-non-ordering",
-        "previous_receipt_sha256": previous,
+        "schema": "stegverse.repo-transition-receipt/v1", "repository": repository, "transition_id": transition_id,
+        "transition_class": transition_class, "predecessor_state_sha256": "sha256:" + "0" * 64,
+        "successor_state_sha256": "sha256:" + hashlib.sha256(transition_id.encode()).hexdigest(),
+        "evidence": evidence, "authority_effect": "NONE",
+        "hb_reference": {"epoch": epoch, "generation": epoch, "derived_from_clock": False},
+        "previous_receipt_sha256": None,
     }
+    return {**body, "receipt_sha256": T.sha(body)}
+
+
+def stray_receipt(task, fence):
+    body = {"schema": T.ORG_RECEIPT_SCHEMA, "organization": ORG,
+            "source_transition_id": f"ORGANIZATION-WORKER-CLAIM-GRANTED-{task}-G{fence}",
+            "boundary_evidence": {"operation": T.GRANTED, "disposition": "ALLOW", "task_id": task, "fencing_token": fence},
+            "hb_reference": {"epoch": 900000, "derived_from_clock": False}, "previous_receipt_sha256": None}
     return {**body, "receipt_sha256": T.sha(body)}
 
 
@@ -40,25 +56,38 @@ class Fixture:
         self.dir = Path(tempfile.mkdtemp())
         test.addCleanup(shutil.rmtree, self.dir, ignore_errors=True)
         self.base = self.dir / "base"
-        for rel in ("control/worker-registry.json", "tasks/TASK-2026-0012.json", T.ORG_CONTRACT):
+        for rel in ("control/worker-registry.json", "tasks/TASK-2026-0012.json", T.ORG_CONTRACT, T.REPO_CONTRACT):
             (self.base / rel).parent.mkdir(parents=True, exist_ok=True)
             shutil.copy(ROOT / rel, self.base / rel)
         (self.base / "tasks" / f"{TASK}.json").write_text(json.dumps(
             {"task_id": TASK, "canonical_task_record": f"data/canonical-task-records/{GOAL}.json"}))
         self.ledger = self.dir / "ledger"
-        (self.ledger / "receipts").mkdir(parents=True)
         self.chain = []
 
-    def append(self, receipt):
+    def append(self, operation, task, fence, *, epoch=900000, from_clock=False, transition_id=None,
+               transition_class=None, repository=ISSUER, source_evidence=None):
+        transition_id = transition_id or f"ORGANIZATION-WORKER-CLAIM-GRANTED-{task}-G{fence}"
+        evidence = {"disposition": "ALLOW", "task_id": task, "fencing_token": fence,
+                    "claim_scope_sha256": "a" * 64, "organization_head_sha256": "b" * 64}
+        source = repository_receipt(transition_id, transition_class or operation,
+                                    evidence if source_evidence is None else source_evidence,
+                                    epoch=epoch, repository=repository)
+        receipt = LEDGER.aggregate_transition(
+            source, ledger=self.ledger, org_transition_class="REPO_STATE_PROPAGATION",
+            predecessor_org_state_sha256=source["predecessor_state_sha256"],
+            successor_org_state_sha256=source["successor_state_sha256"],
+            boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
+            hb_epoch=None if from_clock else epoch)
         self.chain.append(receipt)
-        (self.ledger / "receipts" / (receipt["receipt_sha256"].split(":")[1] + ".json")).write_text(json.dumps(receipt))
-        (self.ledger / "HEAD.json").write_text(json.dumps({"organization": ORG, "receipt_sha256": receipt["receipt_sha256"]}))
         return receipt
 
     def grant(self, fence=8, **kw):
         if not self.chain:
-            self.append(org_receipt(None, "ORGANIZATION_GENESIS", "-", 0, transition_id="GENESIS"))
-        return self.append(org_receipt(self.chain[-1]["receipt_sha256"], T.GRANTED, TASK, fence, **kw))
+            self.append("ORGANIZATION_GENESIS", "-", 0, transition_id="GENESIS")
+        return self.append(T.GRANTED, TASK, fence, **kw)
+
+    def source_path(self, receipt):
+        return self.ledger / LEDGER.ledger_store.source_key(receipt["source_transition_sha256"])
 
     def registry(self, tree=None):
         return json.loads(((tree or self.base) / T.WORKER_REGISTRY).read_text())
@@ -122,6 +151,8 @@ class ProjectionTest(unittest.TestCase):
         self.assertEqual(row["assignment_timer"]["fence_domain"], "ORGANIZATION_CLAIM_ALLOCATOR")
         self.assertEqual(row["assignment_timer"]["start_epoch"], 912345)
         self.assertEqual(row["assignment_timer"]["grant_receipt_sha256"], receipt["receipt_sha256"])
+        self.assertEqual(body["evidence"]["source_transition_sha256"], receipt["source_transition_sha256"])
+        self.assertEqual(body["evidence"]["source_repository"], ISSUER)
         self.assertIsNone(row["worker_id"])
 
     def test_apply_then_verify_allow_and_replay_is_idempotent(self):
@@ -158,17 +189,53 @@ class ProjectionTest(unittest.TestCase):
 
     def test_receipt_not_on_chain(self):
         self.f.grant()
-        stray = org_receipt(None, T.GRANTED, TASK, 12)
+        stray = stray_receipt(TASK, 12)
         self.assertRefused(self.f.run("plan", self.f.request(stray)), "ORGANIZATION_CHAIN_MEMBERSHIP_UNVERIFIED")
 
     def test_broken_chain(self):
         receipt = self.f.grant()
-        (self.f.ledger / "receipts" / (self.f.chain[0]["receipt_sha256"].split(":")[1] + ".json")).unlink()
+        (self.f.ledger / LEDGER.ledger_store.receipt_key(self.f.chain[0]["receipt_sha256"])).unlink()
         self.assertRefused(self.f.run("plan", self.f.request(receipt)), "ORGANIZATION_CHAIN_MEMBERSHIP_UNVERIFIED")
+
+    def assertChainSelfConsistent(self):
+        # The refusal below is the source receipt's, not the Organization chain's: the chain alone still verifies.
+        self.assertTrue(T.read_chain(T.open_store(str(self.f.ledger)), ORG))
+
+    def test_missing_source_receipt_refused(self):
+        receipt = self.f.grant()
+        self.f.source_path(receipt).unlink()
+        self.assertChainSelfConsistent()
+        self.assertRefused(self.f.run("plan", self.f.request(receipt)), "GRANT_SOURCE_RECEIPT_UNVERIFIED")
+
+    def test_tampered_source_receipt_refused(self):
+        receipt = self.f.grant()
+        path = self.f.source_path(receipt)
+        source = json.loads(path.read_text())
+        source["evidence"]["fencing_token"] = 9
+        path.write_text(json.dumps(source))
+        self.assertChainSelfConsistent()
+        self.assertRefused(self.f.run("plan", self.f.request(receipt)), "GRANT_SOURCE_RECEIPT_UNVERIFIED")
+
+    def test_source_receipt_must_carry_the_issuers_grant(self):
+        # Each retained source verifies on its own and the Organization chain recomputes, but the source the
+        # allocator recorded is not this grant: another class, fence, disposition, repository or a clock epoch.
+        granted = {"disposition": "ALLOW", "task_id": TASK, "fencing_token": 8}
+        for name, kw in {
+            "class": {"transition_class": "ORGANIZATION_WORKER_CLAIM_REFUSED"},
+            "fence": {"source_evidence": {**granted, "fencing_token": 7}},
+            "disposition": {"source_evidence": {**granted, "disposition": "DENY"}},
+            "task": {"source_evidence": {**granted, "task_id": "TASK-2099-0002"}},
+            "repository": {"repository": "StegVerse-Labs/another-repository"},
+        }.items():
+            with self.subTest(name):
+                self.f = Fixture(self)
+                receipt = self.f.grant(8, **kw)
+                self.assertChainSelfConsistent()
+                self.assertRefused(self.f.run("plan", self.f.request(receipt)), "GRANT_SOURCE_ISSUER_EVIDENCE_MISMATCH")
 
     def test_not_a_grant(self):
         self.f.grant()
-        other = self.f.append(org_receipt(self.f.chain[-1]["receipt_sha256"], "ORGANIZATION_WORKER_CLAIM_DENIED", TASK, 9))
+        other = self.f.append("ORGANIZATION_WORKER_CLAIM_DENIED", TASK, 9)
         self.assertRefused(self.f.run("plan", self.f.request(other)), "RECEIPT_NOT_A_CLAIM_GRANT")
 
     def test_fence_at_floor(self):
