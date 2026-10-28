@@ -15171,6 +15171,7 @@
   "tests/test_protocol_v1_conformance_fixtures.py": [
    "org-kernel/organization-ledger/fixtures/protocol-v1-conformance/**",
    "org-runtime/interlock-intr.json",
+   "resident-runtime/organization_manifest_ingress.py",
    "resident-runtime/sdk_manifest_crossing.py",
    "tests/test_organization_manifest_ingress_rule_ref.py"
   ],
