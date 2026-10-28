@@ -884,6 +884,55 @@ class OrgClaimCustodyTests(unittest.TestCase):
                       "organization_receipt_sha256": receipt})
         self.assertEqual(bound.consume()["fencing_token"], 10)
 
+    def _issuer_mismatched_grant(self, env, task_id: str, fence: int):
+        """A GRANTED Organization receipt over a repository receipt that recorded a refusal, not this grant."""
+        custody = env.custody()
+        transition_id = f"ORGANIZATION-WORKER-CLAIM-GRANTED-{task_id}-G{fence}"
+        recorded = {"disposition": "DENY", "task_id": task_id, "fencing_token": None, "failed_predicate": "NO_ELIGIBLE_TASK"}
+        repository = custody["emitter"].append(transition_id, consumer.REFUSED, "sha256:" + "1" * 64, "sha256:" + "2" * 64,
+                                               recorded, "NONE", store=custody["repository_store"],
+                                               hb_epoch=CARRIER_HB_EPOCH)
+        granted = {"operation": consumer.GRANTED, "disposition": "ALLOW", "task_id": task_id, "fencing_token": fence}
+        return custody["organization_ledger"].aggregate_transition(
+            repository, ledger=consumer.organization_target(custody), org_transition_class="REPO_STATE_PROPAGATION",
+            predecessor_org_state_sha256=repository["predecessor_state_sha256"],
+            successor_org_state_sha256=repository["successor_state_sha256"], boundary_evidence=granted,
+            authority_effect="NONE", hb_epoch=CARRIER_HB_EPOCH)
+
+    def test_grant_counts_toward_fence_history_only_with_its_retained_source(self):
+        # Each Organization chain still recomputes from HEAD to its root; only the grant's retained source fails.
+        for name in ("missing", "tampered", "issuer_mismatch"):
+            with self.subTest(name):
+                env = Env(self.base / name, generation=9)
+                if name == "issuer_mismatch":
+                    row = self._issuer_mismatched_grant(env, "TASK-2026-9999", 9)
+                else:
+                    row = env.seed_grant("TASK-2026-9999", 9)["organization_receipt"]
+                path = env.org / "source-receipts" / (row["source_transition_sha256"].split(":", 1)[1] + ".json")
+                if name == "missing":
+                    path.unlink()
+                elif name == "tampered":
+                    source = json.loads(path.read_text(encoding="utf-8"))
+                    source["evidence"]["fencing_token"] = 8
+                    path.write_text(json.dumps(source), encoding="utf-8")
+                custody = env.custody()
+                walk = consumer._verify_store_chain(
+                    {**custody, "organization_store": custody["organization_ledger"].ledger_store.PosixLedgerStore(env.org)},
+                    AssertionError)
+                self.assertEqual(walk["receipts"][-1]["receipt_sha256"], row["receipt_sha256"], name)
+                result = env.consume()
+                # The existing verifier's own refusal for a source it cannot read back; a mismatch is fence history.
+                self.assertEqual(result["disposition"], "FAIL_CLOSED", name)
+                self.assertEqual(result["failed_predicate"], {"missing": "STATE_RECEIPT_SHA256_ABSENT",
+                                                              "tampered": "STATE_RECEIPT_SHA256_ABSENT",
+                                                              "issuer_mismatch": "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED"}[name])
+                if name == "issuer_mismatch":
+                    self.assertIn("granted receipt source does not record this grant", result["detail"])
+                self.assertFalse(result["fence_issued"], name)
+                self.assertIsNone(result["fencing_token"], name)
+                self.assertEqual(env.claims()["generation"], 9, name)
+                self.assertEqual(env.task("TASK-2026-0013")["status"], "queued", name)
+
     def test_post_floor_receipt_task_fence_scope_match(self):
         cases = {"task": {"task_id": "TASK-2026-0008"}, "fence": {"fencing_tokens": [10]},
                  "scope": {"claim_scope_sha256": "f" * 64}, "scope_absent": {"claim_scope_sha256": None}}

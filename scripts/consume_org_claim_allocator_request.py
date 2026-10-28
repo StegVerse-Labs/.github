@@ -598,6 +598,38 @@ def chain_grants(chain: Mapping[str, Any]) -> list[dict[str, Any]]:
     return grants
 
 
+def verify_grant_sources(custody: Mapping[str, Any], grants: list[dict[str, Any]]) -> None:
+    """Read back the retained source receipt of every grant on the chain, through the existing verifier.
+
+    A chain that recomputes proves only that Organization receipts are continuous. A grant counts toward
+    fence history only if organization_readback binds it to the exact repository receipt it consumed, and
+    organization_batch_custody.verified_organization_source_receipt reads that receipt back. The receipt
+    must be this repository's own, carrying the grant's boundary evidence as record_transition carries it.
+    It is never authenticated custody.
+    """
+    verifier = custody["organization_receipt_custody"]
+    issuer = custody["emitter"].C["repository"]
+    for row in grants:
+        digest, transition_id = row["receipt_sha256"], row.get("source_transition_id")
+        organization_readback(custody, digest, repository_receipt_sha256=retained_repository_receipt_sha256(custody, row),
+                              transition_id=transition_id)
+        try:
+            _, source = verifier.verified_organization_source_receipt(
+                organization_target(custody), digest, state_receipt_sha256=row["source_transition_sha256"],
+                expected_transition_id=transition_id)
+        except verifier.OrganizationReceiptRefused as exc:
+            raise OrganizationReadbackRefused(exc.refusal()) from exc
+        recorded = source.get("evidence") or {}
+        carried = {"operation": source.get("transition_class"), **{key: recorded.get(key) for key in CARRIED},
+                   **{key: recorded[key] for key in CARRIED_IF_RECORDED if key in recorded}}
+        evidence = row["boundary_evidence"]
+        if (source.get("schema") != "stegverse.repo-transition-receipt/v1" or source.get("repository") != issuer
+                or source.get("transition_id") != transition_id
+                or any(evidence.get(key) != value for key, value in carried.items())):
+            raise ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, "granted receipt source does not record this grant: " + digest,
+                                  "repair the organization claim receipt chain")
+
+
 def provenance_floor(source: Path) -> dict[str, Any]:
     """The fence already issued outside the chain, read from its provenance record."""
     path = source / PROVENANCE_FLOOR_REL
@@ -1271,6 +1303,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 chain_verified = True
                 grants = chain_grants(chain)
                 # Every check completes before any fence is computed.
+                verify_grant_sources(custody, grants)
                 floor = provenance_floor(source)
                 verify_fence_history(runtime, grants, floor, source, custody)
                 prior = prior_grant(grants, target) if target else None
