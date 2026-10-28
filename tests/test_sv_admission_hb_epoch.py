@@ -190,8 +190,10 @@ class PredicateTests(unittest.TestCase):
         for supplied in (None, "", "null", U, "abc", "1025"):
             self.assertEqual(self.verify(supplied, rb=None)["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
 
-    def test_supplied_epoch_failing_c9192134_is_deny_mismatch(self):
-        """Orchestrator ruling: the supplied side is DENY HB_EPOCH_MISMATCH; only the sealed side is FAIL_CLOSED."""
+    def test_supplied_epoch_failing_726248a5_is_deny_mismatch(self):
+        """Orchestrator ruling: the supplied side is DENY HB_EPOCH_MISMATCH; only the sealed side is FAIL_CLOSED.
+        Checks the current shared rule, c9192134 (function text ad8ff529), not 726248a5. The base name is kept
+        because the ratchet counts a renamed test as missing (TEST_MISSING_AT_HEAD)."""
         for supplied in ("abc", "+33", "31", "0031", "1024.0", " 1024", 1024, True, False, "unknown_not_authentically_observed"):
             if supplied != 1024 or supplied is True:  # an int 1024 passes c9192134 but is not ASCII text, so it is still refused
                 self.assertIsNotNone(wi.kernel.supplied_epoch_failure(supplied), supplied)
