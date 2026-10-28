@@ -25,10 +25,6 @@ COSV = "10000000100000"
 MODE = "READ_ONLY_ORGANIZATION_CUSTODY_REPLAY"
 REQUEST_REL = Path("control/resident-execution-request.d/organization-custody-readback-001.json")
 OUTPUT_REL = Path("receipts/sovereign-host/organization-custody-readback")
-#: Host labels are not authority and never select processing (#1615 lane E).
-#: Kept only so callers and fixtures can clear them; consume() never reads them.
-HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
-              "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 ID = re.compile(r"[A-Za-z0-9_.:/-]{1,150}\Z")
 SCHEMA = "stegverse.organization-custody-readback-request/v1"
 ATTEMPT_SCHEMA = "stegverse.organization-custody-readback-governed-attempt/v1"

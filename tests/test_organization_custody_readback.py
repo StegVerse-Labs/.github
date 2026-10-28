@@ -16,10 +16,20 @@ import organization_custody_readback as readback  # noqa: E402
 from scripts import consume_organization_custody_readback_request as consumer  # noqa: E402
 
 
+HOST_LABELS = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
+               "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
+#: Every spelling of an environment read; host labels never select processing (#1615 lane E).
+ENVIRONMENT_READS = ("environ", "getenv", "LEGACY_OPTIONAL_DIAGNOSTIC_HOSTED_ENVIRONMENT")
+
+
+def environment_reads(text):
+    return [token for token in ENVIRONMENT_READS if token in text]
+
+
 @pytest.fixture(autouse=True)
 def source_only_simulated_resident(monkeypatch):
     # Hosted CI runs local fixtures only; no network or resident state is used.
-    for name in consumer.HOSTED_ENV:
+    for name in HOST_LABELS:
         monkeypatch.delenv(name, raising=False)
 
 
@@ -205,8 +215,15 @@ def test_legacy_hosted_request_is_diagnostic_boundary_only(monkeypatch, tmp_path
 
 def test_consumer_reads_no_host_label():
     text = Path(consumer.__file__).read_text(encoding="utf-8")
-    assert "os.environ" not in text
-    assert "LEGACY_OPTIONAL_DIAGNOSTIC_HOSTED_ENVIRONMENT" not in text
+    assert environment_reads(text) == []
+
+
+@pytest.mark.parametrize("read", [
+    'os.getenv("CI")', 'getenv("CI")', 'os.environ.get("CI")',
+    'environ.get("CI")', 'os.environ["CI"]', "from os import environ, getenv",
+])
+def test_host_label_guard_catches_every_environment_read(read):
+    assert environment_reads("import os\nhosted = " + read + "\n")
 
 
 def test_exact_request_retry_keeps_original_immutable_snapshot_after_new_head(monkeypatch, tmp_path):
