@@ -5193,6 +5193,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_organization_ingress_payload_binding.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_organization_ingress_payload_binding.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_payload_binding.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_ledger_component_validation_trigger.py",
    "inputs": [],
    "surfaces": [
@@ -15140,6 +15152,10 @@
    "resident-runtime/governance_endpoint.py",
    "resident-runtime/organization_governance_decision.py",
    "tests/pytest.py"
+  ],
+  "tests/test_organization_ingress_payload_binding.py": [
+   "org-boundary/registry/services.json",
+   "resident-runtime/organization_manifest_ingress.py"
   ],
   "tests/test_organization_ledger_component_validation_trigger.py": [
    ".github/workflows/organization-ledger-component-validation.yml",

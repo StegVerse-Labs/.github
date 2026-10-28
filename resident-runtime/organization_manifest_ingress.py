@@ -133,6 +133,14 @@ APPEND_NOT_COMMITTED_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK"
 APPEND_OWNING_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
 UNOBSERVED = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
 PARENT_MANIFEST_INVALID_PREDICATE = "MANIFEST_DECLARED_ORGANIZATION_BATCH_PARENT_MANIFEST_IS_VALID"
+#: A crossing whose payload digest, manifest digest or echoed effect is not the
+#: payload this organization recomputes from the manifest it was delivered. The
+#: boundary receipt chain binds `payload_hash` and nothing else, so a chain that
+#: reconstructs proves only that the receipts agree with the crossing's own
+#: digest -- not that the digest is the delivered manifest's.
+PAYLOAD_NOT_BOUND = "CROSSING_PAYLOAD_NOT_BOUND_TO_THE_DELIVERED_MANIFEST"
+PAYLOAD_NOT_BOUND_PREDICATE = "CROSSING_PAYLOAD_RECOMPUTES_FROM_THE_DELIVERED_MANIFEST"
+PAYLOAD_BINDING_OWNING_GOAL = "StegVerse-Labs/.github#3369"
 
 
 def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
@@ -587,6 +595,45 @@ def reconstruct_closures(crossing: Mapping[str, Any]) -> list[dict[str, Any]]:
     if previous_id != crossing.get("terminal_receipt_id"):
         raise ValueError("BOUNDARY_TERMINAL_RECEIPT_DOES_NOT_CLOSE_THE_CHAIN")
     return closures
+
+
+def payload_binding_failure(manifest: Mapping[str, Any],
+                            crossing: Mapping[str, Any]) -> str | None:
+    """Why the crossing is not the delivered manifest's exact payload, or None.
+
+    The payload is recomputed here from the manifest this operation was handed,
+    with the crossing's own definition (`crossing_payload` and `sha`): the
+    destination the manifest declares, its canonical digest, and the manifest
+    itself. Then each place the crossing names that payload must be it:
+
+    * `manifest_sha256` is the delivered manifest's digest;
+    * `payload_hash` -- the digest every boundary receipt is bound to -- is the
+      recomputed payload's digest;
+    * an echoed effect (`application_result.echo`, what the far side reports it
+      received) is the recomputed payload, byte for byte under canonical JSON.
+
+    Nothing is taken on the crossing's word: a crossing that names no digest
+    fails, as a mismatch does.
+    """
+    try:
+        destination = crossing_module.declared_destination(manifest)
+    except SystemExit as exc:
+        return "CROSSING_PAYLOAD_DESTINATION_NOT_DECLARED:" + str(exc)
+    payload = crossing_module.crossing_payload(manifest, destination)
+    payload_hash = crossing_module.sha(payload)
+    if crossing.get("manifest_sha256") != payload["manifest_sha256"]:
+        return ("CROSSING_MANIFEST_SHA256_MISMATCH:expected " + payload["manifest_sha256"]
+                + " observed " + str(crossing.get("manifest_sha256")))
+    if crossing.get("payload_hash") != payload_hash:
+        return ("CROSSING_PAYLOAD_HASH_MISMATCH:expected " + payload_hash
+                + " observed " + str(crossing.get("payload_hash")))
+    result = crossing.get("application_result")
+    if isinstance(result, Mapping) and "echo" in result:
+        echoed = result["echo"]
+        if crossing_module.sha(echoed) != payload_hash:
+            return ("CROSSING_ECHOED_PAYLOAD_MISMATCH:expected " + payload_hash
+                    + " observed " + crossing_module.sha(echoed))
+    return None
 
 
 #: The fields of a crossing that name the packets carrying one delivery. They are
@@ -1061,6 +1108,23 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     except ValueError as exc:
         return refused("BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY", str(exc),
                        request_sha256=request["request_sha256"])
+    # The chain reconstructs against the crossing's own `payload_hash`. That
+    # digest, the manifest digest and any echoed effect must also be the payload
+    # recomputed from the manifest delivered here, or a changed effect under an
+    # unchanged digest is admitted.
+    unbound = payload_binding_failure(manifest, crossing)
+    if unbound is not None:
+        return refused(
+            PAYLOAD_NOT_BOUND_PREDICATE, unbound, failure_code=PAYLOAD_NOT_BOUND,
+            required_evidence_or_repair=(
+                "a crossing whose manifest_sha256, payload_hash and echoed effect are the "
+                "payload recomputed from the delivered manifest"),
+            retry_entrypoint=RETRY_ENTRYPOINT,
+            owning_existing_goal=PAYLOAD_BINDING_OWNING_GOAL,
+            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
+                          "resubmit": "THE_SAME_MANIFEST_OVER_AN_UNMODIFIED_CROSSING",
+                          "awaits_an_external_machine": False},
+            request_sha256=request["request_sha256"])
 
     # The transition occurred in this repository, so the repository ledger
     # records it first and the organization ledger consumes that receipt. The

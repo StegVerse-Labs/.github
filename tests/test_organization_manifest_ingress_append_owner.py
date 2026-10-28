@@ -105,9 +105,19 @@ def _plain_request() -> dict:
     return request
 
 
+#: The submitted manifest. It declares its egress, as every crossable manifest
+#: does, so the payload the crossing carries can be recomputed from it.
+MANIFEST = {"processing": {"capability": "records"}, "completion": {"egress": {
+    "final_stegverse_transition_surface": "sdk-manifest-ingress",
+    "transport": "INTERLOCK_INTR", "far_side_transition_required": True}}}
+
+
 def _crossing(seed: str) -> dict:
+    # Bound to the delivered manifest by the crossing's own payload definition.
+    payload = ingress.crossing_module.crossing_payload(
+        MANIFEST, ingress.crossing_module.declared_destination(MANIFEST))
     base = {"packet_id": "ingress-" + seed, "service_id": "records-service",
-            "payload_hash": "sha256:" + "c" * 64}
+            "payload_hash": ingress.crossing_module.sha(payload)}
     receipts, previous = [], None
     for kind in ("INGRESS_ADMITTED", "PROCESSED"):
         digest = ingress.sha({**base, "kind": kind, "previous_receipt_id": previous})
@@ -118,6 +128,7 @@ def _crossing(seed: str) -> dict:
     return {"crossing_completed": True, "ingress_packet_id": base["packet_id"],
             "egress_packet_id": "egress-" + seed, "resolved_service_id": base["service_id"],
             "payload_hash": base["payload_hash"], "boundary_receipts": receipts,
+            "manifest_sha256": payload["manifest_sha256"],
             "terminal_receipt_id": previous, "application_result": None}
 
 
@@ -145,7 +156,7 @@ class LedgerRoots(unittest.TestCase):
         with mock.patch.object(ingress, "derive_execution_request", return_value=request), \
              mock.patch.object(ingress.crossing_module, "cross", cross), \
              mock.patch.object(ingress, "admit_runtime_result", return_value={"admitted": True}):
-            result = ingress.receive({"processing": {"capability": "records"}}, registry={},
+            result = ingress.receive(copy.deepcopy(MANIFEST), registry={},
                                      hb_epoch=hb_epoch)
         return result, cross
 
@@ -345,7 +356,7 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                                        return_value=_ingress_request(request)), \
                      mock.patch.object(ingress.crossing_module, "cross",
                                        return_value=_crossing(str(index))):
-                    result = ingress.receive({"n": index}, registry={})
+                    result = ingress.receive(copy.deepcopy(MANIFEST), registry={})
                 self.assertEqual(result["disposition"], "ALLOW", result)
                 row = json.loads((root / "receipts" / (
                     result["organization_receipt_sha256"].split(":", 1)[1] + ".json")).read_text())
