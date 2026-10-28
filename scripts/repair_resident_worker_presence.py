@@ -75,6 +75,63 @@ def _alive(pid: Any) -> bool:
         return False
 
 
+def _proc_start_ticks(pid: int) -> int | None:
+    """Kernel start time of ``pid`` (clock ticks since boot), or None when unreadable."""
+    try:
+        stat = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
+        # comm (field 2) may contain spaces/parentheses; fields after the last ')' are fixed.
+        return int(stat[stat.rindex(")") + 2:].split()[19])
+    except (OSError, ValueError, IndexError):
+        return None
+
+
+def _worker_identity_refusal(pid: int, runtime_root: Path, receipt: dict[str, Any]) -> dict[str, Any] | None:
+    """Prove ``pid`` is this root's worker before it may be signalled; otherwise a six-field refusal.
+
+    A PID read from the process receipt is only a claim. It is signalled only when
+    /proc shows the exact worker entrypoint every launcher uses for this runtime
+    root and, when the receipt recorded one, the same kernel start time.
+    """
+    runner = str((runtime_root / WORKER_RUNNER).resolve())
+    predicate = None
+    try:
+        argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+        argv = [part.decode("utf-8") for part in argv if part]
+    except (OSError, UnicodeDecodeError):
+        argv, predicate = None, "WORKER_PROCESS_IDENTITY_READABLE"
+    if argv is not None:
+        bound = any(
+            Path(argv[i]).is_absolute() and str(Path(argv[i]).resolve()) == runner
+            and argv[i + 1] == "--root" and Path(argv[i + 2]).is_absolute()
+            and str(Path(argv[i + 2]).resolve()) == str(runtime_root)
+            for i in range(len(argv) - 2)
+        )
+        if not bound:
+            predicate = "RECEIPT_PID_RUNS_THIS_ROOT_WORKER_ENTRYPOINT"
+        elif "worker_start_ticks" in receipt and receipt.get("worker_start_ticks") != _proc_start_ticks(pid):
+            predicate = "RECEIPT_PID_START_TIME_MATCHES_RECORDED_WORKER"
+    if predicate is None:
+        return None
+    return {
+        "state": "FAIL_CLOSED",
+        "failure_code": "STALE_WORKER_IDENTITY_UNPROVEN",
+        "failed_predicate": predicate,
+        "required_evidence_or_repair": (
+            f"/proc/{pid} must show {runner} --root {runtime_root} (and the receipt's worker_start_ticks, "
+            "if recorded); otherwise stop the stale worker by its owner and clear the process receipt"
+        ),
+        "retry_entrypoint": "scripts/repair_resident_worker_presence.py::ensure_worker_presence",
+        "owning_existing_goal": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+        "next_attempt": "next carrier supervision reference after the receipt names a provable worker or none",
+        "worker_repair_attempted": False,
+        "stale_worker_pid": pid,
+        "process_signalled": False,
+        "heartbeat_grants_execution_authority": False,
+        "worker_coordinator_retains_admission_authority": True,
+        "authority_effect": "NONE",
+    }
+
+
 def _clean_env(runtime_root: Path) -> dict[str, str]:
     source = os.environ
     env = {name: source[name] for name in SAFE_ENV if source.get(name)}
@@ -288,6 +345,10 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
         stale_worker_reason = (
             "WORKER_CYCLE_STALE" if structural_task_capable else "WORKER_NOT_TASK_CAPABLE"
         )
+        refusal = _worker_identity_refusal(existing_worker_pid, runtime_root, receipt)
+        if refusal is not None:
+            refusal.update(carrier_pid=carrier_pid, stale_worker_reason=stale_worker_reason)
+            return refusal
         if not _terminate_process(existing_worker_pid):
             return {
                 "state": "STALE_WORKER_RECYCLE_FAILED",
@@ -335,6 +396,11 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
         worker_tick_observed=True,
         tick_evidence=tick,
     )
+    start_ticks = _proc_start_ticks(worker.pid)
+    if start_ticks is not None:
+        receipt["worker_start_ticks"] = start_ticks
+    else:
+        receipt.pop("worker_start_ticks", None)
     if stale_worker_pid is not None:
         receipt["stale_worker_recycled"] = True
         receipt["previous_worker_pid"] = stale_worker_pid
