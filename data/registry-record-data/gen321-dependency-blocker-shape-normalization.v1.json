@@ -1,0 +1,476 @@
+{
+  "schema": "stegverse.registry-record-data-proposal/v1",
+  "registry_generation_base": 321,
+  "authority_effect": "NONE",
+  "operating_mode": "E1 (Claude-lane preparation; the transition itself is deterministic and runs at E0)",
+  "admission": "Prepared by Claude for the Registry owner. Claude does not admit, apply or bump the generation. Only the Registry owner's run of scripts/apply_task_record_data.py <this file> --apply --tip-ref origin/main changes Registry data (one apply = tip -> tip + 1).",
+  "note": "StegVerse-Labs/.github#3195 (owner comment 6482313930): canonical Registry gen 321 has exactly 13 task rows whose dependencies/blockers lists hold bare strings where schemas/canonical-task-record.schema.json requires objects. scripts/query_canonical_tasks.py calls .get() on each entry; #3378 tolerates strings at query time, and this request is the authorized data transition that converts them at the source. scripts/canonical_task_registration_transition.py cannot carry this repair: it registers identities only and refuses any task that already has an aggregate row (TASK_IDENTITY_NOT_UNIQUE); its docstring names the record-data successor (apply_task_record_data) as the repair path for nonconformant existing rows. Every edit is an exact [field, index] before -> after on one string entry; object entries (including the legacy six-field blocker objects) are not touched. The edit applies to the aggregate row and to the same path in the standalone record, and every shard below equals its row at gen 321 for the edited paths. Mapping (mechanical, no inferred meaning): dependency string s -> {dependency_id: s (a .json task path keeps its full path in ref and uses the file stem as id), kind: TASK (every string is a task identity), state: UNKNOWN (the string recorded no state), ref: s}; blocker string s -> {blocker_id: s, dependency_id: s, reason: s} (the string names its own unmet condition; no dependency link was recorded, so none is invented). The owner may restate any after value before applying.",
+  "row_fields": [
+    {
+      "task_id": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+      "path": [
+        "dependencies",
+        0
+      ],
+      "before": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+      "after": {
+        "dependency_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001"
+      }
+    },
+    {
+      "task_id": "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+      "path": [
+        "blockers",
+        0
+      ],
+      "before": "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_CHECKIN",
+      "after": {
+        "blocker_id": "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_CHECKIN",
+        "dependency_id": "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_CHECKIN",
+        "reason": "POST_REGISTRATION_AUTHENTIC_AI_SESSION_GATE_CHECKIN"
+      }
+    },
+    {
+      "task_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+      "path": [
+        "blockers",
+        0
+      ],
+      "before": "POST_REGISTRATION_AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+      "after": {
+        "blocker_id": "POST_REGISTRATION_AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+        "dependency_id": "POST_REGISTRATION_AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN",
+        "reason": "POST_REGISTRATION_AUTHENTIC_EXACT_GENERATION_AI_SESSION_GATE_CHECKIN"
+      }
+    },
+    {
+      "task_id": "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+      "path": [
+        "blockers",
+        1
+      ],
+      "before": "OTHER_FORMALISMS_NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED",
+      "after": {
+        "blocker_id": "OTHER_FORMALISMS_NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED",
+        "dependency_id": "OTHER_FORMALISMS_NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED",
+        "reason": "OTHER_FORMALISMS_NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED"
+      }
+    },
+    {
+      "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "path": [
+        "blockers",
+        1
+      ],
+      "before": "PAT_003_RECONSTRUCTION_OWNER_DISPOSITION_NOT_AUTHENTICATED",
+      "after": {
+        "blocker_id": "PAT_003_RECONSTRUCTION_OWNER_DISPOSITION_NOT_AUTHENTICATED",
+        "dependency_id": "PAT_003_RECONSTRUCTION_OWNER_DISPOSITION_NOT_AUTHENTICATED",
+        "reason": "PAT_003_RECONSTRUCTION_OWNER_DISPOSITION_NOT_AUTHENTICATED"
+      }
+    },
+    {
+      "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "path": [
+        "blockers",
+        2
+      ],
+      "before": "INDEPENDENT_CALIBRATED_PHYSICAL_REFERENCE_NOT_AVAILABLE",
+      "after": {
+        "blocker_id": "INDEPENDENT_CALIBRATED_PHYSICAL_REFERENCE_NOT_AVAILABLE",
+        "dependency_id": "INDEPENDENT_CALIBRATED_PHYSICAL_REFERENCE_NOT_AVAILABLE",
+        "reason": "INDEPENDENT_CALIBRATED_PHYSICAL_REFERENCE_NOT_AVAILABLE"
+      }
+    },
+    {
+      "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+      "path": [
+        "blockers",
+        3
+      ],
+      "before": "ADAPTIVE_PROCESSING_BENEFIT_NOT_DEMONSTRATED_WITH_REQUIRED_CONTEXT",
+      "after": {
+        "blocker_id": "ADAPTIVE_PROCESSING_BENEFIT_NOT_DEMONSTRATED_WITH_REQUIRED_CONTEXT",
+        "dependency_id": "ADAPTIVE_PROCESSING_BENEFIT_NOT_DEMONSTRATED_WITH_REQUIRED_CONTEXT",
+        "reason": "ADAPTIVE_PROCESSING_BENEFIT_NOT_DEMONSTRATED_WITH_REQUIRED_CONTEXT"
+      }
+    },
+    {
+      "task_id": "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "path": [
+        "blockers",
+        0
+      ],
+      "before": "AUTHENTIC_POST_REGISTRATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+      "after": {
+        "blocker_id": "AUTHENTIC_POST_REGISTRATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "dependency_id": "AUTHENTIC_POST_REGISTRATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "reason": "AUTHENTIC_POST_REGISTRATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED"
+      }
+    },
+    {
+      "task_id": "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "path": [
+        "blockers",
+        1
+      ],
+      "before": "CANONICAL_OWNER_CONVERGENCE_NOT_AUTHENTICATED",
+      "after": {
+        "blocker_id": "CANONICAL_OWNER_CONVERGENCE_NOT_AUTHENTICATED",
+        "dependency_id": "CANONICAL_OWNER_CONVERGENCE_NOT_AUTHENTICATED",
+        "reason": "CANONICAL_OWNER_CONVERGENCE_NOT_AUTHENTICATED"
+      }
+    },
+    {
+      "task_id": "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "path": [
+        "blockers",
+        2
+      ],
+      "before": "EXCLUDED_LEGACY_PATHS_NOT_FULLY_TRANSFERRED_OR_DECLINED",
+      "after": {
+        "blocker_id": "EXCLUDED_LEGACY_PATHS_NOT_FULLY_TRANSFERRED_OR_DECLINED",
+        "dependency_id": "EXCLUDED_LEGACY_PATHS_NOT_FULLY_TRANSFERRED_OR_DECLINED",
+        "reason": "EXCLUDED_LEGACY_PATHS_NOT_FULLY_TRANSFERRED_OR_DECLINED"
+      }
+    },
+    {
+      "task_id": "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "path": [
+        "blockers",
+        3
+      ],
+      "before": "LEGACY_BRANCH_DELETION_NOT_OWNER_CLEARED",
+      "after": {
+        "blocker_id": "LEGACY_BRANCH_DELETION_NOT_OWNER_CLEARED",
+        "dependency_id": "LEGACY_BRANCH_DELETION_NOT_OWNER_CLEARED",
+        "reason": "LEGACY_BRANCH_DELETION_NOT_OWNER_CLEARED"
+      }
+    },
+    {
+      "task_id": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+      "path": [
+        "blockers",
+        0
+      ],
+      "before": "NATIVE_MYK_V_SAME_NODE_WEBKIT_ADOPTION_NOT_VERIFIED",
+      "after": {
+        "blocker_id": "NATIVE_MYK_V_SAME_NODE_WEBKIT_ADOPTION_NOT_VERIFIED",
+        "dependency_id": "NATIVE_MYK_V_SAME_NODE_WEBKIT_ADOPTION_NOT_VERIFIED",
+        "reason": "NATIVE_MYK_V_SAME_NODE_WEBKIT_ADOPTION_NOT_VERIFIED"
+      }
+    },
+    {
+      "task_id": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+      "path": [
+        "blockers",
+        1
+      ],
+      "before": "TV_TVC_SIGNING_PROVISIONING_AND_TESTFLIGHT_NOT_OBSERVED",
+      "after": {
+        "blocker_id": "TV_TVC_SIGNING_PROVISIONING_AND_TESTFLIGHT_NOT_OBSERVED",
+        "dependency_id": "TV_TVC_SIGNING_PROVISIONING_AND_TESTFLIGHT_NOT_OBSERVED",
+        "reason": "TV_TVC_SIGNING_PROVISIONING_AND_TESTFLIGHT_NOT_OBSERVED"
+      }
+    },
+    {
+      "task_id": "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+      "path": [
+        "blockers",
+        2
+      ],
+      "before": "CURRENT_IPHONE_MYKV_NOT_INSTALLED_NEVER_INSTALLED",
+      "after": {
+        "blocker_id": "CURRENT_IPHONE_MYKV_NOT_INSTALLED_NEVER_INSTALLED",
+        "dependency_id": "CURRENT_IPHONE_MYKV_NOT_INSTALLED_NEVER_INSTALLED",
+        "reason": "CURRENT_IPHONE_MYKV_NOT_INSTALLED_NEVER_INSTALLED"
+      }
+    },
+    {
+      "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "path": [
+        "dependencies",
+        0
+      ],
+      "before": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+      "after": {
+        "dependency_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001"
+      }
+    },
+    {
+      "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "path": [
+        "dependencies",
+        1
+      ],
+      "before": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+      "after": {
+        "dependency_id": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001"
+      }
+    },
+    {
+      "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "path": [
+        "dependencies",
+        2
+      ],
+      "before": "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "after": {
+        "dependency_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "KV-CONNECTION-REVALIDATION-WORKER-001"
+      }
+    },
+    {
+      "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "path": [
+        "dependencies",
+        3
+      ],
+      "before": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "after": {
+        "dependency_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+      }
+    },
+    {
+      "task_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+      "path": [
+        "blockers",
+        0
+      ],
+      "before": "PRIMARY_911_CAD_DISPATCH_RECORDS_NOT_YET_CUSTODIED",
+      "after": {
+        "blocker_id": "PRIMARY_911_CAD_DISPATCH_RECORDS_NOT_YET_CUSTODIED",
+        "dependency_id": "PRIMARY_911_CAD_DISPATCH_RECORDS_NOT_YET_CUSTODIED",
+        "reason": "PRIMARY_911_CAD_DISPATCH_RECORDS_NOT_YET_CUSTODIED"
+      }
+    },
+    {
+      "task_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+      "path": [
+        "blockers",
+        1
+      ],
+      "before": "COMPLETE_UNEDITED_PRE_ENTRY_BODYCAM_NOT_YET_CUSTODIED",
+      "after": {
+        "blocker_id": "COMPLETE_UNEDITED_PRE_ENTRY_BODYCAM_NOT_YET_CUSTODIED",
+        "dependency_id": "COMPLETE_UNEDITED_PRE_ENTRY_BODYCAM_NOT_YET_CUSTODIED",
+        "reason": "COMPLETE_UNEDITED_PRE_ENTRY_BODYCAM_NOT_YET_CUSTODIED"
+      }
+    },
+    {
+      "task_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+      "path": [
+        "blockers",
+        2
+      ],
+      "before": "CASPER_PD_2024_POLICY_SET_NOT_YET_CUSTODIED",
+      "after": {
+        "blocker_id": "CASPER_PD_2024_POLICY_SET_NOT_YET_CUSTODIED",
+        "dependency_id": "CASPER_PD_2024_POLICY_SET_NOT_YET_CUSTODIED",
+        "reason": "CASPER_PD_2024_POLICY_SET_NOT_YET_CUSTODIED"
+      }
+    },
+    {
+      "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "path": [
+        "dependencies",
+        0
+      ],
+      "before": "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+      "after": {
+        "dependency_id": "TVC-COINBASE-RESIDENT-ACTIVATION-091",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json"
+      }
+    },
+    {
+      "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "path": [
+        "dependencies",
+        1
+      ],
+      "before": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+      "after": {
+        "dependency_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001"
+      }
+    },
+    {
+      "task_id": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+      "path": [
+        "dependencies",
+        0
+      ],
+      "before": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+      "after": {
+        "dependency_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001"
+      }
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+      "path": [
+        "blockers",
+        2
+      ],
+      "before": "GENERIC_NODE_OPAQUE_P256_CAPABILITY_NOT_YET_BOUND_TO_NATIVE_STEGOS_AUTHORITY_SIGNER",
+      "after": {
+        "blocker_id": "GENERIC_NODE_OPAQUE_P256_CAPABILITY_NOT_YET_BOUND_TO_NATIVE_STEGOS_AUTHORITY_SIGNER",
+        "dependency_id": "GENERIC_NODE_OPAQUE_P256_CAPABILITY_NOT_YET_BOUND_TO_NATIVE_STEGOS_AUTHORITY_SIGNER",
+        "reason": "GENERIC_NODE_OPAQUE_P256_CAPABILITY_NOT_YET_BOUND_TO_NATIVE_STEGOS_AUTHORITY_SIGNER"
+      }
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+      "path": [
+        "blockers",
+        3
+      ],
+      "before": "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE",
+      "after": {
+        "blocker_id": "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE",
+        "dependency_id": "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE",
+        "reason": "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE"
+      }
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+      "path": [
+        "blockers",
+        0
+      ],
+      "before": "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_NOT_YET_OBSERVED",
+      "after": {
+        "blocker_id": "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_NOT_YET_OBSERVED",
+        "dependency_id": "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_NOT_YET_OBSERVED",
+        "reason": "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_NOT_YET_OBSERVED"
+      }
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+      "path": [
+        "blockers",
+        1
+      ],
+      "before": "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_NOT_YET_BOUND",
+      "after": {
+        "blocker_id": "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_NOT_YET_BOUND",
+        "dependency_id": "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_NOT_YET_BOUND",
+        "reason": "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_NOT_YET_BOUND"
+      }
+    },
+    {
+      "task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+      "path": [
+        "blockers",
+        2
+      ],
+      "before": "FRESH_PRODUCTION_SIGNED_RECIPIENT_ADMISSION_NOT_YET_OBSERVED",
+      "after": {
+        "blocker_id": "FRESH_PRODUCTION_SIGNED_RECIPIENT_ADMISSION_NOT_YET_OBSERVED",
+        "dependency_id": "FRESH_PRODUCTION_SIGNED_RECIPIENT_ADMISSION_NOT_YET_OBSERVED",
+        "reason": "FRESH_PRODUCTION_SIGNED_RECIPIENT_ADMISSION_NOT_YET_OBSERVED"
+      }
+    }
+  ],
+  "deferred_row_fields": {
+    "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+    "edits_if_row_and_record_are_reconciled": [
+      {
+        "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+        "path": [
+          "blockers",
+          0
+        ],
+        "before": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "after": {
+          "blocker_id": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+          "dependency_id": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+          "reason": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED"
+        }
+      },
+      {
+        "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+        "path": [
+          "blockers",
+          1
+        ],
+        "before": "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
+        "after": {
+          "blocker_id": "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
+          "dependency_id": "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
+          "reason": "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION"
+        }
+      },
+      {
+        "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+        "path": [
+          "blockers",
+          2
+        ],
+        "before": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
+        "after": {
+          "blocker_id": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
+          "dependency_id": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
+          "reason": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
+        }
+      }
+    ],
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH",
+    "failed_predicate": "standalone record WORKER-TASK-RESOURCE-COST-LINKAGE-001.blockers equals the aggregate row's blockers at gen 321",
+    "evidence": {
+      "row_blockers": [
+        "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
+        "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
+      ],
+      "record_blockers": [
+        "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
+      ],
+      "other_diverging_fields": [
+        "expected_evidence_predicates",
+        "allowed_next_transitions"
+      ]
+    },
+    "required_evidence_or_repair": "Registry owner decides whether COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION stands and reconciles row and record (blockers, expected_evidence_predicates, allowed_next_transitions); these three edits then move into row_fields unchanged",
+    "retry_entrypoint": "python scripts/apply_task_record_data.py data/registry-record-data/gen321-dependency-blocker-shape-normalization.v1.json --apply",
+    "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "next_attempt": "after the row/record divergence for WORKER-TASK-RESOURCE-COST-LINKAGE-001 is reconciled by the Registry owner"
+  },
+  "rows": [
+    "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+    "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
+    "ADMISSIBLE-EXISTENCE-MATHEMATICAL-PROCESSING-INTEGRATION",
+    "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+    "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
+    "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+    "MYKV-NATIVE-IOS-PACKAGING-DISTRIBUTION-001",
+    "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+    "ERL-SPURLOCK-CPD-ENTRY-001",
+    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+    "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+    "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
+  ]
+}
