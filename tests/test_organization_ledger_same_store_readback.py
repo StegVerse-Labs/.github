@@ -148,11 +148,13 @@ def _outcome(dispatch, state="ATTEMPT_RECORDED"):
 def test_dispatcher_append_and_readback_use_the_same_declared_git_store(git_declared, tmp_path):
     node, posix, before = git_declared
     dispatch = _dispatch()
-    first = dispatch.retain_component011_dispatch_in_organization(ROOT, tmp_path / "runtime", _outcome(dispatch))
+    # The carried frame's epoch, supplied (HB32 anchor is 32); never derived from a clock.
+    first = dispatch.retain_component011_dispatch_in_organization(ROOT, tmp_path / "runtime", _outcome(dispatch),
+                                                                  hb_epoch=4096)
     assert first["state"] == "RECORDED", first
     assert first["exact_receipt_readback"] == "PASS"
     second = dispatch.retain_component011_dispatch_in_organization(
-        ROOT, tmp_path / "runtime", _outcome(dispatch, "FAIL_CLOSED"))
+        ROOT, tmp_path / "runtime", _outcome(dispatch, "FAIL_CLOSED"), hb_epoch=4096)
     assert second["state"] == "RECORDED", second
     assert second["immediate_predecessor_sha256"] == first["organization_receipt_sha256"]
     assert second["immediate_predecessor_readback"] == "PASS"

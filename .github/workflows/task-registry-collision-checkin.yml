@@ -1,0 +1,53 @@
+name: Task Registry Collision Check-in - Non-Authorizing
+
+# Coordination item H48. Runs the existing collision check-in
+# (scripts/evaluate_task_registry_collision_checkin.py) for every canonical task
+# row or shard a pull request changes, at the PR merge ref and at the live base
+# tip, and fails on a new collision or a disposition the PR made stronger than
+# CONTINUE. Its tests run in test-suite-ratchet.yml. Validation only: never a
+# transition predicate. DRAFT - making this check required is owner-only.
+on:
+  pull_request:
+    paths:
+      - 'data/canonical-task-registry.json'
+      - 'data/canonical-task-records/**'
+      - 'data/task-registry-global-invariants.json'
+      - 'data/task-registry-general-checkin-caller-policy.json'
+      - 'scripts/evaluate_task_registry_collision_checkin.py'
+      - 'scripts/task_registry_checkin_event_history.py'
+      - 'scripts/validate_task_registration_substrate_resolution.py'
+      - 'scripts/check_registry_collision_checkin.py'
+      - '.github/workflows/task-registry-collision-checkin.yml'
+
+permissions: {}
+
+concurrency:
+  group: task-registry-collision-checkin-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checkin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous public checkout of PR merge ref and live base tip without GitHub token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init -q .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch -q --depth=1 --no-tags origin \
+            "+refs/pull/${PR_NUMBER}/merge:refs/remotes/pr/merge" \
+            "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+          git checkout -q --detach pr/merge
+          git worktree add -q --detach "${RUNNER_TEMP}/base" "origin/${BASE_REF}"
+          echo "head=$(git rev-parse HEAD) base=$(git -C "${RUNNER_TEMP}/base" rev-parse HEAD)"
+      - name: Collision check-in for changed tasks - head vs base (fail closed, read-only)
+        run: |
+          set -euo pipefail
+          base_root="${RUNNER_TEMP}/base"
+          head_root="${GITHUB_WORKSPACE}"
+          python scripts/check_registry_collision_checkin.py --base-root "$base_root" --head-root "$head_root"

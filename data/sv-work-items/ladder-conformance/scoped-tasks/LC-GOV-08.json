@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "FINISH_APPENDS_ORGANIZATION_LEDGER_RECEIPT",
+ "failure_class": {
+  "class": "B",
+  "reason": "waits on the organization-ledger writer split (#3255 draft) that the finish transition appends through"
+ },
+ "failure_code": "LADDER_FINISH_NOT_LEDGER_BOUND",
+ "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+ "items": [
+  "H-GOV-FINISH-LEDGER"
+ ],
+ "next_attempt": "on the next record change of GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_lane": "GitHub Product lane (Lane C)",
+ "proposed_resolution": "emit the release verdict as a stegverse.canonical-state-transition-receipt/v1 appended by the ledger writer split in #3255, after the TV/TVC release receipt exists; until then the release is a record, not runtime",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "a manifest-directed transition that appends ORGANIZATION_RECEIPT GOVERNANCE_PRODUCT_RELEASE under the organization-ledger lock",
+ "retry_point": "python -m unittest tests.test_governance_product_finish_point (StegVerse-org/StegVerse-SDK), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-GOV-08"
+}

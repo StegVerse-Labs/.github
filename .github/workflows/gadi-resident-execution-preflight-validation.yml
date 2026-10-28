@@ -5,6 +5,11 @@ on:
       - 'scripts/preflight_gadi_resident_execution.py'
       - 'tests/test_gadi_resident_execution_preflight.py'
       - '.github/workflows/gadi-resident-execution-preflight-validation.yml'
+
+# Least privilege: the only token use is actions/checkout of this repository.
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest

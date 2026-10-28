@@ -129,4 +129,7 @@ api.allocate(pkg,store,{now_ms:1789002000000}).then(result=>{
 def test_bootstrap_deadlock_is_not_hidden():
     text=HANDOFF.read_text(encoding="utf-8")
     assert "Bootstrap circularity" in text
-    assert "must not solve that by bypassing the claim gate" in text
+    # The handoff was reworded in 906b2f13 ("Prepare TASK-0009 HB31 Site successor
+    # allocation"); the invariant itself is unchanged: the bootstrap may not bypass
+    # a task claim gate.
+    assert "This lane must not solve publication by bypassing a task claim gate." in text

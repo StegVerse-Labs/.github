@@ -1,0 +1,2526 @@
+{
+ "cases": [
+  {
+   "case_id": "e0-witness-respond-partial",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "ENTITY_SURFACE_NOT_SUPPLIED",
+    "work_completed": true
+   },
+   "input": {
+    "receipts": [
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "parent_transition": {
+        "org_receipt_sha256": "sha256:bd7abe9285a7010119e96a04c28bb71db01269033111e724779584b94e8c0fe8",
+        "repo_receipt_sha256": "sha256:1f50118d0dbf314797b6aedaad49b97a1dcd489312396583faee2f464f9a8f79",
+        "subject_or_artifact_digest": "sha256:7fe4b7f6a2e61929feee171d1813d42d3c1dac93ce56dc613876143be0dc94bb",
+        "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+       },
+       "work": {
+        "canonical_context_refs": [],
+        "expected_output_or_handoff": {
+         "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+        },
+        "manifested_request": {
+         "destination": {
+          "organization": "SV-LLM",
+          "repository": "sandbox"
+         },
+         "manifest_id": "e0-witness-respond-partial",
+         "payload": {
+          "work": {
+           "expected_output_or_handoff": {
+            "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+           },
+           "intent": "review the supplied contract for internal contradictions",
+           "participants": [
+            {
+             "capability": "adversarial_review",
+             "entity": "Anthropic"
+            },
+            {
+             "capability": "adversarial_review",
+             "entity": "OpenAI"
+            }
+           ],
+           "participation_policy": {
+            "mode": "MULTIPLE"
+           },
+           "permitted_capabilities": [
+            "adversarial_review"
+           ],
+           "requested_capabilities": [
+            "adversarial_review"
+           ]
+          }
+         },
+         "processing": {
+          "capability": "sandbox-work-cycle",
+          "route_id": "sv-llm.sandbox.work-cycle.v1"
+         },
+         "return_to": {
+          "organization": "StegVerse-Labs"
+         }
+        },
+        "parent_transition": {
+         "org_receipt_sha256": "sha256:bd7abe9285a7010119e96a04c28bb71db01269033111e724779584b94e8c0fe8",
+         "repo_receipt_sha256": "sha256:1f50118d0dbf314797b6aedaad49b97a1dcd489312396583faee2f464f9a8f79",
+         "subject_or_artifact_digest": "sha256:7fe4b7f6a2e61929feee171d1813d42d3c1dac93ce56dc613876143be0dc94bb",
+         "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+        },
+        "participation_policy": {
+         "mode": "MULTIPLE"
+        },
+        "permitted_capabilities": [
+         "adversarial_review"
+        ],
+        "requested_capabilities": [
+         "adversarial_review"
+        ],
+        "schema": "sv-llm.sandbox-work/v0.1",
+        "work_id": "e0-witness-respond-partial"
+       },
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.701773+00:00",
+      "predecessor_state_sha256": "sha256:eceff56c4184ffa84af49121ccd627812cb024c564ced9cc8d6070f2067aa66c",
+      "previous_receipt_sha256": null,
+      "receipt_sha256": "sha256:5e4c3481c972fdb498f678fc4a68c1fa9b4c917ab86fb4c3f04f7d19b685bde2",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:fcf6da19946b70441ac2c8cfd408f45ad102637eb28e35ca174cf39704133fde",
+      "transition_class": "SANDBOX_WORK_ADMITTED",
+      "transition_id": "SANDBOX_WORK_ADMITTED:fcf6da19946b70441ac2c8cf"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:5ce1281ffeac1bf2eb84f88341fa2cef27f1e23d66c92e0f3adc574fbec46746",
+         "path": "contracts/entity-capability.json",
+         "repository": "Anthropic"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "Anthropic",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "demonstrated_governed_history_ref": "evaluation/history.jsonl",
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "Anthropic",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.709369+00:00",
+      "predecessor_state_sha256": "sha256:221e94ace62575cb44955accf3cbb001caa4299408765db70ffdbe20fa680467",
+      "previous_receipt_sha256": "sha256:5e4c3481c972fdb498f678fc4a68c1fa9b4c917ab86fb4c3f04f7d19b685bde2",
+      "receipt_sha256": "sha256:590fcedda19808f44d8f23532891d282fe790dd10056d7ba4cdc3e7a211597f0",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:fabbb651760c3f9c973bb9bc995bc1e7c6120bba2db2c7863510cc3bd272d567",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:fabbb651760c3f9c973bb9bc"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-partial",
+       "work_sha256": "sha256:7e4c667985238307b51e73f4d3aeb63e17575d797e53e65996a32dfc64b715e6"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.716611+00:00",
+      "predecessor_state_sha256": "sha256:01ba44974179260c9eeb577b76ba7ba5b38534195c2c5701df282c5b5209df6e",
+      "previous_receipt_sha256": "sha256:590fcedda19808f44d8f23532891d282fe790dd10056d7ba4cdc3e7a211597f0",
+      "receipt_sha256": "sha256:dd4cf85d14afe85d9c0f2180786fe7f91019691ed8c0661117aeb1d40e75aa40",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:cf9b2cd43463b42d80d20615dd70c1f45b62fdcee9c674e40f7507640a261c6e",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:cf9b2cd43463b42d80d20615"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:1efe299a9e1222405717d1a24195187546f87e1dd19fd7965500e528ec01b4e0",
+         "path": "contracts/entity-capability.json",
+         "repository": "OpenAI"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "OpenAI",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "OpenAI",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.725101+00:00",
+      "predecessor_state_sha256": "sha256:5f9a6ad38f76b6e7599c680b518809694d0f69bbaf5e738e1ace685f8609a993",
+      "previous_receipt_sha256": "sha256:dd4cf85d14afe85d9c0f2180786fe7f91019691ed8c0661117aeb1d40e75aa40",
+      "receipt_sha256": "sha256:1136f4770f4c9cc90497f3154b1879cc0b5ed4db47fcd59fd95f4d9f28c3532f",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:5e1a544c50fc28437439f7a0dd02ef571171d3ea92902a9c1436eb6be8b8f3ed",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:5e1a544c50fc28437439f7a0"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-partial",
+       "work_sha256": "sha256:7e4c667985238307b51e73f4d3aeb63e17575d797e53e65996a32dfc64b715e6"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.728880+00:00",
+      "predecessor_state_sha256": "sha256:203ad5263ce40a46e5d227a3b529283f7cb049af1ede8c04f351bcb1a3f8abae",
+      "previous_receipt_sha256": "sha256:1136f4770f4c9cc90497f3154b1879cc0b5ed4db47fcd59fd95f4d9f28c3532f",
+      "receipt_sha256": "sha256:90a9517ab583a3f56e8247ca610886696928e673e552d8e80d9e5b4a8eb6feec",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:e32de1eb038cf8d34b93991c89a107c43a89f1db6598fc3ea1f166f17babf6f9",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:e32de1eb038cf8d34b93991c"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+       "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+        "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+        "entity": "Anthropic",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [],
+        "non_success_status_record": {
+         "evidence_refs": [],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond"
+         ],
+         "reason_or_failed_predicate": "NO_ADMITTED_INVOCATION_SURFACE",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-partial"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.734175+00:00",
+      "predecessor_state_sha256": "sha256:1669301e63df647139da936d16a1279fbb93cd8794b3d9e64fc2f0645dce9cb5",
+      "previous_receipt_sha256": "sha256:90a9517ab583a3f56e8247ca610886696928e673e552d8e80d9e5b4a8eb6feec",
+      "receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:45657a8107ae07546328f0e9c6ed0ae16e5fa239819424a343b4905c3b3c3cfe",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:45657a8107ae07546328f0e9"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+       "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+       "disposition": "ALLOW",
+       "e0_terminal": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "ENTITY_SURFACE_SUPPLIED_FOR_REQUESTED_CONTRIBUTION",
+        "failure_code": "ENTITY_SURFACE_NOT_SUPPLIED",
+        "mode": "E0",
+        "next_attempt": "a new manifest for the same work, taken in by a pass that supplies the OpenAI surface for adversarial_review; this work is complete and nothing waits on it",
+        "owning_existing_goal": "SVORG-LLM-ORG-FOUNDATION-001",
+        "required_evidence_or_repair": "supply the entity's surface (entity repository core.py and contracts/entity-capability.json) to the pass that takes the work in",
+        "retry_entrypoint": "SV-LLM/sandbox runtime/work_cycle.py::respond"
+       },
+       "entity": "OpenAI",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+        "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+        "entity": "OpenAI",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [
+         "entity-set:sha256:e50a4d52ae3c32830e74ac1c403634f872dcd68f94f2ca11c8e771c2bd30915a"
+        ],
+        "non_success_status_record": {
+         "evidence_refs": [
+          "entity-set:sha256:e50a4d52ae3c32830e74ac1c403634f872dcd68f94f2ca11c8e771c2bd30915a"
+         ],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+         ],
+         "reason_or_failed_predicate": "ENTITY_SURFACE_NOT_SUPPLIED",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-partial"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.761441+00:00",
+      "predecessor_state_sha256": "sha256:59c65075e82dbba8d1e6b63fcd68d718f4ccb6e4614f202a05e5d766e6b6f55b",
+      "previous_receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+      "receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:b5e95a6be90376f4d595fbebdd3392c5904b34dbecaf9045b6c8b1c52c8e6165",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:b5e95a6be90376f4d595fbeb"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "lineage": [
+        {
+         "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+         "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+         "disagreement_refs": [],
+         "entity": "Anthropic",
+         "kind": "CONTRIBUTION",
+         "repo_receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        {
+         "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+         "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+         "disagreement_refs": [],
+         "entity": "OpenAI",
+         "kind": "CONTRIBUTION",
+         "repo_receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        }
+       ],
+       "synthesis": {
+        "contributed": 0,
+        "inputs": {
+         "1d4fd13a-402d-4856-8775-cc08ff153a9c": {
+          "entity": "Anthropic",
+          "status": "UNAVAILABLE"
+         },
+         "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367": {
+          "entity": "OpenAI",
+          "status": "UNAVAILABLE"
+         }
+        },
+        "non_success": 2,
+        "schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+       },
+       "synthesis_digest": "sha256:294fde698c948eac79bf87a329a883ebf643e6943c635589048ff46ff2535620",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.769738+00:00",
+      "predecessor_state_sha256": "sha256:66c765d2d7ae864a82d76a77538af85c5b494cf9df5d11fc04ba58c2f994dab7",
+      "previous_receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+      "receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:abf4282ecb3332b59bdc838c5516e712b36c0ba7020374b6f39574b6bf4be08c",
+      "transition_class": "SANDBOX_SYNTHESIS_RECORDED",
+      "transition_id": "SANDBOX_SYNTHESIS_RECORDED:abf4282ecb3332b59bdc838c"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "expected_output_or_handoff": {
+        "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+       },
+       "synthesis_receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.776708+00:00",
+      "predecessor_state_sha256": "sha256:062916ffcdeb8bf114b31fe07ca543361695f0cd52a182959b682b97f59e492c",
+      "previous_receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+      "receipt_sha256": "sha256:d53c68a2d9f128e400812d01b1cb06c132fc8375201cb072cef2870b0832b400",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:074d115d5f8611ada5092c31421fd1a50fce85b85b7860bfc4497bf14ec8584a",
+      "transition_class": "SANDBOX_WORK_COMPLETED",
+      "transition_id": "SANDBOX_WORK_COMPLETED:074d115d5f8611ada5092c31"
+     }
+    ],
+    "supplied_entities": [
+     "Anthropic"
+    ]
+   }
+  },
+  {
+   "case_id": "e0-witness-respond-none",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "ENTITY_SURFACE_NOT_SUPPLIED",
+    "work_completed": true
+   },
+   "input": {
+    "receipts": [
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "parent_transition": {
+        "org_receipt_sha256": "sha256:4a287bca1950622b0be225e684f4fee34b1a9a74ded726fd8e7353766ba58a46",
+        "repo_receipt_sha256": "sha256:834aebaade528b4aafb65591b7f29101549925d42b08d091357032da9d6bb4f6",
+        "subject_or_artifact_digest": "sha256:63f6a58d6e4db90d122c4db2af045fd0487b566f8139925375ac47265cc68dc2",
+        "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+       },
+       "work": {
+        "canonical_context_refs": [],
+        "expected_output_or_handoff": {
+         "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+        },
+        "manifested_request": {
+         "destination": {
+          "organization": "SV-LLM",
+          "repository": "sandbox"
+         },
+         "manifest_id": "e0-witness-respond-none",
+         "payload": {
+          "work": {
+           "expected_output_or_handoff": {
+            "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+           },
+           "intent": "review the supplied contract for internal contradictions",
+           "participants": [
+            {
+             "capability": "adversarial_review",
+             "entity": "Anthropic"
+            },
+            {
+             "capability": "adversarial_review",
+             "entity": "OpenAI"
+            }
+           ],
+           "participation_policy": {
+            "mode": "MULTIPLE"
+           },
+           "permitted_capabilities": [
+            "adversarial_review"
+           ],
+           "requested_capabilities": [
+            "adversarial_review"
+           ]
+          }
+         },
+         "processing": {
+          "capability": "sandbox-work-cycle",
+          "route_id": "sv-llm.sandbox.work-cycle.v1"
+         },
+         "return_to": {
+          "organization": "StegVerse-Labs"
+         }
+        },
+        "parent_transition": {
+         "org_receipt_sha256": "sha256:4a287bca1950622b0be225e684f4fee34b1a9a74ded726fd8e7353766ba58a46",
+         "repo_receipt_sha256": "sha256:834aebaade528b4aafb65591b7f29101549925d42b08d091357032da9d6bb4f6",
+         "subject_or_artifact_digest": "sha256:63f6a58d6e4db90d122c4db2af045fd0487b566f8139925375ac47265cc68dc2",
+         "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+        },
+        "participation_policy": {
+         "mode": "MULTIPLE"
+        },
+        "permitted_capabilities": [
+         "adversarial_review"
+        ],
+        "requested_capabilities": [
+         "adversarial_review"
+        ],
+        "schema": "sv-llm.sandbox-work/v0.1",
+        "work_id": "e0-witness-respond-none"
+       },
+       "work_id": "e0-witness-respond-none"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.994975+00:00",
+      "predecessor_state_sha256": "sha256:540af0447ff33320761c97835f2cde44414669d0b50123ecec0a4fe5af6c93e7",
+      "previous_receipt_sha256": null,
+      "receipt_sha256": "sha256:cd47bf1e4b391819ad5c9875212be34222fd92be65570bfeaba448f8dc4984a6",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:4be9b022691bd0f2484661b65626f2d9a91bdd02c50a86274308e5a6aeffa52d",
+      "transition_class": "SANDBOX_WORK_ADMITTED",
+      "transition_id": "SANDBOX_WORK_ADMITTED:4be9b022691bd0f2484661b6"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:5ce1281ffeac1bf2eb84f88341fa2cef27f1e23d66c92e0f3adc574fbec46746",
+         "path": "contracts/entity-capability.json",
+         "repository": "Anthropic"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "Anthropic",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "demonstrated_governed_history_ref": "evaluation/history.jsonl",
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "Anthropic",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-none"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:52:00.001228+00:00",
+      "predecessor_state_sha256": "sha256:1d1045ea08422f381f7653309029372ddf87cedaf85b730940fe52af6345fbe6",
+      "previous_receipt_sha256": "sha256:cd47bf1e4b391819ad5c9875212be34222fd92be65570bfeaba448f8dc4984a6",
+      "receipt_sha256": "sha256:bc1d57189d9a9015662107c3d988db6781ebd33b750d5b1d5cad56732995938e",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:728cdba8a71c41a191af18d5305624c4f90899cdb39d44831c706492cb7392e5",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:728cdba8a71c41a191af18d5"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-none",
+       "work_sha256": "sha256:481e6950a7e4d44f0274334cca04602feb92d144d18ce96d80d9c5217a96f9de"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:52:00.004863+00:00",
+      "predecessor_state_sha256": "sha256:09d587b200b32fa37083603b52762aea16a220145ec54bc7de8900a40e3dedb7",
+      "previous_receipt_sha256": "sha256:bc1d57189d9a9015662107c3d988db6781ebd33b750d5b1d5cad56732995938e",
+      "receipt_sha256": "sha256:4b336a09325464c8b5cc87ca4044d1e067e887cf0e493c688a9f67938a5ca744",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:8f5623c7e71f1deab205c306ef42cfac20cf090fe493839f0e25c2fb820ff07d",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:8f5623c7e71f1deab205c306"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:1efe299a9e1222405717d1a24195187546f87e1dd19fd7965500e528ec01b4e0",
+         "path": "contracts/entity-capability.json",
+         "repository": "OpenAI"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "OpenAI",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "OpenAI",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-none"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:52:00.011455+00:00",
+      "predecessor_state_sha256": "sha256:3fc9e37d9b60aad5908ffc899f7404d4ac480a283a2380cde060959fcdc9be7e",
+      "previous_receipt_sha256": "sha256:4b336a09325464c8b5cc87ca4044d1e067e887cf0e493c688a9f67938a5ca744",
+      "receipt_sha256": "sha256:4923f40805936998715f989a5b6761833c05e4d02d6cb995438784614b7984c2",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:af3c073a90201a9eb3fb4c844096e64b487cf959c92e6bd7b023319e3b3a79f5",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:af3c073a90201a9eb3fb4c84"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-none",
+       "work_sha256": "sha256:481e6950a7e4d44f0274334cca04602feb92d144d18ce96d80d9c5217a96f9de"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:52:00.015846+00:00",
+      "predecessor_state_sha256": "sha256:a443ceff706441780cab1508f6233a0a16294b69d8f4c4eb377072fb5191e89e",
+      "previous_receipt_sha256": "sha256:4923f40805936998715f989a5b6761833c05e4d02d6cb995438784614b7984c2",
+      "receipt_sha256": "sha256:1a0fccdefd679b85e1ea9fb6daff52f3129962953edbb0cef4d10c19c4ddef10",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:c0d81767821ec9036163f422a6ce8ad8d9ba6bfb1dc0144cc79006bd31f4631b",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:c0d81767821ec9036163f422"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:47ce7d124958a33a6e453dcfb92f0ca7c35008a3824f53bf20dd66b5d1440823",
+       "contribution_id": "surface-not-supplied:888e1e62eb7d79c4c5b2a65b6e9c1775cf247b155d164b1d536ec2e0715380c7",
+       "disposition": "ALLOW",
+       "e0_terminal": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "ENTITY_SURFACE_SUPPLIED_FOR_REQUESTED_CONTRIBUTION",
+        "failure_code": "ENTITY_SURFACE_NOT_SUPPLIED",
+        "mode": "E0",
+        "next_attempt": "a new manifest for the same work, taken in by a pass that supplies the Anthropic surface for adversarial_review; this work is complete and nothing waits on it",
+        "owning_existing_goal": "SVORG-LLM-ORG-FOUNDATION-001",
+        "required_evidence_or_repair": "supply the entity's surface (entity repository core.py and contracts/entity-capability.json) to the pass that takes the work in",
+        "retry_entrypoint": "SV-LLM/sandbox runtime/work_cycle.py::respond"
+       },
+       "entity": "Anthropic",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:47ce7d124958a33a6e453dcfb92f0ca7c35008a3824f53bf20dd66b5d1440823",
+        "contribution_id": "surface-not-supplied:888e1e62eb7d79c4c5b2a65b6e9c1775cf247b155d164b1d536ec2e0715380c7",
+        "entity": "Anthropic",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [
+         "entity-set:sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        ],
+        "non_success_status_record": {
+         "evidence_refs": [
+          "entity-set:sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+         ],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+         ],
+         "reason_or_failed_predicate": "ENTITY_SURFACE_NOT_SUPPLIED",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-none"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-none"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:52:00.023067+00:00",
+      "predecessor_state_sha256": "sha256:c9adb2d27a4b7a99ee92c3e2d780e3fe6ad5f0942f6828c552fdeabb3032acd0",
+      "previous_receipt_sha256": "sha256:1a0fccdefd679b85e1ea9fb6daff52f3129962953edbb0cef4d10c19c4ddef10",
+      "receipt_sha256": "sha256:39e88a7020a199d596a0c16c30b962d19826a2eb9075ace43bd63844c3228502",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:253a7004ca9d664ddd36bf435471bc86c1960a01f3f9005c95df7607b231c87b",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:253a7004ca9d664ddd36bf43"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:47ce7d124958a33a6e453dcfb92f0ca7c35008a3824f53bf20dd66b5d1440823",
+       "contribution_id": "surface-not-supplied:ee66256906f4aa5ac25eb8b585e0727a3d92779261c2cb9320a44deec5b79429",
+       "disposition": "ALLOW",
+       "e0_terminal": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "ENTITY_SURFACE_SUPPLIED_FOR_REQUESTED_CONTRIBUTION",
+        "failure_code": "ENTITY_SURFACE_NOT_SUPPLIED",
+        "mode": "E0",
+        "next_attempt": "a new manifest for the same work, taken in by a pass that supplies the OpenAI surface for adversarial_review; this work is complete and nothing waits on it",
+        "owning_existing_goal": "SVORG-LLM-ORG-FOUNDATION-001",
+        "required_evidence_or_repair": "supply the entity's surface (entity repository core.py and contracts/entity-capability.json) to the pass that takes the work in",
+        "retry_entrypoint": "SV-LLM/sandbox runtime/work_cycle.py::respond"
+       },
+       "entity": "OpenAI",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:47ce7d124958a33a6e453dcfb92f0ca7c35008a3824f53bf20dd66b5d1440823",
+        "contribution_id": "surface-not-supplied:ee66256906f4aa5ac25eb8b585e0727a3d92779261c2cb9320a44deec5b79429",
+        "entity": "OpenAI",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [
+         "entity-set:sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        ],
+        "non_success_status_record": {
+         "evidence_refs": [
+          "entity-set:sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+         ],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+         ],
+         "reason_or_failed_predicate": "ENTITY_SURFACE_NOT_SUPPLIED",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-none"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-none"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:52:00.029034+00:00",
+      "predecessor_state_sha256": "sha256:21685de5892c1d91f2814abfa89d419e6a489560d0830456ca6166886a85e5e6",
+      "previous_receipt_sha256": "sha256:39e88a7020a199d596a0c16c30b962d19826a2eb9075ace43bd63844c3228502",
+      "receipt_sha256": "sha256:1bd650377fdd5e86e5266579852b2233412dc95b7065010c1f79729f6747cd71",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:b6bd6b1c28cb947306069e8adeadeb8efaff5fdf26041491528d60cb93feb669",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:b6bd6b1c28cb947306069e8a"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "lineage": [
+        {
+         "content_digest": "sha256:47ce7d124958a33a6e453dcfb92f0ca7c35008a3824f53bf20dd66b5d1440823",
+         "contribution_id": "surface-not-supplied:888e1e62eb7d79c4c5b2a65b6e9c1775cf247b155d164b1d536ec2e0715380c7",
+         "disagreement_refs": [],
+         "entity": "Anthropic",
+         "kind": "CONTRIBUTION",
+         "repo_receipt_sha256": "sha256:39e88a7020a199d596a0c16c30b962d19826a2eb9075ace43bd63844c3228502",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        {
+         "content_digest": "sha256:47ce7d124958a33a6e453dcfb92f0ca7c35008a3824f53bf20dd66b5d1440823",
+         "contribution_id": "surface-not-supplied:ee66256906f4aa5ac25eb8b585e0727a3d92779261c2cb9320a44deec5b79429",
+         "disagreement_refs": [],
+         "entity": "OpenAI",
+         "kind": "CONTRIBUTION",
+         "repo_receipt_sha256": "sha256:1bd650377fdd5e86e5266579852b2233412dc95b7065010c1f79729f6747cd71",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        }
+       ],
+       "synthesis": {
+        "contributed": 0,
+        "inputs": {
+         "surface-not-supplied:888e1e62eb7d79c4c5b2a65b6e9c1775cf247b155d164b1d536ec2e0715380c7": {
+          "entity": "Anthropic",
+          "status": "UNAVAILABLE"
+         },
+         "surface-not-supplied:ee66256906f4aa5ac25eb8b585e0727a3d92779261c2cb9320a44deec5b79429": {
+          "entity": "OpenAI",
+          "status": "UNAVAILABLE"
+         }
+        },
+        "non_success": 2,
+        "schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+       },
+       "synthesis_digest": "sha256:cc979dec364fccd345d6b47e540dcb16fa535ad291c4ce50ad786177525c62d2",
+       "work_id": "e0-witness-respond-none"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:52:00.036396+00:00",
+      "predecessor_state_sha256": "sha256:5a90f514fda049e67912e83f8bd9885812eea675cb948da91346c194ca8f2c26",
+      "previous_receipt_sha256": "sha256:1bd650377fdd5e86e5266579852b2233412dc95b7065010c1f79729f6747cd71",
+      "receipt_sha256": "sha256:a30b77e0d226d34943f1b7ad5e5878c92cc5055b068e14bfcca2f0901c13e190",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:9f8556b502978ac02b663849c8911103f82c64424d6898a31427a12ae7b38fa2",
+      "transition_class": "SANDBOX_SYNTHESIS_RECORDED",
+      "transition_id": "SANDBOX_SYNTHESIS_RECORDED:9f8556b502978ac02b663849"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "expected_output_or_handoff": {
+        "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+       },
+       "synthesis_receipt_sha256": "sha256:a30b77e0d226d34943f1b7ad5e5878c92cc5055b068e14bfcca2f0901c13e190",
+       "work_id": "e0-witness-respond-none"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:52:00.042105+00:00",
+      "predecessor_state_sha256": "sha256:8d0674fbbf1890b2837ede980016eab90b772d24f06deba349706ee7e8d15ceb",
+      "previous_receipt_sha256": "sha256:a30b77e0d226d34943f1b7ad5e5878c92cc5055b068e14bfcca2f0901c13e190",
+      "receipt_sha256": "sha256:fe58a26930bd1a68099f85a21abace5a964d4e3f3d28a47a8c0f2769bec2d43b",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:a90a827832e8960cd3dc9122cca152ce8bd817445093b45fad584c83510dd7f6",
+      "transition_class": "SANDBOX_WORK_COMPLETED",
+      "transition_id": "SANDBOX_WORK_COMPLETED:a90a827832e8960cd3dc9122"
+     }
+    ],
+    "supplied_entities": []
+   }
+  },
+  {
+   "case_id": "tampered-receipt-is-not-evidence",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failed_check": "RECEIPT_HASH_RECOMPUTES",
+    "failure_code": "RESPOND_E0_TERMINAL_NOT_EVIDENCED"
+   },
+   "input": {
+    "receipts": [
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "parent_transition": {
+        "org_receipt_sha256": "sha256:bd7abe9285a7010119e96a04c28bb71db01269033111e724779584b94e8c0fe8",
+        "repo_receipt_sha256": "sha256:1f50118d0dbf314797b6aedaad49b97a1dcd489312396583faee2f464f9a8f79",
+        "subject_or_artifact_digest": "sha256:7fe4b7f6a2e61929feee171d1813d42d3c1dac93ce56dc613876143be0dc94bb",
+        "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+       },
+       "work": {
+        "canonical_context_refs": [],
+        "expected_output_or_handoff": {
+         "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+        },
+        "manifested_request": {
+         "destination": {
+          "organization": "SV-LLM",
+          "repository": "sandbox"
+         },
+         "manifest_id": "e0-witness-respond-partial",
+         "payload": {
+          "work": {
+           "expected_output_or_handoff": {
+            "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+           },
+           "intent": "review the supplied contract for internal contradictions",
+           "participants": [
+            {
+             "capability": "adversarial_review",
+             "entity": "Anthropic"
+            },
+            {
+             "capability": "adversarial_review",
+             "entity": "OpenAI"
+            }
+           ],
+           "participation_policy": {
+            "mode": "MULTIPLE"
+           },
+           "permitted_capabilities": [
+            "adversarial_review"
+           ],
+           "requested_capabilities": [
+            "adversarial_review"
+           ]
+          }
+         },
+         "processing": {
+          "capability": "sandbox-work-cycle",
+          "route_id": "sv-llm.sandbox.work-cycle.v1"
+         },
+         "return_to": {
+          "organization": "StegVerse-Labs"
+         }
+        },
+        "parent_transition": {
+         "org_receipt_sha256": "sha256:bd7abe9285a7010119e96a04c28bb71db01269033111e724779584b94e8c0fe8",
+         "repo_receipt_sha256": "sha256:1f50118d0dbf314797b6aedaad49b97a1dcd489312396583faee2f464f9a8f79",
+         "subject_or_artifact_digest": "sha256:7fe4b7f6a2e61929feee171d1813d42d3c1dac93ce56dc613876143be0dc94bb",
+         "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+        },
+        "participation_policy": {
+         "mode": "MULTIPLE"
+        },
+        "permitted_capabilities": [
+         "adversarial_review"
+        ],
+        "requested_capabilities": [
+         "adversarial_review"
+        ],
+        "schema": "sv-llm.sandbox-work/v0.1",
+        "work_id": "e0-witness-respond-partial"
+       },
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.701773+00:00",
+      "predecessor_state_sha256": "sha256:eceff56c4184ffa84af49121ccd627812cb024c564ced9cc8d6070f2067aa66c",
+      "previous_receipt_sha256": null,
+      "receipt_sha256": "sha256:5e4c3481c972fdb498f678fc4a68c1fa9b4c917ab86fb4c3f04f7d19b685bde2",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:fcf6da19946b70441ac2c8cfd408f45ad102637eb28e35ca174cf39704133fde",
+      "transition_class": "SANDBOX_WORK_ADMITTED",
+      "transition_id": "SANDBOX_WORK_ADMITTED:fcf6da19946b70441ac2c8cf"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:5ce1281ffeac1bf2eb84f88341fa2cef27f1e23d66c92e0f3adc574fbec46746",
+         "path": "contracts/entity-capability.json",
+         "repository": "Anthropic"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "Anthropic",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "demonstrated_governed_history_ref": "evaluation/history.jsonl",
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "Anthropic",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.709369+00:00",
+      "predecessor_state_sha256": "sha256:221e94ace62575cb44955accf3cbb001caa4299408765db70ffdbe20fa680467",
+      "previous_receipt_sha256": "sha256:5e4c3481c972fdb498f678fc4a68c1fa9b4c917ab86fb4c3f04f7d19b685bde2",
+      "receipt_sha256": "sha256:590fcedda19808f44d8f23532891d282fe790dd10056d7ba4cdc3e7a211597f0",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:fabbb651760c3f9c973bb9bc995bc1e7c6120bba2db2c7863510cc3bd272d567",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:fabbb651760c3f9c973bb9bc"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-partial",
+       "work_sha256": "sha256:7e4c667985238307b51e73f4d3aeb63e17575d797e53e65996a32dfc64b715e6"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.716611+00:00",
+      "predecessor_state_sha256": "sha256:01ba44974179260c9eeb577b76ba7ba5b38534195c2c5701df282c5b5209df6e",
+      "previous_receipt_sha256": "sha256:590fcedda19808f44d8f23532891d282fe790dd10056d7ba4cdc3e7a211597f0",
+      "receipt_sha256": "sha256:dd4cf85d14afe85d9c0f2180786fe7f91019691ed8c0661117aeb1d40e75aa40",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:cf9b2cd43463b42d80d20615dd70c1f45b62fdcee9c674e40f7507640a261c6e",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:cf9b2cd43463b42d80d20615"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:1efe299a9e1222405717d1a24195187546f87e1dd19fd7965500e528ec01b4e0",
+         "path": "contracts/entity-capability.json",
+         "repository": "OpenAI"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "OpenAI",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "OpenAI",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.725101+00:00",
+      "predecessor_state_sha256": "sha256:5f9a6ad38f76b6e7599c680b518809694d0f69bbaf5e738e1ace685f8609a993",
+      "previous_receipt_sha256": "sha256:dd4cf85d14afe85d9c0f2180786fe7f91019691ed8c0661117aeb1d40e75aa40",
+      "receipt_sha256": "sha256:1136f4770f4c9cc90497f3154b1879cc0b5ed4db47fcd59fd95f4d9f28c3532f",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:5e1a544c50fc28437439f7a0dd02ef571171d3ea92902a9c1436eb6be8b8f3ed",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:5e1a544c50fc28437439f7a0"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-partial",
+       "work_sha256": "sha256:7e4c667985238307b51e73f4d3aeb63e17575d797e53e65996a32dfc64b715e6"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.728880+00:00",
+      "predecessor_state_sha256": "sha256:203ad5263ce40a46e5d227a3b529283f7cb049af1ede8c04f351bcb1a3f8abae",
+      "previous_receipt_sha256": "sha256:1136f4770f4c9cc90497f3154b1879cc0b5ed4db47fcd59fd95f4d9f28c3532f",
+      "receipt_sha256": "sha256:90a9517ab583a3f56e8247ca610886696928e673e552d8e80d9e5b4a8eb6feec",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:e32de1eb038cf8d34b93991c89a107c43a89f1db6598fc3ea1f166f17babf6f9",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:e32de1eb038cf8d34b93991c"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+       "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+        "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+        "entity": "Anthropic",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [],
+        "non_success_status_record": {
+         "evidence_refs": [],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond"
+         ],
+         "reason_or_failed_predicate": "NO_ADMITTED_INVOCATION_SURFACE",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-partial"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.734175+00:00",
+      "predecessor_state_sha256": "sha256:1669301e63df647139da936d16a1279fbb93cd8794b3d9e64fc2f0645dce9cb5",
+      "previous_receipt_sha256": "sha256:90a9517ab583a3f56e8247ca610886696928e673e552d8e80d9e5b4a8eb6feec",
+      "receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:45657a8107ae07546328f0e9c6ed0ae16e5fa239819424a343b4905c3b3c3cfe",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:45657a8107ae07546328f0e9"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+       "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+       "disposition": "ALLOW",
+       "e0_terminal": {
+        "disposition": "ALLOW",
+        "failed_predicate": "ENTITY_SURFACE_SUPPLIED_FOR_REQUESTED_CONTRIBUTION",
+        "failure_code": "ENTITY_SURFACE_NOT_SUPPLIED",
+        "mode": "E0",
+        "next_attempt": "a new manifest for the same work, taken in by a pass that supplies the OpenAI surface for adversarial_review; this work is complete and nothing waits on it",
+        "owning_existing_goal": "SVORG-LLM-ORG-FOUNDATION-001",
+        "required_evidence_or_repair": "supply the entity's surface (entity repository core.py and contracts/entity-capability.json) to the pass that takes the work in",
+        "retry_entrypoint": "SV-LLM/sandbox runtime/work_cycle.py::respond"
+       },
+       "entity": "OpenAI",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+        "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+        "entity": "OpenAI",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [
+         "entity-set:sha256:e50a4d52ae3c32830e74ac1c403634f872dcd68f94f2ca11c8e771c2bd30915a"
+        ],
+        "non_success_status_record": {
+         "evidence_refs": [
+          "entity-set:sha256:e50a4d52ae3c32830e74ac1c403634f872dcd68f94f2ca11c8e771c2bd30915a"
+         ],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+         ],
+         "reason_or_failed_predicate": "ENTITY_SURFACE_NOT_SUPPLIED",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-partial"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.761441+00:00",
+      "predecessor_state_sha256": "sha256:59c65075e82dbba8d1e6b63fcd68d718f4ccb6e4614f202a05e5d766e6b6f55b",
+      "previous_receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+      "receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:b5e95a6be90376f4d595fbebdd3392c5904b34dbecaf9045b6c8b1c52c8e6165",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:b5e95a6be90376f4d595fbeb"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "lineage": [
+        {
+         "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+         "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+         "disagreement_refs": [],
+         "entity": "Anthropic",
+         "kind": "CONTRIBUTION",
+         "repo_receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        {
+         "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+         "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+         "disagreement_refs": [],
+         "entity": "OpenAI",
+         "kind": "CONTRIBUTION",
+         "repo_receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        }
+       ],
+       "synthesis": {
+        "contributed": 0,
+        "inputs": {
+         "1d4fd13a-402d-4856-8775-cc08ff153a9c": {
+          "entity": "Anthropic",
+          "status": "UNAVAILABLE"
+         },
+         "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367": {
+          "entity": "OpenAI",
+          "status": "UNAVAILABLE"
+         }
+        },
+        "non_success": 2,
+        "schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+       },
+       "synthesis_digest": "sha256:294fde698c948eac79bf87a329a883ebf643e6943c635589048ff46ff2535620",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.769738+00:00",
+      "predecessor_state_sha256": "sha256:66c765d2d7ae864a82d76a77538af85c5b494cf9df5d11fc04ba58c2f994dab7",
+      "previous_receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+      "receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:abf4282ecb3332b59bdc838c5516e712b36c0ba7020374b6f39574b6bf4be08c",
+      "transition_class": "SANDBOX_SYNTHESIS_RECORDED",
+      "transition_id": "SANDBOX_SYNTHESIS_RECORDED:abf4282ecb3332b59bdc838c"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "expected_output_or_handoff": {
+        "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+       },
+       "synthesis_receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.776708+00:00",
+      "predecessor_state_sha256": "sha256:062916ffcdeb8bf114b31fe07ca543361695f0cd52a182959b682b97f59e492c",
+      "previous_receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+      "receipt_sha256": "sha256:d53c68a2d9f128e400812d01b1cb06c132fc8375201cb072cef2870b0832b400",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:074d115d5f8611ada5092c31421fd1a50fce85b85b7860bfc4497bf14ec8584a",
+      "transition_class": "SANDBOX_WORK_COMPLETED",
+      "transition_id": "SANDBOX_WORK_COMPLETED:074d115d5f8611ada5092c31"
+     }
+    ],
+    "supplied_entities": [
+     "Anthropic"
+    ]
+   }
+  },
+  {
+   "case_id": "outstanding-request-is-not-a-terminal",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failed_check": "NO_REQUEST_LEFT_OUTSTANDING",
+    "failure_code": "RESPOND_E0_TERMINAL_NOT_EVIDENCED"
+   },
+   "input": {
+    "receipts": [
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "parent_transition": {
+        "org_receipt_sha256": "sha256:bd7abe9285a7010119e96a04c28bb71db01269033111e724779584b94e8c0fe8",
+        "repo_receipt_sha256": "sha256:1f50118d0dbf314797b6aedaad49b97a1dcd489312396583faee2f464f9a8f79",
+        "subject_or_artifact_digest": "sha256:7fe4b7f6a2e61929feee171d1813d42d3c1dac93ce56dc613876143be0dc94bb",
+        "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+       },
+       "work": {
+        "canonical_context_refs": [],
+        "expected_output_or_handoff": {
+         "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+        },
+        "manifested_request": {
+         "destination": {
+          "organization": "SV-LLM",
+          "repository": "sandbox"
+         },
+         "manifest_id": "e0-witness-respond-partial",
+         "payload": {
+          "work": {
+           "expected_output_or_handoff": {
+            "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+           },
+           "intent": "review the supplied contract for internal contradictions",
+           "participants": [
+            {
+             "capability": "adversarial_review",
+             "entity": "Anthropic"
+            },
+            {
+             "capability": "adversarial_review",
+             "entity": "OpenAI"
+            }
+           ],
+           "participation_policy": {
+            "mode": "MULTIPLE"
+           },
+           "permitted_capabilities": [
+            "adversarial_review"
+           ],
+           "requested_capabilities": [
+            "adversarial_review"
+           ]
+          }
+         },
+         "processing": {
+          "capability": "sandbox-work-cycle",
+          "route_id": "sv-llm.sandbox.work-cycle.v1"
+         },
+         "return_to": {
+          "organization": "StegVerse-Labs"
+         }
+        },
+        "parent_transition": {
+         "org_receipt_sha256": "sha256:bd7abe9285a7010119e96a04c28bb71db01269033111e724779584b94e8c0fe8",
+         "repo_receipt_sha256": "sha256:1f50118d0dbf314797b6aedaad49b97a1dcd489312396583faee2f464f9a8f79",
+         "subject_or_artifact_digest": "sha256:7fe4b7f6a2e61929feee171d1813d42d3c1dac93ce56dc613876143be0dc94bb",
+         "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+        },
+        "participation_policy": {
+         "mode": "MULTIPLE"
+        },
+        "permitted_capabilities": [
+         "adversarial_review"
+        ],
+        "requested_capabilities": [
+         "adversarial_review"
+        ],
+        "schema": "sv-llm.sandbox-work/v0.1",
+        "work_id": "e0-witness-respond-partial"
+       },
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.701773+00:00",
+      "predecessor_state_sha256": "sha256:eceff56c4184ffa84af49121ccd627812cb024c564ced9cc8d6070f2067aa66c",
+      "previous_receipt_sha256": null,
+      "receipt_sha256": "sha256:5e4c3481c972fdb498f678fc4a68c1fa9b4c917ab86fb4c3f04f7d19b685bde2",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:fcf6da19946b70441ac2c8cfd408f45ad102637eb28e35ca174cf39704133fde",
+      "transition_class": "SANDBOX_WORK_ADMITTED",
+      "transition_id": "SANDBOX_WORK_ADMITTED:fcf6da19946b70441ac2c8cf"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:5ce1281ffeac1bf2eb84f88341fa2cef27f1e23d66c92e0f3adc574fbec46746",
+         "path": "contracts/entity-capability.json",
+         "repository": "Anthropic"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "Anthropic",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "demonstrated_governed_history_ref": "evaluation/history.jsonl",
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "Anthropic",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.709369+00:00",
+      "predecessor_state_sha256": "sha256:221e94ace62575cb44955accf3cbb001caa4299408765db70ffdbe20fa680467",
+      "previous_receipt_sha256": "sha256:5e4c3481c972fdb498f678fc4a68c1fa9b4c917ab86fb4c3f04f7d19b685bde2",
+      "receipt_sha256": "sha256:590fcedda19808f44d8f23532891d282fe790dd10056d7ba4cdc3e7a211597f0",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:fabbb651760c3f9c973bb9bc995bc1e7c6120bba2db2c7863510cc3bd272d567",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:fabbb651760c3f9c973bb9bc"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-partial",
+       "work_sha256": "sha256:7e4c667985238307b51e73f4d3aeb63e17575d797e53e65996a32dfc64b715e6"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.716611+00:00",
+      "predecessor_state_sha256": "sha256:01ba44974179260c9eeb577b76ba7ba5b38534195c2c5701df282c5b5209df6e",
+      "previous_receipt_sha256": "sha256:590fcedda19808f44d8f23532891d282fe790dd10056d7ba4cdc3e7a211597f0",
+      "receipt_sha256": "sha256:dd4cf85d14afe85d9c0f2180786fe7f91019691ed8c0661117aeb1d40e75aa40",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:cf9b2cd43463b42d80d20615dd70c1f45b62fdcee9c674e40f7507640a261c6e",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:cf9b2cd43463b42d80d20615"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:1efe299a9e1222405717d1a24195187546f87e1dd19fd7965500e528ec01b4e0",
+         "path": "contracts/entity-capability.json",
+         "repository": "OpenAI"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "OpenAI",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "OpenAI",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.725101+00:00",
+      "predecessor_state_sha256": "sha256:5f9a6ad38f76b6e7599c680b518809694d0f69bbaf5e738e1ace685f8609a993",
+      "previous_receipt_sha256": "sha256:dd4cf85d14afe85d9c0f2180786fe7f91019691ed8c0661117aeb1d40e75aa40",
+      "receipt_sha256": "sha256:1136f4770f4c9cc90497f3154b1879cc0b5ed4db47fcd59fd95f4d9f28c3532f",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:5e1a544c50fc28437439f7a0dd02ef571171d3ea92902a9c1436eb6be8b8f3ed",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:5e1a544c50fc28437439f7a0"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-partial",
+       "work_sha256": "sha256:7e4c667985238307b51e73f4d3aeb63e17575d797e53e65996a32dfc64b715e6"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.728880+00:00",
+      "predecessor_state_sha256": "sha256:203ad5263ce40a46e5d227a3b529283f7cb049af1ede8c04f351bcb1a3f8abae",
+      "previous_receipt_sha256": "sha256:1136f4770f4c9cc90497f3154b1879cc0b5ed4db47fcd59fd95f4d9f28c3532f",
+      "receipt_sha256": "sha256:90a9517ab583a3f56e8247ca610886696928e673e552d8e80d9e5b4a8eb6feec",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:e32de1eb038cf8d34b93991c89a107c43a89f1db6598fc3ea1f166f17babf6f9",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:e32de1eb038cf8d34b93991c"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+       "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+        "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+        "entity": "Anthropic",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [],
+        "non_success_status_record": {
+         "evidence_refs": [],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond"
+         ],
+         "reason_or_failed_predicate": "NO_ADMITTED_INVOCATION_SURFACE",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-partial"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.734175+00:00",
+      "predecessor_state_sha256": "sha256:1669301e63df647139da936d16a1279fbb93cd8794b3d9e64fc2f0645dce9cb5",
+      "previous_receipt_sha256": "sha256:90a9517ab583a3f56e8247ca610886696928e673e552d8e80d9e5b4a8eb6feec",
+      "receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:45657a8107ae07546328f0e9c6ed0ae16e5fa239819424a343b4905c3b3c3cfe",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:45657a8107ae07546328f0e9"
+     }
+    ],
+    "supplied_entities": [
+     "Anthropic"
+    ]
+   }
+  },
+  {
+   "case_id": "entity-set-digest-recomputed",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "RESPOND_E0_TERMINAL_NOT_EVIDENCED"
+   },
+   "input": {
+    "receipts": [
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "parent_transition": {
+        "org_receipt_sha256": "sha256:bd7abe9285a7010119e96a04c28bb71db01269033111e724779584b94e8c0fe8",
+        "repo_receipt_sha256": "sha256:1f50118d0dbf314797b6aedaad49b97a1dcd489312396583faee2f464f9a8f79",
+        "subject_or_artifact_digest": "sha256:7fe4b7f6a2e61929feee171d1813d42d3c1dac93ce56dc613876143be0dc94bb",
+        "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+       },
+       "work": {
+        "canonical_context_refs": [],
+        "expected_output_or_handoff": {
+         "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+        },
+        "manifested_request": {
+         "destination": {
+          "organization": "SV-LLM",
+          "repository": "sandbox"
+         },
+         "manifest_id": "e0-witness-respond-partial",
+         "payload": {
+          "work": {
+           "expected_output_or_handoff": {
+            "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+           },
+           "intent": "review the supplied contract for internal contradictions",
+           "participants": [
+            {
+             "capability": "adversarial_review",
+             "entity": "Anthropic"
+            },
+            {
+             "capability": "adversarial_review",
+             "entity": "OpenAI"
+            }
+           ],
+           "participation_policy": {
+            "mode": "MULTIPLE"
+           },
+           "permitted_capabilities": [
+            "adversarial_review"
+           ],
+           "requested_capabilities": [
+            "adversarial_review"
+           ]
+          }
+         },
+         "processing": {
+          "capability": "sandbox-work-cycle",
+          "route_id": "sv-llm.sandbox.work-cycle.v1"
+         },
+         "return_to": {
+          "organization": "StegVerse-Labs"
+         }
+        },
+        "parent_transition": {
+         "org_receipt_sha256": "sha256:bd7abe9285a7010119e96a04c28bb71db01269033111e724779584b94e8c0fe8",
+         "repo_receipt_sha256": "sha256:1f50118d0dbf314797b6aedaad49b97a1dcd489312396583faee2f464f9a8f79",
+         "subject_or_artifact_digest": "sha256:7fe4b7f6a2e61929feee171d1813d42d3c1dac93ce56dc613876143be0dc94bb",
+         "transition_class": "ORGANIZATION_INGRESS_MATERIALIZED"
+        },
+        "participation_policy": {
+         "mode": "MULTIPLE"
+        },
+        "permitted_capabilities": [
+         "adversarial_review"
+        ],
+        "requested_capabilities": [
+         "adversarial_review"
+        ],
+        "schema": "sv-llm.sandbox-work/v0.1",
+        "work_id": "e0-witness-respond-partial"
+       },
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.701773+00:00",
+      "predecessor_state_sha256": "sha256:eceff56c4184ffa84af49121ccd627812cb024c564ced9cc8d6070f2067aa66c",
+      "previous_receipt_sha256": null,
+      "receipt_sha256": "sha256:5e4c3481c972fdb498f678fc4a68c1fa9b4c917ab86fb4c3f04f7d19b685bde2",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:fcf6da19946b70441ac2c8cfd408f45ad102637eb28e35ca174cf39704133fde",
+      "transition_class": "SANDBOX_WORK_ADMITTED",
+      "transition_id": "SANDBOX_WORK_ADMITTED:fcf6da19946b70441ac2c8cf"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:5ce1281ffeac1bf2eb84f88341fa2cef27f1e23d66c92e0f3adc574fbec46746",
+         "path": "contracts/entity-capability.json",
+         "repository": "Anthropic"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "Anthropic",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "demonstrated_governed_history_ref": "evaluation/history.jsonl",
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "Anthropic",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.709369+00:00",
+      "predecessor_state_sha256": "sha256:221e94ace62575cb44955accf3cbb001caa4299408765db70ffdbe20fa680467",
+      "previous_receipt_sha256": "sha256:5e4c3481c972fdb498f678fc4a68c1fa9b4c917ab86fb4c3f04f7d19b685bde2",
+      "receipt_sha256": "sha256:590fcedda19808f44d8f23532891d282fe790dd10056d7ba4cdc3e7a211597f0",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:fabbb651760c3f9c973bb9bc995bc1e7c6120bba2db2c7863510cc3bd272d567",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:fabbb651760c3f9c973bb9bc"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "work_id": "e0-witness-respond-partial",
+       "work_sha256": "sha256:7e4c667985238307b51e73f4d3aeb63e17575d797e53e65996a32dfc64b715e6"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.716611+00:00",
+      "predecessor_state_sha256": "sha256:01ba44974179260c9eeb577b76ba7ba5b38534195c2c5701df282c5b5209df6e",
+      "previous_receipt_sha256": "sha256:590fcedda19808f44d8f23532891d282fe790dd10056d7ba4cdc3e7a211597f0",
+      "receipt_sha256": "sha256:dd4cf85d14afe85d9c0f2180786fe7f91019691ed8c0661117aeb1d40e75aa40",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:cf9b2cd43463b42d80d20615dd70c1f45b62fdcee9c674e40f7507640a261c6e",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:cf9b2cd43463b42d80d20615"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability_assignment_evidence": {
+        "capability": "adversarial_review",
+        "capability_declaration_ref": {
+         "declaration_sha256": "sha256:1efe299a9e1222405717d1a24195187546f87e1dd19fd7965500e528ec01b4e0",
+         "path": "contracts/entity-capability.json",
+         "repository": "OpenAI"
+        },
+        "declaration": {
+         "accepts": {
+          "canonical_context_by_reference": true,
+          "work_schema": "sv-llm.sandbox-work/v0.1"
+         },
+         "authority_effect": "NONE",
+         "capabilities": [
+          "reasoning",
+          "synthesis",
+          "code_analysis",
+          "code_generation",
+          "document_analysis",
+          "cross_repository_contract_analysis",
+          "adversarial_review",
+          "candidate_repair",
+          "forward_disposition_inference"
+         ],
+         "contribution": {
+          "contribution_schema": "sv-llm.contribution/v0.1",
+          "epistemic_states": [
+           "OBSERVED",
+           "DERIVED",
+           "PROJECTED"
+          ],
+          "preserve_disagreement": true,
+          "preserve_refusal": true,
+          "statuses": [
+           "CONTRIBUTED",
+           "REFUSED",
+           "UNAVAILABLE",
+           "FAILED"
+          ],
+          "transitive_provenance": true
+         },
+         "entity": "OpenAI",
+         "interface_constraints": {
+          "capability_basis": "DECLARED",
+          "coordination_contract": "SV-LLM/.github",
+          "crossing": {
+           "boundary": "SV-LLM/.github",
+           "credential_authority": "TV/TVC",
+           "credential_material_in_this_repository": false,
+           "manifest_determines_destination": true,
+           "transition_authority": "Interlock/InTr",
+           "transport_in_this_repository": false
+          },
+          "inference_window": {
+           "disposition_complete_when_requested": true,
+           "dispositions_are_input": true,
+           "invent_dispositions": false,
+           "projection_epistemic_state": "PROJECTED",
+           "projection_is_observed_history": false,
+           "question": "If this disposition is applied, what states or consequences might or might not become reachable?"
+          },
+          "live_invocation": false
+         },
+         "prohibited": [
+          "GOVERNANCE_DISPOSITION",
+          "TASK_REGISTRY_AUTHORITY",
+          "WORKER_CLAIM_AUTHORITY",
+          "TRANSITION_AUTHORITY",
+          "CREDENTIAL_AUTHORITY",
+          "PUBLISHER_AUTHORITY",
+          "MASTER_RECORDS_ORGANIZATION_RECORD",
+          "DIRECT_CONSEQUENCE_EXECUTION",
+          "MODEL_CONSENSUS_AS_TRUTH",
+          "TRANSPORT_OUTSIDE_ORGANIZATION_INTR_BOUNDARY"
+         ],
+         "repository": "OpenAI",
+         "role": "INTELLIGENCE_CAPABILITY",
+         "schema": "sv-llm.entity-capability/v0.1"
+        }
+       },
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.725101+00:00",
+      "predecessor_state_sha256": "sha256:5f9a6ad38f76b6e7599c680b518809694d0f69bbaf5e738e1ace685f8609a993",
+      "previous_receipt_sha256": "sha256:dd4cf85d14afe85d9c0f2180786fe7f91019691ed8c0661117aeb1d40e75aa40",
+      "receipt_sha256": "sha256:1136f4770f4c9cc90497f3154b1879cc0b5ed4db47fcd59fd95f4d9f28c3532f",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:5e1a544c50fc28437439f7a0dd02ef571171d3ea92902a9c1436eb6be8b8f3ed",
+      "transition_class": "CAPABILITY_ASSIGNMENT",
+      "transition_id": "CAPABILITY_ASSIGNMENT:5e1a544c50fc28437439f7a0"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "capability": "adversarial_review",
+       "disposition": "ALLOW",
+       "entity": "OpenAI",
+       "work_id": "e0-witness-respond-partial",
+       "work_sha256": "sha256:7e4c667985238307b51e73f4d3aeb63e17575d797e53e65996a32dfc64b715e6"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.728880+00:00",
+      "predecessor_state_sha256": "sha256:203ad5263ce40a46e5d227a3b529283f7cb049af1ede8c04f351bcb1a3f8abae",
+      "previous_receipt_sha256": "sha256:1136f4770f4c9cc90497f3154b1879cc0b5ed4db47fcd59fd95f4d9f28c3532f",
+      "receipt_sha256": "sha256:90a9517ab583a3f56e8247ca610886696928e673e552d8e80d9e5b4a8eb6feec",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:e32de1eb038cf8d34b93991c89a107c43a89f1db6598fc3ea1f166f17babf6f9",
+      "transition_class": "CONTRIBUTION_REQUESTED",
+      "transition_id": "CONTRIBUTION_REQUESTED:e32de1eb038cf8d34b93991c"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+       "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+       "disposition": "ALLOW",
+       "entity": "Anthropic",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+        "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+        "entity": "Anthropic",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [],
+        "non_success_status_record": {
+         "evidence_refs": [],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond"
+         ],
+         "reason_or_failed_predicate": "NO_ADMITTED_INVOCATION_SURFACE",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-partial"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.734175+00:00",
+      "predecessor_state_sha256": "sha256:1669301e63df647139da936d16a1279fbb93cd8794b3d9e64fc2f0645dce9cb5",
+      "previous_receipt_sha256": "sha256:90a9517ab583a3f56e8247ca610886696928e673e552d8e80d9e5b4a8eb6feec",
+      "receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:45657a8107ae07546328f0e9c6ed0ae16e5fa239819424a343b4905c3b3c3cfe",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:45657a8107ae07546328f0e9"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+       "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+       "disposition": "ALLOW",
+       "e0_terminal": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "ENTITY_SURFACE_SUPPLIED_FOR_REQUESTED_CONTRIBUTION",
+        "failure_code": "ENTITY_SURFACE_NOT_SUPPLIED",
+        "mode": "E0",
+        "next_attempt": "a new manifest for the same work, taken in by a pass that supplies the OpenAI surface for adversarial_review; this work is complete and nothing waits on it",
+        "owning_existing_goal": "SVORG-LLM-ORG-FOUNDATION-001",
+        "required_evidence_or_repair": "supply the entity's surface (entity repository core.py and contracts/entity-capability.json) to the pass that takes the work in",
+        "retry_entrypoint": "SV-LLM/sandbox runtime/work_cycle.py::respond"
+       },
+       "entity": "OpenAI",
+       "envelope": {
+        "authority_effect": "NONE",
+        "capability": "adversarial_review",
+        "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+        "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+        "entity": "OpenAI",
+        "epistemic_state": "OBSERVED",
+        "evidence_refs": [
+         "entity-set:sha256:e50a4d52ae3c32830e74ac1c403634f872dcd68f94f2ca11c8e771c2bd30915a"
+        ],
+        "non_success_status_record": {
+         "evidence_refs": [
+          "entity-set:sha256:e50a4d52ae3c32830e74ac1c403634f872dcd68f94f2ca11c8e771c2bd30915a"
+         ],
+         "provenance": [
+          "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+         ],
+         "reason_or_failed_predicate": "ENTITY_SURFACE_NOT_SUPPLIED",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        "provenance": [
+         "SV-LLM/sandbox runtime/work_cycle.py::respond (entity surface not supplied)"
+        ],
+        "schema": "sv-llm.contribution/v0.1",
+        "status": "UNAVAILABLE",
+        "uncertainty": null,
+        "work_id": "e0-witness-respond-partial"
+       },
+       "status": "UNAVAILABLE",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.761441+00:00",
+      "predecessor_state_sha256": "sha256:59c65075e82dbba8d1e6b63fcd68d718f4ccb6e4614f202a05e5d766e6b6f55b",
+      "previous_receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+      "receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:b5e95a6be90376f4d595fbebdd3392c5904b34dbecaf9045b6c8b1c52c8e6165",
+      "transition_class": "ENTITY_CONTRIBUTION_RECORDED",
+      "transition_id": "ENTITY_CONTRIBUTION_RECORDED:b5e95a6be90376f4d595fbeb"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "lineage": [
+        {
+         "content_digest": "sha256:e72a4e7f13a2d61f08b7d3b42f52e2852e35b53ad03a5b9865a23ddc42f0bc41",
+         "contribution_id": "1d4fd13a-402d-4856-8775-cc08ff153a9c",
+         "disagreement_refs": [],
+         "entity": "Anthropic",
+         "kind": "CONTRIBUTION",
+         "repo_receipt_sha256": "sha256:3a1e20a7691d25e5d334add0cee52d51e20df559906671ac8365950953bd59fd",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        },
+        {
+         "content_digest": "sha256:0100f25af78a9ee3a675dfa8d65821c441a90744426a21b390aa3bf55497226b",
+         "contribution_id": "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367",
+         "disagreement_refs": [],
+         "entity": "OpenAI",
+         "kind": "CONTRIBUTION",
+         "repo_receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+         "status": "UNAVAILABLE",
+         "uncertainty": null
+        }
+       ],
+       "synthesis": {
+        "contributed": 0,
+        "inputs": {
+         "1d4fd13a-402d-4856-8775-cc08ff153a9c": {
+          "entity": "Anthropic",
+          "status": "UNAVAILABLE"
+         },
+         "surface-not-supplied:8c365f3f8ee58bc4b44948e9d2247adaaa64b1a49a4f289fe600c772bc47a367": {
+          "entity": "OpenAI",
+          "status": "UNAVAILABLE"
+         }
+        },
+        "non_success": 2,
+        "schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+       },
+       "synthesis_digest": "sha256:294fde698c948eac79bf87a329a883ebf643e6943c635589048ff46ff2535620",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.769738+00:00",
+      "predecessor_state_sha256": "sha256:66c765d2d7ae864a82d76a77538af85c5b494cf9df5d11fc04ba58c2f994dab7",
+      "previous_receipt_sha256": "sha256:653f6608fcc95d37235c5cd6f6a34939d5dd6843cf59df75762a5cdbc319f12e",
+      "receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:abf4282ecb3332b59bdc838c5516e712b36c0ba7020374b6f39574b6bf4be08c",
+      "transition_class": "SANDBOX_SYNTHESIS_RECORDED",
+      "transition_id": "SANDBOX_SYNTHESIS_RECORDED:abf4282ecb3332b59bdc838c"
+     },
+     {
+      "authority_effect": "NONE",
+      "evidence": {
+       "authority_effect": "NONE",
+       "disposition": "ALLOW",
+       "expected_output_or_handoff": {
+        "output_schema": "sv-llm.sandbox-work-cycle-synthesis/v1"
+       },
+       "synthesis_receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+       "work_id": "e0-witness-respond-partial"
+      },
+      "hb_reference": null,
+      "observed_at": "2026-10-23T05:51:59.776708+00:00",
+      "predecessor_state_sha256": "sha256:062916ffcdeb8bf114b31fe07ca543361695f0cd52a182959b682b97f59e492c",
+      "previous_receipt_sha256": "sha256:8c761809eb8a1a2414e713618c21cfdf1c6b9ebcfb337075a498f0de539608ae",
+      "receipt_sha256": "sha256:d53c68a2d9f128e400812d01b1cb06c132fc8375201cb072cef2870b0832b400",
+      "repository": "SV-LLM/sandbox",
+      "schema": "stegverse.repo-transition-receipt/v1",
+      "successor_state_sha256": "sha256:074d115d5f8611ada5092c31421fd1a50fce85b85b7860bfc4497bf14ec8584a",
+      "transition_class": "SANDBOX_WORK_COMPLETED",
+      "transition_id": "SANDBOX_WORK_COMPLETED:074d115d5f8611ada5092c31"
+     }
+    ],
+    "supplied_entities": []
+   }
+  }
+ ],
+ "item": "sv_llm_paths:ENTITY_RESPOND",
+ "schema": "stegverse.nwi-e0-witness-cases/v1"
+}

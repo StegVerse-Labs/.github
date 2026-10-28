@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 319,
+  "generation": 321,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -16608,7 +16608,7 @@
         ],
         "components": [
           "device-kv-bidirectional-intr",
-          "kv-skap-bidirectional-intr",
+          "kv-skap-gate-roundtrip",
           "canonical-event-ephemeral-domain-binding",
           "single-roundtrip-receipt-lineage",
           "tvc-skap-credential-reference",
@@ -18691,7 +18691,7 @@
         {
           "work_unit_id": "WU2-REGISTRATION-RECOVERY-ON-A-NEW-DEVICE",
           "statement": "A principal's node registration must be recoverable on a device that has never held one, without minting a new identity.",
-          "current_state": "Absent. Site:assets/workspace-kv-bridge.js requires node.status().registered === true and otherwise fails closed with 'Register this device before opening Personal Workspace KV context'. Without recovery, node_id is a physical-device identity gate in effect, which the global invariant prohibits.",
+          "current_state": "Consumer present, producer absent. At Site main 6255d59, assets/workspace-kv-bridge.js resolves the node through assets/workspace-node-binding.js: a directly observed registration binds, or an admitted stegos.device_continuity_recovery_result.v1 rehydrates the retained node through node.rehydrateRegistration(recovery). assets/stegverse-node-continuity-impl.js does not define rehydrateRegistration, so the recovery path fails closed with LOCAL_REHYDRATION_INTERFACE_NOT_AVAILABLE (six actionable fields in draft Site#1609). Until the StegOS node-continuity producer exists, node_id remains a physical-device identity gate in effect, which the global invariant prohibits.",
           "assigned_owner": null
         },
         {
@@ -18709,7 +18709,7 @@
         {
           "work_unit_id": "WU5-WORKSPACE-STORAGE-PERSISTENCE-REQUEST",
           "statement": "The WorkSpace path must request storage persistence where the platform offers it, as a mitigation that does not discharge WU1.",
-          "current_state": "Absent. The single navigator.storage.persist() call in Site is in assets/device-local-kv-installer.js, loaded only by device-kv-install.html and cloud-kv-peers.html. WorkSpace's script chain never reaches it. Persistence is advisory and may be refused, so this mitigates eviction without satisfying WU1.",
+          "current_state": "Source-implemented, runtime not observed. At Site main 6255d59, assets/workspace.js defines requestStoragePersistence(), which calls navigator.storage.persist() on every WorkSpace load and records requested, granted, refused or PERSISTENCE_API_UNAVAILABLE. No authentic runtime observation of a grant is recorded. Persistence is advisory and may be refused, so this mitigates eviction without satisfying WU1.",
           "assigned_owner": null
         }
       ],
@@ -22566,6 +22566,70 @@
         "data/canonical-task-records/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json",
         "data/canonical-task-records/ORGANIZATION-BATCH-CUSTODY-REPLAY-001.json"
       ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
+      "correlation_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
+      "root_correlation_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
+      "parent_task_id": null,
+      "goal": "Implement StegApp non-authorizing ephemeral composition: permitted SV-LLM Sandbox StegBrowser tool observations for governed Ecosystem Chat, and independent fictional LDC continuity; repair existing StegApp PR #1 without new runtime or authority.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "UNCLAIMED",
+      "source_refs": [
+        "https://github.com/StegVerse-Labs/.github/issues/3291",
+        "https://github.com/StegVerse-Labs/StegApp/pull/1"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/StegApp"
+        ],
+        "components": [
+          "stegapp-ephemeral-composition"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "adjacent_task_refs": [],
+      "expected_evidence_predicates": [
+        "CANONICAL_REGISTRATION_MERGED",
+        "OWNER_FILE_SCOPE_RECONCILED",
+        "EXACT_HEAD_SOURCE_TESTS",
+        "EXISTING_SANDBOX_STEGBROWSER_BINDING",
+        "AUTHENTIC_MANIFEST_BOUND_DISPOSITION",
+        "ORGANIZATION_LEDGER_READBACK"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "REVIEW_REGISTRATION_PROPOSAL",
+        "RESOLVE_OWNER_SCOPE",
+        "SOURCE_CANDIDATE_REPAIR",
+        "NATIVE_ADMISSION_EVALUATION"
+      ],
+      "handoff_projection_refs": [
+        "docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true
+      },
+      "cosv_task_vector": "10300000011000"
     }
   ],
   "human_actions": [],

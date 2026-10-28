@@ -3,8 +3,11 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import subprocess
+import sys
 import tempfile
+import unittest
 from pathlib import Path
 from unittest.mock import patch
 
@@ -21,8 +24,36 @@ def load(name: str, rel: str):
 
 consumer = load("stegbrowser_intr_consumer", "workers/stegbrowser_intr_materialization_consumer.py")
 ingress = load("stegbrowser_intr_ingress", "workers/stegbrowser_intr_materialization_ingress.py")
-installer = load("stegbrowser_intr_installer", "scripts/install_stegbrowser_universal_intr_route.py")
 executor = load("stegbrowser_intr_executor", "scripts/run_stegbrowser_universal_intr_materialization.py")
+ROUTER = ROOT / "workers/universal_intr_profiled_ingress.py"
+SIX = executor.SIX_FIELDS
+EPOCH = "469411751"
+
+
+def sdk_available() -> bool:
+    try:
+        import stegverse.universal_intr_route_installer  # noqa: F401
+    except ImportError:
+        if os.environ.get("STEGVERSE_SDK_REQUIRED") == "1":
+            raise
+        return False
+    return True
+
+
+def stub_allow(request, router_source):
+    """A stand-in for the SDK evaluator where the SDK is not installed (the ratchet job)."""
+    return {"disposition": "ALLOW", "transition_sha256": "sha256:" + "e" * 64,
+            "transition": {"route": {"route_id": "stegverse.route.stegbrowser.v1"},
+                           "evidence": {"noop": False}, "hb_epoch": request["hb_epoch"]}}
+
+
+STUB_ROUTE = {"route_id": "stegverse.route.stegbrowser.v1"}
+
+
+def assert_six(disposition: dict) -> None:
+    for field in SIX:
+        assert disposition.get(field), field
+    assert disposition["next_attempt"]["awaits_an_external_machine"] is False
 
 
 def request(binding_path: str, payload_hash: str) -> dict:
@@ -98,15 +129,23 @@ def trigger(req: dict, node_id: str = "SV-NODE-" + "a" * 24, interlock_id: str =
     return {**trigger_body, "trigger_sha256": ingress.sha_uri(trigger_body)}
 
 
-def test_installer_reuses_shared_listener_and_is_idempotent():
-    source = (ROOT / "workers/universal_intr_profiled_ingress.py").read_text(encoding="utf-8")
-    once = installer.transform(source)
-    twice = installer.transform(once)
-    assert once == twice
-    assert '"StegBrowser:ManifestInvocation"' in once
-    assert "is_stegbrowser(payload)" in once
-    assert once.count("ThreadingHTTPServer") >= 1
-    assert "class Server(ThreadingHTTPServer)" in once
+def test_router_is_read_never_written_and_the_route_is_decided_by_the_sdk_installer():
+    before = ROUTER.read_bytes()
+    seen = {}
+
+    def evaluate(request, router_source):
+        seen["request"], seen["router_source"] = request, router_source
+        return stub_allow(request, router_source)
+
+    decision = executor.evaluate_route(source_root=ROOT, hb_epoch=EPOCH, evaluate=evaluate, route=STUB_ROUTE)
+    assert ROUTER.read_bytes() == before
+    assert seen["router_source"] == before
+    assert seen["request"]["consumer_id"] == "stegbrowser"
+    assert seen["request"]["router"]["path"] == "workers/universal_intr_profiled_ingress.py"
+    assert seen["request"]["router"]["predecessor_sha256"] == "sha256:" + hashlib.sha256(before).hexdigest()
+    assert seen["request"]["hb_epoch"] == EPOCH
+    assert decision["disposition"] == "ALLOW" and decision["router_written"] is False
+    assert not (ROOT / "scripts/install_stegbrowser_universal_intr_route.py").exists()
 
 
 def test_node_trigger_is_admitted_write_once_without_authority():
@@ -206,7 +245,9 @@ def test_executor_preserves_nonce_and_uses_existing_stegos_builders_and_shared_s
     # The exact profile admit the shared listener routes StegBrowser triggers to,
     # invoked in-process: no second listener, socket, timeout or liveness wait.
     assert "workers/stegbrowser_intr_materialization_ingress.py" in source
-    assert "is_stegbrowser(payload)" in installer.transform((ROOT / "workers/universal_intr_profiled_ingress.py").read_text(encoding="utf-8"))
+    assert "from stegverse.universal_intr_route_installer import evaluate_installation" in source
+    assert "install_stegbrowser_universal_intr_route" not in source
+    assert "subprocess" not in source and "write_text(transformed" not in source
     for forbidden in ("shared.Server", "urlopen", "urllib.request", "threading", "import socket", "timeout=", "handle_request"):
         assert forbidden not in source
     assert "resident_request_sweep_required\": False" in source
@@ -265,9 +306,11 @@ def test_executor_malformed_trigger_is_refused_typed_without_effect():
         try:
             executor.admit_trigger(packet, runtime_root=runtime, admit=ingress.admit)
             assert False, "tampered trigger should be refused"
-        except RuntimeError as exc:
-            assert str(exc).startswith("stegbrowser_intr_admission_refused:")
-            assert "node_outbox_entry_hash_mismatch" in str(exc)
+        except executor.StegBrowserAdmissionRefused as exc:
+            assert exc.disposition["failure_code"] == "STEGBROWSER_INTR_ADMISSION_REFUSED"
+            assert exc.disposition["detail"].startswith("stegbrowser_intr_admission_refused:")
+            assert "node_outbox_entry_hash_mismatch" in exc.disposition["detail"]
+            assert_six(exc.disposition)
         assert not (runtime / consumer.REQUEST_DIR_REL).exists()
         assert not (runtime / consumer.INGRESS_RECEIPT_DIR_REL).exists()
         dispatch.assert_not_called()
@@ -279,7 +322,9 @@ def test_executor_submission_projects_ingress_admitted_without_downstream_claim(
         runtime = Path(td)
         req, packet = _executor_trigger(runtime)
         with patch.object(executor, "build_binding", return_value=({}, req, packet)):
-            result = executor.submit_once(source_root=ROOT, runtime_root=runtime, stegos_root=runtime, node_receipt_path=runtime / "node.json", admit=ingress.admit)
+            with patch.object(executor, "stegbrowser_route_declaration", return_value=STUB_ROUTE):
+                result = executor.submit_once(source_root=ROOT, runtime_root=runtime, stegos_root=runtime, node_receipt_path=runtime / "node.json",
+                                              hb_epoch=EPOCH, admit=ingress.admit, evaluate=stub_allow)
         assert result["state"] == "INGRESS_ADMITTED"
         assert result["request_hash"] == req["request_hash"]
         assert result["ingress_write_once_persisted"] is True
@@ -289,6 +334,8 @@ def test_executor_submission_projects_ingress_admitted_without_downstream_claim(
         assert result["runtime_predicates_promoted"] is False
         assert result["round_trip_1_started"] is False
         assert result["ingress_receipt"]["runtime_execution_attempted"] is False
+        assert result["sdk_route_decision"]["disposition"] == "ALLOW"
+        assert result["sdk_route_decision"]["router_written"] is False
 
 
 def test_browser_carried_opaque_binding_is_persisted_and_resolved_without_filesystem_payload_ref():
@@ -350,3 +397,102 @@ def test_consumer_maps_opaque_binding_ref_to_ingress_retained_binding_path():
     assert 'opaque_prefix = "opaque://stegbrowser-manifest-invocation/"' in source
     assert 'payload_path = runtime / BINDING_DIR_REL / f"{digest}.json"' in source
     assert 'request.get("payload_hash") != "sha256:" + digest' in source
+
+
+# --- SDK route-installer admission: every non-ALLOW carries the six fields ---
+
+def test_sdk_not_importable_is_refused_with_six_fields_and_never_rewrites_the_router():
+    before = ROUTER.read_bytes()
+    with patch.dict(sys.modules, {"stegverse.universal_intr_route_installer": None}):
+        try:
+            executor.evaluate_route(source_root=ROOT, hb_epoch=EPOCH)
+            assert False, "an absent SDK must be refused"
+        except executor.StegBrowserAdmissionRefused as exc:
+            assert exc.disposition["failure_code"] == "SDK_ROUTE_INSTALLER_NOT_IMPORTABLE"
+            assert exc.disposition["disposition"] == "FAIL_CLOSED"
+            assert_six(exc.disposition)
+    assert ROUTER.read_bytes() == before
+
+
+def test_sdk_non_allow_without_six_fields_is_refused_with_six_fields():
+    try:
+        executor.evaluate_route(source_root=ROOT, hb_epoch=EPOCH, route=STUB_ROUTE,
+                                evaluate=lambda request, router: {"disposition": "DENY"})
+        assert False
+    except executor.StegBrowserAdmissionRefused as exc:
+        assert exc.disposition["failure_code"] == "SDK_ROUTE_DECISION_WITHOUT_SIX_FIELDS"
+        assert_six(exc.disposition)
+
+
+def test_route_refusal_persists_nothing_and_admits_nothing():
+    with tempfile.TemporaryDirectory() as td, patch.object(ingress, "_dispatch") as dispatch:
+        runtime = Path(td)
+        sdk_refusal = {"disposition": "FAIL_CLOSED", "failure_code": "HB_EPOCH_NOT_SUPPLIED", "failed_predicate": "P",
+                       "required_evidence_or_repair": "R", "retry_entrypoint": "E", "owning_existing_goal": "G",
+                       "next_attempt": {"entrypoint": "E", "resubmit": "S", "awaits_an_external_machine": False}}
+        with patch.object(executor, "build_binding") as build, \
+                patch.object(executor, "stegbrowser_route_declaration", return_value=STUB_ROUTE):
+            try:
+                executor.submit_once(source_root=ROOT, runtime_root=runtime, stegos_root=runtime, node_receipt_path=runtime / "node.json",
+                                     admit=ingress.admit, evaluate=lambda request, router: sdk_refusal,
+                                     **{"hb_epoch": None})
+                assert False
+            except executor.StegBrowserAdmissionRefused as exc:
+                assert exc.disposition["failure_code"] == "HB_EPOCH_NOT_SUPPLIED"
+                assert_six(exc.disposition)
+            build.assert_not_called()
+        dispatch.assert_not_called()
+        assert not any(runtime.iterdir())
+
+
+def test_binding_failure_is_refused_with_six_fields():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td)
+        try:
+            with patch.object(executor, "stegbrowser_route_declaration", return_value=STUB_ROUTE):
+                executor.submit_once(source_root=ROOT, runtime_root=runtime, stegos_root=runtime, node_receipt_path=runtime / "absent.json",
+                                     hb_epoch=EPOCH, admit=ingress.admit, evaluate=stub_allow)
+        except executor.StegBrowserAdmissionRefused as exc:
+            assert exc.disposition["failure_code"] == "STEGBROWSER_INVOCATION_BINDING_NOT_BUILT"
+            assert_six(exc.disposition)
+        else:
+            assert False
+
+
+@unittest.skipUnless(sdk_available(), "StegVerse SDK c138cad4+ not installed (required in org-runtime-boundary.yml)")
+class RealSdkRouteDecisionTests(unittest.TestCase):
+    """Against the installed SDK; nothing mocked. Required where STEGVERSE_SDK_REQUIRED=1."""
+
+    def test_labs_router_is_allowed_on_the_published_stegbrowser_route_without_writing(self):
+        before = ROUTER.read_bytes()
+        decision = executor.evaluate_route(source_root=ROOT, hb_epoch=EPOCH)
+        self.assertEqual("ALLOW", decision["disposition"])
+        self.assertEqual("stegverse.route.stegbrowser.v1", decision["route"]["route_id"])
+        self.assertRegex(decision["transition_sha256"], r"^(sha256:)?[0-9a-f]{64}$")
+        self.assertFalse(decision["router_written"])
+        self.assertEqual(before, ROUTER.read_bytes())
+
+    def test_absent_and_invalid_epochs_fail_closed_with_six_fields(self):
+        for value, code in ((None, "HB_EPOCH_NOT_SUPPLIED"), ("31", "HB_EPOCH_INVALID"), (" 40", "HB_EPOCH_INVALID"), (True, "HB_EPOCH_INVALID")):
+            with self.assertRaises(executor.StegBrowserAdmissionRefused) as caught:
+                executor.evaluate_route(source_root=ROOT, hb_epoch=value)
+            self.assertEqual(code, caught.exception.disposition["failure_code"])
+            assert_six(caught.exception.disposition)
+
+    def test_route_substitution_is_refused_with_six_fields(self):
+        route = dict(executor.stegbrowser_route_declaration(), route_id="stegverse.route.organization-role-conformance.v1")
+        with self.assertRaises(executor.StegBrowserAdmissionRefused) as caught:
+            executor.evaluate_route(source_root=ROOT, hb_epoch=EPOCH, route=route)
+        self.assertIn(caught.exception.disposition["disposition"], {"DENY", "FAIL_CLOSED"})
+        assert_six(caught.exception.disposition)
+
+    def test_cli_without_epoch_prints_the_six_field_refusal_and_exits_nonzero(self):
+        with tempfile.TemporaryDirectory() as td:
+            env = {k: v for k, v in os.environ.items() if k != "STEGVERSE_HB_EPOCH"}
+            done = subprocess.run([sys.executable, str(ROOT / "scripts/run_stegbrowser_universal_intr_materialization.py"),
+                                   "--runtime-root", td], capture_output=True, text=True, env=env, cwd=str(ROOT))
+            self.assertEqual(1, done.returncode, done.stderr)
+            refusal = json.loads(done.stdout)
+            self.assertEqual("HB_EPOCH_NOT_SUPPLIED", refusal["failure_code"])
+            assert_six(refusal)
+            self.assertEqual([], list(Path(td).iterdir()))
