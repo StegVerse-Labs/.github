@@ -167,7 +167,7 @@ class PredicateTests(unittest.TestCase):
         # absent: a change with no hb_epoch (the record field is the epoch source) reaches admission as supplied_hb_epoch None
         ch = fx.known_good_change(fx.SURFACE_PATH["ledger_writer"])
         ch = base.reseal_change({k: v for k, v in ch.items() if k != "hb_epoch"})
-        obs = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), SYN(), fx.fixture_resolved_issues(ch))
+        obs = fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), SYN(), fx.fixture_resolved_issues(ch))
         self.assertIsNone(obs["supplied_hb_epoch"])
         out = wi.admit(obs, fixture_mode=True)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
@@ -245,7 +245,7 @@ class AdmissionTests(unittest.TestCase):
         ch = fx.known_good_change(path)
         if hb != fx.FIXTURE_HB_EPOCH:
             ch = base.reseal_change(dict(ch, hb_epoch=hb))
-        return wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback() if rb == "fixture" else rb,
+        return fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback() if rb == "fixture" else rb,
                                    fx.fixture_resolved_issues(ch))
 
     def test_ledger_writer_admission_binds_the_readback_epoch(self):

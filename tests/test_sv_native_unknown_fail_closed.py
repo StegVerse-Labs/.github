@@ -20,7 +20,7 @@ def kg():
 
 
 def obs_of(ch):
-    return wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), fx.fixture_resolved_issues(ch))
+    return fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), fx.fixture_resolved_issues(ch))
 
 
 class ValidateRecordTests(unittest.TestCase):

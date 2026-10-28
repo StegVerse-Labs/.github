@@ -1,0 +1,10 @@
+$ {python} -m unittest -v tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_structural_pin_mismatch_fails_closed_with_six_fields
+--- exit 0
+--- stdout
+--- stderr
+test_structural_pin_mismatch_fails_closed_with_six_fields (tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_structural_pin_mismatch_fails_closed_with_six_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in <t>s
+
+OK

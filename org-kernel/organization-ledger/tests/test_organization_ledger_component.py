@@ -904,12 +904,13 @@ class PropagateAfterAppend(unittest.TestCase):
 
     def test_the_workflow_propagates_after_each_append_and_fails_after_publish(self):
         wf = (COMPONENT.parents[1] / ".github/workflows/organization-ledger-transition-reusable.yml").read_text()
-        self.assertEqual(wf.count('python "$COMPONENT/propagate_after_append.py"'), 2)
+        # One append site: the self-closure append is retired (InTr hop inside one organization).
+        self.assertEqual(wf.count('python "$COMPONENT/propagate_after_append.py"'), 1)
         self.assertLess(wf.index("organization_manifest_ingress.py\" \\"), wf.index('propagate_after_append.py"'))
-        self.assertLess(wf.index("--self-close \\"), wf.rindex('propagate_after_append.py"'))
+        self.assertNotIn("--self-close", wf)
         self.assertNotIn('--out "$out/propagation.json" || true', wf)
-        self.assertEqual(wf.count('--hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?'), 2)
-        self.assertEqual(wf.count('echo "$rc" > "$out/propagation.exit"'), 2)
+        self.assertEqual(wf.count('--hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?'), 1)
+        self.assertEqual(wf.count('echo "$rc" > "$out/propagation.exit"'), 1)
         gate = wf.index("Fail on a recorded propagation refusal")
         self.assertLess(wf.index("Publish the ledger ref (fast-forward only)"), gate)
         self.assertLess(wf.index("Read the organization and repository ledgers back from a fresh fetch"), gate)
@@ -1413,12 +1414,11 @@ class ReadbackOnlyMode(unittest.TestCase):
 
     def test_step_one_admits_readback_without_an_epoch_and_refuses_an_undeclared_mode(self):
         self.assertEqual(self.step_one_run("readback", "")[0], 0)
-        rc, out = self.step_one_run("self-closure", "")
+        rc, out = self.step_one_run("request", "+33")
         self.assertEqual(rc, 1)
-        self.assertEqual(json.loads(out.splitlines()[-1])["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
-        self.assertEqual(self.step_one_run("self-closure", "33")[0], 0)
-        self.assertEqual(json.loads(self.step_one_run("self-closure", "+33")[1].splitlines()[-1])["failure_code"], "HB_EPOCH_INVALID")
-        for mode in ("readback-only", "Request", ""):
+        self.assertEqual(json.loads(out.splitlines()[-1])["failure_code"], "HB_EPOCH_INVALID")
+        # self-closure is retired (Rigel's rule 2026-10-25: no InTr hop inside one organization): an undeclared mode.
+        for mode in ("self-closure", "readback-only", "Request", ""):
             rc, out = self.step_one_run(mode, "33")
             self.assertEqual(rc, 1, mode)
             refusal = json.loads(out.splitlines()[-1])
@@ -1427,16 +1427,17 @@ class ReadbackOnlyMode(unittest.TestCase):
 
     def test_the_workflow_appends_and_publishes_nothing_in_readback_mode(self):
         wf = (COMPONENT.parents[1] / ".github/workflows/organization-ledger-transition-reusable.yml").read_text()
-        self.assertNotIn("inputs.mode != 'self-closure'", wf, "an undeclared mode must not fall into request mode")
+        self.assertNotIn("self-closure'", wf, "the retired self-closure mode has no step")
+        self.assertNotIn("--self-close", wf)
+        self.assertNotIn("--verify-self-closure", wf)
         steps = wf.split("\n      - name: ")[1:]
         by_name = {s.splitlines()[0]: s for s in steps}
-        writers = [n for n, s in by_name.items() if "git push" in s or "aggregate" in s or "--self-close" in s
+        writers = [n for n, s in by_name.items() if "git push" in s or "aggregate" in s
                    or "propagate_after_append.py" in s]
         self.assertTrue(writers)
         for name in writers:
             cond = by_name[name].split("run: |")[0]
-            self.assertTrue("inputs.mode == 'request'" in cond or "inputs.mode == 'self-closure'" in cond
-                            or "inputs.mode != 'readback'" in cond, name)
+            self.assertTrue("inputs.mode == 'request'" in cond or "inputs.mode != 'readback'" in cond, name)
         ro = by_name["Read the designated ledger back (readback mode, nothing appended)"]
         self.assertIn("if: inputs.mode == 'readback'", ro)
         self.assertIn('python3 "$COMPONENT/readback_only.py"', ro)

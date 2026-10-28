@@ -341,7 +341,7 @@ class ResolvedIssueFactsTests(unittest.TestCase):
         self.assertIsNone(a[0]["resolution_pair"]["head"])
 
     def test_admission_uses_the_same_function(self):
-        obs = wi.admission_inputs(self.ch, fx.LABS_BASE, fx.signoff_receipts_for(self.ch), fx.fixture_base_state_readback(),
+        obs = fx.observe(self.ch, fx.LABS_BASE, fx.signoff_receipts_for(self.ch), fx.fixture_base_state_readback(),
                                   ledger_objects=self.objs, ledger_ref=self.at, issue_records=[self.issue])
         self.assertEqual(obs["resolved_issues"], wi.derive_resolved_issue_facts(self.objs, self.at, self.ch, [self.issue]))
         # observed (not fixture), but the base receipt alone never resolves a gate issue (commit 4)
@@ -360,7 +360,7 @@ class ResolvedIssueFactsTests(unittest.TestCase):
         ch = sgi.resolving_change([issue["issue_id"]])
         f, = wi.derive_resolved_issue_facts(objs, self.at, ch, [issue])
         self.assertIs(f["resolution_pair"]["base"]["receipt"]["ledgered_at_base"], False)
-        obs = wi.admission_inputs(ch, fx.LABS_BASE, (), None, ledger_objects=objs, ledger_ref=self.at, issue_records=[issue],
+        obs = fx.observe(ch, fx.LABS_BASE, (), None, ledger_objects=objs, ledger_ref=self.at, issue_records=[issue],
                                   change_commits={"base_commit": "e" * 40, "head_commit": "f" * 40})
         self.assertEqual(refusal(wi.verify_resolutions, obs)["failure_code"], "GATE_PAIR_BASE_RECEIPT_MISSING")
         self.assertEqual(wi.derive_resolved_issue_facts({}, self.at, self.ch, [self.issue]), [])  # no bytes: unobserved
