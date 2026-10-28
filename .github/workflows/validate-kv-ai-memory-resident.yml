@@ -88,6 +88,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install pytest==8.3.5
+      - run: python -m pip install pytest==9.2.0
       - run: pytest -q tests/test_kv_ai_memory_resident_binding.py tests/test_kv_ai_memory_intr_admission.py tests/test_prepare_kv_ai_memory_intr_runtime_source.py tests/test_kv_ai_memory_runtime_surface_invariant.py tests/test_kv_ai_memory_resident_source_carriage.py
       - run: python -m py_compile workers/kv_ai_memory_resident_worker.py workers/kv_ai_memory_intr_profile.py workers/kv_ai_memory_intr_transport.py workers/kv_ai_memory_intr_event_bootstrap.py scripts/install_sovereign_heartbeat_service.py scripts/refresh_sovereign_worker_runtime_source.py scripts/refresh_and_dispatch_resident_requests.py scripts/run_kv_ai_memory_intr_event_bootstrap.py scripts/install_kv_ai_memory_universal_intr_route.py scripts/prepare_kv_ai_memory_intr_runtime_source.py scripts/submit_kv_ai_memory_packet_local.py scripts/consume_kv_ai_memory_resident_request.py scripts/dispatch_resident_execution_requests.py scripts/evaluate_task_runtime_routing_readiness.py

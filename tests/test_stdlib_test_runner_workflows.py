@@ -6,7 +6,7 @@ to run a test module that needs nothing from it. They now run it with
 that unittest runs the same tests the module defines, all passing, so the
 behaviour the pytest run checked is preserved. The KV AI memory workflow still
 needs pytest (its tests use pytest fixtures); it no longer upgrades pip first,
-and installs the pinned pytest==8.3.5 (StegVerse-Labs/.github#3183 V2a).
+and installs the pinned pytest==9.2.0, the version main CI resolved (StegVerse-Labs/.github#3183 V2a).
 
 Non-authorizing: source validation only.
 """
@@ -75,7 +75,7 @@ class StdlibTestRunnerWorkflowTests(unittest.TestCase):
         text = (WORKFLOWS / "validate-kv-ai-memory-resident.yml").read_text(encoding="utf-8")
         self.assertNotIn("--upgrade pip", text)
         installs = [line.strip() for line in text.splitlines() if "pip install" in line]
-        self.assertEqual(installs, ["- run: python -m pip install pytest==8.3.5"])
+        self.assertEqual(installs, ["- run: python -m pip install pytest==9.2.0"])
 
 
 if __name__ == "__main__":
