@@ -5049,6 +5049,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_org_runtime_transition_bound.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_org_runtime_transition_bound.py"
+   ],
+   "tests": [
+    "tests/test_org_runtime_transition_bound.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_batch_custody.py",
    "inputs": [],
    "surfaces": [
@@ -5782,6 +5794,18 @@
    ],
    "tests": [
     "tests/test_registry_collision_checkin_gate.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_registry_collision_claimed_integration_guard.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_registry_collision_claimed_integration_guard.py"
+   ],
+   "tests": [
+    "tests/test_registry_collision_claimed_integration_guard.py"
    ]
   },
   {
@@ -14850,6 +14874,10 @@
    "tasks/TASK-2026-0013.json",
    "tasks/TASK-2026-0014.json"
   ],
+  "tests/test_org_runtime_transition_bound.py": [
+   "org-runtime/activation.json",
+   "org-runtime/runtime_boundary.py"
+  ],
   "tests/test_organization_batch_custody.py": [
    "heartbeat_runtime/__init__.py",
    "heartbeat_runtime/independent_oscillator.py",
@@ -15206,6 +15234,11 @@
    "scripts/check_registry_collision_checkin.py",
    "scripts/evaluate_task_registry_collision_checkin.py",
    "tests/pytest.py"
+  ],
+  "tests/test_registry_collision_claimed_integration_guard.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/evaluate_task_registry_collision_checkin.py"
   ],
   "tests/test_registry_gate_findings.py": [
    "scripts/audit_execution_substrate_resolution.py",
