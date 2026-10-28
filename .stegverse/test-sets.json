@@ -15405,10 +15405,13 @@
    "scripts/run_heartbeat_runtime.py"
   ],
   "tests/test_protocol_v1_conformance_fixtures.py": [
+   ".stegverse/transition-ledger/org-contract.json",
+   "org-boundary/runtime/node_standing.py",
    "org-kernel/organization-ledger/fixtures/protocol-v1-conformance/**",
    "org-runtime/interlock-intr.json",
    "resident-runtime/organization_manifest_ingress.py",
    "resident-runtime/sdk_manifest_crossing.py",
+   "resident-runtime/submit_org_transition_to_master_records.py",
    "tests/test_organization_manifest_ingress_rule_ref.py"
   ],
   "tests/test_publisher_intr_materialization.py": [

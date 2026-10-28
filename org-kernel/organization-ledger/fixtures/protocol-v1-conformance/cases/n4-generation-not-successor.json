@@ -1,0 +1,46 @@
+{
+  "case_id": "n4-generation-not-successor",
+  "covers": "VERIFY_EXISTING_STANDING_WHOSE_PREDECESSOR_GENERATION_IS_NOT_GENERATION_MINUS_ONE",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "authority_effect": "NONE_REFUSAL_ONLY",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "ADMITTED_CROSSING_REACHES_ITS_INTERNAL_ENDPOINT",
+    "failure_code": "node-standing-fail_closed:non-genesis-predecessor-invalid:generation-not-successor",
+    "received": false,
+    "refusal_recorded": true
+  },
+  "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
+  "expected_refusal_record": {
+    "disposition": "DENY",
+    "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
+  },
+  "expected_source": "GENERATED_FROM_REAL_RECEIVE",
+  "issue_3369_item": "STALE_HEAD_OR_FENCE",
+  "issue_3369_item_status": "SPEC_GAP",
+  "mutation": {
+    "kind": "REPLACE_STANDING",
+    "standing": {
+      "generation": 3,
+      "mode": "VERIFY_EXISTING",
+      "node_ref": "StegVerse-Labs",
+      "predecessor": {
+        "generation": 1,
+        "heartbeat_epoch": 32,
+        "manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "result_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    }
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1",
+  "spec_gap": {
+    "disposition": "GAP_NOT_IMPLEMENTED",
+    "failed_predicate": "THE_DECLARED_PREDECESSOR_IS_THE_CURRENT_HEAD_UNDER_A_VALID_FENCE",
+    "failure_code": "STALE_HEAD_OR_FENCE_NOT_COMPARED_AT_INGRESS",
+    "issue_3369_item": "STALE_HEAD_OR_FENCE",
+    "next_attempt": "a head comparison or the WorkerCoordinator claim/fence reaches ingress; then add a case declaring a superseded predecessor and assert its refusal",
+    "owning_existing_goal": "CANONICAL-NODE-INGRESS-CONTRACT-001",
+    "required_evidence_or_repair": "node_standing.require checks the predecessor's shape and generation-successor arithmetic only (declared_predecessor_lineage_recomputed false); nothing on the receive() path compares a declared predecessor with a current head or checks a claim/fence token. The ledgers chain each append to their own HEAD, which is not a sender's head. This case covers the successor arithmetic instead",
+    "retry_entrypoint": "org-boundary/runtime/node_standing.py::require"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "case_id": "n3-wrong-receiving-operation",
+  "covers": "THE_REQUEST_NAMES_A_RECEIVING_OPERATION_OWNED_BY_ANOTHER_REPOSITORY",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "authority_effect": "NONE_REFUSAL_ONLY",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "CAPABILITY_IS_BOUND_TO_THIS_RECEIVING_OPERATION",
+    "failure_code": "ORGANIZATION_RECEIVING_OPERATION_OWNED_ELSEWHERE",
+    "received": false,
+    "refusal_recorded": true
+  },
+  "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
+  "expected_refusal_record": {
+    "disposition": "DENY",
+    "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
+  },
+  "expected_source": "GENERATED_FROM_REAL_RECEIVE",
+  "issue_3369_item": "FORGED_IDENTITY",
+  "issue_3369_item_status": "SPEC_GAP",
+  "mutation": {
+    "kind": "PATCH_RECEIVING_OPERATION",
+    "patch": {
+      "owner_repository": "StegVerse-org/.github"
+    }
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1",
+  "spec_gap": {
+    "disposition": "GAP_NOT_IMPLEMENTED",
+    "failed_predicate": "THE_SENDER_IDENTITY_IS_AUTHENTICATED_AT_INGRESS",
+    "failure_code": "SENDER_IDENTITY_NOT_AUTHENTICATED_AT_INGRESS",
+    "issue_3369_item": "FORGED_IDENTITY",
+    "next_attempt": "the contract's attestation owner is established; then add a case presenting a forged sender and assert its refusal",
+    "owning_existing_goal": "CANONICAL-NODE-INGRESS-CONTRACT-001",
+    "required_evidence_or_repair": "receive() takes no sender identity: cross() builds the packet origin itself, and node_standing.require records caller_editable_origin_established_identity false, attestation_owner_state NOT_PROVEN and structural_standing_is_authenticated_standing false. standing.node_ref is checked for presence only. A forged sender is not expressible on this path; this case covers a wrong receiving operation instead",
+    "retry_entrypoint": "org-boundary/runtime/node_standing.py::require"
+  }
+}
