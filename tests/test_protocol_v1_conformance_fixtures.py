@@ -14,8 +14,17 @@ binds for `sdk-manifest-ingress` (SDK#566):
 
 The fixtures live under
 `org-kernel/organization-ledger/fixtures/protocol-v1-conformance/`. Each case
-names one mutation of the positive packet and the disposition it must reach;
-a negative is DENY or FAIL_CLOSED with the six fields, the positive is ALLOW.
+names one mutation of the positive packet and the disposition it declares;
+a negative declares DENY or FAIL_CLOSED with the six fields, the positive ALLOW.
+
+What is observed is narrower than what is declared. For a negative, the
+evaluator yields only its refusal code: the test checks that the packet was
+refused, that the code is the fixture's `failure_code`, and that the temporary
+ledger root gained no entry (`refusal_code_and_temp_ledger_no_append`). The
+declared disposition and the six fields are fixture expectations, checked for
+shape only; they are never copied into the observed outcome, and no runtime
+DENY-vs-FAIL_CLOSED classification or six-field refusal is claimed until the
+evaluator returns a structured refusal of its own.
 
 The bounded effect is the registered `stegverse-labs.boundary-diagnostic`
 echo: the crossing runs for real, writes only to a temporary directory, and
@@ -155,8 +164,15 @@ def evaluate(fixture, mutation, recorded):
 
 
 def run_case(case_id: str):
-    """One case's outcome: disposition, six fields on refusal, and the ledger root left untouched."""
-    fixture, spec = packet(), case(case_id)
+    return run_spec(case(case_id))
+
+
+def run_spec(spec):
+    """One case's observed outcome: refused or not, the evaluator's own refusal code, and the ledger root.
+
+    Nothing in the outcome is read from `spec["expected"]`; only the mutation drives the run.
+    """
+    fixture = packet()
     recorded: set[str] = set()
     with tempfile.TemporaryDirectory() as ledger_root, \
             mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": ledger_root,
@@ -165,14 +181,27 @@ def run_case(case_id: str):
             evaluate(fixture, {"kind": "NONE"}, recorded)
         try:
             result = evaluate(fixture, spec["mutation"], recorded)
-            outcome = {"disposition": "ALLOW", "effect_observed": True, **result}
+            outcome = {"refused": False, **result}
         except Refused as refusal:
-            expected = spec["expected"]
-            outcome = {"disposition": expected["disposition"], "effect_observed": False,
-                       "observed_failure_code": refusal.code,
-                       **{field: expected[field] for field in SIX_FIELDS}}
+            outcome = {"observed_failure_code": refusal.code, "refused": True}
         outcome["ledger_root_entries"] = sorted(os.listdir(ledger_root))
     return spec, outcome
+
+
+def assert_refusal_code_and_temp_ledger_no_append(test, spec, outcome):
+    test.assertIs(outcome["refused"], True)
+    test.assertEqual(outcome["observed_failure_code"], spec["expected"]["failure_code"])
+    test.assertNotIn("closures", outcome)
+    test.assertEqual(outcome["ledger_root_entries"], [])
+
+
+def mutated_copy(case_id: str, directory: str, **expected_patch):
+    """A temporary copy of a committed case with its declared expectations patched, read back from disk."""
+    spec = case(case_id)
+    spec["expected"].update(expected_patch)
+    path = Path(directory) / f"{case_id}.json"
+    path.write_text(json.dumps(spec), encoding="utf-8")
+    return load(path)
 
 
 class FixtureShapeTest(unittest.TestCase):
@@ -190,6 +219,9 @@ class FixtureShapeTest(unittest.TestCase):
         for case_id in ("positive",) + NEGATIVES:
             self.assertEqual(case(case_id)["evidence_class"], "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT")
 
+    def test_positive_declares_allow(self):
+        self.assertEqual(case("positive")["expected"]["disposition"], "ALLOW")
+
     def test_every_negative_declares_six_fields_and_a_non_allow_disposition(self):
         for case_id in NEGATIVES:
             expected = case(case_id)["expected"]
@@ -200,13 +232,14 @@ class FixtureShapeTest(unittest.TestCase):
 
 
 class PositiveCaseTest(unittest.TestCase):
-    def test_positive_reaches_allow_with_the_bounded_echo_and_no_ledger_append(self):
-        spec, outcome = run_case("positive")
-        self.assertEqual(spec["expected"]["disposition"], "ALLOW")
-        self.assertEqual(outcome["disposition"], "ALLOW")
+    def test_positive_is_not_refused_and_echoes_the_bounded_effect_with_no_ledger_append(self):
+        _, outcome = run_case("positive")
+        self.assertIs(outcome["refused"], False)
+        self.assertNotIn("observed_failure_code", outcome)
         crossing = outcome["crossing"]
         fixture = packet()
-        self.assertEqual(crossing["manifest_sha256"], fixture["manifest_sha256"])
+        # Digest recomputed here from the manifest bytes, not read from the fixture's declared digest.
+        self.assertEqual(crossing["manifest_sha256"], "sha256:" + crossing_module.sha(fixture["manifest"]))
         self.assertEqual(crossing["resolved_service_id"], fixture["bounded_effect"]["service_id"])
         self.assertEqual(crossing["application_result"]["echo"]["manifest"], fixture["manifest"])
         self.assertEqual(crossing["authority_effect"], "NONE")
@@ -216,23 +249,42 @@ class PositiveCaseTest(unittest.TestCase):
 
 
 class NegativeCaseTest(unittest.TestCase):
-    def test_each_negative_is_refused_by_the_existing_evaluator_with_no_effect(self):
+    def test_each_negative_refusal_code_and_temp_ledger_no_append(self):
         for case_id in NEGATIVES:
             with self.subTest(case=case_id):
                 spec, outcome = run_case(case_id)
-                expected = spec["expected"]
-                self.assertEqual(outcome["disposition"], expected["disposition"])
-                self.assertEqual(outcome["observed_failure_code"], expected["failure_code"])
-                self.assertFalse(outcome["effect_observed"])
-                self.assertNotIn("closures", outcome)
-                self.assertEqual(outcome["ledger_root_entries"], [])
-                for field in SIX_FIELDS:
-                    self.assertTrue(outcome[field].strip(), field)
+                assert_refusal_code_and_temp_ledger_no_append(self, spec, outcome)
+                self.assertEqual(set(outcome), {"refused", "observed_failure_code", "ledger_root_entries"})
 
-    def test_stale_head_disposition_is_the_standing_contracts_own(self):
+    def test_stale_head_refusal_code_is_the_standing_contracts_own(self):
         _, outcome = run_case("n4-stale-head")
         self.assertTrue(outcome["observed_failure_code"].startswith("node-standing-fail_closed:"))
-        self.assertEqual(outcome["disposition"], "FAIL_CLOSED")
+
+
+class ExpectationMutationRegressionTest(unittest.TestCase):
+    """Declared expectations cannot reach the observed outcome; a wrong declared code is caught."""
+
+    def test_changing_declared_disposition_or_a_six_field_value_leaves_the_observed_outcome_unchanged(self):
+        patches = {"disposition": {"disposition": "ALLOW"},
+                   "failed_predicate": {"failed_predicate": "MUTATED_PREDICATE"},
+                   "next_attempt": {"next_attempt": "mutated next attempt"}}
+        for case_id in NEGATIVES:
+            _, baseline = run_case(case_id)
+            for name, patch in patches.items():
+                with self.subTest(case=case_id, mutated=name), tempfile.TemporaryDirectory() as directory:
+                    spec = mutated_copy(case_id, directory, **patch)
+                    self.assertEqual(spec["expected"][name], patch[name])
+                    _, outcome = run_spec(spec)
+                    self.assertEqual(outcome, baseline)
+                    assert_refusal_code_and_temp_ledger_no_append(self, spec, outcome)
+
+    def test_changing_declared_failure_code_fails_the_refusal_code_assertion(self):
+        for case_id in NEGATIVES:
+            with self.subTest(case=case_id), tempfile.TemporaryDirectory() as directory:
+                spec = mutated_copy(case_id, directory, failure_code="MUTATED_FAILURE_CODE")
+                _, outcome = run_spec(spec)
+                with self.assertRaises(AssertionError):
+                    assert_refusal_code_and_temp_ledger_no_append(self, spec, outcome)
 
 
 if __name__ == "__main__":
