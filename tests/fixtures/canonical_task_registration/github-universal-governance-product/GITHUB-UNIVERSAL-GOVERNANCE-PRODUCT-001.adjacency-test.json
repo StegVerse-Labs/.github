@@ -56,9 +56,9 @@
     },
     "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001": {
       "a_components_disjoint": true,
-      "a_evidence": "neither its shard nor its registry row declares targets.components; its scope is StegHealth corrective-task routing in StegVerse-Labs/StegHealth, which none of this Goal's components claim",
+      "a_evidence": "its shard and registry row declare targets.components [cli-independent-review, cli-independent-review-routing, cli-independent-review-routing-packet, consume-ecosystem-failure-map, ecosystem-failure-registry, steghealth-ecosystem-failure-registry, validate-cli-independent-review-routing, validate-ecosystem-failure-registry] (applied through scripts/apply_task_record_data.py at registry generation 322 with PAYMENT's, from the StegHealth row of Lane D draft StegVerse-Labs/.github#3328, derived from StegVerse-Labs/StegHealth@8508a43c); its scope is StegHealth corrective-task routing in StegVerse-Labs/StegHealth, and none of this Goal's components is among them",
       "b_finish_point_exercises_none": true,
-      "b_evidence": "the sealed finish-point closure contains no StegHealth module; vacuous for components because none are declared",
+      "b_evidence": "the sealed finish-point closure contains no StegHealth module and no module whose path carries any of those component token runs",
       "c_reliance_is_consumes_dependency": true,
       "c_evidence": "no reliance; nothing to record",
       "outcome": "ADJACENT",

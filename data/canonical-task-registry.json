@@ -9411,7 +9411,25 @@
         "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
-      "authority_effect": "NONE_COORDINATION_ONLY"
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/StegHealth"
+        ],
+        "components": [
+          "cli-independent-review",
+          "cli-independent-review-routing",
+          "cli-independent-review-routing-packet",
+          "consume-ecosystem-failure-map",
+          "ecosystem-failure-registry",
+          "steghealth-ecosystem-failure-registry",
+          "validate-cli-independent-review-routing",
+          "validate-ecosystem-failure-registry"
+        ]
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",

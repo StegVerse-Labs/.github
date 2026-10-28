@@ -59,7 +59,16 @@
     },
     {
       "task_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
-      "components": [],
+      "components": [
+        "cli-independent-review",
+        "cli-independent-review-routing",
+        "cli-independent-review-routing-packet",
+        "consume-ecosystem-failure-map",
+        "ecosystem-failure-registry",
+        "steghealth-ecosystem-failure-registry",
+        "validate-cli-independent-review-routing",
+        "validate-ecosystem-failure-registry"
+      ],
       "finish_point_paths": [],
       "record_finish_point": "NONE_DECLARED_IN_RECORD"
     }
@@ -128,5 +137,5 @@
     "pin": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001's three files are verified against sha256 at 4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328 by the finish test before use; recomputed by scripts/adjacency_ruling.py verify (P)",
     "routing": "an edit to them fails closed as STRUCTURAL_OWNED_EDIT routed to SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001; recomputed by scripts/adjacency_ruling.py check-change (R)"
   },
-  "evidence_digest": "sha256:aee4072ce56f926ec78c0353c15665a23030c743498118b3df738c9858b14c74"
+  "evidence_digest": "sha256:ca52157741c648ee8854513c04e5c2d768cd9c21875914242ecef72a0d6829c7"
 }

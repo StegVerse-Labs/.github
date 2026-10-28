@@ -135,5 +135,23 @@
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
+  },
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/StegHealth"
+    ],
+    "components": [
+      "cli-independent-review",
+      "cli-independent-review-routing",
+      "cli-independent-review-routing-packet",
+      "consume-ecosystem-failure-map",
+      "ecosystem-failure-registry",
+      "steghealth-ecosystem-failure-registry",
+      "validate-cli-independent-review-routing",
+      "validate-ecosystem-failure-registry"
+    ]
   }
 }
