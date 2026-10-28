@@ -1,7 +1,0 @@
-{
-  "schema": "stegverse.task-vector/v1",
-  "task_id": "HEALER-ORCHESTRATOR-TARGET-OWNERSHIP-001",
-  "cosv": "10900000009000",
-  "coordination_state": "PROPOSED",
-  "authority_effect": "NONE"
-}

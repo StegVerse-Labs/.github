@@ -9591,18 +9591,6 @@
   {
    "always": false,
    "exclude": [],
-   "id": "tests/test_validate_target_repository_components.py",
-   "inputs": [],
-   "surfaces": [
-    "tests/test_validate_target_repository_components.py"
-   ],
-   "tests": [
-    "tests/test_validate_target_repository_components.py"
-   ]
-  },
-  {
-   "always": false,
-   "exclude": [],
    "id": "tests/test_verify_sovereign_heartbeat_carrier_activation.py",
    "inputs": [],
    "surfaces": [
@@ -12415,9 +12403,6 @@
   ],
   "scripts/validate_session_assistance_scope.py": [
    "control/session-assistance-scope-policy.json"
-  ],
-  "scripts/validate_target_repository_components.py": [
-   "data/canonical-task-records/**"
   ],
   "scripts/validate_task_record_actionable_disposition.py": [
    "data/canonical-task-records/**",
@@ -17256,10 +17241,6 @@
   "tests/test_validate_canonical_work_coordination_schema_required.py": [
    "schemas/canonical-task-record.schema.json",
    "scripts/validate_canonical_work_coordination.py"
-  ],
-  "tests/test_validate_target_repository_components.py": [
-   "data/canonical-task-records/**",
-   "scripts/validate_target_repository_components.py"
   ],
   "tests/test_verify_sovereign_heartbeat_carrier_activation.py": [
    "scripts/verify_sovereign_heartbeat_carrier_activation.py"
