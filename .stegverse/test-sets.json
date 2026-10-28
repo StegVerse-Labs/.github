@@ -5895,6 +5895,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_registry_collision_owner_held_states.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_registry_collision_owner_held_states.py"
+   ],
+   "tests": [
+    "tests/test_registry_collision_owner_held_states.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_registry_gate_findings.py",
    "inputs": [],
    "surfaces": [
@@ -15465,6 +15477,10 @@
   "tests/test_registry_collision_claimed_integration_guard.py": [
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json",
+   "scripts/evaluate_task_registry_collision_checkin.py"
+  ],
+  "tests/test_registry_collision_owner_held_states.py": [
+   "scripts/cosv.py",
    "scripts/evaluate_task_registry_collision_checkin.py"
   ],
   "tests/test_registry_gate_findings.py": [
