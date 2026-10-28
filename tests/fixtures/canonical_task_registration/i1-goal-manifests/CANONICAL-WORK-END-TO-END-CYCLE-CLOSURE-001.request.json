@@ -1,0 +1,109 @@
+{
+  "allocation_request_ref": null,
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "collision_analysis": [
+    "data/canonical-task-records/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.json exists (sha256 8b7dd138fd6ad1cf9ad3e9e826fac391bec35599e8ad36c6520011585c397ab8); no aggregate row at gen 320; no control/task-vectors or task-vector-index.d entry: existing-identity reconcile, not a new identity"
+  ],
+  "issue": "StegVerse-org/.github#160 issuecomment-6353130407 I1 (GOAL_NOT_IN_CANONICAL_REGISTRY / ACTIVE_WORK_HAS_REGISTRY_ROW)",
+  "observed_registry_generation": 321,
+  "registration_mode": "EXISTING_IDENTITY",
+  "record": {
+    "allowed_next_transitions": [
+      "ATTEMPT_CURRENT_PARENT_CANONICAL_WORK_CYCLE",
+      "RETAIN_FIRST_GOVERNED_DISPOSITION",
+      "RECONCILE_APPLICABLE_ORGANIZATION_EVIDENCE_AND_NEXT_STATE",
+      "CLOSE_AFTER_MACHINE_READABLE_CONTINUATION_OR_TERMINAL_STATE"
+    ],
+    "authority_model": {
+      "authority_transfer_created_by_successor": false,
+      "credential_authority": "TV/TVC",
+      "github_runtime_authority": "NONE",
+      "master_records_role": "RELEASED_ORGANIZATION_BATCH_RECEIPT_RECORDER",
+      "runtime_reality_authority": "Organization",
+      "second_user_operated_device_required": false,
+      "source_state_proves_execution": false,
+      "task_registry_mints_execution_authority": false,
+      "transition_authority": "INTERLOCK_INTR",
+      "worker_claim_authority": "WORKERCOORDINATOR"
+    },
+    "blockers": [],
+    "checkout_state": "CHECKED_OUT",
+    "completion": {
+      "canonical_task_state_reconciled": false,
+      "claimed": false,
+      "continuation_or_terminal_state_machine_readable": false,
+      "current_governed_disposition_retained": false,
+      "current_parent_cycle_observed": false,
+      "dependency_successor_or_completion_determined": false,
+      "implementation_parent_source_complete": true,
+      "organization_transition_receipt_retained": false,
+      "validated": false
+    },
+    "coordination_state": "ACTIVE",
+    "correlation_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+    "cosv_task_vector": "10100000100000",
+    "dependencies": [
+      {
+        "dependency_id": "DEP-CURRENT-PARENT-GOVERNED-CYCLE",
+        "disposition": "REQUIRE_CURRENT_EXACT_PARENT_ATTEMPT_TO_RETAIN_ALLOW_deny_or_fail_closed_AND_CORRELATED_CYCLE_EVIDENCE",
+        "kind": "RUNTIME_VERIFICATION",
+        "ref": "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json",
+        "state": "UNRESOLVED"
+      }
+    ],
+    "goal": "Close the distinct post-implementation verification obligation for Canonical Work by executing one current end-to-end coordination cycle through the already-implemented canonical substrate, retaining the first governed disposition and all applicable organization-ledger, reconciliation, and next-state evidence without creating or redesigning runtime, transport, credential, device, scheduler, or authority infrastructure.",
+    "handoff_projection_refs": [
+      "docs/CANONICAL_WORK_END_TO_END_CYCLE_CLOSURE_MIRROR_HANDOFF.md"
+    ],
+    "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "schema": "stegverse.canonical-task-record/v1",
+    "source_refs": [
+      "docs/CANONICAL_WORK_END_TO_END_CYCLE_CLOSURE_MIRROR_HANDOFF.md",
+      "data/canonical-work-coordination-goal-definition.json",
+      "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+      "control/cross-task-coordination.d/canonical-work-parent-ingress.json",
+      "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+      "scripts/refresh_and_dispatch_resident_requests.py",
+      "workers/canonical_work_intr_ingress.py",
+      "workers/universal_intr_profiled_ingress.py",
+      "workers/manifest_state_transition_intr_ingress.py",
+      "org-runtime/interlock-intr.json"
+    ],
+    "successor_task_ids": [],
+    "targets": {
+      "components": [
+        "canonical-work-parent-ingress",
+        "sdk-manifest-ingress",
+        "universal-interlock-intr",
+        "workercoordinator-claim-fence",
+        "organization-transition-ledger",
+        "canonical-task-reconciliation",
+        "successor-determination"
+      ],
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github",
+        "StegVerse-org/StegVerse-SDK"
+      ]
+    },
+    "task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001"
+  },
+  "request_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.existing-identity.gen320",
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+  "vector": {
+    "evidence_refs": [
+      "StegVerse-Labs/.github@86382e60:data/canonical-task-records/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.json"
+    ],
+    "exact_metrics": {
+      "_": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+    },
+    "metric_evidence": {
+      "_": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED: the shard carries cosv_task_vector 10100000100000 but no exact_metrics; the vector is not invertible to metrics"
+    },
+    "observed_at": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+  }
+}

@@ -1,0 +1,158 @@
+{
+ "computed": [],
+ "corpus_digest": "sha256:8c8bffc716531fd8e4172d9253236fb589256435ae9899441b1a1e5e9f74ebe3",
+ "corpus_source": {
+  "commit": "a00a72ec54055e11b23841e3718cfd7352ad8a8c",
+  "path": "evidence/sv-check-receipts",
+  "producer": "NWI-S1 verifier (SV-LLM/.github#46, sandbox/s1_sv_check_receipts.py)",
+  "repository": "SV-LLM/.github"
+ },
+ "disposition": "FAIL_CLOSED",
+ "failed_predicate": "STAGE_THRESHOLD_IS_DERIVED_FROM_OBSERVED_S1_BASELINE",
+ "failure_code": "STAGE_THRESHOLD_BASELINE_INSUFFICIENT",
+ "hb_epoch": "469411750",
+ "insufficient": [
+  {
+   "baseline": {
+    "excluded": [
+     {
+      "change_digest": "sha256:1a70ad70ab1c24d11186d2049adfcfd1e0dce7662f87da4f61bdf11e55c6c103",
+      "index": 0,
+      "reason": "VERIFIER_RECEIPT_NOT_LEDGERED"
+     },
+     {
+      "change_digest": "sha256:4c217bcf70d2761371703408ea2be8861b9d31e716dfa266f15f4068dcc1c912",
+      "index": 1,
+      "reason": "VERIFIER_RECEIPT_NOT_LEDGERED"
+     },
+     {
+      "change_digest": "sha256:332e03ae6fff6a8acfbec7494004a117ec91acc15937b700755fd6cb0e81fcb2",
+      "index": 2,
+      "reason": "VERIFIER_RECEIPT_NOT_LEDGERED"
+     },
+     {
+      "change_digest": "sha256:e44de675c0e3b6375eff9198cab9f1d7b133a73565f2d56955723ba9826edce2",
+      "index": 3,
+      "reason": "VERIFIER_RECEIPT_NOT_LEDGERED"
+     },
+     {
+      "index": 4,
+      "reason": "CHANGE_DIGEST_MALFORMED"
+     }
+    ],
+    "joined": [
+     {
+      "admission": {
+       "disposition": "ALLOW",
+       "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/4fccdef699c11a60599861f1b8d3bb1d92e929b30e6081db26bcdd7a662209f0.json"
+      },
+      "authentic_ledger_receipt": false,
+      "bundle": "StegVerse-Labs-3225-e6ba9601/bundle.json",
+      "s1_failure_code": "REQUIRED_CHECK_RECEIPTS_NOT_ALL_ALLOW",
+      "s1_verdict": "FAIL_CLOSED"
+     },
+     {
+      "admission": {
+       "disposition": "ALLOW",
+       "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/73f7bc29fda05deee1dea497293c7f23fa3b0e800f8d3fa2d1345f84e07458a3.json"
+      },
+      "authentic_ledger_receipt": false,
+      "bundle": "StegVerse-Labs-3226-f82c0324/bundle.json",
+      "s1_failure_code": "REQUIRED_CHECK_RECEIPTS_NOT_ALL_ALLOW",
+      "s1_verdict": "FAIL_CLOSED"
+     },
+     {
+      "admission": {
+       "disposition": "ALLOW",
+       "receipt_ref": "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/93a748cb0f5e1f1c0bf05a8a5d40c96b274e31dc3cdcb4422d28b02b742f93de.json"
+      },
+      "authentic_ledger_receipt": false,
+      "bundle": "StegVerse-Labs-3234-e29493af/bundle.json",
+      "s1_failure_code": "REQUIRED_CHECK_RECEIPTS_NOT_ALL_ALLOW",
+      "s1_verdict": "FAIL_CLOSED"
+     },
+     {
+      "admission": null,
+      "authentic_ledger_receipt": false,
+      "bundle": "StegVerse-Labs-3264-7898cedb/bundle.json",
+      "s1_failure_code": "REQUIRED_CHECK_RECEIPTS_NOT_ALL_ALLOW",
+      "s1_verdict": "FAIL_CLOSED"
+     },
+     {
+      "admission": null,
+      "authentic_ledger_receipt": false,
+      "bundle": "StegVerse-org-nopr-dd8bfd02/bundle.json",
+      "s1_failure_code": "HB_EPOCH_SOURCE_UNOBSERVED",
+      "s1_verdict": "FAIL_CLOSED"
+     }
+    ],
+    "observed": false,
+    "producer": {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "VERIFY_ONLY_VERDICT_HAS_E0_PRODUCER",
+     "failure_code": "VERDICT_AGREEMENT_EVIDENCE_UNOBSERVED",
+     "next_attempt": "re-run on the next organization-ledger append of a verifier receipt or admission outcome; the NWI-S2 gate stays at FAIL_CLOSED STAGE_EVIDENCE_UNOBSERVED meanwhile and nothing waits",
+     "owning_existing_goal": "StegVerse-org/.github#163",
+     "required_evidence_or_repair": "a change with ledgered NWI-S1 verifier check receipts (SV-LLM/.github#46) and a ledgered admission disposition for the same change digest",
+     "retry_entrypoint": "resident-runtime/sv_e0_terminals.py::verdict_agreement_e0"
+    }
+   },
+   "comparator": ">=",
+   "metric": "agreement_rate",
+   "predicate": "SV_LLM_VERDICT_AGREEMENT_RATE",
+   "reason": "BASELINE_UNOBSERVED",
+   "rule": "value = the agreement observed at S1, floored to 4 decimals: agreed/evaluated where the evaluations are the NWI-S1 verifier bundles of the S1 corpus (the snapshot's pinned SV-LLM/.github evidence/sv-check-receipts) joined by (repository, head commit) to ledgered admission decisions, counted by sv_e0_terminals.verdict_agreement_e0 under its own evidence rules (verifier receipts and admission decisions must both be organization-ledger receipts). S2 must not fall below S1's observed agreement. FAIL_CLOSED STAGE_THRESHOLD_BASELINE_INSUFFICIENT if the baseline is unobserved, evaluated < min_observations, or the value is vacuous (0, which every rate passes).",
+   "rule_digest": "sha256:7622825d012629ae853f994a5ce722a85b33ad499bc5a5d41c5a2739022bbd37",
+   "rule_id": "NWI-S2-AGREEMENT-FLOOR-FROM-S1-BASELINE/v1",
+   "stage_id": "NWI-S2"
+  },
+  {
+   "baseline": {
+    "counts": {
+     "FALSE_ADMIT": 0,
+     "FALSE_REFUSAL": 0,
+     "HELD": 0,
+     "NOT_APPLICABLE": 0,
+     "UNKNOWN": 3
+    },
+    "decisions": [
+     "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/4fccdef699c11a60599861f1b8d3bb1d92e929b30e6081db26bcdd7a662209f0.json",
+     "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/73f7bc29fda05deee1dea497293c7f23fa3b0e800f8d3fa2d1345f84e07458a3.json",
+     "refs/stegverse/organization-ledger@9a407561062757a30f90818ec6c8105b04331a39:receipts/93a748cb0f5e1f1c0bf05a8a5d40c96b274e31dc3cdcb4422d28b02b742f93de.json"
+    ],
+    "observed": false,
+    "producer": {
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMISSION_MISS_RATE_IS_COMPUTED_FROM_OBSERVED_OUTCOMES",
+     "failure_code": "ADMISSION_MISS_RATE_UNOBSERVED",
+     "next_attempt": "re-run on the next organization-ledger append of an admission decision or outcome; the NWI-S3 ADMISSION_MISS_RATE predicate stays unobserved meanwhile (no rate is defaulted) and nothing waits",
+     "owning_existing_goal": "StegVerse-org/.github#163",
+     "required_evidence_or_repair": "at least 1 admission decision(s) with an observed outcome: a ledgered stegverse.admission_miss.v1 record (correcting_ref a ledger receipt), a ledgered DENY later contradicted by an ALLOW of the same change digest at the same base, or a stegverse.admission_outcome.v1 HELD record whose evidence_ref is a ledger receipt",
+     "retry_entrypoint": "resident-runtime/admission_miss_rate.py::admission_miss_rate_e0"
+    }
+   },
+   "comparator": "<",
+   "metric": "admission_miss_rate",
+   "predicate": "ADMISSION_MISS_RATE",
+   "reason": "BASELINE_UNOBSERVED",
+   "rule": "value = (misses+1)/(observed+1) over the S1-era admission decisions (ledgered decisions joined to the S1 corpus heads) and their observed outcomes, ceiled to 4 decimals, computed by admission_miss_rate.admission_miss_rate_e0 under metric_definitions.admission_miss_rate; the +1 keeps a zero-miss baseline a satisfiable strict ceiling at the S1 sample size. S3's miss rate must stay strictly under it. FAIL_CLOSED STAGE_THRESHOLD_BASELINE_INSUFFICIENT if the baseline is unobserved (UNKNOWN), observed < min_observations, or the value is vacuous (>= 1).",
+   "rule_digest": "sha256:759ede9f0d5aa9b24dad7a7cb383c19823c362995273ae3c8559fa3ad399b470",
+   "rule_id": "NWI-S3-MISS-CEILING-FROM-S1-BASELINE/v1",
+   "stage_id": "NWI-S3"
+  }
+ ],
+ "ledger": {
+  "commit": "9a407561062757a30f90818ec6c8105b04331a39",
+  "hb_epoch": "469411750",
+  "head_receipt_sha256": "sha256:b7aac1c99587ca76487a58a2c56db8828fa766773fe4136b2c59ac8ae27500ed",
+  "org_receipts_in_chain": 56,
+  "ref": "refs/stegverse/organization-ledger"
+ },
+ "mode": "E0",
+ "next_attempt": "re-run scripts/derive_stage_thresholds.py --collect then scripts/derive_stage_thresholds.py on the next organization-ledger append of an S1 verifier receipt or admission outcome; thresholds stay null (STAGE_THRESHOLD_UNDECLARED) meanwhile and nothing waits",
+ "owning_existing_goal": "StegVerse-org/.github#163",
+ "required_evidence_or_repair": "NWI-S2 SV_LLM_VERDICT_AGREEMENT_RATE: BASELINE_UNOBSERVED; NWI-S3 ADMISSION_MISS_RATE: BASELINE_UNOBSERVED -- the S1 baseline needs NWI-S1 verifier check receipts appended to the organization ledger (authentic_ledger_receipt true) for changes with ledgered admission decisions, and ledgered admission outcomes (stegverse.admission_miss.v1 / stegverse.admission_outcome.v1), at least each rule's min_observations",
+ "retry_entrypoint": "scripts/derive_stage_thresholds.py",
+ "snapshot_sha256": "sha256:8fbf957a6e56d8b3df9a4626b62c146de31890af3b64c785afa70ec0ed393fbc",
+ "transition_class": "STAGE_THRESHOLD_DERIVE"
+}

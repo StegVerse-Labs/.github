@@ -70,6 +70,10 @@ It validates aggregate/shard identity, the separately stored original COSV,
 exact predecessor generation and digest, a genuinely admitted owner transition
 receipt and sovereign ref readback through an injected trusted verifier. It
 cannot mutate the Registry, claim a worker, or mint an original manifest.
+The edge it evaluates is the canonical-task-record schema's own
+`PROPOSED` → `INGRESS_ADMITTED`, refused unless the shard's
+`allowed_next_transitions` names `INGRESS_ADMITTED` (it does not today, so the
+preflight fails closed until the original Registry owner adds it).
 Synthetic tests and source validation are not runtime observations.
 
 **Staged cross-owner integration:** #3306 is temporarily based on the

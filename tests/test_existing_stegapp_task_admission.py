@@ -1,10 +1,12 @@
 """Existing-record StegApp admission must never create authority or change state."""
 import copy
 import importlib.util
+import json
 import unittest
 from pathlib import Path
 
-MODULE = Path(__file__).resolve().parents[1] / "scripts" / "evaluate_existing_task_admission.py"
+ROOT = Path(__file__).resolve().parents[1]
+MODULE = ROOT / "scripts" / "evaluate_existing_task_admission.py"
 spec = importlib.util.spec_from_file_location("stegapp_existing_admission", MODULE)
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
@@ -25,6 +27,7 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
             "worker_claim": {"claim_ref": None, "fence_ref": None,
                              "projection_only": True},
             "coordination_state": "PROPOSED",
+            "allowed_next_transitions": ["INGRESS_ADMITTED"],
         }
         self.registry = {"generation": 320, "tasks": [self.row]}
         self.shard = {k: copy.deepcopy(v) for k, v in self.row.items()
@@ -36,7 +39,7 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
                        "authority_effect": "NONE",
                        "exact_metrics": {"lifecycle": "UNCLAIMED"}}
         self.decision = dict(task_id=mod.TASK_ID, from_state="PROPOSED",
-                             to_state="HANDOFF_READY", observed_registry_generation=320,
+                             to_state="INGRESS_ADMITTED", observed_registry_generation=320,
                              next_registry_generation=321,
                              previous_task_sha256=mod._hash(self.row),
                              cosv="10300000011000", claim_or_fence_minted=False,
@@ -102,7 +105,7 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
         self.registry["generation"] = 321
         self.assertEqual(self.verdict()["disposition"], "FAIL_CLOSED")
         self.registry["generation"] = 320
-        self.shard["coordination_state"] = "HANDOFF_READY"
+        self.shard["coordination_state"] = "INGRESS_ADMITTED"
         self.assertEqual(self.verdict()["failed_predicate"], "ORIGINAL_STATE_PROPOSED")
 
     def test_scope_cosv_and_worker_claim_not_synthetically_accepted(self):
@@ -131,6 +134,45 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
                 fake = copy.deepcopy(self.decision)
                 fake["organization_receipt_sha256"] = bogus
                 result = self.verdict(decision=fake)
+                self.assertEqual(result["disposition"], "FAIL_CLOSED")
+                self.assertEqual(result["failed_predicate"],
+                                 "OWNER_ALLOW_AND_SOVEREIGN_RECORDING_PRESENT")
+
+    def test_edge_is_the_schema_edge_proposed_to_ingress_admitted(self):
+        # #3304 review finding 1: HANDOFF_READY is not in the coordination_state enum
+        schema = json.loads((ROOT / "schemas" / "canonical-task-record.schema.json")
+                            .read_text(encoding="utf-8"))
+        states = schema["properties"]["coordination_state"]["enum"]
+        out = self.verdict()
+        self.assertEqual(out["disposition"], "ALLOW")
+        self.assertIn(out["next_state"], states)
+        self.assertEqual(out["next_state"], "INGRESS_ADMITTED")
+        stale = copy.deepcopy(self.decision)
+        stale["to_state"] = "HANDOFF_READY"
+        self.assertEqual(self.verdict(decision=stale)["failed_predicate"],
+                         "OWNER_DECISION_EXACT_PREDECESSOR_AND_COSV")
+
+    def test_edge_must_be_in_allowed_next_transitions(self):
+        for allowed in (None, [], ["NATIVE_ADMISSION_EVALUATION"], "INGRESS_ADMITTED"):
+            with self.subTest(allowed=allowed):
+                self.shard["allowed_next_transitions"] = allowed
+                self.row["allowed_next_transitions"] = allowed
+                out = self.verdict()
+                self.assertEqual(out["disposition"], "FAIL_CLOSED")
+                self.assertEqual(out["failed_predicate"],
+                                 "INGRESS_ADMITTED_IN_ALLOWED_NEXT_TRANSITIONS")
+
+    def test_digest_without_sha256_prefix_is_refused(self):
+        # #3304 review finding 2: length 71 and hex tail are not enough
+        for bogus in ("md5:XYZ" + "a"*64, "SHA256:" + "a"*64, "sha512:" + "a"*64,
+                      "sha256:" + "a"*64 + "\n"):
+            with self.subTest(bogus=bogus):
+                fake = copy.deepcopy(self.decision)
+                fake["organization_receipt_sha256"] = bogus
+                echo = lambda _, b=bogus: dict(
+                    disposition="ALLOW", original_manifest_bound=True,
+                    task_id=mod.TASK_ID, organization_receipt_sha256=b)
+                result = self.verdict(decision=fake, verifier=echo)
                 self.assertEqual(result["disposition"], "FAIL_CLOSED")
                 self.assertEqual(result["failed_predicate"],
                                  "OWNER_ALLOW_AND_SOVEREIGN_RECORDING_PRESENT")

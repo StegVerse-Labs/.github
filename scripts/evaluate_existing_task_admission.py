@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Fail-closed preflight for an ALREADY REGISTERED Goal's HANDOFF_READY edge.
+"""Fail-closed preflight for an ALREADY REGISTERED Goal's PROPOSED -> INGRESS_ADMITTED edge.
+
+The edge is the canonical-task-record schema's own: ``coordination_state`` moves
+from PROPOSED to INGRESS_ADMITTED, and only when the shard's
+``allowed_next_transitions`` names INGRESS_ADMITTED (the same predicate
+run_canonical_work_event_bootstrap.py applies).
 
 This is not new-task registration (#3232/#3233), a Registry mutator,
 a WorkerCoordinator allocator, or an InTr/Organization Ledger writer.
@@ -11,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from typing import Any, Callable
 
 TASK_ID = "STEGAPP-EPHEMERAL-COMPOSITION-001"
@@ -24,6 +30,10 @@ SHA_KEYS = ("task_id", "correlation_id", "root_correlation_id", "parent_task_id"
             "goal", "source_refs", "targets", "dependencies", "blockers",
             "expected_evidence_predicates", "worker_claim")
 SHA = "sha256:"
+FROM_STATE = "PROPOSED"
+TO_STATE = "INGRESS_ADMITTED"
+# Anchored, as elsewhere in the stack: a digest without the sha256: prefix is not one.
+SHA256_DIGEST = re.compile(r"sha256:[0-9a-f]{64}\Z")
 
 
 def _hash(value: Any) -> str:
@@ -84,10 +94,16 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
             return _fail("AGGREGATE_SHARD_OWNER_DRIFT",
                          "EXISTING_TASK_IDENTITY_AND_SCOPE_AGREE",
                          "reconcile original Registry owner aggregate/shard without changing identity")
-        if row.get("coordination_state") != "PROPOSED" or shard.get("coordination_state") != "PROPOSED":
+        if row.get("coordination_state") != FROM_STATE or shard.get("coordination_state") != FROM_STATE:
             return _fail("EXISTING_TASK_STATE_EDGE_CHANGED",
                          "ORIGINAL_STATE_PROPOSED",
                          "use owner transition matching actual source-state edge")
+        allowed = shard.get("allowed_next_transitions")
+        if not isinstance(allowed, list) or TO_STATE not in allowed:
+            return _fail("EXISTING_TASK_EDGE_NOT_ALLOWED",
+                         "INGRESS_ADMITTED_IN_ALLOWED_NEXT_TRANSITIONS",
+                         "original Registry owner must list INGRESS_ADMITTED in the "
+                         "shard's allowed_next_transitions")
         # Canonical task-record/v1 does NOT embed cosv_task_vector.
         # The source of truth is the separately registered COSV task vector,
         # bound by its full task identity and invariant schema. Do not infer
@@ -111,8 +127,8 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
             return result
         expected = {
             "task_id": TASK_ID,
-            "from_state": "PROPOSED",
-            "to_state": "HANDOFF_READY",
+            "from_state": FROM_STATE,
+            "to_state": TO_STATE,
             "observed_registry_generation": registry["generation"],
             "next_registry_generation": registry["generation"] + 1,
             "previous_task_sha256": _hash(row),
@@ -125,9 +141,7 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
                          "original manifest decision bound to the current Registry row")
         if (owner_receipt.get("disposition") != "ALLOW"
                 or not isinstance(owner_receipt.get("organization_receipt_sha256"), str)
-                or len(owner_receipt["organization_receipt_sha256"]) != 71
-                or any(c not in "0123456789abcdef"
-                       for c in owner_receipt["organization_receipt_sha256"][7:])):
+                or not SHA256_DIGEST.match(owner_receipt["organization_receipt_sha256"])):
             return _fail("ORIGINAL_OWNER_ALLOW_OR_LEDGER_RECEIPT_MISSING",
                          "OWNER_ALLOW_AND_SOVEREIGN_RECORDING_PRESENT",
                          "native manifest ALLOW and its original organization receipt")
@@ -144,7 +158,7 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
         return dict(schema=SCHEMA, disposition="ALLOW",
                     predicate="EXISTING_TASK_ORIGINAL_OWNER_EVIDENCE_VERIFIED",
                     task_id=TASK_ID, observed_registry_generation=registry["generation"],
-                    next_state="HANDOFF_READY", owner_receipt_sha256=_hash(owner_receipt),
+                    next_state=TO_STATE, owner_receipt_sha256=_hash(owner_receipt),
                     organization_receipt_sha256=owner_receipt["organization_receipt_sha256"],
                     authority_effect="NONE_PREFLIGHT_ONLY",
                     state_written=False, claim_or_fence_minted=False,

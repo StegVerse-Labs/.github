@@ -38,6 +38,23 @@ BASELINE = Path("data/test-suite-baseline.json")
 OUTCOME = re.compile(r"^(?:FAILED|ERROR)\s+(\S+)")
 REPAIR = ("repair the actual failing test in its owning source lane; "
           "do not add failures or exclusions to the ratchet baseline")
+OWNING_GOAL = "H6b / StegVerse-Labs/.github#3039 test-suite ratchet"
+RETRY = "python scripts/check_test_suite_ratchet.py --base-sha <exact PR base sha>"
+
+
+def refusal(code: str, predicate: str, repair: str, detail: str = "") -> dict:
+    """The standard six-field FAIL_CLOSED refusal; it changes nothing."""
+    return {"disposition": "FAIL_CLOSED", "failure_code": code, "failed_predicate": predicate,
+            "required_evidence_or_repair": repair, "retry_entrypoint": RETRY,
+            "owning_existing_goal": OWNING_GOAL,
+            "next_attempt": "re-run the integrity check on the exact PR base after repair",
+            "detail": detail, "authority_effect": "NONE"}
+
+
+def _refuse(message: str, code: str, predicate: str, repair: str, detail: str = "") -> int:
+    print(f"{GATE}: FAIL_CLOSED {message} "
+          + json.dumps(refusal(code, predicate, repair, detail), sort_keys=True))
+    return 1
 
 
 def run_suite(target: str) -> set[str]:
@@ -65,7 +82,13 @@ def excluded_tests(baseline: dict) -> set[str]:
     An exclusion is not a silent retry. It is recorded in the baseline with a
     reason, so what the gate is not watching stays visible to a reviewer.
     """
-    return {row["test"] for row in (baseline.get("excluded") or [])}
+    rows = baseline.get("excluded") or []
+    if not isinstance(rows, list):
+        raise ValueError("excluded is not a list")
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("test"), str) or not row["test"]:
+            raise ValueError(f"excluded row without a test id: {row!r}")
+    return {row["test"] for row in rows}
 
 
 def baseline_integrity(current: dict, base: dict) -> dict:
@@ -89,20 +112,24 @@ def baseline_integrity(current: dict, base: dict) -> dict:
 
 def check_baseline_against_base(base_sha: str, path: Path) -> int:
     if not re.fullmatch(r"[0-9a-f]{40}", base_sha):
-        print(f"{GATE}: FAIL_CLOSED invalid exact base commit SHA")
-        return 1
-    result = subprocess.run(["git", "show", f"{base_sha}:{path.as_posix()}"],
+        return _refuse("invalid exact base commit SHA", "BASE_SHA_INVALID",
+                       "EXACT_40_HEX_PR_BASE_SHA", "pass github.event.pull_request.base.sha")
+    # The base benchmark is always the repository's own path at the exact base; `path` is the head's copy,
+    # read as data, so the base's checker can run from a base worktree against the PR's benchmark.
+    result = subprocess.run(["git", "show", f"{base_sha}:{BASELINE.as_posix()}"],
                             capture_output=True, text=True)
     if result.returncode:
-        print(f"{GATE}: FAIL_CLOSED cannot read benchmark from exact PR base")
-        return 1
+        return _refuse("cannot read benchmark from exact PR base", "BASE_BENCHMARK_UNREADABLE",
+                       "BASE_BENCHMARK_READABLE_AT_EXACT_SHA",
+                       "fetch full history so the exact PR base commit is present")
     try:
         base = json.loads(result.stdout)
         current = load_baseline(path)
-    except (ValueError, OSError) as exc:
-        print(f"{GATE}: FAIL_CLOSED invalid benchmark: {exc}")
-        return 1
-    delta = baseline_integrity(current, base)
+        delta = baseline_integrity(current, base)
+    except (ValueError, OSError, KeyError, TypeError, AttributeError) as exc:
+        return _refuse(f"invalid benchmark: {exc}", "BENCHMARK_INVALID",
+                       "BENCHMARK_IS_AN_OBJECT_WITH_TEST_ID_EXCLUSION_ROWS",
+                       "every excluded row must be an object naming its test", str(exc))
     if any(delta[k] for k in ("added_known_failures", "added_exclusions",
                               "moved_from_known_to_excluded")):
         print(f"{GATE}: FAIL_CLOSED BASELINE_EXPANSION_OR_EXCLUSION_FORBIDDEN "

@@ -1,7 +1,12 @@
 """Regression tests for the owner-scoped ratchet baseline integrity gate."""
 from __future__ import annotations
+import contextlib
 import importlib.util
+import io
+import json
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -48,6 +53,73 @@ class BaselineIntegrityTests(unittest.TestCase):
         self.assertEqual(report["removed_exclusions"], ["tests/test_c.py::c"])
         self.assertFalse(report["added_known_failures"] or report["added_exclusions"] or
                          report["moved_from_known_to_excluded"])
+
+
+SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+              "retry_entrypoint", "owning_existing_goal", "next_attempt")
+
+
+def _head_sha() -> str:
+    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
+                          text=True, check=True).stdout.strip()
+
+
+def _check(current) -> tuple[int, str]:
+    """Run the --base-sha check on a head benchmark held outside the repository."""
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "test-suite-baseline.json"
+        path.write_text(current if isinstance(current, str) else json.dumps(current), encoding="utf-8")
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.chdir(ROOT):
+            status = ratchet.check_baseline_against_base(_head_sha(), path)
+    return status, out.getvalue()
+
+
+class BaselineIntegrityRefusalTests(unittest.TestCase):
+    """#3304 review finding 4: a malformed benchmark is a six-field refusal, never a bare exception."""
+
+    def assert_six_field_refusal(self, current):
+        status, out = _check(current)
+        self.assertEqual(status, 1)
+        self.assertIn("FAIL_CLOSED invalid benchmark", out)
+        refusal = json.loads(out[out.index("{\""):])
+        self.assertEqual(refusal["disposition"], "FAIL_CLOSED")
+        for key in SIX_FIELDS:
+            self.assertTrue(refusal.get(key), key)
+
+    def test_excluded_row_without_test_is_not_a_bare_key_error(self):
+        with self.assertRaises(ValueError):
+            ratchet.baseline_integrity({"excluded": [{"reason": "x"}]}, {})
+
+    def test_excluded_row_without_test_is_six_field_refusal(self):
+        self.assert_six_field_refusal({"known_failing": [], "excluded": [{"reason": "x"}]})
+
+    def test_non_object_benchmark_or_rows_are_six_field_refusals(self):
+        for bad in ([], "\"text\"", {"excluded": "tests/x.py::x"}, {"excluded": ["tests/x.py::x"]}):
+            with self.subTest(bad=bad):
+                self.assert_six_field_refusal(bad if isinstance(bad, str) else bad)
+
+
+class BaseCheckerTests(unittest.TestCase):
+    """#3304 review finding 3: the integrity gate runs the base's checker, reading the PR's benchmark as data."""
+
+    def test_head_benchmark_outside_the_base_tree_is_compared_to_the_base_path(self):
+        head = subprocess.run(["git", "show", f"{_head_sha()}:{ratchet.BASELINE.as_posix()}"],
+                              cwd=ROOT, capture_output=True, text=True, check=True).stdout
+        status, out = _check(head)
+        self.assertEqual(status, 0, out)
+        self.assertIn("BASELINE_INTEGRITY_PASS", out)
+
+    def test_workflow_runs_integrity_gate_from_a_base_worktree(self):
+        workflow = (ROOT / ".github/workflows/test-suite-ratchet.yml").read_text(encoding="utf-8")
+        self.assertNotIn("python scripts/check_test_suite_ratchet.py --base-sha", workflow)
+        steps = [s for s in workflow.split("      - name: ") if "--base-sha \"$RATCHET_BASE_SHA\"" in s]
+        self.assertEqual(len(steps), 1)
+        step = steps[0]
+        self.assertIn('git worktree add -q --detach "$RUNNER_TEMP/ratchet-base" "$RATCHET_BASE_SHA"', step)
+        self.assertIn('checker="$RUNNER_TEMP/ratchet-base/scripts/check_test_suite_ratchet.py"', step)
+        self.assertIn('cd "$RUNNER_TEMP/ratchet-base"', step)
+        self.assertIn('--baseline "$GITHUB_WORKSPACE/data/test-suite-baseline.json"', step)
 
 
 if __name__ == "__main__":
