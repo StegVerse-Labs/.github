@@ -191,6 +191,18 @@ def test_bare_request_without_admitted_manifest_route_fails_closed_on_every_host
     assert not (runtime / consumer.OUTPUT_REL).exists()
 
 
+def test_legacy_hosted_request_is_diagnostic_boundary_only(monkeypatch, tmp_path):
+    # The former hosted-label BOUNDARY is gone: a GITHUB_ACTIONS label now gets the same
+    # manifest-route FAIL_CLOSED as any other host (#1615 lane E).
+    runtime = tmp_path / "runtime"
+    request(runtime)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    result = consumer.consume(ROOT, runtime)
+    assert result["state"] == "FAIL_CLOSED"
+    assert result["failure_code"] == "MANIFEST_ROUTE_CONFORMANCE_NOT_ESTABLISHED"
+    assert "reason" not in result
+
+
 def test_consumer_reads_no_host_label():
     text = Path(consumer.__file__).read_text(encoding="utf-8")
     assert "os.environ" not in text
