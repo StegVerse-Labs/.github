@@ -44,6 +44,8 @@ conformance = load_module("origin_attestation_tvc_conformance_fixture", ROOT / "
 RELAY_ORIGIN = "StegVerse-org"
 # The bilateral match reuses the existing reader of an organization's own chain.
 egress = load_module("organization_egress_boundary_relay", ROOT / "resident-runtime" / "organization_egress_boundary.py")
+# The emission receipt carries a supplied fixture epoch (#3290): never a clock.
+FIXTURE_HB_EPOCH = 4096
 
 
 class _ClaimedOriginChain:
@@ -64,7 +66,7 @@ class _ClaimedOriginChain:
         with patch.dict(os.environ, {"STEGVERSE_REPO_LEDGER_ROOT": str(self.root)}):
             egress.repository_ledger.append(egress.EMITTED_CLASS + ":" + packet_id, egress.EMITTED_CLASS,
                                             boundary._sha256_uri({"before": packet_id}), boundary._sha256_uri({"after": packet_id}),
-                                            record, "NONE")
+                                            record, "NONE", hb_epoch=FIXTURE_HB_EPOCH)
 
     def verifier(self):
         def recorded_emission(packet_id: str):
