@@ -62,6 +62,7 @@ def test_the_binding_is_identical_to_the_ingest_route():
     good = receipt()
     assert batches.sealed_source(good) == ing.sealed_source(good)
     assert batches.verify_any_source(good) == ing.verify_any_source(org, good)
+    assert batches.SEALED_TRANSITION_CLASS == ing.SEALED_CLASS
 
 
 @pytest.mark.parametrize("value,code", [
@@ -124,12 +125,27 @@ def test_a_forged_retained_sealed_receipt_is_refused_by_every_reader(ledger):
         readback.readback(root, correlation_ids=("X",))
 
 
-def test_a_sealed_row_carrying_a_repository_digest_is_refused(ledger):
+def reseal_row(root, row, **over):
+    """Write `row` with `over` applied under its own recomputed digest, so only the binding check can refuse it."""
+    body = {k: v for k, v in row.items() if k != "receipt_sha256"} | over
+    digest = org.sha(body)
+    path = root / org.ledger_store.receipt_key(digest)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(body | {"receipt_sha256": digest}), encoding="utf-8")
+    return digest
+
+
+@pytest.mark.parametrize("over,message", [
+    ({"repo_receipt_sha256": "sha256:" + "a" * 64}, "sealed source digest binding mismatch"),
+    ({"canonical_state_transition_receipt_sha256": "sha256:" + "a" * 64}, "sealed source digest binding mismatch"),
+    ({"source_transition_sha256": "not-a-digest"}, "sealed source digest binding mismatch"),
+    ({"org_transition_class": "TEST"}, "sealed source transition class mismatch"),
+])
+def test_a_resealed_sealed_row_with_a_wrong_binding_is_refused(ledger, over, message):
     root, store = ledger
     row = append_sealed(store, receipt())
-    forged = dict(row, repo_receipt_sha256=row["source_transition_sha256"])
-    forged.pop("receipt_sha256")
-    with pytest.raises(ValueError, match="hash mismatch|sealed source digest binding mismatch"):
-        key = org.ledger_store.receipt_key(row["receipt_sha256"])
-        (root / key).write_text(json.dumps(dict(forged, receipt_sha256=row["receipt_sha256"])), encoding="utf-8")
-        batches._verified_receipt(root, row["receipt_sha256"])
+    assert batches._verified_receipt(root, row["receipt_sha256"]) == row
+    digest = reseal_row(root, row, **over)
+    with pytest.raises(ValueError) as caught:
+        batches._verified_receipt(root, digest)
+    assert str(caught.value) == message

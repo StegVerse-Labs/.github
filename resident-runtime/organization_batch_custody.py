@@ -58,6 +58,7 @@ RELEASED_BATCH_SUBMISSION_KEY = org.RETAINED_SUBMISSION_KEY
 # identical to organization_ledger_ingest.sealed_source). It is restated here, not
 # imported, so this pinned module's import closure is unchanged.
 SEALED_TEST_RECEIPT_SCHEMA = "stegverse.test-suite-skip-receipt/v1"
+SEALED_TRANSITION_CLASS = "ORGANIZATION_SEALED_TEST_RECEIPT_INGEST"  # organization_ledger_ingest.SEALED_CLASS
 SEALED_SOURCE_RETRY_ENTRYPOINT = "resident-runtime/organization_batch_custody.py::verify_any_source"
 SEALED_SOURCE_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
 
@@ -213,9 +214,13 @@ def _verified_receipt(root, digest: str) -> dict:
     if row.get("organization") != org.C["organization"]:
         raise ValueError("organization receipt owner mismatch")
     if row.get("source_receipt_schema") == SEALED_TEST_RECEIPT_SCHEMA:
-        # A sealed source is no repository or canonical transition: both digests are None.
+        # Only the sealed ingest route appends a sealed source, and it is no repository or
+        # canonical transition: both digests are None.
+        if row.get("org_transition_class") != SEALED_TRANSITION_CLASS:
+            raise ValueError("sealed source transition class mismatch")
+        source = row.get("source_transition_sha256")
         if (row.get("repo_receipt_sha256") is not None or row.get("canonical_state_transition_receipt_sha256") is not None
-                or not isinstance(row.get("source_transition_sha256"), str)):
+                or not isinstance(source, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", source) is None):
             raise ValueError("sealed source digest binding mismatch")
         return row
     if row.get("source_receipt_schema") not in org.C["consumes"]:
