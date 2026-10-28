@@ -5049,6 +5049,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_org_runtime_transition_bound.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_org_runtime_transition_bound.py"
+   ],
+   "tests": [
+    "tests/test_org_runtime_transition_bound.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_batch_custody.py",
    "inputs": [],
    "surfaces": [
@@ -9579,6 +9591,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_worker_claim_grant_projection_transition.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_worker_claim_grant_projection_transition.py"
+   ],
+   "tests": [
+    "tests/test_worker_claim_grant_projection_transition.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_worker_coordination_subsignal.py",
    "inputs": [],
    "surfaces": [
@@ -12399,6 +12423,19 @@
   "scripts/watch_hil_tvc_lifecycle_outbox.py": [
    "scripts/consume_hil_tvc_lifecycle_outbox.py"
   ],
+  "scripts/worker_claim_grant_projection_transition.py": [
+   ".github/workflows/worker-claim-grant-projection-transition.yml",
+   ".stegverse/transition-ledger/org-contract.json",
+   "contracts/worker-claim-grant-projection-transition.v1.json",
+   "control/worker-claim-grant-projection-requests/**",
+   "control/worker-registry.json",
+   "data/canonical-task-records/**",
+   "resident-runtime/aggregate_repo_transition.py",
+   "resident-runtime/ledger_store.py",
+   "schemas/worker-claim-grant-projection-request.schema.json",
+   "scripts/consume_org_claim_allocator_request.py",
+   "tasks/TASK-2026-0012.json"
+  ],
   "scripts/write_admission.py": [
    "scripts/adjacency_ruling.py"
   ],
@@ -14850,6 +14887,10 @@
    "tasks/TASK-2026-0013.json",
    "tasks/TASK-2026-0014.json"
   ],
+  "tests/test_org_runtime_transition_bound.py": [
+   "org-runtime/activation.json",
+   "org-runtime/runtime_boundary.py"
+  ],
   "tests/test_organization_batch_custody.py": [
    "heartbeat_runtime/__init__.py",
    "heartbeat_runtime/independent_oscillator.py",
@@ -17171,6 +17212,14 @@
   ],
   "tests/test_worker_blocker_fallback_adoption.py": [
    "scripts/validate_worker_blocker_fallback_adoption.py"
+  ],
+  "tests/test_worker_claim_grant_projection_transition.py": [
+   "contracts/worker-claim-grant-projection-transition.v1.json",
+   "control/worker-registry.json",
+   "data/canonical-task-records/**",
+   "scripts/project_worker_claim_into_canonical_task.py",
+   "scripts/worker_claim_grant_projection_transition.py",
+   "tasks/TASK-2026-0012.json"
   ],
   "tests/test_worker_coordination_subsignal.py": [
    "control/heartbeat-master-records-projection.json",
