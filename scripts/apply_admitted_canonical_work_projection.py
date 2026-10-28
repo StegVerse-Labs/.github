@@ -49,8 +49,10 @@ def project_task(task: dict[str, Any], *, correlation_id: str, ingress: dict[str
     proposed = copy.deepcopy(task)
     require(proposed.get("correlation_id") == correlation_id, "correlation identity drift")
     coordination_state = proposed.get("coordination_state")
-    active_checked_out = coordination_state == "ACTIVE" and proposed.get("checkout_state") == "CHECKED_OUT"
-    require(coordination_state in {"PROPOSED", "INGRESS_ADMITTED"} or active_checked_out, "current task state is not ingress-projectable")
+    # This is an initial ingress transition, never a replay or legacy ACTIVE bypass.
+    require(coordination_state == "PROPOSED", "current task state is not ingress-projectable")
+    require("NATIVE_ADMISSION_EVALUATION" in proposed.get("allowed_next_transitions", []),
+            "native admission transition not permitted")
 
     ingress_ref = consumption.get("ingress_receipt_ref")
     require(isinstance(ingress_ref, str) and ingress_ref, "ingress receipt ref required")
@@ -65,31 +67,33 @@ def project_task(task: dict[str, Any], *, correlation_id: str, ingress: dict[str
         "payload_hash": ingress["payload_hash"],
         "ingress_state": "INGRESS_ADMITTED",
     })
-    if not active_checked_out:
-        proposed["coordination_state"] = "INGRESS_ADMITTED"
+    proposed["coordination_state"] = "INGRESS_ADMITTED"
     evidence = proposed.setdefault("existing_evidence_refs", [])
     for ref in (ingress_ref, consumption_ref):
         if ref not in evidence:
             evidence.append(ref)
-    if not active_checked_out:
-        proposed["allowed_next_transitions"] = ["CLAIMABLE", "RECONCILIATION_REQUIRED"]
+    proposed["allowed_next_transitions"] = ["CLAIMABLE", "RECONCILIATION_REQUIRED"]
     return proposed
 
 
 def find_source(*, registry: dict[str, Any], task_id: str, task_shards: Path) -> tuple[str, dict[str, Any], Path | None]:
     matches = [task for task in registry.get("tasks", []) if task.get("task_id") == task_id]
     require(len(matches) <= 1, "canonical task identity must resolve exactly once")
-    if matches:
-        return "MONOLITHIC_REGISTRY", matches[0], None
-
     shard_matches: list[tuple[dict[str, Any], Path]] = []
     if task_shards.is_dir():
         preferred = task_shards / f"{task_id}.json"
-        candidates = [preferred] if preferred.is_file() else list(task_shards.glob("*.json"))
+        candidates = list(task_shards.glob("*.json"))
         for path in candidates:
             value = load(path)
             if value.get("task_id") == task_id:
                 shard_matches.append((value, path))
+    require(len(shard_matches) <= 1, "canonical task shard identity must resolve at most once")
+    if matches and shard_matches:
+        require(matches[0] == shard_matches[0][0], "aggregate/shard divergence before admission")
+        # The original single-target --apply cannot atomically reconcile both representations.
+        require(False, "dual aggregate/shard projection requires coordinated owner writer")
+    if matches:
+        return "MONOLITHIC_REGISTRY", matches[0], None
     require(len(shard_matches) == 1, "canonical task identity must resolve exactly once")
     return "SHARDED_REGISTRY", shard_matches[0][0], shard_matches[0][1]
 
