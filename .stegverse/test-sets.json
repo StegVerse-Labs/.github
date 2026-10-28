@@ -5049,6 +5049,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_org_runtime_transition_bound.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_org_runtime_transition_bound.py"
+   ],
+   "tests": [
+    "tests/test_org_runtime_transition_bound.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_batch_custody.py",
    "inputs": [],
    "surfaces": [
@@ -9531,6 +9543,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_validate_target_repository_components.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_validate_target_repository_components.py"
+   ],
+   "tests": [
+    "tests/test_validate_target_repository_components.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_verify_sovereign_heartbeat_carrier_activation.py",
    "inputs": [],
    "surfaces": [
@@ -12338,6 +12362,9 @@
   "scripts/validate_session_assistance_scope.py": [
    "control/session-assistance-scope-policy.json"
   ],
+  "scripts/validate_target_repository_components.py": [
+   "data/canonical-task-records/**"
+  ],
   "scripts/validate_task_record_actionable_disposition.py": [
    "data/canonical-task-records/**",
    "scripts/registry_gate_findings.py",
@@ -14850,6 +14877,10 @@
    "tasks/TASK-2026-0013.json",
    "tasks/TASK-2026-0014.json"
   ],
+  "tests/test_org_runtime_transition_bound.py": [
+   "org-runtime/activation.json",
+   "org-runtime/runtime_boundary.py"
+  ],
   "tests/test_organization_batch_custody.py": [
    "heartbeat_runtime/__init__.py",
    "heartbeat_runtime/independent_oscillator.py",
@@ -17157,6 +17188,10 @@
   "tests/test_validate_canonical_work_coordination_schema_required.py": [
    "schemas/canonical-task-record.schema.json",
    "scripts/validate_canonical_work_coordination.py"
+  ],
+  "tests/test_validate_target_repository_components.py": [
+   "data/canonical-task-records/**",
+   "scripts/validate_target_repository_components.py"
   ],
   "tests/test_verify_sovereign_heartbeat_carrier_activation.py": [
    "scripts/verify_sovereign_heartbeat_carrier_activation.py"
