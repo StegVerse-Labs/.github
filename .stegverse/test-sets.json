@@ -5631,6 +5631,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_protocol_v1_conformance_fixtures.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_protocol_v1_conformance_fixtures.py"
+   ],
+   "tests": [
+    "tests/test_protocol_v1_conformance_fixtures.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_publisher_intr_materialization.py",
    "inputs": [],
    "surfaces": [
@@ -15167,6 +15179,13 @@
   "tests/test_process_worker_adapter_fragments.py": [
    "control/process-worker-adapters.d/**",
    "scripts/run_heartbeat_runtime.py"
+  ],
+  "tests/test_protocol_v1_conformance_fixtures.py": [
+   "org-kernel/organization-ledger/fixtures/protocol-v1-conformance/**",
+   "org-runtime/interlock-intr.json",
+   "resident-runtime/organization_manifest_ingress.py",
+   "resident-runtime/sdk_manifest_crossing.py",
+   "tests/test_organization_manifest_ingress_rule_ref.py"
   ],
   "tests/test_publisher_intr_materialization.py": [
    "scripts/consume_publisher_intr_materialization_request.py",
