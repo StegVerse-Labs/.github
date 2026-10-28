@@ -5049,6 +5049,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_org_runtime_transition_bound.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_org_runtime_transition_bound.py"
+   ],
+   "tests": [
+    "tests/test_org_runtime_transition_bound.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_batch_custody.py",
    "inputs": [],
    "surfaces": [
@@ -14849,6 +14861,10 @@
    "tasks/TASK-2026-0012.json",
    "tasks/TASK-2026-0013.json",
    "tasks/TASK-2026-0014.json"
+  ],
+  "tests/test_org_runtime_transition_bound.py": [
+   "org-runtime/activation.json",
+   "org-runtime/runtime_boundary.py"
   ],
   "tests/test_organization_batch_custody.py": [
    "heartbeat_runtime/__init__.py",
