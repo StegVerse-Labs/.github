@@ -1,0 +1,133 @@
+{
+  "$id": "stegverse.sv-change-signoff-receipt/v0.1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "fixture_only": {
+            "const": true
+          }
+        },
+        "required": [
+          "fixture_only"
+        ]
+      },
+      "then": {
+        "required": [
+          "unobserved_fields"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "disposition": {
+            "enum": [
+              "DENY",
+              "FAIL_CLOSED"
+            ]
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      },
+      "then": {
+        "required": [
+          "failure_code",
+          "failed_predicate",
+          "required_evidence_or_repair",
+          "retry_entrypoint",
+          "owning_existing_goal",
+          "next_attempt"
+        ]
+      }
+    }
+  ],
+  "description": "Sealed: receipt_sha256 = sha256 over canonical JSON of every other field. An SV_CHANGE sign-off counts only when its receipt_ref equals receipt_sha256 and role, session and change_digest match, disposition ALLOW (sv_work_items.signoff_resolves). fixture_only true marks a fixture: its pinned fields are listed in unobserved_fields, and it counts only in fixture_mode, never on the real admission path.",
+  "properties": {
+    "change_digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "change_id": {
+      "pattern": "^svc:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "disposition": {
+      "enum": [
+        "ALLOW",
+        "DENY",
+        "FAIL_CLOSED"
+      ]
+    },
+    "failed_predicate": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "failure_code": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "fixture_only": {
+      "type": "boolean"
+    },
+    "next_attempt": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "owning_existing_goal": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "receipt_sha256": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "required_evidence_or_repair": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "retry_entrypoint": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "role": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "stegverse.sv-change-signoff-receipt/v0.1"
+    },
+    "session": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "unobserved_fields": {
+      "items": {
+        "enum": [
+          "session",
+          "disposition",
+          "role",
+          "change_id",
+          "change_digest"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema",
+    "role",
+    "session",
+    "change_id",
+    "change_digest",
+    "disposition",
+    "receipt_sha256"
+  ],
+  "title": "SV_CHANGE sign-off receipt (shape TVC#519 resolves)",
+  "type": "object"
+}

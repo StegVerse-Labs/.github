@@ -1,0 +1,243 @@
+{
+  "$defs": {
+    "admission_miss": {
+      "properties": {
+        "hb_epoch": {
+          "description": "supplied; value >= 32 (org-kernel/kernel.py::supplied_epoch_failure); never from a clock",
+          "pattern": "^[0-9]+$",
+          "type": "string"
+        },
+        "miss_kind": {
+          "enum": [
+            "REVERT",
+            "CORRECTION",
+            "REFUSAL"
+          ]
+        },
+        "miss_sha256": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "schema": {
+          "const": "stegverse.admission_miss.v1"
+        }
+      },
+      "required": [
+        "schema",
+        "admitted_change",
+        "admitted_change_digest",
+        "admission_receipt_ref",
+        "correcting_ref",
+        "miss_kind",
+        "predicate_gap",
+        "class_ids",
+        "hb_epoch",
+        "miss_sha256"
+      ],
+      "type": "object"
+    },
+    "scenario": {
+      "properties": {
+        "expected_disposition": {
+          "enum": [
+            "ALLOW",
+            "DENY",
+            "FAIL_CLOSED"
+          ]
+        },
+        "generated_from": {
+          "required": [
+            "class_id",
+            "axis"
+          ],
+          "type": "object"
+        },
+        "hb_epoch": {
+          "description": "supplied; value >= 32 (org-kernel/kernel.py::supplied_epoch_failure); never from a clock",
+          "pattern": "^[0-9]+$",
+          "type": "string"
+        },
+        "observed_inputs": {
+          "description": "sv_work_items.admission_inputs(): base_ref, current_base, head_change_digest, writer_sessions, co_author_grants, push_receipts and change_commits (the branch writer is derived from the sv-push-receipt chain), required_check_ids, validation_receipts, required_signoff_roles, signoffs, bound_request_digest, recomputed_request_digest, touched_paths, touched_surface_kinds, admission_order_slot"
+        },
+        "origin": {
+          "enum": [
+            "SEED",
+            "HARVESTED",
+            "ADMISSION_MISS"
+          ]
+        },
+        "scenario_sha256": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "schema": {
+          "const": "stegverse.admission_scenario.v1"
+        },
+        "supersedes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "scenario_id",
+        "scenario_class",
+        "source",
+        "observed_inputs",
+        "expected_disposition",
+        "expected_failure_code",
+        "origin",
+        "generated_from",
+        "hb_epoch",
+        "scenario_sha256"
+      ],
+      "type": "object"
+    },
+    "scenario_class": {
+      "properties": {
+        "class_id": {
+          "pattern": "^ASC-[A-Z0-9_]+@(workflow|transition|schema|ledger_writer|registry)$",
+          "type": "string"
+        },
+        "class_sha256": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "class_version": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "expected_disposition": {
+          "enum": [
+            "DENY",
+            "FAIL_CLOSED"
+          ]
+        },
+        "expected_failure_code": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "hb_epoch": {
+          "description": "supplied; value >= 32 (org-kernel/kernel.py::supplied_epoch_failure); never from a clock",
+          "pattern": "^[0-9]+$",
+          "type": "string"
+        },
+        "mutation_axes": {
+          "items": {
+            "required": [
+              "field",
+              "bound_value_source",
+              "mutation"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "positive_controls": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "predicate": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "provenance": {
+          "properties": {
+            "rule_refs": {
+              "items": {
+                "required": [
+                  "file",
+                  "blob_sha",
+                  "rule_id"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "origin_scenarios",
+            "harvest_receipt_ref",
+            "rule_refs",
+            "declared_by_session"
+          ],
+          "type": "object"
+        },
+        "schema": {
+          "const": "stegverse.admission_scenario_class.v1"
+        },
+        "supersedes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "surfaces": {
+          "items": {
+            "properties": {
+              "glob": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "workflow",
+                  "transition",
+                  "schema",
+                  "ledger_writer",
+                  "registry"
+                ]
+              }
+            },
+            "required": [
+              "kind"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema",
+        "class_id",
+        "class_version",
+        "supersedes",
+        "predicate",
+        "expected_failure_code",
+        "expected_disposition",
+        "surfaces",
+        "mutation_axes",
+        "positive_controls",
+        "provenance",
+        "hb_epoch",
+        "class_sha256"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "stegverse.admission-corpus.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "files": {
+    "classes": "data/admission-scenarios/classes.jsonl",
+    "misses": "data/admission-scenarios/misses.jsonl",
+    "scenarios": "data/admission-scenarios/corpus.jsonl"
+  },
+  "line_rules": [
+    "sorted-key canonical JSON, one record per line, append-only",
+    "each line's *_sha256 is sha256 over the line without that field",
+    "each line carries a supplied hb_epoch (>=32)",
+    "consumer takes the latest class_version per class_id and FAIL_CLOSES a broken or forked supersede chain",
+    "unknown class -> FAIL_CLOSED",
+    "miss_count is derived from ADMISSION_MISS lines only"
+  ],
+  "title": "Admission scenario corpus (Lane C schema + A1-A7, bound to registry/ledger state)"
+}

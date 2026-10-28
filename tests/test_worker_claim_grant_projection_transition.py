@@ -213,6 +213,36 @@ class ProjectionTest(unittest.TestCase):
         self.assertRefused(self.f.run("plan", self.f.request(receipt, authority_effect="GRANTS_CLAIM")),
                            "PROJECTION_REQUEST_SCHEMA_INVALID")
 
+    def test_projected_grant_mints_no_lease_or_expiry(self):
+        # Expiry is WorkerCoordinator's (heartbeat_runtime/assignment_timer.py): the projection carries
+        # the allocator fence and carrier epoch only, and mints no lease, heartbeat or expiry bound.
+        head = self.f.dir / "head"
+        shutil.copytree(self.f.base, head)
+        self.assertEqual(self.f.run("apply", self.f.request(self.f.grant(8)), head=head)["disposition"], "ALLOW")
+        row = self.f.registry(head)["tasks"][-1]
+        self.assertIsNone(row["lease"])
+        self.assertIsNone(row["heartbeat_timing"])
+        self.assertFalse({"expires_at", "expiry_basis", "heartbeat_due_at"} & set(row["assignment_timer"]))
+
+    def test_unadmitted_canonical_task_is_not_advanced_by_a_projected_grant(self):
+        # The projection writes the WorkerCoordinator row only; the canonical projector still refuses a
+        # PROPOSED (unadmitted) task, so a GRANTED receipt never admits a task.
+        head = self.f.dir / "head"
+        shutil.copytree(self.f.base, head)
+        body = self.f.run("apply", self.f.request(self.f.grant(8)), head=head)
+        self.assertEqual(body["disposition"], "ALLOW", body)
+        self.assertEqual(body["authority_effect"], "NONE_PROJECTION_ONLY")
+        spec = importlib.util.spec_from_file_location("canonical_projector",
+                                                      ROOT / "scripts/project_worker_claim_into_canonical_task.py")
+        projector = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(projector)
+        registry = {"generation": 1, "tasks": [{"task_id": GOAL, "coordination_state": "PROPOSED"}]}
+        with self.assertRaises(SystemExit) as refused:
+            projector.project(registry, self.f.registry(head), GOAL)
+        self.assertIn("FAIL_CLOSED", str(refused.exception))
+        self.assertIn("admitted", str(refused.exception))
+        self.assertEqual(registry["tasks"][0], {"task_id": GOAL, "coordination_state": "PROPOSED"})
+
     def test_script_reads_no_clock(self):
         tree = ast.parse((ROOT / "scripts/worker_claim_grant_projection_transition.py").read_text())
         imported = {a.name.split(".")[0] for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))

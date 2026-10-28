@@ -1,0 +1,14 @@
+$ {python} -m unittest -v tests.test_tvc_skap_custody_reference_issuance
+--- exit 0
+--- stdout
+--- stderr
+test_cli_round_trip (tests.test_tvc_skap_custody_reference_issuance.Issuance.test_cli_round_trip) ... ok
+test_e0_stdlib_only (tests.test_tvc_skap_custody_reference_issuance.Issuance.test_e0_stdlib_only) ... ok
+test_edited_receipts_fail_verification (tests.test_tvc_skap_custody_reference_issuance.Issuance.test_edited_receipts_fail_verification) ... ok
+test_issue_is_deterministic_and_verifies (tests.test_tvc_skap_custody_reference_issuance.Issuance.test_issue_is_deterministic_and_verifies) ... ok
+test_refusals_are_six_field (tests.test_tvc_skap_custody_reference_issuance.Issuance.test_refusals_are_six_field) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in <t>s
+
+OK

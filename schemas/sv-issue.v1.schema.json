@@ -1,0 +1,656 @@
+{
+  "$id": "stegverse.sv_issue.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "record_mode": {
+            "const": "NATIVE"
+          }
+        },
+        "required": [
+          "record_mode"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "unknown_fields"
+                  ]
+                },
+                {
+                  "required": [
+                    "migration_provenance"
+                  ]
+                },
+                {
+                  "required": [
+                    "migration_flags"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "properties": {
+              "disposition": {
+                "properties": {
+                  "failed_predicate": {
+                    "not": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  },
+                  "failure_code": {
+                    "not": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  },
+                  "next_attempt": {
+                    "not": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  },
+                  "owning_existing_goal": {
+                    "not": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  },
+                  "required_evidence_or_repair": {
+                    "not": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  },
+                  "retry_entrypoint": {
+                    "not": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  }
+                }
+              },
+              "hb_epoch": {
+                "pattern": "^[0-9]+$",
+                "type": "string"
+              },
+              "owning_goal": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              },
+              "resolution_class": {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D"
+                ]
+              },
+              "surface": {
+                "properties": {
+                  "kind": {
+                    "not": {
+                      "const": "NON_REPOSITORY_EVIDENCE"
+                    }
+                  }
+                },
+                "type": "object"
+              },
+              "violated_invariant": {
+                "properties": {
+                  "file": {
+                    "not": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  },
+                  "rule_id": {
+                    "not": {
+                      "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_mode": {
+            "const": "MIGRATED_HISTORICAL"
+          }
+        },
+        "required": [
+          "record_mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "disposition": {
+            "properties": {
+              "failed_predicate": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              },
+              "failure_code": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              },
+              "next_attempt": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              },
+              "required_evidence_or_repair": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              },
+              "retry_entrypoint": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              }
+            }
+          },
+          "violated_invariant": {
+            "properties": {
+              "file": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              },
+              "rule_id": {
+                "not": {
+                  "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "unknown_fields",
+          "migration_provenance"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "owning_goal": {
+            "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+          }
+        },
+        "required": [
+          "owning_goal"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_receipt": {
+            "required": [
+              "evidence_locator"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "claim": {
+      "description": "projection of a WorkerCoordinator claim/fence only",
+      "required": [
+        "claim_ref",
+        "fence_ref",
+        "projection_only"
+      ],
+      "type": "object"
+    },
+    "closed_by": {
+      "type": "object"
+    },
+    "disposition": {
+      "properties": {
+        "disposition": {
+          "enum": [
+            "DENY",
+            "FAIL_CLOSED"
+          ]
+        },
+        "failed_predicate": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "failure_code": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "next_attempt": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "owning_existing_goal": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "required_evidence_or_repair": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "retry_entrypoint": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "disposition",
+        "failure_code",
+        "failed_predicate",
+        "required_evidence_or_repair",
+        "retry_entrypoint",
+        "owning_existing_goal",
+        "next_attempt"
+      ],
+      "type": "object"
+    },
+    "hb_epoch": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9]+$",
+          "type": "string"
+        },
+        {
+          "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+        }
+      ],
+      "description": "supplied; ASCII digits, value >= 32 (org-kernel/kernel.py::supplied_epoch_failure); never from a clock. SF-1: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL."
+    },
+    "issue_id": {
+      "description": "content-addressed; a reworded restatement of the same failure has the same id",
+      "pattern": "^svi:[0-9a-f]{64}$",
+      "type": "string",
+      "x-derivation": "svi: + sha256(canonical JSON {violated_invariant:{repository,file,rule_id}, failed_predicate: disposition.failed_predicate, owning_goal (stripped), surface, source_receipt_ref}); source_receipt_ref = 'migration:<evidence_path>@<evidence_sha256>' or '<ledger_ref>@<receipt_sha256>'. Canonical JSON = sorted keys, separators (',',':'), UTF-8. Helper: sv_work_items.issue_identity. No free text (SF-7). RF-1: owning_goal is identity. FB-3: when owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED the inputs also carry source_locator = source_receipt.evidence_locator (required then); for a known goal the inputs are unchanged. A record set that repeats an issue_id fails closed (SV_ISSUE_ID_COLLISION, sv_work_items.validate_issue_set)."
+    },
+    "issue_sha256": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "lifecycle_state": {
+      "enum": [
+        "OPENED",
+        "CLAIMED",
+        "RESOLVED",
+        "CLOSED_BY_INVARIANT",
+        "SUPERSEDED"
+      ]
+    },
+    "migration_flags": {
+      "description": "FB-2. MIGRATED_HISTORICAL only. SURFACE_DERIVED_FROM_CLASS_COLUMN: surface came from the lane table's Class column because retry_entrypoint resolved to UNKNOWN (sv_migration.derive_surface_with_class_column); derived, not observed. Not part of issue_id.",
+      "items": {
+        "enum": [
+          "SURFACE_DERIVED_FROM_CLASS_COLUMN"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "migration_provenance": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "original_base_observed": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "original_base_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "original_base_observed": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "original_base_ref": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ],
+      "description": "SF-10. migrated_at_base equals observed_base (the base the migration was observed at); original_base_ref is null iff original_base_observed is false.",
+      "properties": {
+        "migrated_at_base": {
+          "additionalProperties": false,
+          "properties": {
+            "ledger_head": {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            },
+            "registry_generation": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "tree_sha": {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "registry_generation",
+            "ledger_head"
+          ],
+          "type": "object"
+        },
+        "original_base_observed": {
+          "type": "boolean"
+        },
+        "original_base_ref": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "ledger_head": {
+                  "pattern": "^[0-9a-f]{40}$",
+                  "type": "string"
+                },
+                "registry_generation": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "tree_sha": {
+                  "pattern": "^[0-9a-f]{40}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "registry_generation",
+                "ledger_head"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "original_base_observed",
+        "original_base_ref",
+        "migrated_at_base"
+      ],
+      "type": "object"
+    },
+    "observed_base": {
+      "additionalProperties": false,
+      "properties": {
+        "ledger_head": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "registry_generation": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tree_sha": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "registry_generation",
+        "ledger_head"
+      ],
+      "type": "object"
+    },
+    "opened_by_session": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "owning_goal": {
+      "description": "SF-8: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL",
+      "minLength": 1,
+      "type": "string"
+    },
+    "projection": {
+      "description": "one-way GitHub projection; never authority",
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "record_mode": {
+      "description": "NATIVE: every field observed; no unknown_fields/migration_provenance/migration_flags. MIGRATED_HISTORICAL: history recorded before the native path; UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is permitted only at the pointers in x-migrated-unknown-allowed and each one must be listed in unknown_fields (enforced by sv_work_items.mode_check); never admissible (ADMIT -> FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE); it becomes NATIVE only through a superseding NATIVE record (SV_*_SUPERSEDE) with observed values.",
+      "enum": [
+        "NATIVE",
+        "MIGRATED_HISTORICAL"
+      ]
+    },
+    "resolution_class": {
+      "description": "SF-3: UNKNOWN_NOT_AUTHENTICALLY_OBSERVED only in MIGRATED_HISTORICAL; never defaulted",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+      ]
+    },
+    "resolved_by": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "restatements": {
+      "description": "reworded restatements merged by identity (not part of issue_id)",
+      "items": {
+        "properties": {
+          "failed_predicate": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "failure_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "next_attempt": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "owning_existing_goal": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "required_evidence_or_repair": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "retry_entrypoint": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "failure_code",
+          "failed_predicate",
+          "required_evidence_or_repair",
+          "retry_entrypoint",
+          "owning_existing_goal",
+          "next_attempt"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema": {
+      "const": "stegverse.sv_issue.v1"
+    },
+    "source_receipt": {
+      "properties": {
+        "evidence_locator": {
+          "description": "FB-3. The entry's position inside the evidence (e.g. L586). Required when owning_goal is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (SV_ISSUE_UNKNOWN_GOAL_UNLOCATED otherwise); then hashed into issue_id as source_locator.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "evidence_path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "evidence_sha256": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "ORGANIZATION_LEDGER_RECEIPT",
+            "REPOSITORY_LEDGER_RECEIPT",
+            "MIGRATION_EVIDENCE"
+          ]
+        },
+        "ledger_ref": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "receipt_sha256": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    },
+    "superseded_by": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "supersedes": {
+      "description": "predecessor issue_sha256",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "surface": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "workflow",
+                "transition",
+                "schema",
+                "ledger_writer",
+                "registry",
+                "doc",
+                "NON_REPOSITORY_EVIDENCE"
+              ]
+            },
+            "path": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "path"
+          ],
+          "type": "object"
+        },
+        {
+          "const": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+        }
+      ],
+      "description": "the repository surface the failed predicate was observed on (kind from sv_work_items.surface_kind); part of issue_id. RF-3: a box-local path (patches/, /workspace/, /tmp/, any absolute path, or a path outside every resolved repository tree) is kind NON_REPOSITORY_EVIDENCE: kept for identity, permitted only in MIGRATED_HISTORICAL, never admissible as a surface. RF-2: migration resolves lane aliases, bare names and patch entrypoints only through data/sv-work-items/surface-aliases.json (pinned by blob)."
+    },
+    "unknown_fields": {
+      "description": "JSON pointers holding UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; exactly those, no others",
+      "items": {
+        "pattern": "^(/hb_epoch|/resolution_class|/owning_goal|/disposition/owning_existing_goal|/surface|/restatements/[0-9]+/owning_existing_goal)$",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "violated_invariant": {
+      "properties": {
+        "blob_sha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "file": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "invariant_declared": {
+          "type": "boolean"
+        },
+        "repository": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "rule_id": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "file"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "disposition",
+    "hb_epoch",
+    "issue_id",
+    "issue_sha256",
+    "lifecycle_state",
+    "observed_base",
+    "opened_by_session",
+    "owning_goal",
+    "record_mode",
+    "resolution_class",
+    "schema",
+    "source_receipt",
+    "surface",
+    "violated_invariant"
+  ],
+  "title": "SV_ISSUE (record kind in STEGVERSE-CANONICAL-WORK-COORDINATION-001)",
+  "type": "object",
+  "x-migrated-unknown-allowed": [
+    "/hb_epoch",
+    "/resolution_class",
+    "/owning_goal",
+    "/disposition/owning_existing_goal",
+    "/surface",
+    "/restatements/*/owning_existing_goal"
+  ]
+}

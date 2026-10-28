@@ -1,0 +1,214 @@
+{
+  "schema": "stegverse.invariant-evaluation-probe/v1",
+  "reusable_task_id": "RT-INVARIANT-EVALUATION-001",
+  "probe": 22,
+  "title": "a source over 4 MiB is refused at its line 1; exactly 4 MiB is within the bound; a file past value+1 bytes declared by its whole digest is a digest mismatch",
+  "derived_from": {
+    "b_p16_bound": "max_source_bytes",
+    "behaviour_at_4256cb6": "INPUT_SIZE_EXCEEDED, JSON_TRUNCATED and SOURCE_DIGEST_MISMATCH at line 1 are all emitted at 4256cb6; the spec-quote check fails there because bounds.max_source_bytes and byte_bound_measurement are not declared"
+  },
+  "spec": "source-bundles/reusable-task-registry.d/RT-INVARIANT-EVALUATION-001.json",
+  "authority_effect": "NONE_TEST_FIXTURE",
+  "sources": {
+    "at": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "at-bound.json",
+      "bytes": {
+        "parts": [
+          {
+            "text": " ",
+            "times": 4194304
+          }
+        ]
+      }
+    },
+    "over": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "over.json",
+      "bytes": {
+        "parts": [
+          {
+            "text": " ",
+            "times": 4194305
+          }
+        ]
+      }
+    },
+    "far": {
+      "repo": "synthetic/probe",
+      "rev": "r1",
+      "path": "far.json",
+      "bytes": {
+        "parts": [
+          {
+            "text": " ",
+            "times": 4194306
+          }
+        ]
+      }
+    }
+  },
+  "runs": [
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "Q-PROBE",
+          "invariant_pointer": "/invariants/external_machine_awaiting_allowed",
+          "asserted_value": false
+        }
+      },
+      "supply": [
+        {
+          "source": "at"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "JSON_TRUNCATED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:45",
+          "spec_quote": "more than value bytes is FAIL_CLOSED, exactly value bytes is within the bound"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "at",
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
+          "spec_quote": "repo@rev:path:line for a source"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "Q-PROBE",
+          "invariant_pointer": "/invariants/external_machine_awaiting_allowed",
+          "asserted_value": false
+        }
+      },
+      "supply": [
+        {
+          "source": "over"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "INPUT_SIZE_EXCEEDED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:65",
+          "spec_quote": "\"failed_predicate\": \"<repo>@<rev>:<path> bytes<=4194304\""
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "over",
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
+          "spec_quote": "repo@rev:path:line for a source"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    },
+    {
+      "question": {
+        "json": {
+          "schema": "stegverse.invariant-pointer-assertion/v1",
+          "question_id": "Q-PROBE",
+          "invariant_pointer": "/invariants/external_machine_awaiting_allowed",
+          "asserted_value": false
+        }
+      },
+      "supply": [
+        {
+          "source": "far"
+        }
+      ],
+      "expect": {
+        "disposition": {
+          "value": "FAIL_CLOSED",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:4",
+          "spec_quote": "ALLOW, DENY, FAIL_CLOSED or UNDECIDABLE, cited as repo@rev:path:line"
+        },
+        "failure_code": {
+          "value": "SOURCE_DIGEST_MISMATCH",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:45",
+          "spec_quote": "declared by its whole-file digest answers SOURCE_DIGEST_MISMATCH"
+        },
+        "citations": {
+          "value": [
+            {
+              "source": "far",
+              "line": 1
+            }
+          ],
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:120",
+          "spec_quote": "repo@rev:path:line for a source"
+        },
+        "six_fields": {
+          "value": true,
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:130",
+          "spec_quote": "NON_ALLOW_CARRIES_SIX_FIELDS"
+        },
+        "queue": {
+          "value": "not_created",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:137",
+          "spec_quote": "UNDECIDABLE writes one write-once relay entry",
+          "files_after": 0
+        },
+        "authority_effect": {
+          "value": "NONE_ANSWER_ONLY",
+          "spec_ref": "RT-INVARIANT-EVALUATION-001.json:136",
+          "spec_quote": "\"authority_effect\": \"NONE_ANSWER_ONLY\""
+        }
+      }
+    }
+  ]
+}

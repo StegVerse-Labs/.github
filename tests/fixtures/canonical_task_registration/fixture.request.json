@@ -1,0 +1,121 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "fixture-canonical-task-registration-001",
+  "task_id": "FIXTURE-CANONICAL-TASK-REGISTRATION-001",
+  "observed_registry_generation": 0,
+  "issue": "StegVerse-org/.github#167",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "fixture"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "FIXTURE-CANONICAL-TASK-REGISTRATION-001",
+    "correlation_id": "FIXTURE-CANONICAL-TASK-REGISTRATION-001",
+    "root_correlation_id": "FIXTURE-CANONICAL-TASK-REGISTRATION-001",
+    "parent_task_id": null,
+    "goal": "Test fixture for scripts/canonical_task_registration_transition.py. Not a registration request and never committed under control/canonical-task-registration-requests/.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "scripts/canonical_task_registration_transition.py"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "components": [
+        "canonical-task-registration"
+      ]
+    },
+    "dependencies": [],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [],
+    "existing_evidence_refs": [],
+    "expected_evidence_predicates": [
+      "FIXTURE_ONLY"
+    ],
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "handoff_projection_refs": [],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "Test fixture for scripts/canonical_task_registration_transition.py. Not a registration request and never committed under control/canonical-task-registration-requests/.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "canonical-task-registration"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "FIXTURE_ONLY"
+      ],
+      "finish_point": {
+        "acceptance_test": "tests/test_canonical_task_registration_transition.py::Allow::test_plan_derives_the_four_surfaces_from_the_manifest_alone",
+        "predicate": "FIXTURE_REGISTRATION_DERIVES_ITS_SURFACES",
+        "verifier_entrypoint": "python -m unittest tests.test_canonical_task_registration_transition",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:d7829f4395ec74be3c4802b14577699113076a243c4982f6b64b79a5e6c00f71",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "fixture"
+    },
+    "evidence_refs": [
+      "tests/test_canonical_task_registration_transition.py"
+    ],
+    "observed_at": "fixture"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

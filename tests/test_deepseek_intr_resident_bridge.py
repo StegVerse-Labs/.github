@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import tempfile
+import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -134,3 +135,12 @@ def test_worker_source_requires_exact_runtime_boundaries():
     assert "MASTER_RECORDS_ORGANIZATION_RECORD_NOT_RECORDED" in worker
     assert '"credential_material_present": False' in worker
     assert '"second_machine_required": False' in worker
+
+
+def load_tests(loader, tests, pattern):
+    """Run the module's test_* functions under stdlib unittest (pytest ignores this hook)."""
+    return unittest.TestSuite(
+        unittest.FunctionTestCase(fn)
+        for name, fn in globals().items()
+        if name.startswith("test_") and callable(fn)
+    )

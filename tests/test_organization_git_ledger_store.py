@@ -346,7 +346,7 @@ def test_tampered_receipt_on_the_ref_is_refused(tmp_path, origin):
     assert refused.value.disposition == "DENY"
     assert refused.value.failed_predicate == "ORGANIZATION_RECEIPT_VERIFICATION_FAILED"
     # The tampered key also refuses any further append rather than chaining onto it.
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="existing organization receipt integrity invalid"):
         org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, "next.git", origin))
 
 
@@ -742,10 +742,10 @@ def test_tampered_batch_or_batch_head_on_the_ref_is_refused(tmp_path, origin, ca
         custody.verify_batch(reader, batch_id)
     with pytest.raises(ValueError, match="organization batch hash mismatch"):
         custody.open_packet_state(parent, root=reader, now_ns=hb_now_ns(T0_EPOCH + 3))
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="organization batch hash mismatch"):
         readback_module.readback(reader, correlation_ids=("WORK-2",))
     tip = remote_tip(origin)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="organization batch hash mismatch"):
         org.aggregate_transition(receipt("WORK-3"), ledger=node(tmp_path, "next.git", origin),
                                  parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 3))
     assert remote_tip(origin) == tip

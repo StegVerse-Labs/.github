@@ -98,7 +98,7 @@ def main() -> int:
     bridge_receipt_path = _output_path("STEGVERSE_DEVICE_KV_SKAP_BRIDGE_RECEIPT")
 
     materialization = _load_object(
-        _required_path("STEGVERSE_DEVICE_KV_SKAP_INTR_MATERIALIZATION"),
+        _required_path("STEGVERSE_DEVICE_KV_SKAP_MATERIALIZATION"),
         "intr_materialization",
     )
     retained_node = _load_object(
