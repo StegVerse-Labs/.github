@@ -8,12 +8,20 @@ on:
     paths:
       - '.github/workflows/organization-ledger-transition.yml'
       - '.github/workflows/organization-ledger-transition-validation.yml'
-      - '.stegverse/intr-destination/self-closure-packet.json'
-      - 'resident-runtime/self_closure_packet.py'
-      - 'tests/test_self_closure_packet.py'
       - 'scripts/check_dispatch_hb_epoch.py'
       - 'tests/test_dispatch_hb_epoch_gate.py'
+      - '.stegverse/organization-ledger-ingest/**'
+      - 'resident-runtime/organization_ledger_ingest.py'
+      - 'resident-runtime/sv_check_receipt_append.py'
+      - 'tests/test_organization_ledger_ingest.py'
+      - 'tests/test_sv_check_receipt_append.py'
+      - 'tests/vendor/p1_f28c3a76/**'
+      - 'org-runtime/interlock-intr.json'
       - '.stegverse/transition-ledger/contract.json'
+      - '.stegverse/transition-ledger/org-contract.json'
+      - 'resident-runtime/aggregate_repo_transition.py'
+      - 'resident-runtime/organization_batch_custody.py'
+      - 'resident-runtime/merge_transfer_gitstore.py'
       - '.stegverse/transition-ledger/emit.py'
       - 'resident-runtime/intr_destination_ingress.py'
       - 'resident-runtime/ledger_store.py'
@@ -37,27 +45,36 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate the writer and the self-closure against temporary ledgers
+      - name: Validate the writer against temporary ledgers
         run: |
           python -m py_compile \
             resident-runtime/organization_ledger_readback.py \
             resident-runtime/intr_destination_ingress.py \
             resident-runtime/ledger_store.py \
-            resident-runtime/self_closure_packet.py \
+            resident-runtime/organization_ledger_ingest.py \
+            resident-runtime/sv_check_receipt_append.py \
             scripts/check_dispatch_hb_epoch.py \
             .stegverse/transition-ledger/emit.py
           python -m pip install pytest
           python -m pytest -q --tb=short \
             tests/test_organization_ledger_transition_writer.py \
             tests/test_intr_destination_capability.py \
-            tests/test_self_closure_packet.py \
+            tests/test_organization_ledger_ingest.py \
+            tests/test_sv_check_receipt_append.py \
             tests/test_dispatch_hb_epoch_gate.py
 
-      - name: The committed self-closure packet, if any, is what the push-to-main writer accepts
+      - name: The committed ingest request, if any, is what the push-to-main writer reads
         run: |
           set -euo pipefail
-          if [ -e .stegverse/intr-destination/self-closure-packet.json ]; then
-            python resident-runtime/self_closure_packet.py --packet .stegverse/intr-destination/self-closure-packet.json --require-hb-epoch
+          # Read-only: shape, and for a sealed receipt its admission (seal, accepted
+          # kind, ALLOW, zero skipped, this ledger as target). The append itself runs
+          # only in the push-to-main writer.
+          request=.stegverse/organization-ledger-ingest/request.json
+          if [ -e "$request" ]; then
+            python resident-runtime/organization_ledger_ingest.py read --request "$request"
+            if python -c 'import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get("operation")=="sealed_test_receipt" else 1)' "$request"; then
+              python resident-runtime/organization_ledger_ingest.py admit-sealed --request "$request" --ledger-repository "$GITHUB_REPOSITORY"
+            fi
           else
-            echo "no committed self-closure packet at this head; the writer has nothing to record"
+            echo "no committed ingest request at this head; the writer has nothing to record"
           fi
