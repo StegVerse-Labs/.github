@@ -1,0 +1,221 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "lane-d-tvc-private-source-read-2026-10-23",
+  "task_id": "TVC-PRIVATE-SOURCE-READ-001",
+  "observed_registry_generation": 321,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-org/.github#160",
+  "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-tvc-private-source-read-2026-10-23.json",
+  "collision_analysis": [
+    "no canonical Registry row or shard for TVC-PRIVATE-SOURCE-READ-001 at StegVerse-Labs/.github main 86382e60 (generation 320); identity is TVC-owned (StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-PRIVATE-SOURCE-READ-001.json)",
+    "collision check-in decided mechanically in plan"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "TVC-PRIVATE-SOURCE-READ-001",
+    "correlation_id": "TVC-PRIVATE-SOURCE-READ-001",
+    "root_correlation_id": "TVC-PRIVATE-SOURCE-READ-001",
+    "parent_task_id": null,
+    "goal": "Admit scoped TVC private-source-read capability: capability tvc.private-source-read.v1 (PRIVATE_REPOSITORY_READ_ONLY) under credential authority TV/TVC, policy StegVerse-Labs/TV:policies/private_source_read_capability_policy.json@c6eede495c18b8b19156cf68576702b93e77f593; no write, release, publication, runtime or production authority.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
+      "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:docs/PRIVATE_SOURCE_READ_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC#33",
+      "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json",
+      "StegVerse-Labs/.github@86382e60:data/canonical-task-records/ORG-GITHUB-FLEET-FUNCTIONALIZATION-001.json",
+      "StegVerse-Labs/.github@86382e60:handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+      "StegVerse-Labs/.github@86382e60:data/intr-protocol/v1/protocol.json"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/TVC",
+        "StegVerse-Labs/TV"
+      ],
+      "components": [
+        "tvc-private-source-read-capability",
+        "private-source-read-resident-executor",
+        "sdk-proof-prerequisite-progression",
+        "icv-census-private-source-read",
+        "intr-path-ledger-read"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "CAPABILITY-TV-PRIVATE-SOURCE-READ-POLICY",
+        "kind": "CAPABILITY",
+        "state": "UNKNOWN",
+        "ref": "StegVerse-Labs/TV:policies/private_source_read_capability_policy.json@c6eede495c18b8b19156cf68576702b93e77f593"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [],
+    "existing_evidence_refs": [
+      "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
+      "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json"
+    ],
+    "expected_evidence_predicates": [
+      "PRIVATE_SOURCE_READ_SERVICE_INSTALLED_ON_SOLE_HOST",
+      "CREDENTIAL_PRESENCE_OBSERVED_WITHOUT_VALUE_EXPOSURE",
+      "STEGCORE_PR146_EXACT_MATERIALIZATION_OBSERVED",
+      "SDK_PROOF_PREREQUISITE_RECEIPT_RECORDS_STEGCORE_PR146_SOURCE_VALIDATED",
+      "NO_NON_TV_TVC_OR_GITHUB_GENERATED_TOKEN_SUBSTITUTION"
+    ],
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        }
+      ],
+      "selected_substrate_id": null,
+      "external_device_required": false,
+      "second_user_operated_device_allowed": false,
+      "authority_effect": "NONE"
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+      "SCOPE_CHANGE_ONLY_BY_GOAL_SCOPE_SUPERSEDE_REQUEST"
+    ],
+    "handoff_projection_refs": [
+      "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:docs/PRIVATE_SOURCE_READ_MIRROR_HANDOFF.md"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "Admit scoped TVC private-source-read capability: capability tvc.private-source-read.v1 (PRIVATE_REPOSITORY_READ_ONLY) under credential authority TV/TVC, policy StegVerse-Labs/TV:policies/private_source_read_capability_policy.json@c6eede495c18b8b19156cf68576702b93e77f593; no write, release, publication, runtime or production authority.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/TVC",
+          "StegVerse-Labs/TV"
+        ],
+        "components": [
+          "tvc-private-source-read-capability",
+          "private-source-read-resident-executor",
+          "sdk-proof-prerequisite-progression",
+          "icv-census-private-source-read",
+          "intr-path-ledger-read"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "PRIVATE_SOURCE_READ_SERVICE_INSTALLED_ON_SOLE_HOST",
+        "CREDENTIAL_PRESENCE_OBSERVED_WITHOUT_VALUE_EXPOSURE",
+        "STEGCORE_PR146_EXACT_MATERIALIZATION_OBSERVED",
+        "SDK_PROOF_PREREQUISITE_RECEIPT_RECORDS_STEGCORE_PR146_SOURCE_VALIDATED",
+        "NO_NON_TV_TVC_OR_GITHUB_GENERATED_TOKEN_SUBSTITUTION"
+      ],
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/TVC: python scripts/advance_sdk_proof_prerequisites.py",
+        "predicate": "/var/lib/stegverse/private-source-read/sdk-proof-prerequisites.json records terminal_source_state STEGCORE_PR146_SOURCE_VALIDATED for exact f09eb36abcd3b317f35638e5c0b0c4a802d0aecf",
+        "verifier_entrypoint": "StegVerse-Labs/TVC: scripts/advance_sdk_proof_prerequisites.py",
+        "lowest_supported_mode": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+      }
+    },
+    "scope_digest": "sha256:5f6615d86730d08e40c9271e363c2c89865b4af388ea6905bccdde2c20a9cd64",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "MACHINE_OWNED",
+      "archive_ready": false,
+      "unassigned_work": 0,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": false,
+      "blocker_count": 1,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "archive_ready": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "unassigned_work": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "chat_owned_counts": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "canonical_owner_installed": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "thread_required": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "blocker_count": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "evidence_complete": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "activated": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)",
+      "propagated": "observed in StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json (exact_metrics, observed_at 2026-08-31T06:51:00-05:00)"
+    },
+    "evidence_refs": [
+      "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
+      "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:data/cosv/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json"
+    ],
+    "observed_at": "2026-08-31T06:51:00-05:00"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

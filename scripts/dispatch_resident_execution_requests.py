@@ -21,7 +21,6 @@ import os
 import uuid
 import subprocess
 import sys
-from time import time_ns
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -36,6 +35,11 @@ COMPONENT011_SELECTOR = "ungoverned_ai_defensive_envelope"
 COMPONENT011_TASK_ID = "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
 COMPONENT011_REQUEST_ID = "RESIDENT-EXEC-UNGOVERNED-AI-DEFENSIVE-ENVELOPE-001"
 COMPONENT011_REQUEST_REL = Path("control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json")
+# The component-011 observation references the heartbeat epoch of the frame
+# this dispatch carries (dispatch(hb_epoch=) / --hb-epoch); absent or invalid it
+# is refused six-field FAIL_CLOSED before anything is appended. No clock is read.
+COMPONENT011_EPOCH_RETRY_ENTRYPOINT = "scripts/dispatch_resident_execution_requests.py::dispatch (hb_epoch=, or --hb-epoch)"
+COMPONENT011_EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 AWARENESS_AGGREGATE_REL = Path("receipts/sovereign-host/astra-class-resilience-awareness.latest.json")
 AWARENESS_STATE_DIR = Path("runtime-state/entity-awareness")
 AWARENESS_PROTECTED = {
@@ -146,6 +150,7 @@ CONSUMERS = (
     ("ungoverned_ai_defensive_envelope", "scripts/consume_ungoverned_ai_defensive_envelope_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
+    ("site_production_promotion", "scripts/consume_site_production_promotion_request.py"),
     ("native_email_action_monitor", "scripts/consume_native_email_action_monitor_request.py"),
     ("governed_multilane_manifold_activation", "control/resident-execution-request.d/consume-governed-multilane-manifold-activation.py"),
     ("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"),
@@ -373,8 +378,35 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
 
 
 
+def component011_epoch_refusal(org: Any, hb_epoch: Any) -> dict[str, Any] | None:
+    """The six-field FAIL_CLOSED of the observation's epoch, or None when it is supplied.
+
+    The rule is the kernel's shared `supplied_epoch_failure`; nothing is
+    derived from a clock to stand in for an absent epoch.
+    """
+    failure = org.kernel.supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return None
+    code, detail = failure
+    return {
+        "state": "BOUNDARY",
+        "reason": code,
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": COMPONENT011_EPOCH_PREDICATE,
+        "detail": detail,
+        "required_evidence_or_repair": "the dispatch carries the frame's heartbeat epoch (hb_epoch= or --hb-epoch): ASCII digits with value >= 32; it is never derived from a clock",
+        "retry_entrypoint": COMPONENT011_EPOCH_RETRY_ENTRYPOINT,
+        "owning_existing_goal": COMPONENT011_TASK_ID,
+        "next_attempt": "dispatch again with the frame's epoch; nothing was appended",
+        "derived_from_clock": False,
+        "consequence_committed": False,
+        "authority_effect": "NONE",
+    }
+
+
 def retain_component011_dispatch_in_organization(
-    source: Path, runtime: Path, outcomes: list[dict[str, Any]],
+    source: Path, runtime: Path, outcomes: list[dict[str, Any]], *, hb_epoch: Any = None,
 ) -> dict[str, Any] | None:
     """Record the exact component-011 selector outcome in the EXISTING org ledger.
 
@@ -382,6 +414,8 @@ def retain_component011_dispatch_in_organization(
     a WorkerCoordinator claim/fence. The org predecessor is verified by readback.
     A missing runtime request is recorded as missing ONLY when its canonical
     already-local source request is available for exact identity validation.
+    `hb_epoch` is the epoch of the frame this dispatch carries; the receipt
+    references it, and without a supplied one nothing is appended.
     """
     row = next((item for item in outcomes if item.get("consumer") == COMPONENT011_SELECTOR), None)
     if row is None:
@@ -439,6 +473,9 @@ def retain_component011_dispatch_in_organization(
         # store the Organization manifest declares; no raw ledger root is read.
         store = org.organization_store()
         current_chain(store)
+        refused = component011_epoch_refusal(org, hb_epoch)
+        if refused is not None:
+            return refused
 
         # A fresh actual visit receives its own non-authorizing identity.
         visit_id = uuid.uuid4().hex
@@ -499,6 +536,7 @@ def retain_component011_dispatch_in_organization(
             },
             authority_effect="NONE",
             ledger=store,
+            hb_epoch=int(str(hb_epoch)),
         )
         digest = recorded["receipt_sha256"]
         stored = store.get(org.ledger_store.receipt_key(digest))
@@ -580,7 +618,9 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         "machine_result_sha256": sha256_uri(machine_result),
         "machine_result": machine_result,
     }
-    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}:{time_ns()}"
+    # Keyed on the request's own identity (task, request id, request digest),
+    # as the claim consumer keys its records; no clock is read.
+    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}:{sha256_uri(request)}"
     required_evidence = [{
         "evidence_id": f"{transition_id}:selector-visit",
         "evidence_type": "RESIDENT_REQUEST_DISPATCH_SELECTOR_VISIT",
@@ -719,7 +759,7 @@ def dispatch(
             command.extend(["--request-id", request_id])
         if name == "canonical_work_coordination" and execution_attempt_id:
             command.extend(["--execution-attempt-id", execution_attempt_id])
-        if name == "org_claim_allocator":
+        if name in {"org_claim_allocator", "site_production_promotion"}:
             # The ledger roots are supplied to this execution; without them the
             # consumer refuses rather than deriving a location.
             for flag, variable in (("--repo-ledger-root", "STEGVERSE_REPO_LEDGER_ROOT"),
@@ -780,7 +820,10 @@ def dispatch(
         or richard_dispatch_master_records.get("state") != "RECORDED"
     ):
         exact_selector_failure = True
-    component011_organization_dispatch = retain_component011_dispatch_in_organization(source, runtime, outcomes)
+    # The carried frame's epoch, as supplied, reaches the component-011 writer;
+    # without one it refuses six-field FAIL_CLOSED and appends nothing.
+    component011_organization_dispatch = retain_component011_dispatch_in_organization(
+        source, runtime, outcomes, hb_epoch=hb_epoch)
     component011_custody_failure = bool(
         component011_organization_dispatch is not None
         and component011_organization_dispatch.get("state") != "RECORDED"

@@ -1,0 +1,62 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
+  "correlation_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
+  "root_correlation_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
+  "parent_task_id": null,
+  "goal": "Implement StegApp non-authorizing ephemeral composition: permitted SV-LLM Sandbox StegBrowser tool observations for governed Ecosystem Chat, and independent fictional LDC continuity; repair existing StegApp PR #1 without new runtime or authority.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+    "https://github.com/StegVerse-Labs/.github/issues/3291",
+    "https://github.com/StegVerse-Labs/StegApp/pull/1"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/StegApp"
+    ],
+    "components": [
+      "stegapp-ephemeral-composition"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": [],
+  "expected_evidence_predicates": [
+    "CANONICAL_REGISTRATION_MERGED",
+    "OWNER_FILE_SCOPE_RECONCILED",
+    "EXACT_HEAD_SOURCE_TESTS",
+    "EXISTING_SANDBOX_STEGBROWSER_BINDING",
+    "AUTHENTIC_MANIFEST_BOUND_DISPOSITION",
+    "ORGANIZATION_LEDGER_READBACK"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+    "REVIEW_REGISTRATION_PROPOSAL",
+    "RESOLVE_OWNER_SCOPE",
+    "SOURCE_CANDIDATE_REPAIR",
+    "NATIVE_ADMISSION_EVALUATION"
+  ],
+  "handoff_projection_refs": [
+    "docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": false,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}

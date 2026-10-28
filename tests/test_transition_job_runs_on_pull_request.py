@@ -2,12 +2,16 @@
 permission, and the publishing half lives in writer-only workflows that never
 trigger on pull_request.
 
-- PR-facing (organization-ledger-transition.yml; organization-claim-allocator-
-  transition.yml where present, Labs#3241): triggered by pull_request only,
-  contents: read, no persisted credential, no push; its `transition` job runs
-  (never skips) the PR-safe dry run / verify against a temporary ledger.
-- Writer-only (*-writer.yml): push to main / workflow_dispatch only, job-scoped
-  contents: write, the shared organization-ledger lock, fast-forward push.
+- PR-facing (organization-claim-allocator-transition.yml, Labs#3241):
+  triggered by pull_request only, contents: read, no persisted credential, no
+  push; its `transition` job runs (never skips) the PR-safe dry run against a
+  temporary ledger.
+- Writer-only (organization-claim-allocator-transition-writer.yml): push to
+  main / workflow_dispatch only, job-scoped contents: write, the shared
+  organization-ledger lock, fast-forward push.
+- The organization ledger writer (organization-ledger-transition.yml) is split
+  on main already: it is push-to-main only and its pull_request checks live in
+  organization-ledger-transition-validation.yml (tests/test_organization_ledger_ingest.py).
 - Repository-wide: no workflow triggered by pull_request or
   pull_request_target declares a write permission.
 
@@ -22,12 +26,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS_DIR = ROOT / ".github" / "workflows"
-LEDGER_PR = WORKFLOWS_DIR / "organization-ledger-transition.yml"
-LEDGER_WRITER = WORKFLOWS_DIR / "organization-ledger-transition-writer.yml"
+LEDGER_WRITER = WORKFLOWS_DIR / "organization-ledger-transition.yml"
+LEDGER_PR_CHECKS = WORKFLOWS_DIR / "organization-ledger-transition-validation.yml"
 ALLOCATOR_PR = WORKFLOWS_DIR / "organization-claim-allocator-transition.yml"
 ALLOCATOR_WRITER = WORKFLOWS_DIR / "organization-claim-allocator-transition-writer.yml"
-PAIRS = tuple((pr, writer) for pr, writer in ((LEDGER_PR, LEDGER_WRITER), (ALLOCATOR_PR, ALLOCATOR_WRITER))
-              if pr.is_file())
+PAIRS = ((ALLOCATOR_PR, ALLOCATOR_WRITER),)
 PR_EVENTS = {"pull_request", "pull_request_target"}
 WRITE = re.compile(r"^\s*(?:[a-z-]+:\s*write\b|permissions:\s*write-all\b)", re.MULTILINE)
 
@@ -74,8 +77,13 @@ class PullRequestRunsHoldNoWritePermission(unittest.TestCase):
                 self.assertIsNone(WRITE.search(text), f"{path.name} is pull_request-triggered and declares write")
         self.assertGreater(checked, 0)
 
-    def test_the_ledger_pair_is_covered(self):
-        self.assertIn((LEDGER_PR, LEDGER_WRITER), PAIRS)
+    def test_the_allocator_pair_is_covered(self):
+        self.assertTrue(ALLOCATOR_PR.is_file())
+        self.assertTrue(ALLOCATOR_WRITER.is_file())
+
+    def test_the_ledger_writer_never_triggers_on_pull_request(self):
+        self.assertFalse(triggers(read(LEDGER_WRITER)) & PR_EVENTS)
+        self.assertEqual(triggers(read(LEDGER_PR_CHECKS)), {"pull_request"})
 
     def test_pr_facing_workflows_trigger_on_pull_request_only_with_contents_read(self):
         for pr, _ in PAIRS:
@@ -148,7 +156,6 @@ class WriterWorkflowsNeverTriggerOnPullRequest(unittest.TestCase):
 
 
 class DryRunScope(unittest.TestCase):
-    @unittest.skipUnless(ALLOCATOR_PR.is_file(), "allocator workflow not on this tree (arrives with Labs#3241)")
     def test_allocator_dry_run_runs_the_same_consumer_without_an_epoch(self):
         transition = jobs(read(ALLOCATOR_PR))["transition"]
         self.assertIn("scripts/consume_org_claim_allocator_request.py", transition)
@@ -156,13 +163,6 @@ class DryRunScope(unittest.TestCase):
         self.assertIn("--readback-result", transition)
         self.assertNotIn("--hb-epoch", transition)
         self.assertNotIn("--org-ledger-root", transition)
-
-    def test_ledger_verify_appends_nothing_and_synthesizes_no_epoch(self):
-        transition = jobs(read(LEDGER_PR))["transition"]
-        self.assertIn("organization_ledger_readback.py", transition)
-        self.assertNotIn("--self-close", transition)
-        self.assertNotIn("HB_EPOCH", transition)
-        self.assertIn('"append_attempted": False', transition)
 
 
 if __name__ == "__main__":

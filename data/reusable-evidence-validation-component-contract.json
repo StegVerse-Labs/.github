@@ -63,6 +63,83 @@
         "raw_selected_record_output": false,
         "secret_material_output": false
       }
+    },
+    {
+      "component_id": "RTC-SV-CHANGE-BASE-STATE-READBACK-014",
+      "name": "SV_CHANGE Base-State Readback (B1)",
+      "capability_provided": "read_back_sv_change_base_state",
+      "inputs": {
+        "repository": "local git repository (clone) holding the bound main commit and refs/stegverse/organization-ledger, fetched by the caller's existing transport",
+        "bound_main_commit": "40-hex main commit the caller binds; the repository's own registry file (REGISTRY_PATHS) is read at exactly this commit",
+        "main_ref": "ref whose history must contain bound_main_commit (default refs/heads/main)",
+        "hb_epoch": "optional --hb-epoch cross-check only (ASCII digits >= 32); the epoch is read from the bound ledger head receipt; a malformed value or one differing from the verified sealed epoch -> DENY HB_EPOCH_MISMATCH with hb_epoch and hb_epoch_source sealed (detail expected_hb_epoch, supplied_hb_epoch_well_formed, flag_failure_code HB_EPOCH_FLAG_MISMATCH; supplied_epoch_failure_code HB_EPOCH_INVALID when malformed); an unobservable ledger-head epoch -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED whatever is supplied; given explicitly as \"\", \"null\" or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (both slots null); omitted entirely -> no cross-check, ALLOW with the canonical marker (ruling 16:30Z, P1 invariants.json NOT_CROSS_CHECKED_MARKER = P1 #3264 @7898cedb verify_admission_hb_epoch): top-level cross_checked false plus top-level detail HB_EPOCH_NOT_CROSS_CHECKED; cross_checked is always emitted (amended 17:15Z): true with supplied_hb_epoch on a cross-checked ALLOW and on DENY HB_EPOCH_MISMATCH, false on every FAIL_CLOSED (with supplied_hb_epoch when the flag was given); never an hb_epoch_cross_check key (deliberate: optional cross-check, not the admission supplied epoch)",
+        "repository_name": "the repository the clone is of (e.g. StegVerse-org/.github); selects its registry path from the pinned REGISTRY_PATHS map; unmapped -> REGISTRY_PATH_NOT_DECLARED (no default path)"
+      },
+      "outputs": {
+        "base_ref": "{registry_generation, ledger_head}: the registry generation at bound_main_commit and the organization-ledger ref commit",
+        "sources": "[{file, blob_sha}] for the repository's registry file at bound_main_commit, refs/stegverse/organization-ledger:HEAD.json and the head receipt receipts/<hex>.json",
+        "disposition": "ALLOW, or FAIL_CLOSED carrying failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning_existing_goal (StegVerse-org/.github#164) and next_attempt",
+        "result_sha256": "sha256 seal over the canonical receipt",
+        "hb_epoch": "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH: str($.hb_reference.epoch) of the sealed stegverse.organization-transition-receipt/v1 at the bound ledger head (HEAD.json -> receipts/<hex>.json), only if the epoch is an int (not bool) >= 32 and derived_from_clock is exactly false (org-kernel/kernel.py:68-74, blob ffec5d64; = P1 #3264 fc19b532 base_ledger_head_epoch); else FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; sealed with the receipt; never minted",
+        "hb_epoch_source": "{ledger_head: <commit40>, receipt: receipts/<hex>.json (the head receipt's ledger_store key), field: $.hb_reference.epoch}, sealed with hb_epoch on ALLOW and on DENY HB_EPOCH_MISMATCH; on every FAIL_CLOSED hb_epoch is null and hb_epoch_source is present and null (never omitted). Field names are fixed (Lane B #46 consumes them)"
+      },
+      "preconditions": [
+        "bound_main_commit_well_formed_and_present",
+        "bound_main_commit_on_main_ref",
+        "registry_path_declared_for_repository",
+        "registry_declares_generation",
+        "registry_parses_with_integer_generation_at_bound_commit",
+        "organization_ledger_ref_present",
+        "organization_ledger_reads_back_via_organization_ledger_readback",
+        "ledger_head_stable_during_readback",
+        "ledger_head_receipt_carries_valid_hb_reference_epoch",
+        "expected_hb_epoch_absent_or_equal_to_observed"
+      ],
+      "expected_evidence": [
+        "base_ref.registry_generation",
+        "base_ref.ledger_head",
+        "sources[].blob_sha",
+        "ledger_head_receipt_sha256",
+        "result_sha256",
+        "hb_epoch",
+        "hb_epoch_source"
+      ],
+      "authority_owner": "The Task Registry (generation, via the main branch) and the organization ledger writer (ref) own the state; this component only reads it.",
+      "authority_effect": "NONE_READBACK_ONLY",
+      "failure_classes": [
+        "BASE_STATE_NOT_OBSERVED",
+        "REGISTRY_PATH_NOT_DECLARED",
+        "REGISTRY_GENERATION_NOT_DECLARED",
+        "REGISTRY_GENERATION_UNREADABLE",
+        "HB_EPOCH_SOURCE_UNOBSERVED",
+        "HB_EPOCH_MISMATCH"
+      ],
+      "retry_or_reentry_semantics": "Deterministic for an identical repository state, bound commit and expected hb_epoch. No schedule, loop, clock or retry: the admission caller invokes it when it needs a base binding and re-invokes after the refusal's next_attempt is satisfied.",
+      "version_or_schema_binding": [
+        "stegverse.sv-change-base-state-readback/v1",
+        "stegverse.organization-ledger-readback/v1"
+      ],
+      "implementation": {
+        "component": "resident-runtime/sv_change_base_state_readback.py::evaluate",
+        "reuses": [
+          "resident-runtime/organization_ledger_readback.py::readback",
+          "resident-runtime/ledger_store.py::HEAD_KEY,receipt_key"
+        ],
+        "consumers": [
+          "StegVerse-Labs/TVC sv_change_admission (base_ref input, PR 519)",
+          "StegVerse-org/.github#192 admission_predicate (base gen/ledger head)"
+        ]
+      },
+      "invariants": {
+        "writes_ledger_or_ref": false,
+        "writes_registry": false,
+        "bumps_registry_generation": false,
+        "reads_clock": false,
+        "uses_network": false,
+        "uses_credential": false,
+        "derives_hb_epoch": false,
+        "new_dependency": false
+      }
     }
   ]
 }

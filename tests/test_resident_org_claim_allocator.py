@@ -7,6 +7,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+from datetime import datetime, timedelta
 from pathlib import Path
 from unittest import mock
 
@@ -616,6 +617,52 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         again = self.consume_hosted(self.fresh_runtime("fresh-again"))
         self.assertEqual(again["fencing_token"], 8)
         self.assertEqual(again["organization_receipt_sha256"], result["organization_receipt_sha256"])
+
+    def test_event_ephemeral_grant_projects_a_lease_bounded_by_its_fence_and_expiry(self):
+        env = self.fresh_runtime("lease")
+        result = self.consume_hosted(env)
+        self.assertEqual(result["transition_class"], consumer.GRANTED, result)
+        claims = env.claims()
+        self.assertEqual(claims["generation"], 8)
+        granted = [c for c in claims["claims"] if c.get("task_id") == "TASK-2026-0013"]
+        self.assertTrue(granted)
+        updated = datetime.fromisoformat(claims["updated_at"].replace("Z", "+00:00"))
+        for claim in granted:
+            lease = claim["lease"]
+            self.assertEqual(lease["fencing_token"], 8)
+            expires = datetime.fromisoformat(lease["expires_at"].replace("Z", "+00:00"))
+            heartbeat = datetime.fromisoformat(lease["heartbeat_due_at"].replace("Z", "+00:00"))
+            # Every grant is time-bounded: the lease expires 24h after the grant, after its heartbeat.
+            self.assertEqual(expires - updated, timedelta(hours=24))
+            self.assertLess(heartbeat, expires)
+
+    def test_unadmitted_target_task_is_refused_with_the_six_fields(self):
+        env = self.fresh_runtime("unadmitted")
+        path = env.source / "tasks/TASK-2026-0013.json"
+        task = json.loads(path.read_text(encoding="utf-8"))
+        # The catalog floor pins the .github request's scope; the SDK request loses its dependency
+        # declaration, so the task is no longer admissible and the allocator must refuse it.
+        floor_repository = "StegVerse-org/.github"
+        stripped = 0
+        for request in task["requirements"]["mandatory"]:
+            if request["repository"]["full_name"] != floor_repository:
+                request["scope"]["dependency_surfaces"] = []
+                request["scope"].pop("dependency_surface_exempt", None)
+                stripped += 1
+        self.assertEqual(stripped, 1)
+        path.write_text(json.dumps(task), encoding="utf-8")
+        result = self.consume_hosted(env)
+        self.assertNotEqual(result["disposition"], "ALLOW", result)
+        self.assertNotEqual(result["transition_class"], consumer.GRANTED, result)
+        self.assertEqual(result["failed_predicate"], "NOT_ADMISSIBLE", result)
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result.get(field), field)
+        self.assertEqual(result["retry_entrypoint"], consumer.EVENT_EPHEMERAL_ENTRYPOINT)
+        self.assertFalse(result["fence_issued"])
+        self.assertIsNone(result["fencing_token"])
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        self.assertEqual(consumer.chain_grants(consumer.verify_organization_chain(custody)), [])
 
     def test_source_registry_holding_claims_is_not_rematerialized(self):
         held = {"task_id": "TASK-2026-0007", "lease": {"fencing_token": 2}}

@@ -1,0 +1,25 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "blocker": "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
+ "failure_class": {
+  "class": "A",
+  "reason": "re-pins inside TV/TVC's own reader under the given designation; no new evidence is needed"
+ },
+ "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "H-KV-ENDPOINT-LEDGER-ANCHOR"
+ ],
+ "next_attempt": "on the next push to StegVerse-Labs/TVC that touches the KV reader pins; event-driven, never on a timer",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "GitHub Product lane as TV/TVC owner (StegVerse-Labs/TVC scripts/tvc_org_ledger_head_signer.py, tools/kv_custody_ledgers_config.py); consuming lane: Lane D (KV and WorkSpace)",
+ "proposed_resolution": "GitHub Product: re-pin KV_CONTRACT_PINS, the designation digests and the vendored config to continuity-vault-kit @77d28d83 (or the cvk head current at the time) through TV/TVC's own admitted change",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "narrowed (revision 16, continuity-vault-kit main @77d28d83, TVC main @b686a60b): the Lane B part is withdrawn with the edge it belonged to. Remaining (runs tvc540-bind-cvk263, tvc542-bind-cvk263, tvc541-kv-custody-ledgers-config): TVC's reader refuses both custody_ledgers_config() entries continuity-vault-kit returns at @77d28d83 with KV_RECEIPT_CHAIN_DESIGNATION_DIGEST_MISMATCH (kv and skap_vault), the skap_vault contract digest differs from KV_CONTRACT_PINS, and tools/kv_custody_ledgers_config.py vendors CVK_HEAD 34496af5. TVC already refuses every membership form (ENDPOINT_ORG_MEMBERSHIP_REFUSED, KV_RECEIPT_CHAIN_DESIGNATED_ON_ORG_LEDGER).",
+ "retry_point": "StegVerse-Labs/TVC scripts/tvc_org_ledger_head_signer.py read_custody_ledgers (GitHub Product, TV/TVC)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-21"
+}

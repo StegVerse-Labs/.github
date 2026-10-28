@@ -39,14 +39,14 @@
     }
   ],
   "quantum_resilience_standing_awareness_ready": false,
-  "registered_consumer_count": 56,
+  "registered_consumer_count": 57,
   "request_dispatch_grants_authority": false,
   "request_failure_blocks_later_requests": false,
   "request_failures": [
     "sdk_generic_manifest_execution"
   ],
   "richard_dispatch_master_records": null,
-  "runtime_root": "/tmp/claude-0/-home-user--github/6b7605d1-b70e-50c5-a917-fa186ce05784/scratchpad/wt3211",
+  "runtime_root": "/workspace/laneD/rC",
   "schema": "stegverse.resident-request-dispatch/v1",
   "sdk_evaluator_dispatch_master_records": null,
   "second_machine_required": false,
@@ -55,6 +55,6 @@
   ],
   "selected_request_id": "test5-a",
   "selection_scope": "EXACT_SELECTOR",
-  "source_root": "/tmp/claude-0/-home-user--github/6b7605d1-b70e-50c5-a917-fa186ce05784/scratchpad/wt3211",
+  "source_root": "/workspace/laneD/rC",
   "state": "DISPATCH_INCOMPLETE"
 }

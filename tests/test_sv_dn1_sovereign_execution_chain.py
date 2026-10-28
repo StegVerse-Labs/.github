@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
+import types
 import tempfile
 import unittest
 from pathlib import Path
@@ -412,6 +414,51 @@ class SvDn1SovereignExecutionChainTests(unittest.TestCase):
     def test_consumer_rejects_hosted_environment(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "hosted environment"):
             consumer.clean_exec_env({"GITHUB_ACTIONS": "true"})
+
+
+
+class SvDn1ChainSiblingImportTests(unittest.TestCase):
+    """Regression: the chain loaded only if an earlier import had put scripts/ on sys.path."""
+
+    NAME = "refresh_sovereign_worker_runtime_source"
+
+    def load_chain_fresh(self):
+        spec = importlib.util.spec_from_file_location(
+            "run_sv_dn1_first_round_chain_regression", ROOT / "scripts/run_sv_dn1_first_round_chain.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def isolate(self):
+        saved_path = list(sys.path)
+        saved_module = sys.modules.pop(self.NAME, None)
+        def restore():
+            sys.path[:] = saved_path
+            sys.modules.pop(self.NAME, None)
+            if saved_module is not None:
+                sys.modules[self.NAME] = saved_module
+        self.addCleanup(restore)
+
+    def test_loads_without_scripts_directory_on_sys_path(self) -> None:
+        self.isolate()
+        scripts_dir = str((ROOT / "scripts").resolve())
+        sys.path[:] = [p for p in sys.path if p and Path(p).resolve() != Path(scripts_dir)]
+        module = self.load_chain_fresh()
+        self.assertEqual(
+            Path(module.refresh.__code__.co_filename).resolve(),
+            (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").resolve(),
+        )
+        self.assertNotIn(self.NAME, sys.modules)
+
+    def test_already_imported_module_of_the_same_name_is_not_bound(self) -> None:
+        self.isolate()
+        decoy = types.ModuleType(self.NAME)
+        decoy.refresh = lambda *args, **kwargs: {"state": "DECOY"}
+        sys.modules[self.NAME] = decoy
+        module = self.load_chain_fresh()
+        self.assertIsNot(module.refresh, decoy.refresh)
+        self.assertIs(sys.modules[self.NAME], decoy)
 
 
 if __name__ == "__main__":

@@ -45,6 +45,12 @@
       "reason": "dedicated non-authorizing source validator for the released cross-task coordination handoff projection; coordination truth is not runtime truth and this registration grants no execution, transition, credential, claim/fence, custody, receiving, or publication authority"
     },
     {
+      "path": ".github/workflows/task-registry-collision-checkin.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001 / coordination item H48 / StegVerse-Labs/.github#3183",
+      "reason": "DRAFT non-authorizing pull_request gate that runs the existing collision check-in evaluator for each canonical task row or shard a PR changes, PR merge ref versus live base tip; permissions remain empty, no GitHub token, no event ledger append, never a transition predicate; making it a required check is owner-only"
+    },
+    {
       "path": ".github/workflows/validate-deepseek-resident.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SHWP-DEEPSEEK-INTR-RUNTIME-001 / .github#1122",
@@ -117,18 +123,6 @@
       "reason": "validation-only check (pull_request and push to main, path-filtered, plus workflow_dispatch; permissions contents: read; persist-credentials false) of the advertised intr-destination diagnostic capability: runtime_boundary.py validate and tests.test_intr_destination_capability with both ledger roots redirected to runner.temp; it proves emit and close against this repository's own kernel receipt, not a live peer, appends to no operator ledger, and this registration grants no runtime, transition, or credential authority"
     },
     {
-      "path": ".github/workflows/organization-ledger-transition.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001 / StegVerse-Labs/.github#3202",
-      "reason": "PR-facing half of the organization ledger writer (split by Lane D under SHWP-ORG-CLAIM-ALLOCATOR-001; publishing moved to .github/workflows/organization-ledger-transition-writer.yml): triggered by pull_request only (path-filtered); workflow and every job hold permissions contents: read and checkout uses persist-credentials false. The validate job compiles and unit-tests the writer and the intr-destination self-closure against temporary ledgers; the transition job is the PR-safe verify: it binds the designated ref and repository subtree, copies the published refs/stegverse/organization-ledger anonymously into a temporary ledger, reads it back through organization_ledger_readback.py, and requires the published ref unchanged. No append, no push, no credential, no synthesized hb_epoch; per-PR concurrency group outside ORGANIZATION_LEDGER_LOCK. Registration grants no authority."
-    },
-    {
-      "path": ".github/workflows/organization-ledger-transition-writer.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001 / StegVerse-Labs/.github#3202 / SHWP-ORG-CLAIM-ALLOCATOR-001 (writer split, Lane D)",
-      "reason": "writer-only half of the organization ledger writer: never triggers on pull_request (workflow_dispatch only: communication_id, supplied hb_epoch, packet_id); workflow permissions contents: read with job-scoped contents: write on the publish job only; under the shared organization-ledger concurrency group (ORGANIZATION_LEDGER_LOCK) it appends the diagnostic self-closure onto the existing refs/stegverse/organization-ledger, pushes that ref fast-forward only, and reads it back from a fresh fetch, refusing FAIL_CLOSED if the ref is absent. Split out so that no pull_request run is issued a write-scoped token; the PR-facing checks stay in .github/workflows/organization-ledger-transition.yml. Registration grants no authority."
-    },
-    {
       "path": ".github/workflows/reverse-intr-inter-org-route-validation.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "ORG_RESIDENT_RUNTIME_INTR_BOUNDARY / StegVerse-Labs/.github#3198",
@@ -145,6 +139,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SHWP-ORG-CLAIM-ALLOCATOR-001",
       "reason": "writer-only half of the event-ephemeral organization claim allocator: never triggers on pull_request (push to main on control/resident-execution-request.d/org-claim-allocator-*.json, and workflow_dispatch); workflow permissions contents: read with job-scoped contents: write on the publish job only; runs the existing consumer and allocator against the declared Organization store, appends the typed claim disposition to refs/stegverse/organization-ledger under ORGANIZATION_LEDGER_LOCK, fast-forward only, and reads it back from a fresh fetch; split out so that no pull_request run is issued a write-scoped token; not claim authority"
+    },
+    {
+      "path": ".github/workflows/canonical-task-registration-transition.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",
+      "reason": "Validation-only verify of manifest-directed Goal Task registration (contracts/canonical-task-registration-transition.v1.json): for each registration manifest a PR adds, re-derives record, Registry row, generation bump and COSV vector/index entry from the live base tip and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -328,7 +328,7 @@
     {
       "path": ".github/workflows/validate-purpose-bound-worker-derived-lifetime.yml",
       "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
-      "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK (now d6873d84dddc91ef6b26774336b05c8e1f4042c0), with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
+      "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK (now c138cad4c37db0bb675bc2c66515b5558cc5fa7b, which carries stegverse.universal_intr_route_installer), with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
     }
   ]
 }

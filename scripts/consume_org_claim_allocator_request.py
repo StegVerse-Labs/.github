@@ -42,6 +42,7 @@ REQUEST_RELS = (
     REQUEST_REL,
     Path("control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json"),
     Path("control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json"),
+    Path("control/resident-execution-request.d/org-claim-allocator-workspace-kv-site-001.json"),
 )
 # Projection only: the write-once records under CONSUMPTION_DIR are the evidence.
 RECEIPT_REL = Path("receipts/sovereign-host/org-claim-allocator-request-consumption.latest.json")
@@ -320,6 +321,18 @@ class ClaimFailClosed(Exception):
         self.predicate = predicate
         self.detail = detail
         self.repair = repair
+
+
+# The repair each allocator refusal names, so a refused claim always carries
+# required_evidence_or_repair. Predicates are scripts/allocate_claims.py's.
+ALLOCATOR_REFUSAL_REPAIR = {
+    "NO_ELIGIBLE_TASK": "queue an admissible, dependency-complete, conflict-free task in tasks/",
+    "TARGET_TASK_NOT_QUEUED": "the targeted task must exist in tasks/ with status queued",
+    "DEPENDENCIES_INCOMPLETE": "complete every task the targeted task lists in dependencies",
+    "NOT_ADMISSIBLE": "declare dependency_surfaces (or dependency_surface_exempt) on every mutable mandatory claim "
+                      "of the targeted task; the allocator does not admit it otherwise",
+    "CONFLICTS_WITH_HELD_CLAIM": "wait for the conflicting held claim to be released, then retry",
+}
 
 
 class OrganizationLedgerNotAdmitted(ClaimFailClosed):
@@ -1278,7 +1291,8 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                     predicate = plan.get("refusal_predicate") or "NO_ELIGIBLE_TASK"
                     return non_allow(REFUSED, claim_task, predicate,
                                      "allocator evaluated " + ("target " + target if target else "the ranked queue"),
-                                     None, organization=True, head=head, lock_held=True)
+                                     ALLOCATOR_REFUSAL_REPAIR.get(predicate, ALLOCATOR_REFUSAL_REPAIR["NO_ELIGIBLE_TASK"]),
+                                     organization=True, head=head, lock_held=True)
                 claim_task = selected
                 prior = prior_grant(grants, selected)
                 if prior is not None:

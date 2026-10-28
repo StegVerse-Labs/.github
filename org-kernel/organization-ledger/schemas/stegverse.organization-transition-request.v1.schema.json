@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.organization-transition-request/v1",
+  "title": "Organization transition request (committed under .stegverse/transition-requests/)",
+  "description": "DRAFT, candidate 9. Derived from the 9 committed requests at StegVerse-org/.github@10d14104, the workflow shape asserts (organization-ledger-transition.yml L116-122), resident-runtime/manifest_directed_run_inputs.py (committed_manifest, transition_mesh_root) and org-boundary/runtime/node_standing.py (standing modes). A request is a manifest-directed input; it carries no authority. The ingress decides the disposition, and the organization ledger records it either way.",
+  "type": "object",
+  "required": [
+    "schema",
+    "request_id",
+    "owning_existing_goal",
+    "standing"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.organization-transition-request/v1"
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9-]{2,127}$",
+      "description": "Must equal the file basename without .json (all 9 committed requests follow this)."
+    },
+    "owning_existing_goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "mesh_root": {
+      "type": "string",
+      "pattern": "^git\\+[^#\\s]+#refs/[^\\s]+$",
+      "description": "Durable mesh locator git+<repository>#refs/<name>. Every request of one run that declares one must declare the same one."
+    },
+    "build_manifest": {
+      "type": "object",
+      "description": "Arguments for the pinned SDK's stegverse.manifest_builder.build_manifest. Mutually exclusive with manifest."
+    },
+    "manifest": {
+      "type": "object",
+      "description": "The exact, already-built manifest. Requires expected_canonical_manifest_sha256."
+    },
+    "expected_canonical_manifest_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "standing": {
+      "type": "object",
+      "required": [
+        "mode",
+        "node_ref",
+        "predecessor"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "A standing mode of the canonical node ingress contract (docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json). modes[0] is genesis (ESTABLISH_GENESIS in every committed request)."
+        },
+        "node_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "predecessor": {
+          "description": "null only for explicit genesis; otherwise the predecessor fields required by the contract. The key must be present (predecessor-key-absent is FAIL_CLOSED)."
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "hb_epoch": {
+      "type": "integer",
+      "minimum": 32,
+      "description": "PROPOSED addition (closes InTr FC-7 for push-triggered request mode): the supplied heartbeat epoch this request's receipts carry. A push carries no dispatch input, so the epoch travels in the committed request. No clock fallback."
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "build_manifest"
+      ],
+      "not": {
+        "required": [
+          "manifest"
+        ]
+      }
+    },
+    {
+      "required": [
+        "manifest",
+        "expected_canonical_manifest_sha256"
+      ],
+      "not": {
+        "required": [
+          "build_manifest"
+        ]
+      }
+    }
+  ],
+  "x-stegverse-outcomes": {
+    "ALLOW": "shape valid; the request is built or verified, received on the organization ingress (an InTr-owned interface), and its disposition is appended to both ledgers",
+    "DENY": "an unsupported standing mode, or genesis declaring a predecessor (node_standing). The refusal is recorded on the ledger with six fields.",
+    "FAIL_CLOSED": "both or neither manifest form; a committed manifest whose digest does not reproduce; a missing standing key; a request path outside .stegverse/transition-requests/; an uncommitted request. Nothing is appended."
+  },
+  "x-stegverse-authority-effect": "NONE_SCHEMA_ONLY"
+}

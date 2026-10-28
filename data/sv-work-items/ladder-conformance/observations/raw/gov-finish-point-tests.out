@@ -1,0 +1,13 @@
+$ {python} -m unittest -v tests.test_governance_product_finish_point
+--- exit 0
+--- stdout
+--- stderr
+test_disposition_half_imports_no_stegverse_module (tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_disposition_half_imports_no_stegverse_module) ... ok
+test_finish_point_verdict (tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_finish_point_verdict) ... ok
+test_gate_job_is_read_only_and_exports_the_disposition (tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_gate_job_is_read_only_and_exports_the_disposition) ... ok
+test_structural_pin_mismatch_fails_closed_with_six_fields (tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_structural_pin_mismatch_fails_closed_with_six_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in <t>s
+
+OK

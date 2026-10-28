@@ -1,0 +1,47 @@
+$ {python} -c import json
+from tools import coinbase_intr_double_interlock as d
+rows = []
+def probe(subject, fn):
+    try:
+        fn()
+        rows.append({"subject": subject, "disposition": "ALLOW"})
+    except d.DoubleInterlockError as exc:
+        rows.append(dict({k: exc.refusal.get(k) for k in ("disposition", "failure_class") + d.SIX_FIELDS}, subject=subject, message=str(exc)))
+    except Exception as exc:
+        rows.append({"subject": subject, "disposition": "EXCEPTION", "exception": type(exc).__name__, "message": str(exc)})
+EPOCH = "ladder-probe-hb-epoch-1"
+kw = dict(ingress_id="ladder-probe", credential_ref="tvc://probe", payload_hash="sha256:" + "0" * 64)
+def minted(boundary, hop, transport):
+    # minted by the caller itself: no gate, no ledger read-back, no healthy node
+    body = {"schema": d.RECEIPT_SCHEMA, "receipt_id": "ladder-probe:" + boundary, "operation_id": "ladder-probe",
+            "credential_ref": kw["credential_ref"], "boundary": boundary, "hop_index": hop, "direction": "FORWARD",
+            "from_role": ("DEVICE", "KV")[hop], "to_role": ("KV", "SKAP_VAULT")[hop], "payload_hash": kw["payload_hash"],
+            "prior_receipt_hash": None, "readback_receipt_schema": "caller-minted",
+            "readback_receipt_hash": {"digest": "sha256:" + "1" * 64, "observed_at": EPOCH},
+            "ledger_read_receipt": {"ledger": ("kv", "skap_vault")[hop]}, "transition_state": "FORWARDED",
+            "secret_plaintext_present": False, "authority_transfer": False, "credential_authority": "TV/TVC",
+            "transport_protocol": transport}
+    return dict(body, receipt_hash=d.digest(body))
+def l1_no_health():  # gate 1 (INTR_DEVICE_KV) with no KV recorded receipt chain to read layer 1 from
+    d.gate_device_kv(org_ledger_git_dir=None, supplied_hb_epoch=EPOCH, **kw)
+def l2_no_l1():  # gate 2 (in-KV SKAP gate) with no hop-0 receipt
+    d.gate_kv_skap(device_kv_receipt={}, org_ledger_git_dir=None, supplied_hb_epoch=EPOCH)
+def l2_caller_minted_l1():
+    d.gate_kv_skap(device_kv_receipt=minted("INTR_DEVICE_KV", 0, "InTr"), org_ledger_git_dir=None,
+                   supplied_hb_epoch=EPOCH)
+def kv_skap_hop_claims_intr():  # KV->SKAP never leaves KV: a hop-1 receipt claiming InTr transport is refused
+    d.validate_boundary_receipt(minted("KV_INTERNAL_SKAP_GATE", 1, "InTr"), expected_boundary="KV_INTERNAL_SKAP_GATE")
+def kv_skap_hop_transport():
+    if d.BOUNDARY_TRANSPORT != {"INTR_DEVICE_KV": "InTr", "KV_INTERNAL_SKAP_GATE": "KV_INTERNAL"}:
+        raise ValueError("boundary_transport_not_in_kv_gate: %r" % (d.BOUNDARY_TRANSPORT,))
+probe("LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE", l1_no_health)
+probe("LAYER2_WITHOUT_LAYER1_RECEIPT", l2_no_l1)
+probe("LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT", l2_caller_minted_l1)
+probe("KV_SKAP_HOP_CLAIMING_INTR_TRANSPORT", kv_skap_hop_claims_intr)
+probe("KV_SKAP_HOP_IS_IN_KV_GATE_NOT_INTR", kv_skap_hop_transport)
+print(json.dumps({"rows": rows}, sort_keys=True))
+
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "FAIL_CLOSED", "failed_predicate": "KV_STORAGE_ENDPOINT_PROVIDER_EXECUTION_ADMITTED", "failure_class": "B", "failure_code": "KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR", "message": "kv2_storage_endpoint_pending_interlock_intr:KV_STORAGE_ENDPOINT_PROVIDER_EXECUTION_ADMITTED", "next_attempt": "on the KV #2 governance/provider-execution event in the canonical runtime lane (event-driven)", "owning_existing_goal": "KV-CONNECTION-REVALIDATION-WORKER-001 (KV #2 request SITE-CLOUD-KV-4347408852127319cbda574f02e03edb; SV-KV-AI-PERSISTENCE-001, TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001)", "required_evidence_or_repair": "authentic Interlock/InTr governance and provider execution of the existing KV #2 request SITE-CLOUD-KV-4347408852127319cbda574f02e03edb (KV_STORAGE_ENDPOINT_V2_MIRROR_HANDOFF.md), then a READ of the recorded receipt chain through that storage endpoint", "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)", "subject": "LAYER1_RECEIPT_WITHOUT_HEALTHY_NODE_EVIDENCE"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND", "failure_class": "B", "failure_code": "DOUBLE_INTERLOCK_REFUSED", "message": "boundary_receipt_schema_invalid", "next_attempt": "on a chain rebuilt from both read-back receipts", "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)", "required_evidence_or_repair": "repair the double-interlock chain: boundary_receipt_schema_invalid", "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)", "subject": "LAYER2_WITHOUT_LAYER1_RECEIPT"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND", "failure_class": "B", "failure_code": "BOUNDARY_RECEIPT_LEDGER_READ_ABSENT", "message": "boundary_receipt_ledger_read_absent:COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND", "next_attempt": "on hop receipts produced by the two gates", "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)", "required_evidence_or_repair": "each hop receipt must carry the read receipt of its own recorded receipt chain (hop 0: KV's; hop 1: the SKAP Vault's)", "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)", "subject": "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "COINBASE_INTR_DOUBLE_INTERLOCK_RECEIPT_BOUND", "failure_class": "B", "failure_code": "DOUBLE_INTERLOCK_REFUSED", "message": "boundary_receipt_transport_invalid", "next_attempt": "on a chain rebuilt from both read-back receipts", "owning_existing_goal": "TV/TVC (StegVerse-Labs/TVC); layer receipts minted by KV-SKAP-VAULT-FUNCTIONAL-001 (continuity-vault-kit#258)", "required_evidence_or_repair": "repair the double-interlock chain: boundary_receipt_transport_invalid", "retry_entrypoint": "tools.coinbase_intr_double_interlock.gate_device_kv(..., org_ledger_git_dir=, supplied_hb_epoch=) then gate_kv_skap(...) (StegVerse-Labs/TVC)", "subject": "KV_SKAP_HOP_CLAIMING_INTR_TRANSPORT"}, {"disposition": "ALLOW", "subject": "KV_SKAP_HOP_IS_IN_KV_GATE_NOT_INTR"}]}
+--- stderr
