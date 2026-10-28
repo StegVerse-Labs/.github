@@ -62,7 +62,7 @@ def test_the_binding_is_identical_to_the_ingest_route():
     good = receipt()
     assert batches.sealed_source(good) == ing.sealed_source(good)
     assert batches.verify_any_source(good) == ing.verify_any_source(org, good)
-    assert batches.SEALED_TRANSITION_CLASS == ing.SEALED_CLASS
+    assert (batches.SEALED_TRANSITION_CLASS, batches.SEALED_OPERATION) == (ing.SEALED_CLASS, ing.SEALED)
 
 
 @pytest.mark.parametrize("value,code", [
@@ -135,17 +135,23 @@ def reseal_row(root, row, **over):
     return digest
 
 
-@pytest.mark.parametrize("over,message", [
-    ({"repo_receipt_sha256": "sha256:" + "a" * 64}, "sealed source digest binding mismatch"),
-    ({"canonical_state_transition_receipt_sha256": "sha256:" + "a" * 64}, "sealed source digest binding mismatch"),
-    ({"source_transition_sha256": "not-a-digest"}, "sealed source digest binding mismatch"),
-    ({"org_transition_class": "TEST"}, "sealed source transition class mismatch"),
+@pytest.mark.parametrize("over,code", [
+    ({"source_repository": "StegVerse-Labs/TVC"}, "SEALED_SOURCE_BINDING_MISMATCH"),  # wrong repository
+    ({"repo_receipt_sha256": "sha256:" + "a" * 64}, "SEALED_SOURCE_BINDING_MISMATCH"),  # repository digest
+    ({"canonical_state_transition_receipt_sha256": "sha256:" + "a" * 64}, "SEALED_SOURCE_BINDING_MISMATCH"),
+    ({"source_transition_sha256": "not-a-digest"}, "SEALED_SOURCE_BINDING_MISMATCH"),  # wrong digest
+    ({"source_transition_sha256": None}, "SEALED_SOURCE_BINDING_MISMATCH"),
+    ({"source_transition_id": "TVC_LABS_CONFORMANCE_TEST_RECEIPT@" + "c" * 40}, "SEALED_SOURCE_BINDING_MISMATCH"),
+    ({"source_transition_id": "@StegVerse-Labs/TVC@" + "c" * 40}, "SEALED_SOURCE_BINDING_MISMATCH"),  # wrong id
+    ({"org_transition_class": "TEST"}, "SEALED_SOURCE_CLASS_MISMATCH"),
+    ({"boundary_evidence": {"operation": "repo_transition"}}, "SEALED_SOURCE_CLASS_MISMATCH"),
 ])
-def test_a_resealed_sealed_row_with_a_wrong_binding_is_refused(ledger, over, message):
+def test_a_resealed_sealed_row_with_a_wrong_binding_is_refused(ledger, over, code):
     root, store = ledger
     row = append_sealed(store, receipt())
     assert batches._verified_receipt(root, row["receipt_sha256"]) == row
+    assert reseal_row(root, row) == row["receipt_sha256"]  # re-sealing alone changes nothing
     digest = reseal_row(root, row, **over)
-    with pytest.raises(ValueError) as caught:
+    with pytest.raises(batches.SealedSourceRefused) as caught:
         batches._verified_receipt(root, digest)
-    assert str(caught.value) == message
+    assert_six(caught.value, code)

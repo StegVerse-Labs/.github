@@ -59,6 +59,7 @@ RELEASED_BATCH_SUBMISSION_KEY = org.RETAINED_SUBMISSION_KEY
 # imported, so this pinned module's import closure is unchanged.
 SEALED_TEST_RECEIPT_SCHEMA = "stegverse.test-suite-skip-receipt/v1"
 SEALED_TRANSITION_CLASS = "ORGANIZATION_SEALED_TEST_RECEIPT_INGEST"  # organization_ledger_ingest.SEALED_CLASS
+SEALED_OPERATION = "sealed_test_receipt"  # organization_ledger_ingest.SEALED
 SEALED_SOURCE_RETRY_ENTRYPOINT = "resident-runtime/organization_batch_custody.py::verify_any_source"
 SEALED_SOURCE_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
 
@@ -198,6 +199,32 @@ def verify_any_source(receipt) -> dict:
     return org.verify_source(receipt)
 
 
+def _verify_sealed_row(row: Mapping) -> None:
+    """A sealed-source row is the ingest route's binding exactly, else SealedSourceRefused.
+
+    Only the sealed ingest route appends a sealed source, and it is no repository or
+    canonical transition: those digests and ids are None.
+    """
+    evidence = row.get("boundary_evidence")
+    if (row.get("org_transition_class") != SEALED_TRANSITION_CLASS or not isinstance(evidence, Mapping)
+            or evidence.get("operation") != SEALED_OPERATION):
+        raise SealedSourceRefused("SEALED_SOURCE_CLASS_MISMATCH", "SEALED_ROW_IS_THE_SEALED_INGEST_TRANSITION_CLASS",
+                                  "org_transition_class " + SEALED_TRANSITION_CLASS + " with boundary operation "
+                                  + SEALED_OPERATION)
+    if any(row.get(k) is not None for k in ("source_repository", "repo_receipt_sha256", "repo_transition_id",
+                                            "canonical_state_transition_receipt_sha256", "subject_or_correlation_id")):
+        raise SealedSourceRefused("SEALED_SOURCE_BINDING_MISMATCH", "SEALED_ROW_NAMES_NO_REPOSITORY_OR_CANONICAL_SOURCE",
+                                  "source_repository, repository and canonical digests and ids all None")
+    source = row.get("source_transition_sha256")
+    if not isinstance(source, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", source) is None:
+        raise SealedSourceRefused("SEALED_SOURCE_BINDING_MISMATCH", "SEALED_ROW_SOURCE_DIGEST_IS_A_SHA256",
+                                  "source_transition_sha256 as sha256:<64 hex>, the sealed receipt's receipt_sha256")
+    transition_id = row.get("source_transition_id")
+    if not isinstance(transition_id, str) or len(transition_id.split("@")) != 3 or not all(transition_id.split("@")):
+        raise SealedSourceRefused("SEALED_SOURCE_BINDING_MISMATCH", "SEALED_ROW_TRANSITION_ID_IS_KIND_REPOSITORY_HEAD",
+                                  "source_transition_id as receipt_kind@repository@head_sha")
+
+
 def _verified_receipt(root, digest: str) -> dict:
     """Verify one receipt read through the ledger store `root` names."""
     if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
@@ -214,14 +241,7 @@ def _verified_receipt(root, digest: str) -> dict:
     if row.get("organization") != org.C["organization"]:
         raise ValueError("organization receipt owner mismatch")
     if row.get("source_receipt_schema") == SEALED_TEST_RECEIPT_SCHEMA:
-        # Only the sealed ingest route appends a sealed source, and it is no repository or
-        # canonical transition: both digests are None.
-        if row.get("org_transition_class") != SEALED_TRANSITION_CLASS:
-            raise ValueError("sealed source transition class mismatch")
-        source = row.get("source_transition_sha256")
-        if (row.get("repo_receipt_sha256") is not None or row.get("canonical_state_transition_receipt_sha256") is not None
-                or not isinstance(source, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", source) is None):
-            raise ValueError("sealed source digest binding mismatch")
+        _verify_sealed_row(row)
         return row
     if row.get("source_receipt_schema") not in org.C["consumes"]:
         raise ValueError("organization source schema mismatch")
