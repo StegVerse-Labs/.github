@@ -1,0 +1,17 @@
+{
+  "case_id": "n6-missing-authority",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "REQUEST_CARRIES_THE_BOUNDARY_RESOLVED_CAPABILITY_BINDING",
+    "failure_code": "ORGANIZATION_INGRESS_RESOLUTION_ABSENT_FROM_REQUEST",
+    "next_attempt": "resubmit after the Registry owner admits the task and issues claim/fence",
+    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+    "required_evidence_or_repair": "the request must carry the SDK:ManifestIngress resolution from the boundary document; admission and claim/fence stay with the Registry owner",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::bound_here"
+  },
+  "mutation": {
+    "kind": "DROP_RESOLUTION"
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1"
+}

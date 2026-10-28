@@ -5049,6 +5049,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_org_runtime_transition_bound.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_org_runtime_transition_bound.py"
+   ],
+   "tests": [
+    "tests/test_org_runtime_transition_bound.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_batch_custody.py",
    "inputs": [],
    "surfaces": [
@@ -5614,6 +5626,18 @@
    ],
    "tests": [
     "tests/test_process_worker_adapter_fragments.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_protocol_v1_conformance_fixtures.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_protocol_v1_conformance_fixtures.py"
+   ],
+   "tests": [
+    "tests/test_protocol_v1_conformance_fixtures.py"
    ]
   },
   {
@@ -14850,6 +14874,10 @@
    "tasks/TASK-2026-0013.json",
    "tasks/TASK-2026-0014.json"
   ],
+  "tests/test_org_runtime_transition_bound.py": [
+   "org-runtime/activation.json",
+   "org-runtime/runtime_boundary.py"
+  ],
   "tests/test_organization_batch_custody.py": [
    "heartbeat_runtime/__init__.py",
    "heartbeat_runtime/independent_oscillator.py",
@@ -15139,6 +15167,12 @@
   "tests/test_process_worker_adapter_fragments.py": [
    "control/process-worker-adapters.d/**",
    "scripts/run_heartbeat_runtime.py"
+  ],
+  "tests/test_protocol_v1_conformance_fixtures.py": [
+   "org-kernel/organization-ledger/fixtures/protocol-v1-conformance/**",
+   "org-runtime/interlock-intr.json",
+   "resident-runtime/sdk_manifest_crossing.py",
+   "tests/test_organization_manifest_ingress_rule_ref.py"
   ],
   "tests/test_publisher_intr_materialization.py": [
    "scripts/consume_publisher_intr_materialization_request.py",

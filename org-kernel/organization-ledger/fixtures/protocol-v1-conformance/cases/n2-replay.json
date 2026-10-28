@@ -1,0 +1,18 @@
+{
+  "case_id": "n2-replay",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "disposition": "DENY",
+    "failed_predicate": "ONE_MANIFEST_IS_ONE_TRANSITION_HOWEVER_MANY_TIMES_DELIVERED",
+    "failure_code": "TRANSITION_ALREADY_RECORDED",
+    "next_attempt": "read back the recorded transition instead of resubmitting",
+    "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+    "required_evidence_or_repair": "none; the recorded transition stands and a redelivery produces no second effect",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::ingress_transition_id"
+  },
+  "mutation": {
+    "kind": "REPLAY_UNDER_NEW_PACKET_ID",
+    "packet_id": "protocol-v1-conformance-replay"
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1"
+}
