@@ -112,7 +112,7 @@ def test_opt_in_request_writes_private_exact_bytes_and_sanitizes_stdout(monkeypa
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
     org.aggregate_transition(source("SDK_INTR_DENY", outcome="DENY"))
     request(runtime)
-    summary = consumer.consume(ROOT, runtime)
+    summary = consumer._process_request(ROOT, runtime)
     assert summary["state"] == "RECORDED_LOCAL_READBACK", summary
     assert summary["match_count"] == 1
     assert "exact_source_receipts" not in summary
@@ -134,7 +134,7 @@ def test_forged_request_scope_fails_without_private_artifact(monkeypatch, tmp_pa
     forged = json.loads(path.read_text())
     forged["cosv_task_vector"] = "99999999999999"
     path.write_text(json.dumps(forged))
-    result = consumer.consume(ROOT, runtime)
+    result = consumer._process_request(ROOT, runtime)
     assert result["state"] == "BOUNDARY"
     assert result["reason"] == "READBACK_REQUEST_OWNER_OR_MODE_INVALID"
     assert not (runtime / consumer.OUTPUT_REL).exists()
@@ -144,7 +144,7 @@ def test_missing_head_returns_precise_local_boundary_not_intr_deny(monkeypatch, 
     runtime = tmp_path / "runtime"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "empty-ledger"))
     request(runtime)
-    result = consumer.consume(ROOT, runtime)
+    result = consumer._process_request(ROOT, runtime)
     assert result["state"] == "BOUNDARY", result
     assert result["reason"] == "ORGANIZATION_HEAD_NOT_MATERIALIZED"
     assert result["master_records_reconstruction"] == "NOT_QUERIED"
@@ -160,38 +160,60 @@ def test_unsupplied_ledger_root_is_its_own_boundary_and_nothing_is_derived(monke
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.setenv("XDG_STATE_HOME", str(home / "state"))
     request(runtime)
-    result = consumer.consume(ROOT, runtime)
+    result = consumer._process_request(ROOT, runtime)
     assert result["state"] == "BOUNDARY", result
     assert result["reason"] == "ledger_location_required_from_materializer: STEGVERSE_ORG_LEDGER_ROOT"
     assert result["runtime_execution_proven"] is False
     assert list(home.iterdir()) == []
 
 
-def test_legacy_hosted_request_is_diagnostic_boundary_only(monkeypatch, tmp_path):
-    runtime = tmp_path / "runtime"
+SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+              "retry_entrypoint", "owning_existing_goal", "next_attempt")
+
+
+@pytest.mark.parametrize("host", [{"CI": "true"}, {"GITHUB_ACTIONS": "true", "CI": "true"}, {}])
+def test_bare_request_without_admitted_manifest_route_fails_closed_on_every_host(monkeypatch, tmp_path, host):
+    # #1615 lane E: a host label neither admits nor refuses; the result is the same everywhere.
+    ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
+    monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
+    for name, value in host.items():
+        monkeypatch.setenv(name, value)
+    org.aggregate_transition(source("SDK_INTR_DENY", outcome="DENY"))
     request(runtime)
-    monkeypatch.setenv("GITHUB_ACTIONS", "true")
     result = consumer.consume(ROOT, runtime)
-    assert result["state"] == "BOUNDARY"
-    assert result["reason"] == "LEGACY_OPTIONAL_DIAGNOSTIC_HOSTED_ENVIRONMENT"
+    assert result["state"] == "FAIL_CLOSED", result
+    assert result["disposition"] == "FAIL_CLOSED"
+    assert result["failure_code"] == "MANIFEST_ROUTE_CONFORMANCE_NOT_ESTABLISHED"
+    assert result["failed_predicate"] == "ADMITTED_MANIFEST_CAPABILITY_ROUTE_SELECTS_PROCESSING"
+    assert all(isinstance(result[k], str) and result[k] for k in SIX_FIELDS)
+    assert result["readback_executed"] is False
+    assert "LEGACY_OPTIONAL_DIAGNOSTIC_HOSTED_ENVIRONMENT" not in json.dumps(result)
+    assert not (runtime / consumer.OUTPUT_REL).exists()
+
+
+def test_consumer_reads_no_host_label():
+    text = Path(consumer.__file__).read_text(encoding="utf-8")
+    assert "os.environ" not in text
+    assert "LEGACY_OPTIONAL_DIAGNOSTIC_HOSTED_ENVIRONMENT" not in text
+
 
 def test_exact_request_retry_keeps_original_immutable_snapshot_after_new_head(monkeypatch, tmp_path):
     ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
     original = org.aggregate_transition(source("FIRST"))
     request(runtime)
-    first = consumer.consume(ROOT, runtime)
+    first = consumer._process_request(ROOT, runtime)
     assert first["state"] == "RECORDED_LOCAL_READBACK"
     artifact = runtime / first["private_artifact_location"]
     original_bytes = artifact.read_bytes()
     org.aggregate_transition(source("AFTER_FIRST_READBACK", task="OTHER"))
-    retry = consumer.consume(ROOT, runtime)
+    retry = consumer._process_request(ROOT, runtime)
     assert retry["state"] == "ALREADY_CONSUMED", retry
     assert retry["head_receipt_sha256"] == original["receipt_sha256"]
     assert retry["private_artifact_sha256"] == first["private_artifact_sha256"]
     assert artifact.read_bytes() == original_bytes
     request(runtime, request_id="custody-probe-2")
-    latest = consumer.consume(ROOT, runtime)
+    latest = consumer._process_request(ROOT, runtime)
     assert latest["state"] == "RECORDED_LOCAL_READBACK"
     assert latest["receipt_count"] == 2
     assert latest["private_artifact_sha256"] != first["private_artifact_sha256"]
