@@ -72,6 +72,7 @@ on:
       - 'tests/test_prepare_kv_ai_memory_intr_runtime_source.py'
       - 'tests/test_kv_ai_memory_runtime_surface_invariant.py'
       - 'tests/test_kv_ai_memory_resident_source_carriage.py'
+      - '.github/workflows/validate-kv-ai-memory-resident.yml'
 
 permissions:
   contents: read
