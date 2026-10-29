@@ -1,0 +1,40 @@
+{
+  "authority_effect": "NONE",
+  "evidence": {
+    "consequence_committed": false,
+    "detail": "no carrier heartbeat epoch was supplied for this grant",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "GRANT_EPOCH_NOT_CARRIER_SUPPLIED",
+    "failure_code": "GRANT_EPOCH_NOT_CARRIER_SUPPLIED",
+    "fence_issued": false,
+    "fencing_token": null,
+    "next_attempt": "on the next request event after the repair is recorded",
+    "organization_head_sha256": "sha256:740fd5b7eda39c3774b70e6fdaaab4350e34916200aa3e17b8d682647581d9ec",
+    "owning_existing_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+    "request_id": "RESIDENT-EXEC-ORG-CLAIM-ALLOCATOR-001",
+    "request_sha256": "adab8fdc50316fb1b07c1782f4696e4bc0b54b5bc79ddd0af55c9d22fa3fa770",
+    "required_evidence_or_repair": "supply the carrier heartbeat epoch with --hb-epoch; no epoch is derived from a clock",
+    "retry_entrypoint": ".github/workflows/organization-claim-allocator-transition-writer.yml",
+    "target_task_id": null,
+    "task_id": "TASK-2026-0007"
+  },
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": true,
+    "epoch": 574294944,
+    "frequency_hz": 100,
+    "generation": 574294944,
+    "heartbeat_id": "HB:574294944",
+    "phase_offset_ns": 1399040,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "sampled_unix_ns": 1793254549121399040
+  },
+  "predecessor_state_sha256": "sha256:adab8fdc50316fb1b07c1782f4696e4bc0b54b5bc79ddd0af55c9d22fa3fa770",
+  "previous_receipt_sha256": "sha256:77831481963fff10dcfe10e21e25758fa0649a34d141438f7c8f7fad0d46fa71",
+  "receipt_sha256": "sha256:4addb53229d6b976684a2253332aaeb7e8eef1e57dede573071f8fa85766a2c8",
+  "repository": "StegVerse-Labs/.github",
+  "schema": "stegverse.repo-transition-receipt/v1",
+  "successor_state_sha256": "sha256:a3b92ab7e59fca29746ddbe0fa61b82c506a6a6f73aa9e005c1d1aadaec00d6c",
+  "transition_class": "ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED",
+  "transition_id": "ORGANIZATION-WORKER-CLAIM-FAIL-CLOSED-812fa236b6c9eece"
+}
