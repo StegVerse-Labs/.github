@@ -4,7 +4,7 @@
   "consumed_by": "scripts/canonical_task_registration_transition.py (plan/apply; StegVerse-Labs/.github#3311)",
   "registry_edit": false,
   "registry_generation_bump": false,
-  "observed_registry_generation": 322,
+  "observed_registry_generation": 323,
   "observed_base": {
     "main": "fadccc2f",
     "registry_blob": "6136c5a3"
@@ -16,7 +16,7 @@
       "basis": "SHARD_ONLY",
       "registration_mode": "EXISTING_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.request.json",
-      "request_sha256": "28b60006f3ef5c89383940841e91178cc89b46b64773c0ad1468e7ee1657c65f",
+      "request_sha256": "042062fb5380f289b7ec1c6ac0561f70bf3743ce4e14b0f1fd25d2b18608beb8",
       "plan_at_base": "StegVerse-Labs/.github main fadccc2f with this PR's registry generation 321 (kv-skap-gate-roundtrip rename), and the #3311 transition (9e00a16e)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
@@ -36,7 +36,7 @@
       "basis": "SHARD_ONLY",
       "registration_mode": "EXISTING_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.request.json",
-      "request_sha256": "9e96d3ca0b52728d82328a647adc79b08cd9e66d5795ca2d6999eeafa3292eec",
+      "request_sha256": "7b7ec2538d42fc9e976a12f5d22faafd66189fbfd75f88f4186f280e6675cd48",
       "plan_at_base": "StegVerse-Labs/.github main fadccc2f with this PR's registry generation 321 (kv-skap-gate-roundtrip rename), and the #3311 transition (9e00a16e)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
@@ -56,7 +56,7 @@
       "basis": "SHARD_ONLY",
       "registration_mode": "EXISTING_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.request.json",
-      "request_sha256": "d4bebad363e245716b29827076c0ba40a04ed897fbf62db172ff2804e701d1d4",
+      "request_sha256": "224dbf3a690c05a54c6fb2c54edbd73af6eda2fa7dd01b9ace4654a93af4d74b",
       "plan_at_base": "StegVerse-Labs/.github main fadccc2f with this PR's registry generation 321 (kv-skap-gate-roundtrip rename), and the #3311 transition (9e00a16e)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
@@ -82,7 +82,7 @@
       ],
       "observed_source": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.request.json",
-      "request_sha256": "1b2e2463da9417880044b9d3503b9dde3f28e5ad52835975b33a3c8287d3498f",
+      "request_sha256": "2fa294a0ce4e383b314c30b29c81cc162b6553ef0251f32bc89807606d3615d2",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-tvc-repository-operation-broker-2026-10-23.json",
       "scope_digest": "sha256:7c2d83c7dcdd86a46c63112dda07902fc7adf9d1442c7d2c2f029c4383f71039",
       "finish_point": {
@@ -146,7 +146,7 @@
       ],
       "observed_source": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-PRIVATE-SOURCE-READ-001.request.json",
-      "request_sha256": "d66783483c5e7626c008a7ead86d79396119b1029416ba38a4e5cfe9f05a1900",
+      "request_sha256": "65a17288179efa6477801c14428d2ace824886fc6c3b9e1e5ea48038f28b646a",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-tvc-private-source-read-2026-10-23.json",
       "scope_digest": "sha256:5f6615d86730d08e40c9271e363c2c89865b4af388ea6905bccdde2c20a9cd64",
       "finish_point": {
@@ -161,7 +161,7 @@
         "disposition": "ALLOW",
         "cosv_task_vector": "50000000101000",
         "scope_digest": "sha256:5f6615d86730d08e40c9271e363c2c89865b4af388ea6905bccdde2c20a9cd64",
-        "successor_registry_generation": 323,
+        "successor_registry_generation": 324,
         "derived_files": [
           "control/goal-scope-seals/TVC-PRIVATE-SOURCE-READ-001.json",
           "control/task-vector-index.d/TVC-PRIVATE-SOURCE-READ-001.json",
@@ -178,7 +178,7 @@
       "basis": "NEW_IDENTITY_REQUEST",
       "registration_mode": "NEW_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
-      "request_sha256": "5494560ffef3c062d6fd8ed6bac700f1c1cd9045c779d624c9d7fb35e8560cac",
+      "request_sha256": "6f1df8908d169086b7fe88655a8c29b9d16b2dbe9d80039a19935c753c0ce2a3",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
       "scope_digest": "sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc",
       "finish_point": {
