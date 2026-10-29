@@ -1,0 +1,41 @@
+{
+  "authority_effect": "NONE",
+  "bounded_effect": {
+    "boundary_role": "BOUNDARY_LOCAL_DIAGNOSTIC",
+    "effect": "ECHO_OF_THE_ADMITTED_PAYLOAD",
+    "service_id": "stegverse-labs.boundary-diagnostic",
+    "writes": "NONE"
+  },
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "issue": "StegVerse-Labs/.github#3369",
+  "manifest": {
+    "completion": {
+      "egress": {
+        "far_side_transition_required": true,
+        "final_stegverse_transition_surface": "boundary_diagnostic",
+        "transport": "INTERLOCK_INTR"
+      }
+    },
+    "manifest_id": "PROTOCOL-V1-CONFORMANCE-FIXTURE-001",
+    "schema": "stegverse.ingress-manifest.v1",
+    "transition": {
+      "authority_effect": "NONE"
+    }
+  },
+  "manifest_sha256": "sha256:d6847db504ed6d35fbec5aa86d156f3940e43231085e3e6c5147f12c7af5db88",
+  "packet_id": "protocol-v1-conformance-positive",
+  "profile": {
+    "binding_source": "org-runtime/interlock-intr.json",
+    "operation": "SUBMIT_MANIFEST",
+    "profile_id": "sdk-manifest-ingress",
+    "profile_name": "SDK:ManifestIngress"
+  },
+  "registry_source": "org-boundary/registry/services.json",
+  "schema": "stegverse.protocol-v1-conformance-packet/v1",
+  "standing": {
+    "generation": 1,
+    "mode": "ESTABLISH_GENESIS",
+    "node_ref": "StegVerse-Labs",
+    "predecessor": null
+  }
+}

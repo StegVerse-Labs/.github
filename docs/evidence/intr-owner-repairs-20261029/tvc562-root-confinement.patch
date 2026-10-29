@@ -1,0 +1,117 @@
+--- a/scripts/check_credential_model_consistency.py
++++ b/scripts/check_credential_model_consistency.py
+@@ -24,9 +24,15 @@
+         if not isinstance(entry, dict) or entry.get("workflow") != rel or entry.get("status") != "DONE":
+             continue
+         record, pinned = entry.get("verbatim_record"), entry.get("verbatim_sha256")
+-        if not isinstance(record, str) or not isinstance(pinned, str) or ".." in Path(record).parts:
++        if (not isinstance(record, str) or not isinstance(pinned, str)
++                or Path(record).is_absolute() or ".." in Path(record).parts):
+             return None
+         path = root / record
++        try:
++            if not path.resolve().is_relative_to(root.resolve()):
++                return None
++        except (OSError, RuntimeError):
++            return None
+         if path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest() == pinned:
+             return path
+         return None
+--- a/scripts/check_credential_model_socket_module_review.py
++++ b/scripts/check_credential_model_socket_module_review.py
+@@ -251,9 +251,15 @@
+         if not isinstance(entry, dict) or entry.get("workflow") != rel or entry.get("status") != "DONE":
+             continue
+         record, pinned = entry.get("verbatim_record"), entry.get("verbatim_sha256")
+-        if not isinstance(record, str) or not isinstance(pinned, str) or ".." in Path(record).parts:
++        if (not isinstance(record, str) or not isinstance(pinned, str)
++                or Path(record).is_absolute() or ".." in Path(record).parts):
+             return None
+         path = root / record
++        try:
++            if not path.resolve().is_relative_to(root.resolve()):
++                return None
++        except (OSError, RuntimeError):
++            return None
+         if path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest() == pinned:
+             return path
+         return None
+--- /dev/null
++++ b/tests/test_folded_record_root_confinement.py
+@@ -0,0 +1,76 @@
++from __future__ import annotations
++
++import hashlib
++import json
++import tempfile
++import unittest
++from pathlib import Path
++
++from scripts import check_credential_model_consistency as consistency
++from scripts import check_credential_model_socket_module_review as socket_review
++
++
++class FoldedRecordRootConfinementTests(unittest.TestCase):
++    modules = (consistency, socket_review)
++    workflow = ".github/workflows/w.yml"
++
++    def fixture(self, outer: Path):
++        root = outer / "repo"
++        (root / "control").mkdir(parents=True)
++        # Preserve registry-declared repository-relative records outside the usual
++        # folded directory; this test imposes no new subtree policy.
++        (root / "declared-records").mkdir()
++        inside = root / "declared-records/w.yml"
++        outside = outer / "outside.yml"
++        inside.write_text("on: push\n", encoding="utf-8")
++        outside.write_bytes(inside.read_bytes())
++        return root, inside, outside
++
++    def declare(self, root: Path, record: str, content: bytes):
++        (root / "control/workflow-surface-registry.json").write_text(
++            json.dumps({"folded": [{"workflow": self.workflow, "status": "DONE",
++                "verbatim_record": record,
++                "verbatim_sha256": hashlib.sha256(content).hexdigest()}]}), encoding="utf-8")
++
++    def assert_result(self, root: Path, expected: Path | None):
++        for module in self.modules:
++            with self.subTest(module=module.__name__):
++                self.assertEqual(module._folded_record(root, self.workflow), expected)
++
++    def test_repository_relative_declared_record_is_preserved(self):
++        with tempfile.TemporaryDirectory() as td:
++            root, inside, _ = self.fixture(Path(td))
++            self.declare(root, "declared-records/w.yml", inside.read_bytes())
++            self.assert_result(root, inside)
++
++    def test_absolute_record_rejected_even_with_matching_hash(self):
++        with tempfile.TemporaryDirectory() as td:
++            root, _, outside = self.fixture(Path(td))
++            self.declare(root, str(outside), outside.read_bytes())
++            self.assert_result(root, None)
++
++    def test_symlink_escape_rejected_even_with_matching_hash(self):
++        with tempfile.TemporaryDirectory() as td:
++            root, _, outside = self.fixture(Path(td))
++            link = root / "declared-records/link.yml"
++            link.symlink_to(outside)
++            self.declare(root, "declared-records/link.yml", outside.read_bytes())
++            self.assert_result(root, None)
++
++    def test_internal_symlink_is_preserved(self):
++        with tempfile.TemporaryDirectory() as td:
++            root, inside, _ = self.fixture(Path(td))
++            link = root / "declared-records/link.yml"
++            link.symlink_to(inside)
++            self.declare(root, "declared-records/link.yml", inside.read_bytes())
++            self.assert_result(root, link)
++
++    def test_parent_traversal_remains_rejected(self):
++        with tempfile.TemporaryDirectory() as td:
++            root, _, outside = self.fixture(Path(td))
++            self.declare(root, "../outside.yml", outside.read_bytes())
++            self.assert_result(root, None)
++
++
++if __name__ == "__main__":
++    unittest.main()
