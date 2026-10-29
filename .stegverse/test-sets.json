@@ -15952,6 +15952,8 @@
    "heartbeat_runtime/independent_oscillator.py",
    "heartbeat_runtime/oscillator_producer.py",
    "heartbeat_runtime/worker_runtime.py",
+   "receipts/sovereign-host/**",
+   "scripts/restart_sovereign_ephemeral_node.py",
    "scripts/run_heartbeat_runtime.py",
    "scripts/run_sovereign_ephemeral_console.py",
    "scripts/run_worker_runtime.py",
