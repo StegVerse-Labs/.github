@@ -96,13 +96,13 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
         # revision 16 (Coordination ruling): the cvk-only both-ends anchor; KV's own head record decides (ruling A)
-        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f: "
+        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@acfd2be5763fea22ea7c859cf493dab24f1f3ac8: "
                                                             "runtime/kv_receipt_ledgers.py::read_receipt_ledger"))
         self.assertEqual(anc["e0_terminal"]["dispositions"], ["ALLOW", "DENY", "FAIL_CLOSED"])
         self.assertEqual(anc["observed_by"], ["cvk263-chain-probe", "cvk263-anchor-production-prerequisites"])
         self.assertEqual([b["id"] for b in anc["allow_path"]["blockers"]],
                          ["KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED", "KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR",
-                          "ORG_CROSSING_READER_NOT_INSTALLED", "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED"])
+                          "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED"])  # revision 17: ORG_CROSSING_READER_NOT_INSTALLED cleared (cvk#276)
         self.assertEqual([r["ref"] for r in anc["external_dependency_refs"]], ["ORG-LEDGER-HEAD-SIGNER-001"])
         self.assertTrue(anc["external_dependency_refs"][0]["owner"].startswith("GitHub Product lane"))
         self.assertIn("no bot does it", anc["external_dependency_refs"][0]["evidence"])
@@ -117,9 +117,11 @@ class CommittedArtifacts(unittest.TestCase):
                          ["ORG-LEDGER-HEAD-SIGNER-001"])
         for w_ in ("KV", "SKAP_VAULT"):
             for c_ in ("KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR", "KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED",
-                       "KV_RECEIPT_CHAIN_GENESIS_PIN_MECHANISM_ORG_HOSTED", "KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED"):
+                       "KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED"):
                 self.assertEqual(anc["required_outcomes"]["PROD_PREREQ_%s_%s" % (c_, w_)], ["FAIL_CLOSED"], (c_, w_))
-        self.assertEqual(anc["required_outcomes"]["ORG_CROSSING_READER_INSTALLED"], ["FAIL_CLOSED"])
+        # revision 17: the Org-end reader is installed at continuity-vault-kit @acfd2be5 (cvk#276); the org-hosted pin rows are gone (cvk#277)
+        self.assertEqual(anc["required_outcomes"]["ORG_CROSSING_READER_INSTALLED"], ["ALLOW"])
+        self.assertFalse([k for k in anc["required_outcomes"] if "PIN_MECHANISM_ORG_HOSTED" in k])
         self.assertEqual(anc.get("bypass_paths") or [], [])
         for s_ in ("PROD_LAYER1_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY", "LAYER1_TRANSPORT_NOT_INSTALLED",
                    "LAYER1_NODE_LEDGER_WITHOUT_ANCHOR", "LAYER1_EPHEMERAL_ANCHORED_BY_UNSIGNED_OPENED_RECORD",
@@ -177,11 +179,11 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(m["blocker"], "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED")
         self.assertEqual(m["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
         self.assertEqual(m["failure_code"], "LADDER_ALLOW_PATH_UNBOUND")
-        # re-pins inside TV/TVC's own reader are class A; TVC main @b686a60b does not bind to continuity-vault-kit @77d28d83
+        # class A inside TV/TVC's own reader; TVC main @425eab54 still refuses the entry shape continuity-vault-kit @acfd2be5 returns
         self.assertEqual(m["failure_class"]["class"], "A")
         self.assertTrue(m["owning_lane"].startswith("GitHub Product lane as TV/TVC owner"))
-        self.assertIn("77d28d83", m["required_repair"])
-        self.assertIn("77d28d83", m["proposed_resolution"])
+        self.assertIn("acfd2be5", m["required_repair"])
+        self.assertIn("acfd2be5", m["proposed_resolution"])
         self.assertIn("KV_RECEIPT_CHAIN_DESIGNATION_DIGEST_MISMATCH", m["required_repair"])
         for t in tasks.values():  # withdrawn names and ledger-wide encryption are gone from every proposal
             self.assertNotIn("gateway node", t["proposed_resolution"], t["task_id"])
@@ -202,10 +204,10 @@ class CommittedArtifacts(unittest.TestCase):
         for tid in ("LC-KV-18", "LC-KV-19", "LC-KV-20", "LC-KV-25"):
             self.assertNotIn(tid, tasks)
         anc = sorted(t["task_id"] for t in tasks.values() if "H-KV-ENDPOINT-LEDGER-ANCHOR" in t["items"])
-        self.assertEqual(anc, ["LC-KV-21", "LC-KV-27", "LC-KV-28", "LC-KV-29"])
+        self.assertEqual(anc, ["LC-KV-21", "LC-KV-27", "LC-KV-28"])
+        self.assertNotIn("LC-KV-29", tasks)  # revision 17: ORG_CROSSING_READER_INSTALLED is ALLOW at continuity-vault-kit @acfd2be5
         exp = {"LC-KV-27": ("KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED", "B", "Lane D (KV and WorkSpace"),
                "LC-KV-28": ("KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR", "B", "Lane D (KV and WorkSpace)"),
-               "LC-KV-29": ("ORG_CROSSING_READER_NOT_INSTALLED", "B", "InTr and Mesh Destinations lane (Lane B"),
                "LC-KV-21": ("KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED", "A", "GitHub Product lane as TV/TVC owner")}
         for tid, (blocker, cls, lane) in exp.items():
             t = tasks[tid]
@@ -219,8 +221,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("SUPPLIED_HB_EPOCH", tasks["LC-KV-27"]["required_repair"])
         self.assertIn("a fabricated genesis digest is not evidence", tasks["LC-KV-27"]["required_repair"])
         self.assertIn("SITE-CLOUD-KV-4347408852127319cbda574f02e03edb", tasks["LC-KV-28"]["required_repair"])
-        self.assertIn("6372641743", tasks["LC-KV-29"]["required_repair"])
-        self.assertIn("never a hop inside one org", tasks["LC-KV-29"]["required_repair"])
+        self.assertIn("KV_OWNED_RECEIPT_CHAIN_GENESIS_PIN", tasks["LC-KV-27"]["required_repair"])  # revision 17: mechanism exists, value pending
         self.assertNotIn("H-KV-ENDPOINT-LEDGER-ANCHOR", tasks["LC-KV-05"]["items"])
 
     def test_rev16_withdrawn_path_cannot_be_rebuilt(self):
@@ -249,8 +250,11 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("merge-ready", anc)
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         run = next(r for r in obs["runs"] if r["run_id"] == "cvk263-anchor-production-prerequisites")
-        self.assertTrue(run["pin"].endswith("@77d28d838ec6714044a192d4f549c3ca9366ff3f"))
+        self.assertTrue(run["pin"].endswith("@acfd2be5763fea22ea7c859cf493dab24f1f3ac8"))
         for o in run["outcomes"]:
+            if o["subject"] == "ORG_CROSSING_READER_INSTALLED":  # revision 17: installed (cvk#276)
+                self.assertEqual(o["disposition"], "ALLOW")
+                continue
             self.assertEqual(o["disposition"], "FAIL_CLOSED", o["subject"])
             for k in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
                       "owning_existing_goal", "next_attempt"):
@@ -353,7 +357,7 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_" + w_], ["DENY"])
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         probe = next(r for r in obs["runs"] if r["run_id"] == "cvk263-chain-probe")
-        self.assertTrue(probe["pin"].endswith("@77d28d838ec6714044a192d4f549c3ca9366ff3f"))
+        self.assertTrue(probe["pin"].endswith("@acfd2be5763fea22ea7c859cf493dab24f1f3ac8"))
         rows = {o["subject"]: o for o in probe["outcomes"]}
         for w_ in ("KV", "SKAP_VIA_GATE"):
             for c_ in ("KV_END_ONLY", "ORG_RECORDS_AN_OLDER_HEAD_ONLY"):

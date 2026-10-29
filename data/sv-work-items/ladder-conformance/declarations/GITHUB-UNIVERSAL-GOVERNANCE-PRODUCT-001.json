@@ -540,7 +540,7 @@
     "E3": "three LLM lanes may author repairs to the admission record and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f: resident-runtime/sv_work_items.py::admit (SV_CHANGE_ADMIT)",
+    "by": "StegVerse-Labs/.github@6b13c3a749b2940d6142644196a8302823c1f45a: resident-runtime/sv_work_items.py::admit (SV_CHANGE_ADMIT)",
     "dispositions": [
      "ALLOW",
      "DENY",
