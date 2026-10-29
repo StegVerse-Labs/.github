@@ -5787,6 +5787,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_real_governance_assessment_sample_request_wiring.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_real_governance_assessment_sample_request_wiring.py"
+   ],
+   "tests": [
+    "tests/test_real_governance_assessment_sample_request_wiring.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_receipt_hb_creation_reference.py",
    "inputs": [],
    "surfaces": [
@@ -9934,6 +9946,7 @@
    "control/resident-execution-request.d/canonical-work-erl-household-economic-conditions-site-001.json",
    "control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json",
    "control/resident-execution-request.d/canonical-work-organization-batch-custody-replay-001.json",
+   "control/resident-execution-request.d/canonical-work-real-governance-assessment-sample-001.json",
    "control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json",
    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py",
    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
@@ -15356,6 +15369,14 @@
   "tests/test_ratchet_baseline_integrity.py": [
    ".github/workflows/test-suite-ratchet.yml",
    "scripts/check_test_suite_ratchet.py"
+  ],
+  "tests/test_real_governance_assessment_sample_request_wiring.py": [
+   ".github/workflows/**",
+   "control/resident-execution-request.d/**",
+   "control/resident-execution-request.d/canonical-work-real-governance-assessment-sample-001.json",
+   "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json"
   ],
   "tests/test_receipt_hb_creation_reference.py": [
    "heartbeat_runtime/independent_oscillator.py",
