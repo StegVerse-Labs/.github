@@ -117,6 +117,30 @@
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
     },
     {
+      "path": ".github/workflows/intr-destination-capability-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-Labs/.github#3200",
+      "reason": "validation-only check (pull_request and push to main, path-filtered, plus workflow_dispatch; permissions contents: read; persist-credentials false) of the advertised intr-destination diagnostic capability: runtime_boundary.py validate and tests.test_intr_destination_capability with both ledger roots redirected to runner.temp; it proves emit and close against this repository's own kernel receipt, not a live peer, appends to no operator ledger, and this registration grants no runtime, transition, or credential authority"
+    },
+    {
+      "path": ".github/workflows/reverse-intr-inter-org-route-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORG_RESIDENT_RUNTIME_INTR_BOUNDARY / StegVerse-Labs/.github#3198",
+      "reason": "validation-only check (pull_request and push to main, path-filtered, plus workflow_dispatch; permissions contents: read; persist-credentials false) of the declared reverse InTr governance-to-org leg, Labs to StegVerse-org: tests.test_reverse_intr_inter_org_route with both ledger roots and the mesh redirected by the tests; no remediation-to-org leg, no operator-runtime append, not a production crossing or authentic receipt, and this registration grants no runtime, transition, or credential authority"
+    },
+    {
+      "path": ".github/workflows/organization-claim-allocator-transition.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "reason": "PR-facing half of the event-ephemeral organization claim allocator (split by Lane D; publishing moved to .github/workflows/organization-claim-allocator-transition-writer.yml): triggered by pull_request only (path-filtered); workflow and every job hold permissions contents: read and every checkout uses persist-credentials false. The validate job unit-tests the consumer and allocator against temporary ledgers; the transition job is the PR-safe dry run: the existing consumer and allocator against a temporary copy of refs/stegverse/organization-ledger fetched anonymously (no hb_epoch), fast-forward check and readback on that copy, published ref required unchanged. No push, no credential; per-PR concurrency group outside ORGANIZATION_LEDGER_LOCK; not claim authority"
+    },
+    {
+      "path": ".github/workflows/organization-claim-allocator-transition-writer.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "reason": "writer-only half of the event-ephemeral organization claim allocator: never triggers on pull_request (push to main on control/resident-execution-request.d/org-claim-allocator-*.json, and workflow_dispatch); workflow permissions contents: read with job-scoped contents: write on the publish job only; runs the existing consumer and allocator against the declared Organization store, appends the typed claim disposition to refs/stegverse/organization-ledger under ORGANIZATION_LEDGER_LOCK, fast-forward only, and reads it back from a fresh fetch; split out so that no pull_request run is issued a write-scoped token; not claim authority"
+    },
+    {
       "path": ".github/workflows/canonical-task-registration-transition.yml",
       "classification": "REVIEW_REQUIRED",
       "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",

@@ -1,0 +1,11 @@
+{
+  "case_id": "positive",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "disposition": "ALLOW"
+  },
+  "mutation": {
+    "kind": "NONE"
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1"
+}
