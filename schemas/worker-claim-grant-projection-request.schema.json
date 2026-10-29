@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-claim-grant-projection-request.schema.json",
+  "title": "Worker claim grant projection request",
+  "description": "One committed manifest asking scripts/worker_claim_grant_projection_transition.py to project an Organization claim-allocator GRANTED receipt into control/worker-registry.json. The receipt travels as bytes (inline object) and is re-verified against the Organization ledger. A manifest grants nothing: authority NONE_PROJECTION_ONLY.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "request_id", "allocator_task_id", "canonical_task_id", "observed_worker_registry_generation", "organization_receipt_sha256", "organization_receipt", "authority_effect"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-claim-grant-projection-request/v1"},
+    "request_id": {"type": "string", "pattern": "^WCGP-[A-Z0-9-]+$"},
+    "allocator_task_id": {"type": "string", "pattern": "^TASK-[0-9]{4}-[0-9]{4}$"},
+    "canonical_task_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9-]+$"},
+    "observed_worker_registry_generation": {"type": "integer", "minimum": 0},
+    "organization_receipt_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "organization_receipt": {"type": "object", "description": "The stegverse.organization-transition-receipt/v1 record exactly as stored at receipts/<digest>.json on refs/stegverse/organization-ledger."},
+    "authority_effect": {"const": "NONE_PROJECTION_ONLY"},
+    "notes": {"type": "string"}
+  }
+}

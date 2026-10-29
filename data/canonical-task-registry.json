@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 321,
+  "generation": 322,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -22630,6 +22630,106 @@
         "interlock_intr_required_for_governed_ingress_egress": true
       },
       "cosv_task_vector": "10300000011000"
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "EC9-WHEN-AI-SERVICES-FAIL-PUBLICATION-001",
+      "correlation_id": "EC9-WHEN-AI-SERVICES-FAIL-PUBLICATION-001",
+      "root_correlation_id": "EC9-WHEN-AI-SERVICES-FAIL-PUBLICATION-001",
+      "parent_task_id": null,
+      "goal": "Publish the 'When AI Services Fail' research (SV-LLM/Ecosystem_Chat#9) as a bounded research-candidate edition: merge the verbatim ERL process mirror (Executive_Rhetoric_Ledger#249, owner #251) and the Claude self-documented CBOC records (Executive_Rhetoric_Ledger#247, lane #244), and promote the Site paper page with exact-byte PDF/DOCX (Site#1633) only after independent custody readback, final-text PASS and an exact-head promotion decision. No provider-backend ledger, intent, ranking or legal finding is authorized.",
+      "coordination_state": "PROPOSED",
+      "source_refs": [
+        "SV-LLM/Ecosystem_Chat#9",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#244",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#247",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#249",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#251",
+        "StegVerse-Labs/Site#1633",
+        "StegVerse-Labs/Site#1629",
+        "docs/TASK_REGISTRATION_GUIDE.md",
+        "data/task-registry-global-invariants.json"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs",
+          "SV-LLM"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Executive_Rhetoric_Ledger",
+          "StegVerse-Labs/Site",
+          "SV-LLM/Ecosystem_Chat"
+        ],
+        "components": [
+          "erl-ec9-process-mirror",
+          "erl-cboc-self-documented-records",
+          "site-paper-when-ai-services-fail",
+          "ec9-kv-custody-bridge"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-EC9-SITE-PROMOTION-CUSTODY-BASIS",
+          "kind": "RUNTIME_PREDICATE",
+          "state": "UNRESOLVED",
+          "ref": "scripts/authorize_site_production_promotion.py: no declared authenticating custody basis (Q74-01); AUTHORIZED unreachable until declared"
+        },
+        {
+          "dependency_id": "DEP-EC9-MANUSCRIPT-V1_0_1",
+          "kind": "CAPABILITY",
+          "state": "UNRESOLVED",
+          "ref": "SV-LLM/Ecosystem_Chat#9 comment 6467992600 must-fix 1-2 (manuscript author)"
+        }
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+      ],
+      "existing_evidence_refs": [
+        "SV-LLM/Ecosystem_Chat#9 comment 6467992600 (Claude A1 readback + final-text review)",
+        "SV-LLM/Ecosystem_Chat#9 comment 6467773980 (uploader readback)",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#249 comment 6467973614 (PASS at c3116e5e)",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#251 comment 6467928983 (ChatGPT readback PASS)",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#247 comment 6467012428 (Kimi CONCUR)",
+        "StegVerse-Labs/Site#1633 head 4614456478dc08bef52b80be895e1688b5d00e2c 57/57 CI success"
+      ],
+      "expected_evidence_predicates": [
+        "EC9_ORIGINAL_BYTES_INDEPENDENT_READBACK_TWO_REVIEWERS",
+        "EC9_FINAL_TEXT_REVIEW_PASS",
+        "ERL_249_EXACT_HEAD_MIRROR_READBACK_PASS",
+        "ERL_247_NON_AUTHOR_CONCUR",
+        "SITE_1633_EXACT_HEAD_CI_SUCCESS",
+        "SITE_PRODUCTION_PROMOTION_DECISION_RECORDED"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED",
+        "DEFERRED",
+        "SUPERSEDED"
+      ],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/Site:data/session-work-claims.d/ec9-when-ai-services-fail-publication-20261027.json"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true
+      },
+      "cosv_task_vector": "10100000110000",
+      "source_state_vector_ref": "control/task-vectors/EC9-WHEN-AI-SERVICES-FAIL-PUBLICATION-001.json"
     }
   ],
   "human_actions": [],
