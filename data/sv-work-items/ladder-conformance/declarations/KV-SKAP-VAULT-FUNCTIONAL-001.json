@@ -1345,13 +1345,9 @@
      {
       "evidence": "KV #2 (request SITE-CLOUD-KV-4347408852127319cbda574f02e03edb) has no admitted provider execution, so no production read of KV's recorded chain is possible (PROD_PREREQ_KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR_KV / _SKAP_VAULT FAIL_CLOSED). Scoped as LC-KV-28",
       "id": "KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR"
-     },
-     {
-      "evidence": "the TV/TVC reader at TVC main @425eab54 still refuses the custody_ledgers_config() entries continuity-vault-kit @acfd2be5 returns (KV_RECEIPT_CHAIN_DESIGNATION_DIGEST_MISMATCH for kv and skap_vault; runs tvc540-bind-cvk263, tvc542-bind-cvk263): the designation digests equal the pins and the contract digests equal KV_CONTRACT_PINS (rows CVK_CONTRACT_DIGEST_VS_TVC_PIN_*), but cvk's entry carries no source object, so the reader's entry.source.contract_sha256 / contract_path check reads None; tools/kv_custody_ledgers_config.py vendors CVK_HEAD cdc50149 (run tvc541-kv-custody-ledgers-config), so the KV head signer cannot bind to KV's current designation. Scoped as LC-KV-21",
-      "id": "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED"
      }
     ],
-    "evidence": "revision 17: the cvk-only anchor decides at E0 (run cvk263-chain-probe, every required row as declared) and the Org-end crossing reader is installed (row ORG_CROSSING_READER_INSTALLED ALLOW at continuity-vault-kit @acfd2be5; LC-KV-29 cleared), but production ALLOW is unreachable without these, each six-field FAIL_CLOSED in KV's own rows from continuity-vault-kit main @acfd2be5 receipt_ledger_prerequisites() (run cvk263-anchor-production-prerequisites)",
+    "evidence": "revision 18: the cvk-only anchor decides at E0 (run cvk263-chain-probe, every required row as declared), the Org-end crossing reader is installed (row ORG_CROSSING_READER_INSTALLED ALLOW at continuity-vault-kit @acfd2be5; LC-KV-29 cleared) and TV/TVC binds to KV's current designation (run tvc542-bind-cvk263: parser, wrapped-entry reader and vendored-snapshot rows ALLOW; LC-KV-21 cleared), but production ALLOW is unreachable without these, each six-field FAIL_CLOSED in KV's own rows from continuity-vault-kit main @acfd2be5 receipt_ledger_prerequisites() (run cvk263-anchor-production-prerequisites)",
     "state": "UNBOUND"
    },
    "degraded_forms": {
@@ -1361,7 +1357,7 @@
     "E3": "three or more LLM lanes review in parallel; the deterministic reader still decides"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@acfd2be5763fea22ea7c859cf493dab24f1f3ac8: runtime/kv_receipt_ledgers.py::read_receipt_ledger (KV's own head record, both ends; LC-KV-26)",
+    "by": "StegVerse-Labs/continuity-vault-kit@acfd2be5763fea22ea7c859cf493dab24f1f3ac8: runtime/kv_receipt_ledgers.py::read_receipt_ledger (KV's own head record, both ends; LC-KV-26); StegVerse-Labs/TVC@425eab54c1677e3e1c79d2837a19f1075fc53e76: scripts/tvc_org_ledger_head_signer.py::ledger_location (TV/TVC's reader of the pin-wrapped entry) and tools/kv_custody_ledgers_config.py::parse_entry",
     "dispositions": [
      "ALLOW",
      "DENY",
@@ -1391,16 +1387,17 @@
    ],
    "failure_class": {
     "class": "B",
-    "reason": "production ALLOW waits on evidence that does not exist yet: KV's own genesis receipt for the KV-owned pin (LC-KV-27), KV #2 provider execution (LC-KV-28), the TV/TVC reader re-bound to KV's current designation entry shape (LC-KV-21, class A) and the owner-only KV head signer key (ORG-LEDGER-HEAD-SIGNER-001, external)"
+    "reason": "production ALLOW waits on evidence that does not exist yet: KV's own genesis receipt for the KV-owned pin (LC-KV-27), KV #2 provider execution (LC-KV-28) and the owner-only KV head signer key (ORG-LEDGER-HEAD-SIGNER-001, external)"
    },
    "id": "H-KV-ENDPOINT-LEDGER-ANCHOR",
    "kind": "HANDOFF",
    "lowest_supported_mode": "E0",
    "observed_by": [
     "cvk263-chain-probe",
-    "cvk263-anchor-production-prerequisites"
+    "cvk263-anchor-production-prerequisites",
+    "tvc542-bind-cvk263"
    ],
-   "observed_state": "revision 17 (P1, StegVerse-org/.github#163): re-observed at continuity-vault-kit @acfd2be5, TVC @425eab54 and Labs main @6b13c3a7 (no hand-edited evidence). Changes cvk and TVC made: the Org-end crossing reader is installed (continuity-vault-kit#276, row ORG_CROSSING_READER_INSTALLED ALLOW, so ORG_CROSSING_READER_NOT_INSTALLED / LC-KV-29 is cleared), and the KV-owned genesis pin mechanism replaced the withdrawn org-hosted rows (continuity-vault-kit#277, rows PIN_MECHANISM_ORG_HOSTED no longer emitted); the genesis value itself is still null (LC-KV-27 narrowed). TVC's reader still refuses the entry shape cvk returns (LC-KV-21 narrowed). revision 16 (P1, StegVerse-org/.github#163): re-declared as the cvk-only both-ends anchor. Coordination ruling (relayed to P1 05:36Z): re-declare H-KV-ENDPOINT-LEDGER-ANCHOR as the cvk-only both-ends anchor - no InTr hop inside an org (Rigel: \"InTr paths exist only between distinct orgs. There is never an InTr hop inside one org.\"); LLM-adapter only as an endpoint after an external machine has established itself as a healthy node, or not at all (#162 c6391743862: \"LLM-adapter's only InTr use is when an external machine has established itself as a healthy node; that node may then become an InTr endpoint\"); no external machine (StegVerse-org/.github docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md:53, \"There are no and will be no external machines awaiting anything\", and :60, \"No surface requires an external machine, a second user-operated device, or a remote computer, and none may be introduced as a completion predicate, machine dependency or substrate-unsuitability finding\" - so the EPHEMERAL external node is barred); no ledger dispatch; KV's own head record stays the authority (ruling A, StegVerse-org/.github#167 c6392982821: \"KV's own head record is the authority, and the caller watermark is an optional claim\"); rollback and replay detection on KV's own head stays valid on the LC-KV-26 basis (#167 c6393119202: \"a crossing record held at both ends (the org side and KV's own ledger), never an InTr hop inside one org\"). The withdrawn edge built an intra-org InTr crossing through LLM-adapter and relied on an EPHEMERAL external node; both are gone from this item, its plan runs and its scoped tasks, and it has no unadmitted dependency. At continuity-vault-kit main @acfd2be5 (continuity-vault-kit#275 closed LC-KV-26; run cvk263-chain-probe) every required row decides as declared: KV's own head record decides rollback (an older genuinely signed head is DENY KV_LEDGER_HEAD_ROLLBACK_DETECTED whatever the caller claims; the caller watermark is an optional claim, ruling A), and a read-back head is ALLOW only when it is held at both ends (KV end only, or an Org record naming only an older head, is six-field FAIL_CLOSED KV_CROSSING_RECORD_NOT_OBSERVED; a rollback after the last crossing is DENY), for kv and for skap_vault through SkapLayer2Gate. Production prerequisites (run cvk263-anchor-production-prerequisites) are each six-field FAIL_CLOSED and are the three remaining allow_path blockers plus ORG-LEDGER-HEAD-SIGNER-001. Note for Lane D (class A cleanup, not a bypass): cvk's reader uses vendored chain and Ed25519 helpers under runtime/intr_pinned; that is library code inside KV, not LLM-adapter acting as an endpoint and not an InTr hop. SKAP Vault inside KV is the only PII and credential store for every user, the ecosystem's own included; the ecosystem holds none (HST citation pending P1 #163).",
+   "observed_state": "revision 17 (P1, StegVerse-org/.github#163): re-observed at continuity-vault-kit @acfd2be5, TVC @425eab54 and Labs main @6b13c3a7 (no hand-edited evidence). Changes cvk and TVC made: the Org-end crossing reader is installed (continuity-vault-kit#276, row ORG_CROSSING_READER_INSTALLED ALLOW, so ORG_CROSSING_READER_NOT_INSTALLED / LC-KV-29 is cleared), and the KV-owned genesis pin mechanism replaced the withdrawn org-hosted rows (continuity-vault-kit#277, rows PIN_MECHANISM_ORG_HOSTED no longer emitted); the genesis value itself is still null (LC-KV-27 narrowed). Revision 17 recorded TVC's reader as refusing the entry shape cvk returns (LC-KV-21); that was the probe, not either repo: scripts/tvc_org_ledger_head_signer.py ledger_location reads TV/TVC's pin-wrapped entry (cvk's keys plus designation_sha256, source, designation, status; its KV_ENTRY_KEYS comment) and tools/kv_custody_ledgers_config.py parse_entry reads cvk's raw entry. Revision 18 (run tvc542-bind-cvk263 at TVC @425eab54, cvk @acfd2be5): the raw entry equals TVC's vendored snapshot, parse_entry accepts it, and the reader accepts it wrapped with TVC's own designation_sha256; the raw-entry row stays FAIL_CLOSED by design. LC-KV-21 is cleared; no change to TVC or cvk was needed. revision 16 (P1, StegVerse-org/.github#163): re-declared as the cvk-only both-ends anchor. Coordination ruling (relayed to P1 05:36Z): re-declare H-KV-ENDPOINT-LEDGER-ANCHOR as the cvk-only both-ends anchor - no InTr hop inside an org (Rigel: \"InTr paths exist only between distinct orgs. There is never an InTr hop inside one org.\"); LLM-adapter only as an endpoint after an external machine has established itself as a healthy node, or not at all (#162 c6391743862: \"LLM-adapter's only InTr use is when an external machine has established itself as a healthy node; that node may then become an InTr endpoint\"); no external machine (StegVerse-org/.github docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md:53, \"There are no and will be no external machines awaiting anything\", and :60, \"No surface requires an external machine, a second user-operated device, or a remote computer, and none may be introduced as a completion predicate, machine dependency or substrate-unsuitability finding\" - so the EPHEMERAL external node is barred); no ledger dispatch; KV's own head record stays the authority (ruling A, StegVerse-org/.github#167 c6392982821: \"KV's own head record is the authority, and the caller watermark is an optional claim\"); rollback and replay detection on KV's own head stays valid on the LC-KV-26 basis (#167 c6393119202: \"a crossing record held at both ends (the org side and KV's own ledger), never an InTr hop inside one org\"). The withdrawn edge built an intra-org InTr crossing through LLM-adapter and relied on an EPHEMERAL external node; both are gone from this item, its plan runs and its scoped tasks, and it has no unadmitted dependency. At continuity-vault-kit main @acfd2be5 (continuity-vault-kit#275 closed LC-KV-26; run cvk263-chain-probe) every required row decides as declared: KV's own head record decides rollback (an older genuinely signed head is DENY KV_LEDGER_HEAD_ROLLBACK_DETECTED whatever the caller claims; the caller watermark is an optional claim, ruling A), and a read-back head is ALLOW only when it is held at both ends (KV end only, or an Org record naming only an older head, is six-field FAIL_CLOSED KV_CROSSING_RECORD_NOT_OBSERVED; a rollback after the last crossing is DENY), for kv and for skap_vault through SkapLayer2Gate. Production prerequisites (run cvk263-anchor-production-prerequisites) are each six-field FAIL_CLOSED and are the three remaining allow_path blockers plus ORG-LEDGER-HEAD-SIGNER-001. Note for Lane D (class A cleanup, not a bypass): cvk's reader uses vendored chain and Ed25519 helpers under runtime/intr_pinned; that is library code inside KV, not LLM-adapter acting as an endpoint and not an InTr hop. SKAP Vault inside KV is the only PII and credential store for every user, the ecosystem's own included; the ecosystem holds none (HST citation pending P1 #163).",
    "required_outcomes": {
     "CURRENT_HEAD_HEAD_RECORD_ABSENT_KV": [
      "FAIL_CLOSED"
@@ -1454,6 +1451,18 @@
      "ALLOW"
     ],
     "CURRENT_HEAD_WITHOUT_WATERMARK_SKAP_VIA_GATE": [
+     "ALLOW"
+    ],
+    "CVK_CONTRACT_DIGEST_VS_TVC_PIN_KV": [
+     "ALLOW"
+    ],
+    "CVK_CONTRACT_DIGEST_VS_TVC_PIN_SKAP_VAULT": [
+     "ALLOW"
+    ],
+    "CVK_ENTRY_EQUALS_TVC_VENDORED_SNAPSHOT_KV": [
+     "ALLOW"
+    ],
+    "CVK_ENTRY_EQUALS_TVC_VENDORED_SNAPSHOT_SKAP_VAULT": [
      "ALLOW"
     ],
     "E0_KV_READ_BACK_WITH_WATERMARK": [
@@ -1608,6 +1617,18 @@
     "SKAP_READ_ON_A_NEVER_MINTED_LAYER1_HASH": [
      "DENY",
      "FAIL_CLOSED"
+    ],
+    "TVC_PARSER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_KV": [
+     "ALLOW"
+    ],
+    "TVC_PARSER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_SKAP_VAULT": [
+     "ALLOW"
+    ],
+    "TVC_READER_ON_CVK_HEAD_WRAPPED_ENTRY_KV": [
+     "ALLOW"
+    ],
+    "TVC_READER_ON_CVK_HEAD_WRAPPED_ENTRY_SKAP_VAULT": [
+     "ALLOW"
     ]
    },
    "requires_llms": 0,
