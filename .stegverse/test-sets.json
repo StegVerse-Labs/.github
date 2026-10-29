@@ -7531,6 +7531,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_sppa_ephemeral_storage_boundary.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_sppa_ephemeral_storage_boundary.py"
+   ],
+   "tests": [
+    "tests/test_sppa_ephemeral_storage_boundary.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_ss_erl_canonical_master_records_reconciliation.py",
    "inputs": [],
    "surfaces": [
@@ -16577,6 +16589,10 @@
    "scripts/serve_evaluator_intr_runtime.py",
    "scripts/serve_sv002_observation_intr_runtime.py",
    "state_language/__init__.py"
+  ],
+  "tests/test_sppa_ephemeral_storage_boundary.py": [
+   ".stegverse/transition-ledger/org-contract.json",
+   "tests/test_site_production_promotion_dispatched_run.py"
   ],
   "tests/test_ss_erl_canonical_master_records_reconciliation.py": [
    "data/canonical-task-records/**",

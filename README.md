@@ -2182,3 +2182,5 @@ the pin (#3151), and Master Records never gates. See
 Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COMPOSITION-001` record. See [the handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md). Registration is coordination only; source tests, WorkerCoordinator admission and authentic runtime evidence remain separate.
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
+
+SPPA review follow-up: the six storage-boundary regressions now run with stdlib unittest, with a scoped loader override that restores the fixture-declared Git topology after the suite-wide POSIX default and is removed at cleanup. The existing generated test-set manifest includes the suite. All 45 SPPA tests pass without pytest; this is local source validation, not exact-head CI, custody evidence or promotion authority.

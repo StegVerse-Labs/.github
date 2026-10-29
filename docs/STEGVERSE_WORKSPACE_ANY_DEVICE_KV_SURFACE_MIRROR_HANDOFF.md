@@ -99,3 +99,5 @@ Open items and their owners are recorded on Site#1509 (comments 6168883346 and 6
 ## Non-claims
 
 This handoff does not claim runtime execution, provider execution, WorkSpace deployment, InTr admission, a WorkerCoordinator claim, or completion of any WorkSpace evidence predicate. It does not claim a Master Records organization record either.
+
+SPPA review follow-up: the six storage-boundary regressions now run with stdlib unittest, with a scoped loader override that restores the fixture-declared Git topology after the suite-wide POSIX default and is removed at cleanup. The existing generated test-set manifest includes the suite. All 45 SPPA tests pass without pytest; this is local source validation, not exact-head CI, custody evidence or promotion authority.

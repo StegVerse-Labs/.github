@@ -1,4 +1,5 @@
 """SPPA storage-route regression; temporary empty Git stores, never live authority."""
+import importlib.machinery
 import importlib.util
 import json
 import os
@@ -8,9 +9,6 @@ import subprocess
 import tempfile
 import unittest
 from unittest import mock
-import pytest
-
-pytestmark = pytest.mark.repository_ledger_locus
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -44,6 +42,20 @@ class EphemeralStorageBoundary(unittest.TestCase):
             "store": "git", "ref": REF, "custody": "PRIVATE", "propagate_target": None,
         }
         contract.write_text(json.dumps(value))
+        # Both unittest and pytest install a POSIX default for other suites.
+        # Restore this fixture's declared Git topology after each dynamic load,
+        # then remove the override at cleanup so neighboring tests stay isolated.
+        loader = importlib.machinery.SourceFileLoader
+        previous_exec = loader.exec_module
+
+        def exec_with_declared_locus(loader_self, module):
+            previous_exec(loader_self, module)
+            if callable(getattr(module, "declared_ledger_locus", None)):
+                module.C["organization_ledger"] = dict(value["organization_ledger"])
+
+        patcher = mock.patch.object(loader, "exec_module", exec_with_declared_locus)
+        patcher.start()
+        self.addCleanup(patcher.stop)
         self.gitdir = self.base / "ledger.git"
         self.foreign = self.base / "foreign.git"
         for path in (self.gitdir, self.foreign):
