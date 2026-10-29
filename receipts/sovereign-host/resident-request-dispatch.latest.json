@@ -49,7 +49,7 @@
     "sdk_generic_manifest_execution"
   ],
   "richard_dispatch_master_records": null,
-  "runtime_root": "/workspace/p4r38/reg/L",
+  "runtime_root": "/workspace/labs",
   "schema": "stegverse.resident-request-dispatch/v1",
   "sdk_evaluator_dispatch_master_records": null,
   "second_machine_required": false,
@@ -58,6 +58,6 @@
   ],
   "selected_request_id": "test5-a",
   "selection_scope": "EXACT_SELECTOR",
-  "source_root": "/workspace/p4r38/reg/L",
+  "source_root": "/workspace/labs",
   "state": "DISPATCH_INCOMPLETE"
 }
