@@ -41,6 +41,28 @@
       "ingress_capability": false,
       "addressable_from_the_service_registry": false,
       "authority_effect": "NONE_DECLARATION_ONLY"
+    },
+    {
+      "operation": "sv_push_receipt",
+      "operation_module": "resident-runtime/sv_push_receipt_append.py",
+      "entrypoint": "resident-runtime/sv_push_receipt_append.py::append_push_receipt",
+      "append_path": "resident-runtime/sv_push_receipt_append.py::_append_one (intr_destination_ingress._two_level_atomic; the range lookup, then repository_ledger.append, then organization_ledger.aggregate_transition, in one exclusive section; intr_destination_ingress.py unedited)",
+      "transition_class": "SV_PUSH_RECEIPT_APPEND",
+      "evidence_schema": "stegverse.sv_push_receipt.v1",
+      "evidence_schema_file": "schemas/sv-push-receipt.v1.schema.json (emitted by resident-runtime/sv_push_receipt.py; the shape and seal check is that module's receipt_problem)",
+      "evidence_location": "repository receipt $.evidence (the complete push receipt, self-identified by $.evidence.schema), retained beside the organization receipt at source-receipts/<hex>.json",
+      "organization_receipt_boundary_operation": "sv_push_receipt",
+      "ledger_ref": "refs/stegverse/organization-ledger",
+      "invoked_by": ".github/workflows/organization-ledger-transition.yml (push to main touching .stegverse/organization-ledger-ingest/request.json with operation sv_push_receipt, read by resident-runtime/organization_ledger_ingest.py; ORGANIZATION_LEDGER_LOCK); no dispatch input, no schedule",
+      "one_receipt_per_range": "the range is (repository, ref, old_sha, new_sha); the repository transition id is SV_PUSH_RECEIPT_APPEND:<sha256 of that range>, so one range has one receipt; a second receipt for a range the ledger already records, byte-identical or not, -> six-field FAIL_CLOSED SV_PUSH_RECEIPT_RANGE_ALREADY_RECORDED, nothing appended",
+      "admission": "one object whose schema is stegverse.sv_push_receipt.v1 that passes sv_push_receipt.receipt_problem (closed field set, 40-hex shas, pushed_commits ending at new_sha, supplied hb_epoch, result_sha256 seal); LEDGER_EVIDENCE_NOT_A_PUSH_RECEIPT or SV_PUSH_RECEIPT_MALFORMED otherwise, six fields, before any write",
+      "hb_reference": "supplied epoch only, from the committed ingest request (integer >= 32) and equal to the receipt's own hb_epoch; derived_from_clock false or the operation fails closed",
+      "epoch_rule": "org-kernel/kernel.py::supplied_epoch_failure (L236-269), SHARED_RULE_SHA256 726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef; stored at kernel.py:68-74 hb_reference.epoch (the same rule as sv_check_receipt)",
+      "readback": "resident-runtime/sv_push_receipt_append.py readback on a fresh fetch of the published ref (sealed pair, linked, valid evidence, exactly one receipt for the range)",
+      "verifier": "clock-free and network-free: reads the committed request, the receipt and the declared ledger store only",
+      "ingress_capability": false,
+      "addressable_from_the_service_registry": false,
+      "authority_effect": "NONE_DECLARATION_ONLY"
     }
   ],
   "authority_effect": "NONE_DECLARATION_ONLY"
