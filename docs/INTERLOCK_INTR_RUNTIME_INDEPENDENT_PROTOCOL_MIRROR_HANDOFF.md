@@ -6,7 +6,37 @@ Issue: #2897
 COSV ID: `50000000102000`
 Status: `ACTIVE`
 
-## 2026-10-29 fresh-session continuation (current)
+## 2026-10-29 parallel-work sweep (current)
+
+Session Prompt Count 2; cumulative recovery lower bound **34/20**, exact total
+unverified, never reset. Live main readback for this sweep: 6b13c3a7; generation
+322 / 120 aggregate rows still omits this ACTIVE shard; null claim/fence retained.
+
+- #3405 at 4cf5c7c1 passed all six hosted checks. #3404 at 2e611f345329f4478a5764f45b2d12cbac34044e
+  also passed six; combination merge-tree 997468465f6182eeea000c61e1330ff790409f2e is clean.
+  This new documentary revision needs its own CI. Protected integration remains owner-held.
+- Three owner-ready candidates and validation logs are retained in
+  [owner repair evidence](evidence/intr-owner-repairs-20261029/README.md):
+  #3207 current-main six-field refusal metadata (76 tests), #3213 temporary POSIX
+  fixture correction (188 tests, zero skips), TVC #562 folded-record root confinement
+  (eight focused tests; complete-checkout suite and fresh CI still required).
+- Org #228 remains necessary alongside #258/H36. The complete overlap patch already
+  includes #258: do not apply it twice. #259's D2 option(d) RATIFY/REVERT remains separate.
+  [Owner graph](https://github.com/StegVerse-org/.github/issues/162#issuecomment-6505589472).
+- #3263 at 690d3ef1 preserves every #3206 changed file byte-for-byte and is one commit
+  ahead of its exact head e07326f6. Source-successor uncertainty is resolved; admission,
+  retirement and hygiene identity are not thereby granted.
+  [Mapping](https://github.com/StegVerse-Labs/.github/issues/3401#issuecomment-6505588965).
+- Registry #3195 still owns atomic-route ratification, refreshed serialized application,
+  committed readback and cumulative-count disposition; no new identity or authority minted.
+- KV coordination file 1zTyY4o7CDp2xPldMjDQim6uVijUIJgcj now preserves the prior approved
+  content and appends fresh public issue links/counts. Readback matches content after
+  trailing-newline normalization. This is coordination only, not sovereign KV evidence.
+  The previously rejected session-8 replacement was not retried.
+
+All source, public-reader, Registry and private runtime/credential owners remain separate.
+
+## 2026-10-29 fresh-session continuation (historical predecessor)
 
 Live Registry readback: main `6b13c3a749b2940d6142644196a8302823c1f45a`,
 generation 322, 120 rows, aggregate omission unchanged; shard remains ACTIVE,

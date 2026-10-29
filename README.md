@@ -2087,13 +2087,18 @@ Combined integration check: H36 patch applied cleanly to Org #258 at 9f21aa83;
 in 27.031s. Local fabricated-fixture/source verification only; hosted CI on
 an owner-created combined commit remains required.
 
-Fresh continuation: #3405 at 2a827075 passed all six hosted checks. The
+Fresh continuation: #3405 at 4cf5c7c1 passed all six hosted checks. The
 [Registry repair diagnostic](docs/evidence/intr-registry-repair-20261029/README.md)
 reproduces the omitted-shard repair cycle and validates an isolated atomic
 record-data candidate (seven validators, every-task projection, NO_CHANGE repeat,
 and collision CONTINUE). Canonical application/count disposition remains with
-the Registry owner; this evidence creates no admission. Session 1; cumulative
-recovery lower bound 33/20, exact count unverified and not reset.
+the Registry owner; this evidence creates no admission. Session 2; cumulative
+recovery lower bound 34/20, exact count unverified and not reset.
+[Owner repair candidates](docs/evidence/intr-owner-repairs-20261029/README.md)
+retain #3207 refusal metadata (76 tests), #3213 fixture correction (188 tests),
+and TVC #562 path confinement (eight focused tests). Org #228 + #258/H36 integration,
+#259 ratification, #3263 admission and private runtime ownership remain separate.
+Fresh public issue links are mirrored in the existing KV coordination file.
 
 - 2026-10-01: PR #2878 restores the Canonical Work execution-substrate resolution on the latest canonical head; no runtime authority is inferred.
 
