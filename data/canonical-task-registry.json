@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 322,
+  "generation": 323,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -22617,7 +22617,8 @@
         "REVIEW_REGISTRATION_PROPOSAL",
         "RESOLVE_OWNER_SCOPE",
         "SOURCE_CANDIDATE_REPAIR",
-        "NATIVE_ADMISSION_EVALUATION"
+        "NATIVE_ADMISSION_EVALUATION",
+        "INGRESS_ADMITTED"
       ],
       "handoff_projection_refs": [
         "docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md"
