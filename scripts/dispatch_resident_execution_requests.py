@@ -167,6 +167,44 @@ CONSUMERS = (
 )
 
 
+#: Consumers declared to take the carrier's heartbeat epoch (the dispatcher
+#: analogue of a kernel endpoint row declaring `endpoint_adapter_hb_epoch`
+#: CARRIER_SUPPLIED, org-kernel/kernel.py run_endpoint_adapter, INDEX H34b).
+#: Each is handed `--hb-epoch` exactly as its caller supplied it, checked by the
+#: kernel's shared rule (supplied_epoch_failure, SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH).
+#: Nothing here derives an epoch: not from a clock and not from the oscillator
+#: sampler's runtime observation snapshot (`snapshot_is_observation_only`,
+#: heartbeat_runtime/independent_oscillator.py). Absent, nothing is forwarded and the
+#: consumer refuses what needs one (GRANT_EPOCH_NOT_CARRIER_SUPPLIED).
+CARRIER_EPOCH_CONSUMERS = frozenset({"org_claim_allocator"})
+
+
+def carrier_hb_epoch(hb_epoch: Any) -> tuple[str | None, dict[str, Any] | None]:
+    """The caller-supplied carrier epoch as forwardable text, or a six-field refusal. No clock is read."""
+    if hb_epoch is None:
+        return None, None
+    spec = importlib.util.spec_from_file_location("dispatch_org_kernel_epoch", ROOT / "org-kernel/kernel.py")
+    kernel = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kernel)
+    failure = kernel.supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return str(int(str(hb_epoch))), None
+    code, detail = failure
+    return None, {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": kernel.HB_EPOCH_PREDICATE,
+        "detail": detail,
+        "required_evidence_or_repair": "pass --hb-epoch as the carrier supplied it: ASCII digits with value >= 32",
+        "retry_entrypoint": "scripts/dispatch_resident_execution_requests.py (--hb-epoch)",
+        "owning_existing_goal": kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+        "next_attempt": "dispatch again with the supplied epoch; the consumer was not run",
+        "derived_from_clock": False,
+        "consequence_committed": False,
+        "authority_effect": "NONE_REFUSAL_ONLY",
+    }
+
+
 #: Master Records boundary migration: consumers deployed before the rename report these legacy wait states.
 LEGACY_ACCEPTED_WAIT_STATES = ("WAITING_FOR_MASTER_RECORDS_CUSTODY", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED")
 
@@ -679,6 +717,7 @@ def dispatch(
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     source_env = dict(os.environ if env is None else env)
+    forwarded_hb_epoch, hb_epoch_refusal = carrier_hb_epoch(hb_epoch)
     observed_compute_markers = sorted(name for name in HOSTED_ENV if truthy(source_env.get(name)))
     safe_env = clean_exec_env(source_env)
     selected = select_consumers(only_consumers)
@@ -705,6 +744,10 @@ def dispatch(
         if name in QUANTUM_AWARENESS_PROTECTED and not quantum_awareness_ready(runtime):
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "QUANTUM_STANDING_AWARENESS_REQUIRED", "returncode": None, "result": None, "attempted": False, "authority_effect": "NONE_FAIL_CLOSED"})
             continue
+        if name in CARRIER_EPOCH_CONSUMERS and hb_epoch_refusal is not None:
+            outcomes.append({"consumer": name, "consumer_ref": rel, "state": "FAIL_CLOSED", "returncode": None,
+                             "result": hb_epoch_refusal, "attempted": False, "authority_effect": "NONE_FAIL_CLOSED"})
+            continue
         consumer = runtime / rel
         if not consumer.is_file():
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "CONSUMER_NOT_MATERIALIZED", "returncode": None, "result": None, "attempted": False})
@@ -723,6 +766,8 @@ def dispatch(
                                    ("--org-ledger-root", "STEGVERSE_ORG_LEDGER_ROOT")):
                 if str(source_env.get(variable) or "").strip():
                     command.extend([flag, str(source_env[variable])])
+        if name in CARRIER_EPOCH_CONSUMERS and forwarded_hb_epoch is not None:
+            command.extend(["--hb-epoch", forwarded_hb_epoch])
         try:
             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
             result = parse_last_json(completed.stdout)
@@ -799,6 +844,10 @@ def dispatch(
             "github_actions_authority": "NONE",
             "hosted_provider_authority": "NONE",
         },
+        "carrier_hb_epoch_forwarded": forwarded_hb_epoch,
+        "carrier_hb_epoch_forwarded_to": (sorted(CARRIER_EPOCH_CONSUMERS & {name for name, _ in selected})
+                                          if forwarded_hb_epoch is not None else []),
+        "carrier_hb_epoch_derived_from_clock": False,
         "goal_context_forwarded_to": ([name for name, _ in selected][0] if current_goal_task_id and len(selected) == 1 else None),
         "selected_request_id": request_id,
         "execution_attempt_id": execution_attempt_id,

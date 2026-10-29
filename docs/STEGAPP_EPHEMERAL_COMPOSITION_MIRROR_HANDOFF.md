@@ -54,3 +54,40 @@ Implementation source candidate published at 6e42618cbc829d4480103c4f31b96c3e917
 Read canonical Task Registration Guide, collision evaluator and Worker Task Admission Packet handoff. Generation 319 has no matching task; the evaluator's unregistered path returns STOP_NOT_REGISTERED. This is source inspection, not an executed canonical check-in. The proposal cannot be substituted for committed main. Existing portable checkout requires an authorized task package and TV/TVC-bound authority; none has been authenticated for this goal. The discovered organization-governance-decision workflow consumes an already-emitted federation mesh request; organization-ledger-transition performs diagnostic self-closure only. Neither is a generic task registrar or protected PR admission operation. Do not dispatch either as a fabricated StegApp admission.
 
 Required owner-plane continuation on #3297: establish the proposed ID/COSV through the existing governed registration process and retain the exact registration admission evidence. Re-read main aggregate/shard/COSV, run the current collision check-in, then fresh WorkerCoordinator admission review and claim/fence using the existing authority. No guessed manifest, fabricated claim or external-machine requirement. Upstream integration work: bind native authority and atomic invocation custody; enforce per-action guards and final redirect-origin evidence in existing StegBrowser/Sandbox; governed return/delivery stays in SDK/Publisher/InTr/Chat. LDC remains independent under its existing owner. This handoff is a proposal-branch checkpoint, not canonical admission.
+
+
+## 2026-10-22 existing-record admission integration (supersedes the proposal-only checkpoint)
+
+Canonical identity is **already registered** on main through merged Labs #3297:
+`STEGAPP-EPHEMERAL-COMPOSITION-001`, COSV `10300000011000`.
+Do **not** create another task or replay new-row admission #3233. The actual
+canonical shard remains `PROPOSED` with null WorkerCoordinator claim/fence;
+registration does not issue native `HANDOFF_READY`.
+
+The source-owned, read-only existing-task preflight is
+[Labs #3306](https://github.com/StegVerse-Labs/.github/pull/3306).
+It validates aggregate/shard identity, the separately stored original COSV,
+exact predecessor generation and digest, a genuinely admitted owner transition
+receipt and sovereign ref readback through an injected trusted verifier. It
+cannot mutate the Registry, claim a worker, or mint an original manifest.
+The edge it evaluates is the canonical-task-record schema's own
+`PROPOSED` → `INGRESS_ADMITTED`, refused unless the shard's
+`allowed_next_transitions` names `INGRESS_ADMITTED` (it does not today, so the
+preflight fails closed until the original Registry owner adds it).
+Synthetic tests and source validation are not runtime observations.
+
+**Staged cross-owner integration:** #3306 is temporarily based on the
+review-ready [shared-policy #3304](https://github.com/StegVerse-Labs/.github/pull/3304)
+branch, rather than copying six shared-policy test repairs into admission.
+Restore #3306 to `main` only after #3304 is independently reviewed and merged
+with expected-head protection, then run new exact-head checks against that
+new main. Never treat the stacked merge preview as an authentic owner approval.
+
+Parallel original lanes remain: Registry/COSV existing-record admission;
+WorkerCoordinator #3241 grant/fence and #3235 projection; Sandbox/StegBrowser
+#39 origin, reservation, replay; StegApp #2/#3 LDC/Chat delivery and native
+readback; original SDK/EIA/InTr/TVC/Publisher manifestation; designated source
+and Organization Ledger append plus fresh readback; independent exact-head
+review and expected-head protected release. No hosted runtime, external waiting
+machine, secondary device or framework. If any native interface is unavailable,
+preserve `UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` rather than fabricate ALLOW.

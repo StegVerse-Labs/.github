@@ -53,6 +53,8 @@ PROVENANCE_FLOOR_REL = Path("tasks/TASK-2026-0012.json")
 PROVENANCE_FLOOR_POINTER = "predecessor_provenance.allocator_fence"
 FENCE_HISTORY_UNVERIFIED = "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED"
 ORGANIZATION_APPEND_FAILED = "ORGANIZATION_APPEND_FAILED"
+GRANT_EPOCH_NOT_CARRIER_SUPPLIED = "GRANT_EPOCH_NOT_CARRIER_SUPPLIED"
+GRANT_EPOCH_INVALID = "GRANT_EPOCH_INVALID"
 # What the chain verification establishes, and all it establishes.
 CUSTODY_AUTHENTICATION = "HASH_CHAIN_CONTINUITY_ONLY"
 PREDECESSOR_PROVENANCE_IMMUTABLE = "PREDECESSOR_PROVENANCE_IMMUTABLE"
@@ -67,6 +69,9 @@ HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV",
     "CF_PAGES", "CLOUDFLARE_WORKERS",
 )
+ORG_CONTRACT_REL = Path(".stegverse/transition-ledger/org-contract.json")
+GIT_SCHEME = "git+"
+EVENT_EPHEMERAL_ENTRYPOINT = ".github/workflows/organization-claim-allocator-transition-writer.yml"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -131,10 +136,38 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
     return None
 
 
-def clean_env(values: Mapping[str, str] | None = None) -> dict[str, str]:
+def event_ephemeral_materialization(source: Path, repo_ledger_root: Any, org_ledger_root: Path | None) -> bool:
+    """Whether this execution appends only to the manifest-declared non-posix Organization store.
+
+    True only when no explicit Organization root is supplied, the Organization
+    manifest declares a non-posix store with a ref, and the repository ledger
+    is a git locator on that same declared ref. Such an execution leaves no
+    chain on the host it ran on: every receipt is on the declared ref, and
+    the ref's fast-forward publication is the only egress. It is not
+    authority; the receipts it appends are the evidence.
+    """
+    if org_ledger_root is not None or repo_ledger_root is None:
+        return False
+    try:
+        locus = load_json(source / ORG_CONTRACT_REL).get("organization_ledger")
+    except Exception:
+        return False
+    if not isinstance(locus, dict) or locus.get("store") in (None, "posix") or not locus.get("ref"):
+        return False
+    text = str(repo_ledger_root)
+    if not text.startswith(GIT_SCHEME):
+        return False
+    repository, separator, ref = text[len(GIT_SCHEME):].rpartition("#")
+    return bool(separator and repository) and ref.partition(":")[0] == locus["ref"]
+
+
+def clean_env(values: Mapping[str, str] | None = None, *, event_ephemeral: bool = False) -> dict[str, str]:
+    """The allocator's environment. A hosted environment is refused unless this is an
+    event-ephemeral materialization against the declared non-posix store
+    (event_ephemeral_materialization); an explicit POSIX root stays refused there."""
     source = dict(os.environ if values is None else values)
     hosted = [name for name in HOSTED_ENV if truthy(source.get(name))]
-    if hosted:
+    if hosted and not event_ephemeral:
         raise RuntimeError("hosted environment may not execute resident organization allocator: " + ",".join(sorted(hosted)))
     env = {}
     for key in ("PATH", "HOME", "LANG", "LC_ALL"):
@@ -290,6 +323,18 @@ class ClaimFailClosed(Exception):
         self.repair = repair
 
 
+# The repair each allocator refusal names, so a refused claim always carries
+# required_evidence_or_repair. Predicates are scripts/allocate_claims.py's.
+ALLOCATOR_REFUSAL_REPAIR = {
+    "NO_ELIGIBLE_TASK": "queue an admissible, dependency-complete, conflict-free task in tasks/",
+    "TARGET_TASK_NOT_QUEUED": "the targeted task must exist in tasks/ with status queued",
+    "DEPENDENCIES_INCOMPLETE": "complete every task the targeted task lists in dependencies",
+    "NOT_ADMISSIBLE": "declare dependency_surfaces (or dependency_surface_exempt) on every mutable mandatory claim "
+                      "of the targeted task; the allocator does not admit it otherwise",
+    "CONFLICTS_WITH_HELD_CLAIM": "wait for the conflicting held claim to be released, then retry",
+}
+
+
 class OrganizationLedgerNotAdmitted(ClaimFailClosed):
     """The Organization ledger the manifest declares was not admitted; nothing is read or appended (OL-3)."""
 
@@ -345,11 +390,37 @@ def organization_ledger_locus(organization: Any, org_ledger_root: Path | None) -
             getattr(exc, "repair", None) or "materialize this execution with " + exc.variable) from exc
 
 
-def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path | None) -> dict[str, Any]:
+def repository_ledger_store(emitter: Any, repo_ledger_root: Any) -> Any:
+    """The repository ledger at the supplied location: a POSIX root, or a git locator.
+
+    A `git+<repository>#<ref>:<namespace>` locator is the repository subtree of
+    the designated ledger ref (contract.json repository_ledger_location); it is
+    opened as that ref, never as a directory named after the locator.
+    """
+    text = str(repo_ledger_root)
+    if text.startswith(GIT_SCHEME):
+        return emitter.ledger_store.open_store(text)
+    return emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve())
+
+
+def shares_organization_ref(repository_store: Any, organization_store: Any) -> bool:
+    """Whether the repository chain is a subtree of the very ref the Organization store pins."""
+    return (organization_store is not None
+            and getattr(repository_store, "kind", None) == "GIT_REF"
+            and getattr(organization_store, "kind", None) == "GIT_REF"
+            and repository_store.git_dir == organization_store.git_dir
+            and repository_store.ref == organization_store.ref)
+
+
+def ledger_custody(source: Path, repo_ledger_root: Any, org_ledger_root: Path | None, *,
+                   event_ephemeral: bool = False) -> dict[str, Any]:
     """The existing emitters, at the ledger roots this execution was supplied.
 
     The Organization ledger is the supplied POSIX root only under a declared
     {store: posix}; otherwise it is the declared store (organization_ledger_locus).
+    An event-ephemeral materialization is admitted only when its repository
+    chain is the subtree of that same declared ref, so nothing it appends
+    stays on the host it ran on.
     """
     emitter = _load_module("org_claim_repository_ledger", source / ".stegverse/transition-ledger/emit.py")
     organization = _load_module("org_claim_organization_ledger", source / "resident-runtime/aggregate_repo_transition.py")
@@ -367,13 +438,22 @@ def ledger_custody(source: Path, repo_ledger_root: Path, org_ledger_root: Path |
                 sys.modules.pop("aggregate_repo_transition", None)
             else:
                 sys.modules["aggregate_repo_transition"] = previous
+    repository_store = repository_ledger_store(emitter, repo_ledger_root)
+    shared_ref = shares_organization_ref(repository_store, organization_store)
+    if event_ephemeral and not shared_ref:
+        raise OrganizationLedgerNotAdmitted(
+            "EVENT_EPHEMERAL_REPOSITORY_LEDGER_NOT_ON_DECLARED_REF",
+            "the repository ledger is not the subtree of the declared Organization ledger ref",
+            "supply --repo-ledger-root as git+<checkout>#<declared ref>:<repository_ledger_location.namespace>")
     return {
         "emitter": emitter,
         "organization_ledger": organization,
         "organization_receipt_custody": receipt_custody,
-        "repository_store": emitter.ledger_store.PosixLedgerStore(Path(repo_ledger_root).expanduser().resolve()),
+        "repository_store": repository_store,
         "organization_root": organization_root,
         "organization_store": organization_store,
+        "shared_ref": shared_ref,
+        "event_ephemeral": bool(event_ephemeral),
     }
 
 
@@ -518,6 +598,38 @@ def chain_grants(chain: Mapping[str, Any]) -> list[dict[str, Any]]:
     return grants
 
 
+def verify_grant_sources(custody: Mapping[str, Any], grants: list[dict[str, Any]]) -> None:
+    """Read back the retained source receipt of every grant on the chain, through the existing verifier.
+
+    A chain that recomputes proves only that Organization receipts are continuous. A grant counts toward
+    fence history only if organization_readback binds it to the exact repository receipt it consumed, and
+    organization_batch_custody.verified_organization_source_receipt reads that receipt back. The receipt
+    must be this repository's own, carrying the grant's boundary evidence as record_transition carries it.
+    It is never authenticated custody.
+    """
+    verifier = custody["organization_receipt_custody"]
+    issuer = custody["emitter"].C["repository"]
+    for row in grants:
+        digest, transition_id = row["receipt_sha256"], row.get("source_transition_id")
+        organization_readback(custody, digest, repository_receipt_sha256=retained_repository_receipt_sha256(custody, row),
+                              transition_id=transition_id)
+        try:
+            _, source = verifier.verified_organization_source_receipt(
+                organization_target(custody), digest, state_receipt_sha256=row["source_transition_sha256"],
+                expected_transition_id=transition_id)
+        except verifier.OrganizationReceiptRefused as exc:
+            raise OrganizationReadbackRefused(exc.refusal()) from exc
+        recorded = source.get("evidence") or {}
+        carried = {"operation": source.get("transition_class"), **{key: recorded.get(key) for key in CARRIED},
+                   **{key: recorded[key] for key in CARRIED_IF_RECORDED if key in recorded}}
+        evidence = row["boundary_evidence"]
+        if (source.get("schema") != "stegverse.repo-transition-receipt/v1" or source.get("repository") != issuer
+                or source.get("transition_id") != transition_id
+                or any(evidence.get(key) != value for key, value in carried.items())):
+            raise ClaimFailClosed(FENCE_HISTORY_UNVERIFIED, "granted receipt source does not record this grant: " + digest,
+                                  "repair the organization claim receipt chain")
+
+
 def provenance_floor(source: Path) -> dict[str, Any]:
     """The fence already issued outside the chain, read from its provenance record."""
     path = source / PROVENANCE_FLOOR_REL
@@ -541,6 +653,43 @@ def provenance_floor(source: Path) -> dict[str, Any]:
         "allocator_generation": provenance.get("allocator_generation"),
         "provenance_record_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
     }
+
+
+FENCE_FLOOR_REMATERIALIZATION_BASIS = "ORGANIZATION_CHAIN_MAX_FENCE_AND_PROVENANCE_FLOOR"
+
+
+def rematerialize_runtime_claim_generation(runtime: Path, issued: int, *, chain_max: int,
+                                           floor: Mapping[str, Any], head: str | None,
+                                           initialized_from_source: bool, event_ephemeral: bool) -> dict[str, Any] | None:
+    """Raise a stale, empty ephemeral runtime claim registry to the verified issued fence.
+
+    Only in the event-ephemeral materialization, and only when this run initialized
+    the runtime registry from the committed source copy (no runtime state is
+    preserved) and that copy holds no claims. The generation is derived from the
+    verified Organization chain (`chain_max`) and the immutable provenance floor,
+    never from a clock and never lowered; the next fence is still issued + 1, so no
+    fence is reissued. The committed control/claims-active.json is not touched: the
+    basis is recorded in the transition's own receipt evidence. Anything else stays
+    FAIL_CLOSED FENCE_GENERATION_BEHIND_ISSUED_FENCES.
+    """
+    path = runtime / "control/claims-active.json"
+    state = load_json(path)
+    generation = state.get("generation", 0)
+    if (not event_ephemeral or not initialized_from_source or state.get("claims")
+            or not isinstance(generation, int) or isinstance(generation, bool) or generation >= issued):
+        return None
+    state["generation"] = issued
+    state["generation_basis"] = {
+        "basis": FENCE_FLOOR_REMATERIALIZATION_BASIS,
+        "chain_max_fence": chain_max,
+        "provenance_floor_fence": floor["fence"],
+        "provenance_floor_sha256": floor["provenance_record_sha256"],
+        "organization_head_sha256": head,
+        "source_generation": generation,
+    }
+    path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return dict(state["generation_basis"], rematerialized_generation=issued,
+                authority_effect="NONE_EPHEMERAL_RUNTIME_PROJECTION_ONLY")
 
 
 def task_cosv(source: Path, task: Mapping[str, Any]) -> str | None:
@@ -707,8 +856,14 @@ CARRIED_IF_RECORDED = ("custody_authentication",)
 
 def record_transition(custody: Mapping[str, Any], transition_class: str, transition_id: str,
                       predecessor: str, evidence: dict[str, Any], *, organization: bool,
-                      identity: tuple[str, ...], lock_held: bool = False) -> dict[str, Any]:
+                      identity: tuple[str, ...], lock_held: bool = False,
+                      hb_epoch: int | None = None) -> dict[str, Any]:
     """Append the repository receipt, then the organization receipt consuming it.
+
+    `hb_epoch` is the carrier-supplied heartbeat epoch. Supplied, it passes
+    through to both receipts, so neither falls back to a clock-derived
+    reference; a grant is never recorded without it (consume_request refuses
+    GRANT_EPOCH_NOT_CARRIER_SUPPLIED first).
 
     The organization receipt is built from the returned repository receipt, so
     a retry of a recorded transition consumes the same source with the same
@@ -729,9 +884,14 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
     if prior is not None and all(
             (prior.get("evidence") or {}).get(key) == evidence.get(key) for key in identity):
         successor = prior["successor_state_sha256"]
+    pinned = adopted = None
+    if lock_held and custody.get("shared_ref"):
+        pinned = custody["organization_store"]._snapshot()
     repository_receipt = custody["emitter"].append(
         transition_id, transition_class, predecessor, successor, evidence, "NONE",
-        store=custody["repository_store"], idempotent_on=identity)
+        hb_epoch=hb_epoch, store=custody["repository_store"], idempotent_on=identity)
+    if pinned is not None:
+        adopted = adopt_repository_append(custody, pinned, repository_receipt)
     organization_receipt = None
     if organization:
         recorded = repository_receipt.get("evidence") or {}
@@ -741,9 +901,13 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
             successor_org_state_sha256=repository_receipt["successor_state_sha256"],
             boundary_evidence={"operation": transition_class, **{key: recorded.get(key) for key in CARRIED},
                                **{key: recorded[key] for key in CARRIED_IF_RECORDED if key in recorded}},
-            authority_effect="NONE")
+            authority_effect="NONE", hb_epoch=hb_epoch)
         organization = custody["organization_ledger"]
         try:
+            if adopted is not None and not adopted:
+                raise ClaimFailClosed("ORGANIZATION_LEDGER_SNAPSHOT_MOVED",
+                                      "the shared ledger ref moved outside this transition's repository append",
+                                      "retry; the repository receipt is retained and the organization append is replayed")
             if lock_held:
                 # Already inside the existing append lock: the same locked append
                 # aggregate_transition performs, without re-taking the lock.
@@ -757,6 +921,30 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
         except Exception as exc:
             raise OrganizationAppendFailed(repository_receipt, exc) from exc
     return {"repository_receipt": repository_receipt, "organization_receipt": organization_receipt}
+
+
+def adopt_repository_append(custody: Mapping[str, Any], pinned: str | None,
+                            repository_receipt: Mapping[str, Any]) -> bool:
+    """Carry the Organization pin over this transition's own repository append on the shared ref.
+
+    The repository chain is a subtree of the ref the Organization store pinned,
+    so its append moved that ref. The pin advances only to a tip that is the
+    pinned snapshot itself (an idempotent replay) or a commit whose sole parent
+    is the pinned snapshot and whose repository HEAD is the receipt just
+    appended. Anything else is a move this critical section did not make, and
+    the Organization append is not attempted on it.
+    """
+    store = custody["organization_store"]
+    tip = store._tip()
+    if tip == pinned:
+        return True
+    parents = store._git("rev-list", "--parents", "-n", "1", tip).stdout.decode().split()[1:]
+    repository_head = custody["repository_store"]._read(tip, custody["emitter"].ledger_store.HEAD_KEY)
+    if parents != ([pinned] if pinned else []) or (repository_head or {}).get("receipt_sha256") != \
+            repository_receipt.get("receipt_sha256"):
+        return False
+    store._pinned = (tip,)
+    return True
 
 
 def retained_repository_receipt_sha256(custody: Mapping[str, Any], row: Mapping[str, Any]) -> str | None:
@@ -888,10 +1076,13 @@ def _ledger_refusal(request: Mapping[str, Any] | None, detail: str, *,
         "request_id": (request or {}).get("request_id"),
         "task_id": TASK_ID,
         "disposition": "FAIL_CLOSED",
+        "failure_code": predicate,
         "failed_predicate": predicate,
         "detail": detail,
         "required_evidence_or_repair": repair,
         "retry_entrypoint": RETRY_ENTRYPOINT,
+        "owning_existing_goal": (request or {}).get("task_id") or TASK_ID,
+        "next_attempt": "on the next request event after the repair is recorded",
         "runtime_execution_attempted": False,
         "fence_issued": False,
         "consequence_committed": False,
@@ -900,7 +1091,7 @@ def _ledger_refusal(request: Mapping[str, Any] | None, detail: str, *,
 
 
 def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: Mapping[str, Any],
-                    runner, safe_env: Mapping[str, str]) -> dict[str, Any]:
+                    runner, safe_env: Mapping[str, str], hb_epoch: int | None = None) -> dict[str, Any]:
     request = load_json(runtime / request_rel)
     validate_request(request)
     request_hash = stable_hash(request)
@@ -959,13 +1150,16 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             "request_id": request.get("request_id"),
             "request_sha256": request_hash,
             "target_task_id": target,
+            "failure_code": predicate,
             "failed_predicate": predicate,
             "detail": detail,
             "organization_head_sha256": head,
             "fencing_token": None,
             "fence_issued": False,
             "required_evidence_or_repair": repair,
-            "retry_entrypoint": RETRY_ENTRYPOINT if transition_class == FAIL_CLOSED else None,
+            "retry_entrypoint": EVENT_EPHEMERAL_ENTRYPOINT if custody.get("event_ephemeral") else RETRY_ENTRYPOINT,
+            "owning_existing_goal": request.get("task_id") or TASK_ID,
+            "next_attempt": "on the next request event after the repair is recorded",
             "consequence_committed": False,
         }
         if readback_refusal is not None:
@@ -976,7 +1170,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
         receipts = record_transition(
             custody, transition_class, transition_id, "sha256:" + request_hash, evidence,
             organization=organization, identity=("task_id", "request_sha256", "failed_predicate"),
-            lock_held=lock_held)
+            lock_held=lock_held, hb_epoch=hb_epoch)
         organization_receipt = receipts["organization_receipt"]
         organization_sha = organization_receipt and organization_receipt["receipt_sha256"]
         own_refusal = readback_basis = None
@@ -996,10 +1190,13 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
             "transition_id": transition_id,
             "disposition": DISPOSITION[transition_class],
             "claim_task_id": claim_task,
+            "failure_code": predicate,
             "failed_predicate": predicate,
             "detail": detail,
             "required_evidence_or_repair": repair,
             "retry_entrypoint": evidence["retry_entrypoint"],
+            "owning_existing_goal": evidence["owning_existing_goal"],
+            "next_attempt": evidence["next_attempt"],
             "fencing_token": None,
             "fence_issued": False,
             "selected_task_id": None,
@@ -1106,21 +1303,34 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 chain_verified = True
                 grants = chain_grants(chain)
                 # Every check completes before any fence is computed.
+                verify_grant_sources(custody, grants)
                 floor = provenance_floor(source)
                 verify_fence_history(runtime, grants, floor, source, custody)
                 prior = prior_grant(grants, target) if target else None
                 if prior is not None:
                     return allow(target, prior, None, replayed=True)
+                # Only a run that may mint rematerializes; a replay reprojects the retained grant.
+                claims_rel = runtime / "control/claims-active.json"
+                runtime_claims_before = claims_rel.read_bytes()
+                verified_chain_max = max([row["boundary_evidence"]["fencing_token"] for row in grants], default=0)
+                rematerialized = rematerialize_runtime_claim_generation(
+                    runtime, max(verified_chain_max, floor["fence"]), chain_max=verified_chain_max,
+                    floor=floor, head=head,
+                    initialized_from_source="control/claims-active.json" in control_inputs.get("initialized_control_files", []),
+                    event_ephemeral=bool(custody.get("event_ephemeral")))
                 plan = run_allocator(runner, runtime, safe_env, "--plan", *(("--task", target) if target else ()))
                 selected = plan.get("selected")
                 if not isinstance(selected, str) or not selected:
                     predicate = plan.get("refusal_predicate") or "NO_ELIGIBLE_TASK"
                     return non_allow(REFUSED, claim_task, predicate,
                                      "allocator evaluated " + ("target " + target if target else "the ranked queue"),
-                                     None, organization=True, head=head, lock_held=True)
+                                     ALLOCATOR_REFUSAL_REPAIR.get(predicate, ALLOCATOR_REFUSAL_REPAIR["NO_ELIGIBLE_TASK"]),
+                                     organization=True, head=head, lock_held=True)
                 claim_task = selected
                 prior = prior_grant(grants, selected)
                 if prior is not None:
+                    if rematerialized is not None:
+                        claims_rel.write_bytes(runtime_claims_before)
                     return allow(selected, prior, None, replayed=True)
                 chain_max = max([row["boundary_evidence"]["fencing_token"] for row in grants], default=0)
                 runtime_generation = plan.get("claim_registry_generation")
@@ -1140,6 +1350,15 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                         FENCE_HISTORY_UNVERIFIED,
                         f"runtime generation {runtime_generation} carries fences beyond the verified history {issued}",
                         "record or retire the runtime fences the organization chain does not hold")
+                if hb_epoch is None:
+                    if rematerialized is not None:
+                        claims_rel.write_bytes(runtime_claims_before)
+                    # A grant's receipts carry the carrier's heartbeat epoch; one is
+                    # never synthesized from the host clock (kernel.hb_reference).
+                    raise ClaimFailClosed(
+                        GRANT_EPOCH_NOT_CARRIER_SUPPLIED,
+                        "no carrier heartbeat epoch was supplied for this grant",
+                        "supply the carrier heartbeat epoch with --hb-epoch; no epoch is derived from a clock")
                 fence = issued + 1
                 task = load_json(runtime / "tasks" / f"{selected}.json")
                 requested = plan.get("requested_claims") or task["requirements"]["mandatory"]
@@ -1155,6 +1374,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                     "provenance_floor": floor,
                     "provenance_floor_sha256": floor["provenance_record_sha256"],
                     "runtime_claims_generation_observed": runtime_generation,
+                    "runtime_claims_generation_rematerialized": rematerialized,
                     "request_id": request.get("request_id"),
                     "request_sha256": request_hash,
                     "target_task_id": target,
@@ -1167,7 +1387,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 receipts = record_transition(
                     custody, GRANTED, transition_id, predecessor, evidence, organization=True,
                     identity=("task_id", "fencing_token", "claim_scope_sha256", "organization_head_sha256"),
-                    lock_held=True)
+                    lock_held=True, hb_epoch=hb_epoch)
                 return allow(selected, receipts["organization_receipt"], receipts, replayed=False)
         except OrganizationReadbackRefused as exc:
             transition_class = REFUSED if exc.refusal["disposition"] == "DENY" else FAIL_CLOSED
@@ -1191,10 +1411,11 @@ def consume(
     source_root: Path,
     runtime_root: Path,
     *,
-    repo_ledger_root: Path | None = None,
+    repo_ledger_root: Path | str | None = None,
     org_ledger_root: Path | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -1210,17 +1431,30 @@ def consume(
     if repo_ledger_root is None:
         # Supplied, never derived: nothing is materialized or allocated without it.
         return _ledger_refusal(load_json(runtime / present[0]), "ledger roots not supplied")
-    safe_env = clean_env(env)
+    # A hosted environment may run only the event-ephemeral materialization:
+    # the declared non-posix store, no explicit root, the repository chain on
+    # the same declared ref. Every other hosted execution is refused here.
+    event_ephemeral = event_ephemeral_materialization(source, repo_ledger_root, org_ledger_root)
+    safe_env = clean_env(env, event_ephemeral=event_ephemeral)
     try:
         # The Organization ledger is the supplied root only under a declared
         # {store: posix}; otherwise the declared store, and an explicit root is
         # FAIL_CLOSED before anything is read or appended (OL-3).
-        custody = ledger_custody(source, repo_ledger_root, org_ledger_root)
+        custody = ledger_custody(source, repo_ledger_root, org_ledger_root, event_ephemeral=event_ephemeral)
     except OrganizationLedgerNotAdmitted as exc:
         return _ledger_refusal(load_json(runtime / present[0]), exc.detail, predicate=exc.predicate, repair=exc.repair)
     except ClaimFailClosed as exc:
         return _ledger_refusal(load_json(runtime / present[0]), exc.predicate + ": " + exc.detail)
-    attempts = [consume_request(source, runtime, rel, custody=custody, runner=runner, safe_env=safe_env)
+    if hb_epoch is not None:
+        try:
+            # The kernel validates a carrier epoch; an invalid one is refused before anything is read or appended.
+            custody["organization_ledger"].kernel.hb_reference(epoch=hb_epoch)
+        except ValueError as exc:
+            return _ledger_refusal(load_json(runtime / present[0]), f"carrier heartbeat epoch invalid: {exc}",
+                                   predicate=GRANT_EPOCH_INVALID,
+                                   repair="supply the carrier heartbeat epoch as an integer at or after the HB32 anchor")
+    attempts = [consume_request(source, runtime, rel, custody=custody, runner=runner, safe_env=safe_env,
+                                hb_epoch=hb_epoch)
                 for rel in present]
     if len(attempts) == 1:
         return attempts[0]
@@ -1237,16 +1471,101 @@ def consume(
     }
 
 
+def readback(source_root: Path, repo_ledger_root: str, result: Mapping[str, Any]) -> dict[str, Any]:
+    """Read every Organization receipt a consumption appended back from the supplied ledger.
+
+    Run against a fresh fetch of the published ref, through the existing
+    verifier (organization_readback), bound to each attempt's repository
+    receipt and transition id. An attempt that reports an appended receipt
+    which does not read back is FAIL_CLOSED; an attempt that appended none
+    is reported as such and is not counted as an Organization disposition.
+    """
+    source = source_root.expanduser().resolve()
+    custody = ledger_custody(source, repo_ledger_root, None,
+                             event_ephemeral=event_ephemeral_materialization(source, repo_ledger_root, None))
+    attempts = result.get("attempts") if isinstance(result.get("attempts"), list) else [result]
+    rows = []
+    for attempt in attempts:
+        digest = attempt.get("organization_receipt_sha256")
+        row = {"request_ref": attempt.get("request_ref"), "transition_class": attempt.get("transition_class"),
+               "transition_id": attempt.get("transition_id"), "disposition": attempt.get("disposition"),
+               "fencing_token": attempt.get("fencing_token"), "organization_receipt_sha256": digest}
+        if not attempt.get("organization_receipt_appended"):
+            row["organization_readback"] = "NOT_APPENDED"
+        elif not isinstance(digest, str):
+            row["organization_readback"] = "REFUSED:ORGANIZATION_RECEIPT_DIGEST_MISSING"
+        else:
+            repository = attempt.get("repository_receipt_sha256")
+            if repository is None:
+                grant = custody["organization_store"].get(
+                    custody["organization_ledger"].ledger_store.receipt_key(digest)) or {}
+                repository = retained_repository_receipt_sha256(custody, grant)
+            try:
+                row["organization_readback_custody_basis"] = organization_readback(
+                    custody, digest, repository_receipt_sha256=repository,
+                    transition_id=attempt.get("transition_id"))
+                row["organization_readback"] = "VERIFIED"
+            except OrganizationReadbackRefused as exc:
+                row["organization_readback"] = readback_state(exc.refusal)
+                row["organization_readback_refusal"] = exc.refusal
+        rows.append(row)
+    verified = all(r["organization_readback"] in ("VERIFIED", "NOT_APPENDED") for r in rows)
+    return {
+        "schema": "stegverse.organization-claim-allocator-readback/v1",
+        "disposition": "VERIFIED" if verified else "FAIL_CLOSED",
+        "attempts": rows,
+        "retry_entrypoint": None if verified else EVENT_EPHEMERAL_ENTRYPOINT,
+        "readback_grants_claim_authority": False,
+        "authority_effect": "NONE_READBACK_ONLY",
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Invoke the canonical organization claim allocator from resident dispatch.")
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--runtime-root", type=Path, required=True)
-    parser.add_argument("--repo-ledger-root", type=Path, default=None)
+    # A POSIX root, or git+<checkout>#<ref>:<namespace>; kept as given so a locator is not path-normalized.
+    parser.add_argument("--repo-ledger-root", type=str, default=None)
     parser.add_argument("--org-ledger-root", type=Path, default=None)
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="the carrier's heartbeat epoch; a grant without one is FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED")
+    parser.add_argument("--readback-result", type=Path, default=None,
+                        help="read back the Organization receipts a prior consumption result reports")
     args = parser.parse_args()
+    if args.readback_result is not None:
+        try:
+            verdict = readback(args.source_root, args.repo_ledger_root, load_json(args.readback_result))
+        except ClaimFailClosed as exc:
+            verdict = {"schema": "stegverse.organization-claim-allocator-readback/v1", "disposition": "FAIL_CLOSED",
+                       "failed_predicate": exc.predicate, "detail": exc.detail,
+                       "required_evidence_or_repair": exc.repair, "retry_entrypoint": EVENT_EPHEMERAL_ENTRYPOINT,
+                       "authority_effect": "NONE_READBACK_ONLY"}
+        print(json.dumps(verdict, sort_keys=True))
+        return 0 if verdict["disposition"] == "VERIFIED" else 1
+    hb_epoch = None
+    if args.hb_epoch is not None:
+        # The kernel's shared supplied-epoch rule sees the raw text: '+33', ' 33', '3_3' are refused.
+        spec = importlib.util.spec_from_file_location("consumer_org_kernel_epoch",
+                                                      args.source_root / "org-kernel/kernel.py")
+        kernel = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(kernel)
+        failure = kernel.supplied_epoch_failure(args.hb_epoch)
+        if failure is not None:
+            print(json.dumps({"schema": "stegverse.resident-execution-request-consumption/v1",
+                              "state": "FAIL_CLOSED", "task_id": TASK_ID, "disposition": "FAIL_CLOSED",
+                              "failure_code": GRANT_EPOCH_INVALID, "failed_predicate": GRANT_EPOCH_INVALID,
+                              "detail": failure[1],
+                              "required_evidence_or_repair": "pass --hb-epoch as the carrier supplied it: ASCII digits >= 32",
+                              "retry_entrypoint": RETRY_ENTRYPOINT, "owning_existing_goal": TASK_ID,
+                              "next_attempt": "run again with the supplied epoch; nothing was read or appended",
+                              "runtime_execution_attempted": False, "fence_issued": False,
+                              "consequence_committed": False, "authority_effect": "NONE_REFUSAL_ONLY"}, sort_keys=True))
+            return 1
+        hb_epoch = int(args.hb_epoch)
     try:
         receipt = consume(args.source_root, args.runtime_root,
-                          repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root)
+                          repo_ledger_root=args.repo_ledger_root, org_ledger_root=args.org_ledger_root,
+                          hb_epoch=hb_epoch)
     except Exception as exc:
         receipt = {
             "schema": "stegverse.resident-execution-request-consumption/v1",
