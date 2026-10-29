@@ -1,3 +1,9 @@
+## SPPA ephemeral-storage remediation candidate — 2026-10-29
+
+Source-only EC9 support for original-owner Q74-01 coordination on [#2810](https://github.com/StegVerse-Labs/.github/issues/2810). The SPPA consumer reuses the allocator's manifest-declared ephemeral-storage predicate; authorization separately verifies that the repository store shares the declared Organization Git directory and ref. Custody construction failures become the existing fail-closed P3 result. Storage eligibility grants no execution or promotion authority. Authenticating custody bases, claims, fences, InTr/TVC checks, and provider promotion are unchanged.
+
+Validation on main `6b13c3a749b2940d6142644196a8302823c1f45a`: 41 tests and 3 subtests pass across SPPA authorization, dispatched consumption and six new storage-boundary cases. The new suite has two failures on unchanged main. Tests use temporary empty Git stores; no real ledger, receipt, deployment or Registry write occurs. Owner PR [#3290](https://github.com/StegVerse-Labs/.github/pull/3290) also edits the custody call: integration must retain its supplied-heartbeat-epoch checks. Compatibility validation on owner head `7fc75d01abdd6ec982b773a950b0e42d52a9a076`, retaining its heartbeat argument and checks: 45 tests and 3 subtests pass in the same three suites. This candidate is not merged or admitted runtime evidence. Q74-01 remains unresolved; Site #1633 stays draft/NOT_ALLOWED until original-owner custody, authenticated dependency reconciliation and promotion authority are observed.
+
 ## Registering a canonical Goal Task
 
 Start at [Task Registration Guide](docs/TASK_REGISTRATION_GUIDE.md). The canonical Task Registry owns identity and coordination; a worker admission review is not task registration, a WorkerCoordinator claim, or a governed execution authorization.
@@ -2176,3 +2182,5 @@ the pin (#3151), and Master Records never gates. See
 Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COMPOSITION-001` record. See [the handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md). Registration is coordination only; source tests, WorkerCoordinator admission and authentic runtime evidence remain separate.
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
+
+SPPA review follow-up: the six storage-boundary regressions now run with stdlib unittest, with a scoped loader override that restores the fixture-declared Git topology after the suite-wide POSIX default and is removed at cleanup. The existing generated test-set manifest includes the suite. All 45 SPPA tests pass without pytest; this is local source validation, not exact-head CI, custody evidence or promotion authority.

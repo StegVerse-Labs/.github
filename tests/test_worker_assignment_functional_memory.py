@@ -70,7 +70,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
                 "sha256": pack_sha,
                 "content": memory,
             }],
-        ))
+        ), hb_epoch=4096)
         self.assertEqual(result["state"], "RECORDED")
         return {"memory": memory, "receipt_sha256": result["receipt_sha256"],
                 "organization_receipt_sha256": result["organization_receipt"]["receipt_sha256"]}
@@ -144,7 +144,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
             memory = record_non_allow_functional_memory(
                 task={"task_id": "TASK-1"},
                 trigger={"packet_id": "P1", "source": "INDEPENDENT_TASK_CONTROL"},
-                packet=bound,
+                packet=bound, hb_epoch=4096,
             )
         self.assertEqual(memory["schema"], SCHEMA)
         self.assertEqual(memory["state"], "RECORDED")
@@ -253,7 +253,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
             memory = record_non_allow_functional_memory(
                 task=task,
                 trigger={"packet_id": "P2", "source": "INDEPENDENT_TASK_CONTROL"},
-                packet=bound,
+                packet=bound, hb_epoch=4096,
             )
         self.assertEqual(memory["state"], "BOUNDARY")
         self.assertEqual(memory["reason"], "FUNCTIONAL_MEMORY_PREDECESSOR_NOT_RECONSTRUCTED")
@@ -310,7 +310,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
         pointer = record_non_allow_functional_memory(
             task={"task_id": "TASK-1"},
             trigger={"packet_id": "P5", "source": "INDEPENDENT_TASK_CONTROL"},
-            packet=bound,
+            packet=bound, hb_epoch=4096,
         )
         self.assertEqual(pointer["state"], "RECORDED")
         self.assertRegex(pointer["organization_receipt_sha256"], r"^sha256:[0-9a-f]{64}$")
@@ -367,7 +367,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
             memory = record_non_allow_functional_memory(
                 task={"task_id": "TASK-1", "functional_memory": previous},
                 trigger={"packet_id": "P3", "source": "INDEPENDENT_TASK_CONTROL"},
-                packet=bound,
+                packet=bound, hb_epoch=4096,
             )
 
         self.assertEqual(memory["state"], "RECORDED")
@@ -413,7 +413,7 @@ class WorkerAssignmentFunctionalMemoryTests(unittest.TestCase):
             memory = record_non_allow_functional_memory(
                 task={"task_id": "TASK-1", "functional_memory": previous},
                 trigger={"packet_id": "P4", "source": "INDEPENDENT_TASK_CONTROL"},
-                packet=bound,
+                packet=bound, hb_epoch=4096,
             )
         self.assertEqual(memory["state"], "BOUNDARY")
         self.assertEqual(memory["reason"], "CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH")

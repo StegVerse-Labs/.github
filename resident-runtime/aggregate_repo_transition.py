@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-import argparse,base64,hashlib,importlib.util,json,os,tempfile
-from datetime import datetime,timezone
+import argparse,base64,contextlib,contextvars,hashlib,importlib.util,json,os,tempfile
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -17,7 +16,7 @@ kernel=importlib.util.module_from_spec(_kspec);_kspec.loader.exec_module(kernel)
 _sspec=importlib.util.spec_from_file_location("ledger_store",ROOT/"resident-runtime/ledger_store.py")
 ledger_store=importlib.util.module_from_spec(_sspec);_sspec.loader.exec_module(ledger_store)
 
-def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
+def canon(v): return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False,allow_nan=False).encode()
 def sha(v): return "sha256:"+hashlib.sha256(canon(v)).hexdigest()
 class LedgerLocationRequired(ValueError):
     """No ledger root was supplied; nothing is appended and nothing is derived."""
@@ -612,7 +611,7 @@ def retain_source(root, receipt, verified):
     fd,name=tempfile.mkstemp(prefix=".source-",dir=str(directory))
     try:
         with os.fdopen(fd,"w",encoding="utf-8") as stream:
-            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False)+"\n")
+            stream.write(json.dumps(receipt,indent=2,sort_keys=True,ensure_ascii=False,allow_nan=False)+"\n")
             stream.flush()
             os.fsync(stream.fileno())
         if path.exists():
@@ -669,6 +668,9 @@ def _caller_context(boundary_evidence):
     """
     evidence=dict(boundary_evidence or {})
     evidence.pop(RETAINED_SUBMISSION_KEY,None)
+    # Which batch this append released is ledger state too: an exact retry after
+    # the release committed derives no release of its own (B-P36q).
+    evidence.pop("parent_manifest_released_batch",None)
     return evidence
 
 def _existing_exact_source(store, source, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect):
@@ -740,7 +742,7 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
                          predecessor_org_state_sha256=None, successor_org_state_sha256=None,
                          boundary_evidence=None, authority_effect="NONE", parent_manifest=None,
                          establishes_packet=False, now_ns=None, ledger=None, hb_epoch=None,
-                         custody_exclusivity_verifier=None):
+                         custody_exclusivity_verifier=None, repository_ledger=None):
     """Serialize appends; the governing parent manifest owns packet release.
 
     A manifested receipt packet's first receipt records its own establishment.
@@ -754,15 +756,48 @@ def aggregate_transition(receipt, *, org_transition_class="ORGANIZATION_STATE_TR
     execution. Either way it is supplied, never derived.
 
     `hb_epoch` is the carrier's heartbeat epoch. Supplied, every receipt this
-    call writes carries that exact reference; absent, the reference is derived
-    from the host clock and says so. An exact retry returns the original
-    receipt whatever epoch it arrives at.
+    call writes carries that exact reference; an absent or invalid one raises
+    OrgLedgerEpochRefused (six-field FAIL_CLOSED; HB_EPOCH_NOT_SUPPLIED when
+    absent) before the store is resolved or created, and no clock is read to
+    stand in for it. An exact retry returns the original receipt whatever
+    epoch it arrives at.
 
     `custody_exclusivity_verifier` is the only way an existing authority's
     attestation of unique custody reaches a successor's consequential append
     (require_custody_exclusivity); a root never released does not need it.
+
+    A repository source receipt must be its designated repository ledger's own,
+    reachable from its HEAD, and that ledger must pair with this organization
+    store (source_ledger_refusal). The designated ledger is the materializer's
+    STEGVERSE_REPO_LEDGER_ROOT, or the kernel custody's materializer-supplied
+    store, bound by `with _materialized_repository_ledger(store):` -- a private
+    channel, never a keyword, an environment variable or a request field. A
+    public `repository_ledger` is accepted only when it is that same ledger.
     """
+    _refuse_invalid_epoch(hb_epoch)
+    _refuse_clock_source(receipt)
+    _refuse_unbound_request(receipt, boundary_evidence)
     store = organization_store(ledger)
+    # Resolved, not opened or written: the source's repository ledger must pair with it.
+    _refuse_source_not_on_ledger(receipt, repository_ledger, organization=store,
+                                 materialized=_MATERIALIZED.get())
+    checked = _SOURCE_CHECKED.set(True)
+    try:
+        return _aggregate_transition_checked(receipt, store, org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=boundary_evidence, authority_effect=authority_effect,
+            parent_manifest=parent_manifest, establishes_packet=establishes_packet,
+            now_ns=now_ns, hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier)
+    finally:
+        _SOURCE_CHECKED.reset(checked)
+
+
+def _aggregate_transition_checked(receipt, store, *, org_transition_class, predecessor_org_state_sha256,
+                                  successor_org_state_sha256, boundary_evidence, authority_effect,
+                                  parent_manifest, establishes_packet, now_ns, hb_epoch,
+                                  custody_exclusivity_verifier):
+    """aggregate_transition() after its source was checked: the lock, the packet release and the append."""
     if _is_posix(store):
         store.root.mkdir(mode=0o700, parents=True, exist_ok=True)
         with store.exclusive():
@@ -855,17 +890,43 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
             effective_boundary_evidence[batches.ESTABLISHMENT_KEY] = batches.establishment_record(
                 parent_manifest, kind="MANIFEST_ASSIGNMENT_T0"
             )
+        # An exact retry is recognised before anything is released: under an
+        # establishment-bound manifest the release's establishment receipt
+        # and this one already fill the successor packet, so releasing first
+        # would close it again (W4). The recorded receipt is returned.
+        if _existing_exact_source(
+            store, verify_source(receipt), org_transition_class=org_transition_class,
+            predecessor_org_state_sha256=predecessor_org_state_sha256,
+            successor_org_state_sha256=successor_org_state_sha256,
+            boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+        ) is not None:
+            return _aggregate_transition_locked(
+                receipt, store=store, org_transition_class=org_transition_class,
+                predecessor_org_state_sha256=predecessor_org_state_sha256,
+                successor_org_state_sha256=successor_org_state_sha256,
+                boundary_evidence=effective_boundary_evidence, authority_effect=authority_effect,
+                hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
+            )
         # The last released batch's post-commit submission outcome, read from
         # this store before any release moves BATCH_HEAD, is retained on this
         # receipt once (#3012). Read-only and derived from the ledger, so an
         # exact retry derives the same value and it is not caller context.
+        # An unindexed batch a faulted release wrote is indexed first (B-P36q).
+        batches.adopt_unindexed_batch(store)
         retained = batches.retained_submission_evidence(store)
         if retained is not None:
             effective_boundary_evidence[batches.RELEASED_BATCH_SUBMISSION_KEY] = retained
-        released = batches.release_satisfied_packet_before_next_transition(
-            parent_manifest, root=store, now_ns=now_ns,
-            custody_exclusivity_verifier=custody_exclusivity_verifier,
-        )
+        # A release a faulted attempt committed is resumed, not repeated: a
+        # released batch whose carrying receipt never landed is carried by
+        # this one (B-P36q).
+        released = batches.pending_manifest_release(store)
+        if released is None:
+            # Expiry and release read the supplied epoch when one is in hand, never a clock.
+            released = batches.release_satisfied_packet_before_next_transition(
+                parent_manifest, root=store, now_ns=now_ns,
+                custody_exclusivity_verifier=custody_exclusivity_verifier,
+                epoch=int(str(hb_epoch)) if hb_epoch is not None else None,
+            )
         if released is not None:
             if establishes_packet:
                 raise ValueError("t(0) establishment cannot also release a prior packet")
@@ -901,7 +962,8 @@ def _aggregate_transition_held(receipt, store, *, org_transition_class, predeces
         hb_epoch=hb_epoch, custody_exclusivity_verifier=custody_exclusivity_verifier,
     )
     if released is not None:
-        state = batches.open_packet_state(parent_manifest, root=store, now_ns=now_ns)
+        state = batches.open_packet_state(parent_manifest, root=store, now_ns=now_ns,
+                                          epoch=int(str(hb_epoch)) if hb_epoch is not None else None)
         if state["receipt_count"] != (2 if manifest_establishes else 1):
             raise ValueError("successor organization receipt packet did not initialize correctly")
     return record
@@ -916,6 +978,7 @@ def release_custody(parent_manifest, *, ledger=None, hb_epoch=None, custody_excl
     root taken before the release from being written elsewhere: that copy is
     detected where its receipts meet this release, not prevented.
     """
+    _refuse_invalid_epoch(hb_epoch)
     transfer = custody_transfer(parent_manifest)
     store = organization_store(ledger)
     record = {
@@ -946,6 +1009,7 @@ def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch
     materialization, the manifest's HEAD and generation, and this manifest.
     """
     import organization_batch_custody as batches
+    _refuse_invalid_epoch(hb_epoch)
     transfer = custody_transfer(parent_manifest)
     store = organization_store(ledger)
     root = store.root if _is_posix(store) else None
@@ -1007,7 +1071,7 @@ def assume_custody(parent_manifest, *, materialization_id, ledger=None, hb_epoch
         )
 
 
-def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None, custody_exclusivity_verifier=None):
+def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transition_class="ORGANIZATION_STATE_TRANSITION", predecessor_org_state_sha256=None, successor_org_state_sha256=None, boundary_evidence=None, authority_effect="NONE", hb_epoch=None, custody_exclusivity_verifier=None, repository_ledger=None):
     """The append itself, for a caller already holding the organization append lock.
 
     The receipt and HEAD are published by the store's append_transaction on
@@ -1015,18 +1079,39 @@ def _aggregate_transition_locked(receipt, *, root=None, store=None, org_transiti
     a networked store it is the store's own compare-and-swap, and a lost race
     is a typed FAIL_CLOSED with nothing published.
     """
+    _refuse_invalid_epoch(hb_epoch)
+    _refuse_clock_source(receipt)
+    _refuse_unbound_request(receipt, boundary_evidence)
     source=verify_source(receipt)
     if store is None:
         store=organization_store(root)
         held=store.assume_exclusive()
     else:
         held=store.exclusive()
+    if not _SOURCE_CHECKED.get():
+        _refuse_source_not_on_ledger(receipt, repository_ledger, organization=store,
+                                     materialized=_MATERIALIZED.get())
     with held:
         return _append_locked(receipt,source,store,org_transition_class=org_transition_class,
             predecessor_org_state_sha256=predecessor_org_state_sha256,
             successor_org_state_sha256=successor_org_state_sha256,
             boundary_evidence=boundary_evidence,authority_effect=authority_effect,hb_epoch=hb_epoch,
             custody_exclusivity_verifier=custody_exclusivity_verifier)
+
+#: An append's epoch is supplied by its caller and checked by the kernel's
+#: shared rule (SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH); an absent or invalid
+#: one is refused six-field FAIL_CLOSED before anything is written, as
+#: StegVerse-org/.github#189 does for the organization ledger there.
+EPOCH_RETRY_ENTRYPOINT="resident-runtime/aggregate_repo_transition.py::aggregate_transition (hb_epoch=, or --hb-epoch)"
+OrgLedgerEpochRefused=kernel.SuppliedEpochRefused
+
+def epoch_refusal(hb_epoch):
+    """The six-field FAIL_CLOSED refusal of an append's epoch, or None."""
+    return kernel.writer_epoch_refusal(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+
+def require_supplied_epoch(hb_epoch):
+    """The heartbeat reference of the supplied epoch, or OrgLedgerEpochRefused."""
+    return kernel.supplied_hb_reference(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
 
 def _retained_in_store(store, receipt, source):
     """The exact source receipt an earlier append committed beside its receipt."""
@@ -1035,7 +1120,307 @@ def _retained_in_store(store, receipt, source):
     if stored!=receipt or verify_source(stored)["source_transition_sha256"]!=source["source_transition_sha256"]:
         raise ValueError("retained organization source receipt conflict")
 
+def _refuse_invalid_epoch(hb_epoch):
+    """OrgLedgerEpochRefused for an absent or invalid epoch, before any store opens. No clock is read."""
+    require_supplied_epoch(hb_epoch)
+
+#: O-1: a repository source receipt is consumed only when its own heartbeat
+#: reference is SUPPLIED (or CARRIED), never CLOCK or unmarked. Checked by the
+#: kernel's shared rule on the receipt's reference, before any store opens.
+SOURCE_CLOCK_PROVENANCE="SOURCE_RECEIPT_IS_CLOCK_PROVENANCE"
+SOURCE_PROVENANCE_RETRY_ENTRYPOINT=(".stegverse/transition-ledger/emit.py::append (hb_epoch=, or --hb-epoch), "
+                                    "then resident-runtime/aggregate_repo_transition.py::aggregate_transition")
+
+def source_provenance_refusal(receipt):
+    """The six-field FAIL_CLOSED of a repository source receipt stamped from a clock, or None.
+
+    Only a repo-transition receipt carries an hb_reference. A CLOCK reference
+    (derived_from_clock not False, or a sampled_unix_ns) and an unmarked one
+    are refused; nothing is written and no clock is read. A legacy CLOCK
+    receipt is never mutated: its transition is re-emitted under a supplied epoch.
+    """
+    if not isinstance(receipt,dict) or receipt.get("schema")!="stegverse.repo-transition-receipt/v1":
+        return None
+    reference=receipt.get("hb_reference")
+    epoch=reference.get("epoch") if isinstance(reference,dict) else None
+    failure=kernel.supplied_epoch_failure(epoch,reference if reference is not None else {})
+    if failure is None and isinstance(reference,dict) and ("source" in reference or "head_receipt_sha" in reference):
+        # The shared rule passes a CARRIED reference; this destination does not
+        # accept CARRIED crossings at its writers either (B-P36m option 1, row 7),
+        # so a source receipt claiming one is refused before anything is written.
+        return {"disposition":"FAIL_CLOSED","failure_code":kernel.CARRIED_NOT_ACCEPTED_BY_DESTINATION,
+                "failed_predicate":"DESTINATION_ACCEPTS_CARRIED_CROSSINGS",
+                "detail":"source receipt "+str(receipt.get("receipt_sha256"))+" claims CARRIED provenance",
+                "required_evidence_or_repair":"re-send with the SUPPLIED epoch",
+                "retry_entrypoint":SOURCE_PROVENANCE_RETRY_ENTRYPOINT,
+                "owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+                "next_attempt":"append again consuming a receipt minted with a SUPPLIED epoch; nothing was written",
+                "derived_from_clock":False,"consequence_committed":False}
+    if failure is None:
+        return None
+    code,detail=failure
+    return {"disposition":"FAIL_CLOSED","failure_code":SOURCE_CLOCK_PROVENANCE,
+            "failed_predicate":kernel.HB_EPOCH_PREDICATE,
+            "detail":"source receipt "+str(receipt.get("receipt_sha256"))+": "+code+": "+detail,
+            "required_evidence_or_repair":("the repository receipt this append consumes carries a SUPPLIED "
+                                           "hb_reference (digits >= "+str(kernel.HB_ANCHOR_EPOCH)+", "
+                                           "derived_from_clock false); a CLOCK or unmarked one is re-emitted "
+                                           "under a supplied epoch, never mutated"),
+            "retry_entrypoint":SOURCE_PROVENANCE_RETRY_ENTRYPOINT,
+            "owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"append again consuming a receipt minted with the supplied epoch; nothing was written",
+            "derived_from_clock":False,"consequence_committed":False}
+
+def _refuse_clock_source(receipt):
+    """OrgLedgerEpochRefused (SOURCE_RECEIPT_IS_CLOCK_PROVENANCE) before any store opens."""
+    refusal=source_provenance_refusal(receipt)
+    if refusal is not None:
+        raise OrgLedgerEpochRefused(refusal)
+
+#: A repository source receipt is consumed only as the repository ledger's own:
+#: byte-for-byte the receipt its digest addresses there, reachable from that
+#: ledger's HEAD (VALIDATOR row 8). A self-consistent receipt minted anywhere
+#: else, or no repository ledger supplied at all, is refused before any write.
+SOURCE_NOT_ON_LEDGER="SOURCE_RECEIPT_NOT_ON_LEDGER"
+SOURCE_ON_LEDGER_PREDICATE="SOURCE_RECEIPT_IS_THE_REPOSITORY_LEDGERS_OWN"
+
+def _repository_ledger():
+    """The repository ledger's own emitter module (its store and verified chain walk)."""
+    spec=importlib.util.spec_from_file_location("aggregate_source_repository_ledger",
+                                                ROOT/".stegverse/transition-ledger/emit.py")
+    module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module
+
+#: Lead ruling 2026-10-24T21:00Z, option (b): the source ledger is only this
+#: repository's designated ledger. A caller-held store is accepted only when it
+#: is that same ledger (by realpath, and for a git store the same ref and
+#: namespace); a receipt of another repository is not admissible here until a
+#: route verifies it on that repository's own designated ledger.
+CALLER_CHOSEN_LEDGER="CALLER_CHOSEN_SOURCE_LEDGER_REJECTED"
+ROOT_NOT_DESIGNATED="LEDGER_ROOT_NOT_CONTRACT_DESIGNATED"
+CROSS_REPO_UNVERIFIED="SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED"
+
+def _ledger_identity(store):
+    """What a ledger store is, by location: ('git', git dir realpath, ref, namespace) or ('posix', root realpath)."""
+    if hasattr(store,"store") and hasattr(store,"kind"):
+        store=store.store  # a StagedLedgerTransaction over the store it publishes to
+    if hasattr(store,"git_dir") and hasattr(store,"ref"):
+        return ("git",os.path.realpath(store.git_dir),store.ref,getattr(store,"namespace",None))
+    if hasattr(store,"root"):
+        return ("posix",os.path.realpath(store.root))
+    return ("unknown",repr(store))
+
+def _tracked_files_under(root):
+    """True when `root` lies inside this checkout and holds files git tracks: a committed tree, never a ledger."""
+    resolved=os.path.realpath(root)
+    if not Path(resolved).is_relative_to(os.path.realpath(ROOT)):
+        return False
+    import subprocess
+    listed=subprocess.run(["git","-C",str(ROOT),"ls-files","--",resolved],capture_output=True,text=True)
+    return listed.returncode==0 and bool(listed.stdout.strip())
+
+def source_ledger_refusal(receipt, repository_ledger=None, *, organization=None, materialized=None):
+    """The six-field FAIL_CLOSED of a repository source receipt not on this repository's designated ledger, or None.
+
+    The receipt must be this repository's (another repository's receipt is
+    SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED). The ledger is the one the
+    materializer supplied (STEGVERSE_REPO_LEDGER_ROOT, read by
+    emit.repository_store()): a git locator must name contract.json's ref and
+    namespace, and a plain directory holding git-tracked files is
+    LEDGER_ROOT_NOT_CONTRACT_DESIGNATED.
+
+    Lead ruling 21:13Z (paired override): the designated ledger is the one the
+    materializer supplied -- STEGVERSE_REPO_LEDGER_ROOT, or `materialized`, the
+    kernel custody's repo_ledger_root passed through aggregate's internal
+    channel (harness/CI and materializer redirection are its only intended
+    users). Either way it must PAIR with `organization`, the organization store
+    being appended: a git repository ledger is the same git repository (by
+    realpath) and the same ref as the git organization ledger, at contract.json's
+    namespace; a POSIX one pairs only with a POSIX organization ledger, neither
+    root holding git-tracked files (a mixed pair is MIXED_LEDGER_KIND_PAIR,
+    lead ruling 21:42Z). An unpaired ledger, or a public
+    `repository_ledger` that is not the designated one, is
+    CALLER_CHOSEN_SOURCE_LEDGER_REJECTED. None supplied is the location
+    refusal, never a pass. The walk is emit.chain, which proves every node is
+    the receipt its address names.
+    """
+    if not isinstance(receipt,dict) or receipt.get("schema")!="stegverse.repo-transition-receipt/v1":
+        return None
+    digest=receipt.get("receipt_sha256")
+    def refused(detail,terminal=True,code=SOURCE_NOT_ON_LEDGER,repair=None):
+        return {"disposition":"FAIL_CLOSED","failure_code":code,"terminal":terminal,
+                "failed_predicate":SOURCE_ON_LEDGER_PREDICATE,"detail":"source receipt "+str(digest)+": "+detail,
+                "required_evidence_or_repair":repair or ("consume the receipt this repository's designated ledger holds, "
+                                               "byte-for-byte, reachable from its HEAD, with that ledger supplied "
+                                               "(STEGVERSE_REPO_LEDGER_ROOT)"),
+                "retry_entrypoint":SOURCE_PROVENANCE_RETRY_ENTRYPOINT,
+                "owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+                "next_attempt":("retry once the repository ledger is readable; nothing was written" if not terminal
+                                else "append again consuming the repository ledger's own receipt; nothing was written"),
+                "derived_from_clock":False,"consequence_committed":False}
+    repository=_repository_ledger()
+    if receipt.get("repository")!=repository.C["repository"]:
+        return refused("the receipt is "+repr(receipt.get("repository"))+"'s, not "+repository.C["repository"]+"'s",
+                       code=CROSS_REPO_UNVERIFIED,
+                       repair=("verify the receipt on its own repository's contract-designated ledger (that repository's "
+                               "contract.json ref and namespace, fetched fresh) before it is consumed here"))
+    supplied=os.getenv("STEGVERSE_REPO_LEDGER_ROOT")
+    if supplied and supplied.startswith("~"):
+        # Never derived from a home directory (coordinator 2026-10-27, R2).
+        return refused("STEGVERSE_REPO_LEDGER_ROOT "+repr(supplied)+" is an unexpanded ~",code=ROOT_NOT_DESIGNATED)
+    if materialized is None and not supplied:
+        # Nothing designated to check against is a refusal, never a pass: the same
+        # location refusal every writer gives when its materializer supplied no ledger.
+        raise LedgerLocationRequired("STEGVERSE_REPO_LEDGER_ROOT")
+    try:
+        designated=materialized if materialized is not None else repository.repository_store()
+        identity=_ledger_identity(designated)
+        if materialized is not None and supplied and _ledger_identity(repository.repository_store())!=identity:
+            # Both the materializer's variable and the custody's root are present and
+            # name different ledgers (realpath): one of them is an override.
+            return refused("the custody's repository ledger "+repr(identity)+" is not STEGVERSE_REPO_LEDGER_ROOT's "
+                           +repr(_ledger_identity(repository.repository_store())),code=CALLER_CHOSEN_LEDGER)
+        paired=_ledger_identity(organization) if organization is not None else None
+        if paired is None:
+            # A repository ledger with no organization ledger to pair with is a lone
+            # root, refused from any source (coordinator 2026-10-27, R2).
+            return refused("LONE_REPOSITORY_LEDGER: "+repr(identity)+" is not half of a verified pair",
+                           code=CALLER_CHOSEN_LEDGER)
+        # Lead ruling 21:42Z: both halves of a pair are the same kind. A git
+        # repository ledger is the subtree of the organization ledger ref it pairs
+        # with; a POSIX one pairs only with a POSIX organization ledger, and
+        # neither root holds git-tracked files.
+        if paired is not None and identity[0]!=paired[0]:
+            return refused("MIXED_LEDGER_KIND_PAIR: a "+identity[0]+" repository ledger "+repr(identity)
+                           +" with a "+paired[0]+" organization ledger "+repr(paired),code=CALLER_CHOSEN_LEDGER)
+        if identity[0]=="git" and (paired is None or identity[1:3]!=paired[1:3]):
+            return refused("the repository ledger "+repr(identity)+" does not pair with the organization ledger "
+                           +repr(paired)+" being appended",code=CALLER_CHOSEN_LEDGER)
+        if paired is not None and paired[0]=="posix" and _tracked_files_under(paired[1]):
+            return refused("the organization ledger root "+paired[1]+" holds git-tracked files",code=ROOT_NOT_DESIGNATED)
+        location=repository.C.get("repository_ledger_location") or {}
+        if identity[0]=="git" and (identity[2],identity[3])!=(location.get("ref"),location.get("namespace")):
+            return refused("the supplied git ledger "+repr(identity[2:])+" is not contract.json's "
+                           +repr((location.get("ref"),location.get("namespace"))),code=ROOT_NOT_DESIGNATED)
+        if identity[0]=="posix" and _tracked_files_under(identity[1]):
+            return refused("the supplied ledger root "+identity[1]+" holds git-tracked files",code=ROOT_NOT_DESIGNATED)
+        if repository_ledger is not None and _ledger_identity(repository_ledger)!=identity:
+            return refused("the caller's ledger "+repr(_ledger_identity(repository_ledger))
+                           +" is not this repository's designated ledger "+repr(identity),code=CALLER_CHOSEN_LEDGER)
+        store=designated
+        head=store.get(ledger_store.HEAD_KEY)
+        # The whole chain is walked and verified even after a match, as emit.recorded
+        # does, so the answer is never read off a chain that is broken further back.
+        held=None
+        for row in repository.chain(store,head):
+            if held is None and row.get("receipt_sha256")==digest: held=row
+    except (ValueError,RecursionError,MemoryError) as exc:
+        # A chain that does not verify, or a corrupt stored receipt: terminal, nothing is believed.
+        return refused(type(exc).__name__+": "+str(exc))
+    except OSError as exc:
+        # The ledger could not be read this time (row 9): non-terminal, the same append may be retried.
+        return refused(type(exc).__name__+": "+str(exc),terminal=False)
+    if held is None:
+        return refused("not reachable from the repository ledger's HEAD")
+    if held!=receipt:
+        return refused("differs from the receipt the repository ledger holds at that address")
+    return None
+
+#: An organization receipt carried off this organization (Master Records
+#: submission) is first proven to be this ledger's own (VALIDATOR row 4).
+ORG_RECEIPT_NOT_ON_LEDGER="ORGANIZATION_RECEIPT_NOT_ON_LEDGER"
+ORG_RECEIPT_ON_LEDGER_PREDICATE="ORGANIZATION_RECEIPT_IS_THE_ORGANIZATION_LEDGERS_OWN"
+
+def organization_receipt_ledger_refusal(receipt, store=None, *, retry_entrypoint):
+    """The six-field FAIL_CLOSED of an organization receipt that is not this ledger's own, or None.
+
+    Its receipt_sha256 must be the hash of its body, and it must be, byte-for-byte,
+    the receipt this organization ledger holds at that address, reachable from
+    HEAD along previous_receipt_sha256 with every node self-verifying. `store` is
+    the store the caller holds, else organization_store() (the declared locus).
+    No ledger, an unreadable one or a broken chain is a refusal, never a pass.
+    """
+    digest=receipt.get("receipt_sha256") if isinstance(receipt,dict) else None
+    def refused(code,detail,repair,terminal=True):
+        return {"disposition":"FAIL_CLOSED","failure_code":code,"failed_predicate":ORG_RECEIPT_ON_LEDGER_PREDICATE,
+                "terminal":terminal,
+                "detail":"organization receipt "+str(digest)+": "+detail,"required_evidence_or_repair":repair,
+                "retry_entrypoint":retry_entrypoint,"owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+                "next_attempt":"submit the organization ledger's own receipt; nothing was published",
+                "derived_from_clock":False,"consequence_committed":False,"authority_effect":"NONE_REFUSAL_ONLY"}
+    repair=("submit the receipt this organization ledger holds, byte-for-byte, reachable from its HEAD, "
+            "with that ledger supplied by the materializer")
+    if not isinstance(receipt,dict) or not isinstance(digest,str):
+        return refused("CARRIED_REFERENCE_SELF_HASH_MISMATCH","no receipt_sha256",repair)
+    if digest!=sha({k:v for k,v in receipt.items() if k!="receipt_sha256"}):
+        return refused("CARRIED_REFERENCE_SELF_HASH_MISMATCH","receipt_sha256 is not the hash of its body "
+                       "(edited after it was minted)",repair)
+    try:
+        store=store if store is not None else organization_store()
+        rows=_custody_rows(store)
+        cursor=_read_tip(store); seen=set(); held=None
+        while cursor is not None:
+            if cursor in seen or cursor not in rows:
+                return refused(ORG_RECEIPT_NOT_ON_LEDGER,"the chain from HEAD breaks at "+str(cursor),repair)
+            seen.add(cursor)
+            if cursor==digest: held=rows[cursor]
+            cursor=rows[cursor].get("previous_receipt_sha256")
+    except OSError as exc:
+        return refused(ORG_RECEIPT_NOT_ON_LEDGER,type(exc).__name__+": "+str(exc),repair,terminal=False)
+    except (ValueError,RecursionError,MemoryError) as exc:
+        return refused(ORG_RECEIPT_NOT_ON_LEDGER,type(exc).__name__+": "+str(exc),repair)
+    if held is None:
+        return refused(ORG_RECEIPT_NOT_ON_LEDGER,"not reachable from the organization ledger's HEAD",repair)
+    if held!=receipt:
+        return refused(ORG_RECEIPT_NOT_ON_LEDGER,"differs from the receipt the ledger holds at that address",repair)
+    return None
+
+#: The kernel custody's materializer-supplied repository ledger, bound only by
+#: `with _materialized_repository_ledger(store):` (lead rulings 21:13Z, 21:23Z):
+#: never a keyword, an environment variable or a request field. Its in-tree
+#: users are the kernel's crossing custody, the claim consumer and SPPA.
+_MATERIALIZED=contextvars.ContextVar("aggregate_materialized_repository_ledger",default=None)
+#: Set by aggregate_transition() while it appends a receipt it already checked,
+#: so its own nested _aggregate_transition_locked calls do not check again.
+_SOURCE_CHECKED=contextvars.ContextVar("aggregate_source_ledger_checked",default=False)
+
+@contextlib.contextmanager
+def _materialized_repository_ledger(store):
+    """Bind the materializer-supplied repository ledger for the appends inside this block (still paired and checked)."""
+    token=_MATERIALIZED.set(store)
+    try:
+        yield store
+    finally:
+        _MATERIALIZED.reset(token)
+
+def _refuse_unbound_request(receipt, boundary_evidence):
+    """CommittedRequestRefused before any store opens (rows 5 and 7).
+
+    A caller's boundary evidence never carries committed_request. A source
+    receipt that carries one was written in a request run, so it must name the
+    committed request this run was started from, verified against its file.
+    """
+    kernel.refuse_caller_committed_request(boundary_evidence,"boundary_evidence")
+    if not isinstance(receipt,dict) or kernel.COMMITTED_REQUEST_KEY not in receipt:
+        return
+    bound=kernel.committed_request()
+    if bound is None or receipt[kernel.COMMITTED_REQUEST_KEY]!=bound:
+        raise kernel.CommittedRequestRefused("COMMITTED_REQUEST_DIGEST_UNVERIFIED",
+            "the source receipt's committed_request "+json.dumps(receipt[kernel.COMMITTED_REQUEST_KEY],sort_keys=True)
+            +" is not this run's "+json.dumps(bound,sort_keys=True),
+            repair="consume the source receipt in the request run it was written in, from that committed request")
+
+def _refuse_source_not_on_ledger(receipt, repository_ledger=None, *, organization=None, materialized=None):
+    """OrgLedgerEpochRefused (source_ledger_refusal) before anything is written to the organization store."""
+    refusal=source_ledger_refusal(receipt,repository_ledger,organization=organization,materialized=materialized)
+    if refusal is not None:
+        raise OrgLedgerEpochRefused(refusal)
+
+def _append_reference(hb_epoch):
+    return require_supplied_epoch(hb_epoch)
+
 def _append_locked(receipt, source, store, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect, hb_epoch, custody_exclusivity_verifier=None):
+    reference=_append_reference(hb_epoch)
     posix=_is_posix(store)
     store.initialize()
     rows=verify_custody_lineage(store)
@@ -1079,11 +1464,16 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         "successor_org_state_sha256":successor,
         "boundary_evidence":dict(boundary_evidence or {}),
         "authority_effect":authority_effect,
-        "hb_reference":kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference(),
-        "observed_at":datetime.now(timezone.utc).isoformat(),
+        "hb_reference":reference,
+        # The supplied heartbeat, not a host clock reading.
+        "observed_at":reference["heartbeat_id"],
         "previous_receipt_sha256":prev,
         "custody_generation":generation,
     }
+    # In a request run the organization receipt binds the verified committed request too (row 1),
+    # written at the request's own epoch.
+    bound=kernel.committed_request(reference["epoch"])
+    if bound is not None: body[kernel.COMMITTED_REQUEST_KEY]=bound
     if attestation is not None: body["custody_exclusivity_attestation_sha256"]=sha(attestation)
     if generation==0: body["custody_authority_basis"]=CUSTODY_AUTHORITY_BASIS_GENERATION_0
     digest=sha(body); record={**body,"receipt_sha256":digest}; key=ledger_store.receipt_key(digest)
@@ -1106,22 +1496,37 @@ def main():
     p.add_argument("--parent-manifest")
     p.add_argument("--release-custody",action="store_true")
     p.add_argument("--assume-custody-as")
+    p.add_argument("--hb-epoch",type=str,default=None,
+                   help="carrier-supplied heartbeat epoch, ASCII digits >= 32; required, never coerced")
     a=p.parse_args()
+    # The epoch is checked as typed, before any receipt is read or store opened.
+    refused=epoch_refusal(a.hb_epoch)
+    if refused is not None:
+        print(json.dumps(refused,sort_keys=True)); raise SystemExit(1)
+    hb_epoch=int(a.hb_epoch)
+    # Inputs are read with #3290's kernel.cli_input_json / cli_json_text before
+    # any writer is called; an unreadable one is CLI_INPUT_INVALID (F-INPUT-TRACE),
+    # reported by kernel.run_writer_cli in __main__.
+    entry="resident-runtime/aggregate_repo_transition.py"
+    boundary_evidence=kernel.cli_json_text(a.boundary_evidence_json,"--boundary-evidence-json",retry_entrypoint=entry)
+    parent_manifest=kernel.cli_input_json(a.parent_manifest,"--parent-manifest",retry_entrypoint=entry) if a.parent_manifest else None
     if a.release_custody or a.assume_custody_as:
         if not a.parent_manifest: raise SystemExit("governing parent manifest required")
         try:
-            if a.release_custody: record=release_custody(load(a.parent_manifest))
-            else: record=assume_custody(load(a.parent_manifest),materialization_id=a.assume_custody_as)
+            if a.release_custody: record=release_custody(parent_manifest,hb_epoch=hb_epoch)
+            else: record=assume_custody(parent_manifest,materialization_id=a.assume_custody_as,hb_epoch=hb_epoch)
         except LedgerLocationRequired as exc:
             print(json.dumps(location_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except ledger_store.LedgerStoreRefused as exc:
             print(json.dumps(store_refusal(exc),sort_keys=True)); raise SystemExit(1)
         except CustodyRefused as exc:
             print(json.dumps(exc.refusal(),sort_keys=True)); raise SystemExit(1)
+        except OrgLedgerEpochRefused as exc:
+            print(json.dumps(exc.refusal,sort_keys=True)); raise SystemExit(1)
         print(json.dumps(record,sort_keys=True)); return
     source_path=a.transition_receipt or a.repo_receipt
     if not source_path: raise SystemExit("transition receipt required")
-    receipt=load(source_path)
+    receipt=kernel.cli_input_json(source_path,"--transition-receipt/--repo-receipt",retry_entrypoint=entry)
     default_class="REPO_STATE_PROPAGATION" if receipt.get("schema")=="stegverse.repo-transition-receipt/v1" else "ORGANIZATION_STATE_TRANSITION"
     try:
         record=aggregate_transition(
@@ -1129,9 +1534,10 @@ def main():
             org_transition_class=a.org_transition_class or default_class,
             predecessor_org_state_sha256=a.predecessor_org_state_sha256,
             successor_org_state_sha256=a.successor_org_state_sha256,
-            boundary_evidence=json.loads(a.boundary_evidence_json),
+            boundary_evidence=boundary_evidence,
             authority_effect=a.authority_effect,
-            parent_manifest=load(a.parent_manifest) if a.parent_manifest else None,
+            parent_manifest=parent_manifest,
+            hb_epoch=hb_epoch,
         )
     except LedgerLocationRequired as exc:
         print(json.dumps(location_refusal(exc),sort_keys=True))
@@ -1142,8 +1548,12 @@ def main():
     except CustodyRefused as exc:
         print(json.dumps(exc.refusal(),sort_keys=True))
         raise SystemExit(1)
+    except OrgLedgerEpochRefused as exc:
+        # The six fields of a refused epoch or a CLOCK source (O-1); nothing was written.
+        print(json.dumps(exc.refusal,sort_keys=True))
+        raise SystemExit(1)
     except ValueError as exc:
         raise SystemExit(str(exc))
     print(json.dumps(record,sort_keys=True))
 
-if __name__=="__main__": main()
+if __name__=="__main__": raise SystemExit(kernel.run_writer_cli(lambda: main() or 0, retry_entrypoint="resident-runtime/aggregate_repo_transition.py"))

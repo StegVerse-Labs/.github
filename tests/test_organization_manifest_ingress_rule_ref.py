@@ -112,7 +112,7 @@ class ReceiptBindingTest(unittest.TestCase):
         return json.loads((self.org_root / "receipts" / f"{digest}.json").read_text())
 
     def test_refusal_receipt_binds_the_rule_ref_into_its_digest(self):
-        result = ingress.receive({"processing": {"capability": "x"}}, registry={})
+        result = ingress.receive({"processing": {"capability": "x"}}, registry={}, hb_epoch=4096)
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
         expected = f"StegVerse-Labs/.github@{REVISION}:resident-runtime/organization_manifest_ingress.py"
         self.assertEqual(result["recomputation_rule_ref"], expected)
@@ -130,11 +130,11 @@ class ReceiptBindingTest(unittest.TestCase):
         with mock.patch.object(ingress, "recomputation_rule_ref",
                                side_effect=RuntimeError("RECOMPUTATION_RULE_REVISION_UNRESOLVABLE")):
             with self.assertRaises(RuntimeError):
-                ingress.receive({}, registry={})
+                ingress.receive({}, registry={}, hb_epoch=4096)
         self.assertFalse((self.org_root / "receipts").exists())
 
     def test_step_summary_carries_only_non_secret_fields(self):
-        result = ingress.receive({"processing": {"capability": "x"}}, registry={})
+        result = ingress.receive({"processing": {"capability": "x"}}, registry={}, hb_epoch=4096)
         with tempfile.TemporaryDirectory() as temp:
             summary = Path(temp) / "summary.md"
             environ = {"GITHUB_STEP_SUMMARY": str(summary), "GITHUB_RUN_ID": "42",

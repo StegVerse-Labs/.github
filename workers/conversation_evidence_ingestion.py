@@ -10,6 +10,7 @@ from typing import Any, Mapping
 from canonical_state_transition_custody import (
     build_state_receipt,
     require_predecessor_master_records_organization_record,
+    no_epoch_caller_boundary,
     organization_receipt_gate,
     sha256_uri,
     submit_state_receipt,
@@ -177,8 +178,13 @@ def custody_ingestion(
     package: Mapping[str, Any],
     *,
     predecessor_receipt_sha256: str | None = None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     record_id = _required_string(package, "record_id")
+    if hb_epoch is None:
+        # No supplied epoch in scope: refused before any receipt is built, so
+        # nothing is written and no clock is read (WU-B13 slice g).
+        return no_epoch_caller_boundary("workers/conversation_evidence_ingestion.py::custody_ingestion")
     prior_ref, predecessor_evidence = require_predecessor_master_records_organization_record(
         predecessor_receipt_sha256,
         successor_transition_id=TRANSITION_ID,
@@ -219,10 +225,11 @@ def custody_ingestion(
         proof_scope="CONVERSATION_EVIDENCE_INGESTION_ONLY",
         proof_ceiling="MASTER_RECORDS_ORGANIZATION_RECORD_RECONSTRUCTION_ONLY",
     )
-    result = submit_state_receipt(receipt)
+    result = submit_state_receipt(receipt, hb_epoch=hb_epoch)
     # Organization ledger record closes the transition; Master Records
     # reconstruction fields are evidence only and never gate it.
-    gate = organization_receipt_gate(result, expected_transition_id=receipt["transition_id"], record_refusal=True)
+    gate = organization_receipt_gate(result, expected_transition_id=receipt["transition_id"], record_refusal=True,
+                                     hb_epoch=hb_epoch)
     if not gate["verified"]:
         return {"state":"BOUNDARY","reason":"MASTER_RECORDS_INGESTION_ORGANIZATION_RECORD_NOT_CLOSED","refusal":gate["refusal"],"master_records":result,"authority_effect":"NONE"}
     return {"state":"RECORDED","receipt":receipt,"master_records":result,"authority_effect":"NONE_CUSTODY_RECONSTRUCTION_ONLY"}

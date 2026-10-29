@@ -41,7 +41,7 @@ def test_host_derived_location_is_refused(monkeypatch, tmp_path):
     assert str(refused.value) == "ledger_location_required_from_materializer: STEGVERSE_ORG_LEDGER_ROOT"
     assert org.location_refusal(refused.value)["disposition"] == "FAIL_CLOSED"
     with pytest.raises(org.LedgerLocationRequired):
-        org.aggregate_transition(receipt("CLAIM"))
+        org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     with pytest.raises(org.LedgerLocationRequired):
         batch.close_batch("TASK_CLOSURE")
     assert not any(tmp_path.rglob("HEAD.json"))
@@ -52,7 +52,7 @@ def test_supplied_root_is_the_ledger_and_holds_its_lock(monkeypatch, tmp_path):
     supplied = tmp_path / "supplied"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(supplied))
     monkeypatch.setenv("HOME", str(tmp_path / "home"))
-    first = org.aggregate_transition(receipt("CLAIM"))
+    first = org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     assert org.ledger_root() == supplied.resolve()
     assert (supplied / ".append.lock").is_file()
     assert json.loads((supplied / "HEAD.json").read_text())["receipt_sha256"] == first["receipt_sha256"]
@@ -66,8 +66,8 @@ def test_root_supplied_at_another_path_reads_but_moves_only_by_handover(monkeypa
         "schema": "test.parent-manifest/v1",
         "receipt_batch": {"release_condition": {"type": "COUNT", "count": 2}},
     }
-    first = org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest)
-    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest)
+    first = org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest, hb_epoch=4096)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest, hb_epoch=4096)
 
     # The one materialization of this root, now supplied at another node's path.
     moved = tmp_path / "node-b" / "mounted" / "org-ledger"
@@ -84,7 +84,7 @@ def test_root_supplied_at_another_path_reads_but_moves_only_by_handover(monkeypa
         first["receipt_sha256"], second["receipt_sha256"]]
     # Writes do not (F71-02): moved without a handover is an anomaly, refused.
     with pytest.raises(org.CustodyRefused, match="UNGOVERNED_RELOCATION_ANOMALY_DETECTED"):
-        org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest)
+        org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest, hb_epoch=4096)
     assert submitted == [] and not (moved / "BATCH_HEAD.json").exists()
 
     # Moved by RELEASED/ASSUMED from its recorded location, it advances there.
@@ -92,9 +92,9 @@ def test_root_supplied_at_another_path_reads_but_moves_only_by_handover(monkeypa
     governing = {"schema": "test.parent-manifest/v1", org.CUSTODY_TRANSFER_KEY: {
         "successor_materialization_id": "node-b", "predecessor_head_sha256": second["receipt_sha256"],
         "next_custody_generation": 1}}
-    released = org.release_custody(governing, ledger=written)
+    released = org.release_custody(governing, ledger=written, hb_epoch=4096)
     shutil.copytree(written, moved)
-    assumed = org.assume_custody(governing, materialization_id="node-b", ledger=moved)
+    assumed = org.assume_custody(governing, materialization_id="node-b", ledger=moved, hb_epoch=4096)
 
     def attested(*, successor_materialization_id, custody_generation, predecessor_head_sha256, action_sha256):
         return {"successor_materialization_id": successor_materialization_id, "custody_generation": custody_generation,
@@ -102,7 +102,7 @@ def test_root_supplied_at_another_path_reads_but_moves_only_by_handover(monkeypa
                 "unique_custody": True}
 
     third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest,
-                                     custody_exclusivity_verifier=attested)
+                                     custody_exclusivity_verifier=attested, hb_epoch=4096)
     released_batch = batch._verified_batch(moved, json.loads((moved / "BATCH_HEAD.json").read_text())["batch_id"])
     assert released_batch["ordered_receipt_hashes"] == [first["receipt_sha256"], second["receipt_sha256"],
                                                        released["receipt_sha256"], assumed["receipt_sha256"]]
@@ -114,7 +114,7 @@ def test_root_supplied_at_another_path_reads_but_moves_only_by_handover(monkeypa
 
 def test_head_naming_another_receipt_is_still_refused(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    first = org.aggregate_transition(receipt("CLAIM"))
+    first = org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     head_path = tmp_path / "HEAD.json"
     head = json.loads(head_path.read_text())
     for wrong in (str(tmp_path / "receipts" / ("0" * 64 + ".json")),

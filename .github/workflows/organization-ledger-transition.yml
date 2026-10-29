@@ -142,6 +142,9 @@ jobs:
           # kernel.py::supplied_epoch_failure and equals the receipt's own hb_epoch.
           # A stage-gate receipt is appended only into the subject repository's own
           # ledger: --ledger-repository is this repository.
+          # The kernel's shared rule decides the epoch, six-field, before any append.
+          python scripts/check_dispatch_hb_epoch.py HB_EPOCH \
+            ".github/workflows/organization-ledger-transition.yml (committed ingest request hb_epoch)"
           gate_args=()
           if [ -f "$RUNNER_TEMP/sv-check/evaluation-subject.json" ]; then gate_args+=(--subject "$RUNNER_TEMP/sv-check/evaluation-subject.json"); fi
           if [ -f "$RUNNER_TEMP/sv-check/base-state-readback.json" ]; then gate_args+=(--readback "$RUNNER_TEMP/sv-check/base-state-readback.json"); fi

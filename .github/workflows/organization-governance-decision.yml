@@ -121,14 +121,17 @@ jobs:
 
       - name: Run the cycle
         env:
-          STEGVERSE_REPO_LEDGER_ROOT: ${{ runner.temp }}/repo-ledger
+          # The repository chain is the subtree of the same designated ref the
+          # organization ledger lives on, so the pair is git with git (lead ruling
+          # 2026-10-24T21:42Z, approved for this writer 2026-10-27).
+          STEGVERSE_REPO_LEDGER_ROOT: git+${{ github.workspace }}#refs/stegverse/organization-ledger:repository-ledger/StegVerse-Labs/.github
           # The ledger ref lives in this checkout's git directory, so publishing it
           # uses the job's own contents: write credential for this repository only.
           STEGVERSE_ORG_LEDGER_GIT_DIR: ${{ github.workspace }}/.git
         run: >-
           python resident-runtime/organization_governance_decision.py --evidence "$EVIDENCE"
           cycle --mesh "$RUNNER_TEMP/mesh" --node-state "$RUNNER_TEMP/node-state"
-          --repo-ledger "$RUNNER_TEMP/repo-ledger"
+          --repo-ledger "$STEGVERSE_REPO_LEDGER_ROOT"
 
       - name: Publish answers
         run: >-

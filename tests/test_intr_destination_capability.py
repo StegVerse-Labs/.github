@@ -33,6 +33,8 @@ THIS = "StegVerse-Labs"
 PEER = "StegVerse-org"
 MANIFEST_PROFILE = "sdk-manifest-ingress"
 MANIFEST_ADDRESS = "stegverse-labs." + MANIFEST_PROFILE
+#: A carrier-supplied epoch; a capability crossing is refused without one.
+SUPPLIED_EPOCH = 40
 GENESIS = {"mode": "ESTABLISH_GENESIS", "node_ref": "intr-destination-test", "predecessor": None}
 
 
@@ -303,7 +305,7 @@ class AddressedAndClosedTests(RedirectedLedgers):
             payload=payload, standing=GENESIS,
             transition_reference="intr:transition:" + packet_id,
             authority_effect="NONE", packet_id=packet_id)
-        kernel.publish_packet(packet, root=self.mesh)
+        kernel.publish_packet(packet, root=self.mesh, epoch=SUPPLIED_EPOCH)
         return packet
 
     def consume(self):

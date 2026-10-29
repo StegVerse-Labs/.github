@@ -111,6 +111,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaisesRegex(mod.DiagnosticAdmissionError,
                                         "AUTHENTIC_EVENT_EPHEMERAL_BINDING_LOCATOR_REQUIRED"):
+                # No epoch: the admission refusal, which writes nothing, still comes first.
                 mod.consume(Path(td), Path(td), request())
             self.assertFalse((Path(td) / "receipts/sdk-manifest-state-transition").exists())
 
@@ -123,7 +124,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                                           "STEGVERSE_SDK_ROOT": str(sdk)}):
                 with self.assertRaisesRegex(mod.DiagnosticAdmissionError,
                                            "ADMITTED_NODE_INTERLOCK_LEASE_RUNTIME_CORRELATION_REQUIRED"):
-                    mod.consume(root, root, source, read_source=read_source)
+                    mod.consume(root, root, source, read_source=read_source, hb_epoch=4096)
 
     def test_mocked_positive_composition_remains_simulation_not_authentic_allow(self):
         self._positive_composition(enclosed=False)
@@ -189,7 +190,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                 self.assertEqual(record["transition_outcome"], "EXECUTED")
                 self.assertEqual(record["transition_evidence"]["publisher_executed"], False)
                 # Real producer: appends to the tmp Organization ledger root.
-                return submit_state_receipt(record)
+                return submit_state_receipt(record, hb_epoch=4096)
             with patch.dict(os.environ, {"STEGVERSE_REPO_ROOTS_JSON": "{}",
                                           "STEGVERSE_SDK_ROOT": str(sdk),
                                           "STEGVERSE_ORG_LEDGER_ROOT": str(root / "org-ledger")}), \
@@ -200,9 +201,9 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     subject_or_correlation_id=mod.GOAL, transition_outcome="OBSERVED",
                     prior_state_ref_or_hash=None, resulting_state_ref_or_hash=None,
                     governance_decision_ref_where_applicable=None,
-                    transition_evidence={"fixture": "prior Organization receipt"}))
+                    transition_evidence={"fixture": "prior Organization receipt"}), hb_epoch=4096)
                 result = mod.consume(root, root, source, read_source=read_source,
-                                     runner=fake_run, submit=fake_submit)
+                                     runner=fake_run, submit=fake_submit, hb_epoch=4096)
             self.assertEqual(result["state"], "SOURCE_SIMULATION_ONLY")
             self.assertEqual(result["disposition"], "SIMULATED")
             self.assertFalse(result["authentic_intr_disposition_observed"])
@@ -395,8 +396,8 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
             binding_hash = org.sha(runtime_binding)[7:]
             control = Path(__file__).resolve().parents[1]
             with patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_ROOT": str(ledger)}):
-                org.aggregate_transition(ingress)
-                org.aggregate_transition(runtime_binding)
+                org.aggregate_transition(ingress, hb_epoch=4096)
+                org.aggregate_transition(runtime_binding, hb_epoch=4096)
                 # The production reader over the real Organization ledger; being
                 # injected, it still never writes a consumer-accepted locator.
                 result = mod._read_existing_authenticated_locator(
@@ -423,7 +424,7 @@ class AdmittedDiagnosticConsumerSourceTests(unittest.TestCase):
                     },
                     "required_evidence_manifest": [],
                 }
-                org.aggregate_transition(revoked)
+                org.aggregate_transition(revoked, hb_epoch=4096)
                 with self.assertRaisesRegex(
                     mod.DiagnosticAdmissionError,
                     "CURRENT_EVENT_EPHEMERAL_LEASE_REVOKED_OR_ALREADY_CONSUMED",

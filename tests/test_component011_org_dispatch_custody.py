@@ -100,7 +100,7 @@ def test_mismatched_runtime_request_fails_before_org_append(tmp_path, monkeypatc
     forged["request_id"] = "FORGED_COMPONENT011_REQUEST"
     path.write_text(json.dumps(forged))
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome())
+    result = dispatch.retain_component011_dispatch_in_organization(ROOT, runtime, _outcome(), hb_epoch=4096)
     assert result["state"] == "BOUNDARY"
     assert result["reason"] == "COMPONENT011_REQUEST_IDENTITY_MISMATCH"
     assert not (ledger / "HEAD.json").exists()
@@ -165,7 +165,7 @@ def test_dispatch_org_custody_failure_is_explicit_without_claiming_transition(tm
         return SimpleNamespace(returncode=0, stdout='{"state":"ATTEMPT_RECORDED"}\n', stderr="")
     result = dispatch.dispatch(
         source, runtime, only_consumers=(dispatch.COMPONENT011_SELECTOR,),
-        runner=runner, env={"PATH": "/bin"},
+        runner=runner, env={"PATH": "/bin"}, hb_epoch=4096,
     )
     assert result["state"] == "DISPATCH_INCOMPLETE"
     assert result["component011_organization_custody_failure"] is True

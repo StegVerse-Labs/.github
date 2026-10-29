@@ -97,7 +97,8 @@ class CarrierEpochForwardingTests(unittest.TestCase):
         self.assertEqual(argv[argv.index("--hb-epoch") + 1], "1000")
 
     def test_a_leading_zero_epoch_is_forwarded_as_its_value(self):
-        argv = self.run_adapter(dict(supplied(1000), epoch="0033"))["argv"]
+        # A coherent reference: generation and heartbeat_id follow from the epoch (row 12).
+        argv = self.run_adapter(dict(supplied(33), epoch="0033"))["argv"]
         self.assertEqual(argv[argv.index("--hb-epoch") + 1], "33")
 
     def test_a_digit_string_epoch_is_forwarded_as_supplied(self):
@@ -137,14 +138,28 @@ class CarrierEpochForwardingTests(unittest.TestCase):
         self.assertEqual(record["failure_code"], "HB_EPOCH_INVALID")
         self.assertIn("clock", record["required_evidence_or_repair"])
         # A carried derived_from_clock must be exactly false; one not carried
-        # is not a claim the epoch was derived.
+        # leaves the reference unmarked, which is refused whatever else it
+        # carries: a carrier cannot self-assert CARRIED provenance.
         for value in (True, None, 0, "false", "False"):
             with self.subTest(derived_from_clock=value):
                 self.assertEqual(self.refused(dict(supplied(1000), derived_from_clock=value))["failure_code"],
                                  "HB_EPOCH_INVALID")
         unstated = dict(supplied(1000)); unstated.pop("derived_from_clock")
-        argv = self.run_adapter(unstated)["argv"]
-        self.assertEqual(argv[argv.index("--hb-epoch") + 1], "1000")
+        self.assertEqual(self.refused(unstated)["failure_code"], "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertEqual(self.refused(dict(unstated, source="ORGANIZATION_LEDGER_HEAD",
+                                           head_receipt_sha="f" * 64))["failure_code"],
+                         "HB_EPOCH_PROVENANCE_UNMARKED")
+        for reference in (dict(unstated, sampled_unix_ns=K.HB_ANCHOR_UNIX_NS),
+                          dict(supplied(1000), sampled_unix_ns=K.HB_ANCHOR_UNIX_NS)):
+            with self.subTest(reference=reference):
+                self.assertEqual(self.refused(reference)["failure_code"], "HB_EPOCH_INVALID")
+        # This destination does not accept CARRIED crossings on any route (B-P36m option 1, row 7).
+        carried = dict(supplied(1000), source="StegVerse-Labs/.github", head_receipt_sha="ab" * 32)
+        with self.assertRaises(K.CarrierEpochRefusal) as raised:
+            self.run_adapter(carried)
+        self.assertFalse(self.ran.exists())
+        self.assertEqual(raised.exception.record["failure_code"], "CARRIED_NOT_ACCEPTED_BY_DESTINATION")
+        self.assertEqual(raised.exception.record["failed_predicate"], "DESTINATION_ACCEPTS_CARRIED_CROSSINGS")
 
     def test_no_clock_is_read_on_this_path(self):
         class NoClock:
@@ -167,7 +182,8 @@ class SharedEpochValidatorTests(unittest.TestCase):
     StegVerse-org/.github#185 and StegVerse-Labs/.github#3212 / #3213."""
 
     #: sha256 of the function's source text; the same pin is asserted in each PR.
-    SHARED_VALIDATOR_SHA256 = "7f36f0e697cadc91acd27af121eee3fc460b887ec67cfa258727bfccec0ca5f8"
+    #: B-P36h: re-pinned after the one-line HB_EPOCH_PROVENANCE_UNMARKED tightening.
+    SHARED_VALIDATOR_SHA256 = "ad8ff52936d5bcd9a2ad6caceb2d9a637a099518989b34bbb3370301c7a4cce2"
 
     def test_the_validator_text_is_the_shared_one(self):
         source = inspect.getsource(K.supplied_epoch_failure)
@@ -183,7 +199,23 @@ class SharedEpochValidatorTests(unittest.TestCase):
             with self.subTest(epoch=epoch):
                 self.assertEqual(K.supplied_epoch_failure(epoch)[0], "HB_EPOCH_INVALID")
         self.assertIsNone(K.supplied_epoch_failure(33, {"derived_from_clock": False}))
-        self.assertIsNone(K.supplied_epoch_failure(33, {}))
+        self.assertEqual(K.supplied_epoch_failure(33, {})[0], "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertEqual(K.supplied_epoch_failure(33, {"source": "s", "head_receipt_sha": "ab"})[0],
+                         "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertIsNone(K.supplied_epoch_failure(
+            33, {"derived_from_clock": False, "source": "s", "head_receipt_sha": "ab"}))
+        self.assertEqual(K.supplied_epoch_failure(33, {"derived_from_clock": False, "sampled_unix_ns": 1})[0],
+                         "HB_EPOCH_INVALID")
+        self.assertEqual(K.supplied_epoch_failure(33, {"source": "s", "source_sha": "ab"})[0],
+                         "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertEqual(K.supplied_epoch_failure(
+            33, {"source": "ORGANIZATION_LEDGER_HEAD", "head_receipt_sha": "ff" * 32})[0],
+            "HB_EPOCH_PROVENANCE_UNMARKED")
+        self.assertEqual(K.supplied_epoch_failure(33, {"sampled_unix_ns": 1})[0], "HB_EPOCH_INVALID")
+        self.assertEqual(K.supplied_epoch_failure(
+            33, {"derived_from_clock": False, "sampled_unix_ns": 1, "source": "S", "head_receipt_sha": "ab"})[0],
+            "HB_EPOCH_INVALID")
+        self.assertIsNone(K.supplied_epoch_failure(33, {"derived_from_clock": False, "source": "X"}))
         self.assertEqual(K.supplied_epoch_failure(33, {"derived_from_clock": True})[0], "HB_EPOCH_INVALID")
         self.assertEqual(K.supplied_epoch_failure(33, "HB:33")[0], "HB_EPOCH_INVALID")
 
@@ -230,29 +262,22 @@ class GovernanceCarrierEpochTests(unittest.TestCase):
         self.assertEqual(organization[0]["hb_reference"]["epoch"], 1000)
 
     def test_a_clock_derived_frame_is_refused_and_stored_as_returned(self):
+        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a clock-derived frame lends no epoch: it stays PENDING (HB_EPOCH_NOT_SUPPLIED, non-terminal) and nothing is stored.
+        NARROW (08:10Z): a CLOCK frame lends no epoch. With no cycle epoch it is
+        refused HB_EPOCH_NOT_SUPPLIED, non-terminal: no receipt, no answer, no marker."""
         self.with_stegcore()
-        refused, = self.consume(now_ns=K.HB_ANCHOR_UNIX_NS + 7 * K.HB_PERIOD_NS)
-        result = refused["result"]
-        self.assertEqual(result["status"], "REFUSED")
-        self.assertEqual(result["disposition"], "FAIL_CLOSED")
-        self.assertEqual(result["failure_code"], "HB_EPOCH_INVALID")
+        pending, = self.consume(now_ns=K.HB_ANCHOR_UNIX_NS + 7 * K.HB_PERIOD_NS)
+        result = pending["result"]
+        self.assertEqual(result["status"], "PENDING")
+        self.assertEqual(result["failure_code"], "HB_EPOCH_NOT_SUPPLIED")
+        self.assertIs(result["terminal"], False)
         self.assertEqual(result["owning_existing_goal"], GOAL)
         for key in SIX:
             self.assertTrue(str(result.get(key) or "").strip(), key)
-        # FAIL_CLOSED: recorded, not answered, not marked seen.
-        self.assertIsNone(refused["response_publication"])
-        self.assertIsNone(refused["seen_marker"])
-        repository = self.receipts("STEGVERSE_REPO_LEDGER_ROOT")
-        self.assertEqual([r["transition_class"] for r in repository], ["ORGANIZATION_FEDERATION_CROSSING_REFUSED"])
-        stored = repository[0]["evidence"]
-        self.assertEqual(stored["disposition"], result["disposition"])
-        organization, = self.receipts("STEGVERSE_ORG_LEDGER_ROOT")
-        carried = organization["boundary_evidence"]
-        self.assertEqual(carried["disposition"], result["disposition"])
-        for key in SIX:
-            self.assertEqual(stored[key], result[key], key)
-            self.assertEqual(carried[key], result[key], key)
-
+        self.assertIsNone(pending["response_publication"])
+        self.assertIsNone(pending["seen_marker"])
+        self.assertEqual(self.receipts("STEGVERSE_REPO_LEDGER_ROOT"), [])
+        self.assertEqual(self.receipts("STEGVERSE_ORG_LEDGER_ROOT"), [])
 
 if __name__ == "__main__":
     unittest.main()

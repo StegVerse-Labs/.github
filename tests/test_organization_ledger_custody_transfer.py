@@ -60,17 +60,17 @@ def readback(root: Path, row: dict) -> dict:
 @pytest.fixture
 def predecessor(tmp_path):
     root = tmp_path / "node-a" / "org-ledger"
-    org.aggregate_transition(receipt("FIRST"), ledger=root)
-    second = org.aggregate_transition(receipt("SECOND"), ledger=root)
+    org.aggregate_transition(receipt("FIRST"), ledger=root, hb_epoch=4096)
+    second = org.aggregate_transition(receipt("SECOND"), ledger=root, hb_epoch=4096)
     return root, second
 
 
 def handover(tmp_path, root: Path, tip: str, successor: str = "node-b"):
     governing = manifest(successor, tip)
-    released = org.release_custody(governing, ledger=root)
+    released = org.release_custody(governing, ledger=root, hb_epoch=4096)
     moved = tmp_path / successor / "org-ledger"
     shutil.copytree(root, moved)
-    assumed = org.assume_custody(governing, materialization_id=successor, ledger=moved)
+    assumed = org.assume_custody(governing, materialization_id=successor, ledger=moved, hb_epoch=4096)
     return governing, released, moved, assumed
 
 
@@ -102,7 +102,7 @@ def refused(predicate: str, call, *args, **kwargs) -> org.CustodyRefused:
 def test_released_root_append_refused(predecessor):
     root, second = predecessor
     governing = manifest("node-b", second["receipt_sha256"])
-    released = org.release_custody(governing, ledger=root)
+    released = org.release_custody(governing, ledger=root, hb_epoch=4096)
     assert released["custody_authority_basis"] == org.CUSTODY_AUTHORITY_BASIS_GENERATION_0
     record = released["boundary_evidence"][org.CUSTODY_KEY]
     assert released["org_transition_class"] == "ORGANIZATION_LEDGER_CUSTODY_RELEASED"
@@ -116,14 +116,14 @@ def test_released_root_append_refused(predecessor):
     assert head(root) == released["receipt_sha256"]
     before = receipts(root)
 
-    refused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", org.aggregate_transition, receipt("THIRD"), ledger=root)
+    refused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", org.aggregate_transition, receipt("THIRD"), ledger=root, hb_epoch=4096)
     refused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", batch.close_batch, "TASK_CLOSURE", root=root)
     refused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", org.release_custody,
-            manifest("node-c", released["receipt_sha256"], 2), ledger=root)
+            manifest("node-c", released["receipt_sha256"], 2), ledger=root, hb_epoch=4096)
     assert receipts(root) == before and head(root) == released["receipt_sha256"]
     assert not (root / "BATCH_HEAD.json").exists()
     # The exact release retried is the same receipt, not a second one.
-    assert org.release_custody(governing, ledger=root) == released
+    assert org.release_custody(governing, ledger=root, hb_epoch=4096) == released
     # Its history still reads back.
     assert readback(root, second)["receipt_sha256"] == second["receipt_sha256"]
 
@@ -137,10 +137,10 @@ def test_assumed_successor_appends(tmp_path, predecessor):
     assert assumed["custody_generation"] == 1
     assert record["release_receipt_sha256"] == released["receipt_sha256"]
     assert record["custody_exclusivity"] == "DETECTED_NOT_PREVENTED_ACROSS_KERNELS"
-    assert org.assume_custody(governing, materialization_id="node-b", ledger=moved) == assumed
+    assert org.assume_custody(governing, materialization_id="node-b", ledger=moved, hb_epoch=4096) == assumed
 
     attested = attests("node-b", 1)
-    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=attested)
+    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=attested, hb_epoch=4096)
     assert third["previous_receipt_sha256"] == assumed["receipt_sha256"]
     assert third["custody_generation"] == 1
     assert third["custody_exclusivity_attestation_sha256"] == org.sha(attested(
@@ -154,7 +154,7 @@ def test_assumed_successor_appends(tmp_path, predecessor):
     assert closed["last_org_receipt_sha256"] == third["receipt_sha256"]
     assert len(closed["ordered_receipt_hashes"]) == 5
     # The predecessor stays read-only.
-    refused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", org.aggregate_transition, receipt("FOURTH"), ledger=root)
+    refused("CUSTODY_RELEASED_ROOT_IS_READ_ONLY", org.aggregate_transition, receipt("FOURTH"), ledger=root, hb_epoch=4096)
 
 
 def test_missing_release_refused(tmp_path, predecessor):
@@ -162,35 +162,35 @@ def test_missing_release_refused(tmp_path, predecessor):
     governing = manifest("node-b", second["receipt_sha256"])
     before = receipts(root)
     refused("ORGANIZATION_LEDGER_CUSTODY_RELEASE_MISSING", org.assume_custody, governing,
-            materialization_id="node-b", ledger=root)
+            materialization_id="node-b", ledger=root, hb_epoch=4096)
     assert receipts(root) == before and head(root) == second["receipt_sha256"]
     # Assumption never starts a chain, and an empty root cannot be released.
     empty = tmp_path / "empty"
     refused("ORGANIZATION_LEDGER_CUSTODY_RELEASE_MISSING", org.assume_custody, governing,
-            materialization_id="node-b", ledger=empty)
-    refused("CUSTODY_RELEASE_REQUIRES_EXISTING_HEAD", org.release_custody, governing, ledger=empty)
+            materialization_id="node-b", ledger=empty, hb_epoch=4096)
+    refused("CUSTODY_RELEASE_REQUIRES_EXISTING_HEAD", org.release_custody, governing, ledger=empty, hb_epoch=4096)
     assert not (empty / "HEAD.json").exists() and not receipts(empty)
     # The custody classes cannot be appended around the gate.
     refused("ORGANIZATION_LEDGER_CUSTODY_RELEASE_MISSING", org.aggregate_transition, receipt("FORGED"),
-            org_transition_class=org.CUSTODY_ASSUMED_CLASS, ledger=root)
+            org_transition_class=org.CUSTODY_ASSUMED_CLASS, ledger=root, hb_epoch=4096)
     refused("CUSTODY_RELEASE_PREDECESSOR_HEAD_MISMATCH", org.aggregate_transition, receipt("FORGED"),
-            org_transition_class=org.CUSTODY_RELEASED_CLASS, ledger=root)
+            org_transition_class=org.CUSTODY_RELEASED_CLASS, ledger=root, hb_epoch=4096)
     refused("CUSTODY_TRANSFER_MANIFEST_DECLARATION_REQUIRED", org.release_custody,
-            {"schema": "test.parent-manifest/v1"}, ledger=root)
+            {"schema": "test.parent-manifest/v1"}, ledger=root, hb_epoch=4096)
     assert receipts(root) == before
 
 
 def test_wrong_successor_refused(tmp_path, predecessor):
     root, second = predecessor
     governing = manifest("node-b", second["receipt_sha256"])
-    org.release_custody(governing, ledger=root)
+    org.release_custody(governing, ledger=root, hb_epoch=4096)
     moved = tmp_path / "node-c" / "org-ledger"
     shutil.copytree(root, moved)
     before = receipts(moved)
     refused("CUSTODY_RELEASE_SUCCESSOR_MISMATCH", org.assume_custody, governing,
-            materialization_id="node-c", ledger=moved)
+            materialization_id="node-c", ledger=moved, hb_epoch=4096)
     refused("CUSTODY_RELEASE_SUCCESSOR_MISMATCH", org.assume_custody, manifest("node-c", second["receipt_sha256"]),
-            materialization_id="node-c", ledger=moved)
+            materialization_id="node-c", ledger=moved, hb_epoch=4096)
     assert receipts(moved) == before
 
 
@@ -199,29 +199,29 @@ def test_mismatched_head_refused(tmp_path, predecessor):
     first_digest = second["previous_receipt_sha256"]
     # A manifest naming a HEAD this root no longer holds cannot release it.
     refused("CUSTODY_RELEASE_PREDECESSOR_HEAD_MISMATCH", org.release_custody,
-            manifest("node-b", first_digest), ledger=root)
+            manifest("node-b", first_digest), ledger=root, hb_epoch=4096)
     refused("CUSTODY_GENERATION_MISMATCH", org.release_custody,
-            manifest("node-b", second["receipt_sha256"], 2), ledger=root)
+            manifest("node-b", second["receipt_sha256"], 2), ledger=root, hb_epoch=4096)
     assert head(root) == second["receipt_sha256"]
     governing = manifest("node-b", second["receipt_sha256"])
-    org.release_custody(governing, ledger=root)
+    org.release_custody(governing, ledger=root, hb_epoch=4096)
     moved = tmp_path / "node-b" / "org-ledger"
     shutil.copytree(root, moved)
     before = receipts(moved)
     refused("CUSTODY_RELEASE_PREDECESSOR_HEAD_MISMATCH", org.assume_custody,
-            manifest("node-b", first_digest), materialization_id="node-b", ledger=moved)
+            manifest("node-b", first_digest), materialization_id="node-b", ledger=moved, hb_epoch=4096)
     refused("CUSTODY_GENERATION_MISMATCH", org.assume_custody,
-            manifest("node-b", second["receipt_sha256"], 2), materialization_id="node-b", ledger=moved)
+            manifest("node-b", second["receipt_sha256"], 2), materialization_id="node-b", ledger=moved, hb_epoch=4096)
     other = dict(governing, schema="test.other-manifest/v1")
     refused("CUSTODY_TRANSFER_MANIFEST_MISMATCH", org.assume_custody, other,
-            materialization_id="node-b", ledger=moved)
+            materialization_id="node-b", ledger=moved, hb_epoch=4096)
     assert receipts(moved) == before
 
 
 def test_interrupted_handover_fail_closed_with_retry(tmp_path, predecessor):
     root, second = predecessor
     governing = manifest("node-b", second["receipt_sha256"])
-    released = org.release_custody(governing, ledger=root)
+    released = org.release_custody(governing, ledger=root, hb_epoch=4096)
     # Interrupted: the release receipt is durable but HEAD was never advanced.
     head_path = root / "HEAD.json"
     head_path.write_text(json.dumps(dict(json.loads(head_path.read_text()),
@@ -230,20 +230,20 @@ def test_interrupted_handover_fail_closed_with_retry(tmp_path, predecessor):
     moved = tmp_path / "node-b" / "org-ledger"
     shutil.copytree(root, moved)
     exc = refused("ORGANIZATION_LEDGER_CUSTODY_HANDOVER_INTERRUPTED", org.assume_custody, governing,
-                  materialization_id="node-b", ledger=moved)
+                  materialization_id="node-b", ledger=moved, hb_epoch=4096)
     assert exc.refusal()["retry_entrypoint"] == "resident-runtime/aggregate_repo_transition.py::release_custody"
     # Nor may the predecessor append past its own half-written release.
     refused("ORGANIZATION_LEDGER_CUSTODY_HANDOVER_INTERRUPTED", org.aggregate_transition,
-            receipt("THIRD"), ledger=root)
+            receipt("THIRD"), ledger=root, hb_epoch=4096)
     assert head(root) == second["receipt_sha256"] and head(moved) == second["receipt_sha256"]
 
     # The retry entrypoint completes the handover; nothing is appended twice.
     count = len(receipts(root))
-    assert org.release_custody(governing, ledger=root) == released
+    assert org.release_custody(governing, ledger=root, hb_epoch=4096) == released
     assert head(root) == released["receipt_sha256"] and len(receipts(root)) == count
     shutil.rmtree(moved)
     shutil.copytree(root, moved)
-    assumed = org.assume_custody(governing, materialization_id="node-b", ledger=moved)
+    assumed = org.assume_custody(governing, materialization_id="node-b", ledger=moved, hb_epoch=4096)
     assert assumed["previous_receipt_sha256"] == released["receipt_sha256"]
 
 
@@ -257,7 +257,7 @@ def other_kernel_at_same_path(tmp_path, root: Path, snapshot: Path, name: str):
     root.rename(held)
     shutil.copytree(snapshot, root)
     try:
-        written = org.aggregate_transition(receipt(name), ledger=root)
+        written = org.aggregate_transition(receipt(name), ledger=root, hb_epoch=4096)
         assert readback(root, written)["receipt_sha256"] == written["receipt_sha256"]
         carried = tmp_path / ("other-kernel-" + name)
         (carried / "receipts").mkdir(parents=True)
@@ -288,7 +288,7 @@ def test_stale_source_replay_refused(tmp_path, predecessor):
     root, second = predecessor
     stale, written, moved, assumed = _stale_copy_appends(tmp_path, root, second)
     _replay(stale, written, moved)
-    exc = refused("CUSTODY_GENERATION_SUPERSEDED", org.aggregate_transition, receipt("FOURTH"), ledger=moved)
+    exc = refused("CUSTODY_GENERATION_SUPERSEDED", org.aggregate_transition, receipt("FOURTH"), ledger=moved, hb_epoch=4096)
     assert written["receipt_sha256"] in exc.detail
     refused("CUSTODY_GENERATION_SUPERSEDED", batch.close_batch, "TASK_CLOSURE", root=moved)
     with pytest.raises(org.CustodyRefused, match="CUSTODY_GENERATION_SUPERSEDED"):
@@ -315,12 +315,12 @@ def test_copied_root_dual_writer_detected_fail_closed(tmp_path, predecessor):
     root, second = predecessor
     snapshot = tmp_path / "snapshot"
     shutil.copytree(root, snapshot)
-    ours = org.aggregate_transition(receipt("OURS"), ledger=root)
+    ours = org.aggregate_transition(receipt("OURS"), ledger=root, hb_epoch=4096)
     # Apart, each copy verifies: two kernels at one path, no shared serializer.
     theirs, copy = other_kernel_at_same_path(tmp_path, root, snapshot, "THEIRS")
     assert readback(root, ours)
     _replay(copy, theirs, root)
-    exc = refused("ORGANIZATION_CUSTODY_FORK_DETECTED", org.aggregate_transition, receipt("NEXT"), ledger=root)
+    exc = refused("ORGANIZATION_CUSTODY_FORK_DETECTED", org.aggregate_transition, receipt("NEXT"), ledger=root, hb_epoch=4096)
     assert second["receipt_sha256"] in exc.detail
     refused("ORGANIZATION_CUSTODY_FORK_DETECTED", batch.close_batch, "TASK_CLOSURE", root=root)
     with pytest.raises(batch.OrganizationReceiptRefused) as readback_refusal:
@@ -337,17 +337,17 @@ def test_two_copies_assuming_one_release_detected_fail_closed(tmp_path, predeces
     shutil.copytree(root, twin)
     # A second copy of the released root, assuming as the same successor on
     # another kernel: both assumptions succeed apart.
-    twin_assumed = org.assume_custody(governing, materialization_id="node-b", ledger=twin)
+    twin_assumed = org.assume_custody(governing, materialization_id="node-b", ledger=twin, hb_epoch=4096)
     assert twin_assumed["custody_generation"] == assumed["custody_generation"] == 1
     assert twin_assumed["previous_receipt_sha256"] == assumed["previous_receipt_sha256"]
     # Each copy's own attestation succeeds apart: that is why exclusivity has
     # to come from an authority outside both copies, not from this source.
-    twin_written = org.aggregate_transition(receipt("TWIN"), ledger=twin, custody_exclusivity_verifier=attests("node-b", 1))
-    ours = org.aggregate_transition(receipt("OURS"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1))
+    twin_written = org.aggregate_transition(receipt("TWIN"), ledger=twin, custody_exclusivity_verifier=attests("node-b", 1), hb_epoch=4096)
+    ours = org.aggregate_transition(receipt("OURS"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1), hb_epoch=4096)
     for row in (twin_assumed, twin_written):
         _replay(twin, row, moved)
     refused("ORGANIZATION_CUSTODY_FORK_DETECTED", batch.close_batch, "TASK_CLOSURE", root=moved)
-    refused("ORGANIZATION_CUSTODY_FORK_DETECTED", org.aggregate_transition, receipt("NEXT"), ledger=moved)
+    refused("ORGANIZATION_CUSTODY_FORK_DETECTED", org.aggregate_transition, receipt("NEXT"), ledger=moved, hb_epoch=4096)
     assert head(moved) == ours["receipt_sha256"]
 
 
@@ -384,7 +384,7 @@ def test_existing_chain_without_custody_generation_verifies(tmp_path, predecesso
     assert all("custody_generation" not in row for row in legacy)
     assert readback(root, legacy[-1])["receipt_sha256"] == legacy[-1]["receipt_sha256"]
     assert org.custody_generation(legacy[-1]) == 0
-    third = org.aggregate_transition(receipt("THIRD"), ledger=root)
+    third = org.aggregate_transition(receipt("THIRD"), ledger=root, hb_epoch=4096)
     assert third["previous_receipt_sha256"] == legacy[-1]["receipt_sha256"]
     assert third["custody_generation"] == 0
     closed = batch.close_batch("TASK_CLOSURE", root=root)
@@ -400,22 +400,22 @@ def test_successor_consequential_append_without_exclusivity_attestation_fails_cl
     root, second = predecessor
     governing, released, moved, assumed = handover(tmp_path, root, second["receipt_sha256"])
     before = receipts(moved)
-    exc = refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", org.aggregate_transition, receipt("THIRD"), ledger=moved)
+    exc = refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", org.aggregate_transition, receipt("THIRD"), ledger=moved, hb_epoch=4096)
     assert exc.refusal()["retry_entrypoint"] == "resident-runtime/aggregate_repo_transition.py::aggregate_transition"
     assert exc.detail == "node-b@1@" + assumed["receipt_sha256"]
     refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", org.aggregate_transition, receipt("THIRD"),
-            ledger=moved, custody_exclusivity_verifier=lambda **_: True)
+            ledger=moved, custody_exclusivity_verifier=lambda **_: True, hb_epoch=4096)
     # No environment fallback.
     monkeypatch.setenv("STEGVERSE_CUSTODY_EXCLUSIVITY_VERIFIER", "attested")
-    refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", org.aggregate_transition, receipt("THIRD"), ledger=moved)
+    refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", org.aggregate_transition, receipt("THIRD"), ledger=moved, hb_epoch=4096)
     refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", batch.close_batch, "TASK_CLOSURE", root=moved)
     refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", org.release_custody,
-            manifest("node-c", assumed["receipt_sha256"], 2), ledger=moved)
+            manifest("node-c", assumed["receipt_sha256"], 2), ledger=moved, hb_epoch=4096)
     # A manifest-directed append closes and submits nothing before it is refused.
     submitted = []
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: submitted.append(batch_id))
     refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", org.aggregate_transition, receipt("THIRD"), ledger=moved,
-            parent_manifest={"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}})
+            parent_manifest={"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}}, hb_epoch=4096)
     assert submitted == [] and not (moved / "BATCH_HEAD.json").exists()
     assert receipts(moved) == before and head(moved) == assumed["receipt_sha256"]
     # The limitation is recorded, never used as a passing predicate.
@@ -425,21 +425,21 @@ def test_successor_consequential_append_without_exclusivity_attestation_fails_cl
 def test_successor_assumed_record_itself_permitted(tmp_path, predecessor):
     root, second = predecessor
     governing = manifest("node-b", second["receipt_sha256"])
-    released = org.release_custody(governing, ledger=root)
+    released = org.release_custody(governing, ledger=root, hb_epoch=4096)
     moved = tmp_path / "node-b" / "org-ledger"
     shutil.copytree(root, moved)
-    assumed = org.assume_custody(governing, materialization_id="node-b", ledger=moved)
+    assumed = org.assume_custody(governing, materialization_id="node-b", ledger=moved, hb_epoch=4096)
     assert assumed["previous_receipt_sha256"] == released["receipt_sha256"]
     assert assumed["custody_generation"] == 1
     assert "custody_exclusivity_attestation_sha256" not in assumed
     assert head(moved) == assumed["receipt_sha256"]
     assert readback(moved, assumed)["receipt_sha256"] == assumed["receipt_sha256"]
-    assert org.assume_custody(governing, materialization_id="node-b", ledger=moved) == assumed
+    assert org.assume_custody(governing, materialization_id="node-b", ledger=moved, hb_epoch=4096) == assumed
 
 
 def test_unreleased_root_appends_unchanged(tmp_path, predecessor, monkeypatch):
     root, second = predecessor
-    third = org.aggregate_transition(receipt("THIRD"), ledger=root)
+    third = org.aggregate_transition(receipt("THIRD"), ledger=root, hb_epoch=4096)
     assert third["previous_receipt_sha256"] == second["receipt_sha256"]
     assert third["custody_generation"] == 0
     assert "custody_exclusivity_attestation_sha256" not in third
@@ -448,8 +448,8 @@ def test_unreleased_root_appends_unchanged(tmp_path, predecessor, monkeypatch):
         "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY",
     })
     governing = {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}}
-    fourth = org.aggregate_transition(receipt("FOURTH"), ledger=root, parent_manifest=governing)
-    fifth = org.aggregate_transition(receipt("FIFTH"), ledger=root, parent_manifest=governing)
+    fourth = org.aggregate_transition(receipt("FOURTH"), ledger=root, parent_manifest=governing, hb_epoch=4096)
+    fifth = org.aggregate_transition(receipt("FIFTH"), ledger=root, parent_manifest=governing, hb_epoch=4096)
     assert fifth["previous_receipt_sha256"] == fourth["receipt_sha256"] and fifth["custody_generation"] == 0
     released = batch._verified_batch(root, json.loads((root / "BATCH_HEAD.json").read_text())["batch_id"])
     assert released["last_org_receipt_sha256"] == fourth["receipt_sha256"]
@@ -465,7 +465,7 @@ def _successor(tmp_path, predecessor):
 def _refused_with(moved, verifier, match=None):
     before = receipts(moved), head(moved)
     exc = refused("CUSTODY_EXCLUSIVITY_UNAUTHENTICATED", org.aggregate_transition, receipt("NEXT"),
-                  ledger=moved, custody_exclusivity_verifier=verifier)
+                  ledger=moved, custody_exclusivity_verifier=verifier, hb_epoch=4096)
     assert (receipts(moved), head(moved)) == before
     if match:
         assert match in exc.detail
@@ -486,7 +486,7 @@ def test_exclusivity_wrong_materialization_refused(tmp_path, predecessor):
 def test_exclusivity_stale_head_refused(tmp_path, predecessor):
     _, released, moved, assumed = _successor(tmp_path, predecessor)
     _refused_with(moved, attests("node-b", 1, released["receipt_sha256"]))
-    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1))
+    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1), hb_epoch=4096)
     # An attestation of the HEAD before THIRD no longer covers a write after it.
     _refused_with(moved, attests("node-b", 1, assumed["receipt_sha256"]))
     assert head(moved) == third["receipt_sha256"]
@@ -500,7 +500,7 @@ def test_exclusivity_replayed_attestation_refused(tmp_path, predecessor):
         recorded.append(attests("node-b", 1)(**asked))
         return recorded[-1]
 
-    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=recording)
+    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=recording, hb_epoch=4096)
     assert third["custody_exclusivity_attestation_sha256"] == org.sha(recorded[0])
     _refused_with(moved, lambda **_: dict(recorded[0]))
     # An attestation already bound in a receipt is a replay even where it names the HEAD it is asked about.
@@ -521,7 +521,7 @@ def test_exclusivity_attestation_for_other_action_refused(tmp_path, predecessor)
             custody_exclusivity_verifier=attests("node-b", 1, action=append_action))
     assert receipts(moved) == before and not (moved / "BATCH_HEAD.json").exists()
     # The same verifier asked for the exact action is accepted.
-    written = org.aggregate_transition(receipt("NEXT"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1))
+    written = org.aggregate_transition(receipt("NEXT"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1), hb_epoch=4096)
     assert written["previous_receipt_sha256"] == assumed["receipt_sha256"]
 
 
@@ -547,21 +547,21 @@ def test_generation_zero_relocated_without_handover_consequential_append_refused
     for relocated in (moved, copied):
         before = receipts(relocated)
         exc = refused("UNGOVERNED_RELOCATION_ANOMALY_DETECTED", org.aggregate_transition,
-                      receipt("THIRD"), ledger=relocated)
+                      receipt("THIRD"), ledger=relocated, hb_epoch=4096)
         assert exc.refusal()["retry_entrypoint"] == "resident-runtime/aggregate_repo_transition.py::release_custody"
         refused("UNGOVERNED_RELOCATION_ANOMALY_DETECTED", org.aggregate_transition, receipt("THIRD"),
-                ledger=relocated, parent_manifest={"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}})
+                ledger=relocated, parent_manifest={"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}}, hb_epoch=4096)
         refused("UNGOVERNED_RELOCATION_ANOMALY_DETECTED", batch.close_batch, "TASK_CLOSURE", root=relocated)
         # A relocated root cannot release itself either; only one at its recorded location can.
         refused("UNGOVERNED_RELOCATION_ANOMALY_DETECTED", org.release_custody,
-                manifest("node-d", second["receipt_sha256"]), ledger=relocated)
+                manifest("node-d", second["receipt_sha256"]), ledger=relocated, hb_epoch=4096)
         assert receipts(relocated) == before and head(relocated) == second["receipt_sha256"]
         assert not (relocated / "BATCH_HEAD.json").exists()
     assert submitted == []
     # The only governed move is a handover from the recorded location.
     shutil.move(str(moved), str(root))
     governing, released, successor, assumed = handover(tmp_path, root, second["receipt_sha256"], successor="node-e")
-    third = org.aggregate_transition(receipt("THIRD"), ledger=successor, custody_exclusivity_verifier=attests("node-e", 1))
+    third = org.aggregate_transition(receipt("THIRD"), ledger=successor, custody_exclusivity_verifier=attests("node-e", 1), hb_epoch=4096)
     assert third["previous_receipt_sha256"] == assumed["receipt_sha256"]
 
 
@@ -582,7 +582,7 @@ def test_generation_zero_relocated_readback_still_verifies(tmp_path, predecessor
 
 def test_generation_zero_original_location_unchanged(predecessor):
     root, second = predecessor
-    third = org.aggregate_transition(receipt("THIRD"), ledger=root)
+    third = org.aggregate_transition(receipt("THIRD"), ledger=root, hb_epoch=4096)
     assert third["previous_receipt_sha256"] == second["receipt_sha256"] and third["custody_generation"] == 0
     assert "custody_exclusivity_attestation_sha256" not in third
     # A location match is not custody authority, and the receipt says so.
@@ -592,7 +592,7 @@ def test_generation_zero_original_location_unchanged(predecessor):
     closed = batch.close_batch("TASK_CLOSURE", root=root)
     assert closed["last_org_receipt_sha256"] == third["receipt_sha256"]
     # The same root supplied by a different spelling of the same location is the same location.
-    fourth = org.aggregate_transition(receipt("FOURTH"), ledger=root / ".." / root.name)
+    fourth = org.aggregate_transition(receipt("FOURTH"), ledger=root / ".." / root.name, hb_epoch=4096)
     assert fourth["previous_receipt_sha256"] == third["receipt_sha256"]
 
 
@@ -627,7 +627,7 @@ def test_generation_zero_row_without_basis_reports_fail_closed(predecessor):
 def test_handover_generation_readback_claims_no_custody_authority(tmp_path, predecessor):
     root, second = predecessor
     governing, released, moved, assumed = handover(tmp_path, root, second["receipt_sha256"])
-    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1))
+    third = org.aggregate_transition(receipt("THIRD"), ledger=moved, custody_exclusivity_verifier=attests("node-b", 1), hb_epoch=4096)
     for row in (assumed, third):
         basis = batch.readback_custody_basis(readback(moved, row))
         assert basis == "DETECTED_NOT_PREVENTED_ACROSS_KERNELS; NO_CUSTODY_AUTHORITY_CLAIMED"

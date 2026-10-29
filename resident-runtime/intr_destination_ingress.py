@@ -222,9 +222,10 @@ def _append_halves(transition_class: str, packet_id: str, evidence: Mapping[str,
     organization receipt goes through aggregate_transition on the declared
     {store: git} locus, never through ledger_root().
 
-    The organization append owner is ``aggregate_transition``. It takes the
-    repository receipt's epoch, so a replay rebuilds the same organization
-    receipt rather than one stamped later.
+    The organization append owner is ``aggregate_transition``. It is handed the
+    epoch this call was supplied (``forwarded_epoch``), never one read back
+    from the repository receipt. A replay still returns the recorded
+    organization receipt (its heartbeat reference is not compared).
     """
     predecessor = evidence["payload_sha256"]
     successor = sha({"disposition": evidence["disposition"], "packet_id": packet_id,
@@ -238,7 +239,6 @@ def _append_halves(transition_class: str, packet_id: str, evidence: Mapping[str,
         transition_id, transition_class, predecessor, successor, dict(evidence),
         "NONE", hb_epoch=hb_epoch,
         idempotent_on=("communication_id", "payload_sha256", "disposition"))
-    epoch = repository_receipt["hb_reference"]["epoch"]
     organization_receipt = organization_ledger.aggregate_transition(
         receipt=repository_receipt,
         org_transition_class="REPO_STATE_PROPAGATION",
@@ -249,7 +249,7 @@ def _append_halves(transition_class: str, packet_id: str, evidence: Mapping[str,
                            "communication_id": evidence.get("communication_id"),
                            **dict(boundary_extra or {})},
         authority_effect="NONE",
-        hb_epoch=epoch)
+        hb_epoch=repository_ledger.forwarded_epoch(repository_receipt, hb_epoch))
     return ({"repository_receipt": repository_receipt,
              "organization_receipt": organization_receipt}, prior is not None)
 
@@ -257,6 +257,14 @@ def _append_halves(transition_class: str, packet_id: str, evidence: Mapping[str,
 def _recorded(disposition: str, payload: Any, packet_id: str, hb_epoch: int | None, *,
               failed_predicate: str | None = None, detail: str | None = None,
               closure: str | None = None) -> dict[str, Any]:
+    if hb_epoch is None:
+        # No supplied epoch in scope: nothing is recorded, before any store is
+        # opened, and no clock stands in for the epoch (WU-B13 slice g).
+        refusal = organization_ledger.kernel.no_epoch_caller_refusal(
+            "resident-runtime/intr_destination_ingress.py::_recorded",
+            retry_entrypoint="resident-runtime/intr_destination_ingress.py::receive (hb_epoch=, or --hb-epoch)")
+        return {**refusal, "operation": OPERATION_ID, "packet_id": packet_id, "received": False,
+                "refusal_recorded": False, "authority_effect": "NONE_REFUSAL_ONLY"}
     evidence = _evidence(payload, packet_id, disposition,
                          failed_predicate=failed_predicate, detail=detail, closure=closure)
     if closure is None:
@@ -345,19 +353,25 @@ def main() -> int:
     parser.add_argument("--payload", type=Path)
     parser.add_argument("--registry", type=Path, required=True)
     parser.add_argument("--packet-id", default="organization-intr-destination")
-    parser.add_argument("--hb-epoch", type=int, default=None)
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; never coerced")
     parser.add_argument("--self-close", action="store_true",
                         help="record a diagnostic self-closure; no peer is named")
     parser.add_argument("--communication-id",
                         help="communication_id the self-closure correlates on")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
-    registry = json.loads(args.registry.read_text(encoding="utf-8"))
+    args.hb_epoch, refused = repository_ledger.cli_epoch(
+        args.hb_epoch, "resident-runtime/intr_destination_ingress.py")
+    if refused is not None:
+        print(json.dumps(refused, sort_keys=True))
+        return 1
+    registry = repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
     if args.self_close:
         if args.communication_id:
             payload = diagnostic_payload(args.communication_id)
         elif args.payload is not None:
-            payload = json.loads(args.payload.read_text(encoding="utf-8"))
+            payload = repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
         else:
             raise SystemExit("self-close requires --communication-id or --payload")
         result = self_close(payload, registry=registry, packet_id=args.packet_id,
@@ -366,7 +380,7 @@ def main() -> int:
         if args.payload is None:
             raise SystemExit("--payload is required unless --self-close is set")
         result = receive(
-            json.loads(args.payload.read_text(encoding="utf-8")),
+            repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py"),
             registry=registry, packet_id=args.packet_id, hb_epoch=args.hb_epoch)
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.out:
@@ -377,4 +391,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(repository_ledger.kernel.run_writer_cli(main, retry_entrypoint="resident-runtime/intr_destination_ingress.py"))

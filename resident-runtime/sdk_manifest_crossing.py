@@ -165,6 +165,21 @@ def processing_service(manifest, registry):
     return matches[0] if matches else None
 
 
+#: process_boundary's exit codes (DC#10): its own write fault, and a bad input.
+PROCESSOR_WRITE_FAULT_EXIT = 75
+PROCESSOR_INPUT_FAULT_EXIT = 65
+
+
+def _processor_record(stdout: str | None) -> dict | None:
+    """The six-field record the processor printed as its last stdout line, if any."""
+    lines = (stdout or "").strip().splitlines()
+    try:
+        record = json.loads(lines[-1]) if lines else None
+    except (ValueError, RecursionError, MemoryError):
+        return None
+    return record if isinstance(record, dict) else None
+
+
 def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing", standing=None):
     """Drive the manifest's declared crossing and return what it produced."""
     if not isinstance(registry, dict):
@@ -195,13 +210,21 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
             # The far side refused or could not be reached. Say which, and say
             # it as a disposition rather than as a crossing that happened.
             detail = (completed.stderr or completed.stdout or "").strip().splitlines()
+            # The processor's exit says whose fault it was (DC#10): 75 is its own
+            # write fault, non-terminal, and the only exit that permits a retry;
+            # 65 (bad input), 1, any other code and a crash are terminal.
+            far_side_fault = _processor_record(completed.stdout)
             return {
                 "schema": "stegverse.sdk-manifest-crossing-result/v1",
                 "declared_transition_surface": destination["surface"],
                 "resolved_service_id": service["service_id"],
                 "crossing_completed": False,
+                "processor_exit": completed.returncode,
+                "far_side_fault": far_side_fault,
+                "retry_permitted": completed.returncode == PROCESSOR_WRITE_FAULT_EXIT,
                 "manifest_sha256": ingress["payload"]["manifest_sha256"],
-                "far_side_disposition": detail[-1] if detail else "FAR_SIDE_UNREACHABLE",
+                "far_side_disposition": ((far_side_fault or {}).get("detail")
+                                         or (detail[-1] if detail else "FAR_SIDE_UNREACHABLE")),
                 "profile_status": service.get("profile_status"),
                 "endpoint_adapter_installed": bool(service.get("endpoint_adapter")),
                 "ingress_packet_id": ingress["packet_id"],

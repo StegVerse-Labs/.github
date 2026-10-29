@@ -382,6 +382,8 @@ class SvChangeSchemaEpochTests(unittest.TestCase):
     S = json.loads((ROOT / "schemas/sv-change.v1.schema.json").read_text())
 
     def test_schema_matches_726248a5_for_strings(self):
+        """Checks the schema against the current shared rule, c9192134 (function text ad8ff529), not 726248a5.
+        The base name is kept because the ratchet counts a renamed test as missing (TEST_MISSING_AT_HEAD)."""
         kg = fx.known_good_change(fx.SURFACE_PATH["transition"])
         for v in ("32", "1024", "01024", "469411750", "31", "0031", "00", "abc", "", "+33", " 1024"):
             schema_ok = ss.validate(dict(kg, hb_epoch=v), self.S) == []

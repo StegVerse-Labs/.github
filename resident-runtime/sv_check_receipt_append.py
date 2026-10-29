@@ -16,8 +16,8 @@ Layout. These are the existing receipts, unchanged:
     (ledger_store.source_key). The organization receipt itself is at ``receipts/<hex>.json``.
   * Time: ``hb_reference`` comes from kernel.hb_reference(epoch=<supplied int >= 32>) (org-kernel/kernel.py:68-74,
     the storage location), so derived_from_clock is False. The append epoch and the check receipt's own
-    ``hb_epoch`` must both pass the shared rule org-kernel/kernel.py::supplied_epoch_failure (L236-269, blob
-    ffec5d64, SHARED_RULE_SHA256 726248a5...) and must be equal. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED,
+    ``hb_epoch`` must both pass the shared rule org-kernel/kernel.py::supplied_epoch_failure (SHARED_RULE_SHA256
+    c9192134..., the ast segment as P1 hashes it) and must be equal. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED,
     absent/null/""/"null"/UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; any other malformed or
     different value -> DENY HB_EPOCH_MISMATCH; in both cases before anything is written. A clock-derived epoch (only
     possible on a stored hb_reference) is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. A clock epoch is never written.
@@ -30,7 +30,7 @@ Layout. These are the existing receipts, unchanged:
     validate_gate_receipt(receipt, subject, readback, fixture_mode=False) and appended only into the subject
     repository's own ledger (subject.repository == the writer's repository), at receipts/<org hex>.json plus
     source-receipts/<repo hex>.json. Any failure is a six-field FAIL_CLOSED before any write.
-  * P1 readers: loaded from tests/vendor/p1_f28c3a76/ (P1 #3264 head f28c3a76, P1's layout mirrored), verified
+  * P1 readers: loaded from tests/vendor/p1_c9192134/ (P1's files at the c9192134 re-pin, Labs#3282; P1's layout mirrored), verified
     file-by-file against P1's manifest data/sv-work-items/contract-pins.json (pinned by its sha256) before use; any
     mismatch refuses every append (FAIL_CLOSED P1_CONTRACT_PINS_UNVERIFIED).
 
@@ -45,6 +45,7 @@ for it. Stdlib only.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import importlib.util
 import json
@@ -59,10 +60,9 @@ OPERATION_ID = "sv_check_receipt"
 TRANSITION_CLASS = "SV_CHECK_RECEIPT_APPEND"
 PROFILE_ID = "org-ledger-writer"
 CHECK_RECEIPT_SCHEMA_ID = "stegverse.sv_check_receipt.v1"
-P1_HEAD = "f28c3a76a8b495d7a815a7ecd513c4d4dc90c9c7"
-P1_VENDOR = ROOT / "tests" / "vendor" / "p1_f28c3a76"
+P1_VENDOR = ROOT / "tests" / "vendor" / "p1_c9192134"
 P1_MANIFEST = "data/sv-work-items/contract-pins.json"
-P1_MANIFEST_SHA256 = "5c0c98d4349274b547a7c4ba8154e77e930e55e0a8dc1827344229661957a4cb"  # blob ef2ff1e8
+P1_MANIFEST_SHA256 = "f91ddc4dec0d03af41166f9662916a7c3810e37f036a175180d084b94b53c0dd"  # blob b80622d5
 # the P1 files this operation uses (paths as in P1's tree and in the manifest)
 P1_USED_FILES = ("resident-runtime/sv_work_items.py", "resident-runtime/sv_push_receipt.py",
                  "data/sv-work-items/required-checks.json",
@@ -83,9 +83,10 @@ GATE_LEDGER_PREDICATE = "STAGE_GATE_RECEIPT_APPENDS_TO_THE_SUBJECT_REPOSITORY_LE
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 EPOCH_SOURCE_PREDICATE = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 EPOCH_TIE_PREDICATE = "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH"
-# sha256 of org-kernel/kernel.py::supplied_epoch_failure (L236-269 at blob ffec5d64): from "def supplied_epoch_failure"
-# to the next top-level def, trailing whitespace stripped (the segment rule of P1 sv_work_items.supplied_epoch_rule_sha256).
-SHARED_RULE_SHA256 = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
+# sha256 of the ast source segment of org-kernel/kernel.py::supplied_epoch_failure (the segment rule of P1
+# sv_work_items.supplied_epoch_rule_sha256): the shared rule as Labs#3282 (B-P36h) re-pins it, function text ad8ff529.
+# Was 726248a5 before the HB_EPOCH_PROVENANCE_UNMARKED tightening.
+SHARED_RULE_SHA256 = "c91921348741cc1139553d5e4ad3d4f8f1c44fc67537eee4629c5bf63d49041d"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
               "retry_entrypoint", "owning_existing_goal", "next_attempt")
 IDEMPOTENT_ON = ("schema", "check_id", "disposition", "change_digest", "head_sha", "hb_epoch", "verifier_ref")
@@ -134,9 +135,8 @@ _P1: dict[str, Any] = {}
 
 
 def p1_readers():
-    """P1's sv_work_items at P1_HEAD, run over a temporary root holding the vendored files in P1's layout, with
-    org-kernel/ and scripts/ linked to this checkout (kernel.py ffec5d64 and the worker-claim script 9573c5bb are the
-    same blobs on both). Refuses (RuntimeError) unless the manifest pins verify."""
+    """P1's vendored sv_work_items, run over a temporary root holding the vendored files in P1's layout, with
+    org-kernel/ and scripts/ linked to this checkout (the vendored module reads both from this checkout). Refuses (RuntimeError) unless the manifest pins verify."""
     if "wi" in _P1:
         return _P1["wi"]
     if P1_PIN_FAILURE is not None:
@@ -145,14 +145,14 @@ def p1_readers():
     import shutil
     import tempfile
     import atexit
-    root = Path(tempfile.mkdtemp(prefix="p1_f28c3a76_"))
+    root = Path(tempfile.mkdtemp(prefix="p1_c9192134_"))
     atexit.register(shutil.rmtree, root, True)
     for rel in P1_USED_FILES:
         (root / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(P1_VENDOR / rel, root / rel)
     for link in ("org-kernel", "scripts"):
         os.symlink(ROOT / link, root / link)
-    name = "sv_work_items_p1_f28c3a76"
+    name = "sv_work_items_p1_c9192134"
     spec = importlib.util.spec_from_file_location(name, root / "resident-runtime" / "sv_work_items.py")
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
@@ -165,11 +165,14 @@ REQUIRED_CHECKS = json.loads((P1_VENDOR / P1_REQUIRED_CHECKS_PATH).read_text(enc
 
 
 def supplied_epoch_rule_sha256(source: str) -> str | None:
-    if "def supplied_epoch_failure" not in source:
+    try:
+        tree = ast.parse(source)
+    except (SyntaxError, ValueError):
         return None
-    a = source.index("def supplied_epoch_failure")
-    b = source.find("\ndef ", a + 5)
-    return hashlib.sha256(source[a:b if b >= 0 else len(source)].rstrip().encode("utf-8")).hexdigest()
+    node = next((n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "supplied_epoch_failure"), None)
+    if node is None:
+        return None
+    return hashlib.sha256(ast.get_source_segment(source, node).encode("utf-8")).hexdigest()
 
 
 KERNEL_RULE_SHA256 = supplied_epoch_rule_sha256((ROOT / "org-kernel" / "kernel.py").read_text(encoding="utf-8"))
@@ -250,7 +253,7 @@ def check_payload(receipt: Any) -> dict[str, Any] | None:
 
 
 def command_declared(check_id: str) -> bool:
-    """P1's rule itself (sv_work_items.command_declared @f28c3a76): an argv in the row, or a verifier built-in naming
+    """P1's rule itself (sv_work_items.command_declared, vendored): an argv in the row, or a verifier built-in naming
     the check id, the row's checks merged with the stage manifests' exit_gate_check declarations (GATE_CHECKS)."""
     return bool(p1_readers().command_declared(check_id))
 
