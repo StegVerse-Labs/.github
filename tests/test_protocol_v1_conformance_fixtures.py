@@ -40,11 +40,15 @@ refusal fields (`required_evidence_or_repair`, `retry_entrypoint`,
 `owning_existing_goal`, `next_attempt`) are not emitted by `receive()` on these
 paths, so no case claims them as observed.
 
-Items the real path cannot express -- a stale head or fence, a forged sender
-identity, missing authority, a replay refusal, a payload whose
-`payload_hash` is left unchanged -- are recorded as six-field `spec_gap`
-entries, each checked to name a code that exists nowhere in the ingress
-source, rather than being invented here.
+Items the real path cannot express -- a stale head or fence, a submitter
+whose KV/SKAP verification is bound to the manifest, missing authority, a
+redelivery answered before its endpoint runs, a payload whose `payload_hash`
+is left unchanged -- are recorded as six-field `spec_gap` entries, each
+checked to name a code that exists nowhere in the ingress source, rather than
+being invented here. Replay itself is not one of them: idempotent redelivery
+is the specified behaviour (I-10), and n2 covers "no duplicate effect" at both
+ledger levels. Each registered task a gap names as its owner is checked to
+exist in `data/canonical-task-records/`.
 
 Fixture evidence only. Nothing here is runtime ALLOW, no live receipt is
 minted, and admission, claim/fence and protected runs stay with the Registry
@@ -56,6 +60,7 @@ import copy
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -88,6 +93,9 @@ ISSUE_ITEMS = {"POSITIVE": "positive", "TAMPER": "n1-tamper", "REPLAY": REPLAY,
 GAP_SOURCES = ("resident-runtime/organization_manifest_ingress.py",
                "resident-runtime/sdk_manifest_crossing.py",
                "org-boundary/runtime/node_standing.py")
+TASK_RECORDS = ROOT / "data/canonical-task-records"
+#: A registered task id named inside an owner field, e.g. ORGANIZATION-BATCH-CUSTODY-REPLAY-001.
+TASK_ID = re.compile(r"\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{3}\b")
 MASTER_RECORDS_PROPAGATION = ROOT / "resident-runtime/submit_org_transition_to_master_records.py"
 ORG_CONTRACT = ROOT / ".stegverse/transition-ledger/org-contract.json"
 
@@ -417,7 +425,32 @@ class FixtureShapeTest(unittest.TestCase):
     def test_replay_declares_idempotent_redelivery(self):
         spec = case(REPLAY)
         self.assertEqual(spec["expected"]["disposition"], "IDEMPOTENT_REDELIVERY")
-        self.assertEqual(spec["spec_gap"]["failure_code"], "REPLAY_REFUSAL_NOT_IMPLEMENTED_BY_INGRESS")
+        # Redelivery is idempotent by specification (I-10); the gap is the order
+        # in which receive() processes a redelivery, not a missing refusal.
+        self.assertEqual(spec["issue_3369_item_status"], "COVERED_WITH_SPEC_GAP")
+        self.assertEqual(spec["spec_gap"]["failure_code"], "REDELIVERY_REPROCESSED_BEFORE_DEDUPLICATION")
+
+    def test_every_registered_owner_a_spec_gap_names_exists(self):
+        named = 0
+        for case_id in ALL_CASES:
+            gap = case(case_id).get("spec_gap")
+            if gap is None:
+                continue
+            for task_id in TASK_ID.findall(gap["owning_existing_goal"]):
+                named += 1
+                self.assertTrue((TASK_RECORDS / f"{task_id}.json").is_file(), f"{case_id}:{task_id}")
+        self.assertGreater(named, 0)
+
+    def test_no_spec_gap_waits_on_a_device_or_node_attestation_gate(self):
+        # Device attestation is prohibited as a gate by the global invariants;
+        # submitter verification belongs to the KV/SKAP Vault.
+        invariants = load(ROOT / "data/task-registry-global-invariants.json")
+        self.assertIn("NO_DEVICE_ATTESTATION_OR_PHYSICAL_DEVICE_IDENTITY_GATE", json.dumps(invariants))
+        for case_id in ALL_CASES:
+            gap = case(case_id).get("spec_gap") or {}
+            self.assertNotIn("attestation owner", gap.get("next_attempt", ""), case_id)
+        self.assertEqual(case("n3-wrong-receiving-operation")["spec_gap"]["failure_code"],
+                         "SUBMITTER_KV_SKAP_VERIFICATION_NOT_BOUND_AT_INGRESS")
 
     def test_payload_binding_gap_is_recorded_on_tamper(self):
         self.assertEqual(case("n1-tamper")["spec_gap"]["failure_code"],

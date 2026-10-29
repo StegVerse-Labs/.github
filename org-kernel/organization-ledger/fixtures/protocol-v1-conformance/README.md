@@ -13,7 +13,7 @@ positive case and one case per #3369 item. Each case names its mutation, what it
 |---|---|---|---|
 | `positive` | the positive packet crosses and echoes the bounded effect | POSITIVE | COVERED |
 | `n1-tamper` | payload altered after the crossing, `payload_hash` recomputed from the altered bytes | TAMPER | COVERED_WITH_SPEC_GAP |
-| `n2-replay` | redelivery under another packet id is idempotent acceptance | REPLAY | SPEC_GAP |
+| `n2-replay` | redelivery under another packet id is idempotent, with no duplicate ledger effect | REPLAY | COVERED_WITH_SPEC_GAP |
 | `n3-wrong-receiving-operation` | the request names a receiving operation owned by another repository | FORGED_IDENTITY | SPEC_GAP |
 | `n4-generation-not-successor` | VERIFY_EXISTING standing whose predecessor generation is not generation - 1 | STALE_HEAD_OR_FENCE | SPEC_GAP |
 | `n5-wrong-route` | `completion.egress` declares a surface the registry does not expose | WRONG_ROUTE | COVERED |
@@ -44,14 +44,25 @@ materialized mesh location (FAIL_CLOSED, `MESH_LOCATION_REQUIRED_FROM_MATERIALIZ
 ledger levels are byte-identical afterwards and a redelivery replays the same transition --
 `propagation_gates_organization_runtime_reality` is false in `.stegverse/transition-ledger/org-contract.json`.
 
-Items the real path cannot express are six-field `spec_gap` entries, each checked to name a code absent
-from the ingress, crossing and standing sources:
+Replay is not a refusal the path lacks. Idempotent redelivery is specified (the I-10 ruling in
+`docs/STEGDB_ORGANIZATION_ROLE_VERSION_PROPAGATION_MIRROR_HANDOFF.md`), and partial-commit completion and
+`consume_outbox` redelivery depend on it, so n2 covers #3369's "no duplicate effect" at both ledger levels.
 
-- `REPLAY_REFUSAL_NOT_IMPLEMENTED_BY_INGRESS` (n2)
+Items the real path cannot express are six-field `spec_gap` entries, each checked to name a code absent
+from the ingress, crossing and standing sources, and each registered task an owner field names is checked to
+exist in `data/canonical-task-records/`:
+
+- `REDELIVERY_REPROCESSED_BEFORE_DEDUPLICATION` (n2): `receive()` calls `cross()`, and so the endpoint,
+  before it looks up the recorded transition; only the ledger append is deduplicated
+  (ORGANIZATION-BATCH-CUSTODY-REPLAY-001)
 - `PAYLOAD_HASH_NOT_RECOMPUTED_FROM_MANIFEST_AT_INGRESS` (n1): an echo or manifest altered with
   `payload_hash` unchanged is not detected at ingress
-- `SENDER_IDENTITY_NOT_AUTHENTICATED_AT_INGRESS` (n3)
-- `STALE_HEAD_OR_FENCE_NOT_COMPARED_AT_INGRESS` (n4)
+- `SUBMITTER_KV_SKAP_VERIFICATION_NOT_BOUND_AT_INGRESS` (n3): only the KV/SKAP Vault verifies a submitter;
+  device or node attestation is prohibited as a gate (`device_attestation_gate: NONE_PROHIBITED`), so the
+  next step is binding `workers/device_kv_skap_roundtrip_verifier.py` receipts to the manifest
+  (SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001; KV binding field: STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001)
+- `STALE_HEAD_OR_FENCE_NOT_COMPARED_AT_INGRESS` (n4): the Registry/WorkerCoordinator owner's claim/fence and
+  expected head (#3369 assignment), with organization ledger readback by ORGANIZATION-BATCH-CUSTODY-REPLAY-001
 - `AUTHORITY_NOT_CHECKED_AT_INGRESS` (n6)
 
 Nothing here admits a task, grants authority, appends to a real ledger or mints a live receipt. ALLOW on

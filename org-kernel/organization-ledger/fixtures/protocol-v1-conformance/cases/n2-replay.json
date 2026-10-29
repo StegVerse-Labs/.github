@@ -1,6 +1,6 @@
 {
   "case_id": "n2-replay",
-  "covers": "REDELIVERY_UNDER_ANOTHER_PACKET_ID_IS_IDEMPOTENT_ACCEPTANCE",
+  "covers": "REDELIVERY_UNDER_ANOTHER_PACKET_ID_IS_IDEMPOTENT_WITH_NO_DUPLICATE_LEDGER_EFFECT",
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
     "disposition": "IDEMPOTENT_REDELIVERY",
@@ -10,7 +10,7 @@
     "transition_replayed": true
   },
   "issue_3369_item": "REPLAY",
-  "issue_3369_item_status": "SPEC_GAP",
+  "issue_3369_item_status": "COVERED_WITH_SPEC_GAP",
   "mutation": {
     "kind": "REPLAY_UNDER_NEW_PACKET_ID",
     "packet_id": "protocol-v1-conformance-replay"
@@ -18,12 +18,12 @@
   "schema": "stegverse.protocol-v1-conformance-case/v1",
   "spec_gap": {
     "disposition": "GAP_NOT_IMPLEMENTED",
-    "failed_predicate": "A_REPLAYED_PACKET_IS_REFUSED",
-    "failure_code": "REPLAY_REFUSAL_NOT_IMPLEMENTED_BY_INGRESS",
+    "failed_predicate": "RECORDED_TRANSITION_IS_NOT_REPROCESSED",
+    "failure_code": "REDELIVERY_REPROCESSED_BEFORE_DEDUPLICATION",
     "issue_3369_item": "REPLAY",
-    "next_attempt": "the ingress lane decides whether a redelivery is refused; until then n2 asserts the idempotent acceptance receive() performs",
+    "next_attempt": "the recorded-transition lookup moves ahead of the crossing in receive(), answering an exact redelivery from the recorded receipts while partial-commit completion and outbox redelivery keep working; then n2 also asserts the endpoint is not run again on the redelivery",
     "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-    "required_evidence_or_repair": "StegVerse-Labs/.github#3369 lists replay among the refusals, but organization_manifest_ingress.receive treats a redelivery as idempotent: the same transition id, the recorded receipts returned, no second append. A replay refusal needs an ingress-lane change to receive(), not a refusal invented in this harness",
+    "required_evidence_or_repair": "Idempotent redelivery is the specified behaviour, not a gap: the I-10 ruling in docs/STEGDB_ORGANIZATION_ROLE_VERSION_PROPAGATION_MIRROR_HANDOFF.md, partial-commit completion from the retained repository receipt, and consume_outbox's exact-retry redelivery all depend on it, and n2 covers #3369's 'no duplicate effect' at both ledger levels (same transition id, recorded receipts returned, no second append). The defect is the order: receive() calls sdk_manifest_crossing.cross -- and so process_boundary.py and the internal endpoint -- before it looks up the recorded transition, so a redelivery is processed again and only the ledger append is deduplicated",
     "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive"
   }
 }
