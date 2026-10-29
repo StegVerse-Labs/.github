@@ -9,15 +9,15 @@
      "repo": "StegVerse-Labs/.github"
     },
     "labsmain": {
-     "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+     "commit": "6b13c3a749b2940d6142644196a8302823c1f45a",
      "kind": "git",
-     "ref": "StegVerse-Labs/.github main",
+     "ref": "StegVerse-Labs/.github main @6b13c3a7 (revision 17 re-pin from @86382e60)",
      "repo": "StegVerse-Labs/.github"
     },
     "org": {
-     "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+     "commit": "35c94a0643039b94fd336889191e5e0b8ea17e81",
      "kind": "git",
-     "ref": "StegVerse-org/.github main",
+     "ref": "StegVerse-org/.github main @35c94a06 (revision 17 re-pin from @907f4305)",
      "repo": "StegVerse-org/.github"
     },
     "sdk556": {
@@ -27,15 +27,15 @@
      "repo": "StegVerse-org/StegVerse-SDK"
     },
     "sdkmain": {
-     "commit": "daca828a51d954f2817df4ca9f4fa25807248aa0",
+     "commit": "196ed07c9fd842ffdc039944bc44b088f57fd681",
      "kind": "git",
-     "ref": "StegVerse-SDK main",
+     "ref": "StegVerse-org/StegVerse-SDK main @196ed07c (revision 17 re-pin from @daca828a)",
      "repo": "StegVerse-org/StegVerse-SDK"
     },
     "tvc": {
-     "commit": "c4845bea704949c46658042963e8c532c9559939",
+     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main",
+     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @c4845bea)",
      "repo": "StegVerse-Labs/TVC"
     }
    },
@@ -456,21 +456,21 @@
   "KV-SKAP-VAULT-FUNCTIONAL-001": {
    "roots": {
     "cvk258": {
-     "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
+     "commit": "acfd2be5763fea22ea7c859cf493dab24f1f3ac8",
      "kind": "git",
-     "ref": "continuity-vault-kit main @77d28d83 (revision 15 re-pin from main @9d56bc7b: contains #275 77d28d83, LC-KV-26 closed by P1 - a KV head is readable only when recorded at both ends; and #274; contains #263 6751d36e, #259 1e8cd49e, #270 cdc50149 and #271 9d56bc7b; #258 closed, its commits are ancestors via #263)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @acfd2be5 (revision 17 re-pin from @77d28d83)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk259": {
-     "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
+     "commit": "acfd2be5763fea22ea7c859cf493dab24f1f3ac8",
      "kind": "git",
-     "ref": "continuity-vault-kit main @77d28d83 (revision 15 re-pin from main @9d56bc7b: contains #275 77d28d83, LC-KV-26 closed by P1 - a KV head is readable only when recorded at both ends; and #274; contains #263 6751d36e, #259 1e8cd49e, #270 cdc50149 and #271 9d56bc7b; #258 closed, its commits are ancestors via #263)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @acfd2be5 (revision 17 re-pin from @77d28d83)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk263": {
-     "commit": "77d28d838ec6714044a192d4f549c3ca9366ff3f",
+     "commit": "acfd2be5763fea22ea7c859cf493dab24f1f3ac8",
      "kind": "git",
-     "ref": "continuity-vault-kit main @77d28d83 (revision 15 re-pin from main @9d56bc7b: contains #275 77d28d83, LC-KV-26 closed by P1 - a KV head is readable only when recorded at both ends; and #274; contains #263 6751d36e, #259 1e8cd49e, #270 cdc50149 and #271 9d56bc7b; #258 closed, its commits are ancestors via #263)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @acfd2be5 (revision 17 re-pin from @77d28d83)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvkruling": {
@@ -492,9 +492,9 @@
      "repo": "StegVerse-Labs/.github"
     },
     "labsmain": {
-     "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+     "commit": "6b13c3a749b2940d6142644196a8302823c1f45a",
      "kind": "git",
-     "ref": "StegVerse-Labs/.github main",
+     "ref": "StegVerse-Labs/.github main @6b13c3a7 (revision 17 re-pin from @86382e60)",
      "repo": "StegVerse-Labs/.github"
     },
     "labsruling": {
@@ -516,9 +516,9 @@
      "repo": "StegVerse-org/LLM-adapter"
     },
     "org": {
-     "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+     "commit": "35c94a0643039b94fd336889191e5e0b8ea17e81",
      "kind": "git",
-     "ref": "StegVerse-org/.github main",
+     "ref": "StegVerse-org/.github main @35c94a06 (revision 18 re-pin from @907f4305: the G17 fold 64e2bfd removed .github/workflows/intr-path-transfer.yml; its job is now path-transfer in organization-ledger-writer.yml)",
      "repo": "StegVerse-org/.github"
     },
     "sdk080": {
@@ -528,9 +528,9 @@
      "repo": "StegVerse-org/StegVerse-SDK"
     },
     "tvc": {
-     "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @b686a60b (revision 13 re-pin from StegVerse-Labs/TVC main @c4845bea: contains #540 6fd76b7e, #541 b241ed32, #542 129d00a5 and #544 b686a60b)",
+     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @b686a60b)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc537": {
@@ -540,21 +540,21 @@
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc540": {
-     "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @b686a60b (revision 13 re-pin from StegVerse-Labs/TVC#540 @7802ddb3: contains #540 6fd76b7e, #541 b241ed32, #542 129d00a5 and #544 b686a60b)",
+     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @b686a60b)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc541": {
-     "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @b686a60b (revision 13 re-pin from StegVerse-Labs/TVC#541 @72decca1: contains #540 6fd76b7e, #541 b241ed32, #542 129d00a5 and #544 b686a60b)",
+     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @b686a60b)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc542": {
-     "commit": "b686a60b959ebffd165bc38ef011d0f50a6bb935",
+     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @b686a60b (revision 13 re-pin from StegVerse-Labs/TVC#542 @5b70bf01: contains #540 6fd76b7e, #541 b241ed32, #542 129d00a5 and #544 b686a60b)",
+     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @b686a60b)",
      "repo": "StegVerse-Labs/TVC"
     }
    },
@@ -1534,27 +1534,27 @@
      "argv": [
       "{python}",
       "-c",
-      "# P1 rev 11: TV/TVC readers (TVC#542/#540 scripts/tvc_org_ledger_head_signer.py ledger_location) against the\n# custody_ledgers_config() continuity-vault-kit#263 returns at the head checked out in argv[1]; the committed\n# config/kv_custody_receipt_chains.json; membership forms on the committed entry; the kv_ledger_head_signer state;\n# and the cvk contract digests at that head. Pure reads; cvk imported from argv[1] in a subprocess.\nimport copy, hashlib, json, subprocess, sys\nfrom pathlib import Path\nsys.path[:0] = [\".\", \"scripts\"]\nimport tvc_org_ledger_head_signer as H\ncvk = Path(sys.argv[1])\nrows = []\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\ndef row(subject, disp, note=None, **extra):\n    r = {\"subject\": subject, \"disposition\": disp}\n    if note: r[\"note\"] = note\n    r.update(extra); rows.append(r)\ndef state_row(subject, entry, which, note=None):\n    _, state, detail = H.ledger_location(entry, which)\n    disp = \"ALLOW\" if state in (\"OK\", \"NOT_PINNED\") else \"FAIL_CLOSED\"\n    row(subject, disp, note, state=state, detail=detail[:300])\nlive = json.loads(subprocess.run([sys.executable, \"-c\", \"import json,sys; sys.path.insert(0,'.'); from runtime import kv_receipt_ledgers as rl; print(json.dumps(rl.custody_ledgers_config()))\"],\n                                 cwd=cvk, capture_output=True, text=True, check=True).stdout)\nhead = subprocess.run([\"git\", \"rev-parse\", \"HEAD\"], cwd=cvk, capture_output=True, text=True).stdout.strip()\ncfg = json.loads(Path(\"config/kv_custody_receipt_chains.json\").read_text())\nfor which, f in ((\"kv\", \"stegverse-kv-receipts.contract.json\"), (\"skap_vault\", \"skap-receipts.contract.json\")):\n    got = \"sha256:\" + hashlib.sha256((cvk / \".stegverse/receipt-chains\" / f).read_bytes()).hexdigest()\n    row(\"CVK_CONTRACT_DIGEST_VS_TVC_PIN_\" + which.upper(), \"ALLOW\" if got == H.KV_CONTRACT_PINS[which] else \"FAIL_CLOSED\",\n        note=\"the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS\", cvk_head=head[:8], cvk_contract_sha256=got, tvc_pin=H.KV_CONTRACT_PINS[which])\n    entries = live.get(\"custody_ledgers\", live) if isinstance(live, dict) else {}\n    e = entries.get(which) if isinstance(entries, dict) else None\n    state_row(\"TVC_READER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_\" + which.upper(), e, which,\n              note=\"TVC's reader on the entry cvk's own custody_ledgers_config() returns at the checked-out head\")\n    committed = cfg[\"custody_ledgers\"][which]\n    state_row(\"TVC_READER_ON_COMMITTED_CONFIG_\" + which.upper(), committed, which, note=\"positive control (pinned at the head TVC bound)\")\n    forms = {\n        \"TOP_LEVEL_ORGANIZATION\": lambda e: e.__setitem__(\"organization\", \"StegVerse-org\"),\n        \"TOP_LEVEL_PERMISSIONS\": lambda e: e.__setitem__(\"permissions\", {\"organization_members\": \"write\"}),\n        \"TOP_LEVEL_OWNER\": lambda e: e.__setitem__(\"owner\", \"StegVerse-org\"),\n        \"TOP_LEVEL_GITHUB_APP_INSTALLATION_ID\": lambda e: e.__setitem__(\"github_app_installation_id\", 1),\n        \"TOP_LEVEL_TEAM\": lambda e: e.__setitem__(\"team\", \"kv\"),\n        \"ORG_LEDGER_REF_IN_LOCATION\": lambda e: e[\"repository_ledger_location\"].__setitem__(\"ref\", \"refs/stegverse/organization-ledger\"),\n        \"ORG_REPOSITORY_IN_LOCATION\": lambda e: e[\"repository_ledger_location\"].__setitem__(\"repository\", \"StegVerse-org/LLM-adapter\"),\n    }\n    for nm, edit in forms.items():\n        e2 = copy.deepcopy(committed); edit(e2)\n        state_row(\"TVC_MEMBERSHIP_%s_%s\" % (nm, which.upper()), e2, which)\nk = H.kv_ledger_head_signer()\nrow(\"TVC_KV_LEDGER_HEAD_SIGNER_STATE\", k.get(\"disposition\"), failure_code=k.get(\"failure_code\"),\n    signers=cfg[\"kv_ledger_head_signer\"][\"signer_source\"].get(\"signers\"), ledger_location=cfg[\"kv_ledger_head_signer\"].get(\"ledger_location\"))\nsf = cvk / \".stegverse/node-ledger/kv-ledger-head-signers.v1.json\"\ngot = \"sha256:\" + hashlib.sha256(sf.read_bytes()).hexdigest()\npin = cfg[\"kv_ledger_head_signer\"][\"signer_source\"].get(\"file_sha256\")\nrow(\"TVC_KV_SIGNER_FILE_PIN_VS_CVK_HEAD\", \"ALLOW\" if got == pin else \"FAIL_CLOSED\", cvk_head=head[:8], cvk_file_sha256=got, tvc_pin=pin)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+      "# P1 rev 11: TV/TVC readers (TVC#542/#540 scripts/tvc_org_ledger_head_signer.py ledger_location) against the\n# custody_ledgers_config() continuity-vault-kit#263 returns at the head checked out in argv[1]; the committed\n# config/kv_custody_receipt_chains.json; membership forms on the committed entry; the kv_ledger_head_signer state;\n# and the cvk contract digests at that head. Pure reads; cvk imported from argv[1] in a subprocess.\nimport copy, hashlib, json, subprocess, sys\nfrom pathlib import Path\nsys.path[:0] = [\".\", \"scripts\"]\nimport tvc_org_ledger_head_signer as H\ncvk = Path(sys.argv[1])\nrows = []\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\ndef row(subject, disp, note=None, **extra):\n    r = {\"subject\": subject, \"disposition\": disp}\n    if note: r[\"note\"] = note\n    r.update(extra); rows.append(r)\ndef state_row(subject, entry, which, note=None):\n    _, state, detail = H.ledger_location(entry, which)\n    disp = \"ALLOW\" if state in (\"OK\", \"NOT_PINNED\") else \"FAIL_CLOSED\"\n    row(subject, disp, note, state=state, detail=detail[:300])\nlive = json.loads(subprocess.run([sys.executable, \"-c\", \"import json,sys; sys.path.insert(0,'.'); from runtime import kv_receipt_ledgers as rl; print(json.dumps(rl.custody_ledgers_config()))\"],\n                                 cwd=cvk, capture_output=True, text=True, check=True).stdout)\nhead = subprocess.run([\"git\", \"rev-parse\", \"HEAD\"], cwd=cvk, capture_output=True, text=True).stdout.strip()\ncfg = json.loads(Path(\"config/kv_custody_receipt_chains.json\").read_text())\nfor which, f in ((\"kv\", \"stegverse-kv-receipts.contract.json\"), (\"skap_vault\", \"skap-receipts.contract.json\")):\n    got = \"sha256:\" + hashlib.sha256((cvk / \".stegverse/receipt-chains\" / f).read_bytes()).hexdigest()\n    row(\"CVK_CONTRACT_DIGEST_VS_TVC_PIN_\" + which.upper(), \"ALLOW\" if got == H.KV_CONTRACT_PINS[which] else \"FAIL_CLOSED\",\n        note=\"the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS\", cvk_head=head[:8], cvk_contract_sha256=got, tvc_pin=H.KV_CONTRACT_PINS[which])\n    entries = live.get(\"custody_ledgers\", live) if isinstance(live, dict) else {}\n    e = entries.get(which) if isinstance(entries, dict) else None\n    # P1 rev 18: scripts/tvc_org_ledger_head_signer.py ledger_location reads TV/TVC's pin-WRAPPED entry (cvk's keys plus\n    # KV_ENTRY_WRAPPER_KEYS: designation_sha256, source, designation, status; its own KV_ENTRY_CVK_KEYS comment), so a\n    # raw cvk entry is refused by design; the raw row is kept for the record. The conforming reads are (1) TV/TVC's own\n    # parser tools.kv_custody_ledgers_config.parse_entry on the raw entry, (2) the reader on the entry wrapped with the\n    # sha256 TVC computes (designation_sha256) and a source taken only from cvk's own entry and head, and (3) the raw\n    # entry equal to TVC's vendored snapshot entry. Nothing is taken from a caller; the pins still decide.\n    state_row(\"TVC_READER_ON_CVK_HEAD_RAW_ENTRY_\" + which.upper(), e, which,\n              note=\"TVC's pin-wrapped-entry reader on the RAW entry cvk's custody_ledgers_config() returns: refused by design (no designation_sha256 or source wrapper)\")\n    wrapped = None\n    if isinstance(e, dict):\n        wrapped = dict(e)\n        wrapped[\"designation_sha256\"] = H.designation_sha256(e)\n        wrapped[\"source\"] = {\"repository\": \"StegVerse-Labs/continuity-vault-kit\", \"pull_request\": cfg[\"custody_ledgers\"][which][\"source\"].get(\"pull_request\"),\n                             \"commit\": head, \"accessor\": \"runtime.kv_receipt_ledgers.custody_ledgers_config()\",\n                             \"contract_path\": e.get(\"contract_path\"), \"contract_sha256\": e.get(\"contract_sha256\")}\n    state_row(\"TVC_READER_ON_CVK_HEAD_WRAPPED_ENTRY_\" + which.upper(), wrapped, which,\n              note=\"TVC's reader on cvk's entry wrapped with designation_sha256 (computed by TVC) and a source built only from cvk's own entry and head\")\n    import tools.kv_custody_ledgers_config as T\n    parsed, perr = T.parse_entry(which, copy.deepcopy(e))\n    row(\"TVC_PARSER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_\" + which.upper(), \"ALLOW\" if parsed is not None else \"FAIL_CLOSED\",\n        note=\"TVC's own tools.kv_custody_ledgers_config.parse_entry on the raw entry cvk returns at the checked-out head\",\n        failure_code=(perr or {}).get(\"failure_code\"))\n    snap = json.loads((Path(\".\") / T.SNAPSHOT_REL / T.CONFIG_FILE).read_text())\n    row(\"CVK_ENTRY_EQUALS_TVC_VENDORED_SNAPSHOT_\" + which.upper(), \"ALLOW\" if e == snap.get(which) else \"FAIL_CLOSED\",\n        note=\"the raw entry cvk returns at the checked-out head vs the snapshot TVC vendors (\" + T.SNAPSHOT_REL + \")\", cvk_head=head[:8], tvc_snapshot_head=T.CVK_HEAD[:8])\n    committed = cfg[\"custody_ledgers\"][which]\n    state_row(\"TVC_READER_ON_COMMITTED_CONFIG_\" + which.upper(), committed, which, note=\"positive control (pinned at the head TVC bound)\")\n    forms = {\n        \"TOP_LEVEL_ORGANIZATION\": lambda e: e.__setitem__(\"organization\", \"StegVerse-org\"),\n        \"TOP_LEVEL_PERMISSIONS\": lambda e: e.__setitem__(\"permissions\", {\"organization_members\": \"write\"}),\n        \"TOP_LEVEL_OWNER\": lambda e: e.__setitem__(\"owner\", \"StegVerse-org\"),\n        \"TOP_LEVEL_GITHUB_APP_INSTALLATION_ID\": lambda e: e.__setitem__(\"github_app_installation_id\", 1),\n        \"TOP_LEVEL_TEAM\": lambda e: e.__setitem__(\"team\", \"kv\"),\n        \"ORG_LEDGER_REF_IN_LOCATION\": lambda e: e[\"repository_ledger_location\"].__setitem__(\"ref\", \"refs/stegverse/organization-ledger\"),\n        \"ORG_REPOSITORY_IN_LOCATION\": lambda e: e[\"repository_ledger_location\"].__setitem__(\"repository\", \"StegVerse-org/LLM-adapter\"),\n    }\n    for nm, edit in forms.items():\n        e2 = copy.deepcopy(committed); edit(e2)\n        state_row(\"TVC_MEMBERSHIP_%s_%s\" % (nm, which.upper()), e2, which)\nk = H.kv_ledger_head_signer()\nrow(\"TVC_KV_LEDGER_HEAD_SIGNER_STATE\", k.get(\"disposition\"), failure_code=k.get(\"failure_code\"),\n    signers=cfg[\"kv_ledger_head_signer\"][\"signer_source\"].get(\"signers\"), ledger_location=cfg[\"kv_ledger_head_signer\"].get(\"ledger_location\"))\nsf = cvk / \".stegverse/node-ledger/kv-ledger-head-signers.v1.json\"\ngot = \"sha256:\" + hashlib.sha256(sf.read_bytes()).hexdigest()\npin = cfg[\"kv_ledger_head_signer\"][\"signer_source\"].get(\"file_sha256\")\nrow(\"TVC_KV_SIGNER_FILE_PIN_VS_CVK_HEAD\", \"ALLOW\" if got == pin else \"FAIL_CLOSED\", cvk_head=head[:8], cvk_file_sha256=got, tvc_pin=pin)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
       "{root:cvk263}"
      ],
      "kind": "command",
      "parse": "rows",
      "root": "tvc542",
      "run_id": "tvc542-bind-cvk263",
-     "what": "TVC#542 @5b70bf01 scripts/tvc_org_ledger_head_signer.py ledger_location on (a) the custody_ledgers_config() entries continuity-vault-kit#263 returns at @bf684aad, (b) the committed config/kv_custody_receipt_chains.json entries (positive control), (c) the committed entries plus a top-level organization, permissions, owner, github_app_installation_id or team key, an org-ledger ref or an org repository; the cvk contract file digests at @bf684aad against TVC's KV_CONTRACT_PINS; kv_ledger_head_signer(); the signer file digest pin"
+     "what": "TVC#542 @5b70bf01 scripts/tvc_org_ledger_head_signer.py ledger_location on (a) the custody_ledgers_config() entries continuity-vault-kit#263 returns at @bf684aad, (b) the committed config/kv_custody_receipt_chains.json entries (positive control), (c) the committed entries plus a top-level organization, permissions, owner, github_app_installation_id or team key, an org-ledger ref or an org repository; the cvk contract file digests at @bf684aad against TVC's KV_CONTRACT_PINS; kv_ledger_head_signer(); the signer file digest pin; P1 rev 18: the raw-entry row is refused by design (the reader takes the pin-wrapped entry); added rows for the wrapped entry, TVC's own parser and the vendored-snapshot equality"
     },
     {
      "argv": [
       "{python}",
       "-c",
-      "# P1 rev 11: TV/TVC readers (TVC#542/#540 scripts/tvc_org_ledger_head_signer.py ledger_location) against the\n# custody_ledgers_config() continuity-vault-kit#263 returns at the head checked out in argv[1]; the committed\n# config/kv_custody_receipt_chains.json; membership forms on the committed entry; the kv_ledger_head_signer state;\n# and the cvk contract digests at that head. Pure reads; cvk imported from argv[1] in a subprocess.\nimport copy, hashlib, json, subprocess, sys\nfrom pathlib import Path\nsys.path[:0] = [\".\", \"scripts\"]\nimport tvc_org_ledger_head_signer as H\ncvk = Path(sys.argv[1])\nrows = []\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\ndef row(subject, disp, note=None, **extra):\n    r = {\"subject\": subject, \"disposition\": disp}\n    if note: r[\"note\"] = note\n    r.update(extra); rows.append(r)\ndef state_row(subject, entry, which, note=None):\n    _, state, detail = H.ledger_location(entry, which)\n    disp = \"ALLOW\" if state in (\"OK\", \"NOT_PINNED\") else \"FAIL_CLOSED\"\n    row(subject, disp, note, state=state, detail=detail[:300])\nlive = json.loads(subprocess.run([sys.executable, \"-c\", \"import json,sys; sys.path.insert(0,'.'); from runtime import kv_receipt_ledgers as rl; print(json.dumps(rl.custody_ledgers_config()))\"],\n                                 cwd=cvk, capture_output=True, text=True, check=True).stdout)\nhead = subprocess.run([\"git\", \"rev-parse\", \"HEAD\"], cwd=cvk, capture_output=True, text=True).stdout.strip()\ncfg = json.loads(Path(\"config/kv_custody_receipt_chains.json\").read_text())\nfor which, f in ((\"kv\", \"stegverse-kv-receipts.contract.json\"), (\"skap_vault\", \"skap-receipts.contract.json\")):\n    got = \"sha256:\" + hashlib.sha256((cvk / \".stegverse/receipt-chains\" / f).read_bytes()).hexdigest()\n    row(\"CVK_CONTRACT_DIGEST_VS_TVC_PIN_\" + which.upper(), \"ALLOW\" if got == H.KV_CONTRACT_PINS[which] else \"FAIL_CLOSED\",\n        note=\"the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS\", cvk_head=head[:8], cvk_contract_sha256=got, tvc_pin=H.KV_CONTRACT_PINS[which])\n    entries = live.get(\"custody_ledgers\", live) if isinstance(live, dict) else {}\n    e = entries.get(which) if isinstance(entries, dict) else None\n    state_row(\"TVC_READER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_\" + which.upper(), e, which,\n              note=\"TVC's reader on the entry cvk's own custody_ledgers_config() returns at the checked-out head\")\n    committed = cfg[\"custody_ledgers\"][which]\n    state_row(\"TVC_READER_ON_COMMITTED_CONFIG_\" + which.upper(), committed, which, note=\"positive control (pinned at the head TVC bound)\")\n    forms = {\n        \"TOP_LEVEL_ORGANIZATION\": lambda e: e.__setitem__(\"organization\", \"StegVerse-org\"),\n        \"TOP_LEVEL_PERMISSIONS\": lambda e: e.__setitem__(\"permissions\", {\"organization_members\": \"write\"}),\n        \"TOP_LEVEL_OWNER\": lambda e: e.__setitem__(\"owner\", \"StegVerse-org\"),\n        \"TOP_LEVEL_GITHUB_APP_INSTALLATION_ID\": lambda e: e.__setitem__(\"github_app_installation_id\", 1),\n        \"TOP_LEVEL_TEAM\": lambda e: e.__setitem__(\"team\", \"kv\"),\n        \"ORG_LEDGER_REF_IN_LOCATION\": lambda e: e[\"repository_ledger_location\"].__setitem__(\"ref\", \"refs/stegverse/organization-ledger\"),\n        \"ORG_REPOSITORY_IN_LOCATION\": lambda e: e[\"repository_ledger_location\"].__setitem__(\"repository\", \"StegVerse-org/LLM-adapter\"),\n    }\n    for nm, edit in forms.items():\n        e2 = copy.deepcopy(committed); edit(e2)\n        state_row(\"TVC_MEMBERSHIP_%s_%s\" % (nm, which.upper()), e2, which)\nk = H.kv_ledger_head_signer()\nrow(\"TVC_KV_LEDGER_HEAD_SIGNER_STATE\", k.get(\"disposition\"), failure_code=k.get(\"failure_code\"),\n    signers=cfg[\"kv_ledger_head_signer\"][\"signer_source\"].get(\"signers\"), ledger_location=cfg[\"kv_ledger_head_signer\"].get(\"ledger_location\"))\nsf = cvk / \".stegverse/node-ledger/kv-ledger-head-signers.v1.json\"\ngot = \"sha256:\" + hashlib.sha256(sf.read_bytes()).hexdigest()\npin = cfg[\"kv_ledger_head_signer\"][\"signer_source\"].get(\"file_sha256\")\nrow(\"TVC_KV_SIGNER_FILE_PIN_VS_CVK_HEAD\", \"ALLOW\" if got == pin else \"FAIL_CLOSED\", cvk_head=head[:8], cvk_file_sha256=got, tvc_pin=pin)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+      "# P1 rev 11: TV/TVC readers (TVC#542/#540 scripts/tvc_org_ledger_head_signer.py ledger_location) against the\n# custody_ledgers_config() continuity-vault-kit#263 returns at the head checked out in argv[1]; the committed\n# config/kv_custody_receipt_chains.json; membership forms on the committed entry; the kv_ledger_head_signer state;\n# and the cvk contract digests at that head. Pure reads; cvk imported from argv[1] in a subprocess.\nimport copy, hashlib, json, subprocess, sys\nfrom pathlib import Path\nsys.path[:0] = [\".\", \"scripts\"]\nimport tvc_org_ledger_head_signer as H\ncvk = Path(sys.argv[1])\nrows = []\nSIX = (\"failure_code\", \"failed_predicate\", \"required_evidence_or_repair\", \"retry_entrypoint\", \"owning_existing_goal\", \"next_attempt\")\ndef row(subject, disp, note=None, **extra):\n    r = {\"subject\": subject, \"disposition\": disp}\n    if note: r[\"note\"] = note\n    r.update(extra); rows.append(r)\ndef state_row(subject, entry, which, note=None):\n    _, state, detail = H.ledger_location(entry, which)\n    disp = \"ALLOW\" if state in (\"OK\", \"NOT_PINNED\") else \"FAIL_CLOSED\"\n    row(subject, disp, note, state=state, detail=detail[:300])\nlive = json.loads(subprocess.run([sys.executable, \"-c\", \"import json,sys; sys.path.insert(0,'.'); from runtime import kv_receipt_ledgers as rl; print(json.dumps(rl.custody_ledgers_config()))\"],\n                                 cwd=cvk, capture_output=True, text=True, check=True).stdout)\nhead = subprocess.run([\"git\", \"rev-parse\", \"HEAD\"], cwd=cvk, capture_output=True, text=True).stdout.strip()\ncfg = json.loads(Path(\"config/kv_custody_receipt_chains.json\").read_text())\nfor which, f in ((\"kv\", \"stegverse-kv-receipts.contract.json\"), (\"skap_vault\", \"skap-receipts.contract.json\")):\n    got = \"sha256:\" + hashlib.sha256((cvk / \".stegverse/receipt-chains\" / f).read_bytes()).hexdigest()\n    row(\"CVK_CONTRACT_DIGEST_VS_TVC_PIN_\" + which.upper(), \"ALLOW\" if got == H.KV_CONTRACT_PINS[which] else \"FAIL_CLOSED\",\n        note=\"the cvk contract file sha256 at the checked-out head vs TVC's KV_CONTRACT_PINS\", cvk_head=head[:8], cvk_contract_sha256=got, tvc_pin=H.KV_CONTRACT_PINS[which])\n    entries = live.get(\"custody_ledgers\", live) if isinstance(live, dict) else {}\n    e = entries.get(which) if isinstance(entries, dict) else None\n    # P1 rev 18: scripts/tvc_org_ledger_head_signer.py ledger_location reads TV/TVC's pin-WRAPPED entry (cvk's keys plus\n    # KV_ENTRY_WRAPPER_KEYS: designation_sha256, source, designation, status; its own KV_ENTRY_CVK_KEYS comment), so a\n    # raw cvk entry is refused by design; the raw row is kept for the record. The conforming reads are (1) TV/TVC's own\n    # parser tools.kv_custody_ledgers_config.parse_entry on the raw entry, (2) the reader on the entry wrapped with the\n    # sha256 TVC computes (designation_sha256) and a source taken only from cvk's own entry and head, and (3) the raw\n    # entry equal to TVC's vendored snapshot entry. Nothing is taken from a caller; the pins still decide.\n    state_row(\"TVC_READER_ON_CVK_HEAD_RAW_ENTRY_\" + which.upper(), e, which,\n              note=\"TVC's pin-wrapped-entry reader on the RAW entry cvk's custody_ledgers_config() returns: refused by design (no designation_sha256 or source wrapper)\")\n    wrapped = None\n    if isinstance(e, dict):\n        wrapped = dict(e)\n        wrapped[\"designation_sha256\"] = H.designation_sha256(e)\n        wrapped[\"source\"] = {\"repository\": \"StegVerse-Labs/continuity-vault-kit\", \"pull_request\": cfg[\"custody_ledgers\"][which][\"source\"].get(\"pull_request\"),\n                             \"commit\": head, \"accessor\": \"runtime.kv_receipt_ledgers.custody_ledgers_config()\",\n                             \"contract_path\": e.get(\"contract_path\"), \"contract_sha256\": e.get(\"contract_sha256\")}\n    state_row(\"TVC_READER_ON_CVK_HEAD_WRAPPED_ENTRY_\" + which.upper(), wrapped, which,\n              note=\"TVC's reader on cvk's entry wrapped with designation_sha256 (computed by TVC) and a source built only from cvk's own entry and head\")\n    import tools.kv_custody_ledgers_config as T\n    parsed, perr = T.parse_entry(which, copy.deepcopy(e))\n    row(\"TVC_PARSER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_\" + which.upper(), \"ALLOW\" if parsed is not None else \"FAIL_CLOSED\",\n        note=\"TVC's own tools.kv_custody_ledgers_config.parse_entry on the raw entry cvk returns at the checked-out head\",\n        failure_code=(perr or {}).get(\"failure_code\"))\n    snap = json.loads((Path(\".\") / T.SNAPSHOT_REL / T.CONFIG_FILE).read_text())\n    row(\"CVK_ENTRY_EQUALS_TVC_VENDORED_SNAPSHOT_\" + which.upper(), \"ALLOW\" if e == snap.get(which) else \"FAIL_CLOSED\",\n        note=\"the raw entry cvk returns at the checked-out head vs the snapshot TVC vendors (\" + T.SNAPSHOT_REL + \")\", cvk_head=head[:8], tvc_snapshot_head=T.CVK_HEAD[:8])\n    committed = cfg[\"custody_ledgers\"][which]\n    state_row(\"TVC_READER_ON_COMMITTED_CONFIG_\" + which.upper(), committed, which, note=\"positive control (pinned at the head TVC bound)\")\n    forms = {\n        \"TOP_LEVEL_ORGANIZATION\": lambda e: e.__setitem__(\"organization\", \"StegVerse-org\"),\n        \"TOP_LEVEL_PERMISSIONS\": lambda e: e.__setitem__(\"permissions\", {\"organization_members\": \"write\"}),\n        \"TOP_LEVEL_OWNER\": lambda e: e.__setitem__(\"owner\", \"StegVerse-org\"),\n        \"TOP_LEVEL_GITHUB_APP_INSTALLATION_ID\": lambda e: e.__setitem__(\"github_app_installation_id\", 1),\n        \"TOP_LEVEL_TEAM\": lambda e: e.__setitem__(\"team\", \"kv\"),\n        \"ORG_LEDGER_REF_IN_LOCATION\": lambda e: e[\"repository_ledger_location\"].__setitem__(\"ref\", \"refs/stegverse/organization-ledger\"),\n        \"ORG_REPOSITORY_IN_LOCATION\": lambda e: e[\"repository_ledger_location\"].__setitem__(\"repository\", \"StegVerse-org/LLM-adapter\"),\n    }\n    for nm, edit in forms.items():\n        e2 = copy.deepcopy(committed); edit(e2)\n        state_row(\"TVC_MEMBERSHIP_%s_%s\" % (nm, which.upper()), e2, which)\nk = H.kv_ledger_head_signer()\nrow(\"TVC_KV_LEDGER_HEAD_SIGNER_STATE\", k.get(\"disposition\"), failure_code=k.get(\"failure_code\"),\n    signers=cfg[\"kv_ledger_head_signer\"][\"signer_source\"].get(\"signers\"), ledger_location=cfg[\"kv_ledger_head_signer\"].get(\"ledger_location\"))\nsf = cvk / \".stegverse/node-ledger/kv-ledger-head-signers.v1.json\"\ngot = \"sha256:\" + hashlib.sha256(sf.read_bytes()).hexdigest()\npin = cfg[\"kv_ledger_head_signer\"][\"signer_source\"].get(\"file_sha256\")\nrow(\"TVC_KV_SIGNER_FILE_PIN_VS_CVK_HEAD\", \"ALLOW\" if got == pin else \"FAIL_CLOSED\", cvk_head=head[:8], cvk_file_sha256=got, tvc_pin=pin)\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
       "{root:cvk263}"
      ],
      "kind": "command",
      "parse": "rows",
      "root": "tvc540",
      "run_id": "tvc540-bind-cvk263",
-     "what": "the same binding probe at TVC#540 @7802ddb3 (merges #542 a680d027; reader byte-identical)"
+     "what": "the same binding probe at TVC#540 @7802ddb3 (merges #542 a680d027; reader byte-identical); P1 rev 18: the raw-entry row is refused by design (the reader takes the pin-wrapped entry); added rows for the wrapped entry, TVC's own parser and the vendored-snapshot equality"
     },
     {
      "argv": [
@@ -1897,7 +1897,7 @@
      "root": "org"
     },
     {
-     "path": ".github/workflows/intr-path-transfer.yml",
+     "path": ".github/workflows/organization-ledger-writer.yml",
      "root": "org"
     },
     {

@@ -1,0 +1,23 @@
+{
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "clock_read": false,
+  "consequence_committed": false,
+  "detail": "authority_model.task_registry_mints_execution_authority must be false",
+  "disposition": "FAIL_CLOSED",
+  "execution_authority_minted": false,
+  "failed_predicate": "CANONICAL_RECORD_SCHEMA_INVALID",
+  "failure_code": "CANONICAL_RECORD_SCHEMA_INVALID",
+  "intr_admission_minted": false,
+  "mode": "plan",
+  "next_attempt": "on the next registration request event after the repair is recorded",
+  "organization_ledger_appended": false,
+  "organization_ledger_entrypoint": ".stegverse/transition-ledger/emit.py via .github/workflows/organization-ledger-transition.yml",
+  "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "request_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.existing-identity.gen322.diagnostic",
+  "request_sha256": "sha256:73eadcfa3691e64f402cd63f18bbf9726acd1f6f9b5e0396b3cf5e83e337eccb",
+  "required_evidence_or_repair": "set it false through the record-data successor transition (TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY)",
+  "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+  "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
+  "transition": "CANONICAL_TASK_REGISTRATION",
+  "workercoordinator_claim_or_fence_minted": false
+}

@@ -8,12 +8,12 @@
    "repo": "StegVerse-Labs/.github"
   },
   "labsmain": {
-   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "commit": "6b13c3a749b2940d6142644196a8302823c1f45a",
    "kind": "git",
    "repo": "StegVerse-Labs/.github"
   },
   "org": {
-   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "commit": "35c94a0643039b94fd336889191e5e0b8ea17e81",
    "kind": "git",
    "repo": "StegVerse-org/.github"
   },
@@ -23,12 +23,12 @@
    "repo": "StegVerse-org/StegVerse-SDK"
   },
   "sdkmain": {
-   "commit": "daca828a51d954f2817df4ca9f4fa25807248aa0",
+   "commit": "196ed07c9fd842ffdc039944bc44b088f57fd681",
    "kind": "git",
    "repo": "StegVerse-org/StegVerse-SDK"
   },
   "tvc": {
-   "commit": "c4845bea704949c46658042963e8c532c9559939",
+   "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
    "kind": "git",
    "repo": "StegVerse-Labs/TVC"
   }
@@ -103,8 +103,315 @@
    "what": "code (py/yml) that evaluates any sealed predicate, SDK#556 head"
   },
   {
-   "files_scanned": 792,
-   "hits": [],
+   "files_scanned": 800,
+   "hits": [
+    {
+     "line": 57,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+     "text": "\"PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN_ON_CUSTOMER_SUPPLIED_MANIFEST_CONSTRAINTS\","
+    },
+    {
+     "line": 122,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+     "text": "p = \"PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN_ON_CUSTOMER_SUPPLIED_MANIFEST_CONSTRAINTS\""
+    },
+    {
+     "line": 489,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
+     "text": "\"PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN_ON_CUSTOMER_SUPPLIED_MANIFEST_CONSTRAINTS\": v_product_claim,"
+    },
+    {
+     "line": 58,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+     "text": "\"PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON\","
+    },
+    {
+     "line": 142,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+     "text": "p = \"PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON\""
+    },
+    {
+     "line": 490,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "PACKAGE_VERSION_IDENTITY_CONSISTENT",
+     "text": "\"PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON\": v_package_identity,"
+    },
+    {
+     "line": 59,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+     "text": "\"PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE\","
+    },
+    {
+     "line": 215,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+     "text": "\"PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE\": \"RELEASE_RECEIPT_ABSENT\"})"
+    },
+    {
+     "line": 157,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+     "text": "p = \"PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE\""
+    },
+    {
+     "line": 491,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE",
+     "text": "\"PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE\": v_pinned_tree,"
+    },
+    {
+     "line": 60,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+     "text": "\"IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY\","
+    },
+    {
+     "line": 211,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+     "text": "\"IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY\": \"RELEASE_RECEIPT_ABSENT\","
+    },
+    {
+     "line": 303,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+     "text": "TAG = \"IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY\""
+    },
+    {
+     "line": 174,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+     "text": "p = \"IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY\""
+    },
+    {
+     "line": 492,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED",
+     "text": "\"IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY\": v_immutable_tag,"
+    },
+    {
+     "line": 61,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+     "text": "\"RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM\","
+    },
+    {
+     "line": 199,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+     "text": "p = \"RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM\""
+    },
+    {
+     "line": 493,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "RELEASE_NOTES_SUPERSEDE_V1_0_1",
+     "text": "\"RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM\": v_release_notes,"
+    },
+    {
+     "line": 62,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+     "text": "\"CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED\","
+    },
+    {
+     "line": 210,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+     "text": "p = \"CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED\""
+    },
+    {
+     "line": 494,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL",
+     "text": "\"CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED\": v_quickstart,"
+    },
+    {
+     "line": 63,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+     "text": "\"NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED\","
+    },
+    {
+     "line": 222,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+     "text": "p = \"NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED\""
+    },
+    {
+     "line": 495,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+     "text": "\"NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED\": v_no_new_dependency,"
+    },
+    {
+     "line": 3,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "text": "Predicate NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN, run at the commit the TV/TVC release receipt"
+    },
+    {
+     "line": 64,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "text": "\"NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN\","
+    },
+    {
+     "line": 205,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "text": "\"disposition\": \"ALLOW\", \"predicate\": \"NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN\"})"
+    },
+    {
+     "line": 213,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "text": "\"NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN\": \"CUSTOMER_CONFORMANCE_ORIGIN_UNVERIFIED\","
+    },
+    {
+     "line": 304,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "text": "NON_ALLOW = \"NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN\""
+    },
+    {
+     "line": 381,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "text": "observed = {\"disposition\": \"ALLOW\", \"predicate\": \"NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN\"}"
+    },
+    {
+     "line": 32,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+     "text": "NON_ALLOW_PREDICATE = \"NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN\""
+    },
+    {
+     "line": 65,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+     "text": "\"INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL\","
+    },
+    {
+     "line": 252,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+     "text": "p = \"INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL\""
+    },
+    {
+     "line": 496,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+     "text": "\"INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL\": v_receipt_chain,"
+    },
+    {
+     "line": 67,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+     "text": "\"ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET\","
+    },
+    {
+     "line": 297,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+     "text": "p = \"ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET\""
+    },
+    {
+     "line": 498,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+     "text": "\"ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET\": v_rollback,"
+    },
+    {
+     "line": 30,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "release receipt's commit, and emits the GOVERNANCE_PRODUCT_RELEASE organization-ledger receipt candidate (never"
+    },
+    {
+     "line": 68,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "\"ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE\","
+    },
+    {
+     "line": 74,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "\"RELEASE_NOTES_1.3.0.md\", \"docs/GITHUB_GOVERNANCE_QUICKSTART.md\", \"docs/GOVERNANCE_PRODUCT_RELEASE_DEFAULTS.md\","
+    },
+    {
+     "line": 214,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "\"ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE\": \"ORGANIZATION_LEDGER_READBACK_ABSENT\","
+    },
+    {
+     "line": 301,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "LEDGER = \"ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE\""
+    },
+    {
+     "line": 445,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "def released_ledger(self, tmp, *, order=\"after\", cls=\"GOVERNANCE_PRODUCT_RELEASE\", retain=True, tamper=False,"
+    },
+    {
+     "line": 2,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "bound to the TV/TVC release receipt, and the organization-ledger receipt candidate for GOVERNANCE_PRODUCT_RELEASE."
+    },
+    {
+     "line": 33,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "LEDGER_PREDICATE = \"ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE\""
+    },
+    {
+     "line": 468,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "\"of refs/stegverse/organization-ledger showing the GOVERNANCE_PRODUCT_RELEASE receipt under \""
+    },
+    {
+     "line": 518,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "\"\"\"The GOVERNANCE_PRODUCT_RELEASE canonical-state transition receipt for the organization ledger writer, or a"
+    },
+    {
+     "line": 541,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "GOVERNANCE_PRODUCT_RELEASE",
+     "text": "\"evidence_type\": \"GOVERNANCE_PRODUCT_RELEASE\", \"origin_transition_id\": tid,"
+    },
+    {
+     "line": 69,
+     "path": "tests/test_governance_product_finish_point.py",
+     "pattern": "ENTITLEMENT_SEPARATE_FROM_DISPOSITION",
+     "text": "\"ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT\","
+    },
+    {
+     "line": 309,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "ENTITLEMENT_SEPARATE_FROM_DISPOSITION",
+     "text": "p = \"ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT\""
+    },
+    {
+     "line": 499,
+     "path": "tools/governance_product_finish.py",
+     "pattern": "ENTITLEMENT_SEPARATE_FROM_DISPOSITION",
+     "text": "\"ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT\": v_entitlement,"
+    }
+   ],
    "patterns": [
     "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN",
     "PACKAGE_VERSION_IDENTITY_CONSISTENT",
@@ -120,7 +427,7 @@
     "GOVERNANCE_PRODUCT_RELEASE",
     "ENTITLEMENT_SEPARATE_FROM_DISPOSITION"
    ],
-   "pin": "StegVerse-org/StegVerse-SDK@daca828a51d954f2817df4ca9f4fa25807248aa0",
+   "pin": "StegVerse-org/StegVerse-SDK@196ed07c9fd842ffdc039944bc44b088f57fd681",
    "run_id": "gov-verifier-search-sdkmain",
    "status": "OBSERVED",
    "what": "same search, SDK main"
@@ -244,58 +551,16 @@
    "files_scanned": 2,
    "hits": [
     {
-     "line": 17,
+     "line": 14,
      "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
      "pattern": "APPROVER_CLASS",
      "text": "APPROVER_CLASS,"
     },
     {
-     "line": 106,
+     "line": 43,
      "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
      "pattern": "APPROVER_CLASS",
-     "text": "approver_class=approval.get('approver_class') or APPROVER_CLASS,"
-    },
-    {
-     "line": 90,
-     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
-     "pattern": "validate_browser_packet\\(",
-     "text": "findings = validate_browser_packet(packet)"
-    },
-    {
-     "line": 31,
-     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
-     "pattern": "/var/lib/stegverse",
-     "text": "RESULT_ROOT = Path('/var/lib/stegverse/skap/github/sdk-v1.3.0-release/results')"
-    },
-    {
-     "line": 32,
-     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
-     "pattern": "/var/lib/stegverse",
-     "text": "CONSUMED_ROOT = Path('/var/lib/stegverse/skap/github/sdk-v1.3.0-release/consumed')"
-    },
-    {
-     "line": 102,
-     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
-     "pattern": "datetime\\.now",
-     "text": "now = datetime.now(timezone.utc)"
-    },
-    {
-     "line": 169,
-     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
-     "pattern": "'status': 'blocked'",
-     "text": "return {'status': 'blocked', 'reason': 'SDK_V1_3_OWNER_INGRESS_ROOT_NOT_PRESENT', 'credential_value_exposed': False}"
-    },
-    {
-     "line": 177,
-     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
-     "pattern": "'status': 'blocked'",
-     "text": "return {'status': 'blocked', 'reason': str(exc), 'ingress_id': ingress_id, 'credential_value_exposed': False}"
-    },
-    {
-     "line": 178,
-     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
-     "pattern": "'status': 'blocked'",
-     "text": "return {'status': 'blocked', 'reason': 'NO_UNCONSUMED_SDK_V1_3_OWNER_INGRESS', 'credential_value_exposed': False}"
+     "text": "approver_class=APPROVER_CLASS,"
     },
     {
      "line": 11,
@@ -326,7 +591,7 @@
     "\"commit_sha\"",
     "\"registry\": \"pypi\""
    ],
-   "pin": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939",
+   "pin": "StegVerse-Labs/TVC@425eab54c1677e3e1c79d2837a19f1075fc53e76",
    "run_id": "gov-tvc-release-path",
    "status": "OBSERVED",
    "what": "the TV/TVC SDK v1.3.0 release path: owner ingress, resident root, clock, bare status"
@@ -376,7 +641,7 @@
     "urlopen",
     "datetime"
    ],
-   "pin": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939",
+   "pin": "StegVerse-Labs/TVC@425eab54c1677e3e1c79d2837a19f1075fc53e76",
    "run_id": "gov-tvc-portable-publisher",
    "status": "OBSERVED",
    "what": "the generic TV/TVC portable release publisher (candidate conforming route)"
@@ -441,18 +706,18 @@
    "outcomes": [
     {
      "disposition": "FAIL_CLOSED",
-     "failed_predicate": "CANDIDATE_DECLARES_COMPONENTS",
-     "failure_code": "ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED",
+     "failed_predicate": "CANDIDATE_RECORD_OBSERVED_ON_BASE",
+     "failure_code": "ADJACENCY_RULING_CANDIDATE_NOT_OBSERVED",
      "next_attempt": "on the next registration request event after the repair is recorded",
      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-     "required_evidence_or_repair": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's observed record declares no targets.components, so (a) and (b) would hold vacuously; PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's owner records its components (a record change through its own Goal), or the overlap is resolved by Coordination without this input",
+     "required_evidence_or_repair": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 must have an observed record at data/canonical-task-records/SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001.json on the predecessor tree",
      "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
      "subject": "REGISTRATION_PLAN"
     }
    ],
    "pin": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/gov-registration-plan-with-ruling.out",
-   "raw_sha256": "sha256:deef3ef968dbe80d16e31ffe942c7b9e98ac924737249b897f5081186d568df1",
+   "raw_sha256": "sha256:37aab709a008db9ab1efef74ab25681d4333d652c03ca1f5ecafbb7042881083",
    "run_id": "gov-registration-plan-with-ruling",
    "status": "OBSERVED",
    "what": "registration plan with the adjacency ruling and the finish-point root"
@@ -504,7 +769,7 @@
     "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
     "(?i)org_?membership|ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
    ],
-   "pin": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939",
+   "pin": "StegVerse-Labs/TVC@425eab54c1677e3e1c79d2837a19f1075fc53e76",
    "run_id": "gov-endpoint-org-membership",
    "status": "OBSERVED",
    "what": "Rigel's rule (no endpoint is a member of a GitHub Organization) on the GOV path: the TV/TVC release publisher writes to StegVerse-org/StegVerse-SDK through the GitHub REST API with a bearer token (write access needs an org member, collaborator or app-installation principal), and no membership refusal exists"
@@ -600,7 +865,7 @@
    "patterns": [
     "\"installation_id\": "
    ],
-   "pin": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "pin": "StegVerse-Labs/.github@6b13c3a749b2940d6142644196a8302823c1f45a",
    "run_id": "gov-cosv-app-installations",
    "status": "OBSERVED",
    "what": "StegVerse-Labs/.github main @86382e60: the COSV GitHub App installation ids recorded per organization in the ecosystem adoption manifest (is an app installation an endpoint membership?)"
@@ -638,7 +903,7 @@
     "canonical-state-transition-receipt/v1",
     "repo-transition-receipt/v1"
    ],
-   "pin": "StegVerse-org/.github@907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "pin": "StegVerse-org/.github@35c94a0643039b94fd336889191e5e0b8ea17e81",
    "run_id": "org-ledger-consumes",
    "status": "OBSERVED",
    "what": "what the StegVerse-org ledger admits"
@@ -647,25 +912,31 @@
    "files_scanned": 2,
    "hits": [
     {
-     "line": 183,
+     "line": 747,
      "path": "data/sv-work-items/lifecycle-transitions.json",
      "pattern": "SV_CHANGE_ADMIT",
      "text": "\"transition_class\": \"SV_CHANGE_ADMIT\""
     },
     {
-     "line": 1948,
+     "line": 2041,
      "path": "resident-runtime/sv_work_items.py",
      "pattern": "SV_CHANGE_ADMIT",
      "text": "if transition_class == \"SV_CHANGE_ADMIT\":"
     },
     {
-     "line": 192,
+     "line": 264,
+     "path": "data/sv-work-items/lifecycle-transitions.json",
+     "pattern": "LEDGER_HEAD_COMPARE_AND_SWAP",
+     "text": "\"LEDGER_HEAD_COMPARE_AND_SWAP\": {"
+    },
+    {
+     "line": 756,
      "path": "data/sv-work-items/lifecycle-transitions.json",
      "pattern": "LEDGER_HEAD_COMPARE_AND_SWAP",
      "text": "\"LEDGER_HEAD_COMPARE_AND_SWAP\","
     },
     {
-     "line": 1817,
+     "line": 1906,
      "path": "resident-runtime/sv_work_items.py",
      "pattern": "^def admit\\(",
      "text": "def admit(obs: Mapping[str, Any], evaluator: Callable[..., dict] = evaluate_admission, **kw: Any) -> dict[str, Any]:"
@@ -676,7 +947,7 @@
     "LEDGER_HEAD_COMPARE_AND_SWAP",
     "^def admit\\("
    ],
-   "pin": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f",
+   "pin": "StegVerse-Labs/.github@6b13c3a749b2940d6142644196a8302823c1f45a",
    "run_id": "labs-sv-change-admit",
    "status": "OBSERVED",
    "what": "the SV_CHANGE_ADMIT transition on Labs main (declared class and evaluator)"
@@ -688,7 +959,7 @@
    "pin": null,
    "pr": "StegVerse-org/StegVerse-SDK#556",
    "run_id": "pr-sdk556",
-   "state": "OPEN",
+   "state": "MERGED",
    "status": "OBSERVED",
    "what": "PR state snapshot"
   },
@@ -705,12 +976,12 @@
   },
   {
    "baseRefName": "main",
-   "headRefOid": "86578debc5f808fc1051185e3db889796e66c4d1",
-   "isDraft": true,
+   "headRefOid": "d8ac0ad52809a16bf58af6dffa107eef291a09a4",
+   "isDraft": false,
    "pin": null,
    "pr": "StegVerse-Labs/.github#3313",
    "run_id": "pr-labs3313",
-   "state": "OPEN",
+   "state": "MERGED",
    "status": "OBSERVED",
    "what": "PR state snapshot (SV_CHANGE_ADMIT branch-writer derivation)"
   },
@@ -721,18 +992,18 @@
    "pin": null,
    "pr": "StegVerse-Labs/.github#3255",
    "run_id": "pr-labs3255",
-   "state": "OPEN",
+   "state": "CLOSED",
    "status": "OBSERVED",
    "what": "PR state snapshot (org-ledger writer split)"
   },
   {
    "baseRefName": "main",
-   "headRefOid": "9e00a16ea22eeb221ecf70328cc3716e8c72a4a7",
-   "isDraft": true,
+   "headRefOid": "86f3800aa636f58c30917d69b4170ca925411bc3",
+   "isDraft": false,
    "pin": null,
    "pr": "StegVerse-Labs/.github#3311",
    "run_id": "pr-labs3311",
-   "state": "OPEN",
+   "state": "MERGED",
    "status": "OBSERVED",
    "what": "PR state snapshot (EXISTING_IDENTITY mode + WorkerCoordinator claim request)"
   }
@@ -828,23 +1099,23 @@
    "sha256": "sha256:fe7bdbb3cc7c97ea0190219cd35101ada71a0cfc2d5c8ddd1e6b3e881c938e1f"
   },
   {
-   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
-   "git_blob": "c66de6e86c9ec7d167f0e5edf74e717af0688224",
+   "commit": "6b13c3a749b2940d6142644196a8302823c1f45a",
+   "git_blob": "aed301bce950429788876a3c096d82326b9d3824",
    "path": "data/sv-work-items/lifecycle-transitions.json",
    "repo": "StegVerse-Labs/.github",
    "root": "labsmain",
-   "sha256": "sha256:853c5545bf306eea48c66150ca42d323f130531519112d69e19c4f472556675f"
+   "sha256": "sha256:b05ca55bef7f4ff994c859fbed0108129d155e392c3439397c0d85c62ca30611"
   },
   {
-   "commit": "86382e60da984fa02892fecfac2b9bdec0e64a5f",
-   "git_blob": "9e926ed41210963d4c5b6bc2000ce71c51cf6664",
+   "commit": "6b13c3a749b2940d6142644196a8302823c1f45a",
+   "git_blob": "9544c53b1237f8b0b89f14916aaf22bffa7aa5af",
    "path": "resident-runtime/sv_work_items.py",
    "repo": "StegVerse-Labs/.github",
    "root": "labsmain",
-   "sha256": "sha256:ea36302d1fcdac0f2de01fa8b8f873e805959ae0f2cfe1c10f11d6d9d91ed1e0"
+   "sha256": "sha256:97fd7b6db71b59410f80d6e8ab5a726c0279db2d4806c669b3e0b8d2823328ec"
   },
   {
-   "commit": "c4845bea704949c46658042963e8c532c9559939",
+   "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
    "git_blob": "0e468077751ab01d740f17c51f324a4a13d45718",
    "path": "config/sdk_v1_3_0_release.json",
    "repo": "StegVerse-Labs/TVC",
@@ -852,15 +1123,15 @@
    "sha256": "sha256:486c568c1dad89c2c291f0f105603bf051e8d6e71753b2a681d0e778eb54fc7e"
   },
   {
-   "commit": "c4845bea704949c46658042963e8c532c9559939",
-   "git_blob": "5310c72e2ad69b173f673f87884db5c098a06de4",
+   "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+   "git_blob": "46697bdfa9193152698b6f0fae028547683b45ac",
    "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
    "repo": "StegVerse-Labs/TVC",
    "root": "tvc",
-   "sha256": "sha256:e3923a9ac06d98074145ef7dcd15d5886677530c8d2ee66c7b567f3e801b498c"
+   "sha256": "sha256:2f20b4f2a79f0e1a9f9b897075884470d7911f3a5c976e88059f14d8af4dfe4f"
   },
   {
-   "commit": "c4845bea704949c46658042963e8c532c9559939",
+   "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
    "git_blob": "ee95d8d368858fb8ee03d0ae2741119d9ad36803",
    "path": "tasks/tvc_portable_github_release_publisher.py",
    "repo": "StegVerse-Labs/TVC",
@@ -868,7 +1139,7 @@
    "sha256": "sha256:c9a3507276bd4df704e94fcf5399705ee61d8e8f689eb903c660c2ba9007515d"
   },
   {
-   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "commit": "35c94a0643039b94fd336889191e5e0b8ea17e81",
    "git_blob": "cd56b2d066ee570bdfdddc8371e92a07f201c8fc",
    "path": "docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md",
    "repo": "StegVerse-org/.github",
@@ -876,7 +1147,7 @@
    "sha256": "sha256:a5d9e34057e522dcd824c709b907584d2403f7403b6783b901a724f4c02c9939"
   },
   {
-   "commit": "907f4305ddd4f39b16d96638744304de9ef0b67d",
+   "commit": "35c94a0643039b94fd336889191e5e0b8ea17e81",
    "git_blob": "b5a24567f9961480eda4503143b7b773aa095421",
    "path": ".stegverse/transition-ledger/org-contract.json",
    "repo": "StegVerse-org/.github",

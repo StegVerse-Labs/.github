@@ -139,6 +139,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "disposition": "ALLOW",
       "finish_point": {
         "closure": {
+          ".git": "sha256:e37458d6e4354f687fc7b60793a7c94867475bfc592c2b2566498228b5b465d6",
           ".stegverse/node-ledger/kv-ledger-head-signers.v1.json": "sha256:758d798388599171c145e3d19ca4eb155ad3d3762a3721804da65c08ebc1fe72",
           ".stegverse/receipt-chains/skap-receipts.contract.json": "sha256:1e886348a7a84fb148bb91e84d84f99cb5101d86dfb34ab84104e54982e0bc13",
           ".stegverse/receipt-chains/stegverse-kv-receipts.contract.json": "sha256:c9cc8913de21183fb23774cd155fee84fd6d275c003e71b2712ad44d30d89ce1",
@@ -165,7 +166,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
           "tests/kv_two_layer_e0.py": "sha256:d011bb451e04e9cee2331fc39135255e1d0179091b94e8243b00e5ef131c9c7e",
           "tests/test_kv_skap_vault_finish_point.py": "sha256:91a38b715cd7c5cf7ad905b6e5b6d4c52f795ab263e877e05fa461215048363c"
         },
-        "closure_digest": "sha256:2f12310e95969ac529ba2d9ba8d1f8fed4f8c7b161ae54be60dafeee360146fe",
+        "closure_digest": "sha256:9579be137121a23898e1d9e9540bc203c315f22d4df37ba19a467926f5bfb69e",
         "finish_test_runners": [],
         "hashed_pin_data_paths": [
           "runtime/kv_storage_provider_adapter.py"
