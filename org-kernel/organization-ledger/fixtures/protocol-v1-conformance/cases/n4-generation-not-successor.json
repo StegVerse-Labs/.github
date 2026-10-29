@@ -1,6 +1,6 @@
 {
   "case_id": "n4-generation-not-successor",
-  "covers": "VERIFY_EXISTING_STANDING_WHOSE_PREDECESSOR_GENERATION_IS_NOT_GENERATION_MINUS_ONE",
+  "covers": "VERIFY_EXISTING_STANDING_WHOSE_PREDECESSOR_GENERATION_IS_NOT_GENERATION_MINUS_ONE; a declared WorkerCoordinator claim is verified before the crossing (tests/test_organization_ingress_worker_claim.py)",
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
     "authority_effect": "NONE_REFUSAL_ONLY",
@@ -17,7 +17,7 @@
   },
   "expected_source": "GENERATED_FROM_REAL_RECEIVE",
   "issue_3369_item": "STALE_HEAD_OR_FENCE",
-  "issue_3369_item_status": "SPEC_GAP",
+  "issue_3369_item_status": "COVERED_WITH_SPEC_GAP",
   "mutation": {
     "kind": "REPLACE_STANDING",
     "standing": {
@@ -35,12 +35,12 @@
   "schema": "stegverse.protocol-v1-conformance-case/v1",
   "spec_gap": {
     "disposition": "GAP_NOT_IMPLEMENTED",
-    "failed_predicate": "THE_DECLARED_PREDECESSOR_IS_THE_CURRENT_HEAD_UNDER_A_VALID_FENCE",
-    "failure_code": "STALE_HEAD_OR_FENCE_NOT_COMPARED_AT_INGRESS",
+    "failed_predicate": "THE_DECLARED_PREDECESSOR_IS_RECORDED_AND_UNSUPERSEDED_IN_THE_ORGANIZATION_LEDGER",
+    "failure_code": "DECLARED_PREDECESSOR_NOT_COMPARED_WITH_THE_ORGANIZATION_HEAD_AT_INGRESS",
     "issue_3369_item": "STALE_HEAD_OR_FENCE",
-    "next_attempt": "the Registry/WorkerCoordinator owner's claim/fence and expected head reach ingress as state ingress observes and never mints -- a declared claim_ref/fence_ref checked against an unreleased BOUND WorkerCoordinator claim -- and the organization ledger readback (ORGANIZATION-BATCH-CUSTODY-REPLAY-001) confirms a VERIFY_EXISTING predecessor is recorded and unsuperseded; then add a case declaring a superseded predecessor or a released fence and assert its refusal",
+    "next_attempt": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001's readback (resident-runtime/organization_ledger_readback.py) confirms, for VERIFY_EXISTING, that the declared predecessor.result_sha256 / manifest_sha256 is a receipt in this organization ledger and that no later receipt for the same node_ref names the same predecessor (DECLARED_PREDECESSOR_NOT_RECORDED fails closed, DECLARED_PREDECESSOR_SUPERSEDED denies); then add a case declaring a superseded predecessor and assert its refusal",
     "owning_existing_goal": "Registry/WorkerCoordinator owner per StegVerse-Labs/.github#3369 (claim/fence and expected head); organization ledger readback: ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
-    "required_evidence_or_repair": "node_standing.require checks the predecessor's shape and generation-successor arithmetic only (declared_predecessor_lineage_recomputed false); nothing on the receive() path compares a declared predecessor with a current head or checks a claim/fence token. The ledgers chain each append to their own HEAD, which is not a sender's head. This case covers the successor arithmetic instead",
+    "required_evidence_or_repair": "The fence half is implemented: receive() observes a declared extensions.stegverse_workercoordinator_claim {claim_id: <id>-G<fence>, fencing_token} against the committed WorkerCoordinator registry (control/worker-registry.json) before the crossing -- DECLARED_FENCE_IS_THE_CURRENT_WORKERCOORDINATOR_FENCE; FENCE_DECLARED_NOT_VERIFIED fails closed, FENCE_STALE_OR_RELEASED denies, an absent declaration is admitted as worker_claim_state UNVERIFIED (tests/test_organization_ingress_worker_claim.py) -- and mints nothing. What remains is the head half: node_standing.require checks the predecessor's shape and generation-successor arithmetic only (declared_predecessor_lineage_recomputed false); nothing on the receive() path reads the organization ledger to confirm a VERIFY_EXISTING predecessor is a recorded receipt that no later receipt for the same node_ref supersedes. The ledgers chain each append to their own HEAD, which is not a sender's head. This case covers the successor arithmetic instead; a redelivery of a recorded admission is answered as that admission even after the fence moved (I-10); the derived request's requires_workercoordinator_claim_fence is reported beside the observed state, and a required-but-undeclared claim is still admitted as UNVERIFIED (turning that into a refusal is the route owner's call)",
     "retry_entrypoint": "org-boundary/runtime/node_standing.py::require"
   }
 }

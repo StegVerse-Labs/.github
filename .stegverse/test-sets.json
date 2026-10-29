@@ -5217,6 +5217,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_organization_ingress_worker_claim.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_organization_ingress_worker_claim.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_worker_claim.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_ledger_component_validation_trigger.py",
    "inputs": [],
    "surfaces": [
@@ -10477,6 +10489,7 @@
   ],
   "resident-runtime/organization_manifest_ingress.py": [
    ".stegverse/transition-ledger/emit.py",
+   "control/worker-registry.json",
    "org-runtime/interlock-intr.json",
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/organization_batch_custody.py",
@@ -15171,6 +15184,10 @@
    "resident-runtime/organization_manifest_ingress.py"
   ],
   "tests/test_organization_ingress_payload_binding.py": [
+   "org-boundary/registry/services.json",
+   "resident-runtime/organization_manifest_ingress.py"
+  ],
+  "tests/test_organization_ingress_worker_claim.py": [
    "org-boundary/registry/services.json",
    "resident-runtime/organization_manifest_ingress.py"
   ],

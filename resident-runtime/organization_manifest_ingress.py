@@ -50,7 +50,7 @@ action, not only a successful one: a submission that arrived and was refused is
 a transition whose disposition is DENY, and `organization_scope_rule` makes no
 exception for it. Every refusal path through `receive` -- an unresolvable
 destination, a capability bound elsewhere, a declared authority effect other
-than NONE, a crossing this manifest cannot drive, a far side that refused, a boundary chain that does not reconstruct --
+than NONE, a declared WorkerCoordinator claim that does not verify, a crossing this manifest cannot drive, a far side that refused, a boundary chain that does not reconstruct --
 appends a repository receipt and the organization receipt that consumes it,
 under `ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED`. Before this they returned a
 refusal and wrote nothing, which made a held or retried submission
@@ -154,6 +154,32 @@ AUTHORITY_OWNING_GOAL = "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001"
 #: The only declared effect this operation admits. An absent `transition`, or
 #: one with no `authority_effect`, is the same NONE the crossing reads it as.
 NONE_AUTHORITY_EFFECT = "NONE"
+#: Gap 2 of StegVerse-Labs/.github#3369 (stale head / fence). A submission may
+#: declare the WorkerCoordinator claim it runs under as
+#: `extensions.stegverse_workercoordinator_claim: {"claim_id": "<id>-G<fence>",
+#: "fencing_token": <fence>}` -- under `extensions`, the namespace the SDK's
+#: `validate_ingress_manifest` admits (a top-level field is refused by the SDK
+#: as unknown before this operation sees it). The
+#: declaration is observed against the committed WorkerCoordinator truth
+#: (`control/worker-registry.json`, the registry `coordination_ledger.py`
+#: validates claim coverage from) and nothing is minted: a declared claim that
+#: is not an unreleased BOUND task holding exactly that fence is refused before
+#: the crossing. An absent declaration is admitted and reported as
+#: `worker_claim_state: UNVERIFIED`, as the boundary admits and records an
+#: unattested crossing, because most manifests this operation receives are not
+#: task-bound.
+WORKER_CLAIM_EXTENSION = "stegverse_workercoordinator_claim"
+WORKER_CLAIM_FIELD = "extensions." + WORKER_CLAIM_EXTENSION
+WORKER_REGISTRY_REF = "control/worker-registry.json"
+WORKER_REGISTRY_SCHEMA = "stegverse.heartbeat-worker-registry/v0.1"
+WORKER_CLAIM_TERMINAL_STATES = frozenset({"COMPLETED", "FAILED_TERMINAL"})
+FENCE_PREDICATE = "DECLARED_FENCE_IS_THE_CURRENT_WORKERCOORDINATOR_FENCE"
+FENCE_NOT_VERIFIED = "FENCE_DECLARED_NOT_VERIFIED"
+FENCE_STALE = "FENCE_STALE_OR_RELEASED"
+FENCE_OWNING_GOAL = "StegVerse-Labs/.github#3369"
+WORKER_CLAIM_UNVERIFIED = "UNVERIFIED"
+WORKER_CLAIM_VERIFIED = "VERIFIED_AGAINST_COMMITTED_WORKERCOORDINATOR_REGISTRY"
+WORKER_CLAIM_REPLAYED = "RECORDED_ADMISSION_REPLAYED_FENCE_NOT_RECHECKED"
 
 
 def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
@@ -670,6 +696,113 @@ def declared_authority_effect_failure(manifest: Any) -> str | None:
             + json.dumps(effect, sort_keys=True))
 
 
+def load_worker_registry(root: Path | None = None) -> Mapping[str, Any] | None:
+    """The committed WorkerCoordinator registry, or None when it is not readable.
+
+    Read from the repository checkout this module runs in. Nothing is fetched
+    and nothing is written; the registry is observed exactly as committed.
+    """
+    path = (root or ROOT) / WORKER_REGISTRY_REF
+    try:
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return loaded if isinstance(loaded, Mapping) else None
+
+
+def _registry_fence(task: Mapping[str, Any]) -> int | None:
+    """The fence a WorkerCoordinator task holds, as `coordination_ledger.py` reads it."""
+    for holder in ("heartbeat_timing", "lease"):
+        block = task.get(holder)
+        if isinstance(block, Mapping):
+            fence = block.get("fencing_token")
+            if isinstance(fence, int) and not isinstance(fence, bool):
+                return fence
+    return None
+
+
+def declares_worker_claim(manifest: Any) -> bool:
+    """Whether the manifest carries `extensions.stegverse_workercoordinator_claim` at all."""
+    if not isinstance(manifest, Mapping):
+        return False
+    extensions = manifest.get("extensions")
+    return isinstance(extensions, Mapping) and WORKER_CLAIM_EXTENSION in extensions
+
+
+def recorded_admission_for_request(request_sha256: str) -> Mapping[str, Any] | None:
+    """The repository receipt that already admits this exact request, or None.
+
+    Walks this repository's ledger from HEAD, verified, as `recorded` does, and
+    matches on the transition class of an admitted ingress and the request
+    digest in its evidence. A broken or absent chain answers None: nothing is
+    assumed recorded.
+    """
+    try:
+        store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+        head = store.get(repository_ledger.ledger_store.HEAD_KEY)
+        if not head:
+            return None
+        for receipt in repository_ledger.chain(store, head):
+            if (receipt.get("transition_class") == OPERATION_ID
+                    and (receipt.get("evidence") or {}).get("request_sha256") == request_sha256):
+                return receipt
+    except Exception:  # noqa: BLE001 - a chain this cannot read records nothing for us
+        return None
+    return None
+
+
+def declared_worker_claim_failure(manifest: Any, *, worker_registry: Mapping[str, Any] | None = None,
+                                  root: Path | None = None) -> tuple[str, str] | None:
+    """Why the submission's declared WorkerCoordinator claim is not verified, or None.
+
+    Returns `(failure_code, detail)`. `FENCE_DECLARED_NOT_VERIFIED` is the
+    fail-closed case: the declaration is malformed, the committed registry is
+    not readable or not the expected schema, or no task holds the claim.
+    `FENCE_STALE_OR_RELEASED` is the deny case: a task holds the claim id but
+    it is released, terminal, archived, or its current fence is another
+    generation. An absent declaration is not a failure; the caller reports it
+    as UNVERIFIED. The shape rule is `heartbeat_runtime/process_adapter.py`'s:
+    a non-empty claim id ending in `-G<fence>` with a positive integer fence.
+    """
+    if not declares_worker_claim(manifest):
+        return None
+    claim = manifest["extensions"][WORKER_CLAIM_EXTENSION]
+    if not isinstance(claim, Mapping):
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD} is not an object"
+    claim_id = claim.get("claim_id")
+    fence = claim.get("fencing_token")
+    if not isinstance(claim_id, str) or not claim_id:
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD}.claim_id is not a non-empty string"
+    if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD}.fencing_token is not a positive integer"
+    if not claim_id.endswith(f"-G{fence}"):
+        return FENCE_NOT_VERIFIED, f"claim id {claim_id} does not end in -G{fence}"
+    registry = worker_registry if worker_registry is not None else load_worker_registry(root)
+    if registry is None:
+        return FENCE_NOT_VERIFIED, f"{WORKER_REGISTRY_REF} is not readable"
+    if registry.get("schema") != WORKER_REGISTRY_SCHEMA:
+        return FENCE_NOT_VERIFIED, (f"{WORKER_REGISTRY_REF} schema "
+                                    f"{json.dumps(registry.get('schema'))} is not {WORKER_REGISTRY_SCHEMA}")
+    tasks = registry.get("tasks")
+    if not isinstance(tasks, list):
+        return FENCE_NOT_VERIFIED, f"{WORKER_REGISTRY_REF} tasks is not a list"
+    holders = [task for task in tasks if isinstance(task, Mapping) and task.get("claim_id") == claim_id]
+    if not holders:
+        return FENCE_NOT_VERIFIED, f"no WorkerCoordinator task holds claim {claim_id}"
+    if len(holders) > 1:
+        return FENCE_NOT_VERIFIED, f"claim {claim_id} is held by {len(holders)} WorkerCoordinator tasks"
+    task = holders[0]
+    if task.get("executor_binding") != "BOUND":
+        return FENCE_STALE, f"claim {claim_id} is not BOUND (executor_binding {json.dumps(task.get('executor_binding'))})"
+    if task.get("archive_eligible") is True or task.get("state") in WORKER_CLAIM_TERMINAL_STATES:
+        return FENCE_STALE, f"claim {claim_id} is released: state {json.dumps(task.get('state'))}"
+    current = _registry_fence(task)
+    if current != fence:
+        return FENCE_STALE, (f"claim {claim_id} holds fence {json.dumps(current)}, "
+                             f"the declaration names {fence}")
+    return None
+
+
 #: The fields of a crossing that name the packets carrying one delivery. They are
 #: transport: a redelivery of the same manifest is carried by other packets, and
 #: that does not make it another transition.
@@ -1136,6 +1269,42 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
                           "awaits_an_external_machine": False},
             request_sha256=request["request_sha256"])
 
+    # A declared WorkerCoordinator claim is observed against the committed
+    # registry before the crossing; ingress mints no claim and no fence. An
+    # absent declaration is admitted and reported as UNVERIFIED.
+    fence_failure = declared_worker_claim_failure(manifest)
+    if fence_failure is not None and recorded_admission_for_request(request["request_sha256"]) is not None:
+        # An exact redelivery of an admission this ledger already records is
+        # the same transition (I-10): the fence it ran under was verified when
+        # it was recorded, and a fence that moved since does not turn a recorded
+        # ALLOW into a refusal. The replay path below answers it.
+        fence_failure = None
+        worker_claim_state = WORKER_CLAIM_REPLAYED
+    elif fence_failure is None:
+        worker_claim_state = WORKER_CLAIM_VERIFIED if declares_worker_claim(manifest) else WORKER_CLAIM_UNVERIFIED
+    if fence_failure is not None:
+        fence_code, fence_detail = fence_failure
+        return refused(
+            FENCE_PREDICATE, fence_code + ":" + fence_detail, failure_code=fence_code,
+            disposition="DENY" if fence_code == FENCE_STALE else "FAIL_CLOSED",
+            required_evidence_or_repair=(
+                f"a {WORKER_CLAIM_FIELD} whose claim_id ends in -G<fencing_token> and names an "
+                f"unreleased BOUND task in {WORKER_REGISTRY_REF} holding exactly that fence; "
+                "or omit the declaration, which is admitted as UNVERIFIED"),
+            retry_entrypoint=RETRY_ENTRYPOINT,
+            owning_existing_goal=FENCE_OWNING_GOAL,
+            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
+                          "resubmit": ("THE_MANIFEST_UNDER_THE_CURRENT_WORKERCOORDINATOR_FENCE"
+                                       if fence_code == FENCE_STALE else
+                                       "THE_MANIFEST_WITH_A_VERIFIABLE_OR_ABSENT_WORKER_CLAIM"),
+                          "awaits_an_external_machine": False},
+            request_sha256=request["request_sha256"])
+    # What the SDK's own derivation says about this route: whether the graph
+    # requires a WorkerCoordinator claim/fence. Reported beside the observed
+    # state; a required-but-undeclared claim is admitted as UNVERIFIED today,
+    # and turning that into a refusal is the route owner's call.
+    worker_claim_required = request.get("requires_workercoordinator_claim_fence") is True
+
     try:
         crossing = crossing_module.cross(manifest, registry=dict(registry), standing=standing, packet_id=packet_id)
     except SystemExit as exc:
@@ -1281,7 +1450,9 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         return {**role_conformance_result(
             request, crossing, conformance, transition_id=transition_id,
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
-            rule_ref=rule_ref, replayed=replayed), "delivery_attempt": delivery}
+            rule_ref=rule_ref, replayed=replayed), "delivery_attempt": delivery,
+            "worker_claim_state": worker_claim_state,
+            "workercoordinator_claim_fence_required_by_route": worker_claim_required}
 
     # Governance is decided by the organization that owns StegCore. The ingress
     # transition above occurred here and is recorded; the request now leaves
@@ -1293,7 +1464,9 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
             standing=crossing_module.manifest_standing(manifest, standing),
             mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref, replayed=replayed),
-            "delivery_attempt": delivery}
+            "delivery_attempt": delivery,
+            "worker_claim_state": worker_claim_state,
+            "workercoordinator_claim_fence_required_by_route": worker_claim_required}
 
     # The SDK decides whether this closes the transition. Its refusal is the
     # answer, returned as it was given.
@@ -1347,6 +1520,12 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
         "transition_replayed": replayed,
+        # Observed, never minted: VERIFIED_AGAINST_COMMITTED_WORKERCOORDINATOR_REGISTRY
+        # when the manifest declared a claim this operation verified, UNVERIFIED
+        # when it declared none. A declared claim that did not verify never
+        # reaches here.
+        "worker_claim_state": worker_claim_state,
+        "workercoordinator_claim_fence_required_by_route": worker_claim_required,
         "recomputation_rule_ref": rule_ref,
         # Both levels, so a reader can see the organization consumed a receipt
         # from the level below rather than one it wrote itself.
