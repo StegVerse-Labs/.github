@@ -5,7 +5,7 @@ $ {python} -m runtime.kv_skap_vault finish-point
   "access_constraints": [
     {
       "constraint": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
-      "dependency_owner": "Interlock/InTr healthy-node evaluator, LC-KV-13/LC-KV-14 (StegVerse-org/LLM-adapter#428 llm_adapter/healthy_node_evaluator.py, producer #429, inputs #430, anchored-root check #432 evaluate_anchored, InTr and Mesh Destinations lane), for a PERMANENT node; the chain at StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter is not onboarded yet (onboarding StegVerse-org/LLM-adapter#431, Lane B draft)",
+      "dependency_owner": "Interlock/InTr healthy-node evaluator, LC-KV-13/LC-KV-14 (StegVerse-org/LLM-adapter#428 llm_adapter/healthy_node_evaluator.py, producer #429, inputs #430, anchored-root check #432 evaluate_anchored, InTr and Mesh Destinations lane), for a PERMANENT node; the chain at StegVerse-org/.github refs/stegverse/organization-ledger:repository-ledger/StegVerse-org/LLM-adapter is not onboarded yet (its onboarding route was closed unmerged by the owner; edge removed by StegVerse-org/.github#249)",
       "disposition": "FAIL_CLOSED",
       "enforced_in_sealed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
       "failed_predicate": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
@@ -90,30 +90,30 @@ $ {python} -m runtime.kv_skap_vault finish-point
   "network_used": false,
   "org_ledger_prerequisites": [
     {
-      "dependency_owner": "StegVerse-org/LLM-adapter#431 (repository_ledger_location in .stegverse/transition-ledger/contract.json), Lane B",
+      "dependency_owner": "the repository_ledger_location designation in .stegverse/transition-ledger/contract.json; its onboarding route was closed unmerged by the owner and its edge removed by StegVerse-org/.github#249, so Lane B must reconcile it",
       "disposition": "FAIL_CLOSED",
       "failed_predicate": "ORG_LEDGER_LOCATION_FROM_CONTRACT",
       "failure_class": "B",
       "failure_code": "ORG_LEDGER_LOCATION_NOT_DESIGNATED",
       "gates": "every PERMANENT anchor (evaluate_anchored), so the finish point",
-      "next_attempt": "when StegVerse-org/LLM-adapter#431 lands in the contract; event-driven, never on a timer",
-      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324); dependency owner StegVerse-org/LLM-adapter#431 (repository_ledger_location in .stegverse/transition-ledger/contract.json), Lane B",
+      "next_attempt": "when Lane B reconciles the designation into the contract; event-driven, never on a timer",
+      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324); dependency owner the repository_ledger_location designation in .stegverse/transition-ledger/contract.json; its onboarding route was closed unmerged by the owner and its edge removed by StegVerse-org/.github#249, so Lane B must reconcile it",
       "prerequisite": "ORG_LEDGER_LOCATION_FROM_CONTRACT",
-      "required_evidence_or_repair": "ORG_LEDGER_LOCATION_NOT_DESIGNATED: the #431 repository_ledger_location (repository, ref, namespace) in the vendored contract.json, then re-vendor",
+      "required_evidence_or_repair": "ORG_LEDGER_LOCATION_NOT_DESIGNATED: the repository_ledger_location (repository, ref, namespace) in the vendored contract.json, then re-vendor",
       "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), after re-vendoring #432",
       "tracked_by": "LC-KV-13 / LC-KV-15"
     },
     {
-      "dependency_owner": "StegVerse-org/LLM-adapter#431 (expected_genesis_receipt_sha256, null on purpose until the genesis is observed), Lane B",
+      "dependency_owner": "the contract's expected_genesis_receipt_sha256 (null on purpose until the genesis is observed; its onboarding route is retired, StegVerse-org/.github#249), Lane B",
       "disposition": "FAIL_CLOSED",
       "failed_predicate": "ORG_LEDGER_GENESIS_PINNED_BY_CONTRACT",
       "failure_class": "B",
       "failure_code": "ORG_LEDGER_GENESIS_NOT_PINNED",
       "gates": "every PERMANENT anchor (evaluate_anchored), so the finish point",
       "next_attempt": "when the REPOSITORY_LEDGER_GENESIS_PIN transition runs on the receipted genesis record and its contract write is admitted; event-triggered by that record, no cron, no polling, no person",
-      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324); dependency owner StegVerse-org/LLM-adapter#431 (expected_genesis_receipt_sha256, null on purpose until the genesis is observed), Lane B",
+      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324); dependency owner the contract's expected_genesis_receipt_sha256 (null on purpose until the genesis is observed; its onboarding route is retired, StegVerse-org/.github#249), Lane B",
       "prerequisite": "ORG_LEDGER_GENESIS_PINNED_BY_CONTRACT",
-      "required_evidence_or_repair": "ORG_LEDGER_GENESIS_NOT_PINNED: repository_ledger_location.expected_genesis_receipt_sha256 written by the REPOSITORY_LEDGER_GENESIS_PIN transition (StegVerse-org/LLM-adapter#431) from the observed REPOSITORY_LEDGER_INITIALIZATION genesis receipt_sha256 on refs/stegverse/organization-ledger, never by hand and never invented, then re-vendor",
+      "required_evidence_or_repair": "ORG_LEDGER_GENESIS_NOT_PINNED: repository_ledger_location.expected_genesis_receipt_sha256 written by the REPOSITORY_LEDGER_GENESIS_PIN transition from the observed REPOSITORY_LEDGER_INITIALIZATION genesis receipt_sha256 on refs/stegverse/organization-ledger, never by hand and never invented, then re-vendor",
       "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit), after re-vendoring #432",
       "tracked_by": "LC-KV-13 / LC-KV-15"
     },
@@ -258,7 +258,7 @@ $ {python} -m runtime.kv_skap_vault finish-point
   "receipt_ledger_prerequisites": [
     {
       "contract_path": ".stegverse/receipt-chains/stegverse-kv-receipts.contract.json",
-      "contract_sha256": "sha256:c9cc8913de21183fb23774cd155fee84fd6d275c003e71b2712ad44d30d89ce1",
+      "contract_sha256": "sha256:af70e4a3bbd1a0b6659932d86f52f89e9abb1a016baab2410c4df1f0e44ef81c",
       "disposition": "FAIL_CLOSED",
       "fail_closed": [
         {
@@ -304,7 +304,7 @@ $ {python} -m runtime.kv_skap_vault finish-point
     },
     {
       "contract_path": ".stegverse/receipt-chains/skap-receipts.contract.json",
-      "contract_sha256": "sha256:1e886348a7a84fb148bb91e84d84f99cb5101d86dfb34ab84104e54982e0bc13",
+      "contract_sha256": "sha256:62244b5ccb229d6025e5530b4d45be2ac5412af98c13ade9d3ee7cf26a55b9b0",
       "disposition": "FAIL_CLOSED",
       "fail_closed": [
         {
