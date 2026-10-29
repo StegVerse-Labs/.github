@@ -36,7 +36,7 @@ Coordination ruled this adjacency class D (adjacent, not a duplicate) on 2026-10
 
 The evidence is in the request's `collision_analysis` and in MANIFEST.json `coordination_adjacency_ruling`.
 
-The collision check-in has no input for a ruling, so it still returns COORDINATE_CONVERGENCE with the three goals (see MANIFEST.json `expected_plan`). Applying the identity needs either that ruling admitted at apply time or a ruling input in the check-in. Both are owned by STEGVERSE-CANONICAL-WORK-COORDINATION-001.
+The registration transition already accepts `--adjacency-ruling` and `--finish-point-root` through `checkin_with_ruling`. It may clear COORDINATE_CONVERGENCE only after recomputing the ruling conditions and covering every collision candidate; STOP_COLLISION is not cleared. Remaining owner work is to authenticate Coordination provenance, reconcile current source pins and candidate coverage, commit the approved native request, and serialize plan/apply/verify against the accepted Registry tip. Source support does not itself register this identity or grant execution authority. See scripts/canonical_task_registration_transition.py on main and the recovery-session-2 reconciliation below.
 
 
 ## 2026-10-29 read-only reconciliation (proposal remains unregistered)
@@ -294,3 +294,66 @@ No newer responses were observed in those checked issue threads. Native
 claim/fence, sovereign KV __51 and real-node finish-point ALLOW remain unobserved.
 The prior optional source-packet/note sharing approval remains outstanding;
 no transfer was retried and no shared-folder or sovereign KV write is claimed.
+
+
+## Recovery session 2 — 2026-10-29: corrected admission path and TVC consumer containment
+
+Session Prompt Count: 2. Cumulative contribution recovery lower bound: 14;
+canonical Goal Prompt Count remains unreconciled, not reset. Main remains
+`6b13c3a749b2940d6142644196a8302823c1f45a`; Registry322/120 still has no KV row.
+All six checks on docs head `2e611f345329f4478a5764f45b2d12cbac34044e` passed.
+This update requires separate exact-head checks and original-owner ratification.
+
+The opening ruling-input paragraph was corrected against the implemented native
+entrypoint. Source support is complete; provenance/current-pin/candidate
+reconciliation and an approved native request remain the Registry owner's work.
+The ruling still pins CVK9d56bc7b while current CVK main isacfd2be5; re-derive,
+do not blindly change the pin. Open3380/3403 do not reserve a generation.
+https://github.com/StegVerse-Labs/.github/pull/3324#issuecomment-6505523334
+
+Retired coverage-discovery work: EC9 already executed the seven supplemental
+sealed-source probes at3376d810644d (reported7PASS). Their retained code was
+inspected, not re-executed here. These resolve the specific prior questions;
+permanent folding remains the existing custody owner's source update.
+https://github.com/StegVerse-Labs/.github/issues/2810#issuecomment-6505523865
+
+New executed consumer evidence: actual TVC537 issuer/verifierc87272cf combined
+with main custody gate dbfccec9, twelve exact Git source/config blobs verified,
+and existing test-only ledger/signer/reader/producer/client fixtures. The actual
+issuer/verifier was not mocked. Reference-only issuance for matching/unrelated
+principal, unrelated task, and a self-rehashed BOUND assertion reaches gate ALLOW.
+The manifest currently has no task field; no existing task-field mismatch is
+claimed. Final regression baseline:4expected failures/3passes. A local candidate
+returns six-field TVC_CUSTODY_ISSUANCE_AUTHENTICITY_NOT_PROVEN after integrity
+verification and before client/admission use:7/7focused tests pass.
+No client place/read calls or live runtime/credential access occurred.
+
+Full patch, test, hashes and owner README/TVC-handoff addenda:
+https://github.com/StegVerse-Labs/TVC/pull/537#issuecomment-6505597487
+Cross-consumer coordination:
+https://github.com/StegVerse-Labs/continuity-vault-kit/issues/279#issuecomment-6505604924
+Patch SHA256:22f5d0cb858592c771f37a2372d73d97b799b11179e191ca84b6499b2a8cd8b5.
+
+This is a local unmerged containment proposal, not full-suite green or
+merge-ready. It intentionally removes the ALLOW path until the existing TVC
+owner supplies authentic issuance linkage to principal/manifest/task/reference,
+live slot and current revocation state. No caller flags, new callbacks, trust
+roots or task-schema fields were invented. Existing fake-positive suites require
+explicit component-test migration;22fixture consumers were inventoried for
+review, not demonstrated as22failures. Current production prerequisites remain
+absent and fail closed; this is not a live exploit or native custody claim.
+
+Parallel owner actions: Registry admission/ruling/current pins and counts;
+original writer3183 accepts the already prepared TVC-main conformance receipt
+using genuine supplied epoch, then3290->3376 required checks/integration;
+TVC537 reviews containment and authentic issuance contract, with CVK279 consuming
+the same authority; StegOS426/adapter430 reconcile retained node placement and
+health; Coordination3402 resolves scope observations; docs3404 gets independent
+ratification. Published Labs ledger ref remainsb2d90fc3; no repeat replay on
+unchanged input, no native admission/fence/sovereign__51/finish-point ALLOW.
+
+The earlier optional S9 source-packet transfer remains unperformed. It is not
+needed to deliver this new public-source finding or continue the owner work.
+The new coordination note contains public status/issue links only, not that
+rejected packet or note. Coordination-folder writes remain projections, never
+sovereign KV custody.

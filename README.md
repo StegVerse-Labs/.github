@@ -2382,3 +2382,15 @@ See the [current KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.m
 and [owner findings](https://github.com/StegVerse-Labs/.github/issues/2810#issuecomment-6504630611).
 This docs update requires its own CI. No native admission, custody, fence,
 runtime ALLOW or release is claimed; cumulative prompt count remains unreconciled.
+
+
+## KV/SKAP recovery session 2 — 2026-10-29
+
+The [canonical handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md)
+now corrects the obsolete missing-adjacency-input claim and retires the resolved
+custody coverage questions. Docs2e611f34 passed6/6checks. A new real-issuer TVC
+chain probe exposed reference-only admission under test fixtures; its unmerged
+containment candidate passes7focused cases, with broader mock-positive migration
+still required. [Owner patch and reproducer](https://github.com/StegVerse-Labs/TVC/pull/537#issuecomment-6505597487).
+Registry admission and native custody remain unverified; no live exploit,
+runtime ALLOW, protected integration or release is claimed.
