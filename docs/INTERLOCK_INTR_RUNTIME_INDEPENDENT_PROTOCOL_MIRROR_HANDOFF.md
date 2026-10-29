@@ -6,7 +6,54 @@ Issue: #2897
 COSV ID: `50000000102000`
 Status: `ACTIVE`
 
-## 2026-10-29 parallel-work sweep (current)
+## 2026-10-29 terminal reconciliation at prompt limit (current)
+
+Disposition: **DECOMPOSED_AT_PROMPT_LIMIT** under
+[Coordination ruling 6506716678](https://github.com/StegVerse-Labs/.github/issues/3195#issuecomment-6506716678).
+This is documentary scope reconciliation, not a canonical lifecycle transition:
+Registry shard coordination_state remains ACTIVE, completion.claimed=false,
+validated=false, projection_only=true, null claim/fence. Session Prompt Count 3;
+cumulative recovery lower bound **35/20**, exact total UNVERIFIED and never reset.
+The ruling retained 34/20; this qualifying reconciliation prompt increments it once.
+No successor identity is minted to reset the count. Further implementation follows
+existing owning issues below, retaining this evidence chain.
+
+### Completed and transferred
+
+- #3405 at 6abac8e82b00c00017c150c54e4e0c6e8c1ee591 passed all six checks
+  and merged as b7033aee2f8471667b73e0dfa9ba426ca71d7ce8. Its README,
+  handoff, independent historical replay, Registry rehearsal, and three tested
+  owner-repair candidates are now on main. Previous pending-integration labels are history.
+- Org #259 route(d) was independently ratified at
+  79037ce73aaa80a57c317a8edec9ca1fabc5c4e4 and expected-head merged as
+  46ddcfd4d2215d21c4fcd1b62bc4d129bdbb9dc8. All 46 checks succeeded;
+  selected tests: 328 pass, zero skips. Full-suite evidence binds the PR head to
+  synthetic merge 3f9beede: 1,632 tests plus 13 module tests, zero unsatisfied skips.
+  This is receipt-policy/source integration, not private-runtime execution.
+- #3409 implements the ruled existing atomic record-data route. At reviewed head
+  3b32f45bf663e0811bb21cfe432797df62b71324 it is not merge-ready: CI
+  detects absent effective COSV index materialization and stale registration fixtures.
+  Native repeat is NO_CHANGE and generation fence allows 323 against live 322;
+  these do not override the failed checks. A retained fixture-only repair passes114 tests
+  and all seven native validators. Legacy vector source lacks the native
+  materializer's complete record shape. Preserve exact-metric uncertainty and native guards.
+
+| Existing owning issue | Remaining independent work |
+| --- | --- |
+| Labs #3195 / PR #3409 | Complete native vector/index source evidence and stale-fixture repair; exact-head CI; protected merge and committed row/shard readback. Do not fabricate observed metrics or relax validators. |
+| Org #162 / #166 | #259 is merged; refresh #257, #228 and #258 against new main, check their own receipts/CI, integrate #228 + #258/H36 with overlap resolution. |
+| Labs #3207 / #3213, Lane B | Apply retained current-main metadata/fixture candidates and validate their actual integrated heads. |
+| TVC #562 / #561 / #533 / #488 | Apply tested public-reader confinement fix, complete full-checkout validation and reader-successor disposition; private warrants remain separately owned. |
+| Labs #3404 / #2810 | Continue custody documentary/source integration independently. |
+| Labs #3401 / #3263 | Preserve proven #3206 -> #3263 source mapping; resolve admission/retirement and hygiene identity independently. |
+
+Coordination states no person is required to approve these ecosystem decisions.
+The existing lane-owned KV file is maintained in place; no duplicate or index edit.
+The old session-8 call rejection is historical, not a request for user action.
+No release-ready disposition, runtime execution, external conformance, native claim,
+sovereign KV receipt or task completion is asserted.
+
+## 2026-10-29 parallel-work sweep (historical predecessor)
 
 Session Prompt Count 2; cumulative recovery lower bound **34/20**, exact total
 unverified, never reset. Live main readback for this sweep: 6b13c3a7; generation
