@@ -18,9 +18,9 @@
       "svi:e932853405cb62e1976ecd73c397635142dcabc40f5ddc6d4eb2970c67323139"
     ],
     "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001": [
-      "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204",
-      "svc:c5fb62fb06c54cbc82084b8ace645395ca8a27b43795af9feca3834787cb8d35",
-      "svc:d6df893a9982e89ccbf2bc4140923fce767a3ba76defc070164a9e338faff953",
+      "svc:0aed9b4f819bdff7b099c70f0fc2b96bec952700d4c847559c9c4e07c7918588",
+      "svc:0f7405add9065e51ee9f813fbdb76bbdaf92d45095fdb4a2ce83ebd60ae84532",
+      "svc:23647f091724aaab171b4449964f687768c78d1e9ba19469f7cd8bab2c88f071",
       "svi:15e9f2abb13b26d89161148e80cea9059d0ee16eb003373729625e5c36995c8c",
       "svi:21bfd213161e5f3c1ade3ffb192fcf318bbed4c66ec603148ee4e2524f4716ac",
       "svi:30f1533fb1a5c147d76a3a50020da540e2f720d77c6f505a4492fa0fcee80606",
@@ -42,14 +42,14 @@
       "svi:effb925d1bb6976f9120ca435897b85e825aa72079cc3cc39b365a864536d24f"
     ],
     "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED": [
-      "svc:2aebce74ad7103b4995b79ccda20c5985c03fb03205cbacd75c5c70a64157835",
-      "svc:47a3143779a10ecb5ec05932448854282e9837193b7f53d136b0fc205dd03af3",
-      "svc:5530c50768bf3112045a3ee6c08f80b6600df1082c5903bf9e8087ade7207658",
-      "svc:77ba7e8cb6befca5923be8122d9dfefb34a8733cb289237a5a9d6f23d95fe5bd",
-      "svc:8aa8412b7b76e4d96ac50157f17e8e73748c12ad482d6c24c1f850a337e13e87",
-      "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375",
-      "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da",
-      "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69",
+      "svc:0e6ceb60936db0cdaa5f44f1be2931fc682bbef4a093d1cd6d55b77e39716d2a",
+      "svc:1186bafb319df89e9340ccaed328246af20aa19b5a123a915c4a0c7bb93ca6de",
+      "svc:28e55b25d369d8c14a4686d212aa8603a6d874eed531b95cb72453bd0c92f764",
+      "svc:402ecd7d620d8a8f39981fbdf88a162a57fc675aa0a2fe88954cc4fe879f3218",
+      "svc:6e7045726f6a94d0571aa75ee271960dc71da0e715b9ebcf165ac82857636cd6",
+      "svc:7009f4ca0e9b97a641c286a14bdbaac15079c54c5e10ec3a96776ebacadc4a00",
+      "svc:b245a59bdd50f7f7ed5275fd85b54f6839e8e59ab062fc3609d0a112277c5d4d",
+      "svc:bb4d70fb5f81fed9b02a3e4095dfdceeb04452965a2d225d82754d3937b475f8",
       "svi:6dbf4f7099bfd8872831f702e78249a6394302ae14e72cc23a54d5c3fa8c5657"
     ]
   },
@@ -59,81 +59,17 @@
       "canonical_coordination_state": "PROPOSED",
       "kind": "SV_CHANGE",
       "lifecycle_state": "PROPOSED",
-      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
       "projection": {
         "github_state": "DRAFT",
-        "head_sha": "9bbb3eae573d0f57f56a513c7dae797734b68868",
+        "head_sha": "5052569970dc05f3932ad640f9ea296b555d038a",
         "issue": null,
-        "pr": 3243,
+        "pr": 3235,
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:7b83c4c69569566bfd448ad82d5e3abe3425cfd1a883729995b2a53093b759e7",
-      "work_item_id": "svc:2aebce74ad7103b4995b79ccda20c5985c03fb03205cbacd75c5c70a64157835"
-    },
-    {
-      "canonical_coordination_state": "PROPOSED",
-      "kind": "SV_CHANGE",
-      "lifecycle_state": "PROPOSED",
-      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "projection": {
-        "github_state": "DRAFT",
-        "head_sha": "0721e170eed3dabce4144bd5cdef6b5eb1bd176a",
-        "issue": null,
-        "pr": 3251,
-        "repo": "StegVerse-Labs/.github"
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:afc0ac52a5bf1d39935d72785ec6f136ea717dc52c15e0f8a1aa197cf8d104cf",
-      "work_item_id": "svc:47a3143779a10ecb5ec05932448854282e9837193b7f53d136b0fc205dd03af3"
-    },
-    {
-      "canonical_coordination_state": "PROPOSED",
-      "kind": "SV_CHANGE",
-      "lifecycle_state": "PROPOSED",
-      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "projection": {
-        "github_state": "DRAFT",
-        "head_sha": "de8e3eb992d81582a48e300e1702d91dec0f77df",
-        "issue": null,
-        "pr": 3261,
-        "repo": "StegVerse-Labs/.github"
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:97548838d52c0022e0b6c07f0a3f6c7e4a3c2762cf6a31a337ed45154a6aa5d2",
-      "work_item_id": "svc:5530c50768bf3112045a3ee6c08f80b6600df1082c5903bf9e8087ade7207658"
-    },
-    {
-      "canonical_coordination_state": "PROPOSED",
-      "kind": "SV_CHANGE",
-      "lifecycle_state": "PROPOSED",
-      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "projection": {
-        "github_state": "DRAFT",
-        "head_sha": "abdc51f2ff51a751ba5f4b77e93b8bae106ada95",
-        "issue": null,
-        "pr": 3232,
-        "repo": "StegVerse-Labs/.github"
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:5640441c976e59371ad730eff56f2fa78c3b7c2b13ca82b553dca598a9bbcb87",
-      "work_item_id": "svc:77ba7e8cb6befca5923be8122d9dfefb34a8733cb289237a5a9d6f23d95fe5bd"
-    },
-    {
-      "canonical_coordination_state": "PROPOSED",
-      "kind": "SV_CHANGE",
-      "lifecycle_state": "PROPOSED",
-      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "projection": {
-        "github_state": "DRAFT",
-        "head_sha": "361f35bfb31b6fd72f420cec3eb106962f275e9f",
-        "issue": null,
-        "pr": 3258,
-        "repo": "StegVerse-Labs/.github"
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:8ee9759dd66fe43e90237450af36f6f29cb4e08761f49f2d33280c9347159b0d",
-      "work_item_id": "svc:8aa8412b7b76e4d96ac50157f17e8e73748c12ad482d6c24c1f850a337e13e87"
+      "record_sha256": "sha256:d39a399df291fdb34783e2c9c7817d6cacf0832d445c169cbc9c86920179952e",
+      "work_item_id": "svc:0aed9b4f819bdff7b099c70f0fc2b96bec952700d4c847559c9c4e07c7918588"
     },
     {
       "canonical_coordination_state": "PROPOSED",
@@ -148,72 +84,8 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:d334f691ca9eaf7bea493539ffcd30e323a23741b907eb6e39dc9891801d35af",
-      "work_item_id": "svc:95d9cb0c106cbbbc76fcff93531ca20fae51e14fae8b89b23c8f17ab9fc78375"
-    },
-    {
-      "canonical_coordination_state": "IN_PROGRESS",
-      "kind": "SV_CHANGE",
-      "lifecycle_state": "FAIL_CLOSED",
-      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "projection": {
-        "github_state": "DRAFT",
-        "head_sha": "6d974c92682a0771ad7f4f07abbfc80bd9465a27",
-        "issue": null,
-        "pr": 3245,
-        "repo": "StegVerse-Labs/.github"
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:4b1c514d55337fe472641086a686541d31801689af9b8c5a329d4354086f67bf",
-      "work_item_id": "svc:ad5b29a1c10da18b12666260471bfe586b427efe0e60941c18efc7a61ef8c8da"
-    },
-    {
-      "canonical_coordination_state": "PROPOSED",
-      "kind": "SV_CHANGE",
-      "lifecycle_state": "PROPOSED",
-      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
-      "projection": {
-        "github_state": "DRAFT",
-        "head_sha": "9671ee7a4ef0d86fe816cc18b2f40d2a71d7cd9f",
-        "issue": null,
-        "pr": 3231,
-        "repo": "StegVerse-Labs/.github"
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:e12e4dd0dae3df5753f706baab83075043aadc4ac1e83d9b9549b8d3f96465df",
-      "work_item_id": "svc:b8883d4395ae397270264d5e559d879138012f9b3957b9cff8643ed146469204"
-    },
-    {
-      "canonical_coordination_state": "PROPOSED",
-      "kind": "SV_CHANGE",
-      "lifecycle_state": "PROPOSED",
-      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "projection": {
-        "github_state": "DRAFT",
-        "head_sha": "e5ba67b26403bef2207638161fcc9cc28e7d8036",
-        "issue": null,
-        "pr": 3241,
-        "repo": "StegVerse-Labs/.github"
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:d2d618d827d100ec007c3be4ec831c3ab59ee6be6d8535769d6eef771c1386a1",
-      "work_item_id": "svc:c2753552a5fde168e1dbe05b4af091b013f60fd4dbcee7742ed81e748a985e69"
-    },
-    {
-      "canonical_coordination_state": "PROPOSED",
-      "kind": "SV_CHANGE",
-      "lifecycle_state": "PROPOSED",
-      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
-      "projection": {
-        "github_state": "DRAFT",
-        "head_sha": "5052569970dc05f3932ad640f9ea296b555d038a",
-        "issue": null,
-        "pr": 3235,
-        "repo": "StegVerse-Labs/.github"
-      },
-      "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:67cf95d1401b67931647febedf338badeaf36580a5451ce1428ea1a299cdc3ee",
-      "work_item_id": "svc:c5fb62fb06c54cbc82084b8ace645395ca8a27b43795af9feca3834787cb8d35"
+      "record_sha256": "sha256:7693f117ca916c07617b45508c04f5688ce98a62df1e9b86a8d7d2655aa4be96",
+      "work_item_id": "svc:0e6ceb60936db0cdaa5f44f1be2931fc682bbef4a093d1cd6d55b77e39716d2a"
     },
     {
       "canonical_coordination_state": "PROPOSED",
@@ -228,8 +100,136 @@
         "repo": "StegVerse-Labs/.github"
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:8323501d7871822117ddca5732a2e3c9f64b7c1d59531384e6bbaaeaab887b41",
-      "work_item_id": "svc:d6df893a9982e89ccbf2bc4140923fce767a3ba76defc070164a9e338faff953"
+      "record_sha256": "sha256:a8a18e16d4c61f0fe30877b6b181badeb9ba0633454f699f686eae195dceb34d",
+      "work_item_id": "svc:0f7405add9065e51ee9f813fbdb76bbdaf92d45095fdb4a2ce83ebd60ae84532"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "e5ba67b26403bef2207638161fcc9cc28e7d8036",
+        "issue": null,
+        "pr": 3241,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:2f116b08f09e9adeb1ef070438d53b719c92a08e2350853d2582c16ae7b03cc2",
+      "work_item_id": "svc:1186bafb319df89e9340ccaed328246af20aa19b5a123a915c4a0c7bb93ca6de"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "9671ee7a4ef0d86fe816cc18b2f40d2a71d7cd9f",
+        "issue": null,
+        "pr": 3231,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:5476efd88ad3a07cc4acb09ba6ac99f57123d401051a56ab271033c49c23b343",
+      "work_item_id": "svc:23647f091724aaab171b4449964f687768c78d1e9ba19469f7cd8bab2c88f071"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "9bbb3eae573d0f57f56a513c7dae797734b68868",
+        "issue": null,
+        "pr": 3243,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:f5138bd29717f736a3b8e75b3973fd4ebde0cd7a83fe70ef6b1fc3490ee04351",
+      "work_item_id": "svc:28e55b25d369d8c14a4686d212aa8603a6d874eed531b95cb72453bd0c92f764"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "361f35bfb31b6fd72f420cec3eb106962f275e9f",
+        "issue": null,
+        "pr": 3258,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:f63ec017628cf257021c8b64e0d6cfa1cac5c40f6e1f5327c15df1588ebe7a0e",
+      "work_item_id": "svc:402ecd7d620d8a8f39981fbdf88a162a57fc675aa0a2fe88954cc4fe879f3218"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "de8e3eb992d81582a48e300e1702d91dec0f77df",
+        "issue": null,
+        "pr": 3261,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:2044d73779a07be29534dfc71e52c80788fb024089422aafd3b6f48fc485fa78",
+      "work_item_id": "svc:6e7045726f6a94d0571aa75ee271960dc71da0e715b9ebcf165ac82857636cd6"
+    },
+    {
+      "canonical_coordination_state": "IN_PROGRESS",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "FAIL_CLOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "6d974c92682a0771ad7f4f07abbfc80bd9465a27",
+        "issue": null,
+        "pr": 3245,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:111125340fd3f4dbb9c9822b41f8dc64f505215e39b6321ca2cfedc595cbafe3",
+      "work_item_id": "svc:7009f4ca0e9b97a641c286a14bdbaac15079c54c5e10ec3a96776ebacadc4a00"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "abdc51f2ff51a751ba5f4b77e93b8bae106ada95",
+        "issue": null,
+        "pr": 3232,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:9bad2c3c6a01bf3db41d2569db2dd134f875bf138dffd804d2394620e8ca9431",
+      "work_item_id": "svc:b245a59bdd50f7f7ed5275fd85b54f6839e8e59ab062fc3609d0a112277c5d4d"
+    },
+    {
+      "canonical_coordination_state": "PROPOSED",
+      "kind": "SV_CHANGE",
+      "lifecycle_state": "PROPOSED",
+      "owning_goal": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+      "projection": {
+        "github_state": "DRAFT",
+        "head_sha": "0721e170eed3dabce4144bd5cdef6b5eb1bd176a",
+        "issue": null,
+        "pr": 3251,
+        "repo": "StegVerse-Labs/.github"
+      },
+      "record_mode": "MIGRATED_HISTORICAL",
+      "record_sha256": "sha256:80e1e07068b6d2d9aca55b2aa6b8b562f7170c422b9ecb4a8d0541e123df0f70",
+      "work_item_id": "svc:bb4d70fb5f81fed9b02a3e4095dfdceeb04452965a2d225d82754d3937b475f8"
     },
     {
       "canonical_coordination_state": "INGRESS_ADMITTED",
@@ -244,7 +244,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:2fb401d70fccd5806525f00db32cebaff222b96ac86c9334d5863100937fd5da",
+      "record_sha256": "sha256:38ecba1760d519000a3ab544de3ae78dad8adb708c643927ca8bfc07125a264f",
       "work_item_id": "svi:02c0f24698d2be26378e70eb90cd10e73dddbec9a2fe1f1e7fea0e13396b3b86"
     },
     {
@@ -260,7 +260,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:de4f664448060adceab1179dbf76ba52cc07a82649b1dde5cee853f7e7346019",
+      "record_sha256": "sha256:e142f7734f15b9070bf4446583d4125f9a090d44e02d0cc8dd07cdbb3571e5da",
       "work_item_id": "svi:15e9f2abb13b26d89161148e80cea9059d0ee16eb003373729625e5c36995c8c"
     },
     {
@@ -276,7 +276,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:1a781d00bf681918323e61890204a70ad37e9c799e8e6a1cfecabd4131fc9cd8",
+      "record_sha256": "sha256:59317986d3714e03678329a7a00da5359208ee88105cadd62c515fc491947471",
       "work_item_id": "svi:21bfd213161e5f3c1ade3ffb192fcf318bbed4c66ec603148ee4e2524f4716ac"
     },
     {
@@ -292,7 +292,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:57e2a57232640fb5427749a4e67651529ee64d7e5bee0bc469bbdfeea6597cb4",
+      "record_sha256": "sha256:a5be52f0a40ee518652451a3ced84c5159ef934795eb3a89ace87b924c1bb97a",
       "work_item_id": "svi:30f1533fb1a5c147d76a3a50020da540e2f720d77c6f505a4492fa0fcee80606"
     },
     {
@@ -308,7 +308,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:2c0949372125979fccc682cb1e140aea2b2382e7250d51e25ea5c98e089d82ae",
+      "record_sha256": "sha256:faaaff717f220c6066e0617975157394eb50a56569ce96b1b711a7afa3ac9e48",
       "work_item_id": "svi:3157b2bfb120a246fe10dc27df65e33b555a2ccd8ccc3c2020d09e828066fe72"
     },
     {
@@ -324,7 +324,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:5a44ea3ef5358e3b36e034215a06b7e82257a8f1b96f266d88662ebe1d90f6fd",
+      "record_sha256": "sha256:3049ff5f240b6df881272206c74e86de230e070a547cf927d845fd8ff24cdeb5",
       "work_item_id": "svi:404bdde69740761824346668d1e57f26b61db11c7a13b50274ceeb06e58d6f20"
     },
     {
@@ -340,7 +340,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:5196399a3ed32d6cd10d0282efd6b583c1d716f074ecf6b6c044748d3025f3af",
+      "record_sha256": "sha256:f0211c1acaca8f8cb952de26b01d6083ef739db55fae642816cd050043046133",
       "work_item_id": "svi:41141ee79dce571a8f14dad755ba96a7ff8a3af8c7b7581a3b3f9dddfc99fce4"
     },
     {
@@ -356,7 +356,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:796996b8d982284c100c459124aad94a6485e178c08fa172e5741b03ce92a93b",
+      "record_sha256": "sha256:17532d5704bcc17e845b1e5d9abbf03890c40f807f1041e8104ecbad7aa06ec8",
       "work_item_id": "svi:4a250e2ae51d9137e2e5c57a6a25c438381a30d8132f2671d793d927a7fa1c62"
     },
     {
@@ -372,7 +372,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:ddcd78c5317d003854ada32e510a4d493847f6a60a173c4a0ae337d40089a4c7",
+      "record_sha256": "sha256:8900fcc5489be9e8e6448e9deefd92624e43cd820de8ca8743b156266f1f551f",
       "work_item_id": "svi:4b6e1a1cc4c7fc271f56573c6f9583d7477d9e5ba3e3f4b3d9a97245e8e9d414"
     },
     {
@@ -388,7 +388,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:ab521a9202c310137542794585f4781d9de89e282428e0884a3d05aee5b369b2",
+      "record_sha256": "sha256:22a05713d40f99059f5afdabd90376df5f334596aacb0959330cd35671e3f3cd",
       "work_item_id": "svi:538361b19a72da034f3f43f7a9a44dd08aadda3a12acf5b01733c10641e269f0"
     },
     {
@@ -404,7 +404,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:77754401f08d28753a493133f3342b6aa9e2a7850b8bd130257272488b62a279",
+      "record_sha256": "sha256:cb07b7a5e1416a413a7b4d4a562a2d5d190b6cea5f49f42b227fa08b9f316ed4",
       "work_item_id": "svi:66a7b416288ea9c0c6f036eb987e0a69815c5612bedb98e9a3ed9fc0fbc330f8"
     },
     {
@@ -420,7 +420,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:b605971847dd014528ff6a76ae421e2cb3c5cc3709ec62da0ee3cd304cd9f110",
+      "record_sha256": "sha256:3a665ebea0423c762c65cb0546ee26afdafc8f477282af91c2ce67693a69acdf",
       "work_item_id": "svi:67e919e583998893b4768a708a108f85a6eaa46060b0ae3f76693ef2722e002c"
     },
     {
@@ -436,7 +436,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:b9755e92c9fdc6dae7c8261cce31b3511bd2b5c3f6636249079b2437ed1feda0",
+      "record_sha256": "sha256:2095cfda932dffa958dbd696aeb8b50f5bcac0e53b475091a9b9217e2f90dfc9",
       "work_item_id": "svi:6dbf4f7099bfd8872831f702e78249a6394302ae14e72cc23a54d5c3fa8c5657"
     },
     {
@@ -452,7 +452,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:dda73ff6a82998b173299bd0187f0a47e13a422e90855875ebbdcf363b784cbf",
+      "record_sha256": "sha256:4375d33d5fd0a063baaa380e1f84ccda22731faab0b85bfcbbc4e978bd927dfe",
       "work_item_id": "svi:8414688dff53e1ef501063a6c75ce14417ef65892e7a13b4ac38844bae555411"
     },
     {
@@ -468,7 +468,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:eb99eb33c6bad628d54ea475af95dab41b06b64cb94c732748b2ab9cd27ce959",
+      "record_sha256": "sha256:d4cc82f71cacaeee0ade0fd0122bb1baff66b40e5f5de3c91401d80d77d8cf3f",
       "work_item_id": "svi:93944159fa701528596611847d37a0f14cd4072aab8cfc92ede36033fcbc883b"
     },
     {
@@ -484,7 +484,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:3ec690ae2fd17a523c7d929bab0ab180cfbe45e3118265bdd5813a734b2fb83c",
+      "record_sha256": "sha256:aa844c739f25dcaeba0cdcc014d7035e8c9f0a92969569005b8fc01a68aa7863",
       "work_item_id": "svi:9af400dcbe2606ad23d6ff90485f15ff4ab8621506f8cf07f7c7a87e9df414cb"
     },
     {
@@ -500,7 +500,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:27a8b9d90ecb9586fbd9a6c03ebd9c1c2d9f615abc0d1a3c7b9fa78fe6ab29be",
+      "record_sha256": "sha256:2151bbdd39d0a46a1612973a768cab89f3e0a16562ed3b8c19c44ad8ab3de856",
       "work_item_id": "svi:9c4446c1c98b56114d198fd8dbb31d51d9759ca4a3680771b0716ad9aa7ef897"
     },
     {
@@ -516,7 +516,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:3fed12ad47cbd3d4c4b7c5c59faf035d67fd1ab92262e1ca7c7c4d2b6ded87aa",
+      "record_sha256": "sha256:3b16faac0c9cabe9dfd99959a6a0239e32f1cacc85c9df249967471bdf8d1899",
       "work_item_id": "svi:a8ab58dd007c79d831b1e0f10a07a4d7f353e2b078b971375f5bd0da87f60269"
     },
     {
@@ -532,7 +532,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:d50f104a1031eeb2aec6de5d30d742d286faeff40c482b4089afbabb98afcde1",
+      "record_sha256": "sha256:d2ede9ccdb18ee56cb9f27df667238497dcba9b7cc6fc445c424ce208782972f",
       "work_item_id": "svi:b45ba54cb2b882f7bc55deb819160ffd645e4cb2dc56af0bc02391563c3171bb"
     },
     {
@@ -548,7 +548,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:081f7e73b00059d77495e2bf6976e6949ab219ad05a18b33cbb069a4af90159b",
+      "record_sha256": "sha256:3e5403f562846ebd365e15398578c204d7814bbb7322a26fa6877ff374204e20",
       "work_item_id": "svi:b67fe3109ac7618046c0a3bcb5e161f34fe2c86f363350cb419dc1803a64e120"
     },
     {
@@ -564,7 +564,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:cd8f8b924520cf0aff6590cf9cf3e39fa9422f68a7aaf834992ca12346489118",
+      "record_sha256": "sha256:ea2e4e4974685c633abf7edb7df66fa154a6bf2e02fd4763f485e8b7c4dc6fa0",
       "work_item_id": "svi:b746fdcbe9a42535318affc1b7a4e6c82016d3234452becf1f1aae964fd23083"
     },
     {
@@ -580,7 +580,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:24cac857d8c5c8d53564ee1772c4483f9e62d6ed9933b180bc7767384fb9d799",
+      "record_sha256": "sha256:ed8c59c31cfdd7388b058b573b94d5c8e0829f6a2cbfd182d079c133be8d145e",
       "work_item_id": "svi:b8b82c836790bc9332b9ead25d086f87e299e84cac40ebacd625d0b9abba7c52"
     },
     {
@@ -596,7 +596,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:8dabb1e1b7988b8d17fd7c8a6e114a62f67961d156c54e985654a3007ec83ba3",
+      "record_sha256": "sha256:f86fb905dc49557c704b75492a44fe01512a080809c683a16f032fb5bbbd7a37",
       "work_item_id": "svi:c109f0f3fe840461a35559ebc54cf5876a338a478ff3ee71c44b359c9ef490a7"
     },
     {
@@ -612,7 +612,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:9a555cc18237872f464808ddfa92bee4411cd887f61e713ab8a07983243c56c7",
+      "record_sha256": "sha256:c37fd4c7417f7695f7e72c02be3ad08d230840873d98e99ae033612fe651772a",
       "work_item_id": "svi:cad2f701e9ba8578152fc7736bb591ed085fae07be4d78d3bd5c65dc218b20b1"
     },
     {
@@ -628,7 +628,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:af29b1e959707f2ba33a1ec8f0ac40e513a438bec4e0e5dac495ff64b6af01b1",
+      "record_sha256": "sha256:a287bac15451b14839d06199e5abbdd385970fd47005ed170938bcd89e371b30",
       "work_item_id": "svi:cfa15bd988ac7152e93d62ab4050a015889ced0e5a70bf6512c4c20a2321d6fe"
     },
     {
@@ -644,7 +644,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:7680b95c3639bd6bccc28a7c6bee578dbb09b5369090a4d22f08badd81134edf",
+      "record_sha256": "sha256:3bd23fae5da065ddad67822e02320482d9d61a5b55c0985cac88d109c7524c54",
       "work_item_id": "svi:d7a51932d6c593c4c4f2ddb6b82b9cb4851442d5eaffa34295e8fdeb0ac92a90"
     },
     {
@@ -660,7 +660,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:9de7c4cf5c537477239bdcf71caf3d8feef55c720df761b9cafe91bfd512fc8a",
+      "record_sha256": "sha256:2c0ed7c0c431708bc26e61b0eb7256a28c02730f27435f0363692484c56b57a5",
       "work_item_id": "svi:d8c80cbe13968939172772b3cb0f1b0d6d4f275b91b6596c8e35a5dd1f4bbbd0"
     },
     {
@@ -676,7 +676,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:4e10560fbed9d8629799812dbc3dc5e8e619cff68f1eec98d3b246dbd5302587",
+      "record_sha256": "sha256:9320bebeeb5f2560f8ded5a32fb7f9abed00d9e20de3bea36c3727b87596286e",
       "work_item_id": "svi:e932853405cb62e1976ecd73c397635142dcabc40f5ddc6d4eb2970c67323139"
     },
     {
@@ -692,7 +692,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:6ec819774713c048e83bf8fd5ced2f8b2d97e3d5c9a3709c4073bc303727369b",
+      "record_sha256": "sha256:798fcea062d7252d710d6c30442df14255dcc54c5a7b9a015be842e72e787cfa",
       "work_item_id": "svi:effb925d1bb6976f9120ca435897b85e825aa72079cc3cc39b365a864536d24f"
     },
     {
@@ -708,7 +708,7 @@
         "repo": null
       },
       "record_mode": "MIGRATED_HISTORICAL",
-      "record_sha256": "sha256:0c9191703e27df384942a83e2e571e4316013f1f3e7c142e47c239f7ffd1c6b8",
+      "record_sha256": "sha256:622598bef9437fda4b1b1babec2dbac5c19b2721674d62c91dcef4447d97d189",
       "work_item_id": "svi:fb7345e28725d78bc328305f8a20c4a052ecc0886d5142f4bc2c67516a051cc4"
     }
   ]
