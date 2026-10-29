@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import allocate_claims as allocator  # noqa: E402
 import bootstrap_sovereign_runtime as bootstrap  # noqa: E402
 import consume_org_claim_allocator_request as consumer  # noqa: E402
 
@@ -63,8 +64,7 @@ class StegAppAllocatorCandidateTests(unittest.TestCase):
         self.assertEqual(self.task["status"], "proposed")
         self.assertNotIn(REL, consumer.REQUEST_RELS)
         self.assertNotIn(REL, bootstrap.REQUIRED_SOURCE_FILES)
-        self.assertEqual(consumer.allocate_claims.TARGET_TASK_NOT_QUEUED,
-                         "TARGET_TASK_NOT_QUEUED")
+        self.assertEqual(allocator.TARGET_TASK_NOT_QUEUED, "TARGET_TASK_NOT_QUEUED")
 
 
 if __name__ == "__main__":
