@@ -929,6 +929,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_carrier_hb_epoch_forwarder.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_carrier_hb_epoch_forwarder.py"
+   ],
+   "tests": [
+    "tests/test_carrier_hb_epoch_forwarder.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_carrier_selfheal_source_root_continuity.py",
    "inputs": [],
    "surfaces": [
@@ -2280,6 +2292,18 @@
    ],
    "tests": [
     "tests/test_executor_discovery.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_existing_stegapp_task_admission.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_existing_stegapp_task_admission.py"
+   ],
+   "tests": [
+    "tests/test_existing_stegapp_task_admission.py"
    ]
   },
   {
@@ -5631,6 +5655,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_protocol_v1_conformance_fixtures.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_protocol_v1_conformance_fixtures.py"
+   ],
+   "tests": [
+    "tests/test_protocol_v1_conformance_fixtures.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_publisher_intr_materialization.py",
    "inputs": [],
    "surfaces": [
@@ -5715,6 +5751,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_ratchet_baseline_integrity.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_ratchet_baseline_integrity.py"
+   ],
+   "tests": [
+    "tests/test_ratchet_baseline_integrity.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_receipt_hb_creation_reference.py",
    "inputs": [],
    "surfaces": [
@@ -5794,6 +5842,18 @@
    ],
    "tests": [
     "tests/test_registry_collision_checkin_gate.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_registry_collision_claimed_integration_guard.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_registry_collision_claimed_integration_guard.py"
+   ],
+   "tests": [
+    "tests/test_registry_collision_claimed_integration_guard.py"
    ]
   },
   {
@@ -9255,6 +9315,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_transition_job_runs_on_pull_request.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_transition_job_runs_on_pull_request.py"
+   ],
+   "tests": [
+    "tests/test_transition_job_runs_on_pull_request.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_transition_receipt_journey.py",
    "inputs": [],
    "surfaces": [
@@ -10944,13 +11016,16 @@
    "scripts/verify_stegindex_resident_operational_proof.py"
   ],
   "scripts/consume_org_claim_allocator_request.py": [
+   ".github/workflows/organization-claim-allocator-transition-writer.yml",
    ".stegverse/transition-ledger/emit.py",
+   ".stegverse/transition-ledger/org-contract.json",
    "control/claims-active.json",
    "control/queue.json",
    "control/resident-execution-request.d/org-claim-allocator-001.json",
    "control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json",
    "control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json",
    "control/resident-execution-request.d/org-claim-allocator-workspace-kv-site-001.json",
+   "org-kernel/kernel.py",
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/organization_batch_custody.py",
    "scripts/allocate_claims.py",
@@ -11124,6 +11199,7 @@
    "control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json",
    "control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json",
    "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json",
+   "org-kernel/kernel.py",
    "receipts/sovereign-host/resident-request-dispatch.by-receipt/**",
    "receipts/sovereign-host/resident-request-dispatch.latest.json",
    "resident-runtime/aggregate_repo_transition.py",
@@ -12863,6 +12939,12 @@
    "heartbeat_runtime/engine_v8.py",
    "tests/test_heartbeat_runtime.py"
   ],
+  "tests/test_carrier_hb_epoch_forwarder.py": [
+   ".github/workflows/organization-claim-allocator-transition.yml",
+   "control/heartbeat-carrier-runtime-state.json",
+   "scripts/consume_org_claim_allocator_request.py",
+   "scripts/dispatch_resident_execution_requests.py"
+  ],
   "tests/test_carrier_selfheal_source_root_continuity.py": [
    "scripts/install_sovereign_heartbeat_service.py",
    "scripts/run_heartbeat_runtime.py"
@@ -13503,6 +13585,10 @@
    "control/worker-registry.json",
    "heartbeat_runtime/__init__.py",
    "tests/test_heartbeat_runtime.py"
+  ],
+  "tests/test_existing_stegapp_task_admission.py": [
+   "schemas/canonical-task-record.schema.json",
+   "scripts/evaluate_existing_task_admission.py"
   ],
   "tests/test_external_framework_registry_rollout_planner.py": [
    "scripts/plan_external_framework_registry_rollout.py"
@@ -15182,6 +15268,13 @@
    "control/process-worker-adapters.d/**",
    "scripts/run_heartbeat_runtime.py"
   ],
+  "tests/test_protocol_v1_conformance_fixtures.py": [
+   "org-kernel/organization-ledger/fixtures/protocol-v1-conformance/**",
+   "org-runtime/interlock-intr.json",
+   "resident-runtime/organization_manifest_ingress.py",
+   "resident-runtime/sdk_manifest_crossing.py",
+   "tests/test_organization_manifest_ingress_rule_ref.py"
+  ],
   "tests/test_publisher_intr_materialization.py": [
    "scripts/consume_publisher_intr_materialization_request.py",
    "workers/universal_intr_profiled_ingress.py"
@@ -15204,6 +15297,10 @@
   ],
   "tests/test_quantum_wallet_signature_census.py": [
    "scripts/validate_quantum_wallet_signature_census.py"
+  ],
+  "tests/test_ratchet_baseline_integrity.py": [
+   ".github/workflows/test-suite-ratchet.yml",
+   "scripts/check_test_suite_ratchet.py"
   ],
   "tests/test_receipt_hb_creation_reference.py": [
    "heartbeat_runtime/independent_oscillator.py",
@@ -15248,6 +15345,11 @@
    "scripts/check_registry_collision_checkin.py",
    "scripts/evaluate_task_registry_collision_checkin.py",
    "tests/pytest.py"
+  ],
+  "tests/test_registry_collision_claimed_integration_guard.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/evaluate_task_registry_collision_checkin.py"
   ],
   "tests/test_registry_gate_findings.py": [
    "scripts/audit_execution_substrate_resolution.py",
@@ -15303,12 +15405,15 @@
    "scripts/refresh_and_execute_resident_task.py"
   ],
   "tests/test_resident_org_claim_allocator.py": [
+   ".github/workflows/organization-claim-allocator-transition-writer.yml",
+   ".github/workflows/organization-claim-allocator-transition.yml",
    ".stegverse/transition-ledger/contract.json",
    ".stegverse/transition-ledger/emit.py",
    ".stegverse/transition-ledger/org-contract.json",
    "control/claims-active.json",
    "control/queue.json",
    "control/resident-execution-request.d/org-claim-allocator-001.json",
+   "control/workflow-surface-registry.json",
    "org-kernel/kernel.py",
    "org-kernel/node_store.py",
    "resident-runtime/aggregate_repo_transition.py",
@@ -15323,7 +15428,9 @@
    "tasks/TASK-2026-0006.json",
    "tasks/TASK-2026-0007.json",
    "tasks/TASK-2026-0008.json",
-   "tasks/TASK-2026-0012.json"
+   "tasks/TASK-2026-0012.json",
+   "tasks/TASK-2026-0013.json",
+   "tests/test_org_claim_custody.py"
   ],
   "tests/test_resident_refresh_awareness_dependencies.py": [
    "control/astra-class-adversarial-resilience-contract.json",
@@ -17072,6 +17179,11 @@
   ],
   "tests/test_transition_disposition_invariant.py": [
    "scripts/validate_transition_disposition.py"
+  ],
+  "tests/test_transition_job_runs_on_pull_request.py": [
+   ".github/workflows/**",
+   "control/workflow-surface-registry.json",
+   "scripts/consume_org_claim_allocator_request.py"
   ],
   "tests/test_transition_receipt_journey.py": [
    ".stegverse/transition-ledger/emit.py",
