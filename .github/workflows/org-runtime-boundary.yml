@@ -15,6 +15,7 @@ on:
       - 'tests/test_manifest_governance_universal_intr_binding.py'
       - 'tests/test_manifest_ingress_idempotent.py'
       - '.stegverse/transition-ledger/emit.py'
+      - 'tests/test_p1_fc10_cli_epoch_str.py'
       - 'tests/test_repo_ledger_exact_retry.py'
       - 'resident-runtime/aggregate_repo_transition.py'
       - 'resident-runtime/organization_batch_custody.py'
@@ -76,6 +77,7 @@ on:
       - 'tests/test_manifest_governance_universal_intr_binding.py'
       - 'tests/test_manifest_ingress_idempotent.py'
       - '.stegverse/transition-ledger/emit.py'
+      - 'tests/test_p1_fc10_cli_epoch_str.py'
       - 'tests/test_repo_ledger_exact_retry.py'
       - 'resident-runtime/aggregate_repo_transition.py'
       - 'resident-runtime/organization_batch_custody.py'
@@ -167,6 +169,10 @@ jobs:
         run: python -m unittest -v tests/test_manifest_ingress_idempotent.py
       - name: Validate the repository chain fails closed on a break and an exact retry matches in full
         run: python -m unittest -v tests/test_repo_ledger_exact_retry.py
+      # --hb-epoch is taken as typed and checked by the kernel's shared
+      # supplied-epoch rule; int() coercion is refused FAIL_CLOSED (P1-FC-10).
+      - name: Validate emit.py --hb-epoch is not coerced by int()
+        run: python -m unittest -v tests/test_p1_fc10_cli_epoch_str.py
 
       # A StegDB role-conformance request is admitted by this ingress on the
       # pinned SDK's published route, the request riding
