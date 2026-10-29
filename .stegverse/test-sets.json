@@ -5751,6 +5751,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_query_canonical_tasks_string_entries.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_query_canonical_tasks_string_entries.py"
+   ],
+   "tests": [
+    "tests/test_query_canonical_tasks_string_entries.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_ratchet_baseline_integrity.py",
    "inputs": [],
    "surfaces": [
@@ -15302,6 +15314,9 @@
   ],
   "tests/test_quantum_wallet_signature_census.py": [
    "scripts/validate_quantum_wallet_signature_census.py"
+  ],
+  "tests/test_query_canonical_tasks_string_entries.py": [
+   "scripts/query_canonical_tasks.py"
   ],
   "tests/test_ratchet_baseline_integrity.py": [
    ".github/workflows/test-suite-ratchet.yml",
