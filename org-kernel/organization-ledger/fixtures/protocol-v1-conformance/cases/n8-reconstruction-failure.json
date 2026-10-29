@@ -1,0 +1,17 @@
+{
+  "case_id": "n8-reconstruction-failure",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "RECEIPT_CHAIN_CLOSES_ON_THE_DECLARED_TERMINAL_RECEIPT",
+    "failure_code": "BOUNDARY_TERMINAL_RECEIPT_DOES_NOT_CLOSE_THE_CHAIN",
+    "next_attempt": "redeliver; a chain that does not reconstruct is never promoted",
+    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+    "required_evidence_or_repair": "the chain must reconstruct to the terminal receipt the crossing names",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::reconstruct_closures"
+  },
+  "mutation": {
+    "kind": "DROP_TERMINAL_RECEIPT"
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1"
+}
