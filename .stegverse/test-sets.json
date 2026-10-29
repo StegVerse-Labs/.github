@@ -929,6 +929,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_carrier_hb_epoch_forwarder.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_carrier_hb_epoch_forwarder.py"
+   ],
+   "tests": [
+    "tests/test_carrier_hb_epoch_forwarder.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_carrier_selfheal_source_root_continuity.py",
    "inputs": [],
    "surfaces": [
@@ -9303,6 +9315,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_transition_job_runs_on_pull_request.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_transition_job_runs_on_pull_request.py"
+   ],
+   "tests": [
+    "tests/test_transition_job_runs_on_pull_request.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_transition_receipt_journey.py",
    "inputs": [],
    "surfaces": [
@@ -10980,13 +11004,16 @@
    "scripts/verify_stegindex_resident_operational_proof.py"
   ],
   "scripts/consume_org_claim_allocator_request.py": [
+   ".github/workflows/organization-claim-allocator-transition-writer.yml",
    ".stegverse/transition-ledger/emit.py",
+   ".stegverse/transition-ledger/org-contract.json",
    "control/claims-active.json",
    "control/queue.json",
    "control/resident-execution-request.d/org-claim-allocator-001.json",
    "control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json",
    "control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json",
    "control/resident-execution-request.d/org-claim-allocator-workspace-kv-site-001.json",
+   "org-kernel/kernel.py",
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/organization_batch_custody.py",
    "scripts/allocate_claims.py",
@@ -11160,6 +11187,7 @@
    "control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json",
    "control/resident-execution-request.d/sdk-tt-richard-seam-authentic-runtime-001.json",
    "control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json",
+   "org-kernel/kernel.py",
    "receipts/sovereign-host/resident-request-dispatch.by-receipt/**",
    "receipts/sovereign-host/resident-request-dispatch.latest.json",
    "resident-runtime/aggregate_repo_transition.py",
@@ -12884,6 +12912,12 @@
    "control/worker-capability-profiles.json",
    "heartbeat_runtime/engine_v8.py",
    "tests/test_heartbeat_runtime.py"
+  ],
+  "tests/test_carrier_hb_epoch_forwarder.py": [
+   ".github/workflows/organization-claim-allocator-transition.yml",
+   "control/heartbeat-carrier-runtime-state.json",
+   "scripts/consume_org_claim_allocator_request.py",
+   "scripts/dispatch_resident_execution_requests.py"
   ],
   "tests/test_carrier_selfheal_source_root_continuity.py": [
    "scripts/install_sovereign_heartbeat_service.py",
@@ -15345,12 +15379,15 @@
    "scripts/refresh_and_execute_resident_task.py"
   ],
   "tests/test_resident_org_claim_allocator.py": [
+   ".github/workflows/organization-claim-allocator-transition-writer.yml",
+   ".github/workflows/organization-claim-allocator-transition.yml",
    ".stegverse/transition-ledger/contract.json",
    ".stegverse/transition-ledger/emit.py",
    ".stegverse/transition-ledger/org-contract.json",
    "control/claims-active.json",
    "control/queue.json",
    "control/resident-execution-request.d/org-claim-allocator-001.json",
+   "control/workflow-surface-registry.json",
    "org-kernel/kernel.py",
    "org-kernel/node_store.py",
    "resident-runtime/aggregate_repo_transition.py",
@@ -15365,7 +15402,9 @@
    "tasks/TASK-2026-0006.json",
    "tasks/TASK-2026-0007.json",
    "tasks/TASK-2026-0008.json",
-   "tasks/TASK-2026-0012.json"
+   "tasks/TASK-2026-0012.json",
+   "tasks/TASK-2026-0013.json",
+   "tests/test_org_claim_custody.py"
   ],
   "tests/test_resident_refresh_awareness_dependencies.py": [
    "control/astra-class-adversarial-resilience-contract.json",
@@ -17114,6 +17153,11 @@
   ],
   "tests/test_transition_disposition_invariant.py": [
    "scripts/validate_transition_disposition.py"
+  ],
+  "tests/test_transition_job_runs_on_pull_request.py": [
+   ".github/workflows/**",
+   "control/workflow-surface-registry.json",
+   "scripts/consume_org_claim_allocator_request.py"
   ],
   "tests/test_transition_receipt_journey.py": [
    ".stegverse/transition-ledger/emit.py",

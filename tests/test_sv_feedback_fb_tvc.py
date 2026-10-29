@@ -61,7 +61,12 @@ class FB1AliasTests(unittest.TestCase):
             self.assertEqual(e["path"], U)
             self.assertFalse(e["evidence"]["on_base"])
             self.assertEqual(e["evidence"]["commit"], heads[alias])
-            self.assertFalse((ROOT / e["candidate_path"]).exists(), e["candidate_path"])  # not on our base/branch
+            # This branch is StegVerse-Labs/.github#3241, which carries its own workflow; the row stays FAIL_CLOSED (not on base)
+            # until main does. Every other unresolved alias's target must still be absent here.
+            if alias == 'allocator workflow':
+                self.assertTrue((ROOT / e["candidate_path"]).is_file(), e["candidate_path"])
+            else:
+                self.assertFalse((ROOT / e["candidate_path"]).exists(), e["candidate_path"])  # not on our base/branch
             d = mg.alias_disposition("retry " + alias)
             self.assertEqual((d["disposition"], d["failure_code"], d["owning_existing_goal"]),
                              ("FAIL_CLOSED", "SURFACE_ALIAS_TARGET_NOT_ON_BASE", GOAL163))
