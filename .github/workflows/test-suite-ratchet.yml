@@ -8,7 +8,6 @@ on:
   pull_request:
   push:
     branches: [main]
-  workflow_dispatch:
 
 # Least privilege: nothing at workflow scope. Each job declares the only scope
 # it uses (contents: read, for actions/checkout); artifact upload uses the
@@ -28,7 +27,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install pytest
+      - run: python -m pip install pytest==9.2.0
 
       - name: Explicitly run physical emission provenance fixtures PE-01..PE-08
         run: python -m unittest -v tests/patents/test_physical_emission_2626.py
@@ -222,7 +221,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install pytest
+      - run: python -m pip install pytest==9.2.0
 
       # from governance-endpoint-validation.yml
       - name: The kernel's mesh and node state are supplied, never derived from the host

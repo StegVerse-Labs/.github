@@ -102,7 +102,7 @@
       "path": ".github/workflows/repository-hygiene-ecosystem-bulk-census.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "HYGIENE-CAUSAL-ROOTS-001 / StegVerse-Labs/.github#3039",
-      "reason": "Read-only census that anonymously clones other repositories (StegVerse-Labs/.github, StegVerse-Labs/Site) and classifies their branch inventory fail-closed; that live cross-repository classification exists nowhere else, and an external fetch must not be folded into a dispatcher (#3039 H6b). Its former pull-request verify job is retired: the unittest runs in test-suite-ratchet.yml and its py_compile in the consolidated-source-validators job. Runs on workflow_dispatch and push to main only; evidence collection, no runtime authority."
+      "reason": "Read-only census that anonymously clones other repositories (StegVerse-Labs/.github, StegVerse-Labs/Site) and classifies their branch inventory fail-closed; that live cross-repository classification exists nowhere else, and an external fetch must not be folded into a dispatcher (#3039 H6b). Its former pull-request verify job is retired: the unittest runs in test-suite-ratchet.yml and its py_compile in the consolidated-source-validators job. Runs on push to main only (workflow_dispatch removed, StegVerse-Labs/.github#3183); evidence collection, no runtime authority."
     },
     {
       "path": ".github/workflows/test-suite-ratchet.yml",

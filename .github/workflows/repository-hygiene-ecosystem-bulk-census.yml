@@ -1,7 +1,6 @@
 name: Ecosystem repository hygiene bulk census
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
     paths:

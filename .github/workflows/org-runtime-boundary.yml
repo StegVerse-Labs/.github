@@ -84,7 +84,6 @@ on:
       - 'scripts/run_stegbrowser_universal_intr_materialization.py'
       - 'tests/test_stegbrowser_universal_intr_materialization.py'
       - '.github/workflows/org-runtime-boundary.yml'
-  workflow_dispatch:
 
 permissions:
   contents: read

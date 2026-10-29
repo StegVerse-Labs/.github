@@ -41,7 +41,6 @@ on:
       - 'tests/test_reverse_intr_inter_org_route.py'
       - 'docs/REVERSE_INTR_GOVERNANCE_REMEDIATION_ROUTE_MIRROR_HANDOFF.md'
       - '.github/workflows/reverse-intr-inter-org-route-validation.yml'
-  workflow_dispatch:
 
 permissions:
   contents: read
