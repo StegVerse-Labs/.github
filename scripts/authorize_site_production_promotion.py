@@ -602,10 +602,12 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
     chain_rows: list[dict[str, Any]] = []
     chain_refusal = None
     if repo_ledger_root is not None:
-        custody = consumer.ledger_custody(source, repo_ledger_root, org_ledger_root,
-                                          hb_epoch=int(str(hb_epoch)) if hb_epoch is not None
-                                          and kernel.supplied_epoch_failure(hb_epoch) is None else None)
         try:
+            event_ephemeral = consumer.event_ephemeral_materialization(source, repo_ledger_root, org_ledger_root)
+            custody = consumer.ledger_custody(source, repo_ledger_root, org_ledger_root,
+                                              event_ephemeral=event_ephemeral,
+                                              hb_epoch=int(str(hb_epoch)) if hb_epoch is not None
+                                              and kernel.supplied_epoch_failure(hb_epoch) is None else None)
             chain = consumer.verify_organization_chain(custody)
             chain_rows = list(chain["receipts"])
             grants = consumer.chain_grants(chain)
