@@ -2,14 +2,14 @@
   "schema": "stegverse.canonical-task-registration-request/v1",
   "request_id": "lane-d-for-lane-a-pat-003-chronology-2026-10-23",
   "task_id": "PAT-003-CHRONOLOGY",
-  "observed_registry_generation": 324,
+  "observed_registry_generation": 325,
   "registration_mode": "NEW_IDENTITY",
   "issue": "StegVerse-org/.github#165",
   "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-chronology-2026-10-23.json",
   "collision_analysis": [
     "Identity provenance: PAT-003-CHRONOLOGY is PROPOSED_BY_LANE_A (Lane A (PAT-003, agent session 19d95368-7ddb-43b9-8e58-54fa330e98ec) via orchestrator New Bot c40482d9, 2026-10-23; the same key appears in the StegVerse-Labs/patent-registry#19 work register (PROPOSED / UNCLAIMED)). Lane D files the request; it does not originate the identity.",
     "Owner: Lane A (PAT-003, 19d95368), per INDEX.md lane-to-Goal map 'PAT-003 (19d95368), Lane A: #165 (P3)'.",
-    "Not present in data/canonical-task-registry.json generation 324 (Labs main 32f75c5d, re-observed 2026-10-29) or in data/canonical-task-records/ (observed).",
+    "Not present in data/canonical-task-registry.json generation 325 (Labs main f9b46abc, re-observed 2026-10-29) or in data/canonical-task-records/ (observed).",
     "Adjacent, not equivalent: OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001 (PROPOSED/UNCLAIMED, repository StegVerse-Labs/.github, components optical-physical-state-admission-and-patent-scope-reconciliation, recorded-video-research-protocol-coordination, physical-replay-evidence-contract-review). This task targets StegVerse-Labs/Patents and patent-registry filing-readiness evidence only.",
     "Shared status surfaces filing-readiness/PAT-003_FILING_READINESS_INDEX.md and data/PAT-003-completion-status.json are fenced to PAT-003-EVIDENCE only; PAT-003-CHRONOLOGY and PAT-003-PRIOR-ART update them only through a write-coordination with PAT-003-EVIDENCE (same owner, Lane A).",
     "Excluded: PAT-003-FILING-PACKET stays UNCLAIMED (practitioner hand-off); no path of it is in this task's targets or fence."

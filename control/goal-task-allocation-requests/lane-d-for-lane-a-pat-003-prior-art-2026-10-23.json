@@ -10,7 +10,7 @@
   "cosv_task_vector": null,
   "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics",
   "canonical_registry_ref": "data/canonical-task-registry.json",
-  "observed_registry_generation": 324,
+  "observed_registry_generation": 325,
   "owning_task_found": false,
   "scope": "PAT-003 prior art: a dated, reproducible prior-art search ledger for PAT-003 and a map of its overlap with the existing PAT families (reviews/PAT-003_TECHNICAL_COMPARISON_RESEARCH_LEDGER.md). Practitioner evaluation of the ledger is outside this task (PAT-003-FILING-PACKET, not claimed here). No filing, no legal determination, no freedom-to-operate opinion.",
   "scope_digest": "sha256:981e3b75df3c4cd5274bc485eeea39ea5a89f8971e8c8b3b286338c195eebf2b",
