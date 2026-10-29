@@ -230,3 +230,67 @@ claim/fence, sovereign mutation and runtime ALLOW were not performed.
 Shared source-packet/note transfer remains unperformed after the prior automatic
 approval rejection; exact payload/destination approval remains required. Do not
 retry through another transport. Existing shared checkpoints stop at session6.
+
+
+## Recovery session 1 — 2026-10-29 (after prior session 12)
+
+Live main remains `6b13c3a749b2940d6142644196a8302823c1f45a`.
+Read Registry blob `ea0c6d61881da8b19398e7becbb62d9e727a4379` through
+Git data because the contents endpoint returned an empty body. The actual
+Registry is generation 322 with 120 rows; this proposed identity is absent
+from both the aggregate and the canonical-record shard inventory. Goal ID,
+COSV and canonical lifecycle remain unassigned. Session Prompt Count resets
+to 1; cumulative contribution is at least 13 prompts from the recovered
+12 plus this prompt, not a reset or a reconciled canonical Goal Prompt Count.
+The Registry owner must reconcile the total when admitting the identity.
+
+All six checks on docs head `3b03211a4943484d748c3395d61ed41b611fe5bd`
+completed SUCCESS, including ratchet and required-verification. This retires
+that CI-pending item. This documentation update creates a new head whose
+checks must be evaluated separately. The existing COMMENT review is at
+`d141afef`; no current-head independent APPROVE or protected merge is claimed.
+
+The session-12 custody coverage questions were narrowed against existing
+owner PR #3376 at `d810644ddc6ce290dd1a21f75c7c12d8c3fe05df`:
+
+- Existing canonical-source tests cover missing retained source in readback
+  and export; an existing batch test covers organization-receipt hash tampering.
+- The shared verifier checks the organization seal/hash, schema and owner
+  before selecting its sealed-source branch.
+- The sealed parity suite directly covers three of five nullable binding
+  fields and empty head_sha. Focused cases not located in the nine inspected
+  relevant test files are non-null repo_transition_id and
+  subject_or_correlation_id, empty receipt_kind/repository, and a correctly
+  re-sealed wrong organization owner. These are bounded coverage opportunities,
+  not demonstrated defects or claims about all repository tests.
+- Preserve existing production code and pins. Any additional cases belong in
+  the existing owner's parity parametrizations, with valid controls and
+  re-sealing so the intended guard is reached. No competing patch was created.
+
+Detailed source references and exact owner steps:
+https://github.com/StegVerse-Labs/.github/issues/2810#issuecomment-6504630611.
+This is source inspection; prior local/hosted test results were not re-executed.
+
+Independently read TVC main-push run `40917305561`, job `123600841295`,
+head `dbfccec958c107b97177fe28865e5ef7a2aea46e`. Parsed the actual Labs
+receipt and recomputed its canonical SHA256, matching
+`2e0ec2ddf99dd53b8a42d8bd2f1f4253871da2b3a7068ce69027b3ffdf1a5ed2`.
+Receipt disposition ALLOW: 25 tests, zero failures/errors/skips; job reports
+nine subtests. It explicitly declares candidate=true and
+appended_by_this_job=false. The published Labs ledger ref remains
+`b2d90fc301fe0ced4fd5d68dc0734342e59f8cea`. This is TVC conformance evidence,
+not SKAP custody issuance or organization-ledger acceptance.
+
+The existing #3183 comment6504428668 supplies the prepared ingest-request
+preflight to the original writer. Next: authenticate provenance, use the
+existing ingest route with genuine supplied epoch, read back the published
+append and native consumer result, then evaluate #3290 -> #3376 required
+verification and protected integration. Current #3376 still has six successful
+and two failed check runs. No gate is weakened or receipt fabricated.
+
+Other existing owners retain Registry ruling/pins/admission, TVC537 issuance,
+CVK279 verification, StegOS426 identity and adapter430 healthy-node integration.
+No newer responses were observed in those checked issue threads. Native
+claim/fence, sovereign KV __51 and real-node finish-point ALLOW remain unobserved.
+The prior optional source-packet/note sharing approval remains outstanding;
+no transfer was retried and no shared-folder or sovereign KV write is claimed.

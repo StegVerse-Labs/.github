@@ -2369,3 +2369,16 @@ claim/fence, sovereign mutation and runtime ALLOW were not performed.
 Shared source-packet/note transfer remains unperformed after the prior automatic
 approval rejection; exact payload/destination approval remains required. Do not
 retry through another transport. Existing shared checkpoints stop at session6.
+
+
+## KV/SKAP recovery update — 2026-10-29, new session 1
+
+Docs head `3b03211a` passed all six checks. Registry generation 322 / 120 rows
+still has no admitted KV/SKAP goal. The existing custody-owner coverage review
+is now narrowed to specific sealed-source regressions, with no demonstrated
+production defect. TVC main-run conformance receipt `2e0ec2dd` was independently
+read and its seal recomputed; organization-writer acceptance remains separate.
+See the [current KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#recovery-session-1--2026-10-29-after-prior-session-12)
+and [owner findings](https://github.com/StegVerse-Labs/.github/issues/2810#issuecomment-6504630611).
+This docs update requires its own CI. No native admission, custody, fence,
+runtime ALLOW or release is claimed; cumulative prompt count remains unreconciled.
