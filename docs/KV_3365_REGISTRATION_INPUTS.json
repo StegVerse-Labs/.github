@@ -1,0 +1,91 @@
+{
+  "status": "OWNER_REVIEW_PROPOSAL_NOT_REGISTRATION_REQUEST",
+  "issue": "https://github.com/StegVerse-Labs/.github/issues/3365",
+  "authority_effect": "NONE",
+  "goal_task_id": null,
+  "cosv": null,
+  "recommended_mode": "NEW_IDENTITY_IF_OWNER_CONFIRMS_NO_EXISTING_MIGRATION_IDENTITY",
+  "goal": "Complete one owner-approved, revision-pinned batch of StegVerse ecosystem material from personal Drive sources into existing native OrgKV custody; retain per-object source lineage and exclusions, verify destination bytes and organization transition receipts, and reconcile specifically named coordination consumers without changing the authorities that provide those capabilities.",
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/continuity-vault-kit"
+    ],
+    "components": [
+      "personal-ecosystem-kv-migration-register",
+      "personal-ecosystem-kv-source-classification",
+      "personal-ecosystem-kv-consumer-cutover-reconciliation"
+    ]
+  },
+  "expected_evidence_predicates": [
+    "OWNER_APPROVED_SOURCE_REVISION_SET_AND_DISCLOSURE_CLASSIFICATION",
+    "EVERY_SOURCE_REVISION_HAS_ONE_RECONCILED_DISPOSITION",
+    "MIGRATED_BYTES_MATCH_EXACT_SOURCE_SHA256_AND_LENGTH",
+    "MIGRATED_OBJECT_BOUND_TO_NATIVE_ORGANIZATION_TRANSITION_AND_DESTINATION_READBACK",
+    "ORIGINAL_COPY_MIRROR_DERIVED_RELATIONSHIPS_AND_CONTRADICTIONS_RETAINED",
+    "NAMED_CONSUMERS_CUT_OVER_ONLY_AFTER_VERIFIED_CUSTODY",
+    "NO_PREMATURE_ORIGINAL_DELETION_OR_LEGACY_WRITE_REVOCATION"
+  ],
+  "excluded_ownership": [
+    "Registry identity, COSV allocation and collision authority",
+    "WorkerCoordinator claim/fence issuance",
+    "Organization ledger append and InTr authority",
+    "TVC credentials, SKAP authentication and signer custody",
+    "Task Registry event-history writer (#1423)",
+    "General WorkSpace projection and device-continuity implementation (#2796)",
+    "Historical import implementation already closed under CVK #191",
+    "KV-SKAP-VAULT-FUNCTIONAL-001 capability implementation under Org #167"
+  ],
+  "finish_point_proposal": {
+    "acceptance_test": "For the owner-sealed source revision set, every object is VERIFIED_MIGRATED with exact byte and native custody evidence or EXCLUDED with an owner-approved reason; unresolved or FAIL_CLOSED objects keep completion false. For each named consumer, cutover and any legacy-write revocation are independently manifested and verified. Preserve originals.",
+    "verifier_entrypoint": null,
+    "lowest_supported_mode": "Owner must bind the existing native acceptance verifier; source-only or synthetic tests cannot discharge custody."
+  },
+  "owner_decisions_required": [
+    "Confirm NEW_IDENTITY or name an already-existing exact migration shard; do not repurpose an unrelated registered Goal.",
+    "Record the #3365-specific authority disposition under the existing registration machinery. The contract's SOURCE_IMPLEMENTED_PROPOSED label alone is not proof that source registration cannot proceed: EC9 was separately registered at generation 322. EC9 authority is not transferable to #3365.",
+    "Assign Goal identity and establish parent/root lineage without borrowing a colliding owner identity.",
+    "Seal a finite source revision batch and consumer set through private approved locators; do not place private IDs, contents or hashes of sensitive material in public issue prose.",
+    "Bind and pin a concrete finish-point verifier in its owner repository before forming sealed_scope.",
+    "Provide evidence-backed exact_metrics for native COSV derivation; no manually chosen COSV.",
+    "Run candidate collision validation, resolve hard collisions through the relevant owner, and use a recomputed adjacency ruling only for genuine COORDINATE_CONVERGENCE."
+  ],
+  "ready_for_registration": false,
+  "sealed_scope_created": false,
+  "observed_source": {
+    "head": "0fff5f557e8cec837ebb6da413ec3ec70d5cc562",
+    "registry_blob": "ea0c6d61881da8b19398e7becbb62d9e727a4379",
+    "generation": 322,
+    "aggregate_rows": 120,
+    "task_shards": 214,
+    "request_files": [
+      "control/canonical-task-registration-requests/ec9-when-ai-services-fail-publication-001.json"
+    ]
+  },
+  "observed_source_census": {
+    "source": "https://github.com/StegVerse-Labs/.github/issues/3365#issuecomment-6485704699",
+    "reported_personal_files": 180,
+    "reported_organization_files": 209,
+    "eligibility": "REVIEW_HOLD",
+    "independently_reexecuted_here": false,
+    "approved_batch": false
+  },
+  "verifier_gap": {
+    "cvk_commit": "b1a66008dccad0d301a7e892e6619f47002ec26d",
+    "existing_candidates": [
+      "runtime/kv_receipt_ledgers.py::receipt_on_ledger",
+      "runtime/task_registry_event_sovereign_kv_binding.py::validate_vault_lineage_custody_result"
+    ],
+    "binding_status": "PARTIAL_PRIMITIVES_ONLY_NOT_A_BATCH_FINISH_POINT",
+    "missing_composition": [
+      "owner-approved finite revision set and privacy exclusions",
+      "original-byte source/destination length and SHA-256 equality per included object",
+      "task/manifest-bound native organization and KV receipt verification via existing owners",
+      "preserved contradictory provenance and independently manifested named-consumer cutover"
+    ],
+    "no_supplied_boolean_or_test_double_is_authority": true
+  }
+}
