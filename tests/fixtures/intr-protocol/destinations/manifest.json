@@ -22,7 +22,7 @@
     {
       "organization": "StegVerse-Labs",
       "repository": "StegVerse-Labs/.github",
-      "source_commit": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+      "source_commit": "c356fd819a7b08c8cb97f5993b3fb666c0d101d7",
       "interlock": {
         "file": "StegVerse-Labs.interlock-intr.json",
         "source_path": "org-runtime/interlock-intr.json",
