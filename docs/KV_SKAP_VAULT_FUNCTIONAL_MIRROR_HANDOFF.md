@@ -188,3 +188,45 @@ Session Prompt Count10. Goal Prompt CountUNVERIFIED, not reset; native Goal/COSV
 unassigned. Continue from current Registry and owner replies, preserving evidence
 classes and existing owners. No native admission, fence, sovereign write or
 finish-point ALLOW was performed by this session.
+
+
+## Session12 handoff — 2026-10-29
+
+Current-truth correction: existing custody owner PR3376 at
+`d810644ddc6ce290dd1a21f75c7c12d8c3fe05df` is the convergence target, stacked on
+#3290. The separate session9 candidate is comparison evidence, not a competing
+integration instruction. The earlier sentence directing its review/commit is
+superseded by this section. Original owner retains source and integration control.
+
+Read the public owner parity suite at that exact head: it covers valid sealed
+readback/batch/export, missing seal, forged source, empty head identity, schema
+rejection, resealed binding/class/operation mismatches, and canonical-only Master
+Records handling. Further review should locate coverage for missing retained
+source, organization seal/owner rejection, every binding field and each empty
+identity component across existing suites before adding tests. These are scoped
+coverage questions, not demonstrated vulnerabilities or claims of missing global
+coverage. No rejected patch payload is included or transferred here.
+
+Docs PR3404 at d8a2efaa4b8bd3afd01c875c598e50a437640bfd had all six check runs
+completed SUCCESS, including ratchet and required-verification. This handoff
+update creates a new head requiring its own checks; prior success is historical.
+CVK280 containment remains merged; do not repeat that integration wait.
+
+Parallel owner work remains Registry ruling/pins/adjacencies and serialized
+admission/COSV; TVC537 authenticated issuance; CVK279 consumer verifier; custody
+3376 convergence; StegOS426 identity contract; adapter430/429/428 producer and
+health integration;3402 scope/node findings; independent docs review. StegOS and
+adapter placement text still naming retired431 must be reconciled with Org249
+and the retained healthy-node-to-adapter-to-SDK path before integration. No new
+node registration or repair attempt is authorized by3402's observation record.
+Actual WorkerCoordinator fence, sovereign KV__51 and real-node ALLOW follow the
+required native admission/evidence; preparation can proceed concurrently.
+
+Live main6b13c3a749b2940d6142644196a8302823c1f45a: Registry322,120rows, proposed
+KV identity absent. Goal/COSV/lifecycle and cumulative count remain unverified.
+Session Prompt Count12; resume in a new session using current Registry and this
+handoff. Session11 inventory: org#167 comment6503932798. Native registration,
+claim/fence, sovereign mutation and runtime ALLOW were not performed.
+Shared source-packet/note transfer remains unperformed after the prior automatic
+approval rejection; exact payload/destination approval remains required. Do not
+retry through another transport. Existing shared checkpoints stop at session6.
