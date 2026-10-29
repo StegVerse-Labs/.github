@@ -551,11 +551,11 @@
    "kind": "HANDOFF",
    "lowest_supported_mode": "E0",
    "observed_by": [],
-   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb). Still not admitted: StegVerse-Labs/.github#3326 (draft @e9085315), StegVerse-SDK#556 (draft). admission not exercised; consequence path pending drafts",
+   "observed_state": "revision 21 (Lane D, StegVerse-org/.github#167, gh pr view on 2026-10-29): the two drafts named in the revision 15 text below are superseded and are no longer admission targets. StegVerse-Labs/.github#3326 (draft @e9085315) is superseded by StegVerse-Labs/.github#3358, merged as 5734124204d5f32c0e3040156c962183d3ae4a06 (registry generation 326), which carries the re-sealed registration request and adjacency ruling; Coordination is closing #3326 unmerged. StegVerse-org/StegVerse-SDK#556 was closed unmerged on 2026-10-28T16:04:40Z, two seconds after StegVerse-org/StegVerse-SDK#567 merged as 6b3ccee27dd20b5d930bf9667c855fb2db8223e1, which carries #556's commits as authored plus #562 and #565. Both successors are merged, but each is still listed as a dependency because admission through SV_CHANGE_ADMIT is not exercised for either: Labs main 6bb43816 holds no NATIVE SV_CHANGE record for #3358 or SDK#567 (data/sv-work-items/migration holds only MIGRATED_HISTORICAL records), so LC-GOV-06 stays. Revision 15 text follows. revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb). Still not admitted: StegVerse-Labs/.github#3326 (draft @e9085315), StegVerse-SDK#556 (draft). admission not exercised; consequence path pending drafts",
    "requires_llms": 0,
    "unadmitted_dependencies": [
-    "StegVerse-Labs/.github#3326 draft @e9085315",
-    "StegVerse-org/StegVerse-SDK#556 draft @406774e7 (revision 15: head moved from 2db2ad2e; the plan root sdk556 stays pinned at 2db2ad2e)"
+    "StegVerse-Labs/.github#3358 merged 5734124204d5f32c0e3040156c962183d3ae4a06 (supersedes #3326): no NATIVE SV_CHANGE admission record",
+    "StegVerse-org/StegVerse-SDK#567 merged 6b3ccee27dd20b5d930bf9667c855fb2db8223e1 (carries the closed #556's commits): no NATIVE SV_CHANGE admission record"
    ],
    "what": "the draft surfaces on the path reach main through the ecosystem SV_CHANGE_ADMIT transition, not a person"
   },

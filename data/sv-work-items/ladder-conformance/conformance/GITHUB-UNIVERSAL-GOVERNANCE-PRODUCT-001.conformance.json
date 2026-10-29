@@ -1037,7 +1037,7 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb). Still not admitted: StegVerse-Labs/.github#3326 (draft @e9085315), StegVerse-SDK#556 (draft). admission not exercised; consequence path pending drafts",
+   "observed_state": "revision 21 (Lane D, StegVerse-org/.github#167, gh pr view on 2026-10-29): the two drafts named in the revision 15 text below are superseded and are no longer admission targets. StegVerse-Labs/.github#3326 (draft @e9085315) is superseded by StegVerse-Labs/.github#3358, merged as 5734124204d5f32c0e3040156c962183d3ae4a06 (registry generation 326), which carries the re-sealed registration request and adjacency ruling; Coordination is closing #3326 unmerged. StegVerse-org/StegVerse-SDK#556 was closed unmerged on 2026-10-28T16:04:40Z, two seconds after StegVerse-org/StegVerse-SDK#567 merged as 6b3ccee27dd20b5d930bf9667c855fb2db8223e1, which carries #556's commits as authored plus #562 and #565. Both successors are merged, but each is still listed as a dependency because admission through SV_CHANGE_ADMIT is not exercised for either: Labs main 6bb43816 holds no NATIVE SV_CHANGE record for #3358 or SDK#567 (data/sv-work-items/migration holds only MIGRATED_HISTORICAL records), so LC-GOV-06 stays. Revision 15 text follows. revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb). Still not admitted: StegVerse-Labs/.github#3326 (draft @e9085315), StegVerse-SDK#556 (draft). admission not exercised; consequence path pending drafts",
    "refusals": [
     {
      "disposition": "FAIL_CLOSED",
@@ -1051,7 +1051,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-Labs/.github#3326 draft @e9085315",
+     "evidence": "StegVerse-Labs/.github#3358 merged 5734124204d5f32c0e3040156c962183d3ae4a06 (supersedes #3326): no NATIVE SV_CHANGE admission record",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:H-GOV-ADMISSION",
@@ -1062,7 +1062,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "StegVerse-org/StegVerse-SDK#556 draft @406774e7 (revision 15: head moved from 2db2ad2e; the plan root sdk556 stays pinned at 2db2ad2e)",
+     "evidence": "StegVerse-org/StegVerse-SDK#567 merged 6b3ccee27dd20b5d930bf9667c855fb2db8223e1 (carries the closed #556's commits): no NATIVE SV_CHANGE admission record",
      "failed_predicate": "HANDOFF_SURFACE_ADMITTED",
      "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
      "item": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001:H-GOV-ADMISSION",
@@ -1190,10 +1190,10 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:7cc3a6fff7a7bb1f36368f0c3e009ccfb50cc6ec2df82caeca984ebe85c847b1",
+  "document_sha256": "sha256:f760b11e3514d7b3a4d436b35f009cf31535e9d7c886df0d6f1344def88cf766",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:d72ce9d1c39fc3d1351da5d407d1228338a8fe0fff3183be29d1174625f50ddb",
+   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:8c9c68cd4c07f0dd9aaa3bec19a4c8b47a85dca95c1fea1ae1e047cfdbc2c381",
    "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:f8864a3f15402ba1498fcf952d6a6c51504ea60cef86543401b1a894e966fb10",
    "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:0d11886862889da28454683cc2507c94e220bb778a7415dd7c1a3b82f2a91cf6",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:becdc08760762e5398c5512bcc86b7290687878b4dafd617b13a325b5fdbdb0b",
@@ -1201,7 +1201,7 @@
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-03.json": "sha256:c4522fcbe7258e48dc3eaed097e6d3f778fbd4627a16c5b5b00ef96a477de4ed",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-04.json": "sha256:ad2302d2319aa21c9d77815053bd5a8afc118110724c10cf0a439a8d5a98dbca",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-05.json": "sha256:ea35e6766354bd0b7a9b257c6162478a7c9c814f78d72c378cd92b7e0bb42561",
-   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-06.json": "sha256:636d0d94aa2a387c2744229d1b3c4098a737947810a4f8e9717513965206dfeb",
+   "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-06.json": "sha256:34ab23ac6fef1b2fa2821f0a057fd5912cea1b6f59ebd66e9a171033436e48b2",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-07.json": "sha256:d0f727d3b3e50425554ec2b90babd176d823503bc45ccb4c95106c054497dd24",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-08.json": "sha256:3bd80a55940865b8d1317a6ae165fdffb3ce9f20541292b58896d23095070aa8",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-09.json": "sha256:56a74bd022c7d28227dd17b73c206b53a089213c500324b1ae2f118ce751ea6a",
