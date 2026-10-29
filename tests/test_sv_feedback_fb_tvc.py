@@ -61,7 +61,12 @@ class FB1AliasTests(unittest.TestCase):
             self.assertEqual(e["path"], U)
             self.assertFalse(e["evidence"]["on_base"])
             self.assertEqual(e["evidence"]["commit"], heads[alias])
-            self.assertFalse((ROOT / e["candidate_path"]).exists(), e["candidate_path"])  # not on our base/branch
+            # The merged branch carries both #3235's own workflow and #3241's allocator workflow (now on main); each row stays
+            # FAIL_CLOSED (not on the pinned base) until the alias table is re-verified. Any other unresolved target must be absent.
+            if alias in ('#3235 verify workflow', 'allocator workflow'):
+                self.assertTrue((ROOT / e["candidate_path"]).is_file(), e["candidate_path"])
+            else:
+                self.assertFalse((ROOT / e["candidate_path"]).exists(), e["candidate_path"])  # not on our base/branch
             d = mg.alias_disposition("retry " + alias)
             self.assertEqual((d["disposition"], d["failure_code"], d["owning_existing_goal"]),
                              ("FAIL_CLOSED", "SURFACE_ALIAS_TARGET_NOT_ON_BASE", GOAL163))
@@ -257,7 +262,7 @@ class CheckReceiptInvariantTests(unittest.TestCase):
         bad["request_digest"] = wi.request_digest(bad)
         errs, c = rm.both(bad, SCHEMAS["sv-change.v1"], wi.validate_change)
         self.assertTrue(errs); self.assertEqual(c, "CHECK_ID_UNDECLARED")
-        obs = wi.admission_inputs(ch, ch["base_ref"], resolved_issues=fx.fixture_resolved_issues(ch))
+        obs = fx.observe(ch, ch["base_ref"], resolved_issues=fx.fixture_resolved_issues(ch))
         obs["validation_receipts"].append(fx.ledger_receipt("ci-green", ch["head"]["change_digest"]))
         out = fx_admit(obs)
         self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "CHECK_ID_UNDECLARED"))
@@ -306,8 +311,8 @@ class TVCReplayTests(unittest.TestCase):
             self.assertEqual(m["expected_failure_code"], sc["expected_failure_code"])
             if m["mutation"] is None:
                 rcpts = {r["receipt_sha256"]: r for r in base.jsonl("data/admission-scenarios/tvc-replay/signoff-receipts.jsonl")}
-                self.assertEqual(wi.admission_inputs(ch, m["current_base"], [rcpts[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"],
-                                                    m["resolved_issues"]),
+                self.assertEqual(fx.observe(ch, m["current_base"], [rcpts[k] for k in m["signoff_receipts"]], m["hb_epoch_readback"],
+                                            m["resolved_issues"], push_receipts=m["push_receipts"], change_commits=m["change_commits"]),
                                  sc["observed_inputs"])
                 self.assertEqual(fx_admit(sc["observed_inputs"])["disposition"], "ALLOW")
             else:

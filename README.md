@@ -2053,6 +2053,53 @@ The frozen HOLD SDK attachment attempt now has a machine-readable review record 
 
 `MasterRecordsCheckpoint/v1` is the first bounded interoperability profile. Master Records remains checkpoint authority; manifested Interlock/InTr communication provides transport and provenance, not checkpoint construction. No external adoption or conformance is claimed without independently retained evidence.
 
+2026-10-29 independent read-only verification: the native Org post-genesis kit
+check verifies 156 records, and `replay --require-ledgered-allow` returns
+**156 ALLOW / 0 DENY / 0 FAIL_CLOSED** over 13 anonymously fetched public
+organization-ledger refs. All 156 complete results match the TVC worker's
+published output; the raw file digest differs only because that worker's tip
+inventory includes an additional unused `master-records` copy. Exact source,
+ledger and output hashes are in the [retained evidence](docs/evidence/intr-readback-20261029/README.md)
+and [canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md).
+The protocol-vector verifier also passes. This verifies historical public
+receipts and supersedes the blanket unknown-runtime description for those
+paths; it grants no new transition, private-warrant custody, native task
+admission, claim/fence, external conformance or closure. The task shard remains
+ACTIVE; its aggregate generation-322 Registry row is absent. Protected source
+integration and Registry disposition remain with their existing owners.
+
+### InTr verification and integration handoff — 2026-10-29
+
+
+Org #258's declared-successor reader was independently tested (10 ingress tests
+pass) and preserves all 156 historical public ALLOW results byte-for-byte.
+Its 46 hosted checks pass; protected owner integration and H36 test integration
+remain. The reviewed #3404 head was d8a2efaa; current 3b03211a adds custody-owner
+coordination documentation. Its later append conflicts with the old location of
+this section; this section now sits beside the protocol evidence. Registry native plans exposed
+record/state repairs before aggregate admission; exact requests are on #3195.
+See the [current handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md)
+for pinned evidence, completed/remaining work, separate private-warrant ownership
+and cumulative-count disposition. No private execution or task closure claimed.
+
+Combined integration check: H36 patch applied cleanly to Org #258 at 9f21aa83;
+`python -m unittest discover -s tests -p 'test_intr_*py'` passed 314 tests
+in 27.031s. Local fabricated-fixture/source verification only; hosted CI on
+an owner-created combined commit remains required.
+
+Fresh continuation: #3405 at 4cf5c7c1 passed all six hosted checks. The
+[Registry repair diagnostic](docs/evidence/intr-registry-repair-20261029/README.md)
+reproduces the omitted-shard repair cycle and validates an isolated atomic
+record-data candidate (seven validators, every-task projection, NO_CHANGE repeat,
+and collision CONTINUE). Canonical application/count disposition remains with
+the Registry owner; this evidence creates no admission. Session 2; cumulative
+recovery lower bound 34/20, exact count unverified and not reset.
+[Owner repair candidates](docs/evidence/intr-owner-repairs-20261029/README.md)
+retain #3207 refusal metadata (76 tests), #3213 fixture correction (188 tests),
+and TVC #562 path confinement (eight focused tests). Org #228 + #258/H36 integration,
+#259 ratification, #3263 admission and private runtime ownership remain separate.
+Fresh public issue links are mirrored in the existing KV coordination file.
+
 - 2026-10-01: PR #2878 restores the Canonical Work execution-substrate resolution on the latest canonical head; no runtime authority is inferred.
 
 - 2026-10-01: Reconstructed PR #2865 exact-child SDK dispatch on current canonical main; the existing path now binds Goal context plus exact child request identity without creating another runtime or dispatcher.

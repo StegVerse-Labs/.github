@@ -5,6 +5,7 @@ on:
     paths:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
+      - 'tests/test_org_runtime_transition_bound.py'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'resident-runtime/organization_role_conformance.py'
       - 'org-boundary/registry/services.json'
@@ -65,6 +66,7 @@ on:
     paths:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
+      - 'tests/test_org_runtime_transition_bound.py'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'resident-runtime/organization_role_conformance.py'
       - 'org-boundary/registry/services.json'
@@ -122,6 +124,10 @@ jobs:
         run: |
           python org-runtime/runtime_boundary.py validate | tee /tmp/org-boundary.json
           python -c 'import json; x=json.load(open("/tmp/org-boundary.json")); assert x["valid"] is True; assert x["authority_effect"]=="NONE_VALIDATION_ONLY"'
+      # B-P40: the boundary accepts only a committed-transition-cycle activation;
+      # the prior SOVEREIGN_RESIDENT_PROCESS activation fails closed.
+      - name: Validate runtime surface is the committed transition cycle
+        run: python -m unittest -v tests/test_org_runtime_transition_bound.py
       - name: Validate activation request generation
         run: |
           python org-runtime/runtime_boundary.py activation-request --runtime-id validation-resident | tee /tmp/activation.json

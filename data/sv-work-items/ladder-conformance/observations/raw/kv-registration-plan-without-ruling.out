@@ -1,0 +1,27 @@
+$ {python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json --base .
+--- exit 1
+--- stdout
+--- stderr
+{
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "clock_read": false,
+  "consequence_committed": false,
+  "detail": "[{\"task_id\": \"KV-SKAP-VAULT-FUNCTIONAL-001\", \"head_disposition\": \"COORDINATE_CONVERGENCE\", \"failure_code\": \"REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE\", \"evidence\": {\"new_collision_candidate_ids\": [], \"new_hard_collision_task_ids\": [], \"hard_collision_task_ids\": [], \"collision_candidate_ids\": [\"SS-KV-SKAP-SOCIAL-RELEASE-001\", \"STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001\", \"TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001\"], \"session_action\": \"COORDINATE_BEFORE_MUTATION\", \"substrate_review_error\": null}}]",
+  "disposition": "FAIL_CLOSED",
+  "execution_authority_minted": false,
+  "failed_predicate": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+  "failure_code": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+  "intr_admission_minted": false,
+  "mode": "plan",
+  "next_attempt": "on the next registration request event after the repair is recorded",
+  "organization_ledger_appended": false,
+  "organization_ledger_entrypoint": ".stegverse/transition-ledger/emit.py via .github/workflows/organization-ledger-transition.yml",
+  "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "request_id": "lane-d-kv-skap-vault-functional-2026-10-23",
+  "request_sha256": "sha256:57c1093b7daf06b899accdd7d68512ade1cdbf48bff9361f68a9f763b724dee8",
+  "required_evidence_or_repair": "coordinate KV-SKAP-VAULT-FUNCTIONAL-001 with ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] (COORDINATE_BEFORE_MUTATION) or narrow its targets before merge",
+  "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+  "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
+  "transition": "CANONICAL_TASK_REGISTRATION",
+  "workercoordinator_claim_or_fence_minted": false
+}

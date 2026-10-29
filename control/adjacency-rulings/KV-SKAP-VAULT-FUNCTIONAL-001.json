@@ -18,8 +18,8 @@
     "finish_point": {
       "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
       "repository": "StegVerse-Labs/continuity-vault-kit",
-      "source_commit": "61104a5743deb0ce0279ec049a908b4d08a8e10b",
-      "source_ref": "StegVerse-Labs/continuity-vault-kit#258"
+      "source_commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+      "source_ref": "StegVerse-Labs/continuity-vault-kit main @9d56bc7b (continuity-vault-kit#271 merge of laned/kv-skap-finish-pin-adapter ad327089; tree identical)"
     }
   },
   "candidates": [
@@ -60,7 +60,7 @@
         "canonical-event-ephemeral-domain-binding",
         "device-kv-bidirectional-intr",
         "exact-packet-verification",
-        "kv-skap-bidirectional-intr",
+        "kv-skap-gate-roundtrip",
         "single-roundtrip-receipt-lineage",
         "tvc-skap-credential-reference"
       ],
@@ -94,7 +94,9 @@
         "sovereign-kv",
         "task-registry"
       ],
-      "finish_point_paths": [],
+      "finish_point_paths": [
+        "runtime/kv_storage_provider_adapter.py"
+      ],
       "candidate_owned_paths": [
         "scripts/task_registry_checkin_event_history.py",
         "scripts/project_task_registry_event_to_sovereign_kv.py",
@@ -107,7 +109,14 @@
     {
       "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
       "failure_class": "B",
-      "consumed_by": "KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND (continuity-vault-kit runtime/kv_skap_vault.py)"
+      "consumed_by": "KV_DURABLE_CUSTODY_LOCATION_NOT_BOUND (continuity-vault-kit runtime/kv_skap_vault.py)",
+      "pinned_source": {
+        "repository": "StegVerse-Labs/continuity-vault-kit",
+        "commit": "859f1cf7f65f87b35e65fd8a9aa58e2933a12c01",
+        "files": {
+          "runtime/kv_storage_provider_adapter.py": "d6ab2d2395e045d703787917388cf9656261424e1f1ae78cfc36c4b41b08e1ee"
+        }
+      }
     }
   ],
   "conditions_claimed": {
@@ -115,5 +124,19 @@
     "b": "finish-point test exercises none of the candidates' components",
     "c": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001 is a consumes-dependency"
   },
-  "evidence_digest": "sha256:359e01ffaf2b00f5581ed09171653e36c14982b71d26b730fc62d53f916aa06d"
+  "evidence_digest": "sha256:72cd84f4a7d0b1c909c679222bd3db41c011b62b37caf695ce37e82f334697d6",
+  "protected_paths": [
+    {
+      "repository": "StegVerse-Labs/continuity-vault-kit",
+      "owner_task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+      "paths": [
+        "runtime/kv_storage_provider_adapter.py"
+      ],
+      "on_modification": {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": "KV_STORAGE_PROVIDER_ADAPTER_EDIT_ROUTED_TO_OWNER",
+        "routed_to": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001"
+      }
+    }
+  ]
 }

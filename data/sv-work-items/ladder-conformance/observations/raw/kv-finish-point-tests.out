@@ -1,0 +1,55 @@
+$ {python} -m unittest -v tests.test_kv_skap_vault_finish_point
+--- exit 0
+--- stdout
+--- stderr
+test_durable_custody_is_consumed_from_the_sovereign_kv_goal_not_reimplemented (tests.test_kv_skap_vault_finish_point.AuthorityAndLadder.test_durable_custody_is_consumed_from_the_sovereign_kv_goal_not_reimplemented) ... ok
+test_e0_stdlib_only_no_model_network_or_clock (tests.test_kv_skap_vault_finish_point.AuthorityAndLadder.test_e0_stdlib_only_no_model_network_or_clock) ... ok
+test_no_authority_is_duplicated (tests.test_kv_skap_vault_finish_point.AuthorityAndLadder.test_no_authority_is_duplicated) ... ok
+test_revocation_is_receipted_and_not_repeatable (tests.test_kv_skap_vault_finish_point.Consent.test_revocation_is_receipted_and_not_repeatable) ... ok
+test_write_and_read_require_a_covering_consent (tests.test_kv_skap_vault_finish_point.Consent.test_write_and_read_require_a_covering_consent) ... ok
+test_key_or_credential_material_never_enters_kv (tests.test_kv_skap_vault_finish_point.Custody.test_key_or_credential_material_never_enters_kv) ... ok
+test_only_tv_tvc_custody_key_references_are_held (tests.test_kv_skap_vault_finish_point.Custody.test_only_tv_tvc_custody_key_references_are_held) ... ok
+test_write_requires_a_bound_custody_reference (tests.test_kv_skap_vault_finish_point.Custody.test_write_requires_a_bound_custody_reference) ... ok
+test_a_tampered_or_malformed_bundle_never_raises (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_a_tampered_or_malformed_bundle_never_raises) ... ok
+test_an_ephemeral_node_fails_closed_until_tv_tvc_publishes_a_signer (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_an_ephemeral_node_fails_closed_until_tv_tvc_publishes_a_signer)
+EPHEMERAL anchors are signed envelopes (#432 @1cbad77e); the signers file is empty, so layer 1 is a six-field ... ok
+test_an_evidence_lineage_without_revocation_is_not_a_round_trip (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_an_evidence_lineage_without_revocation_is_not_a_round_trip) ... ok
+test_an_invalid_bound_intr_receipt_is_refused (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_an_invalid_bound_intr_receipt_is_refused) ... ok
+test_each_access_layer_gap_is_a_six_field_fail_closed (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_each_access_layer_gap_is_a_six_field_fail_closed)
+LC-KV-09/10/11: the three access constraints, each evidence-bound and named by its own layer. ... ok
+test_each_evidence_gap_is_a_six_field_fail_closed (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_each_evidence_gap_is_a_six_field_fail_closed) ... ok
+test_endpoint_not_an_org_member_reuses_the_closed_membership_schema (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_endpoint_not_an_org_member_reuses_the_closed_membership_schema)
+LC-KV-09 P4 (ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER): decided by runtime.kv_receipt_ledgers' closed ... ok
+test_endpoint_org_membership_fails_closed (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_endpoint_org_membership_fails_closed) ... ok
+test_every_access_row_failure_fails_its_mapped_sealed_predicate (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_every_access_row_failure_fails_its_mapped_sealed_predicate)
+LC-KV-09 E1 condition (Coordination, Oct 23): for each access row, if the row fails, the sealed predicate ... ok
+test_reference_only_evidence_cannot_reach_allow (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_reference_only_evidence_cannot_reach_allow) ... ok
+test_the_finish_point_expects_a_permanent_node (tests.test_kv_skap_vault_finish_point.EvidenceDrivenVerdict.test_the_finish_point_expects_a_permanent_node)
+LC-KV-13 completes with a PERMANENT node. Since #432 @c4cfc145 (rule 1) a SKAP_VAULT is a STEGVERSE_KV:<location> ... ok
+test_cli_exit_code_matches_disposition (tests.test_kv_skap_vault_finish_point.KvSkapVaultFinishPoint.test_cli_exit_code_matches_disposition) ... ok
+test_cli_unreadable_evidence_fails_closed (tests.test_kv_skap_vault_finish_point.KvSkapVaultFinishPoint.test_cli_unreadable_evidence_fails_closed) ... ok
+test_finish_point_verdict (tests.test_kv_skap_vault_finish_point.KvSkapVaultFinishPoint.test_finish_point_verdict) ... ok
+test_any_device_reconstructs_exactly_from_the_lineage_alone (tests.test_kv_skap_vault_finish_point.LineageAndContinuity.test_any_device_reconstructs_exactly_from_the_lineage_alone) ... ok
+test_lineage_is_one_continuous_hash_chain (tests.test_kv_skap_vault_finish_point.LineageAndContinuity.test_lineage_is_one_continuous_hash_chain) ... ok
+test_tampering_anywhere_breaks_the_lineage (tests.test_kv_skap_vault_finish_point.LineageAndContinuity.test_tampering_anywhere_breaks_the_lineage) ... ok
+test_cli_refuses_unproven_issuance_without_moving_scratch_ledger (tests.test_kv_skap_vault_finish_point.OrganizationLedgerReceipt.test_cli_refuses_unproven_issuance_without_moving_scratch_ledger) ... ok
+test_receipt_is_a_canonical_state_transition_receipt (tests.test_kv_skap_vault_finish_point.OrganizationLedgerReceipt.test_receipt_is_a_canonical_state_transition_receipt) ... ok
+test_scratch_ledger_append_and_refusals (tests.test_kv_skap_vault_finish_point.OrganizationLedgerReceipt.test_scratch_ledger_append_and_refusals) ... ok
+test_scratch_ledger_genesis_absent_is_never_fabricated (tests.test_kv_skap_vault_finish_point.OrganizationLedgerReceipt.test_scratch_ledger_genesis_absent_is_never_fabricated) ... ok
+test_unproven_issuance_never_attempts_a_finish_point_append (tests.test_kv_skap_vault_finish_point.OrganizationLedgerReceipt.test_unproven_issuance_never_attempts_a_finish_point_append) ... ok
+test_layer2_admits_only_a_layer1_receipt_from_a_healthy_node (tests.test_kv_skap_vault_finish_point.RoundTrip.test_layer2_admits_only_a_layer1_receipt_from_a_healthy_node) ... ok
+test_no_vault_operation_is_reachable_without_the_layer2_gate (tests.test_kv_skap_vault_finish_point.RoundTrip.test_no_vault_operation_is_reachable_without_the_layer2_gate)
+LC-KV-07/10/12: direct calls, caller strings, forged or replayed receipts all refuse with six fields. ... ok
+test_skap_entry_is_deterministic_and_returns_dispositions (tests.test_kv_skap_vault_finish_point.RoundTrip.test_skap_entry_is_deterministic_and_returns_dispositions) ... ok
+test_write_read_revoke_round_trip_is_exact (tests.test_kv_skap_vault_finish_point.RoundTrip.test_write_read_revoke_round_trip_is_exact) ... ok
+test_missing_issuance_receipt_remains_unobserved (tests.test_kv_skap_vault_finish_point.TvcIssuanceAuthenticityBoundary.test_missing_issuance_receipt_remains_unobserved) ... ok
+test_receipt_not_bound_to_lineage_remains_refused (tests.test_kv_skap_vault_finish_point.TvcIssuanceAuthenticityBoundary.test_receipt_not_bound_to_lineage_remains_refused) ... ok
+test_rehashed_changed_principal_does_not_prove_tvc_authority (tests.test_kv_skap_vault_finish_point.TvcIssuanceAuthenticityBoundary.test_rehashed_changed_principal_does_not_prove_tvc_authority) ... ok
+test_self_asserted_live_binding_is_not_an_authenticated_witness (tests.test_kv_skap_vault_finish_point.TvcIssuanceAuthenticityBoundary.test_self_asserted_live_binding_is_not_an_authenticated_witness) ... ok
+test_self_constructed_receipt_does_not_prove_tvc_authority (tests.test_kv_skap_vault_finish_point.TvcIssuanceAuthenticityBoundary.test_self_constructed_receipt_does_not_prove_tvc_authority) ... ok
+test_tamper_without_rehash_remains_invalid (tests.test_kv_skap_vault_finish_point.TvcIssuanceAuthenticityBoundary.test_tamper_without_rehash_remains_invalid) ... ok
+
+----------------------------------------------------------------------
+Ran 40 tests in <t>s
+
+OK

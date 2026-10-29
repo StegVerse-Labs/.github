@@ -1,0 +1,96 @@
+diff --git a/.github/workflows/organization-ledger-transition.yml b/.github/workflows/organization-ledger-transition.yml
+index ad2e8717..2f9308ed 100644
+--- a/.github/workflows/organization-ledger-transition.yml
++++ b/.github/workflows/organization-ledger-transition.yml
+@@ -97,7 +97,7 @@ jobs:
+             git fetch --no-tags origin "+$LEDGER_REF:$LEDGER_REF"
+             echo "ledger tip before append: $(git rev-parse "$LEDGER_REF")"
+           else
+-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger already exists; this writer appends to it and does not open a replacement","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
++            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_REF_ABSENT","failed_predicate":"DESIGNATED_REF_ALREADY_PUBLISHED","required_evidence_or_repair":"refs/stegverse/organization-ledger already exists; this writer appends to it and does not open a replacement","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"the next committed-packet push after refs/stegverse/organization-ledger is published for this organization","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+             exit 1
+           fi
+           git rev-parse "$LEDGER_REF" > "$RUNNER_TEMP/ledger-before"
+@@ -171,7 +171,7 @@ jobs:
+           before=$(cat "$RUNNER_TEMP/ledger-before")
+           after=$(git rev-parse "$LEDGER_REF")
+           if ! git merge-base --is-ancestor "$before" "$after"; then
+-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_HISTORY_REWRITTEN","failed_predicate":"APPEND_FAST_FORWARDS_THE_EXISTING_REF","required_evidence_or_repair":"the local ref is not a descendant of the fetched tip; nothing is pushed","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
++            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_HISTORY_REWRITTEN","failed_predicate":"APPEND_FAST_FORWARDS_THE_EXISTING_REF","required_evidence_or_repair":"the local ref is not a descendant of the fetched tip; nothing is pushed","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"the next committed-packet push from the published ledger tip; existing commits stay as parents","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+             exit 1
+           fi
+           echo "ledger tip after append: $after (ancestor $before)"
+@@ -180,7 +180,7 @@ jobs:
+         run: |
+           set -euo pipefail
+           if ! git push origin "$LEDGER_REF:$LEDGER_REF"; then
+-            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_PUBLISH_RACE","failed_predicate":"PUBLISHED_REF_FAST_FORWARDS","required_evidence_or_repair":"another append moved the ref first; this run published nothing","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
++            echo '{"disposition":"FAIL_CLOSED","failure_code":"ORGANIZATION_LEDGER_PUBLISH_RACE","failed_predicate":"PUBLISHED_REF_FAST_FORWARDS","required_evidence_or_repair":"another append moved the ref first; this run published nothing","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"the next committed-packet push; append on top of the moved ledger tip","consequence_committed":false,"authority_effect":"NONE_REFUSAL_ONLY"}'
+             exit 1
+           fi
+ 
+@@ -192,7 +192,7 @@ jobs:
+           git init -q --bare "$fresh"
+           auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+           if [ -z "$auth_header" ]; then
+-            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
++            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"the next committed-packet push with checkout credentials available to the fresh fetch","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+             exit 1
+           fi
+           git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+@@ -216,7 +216,7 @@ jobs:
+           git init -q --bare "$fresh"
+           auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+           if [ -z "$auth_header" ]; then
+-            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
++            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"the next committed-packet push with checkout credentials available to the fresh fetch","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+             exit 1
+           fi
+           git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+diff --git a/tests/test_organization_ledger_transition_writer.py b/tests/test_organization_ledger_transition_writer.py
+index 836e6092..0abec2af 100644
+--- a/tests/test_organization_ledger_transition_writer.py
++++ b/tests/test_organization_ledger_transition_writer.py
+@@ -240,6 +240,42 @@ class GitRefSelfClosure(unittest.TestCase):
+ 
+ 
+ class WriterContract(unittest.TestCase):
++    def test_current_push_writer_refusals_keep_six_fields_and_code_specific_owners(self):
++        import re
++        text = WORKFLOW.read_text(encoding="utf-8")
++        fields = ("failure_code", "failed_predicate", "required_evidence_or_repair",
++                  "retry_entrypoint", "owning_existing_goal", "next_attempt")
++        intr_owner = "StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody"
++        push_owner = "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001"
++        owners = {
++            "ORGANIZATION_LEDGER_REF_ABSENT": intr_owner,
++            "ORGANIZATION_LEDGER_HISTORY_REWRITTEN": intr_owner,
++            "ORGANIZATION_LEDGER_PUBLISH_RACE": intr_owner,
++            "LEDGER_READBACK_CREDENTIAL_UNAVAILABLE": intr_owner,
++            "PUSHED_RANGE_UNRESOLVED": push_owner,
++            "NO_COMMITTED_PACKET_CHANGED": push_owner,
++        }
++        literals = re.findall(r"""echo\s*'(\{"disposition":"(?:FAIL_CLOSED|DENY)".*?\})'""", text)
++        codes = []
++        for literal in literals:
++            message = json.loads(literal)
++            with self.subTest(code=message.get("failure_code")):
++                for field in fields:
++                    self.assertIsInstance(message.get(field), str, (field, message))
++                    self.assertTrue(message[field].strip(), (field, message))
++                self.assertEqual(message["owning_existing_goal"], owners[message["failure_code"]])
++                self.assertEqual(message["retry_entrypoint"], ".github/workflows/organization-ledger-transition.yml")
++            codes.append(message["failure_code"])
++        self.assertEqual(set(codes), set(owners))
++        # Both committed operation paths must report the credential refusal.
++        self.assertEqual(codes.count("LEDGER_READBACK_CREDENTIAL_UNAVAILABLE"), 2)
++        self.assertEqual(len(codes), 7)
++        # The old draft's closure-summary test must not bring retired execution back.
++        self.assertNotIn("workflow_dispatch", text)
++        self.assertNotIn("--self-close", text)
++        self.assertNotIn("SELF_CLOSURE_INPUT_INVALID", text)
++        self.assertNotIn("DISPATCH_HB_EPOCH_INVALID", text)
++
+     def test_the_repository_chain_is_a_subtree_of_the_existing_ref(self):
+         location = CONTRACT["repository_ledger_location"]
+         self.assertEqual(location["ref"], REF)

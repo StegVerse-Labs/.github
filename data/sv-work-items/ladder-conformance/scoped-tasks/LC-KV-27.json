@@ -1,0 +1,25 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "blocker": "KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
+ "failure_class": {
+  "class": "B",
+  "reason": "the genesis value is evidence of KV's own first receipt on its own storage endpoint and does not exist yet; the mechanism row (class A) is done in continuity-vault-kit#277"
+ },
+ "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "H-KV-ENDPOINT-LEDGER-ANCHOR"
+ ],
+ "next_attempt": "on KV's own genesis receipt event on its storage endpoint (after KV #2 provider execution, LC-KV-28), then the admitted cvk pin change; event-driven, never on a timer",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "Lane D (KV and WorkSpace; KV-SKAP-LEDGER-LOCATION-001, continuity-vault-kit); P1 may author the KV-owned mechanism row in continuity-vault-kit",
+ "proposed_resolution": "Lane D: pin each contract's genesis through the KV-owned mechanism (plan_genesis_pin) once KV's own genesis receipt exists on its storage endpoint (LC-KV-28)",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "narrowed (revision 17, continuity-vault-kit main @acfd2be5, run cvk263-anchor-production-prerequisites): the KV-owned pin mechanism now exists (continuity-vault-kit#277, KV_OWNED_RECEIPT_CHAIN_GENESIS_PIN, plan_genesis_pin; the withdrawn org-hosted KV_RECEIPT_CHAIN_GENESIS_PIN_MECHANISM_ORG_HOSTED rows are no longer emitted). Remaining: both contracts' expected_genesis_receipt_sha256 is null (KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED, kv and skap_vault). Needed: KV's own genesis receipt for each chain, computed with the supplied HB epoch (SUPPLIED_HB_EPOCH, StegVerse-org/.github#167 comment 6372442705 item 6) and pinned into the cvk contract by an admitted cvk change. No InTr hop inside an org and no org ledger is involved; a fabricated genesis digest is not evidence.",
+ "retry_point": "continuity-vault-kit runtime/kv_receipt_ledgers.py plan_genesis_pin (Lane D)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-27"
+}

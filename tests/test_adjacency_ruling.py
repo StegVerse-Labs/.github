@@ -777,6 +777,13 @@ class TransitionWithRulingTests(unittest.TestCase):
         self.addCleanup(shutil.rmtree, root, True)
         rul = json.loads(KV_RULING.read_text(encoding="utf-8"))
         rul["subject"]["finish_point"]["source_commit"] = commit
+        # The fixture's finish test never reaches the consumed provider adapter, so the real ruling's consumed-source
+        # pin (a real continuity-vault-kit commit, absent from this fixture repository) and its routing are dropped.
+        for dep in rul["consumes_dependencies"]:
+            dep.pop("pinned_source", None)
+        for cand in rul["candidates"]:
+            cand["finish_point_paths"] = []
+        rul.pop("protected_paths", None)
         rul["evidence_digest"] = ar.ruling_digest(rul)
         path = root.parent / f"{root.name}.ruling.json"
         path.write_text(json.dumps(rul), encoding="utf-8")

@@ -24,6 +24,12 @@ import stdlib_json_schema as S  # noqa: E402
 CORPUS = ROOT / "tests" / "fixtures" / "stdlib-json-schema" / "agreement-corpus.json"
 CORPUS_SCHEMA = "stegverse.stdlib-json-schema-agreement-corpus/v1"
 CONSUMER_SCHEMAS = ("schemas/hil-explanation-trial-record.v1.schema.json", "schemas/user-facing-explanation.v1.schema.json")
+# Consumer schemas outside this repository, by keyword (StegVerse-org/.github#166): the validator also judges
+# StegVerse-org/.github orchestration/schemas/task-registry.schema.json, vendored there from StegVerse-Labs/repo-standards
+# schemas/task-registry.schema.json @e46a8a5a68c7009a3939d9e3c7cef307cd03ceca (sha256 d3a6460b45e1fb24...762976ec), whose
+# cosv.exact_metrics uses minProperties. Its agreement with jsonschema is re-derived in StegVerse-org/.github CI
+# (tests/test_stdlib_json_schema_agreement.py, committed registry and violations).
+EXTERNAL_CONSUMER_KEYWORDS = {"minProperties": "StegVerse-org/.github orchestration/schemas/task-registry.schema.json"}
 D = S.DRAFT_2020_12
 
 # keyword -> (schema, known-good instances, known-bad instances). Edge cases follow jsonschema: booleans are not
@@ -44,6 +50,7 @@ KEYWORDS = {
     "pattern": ({"pattern": "^sha256:[0-9a-f]{4}$"}, ["sha256:00ff", 3], ["sha256:00FF", "xsha256:00ff", "sha256:00f"]),
     "minimum": ({"minimum": 1}, [1, 1.5, "0", True], [0, 0.99, -1]),
     "maximum": ({"maximum": 1}, [1, 0.5, "9", False], [1.01, 2]),
+    "minProperties": ({"minProperties": 2}, [{"a": 1, "b": 2}, {"a": 1, "b": 2, "c": 3}, [1], "ab"], [{}, {"a": 1}]),
     "maxProperties": ({"maxProperties": 1}, [{}, {"a": 1}, [1, 2]], [{"a": 1, "b": 2}]),
     "allOf": ({"allOf": [{"type": "integer"}, {"minimum": 3}]}, [3, 9], [2, 3.5, "3"]),
     "anyOf": ({"anyOf": [{"type": "string"}, {"minimum": 3}]}, ["x", 3, None], [2, 0.5]),
@@ -159,7 +166,8 @@ class Corpus(unittest.TestCase):
         used = set()
         for p in CONSUMER_SCHEMAS:
             used |= S.keywords(json.loads((ROOT / p).read_text(encoding="utf-8")))
-        self.assertEqual(used, set(S.SUPPORTED))
+        self.assertEqual(used | set(EXTERNAL_CONSUMER_KEYWORDS), set(S.SUPPORTED))
+        self.assertFalse(used & set(EXTERNAL_CONSUMER_KEYWORDS), "a keyword used here needs no external record")
 
 
 class Keywords(unittest.TestCase):
