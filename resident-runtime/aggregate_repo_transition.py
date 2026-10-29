@@ -1035,6 +1035,16 @@ def _retained_in_store(store, receipt, source):
     if stored!=receipt or verify_source(stored)["source_transition_sha256"]!=source["source_transition_sha256"]:
         raise ValueError("retained organization source receipt conflict")
 
+def observed_at_from_hb_reference(hb):
+    """`observed_at` provenance from the receipt's own heartbeat reference, never a wall-clock read.
+
+    A supplied epoch gives ``SUPPLIED_HB_EPOCH:<epoch>``, so the same transition
+    at the same supplied epoch writes the same receipt bytes. A reference the
+    kernel derived from a host sample says so: ``HB_EPOCH_DERIVED_FROM_CLOCK:<epoch>``.
+    """
+    epoch=hb.get("epoch")
+    return ("HB_EPOCH_DERIVED_FROM_CLOCK:%s" if hb.get("derived_from_clock") is True else "SUPPLIED_HB_EPOCH:%s")%epoch
+
 def _append_locked(receipt, source, store, *, org_transition_class, predecessor_org_state_sha256, successor_org_state_sha256, boundary_evidence, authority_effect, hb_epoch, custody_exclusivity_verifier=None):
     posix=_is_posix(store)
     store.initialize()
@@ -1070,6 +1080,7 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
     prev=head.get("receipt_sha256") if head is not None else None
     predecessor=predecessor_org_state_sha256 or prev
     successor=successor_org_state_sha256 or source["source_transition_sha256"]
+    hb=kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference()
     body={
         "schema":"stegverse.organization-transition-receipt/v1",
         "organization":C["organization"],
@@ -1079,8 +1090,8 @@ def _append_locked(receipt, source, store, *, org_transition_class, predecessor_
         "successor_org_state_sha256":successor,
         "boundary_evidence":dict(boundary_evidence or {}),
         "authority_effect":authority_effect,
-        "hb_reference":kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference(),
-        "observed_at":datetime.now(timezone.utc).isoformat(),
+        "hb_reference":hb,
+        "observed_at":observed_at_from_hb_reference(hb),
         "previous_receipt_sha256":prev,
         "custody_generation":generation,
     }
