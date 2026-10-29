@@ -117,6 +117,12 @@
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
     },
     {
+      "path": ".github/workflows/worker-claim-grant-projection-transition.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",
+      "reason": "Validation-only verify of the manifest-directed projection of an Organization claim-allocator GRANTED receipt into control/worker-registry.json (contracts/worker-claim-grant-projection-transition.v1.json): for each projection manifest a PR adds, re-derives the worker-registry successor from the live base tip and an anonymous read of refs/stegverse/organization-ledger and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append, no claim or fence minted. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
+      },
+      {
       "path": ".github/workflows/intr-destination-capability-validation.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-Labs/.github#3200",
