@@ -1,19 +1,19 @@
 {
   "schema": "stegverse.lane-d.pat-003-claim-fence-manifest/v1",
   "authority_effect": "NONE_DRAFT_MANIFEST",
-  "label": "admission-input-ready DRAFT. Every identity here is PROPOSED_BY_LANE_A; the plans are scratch ALLOW (successor generation 326 is derived, never applied); nothing is registered, claimed or fenced.",
+  "label": "admission-input-ready DRAFT. Every identity here is PROPOSED_BY_LANE_A; the plans are scratch ALLOW (successor generation 327 is derived, never applied); nothing is registered, claimed or fenced.",
   "issue": "StegVerse-org/.github#165 (Goal of PAT-003); StegVerse-Labs/patent-registry#19 (parent #16)",
   "owner_citation": "LLM_Coordination INDEX.md (Drive file 1_dOuehS567PuLUzqvxHj9JaGYYPX2uA_), lane-to-Goal map line: '- PAT-003 (19d95368), Lane A: #165 (P3)'",
   "registry_edit": false,
   "registry_generation_bump": false,
   "claims_registry_edit": false,
   "ledger_append": false,
-  "observed_registry_generation": 325,
+  "observed_registry_generation": 326,
   "observed_claims_generation": 2,
   "observed_sources": {
     "StegVerse-Labs/Patents": "cf30104dd6a5b9e6b30ec3e15c4538a02f09e304",
     "StegVerse-Labs/patent-registry": "04d33cbdc64d8620dd83443a2f9575f21b5d05f7",
-    "StegVerse-Labs/.github main": "f9b46abc"
+    "StegVerse-Labs/.github main": "57341242"
   },
   "excluded": {
     "PAT-003-FILING-PACKET": "UNCLAIMED (practitioner hand-off, per Lane A); not requested, not fenced"
@@ -28,7 +28,7 @@
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-evidence-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-EVIDENCE.claim-draft.json",
       "scope_digest": "sha256:d2807cbe8d7a9f178dae93fecdf749449d7e769c76f0541e4c2ba7e95275fc60",
-      "plan_at_base": "StegVerse-Labs/.github laned/pat003-claim-fence-registration with main f9b46abc merged (PR #3409 merge; registry generation 325); plan derives successor generation 326",
+      "plan_at_base": "StegVerse-Labs/.github laned/pat003-claim-fence-registration with main 57341242 merged (PR #3358 merge; registry generation 326); plan derives successor generation 327",
       "metrics_source": {
         "supplied_by": "Lane A",
         "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
@@ -77,16 +77,16 @@
         "disposition": "ALLOW",
         "cosv_task_vector": "10110010012000",
         "scope_digest": "sha256:d2807cbe8d7a9f178dae93fecdf749449d7e769c76f0541e4c2ba7e95275fc60",
-        "successor_registry_generation": 326,
+        "successor_registry_generation": 327,
         "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
         "derived_files": {
           "control/goal-scope-seals/PAT-003-EVIDENCE.json": "sha256:eb1a522ecd14df6e75e6955a6d45cd804f80a33c213c178a7f0d480432b29a36",
           "control/task-vector-index.d/PAT-003-EVIDENCE.json": "sha256:0ac67cf6772cc94c8f7586aebdbb377ff38724416046d889af92d894dfb5f5e7",
           "control/task-vectors/PAT-003-EVIDENCE.json": "sha256:6989e914638ff0562bb7a0aeea17bf8022ac3a86c2e88f2a4654380157933745",
           "data/canonical-task-records/PAT-003-EVIDENCE.json": "sha256:0613432311328b9ad6314addca116d9abe35ca5369cd0f306e5a55aa394a315e",
-          "data/canonical-task-registry.json": "sha256:3c3e1ad73c45a6e46b84beefcf9871043689038f4a586f91773c7ccdad1e7be0"
+          "data/canonical-task-registry.json": "sha256:8a0531adda57c90ecb911754d06ee3775f2f07839e017fbf14557f5422d60d8d"
         },
-        "request_sha256": "sha256:b08bfca687b57e7881eca89770fad65db92b4bfdaf85a4aa8278cba759ec3fc9"
+        "request_sha256": "sha256:38323f944faf7d59a5891f4b98c220e81c5666abad9509d866fe3a8dc2964f96"
       }
     },
     {
@@ -98,7 +98,7 @@
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-chronology-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-CHRONOLOGY.claim-draft.json",
       "scope_digest": "sha256:ae347f68961265df18e0760c24fae97bdcc801954dd491b6a3ba7276a2f9235f",
-      "plan_at_base": "StegVerse-Labs/.github laned/pat003-claim-fence-registration with main f9b46abc merged (PR #3409 merge; registry generation 325); plan derives successor generation 326",
+      "plan_at_base": "StegVerse-Labs/.github laned/pat003-claim-fence-registration with main 57341242 merged (PR #3358 merge; registry generation 326); plan derives successor generation 327",
       "metrics_source": {
         "supplied_by": "Lane A",
         "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
@@ -136,16 +136,16 @@
         "disposition": "ALLOW",
         "cosv_task_vector": "10100000012000",
         "scope_digest": "sha256:ae347f68961265df18e0760c24fae97bdcc801954dd491b6a3ba7276a2f9235f",
-        "successor_registry_generation": 326,
+        "successor_registry_generation": 327,
         "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
         "derived_files": {
           "control/goal-scope-seals/PAT-003-CHRONOLOGY.json": "sha256:976247e01603e87e22a449b5e8db232fd51e3d3b401443c6bea27feb37841d98",
           "control/task-vector-index.d/PAT-003-CHRONOLOGY.json": "sha256:bbf9ad8ededeca384ee944af19a03a77b5c88eaa7d8bf93a2fcb067c68ac2a8e",
           "control/task-vectors/PAT-003-CHRONOLOGY.json": "sha256:0d2ea27cf9ded97990c92ab7105d5e826f64047b2da0ef17b99260db584cfa40",
           "data/canonical-task-records/PAT-003-CHRONOLOGY.json": "sha256:d14a004d8e5e72e6eb730dd586311297ba0d9e208d861def05251bfe60d56030",
-          "data/canonical-task-registry.json": "sha256:95398b5488a16769ddd39baadae816352c0bfab92ad31c8d3602f26c720069b2"
+          "data/canonical-task-registry.json": "sha256:fccee4d60790555fbe9757dd95b1896b9e057eb4ab8af5c5b93a7d6b68a09a03"
         },
-        "request_sha256": "sha256:4eae3948fa548ed2bb641a4a01ad015c09a53e5418ceba0abf016aacfe96b795"
+        "request_sha256": "sha256:9baf50198b48f701465b3c3eb9bdf7e344d337317f7f0b3f49a84fd8a4a499a0"
       }
     },
     {
@@ -157,7 +157,7 @@
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-for-lane-a-pat-003-prior-art-2026-10-23.json",
       "claim_draft": "tests/fixtures/canonical_task_registration/pat-003-lane-a/PAT-003-PRIOR-ART.claim-draft.json",
       "scope_digest": "sha256:981e3b75df3c4cd5274bc485eeea39ea5a89f8971e8c8b3b286338c195eebf2b",
-      "plan_at_base": "StegVerse-Labs/.github laned/pat003-claim-fence-registration with main f9b46abc merged (PR #3409 merge; registry generation 325); plan derives successor generation 326",
+      "plan_at_base": "StegVerse-Labs/.github laned/pat003-claim-fence-registration with main 57341242 merged (PR #3358 merge; registry generation 326); plan derives successor generation 327",
       "metrics_source": {
         "supplied_by": "Lane A",
         "ref": "https://github.com/StegVerse-org/.github/issues/165#issuecomment-6368155562",
@@ -195,16 +195,16 @@
         "disposition": "ALLOW",
         "cosv_task_vector": "10100000011000",
         "scope_digest": "sha256:981e3b75df3c4cd5274bc485eeea39ea5a89f8971e8c8b3b286338c195eebf2b",
-        "successor_registry_generation": 326,
+        "successor_registry_generation": 327,
         "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
         "derived_files": {
           "control/goal-scope-seals/PAT-003-PRIOR-ART.json": "sha256:756b99758ced660286941052e02b140d6dce8cab0a0f867a527164675c92bec7",
           "control/task-vector-index.d/PAT-003-PRIOR-ART.json": "sha256:eb3591c01df2817bf8b14a977126e1a1c6f6d6043c6ef4ca5e0c4cfa95ec5208",
           "control/task-vectors/PAT-003-PRIOR-ART.json": "sha256:ea135d77a2f14f068ba55fac85bab87f7cd846656a4090250d23b2e2bb6fccb7",
           "data/canonical-task-records/PAT-003-PRIOR-ART.json": "sha256:402679c5b285c51eb3f1c480f13f8e479c70d3cad57afe665c6a5416b08ea6d5",
-          "data/canonical-task-registry.json": "sha256:a36d28af2c069082df9da8f31bbd287e962724483a26ce0bacd1a05a8f65f978"
+          "data/canonical-task-registry.json": "sha256:4a3f0f4ce7c8393b611b2eb77208d2309eb86294ef81c55f5189aeda4abba65c"
         },
-        "request_sha256": "sha256:80d3ecb6900503c4526acefb5cefbbaa8b42cdc5c3d1f0834a9b508f7d75ee7a"
+        "request_sha256": "sha256:c78a00c4027235d3b2618e5a7491e577e6da64d573c923dc94f8cb413f97bfac"
       }
     }
   ],
