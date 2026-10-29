@@ -1194,7 +1194,7 @@
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
    "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:d72ce9d1c39fc3d1351da5d407d1228338a8fe0fff3183be29d1174625f50ddb",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0e8711bdf85a9cb850ad898aac4d1f16b3c3c45182302fbb2d1489bc590d63f4",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:f8864a3f15402ba1498fcf952d6a6c51504ea60cef86543401b1a894e966fb10",
    "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:0d11886862889da28454683cc2507c94e220bb778a7415dd7c1a3b82f2a91cf6",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:becdc08760762e5398c5512bcc86b7290687878b4dafd617b13a325b5fdbdb0b",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-02.json": "sha256:5dc38459690343e8a49759bcdc7ca8e8d1afdfca18f0705127733560fcadb51e",

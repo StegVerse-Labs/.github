@@ -462,21 +462,21 @@
   "KV-SKAP-VAULT-FUNCTIONAL-001": {
    "roots": {
     "cvk258": {
-     "commit": "acfd2be5763fea22ea7c859cf493dab24f1f3ac8",
+     "commit": "dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit main @acfd2be5 (revision 17 re-pin from @77d28d83)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @dfa5fe3c (revision 20 re-pin from @acfd2be5: cvk#281 8ea420cc and cvk#283 dfa5fe3c merged)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk259": {
-     "commit": "acfd2be5763fea22ea7c859cf493dab24f1f3ac8",
+     "commit": "dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit main @acfd2be5 (revision 17 re-pin from @77d28d83)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @dfa5fe3c (revision 20 re-pin from @acfd2be5: cvk#281 8ea420cc and cvk#283 dfa5fe3c merged)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk263": {
-     "commit": "acfd2be5763fea22ea7c859cf493dab24f1f3ac8",
+     "commit": "dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit main @acfd2be5 (revision 17 re-pin from @77d28d83)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @dfa5fe3c (revision 20 re-pin from @acfd2be5: cvk#281 8ea420cc and cvk#283 dfa5fe3c merged)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvkruling": {
@@ -534,9 +534,9 @@
      "repo": "StegVerse-org/StegVerse-SDK"
     },
     "tvc": {
-     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
+     "commit": "e6f57b6c13450bfb2b63e6869c66fe1bc650271f",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
+     "ref": "StegVerse-Labs/TVC main @e6f57b6c (revision 20 re-pin from @cacf7b6c: TVC#566 ebbf33b4, TVC#567 27496416 and TVC#568 e6f57b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc537": {
@@ -546,21 +546,21 @@
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc540": {
-     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
+     "commit": "e6f57b6c13450bfb2b63e6869c66fe1bc650271f",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
+     "ref": "StegVerse-Labs/TVC main @e6f57b6c (revision 20 re-pin from @cacf7b6c: TVC#566 ebbf33b4, TVC#567 27496416 and TVC#568 e6f57b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc541": {
-     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
+     "commit": "e6f57b6c13450bfb2b63e6869c66fe1bc650271f",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
+     "ref": "StegVerse-Labs/TVC main @e6f57b6c (revision 20 re-pin from @cacf7b6c: TVC#566 ebbf33b4, TVC#567 27496416 and TVC#568 e6f57b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc542": {
-     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
+     "commit": "e6f57b6c13450bfb2b63e6869c66fe1bc650271f",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
+     "ref": "StegVerse-Labs/TVC main @e6f57b6c (revision 20 re-pin from @cacf7b6c: TVC#566 ebbf33b4, TVC#567 27496416 and TVC#568 e6f57b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     }
    },

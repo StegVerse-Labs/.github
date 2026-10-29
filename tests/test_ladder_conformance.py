@@ -96,7 +96,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
         # revision 16 (Coordination ruling): the cvk-only both-ends anchor; KV's own head record decides (ruling A)
-        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@acfd2be5763fea22ea7c859cf493dab24f1f3ac8: "
+        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: "
                                                             "runtime/kv_receipt_ledgers.py::read_receipt_ledger"))
         self.assertEqual(anc["e0_terminal"]["dispositions"], ["ALLOW", "DENY", "FAIL_CLOSED"])
         self.assertEqual(anc["observed_by"], ["cvk263-chain-probe", "cvk263-anchor-production-prerequisites", "tvc542-bind-cvk263"])
@@ -270,7 +270,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("merge-ready", anc)
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         run = next(r for r in obs["runs"] if r["run_id"] == "cvk263-anchor-production-prerequisites")
-        self.assertTrue(run["pin"].endswith("@acfd2be5763fea22ea7c859cf493dab24f1f3ac8"))
+        self.assertTrue(run["pin"].endswith("@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba"))
         for o in run["outcomes"]:
             if o["subject"] == "ORG_CROSSING_READER_INSTALLED":  # revision 17: installed (cvk#276)
                 self.assertEqual(o["disposition"], "ALLOW")
@@ -377,7 +377,7 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_" + w_], ["DENY"])
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         probe = next(r for r in obs["runs"] if r["run_id"] == "cvk263-chain-probe")
-        self.assertTrue(probe["pin"].endswith("@acfd2be5763fea22ea7c859cf493dab24f1f3ac8"))
+        self.assertTrue(probe["pin"].endswith("@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba"))
         rows = {o["subject"]: o for o in probe["outcomes"]}
         for w_ in ("KV", "SKAP_VIA_GATE"):
             for c_ in ("KV_END_ONLY", "ORG_RECORDS_AN_OLDER_HEAD_ONLY"):
