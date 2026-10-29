@@ -12,7 +12,7 @@
   "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
  ],
  "next_attempt": "on Coordination's ruling on app installations and release tokens, then on the next push to the TV/TVC release publisher",
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
  "owning_lane": "GitHub Product lane (Lane C); ruling: Coordination (app installations, release tokens)",
  "proposed_resolution": "build a deterministic E0 check on the TV/TVC release path that records the publishing principal as an observed, receipted state and refuses six-field when it is an org member or collaborator; a token or a COSV installation alone is not refused",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
