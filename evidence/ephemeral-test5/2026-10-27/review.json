@@ -1,0 +1,119 @@
+{
+  "schema": "stegverse.ephemeral-test5-source-review/v1",
+  "goal_task_id": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+  "observed_at": "2026-10-27",
+  "authority_effect": "NONE_SOURCE_REVIEW_ONLY",
+  "source_commit": "7963db6a0c09d81394fbf9b3f925b722f4c10242",
+  "sdk_commit": "c3be296788364a69b5d01b2e325655d3126b85a6",
+  "receipt_boundary": {
+    "repair_pr": 3085,
+    "repair_commit": "d1e8ff2e88ae055522ce470ad04da1a58ccd0368",
+    "command": "python -m pytest -q tests/test_manifest_runtime_receipt_boundary.py",
+    "exit_code": 0,
+    "result": "2 passed",
+    "test_evidence_class": "SYNTHETIC_TEST"
+  },
+  "custody_readbacks": [
+    {
+      "repository": "StegVerse-Labs/.github",
+      "ref": "refs/stegverse/organization-ledger",
+      "commit": "d5b105a9e143c7c228b64ff2955ce31bd983fa85",
+      "reader": "resident-runtime/organization_ledger_readback.py",
+      "reader_source_commit": "7963db6a0c09d81394fbf9b3f925b722f4c10242",
+      "readback": {
+        "authority_effect": "NONE_READBACK_ONLY",
+        "chain_length": 113,
+        "disposition": "ALLOW",
+        "every_receipt_verifies_against_its_body": true,
+        "every_source_receipt_retained_and_verifies": true,
+        "genesis_receipt_sha256": "sha256:118981d742082309a1d10d83d1a6faecc66231b89b06aed28e675d51d2c542cd",
+        "head_receipt_sha256": "sha256:254878beaa0d5f51b85e46aed867f777321a8a8a54deeceac9e897c7ffa9ba38",
+        "readback_writes": false,
+        "schema": "stegverse.organization-ledger-readback/v1",
+        "repository_ledger": {
+          "chain_length": 104,
+          "every_receipt_retained_in_organization_ledger": true,
+          "every_receipt_verifies_against_its_body": true,
+          "genesis_receipt_sha256": "sha256:9e584b5f2fd18742e9d155e8837b68fd5add21ca9b7e261c0af02ba8282c886b",
+          "head_receipt_sha256": "sha256:be7a9b4095d977854b7a1fc01bc2a286678145a54a65f971c7cbd5d7d54b8218",
+          "namespace": "repository-ledger/StegVerse-Labs/.github",
+          "replay_read_organization_receipts": false
+        }
+      },
+      "correlation_scan": {
+        "file_count": 332,
+        "json_files_only": true,
+        "terms": [
+          "TEST5",
+          "test5",
+          "EPHEMERAL-STEGBROWSER-EXTERNAL-AI",
+          "STEGOS-LOCAL-AI-ENTITY",
+          "SDK-GENERIC-MANIFEST-EXECUTION"
+        ],
+        "matched_paths": [],
+        "scope": "Only the named immutable ledger commit; no claim about other custody stores."
+      }
+    },
+    {
+      "repository": "StegVerse-org/.github",
+      "ref": "refs/stegverse/organization-ledger",
+      "commit": "07307cb748e93283fbd236047f8c13cbd1d8002f",
+      "reader": "resident-runtime/organization_ledger_readback.py",
+      "reader_source_commit": "7963db6a0c09d81394fbf9b3f925b722f4c10242",
+      "readback": {
+        "authority_effect": "NONE_READBACK_ONLY",
+        "chain_length": 102,
+        "disposition": "ALLOW",
+        "every_receipt_verifies_against_its_body": true,
+        "every_source_receipt_retained_and_verifies": true,
+        "genesis_receipt_sha256": "sha256:4643742af4298db9c27e9c88de31bfa25163778d29383fd4fccbd63cd23de55d",
+        "head_receipt_sha256": "sha256:650a5a0fb0502335028e49dee2dc76d2293bcd1ada81b6572d2d3e448457051f",
+        "readback_writes": false,
+        "schema": "stegverse.organization-ledger-readback/v1"
+      },
+      "correlation_scan": {
+        "file_count": 304,
+        "json_files_only": true,
+        "terms": [
+          "TEST5",
+          "test5",
+          "EPHEMERAL-STEGBROWSER-EXTERNAL-AI",
+          "STEGOS-LOCAL-AI-ENTITY",
+          "SDK-GENERIC-MANIFEST-EXECUTION"
+        ],
+        "matched_paths": [],
+        "scope": "Only the named immutable ledger commit; no claim about other custody stores."
+      }
+    }
+  ],
+  "test5": {
+    "parent_request_id": "SDK-GENERIC-MANIFEST-EXECUTION-TEST5-SVG-ORG-BATCH-001",
+    "request_source": "control/resident-execution-request.d/sdk-generic-manifest-execution.json",
+    "command": "PYTHONPATH=<SDK checkout> python -m stegverse.manifest_execution --manifest test5-a.manifest.json --output test5-a.disposition.json",
+    "exit_code": 2,
+    "a": {
+      "disposition": "FAIL_CLOSED",
+      "scope": "READINESS_QUALIFICATION_ONLY",
+      "dispatched": false,
+      "provider": "credential-free-huggingface-space",
+      "model": "Qwen3",
+      "counts_as_chatgpt_validation": false
+    },
+    "b": {
+      "state": "NOT_ATTEMPTED",
+      "reason": "Test5_A did not close; B also selects Qwen3 and is not Claude Code.",
+      "counts_as_claude_code_validation": false
+    },
+    "required_order": [
+      "STEGOS-LOCAL-AI-ENTITY-CHATGPT-001",
+      "STEGOS-LOCAL-AI-ENTITY-CLAUDE-CODE-001"
+    ],
+    "artifact_file_sha256": {
+      "test5-a.manifest.json": "sha256:d69e65b15f64dfdadf0a9f0e34b060b96adae7f22ff8d1554f569a78ce524f36",
+      "test5-a.disposition.json": "sha256:335624dcdf7929fa1e8060d21f2ee2393c77652f7efa3630e221c5d24e8f41cf"
+    },
+    "organization_transition_receipt_created": false,
+    "provider_execution_completed": false,
+    "test6_started": false
+  }
+}

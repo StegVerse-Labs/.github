@@ -19182,7 +19182,7 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "transition_authority": "INTERLOCK_INTR",
         "organization_records_first": true,
-        "custody_replay_reconstruction_authority": "MASTER_RECORDS",
+        "custody_replay_reconstruction_authority": "ORGANIZATION_LEDGER",
         "second_user_operated_device_required": false
       },
       "receipt_before_claim": true,
@@ -19214,6 +19214,26 @@
       "current_truth": {
         "o77_01_unrun_failing_test_surface": {
           "item_id": "O77-01",
+          "surface_status": "REPAIRED_AND_RETESTED",
+          "disposition": "ALLOW",
+          "evidence_class": "SYNTHETIC_TEST",
+          "runtime_evidence": "NONE",
+          "authority_effect": "NONE_SOURCE_RECORD_ONLY",
+          "surface": "tests/test_manifest_runtime_receipt_boundary.py::test_missing_purpose_receipt_returns_immutable_nonallow",
+          "source_under_test": "workers/manifest_state_transition_intr_ingress.py::execute",
+          "repair_pr": "https://github.com/StegVerse-Labs/.github/pull/3085",
+          "repair_commit": "d1e8ff2e88ae055522ce470ad04da1a58ccd0368",
+          "verified_source_commit": "7963db6a0c09d81394fbf9b3f925b722f4c10242",
+          "test_result": "2 passed; exit 0",
+          "retry_entrypoint": "python -m pytest -q tests/test_manifest_runtime_receipt_boundary.py",
+          "known_failing_entry_removed": true,
+          "owning_existing_goal": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+          "evidence_refs": [
+            "evidence/ephemeral-test5/2026-10-27/review.json"
+          ]
+        },
+        "superseded_o77_01_20260928": {
+          "item_id": "O77-01",
           "approval_ref": "StegVerse-org/.github#98 comment 6083717164 O77-01",
           "surface_status": "UNPROVEN",
           "disposition": "FAIL_CLOSED",
@@ -19243,6 +19263,22 @@
             "workers/manifest_state_transition_intr_ingress.py:991",
             "data/test-suite-baseline.json"
           ]
+        },
+        "test5_20261027": {
+          "disposition": "FAIL_CLOSED",
+          "evidence_class": "LOCAL_SDK_READINESS_QUALIFICATION",
+          "failure_code": "TEST5_MANIFEST_IDENTITY_AND_READINESS_REQUIRE_RECONCILIATION",
+          "failed_predicate": "CHATGPT_FIRST_MANIFEST_AND_AUTHENTICATED_INVOCATION_BOUND_EVIDENCE_PRESENT",
+          "required_evidence_or_repair": "Use the existing SDK/StegBrowser owner to re-manifest Test5_A as ChatGPT and Test5_B as actual Claude Code, not Qwen3; obtain exact invocation-bound readiness evidence through TVC/InTr. Preserve the original readiness disposition and requalify the corrected digest.",
+          "retry_entrypoint": "stegverse.manifest_execution.main",
+          "owning_existing_goal": "EPHEMERAL-STEGBROWSER-EXTERNAL-AI-AUTHENTIC-RUNTIME-001",
+          "next_attempt": "Re-manifest and qualify ChatGPT Test5_A first. Execute Claude Code Test5_B only after independent Test5_A organization closure. Test6 remains unstarted.",
+          "evidence_refs": [
+            "evidence/ephemeral-test5/2026-10-27/review.json",
+            "evidence/ephemeral-test5/2026-10-27/test5-a.disposition.json"
+          ],
+          "provider_dispatched": false,
+          "authority_effect": "NONE_SOURCE_RECORD_ONLY"
         }
       }
     },

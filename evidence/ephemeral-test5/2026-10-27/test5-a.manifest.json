@@ -1,0 +1,126 @@
+{
+  "manifest_profile": "stegverse.ingress-manifest.v1",
+  "manifest_profile_version": "1",
+  "source_framework": "StegVerse-SDK-Evaluator",
+  "source_instance": null,
+  "source_output_id": "test5-a",
+  "created_at": "2026-10-27T18:22:32.736268Z",
+  "freshness": {},
+  "payload": {
+    "test": 5,
+    "worker": "A"
+  },
+  "processing": {
+    "capability": "stegbrowser",
+    "route_id": "stegverse.route.stegbrowser.v1"
+  },
+  "declared_intent": "Process source-native manifested data through installed stegbrowser processing.",
+  "requested_consequence": "Complete the manifested governed communication lifecycle and return the requested artifact without caller-authored authority.",
+  "context_refs": [],
+  "canonicalization_profile": "steggate.jcs.v1",
+  "hashes": {
+    "payload_sha256": "b1d83224ef5d2cfb764d19bf71f40be87d30ffc9dcfd2725a3f56dd0e156dd2b"
+  },
+  "attestation": null,
+  "extensions": {
+    "stegverse_route": {
+      "route_id": "stegverse.route.stegbrowser.v1",
+      "lane_class": "MANIFEST_BOUND_EPHEMERAL_BROWSER",
+      "routing_surface": "EXISTING_UNIVERSAL_INTR",
+      "containment": "EXISTING_STEGBROWSER_RUNTIME_OWNER",
+      "sandbox_required": false,
+      "external_consequence_enabled": true
+    },
+    "capability_resolution": {
+      "schema": "stegverse.manifest-capability-resolution.v1",
+      "capability": "stegbrowser",
+      "status": "ONLINE",
+      "route_id": "stegverse.route.stegbrowser.v1",
+      "solution_required": false,
+      "next_action": "BUILD_AND_SUBMIT_MANIFEST",
+      "authority_effect": "NONE_CLASSIFICATION_ONLY"
+    },
+    "stegverse_stegbrowser_request": {
+      "schema": "stegbrowser.llm-profile-request.v1",
+      "profile": "llm.v1",
+      "prompt": "Return the exact marker TEST5_A and identify this session.",
+      "response_marker": "TEST5_A",
+      "provider": "credential-free-huggingface-space",
+      "model": "Qwen3",
+      "secure_url": "https://huggingface.co/spaces/Zacheus10/free-ai-chat",
+      "browser_actions": [
+        {
+          "op": "fill",
+          "frame_selector": "iframe",
+          "selector": "#input",
+          "value": "Return the exact marker TEST5_A and identify this session."
+        },
+        {
+          "op": "click",
+          "frame_selector": "iframe",
+          "selector": "#send"
+        },
+        {
+          "op": "wait_for",
+          "frame_selector": "iframe",
+          "selector": ".msg.ai .bubble",
+          "state": "visible",
+          "timeout_ms": 120000
+        },
+        {
+          "op": "read_text",
+          "frame_selector": "iframe",
+          "selector": ".msg.ai .bubble",
+          "timeout_ms": 120000
+        }
+      ],
+      "journey": {
+        "schema": "stegverse.packet-carried-endpoint-receipt-journey/v2",
+        "journey_id": "test5-a",
+        "origin_endpoint": "stegverse:test5-origin",
+        "branch_count": 1,
+        "branches": [
+          {
+            "branch_id": "1",
+            "ephemeral_endpoint": "stegbrowser:ephemeral:a",
+            "outbound_manifest_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "return_manifest_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "return_predecessor_manifest_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    "manifest_builder": {
+      "profile": "stegverse.manifest-builder.v1",
+      "processing_capability": "stegbrowser",
+      "capability_status": "ONLINE",
+      "route_id": "stegverse.route.stegbrowser.v1",
+      "return_depth": "full-trace",
+      "source_semantic_custody": "EXTERNAL",
+      "builder_grants_authority": false,
+      "external_review_requested": false,
+      "publisher_required_by_review_default": false,
+      "publisher_selected_by_destination": false
+    },
+    "source_data_class": "stegverse.sdk-test.v1"
+  },
+  "return_projection": {
+    "mode": "ALL",
+    "transition_classes": []
+  },
+  "completion": {
+    "direction": "SOUTH",
+    "initiator": {
+      "class": "external_framework",
+      "ref": "StegVerse-SDK-Evaluator"
+    },
+    "egress": {
+      "final_stegverse_transition_surface": "LLM_ADAPTER",
+      "transport": "INTERLOCK_INTR",
+      "far_side_transition_required": true
+    }
+  },
+  "manifest_labels": {
+    "mode": "NONE"
+  }
+}
