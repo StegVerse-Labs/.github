@@ -14934,13 +14934,16 @@
    "tests/pytest.py"
   ],
   "tests/test_org_claim_allocator_workspace_kv_site_request.py": [
+   "control/resident-execution-request.d/org-claim-allocator-stegapp-p0-001.json",
    "control/resident-execution-request.d/org-claim-allocator-workspace-kv-site-001.json",
+   "data/canonical-task-records/STEGAPP-EPHEMERAL-COMPOSITION-001.json",
    "data/canonical-task-records/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json",
    "schemas/task.schema.json",
    "scripts/allocate_claims.py",
    "scripts/bootstrap_sovereign_runtime.py",
    "scripts/consume_org_claim_allocator_request.py",
-   "tasks/TASK-2026-0015.json"
+   "tasks/TASK-2026-0015.json",
+   "tasks/TASK-2026-0016.json"
   ],
   "tests/test_org_claim_assertions_lease_fence.py": [
    "control/claims-active.json",
