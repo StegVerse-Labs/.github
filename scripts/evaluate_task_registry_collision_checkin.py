@@ -10,6 +10,10 @@ REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 GLOBAL_INVARIANTS = ROOT / "data" / "task-registry-global-invariants.json"
 CALLER_POLICY = ROOT / "data" / "task-registry-general-checkin-caller-policy.json"
 ACTIVEISH = {"ACTIVE", "CHECKED_OUT", "CLAIMED_INTEGRATION", "HANDOFF_READY_RUNTIME_PROOF_PENDING", "BLOCKED_RUNTIME_ACTIVATION"}
+# Checkout states that hold an owner's claim on scope. An ACTIVE-ish shard in
+# either state guards collisions even when omitted from the aggregate, and a
+# component/lineage/action-surface overlap with it is a hard collision.
+OWNER_HELD_CHECKOUT_STATES = {"CHECKED_OUT", "CLAIMED_INTEGRATION"}
 PROGRESSION_CONTROLLER_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
 sys.path.insert(0, str(ROOT / "scripts"))
 from task_registry_checkin_event_history import (
@@ -68,7 +72,11 @@ def load_records():
 
 
 def load_missing_checked_out_shards(registered: dict) -> dict:
-    """Guard collision evaluation against checked-out shards omitted from aggregate.
+    """Guard collision evaluation against owner-held shards omitted from aggregate.
+
+    Owner-held means an ACTIVE-ish coordination state with a checkout state in
+    OWNER_HELD_CHECKOUT_STATES (CHECKED_OUT or CLAIMED_INTEGRATION). Inactive,
+    retired, released and unclaimed shards are not guards.
 
     An omitted shard is NEVER admitted as a task, minted a COSV, or silently
     inserted into the canonical Registry. It is collision evidence only.
@@ -93,7 +101,7 @@ def load_missing_checked_out_shards(registered: dict) -> dict:
                     raise ValueError(f"canonical task shard {key} mismatch: {tid}")
             continue
         if (str(shard.get("coordination_state") or "").upper() in ACTIVEISH
-                and str(shard.get("checkout_state") or "").upper() == "CHECKED_OUT"):
+                and str(shard.get("checkout_state") or "").upper() in OWNER_HELD_CHECKOUT_STATES):
             missing[tid] = shard
     return missing
 
@@ -127,6 +135,18 @@ def resolve_caller_surface(req: dict) -> str:
     if not declared:
         raise SystemExit("caller_surface required for general Task Registry check-in")
     raise SystemExit(f"caller_surface not admitted by general check-in policy: {declared}")
+
+
+def is_owner_held(row) -> bool:
+    """Whether a collision row's owner holds its scope (hard-collision eligible).
+
+    CHECKED_OUT keeps its historical meaning regardless of coordination state;
+    CLAIMED_INTEGRATION holds scope only while coordination is ACTIVE-ish.
+    """
+    checkout = str(row.get("checkout_state") or "").upper()
+    if checkout == "CHECKED_OUT":
+        return True
+    return checkout in OWNER_HELD_CHECKOUT_STATES and str(row.get("coordination_state") or "").upper() in ACTIVEISH
 
 
 def handoff(r):
@@ -537,7 +557,7 @@ def main():
             collisions.append(row)
             known.add(marker)
 
-    hard=[c for c in collisions if c.get("source") in {"CANONICAL_TASK_REGISTRY", "CHECKED_OUT_SHARD_OMITTED_FROM_AGGREGATE"} and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"].get("components") or c["overlap"].get("lineage") or c["overlap"].get("user_action_surface_conflicts"))]
+    hard=[c for c in collisions if c.get("source") in {"CANONICAL_TASK_REGISTRY", "CHECKED_OUT_SHARD_OMITTED_FROM_AGGREGATE"} and is_owner_held(c) and (c["overlap"].get("components") or c["overlap"].get("lineage") or c["overlap"].get("user_action_surface_conflicts"))]
     disposition = "STOP_COLLISION" if hard else ("COORDINATE_CONVERGENCE" if collisions else "CONTINUE")
     action = "END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER" if hard else ("COORDINATE_BEFORE_MUTATION" if collisions else "CONTINUE_CURRENT_TASK")
     emit({
