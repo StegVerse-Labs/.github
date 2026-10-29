@@ -31,6 +31,11 @@
  "gaps": 18,
  "inspected": {
   "roots": {
+   "labs326": {
+    "commit": "6bb43816736c1d558432fa0fc13144cc9053eb8f",
+    "kind": "git",
+    "repo": "StegVerse-Labs/.github"
+   },
    "labs3326": {
     "commit": "e9085315410f26252214dc64429be19d835886ab",
     "kind": "git",
@@ -831,7 +836,7 @@
    "kind": "HANDOFF",
    "ladder": {
     "E0": {
-     "form": "no LLM: canonical_task_registration_transition.py plan returns six-field FAIL_CLOSED ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED with the ruling (observed) and REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it (observed); the next attempt is the next registration request event",
+     "form": "no LLM: canonical_task_registration_transition.py plan returns ALLOW with the ruling (observed at Labs main @6bb43816, registry generation 326) and six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it (observed); an apply is a registration request event, not part of this plan",
      "llms": 0
     },
     "E1": {
@@ -848,7 +853,7 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "FAIL_CLOSED ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED",
+   "observed_state": "ALLOW (plan with the adjacency ruling at Labs main @6bb43816); FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it",
    "refusals": [],
    "scoped_tasks": [],
    "verdict": "ALLOW"
@@ -975,7 +980,7 @@
    "kind": "HANDOFF",
    "ladder": {
     "E0": {
-     "form": "no observed E0 path: the consumed task depends on an external payment provider and declares no components",
+     "form": "no observed E0 path: the consumed task depends on an external payment provider (its 4 targets.components are declared since StegVerse-Labs/.github#3358, generation 326, which does not make the provider ingress observable at E0)",
      "llms": 0
     },
     "E1": {
@@ -1185,12 +1190,12 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:6b18d7bf986f31771d8fc82cd48fd5987d950988e3f65cd4cac3005d6067f2a3",
+  "document_sha256": "sha256:7cc3a6fff7a7bb1f36368f0c3e009ccfb50cc6ec2df82caeca984ebe85c847b1",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:83d0ceb1a3a23887f79707698b59b37d66e6502d62252a4ce937740f301251d0",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:f40eeb453d9c81043d2e02066124fcbc9b6b4e223384f57047e576190fc1696f",
-   "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:c3f2d0f08ce72238a3ff838b86cde5820b13b5b22e18ab4f60b907bf9f05773f",
+   "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:d72ce9d1c39fc3d1351da5d407d1228338a8fe0fff3183be29d1174625f50ddb",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0e8711bdf85a9cb850ad898aac4d1f16b3c3c45182302fbb2d1489bc590d63f4",
+   "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:0d11886862889da28454683cc2507c94e220bb778a7415dd7c1a3b82f2a91cf6",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:becdc08760762e5398c5512bcc86b7290687878b4dafd617b13a325b5fdbdb0b",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-02.json": "sha256:5dc38459690343e8a49759bcdc7ca8e8d1afdfca18f0705127733560fcadb51e",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-03.json": "sha256:c4522fcbe7258e48dc3eaed097e6d3f778fbd4627a16c5b5b00ef96a477de4ed",

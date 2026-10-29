@@ -409,17 +409,17 @@
   },
   {
    "allow_path": {
-    "by": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 records its targets.components (a record change through its own goal) and the same plan re-evaluates; no code edit",
+    "by": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (4) and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 (8) record their targets.components (record data applied by StegVerse-Labs/.github#3358, merged 57341242, registry generation 326, under Coordination rulings (a) StegVerse-org/.github#167 c6394499602 and (b) c6394499771) and the same plan re-evaluates to ALLOW (run gov-registration-plan-with-ruling); no code edit",
     "state": "BOUND"
    },
    "degraded_forms": {
-    "E0": "no LLM: canonical_task_registration_transition.py plan returns six-field FAIL_CLOSED ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED with the ruling (observed) and REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it (observed); the next attempt is the next registration request event",
+    "E0": "no LLM: canonical_task_registration_transition.py plan returns ALLOW with the ruling (observed at Labs main @6bb43816, registry generation 326) and six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it (observed); an apply is a registration request event, not part of this plan",
     "E1": "one LLM lane authors repairs to the registration request; the deterministic verifier and exact-head CI receipts stand in for cross-checking",
     "E2": "two LLM lanes: one authors a repair to the registration request, one cross-checks it; the deterministic verifier decides",
     "E3": "three LLM lanes may author repairs to the registration request and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab: python scripts/canonical_task_registration_transition.py plan",
+    "by": "StegVerse-Labs/.github@6bb43816736c1d558432fa0fc13144cc9053eb8f: python scripts/canonical_task_registration_transition.py plan",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -432,7 +432,7 @@
     "gov-registration-plan-without-ruling",
     "gov-registration-plan-with-ruling"
    ],
-   "observed_state": "FAIL_CLOSED ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED",
+   "observed_state": "ALLOW (plan with the adjacency ruling at Labs main @6bb43816); FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it",
    "requires_llms": 0,
    "subject": "REGISTRATION_PLAN",
    "what": "canonical task registration of GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (request and adjacency ruling at #3326)"
@@ -513,7 +513,7 @@
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
    "degraded_forms": {
-    "E0": "no observed E0 path: the consumed task depends on an external payment provider and declares no components",
+    "E0": "no observed E0 path: the consumed task depends on an external payment provider (its 4 targets.components are declared since StegVerse-Labs/.github#3358, generation 326, which does not make the provider ingress observable at E0)",
     "E1": "one LLM lane authors repairs to the entitlement input; the deterministic verifier and exact-head CI receipts stand in for cross-checking",
     "E2": "two LLM lanes: one authors a repair to the entitlement input, one cross-checks it; the deterministic verifier decides",
     "E3": "three LLM lanes may author repairs to the entitlement input and cross-check each other's diffs; the deterministic verifier alone decides the verdict"

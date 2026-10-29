@@ -2,6 +2,11 @@
  "mode": "E0",
  "observed_by": "scripts/ladder_conformance.py observe",
  "roots": {
+  "labs326": {
+   "commit": "6bb43816736c1d558432fa0fc13144cc9053eb8f",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
   "labs3326": {
    "commit": "e9085315410f26252214dc64429be19d835886ab",
    "kind": "git",
@@ -693,31 +698,25 @@
      "subject": "REGISTRATION_PLAN"
     }
    ],
-   "pin": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab",
+   "pin": "StegVerse-Labs/.github@6bb43816736c1d558432fa0fc13144cc9053eb8f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/gov-registration-plan-without-ruling.out",
-   "raw_sha256": "sha256:3a12800e21911c9ce15e4dc2dc2b1ba0b0a9a20b90d95a35909bff404ad305fb",
+   "raw_sha256": "sha256:82957d931cb1bca7297f166163d7bebbe9e4df48649440734a630752a0d6455f",
    "run_id": "gov-registration-plan-without-ruling",
    "status": "OBSERVED",
    "what": "registration plan, no adjacency ruling"
   },
   {
    "command": "{python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json --base . --adjacency-ruling control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json --finish-point-root {root:sdk556}",
-   "exit_code": 1,
+   "exit_code": 0,
    "outcomes": [
     {
-     "disposition": "FAIL_CLOSED",
-     "failed_predicate": "CANDIDATE_DECLARES_COMPONENTS",
-     "failure_code": "ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED",
-     "next_attempt": "on the next registration request event after the repair is recorded",
-     "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-     "required_evidence_or_repair": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's observed record declares no targets.components, so (a) and (b) would hold vacuously; PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's owner records its components (a record change through its own Goal), or the overlap is resolved by Coordination without this input",
-     "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+     "disposition": "ALLOW",
      "subject": "REGISTRATION_PLAN"
     }
    ],
-   "pin": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab",
+   "pin": "StegVerse-Labs/.github@6bb43816736c1d558432fa0fc13144cc9053eb8f",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/gov-registration-plan-with-ruling.out",
-   "raw_sha256": "sha256:deef3ef968dbe80d16e31ffe942c7b9e98ac924737249b897f5081186d568df1",
+   "raw_sha256": "sha256:d6094707d78268f4a4c381aa3c7c60223661c7c4bd6a24b742c243089537792c",
    "run_id": "gov-registration-plan-with-ruling",
    "status": "OBSERVED",
    "what": "registration plan with the adjacency ruling and the finish-point root"
