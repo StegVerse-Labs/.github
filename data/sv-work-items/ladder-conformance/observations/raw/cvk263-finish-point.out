@@ -274,19 +274,10 @@ $ {python} -m runtime.kv_skap_vault finish-point
           "failed_predicate": "KV_RECEIPTS_READ_BACK_FROM_KV_OWN_RECEIPT_CHAIN_ONLY",
           "failure_class": "B",
           "failure_code": "KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED",
-          "next_attempt": "after KV_RECEIPT_CHAIN_GENESIS_PIN_MECHANISM_ORG_HOSTED clears (Lane B); event-driven, no cron, no polling",
-          "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324); dependency owner Lane B (#162 / LLM-adapter#431)",
-          "required_evidence_or_repair": "expected_genesis_receipt_sha256 in .stegverse/receipt-chains/stegverse-kv-receipts.contract.json (both the #431 location and the ledger_designation), set by an admitted change from the REPOSITORY_LEDGER_INITIALIZATION genesis computed in advance (SUPPLIED_HB_EPOCH) and checked on read-back; never by hand and never invented",
-          "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger"
-        },
-        {
-          "failed_predicate": "GENESIS_PIN_MECHANISM_ACCEPTS_KV_OWNED_LOCATION",
-          "failure_class": "B",
-          "failure_code": "KV_RECEIPT_CHAIN_GENESIS_PIN_MECHANISM_ORG_HOSTED",
-          "next_attempt": "when Lane B posts the per-endpoint, SUPPLIED_HB_EPOCH-aligned pin; no KV wiring before then",
-          "owning_existing_goal": "StegVerse-org/.github#162 / StegVerse-org/LLM-adapter#431 (Lane B)",
-          "required_evidence_or_repair": "a per-endpoint genesis pin from Lane B that accepts a KV-owned location contract: StegVerse-org/LLM-adapter#431 @66a098fa's planner (contract_shape_failure) and receiver still require StegVerse-org/.github refs/stegverse/organization-ledger; per #167 comment 6372442705 item 6 the pin is computed in advance once #431's genesis aligns with SUPPLIED_HB_EPOCH (StegVerse-Labs/.github#3263/#3290)",
-          "retry_entrypoint": "StegVerse-org/LLM-adapter#431 REPOSITORY_LEDGER_GENESIS_PIN (per-endpoint form, Lane B)"
+          "next_attempt": "on KV's own genesis receipt event on its storage endpoint (after KV #2 provider execution, LC-KV-28), then the admitted cvk pin change; event-driven, no cron, no polling",
+          "owning_existing_goal": "LC-KV-27 (KV-owned receipt-chain genesis pin) under KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+          "required_evidence_or_repair": "expected_genesis_receipt_sha256 in .stegverse/receipt-chains/stegverse-kv-receipts.contract.json (both repository_ledger_location.expected_genesis_receipt_sha256 and ledger_designation.expected_genesis_receipt_sha256), set by an admitted continuity-vault-kit change to the value KV_OWNED_RECEIPT_CHAIN_GENESIS_PIN (runtime.kv_receipt_ledgers.plan_genesis_pin(<'kv'|'skap_vault'>, <storage endpoint adapter>, <readback root>, hb_epoch=<SUPPLIED_HB_EPOCH>)) returns from KV's own REPOSITORY_LEDGER_INITIALIZATION genesis receipt, computed with SUPPLIED_HB_EPOCH and read back from KV's own storage endpoint; never by hand and never invented",
+          "retry_entrypoint": "runtime.kv_receipt_ledgers.plan_genesis_pin(<'kv'|'skap_vault'>, <storage endpoint adapter>, <readback root>, hb_epoch=<SUPPLIED_HB_EPOCH>)"
         },
         {
           "failed_predicate": "KV_LEDGER_HEAD_SIGNED_BY_KV_LEDGER_HEAD_SIGNER",
@@ -329,19 +320,10 @@ $ {python} -m runtime.kv_skap_vault finish-point
           "failed_predicate": "KV_RECEIPTS_READ_BACK_FROM_KV_OWN_RECEIPT_CHAIN_ONLY",
           "failure_class": "B",
           "failure_code": "KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED",
-          "next_attempt": "after KV_RECEIPT_CHAIN_GENESIS_PIN_MECHANISM_ORG_HOSTED clears (Lane B); event-driven, no cron, no polling",
-          "owning_existing_goal": "KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324); dependency owner Lane B (#162 / LLM-adapter#431)",
-          "required_evidence_or_repair": "expected_genesis_receipt_sha256 in .stegverse/receipt-chains/skap-receipts.contract.json (both the #431 location and the ledger_designation), set by an admitted change from the REPOSITORY_LEDGER_INITIALIZATION genesis computed in advance (SUPPLIED_HB_EPOCH) and checked on read-back; never by hand and never invented",
-          "retry_entrypoint": "runtime.kv_receipt_ledgers.read_receipt_ledger('kv', <storage endpoint adapter>, <readback root>, <head attestation>, <org-recorded head>); skap_vault only via runtime.kv_skap_layer2.SkapLayer2Gate.receipt_ledger"
-        },
-        {
-          "failed_predicate": "GENESIS_PIN_MECHANISM_ACCEPTS_KV_OWNED_LOCATION",
-          "failure_class": "B",
-          "failure_code": "KV_RECEIPT_CHAIN_GENESIS_PIN_MECHANISM_ORG_HOSTED",
-          "next_attempt": "when Lane B posts the per-endpoint, SUPPLIED_HB_EPOCH-aligned pin; no KV wiring before then",
-          "owning_existing_goal": "StegVerse-org/.github#162 / StegVerse-org/LLM-adapter#431 (Lane B)",
-          "required_evidence_or_repair": "a per-endpoint genesis pin from Lane B that accepts a KV-owned location contract: StegVerse-org/LLM-adapter#431 @66a098fa's planner (contract_shape_failure) and receiver still require StegVerse-org/.github refs/stegverse/organization-ledger; per #167 comment 6372442705 item 6 the pin is computed in advance once #431's genesis aligns with SUPPLIED_HB_EPOCH (StegVerse-Labs/.github#3263/#3290)",
-          "retry_entrypoint": "StegVerse-org/LLM-adapter#431 REPOSITORY_LEDGER_GENESIS_PIN (per-endpoint form, Lane B)"
+          "next_attempt": "on KV's own genesis receipt event on its storage endpoint (after KV #2 provider execution, LC-KV-28), then the admitted cvk pin change; event-driven, no cron, no polling",
+          "owning_existing_goal": "LC-KV-27 (KV-owned receipt-chain genesis pin) under KV-SKAP-LEDGER-LOCATION-001 under KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+          "required_evidence_or_repair": "expected_genesis_receipt_sha256 in .stegverse/receipt-chains/skap-receipts.contract.json (both repository_ledger_location.expected_genesis_receipt_sha256 and ledger_designation.expected_genesis_receipt_sha256), set by an admitted continuity-vault-kit change to the value KV_OWNED_RECEIPT_CHAIN_GENESIS_PIN (runtime.kv_receipt_ledgers.plan_genesis_pin(<'kv'|'skap_vault'>, <storage endpoint adapter>, <readback root>, hb_epoch=<SUPPLIED_HB_EPOCH>)) returns from KV's own REPOSITORY_LEDGER_INITIALIZATION genesis receipt, computed with SUPPLIED_HB_EPOCH and read back from KV's own storage endpoint; never by hand and never invented",
+          "retry_entrypoint": "runtime.kv_receipt_ledgers.plan_genesis_pin(<'kv'|'skap_vault'>, <storage endpoint adapter>, <readback root>, hb_epoch=<SUPPLIED_HB_EPOCH>)"
         },
         {
           "failed_predicate": "KV_LEDGER_HEAD_SIGNED_BY_KV_LEDGER_HEAD_SIGNER",
