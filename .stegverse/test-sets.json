@@ -9663,6 +9663,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_worker_claim_grant_projection_transition.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_worker_claim_grant_projection_transition.py"
+   ],
+   "tests": [
+    "tests/test_worker_claim_grant_projection_transition.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_worker_coordination_subsignal.py",
    "inputs": [],
    "surfaces": [
@@ -10824,6 +10836,7 @@
    ".stegverse/transition-ledger/emit.py",
    "contracts/canonical-task-registration-transition.v1.json",
    "control/canonical-task-registration-requests/**",
+   "control/goal-scope-seals/**",
    "control/goal-task-allocation-requests/**",
    "control/task-vector-index.d/**",
    "control/task-vector-index.json",
@@ -11321,6 +11334,7 @@
   ],
   "scripts/goal_scope_seal.py": [
    ".github/workflows/canonical-task-registration-transition.yml",
+   "control/goal-scope-seals/**",
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json"
   ],
@@ -12488,6 +12502,20 @@
   ],
   "scripts/watch_hil_tvc_lifecycle_outbox.py": [
    "scripts/consume_hil_tvc_lifecycle_outbox.py"
+  ],
+  "scripts/worker_claim_grant_projection_transition.py": [
+   ".github/workflows/worker-claim-grant-projection-transition.yml",
+   ".stegverse/transition-ledger/contract.json",
+   ".stegverse/transition-ledger/org-contract.json",
+   "contracts/worker-claim-grant-projection-transition.v1.json",
+   "control/worker-claim-grant-projection-requests/**",
+   "control/worker-registry.json",
+   "data/canonical-task-records/**",
+   "resident-runtime/aggregate_repo_transition.py",
+   "resident-runtime/ledger_store.py",
+   "schemas/worker-claim-grant-projection-request.schema.json",
+   "scripts/consume_org_claim_allocator_request.py",
+   "tasks/TASK-2026-0012.json"
   ],
   "scripts/write_admission.py": [
    "scripts/adjacency_ruling.py"
@@ -17306,6 +17334,15 @@
   ],
   "tests/test_worker_blocker_fallback_adoption.py": [
    "scripts/validate_worker_blocker_fallback_adoption.py"
+  ],
+  "tests/test_worker_claim_grant_projection_transition.py": [
+   "contracts/worker-claim-grant-projection-transition.v1.json",
+   "control/worker-registry.json",
+   "data/canonical-task-records/**",
+   "resident-runtime/aggregate_repo_transition.py",
+   "scripts/project_worker_claim_into_canonical_task.py",
+   "scripts/worker_claim_grant_projection_transition.py",
+   "tasks/TASK-2026-0012.json"
   ],
   "tests/test_worker_coordination_subsignal.py": [
    "control/heartbeat-master-records-projection.json",

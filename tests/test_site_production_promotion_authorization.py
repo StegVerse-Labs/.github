@@ -551,6 +551,52 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual(result["failure_code"], sppa.FENCE_BEHIND)
         self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
 
+    def _issuer_mismatched_grant(self, ledger: Ledger, fence: int) -> str:
+        """A GRANTED Organization receipt over a repository receipt that recorded a refusal, not this grant."""
+        custody, consumer = ledger.custody, ledger.consumer
+        transition_id = f"ORGANIZATION-WORKER-CLAIM-GRANTED-{CLAIM_TASK}-G{fence}"
+        recorded = {"disposition": "DENY", "task_id": CLAIM_TASK, "fencing_token": None, "failed_predicate": "NO_ELIGIBLE_TASK"}
+        repository = custody["emitter"].append(transition_id, consumer.REFUSED, "sha256:" + "1" * 64, "sha256:" + "2" * 64,
+                                               recorded, "NONE", store=custody["repository_store"])
+        granted = {"operation": consumer.GRANTED, "disposition": "ALLOW", "task_id": CLAIM_TASK, "fencing_token": fence,
+                   "claim_scope_sha256": sppa.stable_hash(SCOPE)}
+        return custody["organization_ledger"].aggregate_transition(
+            repository, ledger=consumer.organization_target(custody), org_transition_class="REPO_STATE_PROPAGATION",
+            predecessor_org_state_sha256=repository["predecessor_state_sha256"],
+            successor_org_state_sha256=repository["successor_state_sha256"], boundary_evidence=granted,
+            authority_effect="NONE")["receipt_sha256"]
+
+    def test_grant_authorizes_only_with_its_retained_source(self):
+        # The Organization chain still recomputes; only the grant's retained source receipt fails.
+        for name in ("missing", "tampered", "issuer_mismatch"):
+            with self.subTest(name):
+                ledger = Ledger(self.base / name)
+                request = promote_request(ledger)
+                if name == "issuer_mismatch":
+                    request["claim"].update(organization_receipt_sha256=self._issuer_mismatched_grant(ledger, 9),
+                                            fencing_token=9)
+                grant = ledger.org_receipt(request["claim"]["organization_receipt_sha256"])
+                path = ledger.org / "source-receipts" / (grant["source_transition_sha256"].split(":", 1)[1] + ".json")
+                if name == "missing":
+                    path.unlink()
+                elif name == "tampered":
+                    source = json.loads(path.read_text(encoding="utf-8"))
+                    source["evidence"]["fencing_token"] = 7
+                    path.write_text(json.dumps(source), encoding="utf-8")
+                with authenticated_custody():
+                    result = ledger.run(request, hb_epoch=str(CARRIER_HB_EPOCH))
+                self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED, name)
+                self.assertEqual(result["disposition"], "FAIL_CLOSED", name)
+                self.assertFalse(result["promotion_may_proceed"], name)
+                self.assertEqual((result["failure_code"], result["failed_predicate"]),
+                                 (sppa.CLAIM_MISSING, sppa.PREDICATE_NAME["P3"]), name)
+                self.assertIn({"missing": "STATE_RECEIPT_SHA256_ABSENT", "tampered": "STATE_RECEIPT_SHA256_ABSENT",
+                               "issuer_mismatch": "granted receipt source does not record this grant"}[name],
+                              result["evidence"]["detail"], name)
+                for field in SIX:
+                    self.assertTrue(result[field], field)
+                self.assertFalse(result["receipt_appended"], name)
+
     def test_readback_refusal_withholds_promotion(self):
         ledger = Ledger(self.base)
         real_load = sppa._load
@@ -558,7 +604,12 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         def patched(name, path):
             module = real_load(name, path)
             if name == "sppa_org_claim_consumer":
+                real_readback = module.organization_readback
+
                 def refuse(*args, **kwargs):
+                    # Only the P8 readback of the appended receipt; grant sources still read back for real.
+                    if not str(kwargs.get("transition_id")).startswith("SITE_PRODUCTION_PROMOTION_"):
+                        return real_readback(*args, **kwargs)
                     raise module.OrganizationReadbackRefused({"disposition": "FAIL_CLOSED",
                                                               "failed_predicate": "ORGANIZATION_RECEIPT_READBACK_MISSING"})
                 module.organization_readback = refuse

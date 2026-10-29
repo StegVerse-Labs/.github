@@ -61,9 +61,9 @@ class FB1AliasTests(unittest.TestCase):
             self.assertEqual(e["path"], U)
             self.assertFalse(e["evidence"]["on_base"])
             self.assertEqual(e["evidence"]["commit"], heads[alias])
-            # This branch is StegVerse-Labs/.github#3241, which carries its own workflow; the row stays FAIL_CLOSED (not on base)
-            # until main does. Every other unresolved alias's target must still be absent here.
-            if alias == 'allocator workflow':
+            # The merged branch carries both #3235's own workflow and #3241's allocator workflow (now on main); each row stays
+            # FAIL_CLOSED (not on the pinned base) until the alias table is re-verified. Any other unresolved target must be absent.
+            if alias in ('#3235 verify workflow', 'allocator workflow'):
                 self.assertTrue((ROOT / e["candidate_path"]).is_file(), e["candidate_path"])
             else:
                 self.assertFalse((ROOT / e["candidate_path"]).exists(), e["candidate_path"])  # not on our base/branch
