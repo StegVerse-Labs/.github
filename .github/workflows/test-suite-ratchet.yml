@@ -40,6 +40,29 @@ jobs:
       - name: RT-INVARIANT-EVALUATION-001 spec guard, the B-P6 probe set as data
         run: python -m unittest -v tests/test_invariant_evaluation_probes.py
 
+      # Baseline integrity runs the BASE's checker, never the PR's: a pull_request job checks out the PR merge
+      # ref, so a PR that edits scripts/check_test_suite_ratchet.py would otherwise grade itself. The exact base
+      # is checked out as a read-only worktree (the canonical-task-registration-transition.yml pattern) and its
+      # checker reads the PR's data/test-suite-baseline.json as data only. Bootstrap: while the base's checker
+      # has no --base-sha (only before this gate first lands on main) the head's checker runs and says so.
+      - name: Reject PR expansion of known failures or exclusions against exact base (base checker)
+        if: github.event_name == 'pull_request'
+        env:
+          RATCHET_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          git worktree add -q --detach "$RUNNER_TEMP/ratchet-base" "$RATCHET_BASE_SHA"
+          checker="$RUNNER_TEMP/ratchet-base/scripts/check_test_suite_ratchet.py"
+          if ! grep -q -- '--base-sha' "$checker"; then
+            echo "TEST_SUITE_RATCHET: BOOTSTRAP base $RATCHET_BASE_SHA has no baseline integrity checker; head checker used"
+            checker="$GITHUB_WORKSPACE/scripts/check_test_suite_ratchet.py"
+          fi
+          status=0
+          (cd "$RUNNER_TEMP/ratchet-base" && python "$checker" --base-sha "$RATCHET_BASE_SHA" \
+            --baseline "$GITHUB_WORKSPACE/data/test-suite-baseline.json") || status=$?
+          git worktree remove --force "$RUNNER_TEMP/ratchet-base"
+          exit $status
+
       # Read-only inputs, fetched before the suite runs: this repository's own organization ledger ref
       # (one anonymous fetch of a public ref; no credential, no polling) - it is the drift receipt's
       # epoch source (its hb_reference.epoch; no clock is read) and the clone

@@ -124,8 +124,38 @@ def _load(path: Path) -> dict[str, Any]:
         return {}
 
 
+# Popen handles for processes this interpreter spawned, keyed by pid. A child
+# that exits stays a zombie (and answers os.kill(pid, 0)) until its parent
+# reaps it, so in-process teardown must reap through the handle it kept.
+_SPAWNED: dict[int, Any] = {}
+
+
+def _reaped(pid: int | None) -> bool:
+    handle = _SPAWNED.get(pid) if isinstance(pid, int) else None
+    poll = getattr(handle, "poll", None)
+    if not callable(poll) or poll() is None:
+        return False
+    _SPAWNED.pop(pid, None)
+    return True
+
+
+def _reap(pid: int | None, timeout: float) -> bool:
+    handle = _SPAWNED.get(pid) if isinstance(pid, int) else None
+    wait = getattr(handle, "wait", None)
+    if not callable(wait):
+        return False
+    try:
+        wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return False
+    _SPAWNED.pop(pid, None)
+    return True
+
+
 def _alive(pid: int | None) -> bool:
     if not isinstance(pid, int) or pid <= 0:
+        return False
+    if _reaped(pid):
         return False
     try:
         os.kill(pid, 0)
@@ -151,6 +181,15 @@ def _terminate(pid: int | None, timeout: float = 2.0) -> bool:
         os.kill(int(pid), signal.SIGTERM)
     except OSError:
         return True
+    if int(pid) in _SPAWNED:
+        if _reap(pid, timeout):
+            return True
+        try:
+            os.kill(int(pid), signal.SIGKILL)
+        except (OSError, AttributeError):
+            pass
+        _reap(pid, timeout)
+        return not _alive(pid)
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         if not _alive(pid):
@@ -196,7 +235,7 @@ def _spawn(command: list[str], runtime_root: Path, stdout_name: str, stderr_name
     receipt_root.mkdir(parents=True, exist_ok=True)
     out_handle = (receipt_root / stdout_name).open("ab", buffering=0)
     err_handle = (receipt_root / stderr_name).open("ab", buffering=0)
-    return subprocess.Popen(
+    process = subprocess.Popen(
         command,
         cwd=str(runtime_root),
         env=env,
@@ -206,6 +245,9 @@ def _spawn(command: list[str], runtime_root: Path, stdout_name: str, stderr_name
         start_new_session=True,
         close_fds=True,
     )
+    if isinstance(getattr(process, "pid", None), int) and callable(getattr(process, "wait", None)):
+        _SPAWNED[process.pid] = process
+    return process
 
 
 def _runtime_tick(runtime_root: Path) -> int:

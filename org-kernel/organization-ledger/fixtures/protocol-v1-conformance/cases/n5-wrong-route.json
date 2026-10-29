@@ -1,0 +1,20 @@
+{
+  "case_id": "n5-wrong-route",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "disposition": "DENY",
+    "failed_predicate": "DECLARED_SURFACE_RESOLVES_TO_EXACTLY_ONE_REGISTERED_SERVICE",
+    "failure_code": "ORG_EXPOSES_NO_SUCH_TRANSITION_SURFACE",
+    "next_attempt": "correct completion.egress and resubmit",
+    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+    "required_evidence_or_repair": "declare a transition surface org-boundary/registry/services.json exposes",
+    "retry_entrypoint": "resident-runtime/sdk_manifest_crossing.py::resolve_surface"
+  },
+  "mutation": {
+    "kind": "PATCH_EGRESS",
+    "patch": {
+      "final_stegverse_transition_surface": "organization_ledger_direct"
+    }
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1"
+}
