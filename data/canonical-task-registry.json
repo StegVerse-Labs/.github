@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 323,
+  "generation": 324,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -22731,6 +22731,121 @@
       },
       "cosv_task_vector": "10100000110000",
       "source_state_vector_ref": "control/task-vectors/EC9-WHEN-AI-SERVICES-FAIL-PUBLICATION-001.json"
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001",
+      "correlation_id": "REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001",
+      "root_correlation_id": "REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001",
+      "parent_task_id": null,
+      "goal": "Publish one REAL, source-reconstructable, independently reviewed sample governance assessment (StegVerse-Labs/.github#3393, workstreams #3394-#3399; parent product coordination #3183 and first paid assessment #3370): a retained public-source evidence-first assessment with the five assessment artifacts, an exact-source evidence register and candidate register, a downloadable accessible report, and a documented reviewer disposition, reusing the existing ERL source-acquisition owners (Executive_Rhetoric_Ledger#6/#18/#51/#132, automation owner #245) and the existing Site publication owner. Not a synthetic, mock or customer-implied sample; no customer engagement, pricing, payment or invoice, no partisan, motive or legal finding, no second crawler; public release only after source-use disposition, independent review and scoped publication authority; no daily-cadence claim without dated receipts across independently observed cycles.",
+      "coordination_state": "PROPOSED",
+      "source_refs": [
+        "StegVerse-Labs/.github#3393",
+        "StegVerse-Labs/.github#3394",
+        "StegVerse-Labs/.github#3395",
+        "StegVerse-Labs/.github#3396",
+        "StegVerse-Labs/.github#3397",
+        "StegVerse-Labs/.github#3398",
+        "StegVerse-Labs/.github#3399",
+        "StegVerse-Labs/.github#3370",
+        "StegVerse-Labs/.github#3183",
+        "StegVerse-Labs/.github#3195",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#245",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger#248",
+        "docs/TASK_REGISTRATION_GUIDE.md",
+        "data/task-registry-global-invariants.json"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/Executive_Rhetoric_Ledger",
+          "StegVerse-Labs/Site"
+        ],
+        "components": [
+          "real-assessment-report-revision-2",
+          "real-assessment-evidence-register",
+          "real-assessment-public-rendering",
+          "real-assessment-mirror-handoff"
+        ]
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-RAS-SOURCE-USE-DISPOSITION",
+          "kind": "EVIDENCE",
+          "state": "UNRESOLVED",
+          "ref": "StegVerse-Labs/.github#3394 comment 6505537155 (updated proposed supplement) routed to #3370 comment 6505562900; per-source reuse and audience conditions"
+        },
+        {
+          "dependency_id": "DEP-RAS-INDEPENDENT-REVIEW-ACCEPTANCE",
+          "kind": "EVIDENCE",
+          "state": "UNRESOLVED",
+          "ref": "StegVerse-Labs/.github#3397 comment 6505644583 is bounded analytical ACCEPT only; owner exact-digest acceptance pending"
+        },
+        {
+          "dependency_id": "DEP-RAS-ERL-245-RUNNER-INTEGRATION",
+          "kind": "CAPABILITY",
+          "state": "UNRESOLVED",
+          "ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#245 comments 6497048903 and 6500576972; exact-head CI, non-author review, actual attempt-artifact readback"
+        },
+        {
+          "dependency_id": "DEP-RAS-SITE-PUBLICATION-AUTHORITY",
+          "kind": "CAPABILITY",
+          "state": "UNRESOLVED",
+          "ref": "StegVerse-Labs/.github#3398 comments 6505562018 and 6505562470; scoped Site publication authority and live URL, download digest and mobile readback"
+        }
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+        "EC9-WHEN-AI-SERVICES-FAIL-PUBLICATION-001"
+      ],
+      "existing_evidence_refs": [
+        "StegVerse-Labs/.github#3396 comment 6502814562 (revision-2 report, SHA256 983718840ddcd81e0ea298d01359dfa195e0e94cc5580373ffbc505a72cef3b0)",
+        "StegVerse-Labs/.github#3397 comment 6505644583 (bounded analytical review ACCEPT, not owner acceptance)",
+        "StegVerse-Labs/.github#3398 comments 6505562018, 6505562470 (corrected HTML and reproduction)",
+        "StegVerse-Labs/.github#3399 comment 6505651539 (current handoff candidate)",
+        "StegVerse-Labs/.github#3393 comment 6505671300 (progress and parallel owner handoff)"
+      ],
+      "expected_evidence_predicates": [
+        "REAL_ASSESSMENT_SOURCE_USE_DISPOSITION_RECORDED",
+        "REAL_ASSESSMENT_EXACT_DIGEST_INDEPENDENT_REVIEW_ACCEPTED_BY_OWNER",
+        "REAL_ASSESSMENT_ERL_245_RUNNER_EXACT_HEAD_CI_AND_ATTEMPT_READBACK",
+        "REAL_ASSESSMENT_SITE_PUBLICATION_AUTHORIZED_AND_URL_DOWNLOAD_DIGEST_READBACK",
+        "REAL_ASSESSMENT_MIRROR_HANDOFF_AND_README_INTEGRATED"
+      ],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED",
+        "DEFERRED",
+        "SUPERSEDED"
+      ],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/.github#3399 comment 6505651539"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": false,
+        "interlock_intr_required_for_governed_ingress_egress": true
+      },
+      "cosv_task_vector": "10500000110000",
+      "source_state_vector_ref": "control/task-vectors/REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001.json"
     }
   ],
   "human_actions": [],
