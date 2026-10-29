@@ -423,6 +423,8 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
 
 
 LEDGER_REF = "refs/stegverse/organization-ledger"
+# A grant whose retained source receipt does not record it is refused as unverified fence history (#3241).
+SOURCE_MISMATCH = "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED"
 REPO_NAMESPACE = "repository-ledger/StegVerse-Labs/.github"
 HOSTED = {"GITHUB_ACTIONS": "true", "CI": "true"}
 LOCUS_VARIABLES = ("STEGVERSE_ORG_LEDGER_ROOT", "STEGVERSE_ORG_LEDGER_STORE", "STEGVERSE_ORG_LEDGER_GIT_REF",
@@ -573,9 +575,10 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         self.assert_refused_before_anything(repo_ledger_root=other)
 
     # H46 fence-floor repair (Lane D, STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 D1).
-    def fresh_runtime(self, name: str, *, source_claims: list | None = None):
+    def fresh_runtime(self, name: str, *, source_claims: list | None = None,
+                      requests=(custody_tests.TARGETED_REL,)):
         """A runtime with no preserved claim registry, as the hosted workflow materializes it."""
-        env = custody_tests.Env(self.base / name, generation=None, seed=False,
+        env = custody_tests.Env(self.base / name, generation=None, seed=False, requests=requests,
                                 org_ledger=self.base / "unused-org-root")
         if source_claims is not None:
             path = env.source / "control/claims-active.json"
@@ -716,9 +719,172 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
             self.assertEqual(receipt["hb_reference"]["epoch"], CARRIER_HB_EPOCH)
             self.assertIs(receipt["hb_reference"]["derived_from_clock"], False)
 
+    # D1: the carrier writes its heartbeat epoch into the committed request; the hosted writer, which
+    # has no carrier, forwards it from the manifest. Nothing derives an epoch.
+    def with_manifest_epoch(self, env, value):
+        path = env.runtime / custody_tests.TARGETED_REL
+        request = json.loads(path.read_text(encoding="utf-8"))
+        request["hb_epoch"] = value
+        path.write_text(json.dumps(request), encoding="utf-8")
+        return env
+
+    def assert_epoch_refused(self, env, result):
+        self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
+        self.assertEqual(result["failed_predicate"], consumer.GRANT_EPOCH_INVALID, result)
+        self.assertFalse(result["fence_issued"])
+        self.assertIsNone(result["fencing_token"])
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result.get(field), field)
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        self.assertEqual(consumer.chain_grants(consumer.verify_organization_chain(custody)), [])
+        self.assertEqual(env.claims()["generation"], 2)
+
+    def test_committed_manifest_epoch_grants_without_a_carrier_argument(self):
+        for name, value in (("manifest-int", CARRIER_HB_EPOCH), ("manifest-text", str(CARRIER_HB_EPOCH))):
+            with self.subTest(value=value):
+                env = self.with_manifest_epoch(self.fresh_runtime(name), value)
+                result = self.consume_hosted(env, hb_epoch=None)
+                self.assertEqual(result["transition_class"], consumer.GRANTED, result)
+                custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+                keys = custody["organization_ledger"].ledger_store
+                grant = custody["organization_store"].get(keys.receipt_key(result["organization_receipt_sha256"]))
+                self.assertEqual(grant["hb_reference"]["epoch"], CARRIER_HB_EPOCH)
+                self.assertIs(grant["hb_reference"]["derived_from_clock"], False)
+
+    def test_invalid_manifest_epoch_fails_closed_before_any_fence(self):
+        for index, value in enumerate((True, "+4096", " 4096", "4096.0", 4096.0, "", None, 31, "31", [4096], {"epoch": 4096})):
+            with self.subTest(value=value):
+                env = self.with_manifest_epoch(self.fresh_runtime(f"bad-epoch-{index}"), value)
+                self.assert_epoch_refused(env, self.consume_hosted(env, hb_epoch=None))
+
+    def test_manifest_epoch_conflicting_with_the_carrier_argument_fails_closed(self):
+        env = self.with_manifest_epoch(self.fresh_runtime("conflict"), CARRIER_HB_EPOCH)
+        result = self.consume_hosted(env, hb_epoch=CARRIER_HB_EPOCH + 1)
+        self.assert_epoch_refused(env, result)
+        self.assertIn("conflicts", result["detail"])
+
+    def test_manifest_epoch_equal_to_the_carrier_argument_grants(self):
+        env = self.with_manifest_epoch(self.fresh_runtime("agree"), str(CARRIER_HB_EPOCH))
+        result = self.consume_hosted(env, hb_epoch=CARRIER_HB_EPOCH)
+        self.assertEqual(result["transition_class"], consumer.GRANTED, result)
+
+    # D6: every committed request the writer's trigger matches is consumed; none is silently ignored.
+    def test_request_discovery_is_the_writer_trigger_glob(self):
+        writer = (ROOT / ".github/workflows/organization-claim-allocator-transition-writer.yml").read_text(encoding="utf-8")
+        trigger = consumer.REQUEST_DIR.as_posix() + "/" + consumer.REQUEST_GLOB
+        self.assertIn("      - '" + trigger + "'\n", writer)
+        on_disk = tuple(sorted(p.relative_to(ROOT) for p in (ROOT / consumer.REQUEST_DIR).glob(consumer.REQUEST_GLOB)))
+        self.assertEqual(consumer.request_rels(ROOT), on_disk)
+        self.assertEqual(consumer.REQUEST_RELS, on_disk)
+        for rel in ".github/workflows/organization-claim-allocator-transition-writer.yml", \
+                   ".github/workflows/organization-claim-allocator-transition.yml":
+            text = (ROOT / rel).read_text(encoding="utf-8")
+            self.assertIn("consumer.request_rels(Path('.'))", text, rel)
+            self.assertNotIn("consumer.REQUEST_RELS", text, rel)
+
+    def test_a_newly_committed_request_is_consumed_not_ignored(self):
+        env = self.fresh_runtime("new-request")
+        new = consumer.REQUEST_DIR / "org-claim-allocator-zz-new-goal-001.json"
+        request = json.loads((ROOT / custody_tests.TARGETED_REL).read_text(encoding="utf-8"))
+        request["request_id"] = "org-claim-allocator-zz-new-goal-001"
+        request["target_task_id"] = "TASK-2026-0012"   # its own disposition, not a replay of the first grant
+        (env.runtime / new).write_text(json.dumps(request), encoding="utf-8")
+        result = self.consume_hosted(env)
+        refs = [a["request_ref"] for a in result["attempts"]]
+        self.assertEqual(refs, [custody_tests.TARGETED_REL.as_posix(), new.as_posix()])
+
+    def test_a_non_regular_or_foreign_request_path_is_not_discovered(self):
+        env = self.fresh_runtime("foreign-request")
+        (env.runtime / consumer.REQUEST_DIR / "org-claim-allocator-dir.json").mkdir()
+        (env.runtime / consumer.REQUEST_DIR / "other-consumer-001.json").write_text("{}", encoding="utf-8")
+        self.assertEqual(consumer.request_rels(env.runtime), (custody_tests.TARGETED_REL,))
+
+    # The hosted writer run on main 7582e93b (2026-10-29T06:15:50Z): every committed request in ONE run.
+    SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                  "owning_existing_goal", "next_attempt")
+
+    def committed_requests_run(self, name: str, **kwargs):
+        env = self.fresh_runtime(name, requests=consumer.request_rels(ROOT))
+        result = self.consume_hosted(env, **kwargs)
+        attempts = result["attempts"]
+        self.assertEqual([a["request_ref"] for a in attempts], [rel.as_posix() for rel in consumer.request_rels(ROOT)])
+        return env, attempts
+
+    def test_every_request_of_one_run_rematerializes_the_registry_the_run_seeded(self):
+        # The committed registry (generation 2) is behind the provenance floor (7). The first
+        # request initializes the runtime copy, rematerializes it and, refused for want of a
+        # carrier epoch, restores the committed bytes; every later request of the same run must
+        # rematerialize those bytes too, not read them as preserved runtime state and fail
+        # FENCE_GENERATION_BEHIND_ISSUED_FENCES "runtime generation 2 < issued fence 7".
+        floor = consumer.provenance_floor(ROOT)
+        committed = json.loads((ROOT / "control/claims-active.json").read_text(encoding="utf-8"))
+        self.assertLess(committed["generation"], floor["fence"])
+        env, attempts = self.committed_requests_run("one-run", hb_epoch=None)
+        source_bytes = (env.source / "control/claims-active.json").read_bytes()
+        self.assertGreater(len(attempts), 1)
+        for attempt in attempts:
+            self.assertNotEqual(attempt["failed_predicate"], "FENCE_GENERATION_BEHIND_ISSUED_FENCES", attempt)
+            self.assertNotEqual(attempt["transition_class"], consumer.GRANTED, attempt)
+            self.assertFalse(attempt["fence_issued"])
+            self.assertIsNone(attempt["fencing_token"])
+            self.assertIn(attempt["failed_predicate"], (consumer.GRANT_EPOCH_NOT_CARRIER_SUPPLIED,
+                                                        allocator.TARGET_TASK_NOT_QUEUED), attempt)
+            for field in self.SIX_FIELDS:
+                self.assertTrue(attempt.get(field), field)
+            self.assertTrue(attempt["organization_receipt_appended"], attempt)
+        # No fence was minted or reissued; the committed source registry never moved.
+        custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
+        self.assertEqual(consumer.chain_grants(consumer.verify_organization_chain(custody)), [])
+        self.assertEqual((env.source / "control/claims-active.json").read_bytes(), source_bytes)
+        self.assertLessEqual(env.claims()["generation"], floor["fence"])
+
+    def test_one_run_with_a_carrier_epoch_mints_each_fence_once(self):
+        env, attempts = self.committed_requests_run("one-run-carrier")
+        fences = [a["fencing_token"] for a in attempts if a["transition_class"] == consumer.GRANTED]
+        self.assertTrue(fences)
+        # Monotone from the floor, never reissued, and the runtime registry ends at the last fence.
+        self.assertEqual(fences, list(range(8, 8 + len(fences))))
+        self.assertEqual(env.claims()["generation"], fences[-1])
+        for attempt in attempts:
+            self.assertNotEqual(attempt["failed_predicate"], "FENCE_GENERATION_BEHIND_ISSUED_FENCES", attempt)
+
+    def test_a_preserved_registry_behind_the_fences_fails_closed_for_every_request_of_a_run(self):
+        # The run did not seed it: runtime state preserved from before the run is never raised.
+        env = custody_tests.Env(self.base / "preserved-run", generation=2, seed=False,
+                                requests=(custody_tests.UNTARGETED_REL, custody_tests.TARGETED_REL),
+                                org_ledger=self.base / "unused-org-root")
+        result = self.consume_hosted(env)
+        for attempt in result["attempts"]:
+            self.assertEqual(attempt["failed_predicate"], "FENCE_GENERATION_BEHIND_ISSUED_FENCES", attempt)
+        self.assertEqual(env.claims()["generation"], 2)
+        self.assertNotIn("generation_basis", env.claims())
+
+    def test_the_committed_stegapp_request_records_its_six_field_refusal(self):
+        # control/resident-execution-request.d/org-claim-allocator-stegapp-p0-001.json starts a writer
+        # run (the trigger glob matches it); it must leave its own disposition, never a silent skip.
+        stegapp = consumer.REQUEST_DIR / "org-claim-allocator-stegapp-p0-001.json"
+        self.assertIn(stegapp, consumer.request_rels(ROOT))
+        env = self.fresh_runtime("stegapp", requests=(stegapp,))
+        task_path = env.source / "tasks/TASK-2026-0016.json"
+        task = json.loads(task_path.read_text(encoding="utf-8"))
+        task["status"] = "proposed"   # Phase A, as committed on main 7582e93b
+        task_path.write_text(json.dumps(task), encoding="utf-8")
+        result = self.consume_hosted(env)
+        self.assertEqual(result["request_ref"], stegapp.as_posix())
+        self.assertEqual(result["transition_class"], consumer.REFUSED, result)
+        self.assertEqual(result["claim_task_id"], "TASK-2026-0016")
+        self.assertEqual(result["failed_predicate"], allocator.TARGET_TASK_NOT_QUEUED)
+        for field in self.SIX_FIELDS:
+            self.assertTrue(result.get(field), field)
+        self.assertFalse(result["fence_issued"])
+        self.assertTrue(result["organization_receipt_appended"])
+        self.assertEqual(result["organization_readback"], "VERIFIED")
+
     def test_hosted_workflow_synthesizes_no_heartbeat_epoch(self):
-        # The hosted path has no carrier, so it supplies no epoch and derives none;
-        # its grants are FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED until a carrier does.
+        # The hosted path has no carrier, so it supplies no epoch and derives none; a grant
+        # takes the carrier epoch committed in the request (hb_epoch), else it is
+        # FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED.
         text = "".join((ROOT / rel).read_text(encoding="utf-8") for rel in (
             ".github/workflows/organization-claim-allocator-transition.yml",
             ".github/workflows/organization-claim-allocator-transition-writer.yml"))
@@ -765,6 +931,235 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
             self.assertFalse(consumer.adopt_repository_append(custody, self.seeded, {"receipt_sha256": "sha256:" + "f" * 64}))
             self.assertEqual(store._snapshot(), self.seeded)
 
+    # #3241 source binding: a receipt that reads back must also carry what its retained source recorded.
+    def declared_custody(self):
+        return consumer.ledger_custody(self.env.source, locator(self.node), None, event_ephemeral=True)
+
+    def forge_on_ref(self, row, **changes):
+        """Commit a copy of `row` with `changes` on the declared ref as its new HEAD, bypassing the aggregator.
+
+        The copy keeps the real source digest, repository receipt and transition id, so it reads back
+        through verified_organization_receipt; only its boundary_evidence or class differs from its source.
+        """
+        custody = self.declared_custody()
+        store, org = custody["organization_store"], custody["organization_ledger"]
+        head = store.get(org.ledger_store.HEAD_KEY)
+        body = {key: value for key, value in row.items() if key != "receipt_sha256"}
+        body.update(previous_receipt_sha256=head["receipt_sha256"], **changes)
+        digest = org.sha(body)
+        key = org.ledger_store.receipt_key(digest)
+        store.publish({}, {key: {**body, "receipt_sha256": digest},
+                           org.ledger_store.HEAD_KEY: {**head, "receipt_sha256": digest, "receipt_path": store.locator(key)}},
+                      "forged receipt")
+        return {**body, "receipt_sha256": digest}
+
+    def granted_row(self, result):
+        custody = self.declared_custody()
+        return custody["organization_store"].get(
+            custody["organization_ledger"].ledger_store.receipt_key(result["organization_receipt_sha256"]))
+
+    def assert_source_mismatch_refused(self, env, result, generation):
+        self.assertEqual(consumer.FENCE_HISTORY_UNVERIFIED, SOURCE_MISMATCH)
+        self.assertEqual(result["disposition"], "FAIL_CLOSED", result)
+        self.assertEqual(result["failed_predicate"], SOURCE_MISMATCH, result)
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result.get(field), field)
+        self.assertFalse(result["fence_issued"])
+        self.assertIsNone(result["fencing_token"])
+        self.assertFalse(result["claim_grant_occurred"])
+        self.assertEqual(env.task("TASK-2026-0013")["status"], "queued")
+        self.assertEqual(env.claims()["generation"], generation)
+        self.assertEqual(env.claims().get("claims") or [], [])
+        self.assertFalse((env.runtime / consumer.GRANT_DIR).exists())
+
+    def test_replayed_grant_whose_fence_differs_from_its_retained_source_is_refused(self):
+        real = self.hosted(repo_ledger_root=locator(self.node))
+        self.assertEqual(real["fencing_token"], 8)
+        row = self.granted_row(real)
+        # Same source digest, repository receipt and transition id (…-G8); the fence says 9.
+        self.forge_on_ref(row, boundary_evidence={**row["boundary_evidence"], "fencing_token": 9})
+        env = self.fresh_runtime("forged-fence")
+        result = self.consume_hosted(env)
+        self.assert_source_mismatch_refused(env, result, 2)
+
+    def test_refusal_relabelled_as_a_grant_is_refused(self):
+        custody = self.declared_custody()
+        refusal = consumer.verify_organization_chain(custody)["receipts"][-1]
+        self.assertEqual(refusal["boundary_evidence"]["operation"], consumer.REFUSED)
+        # The seeded DENY's own source and transition id, presented as a grant of fence 8.
+        self.forge_on_ref(refusal, boundary_evidence={
+            **refusal["boundary_evidence"], "operation": consumer.GRANTED, "disposition": "ALLOW",
+            "task_id": "TASK-2026-0013", "fencing_token": 8, "failed_predicate": None,
+            "custody_authentication": consumer.CUSTODY_AUTHENTICATION})
+        env = self.fresh_runtime("relabelled")
+        result = self.consume_hosted(env)
+        self.assert_source_mismatch_refused(env, result, 2)
+
+    def test_fence_history_is_counted_from_the_source_not_the_receipt(self):
+        real = self.hosted(repo_ledger_root=locator(self.node))
+        row = self.granted_row(real)
+        forged = self.forge_on_ref(row, boundary_evidence={**row["boundary_evidence"], "claim_scope_sha256": "f" * 64})
+        env = self.fresh_runtime("history")
+        directory = env.runtime / consumer.GRANT_DIR
+        directory.mkdir(parents=True)
+        # Retained evidence agreeing with the forged receipt, not with what the source recorded.
+        (directory / "TASK-2026-0013-G8.json").write_text(json.dumps(
+            {"task_id": "TASK-2026-0013", "fencing_tokens": [8], "claim_scope_sha256": "f" * 64,
+             "organization_receipt_sha256": forged["receipt_sha256"]}), encoding="utf-8")
+        custody = self.declared_custody()
+        grants = consumer.chain_grants(consumer.verify_organization_chain(custody))
+        # The retained evidence agrees with the receipt, so only the source check can refuse it.
+        consumer.verify_fence_history(env.runtime, grants, consumer.provenance_floor(env.source), env.source, None)
+        with self.assertRaises(consumer.ClaimFailClosed) as raised:
+            consumer.verify_grant_sources(custody, grants)
+        self.assertEqual(raised.exception.predicate, SOURCE_MISMATCH)
+        self.assertIn(forged["receipt_sha256"], raised.exception.detail)
+        # consume_request runs that check before fence history: nothing is projected.
+        result = self.consume_hosted(env)
+        self.assertEqual((result["disposition"], result["failed_predicate"]), ("FAIL_CLOSED", SOURCE_MISMATCH), result)
+        self.assertFalse(result["fence_issued"])
+        self.assertEqual(env.claims().get("claims") or [], [])
+
+    def test_readback_refuses_a_grant_whose_evidence_differs_from_its_source(self):
+        real = self.hosted(repo_ledger_root=locator(self.node))
+        row = self.granted_row(real)
+        forged = self.forge_on_ref(row, boundary_evidence={**row["boundary_evidence"], "fencing_token": 9})
+        attempt = {**real, "organization_receipt_sha256": forged["receipt_sha256"], "repository_receipt_sha256": None}
+        verdict = consumer.readback(self.env.source, locator(self.node), attempt)
+        self.assertEqual(verdict["disposition"], "FAIL_CLOSED", verdict)
+        self.assertEqual(verdict["attempts"][0]["organization_readback"],
+                         "REFUSED:" + SOURCE_MISMATCH)
+        # The real grant still reads back.
+        self.assertEqual(consumer.readback(self.env.source, locator(self.node), real)["disposition"], "VERIFIED")
+
+    # #3241 active fences: a grant active on the verified chain blocks a conflicting grant in a later hosted run.
+    def second_task_runtime(self, name: str, task_id: str, *, overlapping: bool):
+        """A fresh hosted runtime whose source adds `task_id` and whose only request targets it.
+
+        Overlapping, the task's mandatory claims are TASK-2026-0013's (same repositories, paths and
+        dependency surfaces); otherwise they name another repository and surface.
+        """
+        env = custody_tests.Env(self.base / name, generation=None, seed=False, requests=(),
+                                org_ledger=self.base / "unused-org-root")
+        task = json.loads((env.source / "tasks/TASK-2026-0013.json").read_text(encoding="utf-8"))
+        task.pop("canonical_task_record", None)
+        task.update(task_id=task_id, status="queued", requested_at="2026-10-09T00:00:00Z")
+        if not overlapping:
+            for request in task["requirements"]["mandatory"]:
+                request["repository"] = {**request["repository"], "name": "Elsewhere",
+                                         "full_name": request["repository"]["owner"] + "/Elsewhere"}
+                request["scope"]["dependency_surfaces"] = ["elsewhere:" + task_id.lower()]
+        (env.source / "tasks" / f"{task_id}.json").write_text(json.dumps(task), encoding="utf-8")
+        request = json.loads((ROOT / custody_tests.TARGETED_REL).read_text(encoding="utf-8"))
+        request.update(request_id="RESIDENT-EXEC-ORG-CLAIM-ALLOCATOR-" + task_id, target_task_id=task_id)
+        path = env.runtime / custody_tests.TARGETED_REL
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(request), encoding="utf-8")
+        return env
+
+    def chain_grant_fences(self):
+        custody = self.declared_custody()
+        return [(row["boundary_evidence"]["task_id"], row["boundary_evidence"]["fencing_token"])
+                for row in consumer.chain_grants(consumer.verify_organization_chain(custody))]
+
+    def test_grant_active_on_the_chain_refuses_an_overlapping_grant_in_a_later_hosted_run(self):
+        first = self.hosted(repo_ledger_root=locator(self.node))
+        self.assertEqual((first["disposition"], first["fencing_token"]), ("ALLOW", 8), first)
+        env = self.second_task_runtime("overlap", "TASK-2026-9013", overlapping=True)
+        registry_before = (env.source / "control/claims-active.json").read_bytes()
+        second = self.consume_hosted(env)
+        # Before: ALLOW at fence 9, because the runtime registry seeded from the committed
+        # claims-active.json held none of the chain's active claims.
+        self.assertEqual(second["disposition"], "DENY", second)
+        self.assertEqual(second["transition_class"], consumer.REFUSED)
+        self.assertEqual(second["failed_predicate"], "CONFLICTS_WITH_HELD_CLAIM", second)
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(second.get(field), field)
+        self.assertEqual(second["retry_entrypoint"], consumer.EVENT_EPHEMERAL_ENTRYPOINT)
+        self.assertIn("TASK-2026-0013 G8", second["detail"])
+        self.assertFalse(second["fence_issued"])
+        self.assertIsNone(second["fencing_token"])
+        self.assertFalse(second["claim_grant_occurred"])
+        self.assertTrue(second["organization_disposition_retained"])
+        self.assertEqual(second["organization_readback"], "VERIFIED")
+        self.assertEqual(self.chain_grant_fences(), [("TASK-2026-0013", 8)])
+        # The runtime registry is restored: the projection never outlives the refusal.
+        claims = env.claims()
+        self.assertEqual(claims.get("claims") or [], [])
+        # The generation stays where the chain rematerialized it (never lowered); the source is untouched.
+        self.assertEqual(claims["generation"], 8)
+        self.assertEqual((env.source / "control/claims-active.json").read_bytes(), registry_before)
+        self.assertEqual(env.task("TASK-2026-9013")["status"], "queued")
+        self.assertFalse((env.runtime / consumer.GRANT_DIR).exists())
+        # The active grant itself still replays; no fence is reissued.
+        again = self.consume_hosted(self.fresh_runtime("overlap-replay"))
+        self.assertEqual((again["disposition"], again["fencing_token"]), ("ALLOW", 8), again)
+        self.assertTrue(again["replayed_prior_grant"])
+
+    def test_grant_active_on_the_chain_does_not_refuse_a_disjoint_grant(self):
+        self.assertEqual(self.hosted(repo_ledger_root=locator(self.node))["fencing_token"], 8)
+        env = self.second_task_runtime("disjoint", "TASK-2026-9014", overlapping=False)
+        result = self.consume_hosted(env)
+        self.assertEqual((result["disposition"], result["fencing_token"]), ("ALLOW", 9), result)
+        self.assertEqual(self.chain_grant_fences(), [("TASK-2026-0013", 8), ("TASK-2026-9014", 9)])
+        custody = self.declared_custody()
+        receipt = custody["repository_store"].get(
+            custody["emitter"].ledger_store.receipt_key(result["repository_receipt_sha256"]))
+        projected = receipt["evidence"]["active_fences_projected"]
+        self.assertEqual([(row["task_id"], row["fencing_token"]) for row in projected["projected"]],
+                         [("TASK-2026-0013", 8)])
+        self.assertNotIn("untrusted", projected)
+        # The ephemeral registry holds the active fence's claims and the new grant's, at generation 9.
+        claims = env.claims()
+        self.assertEqual(claims["generation"], 9)
+        self.assertEqual(sorted({(c["task_id"], c["lease"]["fencing_token"]) for c in claims["claims"]}),
+                         [("TASK-2026-0013", 8), ("TASK-2026-9014", 9)])
+
+    def test_forged_grant_on_the_ref_is_not_an_active_fence(self):
+        refusal = consumer.verify_organization_chain(self.declared_custody())["receipts"][-1]
+        # The seeded DENY's own source and transition id, presented as TASK-2026-0013's grant of fence 8.
+        self.forge_on_ref(refusal, boundary_evidence={
+            **refusal["boundary_evidence"], "operation": consumer.GRANTED, "disposition": "ALLOW",
+            "task_id": "TASK-2026-0013", "fencing_token": 8, "failed_predicate": None,
+            "custody_authentication": consumer.CUSTODY_AUTHENTICATION})
+        env = self.second_task_runtime("forged-active", "TASK-2026-9013", overlapping=True)
+        result = self.consume_hosted(env)
+        # verify_grant_sources refuses the whole chain before any fence is computed or projected (71a4dd52).
+        self.assertEqual((result["disposition"], result["failed_predicate"]), ("FAIL_CLOSED", SOURCE_MISMATCH), result)
+        self.assertFalse(result["fence_issued"])
+        self.assertEqual(env.claims().get("claims") or [], [])
+        self.assertEqual(env.task("TASK-2026-9013")["status"], "queued")
+
+    def test_planner_counts_only_other_tasks_claims_as_conflicts(self):
+        task = json.loads((ROOT / "tasks/TASK-2026-0013.json").read_text(encoding="utf-8"))
+        task["status"] = "queued"
+        held = [dict(request, task_id="TASK-2026-0013", lease={"fencing_token": 8})
+                for request in task["requirements"]["mandatory"]]
+        tasks = {"TASK-2026-0013": task, "TASK-2026-9013": dict(task, task_id="TASK-2026-9013")}
+        # Its own projected fence never blocks a task (it replays); the same claims block any other task.
+        self.assertEqual(allocator.evaluate_target("TASK-2026-0013", tasks, held), (task, None))
+        self.assertEqual(allocator.evaluate_target("TASK-2026-9013", tasks, held),
+                         (None, allocator.CONFLICTS_WITH_HELD_CLAIM))
+
+    def test_active_fence_whose_scope_the_catalog_no_longer_records_fails_closed(self):
+        self.assertEqual(self.hosted(repo_ledger_root=locator(self.node))["fencing_token"], 8)
+        env = self.second_task_runtime("rescoped", "TASK-2026-9014", overlapping=False)
+        path = env.source / "tasks/TASK-2026-0013.json"
+        task = json.loads(path.read_text(encoding="utf-8"))
+        task["requirements"]["mandatory"] = task["requirements"]["mandatory"][:1]
+        path.write_text(json.dumps(task), encoding="utf-8")
+        result = self.consume_hosted(env)
+        self.assertEqual(result["disposition"], "FAIL_CLOSED", result)
+        self.assertEqual(result["failed_predicate"], consumer.ACTIVE_FENCE_SCOPE_UNRECOVERABLE)
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result.get(field), field)
+        self.assertFalse(result["fence_issued"])
+        self.assertEqual(env.claims().get("claims") or [], [])
+        self.assertEqual(self.chain_grant_fences(), [("TASK-2026-0013", 8)])
+
     def test_clean_env_relaxes_only_the_event_ephemeral_materialization(self):
         with self.assertRaisesRegex(RuntimeError, "hosted environment"):
             consumer.clean_env({"PATH": "/bin", **HOSTED})
@@ -789,11 +1184,6 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         self.assertNotIn("secrets.", workflow)
         registry = json.loads((ROOT / "control/workflow-surface-registry.json").read_text(encoding="utf-8"))
         self.assertIn(rel, [entry["path"] for entry in registry["surfaces"]])
-
-
-if __name__ == "__main__":
-    unittest.main()
-
 
     def test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7(self):
         task7 = json.loads((ROOT / "tasks/TASK-2026-0007.json").read_text(encoding="utf-8"))
@@ -829,3 +1219,7 @@ if __name__ == "__main__":
         self.assertIn("portable-tvc-sv001-lease-input-publication", request8["scope"]["capabilities"])
         self.assertEqual(request8["scope"]["dependency_surfaces"], ["site:stegos-de006-bound-inference-publication"])
         self.assertFalse(allocator.conflicts(request8, request7))
+
+
+if __name__ == "__main__":
+    unittest.main()
