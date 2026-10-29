@@ -1,9 +1,9 @@
 {
   "schema": "stegverse.registry-record-data-proposal/v1",
-  "registry_generation_base": 321,
+  "registry_generation_base": 322,
   "authority_effect": "NONE",
   "operating_mode": "E0 deterministic record-data transition; no execution authority is created",
-  "note": "Minimal bootstrap repair for STEGAPP-EPHEMERAL-COMPOSITION-001. The task already has exactly one aggregate Registry row and one standalone shard, both at PROPOSED. Their allowed_next_transitions omit INGRESS_ADMITTED, so the merged existing-task admission preflight fails closed before native ingress. This proposal preserves every existing transition and appends only INGRESS_ADMITTED through scripts/apply_task_record_data.py, which applies the same exact before -> after edit to the aggregate row and standalone shard. It does not change coordination_state or checkout_state, register a task, create a WorkerCoordinator claim/fence, admit work, execute a manifest, or append a Ledger entry. Generation 321 is the observed base at authoring time; the Registry owner must re-read the live tip and rebase this proposal if another transition consumes tip + 1 first.",
+  "note": "Minimal bootstrap repair for STEGAPP-EPHEMERAL-COMPOSITION-001. The task already has exactly one aggregate Registry row and one standalone shard, both at PROPOSED. Their allowed_next_transitions omit INGRESS_ADMITTED, so the merged existing-task admission preflight fails closed before native ingress. This proposal preserves every existing transition and appends only INGRESS_ADMITTED through scripts/apply_task_record_data.py, which applies the same exact before -> after edit to the aggregate row and standalone shard. It does not change coordination_state or checkout_state, register a task, create a WorkerCoordinator claim/fence, admit work, execute a manifest, or append a Ledger entry. Generation 321 was the observed base at authoring time; re-based to 322 (plans 322 -> 323) because StegVerse-Labs/.github#3373 consumes generation 322 for the EC9 canonical task registration, which leaves this task's row and shard unchanged. The Registry owner must re-read the live tip and rebase this proposal if another transition consumes tip + 1 first.",
   "row_fields": [
     {
       "task_id": "STEGAPP-EPHEMERAL-COMPOSITION-001",
