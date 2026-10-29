@@ -1,0 +1,38 @@
+{
+  "case_id": "n6-authority-effect-not-warranted",
+  "covers": "A_DECLARED_AUTHORITY_EFFECT_OTHER_THAN_NONE_IS_REFUSED_BEFORE_THE_CROSSING",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "authority_effect": "NONE_REFUSAL_ONLY",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "DECLARED_AUTHORITY_EFFECT_IS_NONE_UNTIL_A_WARRANT_RECEIPT_BINDS",
+    "failure_code": "AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS:declared transition.authority_effect \"GRANTS_EXECUTION_AUTHORITY\"",
+    "received": false,
+    "refusal_recorded": true
+  },
+  "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
+  "expected_refusal_record": {
+    "disposition": "DENY",
+    "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
+  },
+  "expected_source": "GENERATED_FROM_REAL_RECEIVE",
+  "issue_3369_item": "MISSING_AUTHORITY",
+  "issue_3369_item_status": "COVERED_WITH_SPEC_GAP",
+  "mutation": {
+    "kind": "PATCH_TRANSITION",
+    "patch": {
+      "authority_effect": "GRANTS_EXECUTION_AUTHORITY"
+    }
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1",
+  "spec_gap": {
+    "disposition": "GAP_NOT_IMPLEMENTED",
+    "failed_predicate": "AUTHORITY_EFFECT_IS_WARRANTED_BY_A_LANDED_TV_TVC_RECEIPT",
+    "failure_code": "AUTHORITY_WARRANT_RECEIPT_NOT_VERIFIED_AT_INGRESS",
+    "issue_3369_item": "MISSING_AUTHORITY",
+    "next_attempt": "TV/TVC defines a landed warrant receipt bound to the manifest digest, scope and hb_epoch (StegVerse-Labs/TVC validate_warrant, TVC#488); then receive() verifies it from its landed bytes, as resident-runtime/intr_path_tvc_read.py verifies a TVC receipt, with no live call, and a case submits a warranted non-NONE effect and asserts it crosses while an unwarranted one is still refused",
+    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+    "required_evidence_or_repair": "receive() now refuses any declared transition.authority_effect other than NONE before cross() is called (DECLARED_AUTHORITY_EFFECT_IS_NONE_UNTIL_A_WARRANT_RECEIPT_BINDS / AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS), so a submission without the authority its effect requires produces no effect and the envelope never carries one. What remains is a warranted effect: no TV/TVC warrant receipt schema exists, so a non-NONE effect is refused even when it would be warranted. Admission and claim/fence stay with the Registry/WorkerCoordinator owner, whose ADMIT mints no execution authority",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive"
+  }
+}

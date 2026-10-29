@@ -49,8 +49,8 @@ A refusal is also recorded. A state transition is the disposition of an intended
 action, not only a successful one: a submission that arrived and was refused is
 a transition whose disposition is DENY, and `organization_scope_rule` makes no
 exception for it. Every refusal path through `receive` -- an unresolvable
-destination, a capability bound elsewhere, a crossing this manifest cannot
-drive, a far side that refused, a boundary chain that does not reconstruct --
+destination, a capability bound elsewhere, a declared authority effect other
+than NONE, a crossing this manifest cannot drive, a far side that refused, a boundary chain that does not reconstruct --
 appends a repository receipt and the organization receipt that consumes it,
 under `ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED`. Before this they returned a
 refusal and wrote nothing, which made a held or retried submission
@@ -141,6 +141,19 @@ PARENT_MANIFEST_INVALID_PREDICATE = "MANIFEST_DECLARED_ORGANIZATION_BATCH_PARENT
 PAYLOAD_NOT_BOUND = "CROSSING_PAYLOAD_NOT_BOUND_TO_THE_DELIVERED_MANIFEST"
 PAYLOAD_NOT_BOUND_PREDICATE = "CROSSING_PAYLOAD_RECOMPUTES_FROM_THE_DELIVERED_MANIFEST"
 PAYLOAD_BINDING_OWNING_GOAL = "StegVerse-Labs/.github#3369"
+#: A submission may not carry an authority effect into the crossing. The
+#: crossing copies `transition.authority_effect` onto the InTr envelope
+#: verbatim, the boundary passes it through to its result, and the boundary
+#: document says an effect is DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS, not
+#: taken from the caller. Both appends already record "NONE". Until a landed
+#: warrant receipt can be verified here, anything but NONE is refused before
+#: the crossing runs, so nothing downstream sees an unwarranted effect.
+AUTHORITY_NOT_WARRANTED = "AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS"
+AUTHORITY_NOT_WARRANTED_PREDICATE = "DECLARED_AUTHORITY_EFFECT_IS_NONE_UNTIL_A_WARRANT_RECEIPT_BINDS"
+AUTHORITY_OWNING_GOAL = "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001"
+#: The only declared effect this operation admits. An absent `transition`, or
+#: one with no `authority_effect`, is the same NONE the crossing reads it as.
+NONE_AUTHORITY_EFFECT = "NONE"
 
 
 def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
@@ -636,6 +649,27 @@ def payload_binding_failure(manifest: Mapping[str, Any],
     return None
 
 
+def declared_authority_effect_failure(manifest: Any) -> str | None:
+    """Why the submission's declared authority effect is not NONE, or None.
+
+    Read exactly as the crossing reads it --
+    `(manifest.get("transition") or {}).get("authority_effect", "NONE")` -- so
+    whatever the crossing would put on the envelope is what is checked. A
+    `transition` that is not an object, or an `authority_effect` that is
+    anything but the string NONE (null included), is refused.
+    """
+    if not isinstance(manifest, Mapping):
+        return None
+    transition = manifest.get("transition") or {}
+    if not isinstance(transition, Mapping):
+        return AUTHORITY_NOT_WARRANTED + ":transition is not an object"
+    effect = transition.get("authority_effect", NONE_AUTHORITY_EFFECT)
+    if effect == NONE_AUTHORITY_EFFECT:
+        return None
+    return (AUTHORITY_NOT_WARRANTED + ":declared transition.authority_effect "
+            + json.dumps(effect, sort_keys=True))
+
+
 #: The fields of a crossing that name the packets carrying one delivery. They are
 #: transport: a redelivery of the same manifest is carried by other packets, and
 #: that does not make it another transition.
@@ -1083,6 +1117,24 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
                        request_sha256=request.get("request_sha256"))
     refused = functools.partial(refused, parent_manifest=parent_manifest,
                                 organization_evidence=organization_evidence)
+
+    # A declared authority effect other than NONE is refused before the
+    # crossing, so the endpoint never runs under it and the envelope never
+    # carries it. Nothing here can warrant one.
+    unwarranted = declared_authority_effect_failure(manifest)
+    if unwarranted is not None:
+        return refused(
+            AUTHORITY_NOT_WARRANTED_PREDICATE, unwarranted, failure_code=AUTHORITY_NOT_WARRANTED,
+            required_evidence_or_repair=(
+                "a manifest whose transition.authority_effect is absent or NONE; a non-NONE "
+                "effect needs a landed TV/TVC warrant receipt this operation can verify, and "
+                "none is defined yet"),
+            retry_entrypoint=RETRY_ENTRYPOINT,
+            owning_existing_goal=AUTHORITY_OWNING_GOAL,
+            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
+                          "resubmit": "THE_MANIFEST_WITH_TRANSITION_AUTHORITY_EFFECT_NONE",
+                          "awaits_an_external_machine": False},
+            request_sha256=request["request_sha256"])
 
     try:
         crossing = crossing_module.cross(manifest, registry=dict(registry), standing=standing, packet_id=packet_id)

@@ -5193,6 +5193,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_organization_ingress_authority_effect.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_organization_ingress_authority_effect.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_authority_effect.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_ingress_payload_binding.py",
    "inputs": [],
    "surfaces": [
@@ -15152,6 +15164,11 @@
    "resident-runtime/governance_endpoint.py",
    "resident-runtime/organization_governance_decision.py",
    "tests/pytest.py"
+  ],
+  "tests/test_organization_ingress_authority_effect.py": [
+   "data/canonical-task-records/**",
+   "org-boundary/registry/services.json",
+   "resident-runtime/organization_manifest_ingress.py"
   ],
   "tests/test_organization_ingress_payload_binding.py": [
    "org-boundary/registry/services.json",

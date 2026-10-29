@@ -17,7 +17,7 @@ positive case and one case per #3369 item. Each case names its mutation, what it
 | `n3-wrong-receiving-operation` | the request names a receiving operation owned by another repository | FORGED_IDENTITY | SPEC_GAP |
 | `n4-generation-not-successor` | VERIFY_EXISTING standing whose predecessor generation is not generation - 1 | STALE_HEAD_OR_FENCE | SPEC_GAP |
 | `n5-wrong-route` | `completion.egress` declares a surface the registry does not expose | WRONG_ROUTE | COVERED |
-| `n6-ingress-resolution-absent` | the request carries no organization ingress resolution | MISSING_AUTHORITY | SPEC_GAP |
+| `n6-authority-effect-not-warranted` | a declared `transition.authority_effect` other than NONE is refused before the crossing | MISSING_AUTHORITY | COVERED_WITH_SPEC_GAP |
 | `n7-missing-receipts` | the crossing returns no boundary receipt chain | MISSING_RECEIPTS | COVERED |
 | `n8-reconstruction-failure` | the terminal boundary receipt is dropped; `receive()` refuses (gating) | RECONSTRUCTION_FAILURE_GATING | COVERED |
 | `n9-non-gating-propagation-failure` | Master Records propagation fails closed; the transition stays recorded | RECONSTRUCTION_FAILURE_NON_GATING | COVERED |
@@ -63,7 +63,10 @@ exist in `data/canonical-task-records/`:
   (SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001; KV binding field: STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001)
 - `STALE_HEAD_OR_FENCE_NOT_COMPARED_AT_INGRESS` (n4): the Registry/WorkerCoordinator owner's claim/fence and
   expected head (#3369 assignment), with organization ledger readback by ORGANIZATION-BATCH-CUSTODY-REPLAY-001
-- `AUTHORITY_NOT_CHECKED_AT_INGRESS` (n6)
+- `AUTHORITY_WARRANT_RECEIPT_NOT_VERIFIED_AT_INGRESS` (n6): `receive()` refuses any declared effect other than
+  NONE before `cross()` (`DECLARED_AUTHORITY_EFFECT_IS_NONE_UNTIL_A_WARRANT_RECEIPT_BINDS` /
+  `AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS`); a warranted effect waits on a landed TV/TVC warrant receipt
+  (SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001)
 
 Nothing here admits a task, grants authority, appends to a real ledger or mints a live receipt. ALLOW on
 these temporary roots is a fixture result, not runtime ALLOW. Admission, the WorkerCoordinator

@@ -41,9 +41,9 @@ refusal fields (`required_evidence_or_repair`, `retry_entrypoint`,
 paths, so no case claims them as observed.
 
 Items the real path cannot express -- a stale head or fence, a submitter
-whose KV/SKAP verification is bound to the manifest, missing authority, a
-redelivery answered before its endpoint runs, a payload whose `payload_hash`
-is left unchanged -- are recorded as six-field `spec_gap` entries, each
+whose KV/SKAP verification is bound to the manifest, an authority effect a
+landed warrant receipt binds, a redelivery answered before its endpoint runs,
+a payload whose `payload_hash` is left unchanged -- are recorded as six-field `spec_gap` entries, each
 checked to name a code that exists nowhere in the ingress source, rather than
 being invented here. Replay itself is not one of them: idempotent redelivery
 is the specified behaviour (I-10), and n2 covers "no duplicate effect" at both
@@ -78,7 +78,7 @@ OBSERVED_FIELDS = ("disposition", "failed_predicate", "failure_code", "received"
 REPLAY = "n2-replay"
 NON_GATING = "n9-non-gating-propagation-failure"
 NEGATIVES = ("n1-tamper", "n3-wrong-receiving-operation", "n4-generation-not-successor",
-             "n5-wrong-route", "n6-ingress-resolution-absent", "n7-missing-receipts",
+             "n5-wrong-route", "n6-authority-effect-not-warranted", "n7-missing-receipts",
              "n8-reconstruction-failure")
 ALL_CASES = ("positive", REPLAY, NON_GATING) + NEGATIVES
 #: Every #3369 item, and the one case it is filed under.
@@ -86,7 +86,7 @@ ISSUE_ITEMS = {"POSITIVE": "positive", "TAMPER": "n1-tamper", "REPLAY": REPLAY,
                "FORGED_IDENTITY": "n3-wrong-receiving-operation",
                "STALE_HEAD_OR_FENCE": "n4-generation-not-successor",
                "WRONG_ROUTE": "n5-wrong-route",
-               "MISSING_AUTHORITY": "n6-ingress-resolution-absent",
+               "MISSING_AUTHORITY": "n6-authority-effect-not-warranted",
                "MISSING_RECEIPTS": "n7-missing-receipts",
                "RECONSTRUCTION_FAILURE_GATING": "n8-reconstruction-failure",
                "RECONSTRUCTION_FAILURE_NON_GATING": NON_GATING}
@@ -225,13 +225,13 @@ def drive(spec):
     standing = copy.deepcopy(fixture["standing"])
     if kind == "PATCH_EGRESS":
         manifest["completion"]["egress"].update(mutation["patch"])
+    if kind == "PATCH_TRANSITION":
+        manifest["transition"].update(mutation["patch"])
     if kind == "REPLACE_STANDING":
         standing = copy.deepcopy(mutation["standing"])
     request = ingress_request(fixture, manifest)
     if kind == "PATCH_RECEIVING_OPERATION":
         request["manifest_declared_destination"]["receiving_operation"].update(mutation["patch"])
-    if kind == "DROP_RESOLUTION":
-        request.pop("manifest_declared_destination")
 
     real_cross = ingress.crossing_module.cross
 
@@ -533,6 +533,18 @@ class NegativeCaseTest(unittest.TestCase):
                 self.assertEqual(org_receipt["boundary_evidence"]["disposition"], "DENY")
                 self.assertEqual(org_receipt["boundary_evidence"]["failed_predicate"],
                                  spec["expected"]["failed_predicate"])
+
+    def test_an_unwarranted_authority_effect_is_refused_before_the_crossing_runs(self):
+        """n6 is answered without the crossing: a crossing that cannot run changes nothing."""
+        spec = case("n6-authority-effect-not-warranted")
+
+        def must_not_cross(*args, **kwargs):
+            raise AssertionError("the crossing ran for an unwarranted authority effect")
+
+        with mock.patch.object(ingress.crossing_module, "cross", must_not_cross):
+            fields, record = observed(*drive(spec))
+        assert_matches_expected(self, spec, fields, record)
+        self.assertEqual(fields["failure_code"].split(":", 1)[0], ingress.AUTHORITY_NOT_WARRANTED)
 
     def test_generation_successor_refusal_code_is_the_standing_contracts_own(self):
         result, _ = live("n4-generation-not-successor")
