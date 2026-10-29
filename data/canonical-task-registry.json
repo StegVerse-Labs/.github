@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 325,
+  "generation": 326,
   "status": "MASTER_RECORDS_BULK_SEMANTIC_REMEDIATION_SUCCESSOR_ACTIVE",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -9411,7 +9411,25 @@
         "master_records_reality_authority": false,
         "interlock_intr_required_for_governed_ingress_egress": true
       },
-      "authority_effect": "NONE_COORDINATION_ONLY"
+      "authority_effect": "NONE_COORDINATION_ONLY",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/StegHealth"
+        ],
+        "components": [
+          "cli-independent-review",
+          "cli-independent-review-routing",
+          "cli-independent-review-routing-packet",
+          "consume-ecosystem-failure-map",
+          "ecosystem-failure-registry",
+          "steghealth-ecosystem-failure-registry",
+          "validate-cli-independent-review-routing",
+          "validate-ecosystem-failure-registry"
+        ]
+      }
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
@@ -14762,6 +14780,20 @@
         "webhook_evaluation_admissible": false,
         "failover_evaluation_admissible": false,
         "authentic_completed_evidence_pending": true
+      },
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/TVC"
+        ],
+        "components": [
+          "payment-provider-authentic-ingress",
+          "payment-provider-read-profiles",
+          "tvc-payment-provider-observation",
+          "tvc-payment-provider-read-profile"
+        ]
       }
     },
     {
