@@ -154,3 +154,37 @@ and 50 successful checks from the previous verified run; still draft/unmerged.
 Claude's source review applies to parent d127e2d, with follow-up review outstanding.
 Canonical Registry remains gen322/120 with no proposed goal row. Native registration
 and COSV remain unassigned. Cumulative Goal Prompt Count remains UNVERIFIED.
+
+## Session10 clean handoff — 2026-10-29
+
+CVK#280 is MERGED at acfd2be5763fea22ea7c859cf493dab24f1f3ac8, now CVK main.
+GitHub compare against reviewed ab66f0e has zero changed files, one merge commit
+ahead and zero behind. All43 returned merge-head check runs succeeded. This
+retires the source-integration wait for the authenticity containment; it does
+not provide native TVC issuance or finish-point ALLOW. CVK issue279 remains open.
+
+Custody repair packet session9 is the latest candidate: native-generated one-entry
+manifest update, unchanged dependency closure, historical P1 vendor preserved,
+and regressions in the existing catalog-selected suite.100tests+8subtests pass.
+Fresh-base application check on6b13c3a7 reconstructs all7 candidate files exactly.
+Patch SHA256d4ff0f33a5afb04b07010f8249cd01c7c5b31afea83d5bbd606d73304dc31236.
+Original custody owner must review/commit it and obtain hosted CI and authorized
+integration. Do not apply superseded session7/8 packets. Source evidence and
+owner steps: Labs#2810 comment6502739653. No candidate custody authority inferred.
+
+Registry generation322 still lacks the proposed goal. Original Registry owner
+owns ruling/current-pin authentication, three-adjacency convergence, serialized
+native apply and COSV readback. TVC537 issuance/verifier, retained adapter route
+and3402 scope clarification remain parallel; then task-bound WorkerCoordinator
+fence, sovereign KV__51 and real-node finish-point/organization receipt.
+
+Public InTr8/8 evidence remains verified historical route evidence. Shared
+coordination writes through session6 succeeded; session7 packet/note uploads
+were rejected by automatic approval review. Session7-9 source transfers were not
+retried and are not present/read back in the shared directory. Specific sharing
+approval remains outstanding. Do not confuse this with sovereign KV custody.
+
+Session Prompt Count10. Goal Prompt CountUNVERIFIED, not reset; native Goal/COSV
+unassigned. Continue from current Registry and owner replies, preserving evidence
+classes and existing owners. No native admission, fence, sovereign write or
+finish-point ALLOW was performed by this session.
