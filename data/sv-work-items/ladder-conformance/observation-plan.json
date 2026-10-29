@@ -2,6 +2,12 @@
  "goals": {
   "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001": {
    "roots": {
+    "labs326": {
+     "commit": "6bb43816736c1d558432fa0fc13144cc9053eb8f",
+     "kind": "git",
+     "ref": "StegVerse-Labs/.github main @6bb43816 (generation 326 after #3358, which declared PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's 4 and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001's 8 targets.components; #3331 merged)",
+     "repo": "StegVerse-Labs/.github"
+    },
     "labs3326": {
      "commit": "e9085315410f26252214dc64429be19d835886ab",
      "kind": "git",
@@ -244,7 +250,7 @@
      ],
      "kind": "command",
      "parse": "disposition",
-     "root": "labs3326",
+     "root": "labs326",
      "run_id": "gov-registration-plan-without-ruling",
      "subject": "REGISTRATION_PLAN",
      "what": "registration plan, no adjacency ruling"
@@ -265,7 +271,7 @@
      ],
      "kind": "command",
      "parse": "disposition",
-     "root": "labs3326",
+     "root": "labs326",
      "run_id": "gov-registration-plan-with-ruling",
      "subject": "REGISTRATION_PLAN",
      "what": "registration plan with the adjacency ruling and the finish-point root"
