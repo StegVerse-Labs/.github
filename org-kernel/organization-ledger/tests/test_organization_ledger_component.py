@@ -909,7 +909,7 @@ class PropagateAfterAppend(unittest.TestCase):
         self.assertLess(wf.index("organization_manifest_ingress.py\" \\"), wf.index('propagate_after_append.py"'))
         self.assertNotIn("--self-close", wf)
         self.assertNotIn('--out "$out/propagation.json" || true', wf)
-        self.assertEqual(wf.count('--hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?'), 1)
+        self.assertEqual(wf.count('--hb-epoch "$epoch" --out "$out/propagation.json" || rc=$?'), 1)
         self.assertEqual(wf.count('echo "$rc" > "$out/propagation.exit"'), 1)
         gate = wf.index("Fail on a recorded propagation refusal")
         self.assertLess(wf.index("Publish the ledger ref (fast-forward only)"), gate)
@@ -1445,6 +1445,137 @@ class ReadbackOnlyMode(unittest.TestCase):
         self.assertNotIn("git push", ro)
         gate = by_name["Fail on a recorded propagation refusal (six fields)"]
         self.assertIn("if: always() && inputs.mode != 'readback'", gate)
+
+
+class NonFiniteInputIsRefusedBeforeAnyWrite(unittest.TestCase):
+    """D-11 (StegVerse-org/.github#163 c6389265460): a writer refuses NaN / Infinity / an overflowing literal / malformed
+    JSON as terminal CLI_INPUT_INVALID before any ledger is opened; nothing is written."""
+
+    BAD = ('{"x": NaN}', '{"x": Infinity}', '{"x": -Infinity}', '{"x": [1, {"y": 1e999}]}', '{"x": ')
+
+    def setUp(self):
+        self.c = Consumer()
+        self.addCleanup(self.c.close)
+
+    def assertInputInvalid(self, out, level, text):
+        self.assertNotEqual(out.returncode, 0, text)
+        refusal = json.loads(out.stdout.splitlines()[-1])
+        self.assertEqual(refusal["failure_code"], "CLI_INPUT_INVALID", text)
+        self.assertEqual(refusal["failed_predicate"], "WRITER_REFUSES_NON_FINITE_INPUT_BEFORE_ANY_WRITE")
+        for field in SIX:
+            self.assertTrue(refusal.get(field), field)
+        self.assertEqual(self.c.written(level), [], text)
+
+    def test_emit_cli_refuses_every_non_finite_or_malformed_evidence(self):
+        for text in self.BAD:
+            out = self.c.cli("emit.py", "--transition-id", "t-1", "--transition-class", "TEST",
+                             "--predecessor-state-sha256", A, "--successor-state-sha256", B,
+                             "--evidence-json", text, "--hb-epoch", str(EPOCH))
+            self.assertInputInvalid(out, "repo", text)
+
+    def test_aggregate_cli_refuses_every_non_finite_or_malformed_boundary_evidence(self):
+        r = self.c.py(repo_receipt_snippet() + "print(json.dumps(src))")
+        (self.c.root / "repo-receipt.json").write_text(json.dumps(r))
+        for text in self.BAD:
+            out = self.c.cli("aggregate_repo_transition.py", "--repo-receipt", str(self.c.root / "repo-receipt.json"),
+                             "--predecessor-org-state-sha256", "GENESIS", "--successor-org-state-sha256", B,
+                             "--boundary-evidence-json", text, "--hb-epoch", str(EPOCH))
+            self.assertInputInvalid(out, "org", text)
+
+    def test_aggregate_cli_refuses_a_non_finite_source_receipt_file(self):
+        (self.c.root / "bad-receipt.json").write_text('{"schema": "stegverse.repo-transition-receipt/v1", "n": NaN}')
+        out = self.c.cli("aggregate_repo_transition.py", "--repo-receipt", str(self.c.root / "bad-receipt.json"),
+                         "--predecessor-org-state-sha256", "GENESIS", "--successor-org-state-sha256", B, "--hb-epoch", str(EPOCH))
+        self.assertInputInvalid(out, "org", "bad-receipt.json")
+
+    def test_library_callers_cannot_write_a_non_finite_number_either(self):
+        r = self.c.py('e = load("emit.py")\n'
+                      'print(json.dumps(refusal(lambda: e.append("t-1", "TEST", "%s", "%s", {"x": [float("nan")]}, "NONE", "4200"))))' % (A, B))
+        self.assertEqual(r["refused"]["failure_code"], "CLI_INPUT_INVALID")
+        self.assertEqual(self.c.written("repo"), [])
+        r = self.c.py(repo_receipt_snippet() + 'print(json.dumps(refusal(lambda: agg.append(src, "REPO_STATE_PROPAGATION", agg.GENESIS, "%s", {"x": float("inf")}, "NONE", "4200"))))' % B)
+        self.assertEqual(r["refused"]["failure_code"], "CLI_INPUT_INVALID")
+        self.assertEqual(self.c.written("org"), [])
+
+    def test_finite_input_is_unchanged(self):
+        out = self.c.cli("emit.py", "--transition-id", "t-1", "--transition-class", "TEST",
+                         "--predecessor-state-sha256", A, "--successor-state-sha256", B,
+                         "--evidence-json", '{"x": 1.5, "y": [1, 2]}', "--hb-epoch", str(EPOCH))
+        self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
+
+
+class LedgerRootIsDesignatedOrPairVerified(unittest.TestCase):
+    """D-12 (c6389715021): a ledger root holding git-tracked files is refused (LEDGER_ROOT_NOT_CONTRACT_DESIGNATED);
+    a POSIX root holding none is admitted."""
+
+    def setUp(self):
+        self.c = Consumer()
+        self.addCleanup(self.c.close)
+        self.assertEqual(self.c.cli("emit.py", "--transition-id", "t-1", "--transition-class", "TEST",
+                                    "--predecessor-state-sha256", A, "--successor-state-sha256", B,
+                                    "--hb-epoch", str(EPOCH)).returncode, 0)
+
+    def propagate(self, root, via_env=False):
+        args = ["--repository", "formalism-tests/.github", "--hb-epoch", str(EPOCH)]
+        env = self.c.env
+        if via_env:
+            self.c.env = dict(env, STEGVERSE_REPO_LEDGER_HOME=str(root))
+        else:
+            args += ["--repository-ledger-root", str(root)]
+        try:
+            return self.c.cli("propagate_repository_receipts.py", *args)
+        finally:
+            self.c.env = env
+
+    def git(self, cwd, *args):
+        subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@example.invalid", *args], cwd=cwd, check=True, capture_output=True)
+
+    def test_a_root_with_tracked_files_is_refused_and_nothing_is_written(self):
+        fake = Path(self.c.tmp.name) / "work"
+        shutil.copytree(self.c.ledgers / "repo", fake / "ledger")
+        shutil.copytree(self.c.ledgers / "repo", fake / "formalism-tests/.github")  # the ledger home layout: <home>/<repository>
+        self.git(fake, "init", "-q")
+        self.git(fake, "add", "ledger", "formalism-tests")
+        self.git(fake, "commit", "-q", "-m", "a ledger committed as source")
+        for out in (self.propagate(fake / "ledger"), self.propagate(fake, via_env=True)):
+            self.assertNotEqual(out.returncode, 0, out.stdout)
+            refusal = json.loads(out.stdout.splitlines()[-1])
+            self.assertEqual(refusal["failure_code"], "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED")
+            self.assertEqual(refusal["failed_predicate"], "EVERY_ALLOWED_LEDGER_ROOT_IS_CONTRACT_DESIGNATED_OR_PAIR_VERIFIED")
+            for field in SIX:
+                self.assertTrue(refusal.get(field), field)
+            self.assertEqual(self.c.written("org"), [])
+
+    def test_an_untracked_root_inside_a_work_tree_and_a_root_outside_one_are_admitted(self):
+        work = Path(self.c.tmp.name) / "work2"
+        work.mkdir()
+        self.git(work, "init", "-q")
+        shutil.copytree(self.c.ledgers / "repo", work / "ledger")  # present, untracked
+        for root in (work / "ledger", self.c.ledgers / "repo"):
+            out = self.propagate(root)
+            self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
+            self.assertEqual(json.loads(out.stdout.splitlines()[-1])["disposition"], "ALLOW")
+
+
+class ReusableWorkflowChecksEveryRequestEpoch(unittest.TestCase):
+    """D-10 (c6389241647 / c6389047865): the push path checks every committed request's epoch, strictly, and appends each at
+    its own epoch; it no longer reads only the first request or coerces a trailing newline."""
+
+    TEXT = (COMPONENT.parents[1] / ".github/workflows/organization-ledger-transition-reusable.yml").read_text()
+
+    def test_no_first_request_only_read_remains(self):
+        self.assertNotIn("| head -1 |", self.TEXT)
+        self.assertNotIn('.get("hb_epoch","")', self.TEXT)
+
+    def test_every_request_is_checked_with_a_full_match_and_refused_by_name(self):
+        self.assertIn("EVERY_COMMITTED_REQUEST_EPOCH_IS_CHECKED_AND_WELL_FORMED", self.TEXT)
+        self.assertIn('re.fullmatch(r"[0-9]+",v)', self.TEXT)
+        self.assertIn("done < \"$RUNNER_TEMP/epoch-requests.txt\"", self.TEXT)
+
+    def test_each_request_is_appended_at_its_own_epoch(self):
+        self.assertEqual(self.TEXT.count('--hb-epoch "$epoch"'), 2)
+        self.assertNotIn('--hb-epoch "$HB_EPOCH"', self.TEXT)
+        self.assertIn("EPOCH_SOURCE=request", self.TEXT)
 
 
 if __name__ == "__main__":
