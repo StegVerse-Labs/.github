@@ -61,7 +61,12 @@ class FB1AliasTests(unittest.TestCase):
             self.assertEqual(e["path"], U)
             self.assertFalse(e["evidence"]["on_base"])
             self.assertEqual(e["evidence"]["commit"], heads[alias])
-            self.assertFalse((ROOT / e["candidate_path"]).exists(), e["candidate_path"])  # not on our base/branch
+            # The merged branch carries both #3235's own workflow and #3241's allocator workflow (now on main); each row stays
+            # FAIL_CLOSED (not on the pinned base) until the alias table is re-verified. Any other unresolved target must be absent.
+            if alias in ('#3235 verify workflow', 'allocator workflow'):
+                self.assertTrue((ROOT / e["candidate_path"]).is_file(), e["candidate_path"])
+            else:
+                self.assertFalse((ROOT / e["candidate_path"]).exists(), e["candidate_path"])  # not on our base/branch
             d = mg.alias_disposition("retry " + alias)
             self.assertEqual((d["disposition"], d["failure_code"], d["owning_existing_goal"]),
                              ("FAIL_CLOSED", "SURFACE_ALIAS_TARGET_NOT_ON_BASE", GOAL163))

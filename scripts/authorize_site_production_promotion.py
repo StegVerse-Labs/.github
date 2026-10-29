@@ -609,6 +609,8 @@ def authorize(request: Mapping[str, Any], *, source: Path = ROOT, repo_ledger_ro
             chain = consumer.verify_organization_chain(custody)
             chain_rows = list(chain["receipts"])
             grants = consumer.chain_grants(chain)
+            # A grant is evidence only with its retained source receipt read back; else P3 fails closed.
+            consumer.verify_grant_sources(custody, grants)
             floor_fence = consumer.provenance_floor(source)["fence"]
         except consumer.ClaimFailClosed as exc:
             chain_refusal = exc.predicate + ": " + exc.detail

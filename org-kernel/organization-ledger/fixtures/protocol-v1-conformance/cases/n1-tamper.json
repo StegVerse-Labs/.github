@@ -1,0 +1,20 @@
+{
+  "case_id": "n1-tamper",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "EVERY_BOUNDARY_RECEIPT_RECOMPUTES_FROM_THE_EXACT_PAYLOAD_BYTES",
+    "failure_code": "BOUNDARY_RECEIPT_RECONSTRUCTION_MISMATCH",
+    "next_attempt": "redeliver the unaltered packet; nothing was appended",
+    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+    "required_evidence_or_repair": "resubmit the original manifest bytes; a payload altered after the crossing does not reconstruct",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::reconstruct_closures"
+  },
+  "mutation": {
+    "kind": "TAMPER_PAYLOAD_AFTER_CROSSING",
+    "manifest_patch": {
+      "manifest_id": "PROTOCOL-V1-CONFORMANCE-FIXTURE-001-ALTERED"
+    }
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1"
+}
