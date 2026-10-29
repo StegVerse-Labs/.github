@@ -1,12 +1,96 @@
 # Interlock/InTr runtime-independent protocol mirror handoff
 
-Updated: 2026-10-01
+Updated: 2026-10-29
 Goal Task ID: `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001`
 Issue: #2897
 COSV ID: `50000000102000`
-Status: `ACTIVE / CHECKED OUT / CONFORMANCE VECTOR PREPARATION`
+Status: `ACTIVE`
 
-## 2026-10-17 conformance reconciliation (read this first)
+## 2026-10-29 independent strict replay reconciliation (current evidence)
+
+This is a documentary evidence update under the existing task, with authority
+effect NONE. Earlier sections are retained as history; their blanket
+`UNKNOWN_NOT_AUTHENTICALLY_OBSERVED` and public-route warrant prerequisites are
+superseded for the 156 declared paths at the source and ledger commits below.
+This does not establish a new execution, admission, external conformance,
+private-ledger warrant, release, or task closure.
+
+### Registry and counters
+
+Read at Labs main `6b13c3a749b2940d6142644196a8302823c1f45a`:
+the canonical task shard and vector retain ACTIVE / COSV `50000000102000`.
+The complete aggregate Registry, generation 322 (120 rows), contains no row
+for this task. The shard is DOCUMENTARY_NON_AUTHORIZING, with
+`projection_only=true`, null claim/fence, and only
+`PROTOCOL_SCHEMA_AND_CONFORMANCE_VECTORS_VALIDATED` as an allowed next
+transition. ACTIVE is the shard's coordination state; CHECKED OUT and native
+execution admission are not established. This update changes none of those
+records.
+
+Session Prompt Count: 2 in the fresh continuation. Exact cumulative Goal Prompt
+Count remains unverified and is not reset. The prior session's prompt-20
+handoff is retained at [#2897 comment 6500157092](https://github.com/StegVerse-Labs/.github/issues/2897#issuecomment-6500157092).
+Together with these two continuation prompts it gives a recovery lower bound of 22, already
+beyond the 20-prompt budget. Registry/Coordination must reconcile the cumulative
+count and dispose the documentary validation milestone; this is not permission
+to extend this task into distinct runtime work or mint substitute task IDs.
+
+### Independently executed evidence
+
+- The protocol-vector verifier passes on Labs main `6b13c3a7`: ALLOW, DENY,
+  FAIL_CLOSED, MasterRecordsCheckpoint profile and all six negative vectors.
+- On clean Org main `0b50df09f620304319f99de58af081aa8902c37e`,
+  `scripts/intr_post_genesis_replay.py check` verifies all 156 committed records,
+  all class DESTINATION_RECEIPT_LEDGERED, with no problems.
+- Independently fetched the organization-ledger refs anonymously for precisely
+  the 13 organizations returned by the native `orgs` command. Executed native
+  `replay --require-ledgered-allow`: exit 0, **156 ALLOW / 0 DENY / 0 FAIL_CLOSED**,
+  `e0_terminal=true`, `authority_effect=NONE`. All 156 complete per-path results
+  equal Claude's published results at TVC evidence commit
+  `e2ebde781f8e8cb77dd827519fc0db65bd2aa3ab`.
+- The independent raw output SHA-256 is
+  `fdca42b36ddff4775656de3e14db63bb836abaf76e9d7960e06ccd3e7a61b3f2`;
+  its native record seal is
+  `sha256:870f318b9a9ad2bc830f447038ac6793e21db5fa0c7e4041815a21bb61868b9d`.
+  It is not byte-identical to Claude's file: that file inventories a fourteenth,
+  unused `master-records` ledger copy. Its 13 declared-path ledger tips and all
+  per-path results match. Only that extra inventory entry and the resulting
+  record seal differ. No receipt or result was changed to force a digest match.
+- The separately executed Labs↔Org pair replay remains retained in
+  [#2897 comment 6499684394](https://github.com/StegVerse-Labs/.github/issues/2897#issuecomment-6499684394)
+  and PR #3404: eight byte hashes matched in that worker's run. This session's
+  independent execution is the full 156-path strict replay, not a new claim to
+  have rerun that eight-output script.
+
+Evidence class: independently executed read-only verification of historical
+public-ledger receipts, using the native verifier. These receipts were already
+ledgered; no transition or receipt was replayed or appended. Public ledger reads
+need no TV/TVC credential. Private-ledger warrant hardening remains separate.
+Raw output, exact pins, comparison and reproduction details:
+[retained evidence](evidence/intr-readback-20261029/README.md).
+
+### Integration and owner transitions
+
+PR [#3404](https://github.com/StegVerse-Labs/.github/pull/3404) remains draft,
+open and unmerged at `d141afefd8791f841e4f0bca25787014d3f45a0c`. All three
+returned exact-head workflow runs succeed: 40893614980, 40893615124 and
+40893615034. No approving review or native merge-admission evidence was
+observed. Its source owner retains ratification and protected expected-head
+merge. This handoff update is independently reviewable and does not modify
+that owner's branch.
+
+| Remaining action | Existing owner / evidence surface | Concrete next step |
+|---|---|---|
+| Documentary validation and cumulative-count disposition | Registry / Coordination, Labs #3195 and Org #167 | Reconcile omitted aggregate row with the ACTIVE shard; authenticate the allowed validation transition and closure or a genuinely separate successor through native registration. Do not equate source evidence with claim/fence. |
+| Source integration | Labs #2897 / PR #3404 owners | Review current exact heads and retained evidence, ratify, and use the protected expected-head path. |
+| Duplicate destination-receipt policy | Org #162 | Retain both b122500a and e4e9d2e3; decide successor selection/idempotency semantics without rewriting or reissuing historical receipts. Strict replay is now independently complete. |
+| Private-ledger warrant hardening | TVC #488, #533 / #561 owner | Bind to an authenticated existing or genuinely distinct successor task before issuer/nonce mutation. It is not a prerequisite for the verified public routes. |
+
+Adjacent sealed-source custody reader work remains with Labs #2810's existing
+owner; it is not part of this documentary protocol goal. No successor Goal ID,
+COSV, WorkerCoordinator claim, sovereign KV write, or release is assigned here.
+
+## 2026-10-17 conformance reconciliation (historical)
 
 Read at `StegVerse-Labs/.github` main `5b3fc476`, Registry generation 317. Coordination: StegVerse-org/.github#162 (P0), [#2897](https://github.com/StegVerse-Labs/.github/issues/2897). Evidence class: source reading and a local verifier run. This section changes no record, Registry row, claim or ledger.
 
@@ -138,4 +222,10 @@ PR #2915 ultimately merged into its checkpoint parent as `03e043f4680612bcbaf146
 
 ## Next action
 
-Reconcile the completed parent-branch #2915 artifacts onto current canonical main through the repository's existing latest-main reconstruction pattern. Preserve synthetic/non-authorizing fixtures, runtime independence, external_conformance_claimed=false, and UNKNOWN_NOT_AUTHENTICALLY_OBSERVED for authentic Interlock/InTr execution. Repository merge is source integration only.
+Use the current evidence and owner-transition table above. The #2915 artifacts
+are already on main and their verifier passes. Complete protected documentary
+integration and the original Registry owner's validation/count disposition;
+route distinct remaining work to its authenticated existing owner. Preserve
+runtime independence, external_conformance_claimed=false, all historical
+receipts, and the separation between evidence verification and execution
+authority. Repository merge is source integration only.

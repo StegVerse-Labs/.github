@@ -2053,6 +2053,21 @@ The frozen HOLD SDK attachment attempt now has a machine-readable review record 
 
 `MasterRecordsCheckpoint/v1` is the first bounded interoperability profile. Master Records remains checkpoint authority; manifested Interlock/InTr communication provides transport and provenance, not checkpoint construction. No external adoption or conformance is claimed without independently retained evidence.
 
+2026-10-29 independent read-only verification: the native Org post-genesis kit
+check verifies 156 records, and `replay --require-ledgered-allow` returns
+**156 ALLOW / 0 DENY / 0 FAIL_CLOSED** over 13 anonymously fetched public
+organization-ledger refs. All 156 complete results match the TVC worker's
+published output; the raw file digest differs only because that worker's tip
+inventory includes an additional unused `master-records` copy. Exact source,
+ledger and output hashes are in the [retained evidence](docs/evidence/intr-readback-20261029/README.md)
+and [canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md).
+The protocol-vector verifier also passes. This verifies historical public
+receipts and supersedes the blanket unknown-runtime description for those
+paths; it grants no new transition, private-warrant custody, native task
+admission, claim/fence, external conformance or closure. The task shard remains
+ACTIVE; its aggregate generation-322 Registry row is absent. Protected source
+integration and Registry disposition remain with their existing owners.
+
 - 2026-10-01: PR #2878 restores the Canonical Work execution-substrate resolution on the latest canonical head; no runtime authority is inferred.
 
 - 2026-10-01: Reconstructed PR #2865 exact-child SDK dispatch on current canonical main; the existing path now binds Goal context plus exact child request identity without creating another runtime or dispatcher.
