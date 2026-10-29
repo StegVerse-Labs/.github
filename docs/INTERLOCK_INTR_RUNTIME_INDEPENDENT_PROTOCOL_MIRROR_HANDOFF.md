@@ -6,7 +6,52 @@ Issue: #2897
 COSV ID: `50000000102000`
 Status: `ACTIVE`
 
-## 2026-10-29 session 12 integration handoff (latest)
+## 2026-10-29 fresh-session continuation (current)
+
+Live Registry readback: main `6b13c3a749b2940d6142644196a8302823c1f45a`,
+generation 322, 120 rows, aggregate omission unchanged; shard remains ACTIVE,
+COSV 50000000102000, null claim/fence. Session Prompt Count 1; cumulative
+recovery lower bound **33/20**, exact total unverified. This extends the session-12
+32-count record by one prompt and does not allocate a successor or reset the budget.
+
+- #3405 predecessor `2a827075575ef4a9c022e31095f41331904ab92c` now has
+  **6/6 successful checks**, including ratchet and required-verification.
+  Runs 40926426213, 40926426041, 40926426046 and 40926415810. This new
+  documentary revision requires its own CI; those successes are predecessor evidence.
+- Reproduced the README conflict between #3405@2a827075 and
+  #3404@3b03211a4943484d748c3395d61ed41b611fe5bd. Moved the InTr continuation
+  from the README tail to the existing InTr protocol section to preserve both owners'
+  additions. Local git merge-tree now returns exit 0 for the combination;
+  this is merge applicability, not a merged PR or hosted combined-head CI.
+  #3404's latest two-file delta is custody coordination documentation;
+  its earlier d8a2efaa review must not be labeled current-head review.
+- Executed the next Registry diagnostic rather than repeating the first refusal:
+  the prescribed row_fields repair refuses an omitted shard; adding only the explicit
+  false then exposes COSV_NOT_DERIVABLE because the legacy vector is nested.
+  A hypothetical explicit false plus projection of that same recorded vector into
+  the planner's top-level fields passes native plan/collision, with residuals retained.
+- The **existing atomic record-data route** (register_from_record plus exact
+  authority/vector field edits) passes plan, isolated apply with all seven native
+  validators and every-task handoff projection, repeat NO_CHANGE, and independent
+  collision CONTINUE. Original isolated files were restored byte-for-byte. No
+  canonical apply, new identity, vector allocation, claim/fence or closure occurred.
+  [Inputs, outputs and exact owner action](evidence/intr-registry-repair-20261029/README.md).
+
+Registry #3195 must choose and ratify the existing atomic route or an explicit
+shard-repair successor, refresh live generation/before values, serialize the
+accepted transition and committed readback, and issue the documentary validation
+and cumulative-count disposition. The rehearsal's generation 323 is not reserved.
+Schema/claim/exact-metric residuals remain explicit. Source owners retain protected
+integration; no formal APPROVED review or owner integration ruling was observed.
+Branch-protection details cannot be read by this GitHub App (403); no bypass is inferred.
+
+Org #258/H36 and all private runtime/credential work retain their existing separate
+owners. Their unchanged historical tests are not rerun by this diagnostic. No release
+or propagation-verification task is created before an actual release-ready disposition.
+Drive retains its approved session-6 revision. Session-8 replacement approval remains
+outstanding per #2897 comment 6503877434; no retry or alternate delivery attempted.
+
+## 2026-10-29 session 12 integration handoff (historical predecessor)
 
 Canonical main shard remains ACTIVE (blob a6cd7003ff8088749337d2e2c970c728c6757670),
 with null claim/fence. This documentary update confers no authority.
