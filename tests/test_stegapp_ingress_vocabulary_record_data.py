@@ -1,7 +1,7 @@
 """Scoped record-data repair for the StegApp native ingress bootstrap edge.
 
 The proposal is data for scripts/apply_task_record_data.py, never a hand edit or
-an admission receipt.  Tests execute plan/apply only on temporary copies.
+an admission receipt. Tests execute plan/apply only on temporary copies.
 """
 import copy
 import json
@@ -83,7 +83,7 @@ class StegAppIngressVocabularyRecordDataTests(unittest.TestCase):
         self.assertEqual(row["coordination_state"], "PROPOSED")
         self.assertEqual(record["coordination_state"], "PROPOSED")
         self.assertEqual(row["checkout_state"], "UNCLAIMED")
-        self.assertEqual(record["checkout_state"], "UNCLAIMED")
+        self.assertEqual(row["cosv_task_vector"], "10300000011000")
         self.assertEqual(row["allowed_next_transitions"], EXISTING)
         self.assertEqual(record["allowed_next_transitions"], EXISTING)
         self.assertFalse(record["worker_claim"]["claim_ref"])
@@ -103,16 +103,19 @@ class StegAppIngressVocabularyRecordDataTests(unittest.TestCase):
 
     def test_apply_changes_only_transition_vocabulary_on_row_and_shard(self):
         base_registry = load(self.registry)
-        base_record = self.record()
+        base_row, base_record = self.row(), self.record()
         self.assertEqual(self.run_apply(self.data)["disposition"], "ALLOW")
         registry = load(self.registry)
         row, record = self.row(), self.record()
-        expected = copy.deepcopy(base_record)
-        expected["allowed_next_transitions"] = EXISTING + ["INGRESS_ADMITTED"]
-        self.assertEqual(record, expected)
-        self.assertEqual(row, expected)
+        expected_record = copy.deepcopy(base_record)
+        expected_record["allowed_next_transitions"] = EXISTING + ["INGRESS_ADMITTED"]
+        expected_row = copy.deepcopy(base_row)
+        expected_row["allowed_next_transitions"] = EXISTING + ["INGRESS_ADMITTED"]
+        self.assertEqual(record, expected_record)
+        self.assertEqual(row, expected_row)
+        self.assertEqual(row["checkout_state"], "UNCLAIMED")
+        self.assertEqual(row["cosv_task_vector"], "10300000011000")
         self.assertEqual(record["coordination_state"], "PROPOSED")
-        self.assertEqual(record["checkout_state"], "UNCLAIMED")
         self.assertIsNone(record["worker_claim"]["claim_ref"])
         self.assertIsNone(record["worker_claim"]["fence_ref"])
         self.assertFalse(record["completion"]["claimed"])
