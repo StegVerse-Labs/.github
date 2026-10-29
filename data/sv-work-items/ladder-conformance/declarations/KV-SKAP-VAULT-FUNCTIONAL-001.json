@@ -19,7 +19,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -54,7 +54,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -89,7 +89,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -120,7 +120,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -151,7 +151,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -182,7 +182,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -217,7 +217,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -252,7 +252,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -283,7 +283,7 @@
     "E3": "three LLM lanes may author repairs to the KV SKAP Vault module and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -347,7 +347,7 @@
     "E3": "three LLM lanes may author repairs to the vault-lineage custody binding and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: runtime.task_registry_event_sovereign_kv_binding.validate_vault_lineage_custody_result (the pinned-gate fix is in #258 @9551edab3a152ec0741274b109b3e0de84a23ff8, stacked on it)",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: runtime.task_registry_event_sovereign_kv_binding.validate_vault_lineage_custody_result (the pinned-gate fix is in #258 @9551edab3a152ec0741274b109b3e0de84a23ff8, stacked on it)",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -506,7 +506,7 @@
     "E3": "three LLM lanes may author repairs to the finish-point verdict and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: python -m runtime.kv_skap_vault finish-point --evidence <file>",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: python -m runtime.kv_skap_vault finish-point --evidence <file>",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -537,17 +537,17 @@
   },
   {
    "allow_path": {
-    "evidence": "production TRUST_ANCHORS (runtime/kv_interlock_endpoint.py:529 @9551edab3a152ec0741274b109b3e0de84a23ff8) keep intr_transport None, read as UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (run kv-anchor-schema); layer 1 reaches ALLOW only under the test-only E0 stand-in anchors (run layer1-two-layer-probe: every PROD_* row FAIL_CLOSED). The re-vendor is done (LC-KV-15 closed); a production ALLOW still needs a KV-owned genesis pin (LC-KV-27, revision 16), a published head signer (ORG-LEDGER-HEAD-SIGNER-001) and an installed InTr transport (LC-KV-03) - a code and publication change, not a receipt input",
+    "evidence": "production TRUST_ANCHORS (runtime/kv_interlock_endpoint.py @c379f75f) keep intr_transport None, read as UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (run kv-layer1-pins), and bind no node chain (HEALTHY_NODE_LEDGER_NOT_BOUND); layer 1 reaches ALLOW only under the test-only E0 stand-in anchors and an E0 node chain (run layer1-two-layer-probe: every PROD_* row FAIL_CLOSED). A production ALLOW still needs a deployment binding of the requesting node's own transition ledger with its genesis pin, the evaluator stack admitted on LLM-adapter main (#430, which carries #429 and #428; admission order StegVerse-Labs/StegOS#426, then #430, then #429, then #428) and an installed InTr transport (LC-KV-03) - a code and publication change, not a receipt input",
     "state": "UNBOUND"
    },
    "degraded_forms": {
-    "E0": "no LLM: KVInterlockRuntime.handle takes the requester identity and transport state only from the installed InTr transport in TRUST_ANCHORS, runs the vendored, object-pinned evaluate_anchored (LLM-adapter#432 @74509fec, byte-identical) over the node's anchored ledger with the org genesis derived from the contract-location ledger, and mints a KV-access receipt only on its ALLOW; otherwise six-field FAIL_CLOSED KV_ACCESS_LAYER1_REFUSED / EPHEMERAL_NODE_LEDGER_NOT_ANCHORED / INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED (observed); the next attempt is the next InTr request",
+    "E0": "no LLM: KVInterlockRuntime.handle takes the requester identity and transport state only from the installed InTr transport in TRUST_ANCHORS, calls the bare pinned healthy_node_evaluator.evaluate (LLM-adapter#430 @919851cb, source fdaa2005, byte-identical at #428, #429 and #430) over the requesting node's OWN transition ledger that the deployment binds with its genesis pin, then checks the ALLOW's exact shape, node id and cite, the chain head read at bind, the genesis pin, that the pinned producers wrote every chain receipt, and that the authenticated transport key is the key the chain binds; it mints a KV-access receipt only on that ALLOW; otherwise six-field FAIL_CLOSED KV_ACCESS_LAYER1_REFUSED / HEALTHY_NODE_LEDGER_NOT_BOUND / NODE_NOT_CURRENTLY_ADMITTED_HEALTHY / INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED (observed); the next attempt is the next InTr request",
     "E1": "one LLM lane authors repairs to the KV InTr entry (layer 1); the deterministic verifier and exact-head CI receipts stand in for cross-checking",
     "E2": "two LLM lanes: one authors a repair to the KV InTr entry (layer 1), one cross-checks it; the deterministic verifier decides",
     "E3": "three LLM lanes may author repairs to the KV InTr entry (layer 1) and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (the DEVICE->KV InTr entry, consuming the pinned InTr healthy-node evaluator runtime/intr_pinned/healthy_node_evaluator.py)",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: runtime.kv_interlock_endpoint.KVInterlockRuntime.handle (the DEVICE->KV InTr entry, consuming the pinned healthy-node evaluator runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py over the node's own ledger chain)",
     "dispositions": [
      "ALLOW",
      "DENY",
@@ -563,7 +563,7 @@
     "layer1-healthy-node-search-kv259",
     "kv-ledger-root-binding",
     "kv-layers-probe",
-    "kv-anchor-schema",
+    "kv-layer1-pins",
     "kv-lc-kv-tests",
     "kv-selected-28",
     "kv-stdlib-21",
@@ -576,7 +576,7 @@
    ],
    "failure_class": {
     "class": "B",
-    "reason": "the anchors layer 1 pins do not exist yet: a healthy node that an external machine has established (none exists or ever will: StegVerse-org/.github docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md:53,60), an installed inter-org InTr transport and the NODE_HEALTH_REPORTED producer (#429 draft); revision 16: the withdrawn org-ledger onboarding and EPHEMERAL anchor are no longer layer 1 pins"
+    "reason": "the anchors layer 1 pins do not exist yet: a healthy node that an external machine has established (none exists or ever will: StegVerse-org/.github docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md:53,60), a deployment binding of that node's own ledger, an installed inter-org InTr transport, and the evaluator and its NODE_HEALTH_REPORTED producer admitted on LLM-adapter main (#430, #429, #428, open drafts); revision 21: there is no org ledger, org-ledger anchor or Org->adapter crossing in layer 1 (Coordination ruling (b) at StegVerse-org/.github#162 c6509636142)"
    },
    "id": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
    "kind": "CONSTRAINT",
@@ -585,16 +585,8 @@
    "observed_by": [
     "layer1-two-layer-probe"
    ],
-   "observed_state": "at #258 @9551edab layer 1 calls the vendored LLM-adapter#432 evaluate_anchored at 74509fec (runtime/intr_pinned/ byte-identical to #432 @74509fec; anchor d47cd0a4, evaluator source_sha256 fdaa2005, org_ledger_location b51e6a8b; GENESIS_DERIVATION is now ORG_LEDGER_GENESIS_PINNED_BY_CONTRACT_CHECKED_BY_EVALUATE_ANCHORED; run kv-anchor-schema) - the re-vendor LC-KV-15 asked for. Six-field FAIL_CLOSED: the 7 health refusals, a bare scratch root, a caller-asserted identity, transport NOT_YET_ENABLED, a node ledger without an anchor, a transport key that is not the anchored genesis key, foreign producer reports, an org repository without the ref, an EPHEMERAL node anchored by an unsigned or unpublished-key NODE_LEDGER_OPENED record, an ingress record naming no installed transport, and all 5 PROD_* rows. New at 9551edab (run layer1-two-layer-probe): a PERMANENT node on a caller-created org store is refused whether its genesis is P1-minted or labelled and route-attested (ORG_LEDGER_GENESIS_MISMATCH); a store head unattested, attested by the caller's own key, or carrying a route attestation replayed from the real store is ORG_LEDGER_HEAD_NOT_AUTHENTICATED; an attestation supplied in requester evidence is NODE_NOT_CURRENTLY_ADMITTED_HEALTHY; with no admitted append route every store is MERGE_APPEND_PATH_NOT_ADMITTED; a caller-appended ingress record without its InTr carrier is INTR_TRANSPORT_NOT_AUTHENTICALLY_OBSERVED. An anchored PERMANENT node is ALLOW only inside e0_trust_anchors. Lane D's commands reproduce at 9551edab: tests/test_kv_ladder_conformance_lc_kv.py 41 OK (run kv-lc-kv-tests); the 28-file selected set 366 passed, 0 skipped, 31 subtests (run kv-selected-28); 21 modules with cryptography and pytest blocked 236 OK (run kv-stdlib-21); cryptography is imported only by the pre-existing skap/{browser_admission,browser_ingress,crypto_boundary,portable_envelope}.py and two skap tests (run kv-cryptography-imports), and no dependency, cron or dispatch trigger was added. cvk#263 @f5f971a5 (KV-SKAP-LEDGER-LOCATION-001, moved from 20451a0c, observe root): 49 OK, 375 passed / 0 skipped, 244 stdlib OK; its two contracts name StegVerse-org/01_KV_Ledger and 02_SKAP_Vault_Ledger (run cvk263-contracts)",
+   "observed_state": "revision 21 (Lane D, StegVerse-org/.github#167; Coordination ruling (b) on StegVerse-org/.github#162): continuity-vault-kit moved from @dfa5fe3c to cvk#289 @c379f75f and TVC from @e6f57b6c to main @6458d285. Layer 1 calls the bare pinned healthy_node_evaluator.evaluate (LLM-adapter#430 @919851cb, source fdaa2005, identical at #428, #429 and #430; run kv-layer1-pins) over the requesting node's OWN transition ledger, bound by the deployment with its genesis pin (kind NODE_OWN_LEDGER_CHAIN); there is no org ledger, org-ledger anchor, endpoint designation or Org->adapter crossing in layer 1, and the six vendored byte copies under runtime/intr_pinned that encoded them are removed from the tree (git history keeps the bytes). Six-field FAIL_CLOSED (run layer1-two-layer-probe): no node chain bound, no health report, an unhealthy report, a healthy node that is not admitted, another node's chain, a superseded report, an unverified boundary proof, caller-asserted health evidence, a caller-asserted identity, transport NOT_YET_ENABLED, a wrong genesis pin, a transport key that is not the bound node key, a chain that binds another key, reports no pinned producer wrote (NODE_CHAIN_RECEIPT_NOT_WRITTEN_BY_THE_PINNED_PRODUCERS), an injected, a disguised and an exercise-flag-subclass evaluator, and all 4 PROD_* rows. An admitted healthy node chain is ALLOW only inside e0_trust_anchors. Honest weakening: the wrapper-internal Ed25519 identity proof and org-ledger anchoring of the node ledger (LC-KV-16) are not re-created; the key binding is the transport key against the key the node's own chain binds. Lane D's commands reproduce at cvk#289 @c379f75f: tests/test_kv_ladder_conformance_lc_kv.py 55 OK (run kv-lc-kv-tests); the 28-file selected set 400 passed, 0 skipped, 92 subtests (run kv-selected-28); 21 modules with cryptography and pytest blocked 266 OK (run kv-stdlib-21); cryptography is imported only by the pre-existing skap/* modules and their tests (run kv-cryptography-imports), and no dependency, cron or dispatch trigger was added. cvk#263's contracts and suites are observed at the same head (55 OK, 400 passed / 0 skipped, 266 stdlib OK; runs cvk263-lc-kv-tests, cvk263-selected-28, cvk263-stdlib-21, cvk263-contracts)",
    "required_outcomes": {
-    "LAYER1_BARE_SCRATCH_LEDGER_ROOT": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_CALLER_APPENDED_INGRESS_RECORD_WITHOUT_INTR_CARRIER": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
     "LAYER1_CALLER_ASSERTED_HEALTH_EVIDENCE": [
      "DENY",
      "FAIL_CLOSED"
@@ -603,15 +595,15 @@
      "DENY",
      "FAIL_CLOSED"
     ],
+    "LAYER1_CHAIN_BINDS_ANOTHER_KEY": [
+     "DENY",
+     "FAIL_CLOSED"
+    ],
+    "LAYER1_CHAIN_OF_ANOTHER_NODE": [
+     "DENY",
+     "FAIL_CLOSED"
+    ],
     "LAYER1_DISGUISED_NON_PINNED_EVALUATOR": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_EPHEMERAL_ANCHORED_BY_UNSIGNED_OPENED_RECORD": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_EPHEMERAL_OPENED_RECORD_SIGNED_BY_UNPUBLISHED_KEY": [
      "DENY",
      "FAIL_CLOSED"
     ],
@@ -623,62 +615,18 @@
      "DENY",
      "FAIL_CLOSED"
     ],
-    "LAYER1_INGRESS_RECORD_NAMES_NO_INSTALLED_TRANSPORT": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_NODE_LEDGER_WITHOUT_ANCHOR": [
-     "DENY",
-     "FAIL_CLOSED"
+    "LAYER1_NODE_CHAIN_ADMITTED_HEALTHY": [
+     "ALLOW"
     ],
     "LAYER1_NON_PINNED_EVALUATOR": [
      "DENY",
      "FAIL_CLOSED"
     ],
-    "LAYER1_NO_ADMITTED_APPEND_ROUTE": [
+    "LAYER1_NO_HEALTH_REPORT_ON_CHAIN": [
      "DENY",
      "FAIL_CLOSED"
     ],
-    "LAYER1_NO_HEALTH_REPORT_ON_LEDGER": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_NO_LEDGER_BOUND": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_ORG_REF_ABSENT": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_PERMANENT_NODE_ANCHORED": [
-     "ALLOW"
-    ],
-    "LAYER1_PERMANENT_ON_CALLER_CREATED_LABELLED_ORG_STORE": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_PERMANENT_ON_CALLER_CREATED_UNLABELLED_ORG_STORE": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_REPORT_FOR_ANOTHER_NODE": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_REQUESTER_SUPPLIED_ATTESTATION_IN_EVIDENCE": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_ROUTE_ATTESTATION_REPLAYED_ONTO_A_CALLER_STORE": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_STORE_HEAD_ATTESTED_BY_CALLERS_OWN_KEY": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "LAYER1_STORE_HEAD_UNATTESTED": [
+    "LAYER1_NO_NODE_CHAIN_BOUND": [
      "DENY",
      "FAIL_CLOSED"
     ],
@@ -686,7 +634,11 @@
      "DENY",
      "FAIL_CLOSED"
     ],
-    "LAYER1_TRANSPORT_KEY_NOT_THE_ANCHORED_GENESIS_KEY": [
+    "LAYER1_SUPERSEDED_REPORT": [
+     "DENY",
+     "FAIL_CLOSED"
+    ],
+    "LAYER1_TRANSPORT_KEY_NOT_THE_BOUND_NODE_KEY": [
      "DENY",
      "FAIL_CLOSED"
     ],
@@ -702,7 +654,11 @@
      "DENY",
      "FAIL_CLOSED"
     ],
-    "PROD_LAYER1_E0_GIT_LEDGER_ASSERTED_IDENTITY": [
+    "LAYER1_WRONG_GENESIS_PIN": [
+     "DENY",
+     "FAIL_CLOSED"
+    ],
+    "PROD_LAYER1_E0_NODE_CHAIN_ASSERTED_IDENTITY": [
      "DENY",
      "FAIL_CLOSED"
     ],
@@ -714,18 +670,14 @@
      "DENY",
      "FAIL_CLOSED"
     ],
-    "PROD_LAYER1_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY": [
-     "DENY",
-     "FAIL_CLOSED"
-    ],
-    "PROD_LAYER1_UNANCHORED_NODE_LEDGER": [
+    "PROD_LAYER1_NO_NODE_CHAIN_BOUND": [
      "DENY",
      "FAIL_CLOSED"
     ]
    },
    "requires_llms": 0,
    "reuses": [
-    "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE (StegVerse-org/LLM-adapter@0b37fe3b786a2de687235f5d9d146af49ffee9cd llm_adapter/healthy_node_evaluator.py, vendored byte-identical at continuity-vault-kit runtime/intr_pinned/)",
+    "REQUESTER_IS_CURRENTLY_ADMITTED_HEALTHY_NODE (StegVerse-org/LLM-adapter#430 @919851cb llm_adapter/healthy_node_evaluator.py, vendored byte-identical at continuity-vault-kit runtime/intr_pinned/llm_adapter/; not yet on LLM-adapter main)",
     "INTR_DEVICE_KV (StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939 tools/coinbase_intr_double_interlock.py)"
    ],
    "sealed_scope_evidence": "the sealed scope of #3324 (expected_evidence_predicates, scope_digest unchanged) names neither layer nor the healthy-node predicate; the request, allocation and handoff mention only 'Interlock/InTr' as transition authority (run layers-sealed-scope-search)",
@@ -748,7 +700,7 @@
     "E3": "three LLM lanes may author repairs to the SKAP Vault boundary (layer 2) and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: runtime.kv_skap_layer2.SkapLayer2Gate.admit / consume (the layer-2 gate inside KV; continuity-vault-kit#270 renames its boundary to KV_INTERNAL_SKAP_GATE) and the gated KVSkapVault / VaultStore SKAP entries",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: runtime.kv_skap_layer2.SkapLayer2Gate.admit / consume (the layer-2 gate inside KV; continuity-vault-kit#270 renames its boundary to KV_INTERNAL_SKAP_GATE) and the gated KVSkapVault / VaultStore SKAP entries",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -777,7 +729,7 @@
     "skap-custody-chain-probe-tvc541",
     "tvc541-mint-both-tests"
    ],
-   "observed_state": "the 3 direct KVSkapVault rows are six-field FAIL_CLOSED SKAP_ACCESS_LAYER2_REFUSED; at #258 @9551edab KnowledgeVaultExecutionStore.read_stream and append_extension refuse SKAP records, a record forged by a direct file write (with a valid storage hash) is refused by the gated read (SKAP_RECORD_PROVENANCE_NOT_VERIFIED), a subclassed gate is refused, and the gated append then gated read is ALLOW (run layer1-two-layer-probe SKAP_* rows); provenance is held in the gate's memory, so a legitimate record is refused after a gate restart (SKAP_LEGIT_RECORD_READ_AFTER_GATE_RESTART: FAIL_CLOSED; conforming, not durable; carried under H-KV-DURABLE-CUSTODY-PROVIDER). TV/TVC (TVC#541, now @f75e3e7c - three LC-KV-07 residual commits after 63705c86 - GitHub Product lane as TV/TVC owner per Coordination, a claim; stacked on TVC#538): the four resident stores now call place_through_chain/read_through_chain (tools/skap_custody_chain.py) instead of the resident root, and the chain refuses six-field with no chain, an unlisted store, an out-of-scope subject, an absent or edited layer-1 receipt, a layer 2 not bound to layer 1, an edited TVC#537 issuance receipt and no client; with TVC#537 absent (as on TVC main) every chain is FAIL_CLOSED TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT (run skap-custody-chain-probe-tvc541). At 63705c86 (LC-KV-07 fix, tools/kv_layer_ledger_readback.py) every custody receipt is read back from a designated KV / SKAP Vault ledger and none is taken from the caller: with no ledger designated (DESIGNATIONS empty) the caller-minted rows are six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED, build_chain no longer takes layer receipts as arguments (DOUBLE_INTERLOCK_BUILD_CHAIN_ACCEPTS_CALLER_LAYER_RECEIPTS NOT_A_PARAMETER), and both mint-both tests pass with test-only designated ledgers - a caller ledger, an unpinned genesis, a split ledger and receipts handed in are each FAIL_CLOSED (run tvc541-mint-both-tests). Earlier TVC#541 tests hand-run in this venv: 35 passed, 1 failed (an import of cryptography, not installed here and not added), 0 skipped; Lane C's 354 is not reproduced",
+   "observed_state": "the 3 direct KVSkapVault rows are six-field FAIL_CLOSED SKAP_ACCESS_LAYER2_REFUSED; at cvk#289 @c379f75f KnowledgeVaultExecutionStore.read_stream and append_extension refuse SKAP records, a record forged by a direct file write (with a valid storage hash) is refused by the gated read (SKAP_RECORD_PROVENANCE_NOT_VERIFIED), a subclassed gate is refused, and the gated append then gated read is ALLOW (run layer1-two-layer-probe SKAP_* rows); provenance is held in the gate's memory, so a legitimate record is refused after a gate restart (SKAP_LEGIT_RECORD_READ_AFTER_GATE_RESTART: FAIL_CLOSED; conforming, not durable; carried under H-KV-DURABLE-CUSTODY-PROVIDER). TV/TVC (TVC#541, now @f75e3e7c - three LC-KV-07 residual commits after 63705c86 - GitHub Product lane as TV/TVC owner per Coordination, a claim; stacked on TVC#538): the four resident stores now call place_through_chain/read_through_chain (tools/skap_custody_chain.py) instead of the resident root, and the chain refuses six-field with no chain, an unlisted store, an out-of-scope subject, an absent or edited layer-1 receipt, a layer 2 not bound to layer 1, an edited TVC#537 issuance receipt and no client; with TVC#537 absent (as on TVC main) every chain is FAIL_CLOSED TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT (run skap-custody-chain-probe-tvc541). At 63705c86 (LC-KV-07 fix, tools/kv_layer_ledger_readback.py) every custody receipt is read back from a designated KV / SKAP Vault ledger and none is taken from the caller: with no ledger designated (DESIGNATIONS empty) the caller-minted rows are six-field FAIL_CLOSED CUSTODY_RECEIPT_NAMESPACE_NOT_DESIGNATED, build_chain no longer takes layer receipts as arguments (DOUBLE_INTERLOCK_BUILD_CHAIN_ACCEPTS_CALLER_LAYER_RECEIPTS NOT_A_PARAMETER), and both mint-both tests pass with test-only designated ledgers - a caller ledger, an unpinned genesis, a split ledger and receipts handed in are each FAIL_CLOSED (run tvc541-mint-both-tests). Earlier TVC#541 tests hand-run in this venv: 35 passed, 1 failed (an import of cryptography, not installed here and not added), 0 skipped; Lane C's 354 is not reproduced",
    "removed_external_requirements": "revision 11: TVC#541 @72decca1 ships no deploy/systemd or workflow unit naming /var/lib/stegverse/skap (run tvc541-residual-units); config/skap-resident-store-residuals.json records the removed units and installers as DENY LADDER_EXTERNAL_MACHINE_REQUIRED (ruling #167 comment 6372680042); LC-KV-22 closed",
    "required_outcomes": {
     "CHAIN_CALLER_MINTED_LAYERS_TVC537_NOT_ON_PATH": [
@@ -890,7 +842,7 @@
     "E3": "three LLM lanes may author repairs to the layer-1 -> layer-2 receipt chain and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: runtime.kv_skap_layer2.SkapLayer2Gate.admit -> verify_kv_access_receipt (layer 2 consuming the layer-1 KV-access receipt)",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: runtime.kv_skap_layer2.SkapLayer2Gate.admit -> verify_kv_access_receipt (layer 2 consuming the layer-1 KV-access receipt)",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -913,7 +865,7 @@
    "observed_by": [
     "layer1-two-layer-probe"
    ],
-   "observed_state": "at #258 @9551edab: absent, caller-minted and reused layer-1 receipts, an E0 receipt checked under the production anchors, a subclassed layer-1 runtime and a subclass that sets _EXERCISE_ONLY_UNPINNED_DECIDER are refused six-field; a layer-1 receipt from the pinned evaluator is ALLOW. LC-KV-10 is fixed: pinned_decider_identity (runtime/kv_interlock_endpoint.py:375) requires the decider to be the very object load_pinned_intr loaded and its code digest to match (:381), so an evaluator that declares the pin's module, qualname and source file is refused at layer 1 and its receipt at layer 2 (runs layer1-two-layer-probe LAYER2_ON_LAYER1_RECEIPT_FROM_DISGUISED_NON_PINNED_EVALUATOR: FAIL_CLOSED, kv-evaluator-identity)",
+   "observed_state": "at cvk#289 @c379f75f: absent, caller-minted and reused layer-1 receipts, an E0 receipt checked under the production anchors, a subclassed layer-1 runtime and a subclass that sets _EXERCISE_ONLY_UNPINNED_DECIDER are refused six-field; a layer-1 receipt from the pinned evaluator is ALLOW. LC-KV-10 is fixed: pinned_decider_identity (runtime/kv_interlock_endpoint.py:375) requires the decider to be the very object load_pinned_intr loaded and its code digest to match (:381), so an evaluator that declares the pin's module, qualname and source file is refused at layer 1 and its receipt at layer 2 (runs layer1-two-layer-probe LAYER2_ON_LAYER1_RECEIPT_FROM_DISGUISED_NON_PINNED_EVALUATOR: FAIL_CLOSED, kv-evaluator-identity)",
    "required_outcomes": {
     "LAYER2_ON_CALLER_MINTED_LAYER1_RECEIPT": [
      "DENY",
@@ -972,7 +924,7 @@
     "E3": "three LLM lanes may author repairs to the endpoint designation reader and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: runtime.kv_receipt_ledgers.designation (_org_designation, _org_membership) via read_receipt_ledger and SkapLayer2Gate.receipt_ledger",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: runtime.kv_receipt_ledgers.designation (_org_designation, _org_membership) via read_receipt_ledger and SkapLayer2Gate.receipt_ledger",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -1357,7 +1309,7 @@
     "E3": "three or more LLM lanes review in parallel; the deterministic reader still decides"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: runtime/kv_receipt_ledgers.py::read_receipt_ledger (KV's own head record, both ends; LC-KV-26); StegVerse-Labs/TVC@e6f57b6c13450bfb2b63e6869c66fe1bc650271f: scripts/tvc_org_ledger_head_signer.py::ledger_location (TV/TVC's reader of the pin-wrapped entry) and tools/kv_custody_ledgers_config.py::parse_entry",
+    "by": "StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: runtime/kv_receipt_ledgers.py::read_receipt_ledger (KV's own head record, both ends; LC-KV-26); StegVerse-Labs/TVC@6458d28510e0044d946111e3a2b4046e0d23313d: scripts/tvc_org_ledger_head_signer.py::ledger_location (TV/TVC's reader of the pin-wrapped entry) and tools/kv_custody_ledgers_config.py::parse_entry",
     "dispositions": [
      "ALLOW",
      "DENY",
