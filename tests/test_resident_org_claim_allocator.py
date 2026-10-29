@@ -482,8 +482,10 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         self.addCleanup(patcher.stop)
         self.addCleanup(self._td.cleanup)
         self.env = custody_tests.Env(self.base / "claim", org_ledger=self.base / "unused-org-root")
-        # Root the declared chain through the existing emitters; no genesis is synthesized.
-        custody_tests.seed_rooted_chain(self.env.source, None, self.base / "seed-repo-ledger")
+        # Root the declared chain through the existing emitters; no genesis is synthesized. The seed's
+        # repository chain is the declared ref's own subtree: a POSIX repository ledger under the git
+        # Organization ledger is a mixed ledger-kind pair the aggregate refuses (MIXED_LEDGER_KIND_PAIR).
+        custody_tests.seed_rooted_chain(self.env.source, None, locator(self.node))
         self.seeded = ref_tip(self.node)
         self.assertIsNotNone(self.seeded)
         self.calls = []
@@ -687,20 +689,24 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         self.assertEqual(result["failed_predicate"], "FENCE_GENERATION_BEHIND_ISSUED_FENCES")
 
     def test_event_ephemeral_grant_without_carrier_epoch_fails_closed(self):
+        """Base name kept (ratchet convention). It used to assert a recorded FAIL_CLOSED transition with
+        GRANT_EPOCH_NOT_CARRIER_SUPPLIED; under #3290 a missing epoch is refused at consume() entry as
+        NO_EPOCH_CALLER_FAILS_CLOSED, before anything is read or appended on the declared ref."""
         env = self.fresh_runtime("no-epoch")
         result = self.consume_hosted(env, hb_epoch=None)
-        self.assertEqual(result["transition_class"], consumer.FAIL_CLOSED, result)
-        self.assertEqual(result["failed_predicate"], consumer.GRANT_EPOCH_NOT_CARRIER_SUPPLIED)
+        self.assertEqual(result["disposition"], "FAIL_CLOSED", result)
+        self.assertEqual(result["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
         for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
                       "owning_existing_goal", "next_attempt"):
             self.assertTrue(result.get(field), field)
         self.assertEqual(result["retry_entrypoint"], consumer.EVENT_EPHEMERAL_ENTRYPOINT)
         self.assertFalse(result["fence_issued"])
-        self.assertIsNone(result["fencing_token"])
+        self.assertIsNone(result.get("fencing_token"))
+        self.assertEqual(ref_tip(self.node), self.seeded)
         custody = consumer.ledger_custody(env.source, locator(self.node), None, event_ephemeral=True)
         self.assertEqual(consumer.chain_grants(consumer.verify_organization_chain(custody)), [])
-        # The ephemeral runtime projection is restored; nothing was issued.
-        self.assertEqual(env.claims()["generation"], 2)
+        # Nothing was issued: the runtime claim registry was never even materialized.
+        self.assertFalse((env.runtime / "control/claims-active.json").exists())
 
     def test_event_ephemeral_grant_carries_the_carrier_epoch_not_a_clock_reference(self):
         env = self.fresh_runtime("carrier")

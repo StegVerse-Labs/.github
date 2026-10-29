@@ -1451,8 +1451,11 @@ def consume(
         return _ledger_refusal(load_json(runtime / present[0]), "ledger roots not supplied")
     if hb_epoch is None:
         kernel = _load_module("org_claim_kernel", source / "org-kernel/kernel.py")
+        # The hosted event-ephemeral run is retried through its writer workflow, as its other refusals are.
+        retry = (EVENT_EPHEMERAL_ENTRYPOINT if event_ephemeral_materialization(source, repo_ledger_root, org_ledger_root)
+                 else RETRY_ENTRYPOINT + " (hb_epoch=, or --hb-epoch)")
         refusal = kernel.no_epoch_caller_refusal("scripts/consume_org_claim_allocator_request.py::consume",
-                                                 retry_entrypoint=RETRY_ENTRYPOINT + " (hb_epoch=, or --hb-epoch)")
+                                                 retry_entrypoint=retry)
         return {**_ledger_refusal(load_json(runtime / present[0]), refusal["detail"],
                                   predicate=refusal["failed_predicate"],
                                   repair=refusal["required_evidence_or_repair"]),

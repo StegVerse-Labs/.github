@@ -893,11 +893,13 @@ class OrgClaimCustodyTests(unittest.TestCase):
                                                recorded, "NONE", store=custody["repository_store"],
                                                hb_epoch=CARRIER_HB_EPOCH)
         granted = {"operation": consumer.GRANTED, "disposition": "ALLOW", "task_id": task_id, "fencing_token": fence}
-        return custody["organization_ledger"].aggregate_transition(
-            repository, ledger=consumer.organization_target(custody), org_transition_class="REPO_STATE_PROPAGATION",
-            predecessor_org_state_sha256=repository["predecessor_state_sha256"],
-            successor_org_state_sha256=repository["successor_state_sha256"], boundary_evidence=granted,
-            authority_effect="NONE", hb_epoch=CARRIER_HB_EPOCH)
+        # The source reaches aggregate only through the materializer channel (#3290), as record_transition appends it.
+        with custody["organization_ledger"]._materialized_repository_ledger(custody["repository_store"]):
+            return custody["organization_ledger"].aggregate_transition(
+                repository, ledger=consumer.organization_target(custody), org_transition_class="REPO_STATE_PROPAGATION",
+                predecessor_org_state_sha256=repository["predecessor_state_sha256"],
+                successor_org_state_sha256=repository["successor_state_sha256"], boundary_evidence=granted,
+                authority_effect="NONE", hb_epoch=CARRIER_HB_EPOCH)
 
     def test_grant_counts_toward_fence_history_only_with_its_retained_source(self):
         # Each Organization chain still recomputes from HEAD to its root; only the grant's retained source fails.
