@@ -1,0 +1,17 @@
+{
+  "consumer_id": "stegbrowser",
+  "hb_epoch": "469411751",
+  "route": {
+    "containment": "EXISTING_STEGBROWSER_RUNTIME_OWNER",
+    "external_consequence_enabled": true,
+    "lane_class": "MANIFEST_BOUND_EPHEMERAL_BROWSER",
+    "route_id": "stegverse.route.stegbrowser.v1",
+    "routing_surface": "EXISTING_UNIVERSAL_INTR",
+    "sandbox_required": false
+  },
+  "router": {
+    "path": "workers/universal_intr_profiled_ingress.py",
+    "predecessor_sha256": "sha256:b3672c9e702736d732aa18b14f183656cbea710f684481c0a00fda0c0bd72f07"
+  },
+  "schema": "stegverse.universal-intr-route-installation-request/v1"
+}
