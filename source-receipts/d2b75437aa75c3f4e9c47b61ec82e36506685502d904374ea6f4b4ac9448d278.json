@@ -1,0 +1,40 @@
+{
+  "authority_effect": "NONE",
+  "evidence": {
+    "consequence_committed": false,
+    "detail": "runtime generation 2 < issued fence 7",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "FENCE_GENERATION_BEHIND_ISSUED_FENCES",
+    "failure_code": "FENCE_GENERATION_BEHIND_ISSUED_FENCES",
+    "fence_issued": false,
+    "fencing_token": null,
+    "next_attempt": "on the next request event after the repair is recorded",
+    "organization_head_sha256": "sha256:887382425d826a6fd6c4149cc689ec6b187790255e068a4200a8db2f1cd8015d",
+    "owning_existing_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+    "request_id": "RESIDENT-EXEC-ORG-CLAIM-ALLOCATOR-SDK-STRUCTURAL-VALIDATOR-001",
+    "request_sha256": "525b306febcdbf5af92bedd9fef697e64bf026ae59b265e8055416691327c5dd",
+    "required_evidence_or_repair": "rematerialize the runtime claim registry at or beyond the issued fences",
+    "retry_entrypoint": ".github/workflows/organization-claim-allocator-transition-writer.yml",
+    "target_task_id": "TASK-2026-0014",
+    "task_id": "TASK-2026-0014"
+  },
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": true,
+    "epoch": 574295643,
+    "frequency_hz": 100,
+    "generation": 574295643,
+    "heartbeat_id": "HB:574295643",
+    "phase_offset_ns": 6226048,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "sampled_unix_ns": 1793254556116226048
+  },
+  "predecessor_state_sha256": "sha256:525b306febcdbf5af92bedd9fef697e64bf026ae59b265e8055416691327c5dd",
+  "previous_receipt_sha256": "sha256:aff9ac505b1d39aaf38889fd7be2ea32b84bea8ab76571389ad8d5d5e583c5c6",
+  "receipt_sha256": "sha256:d2b75437aa75c3f4e9c47b61ec82e36506685502d904374ea6f4b4ac9448d278",
+  "repository": "StegVerse-Labs/.github",
+  "schema": "stegverse.repo-transition-receipt/v1",
+  "successor_state_sha256": "sha256:6884af62564bada6eb42ce50676b33a78b847ddb58cdf9300e832838b0e05f5f",
+  "transition_class": "ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED",
+  "transition_id": "ORGANIZATION-WORKER-CLAIM-FAIL-CLOSED-4f20bab59fbf6a89"
+}
