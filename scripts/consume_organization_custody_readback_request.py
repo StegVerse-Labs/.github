@@ -25,8 +25,6 @@ COSV = "10000000100000"
 MODE = "READ_ONLY_ORGANIZATION_CUSTODY_REPLAY"
 REQUEST_REL = Path("control/resident-execution-request.d/organization-custody-readback-001.json")
 OUTPUT_REL = Path("receipts/sovereign-host/organization-custody-readback")
-HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
-              "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 ID = re.compile(r"[A-Za-z0-9_.:/-]{1,150}\Z")
 SCHEMA = "stegverse.organization-custody-readback-request/v1"
 ATTEMPT_SCHEMA = "stegverse.organization-custody-readback-governed-attempt/v1"
@@ -171,7 +169,7 @@ def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> d
     if path.exists() and json.loads(path.read_text(encoding="utf-8")) != request:
         raise ValueError("GOVERNED_ATTEMPT_REQUEST_COLLISION")
     path.write_text(raw, encoding="utf-8")
-    result = consume(source, runtime, _from_governed_attempt=True)
+    result = _process_request(source, runtime)
     result["governed_intr_disposition"] = "ALLOW"
     result["intr_master_records_receipt_sha256"] = intr_closure["receipt_sha256"]
     result["predecessor_master_records_receipt_sha256"] = predecessor["receipt_sha256"]
@@ -182,34 +180,56 @@ def _governed_attempt(source: Path, runtime: Path, attempt: dict[str, Any]) -> d
     return result
 
 
-def consume(source_root: Path, runtime_root: Path, *, _from_governed_attempt: bool = False) -> dict[str, Any]:
+def _manifest_route_not_established() -> dict[str, Any]:
+    """Six-field refusal for a request no admitted manifest route selected.
+
+    The same on every host: a host label neither admits nor refuses (#1615).
+    """
+    return {
+        "schema": "stegverse.organization-custody-readback-result/v1",
+        "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+        "task_id": TASK_ID, "cosv_task_vector": COSV,
+        "failure_code": "MANIFEST_ROUTE_CONFORMANCE_NOT_ESTABLISHED",
+        "failed_predicate": "ADMITTED_MANIFEST_CAPABILITY_ROUTE_SELECTS_PROCESSING",
+        "required_evidence_or_repair": (
+            "present the readback request to InTr and deposit its governed attempt at "
+            + str(ATTEMPT_REL) + " with the authentic disposition and Organization records"),
+        "retry_entrypoint": "scripts/consume_organization_custody_readback_request.py governed attempt",
+        "owning_existing_goal": TASK_ID,
+        "next_attempt": "FAIL_CLOSED_PENDING_GOVERNED_ATTEMPT_ON_ADMITTED_MANIFEST_ROUTE",
+        "readback_executed": False, "runtime_execution_proven": False,
+        "authority_effect": "NONE_FAIL_CLOSED",
+    }
+
+
+def consume(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     source, runtime = Path(source_root).resolve(), Path(runtime_root).resolve()
-    if not _from_governed_attempt:
-        attempt_path = runtime / ATTEMPT_REL
-        if attempt_path.is_file():
-            try:
-                attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
-                if not isinstance(attempt, dict):
-                    raise ValueError("GOVERNED_ATTEMPT_MUST_BE_OBJECT")
-                return _governed_attempt(source, runtime, attempt)
-            except (ValueError, KeyError, OSError, json.JSONDecodeError) as exc:
-                return {
-                    "schema": "stegverse.organization-custody-readback-result/v1",
-                    "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
-                    "reason": str(exc) if isinstance(exc, ValueError) else type(exc).__name__,
-                    "task_id": TASK_ID, "cosv_task_vector": COSV,
-                    "failed_predicate": "GOVERNED_MANIFEST_ATTEMPT_BINDING_AND_CUSTODY",
-                    "authority_effect": "NONE_FAIL_CLOSED",
-                }
-    path = runtime / REQUEST_REL
-    if not path.is_file():
+    attempt_path = runtime / ATTEMPT_REL
+    if attempt_path.is_file():
+        try:
+            attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
+            if not isinstance(attempt, dict):
+                raise ValueError("GOVERNED_ATTEMPT_MUST_BE_OBJECT")
+            return _governed_attempt(source, runtime, attempt)
+        except (ValueError, KeyError, OSError, json.JSONDecodeError) as exc:
+            return {
+                "schema": "stegverse.organization-custody-readback-result/v1",
+                "state": "FAIL_CLOSED", "disposition": "FAIL_CLOSED",
+                "reason": str(exc) if isinstance(exc, ValueError) else type(exc).__name__,
+                "task_id": TASK_ID, "cosv_task_vector": COSV,
+                "failed_predicate": "GOVERNED_MANIFEST_ATTEMPT_BINDING_AND_CUSTODY",
+                "authority_effect": "NONE_FAIL_CLOSED",
+            }
+    if not (runtime / REQUEST_REL).is_file():
         return {"schema": "stegverse.organization-custody-readback-result/v1",
                 "state": "NO_REQUEST", "attempted": False, "authority_effect": "NONE"}
-    if (not _from_governed_attempt and
-            any(os.environ.get(x, "").strip().lower() not in {"", "0", "false", "no"} for x in HOSTED_ENV)):
-        return {"schema": "stegverse.organization-custody-readback-result/v1",
-                "state": "BOUNDARY", "reason": "LEGACY_OPTIONAL_DIAGNOSTIC_HOSTED_ENVIRONMENT",
-                "runtime_execution_proven": False, "authority_effect": "NONE"}
+    # A bare request was selected by no admitted manifest route.
+    return _manifest_route_not_established()
+
+
+def _process_request(source: Path, runtime: Path) -> dict[str, Any]:
+    """Execute the readback the governed ALLOW selected; never entered directly."""
+    path = runtime / REQUEST_REL
     try:
         request = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(request, dict):
