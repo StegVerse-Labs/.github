@@ -11953,6 +11953,7 @@
    "heartbeat_runtime/runtime_presence_projection.py",
    "receipts/sovereign-host/**",
    "scripts/restart_sovereign_ephemeral_node.py",
+   "scripts/run_heartbeat_runtime.py",
    "scripts/run_worker_runtime.py"
   ],
   "scripts/report_canonical_work_coordination_validation.py": [
@@ -11976,6 +11977,7 @@
   "scripts/restart_sovereign_ephemeral_node.py": [
    "control/worker-runtime-state.json",
    "receipts/sovereign-host/**",
+   "scripts/repair_resident_worker_presence.py",
    "scripts/run_heartbeat_runtime.py",
    "scripts/run_worker_runtime.py"
   ],
@@ -13321,8 +13323,11 @@
   ],
   "tests/test_ephemeral_separated_runtime_supervision.py": [
    "control/worker-runtime-state.json",
+   "scripts/repair_resident_worker_presence.py",
    "scripts/restart_sovereign_ephemeral_node.py",
-   "scripts/run_sovereign_ephemeral_console.py"
+   "scripts/run_heartbeat_runtime.py",
+   "scripts/run_sovereign_ephemeral_console.py",
+   "scripts/run_worker_runtime.py"
   ],
   "tests/test_ephemeral_stegbrowser_external_ai_activation.py": [
    "control/task-vector-index.d/**",
