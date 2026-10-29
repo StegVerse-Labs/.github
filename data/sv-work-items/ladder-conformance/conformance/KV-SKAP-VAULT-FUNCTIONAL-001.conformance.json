@@ -90,7 +90,7 @@
     "repo": "StegVerse-org/StegVerse-SDK"
    },
    "tvc": {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    },
@@ -100,17 +100,17 @@
     "repo": "StegVerse-Labs/TVC"
    },
    "tvc540": {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    },
    "tvc541": {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    },
    "tvc542": {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    }
@@ -229,7 +229,7 @@
     "sha256": "sha256:11d1df2de8d8e38c67545d22aac4bb65626bf8d956b79989d7cdf7bb0bde6477"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "04e3745138903a50c575af83b3471c7f19dca0b5",
     "path": "tools/coinbase_intr_double_interlock.py",
     "repo": "StegVerse-Labs/TVC",
@@ -237,7 +237,7 @@
     "sha256": "sha256:54cb7c7dabcab26f8b5b015ea78293250d423c7c38a49fbb9e42b43a8f9cd53f"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "114bad83ea81b07735bd39ec7187a4135b913385",
     "path": "tools/skap_resident_sealed_object.py",
     "repo": "StegVerse-Labs/TVC",
@@ -245,7 +245,7 @@
     "sha256": "sha256:34b6bb14e6ef0cbb3df6ed286b520a83436ad63401f93c68b9d44103f0f1fc62"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "b056df64ee877b1c4f45d2bb7fc9b0d69530a851",
     "path": "skap_resident_seal_activation.py",
     "repo": "StegVerse-Labs/TVC",
@@ -253,7 +253,7 @@
     "sha256": "sha256:78c7583f78ea6fb1588946f060460ab7162be71cd724b9af9dc7a29a4f784c2f"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "268c003508a17dc516b8b640c1aef710c3b35e94",
     "path": "tvc_google_drive_skap_refresh_store.py",
     "repo": "StegVerse-Labs/TVC",
@@ -261,7 +261,7 @@
     "sha256": "sha256:00155d036cfce64343db5fe1d3d931603c8222b314995a0c060d6f88f868781e"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "61095a380c4c4f1b2518279d27f97837b980a3be",
     "path": "tvc_google_drive_client_secret_use.py",
     "repo": "StegVerse-Labs/TVC",
@@ -269,7 +269,7 @@
     "sha256": "sha256:f9920515c955ab3b3d4e94474c17c6300692fd4664fc73eae219dc90abdee3c5"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "4bbd3ee7dec83adad819d8ccae64e703bad657b0",
     "path": "tools/skap_custody_chain.py",
     "repo": "StegVerse-Labs/TVC",
@@ -277,7 +277,7 @@
     "sha256": "sha256:58721bfba6e22092b7347325489ec0724c283f76e822ab7b0fdbc34f39c5931c"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "ebce7f9847e3fe2aa4b435891b71119f842a647c",
     "path": "tools/kv_two_layer_receipts.py",
     "repo": "StegVerse-Labs/TVC",
@@ -285,7 +285,7 @@
     "sha256": "sha256:9fef1f727b650dc918215dd81a4674efb6c12102c761b5de1dcba458a60cdb48"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "04e3745138903a50c575af83b3471c7f19dca0b5",
     "path": "tools/coinbase_intr_double_interlock.py",
     "repo": "StegVerse-Labs/TVC",
@@ -293,7 +293,7 @@
     "sha256": "sha256:54cb7c7dabcab26f8b5b015ea78293250d423c7c38a49fbb9e42b43a8f9cd53f"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "114bad83ea81b07735bd39ec7187a4135b913385",
     "path": "tools/skap_resident_sealed_object.py",
     "repo": "StegVerse-Labs/TVC",
@@ -301,7 +301,7 @@
     "sha256": "sha256:34b6bb14e6ef0cbb3df6ed286b520a83436ad63401f93c68b9d44103f0f1fc62"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "dc5d70f369567c89061a3000652c1b287842cd79",
     "path": "config/skap-custody-chain.manifest.json",
     "repo": "StegVerse-Labs/TVC",
@@ -309,7 +309,7 @@
     "sha256": "sha256:81db79295d91c54700a0d31614cf8f87cf5cea12edc86200a756a56d9c1f3d3c"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "ad409b62516c138fb64f9cab0b1650e575037689",
     "path": "config/skap-resident-store-residuals.json",
     "repo": "StegVerse-Labs/TVC",
@@ -1343,7 +1343,7 @@
     }
    },
    "lowest_supported_mode": "E0",
-   "observed_state": "revision 17 (P1, StegVerse-org/.github#163): re-observed at continuity-vault-kit @acfd2be5, TVC @425eab54 and Labs main @6b13c3a7 (no hand-edited evidence). Changes cvk and TVC made: the Org-end crossing reader is installed (continuity-vault-kit#276, row ORG_CROSSING_READER_INSTALLED ALLOW, so ORG_CROSSING_READER_NOT_INSTALLED / LC-KV-29 is cleared), and the KV-owned genesis pin mechanism replaced the withdrawn org-hosted rows (continuity-vault-kit#277, rows PIN_MECHANISM_ORG_HOSTED no longer emitted); the genesis value itself is still null (LC-KV-27 narrowed). Revision 17 recorded TVC's reader as refusing the entry shape cvk returns (LC-KV-21); that was the probe, not either repo: scripts/tvc_org_ledger_head_signer.py ledger_location reads TV/TVC's pin-wrapped entry (cvk's keys plus designation_sha256, source, designation, status; its KV_ENTRY_KEYS comment) and tools/kv_custody_ledgers_config.py parse_entry reads cvk's raw entry. Revision 18 (run tvc542-bind-cvk263 at TVC @425eab54, cvk @acfd2be5): the raw entry equals TVC's vendored snapshot, parse_entry accepts it, and the reader accepts it wrapped with TVC's own designation_sha256; the raw-entry row stays FAIL_CLOSED by design. LC-KV-21 is cleared; no change to TVC or cvk was needed. revision 16 (P1, StegVerse-org/.github#163): re-declared as the cvk-only both-ends anchor. Coordination ruling (relayed to P1 05:36Z): re-declare H-KV-ENDPOINT-LEDGER-ANCHOR as the cvk-only both-ends anchor - no InTr hop inside an org (Rigel: \"InTr paths exist only between distinct orgs. There is never an InTr hop inside one org.\"); LLM-adapter only as an endpoint after an external machine has established itself as a healthy node, or not at all (#162 c6391743862: \"LLM-adapter's only InTr use is when an external machine has established itself as a healthy node; that node may then become an InTr endpoint\"); no external machine (StegVerse-org/.github docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md:53, \"There are no and will be no external machines awaiting anything\", and :60, \"No surface requires an external machine, a second user-operated device, or a remote computer, and none may be introduced as a completion predicate, machine dependency or substrate-unsuitability finding\" - so the EPHEMERAL external node is barred); no ledger dispatch; KV's own head record stays the authority (ruling A, StegVerse-org/.github#167 c6392982821: \"KV's own head record is the authority, and the caller watermark is an optional claim\"); rollback and replay detection on KV's own head stays valid on the LC-KV-26 basis (#167 c6393119202: \"a crossing record held at both ends (the org side and KV's own ledger), never an InTr hop inside one org\"). The withdrawn edge built an intra-org InTr crossing through LLM-adapter and relied on an EPHEMERAL external node; both are gone from this item, its plan runs and its scoped tasks, and it has no unadmitted dependency. At continuity-vault-kit main @acfd2be5 (continuity-vault-kit#275 closed LC-KV-26; run cvk263-chain-probe) every required row decides as declared: KV's own head record decides rollback (an older genuinely signed head is DENY KV_LEDGER_HEAD_ROLLBACK_DETECTED whatever the caller claims; the caller watermark is an optional claim, ruling A), and a read-back head is ALLOW only when it is held at both ends (KV end only, or an Org record naming only an older head, is six-field FAIL_CLOSED KV_CROSSING_RECORD_NOT_OBSERVED; a rollback after the last crossing is DENY), for kv and for skap_vault through SkapLayer2Gate. Production prerequisites (run cvk263-anchor-production-prerequisites) are each six-field FAIL_CLOSED and are the three remaining allow_path blockers plus ORG-LEDGER-HEAD-SIGNER-001. Note for Lane D (class A cleanup, not a bypass): cvk's reader uses vendored chain and Ed25519 helpers under runtime/intr_pinned; that is library code inside KV, not LLM-adapter acting as an endpoint and not an InTr hop. SKAP Vault inside KV is the only PII and credential store for every user, the ecosystem's own included; the ecosystem holds none (HST citation pending P1 #163).",
+   "observed_state": "revision 19 (P1, StegVerse-org/.github#163): re-observed with the TVC pin moved from @425eab54 to @cacf7b6c after StegVerse-Labs/TVC#562 (merge 7ac2d3a8) and #561 (merge cacf7b6c) merged; continuity-vault-kit @acfd2be5 and Labs main @6b13c3a7 unchanged (no hand-edited evidence). Every row decides as at revision 18; the TVC reader and parse_entry cited below are unchanged in behavior at the new pin. Revision 17 text follows. revision 17 (P1, StegVerse-org/.github#163): re-observed at continuity-vault-kit @acfd2be5, TVC @425eab54 and Labs main @6b13c3a7 (no hand-edited evidence). Changes cvk and TVC made: the Org-end crossing reader is installed (continuity-vault-kit#276, row ORG_CROSSING_READER_INSTALLED ALLOW, so ORG_CROSSING_READER_NOT_INSTALLED / LC-KV-29 is cleared), and the KV-owned genesis pin mechanism replaced the withdrawn org-hosted rows (continuity-vault-kit#277, rows PIN_MECHANISM_ORG_HOSTED no longer emitted); the genesis value itself is still null (LC-KV-27 narrowed). Revision 17 recorded TVC's reader as refusing the entry shape cvk returns (LC-KV-21); that was the probe, not either repo: scripts/tvc_org_ledger_head_signer.py ledger_location reads TV/TVC's pin-wrapped entry (cvk's keys plus designation_sha256, source, designation, status; its KV_ENTRY_KEYS comment) and tools/kv_custody_ledgers_config.py parse_entry reads cvk's raw entry. Revision 18 (run tvc542-bind-cvk263 at TVC @425eab54, cvk @acfd2be5): the raw entry equals TVC's vendored snapshot, parse_entry accepts it, and the reader accepts it wrapped with TVC's own designation_sha256; the raw-entry row stays FAIL_CLOSED by design. LC-KV-21 is cleared; no change to TVC or cvk was needed. revision 16 (P1, StegVerse-org/.github#163): re-declared as the cvk-only both-ends anchor. Coordination ruling (relayed to P1 05:36Z): re-declare H-KV-ENDPOINT-LEDGER-ANCHOR as the cvk-only both-ends anchor - no InTr hop inside an org (Rigel: \"InTr paths exist only between distinct orgs. There is never an InTr hop inside one org.\"); LLM-adapter only as an endpoint after an external machine has established itself as a healthy node, or not at all (#162 c6391743862: \"LLM-adapter's only InTr use is when an external machine has established itself as a healthy node; that node may then become an InTr endpoint\"); no external machine (StegVerse-org/.github docs/ORGANIZATION_ROLE_RUNTIME_REALITY_DEPLOYMENT.md:53, \"There are no and will be no external machines awaiting anything\", and :60, \"No surface requires an external machine, a second user-operated device, or a remote computer, and none may be introduced as a completion predicate, machine dependency or substrate-unsuitability finding\" - so the EPHEMERAL external node is barred); no ledger dispatch; KV's own head record stays the authority (ruling A, StegVerse-org/.github#167 c6392982821: \"KV's own head record is the authority, and the caller watermark is an optional claim\"); rollback and replay detection on KV's own head stays valid on the LC-KV-26 basis (#167 c6393119202: \"a crossing record held at both ends (the org side and KV's own ledger), never an InTr hop inside one org\"). The withdrawn edge built an intra-org InTr crossing through LLM-adapter and relied on an EPHEMERAL external node; both are gone from this item, its plan runs and its scoped tasks, and it has no unadmitted dependency. At continuity-vault-kit main @acfd2be5 (continuity-vault-kit#275 closed LC-KV-26; run cvk263-chain-probe) every required row decides as declared: KV's own head record decides rollback (an older genuinely signed head is DENY KV_LEDGER_HEAD_ROLLBACK_DETECTED whatever the caller claims; the caller watermark is an optional claim, ruling A), and a read-back head is ALLOW only when it is held at both ends (KV end only, or an Org record naming only an older head, is six-field FAIL_CLOSED KV_CROSSING_RECORD_NOT_OBSERVED; a rollback after the last crossing is DENY), for kv and for skap_vault through SkapLayer2Gate. Production prerequisites (run cvk263-anchor-production-prerequisites) are each six-field FAIL_CLOSED and are the three remaining allow_path blockers plus ORG-LEDGER-HEAD-SIGNER-001. Note for Lane D (class A cleanup, not a bypass): cvk's reader uses vendored chain and Ed25519 helpers under runtime/intr_pinned; that is library code inside KV, not LLM-adapter acting as an endpoint and not an InTr hop. SKAP Vault inside KV is the only PII and credential store for every user, the ecosystem's own included; the ecosystem holds none (HST citation pending P1 #163).",
    "refusals": [
     {
      "blocker": "KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED",
@@ -1371,7 +1371,7 @@
     },
     {
      "disposition": "FAIL_CLOSED",
-     "evidence": "continuity-vault-kit @acfd2be5 .stegverse/node-ledger/kv-ledger-head-signers.v1.json is NONE_PUBLISHED (\"bots never hold keys\", signers []), so every production read is six-field FAIL_CLOSED KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED (PROD_PREREQ_KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED_*); TVC main @425eab54 config/kv_custody_receipt_chains.json has \"signers\": [] and \"signer_key_ref\": null (run tvc542-kv-signer-entry). \"Generating or provisioning a signing key is credential custody, and no bot does it; per the invariant, the key would be held only in the SKAP Vault.\" SKAP Vault inside KV is the only PII and credential store for every user, the ecosystem's own included; the ecosystem holds none (HST citation pending P1 #163). Registered as its own task, not a scoped task here",
+     "evidence": "continuity-vault-kit @acfd2be5 .stegverse/node-ledger/kv-ledger-head-signers.v1.json is NONE_PUBLISHED (\"bots never hold keys\", signers []), so every production read is six-field FAIL_CLOSED KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED (PROD_PREREQ_KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED_*); TVC main @cacf7b6c config/kv_custody_receipt_chains.json has \"signers\": [] and \"signer_key_ref\": null (run tvc542-kv-signer-entry). \"Generating or provisioning a signing key is credential custody, and no bot does it; per the invariant, the key would be held only in the SKAP Vault.\" SKAP Vault inside KV is the only PII and credential store for every user, the ecosystem's own included; the ecosystem holds none (HST citation pending P1 #163). Registered as its own task, not a scoped task here",
      "external_ref": "ORG-LEDGER-HEAD-SIGNER-001",
      "failed_predicate": "EXTERNAL_REGISTERED_DEPENDENCY_ADMITTED",
      "failure_code": "LADDER_EXTERNAL_DEPENDENCY_PENDING",
@@ -1404,12 +1404,12 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:94b1c3d6ced5ac284235068e8a5c0389a4eaa5ca5179d8db4adee67acf6d54ab",
+  "document_sha256": "sha256:7608fdd8c4219b31b9bbc60f777b8d84c17cffe302518dbe05cf74ea690edead",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
-   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:2c1c0bacc837aceb3e786632c990b0477fad3d94e8384bc0a3d943210de903a8",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:a044c980707edf41e68a0f4c559f8336e6d0815a3ce3a899554f8dd2fe2d14f6",
-   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:2fa7b300966e46ee79e31d1dc205de65d3071fc0f65b50342b8a41678e319551",
+   "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:1b07bb0c3debd776f3ffc3ef027b852011c7f3fdd87c1e9af30fdf8cc35e7458",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:f40eeb453d9c81043d2e02066124fcbc9b6b4e223384f57047e576190fc1696f",
+   "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:8c5f83feb9040e7f78943ab40321abd1df62aab933c267e51bef451f8b45428c",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:2d215d2083b2769b78e464ce9e9497d379c3bfbdf0084fda8c60dded49cef11a",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-04.json": "sha256:577eabb0045df97a783d7285c6d5644fbe71db58fe2484804f66b822f066cc5f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-05.json": "sha256:daa28feb5c8e0ba07d655997d13afc9004a07ff7412c75da5706063eb070f1e7",

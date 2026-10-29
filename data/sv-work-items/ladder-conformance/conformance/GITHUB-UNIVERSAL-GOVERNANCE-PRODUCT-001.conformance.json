@@ -57,7 +57,7 @@
     "repo": "StegVerse-org/StegVerse-SDK"
    },
    "tvc": {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "kind": "git",
     "repo": "StegVerse-Labs/TVC"
    }
@@ -168,7 +168,7 @@
     "sha256": "sha256:97fd7b6db71b59410f80d6e8ab5a726c0279db2d4806c669b3e0b8d2823328ec"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "0e468077751ab01d740f17c51f324a4a13d45718",
     "path": "config/sdk_v1_3_0_release.json",
     "repo": "StegVerse-Labs/TVC",
@@ -176,7 +176,7 @@
     "sha256": "sha256:486c568c1dad89c2c291f0f105603bf051e8d6e71753b2a681d0e778eb54fc7e"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "46697bdfa9193152698b6f0fae028547683b45ac",
     "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
     "repo": "StegVerse-Labs/TVC",
@@ -184,7 +184,7 @@
     "sha256": "sha256:2f20b4f2a79f0e1a9f9b897075884470d7911f3a5c976e88059f14d8af4dfe4f"
    },
    {
-    "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+    "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
     "git_blob": "ee95d8d368858fb8ee03d0ae2741119d9ad36803",
     "path": "tasks/tvc_portable_github_release_publisher.py",
     "repo": "StegVerse-Labs/TVC",
@@ -1185,12 +1185,12 @@
    "resident-runtime/sv_operating_modes.py": "sha256:0abb3cb6f846548cc542a5a5421e5f54b7ef28396f51e4c53ba91c3fc9e2e18e",
    "scripts/ladder_conformance.py": "sha256:e9c5cba49306f8aa8b6a8bd9835a71a96ea6adde0b25ed080b62629205b1bc58"
   },
-  "document_sha256": "sha256:d4c6e1ba77a6d10128f961c2fac4f1a2563d324e1dfe8e8a72012d502a2d3cb0",
+  "document_sha256": "sha256:6b18d7bf986f31771d8fc82cd48fd5987d950988e3f65cd4cac3005d6067f2a3",
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
    "data/sv-work-items/ladder-conformance/declarations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:83d0ceb1a3a23887f79707698b59b37d66e6502d62252a4ce937740f301251d0",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:a044c980707edf41e68a0f4c559f8336e6d0815a3ce3a899554f8dd2fe2d14f6",
-   "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:0a85a898d9894b2224180715f28789810544a1ad59581e0672015a393392f8ff",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:f40eeb453d9c81043d2e02066124fcbc9b6b4e223384f57047e576190fc1696f",
+   "data/sv-work-items/ladder-conformance/observations/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.observations.json": "sha256:c3f2d0f08ce72238a3ff838b86cde5820b13b5b22e18ab4f60b907bf9f05773f",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-01.json": "sha256:becdc08760762e5398c5512bcc86b7290687878b4dafd617b13a325b5fdbdb0b",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-02.json": "sha256:5dc38459690343e8a49759bcdc7ca8e8d1afdfca18f0705127733560fcadb51e",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-GOV-03.json": "sha256:c4522fcbe7258e48dc3eaed097e6d3f778fbd4627a16c5b5b00ef96a477de4ed",
