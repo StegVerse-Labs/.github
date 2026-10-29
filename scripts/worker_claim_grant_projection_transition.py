@@ -19,6 +19,8 @@ receipt's exact bytes, and from a read of the Organization ledger:
 * ``apply``  writes the derived control/worker-registry.json into a tree.
 * ``verify`` re-derives from the predecessor tree and requires the successor
              tree to hold exactly those bytes.
+* ``guard``  for a change carrying no manifest: control/worker-registry.json may
+             not add, change or remove a projected row.
 
 Fence-domain reconciliation (cited in contracts/worker-claim-grant-projection-transition.v1.json):
 * The allocator fence is carried verbatim, tagged ``fence_domain:
@@ -65,6 +67,10 @@ WORKFLOW = ".github/workflows/worker-claim-grant-projection-transition.yml"
 OWNING_GOAL = "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001"
 FENCE_DOMAIN = "ORGANIZATION_CLAIM_ALLOCATOR"
 PROJECTED_STATE = "CLAIM_GRANTED_PROJECTED"
+# What a verified Organization chain establishes (consume_org_claim_allocator_request.CUSTODY_AUTHENTICATION):
+# hash-chain continuity only, never authenticated custody. A grant claiming more is refused, and every
+# projected row carries this label so no reader takes the row for authenticated custody.
+CUSTODY_AUTHENTICATION = "HASH_CHAIN_CONTINUITY_ONLY"
 AUTHORITY_EFFECT = "NONE_PROJECTION_ONLY"
 NEXT_ATTEMPT = "on the next projection request event after the repair is recorded"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
@@ -72,9 +78,15 @@ SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
 
 
 class Refusal(Exception):
-    def __init__(self, predicate: str, detail: str, repair: str):
+    """A six-field FAIL_CLOSED. `failed_predicate` defaults to the failure code; a refusal passed
+    through from an existing verifier names that verifier's own predicate and carries its refusal."""
+
+    def __init__(self, predicate: str, detail: str, repair: str, *, failed_predicate: str | None = None,
+                 readback_refusal: dict[str, Any] | None = None):
         super().__init__(f"{predicate}: {detail}")
         self.predicate, self.detail, self.repair = predicate, detail, repair
+        self.failed_predicate = failed_predicate or predicate
+        self.readback_refusal = readback_refusal
 
 
 def require(ok: bool, predicate: str, detail: str, repair: str) -> None:
@@ -159,7 +171,7 @@ def read_chain(opened: Any, organization: str) -> list[dict[str, Any]]:
     return chain
 
 
-def verify_grant_source(opened: Any, receipt: dict[str, Any], issuer: str) -> dict[str, Any]:
+def verify_grant_source(opened: Any, receipt: dict[str, Any], issuer: str, consumer: Any) -> dict[str, Any]:
     """The retained source of the GRANTED receipt, read back through the existing Organization verifier.
 
     organization_batch_custody.verified_organization_source_receipt binds the receipt to its
@@ -168,6 +180,11 @@ def verify_grant_source(opened: Any, receipt: dict[str, Any], issuer: str) -> di
     source must then be the allocator's own repository receipt recording this grant. A chain that only
     recomputes is not enough. What this establishes is the recorded issuer evidence, never authenticated
     custody (readback_custody_basis is reported beside it), and it authorizes nothing.
+
+    A verifier refusal keeps the verifier's own failed_predicate and travels verbatim as
+    organization_readback_refusal. The source's evidence must equal the receipt's boundary_evidence on
+    every key consume_org_claim_allocator_request.record_transition carries into it (CARRIED, and
+    CARRIED_IF_RECORDED by presence and value), not only the fence, task and disposition.
     """
     repair = ("project a GRANTED receipt whose exact source receipt the Organization ledger retains "
               "(source-receipts/), as aggregate_transition recorded it")
@@ -182,7 +199,7 @@ def verify_grant_source(opened: Any, receipt: dict[str, Any], issuer: str) -> di
             expected_transition_id=receipt.get("source_transition_id"))
     except custody.OrganizationReceiptRefused as exc:
         raise Refusal("GRANT_SOURCE_RECEIPT_UNVERIFIED", f"{exc.disposition} {exc.failed_predicate}: {exc.detail}",
-                      repair) from exc
+                      repair, failed_predicate=exc.failed_predicate, readback_refusal=exc.refusal()) from exc
     ev, recorded = receipt["boundary_evidence"], source.get("evidence") or {}
     hb = source.get("hb_reference") or {}
     mismatched = [name for name, ok in (
@@ -191,6 +208,10 @@ def verify_grant_source(opened: Any, receipt: dict[str, Any], issuer: str) -> di
         ("transition_id", source.get("transition_id") == receipt["source_transition_id"]),
         ("transition_class", source.get("transition_class") == GRANTED),
         *((f"evidence.{key}", recorded.get(key) == ev.get(key)) for key in ("disposition", "task_id", "fencing_token")),
+        *((f"evidence.{key}", recorded.get(key) == ev.get(key)) for key in consumer.CARRIED
+          if key not in ("disposition", "task_id", "fencing_token")),
+        *((f"evidence.{key}", (key in recorded, recorded.get(key)) == (key in ev, ev.get(key)))
+          for key in consumer.CARRIED_IF_RECORDED),
         ("hb_reference", isinstance(hb.get("epoch"), int) and not isinstance(hb.get("epoch"), bool)
          and hb.get("derived_from_clock") is False),
     ) if not ok]
@@ -198,6 +219,7 @@ def verify_grant_source(opened: Any, receipt: dict[str, Any], issuer: str) -> di
             f"retained source {receipt['source_transition_sha256']} does not record this grant: {mismatched}",
             f"project only a grant the allocator recorded in {issuer} with its carrier epoch; re-run the allocator")
     return {"source_transition_sha256": row["source_transition_sha256"], "source_repository": issuer,
+            "organization_readback": "VERIFIED",
             "organization_readback_custody_basis": custody.readback_custody_basis(row)}
 
 
@@ -225,6 +247,10 @@ def verify_grant(root: Path, request: dict[str, Any], chain: list[dict[str, Any]
             and ev.get("task_id") == allocator_task and isinstance(fence, int) and not isinstance(fence, bool),
             "RECEIPT_NOT_A_CLAIM_GRANT", f"receipt is not an {GRANTED} ALLOW for {allocator_task}",
             "project only an ORGANIZATION_WORKER_CLAIM_GRANTED receipt for the manifest's allocator task")
+    label = ev.get("custody_authentication", CUSTODY_AUTHENTICATION)
+    require(type(label) is str and label == CUSTODY_AUTHENTICATION, "GRANT_CUSTODY_AUTHENTICATION_OVERSTATED",
+            f"grant boundary_evidence.custody_authentication is {label!r}, not {CUSTODY_AUTHENTICATION!r}",
+            "the Organization chain proves hash-chain continuity only; project a grant the allocator recorded as such")
     require(receipt.get("source_transition_id") == f"ORGANIZATION-WORKER-CLAIM-GRANTED-{allocator_task}-G{fence}",
             "RECEIPT_NOT_A_CLAIM_GRANT", "source_transition_id does not name this grant and fence",
             "use the receipt the allocator appended for this grant")
@@ -264,7 +290,8 @@ def derive(root: Path, request: dict[str, Any], opened: Any) -> tuple[dict[str, 
     organization = load(root / ORG_CONTRACT)["organization"]
     chain = read_chain(opened, organization)
     grant = verify_grant(root, request, chain, floor)
-    source = verify_grant_source(opened, request["organization_receipt"], load(root / REPO_CONTRACT)["repository"])
+    source = verify_grant_source(opened, request["organization_receipt"], load(root / REPO_CONTRACT)["repository"],
+                                 consumer)
 
     registry_bytes = (root / WORKER_REGISTRY).read_bytes()
     registry = json.loads(registry_bytes)
@@ -279,6 +306,7 @@ def derive(root: Path, request: dict[str, Any], opened: Any) -> tuple[dict[str, 
         "predecessor_worker_registry_generation": generation,
         "predecessor_worker_registry_sha256": "sha256:" + hashlib.sha256(registry_bytes).hexdigest(),
         "organization_head_sha256": chain[-1]["receipt_sha256"],
+        "custody_authentication": CUSTODY_AUTHENTICATION,
         **source,
     }
     if rows and (rows[0].get("assignment_timer") or {}).get("grant_receipt_sha256") == digest:
@@ -308,6 +336,7 @@ def derive(root: Path, request: dict[str, Any], opened: Any) -> tuple[dict[str, 
         "assignment_timer": {
             "allocator_task_id": request["allocator_task_id"],
             "claim_scope_sha256": ev.get("claim_scope_sha256"),
+            "custody_authentication": CUSTODY_AUTHENTICATION,
             "fence_domain": FENCE_DOMAIN,
             "fencing_token": fence,
             "grant_receipt_sha256": digest,
@@ -339,6 +368,48 @@ def derive(root: Path, request: dict[str, Any], opened: Any) -> tuple[dict[str, 
     return {WORKER_REGISTRY: dump(successor)}, evidence
 
 
+def projected_rows(registry: Any) -> dict[str, Any]:
+    """Rows this transition owns: an allocator-domain fence or the projected state, keyed canonically."""
+    require(isinstance(registry, dict) and isinstance(registry.get("tasks"), list), "PROJECTION_INTERNAL_ERROR",
+            "worker registry is not an object with a tasks list", "restore control/worker-registry.json")
+    owned = {}
+    for index, row in enumerate(registry["tasks"]):
+        require(isinstance(row, dict), "PROJECTION_INTERNAL_ERROR", f"worker registry row {index} is not an object",
+                "restore control/worker-registry.json")
+        timer = row.get("assignment_timer")
+        if (isinstance(timer, dict) and timer.get("fence_domain") == FENCE_DOMAIN) or row.get("state") == PROJECTED_STATE:
+            owned[canon(row).decode()] = row
+    return owned
+
+
+def guard(base: Path, head: Path) -> dict[str, Any]:
+    """A head that changes control/worker-registry.json without a projection manifest.
+
+    Projected rows (fence_domain ORGANIZATION_CLAIM_ALLOCATOR, or state
+    CLAIM_GRANTED_PROJECTED) are written only by `apply` from a committed
+    manifest, so such an edit may not add, change or remove one. Rows of any
+    other writer are outside this transition and pass unchanged.
+    """
+    mode = "guard"
+    request_bytes = b""
+    try:
+        before = projected_rows(json.loads((base / WORKER_REGISTRY).read_bytes()))
+        after = projected_rows(json.loads((head / WORKER_REGISTRY).read_bytes()))
+        added = sorted(str(after[k].get("task_id")) for k in after.keys() - before.keys())
+        removed = sorted(str(before[k].get("task_id")) for k in before.keys() - after.keys())
+        require(not added and not removed, "PROJECTED_ROW_WITHOUT_MANIFEST",
+                f"projected rows changed without a manifest: added/changed {added}, removed/changed {removed}",
+                f"commit a {REQUEST_SCHEMA} manifest under {REQUESTS}/ and write the row with python {ENTRYPOINT} apply")
+        return receipt({}, request_bytes, mode, "ALLOW",
+                       {"projected_rows_unchanged": len(after), "worker_registry": WORKER_REGISTRY}, {})
+    except Refusal as refusal:
+        return receipt({}, request_bytes, mode, "FAIL_CLOSED", refusal=refusal)
+    except Exception as exc:
+        return receipt({}, request_bytes, mode, "FAIL_CLOSED",
+                       refusal=Refusal("PROJECTION_INTERNAL_ERROR", f"{type(exc).__name__}: {exc}",
+                                       "restore a readable control/worker-registry.json on both trees"))
+
+
 def receipt(request: Any, request_bytes: bytes, mode: str, disposition: str, evidence: dict[str, Any] | None = None,
             outputs: dict[str, bytes] | None = None, refusal: Refusal | None = None) -> dict[str, Any]:
     body: dict[str, Any] = {
@@ -360,10 +431,12 @@ def receipt(request: Any, request_bytes: bytes, mode: str, disposition: str, evi
     if outputs is not None:
         body["derived_files"] = {p: "sha256:" + hashlib.sha256(d).hexdigest() for p, d in sorted(outputs.items())}
     if refusal is not None:
-        body.update({"failure_code": refusal.predicate, "failed_predicate": refusal.predicate, "detail": refusal.detail,
+        body.update({"failure_code": refusal.predicate, "failed_predicate": refusal.failed_predicate, "detail": refusal.detail,
                      "required_evidence_or_repair": refusal.repair,
                      "retry_entrypoint": f"{WORKFLOW} / python {ENTRYPOINT} {mode}",
                      "owning_existing_goal": OWNING_GOAL, "next_attempt": NEXT_ATTEMPT, "consequence_committed": False})
+        if refusal.readback_refusal is not None:
+            body["organization_readback_refusal"] = refusal.readback_refusal
     return body
 
 
@@ -397,16 +470,21 @@ def run(mode: str, request_path: Path, base: Path, head: Path | None = None, org
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("mode", choices=("plan", "apply", "verify"))
-    parser.add_argument("--request", required=True, type=Path)
+    parser.add_argument("mode", choices=("plan", "apply", "verify", "guard"))
+    parser.add_argument("--request", type=Path)
     parser.add_argument("--base", type=Path, default=ROOT)
     parser.add_argument("--head", type=Path)
     parser.add_argument("--org-ledger", help="Organization ledger locator, e.g. git+<repo>#refs/stegverse/organization-ledger")
     parser.add_argument("--receipt-out", type=Path)
     args = parser.parse_args(argv)
-    if args.mode == "verify" and args.head is None:
-        parser.error("verify needs --head")
-    body = run(args.mode, args.request, args.base.resolve(), args.head.resolve() if args.head else None, args.org_ledger)
+    if args.mode in ("verify", "guard") and args.head is None:
+        parser.error(f"{args.mode} needs --head")
+    if args.mode == "guard":
+        body = guard(args.base.resolve(), args.head.resolve())
+    else:
+        if args.request is None:
+            parser.error(f"{args.mode} needs --request")
+        body = run(args.mode, args.request, args.base.resolve(), args.head.resolve() if args.head else None, args.org_ledger)
     text = json.dumps(body, indent=2, sort_keys=True) + "\n"
     if args.receipt_out:
         args.receipt_out.write_text(text, encoding="utf-8")
