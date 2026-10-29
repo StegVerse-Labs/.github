@@ -3,7 +3,7 @@
   "request_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.existing-identity.gen320",
   "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
   "registration_mode": "EXISTING_IDENTITY",
-  "observed_registry_generation": 323,
+  "observed_registry_generation": 324,
   "allocation_request_ref": null,
   "authority_effect": "NONE_REGISTRATION_ONLY",
   "issue": "StegVerse-org/.github#160 issuecomment-6354238464 I1 (Lane D: register the no-row Goals by manifest; draft, consumed by the registry transition)",
