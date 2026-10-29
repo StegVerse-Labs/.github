@@ -10,6 +10,12 @@ Coordination state: `PROPOSED`
 Checkout state: `UNCLAIMED`  
 Authority effect: `NONE_COORDINATION_REGISTRATION_ONLY`
 
+## SPPA ephemeral-storage remediation candidate — 2026-10-29
+
+Source-only EC9 support for original-owner Q74-01 coordination on [#2810](https://github.com/StegVerse-Labs/.github/issues/2810). The SPPA consumer reuses the allocator's manifest-declared ephemeral-storage predicate; authorization separately verifies that the repository store shares the declared Organization Git directory and ref. Custody construction failures become the existing fail-closed P3 result. Storage eligibility grants no execution or promotion authority. Authenticating custody bases, claims, fences, InTr/TVC checks, and provider promotion are unchanged.
+
+Validation on main `6b13c3a749b2940d6142644196a8302823c1f45a`: 41 tests and 3 subtests pass across SPPA authorization, dispatched consumption and six new storage-boundary cases. The new suite has two failures on unchanged main. Tests use temporary empty Git stores; no real ledger, receipt, deployment or Registry write occurs. Owner PR [#3290](https://github.com/StegVerse-Labs/.github/pull/3290) also edits the custody call: integration must retain its supplied-heartbeat-epoch checks. Compatibility validation on owner head `7fc75d01abdd6ec982b773a950b0e42d52a9a076`, retaining its heartbeat argument and checks: 45 tests and 3 subtests pass in the same three suites. This candidate is not merged or admitted runtime evidence. Q74-01 remains unresolved; Site #1633 stays draft/NOT_ALLOWED until original-owner custody, authenticated dependency reconciliation and promotion authority are observed.
+
 ## Current canonical truth
 
 PR #2819 is merged as design-session capture only. This handoff applies only the owner decision that is sufficiently explicit and leaves unresolved items unresolved.
