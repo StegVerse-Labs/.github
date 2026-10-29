@@ -125,6 +125,11 @@ class Env:
     def grants(self):
         return consumer.chain_grants(self.chain())
 
+    def scope(self, task_id):
+        """The claim scope a grant of `task_id` records: the stable hash of its catalog mandatory claims."""
+        task = json.loads((self.source / "tasks" / f"{task_id}.json").read_text(encoding="utf-8"))
+        return consumer.stable_hash(task["requirements"]["mandatory"])
+
     def claims(self):
         return json.loads((self.runtime / "control/claims-active.json").read_text(encoding="utf-8"))
 
@@ -132,9 +137,26 @@ class Env:
         return json.loads((self.runtime / "tasks" / f"{task_id}.json").read_text(encoding="utf-8"))
 
     def seed_grant(self, task_id: str, fence: int):
-        """Append a prior grant through the same custody path the consumer uses."""
+        """Append a prior grant through the same custody path the consumer uses.
+
+        A task absent from the catalog is added as an active task whose claims are disjoint
+        from every real task's, and the grant records their scope as a real grant does, so the
+        fence is a recoverable active fence (#3241) that conflicts with nothing else.
+        """
+        scope = "0" * 64
+        path = self.source / "tasks" / f"{task_id}.json"
+        if not path.exists():
+            mandatory = [{"repository": {"host": "github.com", "owner": "StegVerse-Labs", "name": "fixture-" + task_id,
+                                         "full_name": "StegVerse-Labs/fixture-" + task_id, "default_branch": "main"},
+                          "mode": "scoped_exclusive", "preemptible": True,
+                          "scope": {"paths": ["fixture"], "dependency_surfaces": ["fixture:" + task_id.lower()]}}]
+            path.write_text(json.dumps({"schema": "stegverse.org-task/v0.2", "task_id": task_id, "status": "active",
+                                        "requested_at": "2026-01-01T00:00:00Z", "priority_class": "normal",
+                                        "requirements": {"mandatory": mandatory, "optional": []},
+                                        "dependencies": []}), encoding="utf-8")
+            scope = consumer.stable_hash(mandatory)
         evidence = {"disposition": "ALLOW", "task_id": task_id, "fencing_token": fence,
-                    "claim_scope_sha256": "0" * 64, "organization_head_sha256": None,
+                    "claim_scope_sha256": scope, "organization_head_sha256": None,
                     "cosv_task_vector": None, "request_sha256": None, "failed_predicate": None}
         return consumer.record_transition(
             self.custody(), consumer.GRANTED, f"ORGANIZATION-WORKER-CLAIM-GRANTED-{task_id}-G{fence}",
@@ -871,7 +893,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         missing = Env(self.base / "missing", generation=9)
         missing.seed_grant("TASK-2026-9999", 9)
         self._retain(missing, "TASK-2026-9999-G9.json",
-                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": "0" * 64})
+                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": missing.scope("TASK-2026-9999")})
         result = missing.consume()
         self.assertEqual(result["failed_predicate"], "LEDGER_HEAD_OR_FENCE_HISTORY_UNVERIFIED")
         self.assertIn("without its organization receipt", result["detail"])
@@ -880,7 +902,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         bound = Env(self.base / "bound", generation=9)
         receipt = bound.seed_grant("TASK-2026-9999", 9)["organization_receipt"]["receipt_sha256"]
         self._retain(bound, "TASK-2026-9999-G9.json",
-                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": "0" * 64,
+                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": bound.scope("TASK-2026-9999"),
                       "organization_receipt_sha256": receipt})
         self.assertEqual(bound.consume()["fencing_token"], 10)
 
@@ -939,7 +961,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         for name, change in cases.items():
             env = Env(self.base / name, generation=9)
             receipt = env.seed_grant("TASK-2026-9999", 9)["organization_receipt"]["receipt_sha256"]
-            value = {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": "0" * 64,
+            value = {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": env.scope("TASK-2026-9999"),
                      "organization_receipt_sha256": receipt, **change}
             self._retain(env, "evidence.json", value)
             result = env.consume()
@@ -1162,7 +1184,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         cited = history.seed_grant("TASK-2026-9999", 9)["organization_receipt"]
         (history.org / "source-receipts" / (cited["source_transition_sha256"].split(":", 1)[1] + ".json")).unlink()
         self._retain(history, "TASK-2026-9999-G9.json",
-                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": "0" * 64,
+                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": history.scope("TASK-2026-9999"),
                       "organization_receipt_sha256": cited["receipt_sha256"]})
         refused = history.consume()
         self.assertEqual(refused["disposition"], "FAIL_CLOSED")
@@ -1207,7 +1229,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
         recorded = env.seed_grant("TASK-2026-9999", 9)
         cited = recorded["organization_receipt"]
         self._retain(env, "TASK-2026-9999-G9.json",
-                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": "0" * 64,
+                     {"task_id": "TASK-2026-9999", "fencing_tokens": [9], "claim_scope_sha256": env.scope("TASK-2026-9999"),
                       "organization_receipt_sha256": cited["receipt_sha256"]})
         calls = []
         with self._recording_custody(calls):
