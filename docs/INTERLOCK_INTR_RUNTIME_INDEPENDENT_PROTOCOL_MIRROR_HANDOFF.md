@@ -6,7 +6,55 @@ Issue: #2897
 COSV ID: `50000000102000`
 Status: `ACTIVE`
 
-## 2026-10-29 independent strict replay reconciliation (current evidence)
+## 2026-10-29 session 12 integration handoff (latest)
+
+Canonical main shard remains ACTIVE (blob a6cd7003ff8088749337d2e2c970c728c6757670),
+with null claim/fence. This documentary update confers no authority.
+Session Prompt Count: 12. Cumulative recovery lower bound: 32/20;
+exact Goal Prompt Count remains unverified and must not reset.
+
+### Completed verification and source reconciliation
+
+- Org #258 at 9f21aa837852ed7bd341598e545eb8fd29cfa9b3 was independently
+  tested: 10 ingress tests pass, including undeclared successor rejection,
+  refusal propagation and already-observed predecessor rejection.
+  All 46 hosted checks succeeded at that head; it remained draft/unmerged.
+- Strict replay at that head over the retained 13 public-ledger snapshots:
+  156 ALLOW / 0 DENY / 0 FAIL_CLOSED, byte-identical to this PR's retained
+  pg_replay.json (SHA256 fdca42b36ddff4775656de3e14db63bb836abaf76e9d7960e06ccd3e7a61b3f2).
+  This is historical public verification, not a fresh private crossing.
+- H36 phase patch dbedb702e7180071f7d6434c2463325139562e4374ed50d63dcf63cca7b5b012
+  independently passed 20 combined hop tests on Org 0b50df09. Claude/Muse's
+  broader 48/48 vector result is attributed to those lanes.
+- Labs #3404 d8a2efaa delta is reviewed: documentary additions only, six checks
+  successful. Earlier d141afef wording below is historical.
+- Labs #3212, Org #184/#185 and SDK #537 are merged. Their old pending labels
+  below are historical. Labs #3207/#3213 need remaining-delta review;
+  #3206 retains joint source-successor/hygiene disposition.
+- The older 56-hop 12 FAIL / 44 UNREACHABLE inventory must be reconciled by
+  source, scope and ledger pins against the later 156-path evidence; it is
+  not a current failure count and the two inventories are not interchangeable.
+
+### Existing-owner actions, independently actionable
+
+| Owner | Concrete next action |
+|---|---|
+| Org #162 | Ratify declared-successor option (ii), integrate #258 through protected expected-head authority, and integrate H36 tests with combined-head CI. Preserve historical receipts. |
+| Labs source owners | Integrate #3404 and this #3405 documentary update; reconcile shared README changes on the actual base and verify resulting head. Prior-head CI does not validate a new commit. |
+| Registry #3195 | Use exact requests in comments 6504255468/6504255852. Native read-only plans refused InTr's missing explicit task_registry_mints_execution_authority=false and KV's IN_PROGRESS/null-claim inconsistency. Governed record/state repair precedes regenerated row==shard requests, current-generation plan/apply/verify and count disposition. First refusals only; later predicates unproven. |
+| Registry #3195 / Org #167 | Authenticate intr-destination and hygiene registration scopes/identity inputs; no proposed ID or COSV is admission. Serialize Registry mutations. |
+| TVC owner | Review/integrate #562 and adjudicate #561 versus #533 as PUBLIC-ledger-reader work. |
+| TVC/SDK/runtime owners | D1/D2 decision, broker/issuer/nonce/receiver preparation and separately admitted private execution; public historical verification does not require private warrants. |
+| KV custody owner | Labs #2810 remains a distinct custody goal, not an InTr documentary prerequisite. |
+
+Current evidence: [Org #162](https://github.com/StegVerse-org/.github/issues/162#issuecomment-6504333517),
+[Labs #2897](https://github.com/StegVerse-Labs/.github/issues/2897#issuecomment-6504334009),
+[TVC #488](https://github.com/StegVerse-Labs/TVC/issues/488#issuecomment-6504334518).
+Drive coordination file 1zTyY4o7CDp2xPldMjDQim6uVijUIJgcj retains the approved
+session-6 revision; session-8 replacement requires the requested exact-payload
+approval. Later issue evidence is not yet mirrored there. No new upload attempted.
+
+## 2026-10-29 independent strict replay reconciliation (retained evidence)
 
 This is a documentary evidence update under the existing task, with authority
 effect NONE. Earlier sections are retained as history; their blanket
@@ -229,3 +277,8 @@ route distinct remaining work to its authenticated existing owner. Preserve
 runtime independence, external_conformance_claimed=false, all historical
 receipts, and the separation between evidence verification and execution
 authority. Repository merge is source integration only.
+
+Combined integration check: H36 patch applied cleanly to Org #258 at 9f21aa83;
+`python -m unittest discover -s tests -p 'test_intr_*py'` passed 314 tests
+in 27.031s. Local fabricated-fixture/source verification only; hosted CI on
+an owner-created combined commit remains required.

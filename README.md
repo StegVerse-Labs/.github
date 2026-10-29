@@ -2191,3 +2191,20 @@ the pin (#3151), and Master Records never gates. See
 Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COMPOSITION-001` record. See [the handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md). Registration is coordination only; source tests, WorkerCoordinator admission and authentic runtime evidence remain separate.
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
+
+
+## InTr session 12 verification and integration handoff
+
+Org #258's declared-successor reader was independently tested (10 ingress tests
+pass) and preserves all 156 historical public ALLOW results byte-for-byte.
+Its 46 hosted checks pass; protected owner integration and H36 test integration
+remain. Current-head #3404 review is complete. Registry native plans exposed
+record/state repairs before aggregate admission; exact requests are on #3195.
+See the [current handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md)
+for pinned evidence, completed/remaining work, separate private-warrant ownership
+and cumulative-count disposition. No private execution or task closure claimed.
+
+Combined integration check: H36 patch applied cleanly to Org #258 at 9f21aa83;
+`python -m unittest discover -s tests -p 'test_intr_*py'` passed 314 tests
+in 27.031s. Local fabricated-fixture/source verification only; hosted CI on
+an owner-created combined commit remains required.
