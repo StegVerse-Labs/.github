@@ -1408,7 +1408,7 @@
   "evidence_class": "SOURCE_OBSERVED_CONFORMANCE_RECORD",
   "inputs": {
    "data/sv-work-items/ladder-conformance/declarations/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:19ae641f511826dff3f437a03ecc12faa57ef0b22280614db72cd1051b3432c0",
-   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:f8864a3f15402ba1498fcf952d6a6c51504ea60cef86543401b1a894e966fb10",
+   "data/sv-work-items/ladder-conformance/observation-plan.json": "sha256:0b89471159eda4332c5671bec65d1d72dbf1fe84e0cbc4e268c93ff1c3ae4614",
    "data/sv-work-items/ladder-conformance/observations/KV-SKAP-VAULT-FUNCTIONAL-001.observations.json": "sha256:dcc80a3f03442e6538e4156ca7861e926658ccd412aa5336538a6324fbb23a6b",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-03.json": "sha256:2d215d2083b2769b78e464ce9e9497d379c3bfbdf0084fda8c60dded49cef11a",
    "data/sv-work-items/ladder-conformance/scoped-tasks/LC-KV-04.json": "sha256:577eabb0045df97a783d7285c6d5644fbe71db58fe2484804f66b822f066cc5f",

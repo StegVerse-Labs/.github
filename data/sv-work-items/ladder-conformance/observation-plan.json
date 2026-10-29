@@ -11,7 +11,7 @@
     "labs3326": {
      "commit": "e9085315410f26252214dc64429be19d835886ab",
      "kind": "git",
-     "ref": "StegVerse-Labs/.github#3326",
+     "ref": "StegVerse-Labs/.github#3326 (historical pinned observation root, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
      "repo": "StegVerse-Labs/.github"
     },
     "labsmain": {
@@ -29,7 +29,7 @@
     "sdk556": {
      "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
      "kind": "git",
-     "ref": "StegVerse-SDK#556",
+     "ref": "StegVerse-SDK#556 (historical pinned observation root, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
      "repo": "StegVerse-org/StegVerse-SDK"
     },
     "sdkmain": {
