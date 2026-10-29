@@ -2285,6 +2285,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_existing_stegapp_task_admission.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_existing_stegapp_task_admission.py"
+   ],
+   "tests": [
+    "tests/test_existing_stegapp_task_admission.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_external_framework_registry_rollout_planner.py",
    "inputs": [],
    "surfaces": [
@@ -5722,6 +5734,18 @@
    ],
    "tests": [
     "tests/test_quantum_wallet_signature_census.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_ratchet_baseline_integrity.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_ratchet_baseline_integrity.py"
+   ],
+   "tests": [
+    "tests/test_ratchet_baseline_integrity.py"
    ]
   },
   {
@@ -13502,6 +13526,10 @@
    "heartbeat_runtime/__init__.py",
    "tests/test_heartbeat_runtime.py"
   ],
+  "tests/test_existing_stegapp_task_admission.py": [
+   "schemas/canonical-task-record.schema.json",
+   "scripts/evaluate_existing_task_admission.py"
+  ],
   "tests/test_external_framework_registry_rollout_planner.py": [
    "scripts/plan_external_framework_registry_rollout.py"
   ],
@@ -15209,6 +15237,10 @@
   ],
   "tests/test_quantum_wallet_signature_census.py": [
    "scripts/validate_quantum_wallet_signature_census.py"
+  ],
+  "tests/test_ratchet_baseline_integrity.py": [
+   ".github/workflows/test-suite-ratchet.yml",
+   "scripts/check_test_suite_ratchet.py"
   ],
   "tests/test_receipt_hb_creation_reference.py": [
    "heartbeat_runtime/independent_oscillator.py",
