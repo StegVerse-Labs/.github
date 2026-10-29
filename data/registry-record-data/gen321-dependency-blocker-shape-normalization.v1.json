@@ -4,7 +4,7 @@
   "authority_effect": "NONE",
   "operating_mode": "E1 (Claude-lane preparation; the transition itself is deterministic and runs at E0)",
   "admission": "Prepared by Claude for the Registry owner. Claude does not admit, apply or bump the generation. Only the Registry owner's run of scripts/apply_task_record_data.py <this file> --apply --tip-ref origin/main changes Registry data (one apply = tip -> tip + 1).",
-  "note": "StegVerse-Labs/.github#3195 (owner comment 6482313930): canonical Registry gen 321 has exactly 13 task rows whose dependencies/blockers lists hold bare strings where schemas/canonical-task-record.schema.json requires objects. scripts/query_canonical_tasks.py calls .get() on each entry; #3378 tolerates strings at query time, and this request is the authorized data transition that converts them at the source. scripts/canonical_task_registration_transition.py cannot carry this repair: it registers identities only and refuses any task that already has an aggregate row (TASK_IDENTITY_NOT_UNIQUE); its docstring names the record-data successor (apply_task_record_data) as the repair path for nonconformant existing rows. Every edit is an exact [field, index] before -> after on one string entry; object entries (including the legacy six-field blocker objects) are not touched. The edit applies to the aggregate row and to the same path in the standalone record, and every shard below equals its row at gen 321 for the edited paths. Mapping (mechanical, no inferred meaning): dependency string s -> {dependency_id: s (a .json task path keeps its full path in ref and uses the file stem as id), kind: TASK (every string is a task identity), state: UNKNOWN (the string recorded no state), ref: s}; blocker string s -> {blocker_id: s, dependency_id: s, reason: s} (the string names its own unmet condition; no dependency link was recorded, so none is invented). The owner may restate any after value before applying.",
+  "note": "StegVerse-Labs/.github#3195 (owner comment 6482313930): canonical Registry gen 321 has exactly 13 task rows whose dependencies/blockers lists hold bare strings where schemas/canonical-task-record.schema.json requires objects. scripts/query_canonical_tasks.py calls .get() on each entry; #3378 tolerates strings at query time, and this request is the authorized data transition that converts them at the source. scripts/canonical_task_registration_transition.py cannot carry this repair: it registers identities only and refuses any task that already has an aggregate row (TASK_IDENTITY_NOT_UNIQUE); its docstring names the record-data successor (apply_task_record_data) as the repair path for nonconformant existing rows. Every normalization edit is an exact [field, index] before -> after on one string entry (WORKER-TASK-RESOURCE-COST-LINKAGE-001 also carries three reconciliation edits restoring its row to its standalone record; see their rationale); object entries (including the legacy six-field blocker objects) are not touched. The edit applies to the aggregate row and to the same path in the standalone record, and every shard below equals its row at gen 321 for the edited paths. Mapping (mechanical, no inferred meaning): dependency string s -> {dependency_id: s (a .json task path keeps its full path in ref and uses the file stem as id), kind: TASK (every string is a task identity), state: UNKNOWN (the string recorded no state), ref: s}; blocker string s -> {blocker_id: s, dependency_id: s, reason: s} (the string names its own unmet condition; no dependency link was recorded, so none is invented). The owner may restate any after value before applying.",
   "row_fields": [
     {
       "task_id": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
@@ -58,6 +58,70 @@
         "dependency_id": "OTHER_FORMALISMS_NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED",
         "reason": "OTHER_FORMALISMS_NATIVE_MANIFEST_INVOCATION_NOT_VERIFIED"
       }
+    },
+    {
+      "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+      "path": [
+        "blockers"
+      ],
+      "before": [
+        "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
+        "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
+      ],
+      "after": [
+        "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
+      ],
+      "rationale": "Option A of #3195 (comment 6484539587): the standalone record is correct and the aggregate row is restored to it. 9c48a6e8 (#2679, gen 247->248) removed blocker COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION and replaced predicate COSV_DERIVED_FROM_ADMITTED_REGISTRY_STATE -> COSV_SOURCE_STATE_TRACKING_VERIFIED_IN_CANONICAL_INDEX and transition DERIVE_CANONICAL_COSV -> UPDATE_COSV_ON_AUTHENTIC_STATE_EVIDENCE in both row and record. 770af692 (gen 249->250) reverted only the row's three COSV fields with no authorizing transition (a rebase artifact); the record was never reverted, and control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json records blocker_count 2. Edit 1 sets the row's blockers to the record's two strings (a no-op on the record, which already equals after); edits 2-3 then apply the same string->object normalization as every other row to both row and record; edits 4-5 restore the predicate and transition (no-ops on the record). The deferred entry is resolved by this restatement."
+    },
+    {
+      "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+      "path": [
+        "blockers",
+        0
+      ],
+      "before": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+      "after": {
+        "blocker_id": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "dependency_id": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
+        "reason": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED"
+      },
+      "rationale": "Option A of #3195 (comment 6484539587): the standalone record is correct and the aggregate row is restored to it. 9c48a6e8 (#2679, gen 247->248) removed blocker COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION and replaced predicate COSV_DERIVED_FROM_ADMITTED_REGISTRY_STATE -> COSV_SOURCE_STATE_TRACKING_VERIFIED_IN_CANONICAL_INDEX and transition DERIVE_CANONICAL_COSV -> UPDATE_COSV_ON_AUTHENTIC_STATE_EVIDENCE in both row and record. 770af692 (gen 249->250) reverted only the row's three COSV fields with no authorizing transition (a rebase artifact); the record was never reverted, and control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json records blocker_count 2. Edit 1 sets the row's blockers to the record's two strings (a no-op on the record, which already equals after); edits 2-3 then apply the same string->object normalization as every other row to both row and record; edits 4-5 restore the predicate and transition (no-ops on the record). The deferred entry is resolved by this restatement."
+    },
+    {
+      "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+      "path": [
+        "blockers",
+        1
+      ],
+      "before": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
+      "after": {
+        "blocker_id": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
+        "dependency_id": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
+        "reason": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
+      },
+      "rationale": "Option A of #3195 (comment 6484539587): the standalone record is correct and the aggregate row is restored to it. 9c48a6e8 (#2679, gen 247->248) removed blocker COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION and replaced predicate COSV_DERIVED_FROM_ADMITTED_REGISTRY_STATE -> COSV_SOURCE_STATE_TRACKING_VERIFIED_IN_CANONICAL_INDEX and transition DERIVE_CANONICAL_COSV -> UPDATE_COSV_ON_AUTHENTIC_STATE_EVIDENCE in both row and record. 770af692 (gen 249->250) reverted only the row's three COSV fields with no authorizing transition (a rebase artifact); the record was never reverted, and control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json records blocker_count 2. Edit 1 sets the row's blockers to the record's two strings (a no-op on the record, which already equals after); edits 2-3 then apply the same string->object normalization as every other row to both row and record; edits 4-5 restore the predicate and transition (no-ops on the record). The deferred entry is resolved by this restatement."
+    },
+    {
+      "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+      "path": [
+        "expected_evidence_predicates",
+        4
+      ],
+      "before": "COSV_DERIVED_FROM_ADMITTED_REGISTRY_STATE",
+      "after": "COSV_SOURCE_STATE_TRACKING_VERIFIED_IN_CANONICAL_INDEX",
+      "rationale": "Option A of #3195 (comment 6484539587): the standalone record is correct and the aggregate row is restored to it. 9c48a6e8 (#2679, gen 247->248) removed blocker COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION and replaced predicate COSV_DERIVED_FROM_ADMITTED_REGISTRY_STATE -> COSV_SOURCE_STATE_TRACKING_VERIFIED_IN_CANONICAL_INDEX and transition DERIVE_CANONICAL_COSV -> UPDATE_COSV_ON_AUTHENTIC_STATE_EVIDENCE in both row and record. 770af692 (gen 249->250) reverted only the row's three COSV fields with no authorizing transition (a rebase artifact); the record was never reverted, and control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json records blocker_count 2. Edit 1 sets the row's blockers to the record's two strings (a no-op on the record, which already equals after); edits 2-3 then apply the same string->object normalization as every other row to both row and record; edits 4-5 restore the predicate and transition (no-ops on the record). The deferred entry is resolved by this restatement."
+    },
+    {
+      "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
+      "path": [
+        "allowed_next_transitions",
+        3
+      ],
+      "before": "DERIVE_CANONICAL_COSV",
+      "after": "UPDATE_COSV_ON_AUTHENTIC_STATE_EVIDENCE",
+      "rationale": "Option A of #3195 (comment 6484539587): the standalone record is correct and the aggregate row is restored to it. 9c48a6e8 (#2679, gen 247->248) removed blocker COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION and replaced predicate COSV_DERIVED_FROM_ADMITTED_REGISTRY_STATE -> COSV_SOURCE_STATE_TRACKING_VERIFIED_IN_CANONICAL_INDEX and transition DERIVE_CANONICAL_COSV -> UPDATE_COSV_ON_AUTHENTIC_STATE_EVIDENCE in both row and record. 770af692 (gen 249->250) reverted only the row's three COSV fields with no authorizing transition (a rebase artifact); the record was never reverted, and control/task-vectors/WORKER-TASK-RESOURCE-COST-LINKAGE-001.json records blocker_count 2. Edit 1 sets the row's blockers to the record's two strings (a no-op on the record, which already equals after); edits 2-3 then apply the same string->object normalization as every other row to both row and record; edits 4-5 restore the predicate and transition (no-ops on the record). The deferred entry is resolved by this restatement."
     },
     {
       "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
@@ -392,72 +456,6 @@
       }
     }
   ],
-  "deferred_row_fields": {
-    "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
-    "edits_if_row_and_record_are_reconciled": [
-      {
-        "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
-        "path": [
-          "blockers",
-          0
-        ],
-        "before": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
-        "after": {
-          "blocker_id": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
-          "dependency_id": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
-          "reason": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED"
-        }
-      },
-      {
-        "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
-        "path": [
-          "blockers",
-          1
-        ],
-        "before": "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
-        "after": {
-          "blocker_id": "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
-          "dependency_id": "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
-          "reason": "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION"
-        }
-      },
-      {
-        "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
-        "path": [
-          "blockers",
-          2
-        ],
-        "before": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
-        "after": {
-          "blocker_id": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
-          "dependency_id": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
-          "reason": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
-        }
-      }
-    ],
-    "disposition": "FAIL_CLOSED",
-    "failure_code": "RECORD_DATA_ROW_FIELD_BEFORE_MISMATCH",
-    "failed_predicate": "standalone record WORKER-TASK-RESOURCE-COST-LINKAGE-001.blockers equals the aggregate row's blockers at gen 321",
-    "evidence": {
-      "row_blockers": [
-        "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
-        "COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION",
-        "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
-      ],
-      "record_blockers": [
-        "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
-        "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
-      ],
-      "other_diverging_fields": [
-        "expected_evidence_predicates",
-        "allowed_next_transitions"
-      ]
-    },
-    "required_evidence_or_repair": "Registry owner decides whether COSV_DERIVATION_AFTER_AUTHENTIC_ADMISSION stands and reconciles row and record (blockers, expected_evidence_predicates, allowed_next_transitions); these three edits then move into row_fields unchanged",
-    "retry_entrypoint": "python scripts/apply_task_record_data.py data/registry-record-data/gen321-dependency-blocker-shape-normalization.v1.json --apply",
-    "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-    "next_attempt": "after the row/record divergence for WORKER-TASK-RESOURCE-COST-LINKAGE-001 is reconciled by the Registry owner"
-  },
   "rows": [
     "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
     "STCM-CHF-THERMODYNAMIC-WITNESS-COMPARISON-001",
