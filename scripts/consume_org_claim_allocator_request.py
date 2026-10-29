@@ -37,13 +37,26 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Mapping
 
-REQUEST_REL = Path("control/resident-execution-request.d/org-claim-allocator-001.json")
-REQUEST_RELS = (
-    REQUEST_REL,
-    Path("control/resident-execution-request.d/org-claim-allocator-sdk-manifest-001.json"),
-    Path("control/resident-execution-request.d/org-claim-allocator-sdk-structural-validator-001.json"),
-    Path("control/resident-execution-request.d/org-claim-allocator-workspace-kv-site-001.json"),
-)
+REQUEST_DIR = Path("control/resident-execution-request.d")
+# The committed request is the registration: exactly the files the writer workflow's
+# push trigger matches (control/resident-execution-request.d/org-claim-allocator-*.json),
+# so a request that starts a run is never silently left unconsumed. Each one is still
+# validated in full (validate_request) before anything is read or appended.
+REQUEST_GLOB = "org-claim-allocator-*.json"
+REQUEST_REL = REQUEST_DIR / "org-claim-allocator-001.json"
+
+
+def request_rels(root: Path) -> tuple[Path, ...]:
+    """The committed allocator requests under `root`, sorted by path; regular files only."""
+    directory = root / REQUEST_DIR
+    if not directory.is_dir():
+        return ()
+    return tuple(sorted(REQUEST_DIR / path.name for path in directory.glob(REQUEST_GLOB)
+                        if path.is_file() and not path.is_symlink()))
+
+
+# The requests committed in this source checkout (what the writer materializes).
+REQUEST_RELS = request_rels(Path(__file__).resolve().parents[1])
 # Projection only: the write-once records under CONSUMPTION_DIR are the evidence.
 RECEIPT_REL = Path("receipts/sovereign-host/org-claim-allocator-request-consumption.latest.json")
 CONSUMPTION_DIR = Path("receipts/sovereign-host/org-claim-allocator-consumptions")
@@ -665,7 +678,8 @@ def rematerialize_runtime_claim_generation(runtime: Path, issued: int, *, chain_
 
     Only in the event-ephemeral materialization, and only when this run initialized
     the runtime registry from the committed source copy (no runtime state is
-    preserved) and that copy holds no claims. The generation is derived from the
+    preserved; for any request of the run, not only the one that wrote it) and
+    that copy holds no claims. The generation is derived from the
     verified Organization chain (`chain_max`) and the immutable provenance floor,
     never from a clock and never lowered; the next fence is still issued + 1, so no
     fence is reissued. The committed control/claims-active.json is not touched: the
@@ -690,6 +704,79 @@ def rematerialize_runtime_claim_generation(runtime: Path, issued: int, *, chain_
     path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return dict(state["generation_basis"], rematerialized_generation=issued,
                 authority_effect="NONE_EPHEMERAL_RUNTIME_PROJECTION_ONLY")
+
+
+# #3241: a grant active on the verified Organization chain is a held claim in every later run.
+ACTIVE_FENCE_SCOPE_UNRECOVERABLE = "ACTIVE_FENCE_SCOPE_UNRECOVERABLE"
+ACTIVE_FENCE_PROJECTION_BASIS = "ORGANIZATION_CHAIN_VERIFIED_GRANT"
+
+
+def project_active_fences(runtime: Path, active: list[dict[str, Any]],
+                          custody: Mapping[str, Any]) -> dict[str, Any]:
+    """Project the chain's active grants into the runtime claim registry the allocator checks conflicts against.
+
+    A hosted run seeds that registry from the committed control/claims-active.json,
+    which holds no claims, so without this a fence active on the verified chain
+    would not block a conflicting grant. Every grant here already passed
+    verify_grant_sources (its retained source records it), which consume_request
+    runs on the whole chain before any fence is computed. Its claims
+    are the task's mandatory requirements, accepted only when their stable hash is
+    the claim_scope_sha256 the grant recorded (exact types), else FAIL_CLOSED
+    ACTIVE_FENCE_SCOPE_UNRECOVERABLE. A claim the registry already holds (same task
+    and fence) is not duplicated, and the generation is never touched, so it is
+    never lowered. The lease carries the fence and its receipt, never a clock time.
+    Projection only: the Organization receipt stays the evidence.
+    """
+    path = runtime / "control/claims-active.json"
+    state = load_json(path)
+    claims = state.get("claims")
+    if claims is None:
+        claims = []
+    if type(claims) is not list:
+        raise ClaimFailClosed("RUNTIME_CLAIM_REGISTRY_INVALID", "claims is not a list",
+                              "repair the runtime claim registry")
+    held = {(claim.get("task_id"), (claim.get("lease") or {}).get("fencing_token"))
+            for claim in claims if type(claim) is dict and type(claim.get("lease") or {}) is dict}
+    projected: list[dict[str, Any]] = []
+    additions: list[dict[str, Any]] = []
+    for row in active:
+        evidence = row["boundary_evidence"]
+        task_id, fence = evidence.get("task_id"), evidence["fencing_token"]
+
+        def unrecoverable(detail: str) -> ClaimFailClosed:
+            return ClaimFailClosed(
+                ACTIVE_FENCE_SCOPE_UNRECOVERABLE,
+                f"active fence {task_id} G{fence} ({row['receipt_sha256']}): {detail}",
+                "restore the granted task's mandatory requirements in tasks/ exactly as granted "
+                "(their stable hash is the grant's claim_scope_sha256), or record the fence's release")
+
+        if type(task_id) is not str or not task_id.startswith("TASK-"):
+            raise unrecoverable("granted task id invalid")
+        if (task_id, fence) in held:
+            continue
+        task_path = runtime / "tasks" / f"{task_id}.json"
+        if not task_path.is_file():
+            raise unrecoverable("granted task absent from the catalog")
+        mandatory = (load_json(task_path).get("requirements") or {}).get("mandatory")
+        if type(mandatory) is not list or not mandatory or any(type(claim) is not dict for claim in mandatory):
+            raise unrecoverable("granted task has no mandatory claims")
+        if type(evidence.get("claim_scope_sha256")) is not str or stable_hash(mandatory) != evidence["claim_scope_sha256"]:
+            raise unrecoverable("the catalog's mandatory claims are not the scope the grant recorded")
+        for request in mandatory:
+            claim = json.loads(json.dumps(request))
+            claim["task_id"] = task_id
+            claim["lease"] = {"fencing_token": fence, "organization_receipt_sha256": row["receipt_sha256"],
+                              "basis": ACTIVE_FENCE_PROJECTION_BASIS}
+            additions.append(claim)
+        held.add((task_id, fence))
+        projected.append({"task_id": task_id, "fencing_token": fence,
+                          "organization_receipt_sha256": row["receipt_sha256"],
+                          "claim_scope_sha256": evidence["claim_scope_sha256"]})
+    if additions:
+        state["claims"] = claims + additions
+        path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return {"basis": ACTIVE_FENCE_PROJECTION_BASIS, "projected": projected,
+            "authority_effect": "NONE_EPHEMERAL_RUNTIME_PROJECTION_ONLY"}
 
 
 def task_cosv(source: Path, task: Mapping[str, Any]) -> str | None:
@@ -1091,10 +1178,37 @@ def _ledger_refusal(request: Mapping[str, Any] | None, detail: str, *,
 
 
 def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: Mapping[str, Any],
-                    runner, safe_env: Mapping[str, str], hb_epoch: int | None = None) -> dict[str, Any]:
+                    runner, safe_env: Mapping[str, str], hb_epoch: int | None = None,
+                    registry_seeded_by_run: bool = False) -> dict[str, Any]:
+    """One request's terminal disposition.
+
+    `registry_seeded_by_run`: the runtime claim registry was absent when this run
+    (consume) started, so whichever request of the run initialized it, it holds the
+    committed source copy and no preserved runtime state. Every request of that run,
+    not only the first, may then rematerialize it from the verified chain.
+    """
     request = load_json(runtime / request_rel)
     validate_request(request)
     request_hash = stable_hash(request)
+    # D1: the carrier may commit its heartbeat epoch in the request itself, so the hosted
+    # writer (which has no carrier) forwards it. Supplied both ways, the two must agree.
+    epoch_refusal: str | None = None
+    if "hb_epoch" in request:
+        failure = custody["organization_ledger"].kernel.supplied_epoch_failure(request["hb_epoch"])
+        if failure is not None:
+            epoch_refusal = f"the committed request's hb_epoch is invalid: {failure[1]}"
+        else:
+            manifest_epoch = int(str(request["hb_epoch"]))
+            if hb_epoch is not None and hb_epoch != manifest_epoch:
+                epoch_refusal = (f"the carrier --hb-epoch {hb_epoch} conflicts with the committed request's "
+                                 f"hb_epoch {manifest_epoch}")
+            else:
+                try:
+                    custody["organization_ledger"].kernel.hb_reference(epoch=manifest_epoch)
+                except ValueError as exc:
+                    epoch_refusal = f"the committed request's hb_epoch is invalid: {exc}"
+                else:
+                    hb_epoch = manifest_epoch
     target = request.get("target_task_id")
     source_catalog_floor = validate_source_catalog_floor(source, request)
     control_inputs = materialize_org_control_inputs(source, runtime)
@@ -1316,28 +1430,44 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                 rematerialized = rematerialize_runtime_claim_generation(
                     runtime, max(verified_chain_max, floor["fence"]), chain_max=verified_chain_max,
                     floor=floor, head=head,
-                    initialized_from_source="control/claims-active.json" in control_inputs.get("initialized_control_files", []),
+                    initialized_from_source=registry_seeded_by_run or (
+                        "control/claims-active.json" in control_inputs.get("initialized_control_files", [])),
                     event_ephemeral=bool(custody.get("event_ephemeral")))
+                # The chain's active fences are held claims here too; restored on every non-grant exit.
+                runtime_claims_unprojected = claims_rel.read_bytes()
+                active_fences = project_active_fences(runtime, grants, custody)
+                changed = rematerialized is not None or bool(active_fences["projected"])
+
+                def unproject() -> None:
+                    if active_fences["projected"]:
+                        claims_rel.write_bytes(runtime_claims_unprojected)
+
+                held_fences = ", ".join(f"{row['task_id']} G{row['fencing_token']}" for row in active_fences["projected"])
                 plan = run_allocator(runner, runtime, safe_env, "--plan", *(("--task", target) if target else ()))
                 selected = plan.get("selected")
                 if not isinstance(selected, str) or not selected:
+                    unproject()
                     predicate = plan.get("refusal_predicate") or "NO_ELIGIBLE_TASK"
                     return non_allow(REFUSED, claim_task, predicate,
-                                     "allocator evaluated " + ("target " + target if target else "the ranked queue"),
+                                     "allocator evaluated " + ("target " + target if target else "the ranked queue")
+                                     + " against the organization chain's active fences: " + (held_fences or "none"),
                                      ALLOCATOR_REFUSAL_REPAIR.get(predicate, ALLOCATOR_REFUSAL_REPAIR["NO_ELIGIBLE_TASK"]),
                                      organization=True, head=head, lock_held=True)
                 claim_task = selected
                 prior = prior_grant(grants, selected)
                 if prior is not None:
-                    if rematerialized is not None:
+                    if changed:
                         claims_rel.write_bytes(runtime_claims_before)
                     return allow(selected, prior, None, replayed=True)
                 chain_max = max([row["boundary_evidence"]["fencing_token"] for row in grants], default=0)
                 runtime_generation = plan.get("claim_registry_generation")
                 if not isinstance(runtime_generation, int) or isinstance(runtime_generation, bool):
+                    unproject()
                     raise ClaimFailClosed("RUNTIME_CLAIM_REGISTRY_INVALID", "generation invalid",
                                           "repair the runtime claim registry")
                 issued = max(chain_max, floor["fence"])
+                if runtime_generation != issued:
+                    unproject()
                 if runtime_generation < issued:
                     # Never lowered and never reissued: a registry behind the fences
                     # already issued is a stale projection, not a new origin.
@@ -1350,15 +1480,23 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                         FENCE_HISTORY_UNVERIFIED,
                         f"runtime generation {runtime_generation} carries fences beyond the verified history {issued}",
                         "record or retire the runtime fences the organization chain does not hold")
+                if epoch_refusal is not None:
+                    if changed:
+                        claims_rel.write_bytes(runtime_claims_before)
+                    raise ClaimFailClosed(
+                        GRANT_EPOCH_INVALID, epoch_refusal,
+                        "commit the request's hb_epoch as the carrier supplied it (ASCII digits >= 32, equal to "
+                        "any --hb-epoch); no epoch is derived from a clock")
                 if hb_epoch is None:
-                    if rematerialized is not None:
+                    if changed:
                         claims_rel.write_bytes(runtime_claims_before)
                     # A grant's receipts carry the carrier's heartbeat epoch; one is
                     # never synthesized from the host clock (kernel.hb_reference).
                     raise ClaimFailClosed(
                         GRANT_EPOCH_NOT_CARRIER_SUPPLIED,
                         "no carrier heartbeat epoch was supplied for this grant",
-                        "supply the carrier heartbeat epoch with --hb-epoch; no epoch is derived from a clock")
+                        "commit the carrier heartbeat epoch as the request's hb_epoch, or supply it with "
+                        "--hb-epoch; no epoch is derived from a clock")
                 fence = issued + 1
                 task = load_json(runtime / "tasks" / f"{selected}.json")
                 requested = plan.get("requested_claims") or task["requirements"]["mandatory"]
@@ -1375,6 +1513,7 @@ def consume_request(source: Path, runtime: Path, request_rel: Path, *, custody: 
                     "provenance_floor_sha256": floor["provenance_record_sha256"],
                     "runtime_claims_generation_observed": runtime_generation,
                     "runtime_claims_generation_rematerialized": rematerialized,
+                    "active_fences_projected": active_fences,
                     "request_id": request.get("request_id"),
                     "request_sha256": request_hash,
                     "target_task_id": target,
@@ -1419,7 +1558,7 @@ def consume(
 ) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
-    present = [rel for rel in REQUEST_RELS if (runtime / rel).is_file()]
+    present = list(request_rels(runtime))
     if not present:
         return {
             "schema": "stegverse.resident-execution-request-consumption/v1",
@@ -1453,8 +1592,13 @@ def consume(
             return _ledger_refusal(load_json(runtime / present[0]), f"carrier heartbeat epoch invalid: {exc}",
                                    predicate=GRANT_EPOCH_INVALID,
                                    repair="supply the carrier heartbeat epoch as an integer at or after the HB32 anchor")
+    # Decided once per run, before any request materializes it: the first request of a
+    # run initializes the registry from the committed copy, and a non-grant exit restores
+    # those same bytes, so the later requests see a registry this run seeded, not
+    # preserved runtime state (FENCE_GENERATION_BEHIND_ISSUED_FENCES otherwise).
+    registry_seeded_by_run = not (runtime / "control/claims-active.json").exists()
     attempts = [consume_request(source, runtime, rel, custody=custody, runner=runner, safe_env=safe_env,
-                                hb_epoch=hb_epoch)
+                                hb_epoch=hb_epoch, registry_seeded_by_run=registry_seeded_by_run)
                 for rel in present]
     if len(attempts) == 1:
         return attempts[0]
@@ -1496,18 +1640,29 @@ def readback(source_root: Path, repo_ledger_root: str, result: Mapping[str, Any]
             row["organization_readback"] = "REFUSED:ORGANIZATION_RECEIPT_DIGEST_MISSING"
         else:
             repository = attempt.get("repository_receipt_sha256")
+            grant = custody["organization_store"].get(
+                custody["organization_ledger"].ledger_store.receipt_key(digest)) or {}
             if repository is None:
-                grant = custody["organization_store"].get(
-                    custody["organization_ledger"].ledger_store.receipt_key(digest)) or {}
                 repository = retained_repository_receipt_sha256(custody, grant)
             try:
-                row["organization_readback_custody_basis"] = organization_readback(
+                basis = organization_readback(
                     custody, digest, repository_receipt_sha256=repository,
                     transition_id=attempt.get("transition_id"))
+                # A grant reads back only as its retained source records it, as fence history counts it.
+                if attempt.get("transition_class") == GRANTED:
+                    verify_grant_sources(custody, [grant])
+                row["organization_readback_custody_basis"] = basis
                 row["organization_readback"] = "VERIFIED"
             except OrganizationReadbackRefused as exc:
                 row["organization_readback"] = readback_state(exc.refusal)
                 row["organization_readback_refusal"] = exc.refusal
+            except ClaimFailClosed as exc:
+                row["organization_readback"] = "REFUSED:" + exc.predicate
+                row["organization_readback_refusal"] = {
+                    "disposition": "FAIL_CLOSED", "failure_code": exc.predicate, "failed_predicate": exc.predicate,
+                    "detail": exc.detail, "required_evidence_or_repair": exc.repair,
+                    "retry_entrypoint": EVENT_EPHEMERAL_ENTRYPOINT, "consequence_committed": False,
+                    "authority_effect": "NONE_REFUSAL_ONLY"}
         rows.append(row)
     verified = all(r["organization_readback"] in ("VERIFIED", "NOT_APPENDED") for r in rows)
     return {
