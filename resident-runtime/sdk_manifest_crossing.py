@@ -237,6 +237,11 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
         "ingress_packet_id": ingress["packet_id"],
         "egress_packet_id": egress["packet_id"],
         "egress": egress,
+        # The standing the packet carried, so the admission's record names the
+        # node and chain position it was admitted at. A successor's declared
+        # predecessor is checked against these recorded values at ingress
+        # (organization_boundary_must_carry_predecessor).
+        "standing": resolved_standing,
         "authority_effect": result.get("authority_effect", "NONE"),
         "application_result": result.get("application_result"),
         **{field: result[field] for field in SELECTION_FIELDS if field in result},

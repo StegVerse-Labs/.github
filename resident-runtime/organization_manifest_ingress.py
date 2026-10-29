@@ -50,7 +50,7 @@ action, not only a successful one: a submission that arrived and was refused is
 a transition whose disposition is DENY, and `organization_scope_rule` makes no
 exception for it. Every refusal path through `receive` -- an unresolvable
 destination, a capability bound elsewhere, a declared authority effect other
-than NONE, a declared WorkerCoordinator claim that does not verify, a crossing this manifest cannot drive, a far side that refused, a boundary chain that does not reconstruct --
+than NONE, a declared WorkerCoordinator claim that does not verify, a declared predecessor this ledger does not record or another successor already bound, a crossing this manifest cannot drive, a far side that refused, a boundary chain that does not reconstruct --
 appends a repository receipt and the organization receipt that consumes it,
 under `ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED`. Before this they returned a
 refusal and wrote nothing, which made a held or retried submission
@@ -180,6 +180,29 @@ FENCE_OWNING_GOAL = "StegVerse-Labs/.github#3369"
 WORKER_CLAIM_UNVERIFIED = "UNVERIFIED"
 WORKER_CLAIM_VERIFIED = "VERIFIED_AGAINST_COMMITTED_WORKERCOORDINATOR_REGISTRY"
 WORKER_CLAIM_REPLAYED = "RECORDED_ADMISSION_REPLAYED_FENCE_NOT_RECHECKED"
+#: Gap 2 of StegVerse-Labs/.github#3369, the head half (option 2A). A declared
+#: VERIFY_EXISTING standing names a predecessor (generation, manifest_sha256,
+#: result_sha256, heartbeat_epoch -- the lineage contract's field set). Before
+#: the crossing, this operation checks its own repository ledger, the record
+#: of every admission this organization made: the predecessor must be a
+#: recorded admission for the same node_ref at that generation with that
+#: canonical manifest digest, and no other admission for the node may already
+#: have bound that predecessor to a different successor. The ledger is read,
+#: never written here, and nothing is minted. result_sha256 is held to shape
+#: only: no result digest is recorded in a receipt, so it cannot be compared.
+PREDECESSOR_PREDICATE = "DECLARED_PREDECESSOR_IS_RECORDED_AND_UNSUPERSEDED_IN_THIS_LEDGER"
+PREDECESSOR_NOT_RECORDED = "DECLARED_PREDECESSOR_NOT_RECORDED"
+PREDECESSOR_SUPERSEDED = "DECLARED_PREDECESSOR_SUPERSEDED"
+PREDECESSOR_OWNING_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+VERIFY_EXISTING_MODE = "VERIFY_EXISTING"
+PREDECESSOR_RESULT_BINDING = "NOT_CHECKED_RESULT_DIGEST_NOT_RECORDED_IN_RECEIPTS"
+#: How the recorded predecessor was matched: a receipt that recorded the
+#: standing it was admitted at (node, generation and digest all compared), or
+#: an admission recorded before standings were recorded (digest only; the
+#: node and generation could not be compared and the result says so).
+PREDECESSOR_RECORD_FULL = "NODE_GENERATION_AND_MANIFEST_DIGEST_RECORDED"
+PREDECESSOR_RECORD_LEGACY = "MANIFEST_DIGEST_ONLY_RECEIPT_PREDATES_RECORDED_STANDING"
+_HEX64 = re.compile(r"^[0-9a-f]{64}$")
 
 
 def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
@@ -729,26 +752,139 @@ def declares_worker_claim(manifest: Any) -> bool:
     return isinstance(extensions, Mapping) and WORKER_CLAIM_EXTENSION in extensions
 
 
-def recorded_admission_for_request(request_sha256: str) -> Mapping[str, Any] | None:
-    """The repository receipt that already admits this exact request, or None.
+def admitted_ingress_receipts() -> list[Mapping[str, Any]] | None:
+    """Every admitted-ingress receipt in this repository's ledger, newest first, or None.
 
-    Walks this repository's ledger from HEAD, verified, as `recorded` does, and
-    matches on the transition class of an admitted ingress and the request
-    digest in its evidence. A broken or absent chain answers None: nothing is
-    assumed recorded.
+    Walks the chain from HEAD, verified, as `recorded` does. A broken or
+    unreadable chain answers None rather than an empty list: nothing is assumed
+    recorded, and nothing is assumed absent.
     """
     try:
         store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
         head = store.get(repository_ledger.ledger_store.HEAD_KEY)
         if not head:
-            return None
-        for receipt in repository_ledger.chain(store, head):
-            if (receipt.get("transition_class") == OPERATION_ID
-                    and (receipt.get("evidence") or {}).get("request_sha256") == request_sha256):
-                return receipt
+            return []
+        return [receipt for receipt in repository_ledger.chain(store, head)
+                if receipt.get("transition_class") == OPERATION_ID]
     except Exception:  # noqa: BLE001 - a chain this cannot read records nothing for us
         return None
+
+
+def recorded_admission_for_request(request_sha256: str,
+                                   receipts: list[Mapping[str, Any]] | None = None) -> Mapping[str, Any] | None:
+    """The repository receipt that already admits this exact request, or None.
+
+    `receipts` is the chain walk from `admitted_ingress_receipts`, passed in so
+    one ingress walks its chain once.
+    """
+    if receipts is None:
+        receipts = admitted_ingress_receipts()
+    for receipt in receipts or []:
+        if (receipt.get("evidence") or {}).get("request_sha256") == request_sha256:
+            return receipt
     return None
+
+
+def _recorded_standing(receipt: Mapping[str, Any]) -> Mapping[str, Any]:
+    crossing = (receipt.get("evidence") or {}).get("crossing") or {}
+    standing = crossing.get("standing") if isinstance(crossing, Mapping) else None
+    return standing if isinstance(standing, Mapping) else {}
+
+
+def _manifest_digests(evidence: Mapping[str, Any]) -> set[str]:
+    """The digests under which an admission's manifest is recorded.
+
+    The SDK binds the wire manifest (`wire_manifest_sha256`) and its validated
+    projection (`canonical_manifest_sha256`) separately; a predecessor binding
+    (`successor_predecessor_binding`) is the digest of the manifest body, which
+    is the wire form. Either is the same admission, so either matches.
+    """
+    return {str(evidence.get(key)) for key in ("wire_manifest_sha256", "canonical_manifest_sha256")
+            if isinstance(evidence.get(key), str)}
+
+
+def _recorded_generation(standing: Mapping[str, Any]) -> int | None:
+    """The generation a recorded standing was admitted at; genesis without one is 1."""
+    generation = standing.get("generation")
+    if isinstance(generation, int) and not isinstance(generation, bool):
+        return generation
+    if generation is None and standing.get("mode") == "ESTABLISH_GENESIS":
+        return 1
+    return None
+
+
+def declared_predecessor_failure(standing: Any, request: Mapping[str, Any],
+                                 receipts: list[Mapping[str, Any]] | None = None,
+                                 ) -> tuple[str, str] | tuple[None, str] | None:
+    """Why a declared VERIFY_EXISTING predecessor is not recorded-and-unsuperseded, or how it was found.
+
+    Only a declared standing in VERIFY_EXISTING mode whose predecessor is an
+    object with a well-formed `manifest_sha256` and whose generation is exactly
+    predecessor.generation + 1 is checked here: shape and successor arithmetic
+    stay with the standing contract at the boundary (`node_standing.require`),
+    whose own codes those refusals carry, so anything else answers None.
+
+    Returns `(failure_code, detail)` on refusal:
+    DECLARED_PREDECESSOR_NOT_RECORDED (fail closed) when this ledger cannot be
+    read, or holds no admission -- a repository receipt whose organization
+    receipt is also observed -- for the node at the predecessor's generation
+    with the predecessor's manifest digest; DECLARED_PREDECESSOR_SUPERSEDED
+    (deny) when an admission for the node already binds that predecessor to a
+    different successor manifest. Returns `(None, how_recorded)` when the
+    predecessor is recorded: PREDECESSOR_RECORD_FULL when the receipt recorded
+    its standing, PREDECESSOR_RECORD_LEGACY when it predates recorded standings
+    and only the manifest digest could be compared.
+    """
+    if not isinstance(standing, Mapping) or standing.get("mode") != VERIFY_EXISTING_MODE:
+        return None
+    predecessor = standing.get("predecessor")
+    generation = standing.get("generation")
+    if not isinstance(predecessor, Mapping) or not isinstance(generation, int) or isinstance(generation, bool):
+        return None
+    predecessor_generation = predecessor.get("generation")
+    if (not isinstance(predecessor_generation, int) or isinstance(predecessor_generation, bool)
+            or generation != predecessor_generation + 1):
+        return None
+    manifest_digest = predecessor.get("manifest_sha256")
+    if not isinstance(manifest_digest, str) or not _HEX64.match(manifest_digest):
+        return None
+    node_ref = standing.get("node_ref")
+    if receipts is None:
+        receipts = admitted_ingress_receipts()
+    if receipts is None:
+        return PREDECESSOR_NOT_RECORDED, "this repository's ledger could not be read"
+    own_digests = _manifest_digests(request)
+    recorded: str | None = None
+    for receipt in receipts:
+        evidence = receipt.get("evidence") or {}
+        digests = _manifest_digests(evidence)
+        prior = _recorded_standing(receipt)
+        if prior:
+            if prior.get("node_ref") != node_ref:
+                continue
+            bound = prior.get("predecessor")
+            if (isinstance(bound, Mapping) and bound.get("manifest_sha256") == manifest_digest
+                    and not (digests & own_digests)):
+                return PREDECESSOR_SUPERSEDED, (
+                    f"node {node_ref!s} predecessor {manifest_digest} is already bound by the recorded "
+                    f"successor {evidence.get('canonical_manifest_sha256')!s} (generation {prior.get('generation')!s})")
+            if _recorded_generation(prior) != predecessor_generation or manifest_digest not in digests:
+                continue
+            match = PREDECESSOR_RECORD_FULL
+        elif manifest_digest in digests:
+            match = PREDECESSOR_RECORD_LEGACY
+        else:
+            continue
+        # An admission is a repository receipt whose organization receipt is
+        # observed; a repository receipt alone is a partial commit, not one.
+        observed, _ = _organization_receipt_read_back(receipt.get("receipt_sha256"))
+        if observed is True and (recorded is None or match == PREDECESSOR_RECORD_FULL):
+            recorded = match
+    if recorded is None:
+        return PREDECESSOR_NOT_RECORDED, (
+            f"no admission for node {node_ref!s} at generation {predecessor_generation} with manifest "
+            f"digest {manifest_digest} is recorded in this repository's ledger with its organization receipt")
+    return None, recorded
 
 
 def declared_worker_claim_failure(manifest: Any, *, worker_registry: Mapping[str, Any] | None = None,
@@ -1273,7 +1409,14 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # registry before the crossing; ingress mints no claim and no fence. An
     # absent declaration is admitted and reported as UNVERIFIED.
     fence_failure = declared_worker_claim_failure(manifest)
-    if fence_failure is not None and recorded_admission_for_request(request["request_sha256"]) is not None:
+    # One verified walk of this repository's chain per ingress, and only when
+    # something below needs it: a failed fence (is it a redelivery?) or a
+    # declared VERIFY_EXISTING standing (is its predecessor recorded?).
+    admitted = (admitted_ingress_receipts()
+                if fence_failure is not None or (isinstance(standing, Mapping)
+                                                 and standing.get("mode") == VERIFY_EXISTING_MODE)
+                else [])
+    if fence_failure is not None and recorded_admission_for_request(request["request_sha256"], admitted) is not None:
         # An exact redelivery of an admission this ledger already records is
         # the same transition (I-10): the fence it ran under was verified when
         # it was recorded, and a fence that moved since does not turn a recorded
@@ -1304,6 +1447,40 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # state; a required-but-undeclared claim is admitted as UNVERIFIED today,
     # and turning that into a refusal is the route owner's call.
     worker_claim_required = request.get("requires_workercoordinator_claim_fence") is True
+
+    # A declared VERIFY_EXISTING predecessor is checked against this
+    # repository's own record of admissions before the crossing. A redelivery
+    # of a recorded admission is the recorded transition (I-10) and is not
+    # re-judged against a ledger that has moved on since.
+    predecessor_outcome = declared_predecessor_failure(standing, request, admitted)
+    predecessor_record = None
+    predecessor_failure = None
+    if predecessor_outcome is not None:
+        if predecessor_outcome[0] is None:
+            predecessor_record = predecessor_outcome[1]
+        elif recorded_admission_for_request(request["request_sha256"], admitted) is None:
+            predecessor_failure = predecessor_outcome
+    if predecessor_failure is not None:
+        predecessor_code, predecessor_detail = predecessor_failure
+        return refused(
+            PREDECESSOR_PREDICATE, predecessor_code + ":" + predecessor_detail,
+            failure_code=predecessor_code,
+            disposition="DENY" if predecessor_code == PREDECESSOR_SUPERSEDED else "FAIL_CLOSED",
+            required_evidence_or_repair=(
+                "a VERIFY_EXISTING standing whose predecessor names an admission this repository's "
+                "ledger records for the same node_ref at predecessor.generation with "
+                "predecessor.manifest_sha256 as its canonical manifest digest, and which no other "
+                "recorded successor of that node has bound; or ESTABLISH_GENESIS for a new lineage"),
+            retry_entrypoint=RETRY_ENTRYPOINT,
+            owning_existing_goal=PREDECESSOR_OWNING_GOAL,
+            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
+                          "resubmit": ("THE_SUCCESSOR_OF_THE_RECORDED_HEAD_FOR_THIS_NODE"
+                                       if predecessor_code == PREDECESSOR_SUPERSEDED else
+                                       "THE_MANIFEST_WITH_A_PREDECESSOR_THIS_LEDGER_RECORDS"),
+                          "awaits_an_external_machine": False},
+            request_sha256=request["request_sha256"])
+    predecessor_binding = (PREDECESSOR_RESULT_BINDING if isinstance(standing, Mapping)
+                           and standing.get("mode") == VERIFY_EXISTING_MODE else None)
 
     try:
         crossing = crossing_module.cross(manifest, registry=dict(registry), standing=standing, packet_id=packet_id)
@@ -1526,6 +1703,11 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         # reaches here.
         "worker_claim_state": worker_claim_state,
         "workercoordinator_claim_fence_required_by_route": worker_claim_required,
+        # For VERIFY_EXISTING: the declared predecessor was found recorded and
+        # unsuperseded in this repository's ledger before the crossing, except
+        # its result_sha256, which no receipt records; genesis reports null.
+        "declared_predecessor_result_binding": predecessor_binding,
+        "declared_predecessor_record": predecessor_record,
         "recomputation_rule_ref": rule_ref,
         # Both levels, so a reader can see the organization consumed a receipt
         # from the level below rather than one it wrote itself.
