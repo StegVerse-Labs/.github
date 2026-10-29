@@ -2,7 +2,7 @@
   "schema": "stegverse.canonical-task-registration-request/v1",
   "request_id": "lane-d-kv-skap-vault-functional-2026-10-23",
   "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
-  "observed_registry_generation": 324,
+  "observed_registry_generation": 325,
   "registration_mode": "NEW_IDENTITY",
   "issue": "StegVerse-org/.github#160",
   "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",

@@ -4,10 +4,10 @@
   "consumed_by": "scripts/canonical_task_registration_transition.py (plan/apply; StegVerse-Labs/.github#3311)",
   "registry_edit": false,
   "registry_generation_bump": false,
-  "observed_registry_generation": 324,
+  "observed_registry_generation": 325,
   "observed_base": {
-    "main": "5834a544 (PR #3403 merge)",
-    "registry_blob": "4f6f8ac9"
+    "main": "32f75c5d (Labs#3412 merge) plus this PR's generation 325 (INTERLOCK row)",
+    "registry_blob": "8b7e3b92"
   },
   "issue": "StegVerse-org/.github#160 issuecomment-6354238464 I1",
   "goals": [
@@ -16,7 +16,7 @@
       "basis": "SHARD_ONLY",
       "registration_mode": "EXISTING_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.request.json",
-      "request_sha256": "7e5d9e69814a5810967b832365d7d202c3037d661a32f7c749bf758db542ef72",
+      "request_sha256": "91038e3e54155071f2b169cbc70d8a777fb7a23fe942306d4770e5d384cc5cac",
       "plan_at_base": "StegVerse-Labs/.github main fadccc2f with this PR's registry generation 321 (kv-skap-gate-roundtrip rename), and the #3311 transition (9e00a16e)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
@@ -36,7 +36,7 @@
       "basis": "SHARD_ONLY",
       "registration_mode": "EXISTING_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.request.json",
-      "request_sha256": "1d8d846e856e7bad45447dbfb99211b54c4c8c1e7ada84a9ae9fc7ab3b254f83",
+      "request_sha256": "0dd956bc97608be41c0dc1ef6607b043a0da1fff45d7ce346c5d4deb12f5479e",
       "plan_at_base": "StegVerse-Labs/.github main fadccc2f with this PR's registry generation 321 (kv-skap-gate-roundtrip rename), and the #3311 transition (9e00a16e)",
       "lowest_supported_mode": "E0",
       "expected_plan": {
@@ -52,26 +52,6 @@
       }
     },
     {
-      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
-      "basis": "SHARD_ONLY",
-      "registration_mode": "EXISTING_IDENTITY",
-      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.request.json",
-      "request_sha256": "6be5201ddd59afecd1605ed17a7cd35a94d95de2e61651afa15fac3eaa8e6560",
-      "plan_at_base": "StegVerse-Labs/.github main fadccc2f with this PR's registry generation 321 (kv-skap-gate-roundtrip rename), and the #3311 transition (9e00a16e)",
-      "lowest_supported_mode": "E0",
-      "expected_plan": {
-        "disposition": "FAIL_CLOSED",
-        "failure_class": "B",
-        "failure_code": "CANONICAL_RECORD_SCHEMA_INVALID",
-        "failed_predicate": "CANONICAL_RECORD_SCHEMA_INVALID",
-        "required_evidence_or_repair": "set it false through the record-data successor transition (TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY)",
-        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
-        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-        "next_attempt": "on the next registration request event after the repair is recorded",
-        "detail": "authority_model.task_registry_mints_execution_authority must be false"
-      }
-    },
-    {
       "task_id": "TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
       "basis": "NEW_IDENTITY_REQUEST",
       "registration_mode": "NEW_IDENTITY",
@@ -82,7 +62,7 @@
       ],
       "observed_source": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.request.json",
-      "request_sha256": "b40aef40040f1ed840306c95afba4f693a8743f27b325225d57cd73526965cc6",
+      "request_sha256": "d54bf32ece4c518f4ad2ba8765030a6896cb638a64d135864424b4b51e870084",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-tvc-repository-operation-broker-2026-10-23.json",
       "scope_digest": "sha256:7c2d83c7dcdd86a46c63112dda07902fc7adf9d1442c7d2c2f029c4383f71039",
       "finish_point": {
@@ -146,7 +126,7 @@
       ],
       "observed_source": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-PRIVATE-SOURCE-READ-001.request.json",
-      "request_sha256": "85ee2b76926b8f9e1b1bd70706892b6995ae4a7005bf983260a4cb1373bab01f",
+      "request_sha256": "201f032fd5e7b36c79b9fe120a30734700581e04e860eeea14487f66839f18ff",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-tvc-private-source-read-2026-10-23.json",
       "scope_digest": "sha256:5f6615d86730d08e40c9271e363c2c89865b4af388ea6905bccdde2c20a9cd64",
       "finish_point": {
@@ -161,7 +141,7 @@
         "disposition": "ALLOW",
         "cosv_task_vector": "50000000101000",
         "scope_digest": "sha256:5f6615d86730d08e40c9271e363c2c89865b4af388ea6905bccdde2c20a9cd64",
-        "successor_registry_generation": 325,
+        "successor_registry_generation": 326,
         "derived_files": [
           "control/goal-scope-seals/TVC-PRIVATE-SOURCE-READ-001.json",
           "control/task-vector-index.d/TVC-PRIVATE-SOURCE-READ-001.json",
@@ -178,7 +158,7 @@
       "basis": "NEW_IDENTITY_REQUEST",
       "registration_mode": "NEW_IDENTITY",
       "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
-      "request_sha256": "9c8f4ec98aa40d8a9c1c2f571e50ece90126c6e97eb408e7d6807888aaa5fc15",
+      "request_sha256": "08a76235fb73b62624892dae8c464a52b94464a271e5dc091346e3b9ef8b6e6b",
       "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
       "scope_digest": "sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc",
       "finish_point": {
@@ -220,5 +200,15 @@
   ],
   "unknown": {
     "_": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED: no request here was planned against a successor tree; no apply was run"
-  }
+  },
+  "registered_by_record_data": [
+    {
+      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "registry_generation": 325,
+      "pull_request": "StegVerse-Labs/.github#3409",
+      "route": "scripts/apply_task_record_data.py (register_from_record)",
+      "request_fixture_kept": "tests/fixtures/canonical_task_registration/i1-goal-manifests/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.request.json",
+      "note": "registered at generation 325, so it is no longer a pending no-row Goal; the request fixture is kept unchanged apart from observed_registry_generation"
+    }
+  ]
 }
