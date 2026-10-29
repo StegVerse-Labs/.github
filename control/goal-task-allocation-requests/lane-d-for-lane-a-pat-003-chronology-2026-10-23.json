@@ -10,7 +10,7 @@
   "cosv_task_vector": null,
   "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics",
   "canonical_registry_ref": "data/canonical-task-registry.json",
-  "observed_registry_generation": 320,
+  "observed_registry_generation": 324,
   "owning_task_found": false,
   "scope": "PAT-003 dated chronology: populate evidence/PAT-003_DISCLOSURE_CHRONOLOGY.md with dated, attributable conception and public/private disclosure records and complete the disclosure-risk audit of already-public source with exact dates and references. Inventor contributions are recorded as evidence only; inventorship is determined by the practitioner (PAT-003-FILING-PACKET, not claimed here). No filing, no legal determination.",
   "scope_digest": "sha256:ae347f68961265df18e0760c24fae97bdcc801954dd491b6a3ba7276a2f9235f",
