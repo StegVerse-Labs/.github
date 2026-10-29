@@ -10836,6 +10836,7 @@
    ".stegverse/transition-ledger/emit.py",
    "contracts/canonical-task-registration-transition.v1.json",
    "control/canonical-task-registration-requests/**",
+   "control/goal-scope-seals/**",
    "control/goal-task-allocation-requests/**",
    "control/task-vector-index.d/**",
    "control/task-vector-index.json",
@@ -11333,6 +11334,7 @@
   ],
   "scripts/goal_scope_seal.py": [
    ".github/workflows/canonical-task-registration-transition.yml",
+   "control/goal-scope-seals/**",
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json"
   ],
