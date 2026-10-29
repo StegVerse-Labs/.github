@@ -1,0 +1,40 @@
+{
+  "authority_effect": "NONE",
+  "evidence": {
+    "consequence_committed": false,
+    "detail": "runtime generation 2 < issued fence 7",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "FENCE_GENERATION_BEHIND_ISSUED_FENCES",
+    "failure_code": "FENCE_GENERATION_BEHIND_ISSUED_FENCES",
+    "fence_issued": false,
+    "fencing_token": null,
+    "next_attempt": "on the next request event after the repair is recorded",
+    "organization_head_sha256": "sha256:90f75e891f9c61f840e812d4531f4b781d24f3727a9a76d70221156db3d29d31",
+    "owning_existing_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+    "request_id": "RESIDENT-EXEC-ORG-CLAIM-ALLOCATOR-SDK-MANIFEST-001",
+    "request_sha256": "8621f7a4f61ccafdaccc5e2c3dc6464245078fa158502b7cc524f8ce62f7809b",
+    "required_evidence_or_repair": "rematerialize the runtime claim registry at or beyond the issued fences",
+    "retry_entrypoint": ".github/workflows/organization-claim-allocator-transition-writer.yml",
+    "target_task_id": "TASK-2026-0013",
+    "task_id": "TASK-2026-0013"
+  },
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": true,
+    "epoch": 574295293,
+    "frequency_hz": 100,
+    "generation": 574295293,
+    "heartbeat_id": "HB:574295293",
+    "phase_offset_ns": 5202048,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "sampled_unix_ns": 1793254552615202048
+  },
+  "predecessor_state_sha256": "sha256:8621f7a4f61ccafdaccc5e2c3dc6464245078fa158502b7cc524f8ce62f7809b",
+  "previous_receipt_sha256": "sha256:4addb53229d6b976684a2253332aaeb7e8eef1e57dede573071f8fa85766a2c8",
+  "receipt_sha256": "sha256:aff9ac505b1d39aaf38889fd7be2ea32b84bea8ab76571389ad8d5d5e583c5c6",
+  "repository": "StegVerse-Labs/.github",
+  "schema": "stegverse.repo-transition-receipt/v1",
+  "successor_state_sha256": "sha256:329ca5b0b8f0ca2fde9fb5368dbcfde510a63bf80accdbba685601e8ea655b34",
+  "transition_class": "ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED",
+  "transition_id": "ORGANIZATION-WORKER-CLAIM-FAIL-CLOSED-45a9bb10152a72db"
+}
