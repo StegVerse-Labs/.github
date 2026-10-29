@@ -3,17 +3,16 @@
 Temporary repositories only. Receipts here are exercise evidence on those
 repositories, not records of the published organization ledger.
 
-Oracle: P1's readers at StegVerse-Labs/.github#3264 head
-f28c3a76a8b495d7a815a7ecd513c4d4dc90c9c7, vendored under tests/vendor/p1_f28c3a76/ in
-P1's own layout: the contract manifest data/sv-work-items/contract-pins.json (blob
-ef2ff1e8, sha256 5c0c98d4...) and only the files this operation uses, each verified
-against its manifest sha256 (sv_work_items.py 9544c53b, required-checks.json 9c75778f,
+Oracle: P1's readers at the c9192134 re-pin (StegVerse-Labs/.github#3282), vendored under
+tests/vendor/p1_c9192134/ in P1's own layout: the contract manifest data/sv-work-items/contract-pins.json (blob
+56116e48, sha256 8f750202...) and only the files this operation uses, each verified
+against its manifest sha256 (sv_work_items.py 94f56a0f, required-checks.json 482e3af9,
 lifecycle-transitions.json c66de6e8, sv-check-receipt.v1.schema.json a4934cc1, stages
 NWI-S0..S4). tests/sv_ledger_fixtures.py (30a9fe89) is test-only and not listed in the
-manifest, so it is pinned by its blob at f28c3a76. The operation runs P1's module itself
+manifest, so it is pinned by its blob. The operation runs P1's module itself
 (svc.p1_readers()); this test uses that same module. This PR touches no P1 path.
-Shared epoch rule: org-kernel/kernel.py::supplied_epoch_failure L236-269 (blob
-ffec5d64), SHARED_RULE_SHA256 726248a5...; storage location kernel.py:68-74.
+Shared epoch rule: org-kernel/kernel.py::supplied_epoch_failure, SHARED_RULE_SHA256 c9192134... (its ast
+segment; function text ad8ff529); storage location kernel.py hb_reference.
 """
 from __future__ import annotations
 
@@ -29,9 +28,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REF = "refs/stegverse/organization-ledger"
 NAMESPACE = "repository-ledger/StegVerse-Labs/.github"
-VENDOR = ROOT / "tests" / "vendor" / "p1_f28c3a76"
-P1_PIN = "f28c3a76a8b495d7a815a7ecd513c4d4dc90c9c7"
-MANIFEST_SHA256 = "5c0c98d4349274b547a7c4ba8154e77e930e55e0a8dc1827344229661957a4cb"
+VENDOR = ROOT / "tests" / "vendor" / "p1_c9192134"
+MANIFEST_SHA256 = "8f75020249d7a12f8ac754443aec1a01da4c2572e052172bff8f35970e35ab87"
 FIXTURES_BLOB = "30a9fe8980671e63348810c837882f3dab525459"
 GATE = "nwi-s0-exit-gate"
 S1_RUN = "SV-LLM/.github#46@64b90721"
@@ -565,10 +563,14 @@ def kernel_ref(epoch, derived=False):
 
 class Declarations(unittest.TestCase):
     def test_shared_rule_hash_and_pins(self):
-        lines = (ROOT / "org-kernel" / "kernel.py").read_bytes().split(b"\n")
         import hashlib
-        self.assertEqual(hashlib.sha256(b"\n".join(lines[235:269])).hexdigest(), svc.SHARED_RULE_SHA256)
-        self.assertTrue(lines[235].startswith(b"def supplied_epoch_failure"))
+        import inspect
+        # line-independent: the function's own text (ad8ff529) and its ast segment (c9192134), wherever it sits
+        source = inspect.getsource(svc.kernel.supplied_epoch_failure)
+        self.assertEqual(hashlib.sha256(source.encode()).hexdigest(),
+                         "ad8ff52936d5bcd9a2ad6caceb2d9a637a099518989b34bbb3370301c7a4cce2")
+        self.assertEqual(svc.supplied_epoch_rule_sha256((ROOT / "org-kernel" / "kernel.py").read_text(encoding="utf-8")),
+                         svc.SHARED_RULE_SHA256)
         self.assertEqual(svc.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
         self.assertEqual(wi.SUPPLIED_EPOCH_RULE_SHA256, svc.SHARED_RULE_SHA256)
         self.assertEqual(wi.KERNEL_RULE_SHA256, svc.SHARED_RULE_SHA256)
@@ -582,7 +584,7 @@ class Declarations(unittest.TestCase):
         raw = (VENDOR / svc.P1_MANIFEST).read_bytes()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), MANIFEST_SHA256)
         self.assertEqual(svc.P1_MANIFEST_SHA256, MANIFEST_SHA256)
-        self.assertEqual(_blob(raw), "ef2ff1e845076fdbc985846b6667c4c7d38731df")
+        self.assertEqual(_blob(raw), "56116e48b7b2d4e66f73ba5859e6c1230a89a5d3")
         manifest = json.loads(raw)
         self.assertEqual(manifest["schema"], "stegverse.sv-contract-pins/v1")
         self.assertEqual(len(manifest["files"]), 43)
@@ -599,9 +601,9 @@ class Declarations(unittest.TestCase):
             comparison = ("IDENTICAL" if p1.read_bytes() == data else "DRIFT") if p1.is_file() else "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
             print("drift comparison", rel, comparison)
             self.assertNotEqual(comparison, "DRIFT", "P1's " + rel + " drifted from the vendored manifest pin; re-vendor")
-        # not in the manifest (test-only): pinned by its blob at f28c3a76
+        # not in the manifest (test-only): pinned by its blob
         self.assertEqual(_blob((VENDOR / "tests" / "sv_ledger_fixtures.py").read_bytes()), FIXTURES_BLOB)
-        for pin, sha in (("schemas/sv-check-receipt.v1.schema.json", "a4934cc1"), ("resident-runtime/sv_work_items.py", "9544c53b")):
+        for pin, sha in (("schemas/sv-check-receipt.v1.schema.json", "a4934cc1"), ("resident-runtime/sv_work_items.py", "94f56a0f")):
             self.assertTrue(manifest["files"][pin]["blob"].startswith(sha))
 
     def test_a_vendored_file_off_its_manifest_digest_refuses_every_append(self):

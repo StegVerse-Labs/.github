@@ -53,7 +53,8 @@ def validate_hb_reference(ref:dict[str,Any])->dict[str,Any]:
         raise ValueError("heartbeat_progression_not_oscillator")
     return ref
 
-def hb_reference(now_ns:int|None=None, *, epoch:int|None=None)->dict[str,Any]:
+def hb_reference(now_ns:int|None=None, *, epoch:int|None=None, source:str|None=None,
+                 head_receipt_sha:str|None=None)->dict[str,Any]:
     """Build the heartbeat reference for a crossing.
 
     Progression is OSCILLATOR_ONLY: the epoch is a count of heartbeat periods,
@@ -64,14 +65,28 @@ def hb_reference(now_ns:int|None=None, *, epoch:int|None=None)->dict[str,Any]:
     Deriving the epoch from a host clock instead makes the reference depend on
     that host's clock discipline, so a derived reference says so and carries
     the sample it was derived from.
+
+    `source` and `head_receipt_sha` are optional and go together: with a
+    supplied epoch they mark the reference CARRIED (e.g. source
+    ORGANIZATION_LEDGER_HEAD and that head's receipt sha). Without them the
+    reference is SUPPLIED or CLOCK, unchanged.
     """
+    if (source is None)!=(head_receipt_sha is None):
+        raise ValueError("carried_provenance_needs_source_and_head_receipt_sha")
+    if source is not None:
+        if epoch is None: raise ValueError("carried_provenance_needs_a_supplied_epoch")
+        if not isinstance(source,str) or not source or not isinstance(head_receipt_sha,str) or not head_receipt_sha:
+            raise ValueError("carried_provenance_invalid")
     if epoch is not None:
         if now_ns is not None: raise ValueError("supply_epoch_or_sample_not_both")
         if not isinstance(epoch,int) or isinstance(epoch,bool) or epoch<HB_ANCHOR_EPOCH:
             raise ValueError("epoch_precedes_hb32_anchor")
-        return validate_hb_reference({"epoch":epoch,"generation":epoch,"heartbeat_id":f"HB:{epoch}",
-                "phase_offset_ns":0,"frequency_hz":HB_HZ,"progression_dependency":"OSCILLATOR_ONLY",
-                "derived_from_clock":False,"authority_effect":"NONE"})
+        ref={"epoch":epoch,"generation":epoch,"heartbeat_id":f"HB:{epoch}",
+             "phase_offset_ns":0,"frequency_hz":HB_HZ,"progression_dependency":"OSCILLATOR_ONLY",
+             "derived_from_clock":False,"authority_effect":"NONE"}
+        if source is not None:
+            ref["source"]=source; ref["head_receipt_sha"]=head_receipt_sha
+        return validate_hb_reference(ref)
     if now_ns is None:
         now_ns=int(datetime.now(timezone.utc).timestamp()*1_000_000_000)
     if now_ns<HB_ANCHOR_UNIX_NS:
@@ -211,6 +226,18 @@ NODE_STATE_WRITE_ONCE="NODE_STATE_WRITE_ONCE"
 ENDPOINT_ADAPTER_HB_EPOCH_CARRIER_SUPPLIED="CARRIER_SUPPLIED"
 HB_EPOCH_NOT_SUPPLIED="HB_EPOCH_NOT_SUPPLIED"
 HB_EPOCH_INVALID="HB_EPOCH_INVALID"
+#: The marker vocabulary of a heartbeat reference. SUPPLIED: derived_from_clock
+#: explicitly false, with no sampled_unix_ns. CARRIED: false, plus `source` (e.g.
+#: ORGANIZATION_LEDGER_HEAD) and `head_receipt_sha`; the shared rule treats it as
+#: SUPPLIED and only the writer verifies the sha is the current verified head
+#: (CARRIED_PROVENANCE_UNVERIFIED otherwise). CLOCK: derived_from_clock true, or a
+#: bare sampled_unix_ns (legacy CLOCK, never SUPPLIED). supplied_epoch_failure
+#: checks a reference in this order, with no source/sha exemption:
+#: (1) derived_from_clock present and not exactly False -> HB_EPOCH_INVALID;
+#: (2) sampled_unix_ns present -> HB_EPOCH_INVALID;
+#: (3) derived_from_clock absent -> HB_EPOCH_PROVENANCE_UNMARKED (an unmarked
+#: clock value is laundering, and a carrier cannot self-assert CARRIED).
+HB_EPOCH_PROVENANCE_UNMARKED="HB_EPOCH_PROVENANCE_UNMARKED"
 HB_EPOCH_PREDICATE="SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 HB_EPOCH_OWNING_EXISTING_GOAL="INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
 HB_EPOCH_RETRY_ENTRYPOINT=("org-kernel/kernel.py::consume_and_respond: the sender re-publishes the packet in a "
@@ -266,7 +293,54 @@ def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, s
             and reference["derived_from_clock"] is not False:
         return "HB_EPOCH_INVALID", ("the carrier's derived_from_clock is not exactly false; "
                                     "a clock-derived epoch is not a supplied one")
+    if reference is not None and "sampled_unix_ns" in reference: return "HB_EPOCH_INVALID", "the carrier's heartbeat reference carries sampled_unix_ns; a sampled clock value is CLOCK, never a supplied epoch"
+    if reference is not None and "derived_from_clock" not in reference: return "HB_EPOCH_PROVENANCE_UNMARKED", "the carrier's heartbeat reference carries no derived_from_clock; an unmarked clock value is laundering, and a carrier cannot self-assert CARRIED provenance"
     return None
+
+class SuppliedEpochRefused(ValueError):
+    """A receipt writer's refusal of an absent or invalid supplied epoch.
+
+    `refusal` is the six-field FAIL_CLOSED from `writer_epoch_refusal`. Raised
+    before anything is written; no clock is read to stand in for the epoch.
+    """
+    def __init__(self, refusal:dict[str,Any])->None:
+        super().__init__(refusal["failure_code"]+": "+refusal["detail"])
+        self.disposition=refusal["disposition"]
+        self.failed_predicate=refusal["failed_predicate"]
+        self.refusal=dict(refusal)
+
+def writer_epoch_refusal(hb_epoch:Any, *, retry_entrypoint:str, reference:Any=None)->dict[str,Any]|None:
+    """The six-field FAIL_CLOSED of a receipt writer's epoch, or None when it is supplied.
+
+    The shape StegVerse-org/.github#189 gave the organization ledger
+    (`epoch_refusal`): a receipt references the heartbeat epoch its caller
+    supplies, checked by `supplied_epoch_failure`; an absent one is
+    HB_EPOCH_NOT_SUPPLIED and is never derived from a clock.
+    """
+    failure=supplied_epoch_failure(hb_epoch,reference)
+    if failure is None:
+        return None
+    code,detail=failure
+    return {"disposition":"FAIL_CLOSED","failure_code":code,"failed_predicate":HB_EPOCH_PREDICATE,
+            "detail":detail,
+            "required_evidence_or_repair":("the caller supplies hb_epoch= (or --hb-epoch): ASCII digits with "
+                                           "value >= "+str(HB_ANCHOR_EPOCH)+"; it is never derived from a clock"),
+            "retry_entrypoint":retry_entrypoint,
+            "owning_existing_goal":HB_EPOCH_OWNING_EXISTING_GOAL,
+            "next_attempt":"call again with the supplied epoch; nothing was written",
+            "derived_from_clock":False,"consequence_committed":False}
+
+def supplied_hb_reference(hb_epoch:Any, *, retry_entrypoint:str, source:str|None=None,
+                          head_receipt_sha:str|None=None)->dict[str,Any]:
+    """The heartbeat reference of a supplied epoch, or SuppliedEpochRefused. No clock is read.
+
+    With `source` and `head_receipt_sha` the reference is CARRIED; the caller
+    has verified that sha is the current verified head.
+    """
+    refusal=writer_epoch_refusal(hb_epoch,retry_entrypoint=retry_entrypoint)
+    if refusal is not None:
+        raise SuppliedEpochRefused(refusal)
+    return hb_reference(epoch=int(str(hb_epoch)),source=source,head_receipt_sha=head_receipt_sha)
 
 def carrier_epoch(heartbeat_reference:Any)->int:
     """Return the epoch the carrier supplied, or refuse FAIL_CLOSED. No clock is read."""
@@ -316,8 +390,8 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
     """Dispatch a recovered packet. `node_state` is this node's supplied state store.
 
     `heartbeat_reference` is the reference of the carrier frame that delivered
-    the packet; an endpoint adapter declared to take the carrier epoch is handed
-    its epoch and is refused without a supplied one.
+    the packet; an endpoint adapter and a capability-ingress operation requiring
+    the carrier epoch are handed its supplied epoch and refused without one.
 
     `root` is the organization's materialized source: it is read, never written.
     Anything the crossing records (work intake) goes to `node_state`.
@@ -354,6 +428,9 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
     # Also before any receipt: an adapter that takes the carrier epoch is not
     # run, and no chain implies it was, without one the carrier supplied.
     if endpoint and adapter_takes_carrier_epoch(service): carrier_epoch(heartbeat_reference)
+    # Validate the carried frame epoch before creating any dispatch receipts.
+    # No clock fallback is permitted for capability-address operations.
+    frame_epoch=carrier_epoch(heartbeat_reference) if role==CAPABILITY_INGRESS_ROLE else None
     # Also before any receipt: a work request is recorded in node state, so a
     # node materialized without one cannot consume it.
     if (role=="BOUNDARY_LOCAL_CONTROL" and node_state is None
@@ -377,7 +454,7 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
         # defective for having no capability resolver.
         try:
             application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
-                                                                mesh_root=mesh_root)
+                                                                mesh_root=mesh_root,hb_epoch=frame_epoch)
         except SystemExit as refused:
             raise ValueError("capability_ingress_refused:"+str(refused)) from None
     else:
@@ -413,7 +490,8 @@ __all__=["hb_reference","validate_hb_reference","derive_channel","carrier_frame"
          "record_federation_cycle","federation_cycles","manifest_selection","capability_ingress",
          "CAPABILITY_INGRESS_ROLE","crossing_custody",
          "record_crossing","record_refusal","ingest_recorded","CROSSING_CONSUMED_CLASS","CROSSING_REFUSED_CLASS",
-         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID"]
+         "carrier_epoch","CarrierEpochRefusal","HB_EPOCH_NOT_SUPPLIED","HB_EPOCH_INVALID","HB_EPOCH_PROVENANCE_UNMARKED",
+         "SuppliedEpochRefused","writer_epoch_refusal","supplied_hb_reference"]
 
 
 # --- Federation mesh v1.1 additions ---

@@ -81,6 +81,8 @@ def recorded(target,head,transition_id,transition_class):
   if found is None and receipt.get("transition_id")==transition_id and receipt.get("transition_class")==transition_class:found=receipt
  return found
 _ABSENT=object()
+EPOCH_RETRY_ENTRYPOINT=".stegverse/transition-ledger/emit.py::append (hb_epoch=, or --hb-epoch)"
+RepoLedgerEpochRefused=kernel.SuppliedEpochRefused
 def append(transition_id,transition_class,predecessor_state_sha256,successor_state_sha256,evidence=None,authority_effect="NONE",hb_epoch=None,store=None,idempotent_on=None):
  """Append one repository transition receipt through the substrate transaction.
 

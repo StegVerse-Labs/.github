@@ -13,7 +13,7 @@ on:
       - 'resident-runtime/sv_check_receipt_append.py'
       - 'tests/test_organization_ledger_ingest.py'
       - 'tests/test_sv_check_receipt_append.py'
-      - 'tests/vendor/p1_f28c3a76/**'
+      - 'tests/vendor/p1_c9192134/**'
       - 'org-runtime/interlock-intr.json'
       - '.stegverse/transition-ledger/contract.json'
       - '.stegverse/transition-ledger/org-contract.json'

@@ -89,6 +89,48 @@ BODY_FIELD = "body"
 PROCESSOR_SELECTION = "NO_PROCESSOR_SELECTED_AT_THE_CAPABILITY_ADDRESS"
 ROUTE_ADMISSIBILITY = "NOT_RESOLVED_AT_BOUNDARY_ROUTE_OWNER_IS_SDK"
 
+#: The kernel's supplied-epoch predicate, named the same here.
+HB_EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+HB_EPOCH_RETRY_ENTRYPOINT = "org-boundary/runtime/capability_ingress.py::receive (hb_epoch=)"
+KERNEL_PATH = Path(__file__).resolve().parents[2] / "org-kernel" / "kernel.py"
+
+
+class CapabilityEpochRefused(ValueError):
+    """The six-field FAIL_CLOSED of the epoch handed to `receive`, raised before anything is loaded or written.
+
+    `record` (and `refusal`, the same) is `kernel.writer_epoch_refusal`'s record, so a direct caller gets the
+    six fields rather than a bare predicate string.
+    """
+
+    def __init__(self, record: Mapping[str, Any]) -> None:
+        super().__init__(record["failure_code"] + ": " + record["detail"])
+        self.disposition = record["disposition"]
+        self.failed_predicate = record["failed_predicate"]
+        self.record = dict(record)
+        self.refusal = self.record
+
+
+_KERNEL = None
+
+
+def _kernel():
+    """The kernel beside this boundary runtime, for its shared supplied-epoch rule."""
+    global _KERNEL
+    if _KERNEL is None:
+        spec = importlib.util.spec_from_file_location("capability_ingress_kernel", KERNEL_PATH)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _KERNEL = module
+    return _KERNEL
+
+
+def supplied_epoch(hb_epoch: Any) -> int:
+    """The supplied epoch as an int, or CapabilityEpochRefused (the kernel's shared rule). No clock is read."""
+    refusal = _kernel().writer_epoch_refusal(hb_epoch, retry_entrypoint=HB_EPOCH_RETRY_ENTRYPOINT)
+    if refusal is not None:
+        raise CapabilityEpochRefused(refusal)
+    return int(str(hb_epoch))
+
 
 def canon(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
@@ -256,13 +298,20 @@ def declared_manifest(payload: Any) -> dict[str, Any]:
 
 
 def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *, registry: Mapping[str, Any],
-            mesh_root: Path | None = None) -> dict[str, Any]:
+            mesh_root: Path | None = None, hb_epoch: Any = None) -> dict[str, Any]:
     """Hand an addressed submission to the receiving operation the overlay binds.
 
     The operation records its own dispositions at both ledger levels; this
     returns what it reported. A refusal is returned as the operation stated it,
     not retried into an admission.
+
+    `hb_epoch` is the epoch the carrier supplied. The operation's receipts are
+    stamped with it; without one they would be stamped from the host clock, so
+    an absent epoch is refused before the operation is loaded. No clock is read.
+    An absent or invalid one (the kernel's shared rule) raises CapabilityEpochRefused
+    with the six fields, before the overlay is read or any store is opened.
     """
+    hb_epoch = supplied_epoch(hb_epoch)
     resolved = resolve(root, service)
     # The overlay says how this capability's submission is read. A payload the
     # binding does not admit is refused before the operation is loaded, so a
@@ -273,7 +322,7 @@ def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *
     module = load_operation(resolved)
     result = module.receive(submission, registry=registry, standing=packet.get("standing"),
                             packet_id=str(packet.get("packet_id") or resolved["receiving_operation_id"]),
-                            mesh_root=mesh_root)
+                            hb_epoch=hb_epoch, mesh_root=mesh_root)
     return {
         "capability_received": True,
         "capability_profile_id": resolved["capability_profile_id"],

@@ -917,6 +917,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_capability_ingress_supplied_epoch.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_capability_ingress_supplied_epoch.py"
+   ],
+   "tests": [
+    "tests/test_capability_ingress_supplied_epoch.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_capability_profiles.py",
    "inputs": [],
    "surfaces": [
@@ -4025,6 +4037,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_kernel_dispatch_frame_epoch.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_kernel_dispatch_frame_epoch.py"
+   ],
+   "tests": [
+    "tests/test_kernel_dispatch_frame_epoch.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_kernel_endpoint_carrier_epoch.py",
    "inputs": [],
    "surfaces": [
@@ -4056,6 +4080,18 @@
    ],
    "tests": [
     "tests/test_kernel_supplied_mesh.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_kernel_writer_supplied_epoch.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_kernel_writer_supplied_epoch.py"
+   ],
+   "tests": [
+    "tests/test_kernel_writer_supplied_epoch.py"
    ]
   },
   {
@@ -10209,6 +10245,7 @@
    "heartbeat_runtime/independent_oscillator.py"
   ],
   "org-boundary/runtime/capability_ingress.py": [
+   "org-kernel/kernel.py",
    "org-runtime/interlock-intr.json"
   ],
   "org-boundary/runtime/federation_projection_census.py": [
@@ -12936,6 +12973,11 @@
    "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
    "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md"
   ],
+  "tests/test_capability_ingress_supplied_epoch.py": [
+   "org-boundary/registry/services.json",
+   "org-boundary/runtime/capability_ingress.py",
+   "org-kernel/kernel.py"
+  ],
   "tests/test_capability_profiles.py": [
    "control/worker-capability-profiles.json",
    "heartbeat_runtime/engine_v8.py",
@@ -14401,6 +14443,9 @@
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/federation_cycle.py"
   ],
+  "tests/test_kernel_dispatch_frame_epoch.py": [
+   "org-kernel/kernel.py"
+  ],
   "tests/test_kernel_node_state_supplied.py": [
    "docs/CANONICAL_NODE_INGRESS_CONTRACT_001.json",
    "org-kernel/kernel.py",
@@ -14421,6 +14466,11 @@
    "resident-runtime/submit_org_transition_to_master_records.py",
    "tests/peer_organization.py",
    "tests/posix_ledger_locus/**"
+  ],
+  "tests/test_kernel_writer_supplied_epoch.py": [
+   ".stegverse/transition-ledger/emit.py",
+   "org-kernel/kernel.py",
+   "resident-runtime/aggregate_repo_transition.py"
   ],
   "tests/test_kv_ai_memory_intr_admission.py": [
    "scripts/install_kv_ai_memory_universal_intr_route.py",
