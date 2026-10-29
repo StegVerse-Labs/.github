@@ -368,7 +368,8 @@ class StegAppIngressVocabularyRecordDataTests(unittest.TestCase):
         self.assertFalse(record["completion"]["claimed"])
         self.assertFalse(record["completion"]["validated"])
         self.assertEqual(registry["generation"], self.tip + 1)
-        registry["tasks"] = [row for row in registry["tasks"] if row.get("task_id") != STEGAPP_TASK]
+        registry["tasks"] = [base_row if row.get("task_id") == STEGAPP_TASK else row
+                             for row in registry["tasks"]]
         registry["generation"] = base_registry["generation"]
         self.assertEqual(registry, base_registry)
 
