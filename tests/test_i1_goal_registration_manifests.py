@@ -18,14 +18,17 @@ SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry
 class I1GoalRegistrationManifestTests(unittest.TestCase):
     def setUp(self) -> None:
         self.manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        self.registry = json.loads((ROOT / "data/canonical-task-registry.json").read_text())
 
     def test_manifest_makes_no_registry_edit(self) -> None:
         self.assertIs(self.manifest["registry_edit"], False)
         self.assertIs(self.manifest["registry_generation_bump"], False)
-        registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
-        ids = {row.get("task_id") for row in registry["tasks"]}
+        registry_path = ROOT / "data" / "canonical-task-registry.json"
+        before = registry_path.read_bytes()
         for goal in self.manifest["goals"]:
-            self.assertNotIn(goal["task_id"], ids)
+            if goal.get("request"):
+                self._plan(goal["request"])
+        self.assertEqual(registry_path.read_bytes(), before)
 
     def test_every_goal_has_six_fields_and_a_class(self) -> None:
         for goal in self.manifest["goals"]:
@@ -43,11 +46,17 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
                 continue
             request = json.loads((ROOT / goal["request"]).read_text(encoding="utf-8"))
             self.assertEqual(request["registration_mode"], "EXISTING_IDENTITY")
-            with tempfile.TemporaryDirectory() as tmp:
-                out = Path(tmp) / "receipt.json"
-                subprocess.run([sys.executable, str(SCRIPT), "plan", "--request", str(ROOT / goal["request"]),
-                                "--receipt-out", str(out)], cwd=ROOT, capture_output=True, text=True, check=False)
-                receipt = json.loads(out.read_text(encoding="utf-8"))
+            receipt = self._plan(goal["request"])
+            registered = any(row.get("task_id") == goal["task_id"] for row in self.registry["tasks"])
+            if registered:
+                self.assertEqual(receipt["disposition"], "FAIL_CLOSED")
+                self.assertEqual(receipt["failure_code"], "TASK_IDENTITY_NOT_UNIQUE")
+                for field in SIX:
+                    self.assertTrue(receipt[field])
+                for flag in ("consequence_committed", "organization_ledger_appended", "execution_authority_minted",
+                             "workercoordinator_claim_or_fence_minted", "intr_admission_minted"):
+                    self.assertFalse(receipt[flag])
+                continue
             expected = goal["expected_plan"]
             self.assertEqual(receipt["disposition"], expected["disposition"], goal["task_id"])
             for field in SIX:
@@ -60,7 +69,11 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
     def _plan(self, request: str) -> dict:
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "receipt.json"
-            subprocess.run([sys.executable, str(SCRIPT), "plan", "--request", str(ROOT / request),
+            supplied = json.loads((ROOT / request).read_text())
+            supplied["observed_registry_generation"] = self.registry["generation"]
+            request_path = Path(tmp) / "request.json"
+            request_path.write_text(json.dumps(supplied))
+            subprocess.run([sys.executable, str(SCRIPT), "plan", "--request", str(request_path),
                             "--receipt-out", str(out)], cwd=ROOT, capture_output=True, text=True, check=False)
             return json.loads(out.read_text(encoding="utf-8"))
 
@@ -82,7 +95,7 @@ class I1GoalRegistrationManifestTests(unittest.TestCase):
                 evidence = receipt["evidence"]
                 self.assertEqual(evidence["cosv_task_vector"], expected["cosv_task_vector"], goal["task_id"])
                 self.assertEqual(evidence["scope_digest"], expected["scope_digest"], goal["task_id"])
-                self.assertEqual(evidence["successor_registry_generation"], expected["successor_registry_generation"])
+                self.assertEqual(evidence["successor_registry_generation"], self.registry["generation"] + 1)
                 self.assertEqual(sorted(receipt["derived_files"]), expected["derived_files"], goal["task_id"])
                 self.assertIs(expected["applied"], False)
                 self.assertEqual(receipt["mode"], "plan")
