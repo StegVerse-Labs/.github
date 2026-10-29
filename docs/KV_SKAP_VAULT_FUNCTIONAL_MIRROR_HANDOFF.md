@@ -37,3 +37,90 @@ Coordination ruled this adjacency class D (adjacent, not a duplicate) on 2026-10
 The evidence is in the request's `collision_analysis` and in MANIFEST.json `coordination_adjacency_ruling`.
 
 The collision check-in has no input for a ruling, so it still returns COORDINATE_CONVERGENCE with the three goals (see MANIFEST.json `expected_plan`). Applying the identity needs either that ruling admitted at apply time or a ruling input in the check-in. Both are owned by STEGVERSE-CANONICAL-WORK-COORDINATION-001.
+
+
+## 2026-10-29 read-only reconciliation (proposal remains unregistered)
+
+All 234 diagnostic input Git blobs were verified at
+`3d4c7c163ecc75fd41feb9d003ef61c54ef096de`; they are unchanged at observed main
+`7582e93b69548a8bd831ebd89d7dd49492281bce`. Native plan evaluated all 214 shard
+files, 120 aggregate rows and 16 omitted owner-held collision guards. Registry
+generation remains 322. The current task returns `STOP_NOT_REGISTERED`.
+The scratch-derived successor returns `COORDINATE_CONVERGENCE`, zero hard
+collisions, with these three adjacent tasks:
+
+- `TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001`
+- `SS-KV-SKAP-SOCIAL-RELEASE-001`
+- `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001`
+
+Scope digest remains
+`sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc`.
+The derived COSV is a plan only; no canonical COSV is assigned by this note.
+The native planner used its intentionally empty CI session-event ledger;
+mechanical all-shard coverage is not semantic owner approval or native apply.
+
+Recovered Coordination ruling:
+https://github.com/StegVerse-org/.github/issues/167#issuecomment-6392179558.
+It confirms CONSUMES_DEPENDENCY, not FOLD, for the protected custody adapter.
+This corrects the earlier absence of an observed ruling reference; it does not
+constitute current native admission. Registry/Coordination must bind authentic
+ruling evidence and reconcile current pins in the existing native transition,
+serialize against #3380 and successors, apply only after CONTINUE, and read back
+the admitted row, vector, scope seal and organization receipt.
+
+Consumer repair and exact-source evidence:
+https://github.com/StegVerse-Labs/continuity-vault-kit/issues/279.
+The locally prepared TVC authenticity containment patch passes 40 relevant
+tests. README and CVK handoff updates are prepared in that owner patch.
+The original TVC, StegOS, LLM-adapter and CVK owners retain their work; tests or
+reference-only receipts do not establish native custody or runtime completion.
+
+Still unobserved: admitted registration/COSV, WorkerCoordinator claim/fence,
+sovereign KV __51 write plus exact-hash readback, and a manifest-bound real-node
+finish-point ALLOW with native organization receipt. No native apply, merge,
+sovereign KV write, new authority or new machine occurred in this reconciliation.
+Session Prompt Count: 1. Cumulative Goal Prompt Count: unverified; add this one
+qualifying prompt to the existing count without resetting it.
+
+
+## 2026-10-29 continuation: reviewable repair and corrected dependencies
+
+Session Prompt Count: 2; cumulative Goal Prompt Count remains unverified and is
+not reset. Labs main `6b13c3a749b2940d6142644196a8302823c1f45a` retains all 234
+previously verified Registry input blobs unchanged (generation 322, 120 rows,
+214 shard files). The canonical task row, COSV and lifecycle state remain
+unassigned; do not project this proposed identity as an admitted task.
+
+The consumer repair is now a draft source PR:
+https://github.com/StegVerse-Labs/continuity-vault-kit/pull/280
+Head `7b55199ceb59569f5d71c8784ec4213dba631c18`; base
+`b1a66008dccad0d301a7e892e6619f47002ec26d`. All 40 selected local tests pass.
+Six new authenticity regressions are folded into the existing finish-point
+suite and its existing CI runner. Runtime, tests, README and CVK handoff are
+committed on that review branch. Hosted CI and independent review must be
+read at the exact current head; no merge or runtime authority is implied.
+
+Correction to earlier coordination plans: LLM-adapter #431 was explicitly
+closed unmerged as superseded, and Org #249 removed the organization-to-adapter
+edge at `89558cd333c311924e7f282a1ab97e113adb7a23`. Do not initialize the retired
+namespace or rebuild that route. Lane B must reconcile #430's stale #431
+admission-order/genesis references with the retained healthy-node-to-adapter-
+to-SDK path, preserving the existing evaluator and authority boundaries.
+Sources: https://github.com/StegVerse-org/LLM-adapter/pull/431#issuecomment-6391809461
+and https://github.com/StegVerse-org/.github/pull/249.
+
+New browser-node observations are reported in Labs #3402 and its paired
+CLAUDE_NODE_KV_SESSION__RECORD__01.md coordination file. They are not
+independently verified runtime completion or native KV authority. The report
+includes profile-local continuity and service-worker repair findings; route
+those to the existing Site/StegOS owners without treating a second device or
+resident process as a requirement. Its two-hop SKAP wording must be reconciled
+by Coordination with the current sealed no-intra-org-InTr predicate; this
+document does not silently change the goal or scope digest.
+
+Parallel work: Registry owner binds authentic ruling/current pins and reaches
+CONTINUE before native apply/readback; TVC owner supplies authenticated live
+custody issuance; CVK owner reviews #280; StegOS/adapter owners reconcile and
+review their retained lanes; WorkerCoordinator owns claim/fence after admission;
+the native custody owner supplies sovereign KV __51 exact-hash readback.
+Coordination-folder writes are projections only, never substitutes for __51.
