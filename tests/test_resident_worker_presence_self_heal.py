@@ -251,6 +251,61 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             self.assertEqual(result["stale_worker_reason"], "WORKER_NOT_TASK_CAPABLE")
             popen.assert_called_once()
 
+    @unittest.skipUnless(Path("/proc/self/cmdline").is_file(), "process identity is read from /proc")
+    def test_forged_worker_argv_without_recorded_start_time_is_not_signalled(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = self._stale_receipt_root(td, {"carrier_pid": os.getpid()})
+            forged = subprocess.Popen([sys.executable, str(root / repair.WORKER_RUNNER), "--root", str(root)])
+            self.addCleanup(forged.wait)
+            self.addCleanup(forged.kill)
+            (root / repair.PROCESS_RECEIPT).write_text(json.dumps({
+                "carrier_pid": os.getpid(), "worker_pid": forged.pid,
+            }), encoding="utf-8")
+            result, popen = self._supervise_stale(root)
+            self.assertIsNone(forged.poll())
+            self.assertEqual(result["failed_predicate"], "RECEIPT_RECORDS_WORKER_START_TIME")
+            popen.assert_not_called()
+
+    @unittest.skipUnless(Path("/proc/self/cmdline").is_file(), "process identity is read from /proc")
+    def test_identity_change_between_check_and_signal_is_not_signalled(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = self._stale_receipt_root(td, {"carrier_pid": os.getpid()})
+            worker = subprocess.Popen([sys.executable, str(root / repair.WORKER_RUNNER), "--root", str(root)])
+            self.addCleanup(worker.wait)
+            self.addCleanup(worker.kill)
+            ticks = repair._proc_start_ticks(worker.pid)
+            (root / repair.PROCESS_RECEIPT).write_text(json.dumps({
+                "carrier_pid": os.getpid(), "worker_pid": worker.pid, "worker_start_ticks": ticks,
+            }), encoding="utf-8")
+
+            def exits_during_check(pid):
+                # The pinned process goes away after its /proc entry was read; the PID may now be anyone's.
+                worker.kill()
+                worker.wait(timeout=5)
+                return ticks
+
+            with mock.patch.object(repair, "_proc_start_ticks", side_effect=exits_during_check), \
+                 mock.patch.object(repair.signal, "pidfd_send_signal") as send:
+                result, popen = self._supervise_stale(root)
+            self.assertEqual(result["failed_predicate"], "WORKER_PROCESS_UNCHANGED_DURING_IDENTITY_CHECK")
+            send.assert_not_called()
+            popen.assert_not_called()
+
+    def test_without_a_process_handle_nothing_is_signalled(self):
+        # Hosts without pidfd (no Linux /proc: macOS, Windows) fail closed instead of killing by PID.
+        victim = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
+        self.addCleanup(victim.wait)
+        self.addCleanup(victim.kill)
+        with tempfile.TemporaryDirectory() as td:
+            root = self._stale_receipt_root(td, {"carrier_pid": os.getpid(), "worker_pid": victim.pid})
+            with mock.patch.object(repair, "_open_process_handle", return_value=None):
+                result, popen = self._supervise_stale(root)
+        self.assertIsNone(victim.poll())
+        self.assertEqual(result["failed_predicate"], "WORKER_PROCESS_HANDLE_AVAILABLE")
+        self.assertFalse(repair._terminate_process(victim.pid, None))
+        self.assertIsNone(victim.poll())
+        popen.assert_not_called()
+
     def test_alive_but_stale_worker_is_recycled_using_existing_restart_termination(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -268,10 +323,12 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             receipt.parent.mkdir(parents=True)
             receipt.write_text(json.dumps({"carrier_pid": 111, "worker_pid": 222}) + "\n", encoding="utf-8")
             proc = mock.Mock(pid=333)
+            handle = os.open(os.devnull, os.O_RDONLY)  # stands in for the stale worker's pidfd; closed by the code
             projected = {"resident": {"present_worker_runtime_observed": True}}
             with mock.patch.dict(os.environ, {}, clear=True), \
                  mock.patch.object(repair, "_alive", side_effect=lambda pid: pid in {111, 222, 333}), \
                  mock.patch.object(repair, "project", return_value={"resident": {"worker_cycle_fresh": False}}), \
+                 mock.patch.object(repair, "_open_process_handle", return_value=handle), \
                  mock.patch.object(repair, "_worker_identity_refusal", return_value=None) as identity, \
                  mock.patch.object(repair, "_terminate_process", return_value=True) as terminate, \
                  mock.patch.object(repair.subprocess, "Popen", return_value=proc) as popen, \
@@ -288,7 +345,8 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             self.assertTrue(result["request_drain_expected_on_worker_start"])
             identity.assert_called_once()
             self.assertEqual(identity.call_args.args[0], 222)
-            terminate.assert_called_once_with(222)
+            self.assertEqual(identity.call_args.args[3], handle)
+            terminate.assert_called_once_with(222, handle)
             popen.assert_called_once()
             retained = json.loads(receipt.read_text(encoding="utf-8"))
             self.assertTrue(retained["stale_worker_recycled"])

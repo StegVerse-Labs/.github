@@ -128,6 +128,16 @@ def _alive(pid: int | None) -> bool:
         return False
 
 
+def proc_start_ticks(pid: int | None) -> int | None:
+    """Kernel start time of ``pid`` (clock ticks since boot) from /proc, or None when unreadable."""
+    try:
+        stat = Path(f"/proc/{int(pid)}/stat").read_text(encoding="utf-8")
+        # comm (field 2) may contain spaces/parentheses; fields after the last ')' are fixed.
+        return int(stat[stat.rindex(")") + 2:].split()[19])
+    except (OSError, TypeError, ValueError, IndexError):
+        return None
+
+
 def _terminate(pid: int | None, timeout: float = 2.0) -> bool:
     if not _alive(pid):
         return True
@@ -311,6 +321,10 @@ def start(runtime_root: Path, *, interval_ms: float = 10.0, worker_tick_timeout:
         "child_environment_allowlist_enforced": True,
         "authority_effect": "LOCAL_RUNTIME_SUPERVISION_ONLY",
     }
+    worker_start_ticks = proc_start_ticks(worker.pid)
+    if worker_start_ticks is not None:
+        # Lets carrier-side supervision prove this PID is still this worker before signalling it.
+        receipt["worker_start_ticks"] = worker_start_ticks
     path = runtime_root / PROCESS_RECEIPT
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
