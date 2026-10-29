@@ -1,6 +1,9 @@
 {
   "astra_class_standing_awareness_ready": false,
   "authority_effect": "NONE_DISPATCH_ONLY",
+  "carrier_hb_epoch_derived_from_clock": false,
+  "carrier_hb_epoch_forwarded": null,
+  "carrier_hb_epoch_forwarded_to": [],
   "component011_organization_custody_failure": false,
   "component011_organization_dispatch": null,
   "compute_substrate": {
@@ -46,7 +49,7 @@
     "sdk_generic_manifest_execution"
   ],
   "richard_dispatch_master_records": null,
-  "runtime_root": "/workspace/laneD/rC",
+  "runtime_root": "/workspace/p4r38/reg/L",
   "schema": "stegverse.resident-request-dispatch/v1",
   "sdk_evaluator_dispatch_master_records": null,
   "second_machine_required": false,
@@ -55,6 +58,6 @@
   ],
   "selected_request_id": "test5-a",
   "selection_scope": "EXACT_SELECTOR",
-  "source_root": "/workspace/laneD/rC",
+  "source_root": "/workspace/p4r38/reg/L",
   "state": "DISPATCH_INCOMPLETE"
 }

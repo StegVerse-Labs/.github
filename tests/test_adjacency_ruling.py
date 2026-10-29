@@ -768,14 +768,6 @@ class TransitionWithRulingTests(unittest.TestCase):
     """The real KV request through the real transition against this tree; the finish-point source is a local
     fixture repository at a pinned commit that mirrors the real test's import shape."""
 
-    def setUp(self) -> None:
-        tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(tmp.cleanup)
-        request = json.loads(KV_REQUEST.read_text())
-        request["observed_registry_generation"] = json.loads((ROOT / "data/canonical-task-registry.json").read_text())["generation"]
-        self.current_request = Path(tmp.name) / "request.json"
-        self.current_request.write_text(json.dumps(request))
-
     def fixture(self, vault_source: str) -> tuple[Path, Path]:
         root, commit = make_repo({
             "tests/test_kv_skap_vault_finish_point.py": "from runtime import kv_skap_vault as kv\n",
@@ -799,13 +791,13 @@ class TransitionWithRulingTests(unittest.TestCase):
         return root, path
 
     def test_without_a_ruling_the_kv_plan_stays_coordinate_convergence(self) -> None:
-        body = transition.run("plan", self.current_request, ROOT)
+        body = transition.run("plan", KV_REQUEST, ROOT)
         self.assertEqual(body["disposition"], "FAIL_CLOSED")
         self.assertEqual(body["failure_code"], "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE")
 
     def test_a_recomputed_ruling_lets_the_kv_plan_continue(self) -> None:
         root, path = self.fixture("from runtime.secret_field_policy import X\n")
-        body = transition.run("plan", self.current_request, ROOT, None, path, root)
+        body = transition.run("plan", KV_REQUEST, ROOT, None, path, root)
         self.assertEqual(body["disposition"], "ALLOW", body)
         self.assertTrue(body["evidence"]["collision_checkin"].startswith("CONTINUE_BY_VERIFIED_ADJACENCY_RULING"))
         self.assertEqual(body["evidence"]["successor_registry_generation"], body["evidence"]["predecessor_registry_generation"] + 1)
@@ -813,7 +805,7 @@ class TransitionWithRulingTests(unittest.TestCase):
 
     def test_the_same_ruling_fails_closed_when_the_test_reaches_the_sovereign_binding(self) -> None:
         root, path = self.fixture("from runtime import task_registry_event_sovereign_kv_binding\n")
-        body = transition.run("plan", self.current_request, ROOT, None, path, root)
+        body = transition.run("plan", KV_REQUEST, ROOT, None, path, root)
         self.assertEqual(body["disposition"], "FAIL_CLOSED")
         self.assertEqual(body["failure_code"], "ADJACENCY_CONDITION_B_NOT_HELD")
         for field in SIX:

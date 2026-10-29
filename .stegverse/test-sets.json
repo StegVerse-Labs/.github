@@ -14569,6 +14569,7 @@
    "workers/run_device_kv_skap_canonical_runtime_worker.py"
   ],
   "tests/test_ladder_conformance.py": [
+   ".github/workflows/intr-path-transfer.yml",
    "resident-runtime/ladder_conformance.py",
    "scripts/ladder_conformance.py"
   ],
