@@ -28,7 +28,7 @@
    "repo": "StegVerse-org/StegVerse-SDK"
   },
   "tvc": {
-   "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+   "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
    "kind": "git",
    "repo": "StegVerse-Labs/TVC"
   }
@@ -591,7 +591,7 @@
     "\"commit_sha\"",
     "\"registry\": \"pypi\""
    ],
-   "pin": "StegVerse-Labs/TVC@425eab54c1677e3e1c79d2837a19f1075fc53e76",
+   "pin": "StegVerse-Labs/TVC@cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
    "run_id": "gov-tvc-release-path",
    "status": "OBSERVED",
    "what": "the TV/TVC SDK v1.3.0 release path: owner ingress, resident root, clock, bare status"
@@ -641,7 +641,7 @@
     "urlopen",
     "datetime"
    ],
-   "pin": "StegVerse-Labs/TVC@425eab54c1677e3e1c79d2837a19f1075fc53e76",
+   "pin": "StegVerse-Labs/TVC@cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
    "run_id": "gov-tvc-portable-publisher",
    "status": "OBSERVED",
    "what": "the generic TV/TVC portable release publisher (candidate conforming route)"
@@ -706,18 +706,18 @@
    "outcomes": [
     {
      "disposition": "FAIL_CLOSED",
-     "failed_predicate": "CANDIDATE_RECORD_OBSERVED_ON_BASE",
-     "failure_code": "ADJACENCY_RULING_CANDIDATE_NOT_OBSERVED",
+     "failed_predicate": "CANDIDATE_DECLARES_COMPONENTS",
+     "failure_code": "ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED",
      "next_attempt": "on the next registration request event after the repair is recorded",
      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
-     "required_evidence_or_repair": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 must have an observed record at data/canonical-task-records/SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001.json on the predecessor tree",
+     "required_evidence_or_repair": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's observed record declares no targets.components, so (a) and (b) would hold vacuously; PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's owner records its components (a record change through its own Goal), or the overlap is resolved by Coordination without this input",
      "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
      "subject": "REGISTRATION_PLAN"
     }
    ],
    "pin": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab",
    "raw": "data/sv-work-items/ladder-conformance/observations/raw/gov-registration-plan-with-ruling.out",
-   "raw_sha256": "sha256:37aab709a008db9ab1efef74ab25681d4333d652c03ca1f5ecafbb7042881083",
+   "raw_sha256": "sha256:deef3ef968dbe80d16e31ffe942c7b9e98ac924737249b897f5081186d568df1",
    "run_id": "gov-registration-plan-with-ruling",
    "status": "OBSERVED",
    "what": "registration plan with the adjacency ruling and the finish-point root"
@@ -769,7 +769,7 @@
     "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
     "(?i)org_?membership|ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
    ],
-   "pin": "StegVerse-Labs/TVC@425eab54c1677e3e1c79d2837a19f1075fc53e76",
+   "pin": "StegVerse-Labs/TVC@cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
    "run_id": "gov-endpoint-org-membership",
    "status": "OBSERVED",
    "what": "Rigel's rule (no endpoint is a member of a GitHub Organization) on the GOV path: the TV/TVC release publisher writes to StegVerse-org/StegVerse-SDK through the GitHub REST API with a bearer token (write access needs an org member, collaborator or app-installation principal), and no membership refusal exists"
@@ -1115,7 +1115,7 @@
    "sha256": "sha256:97fd7b6db71b59410f80d6e8ab5a726c0279db2d4806c669b3e0b8d2823328ec"
   },
   {
-   "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+   "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
    "git_blob": "0e468077751ab01d740f17c51f324a4a13d45718",
    "path": "config/sdk_v1_3_0_release.json",
    "repo": "StegVerse-Labs/TVC",
@@ -1123,7 +1123,7 @@
    "sha256": "sha256:486c568c1dad89c2c291f0f105603bf051e8d6e71753b2a681d0e778eb54fc7e"
   },
   {
-   "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+   "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
    "git_blob": "46697bdfa9193152698b6f0fae028547683b45ac",
    "path": "tasks/sdk_v1_3_0_release_owner_ingress.py",
    "repo": "StegVerse-Labs/TVC",
@@ -1131,7 +1131,7 @@
    "sha256": "sha256:2f20b4f2a79f0e1a9f9b897075884470d7911f3a5c976e88059f14d8af4dfe4f"
   },
   {
-   "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+   "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
    "git_blob": "ee95d8d368858fb8ee03d0ae2741119d9ad36803",
    "path": "tasks/tvc_portable_github_release_publisher.py",
    "repo": "StegVerse-Labs/TVC",

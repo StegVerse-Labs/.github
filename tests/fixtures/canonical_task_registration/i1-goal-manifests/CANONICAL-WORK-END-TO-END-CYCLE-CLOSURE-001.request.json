@@ -5,7 +5,7 @@
     "data/canonical-task-records/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.json exists (sha256 8b7dd138fd6ad1cf9ad3e9e826fac391bec35599e8ad36c6520011585c397ab8); no aggregate row at gen 320; no control/task-vectors or task-vector-index.d entry: existing-identity reconcile, not a new identity"
   ],
   "issue": "StegVerse-org/.github#160 issuecomment-6353130407 I1 (GOAL_NOT_IN_CANONICAL_REGISTRY / ACTIVE_WORK_HAS_REGISTRY_ROW)",
-  "observed_registry_generation": 325,
+  "observed_registry_generation": 326,
   "registration_mode": "EXISTING_IDENTITY",
   "record": {
     "allowed_next_transitions": [
