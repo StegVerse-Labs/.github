@@ -126,3 +126,31 @@ custody issuance; CVK owner reviews #280; StegOS/adapter owners reconcile and
 review their retained lanes; WorkerCoordinator owns claim/fence after admission;
 the native custody owner supplies sovereign KV __51 exact-hash readback.
 Coordination-folder writes are projections only, never substitutes for __51.
+
+## 2026-10-29: independent public InTr readback (session prompt 5)
+
+Executed TVC evidence branch replay.sh against anonymously fetched public ledgers.
+Source heads: Labs 6b13c3a749b2940d6142644196a8302823c1f45a;
+Org 0b50df09f620304319f99de58af081aa8902c37e. Ledger commits:
+Labs b2d90fc301fe0ced4fd5d68dc0734342e59f8cea;
+Org 07307cb748e93283fbd236047f8c13cbd1d8002f.
+Four native readbacks and four end-to-end results match all eight published
+SHA256SUMS byte digests. Both Labs-to-Org and Org-to-Labs return ALLOW under both
+verifiers. This is independently executed public route evidence, not a new
+transition, private-ledger warrant, KV issuance witness, task admission, fence,
+sovereign KV __51 or vault finish-point ALLOW. No full mesh rerun is claimed.
+
+Reproducer and expected outputs:
+https://github.com/StegVerse-Labs/TVC/tree/claude/intr-readback-evidence-20261029/evidence/intr-readback-2026-10-29
+
+New adjacent custody finding is independently reported in Labs #2810 comment
+6497851220: complete-chain organization custody reader refuses a sealed test-suite
+source schema at f840271e. Existing custody owner must migrate its pinned reader
+seam consistently, preserving seal/digest/identity checks and regenerating pins;
+public route ALLOW does not repair that distinct reader failure.
+
+CVK#280 current head ab66f0eb50cd05280a14f5668ec700ea556bb560 has 45 selected tests
+and 50 successful checks from the previous verified run; still draft/unmerged.
+Claude's source review applies to parent d127e2d, with follow-up review outstanding.
+Canonical Registry remains gen322/120 with no proposed goal row. Native registration
+and COSV remain unassigned. Cumulative Goal Prompt Count remains UNVERIFIED.
