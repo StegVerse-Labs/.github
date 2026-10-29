@@ -131,7 +131,10 @@ class ExactInvocationSupersededRecordDataTests(unittest.TestCase):
 # NO_CHANGE behaviour, and keep the before-mismatch and generation-fence guards
 # exercised with payloads whose before/after match neither the live value nor a
 # stale tip. Guards are never weakened; only the pre-apply expectations moved to
-# post-apply ones.
+# post-apply ones. Test names are the base's names verbatim: the test-suite
+# ratchet fails closed (REQUIRED_VERIFICATION_SKIPPED) on any test present at the
+# base and not run at the head, so a rename is a removal; the pre-apply names are
+# kept and their bodies assert the post-apply contract, noted per test.
 RECORD_DATA = ROOT / "data" / "registry-record-data"
 STEGAPP_DATA = next(path for path in RECORD_DATA.glob("*.json")
                     if "stegapp-ephemeral-composition-ingress-vocabulary" in path.name)
@@ -187,7 +190,9 @@ class StegAppIngressVocabularyRecordDataTests(unittest.TestCase):
         self.assertEqual(edit["before"], STEGAPP_EXISTING)
         self.assertEqual(edit["after"], STEGAPP_APPLIED)
 
-    def test_applied_state_holds_on_exact_aggregate_row_and_shard(self):
+    def test_preconditions_hold_on_exact_aggregate_row_and_shard(self):
+        # spent proposal: the preconditions are the APPLIED state (the name is
+        # the base's, kept because a rename is a ratchet-counted removal)
         row, record = self.row(), self.record()
         self.assertEqual(row["coordination_state"], "PROPOSED")
         self.assertEqual(record["coordination_state"], "PROPOSED")
@@ -200,18 +205,30 @@ class StegAppIngressVocabularyRecordDataTests(unittest.TestCase):
         self.assertFalse(record["completion"]["claimed"])
         self.assertFalse(record["completion"]["validated"])
 
-    def test_spent_proposal_is_idempotent_and_writes_nothing(self):
+    def test_plan_allows_tip_plus_one_and_writes_nothing(self):
+        # spent proposal: the plan is the idempotent NO_CHANGE, not an ALLOW at
+        # tip + 1 (the name is the base's, kept because a rename is a
+        # ratchet-counted removal); nothing is written in either case
         before = (self.registry.read_bytes(), (self.shards / f"{STEGAPP_TASK}.json").read_bytes())
         report = self.run_apply(self.data, write=False)
         self.assertEqual(report["disposition"], "NO_CHANGE")
         self.assertFalse(report.get("files_changed", False))
         self.assertEqual(before, (self.registry.read_bytes(),
                                   (self.shards / f"{STEGAPP_TASK}.json").read_bytes()))
-        # a write-mode re-apply of the spent proposal changes nothing either
+
+    def test_apply_changes_only_transition_vocabulary_on_row_and_shard(self):
+        # spent proposal: a write-mode apply changes nothing at all - not the
+        # row, not the shard, not the registry generation (the name is the
+        # base's, kept because a rename is a ratchet-counted removal)
+        before = (self.registry.read_bytes(), (self.shards / f"{STEGAPP_TASK}.json").read_bytes())
         report = self.run_apply(self.data, write=True)
         self.assertEqual((report["disposition"], report["files_changed"]), ("NO_CHANGE", False))
         self.assertEqual(before, (self.registry.read_bytes(),
                                   (self.shards / f"{STEGAPP_TASK}.json").read_bytes()))
+        row, record = self.row(), self.record()
+        self.assertEqual(row["allowed_next_transitions"], STEGAPP_APPLIED)
+        self.assertEqual(record["allowed_next_transitions"], STEGAPP_APPLIED)
+        self.assertEqual(load(self.registry)["generation"], self.tip)
 
     def test_reapply_is_no_change_with_no_generation_bump(self):
         self.run_apply(self.data)
