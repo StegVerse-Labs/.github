@@ -2232,12 +2232,14 @@ unassigned; do not project this proposed identity as an admitted task.
 
 The consumer repair is now a draft source PR:
 https://github.com/StegVerse-Labs/continuity-vault-kit/pull/280
-Head `7b55199ceb59569f5d71c8784ec4213dba631c18`; base
-`b1a66008dccad0d301a7e892e6619f47002ec26d`. All 40 selected local tests pass.
+Head `d127e2dc3de1c81f99b3a6e8381541fad5e6157d`; base
+`b1a66008dccad0d301a7e892e6619f47002ec26d`. All 45 combined finish-point and E0 witness tests pass locally.
 Six new authenticity regressions are folded into the existing finish-point
-suite and its existing CI runner. Runtime, tests, README and CVK handoff are
-committed on that review branch. Hosted CI and independent review must be
-read at the exact current head; no merge or runtime authority is implied.
+suite and its existing CI runner. The initial CI run exposed obsolete E0 witness ALLOW assertions, now repaired
+to require FAIL_CLOSED without appending; the guard is unchanged.
+Runtime, tests, README and CVK handoff are
+committed on that review branch. Hosted CI at that head reports 50/50 successful check runs (run 40876524643).
+Independent review remains pending; CI success implies no merge or runtime authority.
 
 Correction to earlier coordination plans: LLM-adapter #431 was explicitly
 closed unmerged as superseded, and Org #249 removed the organization-to-adapter
