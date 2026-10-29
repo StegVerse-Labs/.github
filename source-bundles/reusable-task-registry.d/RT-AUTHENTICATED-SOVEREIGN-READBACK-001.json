@@ -1,0 +1,36 @@
+{
+  "reusable_task_id": "RT-AUTHENTICATED-SOVEREIGN-READBACK-001",
+  "name": "Authenticated Sovereign Readback Conformance",
+  "purpose": "Verify a published sovereign Organization Ledger receipt and entire chain using the existing native reader after independently fetching the designated ledger ref; read-only proof of recording integrity, never governance authorization.",
+  "trigger": "manifest-bound task requires independent verification of already-recorded Organization Ledger evidence",
+  "scope": "existing designated organization ledger ref and one expected receipt only",
+  "parameter_keys": [
+    "organization_ledger_repository",
+    "organization_ledger_ref",
+    "expected_receipt_sha256",
+    "expected_transition_id",
+    "fresh_fetch_evidence"
+  ],
+  "runner_templates": [],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal"
+  ],
+  "completion_predicates": [
+    "AUTHENTIC_FRESH_REF_FETCH_OBSERVED",
+    "NATIVE_CHAIN_AND_SOURCE_RECEIPTS_VERIFY",
+    "EXPECTED_RECEIPT_BOUND_TO_CHAIN",
+    "PREDECESSOR_CONTINUITY_VERIFIED",
+    "RECORDING_PROOF_NOT_TREATED_AS_GOVERNANCE_AUTHORIZATION"
+  ],
+  "authority_effect": "NONE_READBACK_ONLY",
+  "reuse_instructions": "Reuse resident-runtime/organization_ledger_readback.py::readback and workers/canonical_state_transition_custody.py::organization_receipt_gate. Existing .github/workflows/topology-sovereign-readback.yml is a verified read-only consumer, not a reusable scheduler. Require authentic invocation evidence; fail closed on absent/mismatched inputs. Never replay an already completed transition or append for verification. Definition is non-authorizing; invoke only through existing manifest, WorkerCoordinator and InTr admission when applicable.",
+  "existing_implementation_refs": [
+    "resident-runtime/organization_ledger_readback.py",
+    "workers/canonical_state_transition_custody.py",
+    "scripts/ecosystem_transition_topology.py",
+    ".github/workflows/topology-sovereign-readback.yml"
+  ],
+  "verified_evidence_ref": "https://github.com/StegVerse-Labs/.github/actions/runs/39734902386"
+}
