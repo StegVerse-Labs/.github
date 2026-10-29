@@ -126,17 +126,10 @@ def _load(path: Path) -> dict[str, Any]:
 
 # Popen handles for processes this interpreter spawned, keyed by pid. A child
 # that exits stays a zombie (and answers os.kill(pid, 0)) until its parent
-# reaps it, so in-process teardown must reap through the handle it kept.
+# reaps it, so in-process teardown must reap through the handle it kept. A handle
+# is only ever used to reap, and only after the signal went through the proven
+# pidfd identity path: it never stands in for the identity proof or for liveness.
 _SPAWNED: dict[int, Any] = {}
-
-
-def _reaped(pid: int | None) -> bool:
-    handle = _SPAWNED.get(pid) if isinstance(pid, int) else None
-    poll = getattr(handle, "poll", None)
-    if not callable(poll) or poll() is None:
-        return False
-    _SPAWNED.pop(pid, None)
-    return True
 
 
 def _reap(pid: int | None, timeout: float) -> bool:
@@ -154,8 +147,6 @@ def _reap(pid: int | None, timeout: float) -> bool:
 
 def _alive(pid: int | None) -> bool:
     if not isinstance(pid, int) or pid <= 0:
-        return False
-    if _reaped(pid):
         return False
     try:
         os.kill(pid, 0)
@@ -181,15 +172,6 @@ def _terminate(pid: int | None, timeout: float = 2.0) -> bool:
         os.kill(int(pid), signal.SIGTERM)
     except OSError:
         return True
-    if int(pid) in _SPAWNED:
-        if _reap(pid, timeout):
-            return True
-        try:
-            os.kill(int(pid), signal.SIGKILL)
-        except (OSError, AttributeError):
-            pass
-        _reap(pid, timeout)
-        return not _alive(pid)
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         if not _alive(pid):
@@ -433,6 +415,10 @@ def _terminate_pinned(pinned: list[tuple[str, int, int]]) -> dict[str, bool]:
             terminated[role] = identity._terminate_process(pid, handle)
         finally:
             os.close(handle)
+        if terminated[role]:
+            # The proven process exited; if this interpreter spawned it, reap it so
+            # no zombie is left answering os.kill(pid, 0).
+            _reap(pid, timeout=2.0)
     return terminated
 
 

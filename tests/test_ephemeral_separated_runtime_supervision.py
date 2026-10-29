@@ -357,13 +357,79 @@ class ReceiptPidIdentityBeforeTeardownTests(unittest.TestCase):
             self.addCleanup(lambda: [supervisor._terminate(pid) for pid in pids])
             self.assertIsInstance(spawned.get("carrier_start_ticks"), int)
             self.assertIsInstance(spawned.get("worker_start_ticks"), int)
+            handles = [supervisor._SPAWNED[pid] for pid in pids]
             result = supervisor.teardown(root)
         self.assertNotEqual(result["state"], "FAIL_CLOSED")
         self.assertTrue(result["carrier_terminated"])
         self.assertTrue(result["worker_terminated"])
-        for pid in pids:
-            _, status = os.waitpid(pid, 0)
-            self.assertEqual(os.WTERMSIG(status), signal.SIGTERM)
+        for handle in handles:  # teardown reaped them through the handles start() kept
+            self.assertEqual(handle.returncode, -signal.SIGTERM)
+
+    def test_spawned_handle_never_stands_in_for_a_reused_pid(self):
+        # The spawned child exited and was reaped elsewhere, so its PID was free to be
+        # reused by an unrelated process; the stale _SPAWNED handle must not make that
+        # PID look dead or provable, and the process at it must not be signalled.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            stale = subprocess.Popen([sys.executable, "-c", "pass"])
+            stale.wait()
+            victim = self._spawn([sys.executable, "-c", "import time; time.sleep(60)"])
+            self.addCleanup(supervisor._SPAWNED.pop, victim.pid, None)
+            supervisor._SPAWNED[victim.pid] = stale
+            self._write_receipt(root, {
+                "worker_pid": victim.pid, "worker_start_ticks": supervisor.proc_start_ticks(victim.pid),
+            })
+            for action in (supervisor.teardown, supervisor.restart):
+                with mock.patch.object(supervisor, "start") as start:
+                    result = action(root)
+                self.assertIsNone(victim.poll())
+                self._assert_refused(result, "RECEIPT_PID_RUNS_THIS_ROOT_WORKER_ENTRYPOINT")
+                start.assert_not_called()
+            self.assertIs(supervisor._SPAWNED.get(victim.pid), stale)
+
+    def test_proven_spawned_peer_is_signalled_then_reaped_without_zombie(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            spawned = supervisor.start(root)
+            pids = (spawned["carrier_pid"], spawned["worker_pid"])
+            self.addCleanup(lambda: [supervisor._terminate(pid) for pid in pids])
+            handles = {pid: supervisor._SPAWNED[pid] for pid in pids}
+            events: list[tuple[str, int]] = []
+            identity = supervisor._identity()
+            real_signal = identity._terminate_process
+
+            def signal_through_pidfd(pid, handle, *args, **kwargs):
+                events.append(("pidfd_signal", pid))
+                return real_signal(pid, handle, *args, **kwargs)
+
+            patches = [mock.patch.object(identity, "_terminate_process", side_effect=signal_through_pidfd)]
+            for pid, handle in handles.items():
+                for method in ("poll", "wait"):
+                    real = getattr(handle, method)
+                    patches.append(mock.patch.object(
+                        handle, method,
+                        side_effect=lambda *a, _pid=pid, _m=method, _real=real, **k: (
+                            events.append((_m, _pid)), _real(*a, **k))[1],
+                    ))
+            for patch in patches:
+                patch.start()
+            try:
+                result = supervisor.teardown(root)
+            finally:
+                for patch in patches:
+                    patch.stop()
+        self.assertEqual(result["state"], "TEARDOWN_COMPLETE")
+        self.assertTrue(result["no_supervised_process_residue"])
+        for pid, handle in handles.items():
+            touched = [i for i, (_kind, event_pid) in enumerate(events) if event_pid == pid]
+            # The handle is used only to reap, and only after the proven pidfd signal.
+            self.assertEqual(events[touched[0]], ("pidfd_signal", pid), events)
+            self.assertIn(("wait", pid), events)
+            self.assertEqual(handle.returncode, -signal.SIGTERM)
+            self.assertNotIn(pid, supervisor._SPAWNED)
+            with self.assertRaises(ChildProcessError):  # reaped: no zombie left
+                os.waitpid(pid, os.WNOHANG)
+            self.assertFalse(Path(f"/proc/{pid}").exists())
 
     def test_restart_still_stops_proven_processes_before_starting(self):
         with tempfile.TemporaryDirectory() as tmp:
