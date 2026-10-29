@@ -33,9 +33,9 @@
      "repo": "StegVerse-org/StegVerse-SDK"
     },
     "tvc": {
-     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @c4845bea)",
+     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     }
    },
@@ -528,9 +528,9 @@
      "repo": "StegVerse-org/StegVerse-SDK"
     },
     "tvc": {
-     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @b686a60b)",
+     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc537": {
@@ -540,21 +540,21 @@
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc540": {
-     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @b686a60b)",
+     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc541": {
-     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @b686a60b)",
+     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     },
     "tvc542": {
-     "commit": "425eab54c1677e3e1c79d2837a19f1075fc53e76",
+     "commit": "cacf7b6c56ac8ba9d3f0f386ba38806fb4901083",
      "kind": "git",
-     "ref": "StegVerse-Labs/TVC main @425eab54 (revision 17 re-pin from @b686a60b)",
+     "ref": "StegVerse-Labs/TVC main @cacf7b6c (revision 19 re-pin from @425eab54; TVC#562 7ac2d3a8, TVC#561 cacf7b6c merged)",
      "repo": "StegVerse-Labs/TVC"
     }
    },
