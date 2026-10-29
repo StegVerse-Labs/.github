@@ -2297,6 +2297,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_existing_stegapp_task_admission.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_existing_stegapp_task_admission.py"
+   ],
+   "tests": [
+    "tests/test_existing_stegapp_task_admission.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_external_framework_registry_rollout_planner.py",
    "inputs": [],
    "surfaces": [
@@ -5643,6 +5655,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_protocol_v1_conformance_fixtures.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_protocol_v1_conformance_fixtures.py"
+   ],
+   "tests": [
+    "tests/test_protocol_v1_conformance_fixtures.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_publisher_intr_materialization.py",
    "inputs": [],
    "surfaces": [
@@ -5727,6 +5751,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_ratchet_baseline_integrity.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_ratchet_baseline_integrity.py"
+   ],
+   "tests": [
+    "tests/test_ratchet_baseline_integrity.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_receipt_hb_creation_reference.py",
    "inputs": [],
    "surfaces": [
@@ -5806,6 +5842,18 @@
    ],
    "tests": [
     "tests/test_registry_collision_checkin_gate.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_registry_collision_claimed_integration_guard.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_registry_collision_claimed_integration_guard.py"
+   ],
+   "tests": [
+    "tests/test_registry_collision_claimed_integration_guard.py"
    ]
   },
   {
@@ -13512,6 +13560,10 @@
    "heartbeat_runtime/__init__.py",
    "tests/test_heartbeat_runtime.py"
   ],
+  "tests/test_existing_stegapp_task_admission.py": [
+   "schemas/canonical-task-record.schema.json",
+   "scripts/evaluate_existing_task_admission.py"
+  ],
   "tests/test_external_framework_registry_rollout_planner.py": [
    "scripts/plan_external_framework_registry_rollout.py"
   ],
@@ -15190,6 +15242,13 @@
    "control/process-worker-adapters.d/**",
    "scripts/run_heartbeat_runtime.py"
   ],
+  "tests/test_protocol_v1_conformance_fixtures.py": [
+   "org-kernel/organization-ledger/fixtures/protocol-v1-conformance/**",
+   "org-runtime/interlock-intr.json",
+   "resident-runtime/organization_manifest_ingress.py",
+   "resident-runtime/sdk_manifest_crossing.py",
+   "tests/test_organization_manifest_ingress_rule_ref.py"
+  ],
   "tests/test_publisher_intr_materialization.py": [
    "scripts/consume_publisher_intr_materialization_request.py",
    "workers/universal_intr_profiled_ingress.py"
@@ -15212,6 +15271,10 @@
   ],
   "tests/test_quantum_wallet_signature_census.py": [
    "scripts/validate_quantum_wallet_signature_census.py"
+  ],
+  "tests/test_ratchet_baseline_integrity.py": [
+   ".github/workflows/test-suite-ratchet.yml",
+   "scripts/check_test_suite_ratchet.py"
   ],
   "tests/test_receipt_hb_creation_reference.py": [
    "heartbeat_runtime/independent_oscillator.py",
@@ -15256,6 +15319,11 @@
    "scripts/check_registry_collision_checkin.py",
    "scripts/evaluate_task_registry_collision_checkin.py",
    "tests/pytest.py"
+  ],
+  "tests/test_registry_collision_claimed_integration_guard.py": [
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/evaluate_task_registry_collision_checkin.py"
   ],
   "tests/test_registry_gate_findings.py": [
    "scripts/audit_execution_substrate_resolution.py",
