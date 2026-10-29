@@ -1,11 +1,11 @@
 {
   "schema": "stegverse.registry-record-data-proposal/v1",
-  "registry_generation_base": 321,
+  "registry_generation_base": 322,
   "authority_effect": "NONE",
   "operating_mode": "E1 (Claude-lane preparation; the transition itself is deterministic and runs at E0)",
   "admission": "Prepared by Claude for the Registry owner. Claude does not admit, apply or bump the generation. Only the Registry owner's run of scripts/apply_task_record_data.py <this file> --apply --tip-ref origin/main changes Registry data (one apply = tip -> tip + 1).",
-  "note": "StegVerse-Labs/.github#3195, Option A of comment 6484539587: WORKER-TASK-RESOURCE-COST-LINKAGE-001's aggregate row diverges from its standalone record in blockers, expected_evidence_predicates and allowed_next_transitions; the record is correct. This request restores the row to the record and changes no record. It is the first of two: gen322-dependency-blocker-shape-normalization.v1.json applies after it (322 -> 323). The split exists because row_fields has no delete and every edit also runs against the standalone record, so reconciling and normalizing this row in one request cannot re-run as NO_CHANGE.",
-  "apply_before": "data/registry-record-data/gen322-dependency-blocker-shape-normalization.v1.json",
+  "note": "StegVerse-Labs/.github#3195, Option A of comment 6484539587: WORKER-TASK-RESOURCE-COST-LINKAGE-001's aggregate row diverges from its standalone record in blockers, expected_evidence_predicates and allowed_next_transitions; the record is correct. This request restores the row to the record and changes no record. It is the first of two: gen323-dependency-blocker-shape-normalization.v1.json applies after it (323 -> 324). The split exists because row_fields has no delete and every edit also runs against the standalone record, so reconciling and normalizing this row in one request cannot re-run as NO_CHANGE.",
+  "apply_before": "data/registry-record-data/gen323-dependency-blocker-shape-normalization.v1.json",
   "row_fields": [
     {
       "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
