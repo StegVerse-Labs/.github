@@ -76,12 +76,17 @@ The edge it evaluates is the canonical-task-record schema's own
 preflight fails closed until the original Registry owner adds it).
 Synthetic tests and source validation are not runtime observations.
 
-**Staged cross-owner integration:** #3306 is temporarily based on the
-review-ready [shared-policy #3304](https://github.com/StegVerse-Labs/.github/pull/3304)
-branch, rather than copying six shared-policy test repairs into admission.
-Restore #3306 to `main` only after #3304 is independently reviewed and merged
-with expected-head protection, then run new exact-head checks against that
-new main. Never treat the stacked merge preview as an authentic owner approval.
+**Restacked onto `main` (2026-10-28):** #3306 was opened against the
+[shared-policy #3304](https://github.com/StegVerse-Labs/.github/pull/3304)
+branch and merged into it (6709977c) with no review. Its three files import
+nothing from #3304, so the restack branch carries them on `main` directly
+(real merge of `main`, no rebase) with the #3304 review fixes ported
+hunk-for-hunk (INGRESS_ADMITTED edge, `allowed_next_transitions`, anchored
+`sha256:` digest) plus exact-type receipt binding, a typed refusal when the
+injected verifier raises, a deep-copied receipt for the verifier, aggregate
+`cosv_task_vector` drift refusal, and a test against the checked-in Registry
+row, shard and vector. #3304 no longer gates #3306. Never treat a merge
+preview or this preflight as an authentic owner approval.
 
 Parallel original lanes remain: Registry/COSV existing-record admission;
 WorkerCoordinator #3241 grant/fence and #3235 projection; Sandbox/StegBrowser

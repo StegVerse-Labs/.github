@@ -100,6 +100,39 @@ class BaselineIntegrityRefusalTests(unittest.TestCase):
                 self.assert_six_field_refusal(bad if isinstance(bad, str) else bad)
 
 
+class RuntimeComparisonRefusalTests(unittest.TestCase):
+    """The runtime comparison (no --base-sha) refuses a malformed benchmark in six fields; it never passes."""
+
+    def run_main(self, benchmark):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "suite"
+            target.mkdir()
+            (target / "test_ok.py").write_text("def test_ok():\n    assert True\n", encoding="utf-8")
+            path = Path(tmp) / "test-suite-baseline.json"
+            path.write_text(json.dumps(benchmark), encoding="utf-8")
+            return subprocess.run([sys.executable, str(ROOT / "scripts/check_test_suite_ratchet.py"),
+                                   "--target", str(target), "--baseline", str(path)],
+                                  cwd=tmp, capture_output=True, text=True)
+
+    def test_malformed_benchmark_is_a_six_field_refusal_not_a_traceback_or_pass(self):
+        for bad in ({"known_failing": "tests/x.py::x"}, {"known_failing": [1]},
+                    {"known_failing": [], "excluded": [{"reason": "x"}]}, []):
+            with self.subTest(bad=bad):
+                done = self.run_main(bad)
+                self.assertEqual(done.returncode, 1, done.stdout + done.stderr)
+                self.assertNotIn("Traceback", done.stderr)
+                self.assertIn("FAIL_CLOSED invalid benchmark", done.stdout)
+                refusal = json.loads(done.stdout[done.stdout.index("{\""):])
+                for key in SIX_FIELDS:
+                    self.assertTrue(refusal.get(key), key)
+
+    def test_known_failing_must_be_a_list_of_test_ids(self):
+        with self.assertRaises(ValueError):
+            ratchet.compare(set(), {"known_failing": "tests/x.py::x"})
+        with self.assertRaises(ValueError):
+            ratchet.baseline_integrity({"known_failing": {"tests/x.py::x": 1}}, {})
+
+
 class BaseCheckerTests(unittest.TestCase):
     """#3304 review finding 3: the integrity gate runs the base's checker, reading the PR's benchmark as data."""
 

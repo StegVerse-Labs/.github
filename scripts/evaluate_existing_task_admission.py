@@ -14,6 +14,7 @@ No device, clock, provider or external machine is consulted.
 """
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import re
@@ -40,6 +41,15 @@ def _hash(value: Any) -> str:
     return SHA + hashlib.sha256(json.dumps(
         value, sort_keys=True, ensure_ascii=False, separators=(",", ":"),
         allow_nan=False).encode("utf-8")).hexdigest()
+
+
+def _same(value: Any, expected: Any) -> bool:
+    """Exact type and value: a str subclass, 0 for False or 320.0 for 320 is not the authority value."""
+    return type(value) is type(expected) and value == expected
+
+
+def _str_list(value: Any) -> bool:
+    return type(value) is list and all(type(item) is str for item in value)
 
 
 def _fail(code: str, predicate: str, repair: str) -> dict[str, Any]:
@@ -74,8 +84,8 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
         if not isinstance(tasks, list):
             return _fail("CANONICAL_REGISTRY_UNREADABLE", "REGISTRY_TASK_ROWS_READABLE",
                          "complete canonical Registry task rows")
-        rows = [r for r in tasks if isinstance(r, dict) and r.get("task_id") == TASK_ID]
-        if len(rows) != 1 or not isinstance(shard, dict) or shard.get("task_id") != TASK_ID:
+        rows = [r for r in tasks if isinstance(r, dict) and _same(r.get("task_id"), TASK_ID)]
+        if len(rows) != 1 or not isinstance(shard, dict) or not _same(shard.get("task_id"), TASK_ID):
             return _fail("EXISTING_TASK_IDENTITY_NOT_UNIQUE",
                          "EXACTLY_ONE_CANONICAL_EXISTING_TASK",
                          "canonical aggregate row plus matching shard for existing task")
@@ -85,21 +95,31 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
         claims = (row.get("worker_claim"), shard.get("worker_claim"))
         if any(not isinstance(c, dict) or c.get("claim_ref") is not None
                or c.get("fence_ref") is not None or c.get("projection_only") is not True
-               or c.get("authority") not in (None, "WORKERCOORDINATOR")
+               or not (c.get("authority") is None or _same(c.get("authority"), "WORKERCOORDINATOR"))
                for c in claims):
             return _fail("UNAUTHENTICATED_WORKER_OWNERSHIP_CONFLICT",
                          "NO_SYNTHETIC_WORKER_CLAIM_OR_FENCE",
                          "reconcile original WorkerCoordinator evidence")
-        if any(row.get(k) != shard.get(k) for k in SHA_KEYS):
+        # Canonical JSON, not ==: True/1/1.0 differ, and a forged __eq__ cannot make different content agree.
+        if any(_hash(row.get(k)) != _hash(shard.get(k)) for k in SHA_KEYS):
             return _fail("AGGREGATE_SHARD_OWNER_DRIFT",
                          "EXISTING_TASK_IDENTITY_AND_SCOPE_AGREE",
                          "reconcile original Registry owner aggregate/shard without changing identity")
-        if row.get("coordination_state") != FROM_STATE or shard.get("coordination_state") != FROM_STATE:
+        if not (_same(row.get("coordination_state"), FROM_STATE)
+                and _same(shard.get("coordination_state"), FROM_STATE)):
             return _fail("EXISTING_TASK_STATE_EDGE_CHANGED",
                          "ORIGINAL_STATE_PROPOSED",
                          "use owner transition matching actual source-state edge")
         allowed = shard.get("allowed_next_transitions")
-        if not isinstance(allowed, list) or TO_STATE not in allowed:
+        # The aggregate row is a second copy of the same record: a shard that alone names
+        # INGRESS_ADMITTED is aggregate/shard drift, not an owner-listed edge.
+        if (_str_list(allowed) and _str_list(row.get("allowed_next_transitions"))
+                and _hash(allowed) != _hash(row["allowed_next_transitions"])):
+            return _fail("AGGREGATE_SHARD_OWNER_DRIFT",
+                         "EXISTING_TASK_IDENTITY_AND_SCOPE_AGREE",
+                         "reconcile aggregate and shard allowed_next_transitions")
+        if not (_str_list(allowed) and _str_list(row.get("allowed_next_transitions"))
+                and any(_same(t, TO_STATE) for t in allowed)):
             return _fail("EXISTING_TASK_EDGE_NOT_ALLOWED",
                          "INGRESS_ADMITTED_IN_ALLOWED_NEXT_TRANSITIONS",
                          "original Registry owner must list INGRESS_ADMITTED in the "
@@ -110,19 +130,25 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
         # one from a row field that is not in this schema.
         expected_vector_identity = "StegVerse-Labs/.github:task:" + TASK_ID
         if (not isinstance(vector, dict)
-                or vector.get("schema") != "stegverse.cosv-task-vector/v0.1"
-                or vector.get("identity") != expected_vector_identity
-                or vector.get("profile") != "task.v1"
-                or vector.get("level") != "task"
-                or not isinstance(vector.get("vector"), str)
-                or len(vector["vector"]) != 14
-                or not vector["vector"].isdigit()
-                or vector["vector"] != REGISTERED_PROPOSED_COSV
+                or not _same(vector.get("schema"), "stegverse.cosv-task-vector/v0.1")
+                or not _same(vector.get("identity"), expected_vector_identity)
+                or not _same(vector.get("profile"), "task.v1")
+                or not _same(vector.get("level"), "task")
+                or not _same(vector.get("vector"), REGISTERED_PROPOSED_COSV)
                 or not isinstance(vector.get("exact_metrics"), dict)
-                or vector["exact_metrics"].get("lifecycle") != "UNCLAIMED"
-                or vector.get("authority_effect") != "NONE"):
+                or not _same(vector["exact_metrics"].get("lifecycle"), "UNCLAIMED")
+                or not _same(vector.get("authority_effect"), "NONE")):
             return _fail("COSV_PROJECTION_MISMATCH", "CANONICAL_COSV_UNCHANGED",
                          "read the identity-bound original task COSV vector from current Registry")
+        # The aggregate Registry row on main DOES carry a cosv_task_vector
+        # projection. It is not the source of truth, but a projection that
+        # disagrees with the registered vector is drift, never ignored.
+        for record in (row, shard):
+            if "cosv_task_vector" in record and not _same(
+                    record["cosv_task_vector"], vector["vector"]):
+                return _fail("COSV_PROJECTION_MISMATCH", "CANONICAL_COSV_UNCHANGED",
+                             "reconcile the Registry row cosv_task_vector projection "
+                             "with the registered task vector")
         if not isinstance(owner_receipt, dict):
             return result
         expected = {
@@ -135,25 +161,33 @@ def evaluate(registry: Any, shard: Any, vector: Any, owner_receipt: Any,
             "cosv": vector["vector"],
             "claim_or_fence_minted": False,
         }
-        if any(owner_receipt.get(k) != v for k, v in expected.items()):
+        if any(not _same(owner_receipt.get(k), v) for k, v in expected.items()):
             return _fail("OWNER_DECISION_NOT_BOUND_TO_CURRENT_STATE",
                          "OWNER_DECISION_EXACT_PREDECESSOR_AND_COSV",
                          "original manifest decision bound to the current Registry row")
-        if (owner_receipt.get("disposition") != "ALLOW"
-                or not isinstance(owner_receipt.get("organization_receipt_sha256"), str)
+        if (not _same(owner_receipt.get("disposition"), "ALLOW")
+                or type(owner_receipt.get("organization_receipt_sha256")) is not str
                 or not SHA256_DIGEST.match(owner_receipt["organization_receipt_sha256"])):
             return _fail("ORIGINAL_OWNER_ALLOW_OR_LEDGER_RECEIPT_MISSING",
                          "OWNER_ALLOW_AND_SOVEREIGN_RECORDING_PRESENT",
                          "native manifest ALLOW and its original organization receipt")
         if not callable(native_receipt_verifier):
             return result
-        observed = native_receipt_verifier(owner_receipt)
+        try:
+            # The verifier is an injected trust boundary: whatever it raises
+            # (or mutates) must not escape as a crash or reach the binding.
+            observed = native_receipt_verifier(copy.deepcopy(owner_receipt))
+        except Exception as exc:  # noqa: BLE001 - fail closed on any verifier error
+            return _fail("NATIVE_RECEIPT_VERIFIER_ERROR",
+                         "NATIVE_RECEIPT_VERIFIER_COMPLETED",
+                         "native owner verifier must return a result, not raise "
+                         + type(exc).__name__)
         if (not isinstance(observed, dict)
-                or observed.get("disposition") != "ALLOW"
+                or not _same(observed.get("disposition"), "ALLOW")
                 or observed.get("original_manifest_bound") is not True
-                or observed.get("organization_receipt_sha256") !=
-                    owner_receipt["organization_receipt_sha256"]
-                or observed.get("task_id") != TASK_ID):
+                or not _same(observed.get("organization_receipt_sha256"),
+                             owner_receipt["organization_receipt_sha256"])
+                or not _same(observed.get("task_id"), TASK_ID)):
             return result
         return dict(schema=SCHEMA, disposition="ALLOW",
                     predicate="EXISTING_TASK_ORIGINAL_OWNER_EVIDENCE_VERIFIED",

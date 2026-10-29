@@ -72,7 +72,8 @@ def run_suite(target: str) -> set[str]:
 
 def load_baseline(path: Path) -> dict:
     if not path.is_file():
-        raise SystemExit(f"{GATE}: baseline {path} is missing; generate it with --write-baseline")
+        raise SystemExit(f"{GATE}: FAIL_CLOSED baseline {path} is missing; restore it from main "
+                         "(regeneration is prohibited)")
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -82,6 +83,8 @@ def excluded_tests(baseline: dict) -> set[str]:
     An exclusion is not a silent retry. It is recorded in the baseline with a
     reason, so what the gate is not watching stays visible to a reviewer.
     """
+    if not isinstance(baseline, dict):
+        raise ValueError("benchmark is not an object")
     rows = baseline.get("excluded") or []
     if not isinstance(rows, list):
         raise ValueError("excluded is not a list")
@@ -91,14 +94,24 @@ def excluded_tests(baseline: dict) -> set[str]:
     return {row["test"] for row in rows}
 
 
+def known_failures(baseline: dict) -> set[str]:
+    """The known-failing ids, each an exact non-empty str: a string or object here is not a list of tests."""
+    if not isinstance(baseline, dict):
+        raise ValueError("benchmark is not an object")
+    rows = baseline.get("known_failing") or []
+    if type(rows) is not list or any(type(row) is not str or not row for row in rows):
+        raise ValueError(f"known_failing is not a list of test ids: {rows!r}")
+    return set(rows)
+
+
 def baseline_integrity(current: dict, base: dict) -> dict:
     """A PR may shrink known failures/exclusions, never add or reclassify them.
 
     This is separate from the runtime test comparison: no PR can grant itself
     a green ratchet by editing the benchmark it is measured against.
     """
-    current_known = set(current.get("known_failing") or [])
-    base_known = set(base.get("known_failing") or [])
+    current_known = known_failures(current)
+    base_known = known_failures(base)
     current_excluded = excluded_tests(current)
     base_excluded = excluded_tests(base)
     return {
@@ -145,7 +158,7 @@ def compare(observed: set[str], baseline: dict) -> dict:
 
     An excluded test can neither fail the gate nor be reported as fixed.
     """
-    known = set(baseline.get("known_failing") or [])
+    known = known_failures(baseline)
     excluded = excluded_tests(baseline)
     return {
         "observed_failing_count": len(observed),
@@ -174,14 +187,25 @@ def main() -> int:
             return 1
         return check_baseline_against_base(args.base_sha, path)
 
-    observed = run_suite(args.target)
-
     if args.write_baseline:
         print(f"{GATE}: FAIL_CLOSED automatic baseline regeneration is prohibited; "
               "repair the actual tests and separately review any baseline reduction")
         return 1
 
-    report = compare(observed, load_baseline(path))
+    # The benchmark is validated before the suite runs: a malformed one is a six-field refusal,
+    # never a traceback and never a comparison against a misread ceiling.
+    try:
+        baseline = load_baseline(path)
+        known_failures(baseline)
+        excluded_tests(baseline)
+    except (ValueError, OSError, TypeError) as exc:
+        return _refuse(f"invalid benchmark: {exc}", "BENCHMARK_INVALID",
+                       "BENCHMARK_IS_AN_OBJECT_WITH_TEST_ID_EXCLUSION_ROWS",
+                       "known_failing is a list of test ids and every excluded row an object naming its test",
+                       str(exc))
+
+    observed = run_suite(args.target)
+    report = compare(observed, baseline)
 
     if args.findings:
         rows = [

@@ -120,7 +120,22 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
         self.assertEqual(self.verdict()["failed_predicate"],
                          "NO_SYNTHETIC_WORKER_CLAIM_OR_FENCE")
 
-    def test_actual_registered_task_shape_does_not_embed_cosv_field(self):
+    def test_aggregate_cosv_projection_must_match_registered_vector(self):
+        # data/canonical-task-registry.json rows carry cosv_task_vector (the
+        # shard schema does not); a matching projection is accepted, a
+        # drifted or mistyped one is refused.
+        for value, ok in (("10300000011000", True), ("10300000011001", False),
+                          (10300000011000, False), (None, False)):
+            with self.subTest(value=value):
+                self.row["cosv_task_vector"] = value
+                self.decision["previous_task_sha256"] = mod._hash(self.row)
+                out = self.verdict()
+                if ok:
+                    self.assertEqual(out["disposition"], "ALLOW")
+                else:
+                    self.assertEqual(out["failed_predicate"], "CANONICAL_COSV_UNCHANGED")
+
+    def test_shard_shape_does_not_embed_cosv_field(self):
         self.assertNotIn("cosv_task_vector", self.row)
         self.assertNotIn("cosv_task_vector", self.shard)
         self.assertEqual(self.verdict()["disposition"], "ALLOW")
@@ -162,6 +177,42 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
                 self.assertEqual(out["failed_predicate"],
                                  "INGRESS_ADMITTED_IN_ALLOWED_NEXT_TRANSITIONS")
 
+    def test_aggregate_cannot_disagree_with_shard_allowed_transitions(self):
+        self.row["allowed_next_transitions"] = ["REVIEW_REGISTRATION_PROPOSAL"]
+        self.decision["previous_task_sha256"] = mod._hash(self.row)
+        out = self.verdict()
+        self.assertEqual(out["disposition"], "FAIL_CLOSED")
+        self.assertEqual(out["failure_code"], "AGGREGATE_SHARD_OWNER_DRIFT")
+
+    def test_checked_in_registry_shard_and_vector_fail_closed_on_edge(self):
+        # The real main-branch records, not a fixture: the shard lists action
+        # names, not INGRESS_ADMITTED, so the preflight must refuse today even
+        # if an ALLOW-shaped receipt and verifier were supplied.
+        def load(rel):
+            return json.loads((ROOT / rel).read_text(encoding="utf-8"))
+        registry = load("data/canonical-task-registry.json")
+        shard = load("data/canonical-task-records/" + mod.TASK_ID + ".json")
+        vector = load("control/task-vectors/" + mod.TASK_ID + ".json")
+        before = copy.deepcopy((registry, shard, vector))
+        # Pin today's refusal while it holds; once the original Registry owner
+        # opens the edge (or the state moves) the refusal moves with it, and a
+        # fixture receipt bound to generation 320 can still never be ALLOW.
+        if shard.get("coordination_state") != "PROPOSED":
+            expected = "ORIGINAL_STATE_PROPOSED"
+        elif "INGRESS_ADMITTED" not in shard.get("allowed_next_transitions", []):
+            expected = "INGRESS_ADMITTED_IN_ALLOWED_NEXT_TRANSITIONS"
+        else:
+            expected = None
+        for receipt in (None, self.decision):
+            with self.subTest(receipt=bool(receipt)):
+                out = mod.evaluate(registry, shard, vector, receipt, self.native)
+                self.assertEqual(out["disposition"], "FAIL_CLOSED")
+                if expected is not None:
+                    self.assertEqual(out["failed_predicate"], expected)
+                self.assertFalse(out["state_written"])
+                self.assertFalse(out["claim_or_fence_minted"])
+        self.assertEqual(before, (registry, shard, vector))
+
     def test_digest_without_sha256_prefix_is_refused(self):
         # #3304 review finding 2: length 71 and hex tail are not enough
         for bogus in ("md5:XYZ" + "a"*64, "SHA256:" + "a"*64, "sha512:" + "a"*64,
@@ -177,11 +228,132 @@ class ExistingStegAppAdmissionTests(unittest.TestCase):
                 self.assertEqual(result["failed_predicate"],
                                  "OWNER_ALLOW_AND_SOVEREIGN_RECORDING_PRESENT")
 
+    def test_receipt_binding_is_exact_type_not_loose_equality(self):
+        class Str(str):
+            pass
+        for key, loose in (("claim_or_fence_minted", 0),
+                           ("observed_registry_generation", 320.0),
+                           ("next_registry_generation", 321.0),
+                           ("to_state", Str("INGRESS_ADMITTED")),
+                           ("task_id", Str(mod.TASK_ID)),
+                           ("disposition", Str("ALLOW"))):
+            with self.subTest(key=key):
+                fake = copy.deepcopy(self.decision)
+                fake[key] = loose
+                self.assertEqual(self.verdict(decision=fake)["disposition"],
+                                 "FAIL_CLOSED")
+        for key, loose in (("disposition", Str("ALLOW")),
+                           ("task_id", Str(mod.TASK_ID))):
+            with self.subTest(verifier_key=key):
+                answer = self.native(None)
+                answer[key] = loose
+                self.assertEqual(
+                    self.verdict(verifier=lambda _, a=answer: a)["disposition"],
+                    "FAIL_CLOSED")
+
+    def test_native_verifier_error_fails_closed_with_typed_refusal(self):
+        for exc in (RuntimeError("down"), KeyError("k"), TypeError("t"),
+                    AttributeError("a"), OSError("io")):
+            def boom(_, e=exc):
+                raise e
+            with self.subTest(exc=type(exc).__name__):
+                out = self.verdict(verifier=boom)
+                self.assertEqual(out["disposition"], "FAIL_CLOSED")
+                self.assertEqual(out["failure_code"], "NATIVE_RECEIPT_VERIFIER_ERROR")
+                self.assertFalse(out["claim_or_fence_minted"])
+                for key in ("failure_code", "failed_predicate",
+                            "required_evidence_or_repair", "retry_entrypoint",
+                            "owning_existing_goal", "next_attempt"):
+                    self.assertTrue(out.get(key), key)
+
+    def test_native_verifier_cannot_rewrite_the_bound_receipt(self):
+        forged = "sha256:" + "f"*64
+        def rewrite(receipt):
+            receipt["organization_receipt_sha256"] = forged
+            return dict(disposition="ALLOW", original_manifest_bound=True,
+                        task_id=mod.TASK_ID, organization_receipt_sha256=forged)
+        out = self.verdict(verifier=rewrite)
+        self.assertEqual(out["disposition"], "FAIL_CLOSED")
+        self.assertNotEqual(self.decision["organization_receipt_sha256"], forged)
+
     def test_owner_claim_cannot_be_minted_with_admission(self):
         forged = copy.deepcopy(self.decision)
         forged["claim_or_fence_minted"] = True
         self.assertEqual(self.verdict(decision=forged)["disposition"], "FAIL_CLOSED")
 
+
+class _Liar(str):
+    """A str subclass that equals every authority string."""
+    __hash__ = str.__hash__
+
+    def __eq__(self, other):
+        return True
+
+    def __ne__(self, other):
+        return False
+
+
+class ExactTypeAndConsistencyTests(unittest.TestCase):
+    """Values compared to authority strings are exact-type; aggregate and shard agree on the edge."""
+
+    setUp = ExistingStegAppAdmissionTests.setUp
+    verdict = ExistingStegAppAdmissionTests.verdict
+
+    def test_allowed_next_transitions_must_agree_between_row_and_shard(self):
+        self.row["allowed_next_transitions"] = ["NATIVE_ADMISSION_EVALUATION"]
+        self.decision["previous_task_sha256"] = mod._hash(self.row)
+        out = self.verdict()
+        self.assertEqual(out["disposition"], "FAIL_CLOSED")
+        # Unified with the #3306 lane: disagreement is drift, refused before the edge check.
+        self.assertEqual(out["failure_code"], "AGGREGATE_SHARD_OWNER_DRIFT")
+
+    def test_allowed_next_transitions_entries_are_exact_strings(self):
+        for allowed in ([_Liar("CLAIMED")], ["INGRESS_ADMITTED", 1]):
+            with self.subTest(allowed=allowed):
+                self.shard["allowed_next_transitions"] = allowed
+                self.row["allowed_next_transitions"] = list(allowed)
+                self.decision["previous_task_sha256"] = mod._hash(self.row)
+                self.assertEqual(self.verdict()["disposition"], "FAIL_CLOSED")
+
+    def test_receipt_bool_and_int_fields_are_exact_type(self):
+        for key, value in (("claim_or_fence_minted", 0), ("observed_registry_generation", 320.0),
+                           ("next_registry_generation", 321.0)):
+            with self.subTest(key=key):
+                fake = copy.deepcopy(self.decision)
+                fake[key] = value
+                out = self.verdict(decision=fake)
+                self.assertEqual(out["disposition"], "FAIL_CLOSED")
+                self.assertEqual(out["failed_predicate"], "OWNER_DECISION_EXACT_PREDECESSOR_AND_COSV")
+
+    def test_str_subclass_never_matches_an_authority_string(self):
+        self.shard["coordination_state"] = _Liar("CLAIMED")
+        self.assertEqual(self.verdict()["failed_predicate"], "ORIGINAL_STATE_PROPOSED")
+        self.shard["coordination_state"] = "PROPOSED"
+        fake = copy.deepcopy(self.decision)
+        fake["disposition"] = _Liar("DENY")
+        self.assertEqual(self.verdict(decision=fake)["disposition"], "FAIL_CLOSED")
+        liar = lambda _: dict(disposition=_Liar("DENY"), original_manifest_bound=True,
+                              task_id=mod.TASK_ID,
+                              organization_receipt_sha256=self.decision["organization_receipt_sha256"])
+        self.assertEqual(self.verdict(verifier=liar)["disposition"], "FAIL_CLOSED")
+        self.vector["authority_effect"] = _Liar("GRANT")
+        self.assertEqual(self.verdict()["failed_predicate"], "CANONICAL_COSV_UNCHANGED")
+
+
+class CheckedInRecordTests(unittest.TestCase):
+    """The checked-in Registry does not list INGRESS_ADMITTED yet: the preflight refuses, it never infers."""
+
+    def test_checked_in_record_refuses_until_owner_lists_the_edge(self):
+        load = lambda rel: json.loads((ROOT / rel).read_text(encoding="utf-8"))
+        registry = load("data/canonical-task-registry.json")
+        shard = load(f"data/canonical-task-records/{mod.TASK_ID}.json")
+        vector = load(f"control/task-vectors/{mod.TASK_ID}.json")
+        out = mod.evaluate(registry, shard, vector, None, None)
+        self.assertEqual(out["disposition"], "FAIL_CLOSED")
+        if "INGRESS_ADMITTED" not in shard.get("allowed_next_transitions", []):
+            self.assertEqual(out["failure_code"], "EXISTING_TASK_EDGE_NOT_ALLOWED")
+        self.assertFalse(out["state_written"])
+        self.assertFalse(out["claim_or_fence_minted"])
 
 if __name__ == "__main__":
     unittest.main()
