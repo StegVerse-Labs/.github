@@ -1,0 +1,42 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "new_sha": "590b975f312747d75cd78a1edf9f3d693109125e",
+    "old_sha": "ad5e08fc35cd2e3fc08a229d72b5797cebf3d4b8",
+    "operation": "sv_push_receipt",
+    "profile_id": "org-ledger-writer",
+    "push_receipt_sha256": "sha256:22fbf88bb4ec1ef2633cc05928c4e7468eb854bfbb6b105147e0f17a6cc0b1da",
+    "push_result_sha256": "sha256:b71da554fc327ac67c2544dc81fba54f9c3910235951e1647765727f36bbb5a7",
+    "range_id": "881901ae19e5d68dabb75c5e43efdb0316d5f3feaa19e1a13c69456096229ae6",
+    "ref": "refs/heads/p1/sdk-push-receipt-recording",
+    "repository": "StegVerse-org/StegVerse-SDK"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 574296107,
+    "frequency_hz": 100,
+    "generation": 574296107,
+    "heartbeat_id": "HB:574296107",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "observed_at": "2026-10-30T01:29:33.285946+00:00",
+  "org_transition_class": "REPO_STATE_PROPAGATION",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:22fbf88bb4ec1ef2633cc05928c4e7468eb854bfbb6b105147e0f17a6cc0b1da",
+  "previous_receipt_sha256": "sha256:ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d",
+  "receipt_sha256": "sha256:ab93a31c5bdb040e2f3c782ff45674ce20321f3b559e502c750a1f6811330ea2",
+  "repo_receipt_sha256": "sha256:defdd1ff58717e4f2ddb8f0d1ce9ed3bd8e487d70eb180fc5c328a5d374f140d",
+  "repo_transition_id": "SV_PUSH_RECEIPT_APPEND:881901ae19e5d68dabb75c5e43efdb0316d5f3feaa19e1a13c69456096229ae6",
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.repo-transition-receipt/v1",
+  "source_repository": "StegVerse-Labs/.github",
+  "source_transition_id": "SV_PUSH_RECEIPT_APPEND:881901ae19e5d68dabb75c5e43efdb0316d5f3feaa19e1a13c69456096229ae6",
+  "source_transition_sha256": "sha256:defdd1ff58717e4f2ddb8f0d1ce9ed3bd8e487d70eb180fc5c328a5d374f140d",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:45031a0bf789de908836f93b792c5fb4bbd8ca227e713d6e11c65476b5de9a4c"
+}
