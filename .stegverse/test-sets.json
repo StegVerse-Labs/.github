@@ -15141,6 +15141,7 @@
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/organization_ledger_ingest.py",
    "resident-runtime/sv_check_receipt_append.py",
+   "resident-runtime/sv_push_receipt_append.py",
    "scripts/tvc_conformance_receipt.py",
    "tests/test_sv_check_receipt_append.py"
   ],
