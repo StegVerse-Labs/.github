@@ -475,11 +475,12 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(govr["labsledger"]["commit"], "c32f04bd2e2b638da63abd4edecd8be9d6669d2d")
         adm = {i["id"]: i for i in _inputs()["declarations"][GOV]["items"]}["H-GOV-ADMISSION"]
         deps = " ".join(adm["unadmitted_dependencies"])
-        self.assertNotIn("StegVerse-Labs/.github#3358", deps)
-        # StegVerse-org/.github#167 c6513392308: SDK#567's coverage is the native StegVerse-org-ledger push receipt (not an admit)
-        self.assertIn("StegVerse-SDK#567", deps)  # kept: a push receipt is not an admit, so the dependency (and LC-GOV-07) stays
-        self.assertIn("50e8fb06ec7d72863427bd4d4b7878ccf086608d", deps)
-        self.assertIn("not an admit", deps)
+        # Coordination ruling (b) on StegVerse-org/.github#167: Labs#3358 and SDK#567 are pre-native history, not admit subjects;
+        # the one dependency is the first real native change that receives a genuine ALLOW through SV_CHANGE_ADMIT
+        self.assertEqual(len(adm["unadmitted_dependencies"]), 1)
+        self.assertTrue(deps.startswith("the first real native change that receives a genuine ALLOW through SV_CHANGE_ADMIT"))
+        self.assertIn("pre-native history", deps)
+        self.assertIn("pre-native history", adm["what"])
         self.assertEqual(govr["orgledger"]["commit"], "50e8fb06ec7d72863427bd4d4b7878ccf086608d")
         self.assertEqual(govr["orgledger"]["repo"], "StegVerse-org/.github")
         for d_ in ("ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab",
@@ -488,17 +489,30 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("not an SV_CHANGE_ADMIT record for SDK#567", adm["observed_state"])
         self.assertIn("ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d", adm["observed_state"])
         self.assertIn("a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c", adm["observed_state"])
-        self.assertEqual(adm["observed_by"], [])
+        self.assertIn("c6514887557", adm["observed_state"])
+        # LC-GOV-06 is closed by a bound, recorded FAIL_CLOSED witness (no ALLOW witness is bound)
+        self.assertEqual(adm["observed_by"], ["labs-pre-native-admit-refusal"])
+        self.assertFalse((lc.BASE / "scoped-tasks" / "LC-GOV-06.json").exists())
+        self.assertEqual(sorted(adm["required_outcomes"].values()), [["FAIL_CLOSED"]] * 4)
         obs = json.loads((cli.BASE / "observations" / (GOV + ".observations.json")).read_text())
+        wit = next(r for r in obs["runs"] if r["run_id"] == "labs-pre-native-admit-refusal")
+        self.assertEqual(wit["status"], "OBSERVED")
+        self.assertEqual(wit["pin"], "StegVerse-Labs/.github@6b13c3a749b2940d6142644196a8302823c1f45a")
+        self.assertEqual({o["subject"] for o in wit["outcomes"]}, set(adm["required_outcomes"]))
+        for o in wit["outcomes"]:
+            self.assertEqual((o["disposition"], o["failure_code"], o["failed_predicate"], o["record_mode"]),
+                             ("FAIL_CLOSED", "HISTORICAL_RECORD_NOT_ADMISSIBLE", "ADMITTED_RECORDS_ARE_NATIVE", "MIGRATED_HISTORICAL"))
+            for k in lc.om.SIX:
+                self.assertTrue(isinstance(o.get(k), str) and o[k].strip(), k)
         run = next(r for r in obs["runs"] if r["run_id"] == "labs-native-push-receipt")
         self.assertEqual(run["status"], "OBSERVED")
         self.assertEqual(run["pin"], "StegVerse-Labs/.github@c32f04bd2e2b638da63abd4edecd8be9d6669d2d")
         for pat in run["patterns"]:
             self.assertTrue([h for h in run["hits"] if h["pattern"] == pat], pat)
         task = json.loads((lc.BASE / "scoped-tasks" / "LC-GOV-07.json").read_text())
-        self.assertIn("c32f04bd", task["proposed_resolution"])
-        self.assertIn("50e8fb06", task["proposed_resolution"])
-        self.assertIn("not an SV_CHANGE_ADMIT record for SDK#567", task["proposed_resolution"])
+        self.assertIn("first real native change", task["next_attempt"])
+        self.assertIn("genuine ALLOW through SV_CHANGE_ADMIT", task["retry_point"])
+        self.assertIn("pre-native history", task["required_repair"])
         sdk = next(r for r in obs["runs"] if r["run_id"] == "org-native-sdk-push-receipt")
         self.assertEqual(sdk["status"], "OBSERVED")
         self.assertEqual(sdk["pin"], "StegVerse-org/.github@50e8fb06ec7d72863427bd4d4b7878ccf086608d")

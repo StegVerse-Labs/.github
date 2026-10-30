@@ -361,6 +361,18 @@
      "what": "the SV_CHANGE_ADMIT transition on Labs main (declared class and evaluator)"
     },
     {
+     "argv": [
+      "{python}",
+      "-c",
+      "import importlib.util, json, sys\nspec = importlib.util.spec_from_file_location(\"sv_work_items\", \"resident-runtime/sv_work_items.py\")\nwi = importlib.util.module_from_spec(spec)\nsys.modules[\"sv_work_items\"] = wi\nspec.loader.exec_module(wi)\nrows = []\nfor line in open(\"data/sv-work-items/migration/sv-changes.jsonl\", encoding=\"utf-8\"):\n    if not line.strip():\n        continue\n    c = json.loads(line)\n    out = wi.admit(wi.admission_inputs(c, c[\"base_ref\"]))\n    rows.append(dict(out, subject=\"PRE_NATIVE_ADMIT_\" + c[\"change_id\"][4:16], change_id=c[\"change_id\"], record_mode=c[\"record_mode\"], projection_pr=c[\"projection\"][\"pr\"], projection_repo=c[\"projection\"][\"repo\"]))\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n"
+     ],
+     "kind": "command",
+     "parse": "rows",
+     "root": "labsmain",
+     "run_id": "labs-pre-native-admit-refusal",
+     "what": "SV_CHANGE_ADMIT (sv_work_items.admission_inputs + admit) on Labs main over each committed MIGRATED_HISTORICAL change record in data/sv-work-items/migration/sv-changes.jsonl: is a pre-native record refused FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE (ADMITTED_RECORDS_ARE_NATIVE) with six fields? The inputs are built by the shipped admission_inputs from the committed records, not by hand; no NATIVE change exists to admit."
+    },
+    {
      "kind": "gh_pr",
      "number": 556,
      "repo": "StegVerse-org/StegVerse-SDK",

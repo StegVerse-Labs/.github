@@ -962,6 +962,74 @@
    "what": "the SV_CHANGE_ADMIT transition on Labs main (declared class and evaluator)"
   },
   {
+   "command": "{python} -c import importlib.util, json, sys\nspec = importlib.util.spec_from_file_location(\"sv_work_items\", \"resident-runtime/sv_work_items.py\")\nwi = importlib.util.module_from_spec(spec)\nsys.modules[\"sv_work_items\"] = wi\nspec.loader.exec_module(wi)\nrows = []\nfor line in open(\"data/sv-work-items/migration/sv-changes.jsonl\", encoding=\"utf-8\"):\n    if not line.strip():\n        continue\n    c = json.loads(line)\n    out = wi.admit(wi.admission_inputs(c, c[\"base_ref\"]))\n    rows.append(dict(out, subject=\"PRE_NATIVE_ADMIT_\" + c[\"change_id\"][4:16], change_id=c[\"change_id\"], record_mode=c[\"record_mode\"], projection_pr=c[\"projection\"][\"pr\"], projection_repo=c[\"projection\"][\"repo\"]))\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "change_id": "svc:1a70ad70ab1c24d11186d2049adfcfd1e0dce7662f87da4f61bdf11e55c6c103",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+     "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+     "next_attempt": "propose the NATIVE successor; this record stays history and is never admitted",
+     "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+     "projection_pr": 3225,
+     "projection_repo": "StegVerse-Labs/.github",
+     "record_mode": "MIGRATED_HISTORICAL",
+     "required_evidence_or_repair": "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+     "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+     "subject": "PRE_NATIVE_ADMIT_1a70ad70ab1c"
+    },
+    {
+     "change_id": "svc:4c217bcf70d2761371703408ea2be8861b9d31e716dfa266f15f4068dcc1c912",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+     "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+     "next_attempt": "propose the NATIVE successor; this record stays history and is never admitted",
+     "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+     "projection_pr": 3226,
+     "projection_repo": "StegVerse-Labs/.github",
+     "record_mode": "MIGRATED_HISTORICAL",
+     "required_evidence_or_repair": "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+     "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+     "subject": "PRE_NATIVE_ADMIT_4c217bcf70d2"
+    },
+    {
+     "change_id": "svc:332e03ae6fff6a8acfbec7494004a117ec91acc15937b700755fd6cb0e81fcb2",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+     "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+     "next_attempt": "propose the NATIVE successor; this record stays history and is never admitted",
+     "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+     "projection_pr": 3234,
+     "projection_repo": "StegVerse-Labs/.github",
+     "record_mode": "MIGRATED_HISTORICAL",
+     "required_evidence_or_repair": "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+     "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+     "subject": "PRE_NATIVE_ADMIT_332e03ae6fff"
+    },
+    {
+     "change_id": "svc:dd6acf613fd9001dd369cb3ef9428a9f216edec28cb05af0de9305c366281be0",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+     "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+     "next_attempt": "propose the NATIVE successor; this record stays history and is never admitted",
+     "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+     "projection_pr": null,
+     "projection_repo": "StegVerse-org/.github",
+     "record_mode": "MIGRATED_HISTORICAL",
+     "required_evidence_or_repair": "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+     "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+     "subject": "PRE_NATIVE_ADMIT_dd6acf613fd9"
+    }
+   ],
+   "pin": "StegVerse-Labs/.github@6b13c3a749b2940d6142644196a8302823c1f45a",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/labs-pre-native-admit-refusal.out",
+   "raw_sha256": "sha256:4f9b2431714fa0cadde4a89d68eb958f4a00b19821923c4a1da5304bbb2c712b",
+   "run_id": "labs-pre-native-admit-refusal",
+   "status": "OBSERVED",
+   "what": "SV_CHANGE_ADMIT (sv_work_items.admission_inputs + admit) on Labs main over each committed MIGRATED_HISTORICAL change record in data/sv-work-items/migration/sv-changes.jsonl: is a pre-native record refused FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE (ADMITTED_RECORDS_ARE_NATIVE) with six fields? The inputs are built by the shipped admission_inputs from the committed records, not by hand; no NATIVE change exists to admit."
+  },
+  {
    "baseRefName": "main",
    "headRefOid": "406774e7eddc13ab2369cc8e8d132a51f77daf21",
    "isDraft": true,
