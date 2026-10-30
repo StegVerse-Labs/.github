@@ -83,6 +83,18 @@
  },
  "manifest": ".stegverse/test-sets.json",
  "module_inputs": {
+  "tests/test_organization_ingress_authority_effect.py": [
+   "stegverse-sdk"
+  ],
+  "tests/test_organization_ingress_declared_predecessor.py": [
+   "stegverse-sdk"
+  ],
+  "tests/test_organization_ingress_payload_binding.py": [
+   "stegverse-sdk"
+  ],
+  "tests/test_organization_ingress_worker_claim.py": [
+   "stegverse-sdk"
+  ],
   "tests/test_organization_role_conformance_ingress.py": [
    "stegverse-sdk"
   ]

@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "2a3a2161dd1b4bf45584951a2583f454fce57c69a49fa20f16c3d301c7e9e8d1"
+  "spec_sha256": "b8b15eea44e46aace6031f82b524172df5481f2033a58b9c2d86e59280cc7c0f"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -5194,7 +5194,9 @@
    "always": false,
    "exclude": [],
    "id": "tests/test_organization_ingress_authority_effect.py",
-   "inputs": [],
+   "inputs": [
+    "stegverse-sdk"
+   ],
    "surfaces": [
     "tests/test_organization_ingress_authority_effect.py"
    ],
@@ -5206,7 +5208,9 @@
    "always": false,
    "exclude": [],
    "id": "tests/test_organization_ingress_declared_predecessor.py",
-   "inputs": [],
+   "inputs": [
+    "stegverse-sdk"
+   ],
    "surfaces": [
     "tests/test_organization_ingress_declared_predecessor.py"
    ],
@@ -5218,7 +5222,9 @@
    "always": false,
    "exclude": [],
    "id": "tests/test_organization_ingress_payload_binding.py",
-   "inputs": [],
+   "inputs": [
+    "stegverse-sdk"
+   ],
    "surfaces": [
     "tests/test_organization_ingress_payload_binding.py"
    ],
@@ -5230,7 +5236,9 @@
    "always": false,
    "exclude": [],
    "id": "tests/test_organization_ingress_worker_claim.py",
-   "inputs": [],
+   "inputs": [
+    "stegverse-sdk"
+   ],
    "surfaces": [
     "tests/test_organization_ingress_worker_claim.py"
    ],
