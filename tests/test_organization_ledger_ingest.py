@@ -210,7 +210,7 @@ class Admission(Refusals, unittest.TestCase):
             # The committed request is one operation at a time. While it carries an sv_push_receipt there is no
             # sealed TVC receipt in it to hold the surface against; the guard applies again when a sealed request
             # is committed.
-            self.assertEqual(request["operation"], ing.SV_PUSH)
+            self.assertIn(request["operation"], (ing.SV_PUSH, "sv_change_admit"))
             return
         receipt = request["receipt"]
         observed = receipt["consumed_source"]["observed_surface"]
@@ -230,6 +230,12 @@ class Admission(Refusals, unittest.TestCase):
             receipt = request["push_receipt"]
             self.assertIsNone(pushappend.push_payload(receipt))
             self.assertEqual(request["hb_epoch"], int(receipt["hb_epoch"]))
+            return
+        if request["operation"] == "sv_change_admit":
+            # A committed sv_change_admit request replaces the sealed one as well. Its own checks (NATIVE successor,
+            # one ledger, six-field refusals) are the sv_change_admit tests'; here it must carry the successor and
+            # an epoch that equals the successor's digits epoch.
+            self.assertEqual(str(request["hb_epoch"]), request["successor"]["hb_epoch"])
             return
         self.assertEqual(request["operation"], ing.SEALED)
         receipt = request["receipt"]
