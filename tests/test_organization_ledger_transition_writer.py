@@ -267,9 +267,9 @@ class WriterContract(unittest.TestCase):
                 self.assertEqual(message["retry_entrypoint"], ".github/workflows/organization-ledger-transition.yml")
             codes.append(message["failure_code"])
         self.assertEqual(set(codes), set(owners))
-        # All three committed operation paths (sv_check, sv_push_receipt and the append) must report the credential refusal.
-        self.assertEqual(codes.count("LEDGER_READBACK_CREDENTIAL_UNAVAILABLE"), 3)
-        self.assertEqual(len(codes), 8)
+        # All four committed operation paths (sv_check, sv_push_receipt, sv_change_admit and the append) must report the credential refusal.
+        self.assertEqual(codes.count("LEDGER_READBACK_CREDENTIAL_UNAVAILABLE"), 4)
+        self.assertEqual(len(codes), 9)
         # The old draft's closure-summary test must not bring retired execution back.
         self.assertNotIn("workflow_dispatch", text)
         self.assertNotIn("--self-close", text)
