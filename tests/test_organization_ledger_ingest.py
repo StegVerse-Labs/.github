@@ -27,12 +27,12 @@ LABS = "StegVerse-Labs/.github"
 # TVC_LABS_CONFORMANCE_RECEIPT_JSON_BEGIN/END; its seal names Labs#3317's head 006b32a0. The contract's
 # surface_paths_observed_at still records it: its surface is byte-identical to Labs main.
 TVC_LABS_RECEIPT_SHA256 = "sha256:9823142846b9a4cb98b6ef48bc2d652c9efe7be908e24fa2502eb8e397560270"
-# The committed request: TVC push run 40166845193 at StegVerse-Labs/TVC fa3e067a (TVC#551 merged) printed this
-# receipt in the same block; its seal names Labs#3359's head 97319a5e (ALLOW, 25 tests, 0 skipped).
-COMMITTED_RUN_ID = 40166845193
-COMMITTED_RECEIPT_SHA256 = "sha256:fd5dd53e42677c3e868c81271f450fbb51db4c53cccb151df727b3654e12268a"
-COMMITTED_LABS_COMMIT = "97319a5e16d1984082d0e76be650d82207f4a7da"
-COMMITTED_TVC_HEAD = "fa3e067a1b8121145bb4e3033c0cff8a88abd1df"
+# The committed request: TVC push run 40999761329 at StegVerse-Labs/TVC e9d646ad printed this receipt in the same
+# block; its seal names Labs#3434's head c6e46982 (ALLOW, 25 tests, 0 skipped).
+COMMITTED_RUN_ID = 40999761329
+COMMITTED_RECEIPT_SHA256 = "sha256:da6fdfa471ecabcb3f079321d850c55b5174da14e470f0bf781adb9ab5ecde36"
+COMMITTED_LABS_COMMIT = "c6e4698256baa6b78ab675cd5963182cf7add498"
+COMMITTED_TVC_HEAD = "e9d646ad21677737954ce0169b68c32d75b0b6c9"
 
 
 def _load(name, path):
@@ -222,7 +222,7 @@ class Admission(Refusals, unittest.TestCase):
     def test_the_committed_request_is_tvc_run_40137248073s_labs_receipt_and_is_admitted(self):
         """The committed request's TVC receipt is admitted. The method name is kept so the test-suite ratchet sees the
         same test at the head (TEST_PRESENT_AT_BASE_RUNS_AT_HEAD); the request now carries run COMMITTED_RUN_ID
-        (40166845193, TVC#551), which supersedes runs 40160000328 (TVC#546) and 40137248073 (TVC#539)."""
+        (40999761329, TVC main e9d646ad), which supersedes runs 40166845193 (TVC#551), 40160000328 (TVC#546) and 40137248073 (TVC#539)."""
         request = ing.read_request(ROOT / ing.REQUEST_PATH)
         if request["operation"] == ing.SV_PUSH:
             # A committed sv_push_receipt request replaces the sealed one (one request holds one receipt). It is
