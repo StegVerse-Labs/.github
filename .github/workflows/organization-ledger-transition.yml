@@ -22,6 +22,13 @@ name: Organization Ledger Transition
 #                        (resident-runtime/sv_push_receipt.py) as the repository receipt's
 #                        evidence, once per push range (repository, ref, old_sha, new_sha);
 #                        a second receipt for the same range is refused as a duplicate;
+#   sv_change_admit      resident-runtime/sv_change_admit_append.py records the SV_CHANGE_SUPERSEDE ->
+#                        SV_CHANGE_VERIFY -> SV_CHANGE_ADMIT outcome of the committed predecessor and
+#                        NATIVE successor stegverse.sv_change.v1 records as the repository receipt's
+#                        evidence, once per change, on the ledger of the organization that owns the
+#                        change's target repository; the push receipts and the ledger head it evaluates
+#                        against are read from the ledger, never from the request; a second request for
+#                        the same change is refused as a duplicate and confers nothing;
 #   sealed_test_receipt  a test receipt sealed by its producer's CI (TVC's
 #                        conformance receipt) is admitted against
 #                        .stegverse/organization-ledger-ingest/accepted-sealed-receipts.json
@@ -174,6 +181,23 @@ jobs:
             --hb-epoch "$HB_EPOCH" \
             --out "$RUNNER_TEMP/results/push-receipt-append.json"
 
+      - name: Record the change admission in the repository and organization ledgers (operation sv_change_admit)
+        if: env.INGEST_OPERATION == 'sv_change_admit'
+        run: |
+          set -euo pipefail
+          export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
+          export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
+          # Time is supplied in the committed request, never sampled. The push receipts and the ledger
+          # head the evaluator reads are observed from this ledger, not taken from the request. One
+          # admit per change; a second request for the same change is a duplicate and appends nothing
+          # (the step then fails with the six fields).
+          python resident-runtime/sv_change_admit_append.py append \
+            --predecessor "$RUNNER_TEMP/sv-check/predecessor.json" \
+            --successor "$RUNNER_TEMP/sv-check/successor.json" \
+            --admission "$RUNNER_TEMP/sv-check/admission.json" \
+            --hb-epoch "$HB_EPOCH" \
+            --out "$RUNNER_TEMP/results/change-admit-append.json"
+
       - name: Append the sealed test receipt to the organization ledger (operation sealed_test_receipt)
         if: env.INGEST_OPERATION == 'sealed_test_receipt'
         run: |
@@ -251,6 +275,30 @@ jobs:
             echo "### sv_push_receipt append"
             echo '```json'
             cat "$RUNNER_TEMP/results/push-receipt-readback.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Read the appended change admission back from a fresh fetch
+        if: env.INGEST_OPERATION == 'sv_change_admit'
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/readback-sv-admit.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          if [ -z "$auth_header" ]; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            exit 1
+          fi
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+            fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
+          python resident-runtime/sv_change_admit_append.py readback \
+            --location "git+$fresh#$LEDGER_REF" \
+            --result "$RUNNER_TEMP/results/change-admit-append.json" \
+            --out "$RUNNER_TEMP/results/change-admit-readback.json"
+          {
+            echo "### sv_change_admit append"
+            echo '```json'
+            cat "$RUNNER_TEMP/results/change-admit-readback.json"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
