@@ -9,6 +9,7 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -76,6 +77,9 @@ class DispatchedSppaRunTests(unittest.TestCase):
         if ledger is not None:
             kwargs.setdefault("repo_ledger_root", ledger.repo)
             kwargs.setdefault("org_ledger_root", ledger.org)
+            # The materializer's repository ledger: SPPA's CLI root never reaches aggregate's channel.
+            with mock.patch.dict(os.environ, {"STEGVERSE_REPO_LEDGER_ROOT": str(ledger.repo)}):
+                return consumer.consume(source, self.runtime, **kwargs)
         return consumer.consume(source, self.runtime, **kwargs)
 
     def test_no_committed_request_is_no_run(self):
@@ -116,7 +120,8 @@ class DispatchedSppaRunTests(unittest.TestCase):
     def test_site_1607_retro_request_records_and_reads_back(self):
         ledger = materialized_ledger(self.base)
         self.commit(resident_request(sppa_tests.fixture()))
-        result = self.run_consumer(ledger)
+        # A refusal is recorded only at a supplied epoch; without one nothing is written.
+        result = self.run_consumer(ledger, hb_epoch="4096")
         self.assertEqual(result["state"], "ATTEMPT_RECORDED")
         self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
         self.assertEqual(result["failure_code"], "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF")
@@ -127,8 +132,10 @@ class DispatchedSppaRunTests(unittest.TestCase):
             self.assertTrue(result[field], field)
         latest = json.loads((self.runtime / consumer.RECEIPT_REL).read_text(encoding="utf-8"))
         self.assertEqual(latest["organization_receipt_sha256"], result["organization_receipt_sha256"])
-        self.assertEqual(self.run_consumer(ledger), result)
+        self.assertEqual(self.run_consumer(ledger, hb_epoch="4096"), result)
 
+    # TVC issuer evidence is another repository's receipt (lead ruling 21:00Z).
+    @sppa_tests.refused_until_cross_repo_route
     def test_first_real_promotion_run_is_fail_closed_on_unauthenticated_evidence(self):
         """Under the real custody verifier no evidence receipt authenticates (SPPA correction, Q74-01)."""
         ledger = materialized_ledger(self.base)
@@ -141,6 +148,8 @@ class DispatchedSppaRunTests(unittest.TestCase):
             for field in SIX:
                 self.assertTrue(result[field], field)
 
+    # TVC issuer evidence is another repository's receipt (lead ruling 21:00Z).
+    @sppa_tests.refused_until_cross_repo_route
     def test_authenticated_promotion_run_is_fail_closed_until_a_carrier_epoch_arrives(self):
         ledger = materialized_ledger(self.base)
         self.commit(resident_request(sppa_tests.promote_request(ledger)))

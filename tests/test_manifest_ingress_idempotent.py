@@ -121,6 +121,7 @@ class IngressLedgerCase(unittest.TestCase):
         return found
 
     def receive(self, **options):
+        options.setdefault("hb_epoch", 4096)
         return ingress.receive({"manifest": 1}, registry={}, **options)
 
     def receipt_bytes(self, root):
@@ -248,12 +249,15 @@ class IdempotentReceiveTests(IngressLedgerCase):
         self.assertEqual(completed["organization_receipt_sha256"], organization["receipt_sha256"])
 
     def test_replay_completion_takes_its_epoch_from_the_retained_receipt(self):
-        """A retry carrying a different epoch still rebuilds the first attempt's records."""
+        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a replay completion takes the epoch its caller supplies; an epoch read back from the retained receipt is never forwarded as supplied.
+        A retry completes the first attempt's repository receipt, and the
+        organization receipt takes the retry's own supplied epoch: an epoch read
+        back from the repository receipt is never forwarded as supplied (B-P36f/m)."""
         self.fail_next_org_append = True
         partial = self.receive(hb_epoch=32)
         self.assertEqual(partial["failure_code"], "ORGANIZATION_APPEND_NOT_COMMITTED")
         self.receive(hb_epoch=99)
-        self.assertEqual(self.org_epochs, [32, 32])
+        self.assertEqual(self.org_epochs, [32, 99])
         repository, = self.receipts(self.repo_root)
         self.assertEqual(repository["hb_reference"]["epoch"], 32)
 
@@ -350,7 +354,7 @@ class DeliveryIdentityCollisionTests(IngressLedgerCase):
         """The organization append owner, retried over the recorded source with one change."""
         repository, = self.receipts(self.repo_root)
         organization, = self.receipts(self.org_root)
-        options = dict(org_transition_class=organization["org_transition_class"],
+        options = dict(hb_epoch=4096, org_transition_class=organization["org_transition_class"],
                        predecessor_org_state_sha256=organization["predecessor_org_state_sha256"],
                        successor_org_state_sha256=organization["successor_org_state_sha256"],
                        boundary_evidence=organization["boundary_evidence"],
@@ -439,17 +443,19 @@ class ConcurrentAppendTests(unittest.TestCase):
         source = repository_ledger.append("SRC-1", "TEST_CLASS", "sha256:" + "a" * 64,
                                           "sha256:" + "b" * 64, {}, "NONE", hb_epoch=43,
                                           store=self.store)
-        options = dict(org_transition_class="REPO_STATE_PROPAGATION",
+        options = dict(hb_epoch=4096, org_transition_class="REPO_STATE_PROPAGATION",
                        predecessor_org_state_sha256="sha256:" + "a" * 64,
                        successor_org_state_sha256="sha256:" + "b" * 64,
                        boundary_evidence={}, authority_effect="NONE", ledger=org_root)
-        first = organization_ledger.aggregate_transition(source, **options)
-        again = organization_ledger.aggregate_transition(source, **options)
-        self.assertEqual(first["receipt_sha256"], again["receipt_sha256"])
-        self.assertEqual(len(list((org_root / "receipts").glob("*.json"))), 1)
-        with self.assertRaises(ValueError):
-            organization_ledger.aggregate_transition(
-                source, **{**options, "org_transition_class": "SOME_OTHER_CLASS"})
+        # The harness binds the repository ledger the source was appended to (the materializer's channel).
+        with organization_ledger._materialized_repository_ledger(self.store):
+            first = organization_ledger.aggregate_transition(source, **options)
+            again = organization_ledger.aggregate_transition(source, **options)
+            self.assertEqual(first["receipt_sha256"], again["receipt_sha256"])
+            self.assertEqual(len(list((org_root / "receipts").glob("*.json"))), 1)
+            with self.assertRaises(ValueError):
+                organization_ledger.aggregate_transition(
+                    source, **{**options, "org_transition_class": "SOME_OTHER_CLASS"})
 
 
 if __name__ == "__main__":

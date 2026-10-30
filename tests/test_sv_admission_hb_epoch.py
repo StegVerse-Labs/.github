@@ -1,7 +1,8 @@
 """Round 5: ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH (JD-P4-3, part-decided by invariant), HB_EPOCH_MISMATCH, the
-supplied-epoch-binder-check as a verifier built-in, and the 726248a5 pin. Pure; no clock, no network."""
+supplied-epoch-binder-check as a verifier built-in, and the c9192134 pin. Pure; no clock, no network."""
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 import unittest
@@ -13,7 +14,7 @@ ROOT, U = base.ROOT, base.wi.UNKNOWN
 GOAL163 = "StegVerse-org/.github#163"
 INV = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 CID = "ASC-" + INV + "@ledger_writer"
-PIN = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
+PIN = "c91921348741cc1139553d5e4ad3d4f8f1c44fc67537eee4629c5bf63d49041d"
 HEAD = fx.LABS_BASE["ledger_head"]
 
 
@@ -74,7 +75,7 @@ class PredicateTests(unittest.TestCase):
         out = self.verify()
         self.assertEqual((out["disposition"], out["hb_epoch"], out["ledger_head"]), ("ALLOW", "1024", HEAD))
         self.assertEqual(self.verify("01024")["disposition"], "ALLOW")  # integer value
-        self.assertEqual(self.verify("2048", reseal(self.RB, hb_epoch=2048))["disposition"], "ALLOW")  # an int slot passes 726248a5
+        self.assertEqual(self.verify("2048", reseal(self.RB, hb_epoch=2048))["disposition"], "ALLOW")  # an int slot passes c9192134
 
     def test_unobserved(self):
         rb = self.RB
@@ -144,7 +145,7 @@ class PredicateTests(unittest.TestCase):
 
     def test_unknown_supplied_epoch_is_fail_closed_never_deny(self):
         """Contract invariant (narrowed): where the supplied value is the epoch source, absent, JSON null, "", "null" and the
-        UNKNOWN sentinel are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED, before 726248a5; an optional cross-check left out proceeds
+        UNKNOWN sentinel are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED, before c9192134; an optional cross-check left out proceeds
         on the sealed epoch; malformed values are DENY HB_EPOCH_MISMATCH, and so is a well-formed mismatch."""
         for name, supplied in (("JSON null", None), ("empty string", ""), ("string null", "null"), ("sentinel", U)):
             out = self.verify(supplied)
@@ -175,7 +176,7 @@ class PredicateTests(unittest.TestCase):
         for v in (U, "", "null"):
             self.assertEqual(wi.kernel.supplied_epoch_failure(v)[0], "HB_EPOCH_INVALID", v)
         self.assertEqual(wi.KERNEL_RULE_SHA256, PIN)
-        pin = wi.REQUIRED_CHECKS["checks"]["supplied-epoch-binder-check"]["predicate_pins"]["726248a5"]
+        pin = wi.REQUIRED_CHECKS["checks"]["supplied-epoch-binder-check"]["predicate_pins"]["c9192134"]
         self.assertEqual(pin["sha256"], PIN)
         self.assertIn("FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED", pin["precedence"])
         entry = next(i for i in json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())["invariants"] if i["invariant_id"] == INV)
@@ -190,9 +191,11 @@ class PredicateTests(unittest.TestCase):
             self.assertEqual(self.verify(supplied, rb=None)["failure_code"], "HB_EPOCH_SOURCE_UNOBSERVED")
 
     def test_supplied_epoch_failing_726248a5_is_deny_mismatch(self):
-        """Orchestrator ruling: the supplied side is DENY HB_EPOCH_MISMATCH; only the sealed side is FAIL_CLOSED."""
+        """Orchestrator ruling: the supplied side is DENY HB_EPOCH_MISMATCH; only the sealed side is FAIL_CLOSED.
+        Checks the current shared rule, c9192134 (function text ad8ff529), not 726248a5. The base name is kept
+        because the ratchet counts a renamed test as missing (TEST_MISSING_AT_HEAD)."""
         for supplied in ("abc", "+33", "31", "0031", "1024.0", " 1024", 1024, True, False, "unknown_not_authentically_observed"):
-            if supplied != 1024 or supplied is True:  # an int 1024 passes 726248a5 but is not ASCII text, so it is still refused
+            if supplied != 1024 or supplied is True:  # an int 1024 passes c9192134 but is not ASCII text, so it is still refused
                 self.assertIsNotNone(wi.kernel.supplied_epoch_failure(supplied), supplied)
             out = self.verify(supplied)
             self.assertEqual((out["disposition"], out["failure_code"], out["failed_predicate"]), ("DENY", "HB_EPOCH_MISMATCH", INV), supplied)
@@ -202,7 +205,7 @@ class PredicateTests(unittest.TestCase):
         # a sealed epoch of 33 does not rescue a coerced '+33'
         self.assertEqual(self.verify("+33", reseal(self.RB, hb_epoch="33"))["failure_code"], "HB_EPOCH_MISMATCH")
         self.assertEqual(self.verify("33", reseal(self.RB, hb_epoch="33"))["disposition"], "ALLOW")
-        # leading zeros: 726248a5 accepts them, so equality is by integer value
+        # leading zeros: c9192134 accepts them, so equality is by integer value
         self.assertIsNone(wi.kernel.supplied_epoch_failure("01024"))
         self.assertEqual(self.verify("01024")["disposition"], "ALLOW")
         self.assertEqual(self.verify("00033", reseal(self.RB, hb_epoch="33"))["disposition"], "ALLOW")
@@ -218,9 +221,11 @@ class PredicateTests(unittest.TestCase):
         self.assertEqual(wi.supplied_epoch_rule_sha256(src), PIN)
         self.assertEqual(wi.KERNEL_RULE_SHA256, PIN)
         self.assertEqual(wi.SUPPLIED_EPOCH_RULE_SHA256, PIN)
-        lines = src.splitlines()
-        self.assertTrue(lines[235].startswith("def supplied_epoch_failure"))  # org-kernel/kernel.py:236
-        self.assertEqual((lines[268].strip(), lines[269], lines[270][:4]), ("return None", "", "def "))  # segment = :236-269
+        # The segment is the function's ast source segment, wherever the function sits in the file.
+        node = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == "supplied_epoch_failure")
+        self.assertEqual(hashlib.sha256(ast.get_source_segment(src, node).encode()).hexdigest(), PIN)
+        # ad8ff529 is the same function's text with its trailing newline (#3282's SharedEpochValidatorTests pin).
+        self.assertTrue(hashlib.sha256((ast.get_source_segment(src, node) + "\n").encode()).hexdigest().startswith("ad8ff529"))
         tampered = src.replace('"HB_EPOCH_INVALID", "hb_epoch "', '"HB_EPOCH_INVALID", "epoch "', 1)
         self.assertNotEqual(wi.supplied_epoch_rule_sha256(tampered), PIN)
         old = wi.KERNEL_RULE_SHA256
@@ -230,10 +235,11 @@ class PredicateTests(unittest.TestCase):
         finally:
             wi.KERNEL_RULE_SHA256 = old
         row = json.loads((ROOT / "data/sv-work-items/required-checks.json").read_text())
-        pin = row["checks"]["supplied-epoch-binder-check"]["predicate_pins"]["726248a5"]
+        pin = row["checks"]["supplied-epoch-binder-check"]["predicate_pins"]["c9192134"]
         self.assertEqual((pin["sha256"], pin["path"], pin["function"]), (PIN, "org-kernel/kernel.py", "supplied_epoch_failure"))
-        blob = hashlib.sha1(b"blob %d\0" % len(src.encode()) + src.encode()).hexdigest()
-        self.assertEqual(pin["file_blob_at_fc19b532"], blob)  # kernel.py unchanged since fc19b532
+        # The superseded 726248a5 pin is kept as history, with the kernel blob and lines it was taken at.
+        self.assertEqual(pin["supersedes"]["sha256"][:8], "726248a5")
+        self.assertEqual(pin["supersedes"]["file_blob_at_fc19b532"], "ffec5d648d7fa4aead1f44f76df936a2da21bb96")
 
 
 class AdmissionTests(unittest.TestCase):

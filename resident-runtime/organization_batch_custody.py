@@ -406,6 +406,50 @@ def _verified_batch(root, digest: str) -> dict:
     return batch
 
 
+MANIFEST_RELEASE_REASONS = {"MANIFEST_RELEASE_CONDITION", "MANIFEST_RELEASE_DELTA_EXPIRY"}
+
+
+def adopt_unindexed_batch(store) -> dict | None:
+    """Index a batch a faulted release wrote but never published to BATCH_HEAD (B-P36q).
+
+    Only a batch that extends the current BATCH_HEAD (or opens the first one)
+    and ends at the current HEAD is adopted: it is exactly the batch the
+    interrupted release built, so the retry resumes it instead of refusing.
+    Run by the appender under its exclusive hold.
+    """
+    head = _get(store, org.ledger_store.HEAD_KEY)
+    if head is None:
+        return None
+    indexed = _get(store, BATCH_HEAD_KEY)
+    current = indexed.get("batch_id") if indexed else None
+    for key in sorted(store.list_prefix(BATCH_PREFIX)):
+        batch = _get(store, key)
+        if (not isinstance(batch, dict) or batch.get("batch_id") == current
+                or batch.get("previous_batch_commitment") != current
+                or batch.get("last_org_receipt_sha256") != head.get("receipt_sha256")):
+            continue
+        _verify_batch(store, batch["batch_id"])
+        store.put(BATCH_HEAD_KEY, {"organization": org.C["organization"], "batch_id": batch["batch_id"],
+                                   "last_org_receipt_sha256": batch["last_org_receipt_sha256"]})
+        return batch
+    return None
+
+
+def pending_manifest_release(store) -> dict | None:
+    """The manifest-released batch whose releasing receipt never landed, if any (B-P36q).
+
+    BATCH_HEAD names a batch closed for a manifest release condition and ends
+    at the current HEAD: the release committed and the transition that carries
+    it did not. The retry carries that batch rather than releasing again.
+    """
+    head = _get(store, org.ledger_store.HEAD_KEY)
+    _, batch = _batch_head(store)
+    if (head is None or batch is None or batch.get("closure_reason") not in MANIFEST_RELEASE_REASONS
+            or batch.get("last_org_receipt_sha256") != head.get("receipt_sha256")):
+        return None
+    return batch
+
+
 def _batch_head(root) -> tuple[str | None, dict | None]:
     store = _ledger(root)
     head = _get(store, BATCH_HEAD_KEY)
@@ -871,7 +915,17 @@ def submit_pending_released_batch(root, *, hb_epoch=None) -> dict:
     NOT_ATTEMPTED -- is recorded as an immutable submission receipt and is
     never a predicate of any transition: FAILED does not block, and a failure
     to record is reported here, not raised into the committed append.
+
+    `hb_epoch` is the epoch the caller supplies; an absent or invalid one is
+    reported as the six-field FAIL_CLOSED (HB_EPOCH_NOT_SUPPLIED when absent)
+    before the outbox is read. No clock is read to stand in for it.
     """
+    refusal = org.kernel.writer_epoch_refusal(hb_epoch, retry_entrypoint=SUBMISSION_RETRY_ENTRYPOINT
+                                              + " (hb_epoch=, or --hb-epoch)")
+    if refusal is not None:
+        return {**refusal, "submission_receipts": [], "submission_receipt": None,
+                "authority_effect": "NONE"}
+    reference = org.kernel.hb_reference(epoch=int(str(hb_epoch)))
     try:
         pending = pending_released_batches(root)
     except Exception as exc:  # noqa: BLE001 -- the committed append is never undone by this step
@@ -895,8 +949,9 @@ def submit_pending_released_batch(root, *, hb_epoch=None) -> dict:
             "governance_disposition": None,
             "submitted_after_commit": True,
             "external_machine_wait_in_transition": False,
-            "hb_reference": org.kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else org.kernel.hb_reference(),
-            "observed_at": org.datetime.now(org.timezone.utc).isoformat(),
+            "hb_reference": reference,
+            # The supplied heartbeat, not a host clock reading.
+            "observed_at": reference["heartbeat_id"],
         }
         receipt = {**body, "receipt_sha256": org.sha(body)}
         try:
@@ -1026,8 +1081,13 @@ def _oscillator():
     return independent_oscillator
 
 
-def current_heartbeat_epoch(*, now_ns: int | None = None) -> int:
-    """Present heartbeat epoch. Requires no scheduler, sampler or live process."""
+def current_heartbeat_epoch(*, now_ns: int | None = None, epoch: int | None = None) -> int:
+    """Present heartbeat epoch. Requires no scheduler, sampler or live process.
+
+    A supplied `epoch` is the present epoch: no clock is read when one is in hand.
+    """
+    if epoch is not None:
+        return int(epoch)
     osc = _oscillator()
     if now_ns is None:
         now_ns = time.time_ns()
@@ -1101,7 +1161,8 @@ def _packet_establishment(rows: list[dict]) -> dict | None:
     return record
 
 
-def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = None) -> dict:
+def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = None,
+                      epoch: int | None = None) -> dict:
     """Return open-packet accounting: count, declared establishment and expiry."""
     release_count = _manifest_release_count(parent_manifest)
     declared = _manifest_establishment(parent_manifest)
@@ -1113,7 +1174,9 @@ def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = 
             tip = head.get("receipt_sha256")
             _verified_receipt(store, tip)
             _, prior = _batch_head(store)
-            rows = _segment(store, tip, prior["last_org_receipt_sha256"] if prior else None)
+            predecessor = prior["last_org_receipt_sha256"] if prior else None
+            # A packet released at HEAD and not yet followed by a receipt is empty.
+            rows = [] if tip == predecessor else _segment(store, tip, predecessor)
     established = _packet_establishment(rows)
     if declared is not None and rows and established is None:
         raise ValueError("manifested receipt packet has no t(0) establishment record")
@@ -1123,7 +1186,7 @@ def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = 
     if established is not None:
         osc = _oscillator()
         expiry_heartbeat_id = established["expiry_heartbeat_id"]
-        expired = current_heartbeat_epoch(now_ns=now_ns) >= osc.decode_heartbeat_id(expiry_heartbeat_id)
+        expired = current_heartbeat_epoch(now_ns=now_ns, epoch=epoch) >= osc.decode_heartbeat_id(expiry_heartbeat_id)
     return {
         "receipt_count": len(rows),
         "release_count": release_count,
@@ -1135,14 +1198,15 @@ def open_packet_state(parent_manifest: dict, *, root=None, now_ns: int | None = 
 
 
 def release_satisfied_packet_before_next_transition(parent_manifest: dict, *, root=None, now_ns: int | None = None,
-                                                   custody_exclusivity_verifier=None) -> dict | None:
+                                                   custody_exclusivity_verifier=None,
+                                                   epoch: int | None = None) -> dict | None:
     """Release the satisfied packet immediately before the next receipt append.
 
     Release is authorized once, at establishment, by the governing manifest.
     Nothing decides anything here: the condition fires, it is not adjudicated.
     """
     root = _ledger(root)
-    state = open_packet_state(parent_manifest, root=root, now_ns=now_ns)
+    state = open_packet_state(parent_manifest, root=root, now_ns=now_ns, epoch=epoch)
     if not state["release_condition_satisfied"]:
         return None
     reason = "MANIFEST_RELEASE_DELTA_EXPIRY" if (
@@ -1246,7 +1310,17 @@ def main() -> None:
     parser.add_argument("--submit-pending-released-batch", action="store_true",
                         help="retry entrypoint: carry the released batch whose post-commit submission is not yet recorded")
     parser.add_argument("--root")
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="carrier-supplied heartbeat epoch for --submit-pending-released-batch, "
+                             "ASCII digits >= 32; required there, never coerced")
     args = parser.parse_args()
+    if args.submit_pending_released_batch:
+        # Checked as typed, before the organization store is resolved or opened.
+        refusal = org.kernel.writer_epoch_refusal(args.hb_epoch, retry_entrypoint=SUBMISSION_RETRY_ENTRYPOINT
+                                                  + " (hb_epoch=, or --hb-epoch)")
+        if refusal is not None:
+            print(json.dumps(refusal, sort_keys=True))
+            raise SystemExit(1)
     root = Path(args.root) if args.root else org.organization_store()
     if sum(bool(value) for value in (args.closure_reason,args.verify_batch,args.export_batch,args.export_batch_record,
                                      args.submit_released_batch,args.submit_pending_released_batch)) != 1:
@@ -1260,11 +1334,11 @@ def main() -> None:
     elif args.export_batch_record:
         result=export_batch_record(root,args.export_batch_record)
     elif args.submit_pending_released_batch:
-        result=submit_pending_released_batch(root)
+        result=submit_pending_released_batch(root,hb_epoch=args.hb_epoch)
     else:
         result=submit_released_batch(root,args.submit_released_batch)
     print(json.dumps(result, sort_keys=True))
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(org.kernel.run_writer_cli(lambda: main() or 0, retry_entrypoint="resident-runtime/organization_batch_custody.py"))

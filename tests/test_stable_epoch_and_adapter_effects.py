@@ -27,6 +27,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from tests.ledgered_org_receipt import ledgered_org_receipt
+
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = json.loads((ROOT / "org-boundary/registry/services.json").read_text(encoding="utf-8"))
 GENESIS = {"mode": "ESTABLISH_GENESIS", "node_ref": "test-node", "predecessor": None}
@@ -154,12 +156,8 @@ class AnswerEpochTests(unittest.TestCase):
 
 class MasterRecordsSubmitterTests(unittest.TestCase):
     def receipt(self, work):
-        receipt = {"schema": "stegverse.organization-transition-receipt/v1",
-                   "organization": "StegVerse-Labs",
-                   "hb_reference": kernel.hb_reference(epoch=kernel.HB_ANCHOR_EPOCH + 77),
-                   "receipt_sha256": "sha256:" + "e" * 64}
-        path = work / "receipt.json"
-        path.write_text(json.dumps(receipt))
+        # The organization ledger's own receipt at that epoch (row 4: nothing else is published).
+        path, _, self.env = ledgered_org_receipt(work, kernel.HB_ANCHOR_EPOCH + 77)
         standing = work / "standing.json"
         standing.write_text(json.dumps(GENESIS))
         return path, standing
@@ -169,7 +167,7 @@ class MasterRecordsSubmitterTests(unittest.TestCase):
                    "--predecessor-ecosystem-state-sha256", "sha256:" + "1" * 64,
                    "--successor-ecosystem-state-sha256", "sha256:" + "2" * 64,
                    "--standing", str(standing), "--mesh-root", str(mesh)]
-        return subprocess.run(command, cwd=str(ROOT), capture_output=True, text=True)
+        return subprocess.run(command, cwd=str(ROOT), capture_output=True, text=True, env=self.env)
 
     def test_the_same_receipt_submitted_twice_publishes_one_frame_at_its_epoch(self):
         work, mesh = scratch(self), scratch(self)

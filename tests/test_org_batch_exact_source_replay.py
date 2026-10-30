@@ -39,8 +39,8 @@ def test_org_exact_source_and_evidence_can_be_replayed_and_exported_offline(monk
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT",str(tmp_path))
     claim=source("CLAIM")
     work=source("WORK")
-    first=org.aggregate_transition(claim)
-    second=org.aggregate_transition(work)
+    first=org.aggregate_transition(claim, hb_epoch=4096)
+    second=org.aggregate_transition(work, hb_epoch=4096)
     batch=batches.close_batch("TASK_CLOSURE",root=tmp_path)
     prepared=batches.export_batch(tmp_path,batch["batch_id"])
     assert prepared["schema"]=="stegverse.master-records.organization-batch-submission/v1"
@@ -60,7 +60,7 @@ def test_org_exact_source_and_evidence_can_be_replayed_and_exported_offline(monk
 def test_missing_source_blocks_export_without_claiming_master_records(monkeypatch,tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT",str(tmp_path))
     value=source("CLAIM")
-    org.aggregate_transition(value)
+    org.aggregate_transition(value, hb_epoch=4096)
     batch=batches.close_batch("TASK_CLOSURE",root=tmp_path)
     sidecar=tmp_path/"source-receipts"/(org.sha(value)[7:]+".json")
     sidecar.unlink()
@@ -72,7 +72,7 @@ def test_missing_source_blocks_export_without_claiming_master_records(monkeypatc
 def test_source_tamper_and_changed_context_fail_closed(monkeypatch,tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT",str(tmp_path))
     value=source("CLAIM")
-    org.aggregate_transition(value)
+    org.aggregate_transition(value, hb_epoch=4096)
     batch=batches.close_batch("TASK_CLOSURE",root=tmp_path)
     sidecar=tmp_path/"source-receipts"/(org.sha(value)[7:]+".json")
     modified=json.loads(sidecar.read_text())
@@ -81,7 +81,7 @@ def test_source_tamper_and_changed_context_fail_closed(monkeypatch,tmp_path):
     with pytest.raises(ValueError,match="required evidence digest mismatch"):
         batches.export_batch(tmp_path,batch["batch_id"])
     with pytest.raises(ValueError,match="retained organization source receipt conflict"):
-        org.aggregate_transition(value)
+        org.aggregate_transition(value, hb_epoch=4096)
 
 
 def test_invalid_inline_required_evidence_never_appends_an_org_receipt(monkeypatch,tmp_path):
@@ -89,7 +89,7 @@ def test_invalid_inline_required_evidence_never_appends_an_org_receipt(monkeypat
     value=source("CLAIM")
     value["required_evidence_manifest"][0]["sha256"]="0"*64
     with pytest.raises(ValueError,match="required evidence digest mismatch"):
-        org.aggregate_transition(value)
+        org.aggregate_transition(value, hb_epoch=4096)
     assert not (tmp_path/"HEAD.json").exists()
     assert not list((tmp_path/"receipts").glob("*.json"))
 
@@ -97,10 +97,10 @@ def test_invalid_inline_required_evidence_never_appends_an_org_receipt(monkeypat
 def test_exact_retry_reuses_org_receipt_and_retained_source_without_new_transition(monkeypatch,tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT",str(tmp_path))
     value=source("CLAIM")
-    first=org.aggregate_transition(value)
-    other=org.aggregate_transition(source("UNRELATED"))
+    first=org.aggregate_transition(value, hb_epoch=4096)
+    other=org.aggregate_transition(source("UNRELATED"), hb_epoch=4096)
     head=json.loads((tmp_path/"HEAD.json").read_text())
-    again=org.aggregate_transition(value)
+    again=org.aggregate_transition(value, hb_epoch=4096)
     assert again==first
     assert again["receipt_sha256"]!=other["receipt_sha256"]
     assert json.loads((tmp_path/"HEAD.json").read_text())==head

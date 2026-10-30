@@ -89,6 +89,15 @@ BODY_FIELD = "body"
 PROCESSOR_SELECTION = "NO_PROCESSOR_SELECTED_AT_THE_CAPABILITY_ADDRESS"
 ROUTE_ADMISSIBILITY = "NOT_RESOLVED_AT_BOUNDARY_ROUTE_OWNER_IS_SDK"
 
+#: The kernel's supplied-epoch predicate, named the same here.
+HB_EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
+HB_EPOCH_OWNING_EXISTING_GOAL = "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+HB_EPOCH_RETRY_ENTRYPOINT = ("org-boundary/runtime/capability_ingress.py::receive: call again with "
+                             "hb_epoch= the carrier supplied (ASCII digits, value >= 32)")
+#: The kernel this module ships with: a materialized root copies boundary
+#: modules, not the kernel, so the rule is read from this module's own tree.
+KERNEL_PATH = Path(__file__).resolve().parents[2] / "org-kernel" / "kernel.py"
+
 
 def canon(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
@@ -97,6 +106,34 @@ def canon(value: Any) -> bytes:
 def _refuse(predicate: str, detail: str) -> SystemExit:
     """Refusals name their failed predicate, as every other surface here does."""
     return SystemExit(predicate + ":" + detail)
+
+
+def epoch_refusal(hb_epoch: Any) -> SystemExit | None:
+    """The six-field FAIL_CLOSED of a supplied epoch, or None when it is supplied.
+
+    The rule is the kernel's own `supplied_epoch_failure`: absent is
+    HB_EPOCH_NOT_SUPPLIED; a bool, a float, a coerced string or a value below
+    32 is HB_EPOCH_INVALID. No clock is read.
+    """
+    spec = importlib.util.spec_from_file_location("capability_ingress_kernel", KERNEL_PATH)
+    kernel = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kernel)
+    failure = kernel.supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return None
+    code, detail = failure
+    refused = _refuse(HB_EPOCH_PREDICATE, code)
+    refused.record = {
+        "disposition": "FAIL_CLOSED", "failure_code": code, "failed_predicate": HB_EPOCH_PREDICATE,
+        "detail": detail,
+        "required_evidence_or_repair": ("the caller supplies hb_epoch=: ASCII digits with value >= "
+                                        + str(kernel.HB_ANCHOR_EPOCH) + "; it is never derived from a clock"),
+        "retry_entrypoint": HB_EPOCH_RETRY_ENTRYPOINT,
+        "owning_existing_goal": HB_EPOCH_OWNING_EXISTING_GOAL,
+        "next_attempt": "call again with the supplied epoch; nothing was written",
+        "derived_from_clock": False, "consequence_committed": False,
+    }
+    return refused
 
 
 def boundary(root: Path) -> dict[str, Any]:
@@ -256,13 +293,21 @@ def declared_manifest(payload: Any) -> dict[str, Any]:
 
 
 def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *, registry: Mapping[str, Any],
-            mesh_root: Path | None = None) -> dict[str, Any]:
+            mesh_root: Path | None = None, hb_epoch: Any = None) -> dict[str, Any]:
     """Hand an addressed submission to the receiving operation the overlay binds.
 
     The operation records its own dispositions at both ledger levels; this
     returns what it reported. A refusal is returned as the operation stated it,
     not retried into an admission.
+
+    `hb_epoch` is the epoch the carrier supplied. The operation's receipts are
+    stamped with it; without one they would be stamped from the host clock, so
+    an absent or invalid epoch is refused before the operation is loaded and
+    before any store is opened. No clock is read.
     """
+    refused = epoch_refusal(hb_epoch)
+    if refused is not None:
+        raise refused
     resolved = resolve(root, service)
     # The overlay says how this capability's submission is read. A payload the
     # binding does not admit is refused before the operation is loaded, so a
@@ -273,7 +318,7 @@ def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *
     module = load_operation(resolved)
     result = module.receive(submission, registry=registry, standing=packet.get("standing"),
                             packet_id=str(packet.get("packet_id") or resolved["receiving_operation_id"]),
-                            mesh_root=mesh_root)
+                            hb_epoch=int(str(hb_epoch)), mesh_root=mesh_root)
     return {
         "capability_received": True,
         "capability_profile_id": resolved["capability_profile_id"],

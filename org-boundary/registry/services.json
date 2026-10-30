@@ -85,6 +85,7 @@
       "endpoint_adapter": "resident-runtime/remediation_endpoint.py",
       "endpoint_adapter_disposition": "ALLOW_DECLARED_ADAPTER",
       "endpoint_adapter_effect": "PURE",
+      "endpoint_adapter_hb_epoch": "CARRIER_SUPPLIED",
       "admits_processing": [
         {
           "capability": "remediation",
@@ -120,5 +121,6 @@
       "source_mutation": false
     }
   ],
-  "boundary_rule": "All organization-crossing communication is generated and consumed through StegVerse-Labs/.github using Interlock/InTr; endpoint authority remains transition-governed."
+  "boundary_rule": "All organization-crossing communication is generated and consumed through StegVerse-Labs/.github using Interlock/InTr; endpoint authority remains transition-governed.",
+  "accepts_carried_crossings": false
 }

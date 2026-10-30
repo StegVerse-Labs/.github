@@ -210,6 +210,10 @@ def receipts(root: Path):
     return sorted(path.name for path in directory.glob("*.json")) if directory.is_dir() else []
 
 
+# The carrier-supplied epoch the redelivery is received at: receive() appends nothing without one (#3290).
+FIXTURE_HB_EPOCH = 4096
+
+
 def run_redelivery(spec):
     """The positive packet received, then redelivered under the case's packet id, by the real `receive`."""
     fixture = packet()
@@ -223,7 +227,8 @@ def run_redelivery(spec):
         deliveries = []
         for packet_id in (fixture["packet_id"], spec["mutation"]["packet_id"]):
             deliveries.append(ingress.receive(copy.deepcopy(fixture["manifest"]), registry=registry,
-                                              standing=copy.deepcopy(fixture["standing"]), packet_id=packet_id))
+                                              standing=copy.deepcopy(fixture["standing"]), packet_id=packet_id,
+                                              hb_epoch=FIXTURE_HB_EPOCH))
             deliveries[-1]["receipts_after"] = {
                 "repository": receipts(Path(directory) / "repo"), "organization": receipts(Path(directory) / "org")}
     return deliveries
