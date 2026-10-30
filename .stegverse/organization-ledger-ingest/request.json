@@ -3,15 +3,15 @@
  "operation": "sv_push_receipt",
  "push_receipt": {
   "hb_epoch": "574296107",
-  "new_sha": "293d9df18e5b81e80c2702f256be81a4c09b1785",
-  "old_sha": "613de515b110b3f1bb1ac42d18e1483c33fb001b",
+  "new_sha": "590b975f312747d75cd78a1edf9f3d693109125e",
+  "old_sha": "ad5e08fc35cd2e3fc08a229d72b5797cebf3d4b8",
   "pushed_commits": [
-   "293d9df18e5b81e80c2702f256be81a4c09b1785"
+   "590b975f312747d75cd78a1edf9f3d693109125e"
   ],
   "pusher_session": "p1-sandbox-and-hcb-20261024",
-  "ref": "refs/heads/p1/sv-push-receipt-handoff-writer-op",
-  "repository": "StegVerse-Labs/.github",
-  "result_sha256": "sha256:69c0c9ee37c34a3076baf50b0762101708abbfb18c6e9c5a23232875e614e8c7",
+  "ref": "refs/heads/p1/sdk-push-receipt-recording",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "result_sha256": "sha256:b71da554fc327ac67c2544dc81fba54f9c3910235951e1647765727f36bbb5a7",
   "schema": "stegverse.sv_push_receipt.v1"
  },
  "schema": "stegverse.organization-ledger-ingest-request/v1"
