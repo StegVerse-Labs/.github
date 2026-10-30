@@ -9,7 +9,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
     "control/task-vector-index.d/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:85e13c4b7ea049ef1685deeb6e0a79f1ad042fbe2428524fcc4c2676be89d535",
     "control/task-vectors/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:68c14500f040433bc3c811b3d81a02da6ec03e90610f395058d7a38e06393244",
     "data/canonical-task-records/KV-SKAP-VAULT-FUNCTIONAL-001.json": "sha256:5284a68e2a86ecfcee82cdbffaa0b8cf615cec4daf3101481a9c09f7123d0e38",
-    "data/canonical-task-registry.json": "sha256:4627945c88f4a26ac830b5fe9df5e1f750371174dfa5e5386f728b1ae8ba392f"
+    "data/canonical-task-registry.json": "sha256:c609287328fa5774c426d0a43e657c2389e097f275ed3a8436e2eaa096e750ba"
   },
   "disposition": "ALLOW",
   "evidence": {
@@ -139,39 +139,36 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "disposition": "ALLOW",
       "finish_point": {
         "closure": {
-          ".stegverse/node-ledger/kv-ledger-head-signers.v1.json": "sha256:758d798388599171c145e3d19ca4eb155ad3d3762a3721804da65c08ebc1fe72",
-          ".stegverse/receipt-chains/skap-receipts.contract.json": "sha256:1e886348a7a84fb148bb91e84d84f99cb5101d86dfb34ab84104e54982e0bc13",
-          ".stegverse/receipt-chains/stegverse-kv-receipts.contract.json": "sha256:c9cc8913de21183fb23774cd155fee84fd6d275c003e71b2712ad44d30d89ce1",
+          ".stegverse/node-ledger/kv-ledger-head-signers.v1.json": "sha256:51179ecc2fdb4d3391bb6d1ffd90ce6738790e94241c0a291725a426415f96ab",
+          ".stegverse/receipt-chains/skap-receipts.contract.json": "sha256:e142ca48671dc18cf24fa3068dd3ffe636bdeafa97d95e92ee34b87ec1de53b7",
+          ".stegverse/receipt-chains/stegverse-kv-receipts.contract.json": "sha256:917bbbf402ada70ec0a34e3efcadfe01c30f1783b7fa8dae58bb0806d9fd73c7",
           "runtime/intr_pinned/.stegverse/transition-ledger/emit.py": "sha256:9579726de7ef915ac8cd61be1ba1c5ef6e34de4ca996504374b0dce7f7c2c9c3",
           "runtime/intr_pinned/llm_adapter/ed25519_verify.py": "sha256:ab05e39a3e40b99f02ff199b178554e0ba435c3ff387dca3f896619770770232",
-          "runtime/intr_pinned/llm_adapter/endpoint_ledger_anchor.py": "sha256:153cf121a51199da8432735d4b2fb34b396f7eaa24da80f1bf9c77040013ac09",
-          "runtime/intr_pinned/llm_adapter/endpoint_ledger_designation.py": "sha256:d69dbb22a1446a22e84b86532f93d9698ac6dc3c82e6aa6ee20882c6764049d8",
           "runtime/intr_pinned/llm_adapter/healthy_node_evaluator.py": "sha256:fdaa20053c527927067d16b011889ca84089b9750e95e291021310c669451f58",
-          "runtime/intr_pinned/llm_adapter/intr_transport_carrier.py": "sha256:9d3e69c838d7e20533f0c5a06401b018948cb12a4201889f6b41d4b497df720f",
           "runtime/intr_pinned/llm_adapter/node_existence_readback.py": "sha256:cbed113d7fe59fc0919953bad5a0a08cdaeba3ad70a4e728e572c360f6fb2fb7",
           "runtime/intr_pinned/llm_adapter/node_health_check_projection.py": "sha256:97cb7043c3f43d9aab2f0a591e1eefb94d3b127efc542d75be8d7574ce561ae8",
           "runtime/intr_pinned/llm_adapter/node_health_report_producer.py": "sha256:21249f2505505afd60eb14188ea638202f2926b207d64cfcf8c3bc5db2d9f361",
           "runtime/intr_pinned/llm_adapter/node_identity_binding_producer.py": "sha256:ab578c921c6de5f50b9ecca50a71645e10582a051d2dd3417faa62d0dfdec01a",
           "runtime/intr_pinned/llm_adapter/node_receipt_common.py": "sha256:7e73b65b649c7238aa6ae47409282b2fb729157de083c093fe595611966e43c7",
-          "runtime/intr_pinned/llm_adapter/org_ledger_location.py": "sha256:b51e6a8bd39ba6fd83044222a3858a2cb0c437020e3e9abbe97c4494d41f2681",
           "runtime/intr_pinned/llm_adapter/supplied_epoch.py": "sha256:be91daad3d5557f810872731c3ea8cc36e1f13af569e1b7634f487fd36f44534",
-          "runtime/kv_interlock_endpoint.py": "sha256:4cc603809df54e8a74c63ff6d3a9976294eb9e05524997a7ec28a8e2dac7a43e",
-          "runtime/kv_receipt_ledgers.py": "sha256:835de455b3f5ecd58627db71d822aa44b300e81a49f03f36dec4b3dd290ce72b",
-          "runtime/kv_skap_layer2.py": "sha256:1a2a83ada55d65a7ee9f758c91fa6a74227dbdb2eaaf05f56bbc80762ae3e8d7",
-          "runtime/kv_skap_vault.py": "sha256:9dcb4c76fc51c433f7a4dc7e2ba91907df37f031279b140d776c2c00e02b3e91",
+          "runtime/kv_interlock_endpoint.py": "sha256:2f36f972b2a455efe1a4be2549f72f92923d4d228b29f52a7a3b97dfddc210e2",
+          "runtime/kv_receipt_ledgers.py": "sha256:05dddaeaec3ff9be24bcac35b7c4ec71149843f07a2142ce13819eb123ce7b5f",
+          "runtime/kv_skap_layer2.py": "sha256:174bd46a0f8f6cef852727c5cdf2e2fb1151c91d49f594f6680bc786eba94281",
+          "runtime/kv_skap_vault.py": "sha256:03638afaef6d188ffc149b923bbfaa63848fb9947bddb116b8d780ca37ad7ea9",
           "runtime/kv_storage_provider_adapter.py": "sha256:d6ab2d2395e045d703787917388cf9656261424e1f1ae78cfc36c4b41b08e1ee",
+          "runtime/org_crossing_reader.py": "sha256:3fca334e4d312da17837faffa3afc3a5b0ea8f510536e4f1beafc017ddf48876",
           "runtime/secret_field_policy.py": "sha256:c6fb0a9a5fe4083c1c7b7f0b28f6a4bf70885a581a39f533af3faeacca4e4dbc",
           "tests/fixtures/intr_pinned_test_only/ed25519_test_signer.py": "sha256:3173bfcfca33129cd31942783b9e3e4c9380022f308f2fc31ccdda3dc2f6fe52",
-          "tests/kv_two_layer_e0.py": "sha256:d011bb451e04e9cee2331fc39135255e1d0179091b94e8243b00e5ef131c9c7e",
-          "tests/test_kv_skap_vault_finish_point.py": "sha256:91a38b715cd7c5cf7ad905b6e5b6d4c52f795ab263e877e05fa461215048363c"
+          "tests/kv_two_layer_e0.py": "sha256:8d0caeec0127d0df85fb6bb5031f3f7fdc531afa99fe1e6df5be1ddd2896aaf5",
+          "tests/test_kv_skap_vault_finish_point.py": "sha256:9c0aae625054b754577a7287d783769416268bd1f618197b56708e34554fc126"
         },
-        "closure_digest": "sha256:2f12310e95969ac529ba2d9ba8d1f8fed4f8c7b161ae54be60dafeee360146fe",
+        "closure_digest": "sha256:ec388f7a49547fbac838fb97163a96dd1f9463f5ec1cfcbc3bf0272888b1ff3a",
         "finish_test_runners": [],
         "hashed_pin_data_paths": [
           "runtime/kv_storage_provider_adapter.py"
         ],
         "repository": "StegVerse-Labs/continuity-vault-kit",
-        "source_commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+        "source_commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
         "stub_contexts_disabled_by": [],
         "stub_preload_sources": [],
         "stub_seeded_contexts": {},
@@ -195,7 +192,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
         }
       ],
       "ruled_by": "Coordination (STEGVERSE-CANONICAL-WORK-COORDINATION-001), relayed to Lane D 2026-10-23; ruling record ref UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
-      "ruling_digest": "sha256:72cd84f4a7d0b1c909c679222bd3db41c011b62b37caf695ce37e82f334697d6",
+      "ruling_digest": "sha256:7d09725e19f45ca6fdd005d7ccb25f841d7148ee2b6596c6e3fbcc8744855961",
       "schema": "stegverse.adjacency-ruling-verification/v1",
       "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001"
     },
@@ -206,7 +203,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "proposed_cosv_task_vector": null,
       "proposed_task_id_matches": true
     },
-    "collision_checkin": "CONTINUE_BY_VERIFIED_ADJACENCY_RULING (scripts/check_registry_collision_checkin.py COORDINATE_CONVERGENCE over ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] cleared by scripts/adjacency_ruling.py; ruling sha256:72cd84f4a7d0b1c909c679222bd3db41c011b62b37caf695ce37e82f334697d6, conditions a/b/c recomputed)",
+    "collision_checkin": "CONTINUE_BY_VERIFIED_ADJACENCY_RULING (scripts/check_registry_collision_checkin.py COORDINATE_CONVERGENCE over ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] cleared by scripts/adjacency_ruling.py; ruling sha256:7d09725e19f45ca6fdd005d7ccb25f841d7148ee2b6596c6e3fbcc8744855961, conditions a/b/c recomputed)",
     "cosv_derivation": "scripts/cosv.py encode_task(exact_metrics)",
     "cosv_task_vector": "10800000110000",
     "finish_point": {
@@ -216,12 +213,12 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_skap_vault finish-point"
     },
     "lowest_supported_mode": "E0",
-    "predecessor_registry_generation": 321,
-    "predecessor_registry_sha256": "sha256:a8fc5380e3c499e46c0b5e2eeb850ac72261bf52dece3df118451b793f0055c7",
+    "predecessor_registry_generation": 326,
+    "predecessor_registry_sha256": "sha256:f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271",
     "registration_mode": "NEW_IDENTITY",
     "row_equals_record": true,
     "scope_digest": "sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc",
-    "successor_registry_generation": 322,
+    "successor_registry_generation": 327,
     "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
     "workercoordinator_claim_request": {
       "allocator_remains_claim_authority": true,
@@ -230,7 +227,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
       "claim_ref": null,
       "consumer_entrypoint": "scripts/consume_org_claim_allocator_request.py",
       "fence_ref": null,
-      "registry_generation": 322,
+      "registry_generation": 327,
       "registry_row_sha256": "sha256:4cf82af200a03b045a14c3406334e010e55a8de90f2054a51c76c91cb65645ec",
       "request_grants_claim_authority": false,
       "requested_of": "WORKERCOORDINATOR",
@@ -245,7 +242,7 @@ $ {python} scripts/canonical_task_registration_transition.py plan --request test
   "organization_ledger_appended": false,
   "organization_ledger_entrypoint": ".stegverse/transition-ledger/emit.py via .github/workflows/organization-ledger-transition.yml",
   "request_id": "lane-d-kv-skap-vault-functional-2026-10-23",
-  "request_sha256": "sha256:57c1093b7daf06b899accdd7d68512ade1cdbf48bff9361f68a9f763b724dee8",
+  "request_sha256": "sha256:0b7147949ddcd8ce370f7ee31e476eca01f6f46f2bd8fe5f4ed6d6c8ada51d83",
   "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
   "transition": "CANONICAL_TASK_REGISTRATION",
   "workercoordinator_claim_or_fence_minted": false

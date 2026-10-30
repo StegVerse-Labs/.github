@@ -46,11 +46,27 @@ A refusal is a sealed six-field FAIL_CLOSED result (`stegverse.sv-push-receipt-r
 - `PUSH_NOT_OBSERVED` (ref did not move, ref unreadable, old sha absent, commits not listable)
 - `PUSH_NOT_FAST_FORWARD`
 
-## Appending is not this component's job
+## Appending: the `sv_push_receipt` writer operation
 
-A receipt becomes a ledger receipt only when the **org-ledger writer transition (StegVerse-Labs/.github#3255)**
-appends it to `refs/stegverse/organization-ledger` under the shared lock. The producer never appends, never
-dispatches the writer, and never touches that ref. The tests assert this.
+The producer never appends, never dispatches the writer, and never touches `refs/stegverse/organization-ledger`.
+A receipt becomes a ledger receipt through the org-ledger writer's `sv_push_receipt` operation
+(`resident-runtime/sv_push_receipt_append.py`, declared in `.stegverse/organization-ledger-ingest/operations.json`;
+landed in Labs#3424, merge `613de515`). The operation is manifest-directed and push-time only:
+
+1. The pushing session emits the receipt as above and commits it as `.stegverse/organization-ledger-ingest/request.json`:
+   `{"schema": "stegverse.organization-ledger-ingest-request/v1", "operation": "sv_push_receipt", "push_receipt": {<the emitted receipt, unaltered>}, "hb_epoch": <integer, the receipt's own hb_epoch>}`.
+   The receipt describes a push that already happened, so the request is committed in a later push than the one it records.
+2. A push to `main` that changes that file runs `.github/workflows/organization-ledger-transition.yml`. There is no
+   `workflow_dispatch`, no schedule and no pull_request trigger. The writer admits the receipt (it must pass this producer's
+   own `receipt_problem`), appends a repository receipt whose `$.evidence` is the push receipt and an organization receipt
+   that names it, pushes the ref fast-forward only, and reads both back from a fresh fetch.
+3. **One receipt per push range** `(repository, ref, old_sha, new_sha)`. The transition id is `SV_PUSH_RECEIPT_APPEND:<sha256 of the range>`,
+   so a second receipt for a range the ledger already holds, byte-identical or not, is a six-field FAIL_CLOSED
+   `SV_PUSH_RECEIPT_RANGE_ALREADY_RECORDED` and appends nothing. That refusal is the steady state for a re-sent request, not a defect.
+4. Other refusals, all six-field and all before any write: `LEDGER_EVIDENCE_NOT_A_PUSH_RECEIPT`, `SV_PUSH_RECEIPT_MALFORMED`,
+   `HB_EPOCH_SOURCE_UNOBSERVED`, `HB_EPOCH_MISMATCH` (the request epoch must equal the receipt's `hb_epoch`; time is supplied, never read).
+
+The writer records which range the session declared. It does not cross-check the receipt's range against the pushing run's own push event.
 
 ## Consumer (TVC#519)
 
@@ -71,4 +87,5 @@ Push receipts are an additional, preferred source. The P4 writer-evidence path s
 ## Open
 
 - No reusable-evidence component contract entry yet: RTC-014 is still on draft #3266, and the next id is unassigned.
-- No live receipts exist yet. The first ones come from the first pushes made with this producer after it lands.
+- Past ranges stay unreceipted by design. Receipts exist only for pushes made with this producer after the `sv_push_receipt` operation landed;
+  `refs/stegverse/organization-ledger` is the place to read them.

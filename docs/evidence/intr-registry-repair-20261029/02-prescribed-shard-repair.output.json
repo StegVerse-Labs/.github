@@ -1,0 +1,13 @@
+{
+  "disposition": "FAIL_CLOSED",
+  "failure_code": "RECORD_DATA_TASK_NOT_IN_AGGREGATE_REGISTRY",
+  "failed_predicate": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 is a row of data/canonical-task-registry.json (the only generation-bearing surface)",
+  "required_evidence_or_repair": "promote the task into the aggregate Registry, or drop its rows",
+  "retry_entrypoint": "python scripts/apply_task_record_data.py <data.json> --apply",
+  "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "next_attempt": "after the task is in the aggregate Registry",
+  "evidence": {
+    "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+  },
+  "files_changed": false
+}

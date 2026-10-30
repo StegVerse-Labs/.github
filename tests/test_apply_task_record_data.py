@@ -144,7 +144,12 @@ class RowFieldsAndRegistrationTests(unittest.TestCase):
         self.shards.mkdir()
         for task_id in (OPTICAL, INTERLOCK):
             shutil.copy2(SHARDS / f"{task_id}.json", self.shards / f"{task_id}.json")
-        self.tip = json.loads(self.registry.read_text(encoding="utf-8"))["generation"]
+        # INTERLOCK stands for "a canonical record with no registry row yet". It is registered on the live registry
+        # (generation 325), so the fixture copy drops that row; the generation is unchanged, the tip stays live.
+        registry = json.loads(self.registry.read_text(encoding="utf-8"))
+        registry["tasks"] = [t for t in registry["tasks"] if t["task_id"] != INTERLOCK]
+        self.registry.write_text(json.dumps(registry, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        self.tip = registry["generation"]
 
     def run_apply(self, payload, tip=None):
         return atr.apply(payload, registry_path=self.registry, task_shards=self.shards,

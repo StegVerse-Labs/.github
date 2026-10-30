@@ -4,20 +4,20 @@
  "failed_check": "HANDOFF_SURFACE_ADMITTED",
  "failure_class": {
   "class": "A",
-  "reason": "decided by an existing transition: each draft's exact-head SV_CHANGE_ADMIT"
+  "reason": "decided by an existing transition: the exact-head SV_CHANGE_ADMIT of the first real native change"
  },
  "failure_code": "LADDER_DEPENDENCY_NOT_ADMITTED",
  "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
  "items": [
   "H-GOV-ADMISSION"
  ],
- "next_attempt": "on each dependency's admission event",
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "next_attempt": "on the admission event of the first real native change that receives a genuine ALLOW through SV_CHANGE_ADMIT",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164)",
  "owning_lane": "GitHub Product lane (Lane C)",
- "proposed_resolution": "no repair inside the product; each draft is admitted by its own exact-head admission, in order #3255 -> #3313 -> #3311 -> #3326 -> StegVerse-SDK#556; nothing waits on a person",
+ "proposed_resolution": "no repair inside the product; when the first real native change receives a genuine ALLOW through SV_CHANGE_ADMIT, add an observe run that evaluates sv_work_items.admit for it and bind H-GOV-ADMISSION's allow witness to that run; no specific change is named because none exists yet; nothing waits on a person",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "admit the path's drafts (#3313, #3255, #3311, #3326, StegVerse-SDK#556) through exact-head SV_CHANGE_ADMIT",
- "retry_point": "SV_CHANGE_ADMIT (resident-runtime/sv_work_items.py::admit, StegVerse-Labs/.github)",
+ "required_repair": "a real native change (record_mode NATIVE) is proposed, verified by its own exact-head receipts, and receives a genuine ALLOW through SV_CHANGE_ADMIT; StegVerse-Labs/.github#3358 and StegVerse-org/StegVerse-SDK#567 are pre-native history (Coordination ruling (b), StegVerse-org/.github#167 comment 6515084109; it answers Lane D's c6514887557) and are not admit subjects",
+ "retry_point": "SV_CHANGE_ADMIT (resident-runtime/sv_work_items.py::admit, StegVerse-Labs/.github) on the exact head of the first real native change that receives a genuine ALLOW through SV_CHANGE_ADMIT; then python scripts/ladder_conformance.py observe",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",
  "task_id": "LC-GOV-07"

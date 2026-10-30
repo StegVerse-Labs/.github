@@ -12,7 +12,7 @@
   "H-GOV-FINISH-LEDGER"
  ],
  "next_attempt": "on the next record change of GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
  "owning_lane": "GitHub Product lane (Lane C)",
  "proposed_resolution": "emit the release verdict as a stegverse.canonical-state-transition-receipt/v1 appended by the ledger writer split in #3255, after the TV/TVC release receipt exists; until then the release is a record, not runtime",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
