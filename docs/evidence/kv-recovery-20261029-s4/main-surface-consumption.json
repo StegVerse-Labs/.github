@@ -1,0 +1,37 @@
+{
+  "authority_effect": "NONE",
+  "bound_by_organization_receipt_sha256": "sha256:f840271ea47e9ff0fc2b81bb0d428dfdadc2cbfb2a4299a727ecf07e2ff32c6f",
+  "bound_labs_commit": "97319a5e16d1984082d0e76be650d82207f4a7da",
+  "bound_receipt_sha256": "sha256:fd5dd53e42677c3e868c81271f450fbb51db4c53cccb151df727b3654e12268a",
+  "bound_tvc_head_sha": "fa3e067a1b8121145bb4e3033c0cff8a88abd1df",
+  "chain_length": 136,
+  "derived_from_clock": false,
+  "disposition": "ALLOW",
+  "epoch_from_ledger_head": "sha256:d4ed1c3b076a5c2929556f6569919cdb12f9fc90fd3edd47ac8db92e8bb7cc69",
+  "ledger": "git+https://github.com/StegVerse-Labs/.github#refs/stegverse/organization-ledger",
+  "lowest_supported_mode": "E0",
+  "predicates": [
+    {
+      "degraded_form": "E0: one anonymous fetch of the public ledger ref, then a local chain walk; unreadable is FAIL_CLOSED for the [tvc] PRs only",
+      "lowest_mode": "E0",
+      "predicate": "ORGANIZATION_LEDGER_CHAIN_READABLE"
+    },
+    {
+      "degraded_form": "E0: a retained source receipt that self-verifies and carries ALLOW, 0 skipped; none is FAIL_CLOSED, never ALLOW",
+      "lowest_mode": "E0",
+      "predicate": "TVC_CONFORMANCE_RECEIPT_ON_ORGANIZATION_LEDGER"
+    },
+    {
+      "degraded_form": "E0: per-file sha256 of the consumed surface at this head; any difference is FAIL_CLOSED (the receipt does not cover these bytes)",
+      "lowest_mode": "E0",
+      "predicate": "TVC_CONFORMANCE_RECEIPT_MATCHES_HEAD_SURFACE"
+    }
+  ],
+  "refusals": [],
+  "schema": "stegverse.tvc-conformance-receipt-consumption/v1",
+  "surface_files_matched": 64,
+  "tvc_sets_selected": [],
+  "writes": false,
+  "observed_ledger_commit": "4b032d13082bf867b4b181f5186ddd290e0837a5",
+  "head_surface_basis": "751e6bc9c5feffa501d9e4a733b6c9e79037985c plus documentation-only PR3404"
+}

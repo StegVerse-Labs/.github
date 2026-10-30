@@ -1,0 +1,16 @@
+{
+  "changed_task_ids": [
+    "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+  ],
+  "disposition": "ALLOW",
+  "results": [
+    {
+      "base_disposition": null,
+      "disposition": "ALLOW",
+      "head_disposition": "CONTINUE",
+      "reason": "CONTINUE",
+      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+    }
+  ],
+  "strict": false
+}

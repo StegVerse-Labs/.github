@@ -357,3 +357,80 @@ needed to deliver this new public-source finding or continue the owner work.
 The new coordination note contains public status/issue links only, not that
 rejected packet or note. Coordination-folder writes remain projections, never
 sovereign KV custody.
+
+
+## Recovery session 4 — 2026-10-29 (America/Chicago)
+
+Session Prompt Count 4; cumulative recovery lower bound16/20, exact canonical
+count UNVERIFIED. Accepted main751e6bc9 has Registry326/122, no KV goal row.
+Goal/COSV remain unassigned; proposal INACTIVE, canonical lifecycle unassigned.
+This branch merges accepted main normally, preserving its README and source.
+Historical observations above are superseded only by the explicit deltas here.
+
+### Admission work already completed
+
+Coordination re-ruling org167 c6512331772 moved the finish point to CVK44e7ae56
+(merged290). The accepted transcript now records ALLOW, verified adjacency and
+326→proposed327. Local hash-binding review verified request SHA0b714794, Registry
+predecessor SHA f384240f, ruling digest7d09725e and CVK pin against current bytes.
+The unchanged plan was not rerun. Its COSV10800000110000 is only derived proposal
+evidence. No new ruling-input implementation or old-pin repair is needed.
+The old ruled_by placeholder is documentary provenance drift; it does not make
+the observed current plan a refusal. Native approved request is still absent
+from control/canonical-task-registration-requests. Original Coordinator next:
+commit the approved request, serialize native apply/verify at accepted tip,
+read all output surfaces, and separately obtain org receipt/claim/fence.
+https://github.com/StegVerse-Labs/.github/issues/3195#issuecomment-6513254673
+
+### Placement and custody deltas
+
+StegOS426 merged94068eac, adapter430 is admitted upstream, CVK289 merged3d68fe1e
+and290 merged44e7ae56. Do not repeat these integration waits. Adapter436 merged
+fb5ae1cb removes the unused organization-ledger location constant with a guard
+test; LaneD's remaining placement maintenance is byte-exact CVK re-vendor/pin
+from accepted adapter source and disposition of its native supplied_epoch.py.
+The adapter is a translator, never an InTr endpoint; the healthy external node
+is the endpoint. These source merges are not real-node placement/health proof.
+
+Labs ledger advanced fromb2d90fc3 to4b032d13082bf867b4b181f5186ddd290e0837a5.
+The six added commits carry two push receipts and a main-merge-transfer, not
+the pending TVC conformance receipt2e0ec2dd. The SDK push receipt recorded on
+Labs is explicitly non-authoritative for its owning org (org167 c6512721870);
+it is retained, not deleted. Original3183 writer still owes the genuine TVC
+sealed_test_receipt ingestion/readback;3290→3376 remains unmerged.
+
+### Source integration and verification
+
+Docs4a0a9299 had6/6 checks successful. This merge-forward/update requires fresh
+exact-head CI. Full PR scope includes README, this handoff and the retained
+public InTr JSON; later evidence additions are explicitly documented below.
+Local execution is restored; the previous session's environment limitation
+no longer applies. Current TVC containment review and test results are reported
+separately, never inferred from the earlier seven focused passes.
+No native admission, claimed identity, custody write, live runtime ALLOW, main
+merge or release is claimed by this recovery contribution.
+
+
+Executed receipt-consumer distinction: current-main-equivalent surface returns
+ALLOW on ledger4b032d13, chain length136, binding retainedfd5dd53e via orgf840271e,
+64files matched. Exact custody3376d810644d returns FAIL_CLOSED
+TVC_CONFORMANCE_RECEIPT_MATCHES_HEAD_SURFACE:12files differ. Previously recovered
+genuine2e0ec2dd independently matches all64files on3376 (zero differences).
+Thus original writer ingestion of that existing receipt remains the concrete
+next step; no generic re-pin or fabricated receipt is needed at this head.
+Outputs: [main](evidence/kv-recovery-20261029-s4/main-surface-consumption.json),
+[3376](evidence/kv-recovery-20261029-s4/custody3376-consumption.json).
+These are non-authorizing conformance readbacks, not KV finish-point ALLOW.
+
+
+Current TVC candidate (main6458d285 + actual537c87272cf) preserves the newer
+CVK288 configuration and reader;15source/config blobs verified. Added actual
+issuer read/place no-client contracts and migrated two gate expectations.
+Baseline59cases:6failed/53passed; candidate59cases:7failed/52passed; focused
+real-issuer suite9passed. The seven remaining mock-positive/downstream tests
+are listed in the [owner report](evidence/kv-recovery-20261029-s4/TVC_OWNER_REVIEW.md).
+The [patch](evidence/kv-recovery-20261029-s4/tvc-containment.patch), regression
+source and logs are archived there for original TVC integration. Not merge-ready
+or full-suite green. No skips, production bypass or weakened negatives.
+A temporary isolated pytest runner was installed locally; no ecosystem repo
+dependency or lockfile changed. Native issuer contract remains original TVC work.

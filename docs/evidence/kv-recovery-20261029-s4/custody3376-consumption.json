@@ -1,0 +1,98 @@
+{
+  "authority_effect": "NONE",
+  "chain_length": 136,
+  "derived_from_clock": false,
+  "disposition": "FAIL_CLOSED",
+  "epoch_from_ledger_head": "sha256:d4ed1c3b076a5c2929556f6569919cdb12f9fc90fd3edd47ac8db92e8bb7cc69",
+  "ledger": "git+https://github.com/StegVerse-Labs/.github#refs/stegverse/organization-ledger",
+  "lowest_supported_mode": "E0",
+  "predicates": [
+    {
+      "degraded_form": "E0: one anonymous fetch of the public ledger ref, then a local chain walk; unreadable is FAIL_CLOSED for the [tvc] PRs only",
+      "lowest_mode": "E0",
+      "predicate": "ORGANIZATION_LEDGER_CHAIN_READABLE"
+    },
+    {
+      "degraded_form": "E0: a retained source receipt that self-verifies and carries ALLOW, 0 skipped; none is FAIL_CLOSED, never ALLOW",
+      "lowest_mode": "E0",
+      "predicate": "TVC_CONFORMANCE_RECEIPT_ON_ORGANIZATION_LEDGER"
+    },
+    {
+      "degraded_form": "E0: per-file sha256 of the consumed surface at this head; any difference is FAIL_CLOSED (the receipt does not cover these bytes)",
+      "lowest_mode": "E0",
+      "predicate": "TVC_CONFORMANCE_RECEIPT_MATCHES_HEAD_SURFACE"
+    }
+  ],
+  "refusals": [
+    {
+      "failed_predicate": "TVC_CONFORMANCE_RECEIPT_MATCHES_HEAD_SURFACE",
+      "failure_code": "REQUIRED_VERIFICATION_INPUT_UNAVAILABLE",
+      "next_attempt": "the next push to this pull request head reruns the ratchet, which re-reads the ledger ref once; nothing is polled or dispatched",
+      "owning_existing_goal": "StegVerse-org/.github#164 (GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001); receipt producer StegVerse-Labs/TVC#539 (run block tvc-conformance-receipt); append: the organization ledger writer",
+      "required_evidence_or_repair": "the newest TVC conformance receipt (sha256:fd5dd53e42677c3e868c81271f450fbb51db4c53cccb151df727b3654e12268a) was observed against different bytes for 12 surface path(s) (.stegverse/transition-ledger/emit.py, heartbeat_runtime/admitted_worker_runtime.py, heartbeat_runtime/worker_assignment_functional_memory.py, heartbeat_runtime/worker_runtime_legacy.py, org-kernel/kernel.py); re-pin TVC's config/labs_conformance_source.json to a Labs commit holding this surface, let TVC CI seal a receipt on TVC main, and have the organization ledger writer append it",
+      "retry_entrypoint": "scripts/test_set_selection.py input tvc (kind receipt_consumer: scripts/tvc_conformance_receipt.py consume), run by the ratchet's test-set selection"
+    }
+  ],
+  "schema": "stegverse.tvc-conformance-receipt-consumption/v1",
+  "stale_receipts": [
+    {
+      "differs": [
+        ".stegverse/transition-ledger/emit.py",
+        "heartbeat_runtime/admitted_worker_runtime.py",
+        "heartbeat_runtime/worker_assignment_functional_memory.py",
+        "heartbeat_runtime/worker_runtime_legacy.py",
+        "org-kernel/kernel.py",
+        "resident-runtime/aggregate_repo_transition.py",
+        "resident-runtime/ledger_store.py",
+        "resident-runtime/organization_egress_boundary.py",
+        "scripts/consume_kv_publisher_return_materialization_request.py",
+        "tests/test_canonical_work_in_process_admission.py",
+        "workers/canonical_state_transition_custody.py",
+        "workers/manifest_state_transition_intr_ingress.py"
+      ],
+      "receipt_sha256": "sha256:fd5dd53e42677c3e868c81271f450fbb51db4c53cccb151df727b3654e12268a"
+    },
+    {
+      "differs": [
+        ".stegverse/transition-ledger/emit.py",
+        "heartbeat_runtime/admitted_worker_runtime.py",
+        "heartbeat_runtime/worker_assignment_functional_memory.py",
+        "heartbeat_runtime/worker_runtime_legacy.py",
+        "org-kernel/kernel.py",
+        "resident-runtime/aggregate_repo_transition.py",
+        "resident-runtime/ledger_store.py",
+        "resident-runtime/organization_egress_boundary.py",
+        "scripts/consume_kv_publisher_return_materialization_request.py",
+        "scripts/consume_kv_skap_custody_materialization_request.py",
+        "tests/test_canonical_work_in_process_admission.py",
+        "workers/canonical_state_transition_custody.py",
+        "workers/manifest_state_transition_intr_ingress.py",
+        "workers/universal_intr_profiled_ingress.py"
+      ],
+      "receipt_sha256": "sha256:7ef22d0422243b6dfb6ebb1cb56248835084d2bfcfade67382464c36990ad931"
+    },
+    {
+      "differs": [
+        ".stegverse/transition-ledger/emit.py",
+        "heartbeat_runtime/admitted_worker_runtime.py",
+        "heartbeat_runtime/worker_assignment_functional_memory.py",
+        "heartbeat_runtime/worker_runtime_legacy.py",
+        "org-kernel/kernel.py",
+        "resident-runtime/aggregate_repo_transition.py",
+        "resident-runtime/ledger_store.py",
+        "resident-runtime/organization_egress_boundary.py",
+        "scripts/consume_kv_publisher_return_materialization_request.py",
+        "scripts/consume_kv_skap_custody_materialization_request.py",
+        "tests/test_canonical_work_in_process_admission.py",
+        "workers/canonical_state_transition_custody.py",
+        "workers/manifest_state_transition_intr_ingress.py",
+        "workers/universal_intr_profiled_ingress.py"
+      ],
+      "receipt_sha256": "sha256:9823142846b9a4cb98b6ef48bc2d652c9efe7be908e24fa2502eb8e397560270"
+    }
+  ],
+  "tvc_sets_selected": [],
+  "writes": false,
+  "observed_ledger_commit": "4b032d13082bf867b4b181f5186ddd290e0837a5",
+  "head_surface_basis": "d810644ddc6ce290dd1a21f75c7c12d8c3fe05df"
+}

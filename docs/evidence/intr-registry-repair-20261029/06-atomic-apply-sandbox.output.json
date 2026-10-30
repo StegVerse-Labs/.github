@@ -1,0 +1,9 @@
+{
+  "disposition": "ALLOW",
+  "generation": 323,
+  "tip_generation": 322,
+  "records_changed": [
+    "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json"
+  ],
+  "files_changed": true
+}

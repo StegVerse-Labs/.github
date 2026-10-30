@@ -11,8 +11,8 @@
  "items": [
   "H-GOV-VERIFIER-REF-BINDING"
  ],
- "next_attempt": "on the next push to grok/lane-c-sdk-governance-product-finish-point (StegVerse-SDK#556)",
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "next_attempt": "on the next push to grok/lane-c-sdk-governance-product-finish-point (StegVerse-SDK#556, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
  "owning_lane": "GitHub Product lane (Lane C)",
  "proposed_resolution": "have the finish-point workflow read the release receipt (tag, commit) as its input and fail closed with six fields when the receipt is absent or the commit differs",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
