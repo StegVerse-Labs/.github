@@ -233,6 +233,18 @@ class GovernanceReverseLegTests(ReverseIntrRouteCase):
         self.assertIn("mesh_location_required_from_materializer", refused["detail"])
         self.assertEqual(self.frames_to(PEER), [])
 
+    def test_no_answer_is_pending_and_records_no_closure(self):
+        """Kept under its original node id so the ratchet's TEST_MISSING_AT_HEAD rule is not tripped. The
+        PENDING disposition it once asserted is superseded by test_no_answer_fails_closed_and_records_no_closure;
+        what stays true under both contracts is that an absent answer closes nothing and records nothing."""
+        emitted = self.emit_on_mesh(self.payload(), capability="governance")
+        absent = self.close(emitted)
+        self.assertNotEqual(absent["disposition"], "PENDING")
+        self.assertIs(absent["closed"], False)
+        self.assertIs(absent["closure_recorded"], False)
+        self.assertIs(absent["absence_is_not_a_transition"], True)
+        self.assertEqual(self.repo_classes(), ["ORGANIZATION_EGRESS_EMITTED"])
+
     def test_no_answer_fails_closed_and_records_no_closure(self):
         emitted = self.emit_on_mesh(self.payload(), capability="governance")
         absent = self.close(emitted)
