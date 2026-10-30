@@ -13,9 +13,11 @@ on:
       - 'resident-runtime/sv_check_receipt_append.py'
       - 'resident-runtime/sv_push_receipt.py'
       - 'resident-runtime/sv_push_receipt_append.py'
+      - 'resident-runtime/sv_change_admit_append.py'
       - 'tests/test_organization_ledger_ingest.py'
       - 'tests/test_sv_check_receipt_append.py'
       - 'tests/test_sv_push_receipt_append.py'
+      - 'tests/test_sv_change_admit_append.py'
       - 'tests/vendor/p1_f28c3a76/**'
       - 'org-runtime/interlock-intr.json'
       - '.stegverse/transition-ledger/contract.json'
@@ -56,6 +58,7 @@ jobs:
             resident-runtime/sv_check_receipt_append.py \
             resident-runtime/sv_push_receipt.py \
             resident-runtime/sv_push_receipt_append.py \
+            resident-runtime/sv_change_admit_append.py \
             .stegverse/transition-ledger/emit.py
           python -m pip install pytest
           python -m pytest -q --tb=short \
@@ -63,7 +66,8 @@ jobs:
             tests/test_intr_destination_capability.py \
             tests/test_organization_ledger_ingest.py \
             tests/test_sv_check_receipt_append.py \
-            tests/test_sv_push_receipt_append.py
+            tests/test_sv_push_receipt_append.py \
+            tests/test_sv_change_admit_append.py
 
       - name: The committed ingest request, if any, is what the push-to-main writer reads
         run: |
