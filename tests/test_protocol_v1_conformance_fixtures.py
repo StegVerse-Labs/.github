@@ -456,6 +456,45 @@ class FixtureShapeTest(unittest.TestCase):
         self.assertEqual(case("n1-tamper")["spec_gap"]["failure_code"],
                          "PAYLOAD_HASH_NOT_RECOMPUTED_FROM_MANIFEST_AT_INGRESS")
 
+    # --- Retained node ids (ratchet TEST_MISSING_AT_HEAD) ------------------------------------------------------
+    # The three tests below keep the ids they had on the base. Each asserts what is true under both the base's
+    # evaluate() contract and this series' receive() contract; the replacement that carries the stronger
+    # claim is named in each docstring. Retiring an id is a separate reviewed change that names its replacement.
+
+    def test_positive_replay_and_seven_refusals_are_committed(self):
+        """Retained id. Replacement: test_positive_replay_non_gating_and_seven_refusals_are_committed."""
+        names = {path.stem for path in (FIXTURES / "cases").glob("*.json")}
+        self.assertEqual(len(NEGATIVES), 7)
+        self.assertTrue(({"positive", REPLAY} | set(NEGATIVES)) <= names)
+
+    def test_every_negative_declares_six_fields_and_a_non_allow_disposition(self):
+        """Retained id. Replacements: test_every_negative_expectation_is_the_generated_observed_shape and
+        test_every_spec_gap_is_six_fields_and_names_no_implemented_code. A negative declares DENY or
+        FAIL_CLOSED with its predicate and code; where it records a spec_gap, that gap carries all six fields."""
+        for case_id in NEGATIVES:
+            spec = case(case_id)
+            expected = spec["expected"]
+            self.assertIn(expected["disposition"], {"DENY", "FAIL_CLOSED"}, case_id)
+            for field in ("failed_predicate", "failure_code"):
+                self.assertIsInstance(expected.get(field), str, f"{case_id}:{field}")
+                self.assertTrue(expected[field].strip(), f"{case_id}:{field}")
+            for field in SIX_FIELDS if "spec_gap" in spec else ():
+                self.assertIsInstance(spec["spec_gap"].get(field), str, f"{case_id}:{field}")
+                self.assertTrue(spec["spec_gap"][field].strip(), f"{case_id}:{field}")
+
+    def test_replay_declares_idempotent_redelivery_and_a_six_field_spec_gap(self):
+        """Retained id. Replacement: test_replay_declares_idempotent_redelivery."""
+        spec = case(REPLAY)
+        self.assertEqual(spec["expected"]["disposition"], "IDEMPOTENT_REDELIVERY")
+        gap = spec["spec_gap"]
+        self.assertEqual(gap["disposition"], "GAP_NOT_IMPLEMENTED")
+        for field in SIX_FIELDS:
+            self.assertIsInstance(gap.get(field), str, field)
+            self.assertTrue(gap[field].strip(), field)
+        # The refusal the issue lists is not in the ingress source, so nothing may claim it was observed.
+        source = (ROOT / "resident-runtime/organization_manifest_ingress.py").read_text(encoding="utf-8")
+        self.assertNotIn(gap["failure_code"], source)
+
 
 class PositiveCaseTest(unittest.TestCase):
     def test_positive_crossing_echoes_the_bounded_effect_and_reconstructs(self):
@@ -477,6 +516,21 @@ class PositiveCaseTest(unittest.TestCase):
         self.assertEqual(result["disposition"], case("positive")["expected"]["disposition"], result.get("detail"))
         self.assertEqual(result["authority_effect"], "NONE_RECEIVING_OPERATION_ONLY")
         self.assertIs(result["master_records_organization_record_observed"], False)
+
+    def test_positive_is_not_refused_and_echoes_the_bounded_effect_with_no_ledger_append(self):
+        """Retained id. Replacements: test_positive_crossing_echoes_the_bounded_effect_and_reconstructs and
+        test_positive_expectation_is_what_real_receive_returns_against_temporary_roots. The crossing alone is
+        not refused, echoes the bounded effect, and appends nothing to a temporary ledger root."""
+        fixture = packet()
+        with LedgerRoots(ingress_request(fixture)) as roots:
+            crossing, closures = cross_positive()
+            self.assertEqual(readback(roots.repo), {"receipts": [], "head": None})
+            self.assertEqual(readback(roots.org), {"receipts": [], "head": None})
+        self.assertEqual(crossing["resolved_service_id"], fixture["bounded_effect"]["service_id"])
+        self.assertEqual(crossing["application_result"]["echo"]["manifest"], fixture["manifest"])
+        self.assertEqual(crossing["authority_effect"], "NONE")
+        self.assertEqual([closure["transition_id"] for closure in closures],
+                         ["INGRESS_ACCEPTED", "DISPATCHED", "CONSUMED", "RESULT_BOUND", "EGRESS_EMITTED"])
 
 
 class NegativeCaseTest(unittest.TestCase):
@@ -551,6 +605,31 @@ class NegativeCaseTest(unittest.TestCase):
         self.assertEqual(result["detail"],
                          "node-standing-fail_closed:non-genesis-predecessor-invalid:generation-not-successor")
 
+    def test_each_negative_refusal_code_and_temp_ledger_no_append(self):
+        """Retained id. Replacements: test_each_negative_matches_the_expectation_generated_from_real_receive and
+        test_each_negative_refusal_is_read_back_from_both_temporary_ledger_roots. Each negative is refused with
+        the code its case declares, reconstructs no closure, and appends no ingress transition to either
+        temporary ledger root (the only record a refusal leaves is the refusal record itself)."""
+        for case_id in NEGATIVES:
+            with self.subTest(case=case_id):
+                spec = case(case_id)
+                result, ledgers = live(case_id)
+                self.assertIn(result["disposition"], {"DENY", "FAIL_CLOSED"})
+                self.assertIs(result["received"], False)
+                self.assertEqual(result["detail"], spec["expected"]["failure_code"])
+                for absent in ("transition_closures", "organization_transition_id"):
+                    self.assertNotIn(absent, result)
+                for level in ("repository", "organization"):
+                    for receipt in ledgers[level]["receipts"]:
+                        self.assertNotEqual(receipt.get("transition_class"), ingress.OPERATION_ID)
+
+    def test_stale_head_refusal_code_is_the_standing_contracts_own(self):
+        """Retained id. Replacement: test_generation_successor_refusal_code_is_the_standing_contracts_own. The
+        stale-head / fence item is filed under n4-generation-not-successor in this series; its refusal code is
+        still the node-standing contract's own."""
+        result, _ = live(ISSUE_ITEMS["STALE_HEAD_OR_FENCE"])
+        self.assertTrue(result["detail"].startswith("node-standing-fail_closed:"), result["detail"])
+
 
 class ReplayCaseTest(unittest.TestCase):
     def test_redelivery_under_another_packet_id_is_the_same_transition_with_no_second_append(self):
@@ -617,6 +696,30 @@ class ExpectationMutationRegressionTest(unittest.TestCase):
                                 failed_predicate="MUTATED_PREDICATE")
             fields, record = observed(*drive(spec))
         self.assertEqual((fields, record), observed(*live("n3-wrong-receiving-operation")))
+
+    def test_changing_declared_disposition_or_a_six_field_value_leaves_the_observed_outcome_unchanged(self):
+        """Retained id. Replacement: test_a_recorded_expectation_does_not_reach_the_run. Declared values are
+        never read by the run, so mutating them changes nothing that is observed."""
+        patches = {"disposition": {"disposition": "ALLOW"},
+                   "failed_predicate": {"failed_predicate": "MUTATED_PREDICATE"},
+                   "next_attempt": {"next_attempt": "mutated next attempt"}}
+        for case_id in NEGATIVES:
+            baseline = observed(*live(case_id))
+            for name, patch in patches.items():
+                with self.subTest(case=case_id, mutated=name), tempfile.TemporaryDirectory() as directory:
+                    spec = mutated_copy(case_id, directory, **patch)
+                    self.assertEqual(spec["expected"][name], patch[name])
+                    self.assertEqual(observed(*drive(spec)), baseline)
+
+    def test_changing_declared_failure_code_fails_the_refusal_code_assertion(self):
+        """Retained id. Replacement: test_changing_a_recorded_field_fails_the_live_equality. A wrong declared
+        failure code is caught against the live refusal."""
+        for case_id in NEGATIVES:
+            with self.subTest(case=case_id), tempfile.TemporaryDirectory() as directory:
+                spec = mutated_copy(case_id, directory, failure_code="MUTATED_FAILURE_CODE")
+                fields, record = observed(*live(case_id))
+                with self.assertRaises(AssertionError):
+                    assert_matches_expected(self, spec, fields, record)
 
 
 if __name__ == "__main__":
