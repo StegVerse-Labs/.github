@@ -6,7 +6,31 @@ Issue: #2897
 COSV ID: `50000000102000`
 Status: `ACTIVE`
 
-## 2026-10-29 terminal reconciliation at prompt limit (current)
+## 2026-10-29 committed Registry and source readback (current)
+
+Session Prompt Count 4; cumulative recovery lower bound **36/20**, exact total
+UNVERIFIED and never reset. Scope disposition remains DECOMPOSED_AT_PROMPT_LIMIT;
+remaining implementation follows its existing owning issues. Canonical coordination
+remains ACTIVE, completion unclaimed/unvalidated, claim/fence null.
+
+- Live Labs main751e6bc9: aggregate generation326 includes the InTr row,
+  equal to the standalone shard. #3409 merged asf9b46abc at head a9f4d87d.
+  This resolves the aggregate omission and incorporates the114-test fixture repair.
+- #3411 predecessor ae7a4cac passed all six checks. This readback revision requires
+  its own checks; predecessor success is not new-head validation.
+- Org #228 merged feba0919; #258 merged dbd8c0b0; #261 merged08578cd7
+  (oldest destination receipt retained; later receipts DUPLICATE_OF_CROSSING);
+  H36/#267 merged82f51045. These are verified GitHub merge records, not new sovereign runs.
+- Registry/COSV metric evidence is a separate follow-up: MACHINE_OWNED is justified
+  in the emitted record by the old vector declaration, while claim/fence remain null;
+  blocker_count=2 cites historical owner actions now partly integrated. Preserve the
+  declared vector's provenance without treating it as independent observation.
+  [Scoped Registry action](https://github.com/StegVerse-Labs/.github/issues/3195#issuecomment-6513211530).
+- Remaining source/public-reader work stays with Labs#3207/#3213 and TVC#562/#561/#533;
+  private warrants/runtime remain with TVC#488 and Org#162. No fresh execution,
+  release, propagation or completion is asserted by these source merges.
+
+## 2026-10-29 terminal reconciliation at prompt limit (historical predecessor)
 
 Disposition: **DECOMPOSED_AT_PROMPT_LIMIT** under
 [Coordination ruling 6506716678](https://github.com/StegVerse-Labs/.github/issues/3195#issuecomment-6506716678).
