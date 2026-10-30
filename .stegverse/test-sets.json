@@ -15214,7 +15214,9 @@
   ],
   "tests/test_organization_ingress_worker_claim.py": [
    "org-boundary/registry/services.json",
-   "resident-runtime/organization_manifest_ingress.py"
+   "resident-runtime/organization_manifest_ingress.py",
+   "tests/fixtures/**",
+   "tests/fixtures/sdk-external-framework-generic-manifest.json"
   ],
   "tests/test_organization_ledger_component_validation_trigger.py": [
    ".github/workflows/organization-ledger-component-validation.yml",
