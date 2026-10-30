@@ -2227,3 +2227,8 @@ the pin (#3151), and Master Records never gates. See
 Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COMPOSITION-001` record. See [the handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md). Registration is coordination only; source tests, WorkerCoordinator admission and authentic runtime evidence remain separate.
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
+
+
+### Personal KV migration owner-review proposal (#3365)
+
+The [registration proposal](docs/KV_3365_REGISTRATION_PROPOSAL.md), [custody bindings](docs/KV_3365_CUSTODY_BINDINGS.md) and [migration handoff](docs/PERSONAL_ECOSYSTEM_KV_MIGRATION_MIRROR_HANDOFF.md) preserve #3365 as unregistered. The generation-326 checkpoint identifies the existing organization-custody owner and exact receipt-reader interfaces without borrowing its identity or another Goal's approval. A complete finite-batch verifier, private batch approval and task-specific registration inputs remain owner decisions. These documents grant no admission, claim/fence or provider-write authority.
