@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "LANE-D-FOR-LANE-A-PAT-003-PRIOR-ART-ALLOCATION-REQUEST-20261023",
+  "state": "PROPOSED",
+  "issue": "StegVerse-org/.github#165",
+  "proposed_task_id": "PAT-003-PRIOR-ART",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "proposed_task_id_source": "Lane A (PAT-003, agent session 19d95368-7ddb-43b9-8e58-54fa330e98ec) via orchestrator New Bot c40482d9, 2026-10-23; the same key appears in the StegVerse-Labs/patent-registry#19 work register (PROPOSED / UNCLAIMED)",
+  "proposed_owner": "Lane A (PAT-003, 19d95368)",
+  "cosv_task_vector": null,
+  "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 326,
+  "owning_task_found": false,
+  "scope": "PAT-003 prior art: a dated, reproducible prior-art search ledger for PAT-003 and a map of its overlap with the existing PAT families (reviews/PAT-003_TECHNICAL_COMPARISON_RESEARCH_LEDGER.md). Practitioner evaluation of the ledger is outside this task (PAT-003-FILING-PACKET, not claimed here). No filing, no legal determination, no freedom-to-operate opinion.",
+  "scope_digest": "sha256:981e3b75df3c4cd5274bc485eeea39ea5a89f8971e8c8b3b286338c195eebf2b",
+  "requested_action": "Check the Lane A identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "handoff_ref": "StegVerse-Labs/Patents/PAT-003_MIRROR_HANDOFF.md@cf30104dd6a5b9e6b30ec3e15c4538a02f09e304"
+}

@@ -1,27 +1,320 @@
 $ {python} scripts/canonical_task_registration_transition.py plan --request tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json --base . --adjacency-ruling control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json --finish-point-root {root:sdk556}
---- exit 1
+--- exit 0
 --- stdout
---- stderr
 {
   "authority_effect": "NONE_REGISTRATION_ONLY",
   "clock_read": false,
-  "consequence_committed": false,
-  "detail": "{\"checkin\": [{\"task_id\": \"GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001\", \"head_disposition\": \"COORDINATE_CONVERGENCE\", \"failure_code\": \"REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE\", \"evidence\": {\"new_collision_candidate_ids\": [], \"new_hard_collision_task_ids\": [], \"hard_collision_task_ids\": [], \"collision_candidate_ids\": [\"PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001\", \"STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001\"], \"session_action\": \"COORDINATE_BEFORE_MUTATION\", \"substrate_review_error\": null}}], \"ruling_detail\": {\"candidate\": \"PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001\"}}",
-  "disposition": "FAIL_CLOSED",
+  "derived_files": {
+    "control/goal-scope-seals/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:7136c7bd33fd0a0b0f62215ac96b47fa82492f4ca606dc28a57ed8ecb2e9fd57",
+    "control/task-vector-index.d/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:acc1c827a96d904d1bf172870c7c3dde8849543222f64935ab4e6e107f72186b",
+    "control/task-vectors/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:71047ac7ff0b6495f903f68d14fc394d71086ff52638db505758c827a63f4a84",
+    "data/canonical-task-records/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json": "sha256:bc05c6b3d68a212b696cc761d27a967075f65a73957ca722b3c7dc1b8b2e1f90",
+    "data/canonical-task-registry.json": "sha256:f0ddb866546ece016c8832426ede0009eb657af8eca909b6903693f4aa749226"
+  },
+  "disposition": "ALLOW",
+  "evidence": {
+    "adjacency_ruling": {
+      "authority_effect": "NONE_REGISTRATION_ONLY",
+      "candidates": [
+        {
+          "components": [
+            "schema-migration",
+            "structural-validator",
+            "validator-inventory"
+          ],
+          "condition_a": "HELD",
+          "condition_b": "HELD",
+          "footprint_in_finish_point_repository": [],
+          "overlap": {
+            "adjacent": false,
+            "components": [],
+            "execution_substrates": [],
+            "lineage": false,
+            "repositories": [
+              "StegVerse-org/StegVerse-SDK"
+            ],
+            "user_action_surface_conflicts": []
+          },
+          "pinned_consumed_paths": [
+            ".github/workflows/governance-gate.yml",
+            "stegverse/governance_gate.py",
+            "stegverse/structural_validator_candidate.py"
+          ],
+          "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001"
+        },
+        {
+          "components": [
+            "cost-component-registry",
+            "tier-pricing"
+          ],
+          "condition_a": "HELD",
+          "condition_b": "HELD",
+          "footprint_in_finish_point_repository": [],
+          "overlap": {
+            "adjacent": false,
+            "components": [],
+            "execution_substrates": [],
+            "lineage": false,
+            "repositories": [
+              "StegVerse-org/StegVerse-SDK"
+            ],
+            "user_action_surface_conflicts": []
+          },
+          "pinned_consumed_paths": [],
+          "task_id": "SDK-COST-DERIVED-TIER-PRICING-001"
+        },
+        {
+          "components": [
+            "payment-provider-authentic-ingress",
+            "payment-provider-read-profiles",
+            "tvc-payment-provider-observation",
+            "tvc-payment-provider-read-profile"
+          ],
+          "condition_a": "HELD",
+          "condition_b": "HELD",
+          "footprint_in_finish_point_repository": [],
+          "overlap": {
+            "adjacent": true,
+            "components": [],
+            "execution_substrates": [],
+            "lineage": false,
+            "repositories": [
+              "StegVerse-Labs/TVC"
+            ],
+            "user_action_surface_conflicts": []
+          },
+          "pinned_consumed_paths": [],
+          "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001"
+        },
+        {
+          "components": [
+            "cli-independent-review",
+            "cli-independent-review-routing",
+            "cli-independent-review-routing-packet",
+            "consume-ecosystem-failure-map",
+            "ecosystem-failure-registry",
+            "steghealth-ecosystem-failure-registry",
+            "validate-cli-independent-review-routing",
+            "validate-ecosystem-failure-registry"
+          ],
+          "condition_a": "HELD",
+          "condition_b": "HELD",
+          "footprint_in_finish_point_repository": [],
+          "overlap": {
+            "adjacent": true,
+            "components": [],
+            "execution_substrates": [],
+            "lineage": false,
+            "repositories": [],
+            "user_action_surface_conflicts": []
+          },
+          "pinned_consumed_paths": [],
+          "task_id": "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001"
+        }
+      ],
+      "clears": "COORDINATE_CONVERGENCE",
+      "clock_read": false,
+      "condition_c": "HELD",
+      "condition_pin": "HELD",
+      "condition_routing": "HELD",
+      "condition_unowned_pin": "HELD",
+      "consumed_pins": [
+        {
+          "commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+          "condition_pin": "HELD",
+          "files": {
+            ".github/workflows/governance-gate.yml": "1d14c9baf363e37a5b66a33016497869206a671a2a7d29596a95c23eedb82df0",
+            "stegverse/governance_gate.py": "3db3e83c97764e912919018dcb560c011d3b499ea550aef43e3f61e64a36ee4f",
+            "stegverse/structural_validator_candidate.py": "574b017a927acc9e4ef15ef90e0f71ddbdbd854dd1575ffa43bfbc1f1533bef7"
+          },
+          "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001"
+        },
+        {
+          "commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+          "condition_pin": "HELD",
+          "edit_failure_code": "ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT",
+          "edit_routed_to": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+          "enforced_by_finish_test": false,
+          "files": {
+            "stegverse/portable_governance_verifier.py": "d1963e230e74da447f47d49440cbec41570b2a8e573c5cd5adb33274d161a0f6"
+          },
+          "in_finish_point_closure": {
+            "stegverse/portable_governance_verifier.py": true
+          },
+          "owner": "UNOWNED_NOT_OBSERVED",
+          "task_id": "UNOWNED_NOT_OBSERVED"
+        }
+      ],
+      "consumes_dependencies": [
+        {
+          "consumed_by": "the gate disposition step and the checker's governance-gate-selftest receipt (sdk-governance-gate-free-tier)",
+          "failure_class": "A",
+          "pinned_source": {
+            "commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+            "commit_ref": "StegVerse-org/StegVerse-SDK#534 (last change to the gate files; structural_validator_candidate.py last changed in #542, unchanged since)",
+            "files": {
+              ".github/workflows/governance-gate.yml": "1d14c9baf363e37a5b66a33016497869206a671a2a7d29596a95c23eedb82df0",
+              "stegverse/governance_gate.py": "3db3e83c97764e912919018dcb560c011d3b499ea550aef43e3f61e64a36ee4f",
+              "stegverse/structural_validator_candidate.py": "574b017a927acc9e4ef15ef90e0f71ddbdbd854dd1575ffa43bfbc1f1533bef7"
+            },
+            "repository": "StegVerse-org/StegVerse-SDK"
+          },
+          "task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001"
+        },
+        {
+          "consumed_by": "ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT (entitlement-separation)",
+          "failure_class": "A",
+          "task_id": "SDK-COST-DERIVED-TIER-PRICING-001"
+        },
+        {
+          "consumed_by": "authentic payment-provider ingress for icv-commercial-distribution",
+          "failure_class": "A",
+          "task_id": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001"
+        },
+        {
+          "consumed_by": "tests/test_governance_product_finish_point.py (finish point) consumes stegverse/portable_governance_verifier.py; no canonical task record observed as its owner",
+          "owner_assignment": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; routed to STEGVERSE-CANONICAL-WORK-COORDINATION-001 (class B item on StegVerse-org/.github#160)",
+          "pinned_source": {
+            "commit": "4c9dfac7b31c5dcd30a8bc9b13e6d11353a51328",
+            "files": {
+              "stegverse/portable_governance_verifier.py": "d1963e230e74da447f47d49440cbec41570b2a8e573c5cd5adb33274d161a0f6"
+            },
+            "repository": "StegVerse-org/StegVerse-SDK"
+          },
+          "provenance": "StegVerse-org/StegVerse-SDK#70 (ceb6a353162242dd9c5919d8af89823b9a97501a); lineage StegVerse-org/StegVerse-SDK#61, #65",
+          "task_id": "UNOWNED_NOT_OBSERVED"
+        }
+      ],
+      "disposition": "ALLOW",
+      "finish_point": {
+        "closure": {
+          ".github/workflows/governance-gate.yml": "sha256:1d14c9baf363e37a5b66a33016497869206a671a2a7d29596a95c23eedb82df0",
+          "stegverse/governance_gate.py": "sha256:3db3e83c97764e912919018dcb560c011d3b499ea550aef43e3f61e64a36ee4f",
+          "stegverse/interlock_return.py": "sha256:2ccbc8f44f869f962a990d1c13fd2308b0d4a18a8b004d4020552eeabc95f67c",
+          "stegverse/interlock_transition.py": "sha256:cd0de91e03ea25c401a23071d4fe93505e4359f8e35857b787f56c25b6b978d0",
+          "stegverse/organization_record_names.py": "sha256:22207791b0119615c6485b59666816feab0be01ab04c7d50723674c464c9f882",
+          "stegverse/portable_governance_verifier.py": "sha256:d1963e230e74da447f47d49440cbec41570b2a8e573c5cd5adb33274d161a0f6",
+          "stegverse/spe_steggate_bridge.py": "sha256:536856c5da0bf3729f5a0188b8d5c461f2c7fd6018fbac9818f42f07d9f31787",
+          "stegverse/structural_validator_candidate.py": "sha256:574b017a927acc9e4ef15ef90e0f71ddbdbd854dd1575ffa43bfbc1f1533bef7",
+          "tests/test_governance_product_finish_point.py": "sha256:f1c06da6f0c5ffaf0e2a2231b2cb561fc6b7056d4c9c8e243b117557835409eb"
+        },
+        "closure_digest": "sha256:3ddca091dc8e38cb9164e1d1752a145e7d8799eb383e3ed8a6acbb74f375335e",
+        "finish_test_runners": [
+          {
+            "command": "python -m unittest tests.test_governance_product_finish_point -v 2>&1 | tee /tmp/finish-point.log",
+            "line": 33,
+            "workflow": ".github/workflows/governance-product-finish-point.yml"
+          }
+        ],
+        "hashed_pin_data_paths": [
+          ".github/workflows/governance-gate.yml",
+          "stegverse/governance_gate.py",
+          "stegverse/structural_validator_candidate.py"
+        ],
+        "repository": "StegVerse-org/StegVerse-SDK",
+        "source_commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+        "stub_contexts_disabled_by": [],
+        "stub_preload_sources": [
+          "tests/__init__.py (the test's package __init__ chain)"
+        ],
+        "stub_seeded_contexts": {
+          "stegverse/interlock_return.py": [
+            "S:stegverse"
+          ],
+          "stegverse/interlock_transition.py": [
+            "S:stegverse"
+          ],
+          "stegverse/organization_record_names.py": [
+            "S:stegverse"
+          ],
+          "stegverse/portable_governance_verifier.py": [
+            "S:stegverse"
+          ],
+          "stegverse/spe_steggate_bridge.py": [
+            "S:stegverse"
+          ],
+          "stegverse/structural_validator_candidate.py": [
+            "S:stegverse"
+          ]
+        },
+        "test": "tests/test_governance_product_finish_point.py"
+      },
+      "llm_used": false,
+      "lowest_supported_mode": "E0",
+      "network_used": false,
+      "protected_paths": [
+        {
+          "on_modification": {
+            "disposition": "FAIL_CLOSED",
+            "failure_code": "STRUCTURAL_OWNED_EDIT",
+            "routed_to": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+            "rule": "any GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 change that modifies these paths fails closed as a SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001-owned edit and is routed to it; the pin moves only to a commit that Goal publishes"
+          },
+          "owner_task_id": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+          "paths": [
+            ".github/workflows/governance-gate.yml",
+            "stegverse/governance_gate.py",
+            "stegverse/structural_validator_candidate.py"
+          ],
+          "repository": "StegVerse-org/StegVerse-SDK"
+        }
+      ],
+      "ruled_by": "Coordination (STEGVERSE-CANONICAL-WORK-COORDINATION-001), class D, relayed to Lane C 2026-10-23: SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 is a consumes-dependency with no fold, on conditions (1) sha256-pinned consumed source and (2) owner routing of edits to it; ruling record ref UNKNOWN_NOT_AUTHENTICALLY_OBSERVED. The entry for SDK-COST-DERIVED-TIER-PRICING-001 is Lane C's proposal; no Coordination ruling for it is observed (UNKNOWN_NOT_AUTHENTICALLY_OBSERVED). The entries for PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 carry the components declared in their records under Coordination ruling (a) https://github.com/StegVerse-org/.github/issues/167#issuecomment-6394499602 (PAYMENT) and ruling (b) https://github.com/StegVerse-org/.github/issues/167#issuecomment-6394499771 (STEGHEALTH); this ruling file was regenerated by Lane D under ruling (c) https://github.com/StegVerse-org/.github/issues/167#issuecomment-6394499894",
+      "ruling_digest": "sha256:319a940fcd6741524e197110b7ac6c031f01f3a60b4b6484ced337c2325c1a57",
+      "schema": "stegverse.adjacency-ruling-verification/v1",
+      "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001"
+    },
+    "allocation": {
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-c-github-universal-governance-product-2026-10-23.json",
+      "allocation_request_sha256": "sha256:0dc505c248b8fcba655754601f46ca5edeacec360e20f61e2b47a7e836980f12",
+      "proposal_adopted": false,
+      "proposed_cosv_task_vector": null,
+      "proposed_task_id_matches": true
+    },
+    "collision_checkin": "CONTINUE_BY_VERIFIED_ADJACENCY_RULING (scripts/check_registry_collision_checkin.py COORDINATE_CONVERGENCE over ['PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001', 'SDK-COST-DERIVED-TIER-PRICING-001', 'SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001', 'STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001'] cleared by scripts/adjacency_ruling.py; ruling sha256:319a940fcd6741524e197110b7ac6c031f01f3a60b4b6484ced337c2325c1a57, conditions a/b/c recomputed)",
+    "cosv_derivation": "scripts/cosv.py encode_task(exact_metrics)",
+    "cosv_task_vector": "10610000116000",
+    "finish_point": {
+      "acceptance_test": "StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py::GovernanceProductFinishPoint::test_finish_point_verdict",
+      "lowest_supported_mode": "E0",
+      "predicate": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN at the ref the TV/TVC release receipt names",
+      "source_commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+      "source_ref": "StegVerse-org/StegVerse-SDK#556",
+      "verifier_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_finish_point_verdict, checked out at the TV/TVC release-receipt ref"
+    },
+    "lowest_supported_mode": "E0",
+    "predecessor_registry_generation": 326,
+    "predecessor_registry_sha256": "sha256:f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271",
+    "registration_mode": "NEW_IDENTITY",
+    "row_equals_record": true,
+    "scope_digest": "sha256:f6d69ee7e294e54401e7367d06fc51e10b0865198da22af1ca4890f2d1171fbb",
+    "successor_registry_generation": 327,
+    "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+    "workercoordinator_claim_request": {
+      "allocator_remains_claim_authority": true,
+      "authority_effect": "NONE_REQUEST_ONLY",
+      "canonical_allocator": "scripts/allocate_claims.py",
+      "claim_ref": null,
+      "consumer_entrypoint": "scripts/consume_org_claim_allocator_request.py",
+      "fence_ref": null,
+      "registry_generation": 327,
+      "registry_row_sha256": "sha256:4e14458ea387a511dd13a5254def824d22fe96245bd7f20b3a814540dee9540f",
+      "request_grants_claim_authority": false,
+      "requested_of": "WORKERCOORDINATOR",
+      "schema": "stegverse.workercoordinator-claim-request/v1",
+      "state": "REQUESTED",
+      "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001"
+    }
+  },
   "execution_authority_minted": false,
-  "failed_predicate": "CANDIDATE_DECLARES_COMPONENTS",
-  "failure_code": "ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED",
   "intr_admission_minted": false,
   "mode": "plan",
-  "next_attempt": "on the next registration request event after the repair is recorded",
   "organization_ledger_appended": false,
   "organization_ledger_entrypoint": ".stegverse/transition-ledger/emit.py via .github/workflows/organization-ledger-transition.yml",
-  "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
   "request_id": "lane-c-github-universal-governance-product-2026-10-23",
-  "request_sha256": "sha256:9ee0b44cdf855ba117b3f28054c343a0ab433e5ade1b5042d1c70bfcd5d10d50",
-  "required_evidence_or_repair": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's observed record declares no targets.components, so (a) and (b) would hold vacuously; PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001's owner records its components (a record change through its own Goal), or the overlap is resolved by Coordination without this input",
-  "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+  "request_sha256": "sha256:5ad6247bb70181dd01375bbc74c8ccae7aba4c1b347e0a3f67f1a45a9cae5cd6",
   "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
   "transition": "CANONICAL_TASK_REGISTRATION",
   "workercoordinator_claim_or_fence_minted": false
 }
+--- stderr

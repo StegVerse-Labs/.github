@@ -66,6 +66,20 @@ if not any(spec.get("task_id") == ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_TASK for spe
 # revalidation TVC runtime-observation request. This only makes the already-staged
 # request visitable by the existing consumer cadence; it creates no second
 # dispatcher, scheduler, runtime, WorkerCoordinator, or credential path.
+# Stage the real-governance assessment sample request for the resident dispatcher
+# cycle only. Registering the spec grants no authority and moves no state: the task
+# stays PROPOSED until authentic Interlock/InTr ingress and consumption receipts are
+# produced by that cycle actually running. No synthetic or test receipt counts.
+REAL_GOVERNANCE_ASSESSMENT_SAMPLE_TASK = "REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001"
+REAL_GOVERNANCE_ASSESSMENT_SAMPLE_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-real-governance-assessment-sample-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-real-governance-assessment-sample-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-real-governance-assessment-sample"),
+    "task_id": REAL_GOVERNANCE_ASSESSMENT_SAMPLE_TASK,
+}
+if not any(spec.get("task_id") == REAL_GOVERNANCE_ASSESSMENT_SAMPLE_TASK for spec in mod.REQUEST_SPECS):
+    mod.REQUEST_SPECS = tuple(mod.REQUEST_SPECS) + (REAL_GOVERNANCE_ASSESSMENT_SAMPLE_SPEC,)
+
 KV_CONNECTION_REVALIDATION_TASK = "KV-CONNECTION-REVALIDATION-WORKER-001"
 KV_CONNECTION_REVALIDATION_TVC_RUNTIME_SPEC = {
     "request_rel": Path("control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json"),

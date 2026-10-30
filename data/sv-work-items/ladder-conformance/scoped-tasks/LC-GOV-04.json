@@ -12,7 +12,7 @@
   "H-GOV-TVC-RELEASE"
  ],
  "next_attempt": "on the TV/TVC release candidate record event",
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
  "owning_lane": "GitHub Product lane (Lane C)",
  "proposed_resolution": "use the manifest-driven TVC portable publisher, which declares no third-party machine, with a candidate directory produced by an ecosystem transition (counterparty TV/TVC)",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",

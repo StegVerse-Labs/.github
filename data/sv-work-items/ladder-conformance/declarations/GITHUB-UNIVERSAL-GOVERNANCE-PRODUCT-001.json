@@ -15,7 +15,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN_ON_CUSTOMER_SUPPLIED_MANIFEST_CONSTRAINTS that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -42,7 +42,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -69,7 +69,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -96,7 +96,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -127,7 +127,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -154,7 +154,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -184,7 +184,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -238,7 +238,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -265,7 +265,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for LICENSE_AND_TERMS_OWNER_APPROVED that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -296,7 +296,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -326,7 +326,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -353,7 +353,7 @@
     "failed_predicate": "PREDICATE_HAS_A_DETERMINISTIC_E0_VERIFIER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the finish-point branch",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic verifier for ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT that returns ALLOW or six-field FAIL_CLOSED, called by the sealed finish point",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
@@ -409,17 +409,17 @@
   },
   {
    "allow_path": {
-    "by": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 records its targets.components (a record change through its own goal) and the same plan re-evaluates; no code edit",
+    "by": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (4) and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 (8) record their targets.components (record data applied by StegVerse-Labs/.github#3358, merged 57341242, registry generation 326, under Coordination rulings (a) StegVerse-org/.github#167 c6394499602 and (b) c6394499771) and the same plan re-evaluates to ALLOW (run gov-registration-plan-with-ruling); no code edit",
     "state": "BOUND"
    },
    "degraded_forms": {
-    "E0": "no LLM: canonical_task_registration_transition.py plan returns six-field FAIL_CLOSED ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED with the ruling (observed) and REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it (observed); the next attempt is the next registration request event",
+    "E0": "no LLM: canonical_task_registration_transition.py plan returns ALLOW with the ruling (observed at Labs main @6bb43816, registry generation 326) and six-field FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it (observed); an apply is a registration request event, not part of this plan",
     "E1": "one LLM lane authors repairs to the registration request; the deterministic verifier and exact-head CI receipts stand in for cross-checking",
     "E2": "two LLM lanes: one authors a repair to the registration request, one cross-checks it; the deterministic verifier decides",
     "E3": "three LLM lanes may author repairs to the registration request and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/.github@e9085315410f26252214dc64429be19d835886ab: python scripts/canonical_task_registration_transition.py plan",
+    "by": "StegVerse-Labs/.github@6bb43816736c1d558432fa0fc13144cc9053eb8f: python scripts/canonical_task_registration_transition.py plan",
     "dispositions": [
      "ALLOW",
      "FAIL_CLOSED"
@@ -432,10 +432,10 @@
     "gov-registration-plan-without-ruling",
     "gov-registration-plan-with-ruling"
    ],
-   "observed_state": "FAIL_CLOSED ADJACENCY_RULING_CANDIDATE_COMPONENTS_UNDECLARED",
+   "observed_state": "ALLOW (plan with the adjacency ruling at Labs main @6bb43816); FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE without it",
    "requires_llms": 0,
    "subject": "REGISTRATION_PLAN",
-   "what": "canonical task registration of GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (request and adjacency ruling at #3326)"
+   "what": "canonical task registration of GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (request and adjacency ruling at #3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))"
   },
   {
    "allow_path": {
@@ -475,7 +475,7 @@
     "failed_predicate": "RELEASE_PUBLICATION_HAS_AN_E0_TERMINAL",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the TV/TVC release candidate record event",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "publish through the manifest-driven TVC portable publisher (tasks/tvc_portable_github_release_publisher.py: validate_candidate/validate_authorization/publish) with a new immutable tag at a commit that contains the gate, so no retarget is needed",
     "retry_entrypoint": "StegVerse-Labs/TVC: tasks/tvc_portable_github_release_publisher.py publish"
    },
@@ -508,12 +508,12 @@
     "failed_predicate": "ENTITLEMENT_INPUT_HAS_AN_E0_PATH",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next record change of PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "keep entitlement separate from the gate disposition so the verdict never waits on payment; record the consumed task's components and its six-field FAIL_CLOSED when the provider is unobserved",
     "retry_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point"
    },
    "degraded_forms": {
-    "E0": "no observed E0 path: the consumed task depends on an external payment provider and declares no components",
+    "E0": "no observed E0 path: the consumed task depends on an external payment provider (its 4 targets.components are declared since StegVerse-Labs/.github#3358, generation 326, which does not make the provider ingress observable at E0)",
     "E1": "one LLM lane authors repairs to the entitlement input; the deterministic verifier and exact-head CI receipts stand in for cross-checking",
     "E2": "two LLM lanes: one authors a repair to the entitlement input, one cross-checks it; the deterministic verifier decides",
     "E3": "three LLM lanes may author repairs to the entitlement input and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
@@ -540,7 +540,7 @@
     "E3": "three LLM lanes may author repairs to the admission record and cross-check each other's diffs; the deterministic verifier alone decides the verdict"
    },
    "e0_terminal": {
-    "by": "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f: resident-runtime/sv_work_items.py::admit (SV_CHANGE_ADMIT)",
+    "by": "StegVerse-Labs/.github@6b13c3a749b2940d6142644196a8302823c1f45a: resident-runtime/sv_work_items.py::admit (SV_CHANGE_ADMIT)",
     "dispositions": [
      "ALLOW",
      "DENY",
@@ -551,11 +551,11 @@
    "kind": "HANDOFF",
    "lowest_supported_mode": "E0",
    "observed_by": [],
-   "observed_state": "revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb). Still not admitted: StegVerse-Labs/.github#3326 (draft @e9085315), StegVerse-SDK#556 (draft). admission not exercised; consequence path pending drafts",
+   "observed_state": "revision 21 (Lane D, StegVerse-org/.github#167, gh pr view on 2026-10-29): the two drafts named in the revision 15 text below are superseded and are no longer admission targets. StegVerse-Labs/.github#3326 (draft @e9085315) is superseded by StegVerse-Labs/.github#3358, merged as 5734124204d5f32c0e3040156c962183d3ae4a06 (registry generation 326), which carries the re-sealed registration request and adjacency ruling; Coordination is closing #3326 unmerged. StegVerse-org/StegVerse-SDK#556 was closed unmerged on 2026-10-28T16:04:40Z, two seconds after StegVerse-org/StegVerse-SDK#567 merged as 6b3ccee27dd20b5d930bf9667c855fb2db8223e1, which carries #556's commits as authored plus #562 and #565. Both successors are merged, but each is still listed as a dependency because admission through SV_CHANGE_ADMIT is not exercised for either: Labs main 6bb43816 holds no NATIVE SV_CHANGE record for #3358 or SDK#567 (data/sv-work-items/migration holds only MIGRATED_HISTORICAL records), so LC-GOV-06 stays. Revision 15 text follows. revision 15 live-state refresh (P1, #163, gh pr view at 2026-10-25T05:35Z): admitted and removed - StegVerse-Labs/.github#3313 (merged 370ea596), #3311 (merged c164f29d), #3255 (closed 2026-10-24T23:22:30Z as superseded by #3344, merged ba2677cb). Still not admitted: StegVerse-Labs/.github#3326 (draft @e9085315), StegVerse-SDK#556 (draft). admission not exercised; consequence path pending drafts",
    "requires_llms": 0,
    "unadmitted_dependencies": [
-    "StegVerse-Labs/.github#3326 draft @e9085315",
-    "StegVerse-org/StegVerse-SDK#556 draft @406774e7 (revision 15: head moved from 2db2ad2e; the plan root sdk556 stays pinned at 2db2ad2e)"
+    "StegVerse-Labs/.github#3358 merged 5734124204d5f32c0e3040156c962183d3ae4a06 (supersedes #3326): no NATIVE SV_CHANGE admission record",
+    "StegVerse-org/StegVerse-SDK#567 merged 6b3ccee27dd20b5d930bf9667c855fb2db8223e1 (carries the closed #556's commits): no NATIVE SV_CHANGE admission record"
    ],
    "what": "the draft surfaces on the path reach main through the ecosystem SV_CHANGE_ADMIT transition, not a person"
   },
@@ -565,7 +565,7 @@
     "failed_predicate": "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
     "failure_code": "OPERATING_MODE_E0_TERMINAL_MISSING",
     "next_attempt": "on the next push to the TV/TVC release publisher that records the publishing principal as an observed, receipted state",
-    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+    "owning_existing_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
     "required_evidence_or_repair": "a deterministic E0 check on the release path that refuses six-field when the publishing principal is an org member, collaborator or app installation, and a release route that crosses into StegVerse-org through InTr instead (after Coordination rules whether a GitHub App installation or a release token is membership)",
     "retry_entrypoint": "StegVerse-Labs/TVC: tasks/tvc_portable_github_release_publisher.py validate_authorization, then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)"
    },
@@ -629,7 +629,7 @@
    "what": "the release verdict becomes runtime: ORGANIZATION_RECEIPT GOVERNANCE_PRODUCT_RELEASE appended under the ledger lock"
   }
  ],
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
  "owning_lane": "GitHub Product lane (Lane C)",
  "schema": "stegverse.ladder-conformance-declaration/v1",
  "sealed_expected_evidence_predicates": [

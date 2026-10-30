@@ -1,0 +1,11 @@
+{
+ "allow_ready_after_genesis": 156,
+ "carry_allow": [],
+ "class_counts": {
+  "DESTINATION_RECEIPT_LEDGERED": 156
+ },
+ "genesis_allow": [],
+ "paths": 156,
+ "problems": {},
+ "verified": true
+}

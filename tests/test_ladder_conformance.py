@@ -96,13 +96,13 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
         # revision 16 (Coordination ruling): the cvk-only both-ends anchor; KV's own head record decides (ruling A)
-        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@77d28d838ec6714044a192d4f549c3ca9366ff3f: "
+        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@44e7ae56f4efee0a19dfd3d7db5c524b68adc46b: "
                                                             "runtime/kv_receipt_ledgers.py::read_receipt_ledger"))
         self.assertEqual(anc["e0_terminal"]["dispositions"], ["ALLOW", "DENY", "FAIL_CLOSED"])
-        self.assertEqual(anc["observed_by"], ["cvk263-chain-probe", "cvk263-anchor-production-prerequisites"])
+        self.assertEqual(anc["observed_by"], ["cvk263-chain-probe", "cvk263-anchor-production-prerequisites", "tvc542-bind-cvk263"])
         self.assertEqual([b["id"] for b in anc["allow_path"]["blockers"]],
                          ["KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED", "KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR",
-                          "ORG_CROSSING_READER_NOT_INSTALLED", "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED"])
+                          ])  # revisions 17/18: ORG_CROSSING_READER_NOT_INSTALLED (cvk#276) and KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED cleared
         self.assertEqual([r["ref"] for r in anc["external_dependency_refs"]], ["ORG-LEDGER-HEAD-SIGNER-001"])
         self.assertTrue(anc["external_dependency_refs"][0]["owner"].startswith("GitHub Product lane"))
         self.assertIn("no bot does it", anc["external_dependency_refs"][0]["evidence"])
@@ -117,18 +117,22 @@ class CommittedArtifacts(unittest.TestCase):
                          ["ORG-LEDGER-HEAD-SIGNER-001"])
         for w_ in ("KV", "SKAP_VAULT"):
             for c_ in ("KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR", "KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED",
-                       "KV_RECEIPT_CHAIN_GENESIS_PIN_MECHANISM_ORG_HOSTED", "KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED"):
+                       "KV_LEDGER_HEAD_SIGNER_NOT_PUBLISHED"):
                 self.assertEqual(anc["required_outcomes"]["PROD_PREREQ_%s_%s" % (c_, w_)], ["FAIL_CLOSED"], (c_, w_))
-        self.assertEqual(anc["required_outcomes"]["ORG_CROSSING_READER_INSTALLED"], ["FAIL_CLOSED"])
+        # revision 17: the Org-end reader is installed at continuity-vault-kit @acfd2be5 (cvk#276); the org-hosted pin rows are gone (cvk#277)
+        self.assertEqual(anc["required_outcomes"]["ORG_CROSSING_READER_INSTALLED"], ["ALLOW"])
+        self.assertFalse([k for k in anc["required_outcomes"] if "PIN_MECHANISM_ORG_HOSTED" in k])
         self.assertEqual(anc.get("bypass_paths") or [], [])
-        for s_ in ("PROD_LAYER1_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY", "LAYER1_TRANSPORT_NOT_INSTALLED",
-                   "LAYER1_NODE_LEDGER_WITHOUT_ANCHOR", "LAYER1_EPHEMERAL_ANCHORED_BY_UNSIGNED_OPENED_RECORD",
-                   "PROD_LAYER1_INJECTED_DISGUISED_EVALUATOR", "LAYER1_EPHEMERAL_OPENED_RECORD_SIGNED_BY_UNPUBLISHED_KEY",
-                   "LAYER1_INGRESS_RECORD_NAMES_NO_INSTALLED_TRANSPORT"):
+        # revision 21 (Coordination ruling (b), StegVerse-org/.github#162 c6509636142): layer 1 reads the node's OWN ledger chain;
+        # the org-ledger anchor, the endpoint designation and the EPHEMERAL anchored rows are gone with their modules
+        for s_ in ("PROD_LAYER1_NO_NODE_CHAIN_BOUND", "PROD_LAYER1_E0_NODE_CHAIN_ASSERTED_IDENTITY", "LAYER1_TRANSPORT_NOT_INSTALLED",
+                   "LAYER1_NODE_CHAIN_ADMITTED_HEALTHY", "LAYER1_WRONG_GENESIS_PIN", "LAYER1_TRANSPORT_KEY_NOT_THE_BOUND_NODE_KEY",
+                   "PROD_LAYER1_INJECTED_DISGUISED_EVALUATOR", "LAYER1_CHAIN_OF_ANOTHER_NODE", "LAYER1_FOREIGN_PRODUCER_REPORTS"):
             self.assertIn(s_, decl[l1]["required_outcomes"])
+        for s_ in decl[l1]["required_outcomes"]:
+            for retired in ("ANCHOR", "EPHEMERAL", "PERMANENT", "ORG_STORE", "INGRESS_RECORD"):
+                self.assertNotIn(retired, s_)
         self.assertNotIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(d, l1))
-        # revision 9: cvk#258 @9551edab refuses the caller-created unlabelled org store, so it is now required
-        self.assertEqual(decl[l1]["required_outcomes"]["LAYER1_PERMANENT_ON_CALLER_CREATED_UNLABELLED_ORG_STORE"], ["DENY", "FAIL_CLOSED"])
         # layer 2's TV/TVC bypass is observed at TVC#541: the custody chain's refusals are required
         self.assertIn("skap-custody-chain-probe-tvc541", decl[l2]["observed_by"])
         self.assertIn("CHAIN_LAYER2_NOT_BOUND_TO_LAYER1", decl[l2]["required_outcomes"])
@@ -173,16 +177,10 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("LC-KV-15", tasks)
         self.assertNotIn("LC-KV-16", tasks)  # closed in revision 6: (a), (b) and (c) are FAIL_CLOSED at #432 @a2ee67e6
         self.assertNotIn("LC-KV-10", tasks)
-        m = tasks["LC-KV-21"]  # revision 16: narrowed to TV/TVC's reader binding to KV's current designation
-        self.assertEqual(m["blocker"], "KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED")
-        self.assertEqual(m["items"], ["H-KV-ENDPOINT-LEDGER-ANCHOR"])
-        self.assertEqual(m["failure_code"], "LADDER_ALLOW_PATH_UNBOUND")
-        # re-pins inside TV/TVC's own reader are class A; TVC main @b686a60b does not bind to continuity-vault-kit @77d28d83
-        self.assertEqual(m["failure_class"]["class"], "A")
-        self.assertTrue(m["owning_lane"].startswith("GitHub Product lane as TV/TVC owner"))
-        self.assertIn("77d28d83", m["required_repair"])
-        self.assertIn("77d28d83", m["proposed_resolution"])
-        self.assertIn("KV_RECEIPT_CHAIN_DESIGNATION_DIGEST_MISMATCH", m["required_repair"])
+        # revision 18: LC-KV-21 cleared. The probe fed the pin-wrapped-entry reader a raw cvk entry; neither repo was
+        # non-conforming (TVC's parser accepts the raw entry, its reader accepts the entry wrapped with TVC's own digest)
+        self.assertNotIn("LC-KV-21", tasks)
+        m = tasks["LC-KV-27"]
         for t in tasks.values():  # withdrawn names and ledger-wide encryption are gone from every proposal
             self.assertNotIn("gateway node", t["proposed_resolution"], t["task_id"])
             self.assertNotIn("encrypted contents", t["proposed_resolution"], t["task_id"])
@@ -202,11 +200,11 @@ class CommittedArtifacts(unittest.TestCase):
         for tid in ("LC-KV-18", "LC-KV-19", "LC-KV-20", "LC-KV-25"):
             self.assertNotIn(tid, tasks)
         anc = sorted(t["task_id"] for t in tasks.values() if "H-KV-ENDPOINT-LEDGER-ANCHOR" in t["items"])
-        self.assertEqual(anc, ["LC-KV-21", "LC-KV-27", "LC-KV-28", "LC-KV-29"])
+        self.assertEqual(anc, ["LC-KV-27", "LC-KV-28"])
+        self.assertNotIn("LC-KV-29", tasks)  # revision 17: ORG_CROSSING_READER_INSTALLED is ALLOW at continuity-vault-kit @acfd2be5
         exp = {"LC-KV-27": ("KV_RECEIPT_CHAIN_GENESIS_NOT_PINNED", "B", "Lane D (KV and WorkSpace"),
                "LC-KV-28": ("KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR", "B", "Lane D (KV and WorkSpace)"),
-               "LC-KV-29": ("ORG_CROSSING_READER_NOT_INSTALLED", "B", "InTr and Mesh Destinations lane (Lane B"),
-               "LC-KV-21": ("KV_RECEIPT_CHAIN_READERS_NOT_ALIGNED", "A", "GitHub Product lane as TV/TVC owner")}
+               }
         for tid, (blocker, cls, lane) in exp.items():
             t = tasks[tid]
             self.assertEqual((t["blocker"], t["failure_code"], t["failure_class"]["class"]),
@@ -219,9 +217,34 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("SUPPLIED_HB_EPOCH", tasks["LC-KV-27"]["required_repair"])
         self.assertIn("a fabricated genesis digest is not evidence", tasks["LC-KV-27"]["required_repair"])
         self.assertIn("SITE-CLOUD-KV-4347408852127319cbda574f02e03edb", tasks["LC-KV-28"]["required_repair"])
-        self.assertIn("6372641743", tasks["LC-KV-29"]["required_repair"])
-        self.assertIn("never a hop inside one org", tasks["LC-KV-29"]["required_repair"])
+        self.assertIn("KV_OWNED_RECEIPT_CHAIN_GENESIS_PIN", tasks["LC-KV-27"]["required_repair"])  # revision 17: mechanism exists, value pending
         self.assertNotIn("H-KV-ENDPOINT-LEDGER-ANCHOR", tasks["LC-KV-05"]["items"])
+
+    def test_rev18_org_root_follows_the_g17_fold_and_lc_kv_21_is_cleared_by_a_conforming_probe(self):
+        plan = json.loads((cli.BASE / "observation-plan.json").read_text())["goals"][KV]
+        # the G17 fold (StegVerse-org/.github 64e2bfd) removed .github/workflows/intr-path-transfer.yml; its job is
+        # path-transfer in organization-ledger-writer.yml; the org root follows main, no source path names the removed file
+        self.assertTrue(plan["roots"]["org"]["commit"].startswith("35c94a06"))
+        paths = [(x["root"], x["path"]) for x in plan["sources"]]
+        self.assertNotIn(("org", ".github/workflows/intr-path-transfer.yml"), paths)
+        self.assertIn(("org", ".github/workflows/organization-ledger-writer.yml"), paths)
+        obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
+        self.assertEqual({s_["commit"][:8] for s_ in obs["sources"] if s_["root"] == "org"}, {"35c94a06"})
+        # LC-KV-21: the raw cvk entry is refused by design by the pin-wrapped-entry reader; TVC's parser, the wrapped
+        # entry and the vendored snapshot equality are the binding rows, each ALLOW
+        run = next(r for r in obs["runs"] if r["run_id"] == "tvc542-bind-cvk263")
+        got = {o["subject"]: o["disposition"] for o in run["outcomes"]}
+        decl = {i["id"]: i for i in _inputs()["declarations"][KV]["items"]}
+        ro = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]["required_outcomes"]
+        for w_ in ("KV", "SKAP_VAULT"):
+            self.assertEqual(got["TVC_READER_ON_CVK_HEAD_RAW_ENTRY_" + w_], "FAIL_CLOSED")
+            self.assertNotIn("TVC_READER_ON_CVK_HEAD_RAW_ENTRY_" + w_, ro)
+            for n_ in ("TVC_READER_ON_CVK_HEAD_WRAPPED_ENTRY_", "TVC_PARSER_ON_CVK_HEAD_CUSTODY_LEDGERS_CONFIG_",
+                       "CVK_ENTRY_EQUALS_TVC_VENDORED_SNAPSHOT_", "CVK_CONTRACT_DIGEST_VS_TVC_PIN_"):
+                self.assertEqual(got[n_ + w_], "ALLOW", n_ + w_)
+                self.assertEqual(ro[n_ + w_], ["ALLOW"], n_ + w_)
+        tasks = {t["task_id"] for t in _inputs()["tasks"]}
+        self.assertNotIn("LC-KV-21", tasks)
 
     def test_rev16_withdrawn_path_cannot_be_rebuilt(self):
         # Coordination ruling: no InTr hop inside an org, no LLM-adapter endpoint without an externally established healthy
@@ -249,8 +272,11 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("merge-ready", anc)
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         run = next(r for r in obs["runs"] if r["run_id"] == "cvk263-anchor-production-prerequisites")
-        self.assertTrue(run["pin"].endswith("@77d28d838ec6714044a192d4f549c3ca9366ff3f"))
+        self.assertTrue(run["pin"].endswith("@44e7ae56f4efee0a19dfd3d7db5c524b68adc46b"))
         for o in run["outcomes"]:
+            if o["subject"] == "ORG_CROSSING_READER_INSTALLED":  # revision 17: installed (cvk#276)
+                self.assertEqual(o["disposition"], "ALLOW")
+                continue
             self.assertEqual(o["disposition"], "FAIL_CLOSED", o["subject"])
             for k in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
                       "owning_existing_goal", "next_attempt"):
@@ -270,10 +296,13 @@ class CommittedArtifacts(unittest.TestCase):
 
     def test_empty_tvc_signer_file_is_a_class_c_tvc_task(self):
         # Name kept from main for the test ratchet (a test at base must run at head).
-        # Revision 16: the empty TVC signer file is no longer a class C TVC task; it is the
-        # external dependency ORG-LEDGER-HEAD-SIGNER-001, whose key step is owner-only.
+        # Revision 16: the empty TVC signer file is no longer a class C TVC task.
+        # Revision 21 (Coordination ruling (b), StegVerse-org/.github#162 c6509636142): layer 1 reads the node's OWN
+        # ledger chain; LC-KV-13 no longer carries the org-ledger anchor, its head signer or a PERMANENT anchored read.
         tasks = {t["task_id"]: t for t in _inputs()["tasks"]}
-        self.assertIn("ORG-LEDGER-HEAD-SIGNER-001", tasks["LC-KV-13"]["required_repair"])
+        self.assertIn("NODE_OWN_LEDGER_CHAIN", tasks["LC-KV-13"]["required_repair"])
+        for retired in ("ORG-LEDGER-HEAD-SIGNER-001", "PERMANENT", "kv-anchor-schema"):
+            self.assertNotIn(retired, json.dumps(tasks["LC-KV-13"]))
         t = tasks["LC-KV-13"]
         for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
             self.assertTrue(str(t.get(k) or "").strip(), k)
@@ -353,7 +382,7 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_" + w_], ["DENY"])
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         probe = next(r for r in obs["runs"] if r["run_id"] == "cvk263-chain-probe")
-        self.assertTrue(probe["pin"].endswith("@77d28d838ec6714044a192d4f549c3ca9366ff3f"))
+        self.assertTrue(probe["pin"].endswith("@44e7ae56f4efee0a19dfd3d7db5c524b68adc46b"))
         rows = {o["subject"]: o for o in probe["outcomes"]}
         for w_ in ("KV", "SKAP_VIA_GATE"):
             for c_ in ("KV_END_ONLY", "ORG_RECORDS_AN_OLDER_HEAD_ONLY"):

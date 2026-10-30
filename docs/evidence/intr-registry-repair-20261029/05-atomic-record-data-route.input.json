@@ -1,0 +1,50 @@
+{
+  "schema": "stegverse.registry-record-data-proposal/v1",
+  "authority_effect": "NONE",
+  "registry_generation_base": 322,
+  "row_fields": [
+    {
+      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "path": [
+        "authority_model"
+      ],
+      "before": {
+        "transport_protocol": "INTERLOCK_INTR",
+        "participating_runtime_authority": "LOCAL_TO_EACH_FRAMEWORK",
+        "stegverse_output_governance": "STEGVERSE",
+        "external_framework_governance": "NOT_ASSUMED"
+      },
+      "after": {
+        "transport_protocol": "INTERLOCK_INTR",
+        "participating_runtime_authority": "LOCAL_TO_EACH_FRAMEWORK",
+        "stegverse_output_governance": "STEGVERSE",
+        "external_framework_governance": "NOT_ASSUMED",
+        "task_registry_mints_execution_authority": false
+      }
+    },
+    {
+      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "path": [
+        "cosv_task_vector"
+      ],
+      "before": {
+        "$absent": true
+      },
+      "after": "50000000102000"
+    },
+    {
+      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "path": [
+        "source_state_vector_ref"
+      ],
+      "before": {
+        "$absent": true
+      },
+      "after": "control/task-vectors/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json"
+    }
+  ],
+  "register_from_record": [
+    "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+  ],
+  "note": "REVIEW ONLY: atomic existing record-data route alternative; no live apply authorized or performed; must be adjudicated by Registry owner against native registration/collision policy."
+}

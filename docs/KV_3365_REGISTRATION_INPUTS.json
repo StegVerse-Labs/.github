@@ -56,13 +56,14 @@
   "ready_for_registration": false,
   "sealed_scope_created": false,
   "observed_source": {
-    "head": "0fff5f557e8cec837ebb6da413ec3ec70d5cc562",
-    "registry_blob": "ea0c6d61881da8b19398e7becbb62d9e727a4379",
-    "generation": 322,
-    "aggregate_rows": 120,
-    "task_shards": 214,
+    "head": "751e6bc9c5feffa501d9e4a733b6c9e79037985c",
+    "registry_blob": "96f4f1a9212cdda301a05c9075e0e5b09735ba83",
+    "generation": 326,
+    "aggregate_rows": 122,
+    "task_shards": 215,
     "request_files": [
-      "control/canonical-task-registration-requests/ec9-when-ai-services-fail-publication-001.json"
+      "control/canonical-task-registration-requests/ec9-when-ai-services-fail-publication-001.json",
+      "control/canonical-task-registration-requests/real-governance-assessment-sample-001.json"
     ]
   },
   "observed_source_census": {
@@ -74,10 +75,12 @@
     "approved_batch": false
   },
   "verifier_gap": {
-    "cvk_commit": "b1a66008dccad0d301a7e892e6619f47002ec26d",
+    "cvk_commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
     "existing_candidates": [
       "runtime/kv_receipt_ledgers.py::receipt_on_ledger",
-      "runtime/task_registry_event_sovereign_kv_binding.py::validate_vault_lineage_custody_result"
+      "runtime/task_registry_event_sovereign_kv_binding.py::validate_vault_lineage_custody_result",
+      "StegVerse-Labs/.github:resident-runtime/organization_custody_readback.py::readback",
+      "StegVerse-Labs/.github:scripts/consume_organization_custody_readback_request.py"
     ],
     "binding_status": "PARTIAL_PRIMITIVES_ONLY_NOT_A_BATCH_FINISH_POINT",
     "missing_composition": [
@@ -86,6 +89,13 @@
       "task/manifest-bound native organization and KV receipt verification via existing owners",
       "preserved contradictory provenance and independently manifested named-consumer cutover"
     ],
-    "no_supplied_boolean_or_test_double_is_authority": true
+    "no_supplied_boolean_or_test_double_is_authority": true,
+    "binding_analysis_ref": "docs/KV_3365_CUSTODY_BINDINGS.md",
+    "existing_organization_custody_owner": {
+      "task_id": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+      "cosv": "10000000100000",
+      "coordination_state": "ACTIVE",
+      "authority_for_migration": false
+    }
   }
 }

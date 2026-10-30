@@ -70,3 +70,12 @@ This source-review proposal changes no canonical task row, task vector, scope se
 
 Session Prompt Count: 2. Cumulative Goal Prompt Count: UNVERIFIED; do not borrow the parent coordination Goal's exhausted budget or reset the migration's history.
 Manual user work: None. Existing owner review is requested through the issues.
+
+
+## 2026-10-29 continuation: accepted generation 326 and custody owner mapping
+
+Live main `751e6bc9c5feffa501d9e4a733b6c9e79037985c` has Registry generation **326**, **122** rows, **215** task shards, aggregate blob `96f4f1a9212cdda301a05c9075e0e5b09735ba83`. No aggregate #3365 reference or migration registration request was found. The two committed requests belong to EC9 and the assessment Goal. Historical generation-322 counts above are retained as their dated observation.
+
+PR #3390's prior exact head `5da2cd7c82ed1382143815b0de9dd7391863df57` completed all six returned check runs successfully, including ratchet; no submitted review or owner response to its decision table was present at this read. That old-head CI is not validation of this new revision.
+
+[Existing custody binding analysis](KV_3365_CUSTODY_BINDINGS.md) identifies the ACTIVE `ORGANIZATION-BATCH-CUSTODY-REPLAY-001` owner and the precise reader/consumer boundaries. Its identity and the separate KV-SKAP plan cannot register #3365. CVK advanced to `44e7ae56f4efee0a19dfd3d7db5c524b68adc46b`; its test-set finish-point selector is not batch completion evidence. The full migration verifier, identity/authority, approved private batch and metrics still need original-owner resolution. Session Prompt Count: 3; cumulative Goal count remains UNVERIFIED, without reset. No native plan/apply/verify or KV write/readback is claimed.
