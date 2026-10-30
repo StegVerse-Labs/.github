@@ -96,7 +96,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
         # revision 16 (Coordination ruling): the cvk-only both-ends anchor; KV's own head record decides (ruling A)
-        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@44e7ae56f4efee0a19dfd3d7db5c524b68adc46b: "
+        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@933d270cef1aa7e9abe4e6f927747b888a95a08e: "
                                                             "runtime/kv_receipt_ledgers.py::read_receipt_ledger"))
         self.assertEqual(anc["e0_terminal"]["dispositions"], ["ALLOW", "DENY", "FAIL_CLOSED"])
         self.assertEqual(anc["observed_by"], ["cvk263-chain-probe", "cvk263-anchor-production-prerequisites", "tvc542-bind-cvk263"])
@@ -272,7 +272,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("merge-ready", anc)
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         run = next(r for r in obs["runs"] if r["run_id"] == "cvk263-anchor-production-prerequisites")
-        self.assertTrue(run["pin"].endswith("@44e7ae56f4efee0a19dfd3d7db5c524b68adc46b"))
+        self.assertTrue(run["pin"].endswith("@933d270cef1aa7e9abe4e6f927747b888a95a08e"))
         for o in run["outcomes"]:
             if o["subject"] == "ORG_CROSSING_READER_INSTALLED":  # revision 17: installed (cvk#276)
                 self.assertEqual(o["disposition"], "ALLOW")
@@ -382,7 +382,7 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_" + w_], ["DENY"])
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         probe = next(r for r in obs["runs"] if r["run_id"] == "cvk263-chain-probe")
-        self.assertTrue(probe["pin"].endswith("@44e7ae56f4efee0a19dfd3d7db5c524b68adc46b"))
+        self.assertTrue(probe["pin"].endswith("@933d270cef1aa7e9abe4e6f927747b888a95a08e"))
         rows = {o["subject"]: o for o in probe["outcomes"]}
         for w_ in ("KV", "SKAP_VIA_GATE"):
             for c_ in ("KV_END_ONLY", "ORG_RECORDS_AN_OLDER_HEAD_ONLY"):
@@ -452,6 +452,40 @@ class CommittedArtifacts(unittest.TestCase):
             raw = next((base / "observations" / "raw").glob("kv-finish-point.out"))
             raw.write_text(raw.read_text() + "x")
             self.assertEqual(cli.check(base)["failure_code"], "OPERATING_MODE_E0_WITNESS_UNBOUND")
+
+    def test_revision_23_cvk_pin_llmad_labels_and_native_push_receipt_coverage(self):
+        # Lane D, StegVerse-org/.github#167 (Coordination c6512573361, c6512694608, c6512705741).
+        plan = json.loads((lc.BASE / "observation-plan.json").read_text())["goals"]
+        kvr, govr = plan[KV]["roots"], plan[GOV]["roots"]
+        head = "933d270cef1aa7e9abe4e6f927747b888a95a08e"
+        for k in ("cvk258", "cvk259", "cvk263"):
+            self.assertEqual(kvr[k]["commit"], head, k)
+            self.assertIn("re-pins to the #291 merge commit after the merge", kvr[k]["ref"], k)
+        # the adjacency ruling's finish-point source is unchanged (no re-ruling)
+        self.assertEqual(kvr["cvkruling"]["commit"], "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b")
+        # the bare #428 / #429 roots are labeled as merged via LLM-adapter#430 (649f0775); their commits are unchanged
+        for k, n, c in (("llmad", "428", "0b37fe3b"), ("llmad429", "429", "5f5f7bbe")):
+            self.assertTrue(kvr[k]["commit"].startswith(c), k)
+            self.assertIn("merged via StegVerse-org/LLM-adapter#430 (merge commit 649f0775", kvr[k]["ref"], k)
+            self.assertIn("#" + n, kvr[k]["ref"], k)
+        # LC-GOV-07: Labs#3358's coverage is the native Labs push receipt; SDK#567's old root is unchanged
+        self.assertEqual(govr["labsledger"]["commit"], "c32f04bd2e2b638da63abd4edecd8be9d6669d2d")
+        adm = {i["id"]: i for i in _inputs()["declarations"][GOV]["items"]}["H-GOV-ADMISSION"]
+        deps = " ".join(adm["unadmitted_dependencies"])
+        self.assertNotIn("StegVerse-Labs/.github#3358", deps)
+        self.assertIn("StegVerse-org/StegVerse-SDK#567 merged 6b3ccee27dd20b5d930bf9667c855fb2db8223e1", deps)
+        self.assertIn("ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d", adm["observed_state"])
+        self.assertIn("a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c", adm["observed_state"])
+        self.assertEqual(adm["observed_by"], [])
+        obs = json.loads((cli.BASE / "observations" / (GOV + ".observations.json")).read_text())
+        run = next(r for r in obs["runs"] if r["run_id"] == "labs-native-push-receipt")
+        self.assertEqual(run["status"], "OBSERVED")
+        self.assertEqual(run["pin"], "StegVerse-Labs/.github@c32f04bd2e2b638da63abd4edecd8be9d6669d2d")
+        for pat in run["patterns"]:
+            self.assertTrue([h for h in run["hits"] if h["pattern"] == pat], pat)
+        task = json.loads((lc.BASE / "scoped-tasks" / "LC-GOV-07.json").read_text())
+        self.assertIn("c32f04bd", task["proposed_resolution"])
+        self.assertIn("StegVerse-SDK#567's old root is unchanged", task["proposed_resolution"])
 
 
 class Refusals(unittest.TestCase):

@@ -14,6 +14,12 @@
      "ref": "StegVerse-Labs/.github#3326 (historical pinned observation root, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
      "repo": "StegVerse-Labs/.github"
     },
+    "labsledger": {
+     "commit": "c32f04bd2e2b638da63abd4edecd8be9d6669d2d",
+     "kind": "git",
+     "ref": "StegVerse-Labs/.github refs/stegverse/organization-ledger @c32f04bd (the organization-ledger append of org receipt ec1ca4d8 for the native Labs push receipt of the push 613de515..293d9df1, StegVerse-Labs/.github#3426 merged 15c3f6c1; read-only fetch)",
+     "repo": "StegVerse-Labs/.github"
+    },
     "labsmain": {
      "commit": "6b13c3a749b2940d6142644196a8302823c1f45a",
      "kind": "git",
@@ -382,6 +388,24 @@
      "repo": "StegVerse-Labs/.github",
      "run_id": "pr-labs3311",
      "what": "PR state snapshot (EXISTING_IDENTITY mode + WorkerCoordinator claim request)"
+    },
+    {
+     "globs": [
+      "receipts/ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d.json",
+      "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "\"operation\": \"sv_push_receipt\"",
+      "\"repository\": \"StegVerse-Labs/.github\"",
+      "\"new_sha\": \"293d9df18e5b81e80c2702f256be81a4c09b1785\"",
+      "\"old_sha\": \"613de515b110b3f1bb1ac42d18e1483c33fb001b\"",
+      "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\"",
+      "\"result_sha256\": \"sha256:69c0c9ee37c34a3076baf50b0762101708abbfb18c6e9c5a23232875e614e8c7\""
+     ],
+     "root": "labsledger",
+     "run_id": "labs-native-push-receipt",
+     "what": "the native Labs push receipt on the organization ledger (org receipt ec1ca4d8, repo receipt a29bc0f9)"
     }
    ],
    "sources": [
@@ -456,27 +480,35 @@
     {
      "path": ".stegverse/transition-ledger/org-contract.json",
      "root": "org"
+    },
+    {
+     "path": "receipts/ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d.json",
+     "root": "labsledger"
+    },
+    {
+     "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
+     "root": "labsledger"
     }
    ]
   },
   "KV-SKAP-VAULT-FUNCTIONAL-001": {
    "roots": {
     "cvk258": {
-     "commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
+     "commit": "933d270cef1aa7e9abe4e6f927747b888a95a08e",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit main @44e7ae56 (the merge of #290 on the #289 merge @3d68fe1e; revision 22 re-pin from the #289 head @c379f75f: KV layer 1 on the node's own ledger chain, the six runtime/intr_pinned copies removed, the pin text and on_upstream_main following the merged LLM-adapter#430 @649f0775, the pinned-code exec targets a literal tuple)",
+     "ref": "StegVerse-Labs/continuity-vault-kit PR #291 head @933d270c (draft, on main 44e7ae56 = the #290 merge; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain); this root re-pins to the #291 merge commit after the merge",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk259": {
-     "commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
+     "commit": "933d270cef1aa7e9abe4e6f927747b888a95a08e",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit main @44e7ae56 (the merge of #290 on the #289 merge @3d68fe1e; revision 22 re-pin from the #289 head @c379f75f: KV layer 1 on the node's own ledger chain, the six runtime/intr_pinned copies removed, the pin text and on_upstream_main following the merged LLM-adapter#430 @649f0775, the pinned-code exec targets a literal tuple)",
+     "ref": "StegVerse-Labs/continuity-vault-kit PR #291 head @933d270c (draft, on main 44e7ae56 = the #290 merge; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain); this root re-pins to the #291 merge commit after the merge",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk263": {
-     "commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
+     "commit": "933d270cef1aa7e9abe4e6f927747b888a95a08e",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit main @44e7ae56 (the merge of #290 on the #289 merge @3d68fe1e; revision 22 re-pin from the #289 head @c379f75f: KV layer 1 on the node's own ledger chain, the six runtime/intr_pinned copies removed, the pin text and on_upstream_main following the merged LLM-adapter#430 @649f0775, the pinned-code exec targets a literal tuple)",
+     "ref": "StegVerse-Labs/continuity-vault-kit PR #291 head @933d270c (draft, on main 44e7ae56 = the #290 merge; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain); this root re-pins to the #291 merge commit after the merge",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvkruling": {
@@ -512,13 +544,13 @@
     "llmad": {
      "commit": "0b37fe3b786a2de687235f5d9d146af49ffee9cd",
      "kind": "git",
-     "ref": "StegVerse-org/LLM-adapter#428",
+     "ref": "StegVerse-org/LLM-adapter#428 pre-merge head @0b37fe3b, merged via StegVerse-org/LLM-adapter#430 (merge commit 649f0775; #428's commits are carried by #430)",
      "repo": "StegVerse-org/LLM-adapter"
     },
     "llmad429": {
      "commit": "5f5f7bbeea96d5f313effaa02f86b01196465247",
      "kind": "git",
-     "ref": "StegVerse-org/LLM-adapter#429",
+     "ref": "StegVerse-org/LLM-adapter#429 pre-merge head @5f5f7bbe, merged via StegVerse-org/LLM-adapter#430 (merge commit 649f0775; #429's commits are carried by #430)",
      "repo": "StegVerse-org/LLM-adapter"
     },
     "org": {
@@ -1762,6 +1794,13 @@
      "root": "cvk263",
      "run_id": "cvk263-anchor-production-prerequisites",
      "what": "continuity-vault-kit main @77d28d83 runtime/kv_receipt_ledgers.py receipt_ledger_prerequisites() and ORG_CROSSING_READER: the production prerequisites of the cvk-only both-ends anchor (H-KV-ENDPOINT-LEDGER-ANCHOR, revision 16)"
+    },
+    {
+     "kind": "gh_pr",
+     "number": 291,
+     "repo": "StegVerse-Labs/continuity-vault-kit",
+     "run_id": "pr-cvk291",
+     "what": "PR state snapshot (cvk node_receipt_common re-vendor at LLM-adapter main fb5ae1cb, native supplied_epoch, L1 owner text)"
     }
    ],
    "sources": [
