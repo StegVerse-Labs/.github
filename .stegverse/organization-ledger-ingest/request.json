@@ -1,18 +1,318 @@
 {
- "hb_epoch": 574296107,
- "operation": "sv_push_receipt",
- "push_receipt": {
-  "hb_epoch": "574296107",
-  "new_sha": "590b975f312747d75cd78a1edf9f3d693109125e",
-  "old_sha": "ad5e08fc35cd2e3fc08a229d72b5797cebf3d4b8",
-  "pushed_commits": [
-   "590b975f312747d75cd78a1edf9f3d693109125e"
-  ],
-  "pusher_session": "p1-sandbox-and-hcb-20261024",
-  "ref": "refs/heads/p1/sdk-push-receipt-recording",
-  "repository": "StegVerse-org/StegVerse-SDK",
-  "result_sha256": "sha256:b71da554fc327ac67c2544dc81fba54f9c3910235951e1647765727f36bbb5a7",
-  "schema": "stegverse.sv_push_receipt.v1"
+ "admission": {
+  "actor_session": "p1-ecosystem-ai-lane",
+  "change_commits": {
+   "base_commit": "613de515b110b3f1bb1ac42d18e1483c33fb001b",
+   "head_commit": "293d9df18e5b81e80c2702f256be81a4c09b1785"
+  },
+  "corpus_head": "cc8eb0f34b5209b03464a89e801766e408478a47",
+  "predicate_digest": "sha256:b05ca55bef7f4ff994c859fbed0108129d155e392c3439397c0d85c62ca30611",
+  "push_ranges": [
+   {
+    "new_sha": "293d9df18e5b81e80c2702f256be81a4c09b1785",
+    "old_sha": "613de515b110b3f1bb1ac42d18e1483c33fb001b",
+    "ref": "refs/heads/p1/sv-push-receipt-handoff-writer-op",
+    "repository": "StegVerse-Labs/.github"
+   }
+  ]
  },
- "schema": "stegverse.organization-ledger-ingest-request/v1"
+ "hb_epoch": 574296107,
+ "operation": "sv_change_admit",
+ "predecessor": {
+  "admission_order_slot": null,
+  "base_ref": {
+   "ledger_head": "42843af745885046b3b4a25f92fbc941bbd47fe8",
+   "registry_generation": 326
+  },
+  "change_id": "svc:68b6e2ee2b65c708d8d0cfe89d02482c8d834601d24c8081bf25f561d54a0240",
+  "content": [
+   {
+    "blob_digest": "sha256:0ac573f8f11a2c7cefd09a4f018f46e2193aa44dc39d1e40e975a11be2c8ed58",
+    "deleted": false,
+    "path": ".github/workflows/canonical-task-registration-transition.yml",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:c2ecbf373094dd5c968398db0cb1391e86c9f848602849b7a7eeb566dccbba10",
+    "deleted": false,
+    "path": ".stegverse/test-sets.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:058559c4760949c0a3f697bd3ea86b56ef84ad35c6cda31e73f7d3322915b785",
+    "deleted": false,
+    "path": "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:0dc505c248b8fcba655754601f46ca5edeacec360e20f61e2b47a7e836980f12",
+    "deleted": false,
+    "path": "control/goal-task-allocation-requests/lane-c-github-universal-governance-product-2026-10-23.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:4d1eb6838abfba11daed621be62e8a6c1171b1de24c6b7c8f9546c50d61e169a",
+    "deleted": false,
+    "path": "data/canonical-task-records/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:0a86cdb36150287a474abdf5e52d781973caf3588dcc5ab77eacc35d16ba0556",
+    "deleted": false,
+    "path": "data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271",
+    "deleted": false,
+    "path": "data/canonical-task-registry.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:8ed0b7554f1d325b2292ae10913e7194b16c7e00ebb8706443a1ffb857352819",
+    "deleted": false,
+    "path": "data/registry-record-data/exact-invocation-superseded-by-cycle-closure.v1.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:b7b535f89844bf9f2b635acc3abd4ee8092f324b03e085ec2cb4047215157046",
+    "deleted": false,
+    "path": "data/registry-record-data/payment-provider-authentic-ingress-components.v1.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:746a2eb69c15130b5cde8f5533c611a720dc5838db53fcd27f181a807e312b92",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.adjacency-test.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:5ad6247bb70181dd01375bbc74c8ccae7aba4c1b347e0a3f67f1a45a9cae5cd6",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:9c6e6ddb009bbbca0b5cbc94b4da080c75ff83f03f833e8c759f6393069f6573",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.request.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:89e2e28f158cbdb906f0fe0c51b0d4335592fb8d36e3cb36f8c0344461079955",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.request.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:9d35b9e151081924dd427ae47f63c5d87ea5f8ba0b3338b0b6841af699fa367f",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.request.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:0b7147949ddcd8ce370f7ee31e476eca01f6f46f2bd8fe5f4ed6d6c8ada51d83",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:47643e4a67124f7756dcc58e590ad4a71f7fa415e325a72756cca0c9e3503c74",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/MANIFEST.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:ce53485bcec42e7ad52c42258860bcafd35c055a4ed753e2bbf78ca5ca265813",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.request.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:2312bf7dfed1f3ce2a892f1ceb5d5d425b2f9509c5261fa501efe92c10a75dca",
+    "deleted": false,
+    "path": "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-PRIVATE-SOURCE-READ-001.request.json",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   },
+   {
+    "blob_digest": "sha256:ea4a378e5be322364758a6f46d96120ab04d867e2b4139ed7dbdb1e98b4e6f9e",
+    "deleted": false,
+    "path": "tests/test_github_universal_governance_product_goal_request.py",
+    "writer_session": {
+     "evidence_class": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+     "session": null
+    }
+   }
+  ],
+  "declared_session": "P1 Ecosystem AI Lane (StegVerse-org/.github#163): migration of StegVerse-Labs/.github#3358, authored by GitHub account StegVerse",
+  "governance_decision_ref": null,
+  "hb_epoch": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+  "head": {
+   "change_digest": "sha256:68b6e2ee2b65c708d8d0cfe89d02482c8d834601d24c8081bf25f561d54a0240"
+  },
+  "lifecycle_state": "PROPOSED",
+  "migration_flags": [
+   "RESOLVES_NOT_RECORDED"
+  ],
+  "migration_provenance": {
+   "migrated_at_base": {
+    "ledger_head": "42843af745885046b3b4a25f92fbc941bbd47fe8",
+    "registry_generation": 326
+   },
+   "original_base_observed": false,
+   "original_base_ref": null
+  },
+  "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3358)",
+  "projection": {
+   "base_ref": "main",
+   "base_sha": "f9b46abc256a9a820f8ab2c24ce75d1007a97382",
+   "branch_writer_is_branch_owner": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+   "branch_writers_evidence": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED (JDQ Q-WRITER-IDENTITY)",
+   "github_ci": {
+    "authority": "PROJECTION_ONLY_NOT_A_VALIDATION_RECEIPT"
+   },
+   "github_state": "MERGED",
+   "head_ref": "laned/github-universal-governance-request-reseal-321",
+   "head_sha": "9c8c25f9206ef449067e5a9a1d0d28a3e2861bb4",
+   "pr": 3358,
+   "repo": "StegVerse-Labs/.github"
+  },
+  "record_mode": "MIGRATED_HISTORICAL",
+  "request_digest": "sha256:ec6f282b2b559154009b622dc55c2aef10888822893831fe2f9479b0a8d71884",
+  "required_checks_ref": {
+   "blob_sha": "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d",
+   "file": "data/sv-work-items/required-checks.json",
+   "row_id": "SV-CHANGE-REQUIRED-CHECKS-001"
+  },
+  "resolves": [],
+  "schema": "stegverse.sv_change.v1",
+  "signoffs": [],
+  "supersedes": null,
+  "target_repository": "StegVerse-Labs/.github",
+  "touched_paths": [
+   ".github/workflows/canonical-task-registration-transition.yml",
+   ".stegverse/test-sets.json",
+   "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json",
+   "control/goal-task-allocation-requests/lane-c-github-universal-governance-product-2026-10-23.json",
+   "data/canonical-task-records/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json",
+   "data/canonical-task-records/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+   "data/canonical-task-registry.json",
+   "data/registry-record-data/exact-invocation-superseded-by-cycle-closure.v1.json",
+   "data/registry-record-data/payment-provider-authentic-ingress-components.v1.json",
+   "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.adjacency-test.json",
+   "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.request.json",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.request.json",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.request.json",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/MANIFEST.json",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.request.json",
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-PRIVATE-SOURCE-READ-001.request.json",
+   "tests/test_github_universal_governance_product_goal_request.py"
+  ],
+  "unknown_fields": [
+   "/hb_epoch"
+  ],
+  "validation_receipts": []
+ },
+ "schema": "stegverse.organization-ledger-ingest-request/v1",
+ "successor": {
+  "admission_order_slot": null,
+  "base_ref": {
+   "ledger_head": "42843af745885046b3b4a25f92fbc941bbd47fe8",
+   "registry_generation": 326
+  },
+  "change_id": "svc:ac381688a914f38b59d66cbd6070b773122734317e3b0c66a9386fca8655cac3",
+  "content": [
+   {
+    "blob_digest": "sha256:b03475e98619cc9a9d0603059a1ee4f66baa4d2acd8eb455afb8d14f86d81abf",
+    "deleted": false,
+    "path": "docs/SV_PUSH_RECEIPT_HANDOFF.md",
+    "writer_session": {
+     "evidence_class": "DECLARED",
+     "session": "p1-sandbox-and-hcb-20261024"
+    }
+   }
+  ],
+  "declared_session": "P1 Ecosystem AI Lane (StegVerse-org/.github#163): StegVerse-Labs/.github#3426, superseding StegVerse-Labs/.github#3358",
+  "governance_decision_ref": null,
+  "hb_epoch": "574296107",
+  "head": {
+   "change_digest": "sha256:ac381688a914f38b59d66cbd6070b773122734317e3b0c66a9386fca8655cac3"
+  },
+  "lifecycle_state": "PROPOSED",
+  "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3358)",
+  "record_mode": "NATIVE",
+  "request_digest": "sha256:c9c1d4527015eb55131bb604cec9680435fe1d9e60f9adfe4904abb2860212b5",
+  "required_checks_ref": {
+   "blob_sha": "9c75778f0a88e0bb4c50a44a9d54a72bc40a496d",
+   "file": "data/sv-work-items/required-checks.json",
+   "row_id": "SV-CHANGE-REQUIRED-CHECKS-001"
+  },
+  "resolves": [
+   "svi:a21a96bdd1768cf2c0b23ebc8cefcbbfaa5486886ca51304c51c153290f4ac69"
+  ],
+  "schema": "stegverse.sv_change.v1",
+  "signoffs": [],
+  "supersedes": "sha256:ec6f282b2b559154009b622dc55c2aef10888822893831fe2f9479b0a8d71884",
+  "target_repository": "StegVerse-Labs/.github",
+  "touched_paths": [
+   "docs/SV_PUSH_RECEIPT_HANDOFF.md"
+  ],
+  "validation_receipts": []
+ }
 }
