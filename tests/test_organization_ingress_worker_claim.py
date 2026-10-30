@@ -340,8 +340,11 @@ class SdkValidatorTests(unittest.TestCase):
         import stegverse
         from stegverse.manifest_contract import validate_ingress_manifest
         self.validate = validate_ingress_manifest
-        example = (Path(stegverse.__file__).resolve().parents[1]
-                   / "inspection/examples/external-framework-generic-manifest.json")
+        # The pin's materialized tree carries only the importable package, so the
+        # SDK's example manifest is read from the repo's byte-copy of it (the same
+        # fixture test_build_optical_component_010_org_request.py uses).
+        example = (Path(__file__).resolve().parent / "fixtures"
+                   / "sdk-external-framework-generic-manifest.json")
         self.example = json.loads(example.read_text(encoding="utf-8"))
         self.validate(self.example)
 
