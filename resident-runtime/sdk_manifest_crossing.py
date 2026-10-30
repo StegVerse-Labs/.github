@@ -128,15 +128,26 @@ def manifest_standing(manifest, declared=None):
     return declared
 
 
+def crossing_payload(manifest, destination):
+    """The exact payload a crossing carries for this manifest and its declared destination.
+
+    `payload_hash` is `sha` of these bytes -- canonical JSON, sorted keys, no
+    whitespace -- and so is every boundary receipt's `payload_hash`. It is one
+    definition, here, so that a receiver recomputing it from the manifest it was
+    delivered computes exactly what the crossing hashed rather than a copy.
+    """
+    return {"schema": "stegverse.sdk-manifest-crossing-payload/v1",
+            "declared_transition_surface": destination["surface"],
+            "manifest_sha256": "sha256:" + sha(manifest),
+            "manifest": manifest}
+
+
 def crossing_packet(manifest, destination, service, registry, origin, packet_id, standing):
     """Build the InTr ingress packet that carries this manifest and its standing."""
     envelope = intr_transport.build_ingress(
         origin,
         {"org": registry["organization"], "service": service["service_id"]},
-        {"schema": "stegverse.sdk-manifest-crossing-payload/v1",
-         "declared_transition_surface": destination["surface"],
-         "manifest_sha256": "sha256:" + sha(manifest),
-         "manifest": manifest},
+        crossing_payload(manifest, destination),
         "canonical",
         "intr:transition:" + packet_id,
         authority_effect=str((manifest.get("transition") or {}).get("authority_effect", "NONE")),
@@ -226,6 +237,11 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
         "ingress_packet_id": ingress["packet_id"],
         "egress_packet_id": egress["packet_id"],
         "egress": egress,
+        # The standing the packet carried, so the admission's record names the
+        # node and chain position it was admitted at. A successor's declared
+        # predecessor is checked against these recorded values at ingress
+        # (organization_boundary_must_carry_predecessor).
+        "standing": resolved_standing,
         "authority_effect": result.get("authority_effect", "NONE"),
         "application_result": result.get("application_result"),
         **{field: result[field] for field in SELECTION_FIELDS if field in result},

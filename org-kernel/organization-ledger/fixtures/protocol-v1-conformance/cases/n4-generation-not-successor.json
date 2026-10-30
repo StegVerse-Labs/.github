@@ -1,0 +1,46 @@
+{
+  "case_id": "n4-generation-not-successor",
+  "covers": "VERIFY_EXISTING_STANDING_WHOSE_PREDECESSOR_GENERATION_IS_NOT_GENERATION_MINUS_ONE; a declared WorkerCoordinator claim is verified before the crossing (tests/test_organization_ingress_worker_claim.py)",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "authority_effect": "NONE_REFUSAL_ONLY",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "ADMITTED_CROSSING_REACHES_ITS_INTERNAL_ENDPOINT",
+    "failure_code": "node-standing-fail_closed:non-genesis-predecessor-invalid:generation-not-successor",
+    "received": false,
+    "refusal_recorded": true
+  },
+  "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
+  "expected_refusal_record": {
+    "disposition": "DENY",
+    "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
+  },
+  "expected_source": "GENERATED_FROM_REAL_RECEIVE",
+  "issue_3369_item": "STALE_HEAD_OR_FENCE",
+  "issue_3369_item_status": "COVERED_WITH_SPEC_GAP",
+  "mutation": {
+    "kind": "REPLACE_STANDING",
+    "standing": {
+      "generation": 3,
+      "mode": "VERIFY_EXISTING",
+      "node_ref": "StegVerse-Labs",
+      "predecessor": {
+        "generation": 1,
+        "heartbeat_epoch": 32,
+        "manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "result_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    }
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1",
+  "spec_gap": {
+    "disposition": "GAP_NOT_IMPLEMENTED",
+    "failed_predicate": "THE_DECLARED_PREDECESSOR_RESULT_SHA256_IS_THE_DIGEST_OF_THE_RECORDED_RESULT",
+    "failure_code": "DECLARED_PREDECESSOR_RESULT_DIGEST_NOT_RECORDED_AT_INGRESS",
+    "issue_3369_item": "STALE_HEAD_OR_FENCE",
+    "next_attempt": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001 rules where an admission's result digest is recorded (the organization receipt's evidence, or the sdk_admitted_result the SDK returns); then receive() compares predecessor.result_sha256 with that recorded digest and a case declares a predecessor whose result_sha256 names another result and asserts its refusal",
+    "owning_existing_goal": "Registry/WorkerCoordinator owner per StegVerse-Labs/.github#3369 (claim/fence and expected head); organization ledger readback: ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+    "required_evidence_or_repair": "Both halves of the stale-head/fence item are now checked before the crossing. Fence: receive() observes a declared extensions.stegverse_workercoordinator_claim against the committed WorkerCoordinator registry (DECLARED_FENCE_IS_THE_CURRENT_WORKERCOORDINATOR_FENCE; FENCE_DECLARED_NOT_VERIFIED fails closed, FENCE_STALE_OR_RELEASED denies; tests/test_organization_ingress_worker_claim.py). Head: for a declared VERIFY_EXISTING standing whose generation is predecessor.generation + 1, receive() requires that this repository's ledger records an admission for the same node_ref at predecessor.generation whose recorded manifest digest (wire_manifest_sha256, the form the SDK's successor_predecessor_binding produces, or canonical_manifest_sha256) is predecessor.manifest_sha256 and whose organization receipt is observed, and that no other recorded successor of the node has bound that predecessor (DECLARED_PREDECESSOR_IS_RECORDED_AND_UNSUPERSEDED_IN_THIS_LEDGER; DECLARED_PREDECESSOR_NOT_RECORDED fails closed, DECLARED_PREDECESSOR_SUPERSEDED denies; tests/test_organization_ingress_declared_predecessor.py); the crossing result now records the standing it was admitted at so successors can be checked. Shape and successor arithmetic stay with node_standing.require at the boundary, whose own code this case covers. What remains: predecessor.result_sha256 is held to shape only, because no receipt records the digest of an admission's result, so a successor that reviewed a different result than the one this organization returned cannot be told apart here; redelivery of a recorded admission is answered as that admission (I-10); an admission recorded before the crossing result carried its standing matches on the digest alone and the result says so (declared_predecessor_record MANIFEST_DIGEST_ONLY_RECEIPT_PREDATES_RECORDED_STANDING); only this repository's own admissions are read, so a predecessor admitted into the organization ledger through another repository's ingress is not found here",
+    "retry_entrypoint": "org-boundary/runtime/node_standing.py::require"
+  }
+}

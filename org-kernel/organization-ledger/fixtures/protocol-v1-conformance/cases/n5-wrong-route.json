@@ -1,15 +1,23 @@
 {
   "case_id": "n5-wrong-route",
+  "covers": "COMPLETION_EGRESS_DECLARES_A_TRANSITION_SURFACE_THE_REGISTRY_DOES_NOT_EXPOSE",
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
-    "disposition": "DENY",
-    "failed_predicate": "DECLARED_SURFACE_RESOLVES_TO_EXACTLY_ONE_REGISTERED_SERVICE",
-    "failure_code": "ORG_EXPOSES_NO_SUCH_TRANSITION_SURFACE",
-    "next_attempt": "correct completion.egress and resubmit",
-    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
-    "required_evidence_or_repair": "declare a transition surface org-boundary/registry/services.json exposes",
-    "retry_entrypoint": "resident-runtime/sdk_manifest_crossing.py::resolve_surface"
+    "authority_effect": "NONE_REFUSAL_ONLY",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED",
+    "failure_code": "ORG_EXPOSES_NO_SUCH_TRANSITION_SURFACE:organization_ledger_direct",
+    "received": false,
+    "refusal_recorded": true
   },
+  "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
+  "expected_refusal_record": {
+    "disposition": "DENY",
+    "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
+  },
+  "expected_source": "GENERATED_FROM_REAL_RECEIVE",
+  "issue_3369_item": "WRONG_ROUTE",
+  "issue_3369_item_status": "COVERED",
   "mutation": {
     "kind": "PATCH_EGRESS",
     "patch": {

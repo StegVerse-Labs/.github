@@ -1,15 +1,23 @@
 {
   "case_id": "n7-missing-receipts",
+  "covers": "THE_CROSSING_RETURNS_NO_BOUNDARY_RECEIPT_CHAIN",
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
+    "authority_effect": "NONE_REFUSAL_ONLY",
     "disposition": "FAIL_CLOSED",
-    "failed_predicate": "CROSSING_CARRIES_ITS_BOUNDARY_RECEIPT_CHAIN",
+    "failed_predicate": "BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY",
     "failure_code": "BOUNDARY_RECEIPT_CHAIN_ABSENT",
-    "next_attempt": "redeliver; no receipt is invented",
-    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
-    "required_evidence_or_repair": "a crossing without its boundary receipts is not evidence; re-drive the crossing",
-    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::reconstruct_closures"
+    "received": false,
+    "refusal_recorded": true
   },
+  "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
+  "expected_refusal_record": {
+    "disposition": "DENY",
+    "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
+  },
+  "expected_source": "GENERATED_FROM_REAL_RECEIVE",
+  "issue_3369_item": "MISSING_RECEIPTS",
+  "issue_3369_item_status": "COVERED",
   "mutation": {
     "kind": "DROP_BOUNDARY_RECEIPTS"
   },

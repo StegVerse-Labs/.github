@@ -1,0 +1,38 @@
+{
+  "case_id": "n3-wrong-receiving-operation",
+  "covers": "THE_REQUEST_NAMES_A_RECEIVING_OPERATION_OWNED_BY_ANOTHER_REPOSITORY",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "authority_effect": "NONE_REFUSAL_ONLY",
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "CAPABILITY_IS_BOUND_TO_THIS_RECEIVING_OPERATION",
+    "failure_code": "ORGANIZATION_RECEIVING_OPERATION_OWNED_ELSEWHERE",
+    "received": false,
+    "refusal_recorded": true
+  },
+  "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
+  "expected_refusal_record": {
+    "disposition": "DENY",
+    "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
+  },
+  "expected_source": "GENERATED_FROM_REAL_RECEIVE",
+  "issue_3369_item": "FORGED_IDENTITY",
+  "issue_3369_item_status": "SPEC_GAP",
+  "mutation": {
+    "kind": "PATCH_RECEIVING_OPERATION",
+    "patch": {
+      "owner_repository": "StegVerse-org/.github"
+    }
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1",
+  "spec_gap": {
+    "disposition": "GAP_NOT_IMPLEMENTED",
+    "failed_predicate": "SUBMITTER_VERIFICATION_IS_KV_SKAP_BOUND_TO_THE_MANIFEST",
+    "failure_code": "SUBMITTER_KV_SKAP_VERIFICATION_NOT_BOUND_AT_INGRESS",
+    "issue_3369_item": "FORGED_IDENTITY",
+    "next_attempt": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 gives the layer-1 KV-access / layer-2 SKAP-access receipt pair a field binding it to the submitted manifest's canonical digest; then receive() re-derives that pair with workers/device_kv_skap_roundtrip_verifier.py and a case presents a pair bound to another manifest and asserts its refusal. Device or node attestation is not the next step: it is prohibited as a gate (device_attestation_gate NONE_PROHIBITED, NO_DEVICE_ATTESTATION_OR_PHYSICAL_DEVICE_IDENTITY_GATE in data/task-registry-global-invariants.json)",
+    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001 (ingress binding); STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 (KV/SKAP manifest binding field)",
+    "required_evidence_or_repair": "receive() binds no submitter verification. cross() building the packet origin itself is the anti-forgery property on this intra-organization binding, not the defect, and standing.node_ref being checked for presence only is required, because node, device and transport identity may not verify a user (node_user_verifier_authority NONE). Only the KV/SKAP Vault verifies a submitter, and no KV/SKAP receipt reaches ingress: the existing layer-1/layer-2 receipts bind a DEVICE to KV hop, not a manifest. A forged sender is not expressible on this path; this case covers a wrong receiving operation instead",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive"
+  }
+}

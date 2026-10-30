@@ -175,9 +175,14 @@ class ConformanceIngressCase(unittest.TestCase):
         manifest_sha256 = "sha256:" + ingress.sha(manifest)
         packet = {"packet_id": packet_id,
                   "payload": {"manifest": manifest, "manifest_sha256": manifest_sha256}}
+        # Bound to the delivered manifest as the real crossing binds it: the
+        # payload its own `crossing_payload` builds, hashed with its own `sha`.
+        payload = ingress.crossing_module.crossing_payload(
+            manifest, ingress.crossing_module.declared_destination(manifest))
         return {"crossing_completed": True, "resolved_service_id": conformance.SERVICE_ID,
                 "ingress_packet_id": packet_id, "egress_packet_id": packet_id + "-egress",
                 "manifest_sha256": manifest_sha256,
+                "payload_hash": ingress.crossing_module.sha(payload),
                 "application_result": conformance.respond(packet, root=self.source)}
 
     def receive(self, manifest=None, **options):

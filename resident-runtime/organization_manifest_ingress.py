@@ -49,8 +49,8 @@ A refusal is also recorded. A state transition is the disposition of an intended
 action, not only a successful one: a submission that arrived and was refused is
 a transition whose disposition is DENY, and `organization_scope_rule` makes no
 exception for it. Every refusal path through `receive` -- an unresolvable
-destination, a capability bound elsewhere, a crossing this manifest cannot
-drive, a far side that refused, a boundary chain that does not reconstruct --
+destination, a capability bound elsewhere, a declared authority effect other
+than NONE, a declared WorkerCoordinator claim that does not verify, a declared predecessor this ledger does not record or another successor already bound, a crossing this manifest cannot drive, a far side that refused, a boundary chain that does not reconstruct --
 appends a repository receipt and the organization receipt that consumes it,
 under `ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED`. Before this they returned a
 refusal and wrote nothing, which made a held or retried submission
@@ -133,6 +133,76 @@ APPEND_NOT_COMMITTED_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK"
 APPEND_OWNING_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
 UNOBSERVED = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
 PARENT_MANIFEST_INVALID_PREDICATE = "MANIFEST_DECLARED_ORGANIZATION_BATCH_PARENT_MANIFEST_IS_VALID"
+#: A crossing whose payload digest, manifest digest or echoed effect is not the
+#: payload this organization recomputes from the manifest it was delivered. The
+#: boundary receipt chain binds `payload_hash` and nothing else, so a chain that
+#: reconstructs proves only that the receipts agree with the crossing's own
+#: digest -- not that the digest is the delivered manifest's.
+PAYLOAD_NOT_BOUND = "CROSSING_PAYLOAD_NOT_BOUND_TO_THE_DELIVERED_MANIFEST"
+PAYLOAD_NOT_BOUND_PREDICATE = "CROSSING_PAYLOAD_RECOMPUTES_FROM_THE_DELIVERED_MANIFEST"
+PAYLOAD_BINDING_OWNING_GOAL = "StegVerse-Labs/.github#3369"
+#: A submission may not carry an authority effect into the crossing. The
+#: crossing copies `transition.authority_effect` onto the InTr envelope
+#: verbatim, the boundary passes it through to its result, and the boundary
+#: document says an effect is DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS, not
+#: taken from the caller. Both appends already record "NONE". Until a landed
+#: warrant receipt can be verified here, anything but NONE is refused before
+#: the crossing runs, so nothing downstream sees an unwarranted effect.
+AUTHORITY_NOT_WARRANTED = "AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS"
+AUTHORITY_NOT_WARRANTED_PREDICATE = "DECLARED_AUTHORITY_EFFECT_IS_NONE_UNTIL_A_WARRANT_RECEIPT_BINDS"
+AUTHORITY_OWNING_GOAL = "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001"
+#: The only declared effect this operation admits. An absent `transition`, or
+#: one with no `authority_effect`, is the same NONE the crossing reads it as.
+NONE_AUTHORITY_EFFECT = "NONE"
+#: Gap 2 of StegVerse-Labs/.github#3369 (stale head / fence). A submission may
+#: declare the WorkerCoordinator claim it runs under as
+#: `extensions.stegverse_workercoordinator_claim: {"claim_id": "<id>-G<fence>",
+#: "fencing_token": <fence>}` -- under `extensions`, the namespace the SDK's
+#: `validate_ingress_manifest` admits (a top-level field is refused by the SDK
+#: as unknown before this operation sees it). The
+#: declaration is observed against the committed WorkerCoordinator truth
+#: (`control/worker-registry.json`, the registry `coordination_ledger.py`
+#: validates claim coverage from) and nothing is minted: a declared claim that
+#: is not an unreleased BOUND task holding exactly that fence is refused before
+#: the crossing. An absent declaration is admitted and reported as
+#: `worker_claim_state: UNVERIFIED`, as the boundary admits and records an
+#: unattested crossing, because most manifests this operation receives are not
+#: task-bound.
+WORKER_CLAIM_EXTENSION = "stegverse_workercoordinator_claim"
+WORKER_CLAIM_FIELD = "extensions." + WORKER_CLAIM_EXTENSION
+WORKER_REGISTRY_REF = "control/worker-registry.json"
+WORKER_REGISTRY_SCHEMA = "stegverse.heartbeat-worker-registry/v0.1"
+WORKER_CLAIM_TERMINAL_STATES = frozenset({"COMPLETED", "FAILED_TERMINAL"})
+FENCE_PREDICATE = "DECLARED_FENCE_IS_THE_CURRENT_WORKERCOORDINATOR_FENCE"
+FENCE_NOT_VERIFIED = "FENCE_DECLARED_NOT_VERIFIED"
+FENCE_STALE = "FENCE_STALE_OR_RELEASED"
+FENCE_OWNING_GOAL = "StegVerse-Labs/.github#3369"
+WORKER_CLAIM_UNVERIFIED = "UNVERIFIED"
+WORKER_CLAIM_VERIFIED = "VERIFIED_AGAINST_COMMITTED_WORKERCOORDINATOR_REGISTRY"
+WORKER_CLAIM_REPLAYED = "RECORDED_ADMISSION_REPLAYED_FENCE_NOT_RECHECKED"
+#: Gap 2 of StegVerse-Labs/.github#3369, the head half (option 2A). A declared
+#: VERIFY_EXISTING standing names a predecessor (generation, manifest_sha256,
+#: result_sha256, heartbeat_epoch -- the lineage contract's field set). Before
+#: the crossing, this operation checks its own repository ledger, the record
+#: of every admission this organization made: the predecessor must be a
+#: recorded admission for the same node_ref at that generation with that
+#: canonical manifest digest, and no other admission for the node may already
+#: have bound that predecessor to a different successor. The ledger is read,
+#: never written here, and nothing is minted. result_sha256 is held to shape
+#: only: no result digest is recorded in a receipt, so it cannot be compared.
+PREDECESSOR_PREDICATE = "DECLARED_PREDECESSOR_IS_RECORDED_AND_UNSUPERSEDED_IN_THIS_LEDGER"
+PREDECESSOR_NOT_RECORDED = "DECLARED_PREDECESSOR_NOT_RECORDED"
+PREDECESSOR_SUPERSEDED = "DECLARED_PREDECESSOR_SUPERSEDED"
+PREDECESSOR_OWNING_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+VERIFY_EXISTING_MODE = "VERIFY_EXISTING"
+PREDECESSOR_RESULT_BINDING = "NOT_CHECKED_RESULT_DIGEST_NOT_RECORDED_IN_RECEIPTS"
+#: How the recorded predecessor was matched: a receipt that recorded the
+#: standing it was admitted at (node, generation and digest all compared), or
+#: an admission recorded before standings were recorded (digest only; the
+#: node and generation could not be compared and the result says so).
+PREDECESSOR_RECORD_FULL = "NODE_GENERATION_AND_MANIFEST_DIGEST_RECORDED"
+PREDECESSOR_RECORD_LEGACY = "MANIFEST_DIGEST_ONLY_RECEIPT_PREDATES_RECORDED_STANDING"
+_HEX64 = re.compile(r"^[0-9a-f]{64}$")
 
 
 def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
@@ -589,6 +659,286 @@ def reconstruct_closures(crossing: Mapping[str, Any]) -> list[dict[str, Any]]:
     return closures
 
 
+def payload_binding_failure(manifest: Mapping[str, Any],
+                            crossing: Mapping[str, Any]) -> str | None:
+    """Why the crossing is not the delivered manifest's exact payload, or None.
+
+    The payload is recomputed here from the manifest this operation was handed,
+    with the crossing's own definition (`crossing_payload` and `sha`): the
+    destination the manifest declares, its canonical digest, and the manifest
+    itself. Then each place the crossing names that payload must be it:
+
+    * `manifest_sha256` is the delivered manifest's digest;
+    * `payload_hash` -- the digest every boundary receipt is bound to -- is the
+      recomputed payload's digest;
+    * an echoed effect (`application_result.echo`, what the far side reports it
+      received) is the recomputed payload, byte for byte under canonical JSON.
+
+    Nothing is taken on the crossing's word: a crossing that names no digest
+    fails, as a mismatch does.
+    """
+    try:
+        destination = crossing_module.declared_destination(manifest)
+    except SystemExit as exc:
+        return "CROSSING_PAYLOAD_DESTINATION_NOT_DECLARED:" + str(exc)
+    payload = crossing_module.crossing_payload(manifest, destination)
+    payload_hash = crossing_module.sha(payload)
+    if crossing.get("manifest_sha256") != payload["manifest_sha256"]:
+        return ("CROSSING_MANIFEST_SHA256_MISMATCH:expected " + payload["manifest_sha256"]
+                + " observed " + str(crossing.get("manifest_sha256")))
+    if crossing.get("payload_hash") != payload_hash:
+        return ("CROSSING_PAYLOAD_HASH_MISMATCH:expected " + payload_hash
+                + " observed " + str(crossing.get("payload_hash")))
+    result = crossing.get("application_result")
+    if isinstance(result, Mapping) and "echo" in result:
+        echoed = result["echo"]
+        if crossing_module.sha(echoed) != payload_hash:
+            return ("CROSSING_ECHOED_PAYLOAD_MISMATCH:expected " + payload_hash
+                    + " observed " + crossing_module.sha(echoed))
+    return None
+
+
+def declared_authority_effect_failure(manifest: Any) -> str | None:
+    """Why the submission's declared authority effect is not NONE, or None.
+
+    Read exactly as the crossing reads it --
+    `(manifest.get("transition") or {}).get("authority_effect", "NONE")` -- so
+    whatever the crossing would put on the envelope is what is checked. A
+    `transition` that is not an object, or an `authority_effect` that is
+    anything but the string NONE (null included), is refused.
+    """
+    if not isinstance(manifest, Mapping):
+        return None
+    transition = manifest.get("transition") or {}
+    if not isinstance(transition, Mapping):
+        return AUTHORITY_NOT_WARRANTED + ":transition is not an object"
+    effect = transition.get("authority_effect", NONE_AUTHORITY_EFFECT)
+    if effect == NONE_AUTHORITY_EFFECT:
+        return None
+    return (AUTHORITY_NOT_WARRANTED + ":declared transition.authority_effect "
+            + json.dumps(effect, sort_keys=True))
+
+
+def load_worker_registry(root: Path | None = None) -> Mapping[str, Any] | None:
+    """The committed WorkerCoordinator registry, or None when it is not readable.
+
+    Read from the repository checkout this module runs in. Nothing is fetched
+    and nothing is written; the registry is observed exactly as committed.
+    """
+    path = (root or ROOT) / WORKER_REGISTRY_REF
+    try:
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return loaded if isinstance(loaded, Mapping) else None
+
+
+def _registry_fence(task: Mapping[str, Any]) -> int | None:
+    """The fence a WorkerCoordinator task holds, as `coordination_ledger.py` reads it."""
+    for holder in ("heartbeat_timing", "lease"):
+        block = task.get(holder)
+        if isinstance(block, Mapping):
+            fence = block.get("fencing_token")
+            if isinstance(fence, int) and not isinstance(fence, bool):
+                return fence
+    return None
+
+
+def declares_worker_claim(manifest: Any) -> bool:
+    """Whether the manifest carries `extensions.stegverse_workercoordinator_claim` at all."""
+    if not isinstance(manifest, Mapping):
+        return False
+    extensions = manifest.get("extensions")
+    return isinstance(extensions, Mapping) and WORKER_CLAIM_EXTENSION in extensions
+
+
+def admitted_ingress_receipts() -> list[Mapping[str, Any]] | None:
+    """Every admitted-ingress receipt in this repository's ledger, newest first, or None.
+
+    Walks the chain from HEAD, verified, as `recorded` does. A broken or
+    unreadable chain answers None rather than an empty list: nothing is assumed
+    recorded, and nothing is assumed absent.
+    """
+    try:
+        store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+        head = store.get(repository_ledger.ledger_store.HEAD_KEY)
+        if not head:
+            return []
+        return [receipt for receipt in repository_ledger.chain(store, head)
+                if receipt.get("transition_class") == OPERATION_ID]
+    except Exception:  # noqa: BLE001 - a chain this cannot read records nothing for us
+        return None
+
+
+def recorded_admission_for_request(request_sha256: str,
+                                   receipts: list[Mapping[str, Any]] | None = None) -> Mapping[str, Any] | None:
+    """The repository receipt that already admits this exact request, or None.
+
+    `receipts` is the chain walk from `admitted_ingress_receipts`, passed in so
+    one ingress walks its chain once.
+    """
+    if receipts is None:
+        receipts = admitted_ingress_receipts()
+    for receipt in receipts or []:
+        if (receipt.get("evidence") or {}).get("request_sha256") == request_sha256:
+            return receipt
+    return None
+
+
+def _recorded_standing(receipt: Mapping[str, Any]) -> Mapping[str, Any]:
+    crossing = (receipt.get("evidence") or {}).get("crossing") or {}
+    standing = crossing.get("standing") if isinstance(crossing, Mapping) else None
+    return standing if isinstance(standing, Mapping) else {}
+
+
+def _manifest_digests(evidence: Mapping[str, Any]) -> set[str]:
+    """The digests under which an admission's manifest is recorded.
+
+    The SDK binds the wire manifest (`wire_manifest_sha256`) and its validated
+    projection (`canonical_manifest_sha256`) separately; a predecessor binding
+    (`successor_predecessor_binding`) is the digest of the manifest body, which
+    is the wire form. Either is the same admission, so either matches.
+    """
+    return {str(evidence.get(key)) for key in ("wire_manifest_sha256", "canonical_manifest_sha256")
+            if isinstance(evidence.get(key), str)}
+
+
+def _recorded_generation(standing: Mapping[str, Any]) -> int | None:
+    """The generation a recorded standing was admitted at; genesis without one is 1."""
+    generation = standing.get("generation")
+    if isinstance(generation, int) and not isinstance(generation, bool):
+        return generation
+    if generation is None and standing.get("mode") == "ESTABLISH_GENESIS":
+        return 1
+    return None
+
+
+def declared_predecessor_failure(standing: Any, request: Mapping[str, Any],
+                                 receipts: list[Mapping[str, Any]] | None = None,
+                                 ) -> tuple[str, str] | tuple[None, str] | None:
+    """Why a declared VERIFY_EXISTING predecessor is not recorded-and-unsuperseded, or how it was found.
+
+    Only a declared standing in VERIFY_EXISTING mode whose predecessor is an
+    object with a well-formed `manifest_sha256` and whose generation is exactly
+    predecessor.generation + 1 is checked here: shape and successor arithmetic
+    stay with the standing contract at the boundary (`node_standing.require`),
+    whose own codes those refusals carry, so anything else answers None.
+
+    Returns `(failure_code, detail)` on refusal:
+    DECLARED_PREDECESSOR_NOT_RECORDED (fail closed) when this ledger cannot be
+    read, or holds no admission -- a repository receipt whose organization
+    receipt is also observed -- for the node at the predecessor's generation
+    with the predecessor's manifest digest; DECLARED_PREDECESSOR_SUPERSEDED
+    (deny) when an admission for the node already binds that predecessor to a
+    different successor manifest. Returns `(None, how_recorded)` when the
+    predecessor is recorded: PREDECESSOR_RECORD_FULL when the receipt recorded
+    its standing, PREDECESSOR_RECORD_LEGACY when it predates recorded standings
+    and only the manifest digest could be compared.
+    """
+    if not isinstance(standing, Mapping) or standing.get("mode") != VERIFY_EXISTING_MODE:
+        return None
+    predecessor = standing.get("predecessor")
+    generation = standing.get("generation")
+    if not isinstance(predecessor, Mapping) or not isinstance(generation, int) or isinstance(generation, bool):
+        return None
+    predecessor_generation = predecessor.get("generation")
+    if (not isinstance(predecessor_generation, int) or isinstance(predecessor_generation, bool)
+            or generation != predecessor_generation + 1):
+        return None
+    manifest_digest = predecessor.get("manifest_sha256")
+    if not isinstance(manifest_digest, str) or not _HEX64.match(manifest_digest):
+        return None
+    node_ref = standing.get("node_ref")
+    if receipts is None:
+        receipts = admitted_ingress_receipts()
+    if receipts is None:
+        return PREDECESSOR_NOT_RECORDED, "this repository's ledger could not be read"
+    own_digests = _manifest_digests(request)
+    recorded: str | None = None
+    for receipt in receipts:
+        evidence = receipt.get("evidence") or {}
+        digests = _manifest_digests(evidence)
+        prior = _recorded_standing(receipt)
+        if prior:
+            if prior.get("node_ref") != node_ref:
+                continue
+            bound = prior.get("predecessor")
+            if (isinstance(bound, Mapping) and bound.get("manifest_sha256") == manifest_digest
+                    and not (digests & own_digests)):
+                return PREDECESSOR_SUPERSEDED, (
+                    f"node {node_ref!s} predecessor {manifest_digest} is already bound by the recorded "
+                    f"successor {evidence.get('canonical_manifest_sha256')!s} (generation {prior.get('generation')!s})")
+            if _recorded_generation(prior) != predecessor_generation or manifest_digest not in digests:
+                continue
+            match = PREDECESSOR_RECORD_FULL
+        elif manifest_digest in digests:
+            match = PREDECESSOR_RECORD_LEGACY
+        else:
+            continue
+        # An admission is a repository receipt whose organization receipt is
+        # observed; a repository receipt alone is a partial commit, not one.
+        observed, _ = _organization_receipt_read_back(receipt.get("receipt_sha256"))
+        if observed is True and (recorded is None or match == PREDECESSOR_RECORD_FULL):
+            recorded = match
+    if recorded is None:
+        return PREDECESSOR_NOT_RECORDED, (
+            f"no admission for node {node_ref!s} at generation {predecessor_generation} with manifest "
+            f"digest {manifest_digest} is recorded in this repository's ledger with its organization receipt")
+    return None, recorded
+
+
+def declared_worker_claim_failure(manifest: Any, *, worker_registry: Mapping[str, Any] | None = None,
+                                  root: Path | None = None) -> tuple[str, str] | None:
+    """Why the submission's declared WorkerCoordinator claim is not verified, or None.
+
+    Returns `(failure_code, detail)`. `FENCE_DECLARED_NOT_VERIFIED` is the
+    fail-closed case: the declaration is malformed, the committed registry is
+    not readable or not the expected schema, or no task holds the claim.
+    `FENCE_STALE_OR_RELEASED` is the deny case: a task holds the claim id but
+    it is released, terminal, archived, or its current fence is another
+    generation. An absent declaration is not a failure; the caller reports it
+    as UNVERIFIED. The shape rule is `heartbeat_runtime/process_adapter.py`'s:
+    a non-empty claim id ending in `-G<fence>` with a positive integer fence.
+    """
+    if not declares_worker_claim(manifest):
+        return None
+    claim = manifest["extensions"][WORKER_CLAIM_EXTENSION]
+    if not isinstance(claim, Mapping):
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD} is not an object"
+    claim_id = claim.get("claim_id")
+    fence = claim.get("fencing_token")
+    if not isinstance(claim_id, str) or not claim_id:
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD}.claim_id is not a non-empty string"
+    if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD}.fencing_token is not a positive integer"
+    if not claim_id.endswith(f"-G{fence}"):
+        return FENCE_NOT_VERIFIED, f"claim id {claim_id} does not end in -G{fence}"
+    registry = worker_registry if worker_registry is not None else load_worker_registry(root)
+    if registry is None:
+        return FENCE_NOT_VERIFIED, f"{WORKER_REGISTRY_REF} is not readable"
+    if registry.get("schema") != WORKER_REGISTRY_SCHEMA:
+        return FENCE_NOT_VERIFIED, (f"{WORKER_REGISTRY_REF} schema "
+                                    f"{json.dumps(registry.get('schema'))} is not {WORKER_REGISTRY_SCHEMA}")
+    tasks = registry.get("tasks")
+    if not isinstance(tasks, list):
+        return FENCE_NOT_VERIFIED, f"{WORKER_REGISTRY_REF} tasks is not a list"
+    holders = [task for task in tasks if isinstance(task, Mapping) and task.get("claim_id") == claim_id]
+    if not holders:
+        return FENCE_NOT_VERIFIED, f"no WorkerCoordinator task holds claim {claim_id}"
+    if len(holders) > 1:
+        return FENCE_NOT_VERIFIED, f"claim {claim_id} is held by {len(holders)} WorkerCoordinator tasks"
+    task = holders[0]
+    if task.get("executor_binding") != "BOUND":
+        return FENCE_STALE, f"claim {claim_id} is not BOUND (executor_binding {json.dumps(task.get('executor_binding'))})"
+    if task.get("archive_eligible") is True or task.get("state") in WORKER_CLAIM_TERMINAL_STATES:
+        return FENCE_STALE, f"claim {claim_id} is released: state {json.dumps(task.get('state'))}"
+    current = _registry_fence(task)
+    if current != fence:
+        return FENCE_STALE, (f"claim {claim_id} holds fence {json.dumps(current)}, "
+                             f"the declaration names {fence}")
+    return None
+
+
 #: The fields of a crossing that name the packets carrying one delivery. They are
 #: transport: a redelivery of the same manifest is carried by other packets, and
 #: that does not make it another transition.
@@ -1037,6 +1387,101 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     refused = functools.partial(refused, parent_manifest=parent_manifest,
                                 organization_evidence=organization_evidence)
 
+    # A declared authority effect other than NONE is refused before the
+    # crossing, so the endpoint never runs under it and the envelope never
+    # carries it. Nothing here can warrant one.
+    unwarranted = declared_authority_effect_failure(manifest)
+    if unwarranted is not None:
+        return refused(
+            AUTHORITY_NOT_WARRANTED_PREDICATE, unwarranted, failure_code=AUTHORITY_NOT_WARRANTED,
+            required_evidence_or_repair=(
+                "a manifest whose transition.authority_effect is absent or NONE; a non-NONE "
+                "effect needs a landed TV/TVC warrant receipt this operation can verify, and "
+                "none is defined yet"),
+            retry_entrypoint=RETRY_ENTRYPOINT,
+            owning_existing_goal=AUTHORITY_OWNING_GOAL,
+            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
+                          "resubmit": "THE_MANIFEST_WITH_TRANSITION_AUTHORITY_EFFECT_NONE",
+                          "awaits_an_external_machine": False},
+            request_sha256=request["request_sha256"])
+
+    # A declared WorkerCoordinator claim is observed against the committed
+    # registry before the crossing; ingress mints no claim and no fence. An
+    # absent declaration is admitted and reported as UNVERIFIED.
+    fence_failure = declared_worker_claim_failure(manifest)
+    # One verified walk of this repository's chain per ingress, and only when
+    # something below needs it: a failed fence (is it a redelivery?) or a
+    # declared VERIFY_EXISTING standing (is its predecessor recorded?).
+    admitted = (admitted_ingress_receipts()
+                if fence_failure is not None or (isinstance(standing, Mapping)
+                                                 and standing.get("mode") == VERIFY_EXISTING_MODE)
+                else [])
+    if fence_failure is not None and recorded_admission_for_request(request["request_sha256"], admitted) is not None:
+        # An exact redelivery of an admission this ledger already records is
+        # the same transition (I-10): the fence it ran under was verified when
+        # it was recorded, and a fence that moved since does not turn a recorded
+        # ALLOW into a refusal. The replay path below answers it.
+        fence_failure = None
+        worker_claim_state = WORKER_CLAIM_REPLAYED
+    elif fence_failure is None:
+        worker_claim_state = WORKER_CLAIM_VERIFIED if declares_worker_claim(manifest) else WORKER_CLAIM_UNVERIFIED
+    if fence_failure is not None:
+        fence_code, fence_detail = fence_failure
+        return refused(
+            FENCE_PREDICATE, fence_code + ":" + fence_detail, failure_code=fence_code,
+            disposition="DENY" if fence_code == FENCE_STALE else "FAIL_CLOSED",
+            required_evidence_or_repair=(
+                f"a {WORKER_CLAIM_FIELD} whose claim_id ends in -G<fencing_token> and names an "
+                f"unreleased BOUND task in {WORKER_REGISTRY_REF} holding exactly that fence; "
+                "or omit the declaration, which is admitted as UNVERIFIED"),
+            retry_entrypoint=RETRY_ENTRYPOINT,
+            owning_existing_goal=FENCE_OWNING_GOAL,
+            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
+                          "resubmit": ("THE_MANIFEST_UNDER_THE_CURRENT_WORKERCOORDINATOR_FENCE"
+                                       if fence_code == FENCE_STALE else
+                                       "THE_MANIFEST_WITH_A_VERIFIABLE_OR_ABSENT_WORKER_CLAIM"),
+                          "awaits_an_external_machine": False},
+            request_sha256=request["request_sha256"])
+    # What the SDK's own derivation says about this route: whether the graph
+    # requires a WorkerCoordinator claim/fence. Reported beside the observed
+    # state; a required-but-undeclared claim is admitted as UNVERIFIED today,
+    # and turning that into a refusal is the route owner's call.
+    worker_claim_required = request.get("requires_workercoordinator_claim_fence") is True
+
+    # A declared VERIFY_EXISTING predecessor is checked against this
+    # repository's own record of admissions before the crossing. A redelivery
+    # of a recorded admission is the recorded transition (I-10) and is not
+    # re-judged against a ledger that has moved on since.
+    predecessor_outcome = declared_predecessor_failure(standing, request, admitted)
+    predecessor_record = None
+    predecessor_failure = None
+    if predecessor_outcome is not None:
+        if predecessor_outcome[0] is None:
+            predecessor_record = predecessor_outcome[1]
+        elif recorded_admission_for_request(request["request_sha256"], admitted) is None:
+            predecessor_failure = predecessor_outcome
+    if predecessor_failure is not None:
+        predecessor_code, predecessor_detail = predecessor_failure
+        return refused(
+            PREDECESSOR_PREDICATE, predecessor_code + ":" + predecessor_detail,
+            failure_code=predecessor_code,
+            disposition="DENY" if predecessor_code == PREDECESSOR_SUPERSEDED else "FAIL_CLOSED",
+            required_evidence_or_repair=(
+                "a VERIFY_EXISTING standing whose predecessor names an admission this repository's "
+                "ledger records for the same node_ref at predecessor.generation with "
+                "predecessor.manifest_sha256 as its canonical manifest digest, and which no other "
+                "recorded successor of that node has bound; or ESTABLISH_GENESIS for a new lineage"),
+            retry_entrypoint=RETRY_ENTRYPOINT,
+            owning_existing_goal=PREDECESSOR_OWNING_GOAL,
+            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
+                          "resubmit": ("THE_SUCCESSOR_OF_THE_RECORDED_HEAD_FOR_THIS_NODE"
+                                       if predecessor_code == PREDECESSOR_SUPERSEDED else
+                                       "THE_MANIFEST_WITH_A_PREDECESSOR_THIS_LEDGER_RECORDS"),
+                          "awaits_an_external_machine": False},
+            request_sha256=request["request_sha256"])
+    predecessor_binding = (PREDECESSOR_RESULT_BINDING if isinstance(standing, Mapping)
+                           and standing.get("mode") == VERIFY_EXISTING_MODE else None)
+
     try:
         crossing = crossing_module.cross(manifest, registry=dict(registry), standing=standing, packet_id=packet_id)
     except SystemExit as exc:
@@ -1061,6 +1506,23 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     except ValueError as exc:
         return refused("BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY", str(exc),
                        request_sha256=request["request_sha256"])
+    # The chain reconstructs against the crossing's own `payload_hash`. That
+    # digest, the manifest digest and any echoed effect must also be the payload
+    # recomputed from the manifest delivered here, or a changed effect under an
+    # unchanged digest is admitted.
+    unbound = payload_binding_failure(manifest, crossing)
+    if unbound is not None:
+        return refused(
+            PAYLOAD_NOT_BOUND_PREDICATE, unbound, failure_code=PAYLOAD_NOT_BOUND,
+            required_evidence_or_repair=(
+                "a crossing whose manifest_sha256, payload_hash and echoed effect are the "
+                "payload recomputed from the delivered manifest"),
+            retry_entrypoint=RETRY_ENTRYPOINT,
+            owning_existing_goal=PAYLOAD_BINDING_OWNING_GOAL,
+            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
+                          "resubmit": "THE_SAME_MANIFEST_OVER_AN_UNMODIFIED_CROSSING",
+                          "awaits_an_external_machine": False},
+            request_sha256=request["request_sha256"])
 
     # The transition occurred in this repository, so the repository ledger
     # records it first and the organization ledger consumes that receipt. The
@@ -1165,7 +1627,9 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         return {**role_conformance_result(
             request, crossing, conformance, transition_id=transition_id,
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
-            rule_ref=rule_ref, replayed=replayed), "delivery_attempt": delivery}
+            rule_ref=rule_ref, replayed=replayed), "delivery_attempt": delivery,
+            "worker_claim_state": worker_claim_state,
+            "workercoordinator_claim_fence_required_by_route": worker_claim_required}
 
     # Governance is decided by the organization that owns StegCore. The ingress
     # transition above occurred here and is recorded; the request now leaves
@@ -1177,7 +1641,9 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
             standing=crossing_module.manifest_standing(manifest, standing),
             mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref, replayed=replayed),
-            "delivery_attempt": delivery}
+            "delivery_attempt": delivery,
+            "worker_claim_state": worker_claim_state,
+            "workercoordinator_claim_fence_required_by_route": worker_claim_required}
 
     # The SDK decides whether this closes the transition. Its refusal is the
     # answer, returned as it was given.
@@ -1231,6 +1697,17 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
         "transition_replayed": replayed,
+        # Observed, never minted: VERIFIED_AGAINST_COMMITTED_WORKERCOORDINATOR_REGISTRY
+        # when the manifest declared a claim this operation verified, UNVERIFIED
+        # when it declared none. A declared claim that did not verify never
+        # reaches here.
+        "worker_claim_state": worker_claim_state,
+        "workercoordinator_claim_fence_required_by_route": worker_claim_required,
+        # For VERIFY_EXISTING: the declared predecessor was found recorded and
+        # unsuperseded in this repository's ledger before the crossing, except
+        # its result_sha256, which no receipt records; genesis reports null.
+        "declared_predecessor_result_binding": predecessor_binding,
+        "declared_predecessor_record": predecessor_record,
         "recomputation_rule_ref": rule_ref,
         # Both levels, so a reader can see the organization consumed a receipt
         # from the level below rather than one it wrote itself.

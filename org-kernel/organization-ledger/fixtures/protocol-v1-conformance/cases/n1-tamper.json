@@ -1,20 +1,38 @@
 {
   "case_id": "n1-tamper",
+  "covers": "PAYLOAD_ALTERED_AFTER_THE_CROSSING_WITH_PAYLOAD_HASH_RECOMPUTED_FROM_THE_ALTERED_BYTES",
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
+    "authority_effect": "NONE_REFUSAL_ONLY",
     "disposition": "FAIL_CLOSED",
-    "failed_predicate": "EVERY_BOUNDARY_RECEIPT_RECOMPUTES_FROM_THE_EXACT_PAYLOAD_BYTES",
-    "failure_code": "BOUNDARY_RECEIPT_RECONSTRUCTION_MISMATCH",
-    "next_attempt": "redeliver the unaltered packet; nothing was appended",
-    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
-    "required_evidence_or_repair": "resubmit the original manifest bytes; a payload altered after the crossing does not reconstruct",
-    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::reconstruct_closures"
+    "failed_predicate": "BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY",
+    "failure_code": "BOUNDARY_RECEIPT_RECONSTRUCTION_MISMATCH:INGRESS_ACCEPTED",
+    "received": false,
+    "refusal_recorded": true
   },
+  "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
+  "expected_refusal_record": {
+    "disposition": "DENY",
+    "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
+  },
+  "expected_source": "GENERATED_FROM_REAL_RECEIVE",
+  "issue_3369_item": "TAMPER",
+  "issue_3369_item_status": "COVERED_WITH_SPEC_GAP",
   "mutation": {
     "kind": "TAMPER_PAYLOAD_AFTER_CROSSING",
     "manifest_patch": {
       "manifest_id": "PROTOCOL-V1-CONFORMANCE-FIXTURE-001-ALTERED"
     }
   },
-  "schema": "stegverse.protocol-v1-conformance-case/v1"
+  "schema": "stegverse.protocol-v1-conformance-case/v1",
+  "spec_gap": {
+    "disposition": "GAP_NOT_IMPLEMENTED",
+    "failed_predicate": "THE_PAYLOAD_HASH_IS_RECOMPUTED_FROM_THE_CARRIED_MANIFEST_AT_INGRESS",
+    "failure_code": "PAYLOAD_HASH_NOT_RECOMPUTED_FROM_MANIFEST_AT_INGRESS",
+    "issue_3369_item": "TAMPER",
+    "next_attempt": "the ingress lane binds payload_hash to the carried manifest; then add a case that alters the echo with payload_hash unchanged and assert its refusal",
+    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+    "required_evidence_or_repair": "reconstruct_closures recomputes every boundary receipt from the crossing's own payload_hash, but receive() never recomputes payload_hash from the manifest or echo it carries. An echo or manifest altered with payload_hash left unchanged reconstructs. Binding needs an ingress-lane change that recomputes the digest from the carried bytes; it is not invented in this fixture",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::reconstruct_closures"
+  }
 }
