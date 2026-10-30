@@ -96,7 +96,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
         # revision 16 (Coordination ruling): the cvk-only both-ends anchor; KV's own head record decides (ruling A)
-        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba: "
+        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07: "
                                                             "runtime/kv_receipt_ledgers.py::read_receipt_ledger"))
         self.assertEqual(anc["e0_terminal"]["dispositions"], ["ALLOW", "DENY", "FAIL_CLOSED"])
         self.assertEqual(anc["observed_by"], ["cvk263-chain-probe", "cvk263-anchor-production-prerequisites", "tvc542-bind-cvk263"])
@@ -123,14 +123,16 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertEqual(anc["required_outcomes"]["ORG_CROSSING_READER_INSTALLED"], ["ALLOW"])
         self.assertFalse([k for k in anc["required_outcomes"] if "PIN_MECHANISM_ORG_HOSTED" in k])
         self.assertEqual(anc.get("bypass_paths") or [], [])
-        for s_ in ("PROD_LAYER1_SCRATCH_LEDGER_AND_ASSERTED_IDENTITY", "LAYER1_TRANSPORT_NOT_INSTALLED",
-                   "LAYER1_NODE_LEDGER_WITHOUT_ANCHOR", "LAYER1_EPHEMERAL_ANCHORED_BY_UNSIGNED_OPENED_RECORD",
-                   "PROD_LAYER1_INJECTED_DISGUISED_EVALUATOR", "LAYER1_EPHEMERAL_OPENED_RECORD_SIGNED_BY_UNPUBLISHED_KEY",
-                   "LAYER1_INGRESS_RECORD_NAMES_NO_INSTALLED_TRANSPORT"):
+        # revision 21 (Coordination ruling (b), StegVerse-org/.github#162 c6509636142): layer 1 reads the node's OWN ledger chain;
+        # the org-ledger anchor, the endpoint designation and the EPHEMERAL anchored rows are gone with their modules
+        for s_ in ("PROD_LAYER1_NO_NODE_CHAIN_BOUND", "PROD_LAYER1_E0_NODE_CHAIN_ASSERTED_IDENTITY", "LAYER1_TRANSPORT_NOT_INSTALLED",
+                   "LAYER1_NODE_CHAIN_ADMITTED_HEALTHY", "LAYER1_WRONG_GENESIS_PIN", "LAYER1_TRANSPORT_KEY_NOT_THE_BOUND_NODE_KEY",
+                   "PROD_LAYER1_INJECTED_DISGUISED_EVALUATOR", "LAYER1_CHAIN_OF_ANOTHER_NODE", "LAYER1_FOREIGN_PRODUCER_REPORTS"):
             self.assertIn(s_, decl[l1]["required_outcomes"])
+        for s_ in decl[l1]["required_outcomes"]:
+            for retired in ("ANCHOR", "EPHEMERAL", "PERMANENT", "ORG_STORE", "INGRESS_RECORD"):
+                self.assertNotIn(retired, s_)
         self.assertNotIn("OPERATING_MODE_E0_WITNESS_FAILED", _codes(d, l1))
-        # revision 9: cvk#258 @9551edab refuses the caller-created unlabelled org store, so it is now required
-        self.assertEqual(decl[l1]["required_outcomes"]["LAYER1_PERMANENT_ON_CALLER_CREATED_UNLABELLED_ORG_STORE"], ["DENY", "FAIL_CLOSED"])
         # layer 2's TV/TVC bypass is observed at TVC#541: the custody chain's refusals are required
         self.assertIn("skap-custody-chain-probe-tvc541", decl[l2]["observed_by"])
         self.assertIn("CHAIN_LAYER2_NOT_BOUND_TO_LAYER1", decl[l2]["required_outcomes"])
@@ -270,7 +272,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("merge-ready", anc)
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         run = next(r for r in obs["runs"] if r["run_id"] == "cvk263-anchor-production-prerequisites")
-        self.assertTrue(run["pin"].endswith("@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba"))
+        self.assertTrue(run["pin"].endswith("@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07"))
         for o in run["outcomes"]:
             if o["subject"] == "ORG_CROSSING_READER_INSTALLED":  # revision 17: installed (cvk#276)
                 self.assertEqual(o["disposition"], "ALLOW")
@@ -294,10 +296,13 @@ class CommittedArtifacts(unittest.TestCase):
 
     def test_empty_tvc_signer_file_is_a_class_c_tvc_task(self):
         # Name kept from main for the test ratchet (a test at base must run at head).
-        # Revision 16: the empty TVC signer file is no longer a class C TVC task; it is the
-        # external dependency ORG-LEDGER-HEAD-SIGNER-001, whose key step is owner-only.
+        # Revision 16: the empty TVC signer file is no longer a class C TVC task.
+        # Revision 21 (Coordination ruling (b), StegVerse-org/.github#162 c6509636142): layer 1 reads the node's OWN
+        # ledger chain; LC-KV-13 no longer carries the org-ledger anchor, its head signer or a PERMANENT anchored read.
         tasks = {t["task_id"]: t for t in _inputs()["tasks"]}
-        self.assertIn("ORG-LEDGER-HEAD-SIGNER-001", tasks["LC-KV-13"]["required_repair"])
+        self.assertIn("NODE_OWN_LEDGER_CHAIN", tasks["LC-KV-13"]["required_repair"])
+        for retired in ("ORG-LEDGER-HEAD-SIGNER-001", "PERMANENT", "kv-anchor-schema"):
+            self.assertNotIn(retired, json.dumps(tasks["LC-KV-13"]))
         t = tasks["LC-KV-13"]
         for k in ("failure_code", "failed_check", "required_repair", "retry_point", "owning_goal", "next_attempt"):
             self.assertTrue(str(t.get(k) or "").strip(), k)
@@ -377,7 +382,7 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_" + w_], ["DENY"])
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         probe = next(r for r in obs["runs"] if r["run_id"] == "cvk263-chain-probe")
-        self.assertTrue(probe["pin"].endswith("@dfa5fe3ca16ed48e361e90adbeb000d5d86bc7ba"))
+        self.assertTrue(probe["pin"].endswith("@c379f75f52b9127c4f95acbcd7e2ae7aa8040a07"))
         rows = {o["subject"]: o for o in probe["outcomes"]}
         for w_ in ("KV", "SKAP_VIA_GATE"):
             for c_ in ("KV_END_ONLY", "ORG_RECORDS_AN_OLDER_HEAD_ONLY"):

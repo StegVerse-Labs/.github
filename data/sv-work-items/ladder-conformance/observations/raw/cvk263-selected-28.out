@@ -19,5 +19,5 @@ print(json.dumps({'rows':[r]}))
 
 --- exit 0
 --- stdout
-{"rows": [{"subject": "LANE_D_SELECTED_28_FILE_SET", "disposition": "ALLOW", "files": 28, "pytest_rc": 0, "passed": 408, "failed": 0, "skipped": 0, "error": 0, "subtests_passed": 102}]}
+{"rows": [{"subject": "LANE_D_SELECTED_28_FILE_SET", "disposition": "ALLOW", "files": 28, "pytest_rc": 0, "passed": 400, "failed": 0, "skipped": 0, "error": 0, "subtests_passed": 92}]}
 --- stderr
