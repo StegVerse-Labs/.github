@@ -1,0 +1,42 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "new_sha": "293d9df18e5b81e80c2702f256be81a4c09b1785",
+    "old_sha": "613de515b110b3f1bb1ac42d18e1483c33fb001b",
+    "operation": "sv_push_receipt",
+    "profile_id": "org-ledger-writer",
+    "push_receipt_sha256": "sha256:a2a507a3e9850dc879f5bd9eaa5e7883073eeae8e31f4ee70a4752d1ca9e1f1c",
+    "push_result_sha256": "sha256:69c0c9ee37c34a3076baf50b0762101708abbfb18c6e9c5a23232875e614e8c7",
+    "range_id": "9a7c06beb7c49ef9c3c1dc2d9a7f79be4fcc7024e922e2ce29da77a357016614",
+    "ref": "refs/heads/p1/sv-push-receipt-handoff-writer-op",
+    "repository": "StegVerse-Labs/.github"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 574296107,
+    "frequency_hz": 100,
+    "generation": 574296107,
+    "heartbeat_id": "HB:574296107",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "observed_at": "2026-10-30T01:24:58.679376+00:00",
+  "org_transition_class": "REPO_STATE_PROPAGATION",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:a2a507a3e9850dc879f5bd9eaa5e7883073eeae8e31f4ee70a4752d1ca9e1f1c",
+  "previous_receipt_sha256": "sha256:b9a73bf78d55228abe9b31f52654e041b94a39cee69ff071538fa66a7a8a1aed",
+  "receipt_sha256": "sha256:ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d",
+  "repo_receipt_sha256": "sha256:a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c",
+  "repo_transition_id": "SV_PUSH_RECEIPT_APPEND:9a7c06beb7c49ef9c3c1dc2d9a7f79be4fcc7024e922e2ce29da77a357016614",
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.repo-transition-receipt/v1",
+  "source_repository": "StegVerse-Labs/.github",
+  "source_transition_id": "SV_PUSH_RECEIPT_APPEND:9a7c06beb7c49ef9c3c1dc2d9a7f79be4fcc7024e922e2ce29da77a357016614",
+  "source_transition_sha256": "sha256:a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:29f3b880f29df5cf17dbda7943728db2e560af32157b31c5d1c8d588fd85585a"
+}
