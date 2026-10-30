@@ -16,7 +16,7 @@
  "owning_lane": "GitHub Product lane (Lane C)",
  "proposed_resolution": "no repair inside the product; when the first real native change receives a genuine ALLOW through SV_CHANGE_ADMIT, add an observe run that evaluates sv_work_items.admit for it and bind H-GOV-ADMISSION's allow witness to that run; no specific change is named because none exists yet; nothing waits on a person",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "a real native change (record_mode NATIVE) is proposed, verified by its own exact-head receipts, and receives a genuine ALLOW through SV_CHANGE_ADMIT; StegVerse-Labs/.github#3358 and StegVerse-org/StegVerse-SDK#567 are pre-native history (Coordination ruling (b) on StegVerse-org/.github#167, as relayed to Lane D; Lane D c6514887557) and are not admit subjects",
+ "required_repair": "a real native change (record_mode NATIVE) is proposed, verified by its own exact-head receipts, and receives a genuine ALLOW through SV_CHANGE_ADMIT; StegVerse-Labs/.github#3358 and StegVerse-org/StegVerse-SDK#567 are pre-native history (Coordination ruling (b), StegVerse-org/.github#167 comment 6515084109; it answers Lane D's c6514887557) and are not admit subjects",
  "retry_point": "SV_CHANGE_ADMIT (resident-runtime/sv_work_items.py::admit, StegVerse-Labs/.github) on the exact head of the first real native change that receives a genuine ALLOW through SV_CHANGE_ADMIT; then python scripts/ladder_conformance.py observe",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

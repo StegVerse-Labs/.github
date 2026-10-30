@@ -490,6 +490,13 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d", adm["observed_state"])
         self.assertIn("a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c", adm["observed_state"])
         self.assertIn("c6514887557", adm["observed_state"])
+        # Coordination's ruling (b) is cited by its #167 comment id, and the history is stated as it is: both merged after the
+        # native path existed, with no NATIVE SV_CHANGE record ever proposed for them (P4 FAIL_CLOSED on Labs#3438)
+        self.assertIn("6515084109", adm["observed_state"])
+        self.assertIn("without a NATIVE SV_CHANGE record ever being proposed", adm["observed_state"])
+        self.assertIn("without a NATIVE SV_CHANGE record ever being proposed", adm["what"])
+        for text_ in (adm["observed_state"][:adm["observed_state"].index("Earlier revision text follows")], adm["what"]):
+            self.assertNotIn("before the NATIVE", text_)
         # LC-GOV-06 is closed by a bound, recorded FAIL_CLOSED witness (no ALLOW witness is bound)
         self.assertEqual(adm["observed_by"], ["labs-pre-native-admit-refusal"])
         self.assertFalse((lc.BASE / "scoped-tasks" / "LC-GOV-06.json").exists())
