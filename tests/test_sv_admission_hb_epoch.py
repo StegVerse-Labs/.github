@@ -233,7 +233,15 @@ class PredicateTests(unittest.TestCase):
         pin = row["checks"]["supplied-epoch-binder-check"]["predicate_pins"]["726248a5"]
         self.assertEqual((pin["sha256"], pin["path"], pin["function"]), (PIN, "org-kernel/kernel.py", "supplied_epoch_failure"))
         blob = hashlib.sha1(b"blob %d\0" % len(src.encode()) + src.encode()).hexdigest()
-        self.assertEqual(pin["file_blob_at_fc19b532"], blob)  # kernel.py unchanged since fc19b532
+        # kernel.py changed after fc19b532 (Labs#3434 supplies the carrier epoch at dispatch); the rule's lines and the
+        # function segment sha256 (PIN) are unchanged. required-checks.json is byte-pinned by the vendored writer snapshot
+        # (tests/test_sv_check_receipt_append.py), so its blob stays the one kernel.py had at fc19b532; invariants.json
+        # carries the current pin and the same historical one.
+        self.assertEqual(pin["file_blob_at_fc19b532"], "ffec5d648d7fa4aead1f44f76df936a2da21bb96")
+        inv = json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())
+        rule = [i for i in inv["invariants"] if "supplied_epoch_rule" in i][0]["supplied_epoch_rule"]
+        self.assertEqual(rule["file_blob"], blob)  # the pinned kernel.py blob is this tree's (re-pinned for Labs#3434)
+        self.assertEqual((rule["file_blob_at_fc19b532"], rule["sha256"]), (pin["file_blob_at_fc19b532"], PIN))
 
 
 class AdmissionTests(unittest.TestCase):
