@@ -73,17 +73,8 @@ $ {python} -m runtime.kv_skap_vault finish-point
   "evidence_sha256": null,
   "layer1_prerequisites": [
     {
-      "dependency_owner": "Lane B (StegVerse-org/LLM-adapter#430, #429 and #428, open drafts; ADMISSION_ORDER StegVerse-Labs/StegOS#426, then StegVerse-org/LLM-adapter#430, then #429, then #428 (#430's head carries #429 and #428, so admitting #430 admits all three as one unit))",
-      "disposition": "FAIL_CLOSED",
-      "failed_predicate": "HEALTHY_NODE_EVALUATOR_STACK_ADMITTED",
-      "failure_class": "B",
-      "failure_code": "HEALTHY_NODE_EVALUATOR_STACK_NOT_ON_LLM_ADAPTER_MAIN",
-      "gates": "every layer-1 ALLOW, so the finish point",
-      "next_attempt": "when #430, #429 and #428 are admitted, in that order; event-driven, never on a timer",
-      "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324); dependency owner Lane B (StegVerse-org/LLM-adapter#430, #429 and #428, open drafts; ADMISSION_ORDER StegVerse-Labs/StegOS#426, then StegVerse-org/LLM-adapter#430, then #429, then #428 (#430's head carries #429 and #428, so admitting #430 admits all three as one unit))",
+      "disposition": "ALLOW",
       "prerequisite": "HEALTHY_NODE_EVALUATOR_STACK_ADMITTED",
-      "required_evidence_or_repair": "HEALTHY_NODE_EVALUATOR_STACK_NOT_ON_LLM_ADAPTER_MAIN: the evaluator and producers admitted on LLM-adapter main, then a re-vendor that flips on_upstream_main in the pin",
-      "retry_entrypoint": "python -m runtime.kv_skap_vault finish-point (StegVerse-Labs/continuity-vault-kit)",
       "tracked_by": "LC-KV-13 / LC-KV-15"
     },
     {

@@ -462,27 +462,27 @@
   "KV-SKAP-VAULT-FUNCTIONAL-001": {
    "roots": {
     "cvk258": {
-     "commit": "c379f75f52b9127c4f95acbcd7e2ae7aa8040a07",
+     "commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit#289 (laned/kv-layer1-own-chain-remove-intr-pinned-copies @c379f75f; revision 21 re-pin from main @dfa5fe3c: KV layer 1 re-founded on the node's own ledger chain, the six runtime/intr_pinned copies removed; depends on cvk#289 and re-pins to main once it merges)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @44e7ae56 (the merge of #290 on the #289 merge @3d68fe1e; revision 22 re-pin from the #289 head @c379f75f: KV layer 1 on the node's own ledger chain, the six runtime/intr_pinned copies removed, the pin text and on_upstream_main following the merged LLM-adapter#430 @649f0775, the pinned-code exec targets a literal tuple)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk259": {
-     "commit": "c379f75f52b9127c4f95acbcd7e2ae7aa8040a07",
+     "commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit#289 (laned/kv-layer1-own-chain-remove-intr-pinned-copies @c379f75f; revision 21 re-pin from main @dfa5fe3c: KV layer 1 re-founded on the node's own ledger chain, the six runtime/intr_pinned copies removed; depends on cvk#289 and re-pins to main once it merges)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @44e7ae56 (the merge of #290 on the #289 merge @3d68fe1e; revision 22 re-pin from the #289 head @c379f75f: KV layer 1 on the node's own ledger chain, the six runtime/intr_pinned copies removed, the pin text and on_upstream_main following the merged LLM-adapter#430 @649f0775, the pinned-code exec targets a literal tuple)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk263": {
-     "commit": "c379f75f52b9127c4f95acbcd7e2ae7aa8040a07",
+     "commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit#289 (laned/kv-layer1-own-chain-remove-intr-pinned-copies @c379f75f; revision 21 re-pin from main @dfa5fe3c: KV layer 1 re-founded on the node's own ledger chain, the six runtime/intr_pinned copies removed; depends on cvk#289 and re-pins to main once it merges)",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @44e7ae56 (the merge of #290 on the #289 merge @3d68fe1e; revision 22 re-pin from the #289 head @c379f75f: KV layer 1 on the node's own ledger chain, the six runtime/intr_pinned copies removed, the pin text and on_upstream_main following the merged LLM-adapter#430 @649f0775, the pinned-code exec targets a literal tuple)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvkruling": {
-     "commit": "9d56bc7b5ff2b3c95f1bcd8a9f5e2a46c90534a1",
+     "commit": "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b",
      "kind": "git",
-     "ref": "continuity-vault-kit main @9d56bc7b (the #271 merge), the finish-point source the KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling at Labs main names; revision 16 keeps the with-ruling plan's finish-point root here while cvk258 follows main's revision 15 re-pin to @77d28d83, at which the ruling's finish-point check fails closed ADJACENCY_RULING_FINISH_POINT_SOURCE_UNAVAILABLE",
+     "ref": "continuity-vault-kit main @44e7ae56 (the #290 merge), the finish-point source the KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling now names (Coordination re-ruling, StegVerse-org/.github#167 c6512331772; revision 22, replacing the #271 merge @9d56bc7b, which still carried the retired intr_pinned copies; at the #289 merge @3d68fe1e the closure failed closed ADJACENCY_RULING_FINISH_POINT_CLOSURE_UNRESOLVED)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "labs3324": {
@@ -504,9 +504,9 @@
      "repo": "StegVerse-Labs/.github"
     },
     "labsruling": {
-     "commit": "64ba618affd86f275417becf048b929ad1494d1e",
+     "commit": "dc5335add6f3bc0e1374d43d599e92f4220202c6",
      "kind": "git",
-     "ref": "StegVerse-Labs/.github main @64ba618a (revision 16 re-pin from #3353 @cff426f1, now merged as fadccc2f: main carries the same KV-SKAP-VAULT-FUNCTIONAL-001 adjacency ruling, registry generation 321 and the #3352 rename of the retired KV-SKAP InTr component to kv-skap-gate-client)",
+     "ref": "StegVerse-Labs/.github laned/ladder-conformance-finish-point-cvk-44e7ae56 @dc5335ad (revision 22: Labs main @613de515 plus the one commit that re-rules the KV-SKAP-VAULT-FUNCTIONAL-001 adjacency finish point to cvk 44e7ae56; the same registry generation 321 and #3352 rename as before; the ruling record, which this PR changes, is read from this commit)",
      "repo": "StegVerse-Labs/.github"
     },
     "llmad": {
@@ -681,7 +681,7 @@
      "root": "labsruling",
      "run_id": "kv-registration-plan-without-ruling",
      "subject": "REGISTRATION_PLAN",
-     "what": "registration plan, no adjacency ruling (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
+     "what": "registration plan, no adjacency ruling (revision 22: at the re-ruling commit @dc5335ad on Labs main @613de515, registry generation 321, after the #3352 component rename)"
     },
     {
      "argv": [
@@ -702,7 +702,7 @@
      "root": "labsruling",
      "run_id": "kv-registration-plan-with-ruling",
      "subject": "REGISTRATION_PLAN",
-     "what": "registration plan with the Coordination class-D adjacency ruling re-pinned to cvk main @9d56bc7b (Labs#3353) and the finish-point root at that commit (revision 16: at Labs main @64ba618a, registry generation 321, after the #3352 component rename)"
+     "what": "registration plan with the Coordination class-D adjacency ruling re-ruled to cvk main @44e7ae56 (#167 c6512331772) and the finish-point root at that commit (revision 22: at the re-ruling commit @dc5335ad on Labs main @613de515, registry generation 321, after the #3352 component rename)"
     },
     {
      "globs": [
@@ -1035,7 +1035,7 @@
      "parse": "rows",
      "root": "cvk258",
      "run_id": "layer1-two-layer-probe",
-     "what": "both gates and the store at cvk#289 @c379f75f through its own E0 harness (tests/kv_two_layer_e0.py): PROD_* rows under the production TRUST_ANCHORS (an E0 node chain with no installed transport, no node chain bound, injected and disguised evaluators); the labelled local exercise and its receipt at the production gate; inside e0_trust_anchors(), over the requesting node's OWN transition ledger bound by the deployment with its genesis pin: no chain bound, no health report, an unhealthy report, a healthy node that is not admitted, another node's chain, a superseded report, an unverified boundary proof, caller-asserted health evidence, a caller-asserted identity, transport NOT_YET_ENABLED, a wrong genesis pin, a transport key that is not the bound node key, a chain that binds another key, reports no pinned producer wrote, an admitted healthy node chain (ALLOW), a subclass setting the exercise flag with an injected evaluator, a non-pinned and a disguised non-pinned evaluator with their receipts at layer 2; layer-2 refusals (none, caller-minted, reused, E0 receipt under production anchors, subclassed layer 1); read_stream / append_extension / direct file write / gate restart / subclassed gate on SKAP records; the custody verifier with an arbitrary callable and a subclassed gate"
+     "what": "both gates and the store at cvk main @44e7ae56 through its own E0 harness (tests/kv_two_layer_e0.py): PROD_* rows under the production TRUST_ANCHORS (an E0 node chain with no installed transport, no node chain bound, injected and disguised evaluators); the labelled local exercise and its receipt at the production gate; inside e0_trust_anchors(), over the requesting node's OWN transition ledger bound by the deployment with its genesis pin: no chain bound, no health report, an unhealthy report, a healthy node that is not admitted, another node's chain, a superseded report, an unverified boundary proof, caller-asserted health evidence, a caller-asserted identity, transport NOT_YET_ENABLED, a wrong genesis pin, a transport key that is not the bound node key, a chain that binds another key, reports no pinned producer wrote, an admitted healthy node chain (ALLOW), a subclass setting the exercise flag with an injected evaluator, a non-pinned and a disguised non-pinned evaluator with their receipts at layer 2; layer-2 refusals (none, caller-minted, reused, E0 receipt under production anchors, subclassed layer 1); read_stream / append_extension / direct file write / gate restart / subclassed gate on SKAP records; the custody verifier with an arbitrary callable and a subclassed gate"
     },
     {
      "globs": [
@@ -1063,7 +1063,8 @@
       "^PINNED_HEALTHY_NODE_EVALUATOR = ",
       "\"commit\": \"919851cb092d353bfe6a4271d3893f129dbc1c91\"",
       "\"source_sha256\": \"sha256:fdaa2005",
-      "\"on_upstream_main\": False",
+      "\"merge_commit\": \"649f0775a1c4a6203bbbca835234453c9b6aee1f\"",
+      "\"on_upstream_main\": True",
       "\"intr_transport\": None",
       "^NODE_CHAIN_SOURCE = ",
       "^FINISH_POINT_NODE_KIND = ",
@@ -1072,7 +1073,7 @@
      ],
      "root": "cvk258",
      "run_id": "kv-layer1-pins",
-     "what": "what KV pins for layer 1 (cvk#289): the LLM-adapter#430 evaluator commit and digest (not on upstream main), the transport that production keeps unobserved, the node-own-chain binding kind, and the refusal codes for chain provenance and node-key binding"
+     "what": "what KV pins for layer 1 (cvk main @44e7ae56): the LLM-adapter#430 evaluator commit, digest and merge commit 649f0775 (on LLM-adapter main, on_upstream_main True), the transport that production keeps unobserved, the node-own-chain binding kind, and the refusal codes for chain provenance and node-key binding"
     },
     {
      "kind": "gh_pr",
@@ -1204,7 +1205,7 @@
      ],
      "root": "llmad",
      "run_id": "hn-producer-search",
-     "what": "any NODE_HEALTH_REPORTED producer: LLM-adapter#428 (evaluator) and #429 (producer draft)"
+     "what": "any NODE_HEALTH_REPORTED producer at the pre-merge head of LLM-adapter#428 (evaluator); both #428 and #429 are merged, carried by #430 as 649f0775 on LLM-adapter main"
     },
     {
      "globs": [
@@ -1217,7 +1218,7 @@
      ],
      "root": "llmad429",
      "run_id": "hn-producer-search-429",
-     "what": "same search at #429"
+     "what": "same search at the pre-merge head of #429 (the producer, merged with #430 as 649f0775)"
     },
     {
      "argv": [
