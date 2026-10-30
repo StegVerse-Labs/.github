@@ -17,6 +17,11 @@ name: Organization Ledger Transition
 #                        stegverse.sv_check_receipt.v1 receipt as the repository
 #                        receipt's evidence and aggregates it into the
 #                        organization receipt on the same ref;
+#   sv_push_receipt     resident-runtime/sv_push_receipt_append.py records the
+#                        stegverse.sv_push_receipt.v1 receipt a pushing session emitted
+#                        (resident-runtime/sv_push_receipt.py) as the repository receipt's
+#                        evidence, once per push range (repository, ref, old_sha, new_sha);
+#                        a second receipt for the same range is refused as a duplicate;
 #   sealed_test_receipt  a test receipt sealed by its producer's CI (TVC's
 #                        conformance receipt) is admitted against
 #                        .stegverse/organization-ledger-ingest/accepted-sealed-receipts.json
@@ -71,7 +76,9 @@ jobs:
           python -m py_compile resident-runtime/organization_ledger_readback.py \
             resident-runtime/intr_destination_ingress.py \
             resident-runtime/organization_ledger_ingest.py \
-            resident-runtime/sv_check_receipt_append.py
+            resident-runtime/sv_check_receipt_append.py \
+            resident-runtime/sv_push_receipt.py \
+            resident-runtime/sv_push_receipt_append.py
           python - <<'PY'
           import json
           from pathlib import Path
@@ -152,6 +159,21 @@ jobs:
             "${gate_args[@]}" \
             --out "$RUNNER_TEMP/results/check-receipt-append.json"
 
+      - name: Append the push receipt to the repository and organization ledgers (operation sv_push_receipt)
+        if: env.INGEST_OPERATION == 'sv_push_receipt'
+        run: |
+          set -euo pipefail
+          export STEGVERSE_ORG_LEDGER_GIT_DIR="$GITHUB_WORKSPACE/.git"
+          export STEGVERSE_REPO_LEDGER_ROOT="git+$GITHUB_WORKSPACE#$LEDGER_REF:$REPO_LEDGER_NAMESPACE"
+          # Time is supplied in the committed request, never sampled: an integer epoch
+          # >= 32 that passes kernel.py::supplied_epoch_failure and equals the receipt's
+          # own hb_epoch. One receipt per push range; a second one for the same range
+          # is a duplicate and appends nothing (the step then fails with the six fields).
+          python resident-runtime/sv_push_receipt_append.py append \
+            --push-receipt "$RUNNER_TEMP/sv-check/push-receipt.json" \
+            --hb-epoch "$HB_EPOCH" \
+            --out "$RUNNER_TEMP/results/push-receipt-append.json"
+
       - name: Append the sealed test receipt to the organization ledger (operation sealed_test_receipt)
         if: env.INGEST_OPERATION == 'sealed_test_receipt'
         run: |
@@ -205,6 +227,30 @@ jobs:
             echo "### sv_check_receipt append"
             echo '```json'
             cat "$RUNNER_TEMP/results/check-receipt-readback.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Read the appended push receipt back from a fresh fetch
+        if: env.INGEST_OPERATION == 'sv_push_receipt'
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/readback-sv-push.git"
+          git init -q --bare "$fresh"
+          auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
+          if [ -z "$auth_header" ]; then
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            exit 1
+          fi
+          git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
+            fetch -q "$(git remote get-url origin)" "+$LEDGER_REF:$LEDGER_REF"
+          python resident-runtime/sv_push_receipt_append.py readback \
+            --location "git+$fresh#$LEDGER_REF" \
+            --result "$RUNNER_TEMP/results/push-receipt-append.json" \
+            --out "$RUNNER_TEMP/results/push-receipt-readback.json"
+          {
+            echo "### sv_push_receipt append"
+            echo '```json'
+            cat "$RUNNER_TEMP/results/push-receipt-readback.json"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
