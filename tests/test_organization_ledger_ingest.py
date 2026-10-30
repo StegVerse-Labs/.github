@@ -50,6 +50,7 @@ ing = _load("organization_ledger_ingest_under_test", ROOT / "resident-runtime/or
 appendtests = _load("test_sv_check_receipt_append_for_ingest", ROOT / "tests/test_sv_check_receipt_append.py")
 svc, GitLedger, REF = appendtests.svc, appendtests.GitLedger, appendtests.REF
 consumer = _load("tvc_conformance_receipt_for_ingest", ROOT / "scripts/tvc_conformance_receipt.py")
+pushappend = _load("sv_push_receipt_append_for_ingest", ROOT / "resident-runtime/sv_push_receipt_append.py")
 org = ing.writer().organization_ledger
 CONTRACT = json.loads((ROOT / ".stegverse/verification-inputs/tvc-conformance-receipt.json").read_text(encoding="utf-8"))
 CHECK = {"schema": "stegverse.sv_check_receipt.v1", "check_id": "x", "hb_epoch": "40"}
@@ -204,7 +205,14 @@ class Admission(Refusals, unittest.TestCase):
     def test_the_tvc_observed_writer_surface_is_not_edited_by_this_route(self):
         # aggregate_repo_transition.py and org-contract.json are in the observed_surface of the
         # receipt this route ingests; editing either would make that receipt stale for the ratchet.
-        receipt = ing.read_request(ROOT / ing.REQUEST_PATH)["receipt"]
+        request = ing.read_request(ROOT / ing.REQUEST_PATH)
+        if request["operation"] != ing.SEALED:
+            # The committed request is one operation at a time. While it carries an sv_push_receipt there is no
+            # sealed TVC receipt in it to hold the surface against; the guard applies again when a sealed request
+            # is committed.
+            self.assertEqual(request["operation"], ing.SV_PUSH)
+            return
+        receipt = request["receipt"]
         observed = receipt["consumed_source"]["observed_surface"]
         for path in ("resident-runtime/aggregate_repo_transition.py", ".stegverse/transition-ledger/org-contract.json"):
             self.assertIn(path, observed)
@@ -216,6 +224,13 @@ class Admission(Refusals, unittest.TestCase):
         same test at the head (TEST_PRESENT_AT_BASE_RUNS_AT_HEAD); the request now carries run COMMITTED_RUN_ID
         (40166845193, TVC#551), which supersedes runs 40160000328 (TVC#546) and 40137248073 (TVC#539)."""
         request = ing.read_request(ROOT / ing.REQUEST_PATH)
+        if request["operation"] == ing.SV_PUSH:
+            # A committed sv_push_receipt request replaces the sealed one (one request holds one receipt). It is
+            # admitted when the producer's own shape and seal check passes and its epoch is the receipt's own.
+            receipt = request["push_receipt"]
+            self.assertIsNone(pushappend.push_payload(receipt))
+            self.assertEqual(request["hb_epoch"], int(receipt["hb_epoch"]))
+            return
         self.assertEqual(request["operation"], ing.SEALED)
         receipt = request["receipt"]
         self.assertTrue(ing.seal_verifies(receipt))
