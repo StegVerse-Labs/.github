@@ -286,7 +286,7 @@ jobs:
           git init -q --bare "$fresh"
           auth_header=$(git config --local --get http.https://github.com/.extraheader || true)
           if [ -z "$auth_header" ]; then
-            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
+            echo '{"disposition":"FAIL_CLOSED","failure_code":"LEDGER_READBACK_CREDENTIAL_UNAVAILABLE","failed_predicate":"FRESH_FETCH_HAS_CHECKOUT_CREDENTIAL","required_evidence_or_repair":"checkout credentials unavailable for an independent ref fetch","retry_entrypoint":".github/workflows/organization-ledger-transition.yml","owning_existing_goal":"StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody","next_attempt":"the next committed-packet push with checkout credentials available to the fresh fetch","consequence_committed":false,"authority_effect":"NONE_READBACK_ONLY"}'
             exit 1
           fi
           git --git-dir="$fresh" -c http.https://github.com/.extraheader="$auth_header" \
