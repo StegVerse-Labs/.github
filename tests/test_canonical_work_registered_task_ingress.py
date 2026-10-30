@@ -41,7 +41,7 @@ class CanonicalWorkRegisteredTaskIngressTests(unittest.TestCase):
         wrapper = WRAPPER.read_text(encoding="utf-8")
         self.assertIn("def validate_target_task", bootstrap)
         self.assertIn("canonical_task_identity_must_resolve_exactly_once", bootstrap)
-        self.assertIn("canonical_task_not_proposed_for_ingress", bootstrap)
+        self.assertIn("canonical_task_not_ingress_projectable", bootstrap)
         self.assertNotIn("bootstrap_is_bounded_to_canonical_work_coordination_task", bootstrap)
         self.assertIn('"--task-id"', wrapper)
 

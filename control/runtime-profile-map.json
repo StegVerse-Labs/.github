@@ -64,7 +64,7 @@
       "component": "Universal InTr Profiled Ingress",
       "repository": "StegVerse-Labs/.github",
       "declared": {
-        "capabilities": ["intr_ingress", "event_triggered_materialization", "intr_profile:HIL:Ingress", "intr_profile:SV002:PublicObservation", "intr_profile:KV:KnowledgeVaultInterlock", "intr_profile:KV:SKAPCiphertextCustody", "intr_profile:Publisher:ArtifactTransfer", "intr_profile:KV:PublisherArtifactImport"],
+        "capabilities": ["intr_ingress", "event_triggered_materialization", "intr_profile:HIL:Ingress", "intr_profile:SV002:PublicObservation", "intr_profile:KV:KnowledgeVaultInterlock", "intr_profile:Publisher:ArtifactTransfer", "intr_profile:KV:PublisherArtifactImport"],
         "effect_class": "ingress_materialization",
         "mutation_allowed": true,
         "deployment_allowed": false,

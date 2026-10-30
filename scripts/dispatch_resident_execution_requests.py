@@ -21,7 +21,6 @@ import os
 import uuid
 import subprocess
 import sys
-from time import time_ns
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -36,6 +35,11 @@ COMPONENT011_SELECTOR = "ungoverned_ai_defensive_envelope"
 COMPONENT011_TASK_ID = "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001"
 COMPONENT011_REQUEST_ID = "RESIDENT-EXEC-UNGOVERNED-AI-DEFENSIVE-ENVELOPE-001"
 COMPONENT011_REQUEST_REL = Path("control/resident-execution-request.d/ungoverned-ai-defensive-envelope-001.json")
+# The component-011 observation references the heartbeat epoch of the frame
+# this dispatch carries (dispatch(hb_epoch=) / --hb-epoch); absent or invalid it
+# is refused six-field FAIL_CLOSED before anything is appended. No clock is read.
+COMPONENT011_EPOCH_RETRY_ENTRYPOINT = "scripts/dispatch_resident_execution_requests.py::dispatch (hb_epoch=, or --hb-epoch)"
+COMPONENT011_EPOCH_PREDICATE = "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"
 AWARENESS_AGGREGATE_REL = Path("receipts/sovereign-host/astra-class-resilience-awareness.latest.json")
 AWARENESS_STATE_DIR = Path("runtime-state/entity-awareness")
 AWARENESS_PROTECTED = {
@@ -146,6 +150,7 @@ CONSUMERS = (
     ("ungoverned_ai_defensive_envelope", "scripts/consume_ungoverned_ai_defensive_envelope_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
+    ("site_production_promotion", "scripts/consume_site_production_promotion_request.py"),
     ("native_email_action_monitor", "scripts/consume_native_email_action_monitor_request.py"),
     ("governed_multilane_manifold_activation", "control/resident-execution-request.d/consume-governed-multilane-manifold-activation.py"),
     ("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"),
@@ -160,6 +165,44 @@ CONSUMERS = (
     ("sdk_workspace_external_collab_consent_listener", "control/resident-execution-request.d/consume-sdk-workspace-external-collab-consent-listener.py"),
     ("stegsocials_bounded_intr_admission", "scripts/consume_stegsocials_bounded_intr_admission_request.py"),
 )
+
+
+#: Consumers declared to take the carrier's heartbeat epoch (the dispatcher
+#: analogue of a kernel endpoint row declaring `endpoint_adapter_hb_epoch`
+#: CARRIER_SUPPLIED, org-kernel/kernel.py run_endpoint_adapter, INDEX H34b).
+#: Each is handed `--hb-epoch` exactly as its caller supplied it, checked by the
+#: kernel's shared rule (supplied_epoch_failure, SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH).
+#: Nothing here derives an epoch: not from a clock and not from the oscillator
+#: sampler's runtime observation snapshot (`snapshot_is_observation_only`,
+#: heartbeat_runtime/independent_oscillator.py). Absent, nothing is forwarded and the
+#: consumer refuses what needs one (GRANT_EPOCH_NOT_CARRIER_SUPPLIED).
+CARRIER_EPOCH_CONSUMERS = frozenset({"org_claim_allocator"})
+
+
+def carrier_hb_epoch(hb_epoch: Any) -> tuple[str | None, dict[str, Any] | None]:
+    """The caller-supplied carrier epoch as forwardable text, or a six-field refusal. No clock is read."""
+    if hb_epoch is None:
+        return None, None
+    spec = importlib.util.spec_from_file_location("dispatch_org_kernel_epoch", ROOT / "org-kernel/kernel.py")
+    kernel = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kernel)
+    failure = kernel.supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return str(int(str(hb_epoch))), None
+    code, detail = failure
+    return None, {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": kernel.HB_EPOCH_PREDICATE,
+        "detail": detail,
+        "required_evidence_or_repair": "pass --hb-epoch as the carrier supplied it: ASCII digits with value >= 32",
+        "retry_entrypoint": "scripts/dispatch_resident_execution_requests.py (--hb-epoch)",
+        "owning_existing_goal": kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+        "next_attempt": "dispatch again with the supplied epoch; the consumer was not run",
+        "derived_from_clock": False,
+        "consequence_committed": False,
+        "authority_effect": "NONE_REFUSAL_ONLY",
+    }
 
 
 #: Master Records boundary migration: consumers deployed before the rename report these legacy wait states.
@@ -335,8 +378,35 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
 
 
 
+def component011_epoch_refusal(org: Any, hb_epoch: Any) -> dict[str, Any] | None:
+    """The six-field FAIL_CLOSED of the observation's epoch, or None when it is supplied.
+
+    The rule is the kernel's shared `supplied_epoch_failure`; nothing is
+    derived from a clock to stand in for an absent epoch.
+    """
+    failure = org.kernel.supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return None
+    code, detail = failure
+    return {
+        "state": "BOUNDARY",
+        "reason": code,
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": COMPONENT011_EPOCH_PREDICATE,
+        "detail": detail,
+        "required_evidence_or_repair": "the dispatch carries the frame's heartbeat epoch (hb_epoch= or --hb-epoch): ASCII digits with value >= 32; it is never derived from a clock",
+        "retry_entrypoint": COMPONENT011_EPOCH_RETRY_ENTRYPOINT,
+        "owning_existing_goal": COMPONENT011_TASK_ID,
+        "next_attempt": "dispatch again with the frame's epoch; nothing was appended",
+        "derived_from_clock": False,
+        "consequence_committed": False,
+        "authority_effect": "NONE",
+    }
+
+
 def retain_component011_dispatch_in_organization(
-    source: Path, runtime: Path, outcomes: list[dict[str, Any]],
+    source: Path, runtime: Path, outcomes: list[dict[str, Any]], *, hb_epoch: Any = None,
 ) -> dict[str, Any] | None:
     """Record the exact component-011 selector outcome in the EXISTING org ledger.
 
@@ -344,6 +414,8 @@ def retain_component011_dispatch_in_organization(
     a WorkerCoordinator claim/fence. The org predecessor is verified by readback.
     A missing runtime request is recorded as missing ONLY when its canonical
     already-local source request is available for exact identity validation.
+    `hb_epoch` is the epoch of the frame this dispatch carries; the receipt
+    references it, and without a supplied one nothing is appended.
     """
     row = next((item for item in outcomes if item.get("consumer") == COMPONENT011_SELECTOR), None)
     if row is None:
@@ -401,6 +473,9 @@ def retain_component011_dispatch_in_organization(
         # store the Organization manifest declares; no raw ledger root is read.
         store = org.organization_store()
         current_chain(store)
+        refused = component011_epoch_refusal(org, hb_epoch)
+        if refused is not None:
+            return refused
 
         # A fresh actual visit receives its own non-authorizing identity.
         visit_id = uuid.uuid4().hex
@@ -461,6 +536,7 @@ def retain_component011_dispatch_in_organization(
             },
             authority_effect="NONE",
             ledger=store,
+            hb_epoch=int(str(hb_epoch)),
         )
         digest = recorded["receipt_sha256"]
         stored = store.get(org.ledger_store.receipt_key(digest))
@@ -542,7 +618,9 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         "machine_result_sha256": sha256_uri(machine_result),
         "machine_result": machine_result,
     }
-    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}:{time_ns()}"
+    # Keyed on the request's own identity (task, request id, request digest),
+    # as the claim consumer keys its records; no clock is read.
+    transition_id = f"{task_id}:RESIDENT_REQUEST_DISPATCH_VISIT:{request_id}:{sha256_uri(request)}"
     required_evidence = [{
         "evidence_id": f"{transition_id}:selector-visit",
         "evidence_type": "RESIDENT_REQUEST_DISPATCH_SELECTOR_VISIT",
@@ -634,10 +712,12 @@ def dispatch(
     goal_task_id: str | None = None,
     request_id: str | None = None,
     execution_attempt_id: str | None = None,
+    hb_epoch: str | int | None = None,
 ) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     source_env = dict(os.environ if env is None else env)
+    forwarded_hb_epoch, hb_epoch_refusal = carrier_hb_epoch(hb_epoch)
     observed_compute_markers = sorted(name for name in HOSTED_ENV if truthy(source_env.get(name)))
     safe_env = clean_exec_env(source_env)
     selected = select_consumers(only_consumers)
@@ -664,6 +744,10 @@ def dispatch(
         if name in QUANTUM_AWARENESS_PROTECTED and not quantum_awareness_ready(runtime):
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "QUANTUM_STANDING_AWARENESS_REQUIRED", "returncode": None, "result": None, "attempted": False, "authority_effect": "NONE_FAIL_CLOSED"})
             continue
+        if name in CARRIER_EPOCH_CONSUMERS and hb_epoch_refusal is not None:
+            outcomes.append({"consumer": name, "consumer_ref": rel, "state": "FAIL_CLOSED", "returncode": None,
+                             "result": hb_epoch_refusal, "attempted": False, "authority_effect": "NONE_FAIL_CLOSED"})
+            continue
         consumer = runtime / rel
         if not consumer.is_file():
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "CONSUMER_NOT_MATERIALIZED", "returncode": None, "result": None, "attempted": False})
@@ -675,13 +759,15 @@ def dispatch(
             command.extend(["--request-id", request_id])
         if name == "canonical_work_coordination" and execution_attempt_id:
             command.extend(["--execution-attempt-id", execution_attempt_id])
-        if name == "org_claim_allocator":
+        if name in {"org_claim_allocator", "site_production_promotion"}:
             # The ledger roots are supplied to this execution; without them the
             # consumer refuses rather than deriving a location.
             for flag, variable in (("--repo-ledger-root", "STEGVERSE_REPO_LEDGER_ROOT"),
                                    ("--org-ledger-root", "STEGVERSE_ORG_LEDGER_ROOT")):
                 if str(source_env.get(variable) or "").strip():
                     command.extend([flag, str(source_env[variable])])
+        if name in CARRIER_EPOCH_CONSUMERS and forwarded_hb_epoch is not None:
+            command.extend(["--hb-epoch", forwarded_hb_epoch])
         try:
             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
             result = parse_last_json(completed.stdout)
@@ -734,7 +820,10 @@ def dispatch(
         or richard_dispatch_master_records.get("state") != "RECORDED"
     ):
         exact_selector_failure = True
-    component011_organization_dispatch = retain_component011_dispatch_in_organization(source, runtime, outcomes)
+    # The carried frame's epoch, as supplied, reaches the component-011 writer;
+    # without one it refuses six-field FAIL_CLOSED and appends nothing.
+    component011_organization_dispatch = retain_component011_dispatch_in_organization(
+        source, runtime, outcomes, hb_epoch=hb_epoch)
     component011_custody_failure = bool(
         component011_organization_dispatch is not None
         and component011_organization_dispatch.get("state") != "RECORDED"
@@ -755,6 +844,10 @@ def dispatch(
             "github_actions_authority": "NONE",
             "hosted_provider_authority": "NONE",
         },
+        "carrier_hb_epoch_forwarded": forwarded_hb_epoch,
+        "carrier_hb_epoch_forwarded_to": (sorted(CARRIER_EPOCH_CONSUMERS & {name for name, _ in selected})
+                                          if forwarded_hb_epoch is not None else []),
+        "carrier_hb_epoch_derived_from_clock": False,
         "goal_context_forwarded_to": ([name for name, _ in selected][0] if current_goal_task_id and len(selected) == 1 else None),
         "selected_request_id": request_id,
         "execution_attempt_id": execution_attempt_id,
@@ -781,6 +874,9 @@ def main() -> int:
     parser.add_argument("--goal-task-id")
     parser.add_argument("--request-id")
     parser.add_argument("--execution-attempt-id")
+    parser.add_argument("--hb-epoch", type=str, default=None,
+                        help="the carrier's heartbeat epoch as supplied (ASCII digits >= 32); forwarded "
+                             "to consumers that take it, never sampled here")
     args = parser.parse_args()
     receipt = dispatch(
         args.source_root,
@@ -789,6 +885,7 @@ def main() -> int:
         goal_task_id=args.goal_task_id,
         request_id=args.request_id,
         execution_attempt_id=args.execution_attempt_id,
+        hb_epoch=args.hb_epoch,
     )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "DISPATCH_COMPLETE" else 1

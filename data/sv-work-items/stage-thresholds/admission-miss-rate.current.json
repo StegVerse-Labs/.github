@@ -1,0 +1,25 @@
+{
+ "admission_miss_rate": "UNKNOWN",
+ "counts": {
+  "FALSE_ADMIT": 0,
+  "FALSE_REFUSAL": 0,
+  "HELD": 0,
+  "NOT_APPLICABLE": 0,
+  "UNKNOWN": 42
+ },
+ "decisions_considered": 42,
+ "definition_id": "NWI-S3-ADMISSION-MISS/v1",
+ "definition_sha256": "sha256:3e8cd6c7234e7bc779cf238f9d8404c1ad2dc5a749e74d07b8dff8ce56dd359a",
+ "disposition": "FAIL_CLOSED",
+ "excluded": [],
+ "failed_predicate": "ADMISSION_MISS_RATE_IS_COMPUTED_FROM_OBSERVED_OUTCOMES",
+ "failure_code": "ADMISSION_MISS_RATE_UNOBSERVED",
+ "mode": "E0",
+ "next_attempt": "re-run on the next organization-ledger append of an admission decision or outcome; the NWI-S3 ADMISSION_MISS_RATE predicate stays unobserved meanwhile (no rate is defaulted) and nothing waits",
+ "outcomes_not_grounded": [],
+ "owning_existing_goal": "StegVerse-org/.github#163",
+ "required_evidence_or_repair": "at least 1 admission decision(s) with an observed outcome: a ledgered stegverse.admission_miss.v1 record (correcting_ref a ledger receipt), a ledgered DENY later contradicted by an ALLOW of the same change digest at the same base, or a stegverse.admission_outcome.v1 HELD record whose evidence_ref is a ledger receipt",
+ "retry_entrypoint": "resident-runtime/admission_miss_rate.py::admission_miss_rate_e0",
+ "scope": "every ledgered admission decision in the snapshot (ledger 9a407561062757a30f90818ec6c8105b04331a39)",
+ "snapshot_sha256": "sha256:8fbf957a6e56d8b3df9a4626b62c146de31890af3b64c785afa70ec0ed393fbc"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "stegverse.goal-task-allocation-request/v0.1",
+  "request_id": "LANE-D-TVC-REPOSITORY-OPERATION-BROKER-ALLOCATION-REQUEST-20261023",
+  "state": "PROPOSED",
+  "issue": "StegVerse-org/.github#160",
+  "proposed_task_id": "TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
+  "proposed_task_id_authority": "NONE_PROPOSAL_ONLY",
+  "proposed_task_id_source": "TVC-owned identity observed at StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json",
+  "cosv_task_vector": null,
+  "cosv_note": "no vector proposed; the registration transition derives it from the request's declared exact_metrics",
+  "canonical_registry_ref": "data/canonical-task-registry.json",
+  "observed_registry_generation": 320,
+  "owning_task_found": false,
+  "scope": "Provide TVC-owned exact-warrant GitHub repository operations (TVC-owned, credential authority TV/TVC). Release condition as observed in TVC: TV/TVC-owned dispatcher report returns PASS for the exact 18-file broker bundle including deterministic PROTECT_DEFAULT_BRANCH, APPLY_ORGANIZATION_RULESET and spool-allowlist tests, with no credential disclosure; subsequent protection execution requires an exact current repository SHA, ST-019 allowed repository, single-use warrant, and sanitized receipt.",
+  "scope_digest": "sha256:7c2d83c7dcdd86a46c63112dda07902fc7adf9d1442c7d2c2f029c4383f71039",
+  "requested_action": "Check the TVC-owned identity through the registration transition (collision check-in, COSV derivation, GOAL_SCOPE_SEALED); register only through that transition.",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "handoff_ref": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:docs/GITHUB_REPOSITORY_OPERATION_BROKER_MIRROR_HANDOFF.md"
+}

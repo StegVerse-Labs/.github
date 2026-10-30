@@ -1,0 +1,28 @@
+diff --git a/tests/test_p1_supplied_epoch_and_ledger_paths.py b/tests/test_p1_supplied_epoch_and_ledger_paths.py
+index 091fa157..889a403b 100644
+--- a/tests/test_p1_supplied_epoch_and_ledger_paths.py
++++ b/tests/test_p1_supplied_epoch_and_ledger_paths.py
+@@ -505,11 +505,22 @@ class LedgerWriterRefusalTests(TemporaryLedgers):
+         component = (_old_layout_component(self.work / name) if source is None
+                      else _flat_component(self.work / name, source))
+         out = self.work / (name + "-self-close-out.json")
++        # Explicit binding reloads consumer contracts after the POSIX import hook.
++        # Declare the temporary ledger locus in those contracts so preflight can
++        # reach the refusing writer without requiring a production Git ledger.
++        consumer = self.work / (name + "-consumer")
++        contracts = consumer / ".stegverse/transition-ledger"
++        contracts.mkdir(parents=True)
++        for filename in ("contract.json", "org-contract.json"):
++            contract = json.loads((ROOT / ".stegverse/transition-ledger" / filename).read_text())
++            if filename == "org-contract.json":
++                contract["organization_ledger"] = {"store": "posix"}
++            (contracts / filename).write_text(json.dumps(contract), encoding="utf-8")
+         return self.run_cli(
+             "resident-runtime/intr_destination_ingress.py", "--self-close",
+             "--registry", str(ROOT / "org-boundary/registry/services.json"),
+             "--communication-id", "p1-ledger-refusal", "--packet-id", "p1-ledger-refusal",
+-            "--hb-epoch", "32", "--ledger-component", str(component), "--consumer-root", str(ROOT),
++            "--hb-epoch", "32", "--ledger-component", str(component), "--consumer-root", str(consumer),
+             "--out", str(out)), out
+ 
+     @requires_sdk

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/site-production-promotion-manifest/v1",
+  "title": "StegVerse Site production-promotion manifest v1",
+  "description": "Binds one exact StegVerse-Labs/Site commit to one production environment and route, the Workers config it deploys, and the allocator claim on dependency surface site:production-deploy. Evaluated by scripts/authorize_site_production_promotion.py (predicate P2). A manifest is a request, never authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "repository", "sha", "promotion_ref", "environment", "route", "service", "worker_main",
+               "assets_directory", "d1_bindings", "wrangler_config_sha256", "dependency_surface", "claim_task_id",
+               "claim_scope", "owning_existing_goal"],
+  "properties": {
+    "schema": {"const": "stegverse.site-production-promotion-manifest/v1"},
+    "repository": {"const": "StegVerse-Labs/Site"},
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "promotion_ref": {"type": "string", "pattern": "^refs/heads/.+"},
+    "environment": {"type": "string", "minLength": 1},
+    "route": {"type": "string", "minLength": 1},
+    "service": {"const": "site"},
+    "worker_main": {"const": "src/worker.js"},
+    "assets_directory": {"const": "."},
+    "d1_bindings": {"type": "array", "items": {"type": "string"}, "contains": {"const": "HIL_REGISTRY"}},
+    "wrangler_config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dependency_surface": {"const": "site:production-deploy"},
+    "claim_task_id": {"type": "string", "minLength": 1},
+    "claim_scope": {"type": "array", "minItems": 1},
+    "provider_build_id": {"type": "string"},
+    "owning_existing_goal": {"type": "string", "minLength": 1}
+  }
+}

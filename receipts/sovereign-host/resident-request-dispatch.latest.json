@@ -1,6 +1,9 @@
 {
   "astra_class_standing_awareness_ready": false,
   "authority_effect": "NONE_DISPATCH_ONLY",
+  "carrier_hb_epoch_derived_from_clock": false,
+  "carrier_hb_epoch_forwarded": null,
+  "carrier_hb_epoch_forwarded_to": [],
   "component011_organization_custody_failure": false,
   "component011_organization_dispatch": null,
   "compute_substrate": {
@@ -39,14 +42,14 @@
     }
   ],
   "quantum_resilience_standing_awareness_ready": false,
-  "registered_consumer_count": 56,
+  "registered_consumer_count": 57,
   "request_dispatch_grants_authority": false,
   "request_failure_blocks_later_requests": false,
   "request_failures": [
     "sdk_generic_manifest_execution"
   ],
   "richard_dispatch_master_records": null,
-  "runtime_root": "/home/user/.github",
+  "runtime_root": "/workspace/labs",
   "schema": "stegverse.resident-request-dispatch/v1",
   "sdk_evaluator_dispatch_master_records": null,
   "second_machine_required": false,
@@ -55,6 +58,6 @@
   ],
   "selected_request_id": "test5-a",
   "selection_scope": "EXACT_SELECTOR",
-  "source_root": "/home/user/.github",
+  "source_root": "/workspace/labs",
   "state": "DISPATCH_INCOMPLETE"
 }

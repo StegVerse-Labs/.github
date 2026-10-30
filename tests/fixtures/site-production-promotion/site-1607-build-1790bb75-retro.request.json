@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.site-production-promotion-request/v1",
+  "mode": "RETRO_CLASSIFY",
+  "repository": "StegVerse-Labs/Site",
+  "sha": "924d92edf0f379af54bdf7702895e2966bc7fed1",
+  "promotion_ref": "refs/heads/main",
+  "observation": {
+    "observed_by": "Lane D (read-only GitHub API, StegVerse token, repo scope)",
+    "observed_at_note": "2026-10-18 ~05:35Z; wall-clock note only, non-ordering",
+    "pull_request": "StegVerse-Labs/Site#1607 (DRAFT, OPEN, head chatgpt/1509-six-field-ui-fallback-20261017)",
+    "provider_comment": "StegVerse-Labs/Site issue comment 6237313898 by cloudflare-workers-and-pages[bot], created 2026-10-17T17:10:57Z, edited 2026-10-18T03:16:15Z: Deployment successful, service site, commit 924d92ed",
+    "authority_effect": "NONE_OBSERVATION_ONLY"
+  },
+  "source_reachability": {
+    "observed_via": "GET repos/StegVerse-Labs/Site/compare/main...924d92edf0f379af54bdf7702895e2966bc7fed1",
+    "base_ref": "refs/heads/main",
+    "base_sha": "2790025d833b7c1a51e4923270420c4f0238fa01",
+    "head_sha": "924d92edf0f379af54bdf7702895e2966bc7fed1",
+    "compare_status": "diverged",
+    "ahead_by": 7,
+    "behind_by": 31,
+    "merge_base_sha": "0916d020add44c3b8ebc33d670241869e459bf05"
+  },
+  "manifest": null,
+  "manifest_sha256": null,
+  "wrangler_config_sha256": "6c85bee35be487ea18cd4b07b83a76dfa2e4829f1fecabd0b96c023ee681e200",
+  "claim": null,
+  "intr_admission": null,
+  "credential": null,
+  "provider_build": {
+    "provider": "cloudflare-workers-builds",
+    "service": "site",
+    "build_id": "1790bb75-3340-4bd3-929d-f188b9f23405",
+    "environment": "production",
+    "environment_basis": "dashboard path .../workers/services/view/site/production/builds/1790bb75-... in the provider comment; no route named",
+    "commit_sha": "924d92edf0f379af54bdf7702895e2966bc7fed1",
+    "route_serving": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "observed_via": "StegVerse-Labs/Site issue comment 6237313898; check run 117573570266 'Workers Builds: site' success"
+  },
+  "checks": [
+    {"id": 117573570266, "name": "Workers Builds: site", "head_sha": "924d92edf0f379af54bdf7702895e2966bc7fed1", "conclusion": "success"},
+    {"id": 117573440201, "name": "validate", "head_sha": "924d92edf0f379af54bdf7702895e2966bc7fed1", "conclusion": "success"},
+    {"id": 117573418738, "name": "validate", "head_sha": "924d92edf0f379af54bdf7702895e2966bc7fed1", "conclusion": "success"},
+    {"id": 117573415450, "name": "validate-heartbeat-contract", "head_sha": "924d92edf0f379af54bdf7702895e2966bc7fed1", "conclusion": "success"},
+    {"id": 117573414428, "name": "reconcile", "head_sha": "924d92edf0f379af54bdf7702895e2966bc7fed1", "conclusion": "success"},
+    {"id": 117573405016, "name": "validate", "head_sha": "924d92edf0f379af54bdf7702895e2966bc7fed1", "conclusion": "success"}
+  ],
+  "owning_existing_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001"
+}

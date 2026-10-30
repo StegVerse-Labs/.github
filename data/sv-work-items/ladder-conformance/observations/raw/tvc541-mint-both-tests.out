@@ -1,0 +1,27 @@
+$ {python} -c import json, sys, io, contextlib
+import pytest
+# TVC#541's two mint-both tests (GitHub Product's LC-KV-07 fix): a caller who mints both layer receipts must FAIL_CLOSED.
+six={"failure_code":"LADDER_E0_VERIFIER_TESTS_NOT_GREEN","failed_predicate":"E0_VERIFIER_SUITE_PASSES_WITH_ZERO_SKIPPED","required_evidence_or_repair":"repair TVC#541's mint-both tests at the pinned commit","retry_entrypoint":"python scripts/ladder_conformance.py observe","owning_existing_goal":"KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324); LC-KV-07","next_attempt":"on the next push to StegVerse-Labs/TVC#541"}
+tests=['tests/test_skap_custody_chain.py::test_p1_mint_both_is_fail_closed_on_gate_read_through_and_place',
+       'tests/test_coinbase_intr_double_interlock.py::Tests::test_p1_mint_both_build_and_validate_fail_closed']
+rows=[]
+for t in tests:
+    class C:
+        def __init__(s): s.c={'passed':0,'failed':0,'skipped':0,'error':0}
+        def pytest_runtest_logreport(s, report):
+            if report.when=='call' or (report.when=='setup' and report.outcome!='passed'):
+                k={'passed':'passed','failed':'failed' if report.when=='call' else 'error','skipped':'skipped'}[report.outcome]; s.c[k]+=1
+    c=C(); buf=io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc=pytest.main(['-q','-p','no:cacheprovider',t], plugins=[c])
+    ok = rc==0 and c.c['passed']==1 and c.c['failed']==c.c['error']==c.c['skipped']==0
+    r={'subject':'TVC541_'+t.rsplit('::',1)[1].upper(),'disposition':'ALLOW' if ok else 'FAIL_CLOSED','test':t,'pytest_rc':int(rc),**c.c,
+       'note':'ALLOW means the test passed, i.e. every mint-both case is six-field FAIL_CLOSED'}
+    if not ok: r.update(six)
+    rows.append(r)
+print(json.dumps({'rows':rows}))
+
+--- exit 0
+--- stdout
+{"rows": [{"subject": "TVC541_TEST_P1_MINT_BOTH_IS_FAIL_CLOSED_ON_GATE_READ_THROUGH_AND_PLACE", "disposition": "ALLOW", "test": "tests/test_skap_custody_chain.py::test_p1_mint_both_is_fail_closed_on_gate_read_through_and_place", "pytest_rc": 0, "passed": 1, "failed": 0, "skipped": 0, "error": 0, "note": "ALLOW means the test passed, i.e. every mint-both case is six-field FAIL_CLOSED"}, {"subject": "TVC541_TEST_P1_MINT_BOTH_BUILD_AND_VALIDATE_FAIL_CLOSED", "disposition": "ALLOW", "test": "tests/test_coinbase_intr_double_interlock.py::Tests::test_p1_mint_both_build_and_validate_fail_closed", "pytest_rc": 0, "passed": 1, "failed": 0, "skipped": 0, "error": 0, "note": "ALLOW means the test passed, i.e. every mint-both case is six-field FAIL_CLOSED"}]}
+--- stderr

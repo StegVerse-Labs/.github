@@ -5,6 +5,7 @@ on:
     paths:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
+      - 'tests/test_org_runtime_transition_bound.py'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'resident-runtime/sdk_manifest_crossing.py'
       - 'resident-runtime/organization_egress_boundary.py'
@@ -47,6 +48,8 @@ on:
       - 'tests/test_mir_sv_exp3_cross_owner_wire_binding.py'
       - 'workers/sdk_manifest_diagnostic_admitted_consumer.py'
       - 'workers/universal_intr_profiled_ingress.py'
+      - 'scripts/run_stegbrowser_universal_intr_materialization.py'
+      - 'tests/test_stegbrowser_universal_intr_materialization.py'
       - 'data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json'
       - 'data/canonical-task-registry.json'
       - 'tests/test_sdk_tt_richard_atomic_activation_seam.py'
@@ -74,6 +77,7 @@ on:
     paths:
       - 'org-runtime/**'
       - 'ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md'
+      - 'tests/test_org_runtime_transition_bound.py'
       - 'resident-runtime/organization_manifest_ingress.py'
       - 'resident-runtime/sdk_manifest_crossing.py'
       - 'resident-runtime/organization_egress_boundary.py'
@@ -98,6 +102,9 @@ on:
       - 'resident-runtime/aggregate_repo_transition.py'
       - 'resident-runtime/organization_batch_custody.py'
       - 'workers/manifest_state_transition_intr_ingress.py'
+      - 'workers/universal_intr_profiled_ingress.py'
+      - 'scripts/run_stegbrowser_universal_intr_materialization.py'
+      - 'tests/test_stegbrowser_universal_intr_materialization.py'
       - '.github/workflows/org-runtime-boundary.yml'
   workflow_dispatch:
 
@@ -119,12 +126,13 @@ jobs:
       - name: Install the pinned StegVerse SDK
         run: |
           set -eu
-          SDK_SHA=d6873d84dddc91ef6b26774336b05c8e1f4042c0
+          SDK_SHA=c138cad4c37db0bb675bc2c66515b5558cc5fa7b
           curl -fsSL "https://github.com/StegVerse-org/StegVerse-SDK/archive/${SDK_SHA}.tar.gz" -o /tmp/stegverse-sdk.tgz
           mkdir /tmp/stegverse-sdk
           tar -xzf /tmp/stegverse-sdk.tgz -C /tmp/stegverse-sdk --strip-components=1
           python -m pip install --quiet /tmp/stegverse-sdk
           python -c 'import stegverse.organization_role_conformance_processor'
+          python -c 'import stegverse.universal_intr_route_installer'
       # From the retired validate-purpose-bound-worker-derived-lifetime.yml (#3039 H6b),
       # which fetched and installed this same pinned SDK on its own. The wire
       # test now reuses the install above, so the SDK is fetched once, not twice.
@@ -138,6 +146,10 @@ jobs:
         run: |
           python org-runtime/runtime_boundary.py validate | tee /tmp/org-boundary.json
           python -c 'import json; x=json.load(open("/tmp/org-boundary.json")); assert x["valid"] is True; assert x["authority_effect"]=="NONE_VALIDATION_ONLY"'
+      # B-P40: the boundary accepts only a committed-transition-cycle activation;
+      # the prior SOVEREIGN_RESIDENT_PROCESS activation fails closed.
+      - name: Validate runtime surface is the committed transition cycle
+        run: python -m unittest -v tests/test_org_runtime_transition_bound.py
       - name: Validate activation request generation
         run: |
           python org-runtime/runtime_boundary.py activation-request --runtime-id validation-resident | tee /tmp/activation.json
@@ -229,6 +241,14 @@ jobs:
       # receipt; a shape the SDK refuses is recorded with its predicate; exact
       # retry is idempotent; an empty outbox is NO_EVENT. Temporary source and
       # ledger roots only.
+      # The StegBrowser in-process submission takes its route decision from the
+      # pinned SDK's route installer (evaluate_installation), read-only, instead
+      # of running the retired Labs installer that rewrote the router in place.
+      # Real SDK, nothing mocked; an absent SDK is an error here, not a skip.
+      - name: Validate StegBrowser route decision through the pinned SDK route installer
+        env:
+          STEGVERSE_SDK_REQUIRED: '1'
+        run: python -m unittest -v tests.test_stegbrowser_universal_intr_materialization.RealSdkRouteDecisionTests
       - name: Validate organization-role conformance admission on the manifest ingress
         env:
           STEGVERSE_SDK_REQUIRED: '1'

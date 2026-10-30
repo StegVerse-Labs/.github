@@ -1,30 +1,41 @@
 #!/usr/bin/env python3
-"""Consume admitted KV->SKAP ciphertext custody and emit canonical SKAP->KV return.
+"""Admit and consume one KV->SKAP Vault ciphertext custody request at the in-KV SKAP gate.
 
-TVC remains the double-Interlock and credential/custody authority. The legacy
-boundary-transition receipts remain for TVC gate compatibility, while a bound
-canonical DEVICE_SYSTEM->KV receipt drives the Universal-InTr KV->SKAP->KV
-receipt chain. Exact ciphertext readback is required before the return is emitted.
+KV and the SKAP Vault are one organisation, so KV->SKAP is the in-KV SKAP gate, not an
+InTr hop (StegVerse-org/.github#167 ruling c6393224851 (3); ruling C accepted, c6393756343).
+The request is an in-KV gate request: it carries no InTr transport intent and resolves
+no StegOS connector profile. TVC remains the double-Interlock and credential/custody
+authority. The legacy boundary-transition receipts remain for TVC gate compatibility.
+A bound canonical DEVICE_SYSTEM->KV hop receipt anchors the two-leg DEVICE->KV->DEVICE
+round trip. The in-KV gate exchange is the cvk layer-2 SKAP-access receipt, re-derived and chained to
+the layer-1 KV-access receipt of that DEVICE->KV hop (C1, C2). It is bound by the hash of its exact bytes, and the
+KV->DEVICE return carries that hash. Exact ciphertext readback is required before the
+return is emitted.
 """
 from __future__ import annotations
 
-import argparse, hashlib, importlib.util, json, os, sys
+import argparse, hashlib, importlib.util, json, os, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 ROOT=Path(__file__).resolve().parents[1]
-REQUEST_DIR_REL=Path("intr-materialization")
-INGRESS_DIR_REL=Path("receipts/sovereign-network/kv-skap-custody-ingress")
-RECEIPT_DIR_REL=Path("receipts/sovereign-host/kv-skap-custody")
-LATEST_REL=Path("receipts/sovereign-host/kv-skap-custody-consumption.latest.json")
-DESTINATION={"boundary":"SKAP_VAULT","subsystem":"SKAP:Vault"}
-SOURCE={"boundary":"KV","subsystem":"KnowledgeVault:SKAPClient"}
+if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
+from workers.device_kv_skap_roundtrip_verifier import Layer2BindingRefused,bind_layer2_skap_access_receipt
+GATE_REQUEST_SCHEMA="stegverse.kv-skap-gate.custody-request/v1"
+GATE_ADMISSION_SCHEMA="stegverse.kv-skap-gate.custody-admission/v1"
+REQUEST_DIR_REL=Path("kv-skap-gate/requests")
+INGRESS_DIR_REL=Path("receipts/sovereign-host/kv-skap-gate-admission")
+RECEIPT_DIR_REL=Path("receipts/sovereign-host/kv-skap-gate-custody")
+LATEST_REL=Path("receipts/sovereign-host/kv-skap-gate-custody-consumption.latest.json")
+GATE={"boundary":"KV","from_subsystem":"KnowledgeVault:SKAPClient","to_subsystem":"SKAP:Vault"}
 DOWNSTREAM_OWNER="StegVerse-Labs/TVC"
 CAPSULE_SCHEMA="stegverse.skap.browser_ingress/p256-ecdh-hkdf-sha256-aes256gcm/v1"
 TVC_ROOT_ENV="STEGVERSE_TVC_ROOT";KV_ROOT_ENV="STEGVERSE_KV_ROOT";STEGOS_ROOT_ENV="STEGVERSE_STEGOS_ROOT"
 HOSTED_ENV=("GITHUB_ACTIONS","CI","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 CREDENTIAL_ENV=("GITHUB_TOKEN","GH_TOKEN","GITHUB_PAT","STEGVERSE_GITHUB_TOKEN","ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+# Fields of a KV->SKAP InTr materialization request. An in-KV gate request must carry none of them.
+RETIRED_INTR_FIELDS=("transport_schema","transport_protocol","transport_intent_hash","boundary_path","destination","packet_id","payload_ref","carrier_binding")
 
 class KVSkapMaterializationError(ValueError): pass
 
@@ -46,6 +57,9 @@ def scrubbed_env(env:dict[str,str]|None=None)->dict[str,str]:
     child=dict(os.environ if env is None else env)
     for key in HOSTED_ENV+CREDENTIAL_ENV:child.pop(key,None)
     child["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"]="TV/TVC";child["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"]="NONE";return child
+def safe_id(value:str)->str:
+    if not value or len(value)>128 or not all(c.isalnum() or c in "-_." for c in value) or value.startswith("."):raise KVSkapMaterializationError("materialization_id_invalid")
+    return value
 
 def _validate_canonical_device_receipt(receipt:Any)->None:
     if not isinstance(receipt,dict) or receipt.get("schema")!="stegverse.intr.hop_receipt/v1":raise KVSkapMaterializationError("canonical_device_kv_receipt_required")
@@ -54,23 +68,49 @@ def _validate_canonical_device_receipt(receipt:Any)->None:
     if claimed!=sha_uri(body):raise KVSkapMaterializationError("canonical_device_kv_receipt_hash_invalid")
 
 def validate_request(request:dict[str,Any])->None:
-    expected={"schema":"stegverse.universal-intr-materialization-request/v1","state":"QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION","transport_schema":"stegverse.universal-intr-transport/v1","transport_protocol":"InTr","destination":DESTINATION,"downstream_owner_ref":DOWNSTREAM_OWNER,"event_triggered":True,"always_on_receiver_required":False,"second_user_device_required":False,"receiver_unavailable_disposition":"DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION","exact_packet_transport_retry_allowed":True,"blind_consequence_retry_allowed":False,"interlock_required":True,"request_grants_execution_authority":False,"claim_or_fence_minted":False,"transport_grants_execution_authority":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_transfer":False,"authority_effect":"NONE_REQUEST_ONLY"}
+    expected={"schema":GATE_REQUEST_SCHEMA,"state":"QUEUED_FOR_IN_KV_SKAP_GATE","gate":GATE,"kv_skap_path":"IN_KV_GATE","kv_skap_intr_hop":False,"downstream_owner_ref":DOWNSTREAM_OWNER,"interlock_required":True,"request_grants_execution_authority":False,"claim_or_fence_minted":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_transfer":False,"authority_effect":"NONE_REQUEST_ONLY"}
     for key,value in expected.items():
-        if request.get(key)!=value:raise KVSkapMaterializationError("materialization_"+key+"_mismatch")
-    if request.get("boundary_path")!=["KV","SKAP_VAULT"]:raise KVSkapMaterializationError("boundary_path_invalid")
-    for key in ("materialization_id","operation_id","packet_id","payload_ref"):
+        if request.get(key)!=value:raise KVSkapMaterializationError("gate_request_"+key+"_mismatch")
+    retired=[key for key in RETIRED_INTR_FIELDS if key in request]
+    if retired:raise KVSkapMaterializationError("kv_skap_intr_request_retired:"+",".join(retired))
+    for key in ("materialization_id","operation_id"):
         if not isinstance(request.get(key),str) or not request[key]:raise KVSkapMaterializationError(key+"_required")
-    for key in ("transport_intent_hash","payload_hash","request_hash"):
+    safe_id(request["materialization_id"])
+    for key in ("payload_hash","request_hash"):
         value=request.get(key)
         if not isinstance(value,str) or len(value)!=71 or not value.startswith("sha256:"):raise KVSkapMaterializationError(key+"_invalid")
     capsule=request.get("sealed_capsule");legacy=request.get("device_kv_receipt")
     if not isinstance(capsule,dict) or capsule.get("schema")!=CAPSULE_SCHEMA:raise KVSkapMaterializationError("sealed_capsule_invalid")
     if not isinstance(legacy,dict) or legacy.get("schema")!="stegverse.intr.boundary_transition_receipt/v1":raise KVSkapMaterializationError("device_kv_receipt_required")
     _validate_canonical_device_receipt(request.get("canonical_device_kv_receipt"))
-    if request.get("payload_ref")!="inline://materialization_request.sealed_capsule":raise KVSkapMaterializationError("payload_ref_invalid")
     if request.get("payload_hash")!=sha_uri(capsule):raise KVSkapMaterializationError("sealed_capsule_payload_hash_mismatch")
+    try:bind_layer2_skap_access_receipt(kv_access_receipt=request.get("kv_access_receipt"),skap_access_receipt=request.get("skap_access_receipt"),device_kv_terminal_receipt_hash=request["canonical_device_kv_receipt"]["receipt_hash"])
+    except Layer2BindingRefused as exc:
+        err=KVSkapMaterializationError(str(exc));err.fail_closed=exc.fail_closed;raise err from exc
     body=dict(request);claimed=body.pop("request_hash")
     if claimed!=sha_uri(body):raise KVSkapMaterializationError("request_hash_mismatch")
+
+def _dispatch_consumer(*,runtime_root:Path,materialization_id:str)->dict[str,Any]:
+    command=[sys.executable,str(ROOT/"scripts/consume_kv_skap_custody_materialization_request.py"),"--source-root",str(ROOT),"--runtime-root",str(runtime_root),"--materialization-id",materialization_id]
+    process=subprocess.Popen(command,cwd=str(ROOT),env=scrubbed_env(),stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True,close_fds=True)
+    return {"consumer_dispatch_attempted":True,"consumer_pid":process.pid,"consumer_execution_authority":False,"consumer_claim_or_fence_minted_by_gate":False,"authority_effect":"NONE_DISPATCH_ONLY"}
+
+def admit(*,runtime_root:Path,request:dict[str,Any],dispatch:bool=True)->dict[str,Any]:
+    """Admit one in-KV gate request write-once and dispatch the consumer. No InTr hop is involved."""
+    validate_request(request)
+    runtime=runtime_root.expanduser().resolve();materialization_id=safe_id(request["materialization_id"])
+    request_path=runtime/REQUEST_DIR_REL/f"{materialization_id}.json";atomic_json(request_path,request)
+    receipt_path=runtime/INGRESS_DIR_REL/f"{materialization_id}.json"
+    result_path=runtime/RECEIPT_DIR_REL/f"{materialization_id}.json"
+    if receipt_path.exists():
+        existing=load(receipt_path)
+        if existing.get("request_hash")!=request["request_hash"] or existing.get("state")!="GATE_ADMITTED":raise KVSkapMaterializationError("write_once_collision")
+        if result_path.is_file() and load(result_path).get("request_hash")==request["request_hash"]:
+            return {**existing,"dispatch":{"consumer_dispatch_attempted":False,"consumer_result_state":"ALREADY_ADMITTED_TO_SKAP_VAULT","consumer_execution_authority":False,"authority_effect":"NONE_DISPATCH_ONLY"}}
+        return {**existing,"dispatch":_dispatch_consumer(runtime_root=runtime,materialization_id=materialization_id) if dispatch else {"consumer_dispatch_attempted":False}}
+    body={"schema":GATE_ADMISSION_SCHEMA,"state":"GATE_ADMITTED","materialization_id":materialization_id,"request_hash":request["request_hash"],"payload_hash":request["payload_hash"],"operation_id":request["operation_id"],"canonical_device_kv_receipt_hash":request["canonical_device_kv_receipt"]["receipt_hash"],"kv_skap_path":"IN_KV_GATE","kv_skap_intr_hop":False,"queue_ref":str(request_path),"exact_request_validated":True,"write_once_persisted":True,"claim_or_fence_minted":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE_ADMISSION_EVIDENCE_ONLY","admitted_at":now()}
+    receipt={**body,"receipt_hash":sha_uri(body)};atomic_json(receipt_path,receipt)
+    return {**receipt,"dispatch":_dispatch_consumer(runtime_root=runtime,materialization_id=materialization_id) if dispatch else {"consumer_dispatch_attempted":False}}
 
 def _load_tvc(tvc_root:Path):
     tvc=tvc_root.expanduser().resolve();required=(tvc/"tools/skap_vault_interlock_gate.py",tvc/"tools/skap_vault_store.py",tvc/"tools/validate_coinbase_browser_skap_admission.py")
@@ -89,9 +129,9 @@ def _canonical_return(request:dict[str,Any],persisted:dict[str,Any],runtime:Path
 
 def consume_one(source_root:Path,runtime_root:Path,materialization_id:str,env:dict[str,str]|None=None)->dict[str,Any]:
     runtime=runtime_root.expanduser().resolve();request_path=runtime/REQUEST_DIR_REL/f"{materialization_id}.json";ingress_path=runtime/INGRESS_DIR_REL/f"{materialization_id}.json"
-    if not request_path.is_file() or not ingress_path.is_file():raise KVSkapMaterializationError("admitted_kv_skap_materialization_missing")
+    if not request_path.is_file() or not ingress_path.is_file():raise KVSkapMaterializationError("admitted_kv_skap_gate_request_missing")
     request=load(request_path);ingress=load(ingress_path);validate_request(request)
-    if ingress.get("state")!="INGRESS_ADMITTED" or ingress.get("request_hash")!=request["request_hash"]:raise KVSkapMaterializationError("kv_skap_ingress_receipt_binding_invalid")
+    if ingress.get("state")!="GATE_ADMITTED" or ingress.get("request_hash")!=request["request_hash"]:raise KVSkapMaterializationError("kv_skap_gate_admission_binding_invalid")
     safe=scrubbed_env(env);tvc_value=safe.get(TVC_ROOT_ENV);kv_value=safe.get(KV_ROOT_ENV);stegos_value=safe.get(STEGOS_ROOT_ENV)
     if not tvc_value:raise KVSkapMaterializationError("STEGVERSE_TVC_ROOT_required")
     if not kv_value:raise KVSkapMaterializationError("STEGVERSE_KV_ROOT_required")
@@ -105,17 +145,17 @@ def consume_one(source_root:Path,runtime_root:Path,materialization_id:str,env:di
     device_kv=request["device_kv_receipt"];credential_ref=str(capsule.get("credential_ref") or "");operation_id=str(request["operation_id"])
     if not credential_ref:raise KVSkapMaterializationError("credential_ref_required")
     if operation_id!=str(capsule.get("ingress_id") or ""):raise KVSkapMaterializationError("operation_ingress_binding_mismatch")
-    kv_skap_body={"schema":"stegverse.intr.boundary_transition_receipt/v1","connector":"InTr","from_boundary":"KV","to_boundary":"SKAP_VAULT","credential_ref":credential_ref,"operation_id":operation_id,"prior_boundary_receipt_hash":device_kv.get("receipt_hash"),"materialization_request_hash":request["request_hash"],"secret_plaintext_present":False,"authority_transfer":False}
+    kv_skap_body={"schema":"stegverse.intr.boundary_transition_receipt/v1","connector":"KV_INTERNAL_SKAP_GATE","from_boundary":"KV","to_boundary":"SKAP_VAULT","credential_ref":credential_ref,"operation_id":operation_id,"prior_boundary_receipt_hash":device_kv.get("receipt_hash"),"materialization_request_hash":request["request_hash"],"secret_plaintext_present":False,"authority_transfer":False}
     kv_skap_receipt={**kv_skap_body,"receipt_hash":gate_digest(kv_skap_body)}
     double_gate=validate_double_interlock(device_kv_receipt=device_kv,kv_skap_receipt=kv_skap_receipt,credential_ref=credential_ref,operation_id=operation_id)
     sealed=capsule["sealed_material"];credential_path=kv_root/"_Vault/SKAP/Credentials/coinbase"/f"{operation_id}.json"
     custody_record={"format":custody_format,"ingress_id":operation_id,"object_id":credential_ref,"credential_version":capsule["credential_version"],"purpose":capsule["purpose"],"endpoint_ref":capsule["endpoint_origin"],"recipient_key_id":sealed["recipient_key_id"],"browser_sealed_digest":packet_digest(sealed),"browser_ingress_digest":packet_digest(capsule),"sealed_material_ref":str(credential_path)+"#/sealed_material","skap_vault_path":str(credential_path),"device_kv_interlock_receipt_hash":device_kv["receipt_hash"],"kv_skap_interlock_receipt_hash":kv_skap_receipt["receipt_hash"],"double_interlock_gate_receipt_hash":double_gate["gate_receipt_hash"],"sealed_material_persisted_unchanged":True,"endpoint_verification_required_before_decryption":True,"decryption_performed":False,"rewrap_performed":False,"plaintext_persisted":False,"kv_decryption_authority":False,"authority_transfer":False}
     transition=build_transition(capsule,custody_record);interlock_record={"device_kv_interlock_receipt":device_kv,"kv_skap_interlock_receipt":kv_skap_receipt,"double_interlock_gate_receipt":double_gate}
     persisted=persist_ciphertext(kv_root=kv_root,ingress_id=operation_id,credential_ref=credential_ref,raw_packet=raw_packet,custody_record=custody_record,transition_receipt=transition,interlock_record=interlock_record,double_interlock_gate=double_gate)
-    if persisted.get("backend_id")!="KV_SKAP_INTR_FILESYSTEM":raise KVSkapMaterializationError("resident_kv_skap_backend_identity_invalid")
+    if persisted.get("backend_id")!="KV_SKAP_GATE_FILESYSTEM":raise KVSkapMaterializationError("resident_kv_skap_backend_identity_invalid")
     if Path(persisted["credential_path"]).read_bytes()!=raw_packet:raise KVSkapMaterializationError("exact_ciphertext_readback_failed")
     canonical_return=_canonical_return(request,persisted,runtime,Path(stegos_value))
-    body={"schema":"stegverse.kv-skap-custody.materialization-consumption/v1","state":"ADMITTED_TO_SKAP_VAULT","materialization_id":materialization_id,"request_hash":request["request_hash"],"transport_intent_hash":request["transport_intent_hash"],"payload_hash":request["payload_hash"],"operation_id":operation_id,"credential_ref":credential_ref,"device_kv_interlock_receipt_hash":device_kv["receipt_hash"],"canonical_device_kv_receipt_hash":request["canonical_device_kv_receipt"]["receipt_hash"],"kv_skap_interlock_receipt_hash":kv_skap_receipt["receipt_hash"],"double_interlock_gate_receipt_hash":double_gate["gate_receipt_hash"],"canonical_kv_skap_receipt_hash":canonical_return["kv_skap_terminal_receipt_hash"],"canonical_skap_kv_receipt_hash":canonical_return["skap_kv_terminal_receipt_hash"],"canonical_return_state":canonical_return["state"],"skap_vault_storage_connector":"KV_SKAP_INTR_ONLY","skap_vault_storage_backend":persisted["backend_id"],"credential_persistence_ref":persisted["credential_path"],"custody_receipt_ref":persisted["custody_receipt_path"],"transition_receipt_ref":persisted["transition_receipt_path"],"interlock_receipt_ref":persisted["interlock_receipt_path"],"exact_ciphertext_persisted":True,"exact_ciphertext_readback_verified":True,"secret_plaintext_present":False,"kv_decryption_authority":False,"device_durable_secret_custody":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","execution_authority":"NONE","request_grants_authority":False,"authority_effect":"NONE_CUSTODY_TRANSITION_ONLY","consumed_at":now()}
+    body={"schema":"stegverse.kv-skap-gate.custody-consumption/v1","state":"ADMITTED_TO_SKAP_VAULT","materialization_id":materialization_id,"request_hash":request["request_hash"],"payload_hash":request["payload_hash"],"operation_id":operation_id,"credential_ref":credential_ref,"device_kv_interlock_receipt_hash":device_kv["receipt_hash"],"canonical_device_kv_receipt_hash":request["canonical_device_kv_receipt"]["receipt_hash"],"kv_skap_interlock_receipt_hash":kv_skap_receipt["receipt_hash"],"double_interlock_gate_receipt_hash":double_gate["gate_receipt_hash"],"kv_skap_gate_exchange_hash":canonical_return["kv_skap_gate_exchange_hash"],"kv_access_receipt_hash":canonical_return["kv_access_receipt_hash"],"skap_access_receipt_hash":canonical_return["skap_access_receipt_hash"],"kv_device_terminal_receipt_hash":canonical_return["kv_device_terminal_receipt_hash"],"boundary_stack":canonical_return["boundary_stack"],"kv_skap_path":"IN_KV_GATE","kv_skap_intr_hop":False,"canonical_return_state":canonical_return["state"],"skap_vault_storage_connector":"KV_INTERNAL_SKAP_GATE_ONLY","skap_vault_storage_backend":persisted["backend_id"],"credential_persistence_ref":persisted["credential_path"],"custody_receipt_ref":persisted["custody_receipt_path"],"transition_receipt_ref":persisted["transition_receipt_path"],"interlock_receipt_ref":persisted["interlock_receipt_path"],"exact_ciphertext_persisted":True,"exact_ciphertext_readback_verified":True,"secret_plaintext_present":False,"kv_decryption_authority":False,"device_durable_secret_custody":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","execution_authority":"NONE","request_grants_authority":False,"authority_effect":"NONE_CUSTODY_TRANSITION_ONLY","consumed_at":now()}
     result={**body,"result_hash":sha_uri(body)};target=runtime/RECEIPT_DIR_REL/f"{materialization_id}.json"
     if target.exists():
         existing=load(target)
@@ -127,6 +167,6 @@ def main()->int:
     p=argparse.ArgumentParser();p.add_argument("--source-root",type=Path,default=ROOT);p.add_argument("--runtime-root",type=Path,required=True);p.add_argument("--materialization-id",required=True);a=p.parse_args()
     try:result=consume_one(a.source_root,a.runtime_root,a.materialization_id)
     except Exception as exc:
-        print(json.dumps({"state":"BLOCKED","reason":str(exc),"authority_effect":"NONE"},sort_keys=True));return 1
-    print(json.dumps(result,sort_keys=True));return 0 if result.get("state")=="ADMITTED_TO_SKAP_VAULT" and result.get("canonical_return_state")=="SKAP_TO_KV_RETURN_PERSISTED" else 1
+        print(json.dumps({"state":"BLOCKED","reason":str(exc),"fail_closed":getattr(exc,"fail_closed",None),"authority_effect":"NONE"},sort_keys=True));return 1
+    print(json.dumps(result,sort_keys=True));return 0 if result.get("state")=="ADMITTED_TO_SKAP_VAULT" and result.get("canonical_return_state")=="KV_TO_DEVICE_RETURN_PERSISTED" else 1
 if __name__=="__main__":raise SystemExit(main())

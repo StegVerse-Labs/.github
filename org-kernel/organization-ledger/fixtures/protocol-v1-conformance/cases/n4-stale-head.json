@@ -1,0 +1,28 @@
+{
+  "case_id": "n4-stale-head",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "DECLARED_PREDECESSOR_IS_THE_CURRENT_HEAD",
+    "failure_code": "node-standing-fail_closed:non-genesis-predecessor-invalid:generation-not-successor",
+    "next_attempt": "re-read the current head and resubmit with its predecessor",
+    "owning_existing_goal": "CANONICAL-NODE-INGRESS-CONTRACT-001",
+    "required_evidence_or_repair": "declare the current predecessor (generation - 1); a stale head is not re-enrolled",
+    "retry_entrypoint": "org-boundary/runtime/node_standing.py::require"
+  },
+  "mutation": {
+    "kind": "REPLACE_STANDING",
+    "standing": {
+      "generation": 3,
+      "mode": "VERIFY_EXISTING",
+      "node_ref": "StegVerse-Labs",
+      "predecessor": {
+        "generation": 1,
+        "heartbeat_epoch": 32,
+        "manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "result_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    }
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1"
+}

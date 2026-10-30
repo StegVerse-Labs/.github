@@ -1,0 +1,29 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "DENY",
+ "failed_check": "NO_OWNER_MUST_ACT",
+ "failure_class": {
+  "class": "C",
+  "reason": "waits on a ruling that turns the five HUMAN_ACTION decisions into manifest defaults (tag, license, distribution, entitlement, rollback)"
+ },
+ "failure_code": "OPERATING_MODE_OWNER_MUST_ACT",
+ "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+ "items": [
+  "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY",
+  "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED",
+  "LICENSE_AND_TERMS_OWNER_APPROVED",
+  "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+  "ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT",
+  "H-GOV-TVC-RELEASE"
+ ],
+ "next_attempt": "on the next record change of GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
+ "owning_lane": "GitHub Product lane (Lane C)",
+ "proposed_resolution": "record each decision as a manifest default the verifier checks: tag = a new immutable tag at a commit containing the gate (no retarget, allow_tag_update stays false); license = the license file already in the tree, checked by hash; distribution = the GitHub release asset; entitlement = separate from disposition; rollback = publish a superseding version, never retarget; restate LICENSE_AND_TERMS_OWNER_APPROVED as a file-hash predicate and drop the 'held for owner merge' metric wording (a new sealed scope digest)",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "replace the five HUMAN_ACTION decisions (tag target, license, distribution surface, commercial separation/entitlement, rollback), the owner-approval predicate wording and the TVC owner-browser ingress with manifest transitions that carry deterministic defaults",
+ "retry_point": "python scripts/canonical_task_registration_transition.py plan (StegVerse-Labs/.github), then python scripts/ladder_conformance.py observe/check",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-GOV-02"
+}

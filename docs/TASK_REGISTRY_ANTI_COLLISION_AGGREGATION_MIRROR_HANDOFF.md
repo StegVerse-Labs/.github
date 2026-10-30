@@ -296,3 +296,20 @@ All remaining predicates owned by this Goal are now satisfied:
 - no second collision engine, WorkerCoordinator, Interlock/InTr authority, credential authority, runtime, scheduler, dispatcher, custody plane, or second-device dependency was introduced.
 
 No successor is required for this completed source-coordination goal. Future defects belong to their actual owner unless they expose a genuinely new anti-collision defect.
+
+
+## DRAFT pull-request collision check-in workflow — coordination item H48 — 2026-10-18
+
+Owner instruction relayed under coordination parent `StegVerse-Labs/.github#3183` (item H48). This goal's canonical issue `#1343` is closed; the slice is reported on `#3183`. Status: `DRAFT / SOURCE_IMPLEMENTED / NOT REQUIRED / NOT MERGED`.
+
+Nothing ran the collision check-in in CI for a pull request that registers or re-scopes a task. This slice adds a pull-request-only workflow around the existing evaluator; it is not a second collision engine.
+
+- `.github/workflows/task-registry-collision-checkin.yml` triggers on `pull_request` touching `data/canonical-task-registry.json`, `data/canonical-task-records/**`, the evaluator and its inputs. Anonymous fetch of `refs/pull/<n>/merge` and the live base tip, `permissions: {}`, no token, no secrets, no third-party action, standard-library Python only. Registered in `control/workflow-surface-registry.json` as `KEEP_STANDALONE_EXCEPTION`.
+- `scripts/check_registry_collision_checkin.py` finds the registry rows and canonical shards whose JSON differs between base and head, loads the head evaluator, and runs its unmodified `main()` for each changed task against the head tree and the base tree. Each request carries `observed_registry_generation` equal to that tree's generation; the live-tip generation fence stays with `check_registry_generation_fence.py`.
+- New caller surface `CI_PULL_REQUEST_COLLISION_VALIDATION` in `data/task-registry-general-checkin-caller-policy.json` (`NON_AUTHORIZING_CI_PULL_REQUEST_VALIDATION`, `transition_predicate=false`, `event_ledger_append=false`). No `session_id` is sent and the event ledger is redirected to an empty temporary path, so no check-in event is appended.
+
+Gate rule, per changed task: `ALLOW` on head `CONTINUE`; `ALLOW` on head `STOP_INACTIVE` / `STOP_SUPERSEDED` (the PR leaves it terminal); `ALLOW` when the head disposition is no stronger than the base disposition and adds no collision candidate or hard-collision id (reported as `PRE_EXISTING_AT_BASE`). Everything else — a new task that is not `CONTINUE`, a disposition made stronger, a new collision candidate, `STOP_COLLISION` introduced by the PR, or an evaluator refusal — is `FAIL_CLOSED` with the six standard fields in the job summary. Base comparison is required because, at generation 319, 59 of 118 registry rows are already non-`CONTINUE` on main; a literal "any non-CONTINUE fails" gate would be red on nearly every registry PR. `--strict` gives that literal behaviour and is not used by the workflow.
+
+Deterministic coverage: `tests/test_registry_collision_checkin_gate.py` (synthetic trees; workflow binding, policy surface and hygiene registration assertions), run by `test-suite-ratchet.yml`.
+
+CI here is validation only and never a transition predicate. **Making this check required (branch protection / ruleset) is owner-only.** Merging is owner-only.

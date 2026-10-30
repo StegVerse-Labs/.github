@@ -1,0 +1,25 @@
+{
+  "case_id": "n2-replay",
+  "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
+  "expected": {
+    "disposition": "IDEMPOTENT_REDELIVERY",
+    "organization_receipts": 1,
+    "repository_receipts": 1,
+    "same_transition_id": true,
+    "transition_replayed": true
+  },
+  "mutation": {
+    "kind": "REPLAY_UNDER_NEW_PACKET_ID",
+    "packet_id": "protocol-v1-conformance-replay"
+  },
+  "schema": "stegverse.protocol-v1-conformance-case/v1",
+  "spec_gap": {
+    "disposition": "GAP_NOT_IMPLEMENTED",
+    "failed_predicate": "A_REPLAYED_PACKET_IS_REFUSED",
+    "failure_code": "REPLAY_REFUSAL_NOT_IMPLEMENTED_BY_INGRESS",
+    "next_attempt": "the ingress lane decides whether a redelivery is refused; until then n2 asserts the idempotent acceptance receive() performs",
+    "owning_existing_goal": "ORGANIZATION-BATCH-CUSTODY-REPLAY-001",
+    "required_evidence_or_repair": "StegVerse-Labs/.github#3369 lists replay among the refusals, but organization_manifest_ingress.receive treats a redelivery as idempotent: the same transition id, the recorded receipts returned, no second append. A replay refusal needs an ingress-lane change to receive(), not a refusal invented in this harness",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive"
+  }
+}

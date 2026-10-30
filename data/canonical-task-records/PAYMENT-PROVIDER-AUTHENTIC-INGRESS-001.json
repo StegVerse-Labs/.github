@@ -42,5 +42,19 @@
     "webhook_evaluation_admissible": false,
     "failover_evaluation_admissible": false,
     "authentic_completed_evidence_pending": true
+  },
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/TVC"
+    ],
+    "components": [
+      "payment-provider-authentic-ingress",
+      "payment-provider-read-profiles",
+      "tvc-payment-provider-observation",
+      "tvc-payment-provider-read-profile"
+    ]
   }
 }

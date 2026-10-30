@@ -198,3 +198,18 @@ def test_repository_only_overlap_remains_blocking_when_component_scope_is_missin
     assert "and b_components" in text
     assert 'overlap_row["scope_disposition"] = "DISTINGUISHED_COMPONENT_SCOPE"' in text
     assert 'repository_only_scope_distinctions.append(overlap_row)' in text
+
+
+def test_ai_session_gate_not_admitted_as_production_caller():
+    policy = collision_gate.load_caller_policy()
+    admitted = policy["admitted_production_caller_surfaces"]
+    assert "AI_SESSION_GATE" not in admitted
+    assert "AI_SESSION_GATE" in policy["prohibited_caller_surfaces"]
+    assert "INTERNAL_CANONICAL_WORK_BOOTSTRAP" in admitted
+    assert admitted["CI_PULL_REQUEST_COLLISION_VALIDATION"]["transition_predicate"] is False
+    try:
+        collision_gate.resolve_caller_surface({"caller_surface": "AI_SESSION_GATE"})
+    except SystemExit as exc:
+        assert "not admitted" in str(exc)
+    else:
+        raise AssertionError("AI_SESSION_GATE must be rejected before collision evaluation")

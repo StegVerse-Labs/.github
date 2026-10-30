@@ -1,0 +1,20 @@
+{
+  "_fixture_not_evidence": "SYNTHETIC FIXTURE for tests/test_mir_exp3_task_vector_org_receipt_materialization.py. Not read back from any ledger; never evidence.",
+  "schema": "stegverse.organization-ledger-readback/v1",
+  "location": "fixture://not-a-ledger",
+  "disposition": "ALLOW",
+  "head_receipt_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "chain_length": 1,
+  "genesis_receipt_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "every_receipt_verifies_against_its_body": true,
+  "every_source_receipt_retained_and_verifies": true,
+  "authority_effect": "NONE_READBACK_ONLY",
+  "ingress_disposition": "ALLOW",
+  "ingress_refused": false,
+  "ingress_organization_receipt_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "ingress_receipt_in_chain": true,
+  "ingress_receipt_bound_to_manifest": true,
+  "canonical_manifest_sha256": "f0fa715e6a25e7fbf57cf4075ff664751b7606cab93ecdbb59f560e90ae510c6",
+  "organization_transition_id": "ORGANIZATION-SDK-MANIFEST-INGRESS-d7f860f157ae325e",
+  "master_records_awaited": false
+}

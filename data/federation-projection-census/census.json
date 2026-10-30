@@ -1,0 +1,153 @@
+{
+ "schema": "stegverse.federation-projection-census/v1",
+ "authority_effect": "NONE_OBSERVATION_ONLY",
+ "owner": "Lane B (lane-b-91117956), single owner of the canonical federation directory (Coordination assignment 17:25Z, logged by P1 on StegVerse-org/.github#163; goal StegVerse-org/.github#162)",
+ "canonical": {
+  "repository": "StegVerse-Labs/.github",
+  "path": "org-boundary/registry/federation.json",
+  "generation_commit": "4790fa419544970f7917d87348fd1a10bab8197b"
+ },
+ "reference_tool": {
+  "repository": "SV-LLM/.github",
+  "commit": "792b5a3b3d4d5c0724f9ec847b995c1efe2213c8",
+  "path": "org-boundary/runtime/federation_projection.py",
+  "vendored_at": "data/federation-projection-census/reference/federation_projection.py",
+  "sha256": "sha256:7a618d22356477c8446bf8f2077aa5c481d3ae05139954fd0232605dcb28b6c4"
+ },
+ "observation_rule": "each observation is the exact bytes of <repository>:org-boundary/registry/federation.json at observed_commit, the repository's main read anonymously (no credential); the census is re-taken only at a milestone and never polled",
+ "organizations": [
+  {
+   "organization": "AaCT-E",
+   "repository": "AaCT-E/.github",
+   "role": "PROJECTION",
+   "observed_commit": "4bdfb439add8c68aecb8a9ca4db54e3e2107b929",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/AaCT-E.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "Admissible-Existence",
+   "repository": "Admissible-Existence/.github",
+   "role": "PROJECTION",
+   "observed_commit": "df1a482f2e146be2430e82212f01c1a104e5d95d",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/Admissible-Existence.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "AdmittedCode",
+   "repository": "AdmittedCode/.github",
+   "role": "PROJECTION",
+   "observed_commit": "f181c6e28879e5d32653772eb30103cd308889a4",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/AdmittedCode.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "Data-Continuation",
+   "repository": "Data-Continuation/.github",
+   "role": "PROJECTION",
+   "observed_commit": "468f42ca39c61ec4038926efb881bdd05577823f",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/Data-Continuation.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "ECAT-ICAT-Formal",
+   "repository": "ECAT-ICAT-Formal/.github",
+   "role": "PROJECTION",
+   "observed_commit": "5f2d5e9df39e0f74b9f7d62769ba3ad904db3e29",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/ECAT-ICAT-Formal.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "formalism-tests",
+   "repository": "formalism-tests/.github",
+   "role": "PROJECTION",
+   "observation": null,
+   "unobserved_reason": "formalism-tests/.github is not anonymously readable (GitHub API 404 without credentials); an authenticated read is not evidence here"
+  },
+  {
+   "organization": "GCAT-BCAT-Engine",
+   "repository": "GCAT-BCAT-Engine/.github",
+   "role": "PROJECTION",
+   "observed_commit": "f8b764b20e98a6a07a42c7a02b37478eeba00e9e",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/GCAT-BCAT-Engine.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "Infrastructure-Continuity-Ventures",
+   "repository": "Infrastructure-Continuity-Ventures/.github",
+   "role": "PROJECTION",
+   "observation": null,
+   "unobserved_reason": "Infrastructure-Continuity-Ventures/.github is not anonymously readable (GitHub API 404 without credentials); an authenticated read is not evidence here"
+  },
+  {
+   "organization": "master-records",
+   "repository": "master-records/.github",
+   "role": "PROJECTION",
+   "observation": null,
+   "unobserved_reason": "master-records/.github is not anonymously readable (GitHub API 404 without credentials); an authenticated read is not evidence here"
+  },
+  {
+   "organization": "StegGhost",
+   "repository": "StegGhost/.github",
+   "role": "PROJECTION",
+   "observed_commit": "68e3a95cdc9732e23ba02e0f1242b23b994ce0ee",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/StegGhost.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "StegVerse-002",
+   "repository": "StegVerse-002/.github",
+   "role": "PROJECTION",
+   "observed_commit": "9d9a8ae6abca6b0319715963c149e08656c1aabe",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/StegVerse-002.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "StegVerse-Labs",
+   "repository": "StegVerse-Labs/.github",
+   "role": "CANONICAL",
+   "observed_at": "this repository's org-boundary/registry/federation.json"
+  },
+  {
+   "organization": "StegVerse-org",
+   "repository": "StegVerse-org/.github",
+   "role": "PROJECTION",
+   "observed_commit": "ab1c6b2f6a363ff542d726cbfdf5604e6d8a10e7",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/StegVerse-org.json",
+   "observation_sha256": "sha256:b089b5b6219dc1a07bfcd58dcc43ef2a44a8539cb294d2768e7fea156dbf8395"
+  },
+  {
+   "organization": "SV-LLM",
+   "repository": "SV-LLM/.github",
+   "role": "PROJECTION",
+   "observed_commit": "792b5a3b3d4d5c0724f9ec847b995c1efe2213c8",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/SV-LLM.json",
+   "observation_sha256": "sha256:b089b5b6219dc1a07bfcd58dcc43ef2a44a8539cb294d2768e7fea156dbf8395"
+  },
+  {
+   "organization": "Triad-Test",
+   "repository": "Triad-Test/.github",
+   "role": "PROJECTION",
+   "observed_commit": "eae4166587d7426efad8bcdebbc6a4d5cafdec7d",
+   "observed_path": "org-boundary/registry/federation.json",
+   "observation": "data/federation-projection-census/observed/Triad-Test.json",
+   "observation_sha256": "sha256:c172c97f9f95293331d9efd00bac82dbe50a66693a99ba2cb8da3c593c4c21af"
+  },
+  {
+   "organization": "SV-011",
+   "repository": "SV-011/entity",
+   "role": "PROJECTION",
+   "observation": null,
+   "unobserved_reason": "SV-011/entity is not anonymously readable (GitHub API 404 without credentials); an authenticated read is not evidence here"
+  }
+ ]
+}

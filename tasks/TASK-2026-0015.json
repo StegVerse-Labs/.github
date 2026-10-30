@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0015",
+  "organization": "StegVerse-Labs",
+  "goal": "Allocator projection of canonical task STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 (COSV 10500000110000) for Lane D items D13 (six-field FAIL_CLOSED on WorkSpace KV non-ALLOW paths) and WU5 (WorkSpace storage-persistence tests) in StegVerse-Labs/Site. Requested so WorkerCoordinator, not a session, decides the Site WorkSpace paths currently held by the session claim SITE-WORKSPACE-INTEROPERABILITY-20260831 (projection only under TASK_REGISTRY_CANONICAL_INVARIANTS.md, Worker-claim field invariant). Coordination: StegVerse-org/.github#167 comment 6245553028. Not a second goal.",
+  "status": "queued",
+  "requested_at": "2026-10-18T04:30:00Z",
+  "priority_class": "normal",
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Site",
+          "full_name": "StegVerse-Labs/Site",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "assets/workspace.js",
+            "tests/workspace-kv-six-field-dispositions.test.cjs",
+            "tests/workspace-storage-persistence.test.cjs"
+          ],
+          "contracts": [],
+          "release_surfaces": [],
+          "capabilities": [
+            "workspace-kv-six-field-nonallow-disposition",
+            "workspace-storage-persistence-validation"
+          ],
+          "workflows": [
+            ".github/workflows/workspace-kv-binding-validation.yml"
+          ],
+          "dependency_surfaces": [
+            "site:workspace-device-kv"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "laned/d13-wu5-workspace-kv",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "canonical_task_record": "data/canonical-task-records/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json",
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "runtime_execution_inferred": false
+  }
+}
