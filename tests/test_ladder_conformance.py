@@ -471,12 +471,21 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertTrue(kvr[k]["commit"].startswith(c), k)
             self.assertIn("merged via StegVerse-org/LLM-adapter#430 (merge commit 649f0775", kvr[k]["ref"], k)
             self.assertIn("#" + n, kvr[k]["ref"], k)
-        # LC-GOV-07: Labs#3358's coverage is the native Labs push receipt; SDK#567's old root is unchanged
+        # LC-GOV-07: Labs#3358's coverage is the native Labs push receipt; SDK#567's coverage is the native org-ledger push receipt
         self.assertEqual(govr["labsledger"]["commit"], "c32f04bd2e2b638da63abd4edecd8be9d6669d2d")
         adm = {i["id"]: i for i in _inputs()["declarations"][GOV]["items"]}["H-GOV-ADMISSION"]
         deps = " ".join(adm["unadmitted_dependencies"])
         self.assertNotIn("StegVerse-Labs/.github#3358", deps)
-        self.assertIn("StegVerse-org/StegVerse-SDK#567 merged 6b3ccee27dd20b5d930bf9667c855fb2db8223e1", deps)
+        # StegVerse-org/.github#167 c6513392308: SDK#567's coverage is the native StegVerse-org-ledger push receipt (not an admit)
+        self.assertIn("StegVerse-SDK#567", deps)  # kept: a push receipt is not an admit, so the dependency (and LC-GOV-07) stays
+        self.assertIn("50e8fb06ec7d72863427bd4d4b7878ccf086608d", deps)
+        self.assertIn("not an admit", deps)
+        self.assertEqual(govr["orgledger"]["commit"], "50e8fb06ec7d72863427bd4d4b7878ccf086608d")
+        self.assertEqual(govr["orgledger"]["repo"], "StegVerse-org/.github")
+        for d_ in ("ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab",
+                   "4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7"):
+            self.assertIn(d_, adm["observed_state"])
+        self.assertIn("not an SV_CHANGE_ADMIT record for SDK#567", adm["observed_state"])
         self.assertIn("ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d", adm["observed_state"])
         self.assertIn("a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c", adm["observed_state"])
         self.assertEqual(adm["observed_by"], [])
@@ -488,7 +497,13 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertTrue([h for h in run["hits"] if h["pattern"] == pat], pat)
         task = json.loads((lc.BASE / "scoped-tasks" / "LC-GOV-07.json").read_text())
         self.assertIn("c32f04bd", task["proposed_resolution"])
-        self.assertIn("StegVerse-SDK#567's old root is unchanged", task["proposed_resolution"])
+        self.assertIn("50e8fb06", task["proposed_resolution"])
+        self.assertIn("not an SV_CHANGE_ADMIT record for SDK#567", task["proposed_resolution"])
+        sdk = next(r for r in obs["runs"] if r["run_id"] == "org-native-sdk-push-receipt")
+        self.assertEqual(sdk["status"], "OBSERVED")
+        self.assertEqual(sdk["pin"], "StegVerse-org/.github@50e8fb06ec7d72863427bd4d4b7878ccf086608d")
+        for pat in sdk["patterns"]:
+            self.assertTrue([h for h in sdk["hits"] if h["pattern"] == pat], pat)
 
 
 class Refusals(unittest.TestCase):

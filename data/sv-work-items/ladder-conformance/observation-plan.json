@@ -32,6 +32,12 @@
      "ref": "StegVerse-org/.github main @35c94a06 (revision 17 re-pin from @907f4305)",
      "repo": "StegVerse-org/.github"
     },
+    "orgledger": {
+     "commit": "50e8fb06ec7d72863427bd4d4b7878ccf086608d",
+     "kind": "git",
+     "ref": "StegVerse-org/.github refs/stegverse/organization-ledger @50e8fb06 (the organization-ledger append of org receipt ce63b27b for the native push receipt of the StegVerse-SDK push c50d29ce..7c8d750d, StegVerse-SDK#579; read-only fetch)",
+     "repo": "StegVerse-org/.github"
+    },
     "sdk556": {
      "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
      "kind": "git",
@@ -406,6 +412,24 @@
      "root": "labsledger",
      "run_id": "labs-native-push-receipt",
      "what": "the native Labs push receipt on the organization ledger (org receipt ec1ca4d8, repo receipt a29bc0f9)"
+    },
+    {
+     "globs": [
+      "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+      "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json"
+     ],
+     "kind": "grep",
+     "patterns": [
+      "\"operation\": \"sv_push_receipt\"",
+      "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+      "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\"",
+      "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\"",
+      "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\"",
+      "\"result_sha256\": \"sha256:e09f5f513f30207db7040c8fc00f3da3cdaf108719ee0cbe7c9712291702d9c0\""
+     ],
+     "root": "orgledger",
+     "run_id": "org-native-sdk-push-receipt",
+     "what": "the native SDK push receipt on the StegVerse-org organization ledger (org receipt ce63b27b, repo receipt 4f47a815)"
     }
    ],
    "sources": [
@@ -488,6 +512,14 @@
     {
      "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
      "root": "labsledger"
+    },
+    {
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "root": "orgledger"
+    },
+    {
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "root": "orgledger"
     }
    ]
   },

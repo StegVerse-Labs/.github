@@ -27,6 +27,11 @@
    "kind": "git",
    "repo": "StegVerse-org/.github"
   },
+  "orgledger": {
+   "commit": "50e8fb06ec7d72863427bd4d4b7878ccf086608d",
+   "kind": "git",
+   "repo": "StegVerse-org/.github"
+  },
   "sdk556": {
    "commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
    "kind": "git",
@@ -1087,6 +1092,77 @@
    "run_id": "labs-native-push-receipt",
    "status": "OBSERVED",
    "what": "the native Labs push receipt on the organization ledger (org receipt ec1ca4d8, repo receipt a29bc0f9)"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 6,
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "pattern": "\"operation\": \"sv_push_receipt\"",
+     "text": "\"operation\": \"sv_push_receipt\","
+    },
+    {
+     "line": 12,
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "pattern": "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+     "text": "\"repository\": \"StegVerse-org/StegVerse-SDK\""
+    },
+    {
+     "line": 12,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+     "text": "\"repository\": \"StegVerse-org/StegVerse-SDK\","
+    },
+    {
+     "line": 4,
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "pattern": "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\"",
+     "text": "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\","
+    },
+    {
+     "line": 5,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\"",
+     "text": "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\","
+    },
+    {
+     "line": 5,
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "pattern": "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\"",
+     "text": "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\","
+    },
+    {
+     "line": 6,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\"",
+     "text": "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\","
+    },
+    {
+     "line": 32,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\"",
+     "text": "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\","
+    },
+    {
+     "line": 13,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"result_sha256\": \"sha256:e09f5f513f30207db7040c8fc00f3da3cdaf108719ee0cbe7c9712291702d9c0\"",
+     "text": "\"result_sha256\": \"sha256:e09f5f513f30207db7040c8fc00f3da3cdaf108719ee0cbe7c9712291702d9c0\","
+    }
+   ],
+   "patterns": [
+    "\"operation\": \"sv_push_receipt\"",
+    "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+    "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\"",
+    "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\"",
+    "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\"",
+    "\"result_sha256\": \"sha256:e09f5f513f30207db7040c8fc00f3da3cdaf108719ee0cbe7c9712291702d9c0\""
+   ],
+   "pin": "StegVerse-org/.github@50e8fb06ec7d72863427bd4d4b7878ccf086608d",
+   "run_id": "org-native-sdk-push-receipt",
+   "status": "OBSERVED",
+   "what": "the native SDK push receipt on the StegVerse-org organization ledger (org receipt ce63b27b, repo receipt 4f47a815)"
   }
  ],
  "schema": "stegverse.ladder-conformance-observations/v1",
@@ -1250,6 +1326,22 @@
    "repo": "StegVerse-Labs/.github",
    "root": "labsledger",
    "sha256": "sha256:047cd1fe06a05cc0d93b82351f337193fb4c35b6dabfc75a04ce5a19f9283fb7"
+  },
+  {
+   "commit": "50e8fb06ec7d72863427bd4d4b7878ccf086608d",
+   "git_blob": "5b9050029ea72f9893a17c371a8073738b4b45f5",
+   "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+   "repo": "StegVerse-org/.github",
+   "root": "orgledger",
+   "sha256": "sha256:13c39ea4f81f769269589eb3883ff5a608314cbc6242dcecd4d4162526f951ba"
+  },
+  {
+   "commit": "50e8fb06ec7d72863427bd4d4b7878ccf086608d",
+   "git_blob": "eba2215ff16956964a3cffbe0a2e7cf6b3dc0f65",
+   "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+   "repo": "StegVerse-org/.github",
+   "root": "orgledger",
+   "sha256": "sha256:6fcde32ba7b2fa30b50029ffb8276afe77ab2b48d9b4d29df5aeaaca7873e895"
   }
  ],
  "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001"
