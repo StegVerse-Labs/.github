@@ -2091,7 +2091,23 @@ Combined integration check: H36 patch applied cleanly to Org #258 at 9f21aa83;
 in 27.031s. Local fabricated-fixture/source verification only; hosted CI on
 an owner-created combined commit remains required.
 
-Fresh continuation: #3405 at 4cf5c7c1 passed all six hosted checks. The
+Current InTr readback: Registry generation326 contains row==shard after #3409
+merge f9b46abc. Org#228/#258/#261/H36#267 are merged. Canonical ACTIVE and
+null claim/fence remain; exact COSV metric provenance is a separate #3195 follow-up.
+Session4; cumulative recovery lower bound36/20, exact total unverified, no reset.
+Private runtime and warrant ownership remain separate; source integration is not
+runtime execution. See the canonical handoff for exact merged commits and owners.
+
+Historical terminal reconciliation: **DECOMPOSED_AT_PROMPT_LIMIT** per Registry #3195
+comment6506716678; canonical shard remains ACTIVE, completion unclaimed/unvalidated.
+Session 3; cumulative recovery lower bound35/20, exact total unverified, no reset.
+#3405 merged as b7033aee after six successful checks. Org #259 independently
+ratified and merged as46ddcfd4 after46 successful checks. Remaining work follows
+existing owners in the [canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md).
+Registry #3409 still needs vector/index evidence and fixture repair before green
+CI and committed aggregate readback; no authority or metrics are invented.
+
+Historical continuation: #3405 at 4cf5c7c1 passed all six hosted checks. The
 [Registry repair diagnostic](docs/evidence/intr-registry-repair-20261029/README.md)
 reproduces the omitted-shard repair cycle and validates an isolated atomic
 record-data candidate (seven validators, every-task projection, NO_CHANGE repeat,
