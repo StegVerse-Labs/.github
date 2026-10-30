@@ -494,21 +494,21 @@
   "KV-SKAP-VAULT-FUNCTIONAL-001": {
    "roots": {
     "cvk258": {
-     "commit": "933d270cef1aa7e9abe4e6f927747b888a95a08e",
+     "commit": "7fd1f6c775aa396fa3803f0d52e3d6a055f06005",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit PR #291 head @933d270c (draft, on main 44e7ae56 = the #290 merge; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain); this root re-pins to the #291 merge commit after the merge",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @7fd1f6c7 (the merge of #291 on the #290 merge @44e7ae56, #291 head @933d270c; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain; re-pinned from the #291 head after the merge)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk259": {
-     "commit": "933d270cef1aa7e9abe4e6f927747b888a95a08e",
+     "commit": "7fd1f6c775aa396fa3803f0d52e3d6a055f06005",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit PR #291 head @933d270c (draft, on main 44e7ae56 = the #290 merge; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain); this root re-pins to the #291 merge commit after the merge",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @7fd1f6c7 (the merge of #291 on the #290 merge @44e7ae56, #291 head @933d270c; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain; re-pinned from the #291 head after the merge)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvk263": {
-     "commit": "933d270cef1aa7e9abe4e6f927747b888a95a08e",
+     "commit": "7fd1f6c775aa396fa3803f0d52e3d6a055f06005",
      "kind": "git",
-     "ref": "StegVerse-Labs/continuity-vault-kit PR #291 head @933d270c (draft, on main 44e7ae56 = the #290 merge; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain); this root re-pins to the #291 merge commit after the merge",
+     "ref": "StegVerse-Labs/continuity-vault-kit main @7fd1f6c7 (the merge of #291 on the #290 merge @44e7ae56, #291 head @933d270c; revision 23: node_receipt_common.py re-vendored byte for byte from LLM-adapter main fb5ae1cb (StegVerse-org/LLM-adapter#436), supplied_epoch owned natively as runtime/kv_supplied_epoch.py with the upstream-pin claim dropped, the L1 owner text naming the merged chain; re-pinned from the #291 head after the merge)",
      "repo": "StegVerse-Labs/continuity-vault-kit"
     },
     "cvkruling": {
@@ -1800,7 +1800,7 @@
      "number": 291,
      "repo": "StegVerse-Labs/continuity-vault-kit",
      "run_id": "pr-cvk291",
-     "what": "PR state snapshot (cvk node_receipt_common re-vendor at LLM-adapter main fb5ae1cb, native supplied_epoch, L1 owner text)"
+     "what": "PR state snapshot (cvk node_receipt_common re-vendor at LLM-adapter main fb5ae1cb, native supplied_epoch, L1 owner text; merged as 7fd1f6c7)"
     }
    ],
    "sources": [

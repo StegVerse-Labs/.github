@@ -96,7 +96,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertIn("LADDER_ALLOW_PATH_UNBOUND", _codes(d, "H-KV-ENDPOINT-LEDGER-ANCHOR"))
         anc = decl["H-KV-ENDPOINT-LEDGER-ANCHOR"]
         # revision 16 (Coordination ruling): the cvk-only both-ends anchor; KV's own head record decides (ruling A)
-        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@933d270cef1aa7e9abe4e6f927747b888a95a08e: "
+        self.assertTrue(anc["e0_terminal"]["by"].startswith("StegVerse-Labs/continuity-vault-kit@7fd1f6c775aa396fa3803f0d52e3d6a055f06005: "
                                                             "runtime/kv_receipt_ledgers.py::read_receipt_ledger"))
         self.assertEqual(anc["e0_terminal"]["dispositions"], ["ALLOW", "DENY", "FAIL_CLOSED"])
         self.assertEqual(anc["observed_by"], ["cvk263-chain-probe", "cvk263-anchor-production-prerequisites", "tvc542-bind-cvk263"])
@@ -272,7 +272,7 @@ class CommittedArtifacts(unittest.TestCase):
         self.assertNotIn("merge-ready", anc)
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         run = next(r for r in obs["runs"] if r["run_id"] == "cvk263-anchor-production-prerequisites")
-        self.assertTrue(run["pin"].endswith("@933d270cef1aa7e9abe4e6f927747b888a95a08e"))
+        self.assertTrue(run["pin"].endswith("@7fd1f6c775aa396fa3803f0d52e3d6a055f06005"))
         for o in run["outcomes"]:
             if o["subject"] == "ORG_CROSSING_READER_INSTALLED":  # revision 17: installed (cvk#276)
                 self.assertEqual(o["disposition"], "ALLOW")
@@ -382,7 +382,7 @@ class CommittedArtifacts(unittest.TestCase):
             self.assertEqual(ro["LC_KV_26_BOTH_ENDS_ROLLBACK_AFTER_LAST_CROSSING_" + w_], ["DENY"])
         obs = json.loads((cli.BASE / "observations" / (KV + ".observations.json")).read_text())
         probe = next(r for r in obs["runs"] if r["run_id"] == "cvk263-chain-probe")
-        self.assertTrue(probe["pin"].endswith("@933d270cef1aa7e9abe4e6f927747b888a95a08e"))
+        self.assertTrue(probe["pin"].endswith("@7fd1f6c775aa396fa3803f0d52e3d6a055f06005"))
         rows = {o["subject"]: o for o in probe["outcomes"]}
         for w_ in ("KV", "SKAP_VIA_GATE"):
             for c_ in ("KV_END_ONLY", "ORG_RECORDS_AN_OLDER_HEAD_ONLY"):
@@ -457,10 +457,13 @@ class CommittedArtifacts(unittest.TestCase):
         # Lane D, StegVerse-org/.github#167 (Coordination c6512573361, c6512694608, c6512705741).
         plan = json.loads((lc.BASE / "observation-plan.json").read_text())["goals"]
         kvr, govr = plan[KV]["roots"], plan[GOV]["roots"]
-        head = "933d270cef1aa7e9abe4e6f927747b888a95a08e"
+        head = "7fd1f6c775aa396fa3803f0d52e3d6a055f06005"
         for k in ("cvk258", "cvk259", "cvk263"):
             self.assertEqual(kvr[k]["commit"], head, k)
-            self.assertIn("re-pins to the #291 merge commit after the merge", kvr[k]["ref"], k)
+            self.assertIn("re-pinned from the #291 head after the merge", kvr[k]["ref"], k)
+        # cvk#291 is merged, so it is no longer an unadmitted dependency of H-KV-ADMISSION
+        kvdeps = " ".join({i["id"]: i for i in _inputs()["declarations"][KV]["items"]}["H-KV-ADMISSION"]["unadmitted_dependencies"])
+        self.assertNotIn("continuity-vault-kit#291", kvdeps)
         # the adjacency ruling's finish-point source is unchanged (no re-ruling)
         self.assertEqual(kvr["cvkruling"]["commit"], "44e7ae56f4efee0a19dfd3d7db5c524b68adc46b")
         # the bare #428 / #429 roots are labeled as merged via LLM-adapter#430 (649f0775); their commits are unchanged
