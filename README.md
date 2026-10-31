@@ -2,6 +2,10 @@
 
 Start at [Task Registration Guide](docs/TASK_REGISTRATION_GUIDE.md). The canonical Task Registry owns identity and coordination; a worker admission review is not task registration, a WorkerCoordinator claim, or a governed execution authorization.
 
+## Real governance assessment sample (#3393)
+
+Registered as `REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001` (COSV 10500000110000, PROPOSED, registration only) by StegVerse-Labs/.github#3412. Canonical handoff: [docs/REAL_GOVERNANCE_ASSESSMENT_SAMPLE_MIRROR_HANDOFF.md](docs/REAL_GOVERNANCE_ASSESSMENT_SAMPLE_MIRROR_HANDOFF.md). The report is consolidated revision 2 at https://github.com/StegVerse-Labs/.github/issues/3396#issuecomment-6502814562; source-use, independent acceptance and public publication remain pending with their owning lanes.
+
 ## Universal user-facing explanation contract and scaled-up HIL experiment — 2026-10-11
 
 Issue: StegVerse-Labs/.github#3106 (coordinates with StegVerse-Labs/Site#1509 and StegVerse-Labs/crypto-bot#23). Every public-facing StegVerse outcome now has one versioned explanation contract, `stegverse.user-facing-explanation/v1` (`schemas/user-facing-explanation.v1.schema.json`, builder `scripts/user_facing_explanation.py`): human-readable prose shown by default (what happened, why, whether it succeeded, failed, was denied or could not be verified, what was authorized, what was executed, what evidence exists, what the person can safely do next, limitations) plus an optional complete, self-contained JSON artifact the person can copy into any independent LLM (ecosystem and schema identifiers, canonical disposition, exact predicates, terminology with definitions, sanitized evidence locators, authorization-versus-execution distinction, LLM interpretation instructions, prohibited assumptions, and an optional unsubmitted remediation-manifest draft). The artifact is a projection: `authority_effect: NONE`, no canonical record mutation, no alternate governance path; a draft inside it is never an authorization, approval, receipt or decision. ALLOW, DENY, FAIL_CLOSED and authentic observation-unknown cases are covered by five SYNTHETIC_TEST fixtures and published examples (`data/user-facing-explanation/`). The Site WorkSpace page renders the same contract through its mirror `assets/workspace-explanation.js`.
@@ -2052,6 +2056,69 @@ The frozen HOLD SDK attachment attempt now has a machine-readable review record 
 `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001` / issue #2897 defines the successor protocol boundary for registered-node, manifested, state-transition-dependent communication. The protocol binds node identity, manifest intent, source/destination, payload commitment, applicable predecessor/state context, requested capability, ALLOW/DENY/FAIL_CLOSED disposition, transfer receipt, resulting-state commitment when applicable, and evidence references without requiring participating frameworks to share internal runtimes or governance implementations.
 
 `MasterRecordsCheckpoint/v1` is the first bounded interoperability profile. Master Records remains checkpoint authority; manifested Interlock/InTr communication provides transport and provenance, not checkpoint construction. No external adoption or conformance is claimed without independently retained evidence.
+
+2026-10-29 independent read-only verification: the native Org post-genesis kit
+check verifies 156 records, and `replay --require-ledgered-allow` returns
+**156 ALLOW / 0 DENY / 0 FAIL_CLOSED** over 13 anonymously fetched public
+organization-ledger refs. All 156 complete results match the TVC worker's
+published output; the raw file digest differs only because that worker's tip
+inventory includes an additional unused `master-records` copy. Exact source,
+ledger and output hashes are in the [retained evidence](docs/evidence/intr-readback-20261029/README.md)
+and [canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md).
+The protocol-vector verifier also passes. This verifies historical public
+receipts and supersedes the blanket unknown-runtime description for those
+paths; it grants no new transition, private-warrant custody, native task
+admission, claim/fence, external conformance or closure. The task shard remains
+ACTIVE; its aggregate generation-322 Registry row is absent. Protected source
+integration and Registry disposition remain with their existing owners.
+
+### InTr verification and integration handoff — 2026-10-29
+
+
+Org #258's declared-successor reader was independently tested (10 ingress tests
+pass) and preserves all 156 historical public ALLOW results byte-for-byte.
+Its 46 hosted checks pass; protected owner integration and H36 test integration
+remain. The reviewed #3404 head was d8a2efaa; current 3b03211a adds custody-owner
+coordination documentation. Its later append conflicts with the old location of
+this section; this section now sits beside the protocol evidence. Registry native plans exposed
+record/state repairs before aggregate admission; exact requests are on #3195.
+See the [current handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md)
+for pinned evidence, completed/remaining work, separate private-warrant ownership
+and cumulative-count disposition. No private execution or task closure claimed.
+
+Combined integration check: H36 patch applied cleanly to Org #258 at 9f21aa83;
+`python -m unittest discover -s tests -p 'test_intr_*py'` passed 314 tests
+in 27.031s. Local fabricated-fixture/source verification only; hosted CI on
+an owner-created combined commit remains required.
+
+Current InTr readback: Registry generation326 contains row==shard after #3409
+merge f9b46abc. Org#228/#258/#261/H36#267 are merged. Canonical ACTIVE and
+null claim/fence remain; exact COSV metric provenance is a separate #3195 follow-up.
+Session4; cumulative recovery lower bound36/20, exact total unverified, no reset.
+Private runtime and warrant ownership remain separate; source integration is not
+runtime execution. See the canonical handoff for exact merged commits and owners.
+
+Historical terminal reconciliation: **DECOMPOSED_AT_PROMPT_LIMIT** per Registry #3195
+comment6506716678; canonical shard remains ACTIVE, completion unclaimed/unvalidated.
+Session 3; cumulative recovery lower bound35/20, exact total unverified, no reset.
+#3405 merged as b7033aee after six successful checks. Org #259 independently
+ratified and merged as46ddcfd4 after46 successful checks. Remaining work follows
+existing owners in the [canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md).
+Registry #3409 still needs vector/index evidence and fixture repair before green
+CI and committed aggregate readback; no authority or metrics are invented.
+
+Historical continuation: #3405 at 4cf5c7c1 passed all six hosted checks. The
+[Registry repair diagnostic](docs/evidence/intr-registry-repair-20261029/README.md)
+reproduces the omitted-shard repair cycle and validates an isolated atomic
+record-data candidate (seven validators, every-task projection, NO_CHANGE repeat,
+and collision CONTINUE). Canonical application/count disposition remains with
+the Registry owner; this evidence creates no admission. Session 2; cumulative
+recovery lower bound 34/20, exact count unverified and not reset.
+[Owner repair candidates](docs/evidence/intr-owner-repairs-20261029/README.md)
+retain #3207 refusal metadata (76 tests), #3213 fixture correction (188 tests),
+and TVC #562 path confinement (eight focused tests). Org #228 + #258/H36 integration,
+#259 ratification, #3263 admission and private runtime ownership remain separate.
+Fresh public issue links are mirrored in the existing KV coordination file.
 
 - 2026-10-01: PR #2878 restores the Canonical Work execution-substrate resolution on the latest canonical head; no runtime authority is inferred.
 

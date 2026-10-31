@@ -3,19 +3,19 @@
  "operation": "sealed_test_receipt",
  "provenance": {
   "repository": "StegVerse-Labs/TVC",
-  "run_id": 40166845193,
-  "head_sha": "fa3e067a1b8121145bb4e3033c0cff8a88abd1df",
+  "run_id": 40999761329,
+  "head_sha": "e9d646ad21677737954ce0169b68c32d75b0b6c9",
   "workflow": ".github/workflows/merge-admitted-pull-request-validation.yml",
   "job": "conformance-receipt",
   "log_block": "TVC_LABS_CONFORMANCE_RECEIPT_JSON_BEGIN..TVC_LABS_CONFORMANCE_RECEIPT_JSON_END",
-  "seal_rechecked": "receipt_sha256 equals the sha256 of the canonical body as printed by that run (Authoring-Session: lane-d)"
+  "seal_rechecked": "receipt_sha256 equals the sha256 of the canonical body as printed by that run (Authoring-Session: p1-ecosystem-ai-lane)"
  },
  "receipt": {
   "authority_effect": "NONE",
   "changed_paths": [],
   "consumed_source": {
-   "commit": "97319a5e16d1984082d0e76be650d82207f4a7da",
-   "observed_commit": "97319a5e16d1984082d0e76be650d82207f4a7da",
+   "commit": "c6e4698256baa6b78ab675cd5963182cf7add498",
+   "observed_commit": "c6e4698256baa6b78ab675cd5963182cf7add498",
    "observed_surface": {
     ".stegverse/transition-ledger/contract.json": "sha256:2dec8cfe7b6d6f0cf11fa8e165b013d462470bb6e266e682b556697c61e62b47",
     ".stegverse/transition-ledger/emit.py": "sha256:33a665ea35d3dc41c0844dcb6c67fb0fca301180846189632c0bfe815d456536",
@@ -54,11 +54,11 @@
     "heartbeat_runtime/worker_runtime_legacy.py": "sha256:d89080b2af3517861d27c726b4181b5b7b61c254d878205fba8eca265537d39c",
     "heartbeat_runtime/worker_task_admission.py": "sha256:8652a3d8fa90e8306bda0cf8e4c10a3996a2e69f1b51e3795579ec992c168d06",
     "org-boundary/runtime/origin_attestation.py": "sha256:d736f10892c6b1666fd525879eebda48d194adc51b33e3357bfe7d2a04533647",
-    "org-kernel/kernel.py": "sha256:3463f1659ec849caf77b32263fbce0711b9c869faade8da2fcd05191e33a4b1f",
+    "org-kernel/kernel.py": "sha256:b3fde5721e993225ae2c17fd623eb22ab54210c860c2b16952f091cb1d70fb47",
     "org-kernel/node_store.py": "sha256:7424b384d6c1116a9ca64290ac1f4f301613086032eea3f2bc878c5b5302aed2",
     "resident-runtime/aggregate_repo_transition.py": "sha256:ff4a2dc76142988dffc63f3088ffe883fe526da03e323017aee4807d60ecd7f5",
     "resident-runtime/ledger_store.py": "sha256:e6e493a9a3c0d1c527ab118d406dbea5aa6f7b294bd476a540ee3f9881b898df",
-    "resident-runtime/organization_egress_boundary.py": "sha256:fb5d5f535b1873d64753b0133bba8661450f58c99c2eb532c7e6507ee3ef0af3",
+    "resident-runtime/organization_egress_boundary.py": "sha256:cf472436edaa9f0fae92a34751b0003d3cd0c1122e99e9b9a6dda0c25a698747",
     "scripts/build_canonical_work_intr_request.py": "sha256:6e985275c0354e3562681ab4ede134b38ba052c693cf51cb41d51e07e17ada5b",
     "scripts/consume_canonical_work_intr_materialization_request.py": "sha256:6d04ba50a2f5a8d8868cbab2db0ef4f76bffc479e3cfe93eda8655078f966d7f",
     "scripts/consume_device_kv_intr_materialization_request.py": "sha256:fa1dc1c305fb8deecfc23e9756382f67b2afb9236366748e69b888d819001db5",
@@ -82,7 +82,7 @@
     "workers/sv002_intr_materialization_consumer.py": "sha256:04912a7c2a18d4f1b3898a65c07dc2e940d291d215757429cedf8ca5667b6e1b",
     "workers/universal_intr_profiled_ingress.py": "sha256:5f9e4f5da326cd0a940ec6bc0a4d552fdeb44a57e893745913d367389c12bbbc"
    },
-   "observed_surface_sha256": "sha256:bb49b172801102d762bd440276a39eb567410d687e7e36e432a5d45e6d264a7b",
+   "observed_surface_sha256": "sha256:03d8eb63f0c6f9dbc7148a7f45dab75ec8f0626d5e395c98d1b0d2de6e4246bb",
    "repository": "StegVerse-Labs/.github"
   },
   "counts": {
@@ -96,7 +96,7 @@
   "disposition": "ALLOW",
   "event": "push",
   "failing_on_head": [],
-  "head_sha": "fa3e067a1b8121145bb4e3033c0cff8a88abd1df",
+  "head_sha": "e9d646ad21677737954ce0169b68c32d75b0b6c9",
   "ledger_candidate": {
    "appended_by": "the organization ledger writer only; this repository's CI never appends",
    "appended_by_this_job": false,
@@ -143,7 +143,7 @@
    "repository": "StegVerse-Labs/.github",
    "sha256": "2e7c79a550d8379ddcbd7764b6a75ea13b63d2019729b84351af379afe5ad53d"
   },
-  "receipt_sha256": "sha256:fd5dd53e42677c3e868c81271f450fbb51db4c53cccb151df727b3654e12268a",
+  "receipt_sha256": "sha256:da6fdfa471ecabcb3f079321d850c55b5174da14e470f0bf781adb9ab5ecde36",
   "ref": "refs/heads/main",
   "refusals": [],
   "repository": "StegVerse-Labs/TVC",
@@ -186,7 +186,7 @@
    "tests.test_origin_attestation_tvc_conformance.TvcConformanceTests::test_this_boundarys_signature_serialization_is_the_authoritys",
    "tests.test_origin_attestation_tvc_conformance.TvcConformanceTests::test_without_the_key_the_signature_does_not_verify"
   ],
-  "tested_commit": "fa3e067a1b8121145bb4e3033c0cff8a88abd1df",
+  "tested_commit": "e9d646ad21677737954ce0169b68c32d75b0b6c9",
   "tvc_surface": {
    "scripts/tv_credential_sign_export_resident.py": "sha256:b6cf28d0032b5a9c6cd1da3ecb899c0b408749069a607c4e1e32219a5985ebff",
    "scripts/tv_credential_verify_export_resident.py": "sha256:c78806f20430d61537eba4f6d22351610cf92770cd1aebf2c80811c506a3e4b7"

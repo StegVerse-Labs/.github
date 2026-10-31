@@ -1,0 +1,60 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0016",
+  "organization": "StegVerse-Labs",
+  "goal": "Allocator projection of canonical task STEGAPP-EPHEMERAL-COMPOSITION-001 (COSV 10300000011000) for the P0 native composition-to-governed-Chat slice in StegVerse-Labs/StegApp. This is the same canonical goal, not a second goal. The target remains proposed and non-queued until authentic PROPOSED -> INGRESS_ADMITTED evidence is independently read back; only then may the owner queue it for WorkerCoordinator allocation.",
+  "status": "proposed",
+  "requested_at": "2026-10-29T01:05:00Z",
+  "priority_class": "normal",
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "StegApp",
+          "full_name": "StegVerse-Labs/StegApp",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegapp/compose.py",
+            "stegapp/sandbox_bridge.py",
+            "stegapp/chat_delivery.py",
+            "stegapp/delivery_readback.py",
+            "stegapp/sdk_bridge.py",
+            "tests/test_p0_slice.py",
+            "tests/integration/test_delivery_readback.py"
+          ],
+          "contracts": [],
+          "release_surfaces": [],
+          "capabilities": [
+            "stegapp-p0-native-composition-chat-delivery"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "stegapp:p0-native-composition-chat-delivery"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "worker/stegapp-p0-native-composition",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "canonical_task_record": "data/canonical-task-records/STEGAPP-EPHEMERAL-COMPOSITION-001.json",
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "runtime_execution_inferred": false
+  }
+}

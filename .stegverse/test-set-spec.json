@@ -83,8 +83,14 @@
  },
  "manifest": ".stegverse/test-sets.json",
  "module_inputs": {
+  "tests/test_manifest_ingress_d7_fail_closed.py": [
+   "stegverse-sdk@c138cad4"
+  ],
   "tests/test_organization_role_conformance_ingress.py": [
    "stegverse-sdk"
+  ],
+  "tests/test_p1_supplied_epoch_and_ledger_paths.py": [
+   "stegverse-sdk@c138cad4"
   ]
  },
  "repository": "StegVerse-Labs/.github",

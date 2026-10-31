@@ -1,0 +1,200 @@
+test_apply_then_verify_and_row_equals_record (tests.test_canonical_task_registration_transition.Allow.test_apply_then_verify_and_row_equals_record) ... ok
+test_derivation_is_deterministic_and_reads_no_clock (tests.test_canonical_task_registration_transition.Allow.test_derivation_is_deterministic_and_reads_no_clock) ... ok
+test_fixture_registers_against_the_live_repository_registry (tests.test_canonical_task_registration_transition.Allow.test_fixture_registers_against_the_live_repository_registry) ... ok
+test_plan_derives_the_four_surfaces_from_the_manifest_alone (tests.test_canonical_task_registration_transition.Allow.test_plan_derives_the_four_surfaces_from_the_manifest_alone) ... ok
+test_receipt_conforms_to_its_schema_and_mints_nothing (tests.test_canonical_task_registration_transition.Allow.test_receipt_conforms_to_its_schema_and_mints_nothing) ... ok
+test_active_is_projected_never_claimed (tests.test_canonical_task_registration_transition.ExistingIdentity.test_active_is_projected_never_claimed) ... ok
+test_against_the_live_repository_the_four_old_refusals_are_settled (tests.test_canonical_task_registration_transition.ExistingIdentity.test_against_the_live_repository_the_four_old_refusals_are_settled) ... ok
+test_allocation_proposal_is_checked_never_adopted (tests.test_canonical_task_registration_transition.ExistingIdentity.test_allocation_proposal_is_checked_never_adopted) ... ok
+test_authority_floor_and_completion (tests.test_canonical_task_registration_transition.ExistingIdentity.test_authority_floor_and_completion) ... ok
+test_collision_checkin_is_a_predicate_and_apply_writes_nothing_on_refusal (tests.test_canonical_task_registration_transition.ExistingIdentity.test_collision_checkin_is_a_predicate_and_apply_writes_nothing_on_refusal) ... ok
+test_cosv_never_invented (tests.test_canonical_task_registration_transition.ExistingIdentity.test_cosv_never_invented) ... ok
+test_cosv_source_is_the_recorded_vector_and_metrics_stay_a_residual (tests.test_canonical_task_registration_transition.ExistingIdentity.test_cosv_source_is_the_recorded_vector_and_metrics_stay_a_residual) ... ok
+test_declared_metrics_must_derive_the_recorded_vector_and_then_emit_it (tests.test_canonical_task_registration_transition.ExistingIdentity.test_declared_metrics_must_derive_the_recorded_vector_and_then_emit_it) ... ok
+test_fixture_is_p1s_request_with_the_mode_named (tests.test_canonical_task_registration_transition.ExistingIdentity.test_fixture_is_p1s_request_with_the_mode_named) ... ok
+test_identity_must_exist_once_without_a_row_and_match_the_manifest (tests.test_canonical_task_registration_transition.ExistingIdentity.test_identity_must_exist_once_without_a_row_and_match_the_manifest) ... ok
+test_receipt_schema_and_clock_free (tests.test_canonical_task_registration_transition.ExistingIdentity.test_receipt_schema_and_clock_free) ... ok
+test_row_equals_record_at_320_to_321_and_the_shard_is_untouched (tests.test_canonical_task_registration_transition.ExistingIdentity.test_row_equals_record_at_320_to_321_and_the_shard_is_untouched) ... ok
+test_the_same_manifest_without_the_mode_still_refuses_as_new_identity (tests.test_canonical_task_registration_transition.ExistingIdentity.test_the_same_manifest_without_the_mode_still_refuses_as_new_identity) ... ok
+test_claim_or_fence_in_the_manifest (tests.test_canonical_task_registration_transition.Refusals.test_claim_or_fence_in_the_manifest) ... ok
+test_cli_exit_codes (tests.test_canonical_task_registration_transition.Refusals.test_cli_exit_codes) ... ok
+test_completion_claim (tests.test_canonical_task_registration_transition.Refusals.test_completion_claim) ... ok
+test_duplicate_identity_on_every_surface (tests.test_canonical_task_registration_transition.Refusals.test_duplicate_identity_on_every_surface) ... ok
+test_manual_or_underivable_vector (tests.test_canonical_task_registration_transition.Refusals.test_manual_or_underivable_vector) ... ok
+test_record_schema_and_initial_state (tests.test_canonical_task_registration_transition.Refusals.test_record_schema_and_initial_state) ... ok
+test_request_schema (tests.test_canonical_task_registration_transition.Refusals.test_request_schema) ... ok
+test_stale_generation (tests.test_canonical_task_registration_transition.Refusals.test_stale_generation) ... ok
+test_verify_refuses_unapplied_and_hand_edited_successors (tests.test_canonical_task_registration_transition.Refusals.test_verify_refuses_unapplied_and_hand_edited_successors) ... ok
+test_contract_names_the_same_surfaces_as_the_code (tests.test_canonical_task_registration_transition.Surface.test_contract_names_the_same_surfaces_as_the_code) ... ok
+test_workflow_is_read_only_and_never_dispatches_or_appends (tests.test_canonical_task_registration_transition.Surface.test_workflow_is_read_only_and_never_dispatches_or_appends) ... ok
+test_adding_a_target_or_predicate_is_refused (tests.test_goal_scope_seal.Freeze.test_adding_a_target_or_predicate_is_refused) ... ok
+test_cli_exit_codes_and_receipt (tests.test_goal_scope_seal.Freeze.test_cli_exit_codes_and_receipt) ... ok
+test_editing_the_seal_in_place_is_refused (tests.test_goal_scope_seal.Freeze.test_editing_the_seal_in_place_is_refused) ... ok
+test_expanding_the_record_goal_is_refused (tests.test_goal_scope_seal.Freeze.test_expanding_the_record_goal_is_refused) ... ok
+test_live_repository_holds_no_unsealed_drift (tests.test_goal_scope_seal.Freeze.test_live_repository_holds_no_unsealed_drift) ... ok
+test_removing_the_seal_is_refused (tests.test_goal_scope_seal.Freeze.test_removing_the_seal_is_refused) ... ok
+test_resealing_with_a_supersede_request_is_allowed (tests.test_goal_scope_seal.Freeze.test_resealing_with_a_supersede_request_is_allowed) ... ok
+test_resealing_without_a_supersede_request_is_refused (tests.test_goal_scope_seal.Freeze.test_resealing_without_a_supersede_request_is_refused) ... ok
+test_unchanged_sealed_goal_is_allowed (tests.test_goal_scope_seal.Freeze.test_unchanged_sealed_goal_is_allowed) ... ok
+test_an_existing_seal_is_an_identity_collision (tests.test_goal_scope_seal.Registration.test_an_existing_seal_is_an_identity_collision) ... ok
+test_finish_point_must_name_a_test_and_a_predicate (tests.test_goal_scope_seal.Registration.test_finish_point_must_name_a_test_and_a_predicate) ... ok
+test_new_identity_supersedes_nothing (tests.test_goal_scope_seal.Registration.test_new_identity_supersedes_nothing) ... ok
+test_new_identity_without_a_seal_is_refused (tests.test_goal_scope_seal.Registration.test_new_identity_without_a_seal_is_refused) ... ok
+test_scope_that_is_not_the_record_is_refused (tests.test_goal_scope_seal.Registration.test_scope_that_is_not_the_record_is_refused) ... ok
+test_sealed_request_derives_the_seal_and_reports_the_digest (tests.test_goal_scope_seal.Registration.test_sealed_request_derives_the_seal_and_reports_the_digest) ... ok
+test_wrong_digest_is_refused (tests.test_goal_scope_seal.Registration.test_wrong_digest_is_refused) ... ok
+test_contract_names_the_seal (tests.test_goal_scope_seal.Surface.test_contract_names_the_seal) ... ok
+test_workflow_runs_the_freeze_read_only_on_pull_request (tests.test_goal_scope_seal.Surface.test_workflow_runs_the_freeze_read_only_on_pull_request) ... ok
+test_every_goal_has_six_fields_and_a_class (tests.test_i1_goal_registration_manifests.I1GoalRegistrationManifestTests.test_every_goal_has_six_fields_and_a_class) ... ok
+test_manifest_makes_no_registry_edit (tests.test_i1_goal_registration_manifests.I1GoalRegistrationManifestTests.test_manifest_makes_no_registry_edit) ... ok
+test_new_identity_requests_carry_a_sealed_testable_finish_point (tests.test_i1_goal_registration_manifests.I1GoalRegistrationManifestTests.test_new_identity_requests_carry_a_sealed_testable_finish_point) ... ok
+test_new_identity_requests_plan_as_recorded (tests.test_i1_goal_registration_manifests.I1GoalRegistrationManifestTests.test_new_identity_requests_plan_as_recorded) ... ok
+test_shard_only_requests_plan_as_recorded (tests.test_i1_goal_registration_manifests.I1GoalRegistrationManifestTests.test_shard_only_requests_plan_as_recorded) ... ok
+test_a_candidate_without_declared_components_is_not_vacuously_adjacent (tests.test_adjacency_ruling.AdjacencyRulingTests.test_a_candidate_without_declared_components_is_not_vacuously_adjacent) ... ok
+test_a_fails_on_a_shared_component_even_if_the_ruling_omits_it (tests.test_adjacency_ruling.AdjacencyRulingTests.test_a_fails_on_a_shared_component_even_if_the_ruling_omits_it) ... ok
+test_a_fails_on_shared_lineage (tests.test_adjacency_ruling.AdjacencyRulingTests.test_a_fails_on_shared_lineage) ... ok
+test_b_fails_when_the_test_reaches_a_module_named_for_a_candidate_component (tests.test_adjacency_ruling.AdjacencyRulingTests.test_b_fails_when_the_test_reaches_a_module_named_for_a_candidate_component) ... ok
+test_b_fails_when_the_test_reaches_a_path_the_candidate_names (tests.test_adjacency_ruling.AdjacencyRulingTests.test_b_fails_when_the_test_reaches_a_path_the_candidate_names) ... ok
+test_b_needs_the_source_at_the_pinned_commit (tests.test_adjacency_ruling.AdjacencyRulingTests.test_b_needs_the_source_at_the_pinned_commit) ... ok
+test_c_fails_when_the_consumes_dependency_is_not_recorded (tests.test_adjacency_ruling.AdjacencyRulingTests.test_c_fails_when_the_consumes_dependency_is_not_recorded) ... ok
+test_check_change_outside_protected_paths_allows (tests.test_adjacency_ruling.AdjacencyRulingTests.test_check_change_outside_protected_paths_allows) ... ok
+test_conditional_seeding_keeps_init (tests.test_adjacency_ruling.AdjacencyRulingTests.test_conditional_seeding_keeps_init) ... ok
+test_conditions_recompute_and_allow (tests.test_adjacency_ruling.AdjacencyRulingTests.test_conditions_recompute_and_allow) ... ok
+test_constant_tables_paths_runpy_exec_and_aliases_resolve (tests.test_adjacency_ruling.AdjacencyRulingTests.test_constant_tables_paths_runpy_exec_and_aliases_resolve) ... ok
+test_consumes_edit_cli_round_trip (tests.test_adjacency_ruling.AdjacencyRulingTests.test_consumes_edit_cli_round_trip) ... ok
+test_consumes_edit_fails_closed_without_repin_relationship_or_matching_receipt (tests.test_adjacency_ruling.AdjacencyRulingTests.test_consumes_edit_fails_closed_without_repin_relationship_or_matching_receipt) ... ok
+test_data_driven_binding_fails_closed_never_disjoint (tests.test_adjacency_ruling.AdjacencyRulingTests.test_data_driven_binding_fails_closed_never_disjoint) ... ok
+test_exec_of_runtime_text_and_env_paths_fail_closed (tests.test_adjacency_ruling.AdjacencyRulingTests.test_exec_of_runtime_text_and_env_paths_fail_closed) ... ok
+test_finish_test_carrying_the_unowned_pin_keeps_the_stub_context (tests.test_adjacency_ruling.AdjacencyRulingTests.test_finish_test_carrying_the_unowned_pin_keeps_the_stub_context)
+Lane C's case: the finish test carries the (U) pin of a module it loads only under a stub-seeded package. ... ok
+test_guarded_seed_with_a_normal_import_in_another_closure_file_keeps_init (tests.test_adjacency_ruling.AdjacencyRulingTests.test_guarded_seed_with_a_normal_import_in_another_closure_file_keeps_init) ... ok
+test_hashed_pin_data_is_not_a_closure_edge (tests.test_adjacency_ruling.AdjacencyRulingTests.test_hashed_pin_data_is_not_a_closure_edge) ... ok
+test_hashed_pin_path_reached_another_way_is_still_followed (tests.test_adjacency_ruling.AdjacencyRulingTests.test_hashed_pin_path_reached_another_way_is_still_followed) ... ok
+test_malformed_unrouted_and_unpinned_relied_paths_fail_closed (tests.test_adjacency_ruling.AdjacencyRulingTests.test_malformed_unrouted_and_unpinned_relied_paths_fail_closed) ... ok
+test_non_constant_or_late_or_pathless_seeding_keeps_init (tests.test_adjacency_ruling.AdjacencyRulingTests.test_non_constant_or_late_or_pathless_seeding_keeps_init) ... ok
+test_normal_import_elsewhere_keeps_init (tests.test_adjacency_ruling.AdjacencyRulingTests.test_normal_import_elsewhere_keeps_init) ... ok
+test_pin_digest_commit_and_finish_test_enforcement_fail_closed (tests.test_adjacency_ruling.AdjacencyRulingTests.test_pin_digest_commit_and_finish_test_enforcement_fail_closed) ... ok
+test_pinned_and_routed_consumed_paths_allow_and_are_exempt_from_b (tests.test_adjacency_ruling.AdjacencyRulingTests.test_pinned_and_routed_consumed_paths_allow_and_are_exempt_from_b) ... ok
+test_preload_from_outside_the_closure_keeps_init (tests.test_adjacency_ruling.AdjacencyRulingTests.test_preload_from_outside_the_closure_keeps_init) ... ok
+test_preload_sources_that_cannot_import_the_package_keep_the_stub (tests.test_adjacency_ruling.AdjacencyRulingTests.test_preload_sources_that_cannot_import_the_package_keep_the_stub) ... ok
+test_private_loader_reached_from_another_module_fails_closed (tests.test_adjacency_ruling.AdjacencyRulingTests.test_private_loader_reached_from_another_module_fails_closed) ... ok
+test_public_loader_parameter_fails_closed (tests.test_adjacency_ruling.AdjacencyRulingTests.test_public_loader_parameter_fails_closed) ... ok
+test_reassigned_module_constant_fails_closed (tests.test_adjacency_ruling.AdjacencyRulingTests.test_reassigned_module_constant_fails_closed) ... ok
+test_removal_from_sys_modules_in_the_closure_keeps_init (tests.test_adjacency_ruling.AdjacencyRulingTests.test_removal_from_sys_modules_in_the_closure_keeps_init) ... ok
+test_ruling_integrity_class_and_scope (tests.test_adjacency_ruling.AdjacencyRulingTests.test_ruling_integrity_class_and_scope) ... ok
+test_run_gate_by_name_load_is_in_the_closure_and_fails_b (tests.test_adjacency_ruling.AdjacencyRulingTests.test_run_gate_by_name_load_is_in_the_closure_and_fails_b) ... ok
+test_run_gate_load_with_unrelated_candidate_still_allows (tests.test_adjacency_ruling.AdjacencyRulingTests.test_run_gate_load_with_unrelated_candidate_still_allows) ... ok
+test_stub_seeded_ensure_idiom_excludes_init (tests.test_adjacency_ruling.AdjacencyRulingTests.test_stub_seeded_ensure_idiom_excludes_init) ... ok
+test_stub_seeded_unconditionally_excludes_init (tests.test_adjacency_ruling.AdjacencyRulingTests.test_stub_seeded_unconditionally_excludes_init) ... ok
+test_subject_edit_of_a_protected_path_fails_closed_owned_by_the_owner (tests.test_adjacency_ruling.AdjacencyRulingTests.test_subject_edit_of_a_protected_path_fails_closed_owned_by_the_owner) ... ok
+test_subprocess_module_string_is_in_the_closure (tests.test_adjacency_ruling.AdjacencyRulingTests.test_subprocess_module_string_is_in_the_closure) ... ok
+test_unowned_consumed_edit_fails_closed_to_coordination (tests.test_adjacency_ruling.AdjacencyRulingTests.test_unowned_consumed_edit_fails_closed_to_coordination) ... ok
+test_unowned_consumed_edit_with_a_consumes_edit_receipt_allows (tests.test_adjacency_ruling.AdjacencyRulingTests.test_unowned_consumed_edit_with_a_consumes_edit_receipt_allows) ... ok
+test_unowned_consumed_pin_allows_and_is_not_a_candidate (tests.test_adjacency_ruling.AdjacencyRulingTests.test_unowned_consumed_pin_allows_and_is_not_a_candidate) ... ok
+test_unowned_consumed_pin_malformed_cases (tests.test_adjacency_ruling.AdjacencyRulingTests.test_unowned_consumed_pin_malformed_cases) ... ok
+test_what_a_pinned_file_loads_by_name_is_not_exempt (tests.test_adjacency_ruling.AdjacencyRulingTests.test_what_a_pinned_file_loads_by_name_is_not_exempt) ... ok
+test_a_recomputed_ruling_lets_the_kv_plan_continue (tests.test_adjacency_ruling.TransitionWithRulingTests.test_a_recomputed_ruling_lets_the_kv_plan_continue) ... ok
+test_committed_kv_ruling_is_sealed_and_covers_the_checkin_candidates (tests.test_adjacency_ruling.TransitionWithRulingTests.test_committed_kv_ruling_is_sealed_and_covers_the_checkin_candidates) ... ok
+test_the_same_ruling_fails_closed_when_the_test_reaches_the_sovereign_binding (tests.test_adjacency_ruling.TransitionWithRulingTests.test_the_same_ruling_fails_closed_when_the_test_reaches_the_sovereign_binding) ... ok
+test_without_a_ruling_the_kv_plan_stays_coordinate_convergence (tests.test_adjacency_ruling.TransitionWithRulingTests.test_without_a_ruling_the_kv_plan_stays_coordinate_convergence) ... ok
+test_constraints (tests.test_write_admission.WriteAdmissionTests.test_constraints) ... ok
+test_consumes_pin_allows_the_owner_and_routes_a_non_owner (tests.test_write_admission.WriteAdmissionTests.test_consumes_pin_allows_the_owner_and_routes_a_non_owner) ... ok
+test_deterministic_and_cli (tests.test_write_admission.WriteAdmissionTests.test_deterministic_and_cli) ... ok
+test_finish_test_closure_allows (tests.test_write_admission.WriteAdmissionTests.test_finish_test_closure_allows) ... ok
+test_goal_target_by_component_module_allows (tests.test_write_admission.WriteAdmissionTests.test_goal_target_by_component_module_allows) ... ok
+test_goal_target_by_source_ref_allows (tests.test_write_admission.WriteAdmissionTests.test_goal_target_by_source_ref_allows) ... ok
+test_issue_and_pull_request_link_allows (tests.test_write_admission.WriteAdmissionTests.test_issue_and_pull_request_link_allows) ... ok
+test_malformed_inputs_fail_closed (tests.test_write_admission.WriteAdmissionTests.test_malformed_inputs_fail_closed) ... ok
+test_no_relationship_fails_closed (tests.test_write_admission.WriteAdmissionTests.test_no_relationship_fails_closed) ... ok
+test_receipts_that_do_not_re_derive_are_rejected (tests.test_write_admission.WriteAdmissionTests.test_receipts_that_do_not_re_derive_are_rejected) ... ok
+test_shipped_lane_d_constraints_are_well_formed (tests.test_write_admission.WriteAdmissionTests.test_shipped_lane_d_constraints_are_well_formed) ... ok
+test_stacked_on_active_work_is_coordinated_and_a_relationship (tests.test_write_admission.WriteAdmissionTests.test_stacked_on_active_work_is_coordinated_and_a_relationship) ... ok
+test_uncoordinated_active_work_conflicts (tests.test_write_admission.WriteAdmissionTests.test_uncoordinated_active_work_conflicts) ... ok
+test_unobserved_active_work_fails_closed (tests.test_write_admission.WriteAdmissionTests.test_unobserved_active_work_fails_closed) ... ok
+test_unowned_consumed_edit_needs_a_consumes_edit_receipt (tests.test_write_admission.WriteAdmissionTests.test_unowned_consumed_edit_needs_a_consumes_edit_receipt) ... ok
+test_write_coordination_resolves_the_conflict (tests.test_write_admission.WriteAdmissionTests.test_write_coordination_resolves_the_conflict) ... ok
+
+----------------------------------------------------------------------
+Ran 114 tests in 10.225s
+
+OK
+{
+  "clock_read": false,
+  "disposition": "ALLOW",
+  "from": {
+    "commit": "4030b355b818be9782f15269baa5ac142c1802e3",
+    "sha256": "d9f742b3f71592d5bb4dda51e1f2d5f0592089fa4f8791f8a3f6d320e8660634"
+  },
+  "ledger_status": "SCRATCH_NOT_A_LEDGER_RECEIPT",
+  "llm_used": false,
+  "lowest_supported_mode": "E0",
+  "network_used": false,
+  "owner": "UNOWNED_NOT_OBSERVED",
+  "path": "gate/gate_reader.py",
+  "pin": {
+    "commit": "0b379f70bbb1c42dd5375ec41f604050ca56f80e",
+    "sha256": "01413a4348bb46596ab391c157c53cc09789ee03c74ba171c7339bb31ef5bdbd"
+  },
+  "receipt_sha256": "sha256:a1e3fc30cfc917249f25d279b6008503bfb90898994945a01cb0d3bb28a2bc55",
+  "relationship": {
+    "consumes_task_id": "UNOWNED_NOT_OBSERVED",
+    "kind": "CONSUMES_PIN",
+    "ruling_digest": "sha256:a11f0175f6b0ee0e8855599bd9ba355ce867b00d8527a0f36f4db6f0143f5587"
+  },
+  "repository": "Org/fp",
+  "routed_to": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "schema": "stegverse.consumes-edit-receipt/v1",
+  "subject_task_id": "SUBJ-001",
+  "to": {
+    "commit": "0b379f70bbb1c42dd5375ec41f604050ca56f80e",
+    "sha256": "01413a4348bb46596ab391c157c53cc09789ee03c74ba171c7339bb31ef5bdbd"
+  },
+  "writer": {
+    "ref": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+    "task_id": "SUBJ-001"
+  }
+}
+{
+  "base": "4030b355b818be9782f15269baa5ac142c1802e3",
+  "clock_read": false,
+  "condition_routing": "HELD",
+  "consumes_edits": [
+    {
+      "ledger_status": "SCRATCH_NOT_A_LEDGER_RECEIPT",
+      "path": "gate/gate_reader.py",
+      "receipt_sha256": "sha256:a1e3fc30cfc917249f25d279b6008503bfb90898994945a01cb0d3bb28a2bc55"
+    }
+  ],
+  "disposition": "ALLOW",
+  "head": "0b379f70bbb1c42dd5375ec41f604050ca56f80e",
+  "llm_used": false,
+  "lowest_supported_mode": "E0",
+  "mode": "check-change",
+  "network_used": false,
+  "protected_paths": [],
+  "schema": "stegverse.adjacency-ruling-verification/v1"
+}
+{
+  "base": "4030b355b818be9782f15269baa5ac142c1802e3",
+  "clock_read": false,
+  "detail": {
+    "modified": [
+      "gate/gate_reader.py"
+    ],
+    "owner": "UNOWNED_NOT_OBSERVED",
+    "routed_to": "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+  },
+  "disposition": "FAIL_CLOSED",
+  "failed_predicate": "UNOWNED_CONSUMED_EDIT_IS_REPINNED_AND_RECEIPTED",
+  "failure_code": "ADJACENCY_RULING_UNOWNED_CONSUMED_EDIT",
+  "head": "0b379f70bbb1c42dd5375ec41f604050ca56f80e",
+  "llm_used": false,
+  "lowest_supported_mode": "E0",
+  "mode": "check-change",
+  "network_used": false,
+  "next_attempt": "on the next registration plan after the ruling or the finish-point source is repaired",
+  "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "required_evidence_or_repair": "['gate/gate_reader.py'] are consumed by the finish point and have no observed owner. The edit is admitted (E) when the relationship is clear, the pin is moved and the edit is receipted: move the UNOWNED_NOT_OBSERVED pin (commit and sha256) in the ruling to the edited bytes, build the receipt with `python scripts/adjacency_ruling.py consumes-edit` (scratch, never the real ledger) and pass it to check-change --consumes-edit-receipt; or STEGVERSE-CANONICAL-WORK-COORDINATION-001 assigns an owner (class B) and the owner publishes the change",
+  "retry_entrypoint": "python scripts/adjacency_ruling.py verify (or canonical_task_registration_transition.py plan --adjacency-ruling)",
+  "schema": "stegverse.adjacency-ruling-verification/v1"
+}

@@ -39,6 +39,7 @@ import argparse
 import importlib.util
 import json
 import os
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Mapping
@@ -82,6 +83,43 @@ def repository_ledger_home() -> Path:
     if override:
         return Path(override).expanduser().resolve()
     raise organization_ledger.LedgerLocationRequired(LEDGER_HOME_VARIABLE)
+
+
+def require_designated_ledger_root(root: Path) -> Path:
+    """Refuse a ledger root that is not a POSIX ledger root (D-12, LEDGER_ROOT_NOT_CONTRACT_DESIGNATED).
+
+    The root arrives from STEGVERSE_REPO_LEDGER_HOME or --repository-ledger-root, neither of which is a contract
+    declaration. An override is admissible only as a verified pair: a POSIX root holding no git-tracked files. A
+    root that contains tracked files is a checked-out repository tree, where a fabricated "ledger" could be
+    committed and then believed to be on ledger, so it is refused before anything is read from it. The resolved
+    (realpath) root is the one checked. A root outside any work tree, or an untracked directory inside one, is a
+    POSIX root and is admitted.
+    """
+    resolved = Path(root).expanduser().resolve()
+    probe = resolved
+    while not probe.exists() and probe != probe.parent:
+        probe = probe.parent
+    if probe.is_file():
+        probe = probe.parent
+    tracked = ""
+    try:
+        inside = subprocess.run(["git", "-C", str(probe), "rev-parse", "--is-inside-work-tree"],
+                                capture_output=True, text=True, check=False)
+        if inside.returncode == 0 and inside.stdout.strip() == "true":
+            listed = subprocess.run(["git", "-C", str(probe), "ls-files", "--", str(resolved)],
+                                    capture_output=True, text=True, check=False)
+            tracked = listed.stdout.strip() if listed.returncode == 0 else "UNREADABLE"
+    except OSError:
+        tracked = ""  # no git on this node: there is no work tree to hold tracked files
+    if tracked:
+        raise common.LedgerRefusal(
+            "LEDGER_ROOT_NOT_CONTRACT_DESIGNATED: " + str(resolved) + " holds git-tracked files",
+            failure_code="LEDGER_ROOT_NOT_CONTRACT_DESIGNATED",
+            failed_predicate="EVERY_ALLOWED_LEDGER_ROOT_IS_CONTRACT_DESIGNATED_OR_PAIR_VERIFIED",
+            required_evidence_or_repair="name the repository's contract-designated ledger, or a POSIX root holding no "
+                                        "git-tracked files; nothing was read from the root and nothing was written",
+            retry_entrypoint=RETRY, next_attempt="on the next propagation with a designated or pair-verified root")
+    return resolved
 
 
 def declared_repositories() -> list[str]:
@@ -161,7 +199,7 @@ def _no_prior_repository_receipt(repository: str) -> str:
 def propagate(repository: str, *, repository_root: Path | None = None,
               hb_epoch: int | None = None) -> dict[str, Any]:
     """Record this repository's unpropagated transitions on the organization chain."""
-    root = Path(repository_root) if repository_root else repository_ledger_home() / repository
+    root = require_designated_ledger_root(Path(repository_root) if repository_root else repository_ledger_home() / repository)
     organization_root = organization_ledger.ledger_root()
     if not (root / HEAD_KEY).is_file():
         # The capability holding that ledger did not materialize on this node.

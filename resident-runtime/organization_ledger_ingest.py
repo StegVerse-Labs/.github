@@ -21,6 +21,27 @@ the ref moves only by its fast-forward publish.
    "receipt": {<a test receipt sealed by its producer's CI, byte-for-value as the run printed it>},
    "provenance": {"repository": "<producer>", "run_id": <int>, "head_sha": "<producer commit>", ...}}
 
+  {"schema": "stegverse.organization-ledger-ingest-request/v1",
+   "operation": "sv_push_receipt",
+   "push_receipt": {<one stegverse.sv_push_receipt.v1 object, as resident-runtime/sv_push_receipt.py emit wrote it>},
+   "hb_epoch": <non-negative integer>}
+
+sv_push_receipt is appended by resident-runtime/sv_push_receipt_append.py at the request's supplied epoch (it must
+equal the receipt's own hb_epoch), once per push range (repository, ref, old_sha, new_sha); a second receipt for the same
+range is refused as a duplicate.
+
+  {"schema": "stegverse.organization-ledger-ingest-request/v1",
+   "operation": "sv_change_admit",
+   "predecessor": {<the stegverse.sv_change.v1 record being superseded>},
+   "successor": {<the NATIVE stegverse.sv_change.v1 record that names it in $.supersedes>},
+   "admission": {"predicate_digest", "corpus_head", "actor_session", "change_commits", "push_ranges"},
+   "hb_epoch": <non-negative integer>}
+
+sv_change_admit is evaluated and appended by resident-runtime/sv_change_admit_append.py: the pinned P1
+SV_CHANGE_SUPERSEDE -> SV_CHANGE_VERIFY -> SV_CHANGE_ADMIT outcome is the repository receipt's $.evidence, once per
+change (a second request for the same change is refused as a duplicate), on the ledger of the organization that owns the
+change's target repository.
+
 sv_check_receipt is appended by resident-runtime/sv_check_receipt_append.py at
 the request's supplied epoch (it must equal the receipt's own hb_epoch).
 
@@ -64,13 +85,19 @@ ENTRYPOINT = ".github/workflows/organization-ledger-transition.yml (push to main
 GOAL = "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001"
 SV_CHECK = "sv_check_receipt"
 SEALED = "sealed_test_receipt"
+SV_PUSH = "sv_push_receipt"
+SV_ADMIT = "sv_change_admit"
 SEALED_CLASS = "ORGANIZATION_SEALED_TEST_RECEIPT_INGEST"
 FIELDS = {
     SV_CHECK: ({"schema", "operation", "check_receipt", "hb_epoch"}, {"evaluation_subject", "base_state_readback"}),
     SEALED: ({"schema", "operation", "receipt", "provenance"}, set()),
+    SV_PUSH: ({"schema", "operation", "push_receipt", "hb_epoch"}, set()),
+    SV_ADMIT: ({"schema", "operation", "predecessor", "successor", "admission", "hb_epoch"}, set()),
 }
 FILES = {"check_receipt": "check-receipt.json", "evaluation_subject": "evaluation-subject.json",
-         "base_state_readback": "base-state-readback.json", "receipt": "sealed-receipt.json",
+         "base_state_readback": "base-state-readback.json", "push_receipt": "push-receipt.json",
+         "predecessor": "predecessor.json", "successor": "successor.json", "admission": "admission.json",
+         "receipt": "sealed-receipt.json",
          "provenance": "provenance.json"}
 MATCH_KEYS = ("schema", "receipt_kind", "suite", "repository")
 SEALED_TEST_RECEIPT_SCHEMA = "stegverse.test-suite-skip-receipt/v1"
@@ -116,7 +143,8 @@ def read_request(path: Path | str) -> dict[str, Any]:
                        + (" and optionally " + ", ".join(sorted(optional)) if optional else ""))
     for name in (required | optional) - {"schema", "operation", "hb_epoch"}:
         if name in request and not isinstance(request[name], dict):
-            code = "LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT" if name == "check_receipt" else "INGEST_REQUEST_SCHEMA_MISMATCH"
+            code = {"check_receipt": "LEDGER_EVIDENCE_NOT_A_CHECK_RECEIPT",
+                    "push_receipt": "LEDGER_EVIDENCE_NOT_A_PUSH_RECEIPT"}.get(name, "INGEST_REQUEST_SCHEMA_MISMATCH")
             return refusal(code, name.upper() + "_IS_ONE_JSON_OBJECT", name + " as one JSON object")
     result = {"disposition": "ALLOW", "operation": operation}
     if operation == SV_CHECK:
@@ -127,6 +155,19 @@ def read_request(path: Path | str) -> dict[str, Any]:
         return result | {"check_receipt": request["check_receipt"], "hb_epoch": epoch,
                          "evaluation_subject": request.get("evaluation_subject"),
                          "base_state_readback": request.get("base_state_readback")}
+    if operation == SV_PUSH:
+        epoch = request["hb_epoch"]
+        if isinstance(epoch, bool) or not isinstance(epoch, int) or epoch < 0:
+            return refusal("SV_PUSH_RECEIPT_HB_EPOCH_INVALID", "HB_EPOCH_IS_A_NON_NEGATIVE_INTEGER",
+                           "hb_epoch as a non-negative integer in the request; no clock is read for it")
+        return result | {"push_receipt": request["push_receipt"], "hb_epoch": epoch}
+    if operation == SV_ADMIT:
+        epoch = request["hb_epoch"]
+        if isinstance(epoch, bool) or not isinstance(epoch, int) or epoch < 0:
+            return refusal("SV_CHANGE_ADMIT_HB_EPOCH_INVALID", "HB_EPOCH_IS_A_NON_NEGATIVE_INTEGER",
+                           "hb_epoch as a non-negative integer in the request; no clock is read for it")
+        return result | {"predecessor": request["predecessor"], "successor": request["successor"],
+                         "admission": request["admission"], "hb_epoch": epoch}
     return result | {"receipt": request["receipt"], "provenance": request["provenance"]}
 
 
@@ -336,7 +377,7 @@ def main(argv: list[str] | None = None) -> int:
     read = sub.add_parser("read", help="check the request's shape; materialize its parts")
     read.add_argument("--request", default=REQUEST_PATH)
     read.add_argument("--materialize", help="write the request's parts here as the operation's input files")
-    read.add_argument("--github-env", help="append INGEST_OPERATION (and HB_EPOCH for sv_check_receipt) here")
+    read.add_argument("--github-env", help="append INGEST_OPERATION (and HB_EPOCH for sv_check_receipt, sv_push_receipt and sv_change_admit) here")
     append = sub.add_parser("append-sealed", help="append a sealed_test_receipt request through the governed writer")
     append.add_argument("--request", default=REQUEST_PATH)
     append.add_argument("--ledger-repository", required=True)
@@ -363,12 +404,20 @@ def main(argv: list[str] | None = None) -> int:
         if args.github_env:
             with open(args.github_env, "a", encoding="utf-8") as env:
                 env.write("INGEST_OPERATION=%s\n" % result["operation"])
-                if result["operation"] == SV_CHECK:
+                if result["operation"] in (SV_CHECK, SV_PUSH, SV_ADMIT):
                     env.write("HB_EPOCH=%d\n" % result["hb_epoch"])
         summary = {"disposition": "ALLOW", "request": args.request, "operation": result["operation"]}
         if result["operation"] == SV_CHECK:
             summary |= {"hb_epoch": result["hb_epoch"], "check_id": result["check_receipt"].get("check_id"),
                         "stage_gate_inputs": sorted(n for n in FIELDS[SV_CHECK][1] if result.get(n) is not None)}
+        elif result["operation"] == SV_PUSH:
+            receipt = result["push_receipt"]
+            summary |= {"hb_epoch": result["hb_epoch"], "repository": receipt.get("repository"), "ref": receipt.get("ref"),
+                        "old_sha": receipt.get("old_sha"), "new_sha": receipt.get("new_sha")}
+        elif result["operation"] == SV_ADMIT:
+            summary |= {"hb_epoch": result["hb_epoch"], "change_id": result["successor"].get("change_id"),
+                        "target_repository": result["successor"].get("target_repository"),
+                        "supersedes": result["successor"].get("supersedes")}
         else:
             summary |= {"receipt_sha256": result["receipt"].get("receipt_sha256"),
                         "receipt_kind": result["receipt"].get("receipt_kind"),
