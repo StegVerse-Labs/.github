@@ -1,0 +1,81 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "ALLOCATOR_TASK_ID_NOT_ASSIGNED",
+  "allocator_task_id_note": "assigned only when the ecosystem admission transition commits the catalog entry under tasks/; never chosen here",
+  "organization": "StegVerse-Labs",
+  "goal": "Allocator projection of canonical task PAT-003-PRIOR-ART (PROPOSED_BY_LANE_A; owner Lane A, StegVerse-org/.github#165) so WorkerCoordinator, not a session, decides the PAT-003 paths in StegVerse-Labs/Patents. Draft claim request only.",
+  "status": "queued",
+  "requested_at": "2026-10-23T00:00:00Z",
+  "requested_at_note": "allocator ranking field; the catalog value is set at admission",
+  "priority_class": "normal",
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Patents",
+          "full_name": "StegVerse-Labs/Patents",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "reviews/PAT-003_TECHNICAL_COMPARISON_RESEARCH_LEDGER.md"
+          ],
+          "contracts": [],
+          "release_surfaces": [],
+          "capabilities": [
+            "pat-003-prior-art-search-ledger",
+            "pat-003-pat-family-overlap-map"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "patents:pat-003-prior-art"
+          ]
+        }
+      },
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "patent-registry",
+          "full_name": "StegVerse-Labs/patent-registry",
+          "default_branch": "main"
+        },
+        "mode": "shared_read",
+        "preemptible": true,
+        "scope": {
+          "paths": [],
+          "contracts": [],
+          "release_surfaces": [],
+          "capabilities": [
+            "patent-lane-work-register-pat-003"
+          ],
+          "workflows": [],
+          "dependency_surfaces": []
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "laneA/*",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "canonical_task_record": "data/canonical-task-records/PAT-003-PRIOR-ART.json",
+  "excluded": {
+    "PAT-003-FILING-PACKET": "UNCLAIMED (practitioner hand-off); reviews/PAT-003-human-action-packet.md and tools/filing_packet_emitter.py are not fenced"
+  },
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "runtime_execution_inferred": false
+  }
+}

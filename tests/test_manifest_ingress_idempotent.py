@@ -277,7 +277,9 @@ class IdempotentReceiveTests(IngressLedgerCase):
         # The same request digest (so the same transition id) over another manifest.
         self.request = request(manifest_sha256="f" * 64)
         refused = self.receive(packet_id="org-ingress-collision")
-        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        # A colliding id is a defect of the submission: DENY, returned as stored.
+        self.assertEqual(refused["disposition"], "DENY")
+        self.assertEqual(refused["refusal_stored_disposition"], "DENY")
         self.assertEqual(refused["failed_predicate"], "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST")
         self.assertEqual(len(self.receipts(self.repo_root, ingress.OPERATION_ID)), 1)
         self.assertEqual(len(self.receipts(self.repo_root, ingress.REFUSED_CLASS)), 1)

@@ -10,15 +10,14 @@
  "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
  "items": [
   "H-KV-ADMISSION",
-  "H-KV-HEALTHY-NODE-DETERMINATION",
   "H-KV-TVC-CUSTODY-ISSUANCE"
  ],
  "next_attempt": "on each dependency's admission event",
  "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
  "owning_lane": "Lane D (KV and WorkSpace)",
- "proposed_resolution": "no repair inside KV; each draft is admitted by its own exact-head admission, in order #3255 -> #3313 -> #3311 -> #3324/#3327 -> LLM-adapter#428 -> #429 -> StegOS#427 -> TVC#537 -> TVC#538 -> TVC#541 -> continuity-vault-kit#259 together with #258 (the custody verifier fix is only in #258); nothing waits on a person",
+ "proposed_resolution": "no repair inside KV; each draft is admitted by its own exact-head admission, in order #3255 -> #3313 -> #3311 -> #3324/#3327 -> StegOS#427 -> TVC#537 -> TVC#538 -> TVC#541 -> continuity-vault-kit#259 together with #258 (the custody verifier fix is only in #258); nothing waits on a person",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
- "required_repair": "admit the path's drafts (#3313, #3255, #3311, #3324, #3327, continuity-vault-kit#258 @9551edab, #259 @d052d652 and #263 @f5f971a5, LLM-adapter#428 @0b37fe3b, #429 @5f5f7bbe, StegOS#427 @ac9a1532, TVC#537 @c87272cf, TVC#538 @af4e3c12 and #541 @63705c86) through exact-head SV_CHANGE_ADMIT; (revision 6, continuity-vault-kit#258 @b93b06a4, Labs#3327 @753f1bb5, TVC#541 @c7e4c106, LLM-adapter#432 @a2ee67e6) Labs#3327 @7bdb8a2e names #258 @9551edab in its adjacency ruling and the plan is ALLOW at the head ((revision 9, continuity-vault-kit#258 @9551edab, #263 @f5f971a5, TVC#541 @63705c86))",
+ "required_repair": "admit the path's drafts (#3313, #3255, #3311, #3324, #3327, continuity-vault-kit#258 @9551edab, #259 @d052d652 and #263 @f5f971a5, StegOS#427 @ac9a1532, TVC#537 @c87272cf, TVC#538 @af4e3c12 and #541 @63705c86) through exact-head SV_CHANGE_ADMIT; (revision 6, continuity-vault-kit#258 @b93b06a4, Labs#3327 @753f1bb5, TVC#541 @c7e4c106, LLM-adapter#432 @a2ee67e6) Labs#3327 @7bdb8a2e names #258 @9551edab in its adjacency ruling and the plan is ALLOW at the head ((revision 9, continuity-vault-kit#258 @9551edab, #263 @f5f971a5, TVC#541 @63705c86)) (revision 22: LLM-adapter#428 and #429 are admitted and merged, carried by #430 as 649f0775 on LLM-adapter main, so they leave this list and H-KV-HEALTHY-NODE-DETERMINATION is no longer a LADDER_DEPENDENCY_NOT_ADMITTED gap; its remaining gap is owned by LC-KV-13)",
  "retry_point": "SV_CHANGE_ADMIT (resident-runtime/sv_work_items.py::admit, StegVerse-Labs/.github)",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",

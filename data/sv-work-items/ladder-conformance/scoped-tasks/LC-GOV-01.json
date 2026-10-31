@@ -24,8 +24,8 @@
   "H-GOV-TVC-RELEASE",
   "H-GOV-PAYMENT-INGRESS"
  ],
- "next_attempt": "on the next push to grok/lane-c-sdk-governance-product-finish-point (StegVerse-SDK#556)",
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "next_attempt": "on the next push to grok/lane-c-sdk-governance-product-finish-point (StegVerse-SDK#556, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
  "owning_lane": "GitHub Product lane (Lane C)",
  "proposed_resolution": "extend tests/test_governance_product_finish_point.py into a finish-point verifier with one check per predicate (package identity: compare pyproject/__init__/version.json; pinned tree: git ls-tree at the release ref; dependency: diff of declared deps; receipt chain: verify plus a tamper case; claim/notes/quickstart: required and forbidden statements in the published files); publish through the TVC portable publisher (see LC-GOV-02); keep entitlement out of the gate disposition so payment never blocks a verdict",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",

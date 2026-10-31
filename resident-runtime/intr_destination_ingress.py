@@ -32,6 +32,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Mapping
@@ -68,6 +69,180 @@ def _module(name: str, relative: str):
 repository_ledger = _module("repo_transition_emit", ".stegverse/transition-ledger/emit.py")
 organization_ledger = _module("aggregate_repo_transition",
                               "resident-runtime/aggregate_repo_transition.py")
+
+INTR_PROTOCOL_GOAL = "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+
+
+#: P1 interface (#163): where the ledger writers load from and where their
+#: contracts resolve. Both default to this checkout, which is today's
+#: behaviour. A consumer that carries this operation without carrying the
+#: writers names them with `--ledger-component <path>` (a root holding
+#: `.stegverse/transition-ledger/emit.py` and
+#: `resident-runtime/aggregate_repo_transition.py`) and the root its contracts
+#: live in with `--consumer-root <path>` (a root holding
+#: `.stegverse/transition-ledger/contract.json` and `org-contract.json`). The
+#: ledger *locations* stay STEGVERSE_REPO_LEDGER_ROOT / STEGVERSE_ORG_LEDGER_ROOT.
+#: A path that is given and does not hold those files fails closed.
+LEDGER_COMPONENT_PATH_INVALID = "LEDGER_COMPONENT_PATH_INVALID"
+CONSUMER_ROOT_PATH_INVALID = "CONSUMER_ROOT_PATH_INVALID"
+LEDGER_COMPONENT_FILES = (".stegverse/transition-ledger/emit.py",
+                          "resident-runtime/aggregate_repo_transition.py")
+#: The flat layout of the shared ledger component (as in
+#: org-kernel/organization-ledger/): the same two writers as siblings. Either
+#: layout is accepted for --ledger-component.
+LEDGER_COMPONENT_FLAT_FILES = ("emit.py", "aggregate_repo_transition.py")
+SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+              "retry_entrypoint", "owning_existing_goal", "next_attempt")
+LEDGER_COMPONENT_LAYOUTS = (" and ".join(LEDGER_COMPONENT_FILES)
+                            + ", or as siblings " + " and ".join(LEDGER_COMPONENT_FLAT_FILES),)
+CONSUMER_ROOT_FILES = (".stegverse/transition-ledger/contract.json",
+                       ".stegverse/transition-ledger/org-contract.json")
+
+
+class LedgerPathRefused(SystemExit):
+    """A FAIL_CLOSED refusal of a given ledger path; `.refusal` carries the six fields."""
+
+    def __init__(self, refusal: Mapping[str, Any]):
+        super().__init__(refusal["failure_code"] + ":" + refusal["detail"])
+        self.refusal = dict(refusal)
+
+
+def _ledger_path_refusal(code: str, predicate: str, option: str, path: Any,
+                         required: tuple[str, ...], entrypoint: str, goal: str) -> LedgerPathRefused:
+    return LedgerPathRefused({
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": predicate,
+        "detail": option + " " + str(path) + " does not hold " + ", ".join(required),
+        "required_evidence_or_repair": (
+            "give " + option + " a directory holding " + ", ".join(required)
+            + ", or omit it to use this checkout"),
+        "retry_entrypoint": entrypoint,
+        "owning_existing_goal": goal,
+        "next_attempt": "run again with a valid " + option + "; nothing was loaded or appended",
+    })
+
+
+def ledger_writer_refusal(exc: SystemExit, entrypoint: str,
+                          goal: str) -> tuple[dict[str, Any], bool] | None:
+    """A ledger writer's refusal and whether it carried its own record, or None.
+
+    The ledger component's LedgerRefusal (ledger_common.py, flat next to
+    emit.py) subclasses SystemExit and carries its refusal as `.refusal`, a
+    dict: that is returned as given, (refusal, True), and printed unchanged.
+    An old-layout writer raises a plain SystemExit(message): only when it
+    came out of a ledger writer call itself (`_ledger_write`, which marks it
+    LedgerWriterExit) is the message given the six fields here, FAIL_CLOSED,
+    (fields, False). Any other SystemExit -- an int or None code, or a message
+    from anything but a writer call (e.g. repository-receipt-failed) -- is not
+    a ledger refusal (None) and is re-raised by the caller.
+    """
+    refusal = getattr(exc, "refusal", None)
+    if isinstance(refusal, dict):
+        return refusal, True
+    if not isinstance(exc, LedgerWriterExit) or not isinstance(exc.code, str):
+        return None
+    message = exc.code
+    head = message.split(":", 1)[0].strip()
+    code = head if re.fullmatch(r"[A-Z][A-Z0-9_]*", head) else "LEDGER_WRITER_REFUSED"
+    return {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": "LEDGER_WRITER_ADMITS_THE_APPEND",
+        "detail": message,
+        "required_evidence_or_repair": "repair what the ledger writer refused (" + message + ") and run again",
+        "retry_entrypoint": entrypoint,
+        "owning_existing_goal": goal,
+        "next_attempt": "run again once the ledger writer's refusal is repaired; nothing was written",
+    }, False
+
+
+class LedgerWriterExit(SystemExit):
+    """A plain SystemExit(message) that a ledger writer call itself raised (old layout)."""
+
+
+def _ledger_write(call: Any, *args: Any, **kwargs: Any) -> Any:
+    """Run one ledger writer call; a plain SystemExit(message) from it is marked as the writer's.
+
+    Only a plain SystemExit is marked. A LedgerRefusal (it carries
+    `.refusal`), the writer's other SystemExit subclasses (e.g.
+    OrgLedgerAppendRefused) and an exit with no message pass through unchanged.
+    """
+    try:
+        return call(*args, **kwargs)
+    except SystemExit as exc:
+        if type(exc) is not SystemExit or not isinstance(exc.code, str):
+            raise
+        raise LedgerWriterExit(exc.code) from exc
+
+
+def cli_hb_epoch(text: str | None, entrypoint: str,
+                 goal: str) -> tuple[int | None, dict[str, Any] | None]:
+    """--hb-epoch as typed, checked by the shared rule: (epoch, None) or (None, refusal).
+
+    The rule is the kernel's own `supplied_epoch_failure`, applied by the
+    repository writer's `cli_epoch` (one rule, not a copy). argparse hands over
+    the raw text (type=str), so '+33', ' 33' and '3_3' are HB_EPOCH_INVALID and
+    '0033' is 33. An absent --hb-epoch is HB_EPOCH_NOT_SUPPLIED, six-field; no
+    clock is read and nothing is appended. `goal` is the kernel's own
+    (INTR_PROTOCOL_GOAL) and is kept for the call shape.
+    """
+    hb_epoch, refused = repository_ledger.cli_epoch(text, entrypoint)
+    if refused is not None:
+        refused = {**refused, "owning_existing_goal": refused.get("owning_existing_goal") or goal}
+    return hb_epoch, refused
+
+
+def bind_ledger_writers(ledger_component: Path | str | None = None,
+                        consumer_root: Path | str | None = None) -> dict[str, Any]:
+    """Load the ledger writers from `ledger_component`, their contracts from `consumer_root`.
+
+    Either left None keeps this checkout. Both are checked before anything is
+    loaded, so a refused path leaves the writers already bound in place.
+    """
+    global repository_ledger, organization_ledger
+    entrypoint = "resident-runtime/intr_destination_ingress.py (--ledger-component, --consumer-root)"
+    component = Path(ledger_component).expanduser().resolve() if ledger_component is not None else None
+    consumer = Path(consumer_root).expanduser().resolve() if consumer_root is not None else None
+    layout = (None if component is None
+              else LEDGER_COMPONENT_FILES if all((component / name).is_file() for name in LEDGER_COMPONENT_FILES)
+              else LEDGER_COMPONENT_FLAT_FILES
+              if all((component / name).is_file() for name in LEDGER_COMPONENT_FLAT_FILES)
+              else ())
+    if component is not None and not layout:
+        raise _ledger_path_refusal(LEDGER_COMPONENT_PATH_INVALID, "LEDGER_COMPONENT_PATH_HOLDS_THE_LEDGER_WRITERS",
+                                   "--ledger-component", ledger_component, LEDGER_COMPONENT_LAYOUTS,
+                                   entrypoint, INTR_PROTOCOL_GOAL)
+    if consumer is not None and not all((consumer / name).is_file() for name in CONSUMER_ROOT_FILES):
+        raise _ledger_path_refusal(CONSUMER_ROOT_PATH_INVALID, "CONSUMER_ROOT_PATH_HOLDS_THE_LEDGER_CONTRACTS",
+                                   "--consumer-root", consumer_root, CONSUMER_ROOT_FILES,
+                                   entrypoint, INTR_PROTOCOL_GOAL)
+    try:
+        contracts = ({name: json.loads((consumer / name).read_text(encoding="utf-8"))
+                      for name in CONSUMER_ROOT_FILES} if consumer is not None else None)
+    except ValueError as exc:
+        raise _ledger_path_refusal(CONSUMER_ROOT_PATH_INVALID, "CONSUMER_ROOT_PATH_HOLDS_THE_LEDGER_CONTRACTS",
+                                   "--consumer-root", str(consumer_root) + " (" + str(exc) + ")",
+                                   CONSUMER_ROOT_FILES, entrypoint, INTR_PROTOCOL_GOAL) from None
+    base = component if component is not None else ROOT
+    files = layout or LEDGER_COMPONENT_FILES
+    repository = _module_at("repo_transition_emit_bound", base / files[0])
+    organization = _module_at("aggregate_repo_transition_bound", base / files[1])
+    if contracts is not None:
+        repository.ROOT, repository.C = consumer, contracts[CONSUMER_ROOT_FILES[0]]
+        organization.ROOT, organization.C = consumer, contracts[CONSUMER_ROOT_FILES[1]]
+    repository_ledger, organization_ledger = repository, organization
+    return {"ledger_component": str(base), "consumer_root": str(consumer if consumer is not None else ROOT),
+            "ledger_component_is_this_checkout": component is None,
+            "ledger_component_layout": "FLAT" if files == LEDGER_COMPONENT_FLAT_FILES else "NESTED",
+            "consumer_root_is_this_checkout": consumer is None}
+
+
+def _module_at(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def canon(value: Any) -> bytes:
@@ -234,12 +409,12 @@ def _append_halves(transition_class: str, packet_id: str, evidence: Mapping[str,
     transition_id = transition_class + ":" + packet_id
     store = repository_ledger.repository_store()
     head = store.get(repository_ledger.ledger_store.HEAD_KEY)
-    prior = repository_ledger.recorded(store, head, transition_id, transition_class)
-    repository_receipt = repository_ledger.append(
+    prior = _ledger_write(repository_ledger.recorded, store, head, transition_id, transition_class)
+    repository_receipt = _ledger_write(repository_ledger.append,
         transition_id, transition_class, predecessor, successor, dict(evidence),
         "NONE", hb_epoch=hb_epoch,
         idempotent_on=("communication_id", "payload_sha256", "disposition"))
-    organization_receipt = organization_ledger.aggregate_transition(
+    organization_receipt = _ledger_write(organization_ledger.aggregate_transition,
         receipt=repository_receipt,
         org_transition_class="REPO_STATE_PROPAGATION",
         predecessor_org_state_sha256=predecessor,
@@ -360,13 +535,34 @@ def main() -> int:
     parser.add_argument("--communication-id",
                         help="communication_id the self-closure correlates on")
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--ledger-component", type=Path, default=None,
+                        help="root the ledger writers load from (.stegverse/transition-ledger/emit.py, "
+                             "resident-runtime/aggregate_repo_transition.py); default: this checkout")
+    parser.add_argument("--consumer-root", type=Path, default=None,
+                        help="root the ledger contracts resolve from (.stegverse/transition-ledger/"
+                             "contract.json, org-contract.json); default: this checkout")
     args = parser.parse_args()
-    args.hb_epoch, refused = repository_ledger.cli_epoch(
+    # The kernel's supplied-epoch rule sees --hb-epoch as typed: an absent one
+    # is HB_EPOCH_NOT_SUPPLIED, a coerced one HB_EPOCH_INVALID, each six-field.
+    # Nothing is received, appended or written (no --out); the exit is 1.
+    hb_epoch, epoch_refused = repository_ledger.cli_epoch(
         args.hb_epoch, "resident-runtime/intr_destination_ingress.py")
-    if refused is not None:
-        print(json.dumps(refused, sort_keys=True))
+    if epoch_refused is not None:
+        print(json.dumps(epoch_refused, sort_keys=True))
         return 1
+    if args.ledger_component is not None or args.consumer_root is not None:
+        try:
+            bind_ledger_writers(args.ledger_component, args.consumer_root)
+        except LedgerPathRefused as refused:
+            result = {**refused.refusal, "appended": False, "authority_effect": "NONE_REFUSAL_ONLY"}
+            if args.out:
+                args.out.parent.mkdir(parents=True, exist_ok=True)
+                args.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            print(json.dumps(result, sort_keys=True))
+            return 1
     registry = repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
+    # Usage errors exit before the ledger is touched, so the SystemExit caught
+    # below is only ever the ledger writer's.
     if args.self_close:
         if args.communication_id:
             payload = diagnostic_payload(args.communication_id)
@@ -374,14 +570,29 @@ def main() -> int:
             payload = repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
         else:
             raise SystemExit("self-close requires --communication-id or --payload")
-        result = self_close(payload, registry=registry, packet_id=args.packet_id,
-                            hb_epoch=args.hb_epoch)
+    elif args.payload is None:
+        raise SystemExit("--payload is required unless --self-close is set")
     else:
-        if args.payload is None:
-            raise SystemExit("--payload is required unless --self-close is set")
-        result = receive(
-            repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py"),
-            registry=registry, packet_id=args.packet_id, hb_epoch=args.hb_epoch)
+        payload = repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
+    try:
+        if args.self_close:
+            result = self_close(payload, registry=registry, packet_id=args.packet_id,
+                                hb_epoch=hb_epoch)
+        else:
+            result = receive(payload, registry=registry, packet_id=args.packet_id, hb_epoch=hb_epoch)
+    except SystemExit as exc:
+        refused = ledger_writer_refusal(
+            exc, "resident-runtime/intr_destination_ingress.py (--self-close, --hb-epoch)", INTR_PROTOCOL_GOAL)
+        if refused is None:
+            raise
+        refusal, carried = refused
+        # The ledger writer refused (e.g. HB_EPOCH_NOT_SUPPLIED). A carried
+        # refusal is printed exactly as given; an old-layout message gets the
+        # six fields. Nothing is written (no --out), and the exit is 1.
+        print(json.dumps(refusal) if carried else json.dumps(
+            {**refusal, "appended": False, "refusal_source": "LEDGER_WRITER",
+             "authority_effect": "NONE_REFUSAL_ONLY"}, sort_keys=True))
+        return 1
     rendered = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

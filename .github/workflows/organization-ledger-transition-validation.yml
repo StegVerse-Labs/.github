@@ -13,8 +13,13 @@ on:
       - '.stegverse/organization-ledger-ingest/**'
       - 'resident-runtime/organization_ledger_ingest.py'
       - 'resident-runtime/sv_check_receipt_append.py'
+      - 'resident-runtime/sv_push_receipt.py'
+      - 'resident-runtime/sv_push_receipt_append.py'
+      - 'resident-runtime/sv_change_admit_append.py'
       - 'tests/test_organization_ledger_ingest.py'
       - 'tests/test_sv_check_receipt_append.py'
+      - 'tests/test_sv_push_receipt_append.py'
+      - 'tests/test_sv_change_admit_append.py'
       - 'tests/vendor/p1_c9192134/**'
       - 'org-runtime/interlock-intr.json'
       - '.stegverse/transition-ledger/contract.json'
@@ -53,6 +58,9 @@ jobs:
             resident-runtime/ledger_store.py \
             resident-runtime/organization_ledger_ingest.py \
             resident-runtime/sv_check_receipt_append.py \
+            resident-runtime/sv_push_receipt.py \
+            resident-runtime/sv_push_receipt_append.py \
+            resident-runtime/sv_change_admit_append.py \
             scripts/check_dispatch_hb_epoch.py \
             .stegverse/transition-ledger/emit.py
           python -m pip install pytest
@@ -61,6 +69,8 @@ jobs:
             tests/test_intr_destination_capability.py \
             tests/test_organization_ledger_ingest.py \
             tests/test_sv_check_receipt_append.py \
+            tests/test_sv_push_receipt_append.py \
+            tests/test_sv_change_admit_append.py \
             tests/test_dispatch_hb_epoch_gate.py
 
       - name: The committed ingest request, if any, is what the push-to-main writer reads

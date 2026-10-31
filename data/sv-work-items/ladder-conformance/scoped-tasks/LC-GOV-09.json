@@ -11,13 +11,13 @@
  "items": [
   "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER"
  ],
- "next_attempt": "on the next push to the governance request branch (StegVerse-Labs/.github#3326)",
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "next_attempt": "on the next push to the governance request branch (StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
  "owning_lane": "GitHub Product lane (Lane C)",
  "proposed_resolution": "re-seal the governance request with ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER as a predicate (new scope digest) and give it a deterministic E0 verifier (LC-GOV-10)",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
  "required_repair": "new (revision 10, continuity-vault-kit#263 @543e8c32, TVC#541 @f75e3e7c, TVC#540 @b0ba93e3, TVC#542 @4c2504da): Rigel's rule (revision 10): no endpoint, whether externally maintained or ecosystem maintained, can be a member of a GitHub Organization, because membership defeats the Inter-Org InTr data transfer protocol and its boundaries; GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001's 13 sealed expected_evidence_predicates do not name it, so the finish point never evaluates it",
- "retry_point": "python scripts/canonical_task_registration_transition.py plan (StegVerse-Labs/.github#3326), then python scripts/ladder_conformance.py observe/check",
+ "retry_point": "python scripts/canonical_task_registration_transition.py plan (StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2)), then python scripts/ladder_conformance.py observe/check",
  "schema": "stegverse.ladder-conformance-scoped-task/v1",
  "status": "SCOPED_TASK_RECORD_ONLY",
  "task_id": "LC-GOV-09"
