@@ -1,10 +1,10 @@
 {
   "schema": "stegverse.registry-record-data-proposal/v1",
-  "registry_generation_base": 323,
+  "registry_generation_base": 327,
   "authority_effect": "NONE",
   "operating_mode": "E1 (Claude-lane preparation; the transition itself is deterministic and runs at E0)",
   "admission": "Prepared by Claude for the Registry owner. Claude does not admit, apply or bump the generation. Only the Registry owner's run of scripts/apply_task_record_data.py <this file> --apply --tip-ref origin/main changes Registry data (one apply = tip -> tip + 1).",
-  "note": "StegVerse-Labs/.github#3195 (owner comment 6482313930): canonical Registry gen 322 has exactly 13 task rows whose dependencies/blockers lists hold bare strings where schemas/canonical-task-record.schema.json requires objects. scripts/query_canonical_tasks.py calls .get() on each entry; #3378 tolerates strings at query time, and this request is the authorized data transition that converts them at the source. scripts/canonical_task_registration_transition.py cannot carry this repair: it registers identities only and refuses any task that already has an aggregate row (TASK_IDENTITY_NOT_UNIQUE); its docstring names the record-data successor (apply_task_record_data) as the repair path for nonconformant existing rows. Every normalization edit is an exact [field, index] before -> after on one string entry; object entries (including the legacy six-field blocker objects) are not touched. The edit applies to the aggregate row and to the same path in the standalone record, and every shard below equals its row at gen 323 for the edited paths (gen 323 = gen 322 plus the reconciliation request named in apply_after, which this request must follow). Mapping (mechanical, no inferred meaning): dependency string s -> {dependency_id: s (a .json task path keeps its full path in ref and uses the file stem as id), kind: TASK (every string is a task identity), state: UNKNOWN (the string recorded no state), ref: s}; blocker string s -> {blocker_id: s, dependency_id: s, reason: s} (the string names its own unmet condition; no dependency link was recorded, so none is invented). The owner may restate any after value before applying.",
+  "note": "StegVerse-Labs/.github#3195 (owner comment 6482313930): canonical Registry gen 326 has exactly 14 task rows whose dependencies/blockers lists hold bare strings where schemas/canonical-task-record.schema.json requires objects. scripts/query_canonical_tasks.py calls .get() on each entry; #3378 tolerates strings at query time, and this request is the authorized data transition that converts them at the source. scripts/canonical_task_registration_transition.py cannot carry this repair: it registers identities only and refuses any task that already has an aggregate row (TASK_IDENTITY_NOT_UNIQUE); its docstring names the record-data successor (apply_task_record_data) as the repair path for nonconformant existing rows. Every normalization edit is an exact [field, index] before -> after on one string entry; object entries (including the legacy six-field blocker objects) are not touched. The edit applies to the aggregate row and to the same path in the standalone record, and every shard below equals its row at gen 327 for the edited paths (gen 327 = gen 326 plus the reconciliation request named in apply_after, which this request must follow). Mapping (mechanical, no inferred meaning): dependency string s -> {dependency_id: s (a .json task path keeps its full path in ref and uses the file stem as id), kind: TASK (every string is a task identity), state: UNKNOWN (the string recorded no state), ref: s}; blocker string s -> {blocker_id: s, dependency_id: s, reason: s} (the string names its own unmet condition; no dependency link was recorded, so none is invented). The owner may restate any after value before applying.",
   "row_fields": [
     {
       "task_id": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
@@ -71,7 +71,7 @@
         "dependency_id": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED",
         "reason": "AUTHENTIC_POST_REGISTRATION_EXACT_GENERATION_AI_SESSION_GATE_DISPOSITION_NOT_OBTAINED"
       },
-      "rationale": "Same string -> object normalization as every other row. Valid only after gen322-worker-task-resource-cost-linkage-row-record-reconciliation.v1.json has made the row's blockers equal the record's two strings (#3195 c6484539587, Option A)."
+      "rationale": "Same string -> object normalization as every other row. Valid only after gen326-worker-task-resource-cost-linkage-row-record-reconciliation.v1.json has made the row's blockers equal the record's two strings (#3195 c6484539587, Option A)."
     },
     {
       "task_id": "WORKER-TASK-RESOURCE-COST-LINKAGE-001",
@@ -85,7 +85,7 @@
         "dependency_id": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION",
         "reason": "EXISTING_SDK_OWNER_ADMISSION_REQUIRED_BEFORE_RUNTIME_ROUTE_MUTATION"
       },
-      "rationale": "Same string -> object normalization as every other row. Valid only after gen322-worker-task-resource-cost-linkage-row-record-reconciliation.v1.json has made the row's blockers equal the record's two strings (#3195 c6484539587, Option A)."
+      "rationale": "Same string -> object normalization as every other row. Valid only after gen326-worker-task-resource-cost-linkage-row-record-reconciliation.v1.json has made the row's blockers equal the record's two strings (#3195 c6484539587, Option A)."
     },
     {
       "task_id": "OPTICAL-PHYSICAL-STATE-REPLAY-RESEARCH-001",
@@ -418,6 +418,20 @@
         "dependency_id": "FRESH_PRODUCTION_SIGNED_RECIPIENT_ADMISSION_NOT_YET_OBSERVED",
         "reason": "FRESH_PRODUCTION_SIGNED_RECIPIENT_ADMISSION_NOT_YET_OBSERVED"
       }
+    },
+    {
+      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "path": [
+        "dependencies",
+        0
+      ],
+      "before": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+      "after": {
+        "dependency_id": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001",
+        "kind": "TASK",
+        "state": "UNKNOWN",
+        "ref": "MASTER-RECORDS-REPORTABLE-CHECKPOINT-001"
+      }
     }
   ],
   "rows": [
@@ -433,7 +447,8 @@
     "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
     "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
     "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
-    "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
+    "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+    "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
   ],
-  "apply_after": "data/registry-record-data/gen322-worker-task-resource-cost-linkage-row-record-reconciliation.v1.json"
+  "apply_after": "data/registry-record-data/gen326-worker-task-resource-cost-linkage-row-record-reconciliation.v1.json"
 }
