@@ -105,8 +105,8 @@
       "sha256": "sha256:24eb74c60d35ce2bfede77a4539e556e8ac3ef3f612252ae8845e1676700bf11"
     },
     "resident-runtime/organization_batch_custody.py": {
-      "blob": "b1cfb088c65856e0d51cb492f544d2ba789a51ac",
-      "sha256": "sha256:58f0841f1dbbd2a8989d78178b32d56a56025cecc1e6987473dc18e2e6f1679a"
+      "blob": "ef4db38400434fe305edcfda870a7ae3ef0f4cab",
+      "sha256": "sha256:500d32e90dc609ad091b2863227c400d5453c8bb1f66ea555151c81283b9ff72"
     },
     "resident-runtime/schema_subset.py": {
       "blob": "b29dfb33b0ccfe29b6a96862694f9fc4b9787a20",

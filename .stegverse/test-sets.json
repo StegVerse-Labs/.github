@@ -409,6 +409,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_batch_custody_sealed_source_parity.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_batch_custody_sealed_source_parity.py"
+   ],
+   "tests": [
+    "tests/test_batch_custody_sealed_source_parity.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_block_boundaries.py",
    "inputs": [],
    "surfaces": [
@@ -13070,6 +13082,13 @@
    "heartbeat_runtime/independent_oscillator.py",
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/organization_batch_custody.py",
+   "tests/pytest.py"
+  ],
+  "tests/test_batch_custody_sealed_source_parity.py": [
+   "resident-runtime/aggregate_repo_transition.py",
+   "resident-runtime/organization_batch_custody.py",
+   "resident-runtime/organization_custody_readback.py",
+   "resident-runtime/organization_ledger_ingest.py",
    "tests/pytest.py"
   ],
   "tests/test_block_boundaries.py": [

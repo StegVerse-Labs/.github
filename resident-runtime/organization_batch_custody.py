@@ -51,6 +51,17 @@ SUBMISSION_RETRY_ENTRYPOINT = "resident-runtime/organization_batch_custody.py::s
 RELEASED_BATCH_KEY = "parent_manifest_released_batch"
 # One constant: the append owner excludes this key from exact-retry context comparison.
 RELEASED_BATCH_SUBMISSION_KEY = org.RETAINED_SUBMISSION_KEY
+# Sealed-receipt parity with resident-runtime/organization_ledger_ingest.py (#3012,
+# ORGANIZATION-BATCH-CUSTODY-REPLAY-001). That route appends a sealed test receipt
+# as a source of its own: source_receipt_schema is this schema, which is not in
+# org.C["consumes"], and its binding is the producer's seal (sealed_source below,
+# identical to organization_ledger_ingest.sealed_source). It is restated here, not
+# imported, so this pinned module's import closure is unchanged.
+SEALED_TEST_RECEIPT_SCHEMA = "stegverse.test-suite-skip-receipt/v1"
+SEALED_TRANSITION_CLASS = "ORGANIZATION_SEALED_TEST_RECEIPT_INGEST"  # organization_ledger_ingest.SEALED_CLASS
+SEALED_OPERATION = "sealed_test_receipt"  # organization_ledger_ingest.SEALED
+SEALED_SOURCE_RETRY_ENTRYPOINT = "resident-runtime/organization_batch_custody.py::verify_any_source"
+SEALED_SOURCE_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
 
 
 def _batch_key(digest: str) -> str:
@@ -132,6 +143,88 @@ def _read(path: Path) -> dict:
     return row
 
 
+class SealedSourceRefused(ValueError):
+    """A sealed source receipt did not verify. Six fields; FAIL_CLOSED; nothing is committed."""
+
+    def __init__(self, failure_code: str, failed_predicate: str, required_evidence_or_repair: str):
+        super().__init__(failure_code + ": " + failed_predicate)
+        self.failure_code = failure_code
+        self.failed_predicate = failed_predicate
+        self.required_evidence_or_repair = required_evidence_or_repair
+
+    def refusal(self) -> dict:
+        return {
+            "disposition": "FAIL_CLOSED",
+            "failure_code": self.failure_code,
+            "failed_predicate": self.failed_predicate,
+            "required_evidence_or_repair": self.required_evidence_or_repair,
+            "retry_entrypoint": SEALED_SOURCE_RETRY_ENTRYPOINT,
+            "owning_existing_goal": SEALED_SOURCE_GOAL,
+            "next_attempt": "retain the producer's exact sealed receipt bytes under source-receipts/; nothing was committed",
+            "consequence_committed": False,
+            "authority_effect": "NONE_REFUSAL_ONLY",
+        }
+
+
+def _seal_verifies(receipt) -> bool:
+    return (isinstance(receipt, dict) and isinstance(receipt.get("receipt_sha256"), str)
+            and receipt["receipt_sha256"] == "sha256:" + hashlib.sha256(json.dumps(
+                {k: v for k, v in receipt.items() if k != "receipt_sha256"},
+                sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest())
+
+
+def sealed_source(receipt) -> dict:
+    """The organization source binding of a sealed test receipt, else SealedSourceRefused."""
+    if not isinstance(receipt, Mapping) or receipt.get("schema") != SEALED_TEST_RECEIPT_SCHEMA:
+        raise SealedSourceRefused("SEALED_SOURCE_SCHEMA_MISMATCH", "SOURCE_IS_A_SEALED_TEST_RECEIPT",
+                                  "a receipt with schema " + SEALED_TEST_RECEIPT_SCHEMA)
+    if not _seal_verifies(dict(receipt)):
+        raise SealedSourceRefused("SEALED_SOURCE_SEAL_MISMATCH", "RECEIPT_SHA256_IS_THE_SHA256_OF_THE_CANONICAL_BODY",
+                                  "the receipt exactly as its producer sealed it; receipt_sha256 over its canonical body")
+    identity = [receipt.get(k) for k in ("receipt_kind", "repository", "head_sha")]
+    if not all(isinstance(v, str) and v for v in identity):
+        raise SealedSourceRefused("SEALED_SOURCE_IDENTITY_INVALID", "SEALED_RECEIPT_NAMES_KIND_REPOSITORY_AND_HEAD",
+                                  "non-empty receipt_kind, repository and head_sha")
+    return {"source_receipt_schema": SEALED_TEST_RECEIPT_SCHEMA,
+            "source_transition_sha256": receipt["receipt_sha256"],
+            "source_transition_id": "@".join(identity),
+            "source_repository": None, "repo_receipt_sha256": None, "repo_transition_id": None,
+            "canonical_state_transition_receipt_sha256": None, "subject_or_correlation_id": None}
+
+
+def verify_any_source(receipt) -> dict:
+    """org.verify_source for the schemas the contract consumes; sealed_source for a sealed test receipt."""
+    if isinstance(receipt, Mapping) and receipt.get("schema") == SEALED_TEST_RECEIPT_SCHEMA:
+        return sealed_source(receipt)
+    return org.verify_source(receipt)
+
+
+def _verify_sealed_row(row: Mapping) -> None:
+    """A sealed-source row is the ingest route's binding exactly, else SealedSourceRefused.
+
+    Only the sealed ingest route appends a sealed source, and it is no repository or
+    canonical transition: those digests and ids are None.
+    """
+    evidence = row.get("boundary_evidence")
+    if (row.get("org_transition_class") != SEALED_TRANSITION_CLASS or not isinstance(evidence, Mapping)
+            or evidence.get("operation") != SEALED_OPERATION):
+        raise SealedSourceRefused("SEALED_SOURCE_CLASS_MISMATCH", "SEALED_ROW_IS_THE_SEALED_INGEST_TRANSITION_CLASS",
+                                  "org_transition_class " + SEALED_TRANSITION_CLASS + " with boundary operation "
+                                  + SEALED_OPERATION)
+    if any(row.get(k) is not None for k in ("source_repository", "repo_receipt_sha256", "repo_transition_id",
+                                            "canonical_state_transition_receipt_sha256", "subject_or_correlation_id")):
+        raise SealedSourceRefused("SEALED_SOURCE_BINDING_MISMATCH", "SEALED_ROW_NAMES_NO_REPOSITORY_OR_CANONICAL_SOURCE",
+                                  "source_repository, repository and canonical digests and ids all None")
+    source = row.get("source_transition_sha256")
+    if not isinstance(source, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", source) is None:
+        raise SealedSourceRefused("SEALED_SOURCE_BINDING_MISMATCH", "SEALED_ROW_SOURCE_DIGEST_IS_A_SHA256",
+                                  "source_transition_sha256 as sha256:<64 hex>, the sealed receipt's receipt_sha256")
+    transition_id = row.get("source_transition_id")
+    if not isinstance(transition_id, str) or len(transition_id.split("@")) != 3 or not all(transition_id.split("@")):
+        raise SealedSourceRefused("SEALED_SOURCE_BINDING_MISMATCH", "SEALED_ROW_TRANSITION_ID_IS_KIND_REPOSITORY_HEAD",
+                                  "source_transition_id as receipt_kind@repository@head_sha")
+
+
 def _verified_receipt(root, digest: str) -> dict:
     """Verify one receipt read through the ledger store `root` names."""
     if not isinstance(digest, str) or re.fullmatch(r"sha256:[0-9a-f]{64}", digest) is None:
@@ -147,6 +240,9 @@ def _verified_receipt(root, digest: str) -> dict:
         raise ValueError("organization receipt schema mismatch")
     if row.get("organization") != org.C["organization"]:
         raise ValueError("organization receipt owner mismatch")
+    if row.get("source_receipt_schema") == SEALED_TEST_RECEIPT_SCHEMA:
+        _verify_sealed_row(row)
+        return row
     if row.get("source_receipt_schema") not in org.C["consumes"]:
         raise ValueError("organization source schema mismatch")
     if row.get("source_receipt_schema") == "stegverse.canonical-state-transition-receipt/v1":
@@ -273,7 +369,7 @@ def verified_organization_receipt(root, digest, *, state_receipt_sha256,
         expected = _state_digest(expected_predecessor, "EXPECTED_PREDECESSOR")
         retained = _read_retained(ledger, source)
         try:
-            retained_digest = org.verify_source(retained)["source_transition_sha256"]
+            retained_digest = verify_any_source(retained)["source_transition_sha256"]
         except (KeyError, ValueError) as exc:
             raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=str(exc)) from exc
         if retained_digest != source:
@@ -330,7 +426,7 @@ def verified_organization_source_receipt(root, digest, *, state_receipt_sha256,
     source = row["source_transition_sha256"]
     retained = _read_retained(_readback_store(root), source)
     try:
-        verified = org.verify_source(retained)
+        verified = verify_any_source(retained)
     except (KeyError, ValueError) as exc:
         raise OrganizationReceiptRefused("ORGANIZATION_SOURCE_RECEIPT_INVALID", deterministic=True, detail=str(exc)) from exc
     if verified["source_transition_sha256"] != source or verified["source_transition_id"] != row.get("source_transition_id"):
@@ -570,9 +666,12 @@ def _verify_batch(root, batch_id: str, *, source_receipts: dict[str, dict] | Non
     if source_receipts is not None:
         for row in rows:
             source = source_receipts.get(row["source_transition_sha256"])
-            if not isinstance(source, dict) or org.verify_source(source)["source_transition_sha256"] != row["source_transition_sha256"]:
+            if not isinstance(source, dict):
                 raise ValueError("source transition receipt missing or invalid")
-            if source.get("transition_id") != row.get("source_transition_id"):
+            verified = verify_any_source(source)
+            if verified["source_transition_sha256"] != row["source_transition_sha256"]:
+                raise ValueError("source transition receipt missing or invalid")
+            if verified["source_transition_id"] != row.get("source_transition_id"):
                 raise ValueError("source transition identity mismatch")
         source_state = "SOURCE_DIGESTS_AND_REQUIRED_EVIDENCE_BYTES_PASS"
     return {
@@ -611,7 +710,7 @@ def _export_batch(root, batch_id: str) -> dict:
         source=_get(root,org.ledger_store.source_key(source_hash))
         if source is None:
             raise ValueError("exact organization source receipt unavailable: "+source_hash)
-        verified=org.verify_source(source)
+        verified=verify_any_source(source)
         if verified["source_transition_sha256"]!=source_hash or verified["source_transition_id"]!=row["source_transition_id"]:
             raise ValueError("exact organization source receipt binding invalid")
         source_map[source_hash]=source

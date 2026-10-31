@@ -25,7 +25,7 @@ def _source_for(store, row: dict[str, Any]) -> dict[str, Any]:
     source = batch._get(store, org.ledger_store.source_key(digest))
     if source is None:
         raise ValueError("SOURCE_RECEIPT_MISSING:" + digest)
-    checked = org.verify_source(source)  # also verifies inline required evidence
+    checked = batch.verify_any_source(source)  # also verifies inline required evidence, or the seal
     if (
         checked["source_transition_sha256"] != digest
         or checked["source_transition_id"] != row["source_transition_id"]
@@ -257,7 +257,7 @@ def reconcile_master_records(
     from urllib.parse import quote
     sources = {}
     for source in snapshot.get("exact_source_receipts", []):
-        verified = org.verify_source(source)
+        verified = batch.verify_any_source(source)
         sources[verified["source_transition_sha256"]] = source
     canonical = []
     for item in snapshot.get("matching_transitions", []):
@@ -265,8 +265,11 @@ def reconcile_master_records(
         if not isinstance(source, dict):
             raise ValueError("MATCHED_EXACT_SOURCE_NOT_AVAILABLE")
         if source.get("schema") != "stegverse.canonical-state-transition-receipt/v1":
+            # Canonical-only: Master Records is queried for canonical state transitions alone.
             canonical.append({"organization_receipt_sha256": item["organization_receipt_sha256"],
-                              "state": "REPOSITORY_SOURCE_NOT_DIRECT_CANONICAL_CUSTODY"})
+                              "state": "SEALED_SOURCE_NOT_DIRECT_CANONICAL_CUSTODY"
+                              if source.get("schema") == batch.SEALED_TEST_RECEIPT_SCHEMA
+                              else "REPOSITORY_SOURCE_NOT_DIRECT_CANONICAL_CUSTODY"})
             continue
         query = get_json("/api/master-records/state-transitions/query", {
             "subject_or_correlation_id": source["subject_or_correlation_id"],
