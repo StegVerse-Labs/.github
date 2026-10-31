@@ -112,7 +112,7 @@ class EgressSuppliedEpochTests(TemporaryLedgers):
         """
         for value in (31, True, "+33", " 33", "3_3", -1):
             with self.subTest(value=value):
-                with self.assertRaises(kernel.SuppliedEpochRefused) as raised:
+                with self.assertRaises(egress.kernel.SuppliedEpochRefused) as raised:
                     self.emit(hb_epoch=value)
                 self.assert_six_fields(raised.exception.refusal, "HB_EPOCH_INVALID")
                 self.assertEqual(raised.exception.refusal["failed_predicate"],

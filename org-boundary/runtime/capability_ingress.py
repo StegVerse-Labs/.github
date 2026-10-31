@@ -129,8 +129,16 @@ def _kernel():
     return kernel
 
 
-#: The rule itself, by name, so a reader of this module sees the kernel's text.
-supplied_epoch_failure = _kernel().supplied_epoch_failure
+def __getattr__(name: str) -> Any:
+    """`supplied_epoch_failure` is the kernel's own function, resolved when it is asked for.
+
+    Loaded then rather than at import, as `epoch_refusal` loads it, so a
+    boundary module copied without its kernel still imports; a reader (or the
+    one-validator pin) sees the kernel's text, not a copy.
+    """
+    if name == "supplied_epoch_failure":
+        return _kernel().supplied_epoch_failure
+    raise AttributeError(name)
 
 
 class EpochRefused(SystemExit):
@@ -153,7 +161,7 @@ def epoch_refusal(hb_epoch: Any) -> dict[str, Any] | None:
     HB_EPOCH_NOT_SUPPLIED; a bool, a float, a coerced string or a value below
     32 is HB_EPOCH_INVALID. No clock is read.
     """
-    failure = supplied_epoch_failure(hb_epoch)
+    failure = _kernel().supplied_epoch_failure(hb_epoch)
     if failure is None:
         return None
     code, detail = failure

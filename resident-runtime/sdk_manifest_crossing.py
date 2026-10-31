@@ -326,6 +326,8 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
             # write fault, non-terminal, and the only exit that permits a retry;
             # 65 (bad input), 1, any other code and a crash are terminal.
             far_side_fault = _processor_record(completed.stdout)
+            far_side_disposition = ((far_side_fault or {}).get("detail")
+                                    or (detail[-1] if detail else "FAR_SIDE_UNREACHABLE"))
             return {
                 "schema": "stegverse.sdk-manifest-crossing-result/v1",
                 "declared_transition_surface": destination["surface"],
@@ -335,8 +337,7 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
                 "far_side_fault": far_side_fault,
                 "retry_permitted": completed.returncode == PROCESSOR_WRITE_FAULT_EXIT,
                 "manifest_sha256": ingress["payload"]["manifest_sha256"],
-                "far_side_disposition": ((far_side_fault or {}).get("detail")
-                                         or (detail[-1] if detail else "FAR_SIDE_UNREACHABLE")),
+                "far_side_disposition": far_side_disposition,
                 "profile_status": service.get("profile_status"),
                 "endpoint_adapter_installed": bool(service.get("endpoint_adapter")),
                 "ingress_packet_id": ingress["packet_id"],

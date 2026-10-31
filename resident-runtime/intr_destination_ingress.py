@@ -542,6 +542,9 @@ def main() -> int:
                         help="root the ledger contracts resolve from (.stegverse/transition-ledger/"
                              "contract.json, org-contract.json); default: this checkout")
     args = parser.parse_args()
+    # This checkout's kernel reads the CLI inputs, whichever ledger component
+    # --ledger-component binds below: an input is the caller's, not the writer's.
+    kernel = repository_ledger.kernel
     # The kernel's supplied-epoch rule sees --hb-epoch as typed: an absent one
     # is HB_EPOCH_NOT_SUPPLIED, a coerced one HB_EPOCH_INVALID, each six-field.
     # Nothing is received, appended or written (no --out); the exit is 1.
@@ -560,20 +563,20 @@ def main() -> int:
                 args.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             print(json.dumps(result, sort_keys=True))
             return 1
-    registry = repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
+    registry = kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
     # Usage errors exit before the ledger is touched, so the SystemExit caught
     # below is only ever the ledger writer's.
     if args.self_close:
         if args.communication_id:
             payload = diagnostic_payload(args.communication_id)
         elif args.payload is not None:
-            payload = repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
+            payload = kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
         else:
             raise SystemExit("self-close requires --communication-id or --payload")
     elif args.payload is None:
         raise SystemExit("--payload is required unless --self-close is set")
     else:
-        payload = repository_ledger.kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
+        payload = kernel.cli_input_json(args.payload, "--payload", retry_entrypoint="resident-runtime/intr_destination_ingress.py")
     try:
         if args.self_close:
             result = self_close(payload, registry=registry, packet_id=args.packet_id,

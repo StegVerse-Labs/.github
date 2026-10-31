@@ -1877,6 +1877,9 @@ def main() -> int:
                         help="root the ledger contracts resolve from (.stegverse/transition-ledger/"
                              "contract.json, org-contract.json); default: this checkout")
     args = parser.parse_args()
+    # This checkout's kernel reads the CLI inputs, whichever ledger component
+    # --ledger-component binds below: an input is the caller's, not the writer's.
+    kernel = repository_ledger.kernel
     # The kernel's supplied-epoch rule sees --hb-epoch as typed: an absent one
     # is HB_EPOCH_NOT_SUPPLIED, a coerced one HB_EPOCH_INVALID, each six-field.
     # Nothing is received, appended or written (no --out); the exit is 1.
@@ -1903,7 +1906,7 @@ def main() -> int:
     if args.outbox_root is not None:
         try:
             consumed = consume_outbox(args.outbox_root,
-                                      registry=repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
+                                      registry=kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
                                       mesh_root=args.mesh_root)
         except RuntimeError as exc:
             consumed = {"schema": OUTBOX_CONSUMPTION_SCHEMA, "state": "FAIL_CLOSED",
@@ -1916,9 +1919,9 @@ def main() -> int:
         return 0 if consumed["state"] in {"NO_EVENT", "CONSUMED"} else 1
     try:
         result = receive(
-            repository_ledger.kernel.cli_input_json(args.manifest, "--manifest", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
-            registry=repository_ledger.kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
-            standing=(repository_ledger.kernel.cli_input_json(args.standing, "--standing", retry_entrypoint="resident-runtime/organization_manifest_ingress.py")
+            kernel.cli_input_json(args.manifest, "--manifest", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
+            registry=kernel.cli_input_json(args.registry, "--registry", retry_entrypoint="resident-runtime/organization_manifest_ingress.py"),
+            standing=(kernel.cli_input_json(args.standing, "--standing", retry_entrypoint="resident-runtime/organization_manifest_ingress.py")
                       if args.standing else None),
             packet_id=args.packet_id, hb_epoch=hb_epoch, mesh_root=args.mesh_root)
     except SystemExit as exc:
