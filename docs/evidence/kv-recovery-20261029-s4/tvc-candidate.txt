@@ -1,0 +1,67 @@
+...................F.F........FFF...FF.....................              [100%]
+=================================== FAILURES ===================================
+_________________ test_layer2_consumes_the_ledger_read_layer1 __________________
+tests/test_skap_custody_chain.py:200: in test_layer2_consumes_the_ledger_read_layer1
+    assert ok["disposition"] == "ALLOW" and ok["receipts_source"] == "DESIGNATED_LEDGER_READBACK"
+E   AssertionError: assert ('FAIL_CLOSED' == 'ALLOW'
+E     
+E     - ALLOW
+E     + FAIL_CLOSED)
+_______ test_custody_result_must_be_read_back_from_the_skap_vault_ledger _______
+tests/test_skap_custody_chain.py:239: in test_custody_result_must_be_read_back_from_the_skap_vault_ledger
+    assert exc.value.refusal["failure_code"] == "CUSTODY_RESULT_NOT_ON_SKAP_VAULT_LEDGER"
+E   AssertionError: assert 'TVC_CUSTODY_...TY_NOT_PROVEN' == 'CUSTODY_RESU..._VAULT_LEDGER'
+E     
+E     - CUSTODY_RESULT_NOT_ON_SKAP_VAULT_LEDGER
+E     + TVC_CUSTODY_ISSUANCE_AUTHENTICITY_NOT_PROVEN
+__________ test_place_and_read_round_trip_and_never_request_deletion ___________
+tests/test_skap_custody_chain.py:314: in test_place_and_read_round_trip_and_never_request_deletion
+    placed = c.place_through_chain(STORE, {"a": 1}, subject_ref=SUBJECT, chain=chain, custody_ref=ref, mode="supersede")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools/skap_custody_chain.py:251: in place_through_chain
+    admission = _raise_unless_allow(gate(store_id, "place", subject_ref=subject_ref, chain=chain))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools/skap_custody_chain.py:232: in _raise_unless_allow
+    raise SkapCustodyChainRefused(record)
+E   tools.skap_custody_chain.SkapCustodyChainRefused: tvc_custody_issuance_authenticity_not_proven:TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER
+____________________ test_read_absent_and_tampered_readback ____________________
+tests/test_skap_custody_chain.py:329: in test_read_absent_and_tampered_readback
+    assert c.read_through_chain(STORE, ref, subject_ref=SUBJECT, chain=chain, absent_ok=True) is None
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools/skap_custody_chain.py:278: in read_through_chain
+    admission = _raise_unless_allow(gate(store_id, "read", subject_ref=subject_ref, chain=chain))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools/skap_custody_chain.py:232: in _raise_unless_allow
+    raise SkapCustodyChainRefused(record)
+E   tools.skap_custody_chain.SkapCustodyChainRefused: tvc_custody_issuance_authenticity_not_proven:TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER
+____________ test_placement_receipt_must_echo_digest_and_admission _____________
+tests/test_skap_custody_chain.py:349: in test_placement_receipt_must_echo_digest_and_admission
+    assert exc.value.refusal["failure_code"] == "SKAP_VAULT_PLACEMENT_READBACK_MISMATCH"
+E   AssertionError: assert 'TVC_CUSTODY_...TY_NOT_PROVEN' == 'SKAP_VAULT_P...BACK_MISMATCH'
+E     
+E     - SKAP_VAULT_PLACEMENT_READBACK_MISMATCH
+E     + TVC_CUSTODY_ISSUANCE_AUTHENTICITY_NOT_PROVEN
+____ test_kv_and_skap_digests_cross_digest_only_with_the_supplied_hb_epoch _____
+tests/test_skap_custody_chain.py:398: in test_kv_and_skap_digests_cross_digest_only_with_the_supplied_hb_epoch
+    assert got["disposition"] == "ALLOW"
+E   AssertionError: assert 'FAIL_CLOSED' == 'ALLOW'
+E     
+E     - ALLOW
+E     + FAIL_CLOSED
+________ test_missing_or_bad_epoch_fails_closed_class_b_with_six_fields ________
+tests/test_skap_custody_chain.py:417: in test_missing_or_bad_epoch_fails_closed_class_b_with_six_fields
+    assert (got["disposition"], got["failure_class"], got["failure_code"]) == \
+E   AssertionError: None
+E   assert ('FAIL_CLOSED...Y_NOT_PROVEN') == ('FAIL_CLOSED...NOT_SUPPLIED')
+E     
+E     At index 2 diff: 'TVC_CUSTODY_ISSUANCE_AUTHENTICITY_NOT_PROVEN' != 'CROSSING_RECEIPT_EPOCH_NOT_SUPPLIED'
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED tests/test_skap_custody_chain.py::test_layer2_consumes_the_ledger_read_layer1
+FAILED tests/test_skap_custody_chain.py::test_custody_result_must_be_read_back_from_the_skap_vault_ledger
+FAILED tests/test_skap_custody_chain.py::test_place_and_read_round_trip_and_never_request_deletion
+FAILED tests/test_skap_custody_chain.py::test_read_absent_and_tampered_readback
+FAILED tests/test_skap_custody_chain.py::test_placement_receipt_must_echo_digest_and_admission
+FAILED tests/test_skap_custody_chain.py::test_kv_and_skap_digests_cross_digest_only_with_the_supplied_hb_epoch
+FAILED tests/test_skap_custody_chain.py::test_missing_or_bad_epoch_fails_closed_class_b_with_six_fields
+7 failed, 52 passed in 41.80s

@@ -1,0 +1,17 @@
+{
+  "config/cvk-kv-receipt-ledgers/f3f8a2dd/custody-ledgers-config.json": "229f28ed190abc389659afc1200c43101a66b5e8",
+  "config/cvk-kv-receipt-ledgers/f3f8a2dd/kv-ledger-head-signers.v1.json": "912e9b185a148fbe17e445587a1029c28e2aafcc",
+  "config/cvk-kv-receipt-ledgers/f3f8a2dd/skap-receipts.contract.json": "52f64c5bcd3f1fb01bfb9560e816d10b85d4173a",
+  "config/cvk-kv-receipt-ledgers/f3f8a2dd/stegverse-kv-receipts.contract.json": "61f0c44246dac659cd0359fcff7a4a07f10775e5",
+  "config/kv_custody_receipt_chains.json": "fabe79822e0247395932212a32fad5905b12a75b",
+  "config/skap-custody-chain.manifest.json": "dc5d70f369567c89061a3000652c1b287842cd79",
+  "tests/kv_two_layer_fixture.py": "2d17da20e944c85b53b52fe7b8ef6950b49f675d",
+  "tests/skap_custody_chain_fixture.py": "5c8fc013b57d0f1e74b0d1f3c37b6441efdcd986",
+  "tests/test_kv_custody_ledgers_config.py": "35411be7c28ad93f40cbfb26b3e4ab3a20381a06",
+  "tests/test_skap_custody_chain.py": "9b90faecfffa1e204b2e5ebf60f33ae5ee4aa0d4",
+  "tools/kv_crossing_receipt.py": "82ef6102e3ffd33e87c771e31a42ed78504de86f",
+  "tools/kv_custody_ledgers_config.py": "f59ac945203978c785d8be58220e6ea8087a3eac",
+  "tools/kv_layer_ledger_readback.py": "ba4bb0be6ac0c6cbff0213b9db57003c327b5822",
+  "tools/kv_two_layer_receipts.py": "ebce7f9847e3fe2aa4b435891b71119f842a647c",
+  "tools/skap_custody_chain.py": "50802baf4145e408f65858d59bbcaf8b1690b20a"
+}

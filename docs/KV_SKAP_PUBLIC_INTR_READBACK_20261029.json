@@ -1,0 +1,46 @@
+{
+  "evidence_class": "INDEPENDENT_NATIVE_READ_ONLY_PUBLIC_ROUTE_VERIFICATION",
+  "authority_effect": "NONE",
+  "outputs": [
+    {
+      "file": "e2e_l2o_by_Labs.json",
+      "sha256": "4f698f3c6cb456c64071207e90725274b8fe6e4881b27faebf8ca7405ce297a7",
+      "disposition": "ALLOW"
+    },
+    {
+      "file": "e2e_l2o_by_org.json",
+      "sha256": "4f698f3c6cb456c64071207e90725274b8fe6e4881b27faebf8ca7405ce297a7",
+      "disposition": "ALLOW"
+    },
+    {
+      "file": "e2e_o2l_by_Labs.json",
+      "sha256": "20fe77264e0e6868a695e305ed6eda59c3b5b8fa5151d20aa592d864981f1d73",
+      "disposition": "ALLOW"
+    },
+    {
+      "file": "e2e_o2l_by_org.json",
+      "sha256": "20fe77264e0e6868a695e305ed6eda59c3b5b8fa5151d20aa592d864981f1d73",
+      "disposition": "ALLOW"
+    },
+    {
+      "file": "l2o_dest_org.json",
+      "sha256": "cb244530555004b96e44ca673c436743bf9f8888912f86d498d5af3df394bed7",
+      "disposition": "readback"
+    },
+    {
+      "file": "l2o_source_labs.json",
+      "sha256": "47c30430491c2c9266ac2c65f18533a2da21ad07c82339b45d1f129b108a5bce",
+      "disposition": "readback"
+    },
+    {
+      "file": "o2l_dest_labs.json",
+      "sha256": "7bda0fdbf6f50a145013deeefecf7788a7d3d779d0286e46f9c0bd1800299414",
+      "disposition": "readback"
+    },
+    {
+      "file": "o2l_source_org.json",
+      "sha256": "1034fd9bfd5d4ca5c2c35c7239c5701bf3f2d6bda6f6be4bcf0027275d7b0347",
+      "disposition": "readback"
+    }
+  ]
+}

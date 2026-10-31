@@ -1,0 +1,54 @@
+FFFF...FF..................................................              [100%]
+=================================== FAILURES ===================================
+_ test_reference_only_real_issuer_cannot_authorize_chain[principal:owner-KV-SKAP-VAULT-FUNCTIONAL-001-None] _
+test_real_issuance_chain_contract.py:38: in test_reference_only_real_issuer_cannot_authorize_chain
+    assert actual['disposition'] == 'FAIL_CLOSED', actual
+E   AssertionError: {'schema': 'stegverse.tvc.skap-custody-chain-admission/v1', 'disposition': 'ALLOW', 'store_id': 'google_drive_personal_kv_refresh_index', 'operation': 'read', ...}
+E   assert 'ALLOW' == 'FAIL_CLOSED'
+E     
+E     - FAIL_CLOSED
+E     + ALLOW
+_ test_reference_only_real_issuer_cannot_authorize_chain[principal:someone-else-KV-SKAP-VAULT-FUNCTIONAL-001-None] _
+test_real_issuance_chain_contract.py:38: in test_reference_only_real_issuer_cannot_authorize_chain
+    assert actual['disposition'] == 'FAIL_CLOSED', actual
+E   AssertionError: {'schema': 'stegverse.tvc.skap-custody-chain-admission/v1', 'disposition': 'ALLOW', 'store_id': 'google_drive_personal_kv_refresh_index', 'operation': 'read', ...}
+E   assert 'ALLOW' == 'FAIL_CLOSED'
+E     
+E     - FAIL_CLOSED
+E     + ALLOW
+_ test_reference_only_real_issuer_cannot_authorize_chain[principal:owner-UNRELATED-TASK-None] _
+test_real_issuance_chain_contract.py:38: in test_reference_only_real_issuer_cannot_authorize_chain
+    assert actual['disposition'] == 'FAIL_CLOSED', actual
+E   AssertionError: {'schema': 'stegverse.tvc.skap-custody-chain-admission/v1', 'disposition': 'ALLOW', 'store_id': 'google_drive_personal_kv_refresh_index', 'operation': 'read', ...}
+E   assert 'ALLOW' == 'FAIL_CLOSED'
+E     
+E     - FAIL_CLOSED
+E     + ALLOW
+_ test_reference_only_real_issuer_cannot_authorize_chain[principal:owner-KV-SKAP-VAULT-FUNCTIONAL-001-BOUND] _
+test_real_issuance_chain_contract.py:38: in test_reference_only_real_issuer_cannot_authorize_chain
+    assert actual['disposition'] == 'FAIL_CLOSED', actual
+E   AssertionError: {'schema': 'stegverse.tvc.skap-custody-chain-admission/v1', 'disposition': 'ALLOW', 'store_id': 'google_drive_personal_kv_refresh_index', 'operation': 'read', ...}
+E   assert 'ALLOW' == 'FAIL_CLOSED'
+E     
+E     - FAIL_CLOSED
+E     + ALLOW
+_________ test_real_reference_only_never_reaches_custody_client[read] __________
+test_real_issuance_chain_contract.py:80: in test_real_reference_only_never_reaches_custody_client
+    assert exc.value.refusal['failure_code'] == 'TVC_CUSTODY_ISSUANCE_AUTHENTICITY_NOT_PROVEN'
+E   AssertionError: assert 'SKAP_CUSTODY_RECORD_ABSENT' == 'TVC_CUSTODY_...TY_NOT_PROVEN'
+E     
+E     - TVC_CUSTODY_ISSUANCE_AUTHENTICITY_NOT_PROVEN
+E     + SKAP_CUSTODY_RECORD_ABSENT
+_________ test_real_reference_only_never_reaches_custody_client[place] _________
+test_real_issuance_chain_contract.py:75: in test_real_reference_only_never_reaches_custody_client
+    with pytest.raises(chain_module.SkapCustodyChainRefused) as exc:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE SkapCustodyChainRefused
+=========================== short test summary info ============================
+FAILED test_real_issuance_chain_contract.py::test_reference_only_real_issuer_cannot_authorize_chain[principal:owner-KV-SKAP-VAULT-FUNCTIONAL-001-None]
+FAILED test_real_issuance_chain_contract.py::test_reference_only_real_issuer_cannot_authorize_chain[principal:someone-else-KV-SKAP-VAULT-FUNCTIONAL-001-None]
+FAILED test_real_issuance_chain_contract.py::test_reference_only_real_issuer_cannot_authorize_chain[principal:owner-UNRELATED-TASK-None]
+FAILED test_real_issuance_chain_contract.py::test_reference_only_real_issuer_cannot_authorize_chain[principal:owner-KV-SKAP-VAULT-FUNCTIONAL-001-BOUND]
+FAILED test_real_issuance_chain_contract.py::test_real_reference_only_never_reaches_custody_client[read]
+FAILED test_real_issuance_chain_contract.py::test_real_reference_only_never_reaches_custody_client[place]
+6 failed, 53 passed in 39.41s

@@ -1,0 +1,83 @@
+"""Owner-review regression candidate for TVC#537 plus current-main custody chain.
+
+Requires the actual tvc_skap_custody_reference_issuance module; never substitutes
+a verifier. Only existing TEST-ONLY ledger designation/signer/reader/producer
+fixtures and the existing in-memory client are installed. No live runtime or
+credential is accessed. Four contract tests are intentionally RED on the
+observed exact-source combination; the integrity and unavailable controls pass.
+Rejecting all reference-only receipts is necessary containment, but does not
+prove future authenticated principal/task/reference/revocation matching. That
+requires original-owner authenticated-witness fixtures after its contract exists.
+"""
+import sys
+import pytest
+import tvc_skap_custody_reference_issuance as issuer
+from tests import skap_custody_chain_fixture as fx
+from tools import skap_custody_chain as chain_module
+
+STORE = 'google_drive_personal_kv_refresh_index'
+SUBJECT = 'skap://providers/google-drive/personal-kv/refresh-index/owner-1'
+
+@pytest.mark.parametrize('principal,task,binding', [
+    ('principal:owner', 'KV-SKAP-VAULT-FUNCTIONAL-001', None),
+    ('principal:someone-else', 'KV-SKAP-VAULT-FUNCTIONAL-001', None),
+    ('principal:owner', 'UNRELATED-TASK', None),
+    ('principal:owner', 'KV-SKAP-VAULT-FUNCTIONAL-001', 'BOUND'),
+])
+def test_reference_only_real_issuer_cannot_authorize_chain(monkeypatch, principal, task, binding):
+    receipt = issuer.issue(issuer.build_manifest(principal_ref=principal, kv_task_id=task))
+    assert receipt['live_key_slot_binding'] == 'UNKNOWN_NOT_AUTHENTICALLY_OBSERVED'
+    assert receipt['authority_effect'] == 'NONE'
+    if binding is not None:
+        receipt['live_key_slot_binding'] = binding
+        receipt['receipt_sha256'] = issuer.sha256_uri({k: v for k, v in receipt.items() if k != 'receipt_sha256'})
+    fx.install_ledger_producer(monkeypatch)
+    chain = fx.chain(issuance=receipt)
+    actual = chain_module.gate(STORE, 'read', subject_ref=SUBJECT, chain=chain)
+    assert chain['kv_skap_gate_client'].requests == []
+    assert actual['disposition'] == 'FAIL_CLOSED', actual
+    assert actual['failure_code'] == 'TVC_CUSTODY_ISSUANCE_AUTHENTICITY_NOT_PROVEN'
+    for field in ('failure_code', 'failed_predicate', 'required_evidence_or_repair', 'retry_entrypoint', 'owning_existing_goal', 'next_attempt'):
+        assert isinstance(actual[field], str) and actual[field]
+
+@pytest.mark.parametrize('kind,expected', [
+    ('tamper', 'TVC_CUSTODY_ISSUANCE_RECEIPT_DIGEST_MISMATCH'),
+    ('shape', 'TVC_CUSTODY_ISSUANCE_RECEIPT_INVALID'),
+])
+def test_existing_integrity_refusals_are_preserved(monkeypatch, kind, expected):
+    receipt = issuer.issue(issuer.build_manifest(principal_ref='principal:owner'))
+    if kind == 'tamper':
+        receipt['principal_ref'] = 'principal:someone-else'
+    else:
+        receipt = {'invalid': True}
+    fx.install_ledger_producer(monkeypatch)
+    chain = fx.chain(issuance=receipt)
+    actual = chain_module.gate(STORE, 'read', subject_ref=SUBJECT, chain=chain)
+    assert actual['disposition'] == 'FAIL_CLOSED'
+    assert actual['failure_code'] == expected
+    assert chain['kv_skap_gate_client'].requests == []
+
+def test_unbound_production_shape_stays_fail_closed(monkeypatch):
+    monkeypatch.setitem(sys.modules, chain_module.CUSTODY_ISSUANCE_MODULE, None)
+    chain = {'manifest': fx.manifest(), 'org_ledger_git_dir': 'NOT_A_REAL_RUNTIME',
+             'kv_skap_gate_client': None, 'supplied_hb_epoch': 1500}
+    actual = chain_module.gate(STORE, 'read', subject_ref=SUBJECT, chain=chain)
+    assert actual['disposition'] == 'FAIL_CLOSED'
+    assert actual['failure_code'] == 'KV2_STORAGE_ENDPOINT_PENDING_INTERLOCK_INTR'
+    assert 'TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT' in actual['chain_blockers']
+
+@pytest.mark.parametrize('operation', ['read', 'place'])
+def test_real_reference_only_never_reaches_custody_client(monkeypatch, operation):
+    receipt = issuer.issue(issuer.build_manifest(principal_ref='principal:owner'))
+    fx.install_ledger_producer(monkeypatch)
+    chain = fx.chain(issuance=receipt)
+    ref = chain_module.store_ref(STORE, SUBJECT)
+    with pytest.raises(chain_module.SkapCustodyChainRefused) as exc:
+        if operation == 'read':
+            chain_module.read_through_chain(STORE, ref, subject_ref=SUBJECT, chain=chain)
+        else:
+            chain_module.place_through_chain(STORE, {'synthetic': True}, subject_ref=SUBJECT, chain=chain, custody_ref=ref)
+    assert exc.value.refusal['failure_code'] == 'TVC_CUSTODY_ISSUANCE_AUTHENTICITY_NOT_PROVEN'
+    for field in ('failure_code', 'failed_predicate', 'required_evidence_or_repair', 'retry_entrypoint', 'owning_existing_goal', 'next_attempt'):
+        assert isinstance(exc.value.refusal[field], str) and exc.value.refusal[field]
+    assert chain['kv_skap_gate_client'].requests == []

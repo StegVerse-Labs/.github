@@ -2243,3 +2243,239 @@ the pin (#3151), and Master Records never gates. See
 Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COMPOSITION-001` record. See [the handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md). Registration is coordination only; source tests, WorkerCoordinator admission and authentic runtime evidence remain separate.
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
+
+
+## 2026-10-29 read-only reconciliation (proposal remains unregistered)
+
+All 234 diagnostic input Git blobs were verified at
+`3d4c7c163ecc75fd41feb9d003ef61c54ef096de`; they are unchanged at observed main
+`7582e93b69548a8bd831ebd89d7dd49492281bce`. Native plan evaluated all 214 shard
+files, 120 aggregate rows and 16 omitted owner-held collision guards. Registry
+generation remains 322. The current task returns `STOP_NOT_REGISTERED`.
+The scratch-derived successor returns `COORDINATE_CONVERGENCE`, zero hard
+collisions, with these three adjacent tasks:
+
+- `TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001`
+- `SS-KV-SKAP-SOCIAL-RELEASE-001`
+- `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001`
+
+Scope digest remains
+`sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc`.
+The derived COSV is a plan only; no canonical COSV is assigned by this note.
+The native planner used its intentionally empty CI session-event ledger;
+mechanical all-shard coverage is not semantic owner approval or native apply.
+
+Recovered Coordination ruling:
+https://github.com/StegVerse-org/.github/issues/167#issuecomment-6392179558.
+It confirms CONSUMES_DEPENDENCY, not FOLD, for the protected custody adapter.
+This corrects the earlier absence of an observed ruling reference; it does not
+constitute current native admission. Registry/Coordination must bind authentic
+ruling evidence and reconcile current pins in the existing native transition,
+serialize against #3380 and successors, apply only after CONTINUE, and read back
+the admitted row, vector, scope seal and organization receipt.
+
+Consumer repair and exact-source evidence:
+https://github.com/StegVerse-Labs/continuity-vault-kit/issues/279.
+The locally prepared TVC authenticity containment patch passes 40 relevant
+tests. README and CVK handoff updates are prepared in that owner patch.
+The original TVC, StegOS, LLM-adapter and CVK owners retain their work; tests or
+reference-only receipts do not establish native custody or runtime completion.
+
+Still unobserved: admitted registration/COSV, WorkerCoordinator claim/fence,
+sovereign KV __51 write plus exact-hash readback, and a manifest-bound real-node
+finish-point ALLOW with native organization receipt. No native apply, merge,
+sovereign KV write, new authority or new machine occurred in this reconciliation.
+Session Prompt Count: 1. Cumulative Goal Prompt Count: unverified; add this one
+qualifying prompt to the existing count without resetting it.
+
+
+## 2026-10-29 continuation: reviewable repair and corrected dependencies
+
+Session Prompt Count: 2; cumulative Goal Prompt Count remains unverified and is
+not reset. Labs main `6b13c3a749b2940d6142644196a8302823c1f45a` retains all 234
+previously verified Registry input blobs unchanged (generation 322, 120 rows,
+214 shard files). The canonical task row, COSV and lifecycle state remain
+unassigned; do not project this proposed identity as an admitted task.
+
+The consumer repair is now a draft source PR:
+https://github.com/StegVerse-Labs/continuity-vault-kit/pull/280
+Head `d127e2dc3de1c81f99b3a6e8381541fad5e6157d`; base
+`b1a66008dccad0d301a7e892e6619f47002ec26d`. All 45 combined finish-point and E0 witness tests pass locally.
+Six new authenticity regressions are folded into the existing finish-point
+suite and its existing CI runner. The initial CI run exposed obsolete E0 witness ALLOW assertions, now repaired
+to require FAIL_CLOSED without appending; the guard is unchanged.
+Runtime, tests, README and CVK handoff are
+committed on that review branch. Hosted CI at that head reports 50/50 successful check runs (run 40876524643).
+Independent review remains pending; CI success implies no merge or runtime authority.
+
+Correction to earlier coordination plans: LLM-adapter #431 was explicitly
+closed unmerged as superseded, and Org #249 removed the organization-to-adapter
+edge at `89558cd333c311924e7f282a1ab97e113adb7a23`. Do not initialize the retired
+namespace or rebuild that route. Lane B must reconcile #430's stale #431
+admission-order/genesis references with the retained healthy-node-to-adapter-
+to-SDK path, preserving the existing evaluator and authority boundaries.
+Sources: https://github.com/StegVerse-org/LLM-adapter/pull/431#issuecomment-6391809461
+and https://github.com/StegVerse-org/.github/pull/249.
+
+New browser-node observations are reported in Labs #3402 and its paired
+CLAUDE_NODE_KV_SESSION__RECORD__01.md coordination file. They are not
+independently verified runtime completion or native KV authority. The report
+includes profile-local continuity and service-worker repair findings; route
+those to the existing Site/StegOS owners without treating a second device or
+resident process as a requirement. Its two-hop SKAP wording must be reconciled
+by Coordination with the current sealed no-intra-org-InTr predicate; this
+document does not silently change the goal or scope digest.
+
+Parallel work: Registry owner binds authentic ruling/current pins and reaches
+CONTINUE before native apply/readback; TVC owner supplies authenticated live
+custody issuance; CVK owner reviews #280; StegOS/adapter owners reconcile and
+review their retained lanes; WorkerCoordinator owns claim/fence after admission;
+the native custody owner supplies sovereign KV __51 exact-hash readback.
+Coordination-folder writes are projections only, never substitutes for __51.
+
+## 2026-10-29: independent public InTr readback (session prompt 5)
+
+Executed TVC evidence branch replay.sh against anonymously fetched public ledgers.
+Source heads: Labs 6b13c3a749b2940d6142644196a8302823c1f45a;
+Org 0b50df09f620304319f99de58af081aa8902c37e. Ledger commits:
+Labs b2d90fc301fe0ced4fd5d68dc0734342e59f8cea;
+Org 07307cb748e93283fbd236047f8c13cbd1d8002f.
+Four native readbacks and four end-to-end results match all eight published
+SHA256SUMS byte digests. Both Labs-to-Org and Org-to-Labs return ALLOW under both
+verifiers. This is independently executed public route evidence, not a new
+transition, private-ledger warrant, KV issuance witness, task admission, fence,
+sovereign KV __51 or vault finish-point ALLOW. No full mesh rerun is claimed.
+
+Reproducer and expected outputs:
+https://github.com/StegVerse-Labs/TVC/tree/claude/intr-readback-evidence-20261029/evidence/intr-readback-2026-10-29
+
+New adjacent custody finding is independently reported in Labs #2810 comment
+6497851220: complete-chain organization custody reader refuses a sealed test-suite
+source schema at f840271e. Existing custody owner must migrate its pinned reader
+seam consistently, preserving seal/digest/identity checks and regenerating pins;
+public route ALLOW does not repair that distinct reader failure.
+
+CVK#280 current head ab66f0eb50cd05280a14f5668ec700ea556bb560 has 45 selected tests
+and 50 successful checks from the previous verified run; still draft/unmerged.
+Claude's source review applies to parent d127e2d, with follow-up review outstanding.
+Canonical Registry remains gen322/120 with no proposed goal row. Native registration
+and COSV remain unassigned. Cumulative Goal Prompt Count remains UNVERIFIED.
+
+## Session10 clean handoff — 2026-10-29
+
+CVK#280 is MERGED at acfd2be5763fea22ea7c859cf493dab24f1f3ac8, now CVK main.
+GitHub compare against reviewed ab66f0e has zero changed files, one merge commit
+ahead and zero behind. All43 returned merge-head check runs succeeded. This
+retires the source-integration wait for the authenticity containment; it does
+not provide native TVC issuance or finish-point ALLOW. CVK issue279 remains open.
+
+Custody repair packet session9 is the latest candidate: native-generated one-entry
+manifest update, unchanged dependency closure, historical P1 vendor preserved,
+and regressions in the existing catalog-selected suite.100tests+8subtests pass.
+Fresh-base application check on6b13c3a7 reconstructs all7 candidate files exactly.
+Patch SHA256d4ff0f33a5afb04b07010f8249cd01c7c5b31afea83d5bbd606d73304dc31236.
+Original custody owner must review/commit it and obtain hosted CI and authorized
+integration. Do not apply superseded session7/8 packets. Source evidence and
+owner steps: Labs#2810 comment6502739653. No candidate custody authority inferred.
+
+Registry generation322 still lacks the proposed goal. Original Registry owner
+owns ruling/current-pin authentication, three-adjacency convergence, serialized
+native apply and COSV readback. TVC537 issuance/verifier, retained adapter route
+and3402 scope clarification remain parallel; then task-bound WorkerCoordinator
+fence, sovereign KV__51 and real-node finish-point/organization receipt.
+
+Public InTr8/8 evidence remains verified historical route evidence. Shared
+coordination writes through session6 succeeded; session7 packet/note uploads
+were rejected by automatic approval review. Session7-9 source transfers were not
+retried and are not present/read back in the shared directory. Specific sharing
+approval remains outstanding. Do not confuse this with sovereign KV custody.
+
+Session Prompt Count10. Goal Prompt CountUNVERIFIED, not reset; native Goal/COSV
+unassigned. Continue from current Registry and owner replies, preserving evidence
+classes and existing owners. No native admission, fence, sovereign write or
+finish-point ALLOW was performed by this session.
+
+
+## Session12 handoff — 2026-10-29
+
+Current-truth correction: existing custody owner PR3376 at
+`d810644ddc6ce290dd1a21f75c7c12d8c3fe05df` is the convergence target, stacked on
+#3290. The separate session9 candidate is comparison evidence, not a competing
+integration instruction. The earlier sentence directing its review/commit is
+superseded by this section. Original owner retains source and integration control.
+
+Read the public owner parity suite at that exact head: it covers valid sealed
+readback/batch/export, missing seal, forged source, empty head identity, schema
+rejection, resealed binding/class/operation mismatches, and canonical-only Master
+Records handling. Further review should locate coverage for missing retained
+source, organization seal/owner rejection, every binding field and each empty
+identity component across existing suites before adding tests. These are scoped
+coverage questions, not demonstrated vulnerabilities or claims of missing global
+coverage. No rejected patch payload is included or transferred here.
+
+Docs PR3404 at d8a2efaa4b8bd3afd01c875c598e50a437640bfd had all six check runs
+completed SUCCESS, including ratchet and required-verification. This handoff
+update creates a new head requiring its own checks; prior success is historical.
+CVK280 containment remains merged; do not repeat that integration wait.
+
+Parallel owner work remains Registry ruling/pins/adjacencies and serialized
+admission/COSV; TVC537 authenticated issuance; CVK279 consumer verifier; custody
+3376 convergence; StegOS426 identity contract; adapter430/429/428 producer and
+health integration;3402 scope/node findings; independent docs review. StegOS and
+adapter placement text still naming retired431 must be reconciled with Org249
+and the retained healthy-node-to-adapter-to-SDK path before integration. No new
+node registration or repair attempt is authorized by3402's observation record.
+Actual WorkerCoordinator fence, sovereign KV__51 and real-node ALLOW follow the
+required native admission/evidence; preparation can proceed concurrently.
+
+Live main6b13c3a749b2940d6142644196a8302823c1f45a: Registry322,120rows, proposed
+KV identity absent. Goal/COSV/lifecycle and cumulative count remain unverified.
+Session Prompt Count12; resume in a new session using current Registry and this
+handoff. Session11 inventory: org#167 comment6503932798. Native registration,
+claim/fence, sovereign mutation and runtime ALLOW were not performed.
+Shared source-packet/note transfer remains unperformed after the prior automatic
+approval rejection; exact payload/destination approval remains required. Do not
+retry through another transport. Existing shared checkpoints stop at session6.
+
+
+## KV/SKAP recovery update — 2026-10-29, new session 1
+
+Docs head `3b03211a` passed all six checks. Registry generation 322 / 120 rows
+still has no admitted KV/SKAP goal. The existing custody-owner coverage review
+is now narrowed to specific sealed-source regressions, with no demonstrated
+production defect. TVC main-run conformance receipt `2e0ec2dd` was independently
+read and its seal recomputed; organization-writer acceptance remains separate.
+See the [current KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#recovery-session-1--2026-10-29-after-prior-session-12)
+and [owner findings](https://github.com/StegVerse-Labs/.github/issues/2810#issuecomment-6504630611).
+This docs update requires its own CI. No native admission, custody, fence,
+runtime ALLOW or release is claimed; cumulative prompt count remains unreconciled.
+
+
+## KV/SKAP recovery session 2 — 2026-10-29
+
+The [canonical handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md)
+now corrects the obsolete missing-adjacency-input claim and retires the resolved
+custody coverage questions. Docs2e611f34 passed6/6checks. A new real-issuer TVC
+chain probe exposed reference-only admission under test fixtures; its unmerged
+containment candidate passes7focused cases, with broader mock-positive migration
+still required. [Owner patch and reproducer](https://github.com/StegVerse-Labs/TVC/pull/537#issuecomment-6505597487).
+Registry admission and native custody remain unverified; no live exploit,
+runtime ALLOW, protected integration or release is claimed.
+
+
+## KV/SKAP recovery session 4 — 2026-10-29
+
+The [handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#recovery-session-4--2026-10-29-americachicago)
+now reconciles Registry326 and the already accepted adjacency plan at CVK44e7ae56.
+Native KV registration remains unperformed; repeated old-pin/planner work is
+retired. StegOS426, adapter430/436 and CVK289/290 integration is completed
+upstream; CVK re-vendoring and actual node/custody evidence remain distinct.
+The organization ledger advanced through unrelated receipts; the TVC receipt
+requires its original writer. Current main was merged into this docs branch
+without conflicts; new-head CI and independent ratification remain required.
+
+The current TVC owner proposal adds read/place protection tests:9focused passes,
+with7remaining failures in the59-case affected selection explicitly retained.
+[Evidence and owner migration plan](docs/evidence/kv-recovery-20261029-s4/TVC_OWNER_REVIEW.md).
+Executed ledger consumption distinguishes main64-file ALLOW from3376's12-file
+surface mismatch; the recovered genuine receipt matches all64files on3376.
