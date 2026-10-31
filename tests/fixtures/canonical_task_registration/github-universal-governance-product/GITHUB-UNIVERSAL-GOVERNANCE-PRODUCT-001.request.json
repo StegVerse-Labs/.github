@@ -1,0 +1,367 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "lane-c-github-universal-governance-product-2026-10-23",
+  "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+  "observed_registry_generation": 326,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-org/.github#164",
+  "allocation_request_ref": "control/goal-task-allocation-requests/lane-c-github-universal-governance-product-2026-10-23.json",
+  "collision_analysis": [
+    "no canonical Registry row, shard, task-vector or index entry for GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 at StegVerse-Labs/.github main 86382e60 (generation 320); the identity is the one proposed in StegVerse-Labs/.github#3012 and named in StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md",
+    "collision check-in decided mechanically in plan",
+    "adjacency test (structured evidence: tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.adjacency-test.json): SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001: NOT_ADJACENT_OVERLAP_FOLDED (a=False, b=True, c=True; kept as dependency CONSUMES-SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001 (the published gate at the released ref)); SDK-COST-DERIVED-TIER-PRICING-001: NOT_ADJACENT_OVERLAP_FOLDED (a=False, b=True, c=True; kept as dependency CONSUMES-SDK-COST-DERIVED-TIER-PRICING-001 and predicate ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT); PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001: ADJACENT (a=True, b=True, c=True; kept as adjacent_task_refs entry and dependency CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 (revenue-ops input)); STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001: ADJACENT (a=True, b=True, c=True; kept as adjacent_task_refs entry)"
+  ],
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "PROPOSED: Release StegVerse Governance as an independently installable GitHub product whose only product claim is a verifiable receipt chain built on customer-supplied manifest constraints. ALL ACTIONS BY MANIFEST and state-transition dependent; every attempted transition returns ALLOW, DENY or FAIL_CLOSED, and missing runtime observation is never converted into ALLOW. The customer retains its data, credentials, infrastructure and execution. Preserve canonical SDK manifest/route semantics, StegCore/StegGate evaluation semantics, Interlock/InTr transition authority, TV/TVC credential and release authority, Organization ledger observed reality and Master Records reconstruction. Introduce no external machine, hosted runtime, scheduler, second device or new framework/dependency, and reduce existing dependencies. Make no safety, compliance or authority claim.",
+      "targets": {
+        "organizations": [
+          "StegVerse-org",
+          "StegVerse-Labs",
+          "Infrastructure-Continuity-Ventures"
+        ],
+        "repositories": [
+          "StegVerse-org/StegVerse-SDK",
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/TVC",
+          "StegVerse-org/.github"
+        ],
+        "components": [
+          "sdk-governance-gate-free-tier",
+          "sdk-portable-governance-verification-bundle",
+          "sdk-package-version-identity",
+          "customer-quickstart-and-release-notes",
+          "tvc-sdk-1.3.0-publication",
+          "icv-commercial-distribution",
+          "entitlement-separation"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN_ON_CUSTOMER_SUPPLIED_MANIFEST_CONSTRAINTS",
+        "PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON",
+        "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE",
+        "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY",
+        "RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM",
+        "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED",
+        "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+        "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+        "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+        "LICENSE_AND_TERMS_OWNER_APPROVED",
+        "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+        "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE",
+        "ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT"
+      ],
+      "finish_point": {
+        "acceptance_test": "StegVerse-org/StegVerse-SDK:tests/test_governance_product_finish_point.py::GovernanceProductFinishPoint::test_finish_point_verdict",
+        "source_commit": "2db2ad2e7cf5dc90edc25fe1a01379be0454e8ce",
+        "source_ref": "StegVerse-org/StegVerse-SDK#556",
+        "predicate": "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN at the ref the TV/TVC release receipt names",
+        "verifier_entrypoint": "StegVerse-org/StegVerse-SDK: python -m unittest tests.test_governance_product_finish_point.GovernanceProductFinishPoint.test_finish_point_verdict, checked out at the TV/TVC release-receipt ref",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:f6d69ee7e294e54401e7367d06fc51e10b0865198da22af1ca4890f2d1171fbb",
+    "supersedes_scope_digest": null
+  },
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+    "correlation_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+    "root_correlation_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+    "parent_task_id": null,
+    "goal": "PROPOSED: Release StegVerse Governance as an independently installable GitHub product whose only product claim is a verifiable receipt chain built on customer-supplied manifest constraints. ALL ACTIONS BY MANIFEST and state-transition dependent; every attempted transition returns ALLOW, DENY or FAIL_CLOSED, and missing runtime observation is never converted into ALLOW. The customer retains its data, credentials, infrastructure and execution. Preserve canonical SDK manifest/route semantics, StegCore/StegGate evaluation semantics, Interlock/InTr transition authority, TV/TVC credential and release authority, Organization ledger observed reality and Master Records reconstruction. Introduce no external machine, hosted runtime, scheduler, second device or new framework/dependency, and reduce existing dependencies. Make no safety, compliance or authority claim.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "StegVerse-Labs/.github#3012",
+      "StegVerse-Labs/.github#3183",
+      "StegVerse-org/.github#164",
+      "StegVerse-org/.github#160",
+      "StegVerse-org/StegVerse-SDK:.github/workflows/governance-gate.yml",
+      "StegVerse-org/StegVerse-SDK:stegverse/governance_gate.py",
+      "StegVerse-org/StegVerse-SDK:stegverse/tier_pricing.py",
+      "StegVerse-org/StegVerse-SDK:pricing/policy.candidate.json",
+      "StegVerse-org/StegVerse-SDK:pricing/rate-card.candidate.json",
+      "StegVerse-org/StegVerse-SDK:pricing/candidate-report.json",
+      "StegVerse-org/StegVerse-SDK:LICENSE",
+      "StegVerse-org/StegVerse-SDK:VERSION.json",
+      "StegVerse-org/StegVerse-SDK:PRODUCTION_RELEASE_SET_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC:config/sdk_v1_3_0_release.json",
+      "StegVerse-Labs/TVC:tasks/TVC-SDK-1.3.0-CREDENTIAL-AUTHORIZATION-001.json",
+      "StegVerse-Labs/.github:TASK_REGISTRY_CANONICAL_INVARIANTS.md",
+      "StegVerse-Labs/.github:management/COSV_PROFILE_V1.json",
+      "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-org",
+        "StegVerse-Labs",
+        "Infrastructure-Continuity-Ventures"
+      ],
+      "repositories": [
+        "StegVerse-org/StegVerse-SDK",
+        "StegVerse-Labs/.github",
+        "StegVerse-Labs/TVC",
+        "StegVerse-org/.github"
+      ],
+      "components": [
+        "sdk-governance-gate-free-tier",
+        "sdk-portable-governance-verification-bundle",
+        "sdk-package-version-identity",
+        "customer-quickstart-and-release-notes",
+        "tvc-sdk-1.3.0-publication",
+        "icv-commercial-distribution",
+        "entitlement-separation"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DECISION-V130-TAG-TARGET",
+        "kind": "HUMAN_ACTION",
+        "state": "UNRESOLVED",
+        "ref": "decision owner: OWNER + TV/TVC"
+      },
+      {
+        "dependency_id": "DECISION-LICENSE",
+        "kind": "HUMAN_ACTION",
+        "state": "UNRESOLVED",
+        "ref": "decision owner: OWNER"
+      },
+      {
+        "dependency_id": "DECISION-DISTRIBUTION-SURFACE",
+        "kind": "HUMAN_ACTION",
+        "state": "UNRESOLVED",
+        "ref": "decision owner: OWNER + ICV"
+      },
+      {
+        "dependency_id": "DECISION-COMMERCIAL-SEPARATION-ENTITLEMENT",
+        "kind": "HUMAN_ACTION",
+        "state": "UNRESOLVED",
+        "ref": "decision owner: OWNER + ICV + TV/TVC"
+      },
+      {
+        "dependency_id": "DECISION-ROLLBACK",
+        "kind": "HUMAN_ACTION",
+        "state": "UNRESOLVED",
+        "ref": "decision owner: OWNER + TV/TVC"
+      },
+      {
+        "dependency_id": "TASK-TVC-SDK-1.3.0-CREDENTIAL-AUTHORIZATION-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "TVC-SDK-1.3.0-CREDENTIAL-AUTHORIZATION-001"
+      },
+      {
+        "dependency_id": "CONSUMES-PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001"
+      },
+      {
+        "dependency_id": "CONSUMES-SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "SDK-STRUCTURAL-VALIDATOR-CONSOLIDATION-001"
+      },
+      {
+        "dependency_id": "CONSUMES-SDK-COST-DERIVED-TIER-PRICING-001",
+        "kind": "TASK",
+        "state": "UNRESOLVED",
+        "ref": "SDK-COST-DERIVED-TIER-PRICING-001"
+      }
+    ],
+    "blockers": [
+      {
+        "blocker_id": "BLOCKER-DECISION-V130-TAG-TARGET",
+        "dependency_id": "DECISION-V130-TAG-TARGET",
+        "reason": "TVC config/sdk_v1_3_0_release.json binds v1.3.0 to b1376d3e (allow_tag_update=false), a commit without governance-gate.yml or governance_gate.py. SDK #534 (head 4f3916aa) works around it by pinning callers to commit ba5bbf42 (current main, which has the pre-#534 checker); its body states the owner named that SHA (not independently observed). Still open: release identity/version for the product and retargeting the pin to a commit containing the #534 checker."
+      },
+      {
+        "blocker_id": "BLOCKER-DECISION-LICENSE",
+        "dependency_id": "DECISION-LICENSE",
+        "reason": "SDK LICENSE is MIT; legal/demo terms cover only the Demo surface. Decide product license/terms."
+      },
+      {
+        "blocker_id": "BLOCKER-DECISION-DISTRIBUTION-SURFACE",
+        "dependency_id": "DECISION-DISTRIBUTION-SURFACE",
+        "reason": "Reusable workflow in the SDK repo versus a dedicated action.yml / Marketplace repository."
+      },
+      {
+        "blocker_id": "BLOCKER-DECISION-COMMERCIAL-SEPARATION-ENTITLEMENT",
+        "dependency_id": "DECISION-COMMERCIAL-SEPARATION-ENTITLEMENT",
+        "reason": "Where entitlement is issued and checked, separately from governance disposition."
+      },
+      {
+        "blocker_id": "BLOCKER-DECISION-ROLLBACK",
+        "dependency_id": "DECISION-ROLLBACK",
+        "reason": "Rollback model given immutable tags (existing tag must never be retargeted)."
+      }
+    ],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001",
+      "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+      "PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001",
+      "GOVERNANCE-METERED-POLICY-RECOVERY-001",
+      "SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001",
+      "TVC-SDK-1.3.0-CREDENTIAL-AUTHORIZATION-001"
+    ],
+    "existing_evidence_refs": [
+      "StegVerse-org/StegVerse-SDK main 291ad15b0382971f2e56c393ceb59c26862e3257 (2026-10-18; #542 merged 02:59:17Z, #539 merged 02:59:36Z; #538 07a6a90a, #540 ae4a2a12 earlier)",
+      "StegVerse-org/StegVerse-SDK:pull/534 head 3dd6c80b (open, draft; merge of main 291ad15b; CI at this head UNKNOWN_NOT_AUTHENTICALLY_OBSERVED)",
+      "StegVerse-org/StegVerse-SDK:pull/535 head 14b0ecc6 (open; 'Release notes: validator contract 1.7 (#542)'; CI at this head UNKNOWN_NOT_AUTHENTICALLY_OBSERVED)",
+      "StegVerse-org/StegVerse-SDK:pull/536 head b3e93437 (open, draft; 25 pass / 2 skipped at that head)",
+      "StegVerse-org/StegVerse-SDK:pull/541 head 43abed4b (open, draft, docs only)",
+      "StegVerse-Labs/.github#3214 merged 60d90c48; #3222 merged bfcf0318 (pricing shard)"
+    ],
+    "expected_evidence_predicates": [
+      "PRODUCT_CLAIM_LIMITED_TO_VERIFIABLE_RECEIPT_CHAIN_ON_CUSTOMER_SUPPLIED_MANIFEST_CONSTRAINTS",
+      "PACKAGE_VERSION_IDENTITY_CONSISTENT_ACROSS_PYPROJECT_INIT_VERSION_JSON",
+      "PINNED_REF_TREE_CONTAINS_GOVERNANCE_GATE_WORKFLOW_AND_MODULE",
+      "IMMUTABLE_TAG_AND_GITHUB_RELEASE_PUBLISHED_UNDER_TV_TVC_AUTHORITY",
+      "RELEASE_NOTES_SUPERSEDE_V1_0_1_SAFETY_STACK_OVERCLAIM",
+      "CUSTOMER_QUICKSTART_INSTALL_UNINSTALL_AND_NONCLAIMS_PUBLISHED",
+      "NO_NEW_RUNTIME_DEPENDENCY_INTRODUCED",
+      "NON_ALLOW_PRODUCES_NO_EFFECT_IN_CUSTOMER_CONFORMANCE_RUN",
+      "INDEPENDENT_RECEIPT_CHAIN_VERIFICATION_PASS_AND_TAMPER_FAIL",
+      "LICENSE_AND_TERMS_OWNER_APPROVED",
+      "ROLLBACK_PROCEDURE_DOCUMENTED_WITHOUT_TAG_RETARGET",
+      "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK:GOVERNANCE_PRODUCT_RELEASE",
+      "ENTITLEMENT_SEPARATE_FROM_DISPOSITION_CONSUMING_SDK_COST_DERIVED_TIER_PRICING_OUTPUT"
+    ],
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "authority_effect": "NONE",
+      "second_user_operated_device_allowed": false,
+      "external_device_required": false,
+      "selected_substrate_id": null,
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        }
+      ]
+    },
+    "runtime_requirements": {
+      "capabilities": [
+        "portable-governance-bundle-verification",
+        "reusable-github-workflow-call",
+        "interlock-intr-governed-transition",
+        "tv-tvc-release-publication"
+      ],
+      "environment": "CUSTOMER_OWNED_CI",
+      "direction": "INTERNAL",
+      "mutation_required": true,
+      "deployment_required": false,
+      "current_observation_required": true
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+      "PROPOSED_TO_SUPERSEDED_IF_MERGED_INTO_AN_EXISTING_OWNER",
+      "SCOPE_CHANGE_ONLY_BY_GOAL_SCOPE_SUPERSEDE_REQUEST"
+    ],
+    "handoff_projection_refs": [
+      "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 6,
+      "chat_owned_implementation": 1,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 6,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "UNCLAIMED (L=1). No authentic WorkerCoordinator claim or fence observed; this draft creates none. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "archive_ready": "False (R=0). No validated evidence package exists. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "unassigned_work": "6 (U=6) as proposed at generation 316. Since INDEX H55 (2026-10-17 20:41Z) chat lanes hold workstreams A3/B/C/E/D7 and Claude holds A and D, but none is a WorkerCoordinator claim; re-deriving U/I from WorkerCoordinator-only evidence is the Registry owner's call. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "chat_owned_implementation": "1 (I=1). The SDK release-prep lane (StegVerse-org/StegVerse-SDK#534, #535, #536) is implemented by a chat/cloud-agent session and held for owner merge. A reviewer who counts only WorkerCoordinator-claimed work should set I=0, giving 10600000116000. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "chat_owned_validation": "0. No chat session owns validation; exact-head CI is GitHub Actions validation only. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "chat_owned_integration": "0. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "chat_owned_observation": "0. No runtime observation is owned or claimed. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "chat_owned_credentials": "0. Credential and release authority remain TV/TVC. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "canonical_owner_installed": "True only upon admission, following the WorkSpace registration precedent (registry row is the canonical owner surface). Before admission this is False, giving 10610000016000. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "thread_required": "True. Spans StegVerse-org/StegVerse-SDK, StegVerse-Labs/.github, StegVerse-Labs/TVC, Infrastructure-Continuity-Ventures and StegOps. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "blocker_count": "6. The six owner decisions in blockers[] below. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "evidence_complete": "False. No expected_evidence_predicate is satisfied. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "activated": "False. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]",
+      "propagated": "False. [source: Lane C's 2026-10-18 draft record (hd7_canonical_task_record_GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json, cosv_derivation_PROPOSED), published as StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md (COSV 10610000116000 proposed there)]"
+    },
+    "evidence_refs": [
+      "StegVerse-Labs/.github@86382e60da984fa02892fecfac2b9bdec0e64a5f:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/.github#3012",
+      "StegVerse-org/.github#164"
+    ],
+    "observed_at": "2026-10-18T03:10:00Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

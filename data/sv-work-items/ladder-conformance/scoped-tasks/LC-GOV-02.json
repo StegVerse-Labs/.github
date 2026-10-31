@@ -17,7 +17,7 @@
   "H-GOV-TVC-RELEASE"
  ],
  "next_attempt": "on the next record change of GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
- "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326)",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
  "owning_lane": "GitHub Product lane (Lane C)",
  "proposed_resolution": "record each decision as a manifest default the verifier checks: tag = a new immutable tag at a commit containing the gate (no retarget, allow_tag_update stays false); license = the license file already in the tree, checked by hash; distribution = the GitHub release asset; entitlement = separate from disposition; rollback = publish a superseding version, never retarget; restate LICENSE_AND_TERMS_OWNER_APPROVED as a file-hash predicate and drop the 'held for owner merge' metric wording (a new sealed scope digest)",
  "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",

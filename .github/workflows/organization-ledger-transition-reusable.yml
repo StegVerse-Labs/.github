@@ -66,8 +66,24 @@ jobs:
           fi
           if [ -z "$HB_EPOCH" ] && [ "$MODE" = request ]; then
             # push-triggered request mode: the committed request carries the epoch (schema hb_epoch)
-            HB_EPOCH=$(git diff --name-only --diff-filter=AM "${{ github.event.before }}" "$GITHUB_SHA" -- '.stegverse/transition-requests/*.json' | head -1 | xargs -r python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("hb_epoch",""))')
+            # Every committed request's epoch is checked, not only the first (EVERY_COMMITTED_REQUEST_EPOCH_IS_CHECKED_AND_WELL_FORMED):
+            # a string of ASCII digits only (no sign, space, newline or fraction) or an integer, and >= 32. A malformed value is refused
+            # before anything is appended; a trailing-newline value ("4096\n") is malformed, never coerced.
+            git diff --name-only --diff-filter=AM "${{ github.event.before }}" "$GITHUB_SHA" -- '.stegverse/transition-requests/*.json' > "$RUNNER_TEMP/epoch-requests.txt"
+            while IFS= read -r req; do
+              [ -n "$req" ] || continue
+              python3 -c 'import json,re,sys
+          try:
+              v=json.load(open(sys.argv[1])).get("hb_epoch")
+          except Exception:
+              sys.exit(1)
+          if isinstance(v,bool) or not (isinstance(v,int) or (isinstance(v,str) and re.fullmatch(r"[0-9]+",v))):
+              sys.exit(1)
+          sys.exit(0 if int(v)>=32 else 1)' "$req" || fail HB_EPOCH_INVALID EVERY_COMMITTED_REQUEST_EPOCH_IS_CHECKED_AND_WELL_FORMED "$req carries no hb_epoch, or one that is not ASCII digits only (or an integer) and >= 32; every committed request is checked, none is coerced; no clock is read" "commit a successor request with a valid hb_epoch; nothing was appended"
+              [ -n "$HB_EPOCH" ] || HB_EPOCH=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hb_epoch"])' "$req")
+            done < "$RUNNER_TEMP/epoch-requests.txt"
             echo "HB_EPOCH=$HB_EPOCH" >> "$GITHUB_ENV"
+            echo "EPOCH_SOURCE=request" >> "$GITHUB_ENV"
           fi
           # Shared epoch rule (agreed with InTr; same as TVC validate_warrant): supplied, digits, >= 32; no clock.
           [ "$MODE" = readback ] || [ -n "$HB_EPOCH" ] || fail HB_EPOCH_NOT_SUPPLIED SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH "supply hb_epoch (an integer >= 32) from the carrier, in the committed request or the dispatch; no clock is read" "re-dispatch the same transition with hb_epoch supplied; nothing was appended"
@@ -234,6 +250,13 @@ jobs:
             [ -n "$request" ] || continue
             listed=$((listed + 1))
             name=$(basename "$request" .json)
+            # Each request is appended at its own, already-checked epoch when the epoch came from the committed requests (not one
+            # request's epoch for the whole push). A dispatched epoch is the one supplied epoch for the one dispatched request.
+            epoch="$HB_EPOCH"
+            if [ "${EPOCH_SOURCE:-}" = request ]; then
+              epoch=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hb_epoch"])' "$request")
+              case "$epoch" in ""|*[!0123456789]*) echo "FAIL_CLOSED: HB_EPOCH_INVALID $request" >&2; exit 1;; esac
+            fi
             # A request whose process the boundary binds to egress leaves this
             # organization, and a run without a supplied mesh can
             # only record its emission as refused. Recording it would also make
@@ -299,7 +322,7 @@ jobs:
               --ledger-component "$COMPONENT" --consumer-root "$GITHUB_WORKSPACE" \
               --registry org-boundary/registry/services.json \
               --manifest "$out/manifest.json" --standing "$out/standing.json" \
-              --packet-id "$name" --hb-epoch "$HB_EPOCH" ${mesh_args[@]+"${mesh_args[@]}"} --out "$out/ingress.json" || true
+              --packet-id "$name" --hb-epoch "$epoch" ${mesh_args[@]+"${mesh_args[@]}"} --out "$out/ingress.json" || true
             python -c 'import json,sys; x=json.load(open(sys.argv[1])); print("ingress disposition:", x["disposition"], x.get("failed_predicate"), x.get("organization_receipt_sha256"))' "$out/ingress.json"
             # Item (5), INDEX H51: right after the append, carry this repository's receipts onto the organization
             # chain with the component's propagate_repository_receipts.propagate() (digest-pinned), handed the
@@ -313,7 +336,7 @@ jobs:
             # Not `|| true`: the exit status is recorded next to the record, and the last step requires 0 and ALLOW.
             rc=0
             python "$COMPONENT/propagate_after_append.py" --repository "$GITHUB_REPOSITORY" \
-              --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$HB_EPOCH" --out "$out/propagation.json" || rc=$?
+              --repository-ledger-root "$home/$REPO_LEDGER_NAMESPACE" --hb-epoch "$epoch" --out "$out/propagation.json" || rc=$?
             echo "$rc" > "$out/propagation.exit"
           done < "$RUNNER_TEMP/requests.txt"
           if [ "$received" -eq 0 ]; then

@@ -3017,6 +3017,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_github_universal_governance_product_goal_request.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_github_universal_governance_product_goal_request.py"
+   ],
+   "tests": [
+    "tests/test_github_universal_governance_product_goal_request.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_glm53_sovereign_lane_resident_bridge.py",
    "inputs": [],
    "surfaces": [
@@ -5679,6 +5691,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_pat003_claim_fence_registration.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_pat003_claim_fence_registration.py"
+   ],
+   "tests": [
+    "tests/test_pat003_claim_fence_registration.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_personal_kv_provider_root_resolution.py",
    "inputs": [],
    "surfaces": [
@@ -5998,6 +6022,18 @@
    ],
    "tests": [
     "tests/test_ratchet_baseline_integrity.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_real_governance_assessment_sample_request_wiring.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_real_governance_assessment_sample_request_wiring.py"
+   ],
+   "tests": [
+    "tests/test_real_governance_assessment_sample_request_wiring.py"
    ]
   },
   {
@@ -8734,6 +8770,18 @@
   },
   {
    "always": false,
+   "exclude": [],
+   "id": "tests/test_sv_change_admit_append.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_sv_change_admit_append.py"
+   ],
+   "tests": [
+    "tests/test_sv_change_admit_append.py"
+   ]
+  },
+  {
+   "always": false,
    "exclude": [
     "tests/test_sv_change_base_state_readback_component.py::BaseStateReadbackTests::test_known_answer_live_labs_head"
    ],
@@ -9154,6 +9202,18 @@
    ],
    "tests": [
     "tests/test_sv_push_receipt.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_sv_push_receipt_append.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_sv_push_receipt_append.py"
+   ],
+   "tests": [
+    "tests/test_sv_push_receipt_append.py"
    ]
   },
   {
@@ -10210,6 +10270,7 @@
    "control/resident-execution-request.d/canonical-work-erl-household-economic-conditions-site-001.json",
    "control/resident-execution-request.d/canonical-work-kv-connection-revalidation-tvc-runtime-001.json",
    "control/resident-execution-request.d/canonical-work-organization-batch-custody-replay-001.json",
+   "control/resident-execution-request.d/canonical-work-real-governance-assessment-sample-001.json",
    "control/resident-execution-request.d/canonical-work-steghealth-kv-interlock-production-endpoint-001.json",
    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py",
    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
@@ -10728,6 +10789,11 @@
    "org-kernel/kernel.py",
    "resident-runtime/aggregate_repo_transition.py"
   ],
+  "resident-runtime/sv_change_admit_append.py": [
+   "data/canonical-task-registry.json",
+   "data/sv-work-items/contract-pins.json",
+   "resident-runtime/sv_push_receipt_append.py"
+  ],
   "resident-runtime/sv_change_base_state_readback.py": [
    "data/canonical-task-registry.json",
    "org-kernel/kernel.py",
@@ -10760,6 +10826,11 @@
    "data/sv-work-items/operating-modes.json",
    "data/sv-work-items/stages/**",
    "resident-runtime/stage_gate.py"
+  ],
+  "resident-runtime/sv_push_receipt_append.py": [
+   "resident-runtime/intr_destination_ingress.py",
+   "resident-runtime/sv_check_receipt_append.py",
+   "resident-runtime/sv_push_receipt.py"
   ],
   "resident-runtime/sv_work_items.py": [
    ".github/workflows/**",
@@ -12347,6 +12418,7 @@
    "heartbeat_runtime/runtime_presence_projection.py",
    "receipts/sovereign-host/**",
    "scripts/restart_sovereign_ephemeral_node.py",
+   "scripts/run_heartbeat_runtime.py",
    "scripts/run_worker_runtime.py"
   ],
   "scripts/report_canonical_work_coordination_validation.py": [
@@ -12370,6 +12442,7 @@
   "scripts/restart_sovereign_ephemeral_node.py": [
    "control/worker-runtime-state.json",
    "receipts/sovereign-host/**",
+   "scripts/repair_resident_worker_presence.py",
    "scripts/run_heartbeat_runtime.py",
    "scripts/run_worker_runtime.py"
   ],
@@ -13812,8 +13885,11 @@
   ],
   "tests/test_ephemeral_separated_runtime_supervision.py": [
    "control/worker-runtime-state.json",
+   "scripts/repair_resident_worker_presence.py",
    "scripts/restart_sovereign_ephemeral_node.py",
-   "scripts/run_sovereign_ephemeral_console.py"
+   "scripts/run_heartbeat_runtime.py",
+   "scripts/run_sovereign_ephemeral_console.py",
+   "scripts/run_worker_runtime.py"
   ],
   "tests/test_ephemeral_stegbrowser_external_ai_activation.py": [
    "control/task-vector-index.d/**",
@@ -14247,6 +14323,18 @@
   ],
   "tests/test_github_email_failure_error_classification.py": [
    "scripts/normalize_github_failure_email_events.py"
+  ],
+  "tests/test_github_universal_governance_product_goal_request.py": [
+   ".github/workflows/canonical-task-registration-transition.yml",
+   "control/adjacency-rulings/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.json",
+   "control/goal-scope-seals/**",
+   "control/goal-task-allocation-requests/**",
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/adjacency_ruling.py",
+   "scripts/canonical_task_registration_transition.py",
+   "scripts/goal_scope_seal.py",
+   "tests/fixtures/canonical_task_registration/github-universal-governance-product/**"
   ],
   "tests/test_glm53_sovereign_lane_resident_bridge.py": [
    "control/process-worker-adapters.d/glm53-sovereign-lane-001.json",
@@ -14991,6 +15079,7 @@
    "workers/run_device_kv_skap_canonical_runtime_worker.py"
   ],
   "tests/test_ladder_conformance.py": [
+   ".github/workflows/intr-path-transfer.yml",
    "resident-runtime/ladder_conformance.py",
    "scripts/ladder_conformance.py"
   ],
@@ -15506,6 +15595,7 @@
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/organization_ledger_ingest.py",
    "resident-runtime/sv_check_receipt_append.py",
+   "resident-runtime/sv_push_receipt_append.py",
    "scripts/tvc_conformance_receipt.py",
    "tests/test_sv_check_receipt_append.py"
   ],
@@ -15638,6 +15728,19 @@
    "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md",
    "scripts/evaluate_reusable_task_componentization.py"
   ],
+  "tests/test_pat003_claim_fence_registration.py": [
+   "control/claims-active.json",
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json",
+   "scripts/allocate_claims.py",
+   "scripts/canonical_task_registration_transition.py",
+   "scripts/cosv.py",
+   "scripts/goal_scope_seal.py",
+   "scripts/write_admission.py",
+   "tests/fixtures/**",
+   "tests/fixtures/canonical_task_registration/**",
+   "tests/fixtures/canonical_task_registration/pat-003-lane-a/**"
+  ],
   "tests/test_personal_kv_provider_root_resolution.py": [
    "scripts/materialize_personal_kv_provider_root.py"
   ],
@@ -15750,6 +15853,14 @@
   "tests/test_ratchet_baseline_integrity.py": [
    ".github/workflows/test-suite-ratchet.yml",
    "scripts/check_test_suite_ratchet.py"
+  ],
+  "tests/test_real_governance_assessment_sample_request_wiring.py": [
+   ".github/workflows/**",
+   "control/resident-execution-request.d/**",
+   "control/resident-execution-request.d/canonical-work-real-governance-assessment-sample-001.json",
+   "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+   "data/canonical-task-records/**",
+   "data/canonical-task-registry.json"
   ],
   "tests/test_receipt_hb_creation_reference.py": [
    "heartbeat_runtime/independent_oscillator.py",
@@ -16438,6 +16549,8 @@
    "heartbeat_runtime/independent_oscillator.py",
    "heartbeat_runtime/oscillator_producer.py",
    "heartbeat_runtime/worker_runtime.py",
+   "receipts/sovereign-host/**",
+   "scripts/restart_sovereign_ephemeral_node.py",
    "scripts/run_heartbeat_runtime.py",
    "scripts/run_sovereign_ephemeral_console.py",
    "scripts/run_worker_runtime.py",
@@ -17164,6 +17277,17 @@
    "tests/fixtures/org-ledger-StegVerse-Labs-a5bb54d8/**",
    "tests/test_sv_native_work_items.py"
   ],
+  "tests/test_sv_change_admit_append.py": [
+   ".github/workflows/**",
+   ".github/workflows/organization-ledger-transition-validation.yml",
+   ".github/workflows/organization-ledger-transition.yml",
+   ".stegverse/organization-ledger-ingest/**",
+   ".stegverse/organization-ledger-ingest/operations.json",
+   "resident-runtime/sv_change_admit_append.py",
+   "tests/__init__.py",
+   "tests/test_sv_native_work_items.py",
+   "tests/test_sv_push_receipt_append.py"
+  ],
   "tests/test_sv_change_base_state_readback_component.py": [
    "README.md",
    "data/canonical-task-registry.json",
@@ -17398,6 +17522,17 @@
   "tests/test_sv_push_receipt.py": [
    "resident-runtime/sv_push_receipt.py",
    "schemas/sv-push-receipt.v1.schema.json"
+  ],
+  "tests/test_sv_push_receipt_append.py": [
+   ".github/workflows/**",
+   ".github/workflows/organization-ledger-transition-validation.yml",
+   ".github/workflows/organization-ledger-transition.yml",
+   ".stegverse/organization-ledger-ingest/**",
+   ".stegverse/organization-ledger-ingest/operations.json",
+   "resident-runtime/organization_ledger_ingest.py",
+   "resident-runtime/sv_push_receipt_append.py",
+   "schemas/sv-push-receipt.v1.schema.json",
+   "tests/test_sv_check_receipt_append.py"
   ],
   "tests/test_sv_record_modes.py": [
    "data/canonical-task-records/STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001.json",
