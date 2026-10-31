@@ -240,6 +240,18 @@ class PredicateTests(unittest.TestCase):
         # The superseded 726248a5 pin is kept as history, with the kernel blob and lines it was taken at.
         self.assertEqual(pin["supersedes"]["sha256"][:8], "726248a5")
         self.assertEqual(pin["supersedes"]["file_blob_at_fc19b532"], "ffec5d648d7fa4aead1f44f76df936a2da21bb96")
+        blob = hashlib.sha1(b"blob %d\0" % len(src.encode()) + src.encode()).hexdigest()
+        # kernel.py changed after fc19b532 (the c9192134 re-pin; Labs#3434 supplies the carrier epoch at dispatch);
+        # the rule's function segment sha256 (PIN) is c9192134 wherever the function sits. required-checks.json is
+        # byte-pinned by the vendored writer snapshot (tests/test_sv_check_receipt_append.py), so its history entry
+        # stays the blob kernel.py had at fc19b532; invariants.json carries the current pin, this tree's kernel blob
+        # and the same historical one.
+        inv = json.loads((ROOT / "data/sv-work-items/invariants.json").read_text())
+        rule = [i for i in inv["invariants"] if "supplied_epoch_rule" in i][0]["supplied_epoch_rule"]
+        self.assertEqual(rule["file_blob"], blob)  # the pinned kernel.py blob is this tree's
+        self.assertEqual((rule["file_blob_at_fc19b532"], rule["sha256"]),
+                         (pin["supersedes"]["file_blob_at_fc19b532"], PIN))
+        self.assertEqual(rule["supersedes"]["sha256"], pin["supersedes"]["sha256"])
 
 
 class AdmissionTests(unittest.TestCase):

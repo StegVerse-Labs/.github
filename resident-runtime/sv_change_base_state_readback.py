@@ -24,7 +24,7 @@ layout: ``<ledger_head>:HEAD.json`` (ledger_store.HEAD_KEY) -> ``receipts/<hex>.
 schema ``stegverse.organization-transition-receipt/v1`` with a verified seal (receipt_sha256 = sha256 of the canonical
 body without it, aggregate_repo_transition.canon/sha) -> ``str($.hb_reference.epoch)`` only if the epoch is an int (not a
 bool) >= 32 and ``$.hb_reference.derived_from_clock`` is exactly false (rule source: org-kernel/kernel.py:68-74
-``hb_reference``, blob ffec5d64; the same rule as P1 #3264 @fc19b532 ``base_ledger_head_epoch``). Otherwise FAIL_CLOSED
+``hb_reference``, blob 4d1d2d47 (Labs#3434; ffec5d64 until then); the same rule as P1 #3264 @fc19b532 ``base_ledger_head_epoch``). Otherwise FAIL_CLOSED
 HB_EPOCH_SOURCE_UNOBSERVED. The epoch is sealed with the rest of the receipt, together with
 ``hb_epoch_source {ledger_head, receipt, field}`` naming where it was read; on every FAIL_CLOSED both are sealed as null.
 ``--hb-epoch`` is never a source, only a cross-check. A supplied value that is malformed (not ASCII digits >= 32) or
@@ -88,12 +88,13 @@ HB_EPOCH_INVARIANT = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 ORG_RECEIPT_SCHEMA = "stegverse.organization-transition-receipt/v1"  # aggregate_repo_transition.py:1074
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py:22
 # Rule source: org-kernel/kernel.py:84-93 (hb_reference(epoch=...): int, not bool, >= 32, derived_from_clock False).
-# Was lines 68-74 of blob ffec5d64; re-cited at the #3290 main merge with the c9192134 re-pin (lead ruling 2026-10-24).
-EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "84-93", "git_blob_sha": "5e27db4b97866f877c9438dff5531253bee8af6d"}
+# Was lines 68-74 of blob ffec5d64; re-cited at the #3290 main merge with the c9192134 re-pin (lead ruling 2026-10-24),
+# and again at the merge of main 6aa1de76 (Labs#3434 supplies the carrier epoch at dispatch): the blob moves, the lines and the segment do not.
+EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "84-93", "git_blob_sha": "5ac967d8c76d982e6c2a8f5ba45e015df646c315"}
 # P1 cites the supplied-epoch rule as the sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 267-302 of the
 # same blob); verified: sha256(ast.get_source_segment(...).encode("utf-8")).
 EPOCH_RULE_FUNCTION = {"file": "org-kernel/kernel.py", "function": "supplied_epoch_failure", "lines": "267-302",
-                       "git_blob_sha": "5e27db4b97866f877c9438dff5531253bee8af6d",
+                       "git_blob_sha": "5ac967d8c76d982e6c2a8f5ba45e015df646c315",
                        "source_segment_sha256": "c91921348741cc1139553d5e4ad3d4f8f1c44fc67537eee4629c5bf63d49041d"}
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
               "owning_existing_goal", "next_attempt")
