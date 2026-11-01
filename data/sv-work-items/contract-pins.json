@@ -13,20 +13,20 @@
       "sha256": "sha256:056b602281a21975f286fd0d919c3b63dacb14d1f41db7a4e56127eee7277eac"
     },
     "data/admission-scenarios/classes.jsonl": {
-      "blob": "98a3584bb4af578368104432b3fa8b4f2921da40",
-      "sha256": "sha256:bb312f6e31c82098a5f76a01dc9ad131b7592d4a3ce276554df5901d726ecfe2"
+      "blob": "e1e990bba61cab70a40274dd18aa5c87a85fbf71",
+      "sha256": "sha256:22dc57cd6643e1c2f56e5e8fe08967bf23cf2385832b5201d898f1d55de0ce79"
     },
     "data/admission-scenarios/corpus.jsonl": {
-      "blob": "97581901a836419c807a553abd20807bbe7a53ec",
-      "sha256": "sha256:f59df79cb5c090281fa0ec188742c4e36d9333c4bafa306282a86129b364f7a1"
+      "blob": "cdad6b227609e21518e2e0b1836a05516cd090bc",
+      "sha256": "sha256:1098c5ca147664f103f920aa363d3b4bdc518e175a41143d3182ff39637602c9"
     },
     "data/admission-scenarios/seed-append-outcomes.jsonl": {
-      "blob": "196f8db8dffea6cdf19a68a48d09963f20cc39bf",
-      "sha256": "sha256:06713da7ae0ea13eefc48816406b7994f4ec7689e71e2a28b80655d62228fd61"
+      "blob": "d09f690da934899dd1a0d527ed6f8053829bb43f",
+      "sha256": "sha256:8404cb5909e6c1354e12478cc16e3389aa24e45d214fbffc32394827d08f555c"
     },
     "data/admission-scenarios/tvc-replay/replay-map.jsonl": {
-      "blob": "aad79f39f04115dfb60591d2322014287d9977ac",
-      "sha256": "sha256:8d62c0932886efa7821890e4fcc5e341137d7fd44ad1f806a9a70733d0b3ccb9"
+      "blob": "3fe39edd5fdcc02d747ba4df56dc1d9edf9a4ebf",
+      "sha256": "sha256:df23bec92402e393571f714eb6740f21d020aedccea0f4688a9e7238c00935c3"
     },
     "data/admission-scenarios/tvc-replay/signoff-receipts.jsonl": {
       "blob": "b3c494fb31c3d469a1ce12871fd3864f86856e0e",
@@ -37,8 +37,8 @@
       "sha256": "sha256:63283a27f0166d2af5d2847dfe47bed3b2cd29ceefc3e2bfe54e656caad3fc1d"
     },
     "data/sv-work-items/invariants.json": {
-      "blob": "5900639a21f66fc4b0066aa1c762cff50c0308cb",
-      "sha256": "sha256:f03e3e3bba9202ebb02b372c25be7ffab17050720c23acf595d55822358970be"
+      "blob": "a4472e9429e32216f4cd04fd7c1354f95ce4223f",
+      "sha256": "sha256:6901c5d1718f72e07a7fa21864e991b97b697b1fc8ebc60f4f606812fa9c15f0"
     },
     "data/sv-work-items/lifecycle-transitions.json": {
       "blob": "aed301bce950429788876a3c096d82326b9d3824",
@@ -49,8 +49,8 @@
       "sha256": "sha256:12e0609db355b9fda438fee416813ee6c19895efebda53fb991a6278e3cd9293"
     },
     "data/sv-work-items/migration/sv-issues.jsonl": {
-      "blob": "2c17f71b12efc0d856f4a6a19ada2a133366f441",
-      "sha256": "sha256:184dd188da7073f3eebb12756a02af666f02520930f4b0f6b1e7e2b3ea4275b7"
+      "blob": "ad79adf4ab4cd1e1a3671efc6ff8f6d77123c55b",
+      "sha256": "sha256:7ce463e977060ed3526bdbf7501697b61a9f3b166e526903b094581a190fdb32"
     },
     "data/sv-work-items/required-checks.json": {
       "blob": "482e3af945492d1cc6d6f80794729445199f88db",
@@ -85,8 +85,8 @@
       "sha256": "sha256:837343e7fae10ed39b8d2bf63355dcfdcf02277f9b9f944b3dff34e986164fd6"
     },
     "org-kernel/kernel.py": {
-      "blob": "5e27db4b97866f877c9438dff5531253bee8af6d",
-      "sha256": "sha256:a1dab479f808efae4f8463198b4a46457fe1227d96e21aaa08bc8e2a60d85b39"
+      "blob": "5ac967d8c76d982e6c2a8f5ba45e015df646c315",
+      "sha256": "sha256:fe7347336ac57c1b8011ae85d11412fed48063215347f38e0ed2bafa6aceae75"
     },
     "org-kernel/node_store.py": {
       "blob": "10b9897847db7d734f47ccfe3c6422f02a7eee3b",
@@ -161,8 +161,8 @@
       "sha256": "sha256:38b4d32032cb96566f890906d2baa396913ff45c95c7bc7ae5f3ec4a1e0a805a"
     },
     "scripts/build_sv_native_fixtures.py": {
-      "blob": "f17c4546bae22cfaaa172c398f8d0615bd9efd66",
-      "sha256": "sha256:a8eb456795c2e62b8451ffed9391513e93f124782c6e2f979ccc008b38b0ee00"
+      "blob": "8d1a35e41c5901c3ed5d4daea762a146b869f7ea",
+      "sha256": "sha256:eece8a20b194223a7616d838a3919f5ae0793265b041a1a81f583875ae15805d"
     },
     "scripts/project_worker_claim_into_canonical_task.py": {
       "blob": "9573c5bb963d7c19f64a08173f7397f427ba32dd",
