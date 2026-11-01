@@ -367,7 +367,7 @@ Goal/COSV remain unassigned; proposal INACTIVE, canonical lifecycle unassigned.
 This branch merges accepted main normally, preserving its README and source.
 Historical observations above are superseded only by the explicit deltas here.
 
-### Admission work already completed
+### Admission preparation already completed
 
 Coordination re-ruling org167 c6512331772 moved the finish point to CVK44e7ae56
 (merged290). The accepted transcript now records ALLOW, verified adjacency and

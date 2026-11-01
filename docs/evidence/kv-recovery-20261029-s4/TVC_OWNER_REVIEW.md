@@ -4,7 +4,7 @@ TVC main read at 6458d28510e0044d946111e3a2b4046e0d23313d; original537 remains d
 
 ## New source and execution
 
-Current chain50802baf changes the consumed CVK pin in documentation; no new authority guard. Readerba4bb0be replaces the obsolete adapter431 genesis instruction with existing Lane D plan_genesis_pin LC-KV-27/28. Configf59ac945 now validates CVK288/f3f8a2dd snapshot files, including new contract and designation pins. This review preserves these changes and fetched their current four-file snapshot; it does not overwrite current main with old cdc50149 artifacts. Fifteen relevant current source/config blobs verified in current-source-blobs.json. Actual537 issuer remains byte-identical to prior verified blob95511a1f.
+Current chain50802baf changes the consumed CVK pin in documentation; no new authority guard. Readerba4bb0be replaces the obsolete adapter431 genesis instruction with existing Lane D plan_genesis_pin LC-KV-27/28. Configf59ac945 now validates CVK288/f3f8a2dd snapshot files, including new contract and designation pins. This review preserves these changes and fetched their current four-file snapshot; it does not overwrite current main with old cdc50149 artifacts. Fifteen relevant current source/config blobs verified in tvc-source-blobs.json. Actual537 issuer remains byte-identical to prior verified blob95511a1f.
 
 New tests exercise real issuer through read_through_chain and place_through_chain, with only existing synthetic ledger/signer/producer/client fixtures. They require typed six-field authenticity refusal and zero client requests. Baseline read reaches synthetic client and returns SKAP_CUSTODY_RECORD_ABSENT; baseline place succeeds without refusal. These are test-fixture effects only. Existing seven regressions remain intact; focused contract is now nine cases. Neither fake verifier nor native credential is used by this real-module contract.
 
@@ -14,7 +14,7 @@ Temporary test runner pytest9.2.0 was installed under /tmp/tvc-review-pytest bec
 
 ## Patch and migration scope
 
-current-containment-and-migration.patch applies the original unconditional post-verify authenticity refusal before any client use and migrates two direct gate assertions: fake verifier ALLOW is now refusal/no admission/no client request, and missing-client case now observes earlier authenticity refusal. No production bypass, caller BOUND flag, new signer, purpose or task field was invented. The real issuer issue/verify semantics remain untouched. Candidate source is in ../runtime-review-current-contained; pristine baseline in this directory.
+tvc-containment.patch applies the original unconditional post-verify authenticity refusal before any client use and migrates two direct gate assertions: fake verifier ALLOW is now refusal/no admission/no client request, and missing-client case now observes earlier authenticity refusal. No production bypass, caller BOUND flag, new signer, purpose or task field was invented. The real issuer issue/verify semantics remain untouched. The local candidate and pristine work directories are not archived here. Reconstruct the proposal using tvc-source-blobs.json and tvc-containment.patch; this archive does not claim to contain a full checkout.
 
 Seven remaining failing owner tests, intentionally retained rather than skipped or weakened:
 - test_layer2_consumes_the_ledger_read_layer1: preserve reader/layer positive at read_custody_receipts component boundary; gate itself refuses issuance authority.
@@ -37,3 +37,7 @@ Append the same paragraph as a labeled consumed-dependency observation in docs/T
 
 chain SHA256 before dcc4202f8bc30d961049c1f45a1235224dd234c30624271aa257f8866cc89b3f; after e99bd6454aea2aca7296cd21eb60fc4cf4cd9e6f0bb67d12a97ddad7c9d46080.
 Gate test SHA256 before6b43eb33c5d8c0c84fa805267bae691619ccbd1b15fca78c9882ad626fb3b24d; after b415d547e45151e795b34ef52c76815cd96e3694324a0e7c14b7b6cc583288e5.
+
+## Evidence provenance correction — 2026-11-01
+
+The two consumption JSON files are restored byte-for-byte from their original native consumer output. Reviewer annotations are confined to this sidecar: observed ledger commit was 4b032d13; main consumption used the retained fd5dd53e receipt, and custody consumption tested historical d810644d. These are historical observations, not receipt coverage for current 3442/3376 heads. The later 2e0ec2dd receipt also binds the old surface; final source update and restack require a newly matching producer receipt and original writer append.
