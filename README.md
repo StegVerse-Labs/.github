@@ -2072,7 +2072,20 @@ admission, claim/fence, external conformance or closure. The task shard remains
 ACTIVE; its aggregate generation-322 Registry row is absent. Protected source
 integration and Registry disposition remain with their existing owners.
 
-### InTr verification and integration handoff — 2026-10-29
+### InTr owner reconciliation — 2026-11-01
+
+TVC #573 and Labs #3411 are merged. Labs #3207 was superseded by merged #3433;
+#3213 is merged. Org #162's one-receipt decision and merged #261 resolve the
+historical successor-policy item. Registry #3195 must now reconcile the stale
+B2 rationale, shard blockers=[] and L5 ownership provenance through its native
+process; no metric or authority transition is inferred here. Canonical ACTIVE,
+null claim/fence and completion=false remain. Session9; cumulative recovery lower
+bound41/20, exact total UNVERIFIED and never reset. Private execution remains
+under existing Org #162 / TVC #488 owners. See the
+[canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md)
+for immutable merge receipts, owner decision and concrete remaining actions.
+
+### InTr verification and integration handoff — 2026-10-29 (historical)
 
 
 Org #258's declared-successor reader was independently tested (10 ingress tests
