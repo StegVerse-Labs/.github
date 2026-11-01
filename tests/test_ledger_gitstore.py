@@ -198,7 +198,9 @@ def ingress_org_writer():
     source = inspect.getsource(ingress._append_halves)
     if "ledger.append_organization(" in source:
         return ingress.ledger, "append_organization"
-    if "organization_ledger.aggregate_transition(" in source:
+    # the call may be wrapped (`_ledger_write(organization_ledger.aggregate_transition, ...)`),
+    # so match the attribute reference, not only a direct call
+    if "organization_ledger.aggregate_transition" in source:
         return ingress.organization_ledger, "aggregate_transition"
     return ingress.organization_ledger, "append"
 

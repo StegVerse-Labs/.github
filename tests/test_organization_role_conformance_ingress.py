@@ -717,7 +717,9 @@ class RetryAndLedgerRootTests(ConformanceIngressCase):
         with mock.patch.object(ingress, "ingress_transition_id",
                                lambda request, evaluation=None: first["organization_transition_id"]):
             refused = self.receive(manifest, packet_id="delivery-2")
-        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        # A colliding id is a defect of the submission: DENY, returned as stored.
+        self.assertEqual(refused["disposition"], "DENY")
+        self.assertEqual(refused["refusal_stored_disposition"], "DENY")
         self.assertEqual(refused["failed_predicate"], "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST")
         after = self.receipt_bytes(self.repo_root)
         self.assertTrue(set(repository_bytes.items()) <= set(after.items()))
