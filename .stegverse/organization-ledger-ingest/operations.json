@@ -71,7 +71,7 @@
       "append_path": "resident-runtime/sv_change_admit_append.py::append_change_admit (intr_destination_ingress._two_level_atomic; the change lookup, the P1 sv_work_items.transition chain SV_CHANGE_SUPERSEDE -> SV_CHANGE_VERIFY -> SV_CHANGE_ADMIT, then sv_work_items.record -> repository_ledger.append -> organization_ledger.aggregate_transition, in one exclusive section; intr_destination_ingress.py unedited)",
       "transition_class": "SV_CHANGE_ADMIT",
       "evidence_schema": "stegverse.sv_change.v1 (the change record, in $.evidence.record, with the lifecycle outcome and its six fields)",
-      "evidence_schema_file": "tests/vendor/p1_f28c3a76/ (P1's sv_work_items.py validate_change and lifecycle-transitions.json, pinned by data/sv-work-items/contract-pins.json sha256 5c0c98d4349274b547a7c4ba8154e77e930e55e0a8dc1827344229661957a4cb; the evaluator is sv_check_receipt_append.p1_readers, not a copy)",
+      "evidence_schema_file": "tests/vendor/p1_c9192134/ (P1's sv_work_items.py validate_change and lifecycle-transitions.json, pinned by data/sv-work-items/contract-pins.json sha256 5c0c98d4349274b547a7c4ba8154e77e930e55e0a8dc1827344229661957a4cb; the evaluator is sv_check_receipt_append.p1_readers, not a copy)",
       "evidence_location": "repository receipt $.evidence (record, disposition, the six fields, invariant, and $.evidence.observed: the current base read from the ledger and the checkout, the push receipts read from the ledger, the step chain), retained beside the organization receipt at source-receipts/<hex>.json",
       "organization_receipt_boundary_operation": "sv_change_admit",
       "ledger_ref": "refs/stegverse/organization-ledger",

@@ -108,32 +108,74 @@ def _refuse(predicate: str, detail: str) -> SystemExit:
     return SystemExit(predicate + ":" + detail)
 
 
-def epoch_refusal(hb_epoch: Any) -> SystemExit | None:
+#: The shared supplied-epoch rule (consumers Q3; P1 #163) is the kernel's own
+#: `supplied_epoch_failure`: one rule, not a copy. The receiving operation
+#: appends at both ledger levels, so it is handed the epoch of the frame being
+#: consumed; none is HB_EPOCH_NOT_SUPPLIED, anything other than ASCII digits
+#: at or above the HB32 anchor is HB_EPOCH_INVALID. No clock is read and the
+#: operation is not loaded, so nothing is appended.
+HB_EPOCH_NOT_SUPPLIED = "HB_EPOCH_NOT_SUPPLIED"
+HB_EPOCH_INVALID = "HB_EPOCH_INVALID"
+HB_ANCHOR_EPOCH = 32
+INTR_PROTOCOL_GOAL = HB_EPOCH_OWNING_EXISTING_GOAL
+RETRY_ENTRYPOINT = HB_EPOCH_RETRY_ENTRYPOINT
+
+
+def _kernel():
+    """The kernel this module ships with, loaded from its own tree (never a copy of the rule)."""
+    spec = importlib.util.spec_from_file_location("capability_ingress_kernel", KERNEL_PATH)
+    kernel = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kernel)
+    return kernel
+
+
+def __getattr__(name: str) -> Any:
+    """`supplied_epoch_failure` is the kernel's own function, resolved when it is asked for.
+
+    Loaded then rather than at import, as `epoch_refusal` loads it, so a
+    boundary module copied without its kernel still imports; a reader (or the
+    one-validator pin) sees the kernel's text, not a copy.
+    """
+    if name == "supplied_epoch_failure":
+        return _kernel().supplied_epoch_failure
+    raise AttributeError(name)
+
+
+class EpochRefused(SystemExit):
+    """A FAIL_CLOSED epoch refusal; `.refusal` (and `.record`) carry the six fields.
+
+    Its message names the failed predicate and the failure code, as every other
+    refusal of this surface does (`_refuse`).
+    """
+
+    def __init__(self, refusal: Mapping[str, Any]):
+        super().__init__(refusal["failed_predicate"] + ":" + refusal["failure_code"])
+        self.refusal = dict(refusal)
+        self.record = self.refusal
+
+
+def epoch_refusal(hb_epoch: Any) -> dict[str, Any] | None:
     """The six-field FAIL_CLOSED of a supplied epoch, or None when it is supplied.
 
     The rule is the kernel's own `supplied_epoch_failure`: absent is
     HB_EPOCH_NOT_SUPPLIED; a bool, a float, a coerced string or a value below
     32 is HB_EPOCH_INVALID. No clock is read.
     """
-    spec = importlib.util.spec_from_file_location("capability_ingress_kernel", KERNEL_PATH)
-    kernel = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(kernel)
-    failure = kernel.supplied_epoch_failure(hb_epoch)
+    failure = _kernel().supplied_epoch_failure(hb_epoch)
     if failure is None:
         return None
     code, detail = failure
-    refused = _refuse(HB_EPOCH_PREDICATE, code)
-    refused.record = {
+    return {
         "disposition": "FAIL_CLOSED", "failure_code": code, "failed_predicate": HB_EPOCH_PREDICATE,
         "detail": detail,
         "required_evidence_or_repair": ("the caller supplies hb_epoch=: ASCII digits with value >= "
-                                        + str(kernel.HB_ANCHOR_EPOCH) + "; it is never derived from a clock"),
+                                        + str(HB_ANCHOR_EPOCH) + "; it is never derived from a clock"),
         "retry_entrypoint": HB_EPOCH_RETRY_ENTRYPOINT,
         "owning_existing_goal": HB_EPOCH_OWNING_EXISTING_GOAL,
-        "next_attempt": "call again with the supplied epoch; nothing was written",
+        "next_attempt": "call again with the supplied epoch; the receiving operation was not loaded "
+                        "and nothing was written",
         "derived_from_clock": False, "consequence_committed": False,
     }
-    return refused
 
 
 def boundary(root: Path) -> dict[str, Any]:
@@ -300,14 +342,16 @@ def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *
     returns what it reported. A refusal is returned as the operation stated it,
     not retried into an admission.
 
-    `hb_epoch` is the epoch the carrier supplied. The operation's receipts are
-    stamped with it; without one they would be stamped from the host clock, so
-    an absent or invalid epoch is refused before the operation is loaded and
-    before any store is opened. No clock is read.
+    `hb_epoch` is the epoch of the frame being consumed, as the carrier
+    supplied it. The operation's receipts are stamped with it; without one they
+    would be stamped from the host clock, so an absent or invalid epoch raises
+    the six-field `EpochRefused` before the operation is loaded and before any
+    store is opened. No clock is read.
     """
-    refused = epoch_refusal(hb_epoch)
-    if refused is not None:
-        raise refused
+    refused_epoch = epoch_refusal(hb_epoch)
+    if refused_epoch is not None:
+        raise EpochRefused(refused_epoch)
+    hb_epoch = int(str(hb_epoch))  # admitted as ASCII digits
     resolved = resolve(root, service)
     # The overlay says how this capability's submission is read. A payload the
     # binding does not admit is refused before the operation is loaded, so a
@@ -318,7 +362,7 @@ def receive(root: Path, service: Mapping[str, Any], packet: Mapping[str, Any], *
     module = load_operation(resolved)
     result = module.receive(submission, registry=registry, standing=packet.get("standing"),
                             packet_id=str(packet.get("packet_id") or resolved["receiving_operation_id"]),
-                            hb_epoch=int(str(hb_epoch)), mesh_root=mesh_root)
+                            hb_epoch=hb_epoch, mesh_root=mesh_root)
     return {
         "capability_received": True,
         "capability_profile_id": resolved["capability_profile_id"],
