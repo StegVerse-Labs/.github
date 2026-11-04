@@ -1,0 +1,39 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "communication_id": "main-merge-transfer:StegVerse-Labs/.github@cc8eb0f34b5209b03464a89e801766e408478a47",
+    "disposition": "ALLOW",
+    "merge_commit": "cc8eb0f34b5209b03464a89e801766e408478a47",
+    "operation": "ORGANIZATION_MAIN_MERGE_TRANSFER",
+    "profile_id": "main-merge-transfer",
+    "repository": "StegVerse-Labs/.github"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 574296107,
+    "frequency_hz": 100,
+    "generation": 574296107,
+    "heartbeat_id": "HB:574296107",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "observed_at": "2026-11-04T13:36:27.291610+00:00",
+  "org_transition_class": "REPO_STATE_PROPAGATION",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:09b21266cbf7a32050bfe4f344e1172939906b3e73d546c4b7ea4533089260c5",
+  "previous_receipt_sha256": "sha256:df339d648e6b697fcd63063583e0eaac15ec0842b76964137677a2e251269c4e",
+  "receipt_sha256": "sha256:b838b38859e1f4f713e2702431891ecef40bae8db2828b6ed01689d5758e75e6",
+  "repo_receipt_sha256": "sha256:c57fd2b1a53ea11ff233f75d25c76c4521f4b34c3877d095b89a615b89d55909",
+  "repo_transition_id": "ORGANIZATION_MAIN_MERGE_TRANSFER:cc8eb0f34b5209b03464a89e801766e408478a47",
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.repo-transition-receipt/v1",
+  "source_repository": "StegVerse-Labs/.github",
+  "source_transition_id": "ORGANIZATION_MAIN_MERGE_TRANSFER:cc8eb0f34b5209b03464a89e801766e408478a47",
+  "source_transition_sha256": "sha256:c57fd2b1a53ea11ff233f75d25c76c4521f4b34c3877d095b89a615b89d55909",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:72ca82d8a3a8c4182d8ec69df3afae3abda82c3affb323cdd1a281bdb09b69ec"
+}
