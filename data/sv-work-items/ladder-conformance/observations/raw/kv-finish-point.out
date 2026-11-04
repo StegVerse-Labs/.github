@@ -5,7 +5,7 @@ $ {python} -m runtime.kv_skap_vault finish-point
   "access_constraints": [
     {
       "constraint": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
-      "dependency_owner": "Interlock/InTr healthy-node evaluator, LC-KV-13/LC-KV-14 (StegVerse-org/LLM-adapter#430, which carries #429 and #428; admission order StegVerse-Labs/StegOS#426, then #430, then #429, then #428; InTr and Mesh Destinations lane), over the requesting node's own transition ledger; no organization ledger is involved",
+      "dependency_owner": "Interlock/InTr healthy-node evaluator, LC-KV-13/LC-KV-14 (StegVerse-org/LLM-adapter#430, merged as 649f0775, which carried #429 and #428; merged chain StegVerse-Labs/StegOS#430 d7b23eb5, then LLM-adapter#430 649f0775, then continuity-vault-kit#289 3d68fe1e, then continuity-vault-kit#290 44e7ae56, then StegVerse-Labs/.github#3425 fd6462db, then StegVerse-Labs/.github#3428 a630f155; InTr and Mesh Destinations lane), over the requesting node's own transition ledger; no organization ledger is involved",
       "disposition": "FAIL_CLOSED",
       "enforced_in_sealed_predicate": "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
       "failed_predicate": "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",

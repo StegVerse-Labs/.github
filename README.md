@@ -2072,7 +2072,20 @@ admission, claim/fence, external conformance or closure. The task shard remains
 ACTIVE; its aggregate generation-322 Registry row is absent. Protected source
 integration and Registry disposition remain with their existing owners.
 
-### InTr verification and integration handoff — 2026-10-29
+### InTr owner reconciliation — 2026-11-01
+
+TVC #573 and Labs #3411 are merged. Labs #3207 was superseded by merged #3433;
+#3213 is merged. Org #162's one-receipt decision and merged #261 resolve the
+historical successor-policy item. Registry #3195 must now reconcile the stale
+B2 rationale, shard blockers=[] and L5 ownership provenance through its native
+process; no metric or authority transition is inferred here. Canonical ACTIVE,
+null claim/fence and completion=false remain. Session9; cumulative recovery lower
+bound41/20, exact total UNVERIFIED and never reset. Private execution remains
+under existing Org #162 / TVC #488 owners. See the
+[canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md)
+for immutable merge receipts, owner decision and concrete remaining actions.
+
+### InTr verification and integration handoff — 2026-10-29 (historical)
 
 
 Org #258's declared-successor reader was independently tested (10 ingress tests
@@ -2091,7 +2104,23 @@ Combined integration check: H36 patch applied cleanly to Org #258 at 9f21aa83;
 in 27.031s. Local fabricated-fixture/source verification only; hosted CI on
 an owner-created combined commit remains required.
 
-Fresh continuation: #3405 at 4cf5c7c1 passed all six hosted checks. The
+Current InTr readback: Registry generation326 contains row==shard after #3409
+merge f9b46abc. Org#228/#258/#261/H36#267 are merged. Canonical ACTIVE and
+null claim/fence remain; exact COSV metric provenance is a separate #3195 follow-up.
+Session4; cumulative recovery lower bound36/20, exact total unverified, no reset.
+Private runtime and warrant ownership remain separate; source integration is not
+runtime execution. See the canonical handoff for exact merged commits and owners.
+
+Historical terminal reconciliation: **DECOMPOSED_AT_PROMPT_LIMIT** per Registry #3195
+comment6506716678; canonical shard remains ACTIVE, completion unclaimed/unvalidated.
+Session 3; cumulative recovery lower bound35/20, exact total unverified, no reset.
+#3405 merged as b7033aee after six successful checks. Org #259 independently
+ratified and merged as46ddcfd4 after46 successful checks. Remaining work follows
+existing owners in the [canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md).
+Registry #3409 still needs vector/index evidence and fixture repair before green
+CI and committed aggregate readback; no authority or metrics are invented.
+
+Historical continuation: #3405 at 4cf5c7c1 passed all six hosted checks. The
 [Registry repair diagnostic](docs/evidence/intr-registry-repair-20261029/README.md)
 reproduces the omitted-shard repair cycle and validates an isolated atomic
 record-data candidate (seven validators, every-task projection, NO_CHANGE repeat,
@@ -2274,3 +2303,7 @@ with7remaining failures in the59-case affected selection explicitly retained.
 [Evidence and owner migration plan](docs/evidence/kv-recovery-20261029-s4/TVC_OWNER_REVIEW.md).
 Executed ledger consumption distinguishes main64-file ALLOW from3376's12-file
 surface mismatch; the recovered genuine receipt matches all64files on3376.
+
+## KV/SKAP source and custody handoff — 2026-11-03
+
+The [KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#november-3--source-offers-and-custody) records the accepted historical writer append, the two source files still requiring TVC verification, and the pending Registry decision.

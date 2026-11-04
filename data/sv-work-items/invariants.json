@@ -157,6 +157,7 @@
       "statement": "For admission, hb_epoch is observed state: the SV_CHANGE's hb_epoch is the epoch recorded on the org-ledger head receipt its base (base_ref.ledger_head) is bound to ($.hb_reference.epoch of the sealed stegverse.organization-transition-receipt/v1 named by HEAD.json at that commit), as read and sealed by Lane C's base-state readback (Labs#3266 @7ad6d81f, readback blob 17ef4401, stegverse.sv-change-base-state-readback/v1: hb_epoch slot + hb_epoch_source, sealed by result_sha256). The shared supplied-epoch rule (726248a5) still applies to the read value. Nothing reads a clock and nothing mints an epoch.",
       "status": "DECIDED_BY_INVARIANT (JD-P4-3, partial)",
       "supplied_epoch_rule": {
+        "file_blob": "4d1d2d470e9e348a9814aaf58258e135760fd0e5",
         "file_blob_at_fc19b532": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
         "function": "supplied_epoch_failure",
         "lines_at_fc19b532": "236-269",

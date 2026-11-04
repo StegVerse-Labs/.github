@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import json
+import os
+import signal
+import subprocess
+import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
+from scripts import repair_resident_worker_presence as repair
 from scripts import restart_sovereign_ephemeral_node as supervisor
 from scripts.run_sovereign_ephemeral_console import _service_receipt
 
@@ -18,6 +25,13 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
         (scripts / "run_heartbeat_runtime.py").write_text("# carrier\n", encoding="utf-8")
         (scripts / "run_worker_runtime.py").write_text("# worker\n", encoding="utf-8")
         return root
+
+    def _pinned(self, carrier_pid: int, worker_pid: int) -> list:
+        # Stand-ins for the pidfds the identity proof pins; the code under test closes them.
+        return [
+            ("carrier", carrier_pid, os.open(os.devnull, os.O_RDONLY)),
+            ("worker", worker_pid, os.open(os.devnull, os.O_RDONLY)),
+        ]
 
     def test_start_launches_separate_carrier_and_worker_and_requires_worker_tick(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -170,7 +184,9 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
                 "worker_active": True,
                 "worker_task_capable_cycle_observed": True,
             }
-            with mock.patch.object(supervisor, "_terminate", side_effect=[True, True]) as terminate, mock.patch.object(supervisor, "start", return_value=dict(fresh)):
+            with mock.patch.object(supervisor, "_proven_previous_processes", return_value=(self._pinned(11, 12), None)), \
+                 mock.patch.object(repair, "_terminate_process", side_effect=[True, True]) as terminate, \
+                 mock.patch.object(supervisor, "start", return_value=dict(fresh)):
                 result = supervisor.restart(root)
 
             self.assertEqual([call.args[0] for call in terminate.call_args_list], [11, 12])
@@ -178,7 +194,9 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
             self.assertTrue(result["worker_restart_observed"])
             self.assertTrue(result["restart_observed"])
 
-            with mock.patch.object(supervisor, "_terminate", side_effect=[True, False]), mock.patch.object(supervisor, "start") as start:
+            with mock.patch.object(supervisor, "_proven_previous_processes", return_value=(self._pinned(11, 12), None)), \
+                 mock.patch.object(repair, "_terminate_process", side_effect=[True, False]), \
+                 mock.patch.object(supervisor, "start") as start:
                 with self.assertRaisesRegex(RuntimeError, "previous_ephemeral_process_teardown_incomplete"):
                     supervisor.restart(root)
             start.assert_not_called()
@@ -194,7 +212,8 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
             durable.write_text('{"durable":true}\n', encoding="utf-8")
 
             with (
-                mock.patch.object(supervisor, "_terminate", side_effect=[True, True]),
+                mock.patch.object(supervisor, "_proven_previous_processes", return_value=(self._pinned(41, 42), None)),
+                mock.patch.object(repair, "_terminate_process", side_effect=[True, True]),
                 mock.patch.object(supervisor, "_alive", side_effect=[False, False]),
             ):
                 result = supervisor.teardown(root)
@@ -243,6 +262,195 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
             missing_worker = dict(process)
             missing_worker["worker_pid"] = None
             self.assertFalse(_service_receipt(root, root / "runtime", missing_worker, 10.0)["active"])
+
+
+@unittest.skipUnless(Path("/proc/self/cmdline").is_file(), "process identity is read from /proc")
+class ReceiptPidIdentityBeforeTeardownTests(unittest.TestCase):
+    """teardown()/restart() signal only processes proven to be this root's carrier/worker (#1620/#3299)."""
+
+    SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                  "retry_entrypoint", "owning_existing_goal", "next_attempt")
+
+    def _root(self, tmp: str) -> Path:
+        root = Path(tmp).resolve()
+        (root / "scripts").mkdir()
+        (root / "scripts" / "run_heartbeat_runtime.py").write_text("import time\ntime.sleep(60)\n", encoding="utf-8")
+        (root / "scripts" / "run_worker_runtime.py").write_text(
+            "import json, sys, time\nfrom pathlib import Path\n"
+            "root = Path(sys.argv[sys.argv.index('--root') + 1])\n"
+            "(root / 'control').mkdir(exist_ok=True)\n"
+            "(root / 'control' / 'worker-runtime-state.json').write_text(json.dumps({'runtime_tick': 1}))\n"
+            "time.sleep(60)\n",
+            encoding="utf-8",
+        )
+        return root
+
+    def _spawn(self, command: list[str]) -> subprocess.Popen:
+        process = subprocess.Popen(command)
+        self.addCleanup(process.wait)
+        self.addCleanup(process.kill)
+        return process
+
+    def _runner(self, root: Path, role: str) -> subprocess.Popen:
+        runner = {"carrier": "run_heartbeat_runtime.py", "worker": "run_worker_runtime.py"}[role]
+        return self._spawn([sys.executable, str(root / "scripts" / runner), "--root", str(root)])
+
+    def _write_receipt(self, root: Path, receipt: dict) -> None:
+        path = root / supervisor.PROCESS_RECEIPT
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(receipt) + "\n", encoding="utf-8")
+
+    def _assert_refused(self, result: dict, predicate: str) -> None:
+        self.assertEqual(result["state"], "FAIL_CLOSED")
+        self.assertEqual(result["failure_code"], "STALE_WORKER_IDENTITY_UNPROVEN")
+        self.assertEqual(result["failed_predicate"], predicate)
+        for field in self.SIX_FIELDS:
+            self.assertTrue(result[field], field)
+        self.assertFalse(result["process_signalled"])
+
+    def test_teardown_never_signals_an_unrelated_receipt_pid(self):
+        victim = self._spawn([sys.executable, "-c", "import time; time.sleep(60)"])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            self._write_receipt(root, {"carrier_pid": victim.pid, "worker_pid": victim.pid})
+            result = supervisor.teardown(root)
+            self.assertEqual(json.loads((root / supervisor.TEARDOWN_RECEIPT).read_text())["state"], "FAIL_CLOSED")
+        self.assertIsNone(victim.poll())
+        self._assert_refused(result, "RECEIPT_PID_RUNS_THIS_ROOT_CARRIER_ENTRYPOINT")
+        self.assertEqual(result["retry_entrypoint"], "scripts/restart_sovereign_ephemeral_node.py::teardown")
+
+    def test_restart_kills_nothing_and_starts_nothing_when_one_receipt_pid_is_unproven(self):
+        victim = self._spawn([sys.executable, "-c", "import time; time.sleep(60)"])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            carrier = self._runner(root, "carrier")
+            self._write_receipt(root, {
+                "carrier_pid": carrier.pid, "carrier_start_ticks": supervisor.proc_start_ticks(carrier.pid),
+                "worker_pid": victim.pid,
+            })
+            with mock.patch.object(supervisor, "start") as start:
+                result = supervisor.restart(root)
+            self.assertIsNone(carrier.poll())
+        self.assertIsNone(victim.poll())
+        self._assert_refused(result, "RECEIPT_PID_RUNS_THIS_ROOT_WORKER_ENTRYPOINT")
+        self.assertFalse(result["restart_observed"])
+        start.assert_not_called()
+
+    def test_teardown_never_signals_a_reused_worker_pid(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            worker = self._runner(root, "worker")
+            ticks = supervisor.proc_start_ticks(worker.pid)
+            self.assertIsInstance(ticks, int)
+            self._write_receipt(root, {"worker_pid": worker.pid, "worker_start_ticks": ticks - 1})
+            result = supervisor.teardown(root)
+            self.assertIsNone(worker.poll())
+        self._assert_refused(result, "RECEIPT_PID_START_TIME_MATCHES_RECORDED_WORKER")
+
+    def test_teardown_still_stops_the_processes_start_spawned(self):
+        # The console tears down the peers it just started; start() records both start
+        # times, so their identity is provable and they are still stopped.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            spawned = supervisor.start(root)
+            pids = (spawned["carrier_pid"], spawned["worker_pid"])
+            self.addCleanup(lambda: [supervisor._terminate(pid) for pid in pids])
+            self.assertIsInstance(spawned.get("carrier_start_ticks"), int)
+            self.assertIsInstance(spawned.get("worker_start_ticks"), int)
+            handles = [supervisor._SPAWNED[pid] for pid in pids]
+            result = supervisor.teardown(root)
+        self.assertNotEqual(result["state"], "FAIL_CLOSED")
+        self.assertTrue(result["carrier_terminated"])
+        self.assertTrue(result["worker_terminated"])
+        for handle in handles:  # teardown reaped them through the handles start() kept
+            self.assertEqual(handle.returncode, -signal.SIGTERM)
+
+    def test_spawned_handle_never_stands_in_for_a_reused_pid(self):
+        # The spawned child exited and was reaped elsewhere, so its PID was free to be
+        # reused by an unrelated process; the stale _SPAWNED handle must not make that
+        # PID look dead or provable, and the process at it must not be signalled.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            stale = subprocess.Popen([sys.executable, "-c", "pass"])
+            stale.wait()
+            victim = self._spawn([sys.executable, "-c", "import time; time.sleep(60)"])
+            self.addCleanup(supervisor._SPAWNED.pop, victim.pid, None)
+            supervisor._SPAWNED[victim.pid] = stale
+            self._write_receipt(root, {
+                "worker_pid": victim.pid, "worker_start_ticks": supervisor.proc_start_ticks(victim.pid),
+            })
+            for action in (supervisor.teardown, supervisor.restart):
+                with mock.patch.object(supervisor, "start") as start:
+                    result = action(root)
+                self.assertIsNone(victim.poll())
+                self._assert_refused(result, "RECEIPT_PID_RUNS_THIS_ROOT_WORKER_ENTRYPOINT")
+                start.assert_not_called()
+            self.assertIs(supervisor._SPAWNED.get(victim.pid), stale)
+
+    def test_proven_spawned_peer_is_signalled_then_reaped_without_zombie(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            spawned = supervisor.start(root)
+            pids = (spawned["carrier_pid"], spawned["worker_pid"])
+            self.addCleanup(lambda: [supervisor._terminate(pid) for pid in pids])
+            handles = {pid: supervisor._SPAWNED[pid] for pid in pids}
+            events: list[tuple[str, int]] = []
+            identity = supervisor._identity()
+            real_signal = identity._terminate_process
+
+            def signal_through_pidfd(pid, handle, *args, **kwargs):
+                events.append(("pidfd_signal", pid))
+                return real_signal(pid, handle, *args, **kwargs)
+
+            patches = [mock.patch.object(identity, "_terminate_process", side_effect=signal_through_pidfd)]
+            for pid, handle in handles.items():
+                for method in ("poll", "wait"):
+                    real = getattr(handle, method)
+                    patches.append(mock.patch.object(
+                        handle, method,
+                        side_effect=lambda *a, _pid=pid, _m=method, _real=real, **k: (
+                            events.append((_m, _pid)), _real(*a, **k))[1],
+                    ))
+            for patch in patches:
+                patch.start()
+            try:
+                result = supervisor.teardown(root)
+            finally:
+                for patch in patches:
+                    patch.stop()
+        self.assertEqual(result["state"], "TEARDOWN_COMPLETE")
+        self.assertTrue(result["no_supervised_process_residue"])
+        for pid, handle in handles.items():
+            touched = [i for i, (_kind, event_pid) in enumerate(events) if event_pid == pid]
+            # The handle is used only to reap, and only after the proven pidfd signal.
+            self.assertEqual(events[touched[0]], ("pidfd_signal", pid), events)
+            self.assertIn(("wait", pid), events)
+            self.assertEqual(handle.returncode, -signal.SIGTERM)
+            self.assertNotIn(pid, supervisor._SPAWNED)
+            with self.assertRaises(ChildProcessError):  # reaped: no zombie left
+                os.waitpid(pid, os.WNOHANG)
+            self.assertFalse(Path(f"/proc/{pid}").exists())
+
+    def test_restart_still_stops_proven_processes_before_starting(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._root(tmp)
+            carrier, worker = self._runner(root, "carrier"), self._runner(root, "worker")
+            self._write_receipt(root, {
+                "carrier_pid": carrier.pid, "carrier_start_ticks": supervisor.proc_start_ticks(carrier.pid),
+                "worker_pid": worker.pid, "worker_start_ticks": supervisor.proc_start_ticks(worker.pid),
+            })
+            reapers = [threading.Thread(target=p.wait, daemon=True) for p in (carrier, worker)]
+            for reaper in reapers:  # no zombie left to look alive
+                reaper.start()
+            fresh = {"carrier_pid": 1, "worker_pid": 2, "worker_task_capable_cycle_observed": True}
+            with mock.patch.object(supervisor, "start", return_value=fresh) as start:
+                result = supervisor.restart(root)
+            for reaper in reapers:
+                reaper.join(timeout=5)
+        self.assertEqual(carrier.returncode, -signal.SIGTERM)
+        self.assertEqual(worker.returncode, -signal.SIGTERM)
+        self.assertTrue(result["restart_observed"])
+        start.assert_called_once()
 
 
 if __name__ == "__main__":

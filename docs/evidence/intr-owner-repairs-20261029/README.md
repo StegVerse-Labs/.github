@@ -27,3 +27,16 @@ Patch SHA256 values:
 
 Retained logs report local validation, not hosted CI. Existing owners apply/rebase candidates,
 refresh exact-head CI and perform protected integration under their own authority.
+
+## Registry #3409 follow-up
+
+At head3b32f45bf663e0811bb21cfe432797df62b71324, the retained fixture-only
+patch repairs stale generation322 and absent-task assumptions.114 tests pass;
+all seven native validators pass. SHA256:
+21002b4b9c233b9f97d912a8c1ba927ff0dff28367b4563582613d0a58f94439.
+
+This does not resolve the missing effective COSV index. The legacy source lacks
+a complete native record. A diagnostic null observed_at wrapper was rejected
+as incompatible with the full schema; it and its generated index are excluded.
+Registry/Coordination must supply truthful source evidence or explicitly resolve
+non-emitted legacy representation before exact-head CI and protected merge.

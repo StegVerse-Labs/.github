@@ -12,6 +12,11 @@
    "kind": "git",
    "repo": "StegVerse-Labs/.github"
   },
+  "labsledger": {
+   "commit": "c32f04bd2e2b638da63abd4edecd8be9d6669d2d",
+   "kind": "git",
+   "repo": "StegVerse-Labs/.github"
+  },
   "labsmain": {
    "commit": "6b13c3a749b2940d6142644196a8302823c1f45a",
    "kind": "git",
@@ -19,6 +24,11 @@
   },
   "org": {
    "commit": "35c94a0643039b94fd336889191e5e0b8ea17e81",
+   "kind": "git",
+   "repo": "StegVerse-org/.github"
+  },
+  "orgledger": {
+   "commit": "50e8fb06ec7d72863427bd4d4b7878ccf086608d",
    "kind": "git",
    "repo": "StegVerse-org/.github"
   },
@@ -952,6 +962,74 @@
    "what": "the SV_CHANGE_ADMIT transition on Labs main (declared class and evaluator)"
   },
   {
+   "command": "{python} -c import importlib.util, json, sys\nspec = importlib.util.spec_from_file_location(\"sv_work_items\", \"resident-runtime/sv_work_items.py\")\nwi = importlib.util.module_from_spec(spec)\nsys.modules[\"sv_work_items\"] = wi\nspec.loader.exec_module(wi)\nrows = []\nfor line in open(\"data/sv-work-items/migration/sv-changes.jsonl\", encoding=\"utf-8\"):\n    if not line.strip():\n        continue\n    c = json.loads(line)\n    out = wi.admit(wi.admission_inputs(c, c[\"base_ref\"]))\n    rows.append(dict(out, subject=\"PRE_NATIVE_ADMIT_\" + c[\"change_id\"][4:16], change_id=c[\"change_id\"], record_mode=c[\"record_mode\"], projection_pr=c[\"projection\"][\"pr\"], projection_repo=c[\"projection\"][\"repo\"]))\nprint(json.dumps({\"rows\": rows}, sort_keys=True))\n",
+   "exit_code": 0,
+   "outcomes": [
+    {
+     "change_id": "svc:1a70ad70ab1c24d11186d2049adfcfd1e0dce7662f87da4f61bdf11e55c6c103",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+     "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+     "next_attempt": "propose the NATIVE successor; this record stays history and is never admitted",
+     "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+     "projection_pr": 3225,
+     "projection_repo": "StegVerse-Labs/.github",
+     "record_mode": "MIGRATED_HISTORICAL",
+     "required_evidence_or_repair": "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+     "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+     "subject": "PRE_NATIVE_ADMIT_1a70ad70ab1c"
+    },
+    {
+     "change_id": "svc:4c217bcf70d2761371703408ea2be8861b9d31e716dfa266f15f4068dcc1c912",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+     "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+     "next_attempt": "propose the NATIVE successor; this record stays history and is never admitted",
+     "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+     "projection_pr": 3226,
+     "projection_repo": "StegVerse-Labs/.github",
+     "record_mode": "MIGRATED_HISTORICAL",
+     "required_evidence_or_repair": "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+     "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+     "subject": "PRE_NATIVE_ADMIT_4c217bcf70d2"
+    },
+    {
+     "change_id": "svc:332e03ae6fff6a8acfbec7494004a117ec91acc15937b700755fd6cb0e81fcb2",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+     "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+     "next_attempt": "propose the NATIVE successor; this record stays history and is never admitted",
+     "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+     "projection_pr": 3234,
+     "projection_repo": "StegVerse-Labs/.github",
+     "record_mode": "MIGRATED_HISTORICAL",
+     "required_evidence_or_repair": "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+     "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+     "subject": "PRE_NATIVE_ADMIT_332e03ae6fff"
+    },
+    {
+     "change_id": "svc:dd6acf613fd9001dd369cb3ef9428a9f216edec28cb05af0de9305c366281be0",
+     "disposition": "FAIL_CLOSED",
+     "failed_predicate": "ADMITTED_RECORDS_ARE_NATIVE",
+     "failure_code": "HISTORICAL_RECORD_NOT_ADMISSIBLE",
+     "next_attempt": "propose the NATIVE successor; this record stays history and is never admitted",
+     "owning_existing_goal": "StegVerse-org/.github#163 (WORK_ITEMS_ARE_TASK_REGISTRY_NATIVE)",
+     "projection_pr": null,
+     "projection_repo": "StegVerse-org/.github",
+     "record_mode": "MIGRATED_HISTORICAL",
+     "required_evidence_or_repair": "a superseding NATIVE record (SV_CHANGE_SUPERSEDE) whose every unknown_fields pointer holds an observed value",
+     "retry_entrypoint": "resident-runtime/sv_work_items.py::evaluate_admission",
+     "subject": "PRE_NATIVE_ADMIT_dd6acf613fd9"
+    }
+   ],
+   "pin": "StegVerse-Labs/.github@6b13c3a749b2940d6142644196a8302823c1f45a",
+   "raw": "data/sv-work-items/ladder-conformance/observations/raw/labs-pre-native-admit-refusal.out",
+   "raw_sha256": "sha256:4f9b2431714fa0cadde4a89d68eb958f4a00b19821923c4a1da5304bbb2c712b",
+   "run_id": "labs-pre-native-admit-refusal",
+   "status": "OBSERVED",
+   "what": "SV_CHANGE_ADMIT (sv_work_items.admission_inputs + admit) on Labs main over each committed MIGRATED_HISTORICAL change record in data/sv-work-items/migration/sv-changes.jsonl: is a pre-native record refused FAIL_CLOSED HISTORICAL_RECORD_NOT_ADMISSIBLE (ADMITTED_RECORDS_ARE_NATIVE) with six fields? The inputs are built by the shipped admission_inputs from the committed records, not by hand; no NATIVE change exists to admit."
+  },
+  {
    "baseRefName": "main",
    "headRefOid": "406774e7eddc13ab2369cc8e8d132a51f77daf21",
    "isDraft": true,
@@ -969,7 +1047,7 @@
    "pin": null,
    "pr": "StegVerse-Labs/.github#3326",
    "run_id": "pr-labs3326",
-   "state": "OPEN",
+   "state": "CLOSED",
    "status": "OBSERVED",
    "what": "PR state snapshot"
   },
@@ -1005,6 +1083,154 @@
    "state": "MERGED",
    "status": "OBSERVED",
    "what": "PR state snapshot (EXISTING_IDENTITY mode + WorkerCoordinator claim request)"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 6,
+     "path": "receipts/ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d.json",
+     "pattern": "\"operation\": \"sv_push_receipt\"",
+     "text": "\"operation\": \"sv_push_receipt\","
+    },
+    {
+     "line": 12,
+     "path": "receipts/ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d.json",
+     "pattern": "\"repository\": \"StegVerse-Labs/.github\"",
+     "text": "\"repository\": \"StegVerse-Labs/.github\""
+    },
+    {
+     "line": 12,
+     "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
+     "pattern": "\"repository\": \"StegVerse-Labs/.github\"",
+     "text": "\"repository\": \"StegVerse-Labs/.github\","
+    },
+    {
+     "line": 29,
+     "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
+     "pattern": "\"repository\": \"StegVerse-Labs/.github\"",
+     "text": "\"repository\": \"StegVerse-Labs/.github\","
+    },
+    {
+     "line": 4,
+     "path": "receipts/ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d.json",
+     "pattern": "\"new_sha\": \"293d9df18e5b81e80c2702f256be81a4c09b1785\"",
+     "text": "\"new_sha\": \"293d9df18e5b81e80c2702f256be81a4c09b1785\","
+    },
+    {
+     "line": 5,
+     "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
+     "pattern": "\"new_sha\": \"293d9df18e5b81e80c2702f256be81a4c09b1785\"",
+     "text": "\"new_sha\": \"293d9df18e5b81e80c2702f256be81a4c09b1785\","
+    },
+    {
+     "line": 5,
+     "path": "receipts/ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d.json",
+     "pattern": "\"old_sha\": \"613de515b110b3f1bb1ac42d18e1483c33fb001b\"",
+     "text": "\"old_sha\": \"613de515b110b3f1bb1ac42d18e1483c33fb001b\","
+    },
+    {
+     "line": 6,
+     "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
+     "pattern": "\"old_sha\": \"613de515b110b3f1bb1ac42d18e1483c33fb001b\"",
+     "text": "\"old_sha\": \"613de515b110b3f1bb1ac42d18e1483c33fb001b\","
+    },
+    {
+     "line": 32,
+     "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
+     "pattern": "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\"",
+     "text": "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\","
+    },
+    {
+     "line": 13,
+     "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
+     "pattern": "\"result_sha256\": \"sha256:69c0c9ee37c34a3076baf50b0762101708abbfb18c6e9c5a23232875e614e8c7\"",
+     "text": "\"result_sha256\": \"sha256:69c0c9ee37c34a3076baf50b0762101708abbfb18c6e9c5a23232875e614e8c7\","
+    }
+   ],
+   "patterns": [
+    "\"operation\": \"sv_push_receipt\"",
+    "\"repository\": \"StegVerse-Labs/.github\"",
+    "\"new_sha\": \"293d9df18e5b81e80c2702f256be81a4c09b1785\"",
+    "\"old_sha\": \"613de515b110b3f1bb1ac42d18e1483c33fb001b\"",
+    "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\"",
+    "\"result_sha256\": \"sha256:69c0c9ee37c34a3076baf50b0762101708abbfb18c6e9c5a23232875e614e8c7\""
+   ],
+   "pin": "StegVerse-Labs/.github@c32f04bd2e2b638da63abd4edecd8be9d6669d2d",
+   "run_id": "labs-native-push-receipt",
+   "status": "OBSERVED",
+   "what": "the native Labs push receipt on the organization ledger (org receipt ec1ca4d8, repo receipt a29bc0f9)"
+  },
+  {
+   "files_scanned": 2,
+   "hits": [
+    {
+     "line": 6,
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "pattern": "\"operation\": \"sv_push_receipt\"",
+     "text": "\"operation\": \"sv_push_receipt\","
+    },
+    {
+     "line": 12,
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "pattern": "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+     "text": "\"repository\": \"StegVerse-org/StegVerse-SDK\""
+    },
+    {
+     "line": 12,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+     "text": "\"repository\": \"StegVerse-org/StegVerse-SDK\","
+    },
+    {
+     "line": 4,
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "pattern": "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\"",
+     "text": "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\","
+    },
+    {
+     "line": 5,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\"",
+     "text": "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\","
+    },
+    {
+     "line": 5,
+     "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+     "pattern": "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\"",
+     "text": "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\","
+    },
+    {
+     "line": 6,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\"",
+     "text": "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\","
+    },
+    {
+     "line": 32,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\"",
+     "text": "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\","
+    },
+    {
+     "line": 13,
+     "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+     "pattern": "\"result_sha256\": \"sha256:e09f5f513f30207db7040c8fc00f3da3cdaf108719ee0cbe7c9712291702d9c0\"",
+     "text": "\"result_sha256\": \"sha256:e09f5f513f30207db7040c8fc00f3da3cdaf108719ee0cbe7c9712291702d9c0\","
+    }
+   ],
+   "patterns": [
+    "\"operation\": \"sv_push_receipt\"",
+    "\"repository\": \"StegVerse-org/StegVerse-SDK\"",
+    "\"new_sha\": \"7c8d750db7199837fe10c2b87b01d3631c0655f6\"",
+    "\"old_sha\": \"c50d29cee6b5e643ae636f513dd89e34ccfdbfe5\"",
+    "\"transition_class\": \"SV_PUSH_RECEIPT_APPEND\"",
+    "\"result_sha256\": \"sha256:e09f5f513f30207db7040c8fc00f3da3cdaf108719ee0cbe7c9712291702d9c0\""
+   ],
+   "pin": "StegVerse-org/.github@50e8fb06ec7d72863427bd4d4b7878ccf086608d",
+   "run_id": "org-native-sdk-push-receipt",
+   "status": "OBSERVED",
+   "what": "the native SDK push receipt on the StegVerse-org organization ledger (org receipt ce63b27b, repo receipt 4f47a815)"
   }
  ],
  "schema": "stegverse.ladder-conformance-observations/v1",
@@ -1152,6 +1378,38 @@
    "repo": "StegVerse-org/.github",
    "root": "org",
    "sha256": "sha256:6d373913af7bd13a53c71beffbe617aa80c284df73d4f25ec3c466547b4ceda8"
+  },
+  {
+   "commit": "c32f04bd2e2b638da63abd4edecd8be9d6669d2d",
+   "git_blob": "74089b123f0bd2a547bd53406ca93d25025ffe3f",
+   "path": "receipts/ec1ca4d8f7f9f16e3424016a9bd2935cbe471e52cfd1832a34e7e45bda336b8d.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsledger",
+   "sha256": "sha256:19ab9137c2439c12f0606d8c1cd65d0ae082835050078787524bb28334940a09"
+  },
+  {
+   "commit": "c32f04bd2e2b638da63abd4edecd8be9d6669d2d",
+   "git_blob": "42bb256f0dc830f158ab87475185293067c7b569",
+   "path": "repository-ledger/StegVerse-Labs/.github/receipts/a29bc0f9972eedd9f6bde9cf0b3c1c7c39f325c8d80abf422a7a54faea0d861c.json",
+   "repo": "StegVerse-Labs/.github",
+   "root": "labsledger",
+   "sha256": "sha256:047cd1fe06a05cc0d93b82351f337193fb4c35b6dabfc75a04ce5a19f9283fb7"
+  },
+  {
+   "commit": "50e8fb06ec7d72863427bd4d4b7878ccf086608d",
+   "git_blob": "5b9050029ea72f9893a17c371a8073738b4b45f5",
+   "path": "receipts/ce63b27baaa919eb635688091cdcf34a4cbd46e53f1785f8ca70530b87477bab.json",
+   "repo": "StegVerse-org/.github",
+   "root": "orgledger",
+   "sha256": "sha256:13c39ea4f81f769269589eb3883ff5a608314cbc6242dcecd4d4162526f951ba"
+  },
+  {
+   "commit": "50e8fb06ec7d72863427bd4d4b7878ccf086608d",
+   "git_blob": "eba2215ff16956964a3cffbe0a2e7cf6b3dc0f65",
+   "path": "repository-ledger/StegVerse-org/.github/receipts/4f47a815ea4e15c9b430fe3407cac5298819082eb1e0c3ff757431170dc8c4c7.json",
+   "repo": "StegVerse-org/.github",
+   "root": "orgledger",
+   "sha256": "sha256:6fcde32ba7b2fa30b50029ffb8276afe77ab2b48d9b4d29df5aeaaca7873e895"
   }
  ],
  "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001"

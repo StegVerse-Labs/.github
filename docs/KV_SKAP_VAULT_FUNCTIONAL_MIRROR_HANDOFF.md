@@ -434,3 +434,19 @@ source and logs are archived there for original TVC integration. Not merge-ready
 or full-suite green. No skips, production bypass or weakened negatives.
 A temporary isolated pytest runner was installed locally; no ecosystem repo
 dependency or lockfile changed. Native issuer contract remains original TVC work.
+
+## November 3 — source offers and custody
+
+At accepted Labs main `9bd59fd6`, Registry generation 326 has 122 rows and contains no KV goal. The existing registration plan is applicable to that predecessor. The Coordinator owns serialization with [#3380](https://github.com/StegVerse-Labs/.github/pull/3380) and the approved request, apply, and five-surface verification in [#3195](https://github.com/StegVerse-Labs/.github/issues/3195).
+
+The session 4 instruction to ingest receipt `2e0ec2dd` is complete for its historical source. Organization ledger `5515d247` already contains that receipt. The native consumer identified different bytes for `org-kernel/kernel.py` and `resident-runtime/organization_egress_boundary.py` on both offered trees.
+
+[Source offer #3455](https://github.com/StegVerse-Labs/.github/pull/3455) preserves #3442 and its November 1 main (`9412107c`). [Restack offer #3456](https://github.com/StegVerse-Labs/.github/pull/3456) preserves #3376 and the source offer. On each published head four checks passed. Both ratchet jobs reported zero new findings and refused the two selected TVC test sets for missing receipt evidence. Required verification failed on both heads. [Source job](https://github.com/StegVerse-Labs/.github/actions/runs/41352909594/job/124986744404) · [Restack job](https://github.com/StegVerse-Labs/.github/actions/runs/41352987035/job/124986977479)
+
+Lane D owns ratification of #3442. The custody owner then accepts the #3376 restack. The TVC producer must cover the final bytes and the designated writer must append its sealed receipt. The native consumer and required CI verify coverage after append. The older receipt cannot satisfy this check. Registration, execution admission, claim/fence and the KV finish-point verdict each require their own evidence.
+
+Accepted main subsequently advanced to `9bd59fd6` through documentation changes only. The Registry and canonical handoff blobs stayed identical. [P1 owner reconciliation](https://github.com/StegVerse-Labs/.github/pull/3442#issuecomment-6621073123) records the accepted nonfinite JSON, ledger-root and per-request epoch repairs and ten passing tests. P1 still owns adopting the shared checker at an accepted component pin. SPPA still owns designated-ledger verification of foreign observations.
+
+The [native registration candidate](https://github.com/StegVerse-Labs/.github/pull/3459) carries the request and five derived files. Isolated native apply and verify returned ALLOW and the Registry invariants passed. The Coordinator must decide the order with #3380 at the current predecessor. The [TVC producer candidate](https://github.com/StegVerse-Labs/TVC/pull/575) covers identical bytes for all 64 consumed Labs files across both offers. Its local producer run passed 25 tests with zero skips and nine subtests. The final TVC main seal, designated writer append and consumer readback are pending.
+
+The [TVC containment owner](https://github.com/StegVerse-Labs/TVC/pull/537) now has a tested migration for the seven older failures. All 59 affected tests passed against the candidate. Downstream client protocol tests exercise a synthetic post-admission boundary. The real-issuer rejection tests exercise gate, read and place and assert zero client requests. Live issuer authority still requires its own witness. [Node owner evidence](https://github.com/StegVerse-Labs/.github/pull/3324#issuecomment-6621096745) records 43 passing endpoint tests and the unresolved installed DEVICE→KV transport, provider read and genesis bindings.

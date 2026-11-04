@@ -24,7 +24,7 @@ layout: ``<ledger_head>:HEAD.json`` (ledger_store.HEAD_KEY) -> ``receipts/<hex>.
 schema ``stegverse.organization-transition-receipt/v1`` with a verified seal (receipt_sha256 = sha256 of the canonical
 body without it, aggregate_repo_transition.canon/sha) -> ``str($.hb_reference.epoch)`` only if the epoch is an int (not a
 bool) >= 32 and ``$.hb_reference.derived_from_clock`` is exactly false (rule source: org-kernel/kernel.py:68-74
-``hb_reference``, blob ffec5d64; the same rule as P1 #3264 @fc19b532 ``base_ledger_head_epoch``). Otherwise FAIL_CLOSED
+``hb_reference``, blob 4d1d2d47 (Labs#3434; ffec5d64 until then); the same rule as P1 #3264 @fc19b532 ``base_ledger_head_epoch``). Otherwise FAIL_CLOSED
 HB_EPOCH_SOURCE_UNOBSERVED. The epoch is sealed with the rest of the receipt, together with
 ``hb_epoch_source {ledger_head, receipt, field}`` naming where it was read; on every FAIL_CLOSED both are sealed as null.
 ``--hb-epoch`` is never a source, only a cross-check. A supplied value that is malformed (not ASCII digits >= 32) or
@@ -88,11 +88,11 @@ HB_EPOCH_INVARIANT = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 ORG_RECEIPT_SCHEMA = "stegverse.organization-transition-receipt/v1"  # aggregate_repo_transition.py:1074
 HB_ANCHOR_EPOCH = 32  # org-kernel/kernel.py:22
 # Rule source: org-kernel/kernel.py:68-74 (hb_reference(epoch=...): int, not bool, >= 32, derived_from_clock False).
-EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "68-74", "git_blob_sha": "ffec5d648d7fa4aead1f44f76df936a2da21bb96"}
+EPOCH_RULE_SOURCE = {"file": "org-kernel/kernel.py", "lines": "68-74", "git_blob_sha": "4d1d2d470e9e348a9814aaf58258e135760fd0e5"}
 # P1 cites the supplied-epoch rule as the sha256 of the source segment of kernel.py::supplied_epoch_failure (lines 236-269 of the
 # same blob); verified: sha256(ast.get_source_segment(...).encode("utf-8")).
 EPOCH_RULE_FUNCTION = {"file": "org-kernel/kernel.py", "function": "supplied_epoch_failure", "lines": "236-269",
-                       "git_blob_sha": "ffec5d648d7fa4aead1f44f76df936a2da21bb96",
+                       "git_blob_sha": "4d1d2d470e9e348a9814aaf58258e135760fd0e5",
                        "source_segment_sha256": "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"}
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
               "owning_existing_goal", "next_attempt")

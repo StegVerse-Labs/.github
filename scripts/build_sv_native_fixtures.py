@@ -41,7 +41,7 @@ REQUIRED_CHECKS_BLOB = mg.git_blob((ROOT / REQUIRED_CHECKS_FILE).read_bytes())  
 FIXTURE_SIGNOFF_SESSION = "fixture-owner"
 SCN = ROOT / "data/admission-scenarios"
 INVARIANT_FILES = {  # rule_id -> (repository, file, blob_sha); others stay invariant_declared false
-    "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH": ("StegVerse-Labs/.github", "org-kernel/kernel.py#supplied_epoch_failure", "ffec5d648d7fa4aead1f44f76df936a2da21bb96"),
+    "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH": ("StegVerse-Labs/.github", "org-kernel/kernel.py#supplied_epoch_failure", "4d1d2d470e9e348a9814aaf58258e135760fd0e5"),
     "H28_COMPONENT_AVAILABLE_AT_PINNED_COMMIT": ("StegVerse-Labs/.github", "data/reusable-task-component-model.json", "87688679d07e0c2b4bc9b6b885ac489f0dc3a09a"),
     "ECOSYSTEM_CAPABILITY_PERFORMS_STEP": ("StegVerse-Labs/.github", "data/reusable-task-component-model.json", "87688679d07e0c2b4bc9b6b885ac489f0dc3a09a"),
 }

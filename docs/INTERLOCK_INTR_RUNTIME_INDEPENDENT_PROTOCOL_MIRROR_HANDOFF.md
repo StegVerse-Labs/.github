@@ -1,12 +1,151 @@
 # Interlock/InTr runtime-independent protocol mirror handoff
 
-Updated: 2026-10-29
+Updated: 2026-11-01
 Goal Task ID: `INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001`
 Issue: #2897
 COSV ID: `50000000102000`
 Status: `ACTIVE`
 
-## 2026-10-29 parallel-work sweep (current)
+## 2026-11-01 owner-evidence reconciliation (current)
+
+Session Prompt Count 9; cumulative recovery lower bound **41/20**, exact total
+UNVERIFIED. This is this continuation's lower bound, not a deduplicated total
+across parallel lanes. DECOMPOSED_AT_PROMPT_LIMIT remains the existing disposition;
+no replacement identity or reset. Canonical shard remains ACTIVE, completion
+unclaimed/unvalidated, projection_only=true, null claim/fence, authority_effect NONE.
+
+### Verified source disposition
+
+- Labs #3411 merged as b8d5acbcf7f62c3109bd5c0279ea276f35d1abfd.
+- TVC #573 merged as 7f4b4ba07c8bc0ec0a14d8fbb16a77faf5a05748 from
+  a1226414a1a2119efb1bcacb1592610346c8ab93. Separate same-system review found
+  missing CI wiring; seven regressions were moved into the executed module.
+  All 81 checks passed, with 22 tests in the relevant CI step. Review is not
+  different-model or formal owner approval; merge/readback is source evidence.
+  [Owner receipt](https://github.com/StegVerse-Labs/TVC/issues/488#issuecomment-6564236745).
+- Labs #3207 is closed unmerged and superseded by #3433, merged as
+  8a73434d5ec0d7c6da94636cdc5e2f5e0267b29e. The existing owner confirms the
+  current push-writer repair without restoring retired execution machinery.
+  [Disposition](https://github.com/StegVerse-Labs/.github/pull/3207#issuecomment-6514288163).
+- Labs #3213 merged as 50f57fa0d0a4a939e647ca1284e8e6df5285d706.
+  These old source candidates must not be rebuilt as pending work.
+- Org #162's owner decision is one destination receipt per crossing, with later
+  receipts duplicates granting nothing; there is no declared-replacement policy.
+  [Owner decision](https://github.com/StegVerse-org/.github/issues/162#issuecomment-6508050206).
+  Org #261 merged as 08578cd7529d81c0a69023a4b7822a2580ab9deb.
+  This resolves the cited successor-policy decision/source repair, without
+  rewriting receipts or establishing private warrant execution.
+
+### Registry metric reconciliation under #3195
+
+The current vector still declares L5/MACHINE_OWNED and B2. L5's emitted provenance
+cites the prior declaration, not an independently established ownership predicate.
+Null claim/fence does not by itself prove L5 false. Registry must retain or correct
+it from its actual ownership semantics and evidence.
+
+B2's stated basis names TVC issuance and Org successor ratification. The latter
+now has an explicit owner decision and merged implementation above. Consequently
+that historical rationale is stale. The task shard separately has blockers=[].
+Registry must reconcile the metric scope and both surfaces through its native
+serialized process: if these are the only two counted items, retire the resolved
+successor item; if B2 is retained, identify the distinct currently open item and
+its owner evidence. Do not silently replace the resolved item with an unrelated
+private-runtime obligation or infer a replacement vector here.
+
+[Registry evidence request](https://github.com/StegVerse-Labs/.github/issues/3195#issuecomment-6564213365)
+remains owner-routed. No vector, claim, lifecycle, activation or propagation
+transition is performed by this documentary reconciliation.
+
+### Remaining scoped obligations
+
+| Existing owner | Required input and next action |
+|---|---|
+| Registry #3195 | Rule on lifecycle provenance, stale blocker rationale and shard/vector scope; apply any justified correction natively and verify row/shard/vector/index consistency. Reconcile exact cumulative history without resetting this lower bound. |
+| Org #162 / TVC #488 | Consume the already delivered D2 A/B preparation; record actual credential choice, immutable redemption seam and execution-task/claim/fence binding before private invocation. No secrets in comments. |
+| Existing integration owners | Advance their current successors, including #3442 and adjacent custody work, using their own evidence and restrictions; these are not replacement InTr task IDs. |
+
+The [D2 preparation filing](https://github.com/StegVerse-org/.github/issues/162#issuecomment-6538812625)
+is preparation evidence, not a selected credential or execution admission.
+No fresh sovereign crossing, private warrant issuance, release, propagation or
+goal completion is claimed. The previous Drive approval note below is historical:
+the existing coordination file was successfully appended and read back in session8;
+there is no outstanding user upload instruction from that superseded note.
+
+All dated sections below are retained historical evidence; pending labels there
+are superseded by the current section where a verified disposition is stated.
+
+## 2026-10-29 committed Registry and source readback (historical)
+
+Session Prompt Count 4; cumulative recovery lower bound **36/20**, exact total
+UNVERIFIED and never reset. Scope disposition remains DECOMPOSED_AT_PROMPT_LIMIT;
+remaining implementation follows its existing owning issues. Canonical coordination
+remains ACTIVE, completion unclaimed/unvalidated, claim/fence null.
+
+- Live Labs main751e6bc9: aggregate generation326 includes the InTr row,
+  equal to the standalone shard. #3409 merged asf9b46abc at head a9f4d87d.
+  This resolves the aggregate omission and incorporates the114-test fixture repair.
+- #3411 predecessor ae7a4cac passed all six checks. This readback revision requires
+  its own checks; predecessor success is not new-head validation.
+- Org #228 merged feba0919; #258 merged dbd8c0b0; #261 merged08578cd7
+  (oldest destination receipt retained; later receipts DUPLICATE_OF_CROSSING);
+  H36/#267 merged82f51045. These are verified GitHub merge records, not new sovereign runs.
+- Registry/COSV metric evidence is a separate follow-up: MACHINE_OWNED is justified
+  in the emitted record by the old vector declaration, while claim/fence remain null;
+  blocker_count=2 cites historical owner actions now partly integrated. Preserve the
+  declared vector's provenance without treating it as independent observation.
+  [Scoped Registry action](https://github.com/StegVerse-Labs/.github/issues/3195#issuecomment-6513211530).
+- Remaining source/public-reader work stays with Labs#3207/#3213 and TVC#562/#561/#533;
+  private warrants/runtime remain with TVC#488 and Org#162. No fresh execution,
+  release, propagation or completion is asserted by these source merges.
+
+## 2026-10-29 terminal reconciliation at prompt limit (historical predecessor)
+
+Disposition: **DECOMPOSED_AT_PROMPT_LIMIT** under
+[Coordination ruling 6506716678](https://github.com/StegVerse-Labs/.github/issues/3195#issuecomment-6506716678).
+This is documentary scope reconciliation, not a canonical lifecycle transition:
+Registry shard coordination_state remains ACTIVE, completion.claimed=false,
+validated=false, projection_only=true, null claim/fence. Session Prompt Count 3;
+cumulative recovery lower bound **35/20**, exact total UNVERIFIED and never reset.
+The ruling retained 34/20; this qualifying reconciliation prompt increments it once.
+No successor identity is minted to reset the count. Further implementation follows
+existing owning issues below, retaining this evidence chain.
+
+### Completed and transferred
+
+- #3405 at 6abac8e82b00c00017c150c54e4e0c6e8c1ee591 passed all six checks
+  and merged as b7033aee2f8471667b73e0dfa9ba426ca71d7ce8. Its README,
+  handoff, independent historical replay, Registry rehearsal, and three tested
+  owner-repair candidates are now on main. Previous pending-integration labels are history.
+- Org #259 route(d) was independently ratified at
+  79037ce73aaa80a57c317a8edec9ca1fabc5c4e4 and expected-head merged as
+  46ddcfd4d2215d21c4fcd1b62bc4d129bdbb9dc8. All 46 checks succeeded;
+  selected tests: 328 pass, zero skips. Full-suite evidence binds the PR head to
+  synthetic merge 3f9beede: 1,632 tests plus 13 module tests, zero unsatisfied skips.
+  This is receipt-policy/source integration, not private-runtime execution.
+- #3409 implements the ruled existing atomic record-data route. At reviewed head
+  3b32f45bf663e0811bb21cfe432797df62b71324 it is not merge-ready: CI
+  detects absent effective COSV index materialization and stale registration fixtures.
+  Native repeat is NO_CHANGE and generation fence allows 323 against live 322;
+  these do not override the failed checks. A retained fixture-only repair passes114 tests
+  and all seven native validators. Legacy vector source lacks the native
+  materializer's complete record shape. Preserve exact-metric uncertainty and native guards.
+
+| Existing owning issue | Remaining independent work |
+| --- | --- |
+| Labs #3195 / PR #3409 | Complete native vector/index source evidence and stale-fixture repair; exact-head CI; protected merge and committed row/shard readback. Do not fabricate observed metrics or relax validators. |
+| Org #162 / #166 | #259 is merged; refresh #257, #228 and #258 against new main, check their own receipts/CI, integrate #228 + #258/H36 with overlap resolution. |
+| Labs #3207 / #3213, Lane B | Apply retained current-main metadata/fixture candidates and validate their actual integrated heads. |
+| TVC #562 / #561 / #533 / #488 | Apply tested public-reader confinement fix, complete full-checkout validation and reader-successor disposition; private warrants remain separately owned. |
+| Labs #3404 / #2810 | Continue custody documentary/source integration independently. |
+| Labs #3401 / #3263 | Preserve proven #3206 -> #3263 source mapping; resolve admission/retirement and hygiene identity independently. |
+
+Coordination states no person is required to approve these ecosystem decisions.
+The existing lane-owned KV file is maintained in place; no duplicate or index edit.
+The old session-8 call rejection is historical, not a request for user action.
+No release-ready disposition, runtime execution, external conformance, native claim,
+sovereign KV receipt or task completion is asserted.
+
+## 2026-10-29 parallel-work sweep (historical predecessor)
 
 Session Prompt Count 2; cumulative recovery lower bound **34/20**, exact total
 unverified, never reset. Live main readback for this sweep: 6b13c3a7; generation

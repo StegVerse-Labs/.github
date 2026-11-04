@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import os
+import select
 import signal
 import subprocess
 import sys
@@ -19,13 +20,16 @@ from pathlib import Path
 from typing import Any
 
 from heartbeat_runtime.runtime_presence_projection import project
-from scripts.restart_sovereign_ephemeral_node import _terminate as _terminate_process
+from scripts.restart_sovereign_ephemeral_node import _terminate as _terminate_own_child
+from scripts.restart_sovereign_ephemeral_node import proc_start_ticks as _proc_start_ticks
 
 PROCESS_RECEIPT = Path("receipts/sovereign-host/ephemeral-process.latest.json")
 PRESENCE_RECEIPT = Path("receipts/sovereign-host/runtime-presence.latest.json")
 PRESENCE_MR_INTAKE_RECEIPT = Path("receipts/sovereign-host/runtime-presence-master-records-intake.latest.json")
 WORKER_STATE = Path("control/worker-runtime-state.json")
 WORKER_RUNNER = Path("scripts/run_worker_runtime.py")
+CARRIER_RUNNER = Path("scripts/run_heartbeat_runtime.py")
+RUNNERS = {"worker": WORKER_RUNNER, "carrier": CARRIER_RUNNER}
 MR_IMPORTER = Path("scripts/intake_resident_runtime_presence.py")
 HOSTED_ENV = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN_NAME_PARTS = ("TOKEN", "SECRET", "PASSWORD", "PASSWD", "API_KEY", "PRIVATE_KEY", "CREDENTIAL")
@@ -73,6 +77,95 @@ def _alive(pid: Any) -> bool:
         return True
     except OSError:
         return False
+
+
+def _open_process_handle(pid: int) -> int | None:
+    """A pidfd pinning ``pid`` to one process for the identity check and the signal, or None."""
+    try:
+        return os.pidfd_open(pid)
+    except (AttributeError, OSError):
+        return None
+
+
+def _handle_exited(handle: int, timeout: float) -> bool:
+    poller = select.poll()
+    poller.register(handle, select.POLLIN)
+    return bool(poller.poll(max(0, int(timeout * 1000))))
+
+
+def _terminate_process(pid: int, handle: int | None, timeout: float = 2.0) -> bool:
+    """Terminate ``pid`` only through its pidfd, so a reused PID can never be signalled."""
+    if handle is None:
+        return False
+    for signum in (signal.SIGTERM, signal.SIGKILL):
+        try:
+            signal.pidfd_send_signal(handle, signum)
+        except ProcessLookupError:
+            return True
+        except OSError:
+            return False
+        if _handle_exited(handle, timeout):
+            return True
+    return False
+
+
+def _worker_identity_refusal(
+    pid: int, runtime_root: Path, receipt: dict[str, Any], handle: int | None, *, role: str = "worker",
+) -> dict[str, Any] | None:
+    """Prove ``pid`` is this root's ``role`` process before it may be signalled; otherwise a six-field refusal.
+
+    A PID read from the process receipt is only a claim. It is signalled only through
+    a pidfd opened before this check, when /proc shows the exact ``role`` entrypoint every
+    launcher uses for this runtime root and the kernel start time the receipt recorded
+    for that process (``<role>_start_ticks``), and the pinned process is still the one that was read.
+    """
+    runner = str((runtime_root / RUNNERS[role]).resolve())
+    label = role.upper()
+    predicate = f"{label}_PROCESS_HANDLE_AVAILABLE" if handle is None else None
+    argv = None
+    if predicate is None:
+        try:
+            argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+            argv = [part.decode("utf-8") for part in argv if part]
+        except (OSError, UnicodeDecodeError):
+            predicate = f"{label}_PROCESS_IDENTITY_READABLE"
+    if argv is not None:
+        bound = any(
+            Path(argv[i]).is_absolute() and str(Path(argv[i]).resolve()) == runner
+            and argv[i + 1] == "--root" and Path(argv[i + 2]).is_absolute()
+            and str(Path(argv[i + 2]).resolve()) == str(runtime_root)
+            for i in range(len(argv) - 2)
+        )
+        recorded_ticks = receipt.get(f"{role}_start_ticks")
+        if not bound:
+            predicate = f"RECEIPT_PID_RUNS_THIS_ROOT_{label}_ENTRYPOINT"
+        elif not isinstance(recorded_ticks, int) or isinstance(recorded_ticks, bool):
+            predicate = f"RECEIPT_RECORDS_{label}_START_TIME"
+        elif recorded_ticks != _proc_start_ticks(pid):
+            predicate = f"RECEIPT_PID_START_TIME_MATCHES_RECORDED_{label}"
+        elif _handle_exited(handle, 0):
+            # The pinned process exited during the reads, so they may describe a reused PID.
+            predicate = f"{label}_PROCESS_UNCHANGED_DURING_IDENTITY_CHECK"
+    if predicate is None:
+        return None
+    return {
+        "state": "FAIL_CLOSED",
+        "failure_code": "STALE_WORKER_IDENTITY_UNPROVEN",
+        "failed_predicate": predicate,
+        "required_evidence_or_repair": (
+            f"a pidfd for {pid} whose /proc entry shows {runner} --root {runtime_root} and the receipt's "
+            f"{role}_start_ticks; otherwise stop the stale {role} by its owner and clear the process receipt"
+        ),
+        "retry_entrypoint": "scripts/repair_resident_worker_presence.py::ensure_worker_presence",
+        "owning_existing_goal": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+        "next_attempt": "next carrier supervision reference after the receipt names a provable worker or none",
+        "worker_repair_attempted": False,
+        f"stale_{role}_pid": pid,
+        "process_signalled": False,
+        "heartbeat_grants_execution_authority": False,
+        "worker_coordinator_retains_admission_authority": True,
+        "authority_effect": "NONE",
+    }
 
 
 def _clean_env(runtime_root: Path) -> dict[str, str]:
@@ -288,7 +381,17 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
         stale_worker_reason = (
             "WORKER_CYCLE_STALE" if structural_task_capable else "WORKER_NOT_TASK_CAPABLE"
         )
-        if not _terminate_process(existing_worker_pid):
+        handle = _open_process_handle(existing_worker_pid)
+        try:
+            refusal = _worker_identity_refusal(existing_worker_pid, runtime_root, receipt, handle)
+            if refusal is not None:
+                refusal.update(carrier_pid=carrier_pid, stale_worker_reason=stale_worker_reason)
+                return refusal
+            terminated = _terminate_process(existing_worker_pid, handle)
+        finally:
+            if handle is not None:
+                os.close(handle)
+        if not terminated:
             return {
                 "state": "STALE_WORKER_RECYCLE_FAILED",
                 "worker_repair_attempted": True,
@@ -313,7 +416,7 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
     )
     tick = _wait_for_tick(runtime_root, baseline, worker.pid, timeout)
     if not tick.get("observed"):
-        _terminate_process(worker.pid)
+        _terminate_own_child(worker.pid)
         return {
             "state": "WORKER_REPAIR_FAILED",
             "worker_repair_attempted": True,
@@ -335,6 +438,12 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
         worker_tick_observed=True,
         tick_evidence=tick,
     )
+    for role, pid in (("worker", worker.pid), ("carrier", carrier_pid)):
+        start_ticks = _proc_start_ticks(pid)
+        if start_ticks is not None:
+            receipt[f"{role}_start_ticks"] = start_ticks
+        else:
+            receipt.pop(f"{role}_start_ticks", None)
     if stale_worker_pid is not None:
         receipt["stale_worker_recycled"] = True
         receipt["previous_worker_pid"] = stale_worker_pid
