@@ -2256,3 +2256,10 @@ the pin (#3151), and Master Records never gates. See
 Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COMPOSITION-001` record. See [the handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md). Registration is coordination only; source tests, WorkerCoordinator admission and authentic runtime evidence remain separate.
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
+
+
+### StegApp Goal #3291: post-vocabulary source/test hygiene (2026-11-03)
+
+The canonical StegApp vocabulary edit is merged via Labs PR #3403. The aggregate Registry and standalone shard now include `INGRESS_ADMITTED`, but the Goal remains `PROPOSED` and WorkerCoordinator claim/fence remain null. This is an allowed-transition *vocabulary* change only, not native admission. Goal task `STEGAPP-EPHEMERAL-COMPOSITION-001`, COSV `10300000011000`, [canonical handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md), [Goal #3291](https://github.com/StegVerse-Labs/.github/issues/3291).
+
+This repair restores collection of `test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7` inside its test class and runs `test_goal_context_with_a_request_id_forwards_it` against a scratch runtime root so tests do not rewrite tracked sovereign-host receipt files. These are non-authorizing test corrections; validate the exact PR head and preserve native Registry issuer, WorkerCoordinator GRANTED/fence, Sandbox work/evidence, SDK/InTr Chat delivery, and Organization Ledger source/readback prerequisites. No new machines, frameworks, secret paths or runtime authority.
