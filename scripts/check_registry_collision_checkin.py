@@ -45,6 +45,8 @@ import importlib.util
 import io
 import json
 import os
+import re
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
@@ -211,6 +213,70 @@ def check(base: Path, head: Path, strict: bool = False) -> dict:
             "changed_task_ids": tasks, "results": results}
 
 
+def evaluate_registration_exception(result: dict, base: Path, head: Path, source: Path | None = None) -> dict:
+    """Adjudicate one newly registered row only, using the ruling already present at base."""
+    rows = result.get("results", [])
+    if len(rows) != 1 or result["disposition"] != FAIL_CLOSED:
+        return result
+    row = rows[0]
+    task = row["task_id"]
+    if (row.get("base_disposition") is not None
+            or row.get("head_disposition") != "COORDINATE_CONVERGENCE"
+            or row.get("evidence", {}).get("hard_collision_task_ids")
+            or row.get("evidence", {}).get("new_hard_collision_task_ids")
+            or row.get("failure_code") != "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE"
+            or not re.fullmatch(r"[A-Za-z0-9_-]+", task)):
+        return result
+
+    rel = Path("control/adjacency-rulings") / f"{task}.json"
+    if not (base / rel).is_file() or not (head / rel).is_file() or (base / rel).read_bytes() != (head / rel).read_bytes():
+        return result
+    ruling = _read_json(base / rel)
+    requests = []
+    for path in (head / "control/canonical-task-registration-requests").glob("*.json"):
+        request = _read_json(path)
+        if request.get("task_id") == task and request.get("request_id") == path.stem and request.get("registration_mode") == "NEW_IDENTITY":
+            requests.append((path, request))
+    if len(requests) != 1:
+        return result
+    path, request = requests[0]
+    # The full derived successor must match the actual head, including its aggregate.
+    transition = base / "scripts/canonical_task_registration_transition.py"
+    verified = subprocess.run([sys.executable, str(transition), "verify", "--base", str(base),
+                               "--head", str(head), "--request", str(path)], capture_output=True, text=True)
+    if verified.returncode:
+        row["registration_verification"] = json.loads(verified.stderr)
+        return result
+
+    spec = importlib.util.spec_from_file_location("accepted_registration_ruling", base / "scripts/adjacency_ruling.py")
+    verifier = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(verifier)
+    with tempfile.TemporaryDirectory() as scratch:
+        if source is None:
+            fp = ruling["subject"]["finish_point"]
+            repo, commit = fp["repository"], fp["source_commit"]
+            pins, _ = verifier.pin_structure(ruling, repo)
+            commits = sorted({commit} | {p["commit"] for p in pins.values()})
+            if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo) or not all(re.fullmatch(r"[0-9a-f]{40}", c) for c in commits):
+                return result
+            source = Path(scratch)
+            env = {k: v for k, v in os.environ.items() if k not in {"GH_TOKEN", "GITHUB_TOKEN"}}
+            for args in (["init", "-q"], ["fetch", "--depth=1", "--no-tags", f"https://github.com/{repo}.git", *commits],
+                         ["checkout", "-q", "--detach", commit]):
+                completed = subprocess.run(["git", *args], cwd=source, env=env)
+                if completed.returncode:
+                    row["registration_ruling"] = {"disposition": FAIL_CLOSED, "detail": "pinned source unavailable"}
+                    return result
+        verdict = verifier.verify(ruling, request, base, source, rows)
+    row["registration_ruling"] = {key: verdict[key] for key in ("disposition", "failure_code", "ruling_digest") if key in verdict}
+    if verdict["disposition"] == ALLOW:
+        result["results"] = [{"task_id": task, "disposition": ALLOW, "head_disposition": row["head_disposition"],
+                              "base_disposition": None, "reason": "CONTINUE_BY_VERIFIED_ADJACENCY_RULING",
+                              "raw_checkin": row, "ruling_digest": verdict["ruling_digest"]}]
+        result["disposition"] = ALLOW
+    return result
+
+
 def summary_markdown(result: dict) -> str:
     lines = [f"### {GATE}: {result['disposition']}", ""]
     rows = result.get("results") or []
@@ -235,9 +301,12 @@ def main(argv=None) -> int:
     parser.add_argument("--base-root", required=True, type=Path)
     parser.add_argument("--head-root", required=True, type=Path)
     parser.add_argument("--strict", action="store_true")
+    parser.add_argument("--verify-registration-ruling", action="store_true")
     args = parser.parse_args(argv)
     try:
         result = check(args.base_root.resolve(), args.head_root.resolve(), args.strict)
+        if args.verify_registration_ruling and not args.strict:
+            result = evaluate_registration_exception(result, args.base_root.resolve(), args.head_root.resolve())
     except Exception as exc:  # an error is never a pass
         result = failure("REGISTRY_COLLISION_CHECKIN_INTERNAL_ERROR",
                          "the collision check-in gate evaluates without an unexpected error",
