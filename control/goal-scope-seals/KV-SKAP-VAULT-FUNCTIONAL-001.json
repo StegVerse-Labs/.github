@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.goal-scope-seal/v1",
+  "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+  "scope": {
+    "goal": "Make KnowledgeVault (KV) functional with a SKAP Vault inside KV: a principal's KV projection is written, read back exactly and revoked only through governed Interlock/InTr transitions; the SKAP Vault inside KV holds custody-key references (never credential or key material) while TV/TVC remains the credential authority and the sole SKAP ciphertext custody writer; every write and read is preceded by a consent receipt and every revoke produces a revocation receipt that ends read access, all on one continuous receipt-hash lineage; the same principal's projection reconstructs exactly on any eligible device with no connected device, second user-operated device or external machine required; and no governance, credential, verifier, claim or KV authority is duplicated. Done is decided by the acceptance test named in the sealed finish point, which must reach its verdict at E0 (ecosystem only, no LLM) and degrade gracefully down the operating-mode ladder.",
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/continuity-vault-kit"
+      ],
+      "components": [
+        "kv-skap-vault-module",
+        "skap-custody-key-reference",
+        "kv-projection-write-read-revoke",
+        "consent-receipt",
+        "revocation-receipt",
+        "receipt-hash-lineage",
+        "any-device-continuity",
+        "authority-non-duplication"
+      ]
+    },
+    "expected_evidence_predicates": [
+      "KV_PROJECTION_WRITE_READ_REVOKE_ROUNDTRIP_EXACT",
+      "SKAP_VAULT_INSIDE_KV_HOLDS_CUSTODY_KEY_REFERENCES_ONLY",
+      "CONSENT_RECEIPT_PRECEDES_EVERY_KV_WRITE_AND_READ",
+      "REVOCATION_RECEIPT_ENDS_READ_ACCESS",
+      "RECEIPT_HASH_LINEAGE_CONTINUOUS_ACROSS_WRITE_READ_REVOKE",
+      "ANY_DEVICE_CONTINUITY_WITH_NO_CONNECTED_DEVICE_REQUIRED",
+      "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY_AND_SOLE_SKAP_CIPHERTEXT_WRITER",
+      "NO_DUPLICATED_GOVERNANCE_CREDENTIAL_VERIFIER_OR_KV_AUTHORITY",
+      "KV_REACHABLE_ONLY_VIA_INTR_FROM_HEALTHY_NODE",
+      "SKAP_VAULT_REACHABLE_ONLY_FROM_INSIDE_KV",
+      "SKAP_ACCESS_REQUIRES_PRIOR_LAYER1_KV_ACCESS_RECEIPT",
+      "ENDPOINT_NOT_A_GITHUB_ORGANIZATION_MEMBER",
+      "FINISH_POINT_VERDICT_REACHED_AT_E0_WITHOUT_LLM"
+    ],
+    "finish_point": {
+      "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
+      "predicate": "KV_SKAP_VAULT_FINISH_POINT: python -m runtime.kv_skap_vault finish-point returns disposition ALLOW (every expected_evidence_predicate ALLOW over one receipt-hash lineage); until then it returns six-field FAIL_CLOSED naming each unmet predicate",
+      "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_skap_vault finish-point",
+      "lowest_supported_mode": "E0"
+    }
+  },
+  "scope_digest": "sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc",
+  "supersedes_scope_digest": null,
+  "authority_effect": "NONE_SCOPE_SEAL_ONLY"
+}

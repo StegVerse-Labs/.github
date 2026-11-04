@@ -1,0 +1,41 @@
+{
+  "identity": "StegVerse-Labs/.github:task:KV-SKAP-VAULT-FUNCTIONAL-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10800000110000",
+  "evidence_refs": [
+    "docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md",
+    "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json"
+  ],
+  "observed_at": "2026-10-23T05:45:00Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 8,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "no WorkerCoordinator claim or fence exists for this identity (record worker_claim claim_ref/fence_ref null)",
+    "archive_ready": "nonterminal: PROPOSED",
+    "unassigned_work": "8 target components (record targets.components), none admitted on StegVerse-Labs/continuity-vault-kit main bcc2d751",
+    "chat_owned_counts": "no chat-owned implementation, validation, integration, observation or credential role is asserted",
+    "canonical_owner_installed": "the Registry row this transition derives is the canonical owner (same reading as STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 M=1)",
+    "thread_required": "durable coordination continues on StegVerse-org/.github#160 / #167",
+    "blocker_count": "record blockers [] (dependencies are UNKNOWN/UNRESOLVED, not blockers)",
+    "evidence_complete": "finish-point verdict is not ALLOW",
+    "activated": "no runtime activation observed",
+    "propagated": "no downstream completion observed"
+  },
+  "authority_effect": "NONE"
+}
