@@ -16,6 +16,8 @@ import sys
 import tempfile
 import unittest
 
+from tests.registry_predecessor_fixture import registration_predecessor_326
+
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "canonical_task_registration_transition.py"
 TASK_ID = "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001"
@@ -56,11 +58,11 @@ class GovernanceProductGoalRequestTests(unittest.TestCase):
         self.assertEqual(self.request["authority_effect"], "NONE_REGISTRATION_ONLY")
         self.assertEqual(self.request["record"]["coordination_state"], "PROPOSED")
         self.assertNotIn("cosv_task_vector", self.request["record"])
-        registry = load("data/canonical-task-registry.json")
+        registry = json.loads((registration_predecessor_326() / "data/canonical-task-registry.json").read_text())
         self.assertNotIn(TASK_ID, {row.get("task_id") for row in registry["tasks"]})
         self.assertEqual(self.request["observed_registry_generation"], registry.get("generation", registry.get("registry_generation")))
-        self.assertFalse((ROOT / "data" / "canonical-task-records" / f"{TASK_ID}.json").exists())
-        self.assertFalse((ROOT / "control" / "goal-scope-seals" / f"{TASK_ID}.json").exists())
+        self.assertFalse((registration_predecessor_326() / "data" / "canonical-task-records" / f"{TASK_ID}.json").exists())
+        self.assertFalse((registration_predecessor_326() / "control" / "goal-scope-seals" / f"{TASK_ID}.json").exists())
 
     def test_scope_is_sealed_with_a_testable_finish_point(self) -> None:
         sys.path.insert(0, str(ROOT / "scripts"))
@@ -137,7 +139,7 @@ class GovernanceProductGoalRequestTests(unittest.TestCase):
     def test_plan_resolves_to_the_recorded_six_field_outcome(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "receipt.json"
-            subprocess.run([sys.executable, str(SCRIPT), "plan", "--request", str(ROOT / REQUEST), "--receipt-out", str(out)],
+            subprocess.run([sys.executable, str(SCRIPT), "plan", "--base", str(registration_predecessor_326()), "--request", str(ROOT / REQUEST), "--receipt-out", str(out)],
                            cwd=ROOT, capture_output=True, text=True, check=False)
             receipt = json.loads(out.read_text(encoding="utf-8"))
         self.assertEqual(receipt["mode"], "plan")
