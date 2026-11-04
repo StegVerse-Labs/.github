@@ -143,8 +143,6 @@ def evaluate(module, root: Path, task_id: str) -> dict:
             module.main()
     except SystemExit as exc:
         return {"disposition": "EVALUATOR_REFUSED", "detail": str(exc.code)}
-        if args.verify_registration_ruling and not args.strict:
-            result = evaluate_registration_exception(result, args.base_root.resolve(), args.head_root.resolve())
     except Exception as exc:  # an error is never a pass
         return {"disposition": "EVALUATOR_REFUSED", "detail": f"{type(exc).__name__}: {exc}"}
     finally:

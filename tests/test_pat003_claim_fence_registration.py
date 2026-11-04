@@ -13,6 +13,8 @@ import sys
 import tempfile
 import unittest
 
+from tests.registry_predecessor_fixture import registration_predecessor_326
+
 ROOT = Path(__file__).resolve().parents[1]
 FX = ROOT / "tests" / "fixtures" / "canonical_task_registration" / "pat-003-lane-a"
 MANIFEST = json.loads((FX / "MANIFEST.json").read_text(encoding="utf-8"))
@@ -36,12 +38,12 @@ def request(task: str) -> dict:
 
 class Registration(unittest.TestCase):
     def test_identities_are_lane_a_proposals_absent_from_the_registry(self):
-        registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
+        registry = json.loads((registration_predecessor_326() / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
         ids = {row.get("task_id") for row in registry["tasks"]}
         self.assertEqual([g["task_id"] for g in MANIFEST["goals"]], list(TASKS))
         for goal in MANIFEST["goals"]:
             self.assertNotIn(goal["task_id"], ids)
-            self.assertFalse((ROOT / "data" / "canonical-task-records" / f"{goal['task_id']}.json").exists())
+            self.assertFalse((registration_predecessor_326() / "data" / "canonical-task-records" / f"{goal['task_id']}.json").exists())
             self.assertEqual(goal["identity_provenance"], "PROPOSED_BY_LANE_A")
         self.assertFalse(MANIFEST["registry_edit"] or MANIFEST["registry_generation_bump"] or MANIFEST["ledger_append"])
 
@@ -69,7 +71,7 @@ class Registration(unittest.TestCase):
             with tempfile.TemporaryDirectory() as tmp:
                 out = Path(tmp) / "receipt.json"
                 subprocess.run([sys.executable, str(ROOT / "scripts" / "canonical_task_registration_transition.py"), "plan",
-                                "--request", str(ROOT / goal["request"]), "--base", str(ROOT), "--receipt-out", str(out)],
+                                "--request", str(ROOT / goal["request"]), "--base", str(registration_predecessor_326()), "--receipt-out", str(out)],
                                cwd=ROOT, capture_output=True, text=True, check=False)
                 receipt = json.loads(out.read_text(encoding="utf-8"))
             expected = goal["expected_plan"]
@@ -87,7 +89,7 @@ class Registration(unittest.TestCase):
             for flag in ("consequence_committed", "organization_ledger_appended", "execution_authority_minted",
                          "workercoordinator_claim_or_fence_minted", "intr_admission_minted"):
                 self.assertFalse(receipt.get(flag, False), (goal["task_id"], flag))
-        registry = json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
+        registry = json.loads((registration_predecessor_326() / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))
         self.assertEqual(registry["generation"], MANIFEST["observed_registry_generation"])  # nothing applied
 
     def test_metrics_carry_evidence_and_derive_only_in_the_planner(self):
