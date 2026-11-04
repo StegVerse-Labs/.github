@@ -50,4 +50,4 @@ jobs:
           set -euo pipefail
           base_root="${RUNNER_TEMP}/base"
           head_root="${GITHUB_WORKSPACE}"
-          python scripts/check_registry_collision_checkin.py --base-root "$base_root" --head-root "$head_root"
+          python scripts/check_registry_collision_checkin.py --base-root "$base_root" --head-root "$head_root" --verify-registration-ruling
