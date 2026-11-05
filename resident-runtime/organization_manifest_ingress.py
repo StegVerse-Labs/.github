@@ -291,12 +291,117 @@ REFUSAL_DISPOSITIONS = {
     # Labs-only rows
     (APPEND_NOT_COMMITTED, APPEND_NOT_COMMITTED_PREDICATE): "FAIL_CLOSED",
     (REFUSED_CLASS, "RECORDED_DELIVERY_RECONSTRUCTS_INDEPENDENTLY"): "FAIL_CLOSED",
+    # Rows for the refusals of the ingress series (Labs#3441). A declared effect, a
+    # fence that moved and a superseded predecessor are defects of the submission;
+    # a fence or predecessor this operation cannot verify, and a crossing whose
+    # payload is not the delivered manifest's, are not.
+    (PAYLOAD_NOT_BOUND, PAYLOAD_NOT_BOUND_PREDICATE): "FAIL_CLOSED",
+    (AUTHORITY_NOT_WARRANTED, AUTHORITY_NOT_WARRANTED_PREDICATE): "DENY",
+    (FENCE_NOT_VERIFIED, FENCE_PREDICATE): "FAIL_CLOSED",
+    (FENCE_STALE, FENCE_PREDICATE): "DENY",
+    (PREDECESSOR_NOT_RECORDED, PREDECESSOR_PREDICATE): "FAIL_CLOSED",
+    (PREDECESSOR_SUPERSEDED, PREDECESSOR_PREDICATE): "DENY",
     # An invalid declared parent manifest is refused under the owner's code.
     **{(code, PARENT_MANIFEST_INVALID_PREDICATE): "DENY" for code in PARENT_MANIFEST_OWNER_CODES},
     (REFUSED_CLASS, "SDK_ADMITS_THE_ROLE_CONFORMANCE_MANIFEST_SHAPE"): "DENY",
     (REFUSED_CLASS, "SDK_RESOLVES_THE_DECLARED_ROLE_CONFORMANCE_ROUTE"): "DENY",
     (REFUSED_CLASS, "SDK_DERIVES_THE_ROLE_CONFORMANCE_REQUEST_FROM_ITS_EXTENSION"): "DENY",
 }
+
+
+def ingress_six_fields(failure_code: str, failed_predicate: str, required_evidence_or_repair: str,
+                       owning_existing_goal: str, resubmit: str) -> dict[str, str]:
+    """The six fields of a refusal this operation raises before the crossing.
+
+    Every field is a non-empty string, as `passed_through` requires of the ones
+    a crossing carries. `next_attempt` names what to resubmit and says nothing
+    waits on an external machine: the next attempt is a resubmission to `receive`.
+    """
+    return {"failure_code": failure_code, "failed_predicate": failed_predicate,
+            "required_evidence_or_repair": required_evidence_or_repair,
+            "retry_entrypoint": RETRY_ENTRYPOINT,
+            "owning_existing_goal": owning_existing_goal,
+            "next_attempt": "resubmit " + resubmit + " to " + RETRY_ENTRYPOINT
+                            + "; nothing waits on an external machine"}
+
+
+def _repair(repair: str, goal: str, next_attempt: str) -> tuple[str, str, str]:
+    return repair, goal, next_attempt
+
+
+#: What each refusal this operation raises without six fields of its own
+#: (PR-1(ii)) names as the repair, the goal that owns it and the next attempt,
+#: by its predicate. `retry_entrypoint` is always `RETRY_ENTRYPOINT`: every one of
+#: these is retried by submitting a manifest to `receive`. A refusal whose
+#: predicate has no row here still returns and records all six fields, from
+#: `UNLISTED_REFUSAL_REPAIR`; a test fails if a predicate this file refuses under
+#: has no row, so that fallback is never what a known refusal reads.
+REFUSAL_REPAIRS = {
+    "ORGANIZATION_RESOLVES_ITS_OWN_INGRESS_DESTINATION": _repair(
+        "a manifest the SDK resolves to this organization's ingress destination from its own "
+        "declarations; the detail names the derivation step that did not resolve",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest once its declared route and capability derive an ingress request; "
+        "the refusal is recorded and nothing crossed"),
+    "CAPABILITY_IS_BOUND_TO_THIS_RECEIVING_OPERATION": _repair(
+        "a manifest whose declared capability the SDK resolves to this repository's "
+        "ORGANIZATION_SDK_MANIFEST_INGRESS receiving operation; submit it to the owning organization instead",
+        INTR_PROTOCOL_GOAL,
+        "resubmit to the organization whose receiving operation the manifest's capability resolves to; "
+        "nothing crossed here"),
+    "CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED": _repair(
+        "a manifest that declares what the crossing needs (completion egress, a final transition "
+        "surface, an InTr transport, standing); the detail names the missing declaration",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest with the missing declaration added; nothing crossed"),
+    "BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY": _repair(
+        "a boundary receipt chain whose every receipt recomputes from its own subject and whose "
+        "predecessors chain; the detail names the receipt that does not",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest once the boundary returns a chain that reconstructs; the refused "
+        "crossing is recorded and no ingress transition was written"),
+    "RECORDED_DELIVERY_RECONSTRUCTS_INDEPENDENTLY": _repair(
+        "a recorded delivery whose receipts recompute from the stored crossing; the detail names "
+        "the digest that does not",
+        APPEND_OWNING_GOAL,
+        "resubmit the same manifest once the recorded delivery reconstructs; the first record is kept"),
+    "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST": _repair(
+        "the manifest this transition id already binds, or a new transition id for a different manifest",
+        APPEND_OWNING_GOAL,
+        "resubmit the original manifest for the recorded transition, or submit the other manifest "
+        "under its own transition id"),
+    PARENT_MANIFEST_INVALID_PREDICATE: _repair(
+        "a declared organization batch parent manifest that its owner validates; the failure code "
+        "is the owner's own code for what did not validate",
+        APPEND_OWNING_GOAL,
+        "resubmit with a parent manifest the owner validates, or without the declaration"),
+    "SDK_ADMITS_THE_ROLE_CONFORMANCE_MANIFEST_SHAPE": _repair(
+        "a role-conformance manifest of a shape the pinned SDK admits; the detail is the SDK's own reason",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest in the shape the SDK admits; nothing crossed"),
+    "SDK_RESOLVES_THE_DECLARED_ROLE_CONFORMANCE_ROUTE": _repair(
+        "a role-conformance manifest whose declared route the pinned SDK resolves; the detail is "
+        "the SDK's own reason",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest naming a route the SDK publishes; nothing crossed"),
+    "SDK_DERIVES_THE_ROLE_CONFORMANCE_REQUEST_FROM_ITS_EXTENSION": _repair(
+        "a role-conformance manifest whose extension the pinned SDK derives an ingress request from; "
+        "the detail is the SDK's own reason",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest with an extension the SDK derives a request from; nothing crossed"),
+}
+UNLISTED_REFUSAL_REPAIR = _repair(
+    "a submission for which the failed predicate holds; the detail names what did not",
+    INTR_PROTOCOL_GOAL,
+    "resubmit once the failed predicate holds; the refusal is recorded and nothing crossed")
+
+
+def generic_six_fields(failure_code: str, failed_predicate: str) -> dict[str, str]:
+    """The six fields of a refusal that carried none, from `REFUSAL_REPAIRS` by its predicate."""
+    repair, goal, next_attempt = REFUSAL_REPAIRS.get(failed_predicate, UNLISTED_REFUSAL_REPAIR)
+    return {"failure_code": failure_code, "failed_predicate": failed_predicate,
+            "required_evidence_or_repair": repair, "retry_entrypoint": RETRY_ENTRYPOINT,
+            "owning_existing_goal": goal, "next_attempt": next_attempt}
 
 
 def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
@@ -917,6 +1022,7 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
          "disposition": record["disposition"],
          "failed_predicate": record["failed_predicate"],
          "recomputation_rule_ref": rule_ref,
+         **{field: record[field] for field in SIX_FIELDS if field in record},
          **dict(organization_evidence or {})},
         hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
         idempotent_on=("failed_predicate", "detail"))
@@ -982,28 +1088,20 @@ def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str
              **extra: Any) -> dict[str, Any]:
     """Record and return a refusal.
 
-    `six_fields`, when the refusing step carried them, are returned and stored
-    as they were given. A refusal that carried none returns as before; giving
-    those the six fields is PR-1(ii) and is not done here.
+    Every refusal returns and records the six fields. `six_fields`, when the
+    refusing step carried them, are returned and stored as they were given. A
+    refusal that carried none takes them from `REFUSAL_REPAIRS` under the code
+    it returns (an owner's code it carries, or `REFUSED_CLASS`) and its predicate.
+    A pair the disposition table does not declare is refused FAIL_CLOSED under
+    `REFUSAL_DISPOSITION_NOT_DECLARED`, with all six fields and the pair it
+    arrived with kept. The six fields in `extra` are the refusal's, never
+    overwritten by it: they are dropped from `extra` here.
     """
-    if six_fields:
-        disposition, carried = declared_refusal(six_fields)
-    else:
-        # No six fields yet (PR-1(ii)): looked up under the code the refusal
-        # actually returns -- an owner's code it carries (the parent manifest's)
-        # or REFUSED_CLASS -- with its predicate.
-        code = extra.get("failure_code") or REFUSED_CLASS
-        disposition, carried = refusal_disposition(code, failed_predicate), {}
-        if disposition is None:
-            disposition, carried = "FAIL_CLOSED", {
-                "failure_code": REFUSAL_DISPOSITION_NOT_DECLARED,
-                "failed_predicate": failed_predicate,
-                "undeclared_refusal_failure_code": code,
-                "undeclared_refusal_failed_predicate": failed_predicate,
-            }
-            # The returned code is REFUSAL_DISPOSITION_NOT_DECLARED; the owner's
-            # code is kept under undeclared_refusal_failure_code.
-            extra = {key: value for key, value in extra.items() if key != "failure_code"}
+    if not six_fields:
+        six_fields = generic_six_fields(extra.get("failure_code") or REFUSED_CLASS,
+                                        failed_predicate)
+    extra = {key: value for key, value in extra.items() if key not in SIX_FIELDS}
+    disposition, carried = declared_refusal(six_fields)
     record = refusal_record(failed_predicate, detail, manifest, carried or None,
                             disposition=disposition)
     appended = _record_refusal(record, hb_epoch, rule_ref, parent_manifest,
@@ -1858,16 +1956,14 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     unwarranted = declared_authority_effect_failure(manifest)
     if unwarranted is not None:
         return refused(
-            AUTHORITY_NOT_WARRANTED_PREDICATE, unwarranted, failure_code=AUTHORITY_NOT_WARRANTED,
-            required_evidence_or_repair=(
+            AUTHORITY_NOT_WARRANTED_PREDICATE, unwarranted,
+            six_fields=ingress_six_fields(
+                AUTHORITY_NOT_WARRANTED, AUTHORITY_NOT_WARRANTED_PREDICATE,
+                (
                 "a manifest whose transition.authority_effect is absent or NONE; a non-NONE "
                 "effect needs a landed TV/TVC warrant receipt this operation can verify, and "
                 "none is defined yet"),
-            retry_entrypoint=RETRY_ENTRYPOINT,
-            owning_existing_goal=AUTHORITY_OWNING_GOAL,
-            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
-                          "resubmit": "THE_MANIFEST_WITH_TRANSITION_AUTHORITY_EFFECT_NONE",
-                          "awaits_an_external_machine": False},
+                AUTHORITY_OWNING_GOAL, "THE_MANIFEST_WITH_TRANSITION_AUTHORITY_EFFECT_NONE"),
             request_sha256=request["request_sha256"])
 
     # A declared WorkerCoordinator claim is observed against the committed
@@ -1893,19 +1989,17 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     if fence_failure is not None:
         fence_code, fence_detail = fence_failure
         return refused(
-            FENCE_PREDICATE, fence_code + ":" + fence_detail, failure_code=fence_code,
-            disposition="DENY" if fence_code == FENCE_STALE else "FAIL_CLOSED",
-            required_evidence_or_repair=(
+            FENCE_PREDICATE, fence_code + ":" + fence_detail,
+            six_fields=ingress_six_fields(
+                fence_code, FENCE_PREDICATE,
+                (
                 f"a {WORKER_CLAIM_FIELD} whose claim_id ends in -G<fencing_token> and names an "
                 f"unreleased BOUND task in {WORKER_REGISTRY_REF} holding exactly that fence; "
                 "or omit the declaration, which is admitted as UNVERIFIED"),
-            retry_entrypoint=RETRY_ENTRYPOINT,
-            owning_existing_goal=FENCE_OWNING_GOAL,
-            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
-                          "resubmit": ("THE_MANIFEST_UNDER_THE_CURRENT_WORKERCOORDINATOR_FENCE"
+                FENCE_OWNING_GOAL,
+                ("THE_MANIFEST_UNDER_THE_CURRENT_WORKERCOORDINATOR_FENCE"
                                        if fence_code == FENCE_STALE else
-                                       "THE_MANIFEST_WITH_A_VERIFIABLE_OR_ABSENT_WORKER_CLAIM"),
-                          "awaits_an_external_machine": False},
+                                       "THE_MANIFEST_WITH_A_VERIFIABLE_OR_ABSENT_WORKER_CLAIM")),
             request_sha256=request["request_sha256"])
     # What the SDK's own derivation says about this route: whether the graph
     # requires a WorkerCoordinator claim/fence. Reported beside the observed
@@ -1929,20 +2023,17 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         predecessor_code, predecessor_detail = predecessor_failure
         return refused(
             PREDECESSOR_PREDICATE, predecessor_code + ":" + predecessor_detail,
-            failure_code=predecessor_code,
-            disposition="DENY" if predecessor_code == PREDECESSOR_SUPERSEDED else "FAIL_CLOSED",
-            required_evidence_or_repair=(
+            six_fields=ingress_six_fields(
+                predecessor_code, PREDECESSOR_PREDICATE,
+                (
                 "a VERIFY_EXISTING standing whose predecessor names an admission this repository's "
                 "ledger records for the same node_ref at predecessor.generation with "
                 "predecessor.manifest_sha256 as its canonical manifest digest, and which no other "
                 "recorded successor of that node has bound; or ESTABLISH_GENESIS for a new lineage"),
-            retry_entrypoint=RETRY_ENTRYPOINT,
-            owning_existing_goal=PREDECESSOR_OWNING_GOAL,
-            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
-                          "resubmit": ("THE_SUCCESSOR_OF_THE_RECORDED_HEAD_FOR_THIS_NODE"
+                PREDECESSOR_OWNING_GOAL,
+                ("THE_SUCCESSOR_OF_THE_RECORDED_HEAD_FOR_THIS_NODE"
                                        if predecessor_code == PREDECESSOR_SUPERSEDED else
-                                       "THE_MANIFEST_WITH_A_PREDECESSOR_THIS_LEDGER_RECORDS"),
-                          "awaits_an_external_machine": False},
+                                       "THE_MANIFEST_WITH_A_PREDECESSOR_THIS_LEDGER_RECORDS")),
             request_sha256=request["request_sha256"])
     predecessor_binding = (PREDECESSOR_RESULT_BINDING if isinstance(standing, Mapping)
                            and standing.get("mode") == VERIFY_EXISTING_MODE else None)
@@ -1990,15 +2081,13 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     unbound = payload_binding_failure(manifest, crossing)
     if unbound is not None:
         return refused(
-            PAYLOAD_NOT_BOUND_PREDICATE, unbound, failure_code=PAYLOAD_NOT_BOUND,
-            required_evidence_or_repair=(
+            PAYLOAD_NOT_BOUND_PREDICATE, unbound,
+            six_fields=ingress_six_fields(
+                PAYLOAD_NOT_BOUND, PAYLOAD_NOT_BOUND_PREDICATE,
+                (
                 "a crossing whose manifest_sha256, payload_hash and echoed effect are the "
                 "payload recomputed from the delivered manifest"),
-            retry_entrypoint=RETRY_ENTRYPOINT,
-            owning_existing_goal=PAYLOAD_BINDING_OWNING_GOAL,
-            next_attempt={"entrypoint": RETRY_ENTRYPOINT,
-                          "resubmit": "THE_SAME_MANIFEST_OVER_AN_UNMODIFIED_CROSSING",
-                          "awaits_an_external_machine": False},
+                PAYLOAD_BINDING_OWNING_GOAL, "THE_SAME_MANIFEST_OVER_AN_UNMODIFIED_CROSSING"),
             request_sha256=request["request_sha256"])
 
     # The transition occurred in this repository, so the repository ledger

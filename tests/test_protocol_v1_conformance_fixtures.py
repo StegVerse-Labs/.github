@@ -28,17 +28,17 @@ shape, reads the refusal receipts back from the temporary roots, checks their
 digests and that they carry the case's failure code, and checks that no
 ingress transition receipt was written.
 
-A case's `expected` block is not hand-written. It is the six fields
-`receive()` returned for that case (`disposition`, `failed_predicate`,
-`failure_code` -- the returned `detail` --, `received`, `refusal_recorded`,
-`authority_effect`) and the disposition and class of the refusal record it
+A case's `expected` block is not hand-written. It is what `receive()`
+returned for that case: the six fields (`failure_code`, `failed_predicate`,
+`required_evidence_or_repair`, `retry_entrypoint`, `owning_existing_goal`,
+`next_attempt`), the `disposition`, the `detail`, `received`,
+`refusal_recorded` and `authority_effect`, and the disposition and class of the refusal record it
 appended, written by `python3 -m tests.test_protocol_v1_conformance_fixtures
 --regenerate` (run from the repository root, so `tests/__init__.py` declares
 the POSIX ledger locus as `tests/conftest.py` does under pytest) and asserted
-equal to a live run here. The protocol's other
-refusal fields (`required_evidence_or_repair`, `retry_entrypoint`,
-`owning_existing_goal`, `next_attempt`) are not emitted by `receive()` on these
-paths, so no case claims them as observed.
+equal to a live run here. Every refusal `receive()` returns and records carries
+all six fields (Lane B ruling on Labs#3441), so each case records them as
+observed; tests/test_organization_ingress_six_field_refusals.py holds that rule.
 
 Items the real path cannot express -- a stale head or fence, a submitter
 whose KV/SKAP verification is bound to the manifest, an authority effect a
@@ -72,9 +72,10 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "org-kernel/organization-ledger/fixtures/protocol-v1-conformance"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
               "retry_entrypoint", "owning_existing_goal", "next_attempt")
-#: The six fields `receive()` returns for a refusal, as the case's `expected` records them.
-OBSERVED_FIELDS = ("disposition", "failed_predicate", "failure_code", "received",
-                   "refusal_recorded", "authority_effect")
+#: What `receive()` returns for a refusal, as the case's `expected` records it.
+OBSERVED_FIELDS = ("disposition", "failed_predicate", "failure_code", "detail",
+                   "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal",
+                   "next_attempt", "received", "refusal_recorded", "authority_effect")
 REPLAY = "n2-replay"
 NON_GATING = "n9-non-gating-propagation-failure"
 NEGATIVES = ("n1-tamper", "n3-wrong-receiving-operation", "n4-generation-not-successor",
@@ -259,7 +260,12 @@ def drive(spec):
 def observed(result, ledgers):
     """What a case's `expected` block records, taken from a live run."""
     fields = {"disposition": result.get("disposition"), "failed_predicate": result.get("failed_predicate"),
-              "failure_code": result.get("detail"), "received": result.get("received"),
+              "failure_code": result.get("failure_code"), "detail": result.get("detail"),
+              "required_evidence_or_repair": result.get("required_evidence_or_repair"),
+              "retry_entrypoint": result.get("retry_entrypoint"),
+              "owning_existing_goal": result.get("owning_existing_goal"),
+              "next_attempt": result.get("next_attempt"),
+              "received": result.get("received"),
               "refusal_recorded": result.get("refusal_recorded"),
               "authority_effect": result.get("authority_effect")}
     repository = ledgers["repository"]["receipts"]
@@ -543,7 +549,8 @@ class NegativeCaseTest(unittest.TestCase):
         for case_id in NEGATIVES:
             with self.subTest(case=case_id):
                 result, _ = live(case_id)
-                self.assertEqual(result["disposition"], "FAIL_CLOSED")
+                self.assertEqual(result["disposition"], ingress.refusal_disposition(
+                    result["failure_code"], result["failed_predicate"]))
                 self.assertIs(result["received"], False)
                 self.assertIs(result["refusal_recorded"], True)
                 self.assertEqual(result["authority_effect"], "NONE_REFUSAL_ONLY")
@@ -572,9 +579,11 @@ class NegativeCaseTest(unittest.TestCase):
                 body = {key: value for key, value in repo_receipt.items() if key != "receipt_sha256"}
                 self.assertEqual(ingress.repository_ledger.sha(body), repo_receipt["receipt_sha256"])
                 evidence = repo_receipt["evidence"]
-                self.assertEqual(evidence["detail"], spec["expected"]["failure_code"])
+                self.assertEqual(evidence["detail"], spec["expected"]["detail"])
+                for field in SIX_FIELDS:
+                    self.assertEqual(evidence[field], result[field], field)
                 self.assertEqual(evidence["failed_predicate"], spec["expected"]["failed_predicate"])
-                self.assertEqual(evidence["disposition"], "DENY")
+                self.assertEqual(evidence["disposition"], result["disposition"])
                 self.assertIs(evidence["received"], False)
                 self.assertEqual(evidence["submitted_manifest_sha256"], repo_receipt["predecessor_state_sha256"])
 
@@ -584,7 +593,9 @@ class NegativeCaseTest(unittest.TestCase):
                 self.assertEqual(ingress.organization_ledger.sha(body), org_receipt["receipt_sha256"])
                 self.assertEqual(org_receipt["repo_receipt_sha256"], repo_receipt["receipt_sha256"])
                 self.assertEqual(org_receipt["repo_transition_id"], result["refusal_transition_id"])
-                self.assertEqual(org_receipt["boundary_evidence"]["disposition"], "DENY")
+                self.assertEqual(org_receipt["boundary_evidence"]["disposition"], result["disposition"])
+                for field in SIX_FIELDS:
+                    self.assertEqual(org_receipt["boundary_evidence"][field], result[field], field)
                 self.assertEqual(org_receipt["boundary_evidence"]["failed_predicate"],
                                  spec["expected"]["failed_predicate"])
 
@@ -598,7 +609,7 @@ class NegativeCaseTest(unittest.TestCase):
         with mock.patch.object(ingress.crossing_module, "cross", must_not_cross):
             fields, record = observed(*drive(spec))
         assert_matches_expected(self, spec, fields, record)
-        self.assertEqual(fields["failure_code"].split(":", 1)[0], ingress.AUTHORITY_NOT_WARRANTED)
+        self.assertEqual(fields["failure_code"], ingress.AUTHORITY_NOT_WARRANTED)
 
     def test_generation_successor_refusal_code_is_the_standing_contracts_own(self):
         result, _ = live("n4-generation-not-successor")
@@ -616,7 +627,8 @@ class NegativeCaseTest(unittest.TestCase):
                 result, ledgers = live(case_id)
                 self.assertIn(result["disposition"], {"DENY", "FAIL_CLOSED"})
                 self.assertIs(result["received"], False)
-                self.assertEqual(result["detail"], spec["expected"]["failure_code"])
+                self.assertEqual(result["detail"], spec["expected"]["detail"])
+                self.assertEqual(result["failure_code"], spec["expected"]["failure_code"])
                 for absent in ("transition_closures", "organization_transition_id"):
                     self.assertNotIn(absent, result)
                 for level in ("repository", "organization"):

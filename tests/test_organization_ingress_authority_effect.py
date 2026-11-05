@@ -123,7 +123,7 @@ class AuthorityEffectCase(unittest.TestCase):
             if directory.is_dir() else []
 
     def assertRefusedBeforeCrossing(self, result: dict, manifest) -> None:
-        self.assertEqual(result["disposition"], "FAIL_CLOSED", result)
+        self.assertEqual(result["disposition"], "DENY", result)
         self.assertEqual(result["failed_predicate"], PREDICATE, result)
         self.assertEqual(result["failure_code"], FAILURE_CODE, result)
         self.assertTrue(result["detail"].startswith(FAILURE_CODE + ":"), result["detail"])
@@ -131,7 +131,7 @@ class AuthorityEffectCase(unittest.TestCase):
             self.assertTrue(result.get(field), field)
         self.assertEqual(result["owning_existing_goal"], OWNING_GOAL)
         self.assertEqual(result["retry_entrypoint"], ingress.RETRY_ENTRYPOINT)
-        self.assertIs(result["next_attempt"]["awaits_an_external_machine"], False)
+        self.assertIn("nothing waits on an external machine", result["next_attempt"])
         self.assertIs(result["received"], False)
         self.assertIs(result["refusal_recorded"], True)
         self.assertIs(result["organization_receipt_observed"], False)

@@ -134,7 +134,7 @@ class DeclaredPredecessorCase(unittest.TestCase):
         for field in SIX_FIELDS:
             self.assertTrue(result.get(field), field)
         self.assertEqual(result["owning_existing_goal"], ingress.PREDECESSOR_OWNING_GOAL)
-        self.assertIs(result["next_attempt"]["awaits_an_external_machine"], False)
+        self.assertIn("nothing waits on an external machine", result["next_attempt"])
         self.assertIs(result["received"], False)
         self.assertIs(result["refusal_recorded"], True)
         self.assertEqual(result["authority_effect"], "NONE_REFUSAL_ONLY")
@@ -252,8 +252,7 @@ class NotRecordedTests(DeclaredPredecessorCase):
         result = self.receive(attempt, successor(never))
         self.assertRefusedBeforeCrossing(result, attempt, NOT_RECORDED, "FAIL_CLOSED")
         self.assertEqual(self.crossings, [])
-        self.assertEqual(result["next_attempt"]["resubmit"],
-                         "THE_MANIFEST_WITH_A_PREDECESSOR_THIS_LEDGER_RECORDS")
+        self.assertIn("THE_MANIFEST_WITH_A_PREDECESSOR_THIS_LEDGER_RECORDS", result["next_attempt"])
 
     def test_a_predecessor_recorded_under_another_node_is_not_this_nodes(self):
         first = manifest(1)
@@ -288,8 +287,7 @@ class SupersededTests(DeclaredPredecessorCase):
         self.assertRefusedBeforeCrossing(result, fork, SUPERSEDED, "DENY")
         self.assertEqual(len(self.crossings), 2)
         self.assertIn("already bound by the recorded successor", result["detail"])
-        self.assertEqual(result["next_attempt"]["resubmit"],
-                         "THE_SUCCESSOR_OF_THE_RECORDED_HEAD_FOR_THIS_NODE")
+        self.assertIn("THE_SUCCESSOR_OF_THE_RECORDED_HEAD_FOR_THIS_NODE", result["next_attempt"])
 
     def test_the_recorded_successor_redelivered_is_the_recorded_transition(self):
         first, second = manifest(1), manifest(2)

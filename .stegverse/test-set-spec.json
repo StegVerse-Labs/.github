@@ -95,6 +95,9 @@
   "tests/test_organization_ingress_payload_binding.py": [
    "stegverse-sdk"
   ],
+  "tests/test_organization_ingress_six_field_refusals.py": [
+   "stegverse-sdk"
+  ],
   "tests/test_organization_ingress_worker_claim.py": [
    "stegverse-sdk"
   ],

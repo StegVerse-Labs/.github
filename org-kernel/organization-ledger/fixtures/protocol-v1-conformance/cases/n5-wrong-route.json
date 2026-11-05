@@ -4,15 +4,20 @@
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
     "authority_effect": "NONE_REFUSAL_ONLY",
+    "detail": "ORG_EXPOSES_NO_SUCH_TRANSITION_SURFACE:organization_ledger_direct",
     "disposition": "FAIL_CLOSED",
-    "failed_predicate": "CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED",
-    "failure_code": "ORG_EXPOSES_NO_SUCH_TRANSITION_SURFACE:organization_ledger_direct",
+    "failed_predicate": "DECLARED_SURFACE_RESOLVES_TO_EXACTLY_ONE_SERVICE",
+    "failure_code": "ORG_EXPOSES_NO_SUCH_TRANSITION_SURFACE",
+    "next_attempt": "resubmit the same manifest once the repair is in place; nothing crossed and nothing was dispatched",
+    "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
     "received": false,
-    "refusal_recorded": true
+    "refusal_recorded": true,
+    "required_evidence_or_repair": "declare a transition surface this organization registers, or register the service in org-boundary/registry/services.json (organization_ledger_direct)",
+    "retry_entrypoint": "resident-runtime/sdk_manifest_crossing.py::cross"
   },
   "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
   "expected_refusal_record": {
-    "disposition": "DENY",
+    "disposition": "FAIL_CLOSED",
     "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
   },
   "expected_source": "GENERATED_FROM_REAL_RECEIVE",

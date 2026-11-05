@@ -4,11 +4,16 @@
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
     "authority_effect": "NONE_REFUSAL_ONLY",
-    "disposition": "FAIL_CLOSED",
+    "detail": "AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS:declared transition.authority_effect \"GRANTS_EXECUTION_AUTHORITY\"",
+    "disposition": "DENY",
     "failed_predicate": "DECLARED_AUTHORITY_EFFECT_IS_NONE_UNTIL_A_WARRANT_RECEIPT_BINDS",
-    "failure_code": "AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS:declared transition.authority_effect \"GRANTS_EXECUTION_AUTHORITY\"",
+    "failure_code": "AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS",
+    "next_attempt": "resubmit THE_MANIFEST_WITH_TRANSITION_AUTHORITY_EFFECT_NONE to resident-runtime/organization_manifest_ingress.py::receive; nothing waits on an external machine",
+    "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
     "received": false,
-    "refusal_recorded": true
+    "refusal_recorded": true,
+    "required_evidence_or_repair": "a manifest whose transition.authority_effect is absent or NONE; a non-NONE effect needs a landed TV/TVC warrant receipt this operation can verify, and none is defined yet",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive"
   },
   "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
   "expected_refusal_record": {

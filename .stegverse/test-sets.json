@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "6945b2d7a4cc2a5cbf71562c41e0a6707e0782e19d5c834e74ba0511ed45bbee"
+  "spec_sha256": "98fa1b468eebc6f2057a87b82acbb2e708e78b8c1c1902a3115415c5b0d0f31a"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -5256,6 +5256,20 @@
    ],
    "tests": [
     "tests/test_organization_ingress_payload_binding.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_organization_ingress_six_field_refusals.py",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "surfaces": [
+    "tests/test_organization_ingress_six_field_refusals.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_six_field_refusals.py"
    ]
   },
   {
@@ -15282,6 +15296,11 @@
   "tests/test_organization_ingress_payload_binding.py": [
    "org-boundary/registry/services.json",
    "resident-runtime/organization_manifest_ingress.py"
+  ],
+  "tests/test_organization_ingress_six_field_refusals.py": [
+   "resident-runtime/organization_manifest_ingress.py",
+   "tests/__init__.py",
+   "tests/test_protocol_v1_conformance_fixtures.py"
   ],
   "tests/test_organization_ingress_worker_claim.py": [
    "org-boundary/registry/services.json",

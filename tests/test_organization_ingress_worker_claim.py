@@ -154,7 +154,7 @@ class WorkerClaimCase(unittest.TestCase):
             self.assertTrue(result.get(field), field)
         self.assertEqual(result["owning_existing_goal"], ingress.FENCE_OWNING_GOAL)
         self.assertEqual(result["retry_entrypoint"], ingress.RETRY_ENTRYPOINT)
-        self.assertIs(result["next_attempt"]["awaits_an_external_machine"], False)
+        self.assertIn("nothing waits on an external machine", result["next_attempt"])
         self.assertIs(result["received"], False)
         self.assertIs(result["refusal_recorded"], True)
         self.assertIs(result["organization_receipt_observed"], False)
@@ -217,8 +217,7 @@ class NotVerifiedTests(WorkerClaimCase):
         manifest = with_claim(claim)
         result = self.receive(manifest)
         self.assertRefusedBeforeCrossing(result, manifest, NOT_VERIFIED, "FAIL_CLOSED")
-        self.assertEqual(result["next_attempt"]["resubmit"],
-                         "THE_MANIFEST_WITH_A_VERIFIABLE_OR_ABSENT_WORKER_CLAIM")
+        self.assertIn("THE_MANIFEST_WITH_A_VERIFIABLE_OR_ABSENT_WORKER_CLAIM", result["next_attempt"])
         return result
 
     def test_each_malformed_declaration_is_refused(self):
@@ -267,8 +266,7 @@ class StaleOrReleasedTests(WorkerClaimCase):
         manifest = with_claim(claim)
         result = self.receive(manifest)
         self.assertRefusedBeforeCrossing(result, manifest, STALE, "DENY")
-        self.assertEqual(result["next_attempt"]["resubmit"],
-                         "THE_MANIFEST_UNDER_THE_CURRENT_WORKERCOORDINATOR_FENCE")
+        self.assertIn("THE_MANIFEST_UNDER_THE_CURRENT_WORKERCOORDINATOR_FENCE", result["next_attempt"])
         return result
 
     def test_a_superseded_fence_is_denied(self):

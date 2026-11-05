@@ -781,9 +781,12 @@ class PartialCommitTest(LedgerRoots):
 class SdkRuntimeResultRefusalTest(LedgerRoots):
     def test_an_sdk_refused_runtime_result_is_fail_closed_with_six_fields(self):
         """(SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT, SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT) = FAIL_CLOSED."""
+        # The mocked crossing's payload is not one recomputed from this stub manifest, so the
+        # payload binding guard (Labs#3441) is held out here: this test isolates the SDK's refusal.
         cross = mock.MagicMock(return_value=_crossing("sdk-refused"))
         with mock.patch.object(ingress, "derive_execution_request", return_value=_plain_request()), \
              mock.patch.object(ingress.crossing_module, "cross", cross), \
+             mock.patch.object(ingress, "payload_binding_failure", return_value=None), \
              mock.patch.object(ingress, "admit_runtime_result",
                                side_effect=ValueError("SDK_RESULT_NOT_ADMITTED_FOR_TEST")):
             result = ingress.receive({"processing": {"capability": "records"}}, registry={}, hb_epoch=7100)

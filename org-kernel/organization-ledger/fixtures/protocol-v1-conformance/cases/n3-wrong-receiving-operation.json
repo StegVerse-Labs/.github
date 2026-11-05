@@ -4,11 +4,16 @@
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
     "authority_effect": "NONE_REFUSAL_ONLY",
-    "disposition": "FAIL_CLOSED",
+    "detail": "ORGANIZATION_RECEIVING_OPERATION_OWNED_ELSEWHERE",
+    "disposition": "DENY",
     "failed_predicate": "CAPABILITY_IS_BOUND_TO_THIS_RECEIVING_OPERATION",
-    "failure_code": "ORGANIZATION_RECEIVING_OPERATION_OWNED_ELSEWHERE",
+    "failure_code": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED",
+    "next_attempt": "resubmit to the organization whose receiving operation the manifest's capability resolves to; nothing crossed here",
+    "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
     "received": false,
-    "refusal_recorded": true
+    "refusal_recorded": true,
+    "required_evidence_or_repair": "a manifest whose declared capability the SDK resolves to this repository's ORGANIZATION_SDK_MANIFEST_INGRESS receiving operation; submit it to the owning organization instead",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive"
   },
   "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
   "expected_refusal_record": {

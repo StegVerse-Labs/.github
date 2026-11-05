@@ -4,15 +4,20 @@
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
     "authority_effect": "NONE_REFUSAL_ONLY",
+    "detail": "BOUNDARY_RECEIPT_RECONSTRUCTION_MISMATCH:INGRESS_ACCEPTED",
     "disposition": "FAIL_CLOSED",
     "failed_predicate": "BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY",
-    "failure_code": "BOUNDARY_RECEIPT_RECONSTRUCTION_MISMATCH:INGRESS_ACCEPTED",
+    "failure_code": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED",
+    "next_attempt": "resubmit the manifest once the boundary returns a chain that reconstructs; the refused crossing is recorded and no ingress transition was written",
+    "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
     "received": false,
-    "refusal_recorded": true
+    "refusal_recorded": true,
+    "required_evidence_or_repair": "a boundary receipt chain whose every receipt recomputes from its own subject and whose predecessors chain; the detail names the receipt that does not",
+    "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive"
   },
   "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
   "expected_refusal_record": {
-    "disposition": "DENY",
+    "disposition": "FAIL_CLOSED",
     "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
   },
   "expected_source": "GENERATED_FROM_REAL_RECEIVE",

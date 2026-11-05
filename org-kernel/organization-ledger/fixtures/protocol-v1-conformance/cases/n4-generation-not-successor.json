@@ -4,15 +4,20 @@
   "evidence_class": "FIXTURE_ONLY_NOT_RUNTIME_RECEIPT",
   "expected": {
     "authority_effect": "NONE_REFUSAL_ONLY",
+    "detail": "node-standing-fail_closed:non-genesis-predecessor-invalid:generation-not-successor",
     "disposition": "FAIL_CLOSED",
-    "failed_predicate": "ADMITTED_CROSSING_REACHES_ITS_INTERNAL_ENDPOINT",
-    "failure_code": "node-standing-fail_closed:non-genesis-predecessor-invalid:generation-not-successor",
+    "failed_predicate": "RESOLVED_SERVICE_HAS_AN_INSTALLED_ENDPOINT_ADAPTER",
+    "failure_code": "FAR_SIDE_RECEIVER_UNAVAILABLE",
+    "next_attempt": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION: the crossing is re-driven when the receiver is materialized by the next event; nothing waits or polls",
+    "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
     "received": false,
-    "refusal_recorded": true
+    "refusal_recorded": true,
+    "required_evidence_or_repair": "install the endpoint adapter for stegverse-labs.boundary-diagnostic (node-standing-fail_closed:non-genesis-predecessor-invalid:generation-not-successor)",
+    "retry_entrypoint": "resident-runtime/sdk_manifest_crossing.py::cross"
   },
   "expected_generator": "python3 -m tests.test_protocol_v1_conformance_fixtures --regenerate",
   "expected_refusal_record": {
-    "disposition": "DENY",
+    "disposition": "FAIL_CLOSED",
     "transition_class": "ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED"
   },
   "expected_source": "GENERATED_FROM_REAL_RECEIVE",
