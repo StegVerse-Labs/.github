@@ -1,0 +1,146 @@
+{
+  "caller_workflow": ".github/workflows/universal-intr-route-installation.yml",
+  "consumers": {
+    "canonical_work": {
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "EDGE_CONSUMER_ENTERS_THROUGH_SDK_PUBLISHED_ROUTE_WITH_ORG_LEDGER_RECEIPT",
+      "failure_code": "EDGE_CONSUMER_ROUTE_NOT_PUBLISHED",
+      "installer_retained": "scripts/install_canonical_work_universal_intr_route.py",
+      "next_attempt": {
+        "awaits_an_external_machine": false,
+        "entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+        "resubmit": "THE_SAME_REQUEST_AFTER_THE_ROUTE_IS_PUBLISHED"
+      },
+      "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "profile": "CanonicalWork:Coordination",
+      "required_evidence_or_repair": "publish the consumer's route in stegverse/route_resolution.py PUBLISHED_ROUTES on routing_surface EXISTING_UNIVERSAL_INTR, bound to an installed runtime, with a registry service row whose admits_processing matches; then record it in EDGE_CONSUMERS",
+      "retry_entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+      "route_id": null
+    },
+    "erl_active_research": {
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "EDGE_CONSUMER_ENTERS_THROUGH_SDK_PUBLISHED_ROUTE_WITH_ORG_LEDGER_RECEIPT",
+      "failure_code": "EDGE_CONSUMER_ROUTE_NOT_PUBLISHED",
+      "installer_retained": "scripts/install_erl_active_research_universal_intr_route.py",
+      "next_attempt": {
+        "awaits_an_external_machine": false,
+        "entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+        "resubmit": "THE_SAME_REQUEST_AFTER_THE_ROUTE_IS_PUBLISHED"
+      },
+      "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "profile": "ERL:ActiveResearch",
+      "required_evidence_or_repair": "publish the consumer's route in stegverse/route_resolution.py PUBLISHED_ROUTES on routing_surface EXISTING_UNIVERSAL_INTR, bound to an installed runtime, with a registry service row whose admits_processing matches; then record it in EDGE_CONSUMERS",
+      "retry_entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+      "route_id": null
+    },
+    "kv_ai_memory": {
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "EDGE_CONSUMER_ENTERS_THROUGH_SDK_PUBLISHED_ROUTE_WITH_ORG_LEDGER_RECEIPT",
+      "failure_code": "EDGE_CONSUMER_ROUTE_NOT_PUBLISHED",
+      "installer_retained": "scripts/install_kv_ai_memory_universal_intr_route.py",
+      "next_attempt": {
+        "awaits_an_external_machine": false,
+        "entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+        "resubmit": "THE_SAME_REQUEST_AFTER_THE_ROUTE_IS_PUBLISHED"
+      },
+      "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "profile": "KV:AI-MemoryPacketAdmission",
+      "required_evidence_or_repair": "publish the consumer's route in stegverse/route_resolution.py PUBLISHED_ROUTES on routing_surface EXISTING_UNIVERSAL_INTR, bound to an installed runtime, with a registry service row whose admits_processing matches; then record it in EDGE_CONSUMERS",
+      "retry_entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+      "route_id": null
+    },
+    "site_publication": {
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "EDGE_CONSUMER_ENTERS_THROUGH_SDK_PUBLISHED_ROUTE_WITH_ORG_LEDGER_RECEIPT",
+      "failure_code": "EDGE_CONSUMER_ROUTE_NOT_PUBLISHED",
+      "installer_retained": "scripts/install_site_publication_universal_intr_route.py",
+      "next_attempt": {
+        "awaits_an_external_machine": false,
+        "entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+        "resubmit": "THE_SAME_REQUEST_AFTER_THE_ROUTE_IS_PUBLISHED"
+      },
+      "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "profile": "StegOS:SitePublicationRuntime",
+      "required_evidence_or_repair": "publish the consumer's route in stegverse/route_resolution.py PUBLISHED_ROUTES on routing_surface EXISTING_UNIVERSAL_INTR, bound to an installed runtime, with a registry service row whose admits_processing matches; then record it in EDGE_CONSUMERS",
+      "retry_entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+      "route_id": null
+    },
+    "stegbrowser": {
+      "disposition": "ALLOW",
+      "evaluated_by": ".github/workflows/universal-intr-route-installation.yml (exact-head run of the reusable workflow)",
+      "installer_retirement": {
+        "disposition": "FAIL_CLOSED",
+        "failed_predicate": "AUTHENTIC_SUCCESSOR_MATERIALIZATION_AND_ORGANIZATION_RECEIPT_NOT_YET_ESTABLISHED",
+        "failure_code": "NATIVE_REPLACEMENT_CUSTODY_UNVERIFIED",
+        "next_attempt": "replay current exact manifest and read back same-transition Organization ledger receipt; no listener or external machine required",
+        "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+        "required_evidence_or_repair": "Source successor now imports stegverse.universal_intr_route_installer.evaluate_installation and its tests prohibit the retired script; source replacement alone is not authentic manifest-bound admission or Organization receipt; verify current SDK route materialization plus predecessor-bound InTr/Organization closure before claiming authorized retirement.",
+        "retry_entrypoint": "scripts/run_stegbrowser_universal_intr_materialization.py via original manifest-bound SDK/InTr ingress"
+      },
+      "route_declaration_hash": "db36dde96bf309dea28a3774931cbffb925428d49c22d327067330622160503f",
+      "route_id": "stegverse.route.stegbrowser.v1",
+      "retired_installer": "scripts/install_stegbrowser_universal_intr_route.py",
+      "materialization_successor": "scripts/run_stegbrowser_universal_intr_materialization.py"
+    },
+    "stegsocials_bounded": {
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "EDGE_CONSUMER_ENTERS_THROUGH_SDK_PUBLISHED_ROUTE_WITH_ORG_LEDGER_RECEIPT",
+      "failure_code": "EDGE_CONSUMER_ROUTE_NOT_PUBLISHED",
+      "installer_retained": "scripts/install_stegsocials_bounded_universal_intr_route.py",
+      "next_attempt": {
+        "awaits_an_external_machine": false,
+        "entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+        "resubmit": "THE_SAME_REQUEST_AFTER_THE_ROUTE_IS_PUBLISHED"
+      },
+      "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "profile": "StegSocials:BoundedSocialIngress",
+      "required_evidence_or_repair": "publish the consumer's route in stegverse/route_resolution.py PUBLISHED_ROUTES on routing_surface EXISTING_UNIVERSAL_INTR, bound to an installed runtime, with a registry service row whose admits_processing matches; then record it in EDGE_CONSUMERS",
+      "retry_entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+      "route_id": null
+    },
+    "tvc_recipient_admission_sign": {
+      "disposition": "FAIL_CLOSED",
+      "failed_predicate": "EDGE_CONSUMER_ENTERS_THROUGH_SDK_PUBLISHED_ROUTE_WITH_ORG_LEDGER_RECEIPT",
+      "failure_code": "EDGE_CONSUMER_ROUTE_NOT_PUBLISHED",
+      "installer_retained": "scripts/install_tvc_recipient_admission_sign_universal_intr_route.py",
+      "next_attempt": {
+        "awaits_an_external_machine": false,
+        "entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+        "resubmit": "THE_SAME_REQUEST_AFTER_THE_ROUTE_IS_PUBLISHED"
+      },
+      "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "profile": "TVC:RecipientAdmissionAuthoritySign",
+      "required_evidence_or_repair": "publish the consumer's route in stegverse/route_resolution.py PUBLISHED_ROUTES on routing_surface EXISTING_UNIVERSAL_INTR, bound to an installed runtime, with a registry service row whose admits_processing matches; then record it in EDGE_CONSUMERS",
+      "retry_entrypoint": "stegverse/universal_intr_route_installer.py::evaluate_installation",
+      "route_id": null
+    }
+  },
+  "evidence_class": "SOURCE_EVALUATED_BY_SDK_c138cad4 (no installer run, no router written, no receipt claimed)",
+  "goal": "StegVerse-org/.github#162 (Lane B, Fix 4 Labs half)",
+  "hb_epoch_source": {
+    "derived_from_clock": false,
+    "ledger_ref": "refs/stegverse/organization-ledger@a5bb54d81893b392a3ce28182986fc39857807e1",
+    "rule": "organization-ledger tip epoch + 1; no clock read",
+    "tip_epoch": 469411750,
+    "tip_receipt_sha256": "sha256:35810b6598e99cef32d9a0f1f97d07394d9f21c540ed7d3a395d9d78b753db3d",
+    "value": "469411751"
+  },
+  "installation_request": "control/universal-intr-route-installation-request.json",
+  "owning_existing_goal": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "role_version_record": {
+    "disposition": "FAIL_CLOSED",
+    "failed_predicate": "SHARED_EDGE_INSTALLER_IS_A_RECORDED_TARGET_VERSION_FILE",
+    "failure_code": "ROLE_VERSION_TARGET_FILES_EXCLUDE_SHARED_INSTALLER",
+    "next_attempt": "after the StegDB -002 successor and the generation 320+ extension exist",
+    "owning_existing_goal": "STEGDB-ORGANIZATION-ROLE-VERSION-PROPAGATION-002",
+    "required_evidence_or_repair": "a successor version in StegVerse-Labs/StegDB registry/organization-role/versions.json whose files include this caller workflow (extend_role_version_files), and the canonical-task bounded extension at registry generation >= 320 carried by the canonical-work ingress transition",
+    "retry_entrypoint": "StegDB tools/evaluate_organization_role_conformance.py, then resident-runtime/organization_manifest_ingress.py::receive"
+  },
+  "router": {
+    "observed_at_labs_main": "978b8880d238dc3e3a8b690c0675d8bb0e9d6985",
+    "path": "workers/universal_intr_profiled_ingress.py",
+    "predecessor_sha256": "sha256:b3672c9e702736d732aa18b14f183656cbea710f684481c0a00fda0c0bd72f07"
+  },
+  "schema": "stegverse.universal-intr-route-installation-adoption/v1",
+  "sdk_ref": "c138cad4c37db0bb675bc2c66515b5558cc5fa7b"
+}
