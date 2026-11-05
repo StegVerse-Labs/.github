@@ -64,6 +64,8 @@ def test_new_task_colliding_with_checked_out_owner_fails_closed_with_six_fields(
     tasks = copy.deepcopy(BASE_TASKS) + [task("H48-NEW-COLLIDER-001", ["collision-owner-component"])]
     result = gate.check(base, head_with(tmp_path, tasks))
     assert result["disposition"] == gate.FAIL_CLOSED
+    untouched = copy.deepcopy(result)
+    assert gate.evaluate_registration_exception(result, base, tmp_path / "head") == untouched
     row = by_task(result)["H48-NEW-COLLIDER-001"]
     assert row["head_disposition"] == "STOP_COLLISION"
     assert row["base_disposition"] is None
@@ -148,6 +150,7 @@ def test_workflow_binding_is_pull_request_only_tokenless_and_registered():
     assert 'test -z "${GITHUB_TOKEN:-}"' in text
     assert "python scripts/check_registry_collision_checkin.py" in text
     assert '--base-root "$base_root" --head-root "$head_root"' in text
+    assert "--verify-registration-ruling" in text
     assert "--strict" not in text
     registry = json.loads(HYGIENE.read_text(encoding="utf-8"))
     paths = {entry["path"] for entry in registry["surfaces"]}

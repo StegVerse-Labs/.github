@@ -4591,6 +4591,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_merge_transfer_gitstore_sweep.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_merge_transfer_gitstore_sweep.py"
+   ],
+   "tests": [
+    "tests/test_merge_transfer_gitstore_sweep.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_mir_exp3_original_resident_request.py",
    "inputs": [],
    "surfaces": [
@@ -10531,6 +10543,9 @@
    ".stegverse/transition-ledger/org-contract.json",
    "resident-runtime/aggregate_repo_transition.py"
   ],
+  "resident-runtime/merge_transfer_gitstore_sweep.py": [
+   "resident-runtime/merge_transfer_gitstore.py"
+  ],
   "resident-runtime/mesh_source_binding.py": [
    ".github/workflows/organization-governance-decision.yml"
   ],
@@ -11073,9 +11088,13 @@
   ],
   "scripts/check_registry_collision_checkin.py": [
    ".github/workflows/task-registry-collision-checkin.yml",
+   "control/adjacency-rulings/**",
+   "control/canonical-task-registration-requests/**",
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json",
    "data/task-registry-global-invariants.json",
+   "scripts/adjacency_ruling.py",
+   "scripts/canonical_task_registration_transition.py",
    "scripts/evaluate_task_registry_collision_checkin.py"
   ],
   "scripts/check_registry_generation_fence.py": [
@@ -12775,6 +12794,9 @@
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/ledger_store.py"
   ],
+  "tests/registry_predecessor_fixture.py": [
+   "tests/fixtures/canonical_task_registration/predecessor-326.tar.gz"
+  ],
   "tests/sv_ledger_fixtures.py": [
    "resident-runtime/aggregate_repo_transition.py"
   ],
@@ -12801,7 +12823,8 @@
    "tests/fixtures/**",
    "tests/fixtures/canonical_task_registration/**",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/**",
-   "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json"
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_admissible_source_generation_capability_worker.py": [
    "workers/admissible_source_generation_capability_worker.py"
@@ -13797,7 +13820,8 @@
    "data/canonical-task-registry.json",
    "data/registry-record-data/**",
    "data/registry-record-data/exact-invocation-superseded-by-cycle-closure.v1.json",
-   "scripts/apply_task_record_data.py"
+   "scripts/apply_task_record_data.py",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_execution_spine_regression_reconstruction.py": [
    "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
@@ -14080,7 +14104,8 @@
    "scripts/adjacency_ruling.py",
    "scripts/canonical_task_registration_transition.py",
    "scripts/goal_scope_seal.py",
-   "tests/fixtures/canonical_task_registration/github-universal-governance-product/**"
+   "tests/fixtures/canonical_task_registration/github-universal-governance-product/**",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_glm53_sovereign_lane_resident_bridge.py": [
    "control/process-worker-adapters.d/glm53-sovereign-lane-001.json",
@@ -14488,7 +14513,8 @@
    "tests/fixtures/**",
    "tests/fixtures/canonical_task_registration/**",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/**",
-   "tests/fixtures/canonical_task_registration/i1-goal-manifests/MANIFEST.json"
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/MANIFEST.json",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_ibc_intr_resident_consumer.py": [
    "scripts/consume_ibc_intr_resident_request.py",
@@ -14934,6 +14960,12 @@
    ".stegverse/merge-transfer/pending.json",
    "resident-runtime/merge_transfer_gitstore.py",
    "tests/fixtures/merge-transfer-gitstore/**",
+   "tests/pytest.py"
+  ],
+  "tests/test_merge_transfer_gitstore_sweep.py": [
+   ".github/workflows/organization-ledger-merge-transfer.yml",
+   ".stegverse/merge-transfer/pending.json",
+   "resident-runtime/merge_transfer_gitstore_sweep.py",
    "tests/pytest.py"
   ],
   "tests/test_mir_exp3_original_resident_request.py": [
@@ -15497,7 +15529,8 @@
    "scripts/write_admission.py",
    "tests/fixtures/**",
    "tests/fixtures/canonical_task_registration/**",
-   "tests/fixtures/canonical_task_registration/pat-003-lane-a/**"
+   "tests/fixtures/canonical_task_registration/pat-003-lane-a/**",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_personal_kv_provider_root_resolution.py": [
    "scripts/materialize_personal_kv_provider_root.py"

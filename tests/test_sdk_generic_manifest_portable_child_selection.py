@@ -66,10 +66,16 @@ def test_goal_context_without_a_request_id_is_refused_and_runs_nothing():
     assert captured == [], "nothing may execute when the exact child is unbound"
 
 
-def test_goal_context_with_a_request_id_forwards_it():
+def test_goal_context_with_a_request_id_forwards_it(tmp_path):
+    # Use a scratch runtime root: dispatch() writes a receipt there, never to
+    # the tracked receipts/sovereign-host directory in the repository.
     module = _dispatcher()
     captured = []
-    module.dispatch(ROOT, ROOT, runner=_fake_runner(captured),
+    # The dispatcher executes only the consumers present in its runtime root.
+    for name, rel in module.select_consumers(("sdk_generic_manifest_execution",)):
+        (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / rel).write_bytes((ROOT / rel).read_bytes())
+    module.dispatch(ROOT, tmp_path, runner=_fake_runner(captured),
                     only_consumers=("sdk_generic_manifest_execution",),
                     goal_task_id="RT-SDK-GENERIC-MANIFEST-PORTABLE-DISPATCH-001",
                     request_id="test5-a")

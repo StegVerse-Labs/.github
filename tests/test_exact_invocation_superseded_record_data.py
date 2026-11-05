@@ -12,13 +12,15 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from tests.registry_predecessor_fixture import registration_predecessor_326
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import apply_task_record_data as atr  # noqa: E402
 
-REGISTRY = ROOT / "data" / "canonical-task-registry.json"
-SHARDS = ROOT / "data" / "canonical-task-records"
+REGISTRY = registration_predecessor_326() / "data" / "canonical-task-registry.json"
+SHARDS = registration_predecessor_326() / "data" / "canonical-task-records"
 DATA = ROOT / "data" / "registry-record-data" / "exact-invocation-superseded-by-cycle-closure.v1.json"
 TASK = "CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001"
 CONTINUATION = "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001"

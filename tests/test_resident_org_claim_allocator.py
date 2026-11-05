@@ -790,11 +790,6 @@ class EventEphemeralClaimMaterializationTests(unittest.TestCase):
         registry = json.loads((ROOT / "control/workflow-surface-registry.json").read_text(encoding="utf-8"))
         self.assertIn(rel, [entry["path"] for entry in registry["surfaces"]])
 
-
-if __name__ == "__main__":
-    unittest.main()
-
-
     def test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7(self):
         task7 = json.loads((ROOT / "tasks/TASK-2026-0007.json").read_text(encoding="utf-8"))
         task8 = json.loads((ROOT / "tasks/TASK-2026-0008.json").read_text(encoding="utf-8"))
@@ -829,3 +824,7 @@ if __name__ == "__main__":
         self.assertIn("portable-tvc-sv001-lease-input-publication", request8["scope"]["capabilities"])
         self.assertEqual(request8["scope"]["dependency_surfaces"], ["site:stegos-de006-bound-inference-publication"])
         self.assertFalse(allocator.conflicts(request8, request7))
+
+
+if __name__ == "__main__":
+    unittest.main()
