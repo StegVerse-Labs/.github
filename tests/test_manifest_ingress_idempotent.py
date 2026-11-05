@@ -56,14 +56,27 @@ def request(manifest_sha256="a" * 64, request_sha256="b" * 64):
             "destination_resolution_source": "ORGANIZATION_BOUNDARY"}
 
 
+#: The submitted manifest. It declares its egress, as every crossable manifest
+#: does, so the payload the crossing carries can be recomputed from it.
+MANIFEST = {"manifest": 1, "completion": {"egress": {
+    "final_stegverse_transition_surface": "sdk-manifest-ingress",
+    "transport": "INTERLOCK_INTR", "far_side_transition_required": True}}}
+
+
 def crossing(manifest, *, registry, standing=None, packet_id):
     """The crossing as the boundary drives it: each delivery is its own packet.
 
     The packet id is the carrier's, so a redelivery under another packet id
     names another ingress and egress packet, exactly as the real crossing does.
+    It is bound to the delivered manifest by the crossing's own payload
+    definition, as the real crossing is.
     """
+    payload = ingress.crossing_module.crossing_payload(
+        manifest, ingress.crossing_module.declared_destination(manifest))
     return {"crossing_completed": True, "resolved_service_id": "stegverse-labs.sdk-manifest-ingress",
             "ingress_packet_id": packet_id, "egress_packet_id": packet_id + ":egress",
+            "manifest_sha256": payload["manifest_sha256"],
+            "payload_hash": ingress.crossing_module.sha(payload),
             "application_result": {}}
 
 
@@ -121,7 +134,7 @@ class IngressLedgerCase(unittest.TestCase):
         return found
 
     def receive(self, **options):
-        return ingress.receive({"manifest": 1}, registry={}, **options)
+        return ingress.receive(dict(MANIFEST), registry={}, **options)
 
     def receipt_bytes(self, root):
         directory = root / "receipts"
