@@ -17,7 +17,7 @@ Layout. These are the existing receipts, unchanged:
   * Time: ``hb_reference`` comes from kernel.hb_reference(epoch=<supplied int >= 32>) (org-kernel/kernel.py:68-74,
     the storage location), so derived_from_clock is False. The append epoch and the check receipt's own
     ``hb_epoch`` must both pass the shared rule org-kernel/kernel.py::supplied_epoch_failure (L236-269, blob
-    ffec5d64, SHARED_RULE_SHA256 726248a5...) and must be equal. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED,
+    4d1d2d47; was ffec5d64 until Labs#3434; SHARED_RULE_SHA256 726248a5 pinned at fc19b532) and must be equal. Unobserved -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED,
     absent/null/""/"null"/UNKNOWN_NOT_AUTHENTICALLY_OBSERVED -> FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED; any other malformed or
     different value -> DENY HB_EPOCH_MISMATCH; in both cases before anything is written. A clock-derived epoch (only
     possible on a stored hb_reference) is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED. A clock epoch is never written.
@@ -83,7 +83,7 @@ GATE_LEDGER_PREDICATE = "STAGE_GATE_RECEIPT_APPENDS_TO_THE_SUBJECT_REPOSITORY_LE
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 EPOCH_SOURCE_PREDICATE = "ADMISSION_HB_EPOCH_IS_THE_BOUND_LEDGER_HEAD_EPOCH"
 EPOCH_TIE_PREDICATE = "CHECK_RECEIPT_HB_EPOCH_EQUALS_APPEND_HB_EPOCH"
-# sha256 of org-kernel/kernel.py::supplied_epoch_failure (L236-269 at blob ffec5d64): from "def supplied_epoch_failure"
+# sha256 of org-kernel/kernel.py::supplied_epoch_failure (L236-269; historical pin blob ffec5d64 at fc19b532; current file blob 4d1d2d47): from "def supplied_epoch_failure"
 # to the next top-level def, trailing whitespace stripped (the segment rule of P1 sv_work_items.supplied_epoch_rule_sha256).
 SHARED_RULE_SHA256 = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
 SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
@@ -135,8 +135,8 @@ _P1: dict[str, Any] = {}
 
 def p1_readers():
     """P1's sv_work_items at P1_HEAD, run over a temporary root holding the vendored files in P1's layout, with
-    org-kernel/ and scripts/ linked to this checkout (kernel.py ffec5d64 and the worker-claim script 9573c5bb are the
-    same blobs on both). Refuses (RuntimeError) unless the manifest pins verify."""
+    org-kernel/ and scripts/ linked to this checkout (kernel.py blob 4d1d2d47 after Labs#3434, was ffec5d64; worker-claim script 9573c5bb).
+    Refuses (RuntimeError) unless the manifest pins verify."""
     if "wi" in _P1:
         return _P1["wi"]
     if P1_PIN_FAILURE is not None:
