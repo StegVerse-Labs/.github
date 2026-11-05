@@ -6,7 +6,7 @@ Author session: P1 Ecosystem AI Lane (d8cbc58c). Invariants: WORK_ITEMS_ARE_TASK
 - SV_ISSUE and SV_CHANGE are record kinds inside STEGVERSE-CANONICAL-WORK-COORDINATION-001 (`docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md`). They are not a new repository or a parallel pipeline. Each lifecycle state maps to a `coordination_state` (`data/sv-work-items/lifecycle-transitions.json#canonical_coordination_state`).
 - CLAIMED projects a WorkerCoordinator claim and fence through `scripts/project_worker_claim_into_canonical_task.py::worker_projection` (blob 9573c5bb). It is not a second claim path.
 - Receipts come from the existing `.stegverse/transition-ledger/emit.py::append` (f2de8a1a), called with the supplied epoch. The organization ledger aggregates them. Stage outcomes go out as `stegverse.organization-transition-request/v1` bodies for `.stegverse/transition-requests/`.
-- The epoch rule is `org-kernel/kernel.py::supplied_epoch_failure` (Labs ffec5d64 L236). It is byte-identical to the copy in org `resident-runtime/aggregate_repo_transition.py` (89be8754).
+- The epoch rule is `org-kernel/kernel.py::supplied_epoch_failure` (Labs blob `4d1d2d47`, L236; was `ffec5d64` until Labs#3434). It is byte-identical to the copy in org `resident-runtime/aggregate_repo_transition.py` (89be8754).
 - Schema owner: repo-standards `schemas/task-registry.schema.json` (65a4a7ca), bundled with org#150. `schemas/canonical-task-work-items.v1.schema.json` is the proposed `work_items[]` field. It merges Claude's #160 6249905378 proposal, keyed by native id, with GitHub numbers as projection fields and no owner-approval flag.
 
 ## Files
