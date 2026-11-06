@@ -838,7 +838,7 @@ def _repository_receipt_read_back(receipt: Mapping[str, Any]) -> str | None:
     """
     try:
         digest = receipt["receipt_sha256"]
-        store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+        store = repository_ledger.repository_store()
         stored = store.get(repository_ledger.ledger_store.receipt_key(digest))
         body = {key: value for key, value in stored.items() if key != "receipt_sha256"}
         if stored != dict(receipt) or repository_ledger.sha(body) != digest:
@@ -1323,7 +1323,7 @@ def admitted_ingress_receipts() -> list[Mapping[str, Any]] | None:
     recorded, and nothing is assumed absent.
     """
     try:
-        store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+        store = repository_ledger.repository_store()
         head = store.get(repository_ledger.ledger_store.HEAD_KEY)
         if not head:
             return []
@@ -2138,7 +2138,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # recorded the repository receipt and stopped before the organization
     # receipt is completed here, from the retained repository receipt, rather
     # than recorded twice.
-    chain = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+    chain = repository_ledger.repository_store()
     # The successor state is the last closure of the crossing that carried the
     # manifest, and a redelivery is carried again: another packet, another
     # closure. The repository ledger compares the successor on every exact
