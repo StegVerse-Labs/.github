@@ -1,0 +1,287 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "stegclaw-28-2026-10-28",
+  "task_id": "STEGCLAW-MULTI-LLM-DEVELOPMENT-HARNESS-001",
+  "observed_registry_generation": 321,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "Data-Continuation/StegClaw#28",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "no canonical Registry row or shard for STEGCLAW-MULTI-LLM-DEVELOPMENT-HARNESS-001 at StegVerse-Labs/.github main 1f72f204 (generation 321); only related surface is runtime-observability consumer DATA-CONTINUATION-STEGCLAW-P4 (StegClaw#26)",
+    "collision check-in decided mechanically in plan"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "STEGCLAW-MULTI-LLM-DEVELOPMENT-HARNESS-001",
+    "correlation_id": "STEGCLAW-MULTI-LLM-DEVELOPMENT-HARNESS-001",
+    "root_correlation_id": "STEGCLAW-MULTI-LLM-DEVELOPMENT-HARNESS-001",
+    "parent_task_id": null,
+    "goal": "Agree and implement the StegClaw multi-LLM development harness (Data-Continuation/StegClaw#28): manifest-directed envelope/runner, journal fold, collab/drive/github adapters and cross-lane selftest; no execution, credential, publication or runtime authority.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "Data-Continuation/StegClaw#28",
+      "Data-Continuation/StegClaw#29",
+      "Data-Continuation/StegClaw#30",
+      "Data-Continuation/StegClaw#31",
+      "Data-Continuation/StegClaw#32",
+      "Data-Continuation/StegClaw#33",
+      "Data-Continuation/StegClaw#34",
+      "Data-Continuation/StegClaw#35",
+      "Data-Continuation/StegClaw#36",
+      "Data-Continuation/StegClaw#37",
+      "Data-Continuation/StegClaw#38",
+      "Data-Continuation/StegClaw#39"
+    ],
+    "targets": {
+      "organizations": [
+        "Data-Continuation"
+      ],
+      "repositories": [
+        "Data-Continuation/StegClaw"
+      ],
+      "components": [
+        "lane-a-envelope-runner",
+        "lane-a2-journal-fold",
+        "lane-b-collab-adapter",
+        "lane-c-drive-projection",
+        "lane-d-github-adapter",
+        "lane-e-crosslane-selftest",
+        "lane-f-verification-handoff"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR32-ENVELOPE-RUNNER-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@83346396a7676c6b7fe0a447a4c35a8514ac060c:stegclaw/task_envelope.py"
+      },
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR33-JOURNAL-FOLD-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@c580f39701a958c1d30201d89203e8317bdfba7e:stegclaw/devharness/journal.py"
+      },
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR31-COLLAB-ADAPTER-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@58acd6281b1cb9d9ec0e5ad5d709fbf263d28a4a:stegclaw/devharness/collab_adapter.py"
+      },
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR35-DRIVE-PROJECTION-V3-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@16532ff028d39864ed2088f3f4a7dc73517fc0f5:stegclaw/devharness/drive_projection.py"
+      },
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR29-GITHUB-ADAPTER-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@354ffcdc5febff1f7a053949dd6209b0cc682816:stegclaw/devharness/github_adapter.py"
+      },
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR34-GITHUB-ADAPTER-HARDENING-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@c3dae971001caf994e4674caf3f7ea57086e15e4:stegclaw/devharness/github_adapter.py"
+      },
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR36-CROSSLANE-SELFTEST-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@d00190b50f3468be56c735c92901ffe2de26cb00:scripts/selftest_dev_crosslane.py"
+      },
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR37-EVIDENCE-LEDGER-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@c5c8db9a57cbb02a20044344c9689acad9bea512:docs/dev-harness/evidence-ledger.json"
+      },
+      {
+        "dependency_id": "EVIDENCE-STEGCLAW-PR39-RUNTIME-OBSERVATION-MERGED",
+        "kind": "EVIDENCE",
+        "state": "RESOLVED",
+        "ref": "Data-Continuation/StegClaw@ba74235c8f1f73a57301dd8bd83c5415d9ec88c1:stegclaw/devharness/observation.py"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [],
+    "existing_evidence_refs": [
+      "Data-Continuation/StegClaw@83346396a7676c6b7fe0a447a4c35a8514ac060c:stegclaw/task_envelope.py",
+      "Data-Continuation/StegClaw@c580f39701a958c1d30201d89203e8317bdfba7e:stegclaw/devharness/journal.py",
+      "Data-Continuation/StegClaw@58acd6281b1cb9d9ec0e5ad5d709fbf263d28a4a:stegclaw/devharness/collab_adapter.py",
+      "Data-Continuation/StegClaw@16532ff028d39864ed2088f3f4a7dc73517fc0f5:stegclaw/devharness/drive_projection.py",
+      "Data-Continuation/StegClaw@354ffcdc5febff1f7a053949dd6209b0cc682816:stegclaw/devharness/github_adapter.py",
+      "Data-Continuation/StegClaw@c3dae971001caf994e4674caf3f7ea57086e15e4:stegclaw/devharness/github_adapter.py",
+      "Data-Continuation/StegClaw@d00190b50f3468be56c735c92901ffe2de26cb00:scripts/selftest_dev_crosslane.py",
+      "Data-Continuation/StegClaw@c5c8db9a57cbb02a20044344c9689acad9bea512:docs/dev-harness/evidence-ledger.json",
+      "Data-Continuation/StegClaw@ba74235c8f1f73a57301dd8bd83c5415d9ec88c1:stegclaw/devharness/observation.py"
+    ],
+    "expected_evidence_predicates": [
+      "LANE_A_ENVELOPE_RUNNER_MERGED",
+      "LANE_A2_JOURNAL_FOLD_MERGED",
+      "LANE_B_COLLAB_ADAPTER_MERGED",
+      "LANE_C_DRIVE_PROJECTION_V3_MERGED",
+      "LANE_D_GITHUB_ADAPTER_MERGED",
+      "LANE_E_CROSSLANE_SELFTEST_PASSES_STDLIB_NETWORK_FREE",
+      "LANE_F_VERIFICATION_HANDOFF_RECORDED"
+    ],
+    "execution_substrate_resolution": {
+      "schema": "stegverse.execution-substrate-resolution/v1",
+      "review_order": [
+        "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "STEGOS-CURRENT-DEVICE-NODE",
+        "STEG-BROWSER-EPHEMERAL-LEASE",
+        "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+      ],
+      "reviews": [
+        {
+          "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        },
+        {
+          "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+          "disposition": "PENDING_EVIDENCE",
+          "limitation_class": "EVIDENCE_REACHABILITY",
+          "evidence_refs": []
+        }
+      ],
+      "selected_substrate_id": null,
+      "external_device_required": false,
+      "second_user_operated_device_allowed": false,
+      "authority_effect": "NONE"
+    },
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "PROPOSED_TO_ACTIVE_ON_AUTHENTICATED_ADMISSION_AND_WORKERCOORDINATOR_CLAIM_AND_FENCE",
+      "SCOPE_CHANGE_ONLY_BY_GOAL_SCOPE_SUPERSEDE_REQUEST"
+    ],
+    "handoff_projection_refs": [
+      "Data-Continuation/StegClaw#28"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "Agree and implement the StegClaw multi-LLM development harness (Data-Continuation/StegClaw#28): manifest-directed envelope/runner, journal fold, collab/drive/github adapters and cross-lane selftest; no execution, credential, publication or runtime authority.",
+      "targets": {
+        "organizations": [
+          "Data-Continuation"
+        ],
+        "repositories": [
+          "Data-Continuation/StegClaw"
+        ],
+        "components": [
+          "lane-a-envelope-runner",
+          "lane-a2-journal-fold",
+          "lane-b-collab-adapter",
+          "lane-c-drive-projection",
+          "lane-d-github-adapter",
+          "lane-e-crosslane-selftest",
+          "lane-f-verification-handoff"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "LANE_A_ENVELOPE_RUNNER_MERGED",
+        "LANE_A2_JOURNAL_FOLD_MERGED",
+        "LANE_B_COLLAB_ADAPTER_MERGED",
+        "LANE_C_DRIVE_PROJECTION_V3_MERGED",
+        "LANE_D_GITHUB_ADAPTER_MERGED",
+        "LANE_E_CROSSLANE_SELFTEST_PASSES_STDLIB_NETWORK_FREE",
+        "LANE_F_VERIFICATION_HANDOFF_RECORDED"
+      ],
+      "finish_point": {
+        "acceptance_test": "Data-Continuation/StegClaw: cross-lane selftest (PR #36)",
+        "predicate": "cross-lane selftest exits 0 over lanes A,A2,B,C,D at the merged StegClaw main commit",
+        "verifier_entrypoint": "Data-Continuation/StegClaw: python scripts/selftest_dev_crosslane.py",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:b9065ebd1e8aa97b662bb8385c449b1a02127bffc0b55555602d64318ab3ba3c",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "MACHINE_OWNED",
+      "archive_ready": false,
+      "unassigned_work": 0,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 1,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "archive_ready": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "unassigned_work": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "chat_owned_counts": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "canonical_owner_installed": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "thread_required": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "blocker_count": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "evidence_complete": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "activated": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)",
+      "propagated": "observed in Data-Continuation/StegClaw#28 and StegClaw PRs #29-#39 (2026-10-28)"
+    },
+    "evidence_refs": [
+      "Data-Continuation/StegClaw#28",
+      "Data-Continuation/StegClaw@ba74235c8f1f73a57301dd8bd83c5415d9ec88c1:docs/dev-harness/evidence-ledger.json"
+    ],
+    "observed_at": "2026-10-28T00:00:00-05:00"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}
