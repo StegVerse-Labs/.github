@@ -1,0 +1,15 @@
+{
+  "schema": "stegverse.write-admission-constraints/v1",
+  "description": "Lane D's G-8 write constraints as WRITE_ADMISSION input (example; data only). Lane D writes only its own laned/* branches. Main, merges, force-pushes, history rewrites, registry generation bumps, settings and workflow_dispatch are not file writes and are outside this predicate; they stay governed by G-8 itself.",
+  "rules": [
+    {
+      "id": "g8-own-laned-branches",
+      "kind": "writer_branch_glob",
+      "globs": ["laned/*"],
+      "failure_code": "WRITE_ADMISSION_CONSTRAINT_VIOLATED",
+      "failed_predicate": "WRITER_BRANCH_IS_AN_OWN_LANED_BRANCH",
+      "repair": "push only to a laned/* branch you own and open a DRAFT pull request; never main",
+      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    }
+  ]
+}

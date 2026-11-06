@@ -1,6 +1,16 @@
+## SPPA ephemeral-storage remediation candidate — 2026-10-29
+
+Source-only EC9 support for original-owner Q74-01 coordination on [#2810](https://github.com/StegVerse-Labs/.github/issues/2810). The SPPA consumer reuses the allocator's manifest-declared ephemeral-storage predicate; authorization separately verifies that the repository store shares the declared Organization Git directory and ref. Custody construction failures become the existing fail-closed P3 result. Storage eligibility grants no execution or promotion authority. Authenticating custody bases, claims, fences, InTr/TVC checks, and provider promotion are unchanged.
+
+Validation on main `6b13c3a749b2940d6142644196a8302823c1f45a`: 41 tests and 3 subtests pass across SPPA authorization, dispatched consumption and six new storage-boundary cases. The new suite has two failures on unchanged main. Tests use temporary empty Git stores; no real ledger, receipt, deployment or Registry write occurs. Owner PR [#3290](https://github.com/StegVerse-Labs/.github/pull/3290) also edits the custody call: integration must retain its supplied-heartbeat-epoch checks. Compatibility validation on owner head `7fc75d01abdd6ec982b773a950b0e42d52a9a076`, retaining its heartbeat argument and checks: 45 tests and 3 subtests pass in the same three suites. This candidate is not merged or admitted runtime evidence. Q74-01 remains unresolved; Site #1633 stays draft/NOT_ALLOWED until original-owner custody, authenticated dependency reconciliation and promotion authority are observed.
+
 ## Registering a canonical Goal Task
 
 Start at [Task Registration Guide](docs/TASK_REGISTRATION_GUIDE.md). The canonical Task Registry owns identity and coordination; a worker admission review is not task registration, a WorkerCoordinator claim, or a governed execution authorization.
+
+## Real governance assessment sample (#3393)
+
+Registered as `REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001` (COSV 10500000110000, PROPOSED, registration only) by StegVerse-Labs/.github#3412. Canonical handoff: [docs/REAL_GOVERNANCE_ASSESSMENT_SAMPLE_MIRROR_HANDOFF.md](docs/REAL_GOVERNANCE_ASSESSMENT_SAMPLE_MIRROR_HANDOFF.md). The report is consolidated revision 2 at https://github.com/StegVerse-Labs/.github/issues/3396#issuecomment-6502814562; source-use, independent acceptance and public publication remain pending with their owning lanes.
 
 ## Universal user-facing explanation contract and scaled-up HIL experiment — 2026-10-11
 
@@ -2053,6 +2063,82 @@ The frozen HOLD SDK attachment attempt now has a machine-readable review record 
 
 `MasterRecordsCheckpoint/v1` is the first bounded interoperability profile. Master Records remains checkpoint authority; manifested Interlock/InTr communication provides transport and provenance, not checkpoint construction. No external adoption or conformance is claimed without independently retained evidence.
 
+2026-10-29 independent read-only verification: the native Org post-genesis kit
+check verifies 156 records, and `replay --require-ledgered-allow` returns
+**156 ALLOW / 0 DENY / 0 FAIL_CLOSED** over 13 anonymously fetched public
+organization-ledger refs. All 156 complete results match the TVC worker's
+published output; the raw file digest differs only because that worker's tip
+inventory includes an additional unused `master-records` copy. Exact source,
+ledger and output hashes are in the [retained evidence](docs/evidence/intr-readback-20261029/README.md)
+and [canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md).
+The protocol-vector verifier also passes. This verifies historical public
+receipts and supersedes the blanket unknown-runtime description for those
+paths; it grants no new transition, private-warrant custody, native task
+admission, claim/fence, external conformance or closure. The task shard remains
+ACTIVE; its aggregate generation-322 Registry row is absent. Protected source
+integration and Registry disposition remain with their existing owners.
+
+### InTr owner reconciliation — 2026-11-01
+
+TVC #573 and Labs #3411 are merged. Labs #3207 was superseded by merged #3433;
+#3213 is merged. Org #162's one-receipt decision and merged #261 resolve the
+historical successor-policy item. Registry #3195 must now reconcile the stale
+B2 rationale, shard blockers=[] and L5 ownership provenance through its native
+process; no metric or authority transition is inferred here. Canonical ACTIVE,
+null claim/fence and completion=false remain. Session9; cumulative recovery lower
+bound41/20, exact total UNVERIFIED and never reset. Private execution remains
+under existing Org #162 / TVC #488 owners. See the
+[canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md)
+for immutable merge receipts, owner decision and concrete remaining actions.
+
+### InTr verification and integration handoff — 2026-10-29 (historical)
+
+
+Org #258's declared-successor reader was independently tested (10 ingress tests
+pass) and preserves all 156 historical public ALLOW results byte-for-byte.
+Its 46 hosted checks pass; protected owner integration and H36 test integration
+remain. The reviewed #3404 head was d8a2efaa; current 3b03211a adds custody-owner
+coordination documentation. Its later append conflicts with the old location of
+this section; this section now sits beside the protocol evidence. Registry native plans exposed
+record/state repairs before aggregate admission; exact requests are on #3195.
+See the [current handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md)
+for pinned evidence, completed/remaining work, separate private-warrant ownership
+and cumulative-count disposition. No private execution or task closure claimed.
+
+Combined integration check: H36 patch applied cleanly to Org #258 at 9f21aa83;
+`python -m unittest discover -s tests -p 'test_intr_*py'` passed 314 tests
+in 27.031s. Local fabricated-fixture/source verification only; hosted CI on
+an owner-created combined commit remains required.
+
+Current InTr readback: Registry generation326 contains row==shard after #3409
+merge f9b46abc. Org#228/#258/#261/H36#267 are merged. Canonical ACTIVE and
+null claim/fence remain; exact COSV metric provenance is a separate #3195 follow-up.
+Session4; cumulative recovery lower bound36/20, exact total unverified, no reset.
+Private runtime and warrant ownership remain separate; source integration is not
+runtime execution. See the canonical handoff for exact merged commits and owners.
+
+Historical terminal reconciliation: **DECOMPOSED_AT_PROMPT_LIMIT** per Registry #3195
+comment6506716678; canonical shard remains ACTIVE, completion unclaimed/unvalidated.
+Session 3; cumulative recovery lower bound35/20, exact total unverified, no reset.
+#3405 merged as b7033aee after six successful checks. Org #259 independently
+ratified and merged as46ddcfd4 after46 successful checks. Remaining work follows
+existing owners in the [canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md).
+Registry #3409 still needs vector/index evidence and fixture repair before green
+CI and committed aggregate readback; no authority or metrics are invented.
+
+Historical continuation: #3405 at 4cf5c7c1 passed all six hosted checks. The
+[Registry repair diagnostic](docs/evidence/intr-registry-repair-20261029/README.md)
+reproduces the omitted-shard repair cycle and validates an isolated atomic
+record-data candidate (seven validators, every-task projection, NO_CHANGE repeat,
+and collision CONTINUE). Canonical application/count disposition remains with
+the Registry owner; this evidence creates no admission. Session 2; cumulative
+recovery lower bound 34/20, exact count unverified and not reset.
+[Owner repair candidates](docs/evidence/intr-owner-repairs-20261029/README.md)
+retain #3207 refusal metadata (76 tests), #3213 fixture correction (188 tests),
+and TVC #562 path confinement (eight focused tests). Org #228 + #258/H36 integration,
+#259 ratification, #3263 admission and private runtime ownership remain separate.
+Fresh public issue links are mirrored in the existing KV coordination file.
+
 - 2026-10-01: PR #2878 restores the Canonical Work execution-substrate resolution on the latest canonical head; no runtime authority is inferred.
 
 - 2026-10-01: Reconstructed PR #2865 exact-child SDK dispatch on current canonical main; the existing path now binds Goal context plus exact child request identity without creating another runtime or dispatcher.
@@ -2180,3 +2266,61 @@ StegApp continuation: existing PR #1 now includes completed Sandbox readback at 
 ## Sovereign readback conformance reusable task
 
 The existing read-only Organization Ledger reader is consumed by `scripts/ecosystem_transition_topology.py` and `.github/workflows/topology-sovereign-readback.yml`. The verified workflow fetches the published sovereign ref into a fresh Git repository and verifies receipt integrity, predecessor continuity, source retention, and expected receipt membership without replaying a transition. Its `ALLOW` is recording-integrity evidence only, not governance admissibility. The reusable, non-authorizing definition is `source-bundles/reusable-task-registry.d/RT-AUTHENTICATED-SOVEREIGN-READBACK-001.json`; the existing task constructor/trigger load it as a durable identity, and the empty runner list deliberately retains the native execution-admission boundary. See [topology handoff](docs/ECOSYSTEM_STATE_TRANSITION_TOPOLOGY_3299_MIRROR_HANDOFF.md) and [Goal #3299](https://github.com/StegVerse-Labs/.github/issues/3299).
+
+## KV/SKAP historical reconciliation — 2026-10-29
+
+The [canonical KV handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md) preserves the proposal reconciliation, dependency corrections, independent InTr readback and session 10/12 history. These observations do not establish canonical registration or native admission.
+
+## KV/SKAP recovery update — 2026-10-29, new session 1
+
+Docs head `3b03211a` passed all six checks. Registry generation 322 / 120 rows
+still has no admitted KV/SKAP goal. The existing custody-owner coverage review
+is now narrowed to specific sealed-source regressions, with no demonstrated
+production defect. TVC main-run conformance receipt `2e0ec2dd` was independently
+read and its seal recomputed; organization-writer acceptance remains separate.
+See the [current KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#recovery-session-1--2026-10-29-after-prior-session-12)
+and [owner findings](https://github.com/StegVerse-Labs/.github/issues/2810#issuecomment-6504630611).
+This docs update requires its own CI. No native admission, custody, fence,
+runtime ALLOW or release is claimed; cumulative prompt count remains unreconciled.
+
+
+## KV/SKAP recovery session 2 — 2026-10-29
+
+The [canonical handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md)
+now corrects the obsolete missing-adjacency-input claim and retires the resolved
+custody coverage questions. Docs2e611f34 passed6/6checks. A new real-issuer TVC
+chain probe exposed reference-only admission under test fixtures; its unmerged
+containment candidate passes7focused cases, with broader mock-positive migration
+still required. [Owner patch and reproducer](https://github.com/StegVerse-Labs/TVC/pull/537#issuecomment-6505597487).
+Registry admission and native custody remain unverified; no live exploit,
+runtime ALLOW, protected integration or release is claimed.
+
+
+## KV/SKAP recovery session 4 — 2026-10-29
+
+The [handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#recovery-session-4--2026-10-29-americachicago)
+now reconciles Registry326 and the already accepted adjacency plan at CVK44e7ae56.
+Native KV registration remains unperformed; repeated old-pin/planner work is
+retired. StegOS426, adapter430/436 and CVK289/290 integration is completed
+upstream; CVK re-vendoring and actual node/custody evidence remain distinct.
+The organization ledger advanced through unrelated receipts; the TVC receipt
+requires its original writer. Current main was merged into this docs branch
+without conflicts; new-head CI and independent ratification remain required.
+
+The current TVC owner proposal adds read/place protection tests:9focused passes,
+with7remaining failures in the59-case affected selection explicitly retained.
+[Evidence and owner migration plan](docs/evidence/kv-recovery-20261029-s4/TVC_OWNER_REVIEW.md).
+Executed ledger consumption distinguishes main64-file ALLOW from3376's12-file
+surface mismatch; the recovered genuine receipt matches all64files on3376.
+
+## KV/SKAP source and custody handoff — 2026-11-03
+
+The [KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#november-3--source-offers-and-custody) records the accepted historical writer append, the two source files still requiring TVC verification, and the pending Registry decision.
+
+SPPA review follow-up: the six storage-boundary regressions now run with stdlib unittest, with a scoped loader override that restores the fixture-declared Git topology after the suite-wide POSIX default and is removed at cleanup. The existing generated test-set manifest includes the suite. All 45 SPPA tests pass without pytest; this is local source validation, not exact-head CI, custody evidence or promotion authority.
+
+### StegApp Goal #3291: post-vocabulary source/test hygiene (2026-11-03)
+
+The canonical StegApp vocabulary edit is merged via Labs PR #3403. The aggregate Registry and standalone shard now include `INGRESS_ADMITTED`, but the Goal remains `PROPOSED` and WorkerCoordinator claim/fence remain null. This is an allowed-transition *vocabulary* change only, not native admission. Goal task `STEGAPP-EPHEMERAL-COMPOSITION-001`, COSV `10300000011000`, [canonical handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md), [Goal #3291](https://github.com/StegVerse-Labs/.github/issues/3291).
+
+This repair restores collection of `test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7` inside its test class and runs `test_goal_context_with_a_request_id_forwards_it` against a scratch runtime root so tests do not rewrite tracked sovereign-host receipt files. These are non-authorizing test corrections; validate the exact PR head and preserve native Registry issuer, WorkerCoordinator GRANTED/fence, Sandbox work/evidence, SDK/InTr Chat delivery, and Organization Ledger source/readback prerequisites. No new machines, frameworks, secret paths or runtime authority.

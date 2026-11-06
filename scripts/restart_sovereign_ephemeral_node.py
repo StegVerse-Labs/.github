@@ -9,8 +9,10 @@ coordinator. Merely spawning a worker PID is not sufficient: the worker runtime
 state must advance after the spawned run_worker_runtime.py process starts.
 
 Ephemeral child processes never inherit the complete parent environment. Only an
-explicit non-secret process/runtime allowlist is forwarded. Teardown verifies both
-separated processes are dead and records that observation without deleting governed
+explicit non-secret process/runtime allowlist is forwarded. Teardown and restart
+signal a receipt-named PID only after proving it is this root's carrier or worker
+(entrypoint, --root and recorded kernel start time, pinned by a pidfd); otherwise
+they signal nothing and fail closed. Teardown verifies both separated processes are dead and records that observation without deleting governed
 durable evidence. A fresh ephemeral instance must use a previously unused/empty
 runtime root; intentional same-node continuity uses restart() on the existing root.
 """
@@ -25,6 +27,10 @@ import sys
 import time
 from pathlib import Path
 from typing import Any, Mapping
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 PROCESS_RECEIPT = Path("receipts/sovereign-host/ephemeral-process.latest.json")
 TEARDOWN_RECEIPT = Path("receipts/sovereign-host/ephemeral-process-teardown.latest.json")
@@ -118,6 +124,27 @@ def _load(path: Path) -> dict[str, Any]:
         return {}
 
 
+# Popen handles for processes this interpreter spawned, keyed by pid. A child
+# that exits stays a zombie (and answers os.kill(pid, 0)) until its parent
+# reaps it, so in-process teardown must reap through the handle it kept. A handle
+# is only ever used to reap, and only after the signal went through the proven
+# pidfd identity path: it never stands in for the identity proof or for liveness.
+_SPAWNED: dict[int, Any] = {}
+
+
+def _reap(pid: int | None, timeout: float) -> bool:
+    handle = _SPAWNED.get(pid) if isinstance(pid, int) else None
+    wait = getattr(handle, "wait", None)
+    if not callable(wait):
+        return False
+    try:
+        wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return False
+    _SPAWNED.pop(pid, None)
+    return True
+
+
 def _alive(pid: int | None) -> bool:
     if not isinstance(pid, int) or pid <= 0:
         return False
@@ -126,6 +153,16 @@ def _alive(pid: int | None) -> bool:
         return True
     except OSError:
         return False
+
+
+def proc_start_ticks(pid: int | None) -> int | None:
+    """Kernel start time of ``pid`` (clock ticks since boot) from /proc, or None when unreadable."""
+    try:
+        stat = Path(f"/proc/{int(pid)}/stat").read_text(encoding="utf-8")
+        # comm (field 2) may contain spaces/parentheses; fields after the last ')' are fixed.
+        return int(stat[stat.rindex(")") + 2:].split()[19])
+    except (OSError, TypeError, ValueError, IndexError):
+        return None
 
 
 def _terminate(pid: int | None, timeout: float = 2.0) -> bool:
@@ -180,7 +217,7 @@ def _spawn(command: list[str], runtime_root: Path, stdout_name: str, stderr_name
     receipt_root.mkdir(parents=True, exist_ok=True)
     out_handle = (receipt_root / stdout_name).open("ab", buffering=0)
     err_handle = (receipt_root / stderr_name).open("ab", buffering=0)
-    return subprocess.Popen(
+    process = subprocess.Popen(
         command,
         cwd=str(runtime_root),
         env=env,
@@ -190,6 +227,9 @@ def _spawn(command: list[str], runtime_root: Path, stdout_name: str, stderr_name
         start_new_session=True,
         close_fds=True,
     )
+    if isinstance(getattr(process, "pid", None), int) and callable(getattr(process, "wait", None)):
+        _SPAWNED[process.pid] = process
+    return process
 
 
 def _runtime_tick(runtime_root: Path) -> int:
@@ -311,10 +351,75 @@ def start(runtime_root: Path, *, interval_ms: float = 10.0, worker_tick_timeout:
         "child_environment_allowlist_enforced": True,
         "authority_effect": "LOCAL_RUNTIME_SUPERVISION_ONLY",
     }
+    for role, pid in (("carrier", carrier.pid), ("worker", worker.pid)):
+        start_ticks = proc_start_ticks(pid)
+        if start_ticks is not None:
+            # Lets supervision prove this PID is still this process before signalling it.
+            receipt[f"{role}_start_ticks"] = start_ticks
     path = runtime_root / PROCESS_RECEIPT
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return receipt
+
+
+def _identity():
+    # The receipt-PID identity proof (#3382) lives with the carrier-side supervisor,
+    # which imports this module at load time; import it lazily to avoid the cycle.
+    from scripts import repair_resident_worker_presence
+
+    return repair_resident_worker_presence
+
+
+def _proven_previous_processes(
+    runtime_root: Path, previous: dict[str, Any], action: str,
+) -> tuple[list[tuple[str, int, int]], dict[str, Any] | None]:
+    """Pin and prove every live receipt-named process before any is signalled.
+
+    Returns the pinned ``(role, pid, pidfd)`` rows, or a six-field refusal. On a
+    refusal every pidfd is already closed and nothing has been signalled: a receipt
+    PID that is not proven to be this root's carrier or worker is never killed.
+    """
+    identity = _identity()
+    pinned: list[tuple[str, int, int]] = []
+    roles = (("carrier", previous.get("carrier_pid", previous.get("pid"))), ("worker", previous.get("worker_pid")))
+    for role, pid in roles:
+        if not _alive(pid):
+            continue
+        handle = identity._open_process_handle(pid)
+        refusal = identity._worker_identity_refusal(pid, runtime_root, previous, handle, role=role)
+        if refusal is None:
+            pinned.append((role, pid, handle))
+            continue
+        for _role, _pid, held in pinned + ([(role, pid, handle)] if handle is not None else []):
+            os.close(held)
+        return [], {
+            "state": "FAIL_CLOSED",
+            "failure_code": refusal["failure_code"],
+            "failed_predicate": refusal["failed_predicate"],
+            "required_evidence_or_repair": refusal["required_evidence_or_repair"],
+            "retry_entrypoint": f"scripts/restart_sovereign_ephemeral_node.py::{action}",
+            "owning_existing_goal": refusal["owning_existing_goal"],
+            "next_attempt": f"{action} after the process receipt names provable carrier and worker processes or none",
+            "refused_role": role,
+            "refused_pid": pid,
+            "process_signalled": False,
+        }
+    return pinned, None
+
+
+def _terminate_pinned(pinned: list[tuple[str, int, int]]) -> dict[str, bool]:
+    identity = _identity()
+    terminated = {"carrier": True, "worker": True}
+    for role, pid, handle in pinned:
+        try:
+            terminated[role] = identity._terminate_process(pid, handle)
+        finally:
+            os.close(handle)
+        if terminated[role]:
+            # The proven process exited; if this interpreter spawned it, reap it so
+            # no zombie is left answering os.kill(pid, 0).
+            _reap(pid, timeout=2.0)
+    return terminated
 
 
 def teardown(runtime_root: Path) -> dict[str, Any]:
@@ -328,8 +433,27 @@ def teardown(runtime_root: Path) -> dict[str, Any]:
     previous = _load(runtime_root / PROCESS_RECEIPT)
     previous_carrier_pid = previous.get("carrier_pid", previous.get("pid"))
     previous_worker_pid = previous.get("worker_pid")
-    carrier_terminated = _terminate(previous_carrier_pid)
-    worker_terminated = _terminate(previous_worker_pid)
+    pinned, refusal = _proven_previous_processes(runtime_root, previous, "teardown")
+    if refusal is not None:
+        receipt = {
+            "schema": "stegverse.ephemeral-sovereign-process-teardown/v1",
+            **refusal,
+            "runtime_root": str(runtime_root),
+            "previous_carrier_pid": previous_carrier_pid,
+            "previous_worker_pid": previous_worker_pid,
+            "no_supervised_process_residue": False,
+            "durable_evidence_deleted": False,
+            "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE",
+            "authority_effect": "NONE",
+        }
+        path = runtime_root / TEARDOWN_RECEIPT
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return receipt
+    terminated = _terminate_pinned(pinned)
+    carrier_terminated = terminated["carrier"]
+    worker_terminated = terminated["worker"]
     carrier_dead = not _alive(previous_carrier_pid)
     worker_dead = not _alive(previous_worker_pid)
     complete = carrier_terminated and worker_terminated and carrier_dead and worker_dead
@@ -362,9 +486,18 @@ def restart(runtime_root: Path, *, interval_ms: float = 10.0, worker_tick_timeou
     previous = _load(runtime_root / PROCESS_RECEIPT)
     previous_carrier_pid = previous.get("carrier_pid", previous.get("pid"))
     previous_worker_pid = previous.get("worker_pid")
-    carrier_terminated = _terminate(previous_carrier_pid)
-    worker_terminated = _terminate(previous_worker_pid)
-    if not (carrier_terminated and worker_terminated):
+    pinned, refusal = _proven_previous_processes(runtime_root, previous, "restart")
+    if refusal is not None:
+        return {
+            **refusal,
+            "runtime_root": str(runtime_root),
+            "previous_carrier_pid": previous_carrier_pid,
+            "previous_worker_pid": previous_worker_pid,
+            "restart_observed": False,
+            "authority_effect": "NONE",
+        }
+    terminated = _terminate_pinned(pinned)
+    if not (terminated["carrier"] and terminated["worker"]):
         raise RuntimeError("previous_ephemeral_process_teardown_incomplete")
     fresh = start(runtime_root, interval_ms=interval_ms, worker_tick_timeout=worker_tick_timeout)
     fresh["previous_pid"] = previous_carrier_pid

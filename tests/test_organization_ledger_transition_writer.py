@@ -240,6 +240,42 @@ class GitRefSelfClosure(unittest.TestCase):
 
 
 class WriterContract(unittest.TestCase):
+    def test_current_push_writer_refusals_keep_six_fields_and_code_specific_owners(self):
+        import re
+        text = WORKFLOW.read_text(encoding="utf-8")
+        fields = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                  "retry_entrypoint", "owning_existing_goal", "next_attempt")
+        intr_owner = "StegVerse-Labs/.github#2897 / StegVerse-org/.github#162 P0-runtime-and-custody"
+        push_owner = "ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001"
+        owners = {
+            "ORGANIZATION_LEDGER_REF_ABSENT": intr_owner,
+            "ORGANIZATION_LEDGER_HISTORY_REWRITTEN": intr_owner,
+            "ORGANIZATION_LEDGER_PUBLISH_RACE": intr_owner,
+            "LEDGER_READBACK_CREDENTIAL_UNAVAILABLE": intr_owner,
+            "PUSHED_RANGE_UNRESOLVED": push_owner,
+            "NO_COMMITTED_PACKET_CHANGED": push_owner,
+        }
+        literals = re.findall(r"""echo\s*'(\{"disposition":"(?:FAIL_CLOSED|DENY)".*?\})'""", text)
+        codes = []
+        for literal in literals:
+            message = json.loads(literal)
+            with self.subTest(code=message.get("failure_code")):
+                for field in fields:
+                    self.assertIsInstance(message.get(field), str, (field, message))
+                    self.assertTrue(message[field].strip(), (field, message))
+                self.assertEqual(message["owning_existing_goal"], owners[message["failure_code"]])
+                self.assertEqual(message["retry_entrypoint"], ".github/workflows/organization-ledger-transition.yml")
+            codes.append(message["failure_code"])
+        self.assertEqual(set(codes), set(owners))
+        # All four committed operation paths (sv_check, sv_push_receipt, sv_change_admit and the append) must report the credential refusal.
+        self.assertEqual(codes.count("LEDGER_READBACK_CREDENTIAL_UNAVAILABLE"), 4)
+        self.assertEqual(len(codes), 9)
+        # The old draft's closure-summary test must not bring retired execution back.
+        self.assertNotIn("workflow_dispatch", text)
+        self.assertNotIn("--self-close", text)
+        self.assertNotIn("SELF_CLOSURE_INPUT_INVALID", text)
+        self.assertNotIn("DISPATCH_HB_EPOCH_INVALID", text)
+
     def test_the_repository_chain_is_a_subtree_of_the_existing_ref(self):
         location = CONTRACT["repository_ledger_location"]
         self.assertEqual(location["ref"], REF)
@@ -255,8 +291,10 @@ class WriterContract(unittest.TestCase):
         text = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("on:\n  push:\n    branches: [main]\n", text)
         self.assertNotIn("workflow_dispatch", text)
-        self.assertIn("--self-close", text)
-        self.assertIn("organization_ledger_readback.py", text)
+        # The self-closure is retired (Rigel's rule, 2026-10-25: no InTr hop inside one organization).
+        self.assertNotIn("--self-close", text)
+        self.assertNotIn("self-closure-packet.json'", text.split("\njobs:", 1)[0].split("\non:", 1)[1])
+        self.assertIn("readback", text)
         self.assertIn('git push origin "$LEDGER_REF:$LEDGER_REF"', text)
         self.assertNotIn("--force", text)
         self.assertNotIn("federation.json", text)

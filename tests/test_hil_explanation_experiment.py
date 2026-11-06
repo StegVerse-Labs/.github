@@ -201,11 +201,10 @@ class SchemaOnlyConsumers(unittest.TestCase):
             H.validate_trial(inst)
 
     def test_jsonschema_rejects_contradictory_trials(self):
-        try:
-            from jsonschema import Draft202012Validator
-        except ImportError:  # pragma: no cover
-            self.skipTest("jsonschema not installed")
-        validator = Draft202012Validator(self.SCHEMA)
+        # stdlib validator (scripts/stdlib_json_schema.py): no dependency, never skipped; agreement with
+        # jsonschema on these same instances is checked where jsonschema is installed (StegVerse-org/.github CI).
+        from stdlib_json_schema import Validator
+        validator = Validator(self.SCHEMA)
         for name, inst in self.mutations().items():
             self.assertFalse(validator.is_valid(inst), name)
         for inst in self.valid_records():
@@ -643,11 +642,8 @@ class ActualObservationOnlyThroughTicketedIntake(unittest.TestCase):
                 H.validate_trial(inst)
         H.validate_trial(trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="owner-vault://x#" + D64))
         schema = json.loads((ROOT / "schemas" / "hil-explanation-trial-record.v1.schema.json").read_text(encoding="utf-8"))
-        try:
-            from jsonschema import Draft202012Validator
-        except ImportError:  # pragma: no cover
-            return
-        v = Draft202012Validator(schema)
+        from stdlib_json_schema import Validator  # was a silent return when jsonschema was absent
+        v = Validator(schema)
         self.assertTrue(v.is_valid(good))
         for inst in (trial(evidence_locator="owner-vault://x"), trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="synthetic://x#" + D64), trial(evidence_class="ACTUAL_OBSERVATION", evidence_locator="owner-vault://x")):
             self.assertFalse(v.is_valid(inst))

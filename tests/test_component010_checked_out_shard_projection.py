@@ -89,7 +89,7 @@ class Component010ProjectionTests(unittest.TestCase):
         candidate = owner("REGISTERED")
         self.put(owner("MISSING_OWNER"))
         result = self.invoke({"generation": 223, "tasks": [candidate]}, {
-            "task_id": "REGISTERED", "caller_surface": "AI_SESSION_GATE",
+            "task_id": "REGISTERED", "caller_surface": "INTERNAL_CANONICAL_WORK_BOOTSTRAP",
             "observed_registry_generation": 223,
             "checkin_context": {"session_id": "inert-test", "repository": "StegVerse-Labs/.github",
                                 "components_under_mutation": ["shared-gate"]}})
@@ -106,7 +106,7 @@ class Component010ProjectionTests(unittest.TestCase):
 
     def test_stale_generation_stops_before_overlap_evaluation(self):
         result = self.invoke({"generation": 223, "tasks": [owner("REGISTERED")]}, {
-            "task_id": "REGISTERED", "caller_surface": "AI_SESSION_GATE",
+            "task_id": "REGISTERED", "caller_surface": "INTERNAL_CANONICAL_WORK_BOOTSTRAP",
             "observed_registry_generation": 222, "checkin_context": {"session_id": "stale-test"}})
         self.assertEqual(result["disposition"], "STOP_STALE_COORDINATION")
         self.assertFalse(result["write_pr_merge_handoff_claim_admissible"])

@@ -349,6 +349,34 @@
       "current_disposition": "FAIL_CLOSED",
       "consequence_committed": false,
       "authority_effect": "NONE_REGISTER_ONLY"
+    },
+    {
+      "surface": "StegVerse-Labs/Executive_Rhetoric_Ledger: main merge (pull-request merge into refs/heads/main)",
+      "owning_existing_goal": "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001",
+      "failure_code": "REPOSITORY_MAIN_MERGE_TRANSFER_NOT_INSTALLED",
+      "failed_predicate": "EVERY_STATE_TRANSITION_OCCURRING_WITHIN_THE_ORGANIZATION_EMITS_AN_ORGANIZATION_RECEIPT",
+      "why_manifest_bound_state_transition_is_not_yet_possible": "Executive_Rhetoric_Ledger has no .stegverse/transition-ledger contract and no main-merge transfer. The only installed writer of the designated organization ledger ref (refs/stegverse/organization-ledger) is StegVerse-Labs/.github's organization-ledger-merge-transfer.yml / organization-ledger-transition.yml, which append for .github only with that repository's own GITHUB_TOKEN and expressly make no cross-repository call; .github/.stegverse/transition-ledger/contract.json designates a repository-ledger namespace only for StegVerse-Labs/.github. An ERL merge therefore has no designated repository-ledger namespace and no manifest-directed ingest operation. Source review at StegVerse-Labs/.github@1f72f204 and Executive_Rhetoric_Ledger@main; no runtime attempt claimed.",
+      "required_evidence_or_repair": "the .github ledger owner designates repository-ledger/StegVerse-Labs/Executive_Rhetoric_Ledger under refs/stegverse/organization-ledger and admits a manifest-directed ingest operation in .stegverse/organization-ledger-ingest/operations.json for a peer-repository main-merge receipt (exact merge sha, predecessor/successor tree sha256, PR number, reviewed expected head); ERL then commits its contract.json and emits that receipt as the ingest request on each merge.",
+      "retry_entrypoint": "StegVerse-Labs/.github:.stegverse/organization-ledger-ingest/request.json via .github/workflows/organization-ledger-transition.yml",
+      "next_attempt": "the next ERL main merge after the namespace designation and ingest operation are merged in StegVerse-Labs/.github",
+      "expires_or_review_on": "2026-11-27",
+      "current_disposition": "FAIL_CLOSED",
+      "consequence_committed": false,
+      "authority_effect": "NONE_REGISTER_ONLY"
+    },
+    {
+      "surface": "StegVerse-Labs/Site: main merge and Cloudflare Workers Builds provider deploy (service site, dashboard environment production)",
+      "owning_existing_goal": "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001",
+      "failure_code": "PROVIDER_DEPLOY_WITHOUT_AUTHORIZATION_RECEIPT",
+      "failed_predicate": "PROMOTION_SOURCE_ON_PROMOTION_REF; PROMOTION_CLAIM_AND_FENCE_ISSUED; INTR_ADMISSION_AUTHENTICATED",
+      "why_manifest_bound_state_transition_is_not_yet_possible": "Site carries .stegverse/transition-ledger/emit.py source but no Site workflow invokes it, and the Workers Builds integration builds every pushed branch (draft PR head 4614456478dc08bef52b80be895e1688b5d00e2c produced build 899b109f / version 0eb66e6a under the production dashboard path). scripts/authorize_site_production_promotion.py classifies such builds FAIL_CLOSED (RETRO_CLASSIFY, same class as Site#1607) and its AUTHORIZED disposition is unreachable until ORGANIZATION-BATCH-CUSTODY-REPLAY-001 declares an authenticating custody basis (organization_batch_custody Q74-01). Executed locally read-only at StegVerse-Labs/.github@1f72f204; no deploy or ledger append performed.",
+      "required_evidence_or_repair": "(1) ORGANIZATION-BATCH-CUSTODY-REPLAY-001 declares the custody basis the SPPA verifier authenticates; (2) the Site promotion manifest (schemas/site-production-promotion-manifest.schema.json) is emitted for each main sha and the provider build is restricted to the manifest-bound sha (non-main branch builds uploaded as non-promoted versions only); (3) Site main merges emit their repository receipt through the same .github ingest operation required for peer repositories.",
+      "retry_entrypoint": "StegVerse-Labs/.github:scripts/authorize_site_production_promotion.py",
+      "next_attempt": "the next Site promotion request after the custody basis is declared and the repair is recorded",
+      "expires_or_review_on": "2026-11-27",
+      "current_disposition": "FAIL_CLOSED",
+      "consequence_committed": false,
+      "authority_effect": "NONE_REGISTER_ONLY"
     }
   ],
   "authority_effect": "NONE_REGISTER_ONLY"

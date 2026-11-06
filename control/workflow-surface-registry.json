@@ -9,16 +9,10 @@
   "current_state": "COMPLETE_STABLE_TWO_DISPATCHERS_WITH_REGISTERED_EXCEPTIONS",
   "surfaces": [
     {
-      "path": ".github/workflows/org-control-plane-validate.yml",
-      "classification": "KEEP_STABLE_DISPATCHER",
-      "owner": "HYGIENE-CAUSAL-ROOTS-001",
-      "reason": "canonical organization validation/consolidation surface; includes ephemeral org handoff projection parity and archive-readiness validation after Healer consolidation"
-    },
-    {
-      "path": ".github/workflows/heartbeat-worker-project.yml",
-      "classification": "KEEP_STABLE_DISPATCHER",
-      "owner": "canonical heartbeat worker project",
-      "reason": "canonical heartbeat/runtime/worker validation surface; absorbs organization-heartbeat source triggers/carrier parity, manual watchdog diagnostics, retained terminal host/native canary evidence, and external-timing fixed-cadence zero-authority validation while routine state persistence remains excluded from automatic hosted fanout"
+      "path": ".github/workflows/canonical-task-registration-transition.yml",
+      "classification": "REVIEW_REQUIRED",
+      "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",
+      "reason": "Validation-only verify of manifest-directed Goal Task registration (contracts/canonical-task-registration-transition.v1.json): for each registration manifest a PR adds, re-derives record, Registry row, generation bump and COSV vector/index entry from the live base tip and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
     },
     {
       "path": ".github/workflows/cross-framework-current-basis-v04-resident.yml",
@@ -27,34 +21,10 @@
       "reason": "source-only validation for the bounded frozen v0.4 resident execution request/consumer; authentic execution is prohibited on GitHub Actions"
     },
     {
-      "path": ".github/workflows/org-runtime-boundary.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "ORG_RESIDENT_RUNTIME_INTR_BOUNDARY",
-      "reason": "source-only validation for the organization resident-runtime and Interlock/InTr boundary; authentic resident execution remains prohibited on GitHub Actions"
-    },
-    {
-      "path": ".github/workflows/workspace-device-kv-validation.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "WORKSPACE_DEVICE_KV_QUERY / PERSONAL_PROFILE_DEVICE_KV",
-      "reason": "validation-only source check for the bounded Personal-KV Workspace DEVICE_KV extension; authentic resident DEVICE_KV execution remains prohibited on GitHub Actions and this registration grants no runtime authority"
-    },
-    {
       "path": ".github/workflows/cross-task-coordination-validation.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "CROSS_TASK_COORDINATION / EVIDENCE_RESOLUTION",
       "reason": "dedicated non-authorizing source validator for the released cross-task coordination handoff projection; coordination truth is not runtime truth and this registration grants no execution, transition, credential, claim/fence, custody, receiving, or publication authority"
-    },
-    {
-      "path": ".github/workflows/task-registry-collision-checkin.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001 / coordination item H48 / StegVerse-Labs/.github#3183",
-      "reason": "DRAFT non-authorizing pull_request gate that runs the existing collision check-in evaluator for each canonical task row or shard a PR changes, PR merge ref versus live base tip; permissions remain empty, no GitHub token, no event ledger append, never a transition predicate; making it a required check is owner-only"
-    },
-    {
-      "path": ".github/workflows/validate-deepseek-resident.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "SHWP-DEEPSEEK-INTR-RUNTIME-001 / .github#1122",
-      "reason": "validation-only source/preflight check for the bounded DeepSeek resident request, WorkerCoordinator registration, README completeness, and pinned StegIndex reuse evidence; authentic provider/runtime execution is prohibited on GitHub Actions"
     },
     {
       "path": ".github/workflows/deterministic-suite-diagnostics.yml",
@@ -63,52 +33,76 @@
       "reason": "temporary non-authorizing validation-evidence carrier for the complete deterministic repository suite while PR #1179 closes the recurring failure-observability gap; permissions remain empty, GitHub credential authority remains NONE, and this surface grants no runtime, execution, transition, claim/fence, custody, receiving, or completion authority"
     },
     {
-      "path": ".github/workflows/gadi-resident-execution-preflight-validation.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "GADI-RESIDENT-EXECUTION-001",
-      "reason": "validation-only check for deterministic fail-closed resident-execution preflight blocker computation; it does not execute GADI, create runtime state, grant a WorkerCoordinator claim/fence, mint InTr admission, expose credentials, or prove activation"
-    },
-    {
-      "path": ".github/workflows/sdk-workspace-external-collab-reseal-resident-validation.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003 / .github#1370",
-      "reason": "validation-only check for the bounded external-collaboration client-secret resident reseal request/consumer and dispatcher registration; authentic TV/TVC reseal execution, client-secret custody, Google consent, provider contact, and WorkSpace readiness remain prohibited on GitHub Actions and this registration grants no runtime or credential authority"
-    },
-    {
-      "path": ".github/workflows/sdk-workspace-external-collab-consent-listener-resident-validation.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003 / .github#1382",
-      "reason": "validation-only check for the bounded external-collaboration consent-listener resident install request/consumer and dispatcher registration; authentic systemd installation, loopback runtime health, public HTTPS/Gateway binding, Google owner consent, credential custody, provider contact, and WorkSpace readiness remain prohibited on GitHub Actions and this registration grants no runtime, Gateway, or credential authority"
-    },
-    {
-      "path": ".github/workflows/validate-kv-ai-memory-resident.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "SV-KV-AI-PERSISTENCE-001",
-      "reason": "validation-only check for the bounded KV AI memory resident source, handoff, dispatcher, and provider-request materialization contracts; authentic Personal-KV memory admission, provider execution, TV/TVC authorization, KV writeback, and runtime activation remain prohibited on GitHub Actions and this registration grants no runtime, credential, or mutation authority"
-    },
-    {
       "path": ".github/workflows/ephemeral-execution-surface-discovery.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001 / .github#2060",
       "reason": "focused source-only validation for connected versus event-ephemeral execution-surface discovery and operation-specific callable ownership; GitHub Actions has no runtime authority and this workflow cannot materialize a Node, mint Interlock/InTr admission, WorkerCoordinator claim/fence, principal execution, or Master Records evidence"
     },
     {
-      "path": ".github/workflows/repository-hygiene-reusable.yml",
+      "path": ".github/workflows/gadi-resident-execution-preflight-validation.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "HYGIENE-CAUSAL-ROOTS-001 / .github#165",
-      "reason": "organization-reusable, non-authorizing branch inventory/classification surface; caller source checkout is read-only with persist-credentials=false so private repositories are supported; no ref deletion, PR/issue closure, credential mutation, runtime action, or age/name-based retirement authority"
+      "owner": "GADI-RESIDENT-EXECUTION-001",
+      "reason": "validation-only check for deterministic fail-closed resident-execution preflight blocker computation; it does not execute GADI, create runtime state, grant a WorkerCoordinator claim/fence, mint InTr admission, expose credentials, or prove activation"
     },
     {
-      "path": ".github/workflows/repository-hygiene-ecosystem-bulk-census.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "HYGIENE-CAUSAL-ROOTS-001 / StegVerse-Labs/.github#3039",
-      "reason": "Read-only census that anonymously clones other repositories (StegVerse-Labs/.github, StegVerse-Labs/Site) and classifies their branch inventory fail-closed; that live cross-repository classification exists nowhere else, and an external fetch must not be folded into a dispatcher (#3039 H6b). Its former pull-request verify job is retired: the unittest runs in test-suite-ratchet.yml and its py_compile in the consolidated-source-validators job. Runs on workflow_dispatch and push to main only; evidence collection, no runtime authority."
-    },
-    {
-      "path": ".github/workflows/test-suite-ratchet.yml",
+      "path": ".github/workflows/heartbeat-worker-project.yml",
       "classification": "KEEP_STABLE_DISPATCHER",
-      "owner": "HYGIENE-CAUSAL-ROOTS-001 / StegVerse-Labs/.github#3039",
-      "reason": "Coverage backstop and pull-request dispatcher (#3039 H6b). The ratchet job runs the whole tests/ suite on every pull request and push to main with no path filter; the consolidated-source-validators job runs the non-tests/ validators retired from 16 per-feature workflows. The other stable dispatchers are workflow_dispatch only, so moving pull-request gates into them would have removed the gate. Validation only; no runtime authority."
+      "owner": "canonical heartbeat worker project",
+      "reason": "canonical heartbeat/runtime/worker validation surface; absorbs organization-heartbeat source triggers/carrier parity, manual watchdog diagnostics, retained terminal host/native canary evidence, and external-timing fixed-cadence zero-authority validation while routine state persistence remains excluded from automatic hosted fanout"
+    },
+    {
+      "path": ".github/workflows/intr-destination-capability-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-Labs/.github#3200",
+      "reason": "validation-only check (pull_request and push to main, path-filtered, plus workflow_dispatch; permissions contents: read; persist-credentials false) of the advertised intr-destination diagnostic capability: runtime_boundary.py validate and tests.test_intr_destination_capability with both ledger roots redirected to runner.temp; it proves emit and close against this repository's own kernel receipt, not a live peer, appends to no operator ledger, and this registration grants no runtime, transition, or credential authority"
+    },
+    {
+      "path": ".github/workflows/intr-path-ingress.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162",
+      "reason": "workflow_run observer for InTr path ingress (ACTIONS_BY_MANIFEST_STATE_TRANSITION_TRIGGER_ONLY chain): contents: read only; no workflow_dispatch/schedule; cannot fold into the PR/push dispatcher without dropping the workflow_run edge. Registration grants no runtime, admission, credential, or transition authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/intr-path-transfer-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162",
+      "reason": "validation-only PR/push check for the InTr path-transfer surface (contents: read, no secrets). Kept standalone while the paired workflow_run transfer/ingress observers remain outside the dispatcher; folding only this half would split the InTr path contract. Registration grants no authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/intr-path-transfer.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162",
+      "reason": "workflow_run observer for InTr path transfer: contents: read only; state-transition-triggered; cannot fold into the PR/push dispatcher without dropping the workflow_run edge. Registration grants no runtime, admission, credential, or transition authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/merge-transfer-gitstore-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "validation-only pull_request check for merge-transfer gitstore behavior (contents: read). Paired with organization-ledger merge-transfer/transition surfaces that are not dispatcher-foldable without a design decision. Registration grants no authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/org-control-plane-validate.yml",
+      "classification": "KEEP_STABLE_DISPATCHER",
+      "owner": "HYGIENE-CAUSAL-ROOTS-001",
+      "reason": "canonical organization validation/consolidation surface; includes ephemeral org handoff projection parity and archive-readiness validation after Healer consolidation"
+    },
+    {
+      "path": ".github/workflows/org-runtime-boundary.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORG_RESIDENT_RUNTIME_INTR_BOUNDARY",
+      "reason": "source-only validation for the organization resident-runtime and Interlock/InTr boundary; authentic resident execution remains prohibited on GitHub Actions"
+    },
+    {
+      "path": ".github/workflows/organization-claim-allocator-transition-writer.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "reason": "writer-only half of the event-ephemeral organization claim allocator: never triggers on pull_request (push to main on control/resident-execution-request.d/org-claim-allocator-*.json, and workflow_dispatch); workflow permissions contents: read with job-scoped contents: write on the publish job only; runs the existing consumer and allocator against the declared Organization store, appends the typed claim disposition to refs/stegverse/organization-ledger under ORGANIZATION_LEDGER_LOCK, fast-forward only, and reads it back from a fresh fetch; split out so that no pull_request run is issued a write-scoped token; not claim authority"
+    },
+    {
+      "path": ".github/workflows/organization-claim-allocator-transition.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+      "reason": "PR-facing half of the event-ephemeral organization claim allocator (split by Lane D; publishing moved to .github/workflows/organization-claim-allocator-transition-writer.yml): triggered by pull_request only (path-filtered); workflow and every job hold permissions contents: read and every checkout uses persist-credentials false. The validate job unit-tests the consumer and allocator against temporary ledgers; the transition job is the PR-safe dry run: the existing consumer and allocator against a temporary copy of refs/stegverse/organization-ledger fetched anonymously (no hb_epoch), fast-forward check and readback on that copy, published ref required unchanged. No push, no credential; per-PR concurrency group outside ORGANIZATION_LEDGER_LOCK; not claim authority"
     },
     {
       "path": ".github/workflows/organization-governance-decision.yml",
@@ -117,10 +111,112 @@
       "reason": "Manifest-directed materialization of this organization's governance endpoint: a committed decision request under .stegverse/governance-decision-requests/ declares the emitting organization's mesh locator and its push starts the run (a dispatch is still accepted, not required); reads the emitting organization's mesh ref anonymously, runs org-kernel consume_and_respond with run-scoped ledgers (organization_ledger propagate_target null by declaration), and writes only this repository's own refs/stegverse/federation-mesh, fast-forward only. Needs contents: write and its own concurrency group, so it cannot ride the validation-only dispatchers. Registration grants no authority."
     },
     {
-      "path": ".github/workflows/canonical-task-registration-transition.yml",
+      "path": ".github/workflows/organization-ledger-component-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "validation-only PR/push CI for the reusable organization-ledger component: appends nothing and dispatches nothing (C1). Kept standalone with the ledger transition suite until an admitted catalog design covers the writer/reusable halves. Registration grants no runtime ALLOW. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-merge-transfer.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "push-triggered organization-ledger merge-transfer surface (contents: read at workflow permissions; part of the ledger transition suite). Not foldable into the validation dispatcher without an admitted writer/observer design. Registration grants no authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-transition-reusable.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "workflow_call reusable organization-ledger transition (contents: write on the called job). Reusable workflow_call cannot live as a catalog run block; callers pin it by path. Registration grants no new authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-transition-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "PR-facing validation half of organization-ledger-transition.yml: every job runs on every trigger with contents: read and no contents: write. Kept with the writer/reusable suite. Registration grants no runtime ALLOW. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-transition.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163 / Lane D draft #3268",
+      "reason": "push-triggered organization-ledger transition surface (class B writer suite companion). Cannot fold into the validation-only dispatcher. P4 registers the live file so workflow-surface hygiene fails closed only on NEW unregistered files; grants no runtime, admission, or credential authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/repository-hygiene-ecosystem-bulk-census.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "HYGIENE-CAUSAL-ROOTS-001 / StegVerse-Labs/.github#3039",
+      "reason": "Read-only census that anonymously clones other repositories (StegVerse-Labs/.github, StegVerse-Labs/Site) and classifies their branch inventory fail-closed; that live cross-repository classification exists nowhere else, and an external fetch must not be folded into a dispatcher (#3039 H6b). Its former pull-request verify job is retired: the unittest runs in test-suite-ratchet.yml and its py_compile in the consolidated-source-validators job. Runs on push to main only (workflow_dispatch removed, StegVerse-Labs/.github#3183); evidence collection, no runtime authority."
+    },
+    {
+      "path": ".github/workflows/repository-hygiene-reusable.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "HYGIENE-CAUSAL-ROOTS-001 / .github#165",
+      "reason": "organization-reusable, non-authorizing branch inventory/classification surface; caller source checkout is read-only with persist-credentials=false so private repositories are supported; no ref deletion, PR/issue closure, credential mutation, runtime action, or age/name-based retirement authority"
+    },
+    {
+      "path": ".github/workflows/resident-cycle-request.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "reason": "COMMITTED_REQUEST dispatch of the resident cycle (row 16): a push to main changing .stegverse/resident-cycle/request.json runs resident-runtime/resident_cycle_request.py at the committed epoch; no workflow_dispatch, no inputs, contents read-only"
+    },
+    {
+      "path": ".github/workflows/reverse-intr-inter-org-route-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORG_RESIDENT_RUNTIME_INTR_BOUNDARY / StegVerse-Labs/.github#3198",
+      "reason": "validation-only check (pull_request and push to main, path-filtered, plus workflow_dispatch; permissions contents: read; persist-credentials false) of the declared reverse InTr governance-to-org leg, Labs to StegVerse-org: tests.test_reverse_intr_inter_org_route with both ledger roots and the mesh redirected by the tests; no remediation-to-org leg, no operator-runtime append, not a production crossing or authentic receipt, and this registration grants no runtime, transition, or credential authority"
+    },
+    {
+      "path": ".github/workflows/sdk-workspace-external-collab-consent-listener-resident-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003 / .github#1382",
+      "reason": "validation-only check for the bounded external-collaboration consent-listener resident install request/consumer and dispatcher registration; authentic systemd installation, loopback runtime health, public HTTPS/Gateway binding, Google owner consent, credential custody, provider contact, and WorkSpace readiness remain prohibited on GitHub Actions and this registration grants no runtime, Gateway, or credential authority"
+    },
+    {
+      "path": ".github/workflows/sdk-workspace-external-collab-reseal-resident-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003 / .github#1370",
+      "reason": "validation-only check for the bounded external-collaboration client-secret resident reseal request/consumer and dispatcher registration; authentic TV/TVC reseal execution, client-secret custody, Google consent, provider contact, and WorkSpace readiness remain prohibited on GitHub Actions and this registration grants no runtime or credential authority"
+    },
+    {
+      "path": ".github/workflows/task-registry-collision-checkin.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001 / coordination item H48 / StegVerse-Labs/.github#3183",
+      "reason": "DRAFT non-authorizing pull_request gate that runs the existing collision check-in evaluator for each canonical task row or shard a PR changes, PR merge ref versus live base tip; permissions remain empty, no GitHub token, no event ledger append, never a transition predicate; making it a required check is owner-only"
+    },
+    {
+      "path": ".github/workflows/test-suite-ratchet.yml",
+      "classification": "KEEP_STABLE_DISPATCHER",
+      "owner": "HYGIENE-CAUSAL-ROOTS-001 / StegVerse-Labs/.github#3039",
+      "reason": "Coverage backstop and pull-request dispatcher (#3039 H6b). The ratchet job runs the whole tests/ suite on every pull request and push to main with no path filter; the consolidated-source-validators job runs the non-tests/ validators retired from 16 per-feature workflows. The other stable dispatchers are workflow_dispatch only, so moving pull-request gates into them would have removed the gate. Validation only; no runtime authority."
+    },
+    {
+      "path": ".github/workflows/topology-sovereign-readback.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ECOSYSTEM-STATE-TRANSITION-TOPOLOGY / StegVerse-Labs/.github#3299",
+      "reason": "PR-path-filtered read-only sovereign Organization Ledger topology conformance (contents: read; no workflow_dispatch; no contents: write). Exercises scripts/ecosystem_transition_topology.py against an independently fetched refs/stegverse/organization-ledger. Cannot fold into the validation dispatcher without an admitted catalog design for pinned expected_receipt + fresh-fetch readback. Registration grants no runtime ALLOW, admission, or credential authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/validate-deepseek-resident.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SHWP-DEEPSEEK-INTR-RUNTIME-001 / .github#1122",
+      "reason": "validation-only source/preflight check for the bounded DeepSeek resident request, WorkerCoordinator registration, README completeness, and pinned StegIndex reuse evidence; authentic provider/runtime execution is prohibited on GitHub Actions"
+    },
+    {
+      "path": ".github/workflows/validate-kv-ai-memory-resident.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SV-KV-AI-PERSISTENCE-001",
+      "reason": "validation-only check for the bounded KV AI memory resident source, handoff, dispatcher, and provider-request materialization contracts; authentic Personal-KV memory admission, provider execution, TV/TVC authorization, KV writeback, and runtime activation remain prohibited on GitHub Actions and this registration grants no runtime, credential, or mutation authority"
+    },
+    {
+      "path": ".github/workflows/worker-claim-grant-projection-transition.yml",
       "classification": "REVIEW_REQUIRED",
       "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",
-      "reason": "Validation-only verify of manifest-directed Goal Task registration (contracts/canonical-task-registration-transition.v1.json): for each registration manifest a PR adds, re-derives record, Registry row, generation bump and COSV vector/index entry from the live base tip and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
+      "reason": "Validation-only verify of the manifest-directed projection of an Organization claim-allocator GRANTED receipt into control/worker-registry.json (contracts/worker-claim-grant-projection-transition.v1.json): for each projection manifest a PR adds, re-derives the worker-registry successor from the live base tip and an anonymous read of refs/stegverse/organization-ledger and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append, no claim or fence minted. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/workspace-device-kv-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "WORKSPACE_DEVICE_KV_QUERY / PERSONAL_PROFILE_DEVICE_KV",
+      "reason": "validation-only source check for the bounded Personal-KV Workspace DEVICE_KV extension; authentic resident DEVICE_KV execution remains prohibited on GitHub Actions and this registration grants no runtime authority"
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -306,5 +402,22 @@
       "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
       "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK (now c138cad4c37db0bb675bc2c66515b5558cc5fa7b, which carries stegverse.universal_intr_route_installer), with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
     }
-  ]
+  ],
+  "g17_p4_registration_batch": {
+    "session": "P4 Maintenance Lane a65c67bf",
+    "issue": "StegVerse-org/.github#166",
+    "added": [
+      ".github/workflows/intr-path-ingress.yml",
+      ".github/workflows/intr-path-transfer.yml",
+      ".github/workflows/intr-path-transfer-validation.yml",
+      ".github/workflows/merge-transfer-gitstore-validation.yml",
+      ".github/workflows/organization-ledger-component-validation.yml",
+      ".github/workflows/organization-ledger-merge-transfer.yml",
+      ".github/workflows/organization-ledger-transition-reusable.yml",
+      ".github/workflows/organization-ledger-transition-validation.yml",
+      ".github/workflows/organization-ledger-transition.yml"
+    ],
+    "workflow_count": 34,
+    "note": "Registers the nine live workflow files that were failing scripts/validate_workflow_surface_hygiene.py on main. Count stays 34; no safe fold/dispatch-removal remains among writers/secrets/workflow_run/reusable. Remaining workflow_dispatch triggers are heartbeat-worker-project, org-control-plane-validate (secrets), organization-claim-allocator-transition-writer, organization-governance-decision (writers)."
+  }
 }

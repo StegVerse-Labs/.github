@@ -1,0 +1,5 @@
+COMMAND: python -m pytest -q tests/test_folded_record_root_confinement.py tests/test_credential_model_socket_module_review.py -k "FoldedRecordRootConfinementTests or FoldedWorkflowResolutionTests"
+........                                                       [100%]
+8 passed, 143 deselected, 10 subtests passed in 0.04s
+
+EXIT: 0

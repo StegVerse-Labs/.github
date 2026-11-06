@@ -64,7 +64,7 @@ class LaneBPair(unittest.TestCase):
 
     def obs(self, facts, change=None):
         ch = change or self.change
-        o = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), facts)
+        o = fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), facts)
         return o
 
     def test_lane_b_files_are_byte_identical(self):
@@ -203,7 +203,7 @@ class MalformedEpochStringTests(unittest.TestCase):
     """Commit 5 (NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED): validate_change agrees with admission on hb_epoch strings."""
 
     def admitted(self, ch):
-        o = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), fx.fixture_resolved_issues(ch))
+        o = fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), fx.fixture_resolved_issues(ch))
         return refusal(wi.admit, o, fixture_mode=True)
 
     def test_malformed_string_is_deny_in_both(self):

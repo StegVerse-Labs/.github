@@ -13,7 +13,7 @@ kernel=importlib.util.module_from_spec(_spec);_spec.loader.exec_module(kernel)
 # this one addresses the same store so it does too.
 _sspec=importlib.util.spec_from_file_location("ledger_store",ROOT/"resident-runtime/ledger_store.py")
 ledger_store=importlib.util.module_from_spec(_sspec);_sspec.loader.exec_module(ledger_store)
-def canon(v):return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()
+def canon(v):return json.dumps(v,sort_keys=True,separators=(",",":"),ensure_ascii=False,allow_nan=False).encode()
 def sha(v):return "sha256:"+hashlib.sha256(v if isinstance(v,(bytes,bytearray)) else canon(v)).hexdigest()
 def lr():
  o=os.getenv("STEGVERSE_REPO_LEDGER_ROOT")
@@ -81,6 +81,8 @@ def recorded(target,head,transition_id,transition_class):
   if found is None and receipt.get("transition_id")==transition_id and receipt.get("transition_class")==transition_class:found=receipt
  return found
 _ABSENT=object()
+EPOCH_RETRY_ENTRYPOINT=".stegverse/transition-ledger/emit.py::append (hb_epoch=, or --hb-epoch)"
+RepoLedgerEpochRefused=kernel.SuppliedEpochRefused
 def append(transition_id,transition_class,predecessor_state_sha256,successor_state_sha256,evidence=None,authority_effect="NONE",hb_epoch=None,store=None,idempotent_on=None):
  """Append one repository transition receipt through the substrate transaction.
 
@@ -98,7 +100,17 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
  Every attempt, idempotent or not, first verifies the whole chain reachable
  from HEAD and raises `RepoLedgerChainBreak` on a missing or corrupted node,
  so no receipt is ever minted on top of a broken chain.
+
+ `hb_epoch` is the epoch the caller supplies. An absent or invalid one raises
+ RepoLedgerEpochRefused (six-field FAIL_CLOSED; HB_EPOCH_NOT_SUPPLIED when
+ absent) before the store is resolved or initialized. No clock is read to
+ stand in for it.
  """
+ ref=kernel.supplied_hb_reference(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+ # Before the store opens: a caller cannot supply committed_request (row 5), and
+ # in a request run the receipt binds the verified committed request (row 1).
+ kernel.refuse_caller_committed_request(evidence,"evidence")
+ bound=kernel.committed_request(hb_epoch)
  target=store or repository_store();target.initialize()
  for _attempt in range(128):
   expected_head=target.get(ledger_store.HEAD_KEY)
@@ -113,7 +125,8 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
        or any(theirs.get(k,_ABSENT)!=mine.get(k,_ABSENT) for k in idempotent_on)):
     raise ValueError("ledger_receipt_collision")
    return prior
-  b={"schema":"stegverse.repo-transition-receipt/v1","repository":C["repository"],"transition_id":transition_id,"transition_class":transition_class,"predecessor_state_sha256":predecessor_state_sha256,"successor_state_sha256":successor_state_sha256,"evidence":evidence if evidence is not None else {},"authority_effect":authority_effect,"hb_reference":kernel.hb_reference(epoch=hb_epoch) if hb_epoch is not None else kernel.hb_reference(),"previous_receipt_sha256":prev}
+  b={"schema":"stegverse.repo-transition-receipt/v1","repository":C["repository"],"transition_id":transition_id,"transition_class":transition_class,"predecessor_state_sha256":predecessor_state_sha256,"successor_state_sha256":successor_state_sha256,"evidence":evidence if evidence is not None else {},"authority_effect":authority_effect,"hb_reference":ref,"previous_receipt_sha256":prev}
+  if bound is not None:b[kernel.COMMITTED_REQUEST_KEY]=bound
   dg=sha(b);r={**b,"receipt_sha256":dg};key=ledger_store.receipt_key(dg)
   new_head={"repository":C["repository"],"receipt_sha256":dg,"receipt_path":target.locator(key)}
   try: published=target.append_transaction(key,r,expected_head,new_head)
@@ -124,10 +137,36 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
    return r
  raise SystemExit("REPO_LEDGER_APPEND_CONTENTION_EXHAUSTED")
 
+def forwarded_epoch(receipt,hb_epoch):
+ """The epoch an organization append consuming `receipt` is handed: the caller's.
+
+ Never one read back from `receipt`. A read-back epoch is not supplied (absent,
+ it is a clock reading), and carrying it would need CARRIED provenance the
+ organization receipt does not record, so it would read as SUPPLIED. A replay
+ completing a partial commit therefore takes the epoch its own caller supplies.
+ """
+ return hb_epoch
+
+def cli_epoch(text,retry_entrypoint):
+ """--hb-epoch as typed, checked by the kernel's supplied-epoch rule: (epoch, None) or (None, refusal).
+
+ argparse hands over the raw text (type=str), so '+33', '\uff13\uff13', ' 33', 'True', '33.7'
+ and '' reach supplied_epoch_failure uncoerced and are refused; nothing is
+ appended. An omitted --hb-epoch is refused HB_EPOCH_NOT_SUPPLIED with the
+ shared rule's own six-field dict (writer_epoch_refusal); no clock is read.
+ """
+ if text is None:return None,kernel.writer_epoch_refusal(None,retry_entrypoint=retry_entrypoint+" (--hb-epoch)")
+ failure=kernel.supplied_epoch_failure(text)
+ if failure is None:return int(text),None
+ code,detail=failure
+ return None,{"disposition":"FAIL_CLOSED","failure_code":code,"failed_predicate":kernel.HB_EPOCH_PREDICATE,"detail":detail,"required_evidence_or_repair":"pass --hb-epoch as the carrier supplied it: ASCII digits with value >= "+str(kernel.HB_ANCHOR_EPOCH)+"; it is never coerced","retry_entrypoint":retry_entrypoint+" (--hb-epoch)","owning_existing_goal":kernel.HB_EPOCH_OWNING_EXISTING_GOAL,"next_attempt":"run again with the supplied epoch; nothing was appended or written","consequence_committed":False,"authority_effect":"NONE_REFUSAL_ONLY"}
+
 def main():
- p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=int,default=None,help="heartbeat epoch; derived from the host clock, and marked as derived, when absent");a=p.parse_args()
- try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,json.loads(a.evidence_json),a.authority_effect,a.hb_epoch)
+ p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=str,default=None,help="carrier-supplied heartbeat epoch, ASCII digits >= 32; required, never coerced");p.add_argument("--idempotent-on",default=None,help="comma-separated evidence keys: an exact retry returns the recorded receipt");a=p.parse_args()
+ hb_epoch,refused=cli_epoch(a.hb_epoch,".stegverse/transition-ledger/emit.py")
+ if refused is not None:print(json.dumps(refused,sort_keys=True));raise SystemExit(1)
+ try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,kernel.cli_json_text(a.evidence_json,"--evidence-json",retry_entrypoint=".stegverse/transition-ledger/emit.py"),a.authority_effect,hb_epoch,idempotent_on=None if a.idempotent_on is None else tuple(k for k in a.idempotent_on.split(",") if k))
  except RepoLedgerChainBreak as exc:
   print(json.dumps(chain_break_refusal(exc),sort_keys=True));raise SystemExit(1)
  print(json.dumps(r,sort_keys=True))
-if __name__=="__main__":main()
+if __name__=="__main__":raise SystemExit(kernel.run_writer_cli(lambda:main() or 0,retry_entrypoint=".stegverse/transition-ledger/emit.py"))

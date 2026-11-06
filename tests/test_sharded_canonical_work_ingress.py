@@ -38,7 +38,7 @@ class ShardedCanonicalWorkIngressTests(unittest.TestCase):
     def test_stegbrowser_superseded_parent_is_not_reingress_eligible(self):
         with self.assertRaises(SystemExit) as ctx:
             bootstrap.validate_target_task(registry=REGISTRY, registry_shards=SHARDS, task_id=TASK_ID)
-        self.assertIn("canonical_task_not_proposed_for_ingress", str(ctx.exception))
+        self.assertIn("canonical_task_not_ingress_projectable", str(ctx.exception))
 
     def test_superseded_parent_rejects_post_ingress_projection(self):
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))

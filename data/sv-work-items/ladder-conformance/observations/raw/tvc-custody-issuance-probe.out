@@ -1,0 +1,22 @@
+$ {python} -c import json
+import tvc_skap_custody_reference_issuance as t
+SIX = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt")
+rows = []
+def keep(subject, out):
+    r = {"subject": subject, "disposition": out.get("disposition")}
+    for k in SIX + ("failure_class", "custody_key_ref"):
+        if isinstance(out.get(k), str):
+            r[k] = out[k]
+    rows.append(r)
+keep("ISSUE_INVALID_MANIFEST", t.issue({}))
+keep("ISSUE_MANIFEST_CARRYING_MATERIAL", t.issue(dict(t.build_manifest(principal_ref="principal:probe"), private_key="x")))
+ok = t.issue(t.build_manifest(principal_ref="principal:probe"))
+keep("ISSUE_VALID_MANIFEST", ok)
+keep("VERIFY_EDITED_RECEIPT", t.verify(dict(ok, custody_key_ref="tvc://skap-custody/forged")))
+keep("VERIFY_ISSUED_RECEIPT", t.verify(ok))
+print(json.dumps({"rows": rows}, sort_keys=True))
+
+--- exit 0
+--- stdout
+{"rows": [{"disposition": "FAIL_CLOSED", "failed_predicate": "TVC_ISSUES_SKAP_CUSTODY_KEY_REFERENCE_BY_TRANSITION", "failure_class": "B", "failure_code": "TVC_CUSTODY_ISSUANCE_MANIFEST_INVALID", "next_attempt": "on the next issuance manifest carrying the repair", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "supply a stegverse.tvc.skap-custody-reference-issuance-manifest/v1 manifest", "retry_entrypoint": "python tvc_skap_custody_reference_issuance.py issue --manifest <file> (StegVerse-Labs/TVC)", "subject": "ISSUE_INVALID_MANIFEST"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "TVC_ISSUES_SKAP_CUSTODY_KEY_REFERENCE_BY_TRANSITION", "failure_class": "C", "failure_code": "TVC_CUSTODY_ISSUANCE_MANIFEST_CARRIES_MATERIAL", "next_attempt": "on the next issuance manifest carrying the repair", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "remove manifest.private_key; issuance manifests carry references only", "retry_entrypoint": "python tvc_skap_custody_reference_issuance.py issue --manifest <file> (StegVerse-Labs/TVC)", "subject": "ISSUE_MANIFEST_CARRYING_MATERIAL"}, {"custody_key_ref": "tvc://skap-custody/db4f49205cc491ecc1c203201b28fa43", "disposition": "ALLOW", "subject": "ISSUE_VALID_MANIFEST"}, {"disposition": "FAIL_CLOSED", "failed_predicate": "TVC_ISSUES_SKAP_CUSTODY_KEY_REFERENCE_BY_TRANSITION", "failure_class": "C", "failure_code": "TVC_CUSTODY_ISSUANCE_RECEIPT_DIGEST_MISMATCH", "next_attempt": "on the next issuance manifest carrying the repair", "owning_existing_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)", "required_evidence_or_repair": "the receipt was edited", "retry_entrypoint": "python tvc_skap_custody_reference_issuance.py issue --manifest <file> (StegVerse-Labs/TVC)", "subject": "VERIFY_EDITED_RECEIPT"}, {"custody_key_ref": "tvc://skap-custody/db4f49205cc491ecc1c203201b28fa43", "disposition": "ALLOW", "subject": "VERIFY_ISSUED_RECEIPT"}]}
+--- stderr

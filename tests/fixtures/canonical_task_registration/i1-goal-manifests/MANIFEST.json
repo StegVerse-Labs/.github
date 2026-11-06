@@ -1,0 +1,214 @@
+{
+  "schema": "stegverse.lane-d.i1-goal-registration-manifest/v1",
+  "authority_effect": "NONE_DRAFT_MANIFEST",
+  "consumed_by": "scripts/canonical_task_registration_transition.py (plan/apply; StegVerse-Labs/.github#3311)",
+  "registry_edit": false,
+  "registry_generation_bump": false,
+  "observed_registry_generation": 326,
+  "observed_base": {
+    "main": "f9b46abc (PR #3409 merge, generation 325) plus this PR's generation 326",
+    "registry_blob": "96f4f1a9"
+  },
+  "issue": "StegVerse-org/.github#160 issuecomment-6354238464 I1",
+  "goals": [
+    {
+      "task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "basis": "SHARD_ONLY",
+      "registration_mode": "EXISTING_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.request.json",
+      "request_sha256": "89e2e28f158cbdb906f0fe0c51b0d4335592fb8d36e3cb36f8c0344461079955",
+      "plan_at_base": "StegVerse-Labs/.github main f9b46abc (generation 325, #3409 merge) with #3358's registry generation 326 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 components declared), and the #3311 transition",
+      "lowest_supported_mode": "E0",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "WORKER_CLAIM_NOT_PROJECTION_ONLY",
+        "failed_predicate": "WORKER_CLAIM_NOT_PROJECTION_ONLY",
+        "required_evidence_or_repair": "WorkerCoordinator mints claims (scripts/allocate_claims.py); register the identity without the claim",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded",
+        "detail": "state 'ACTIVE' / worker_claim {'authority': 'WORKERCOORDINATOR', 'claim_ref': None, 'fence_ref': 'TASK-2026-0011:FENCE7', 'projection_only': True} asserts a claim WorkerCoordinator did not issue"
+      }
+    },
+    {
+      "task_id": "CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001",
+      "basis": "SHARD_ONLY",
+      "registration_mode": "EXISTING_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001.request.json",
+      "request_sha256": "9c6e6ddb009bbbca0b5cbc94b4da080c75ff83f03f833e8c759f6393069f6573",
+      "plan_at_base": "StegVerse-Labs/.github main f9b46abc (generation 325, #3409 merge) with #3358's registry generation 326 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 components declared), and the #3311 transition",
+      "lowest_supported_mode": "E0",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "C",
+        "failure_code": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+        "failed_predicate": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+        "required_evidence_or_repair": "coordinate CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001 with ['CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001', 'GADI-RUNTIME-CLOSURE-001'] (END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER) or narrow its targets before merge",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded",
+        "detail": "[{\"task_id\": \"CANONICAL-WORK-END-TO-END-CYCLE-CLOSURE-001\", \"head_disposition\": \"STOP_COLLISION\", \"failure_code\": \"REGISTRY_COLLISION_CHECKIN_STOP_COLLISION\", \"evidence\": {\"new_collision_candidate_ids\": [], \"new_hard_collision_task_ids\": [], \"hard_collision_task_ids\": [\"CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001\", \"GADI-RUNTIME-CLOSURE-001\"], \"collision_candidate_ids\": [\"CANONICAL-WORK-EXACT-INVOCATION-EVIDENCE-RECONCILIATION-001\", \"GADI-RUNTIME-CLOSURE-001\"], \"session_action\": \"END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER\", \"substrate_review_error\": null}}]"
+      }
+    },
+    {
+      "task_id": "TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001",
+      "basis": "NEW_IDENTITY_REQUEST",
+      "registration_mode": "NEW_IDENTITY",
+      "referenced_by": [
+        "StegVerse-Labs/.github@86382e60:control/formalism-tvc-repository-transport.json",
+        "StegVerse-Labs/.github@86382e60:handoffs/SHWP-TVC-REPOSITORY-BROKER-VALIDATION-001.json",
+        "StegVerse-Labs/.github@86382e60:control/worker-registry.d/tvc-repository-broker-validation-001.json"
+      ],
+      "observed_source": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.request.json",
+      "request_sha256": "ce53485bcec42e7ad52c42258860bcafd35c055a4ed753e2bbf78ca5ca265813",
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-tvc-repository-operation-broker-2026-10-23.json",
+      "scope_digest": "sha256:7c2d83c7dcdd86a46c63112dda07902fc7adf9d1442c7d2c2f029c4383f71039",
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/TVC: python tools/task_dispatcher.py tvc.github_repository_operation_broker.verify",
+        "predicate": "TV/TVC-owned dispatcher report returns PASS for the exact 18-file broker bundle including deterministic PROTECT_DEFAULT_BRANCH, APPLY_ORGANIZATION_RULESET and spool-allowlist tests, with no credential disclosure; subsequent protection execution requires an exact current repository SHA, ST-019 allowed repository, single-use warrant, and sanitized receipt.",
+        "verifier_entrypoint": "StegVerse-Labs/TVC: tvc.github_repository_operation_broker.verify",
+        "lowest_supported_mode": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+      },
+      "plan_at_base": "StegVerse-Labs/.github main f9b46abc (generation 325, #3409 merge) with #3358's registry generation 326 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
+      "lowest_supported_mode": "E0",
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "COSV_NOT_DERIVABLE",
+        "failed_predicate": "COSV_NOT_DERIVABLE",
+        "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS)",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded"
+      },
+      "owner_repair": "StegVerse-Labs/TVC supplies exact task.v1 metrics (data/cosv/task-vectors/TVC-GITHUB-REPOSITORY-OPERATION-BROKER-001.json is absent at c4845bea)"
+    },
+    {
+      "task_id": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+      "basis": "NO_SHARD_NO_ROW",
+      "referenced_by": [
+        "StegVerse-Labs/.github@86382e60:docs/GITHUB_UNIVERSAL_GOVERNANCE_PRODUCT_MIRROR_HANDOFF.md"
+      ],
+      "lowest_supported_mode": "E0",
+      "expected_plan": null,
+      "fail_closed": {
+        "failure_class": "B",
+        "failure_code": "GOAL_RECORD_CONTENT_NOT_AUTHENTICALLY_OBSERVED",
+        "failed_predicate": "REGISTRATION_REQUEST_RECORD_IS_OBSERVED_NOT_INVENTED",
+        "required_evidence_or_repair": "GitHub Product (Lane C) filed the NEW_IDENTITY request with sealed_scope as StegVerse-Labs/.github#3326 @c92b0e02 (stacked on laned/tvc-new-identity-requests); Lane D files no duplicate. Its plan is FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE, which GitHub Product coordinates. Lane D does not invent the record, the COSV vector or a Task ID",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan --request <request>",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next plan of #3326's request after GitHub Product records its collision coordination"
+      },
+      "registering_owner": "GitHub Product (Lane C, agent 6329a668-958c-4d3f-a0b4-083acca8f51f)",
+      "registration_request": {
+        "pr": "StegVerse-Labs/.github#3326",
+        "head": "c92b0e0256afa971e625940d9e1c763c41615b8e",
+        "path": "tests/fixtures/canonical_task_registration/github-universal-governance-product/GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001.request.json",
+        "request_sha256": "5ad6247bb70181dd01375bbc74c8ccae7aba4c1b347e0a3f67f1a45a9cae5cd6",
+        "observed_registry_generation": 326,
+        "registration_mode": "NEW_IDENTITY",
+        "scope_digest": "sha256:27909085ddc6d08f35d5ebb58cfaf6ed8152f2f3c2826b015a932c28334ed764",
+        "observed_by": "Lane D at #3358 head 229ac85e (generation 321); re-sealed at generation 322, 325 and again at generation 326 (tip 325 + 1) in #3358 (sha256 recomputed over the 326 request)",
+        "plan": "FAIL_CLOSED REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE (owned by GitHub Product)"
+      }
+    },
+    {
+      "task_id": "TVC-PRIVATE-SOURCE-READ-001",
+      "basis": "NEW_IDENTITY_REQUEST",
+      "registration_mode": "NEW_IDENTITY",
+      "referenced_by": [
+        "StegVerse-Labs/.github@86382e60:data/canonical-task-records/ORG-GITHUB-FLEET-FUNCTIONALIZATION-001.json",
+        "StegVerse-Labs/.github@86382e60:handoffs/GOVERNANCE-SOVEREIGN-TASK-OBSERVER-001.json",
+        "StegVerse-Labs/.github@86382e60:data/intr-protocol/v1/protocol.json"
+      ],
+      "observed_source": "StegVerse-Labs/TVC@c4845bea704949c46658042963e8c532c9559939:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/TVC-PRIVATE-SOURCE-READ-001.request.json",
+      "request_sha256": "2312bf7dfed1f3ce2a892f1ceb5d5d425b2f9509c5261fa501efe92c10a75dca",
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-tvc-private-source-read-2026-10-23.json",
+      "scope_digest": "sha256:5f6615d86730d08e40c9271e363c2c89865b4af388ea6905bccdde2c20a9cd64",
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/TVC: python scripts/advance_sdk_proof_prerequisites.py",
+        "predicate": "/var/lib/stegverse/private-source-read/sdk-proof-prerequisites.json records terminal_source_state STEGCORE_PR146_SOURCE_VALIDATED for exact f09eb36abcd3b317f35638e5c0b0c4a802d0aecf",
+        "verifier_entrypoint": "StegVerse-Labs/TVC: scripts/advance_sdk_proof_prerequisites.py",
+        "lowest_supported_mode": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
+      },
+      "plan_at_base": "StegVerse-Labs/.github main f9b46abc (generation 325, #3409 merge) with #3358's registry generation 326 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
+      "lowest_supported_mode": "E0",
+      "expected_plan": {
+        "disposition": "ALLOW",
+        "cosv_task_vector": "50000000101000",
+        "scope_digest": "sha256:5f6615d86730d08e40c9271e363c2c89865b4af388ea6905bccdde2c20a9cd64",
+        "successor_registry_generation": 327,
+        "derived_files": [
+          "control/goal-scope-seals/TVC-PRIVATE-SOURCE-READ-001.json",
+          "control/task-vector-index.d/TVC-PRIVATE-SOURCE-READ-001.json",
+          "control/task-vectors/TVC-PRIVATE-SOURCE-READ-001.json",
+          "data/canonical-task-records/TVC-PRIVATE-SOURCE-READ-001.json",
+          "data/canonical-task-registry.json"
+        ],
+        "applied": false,
+        "note": "plan only; apply is not performed here (G-8)"
+      }
+    },
+    {
+      "task_id": "KV-SKAP-VAULT-FUNCTIONAL-001",
+      "basis": "NEW_IDENTITY_REQUEST",
+      "registration_mode": "NEW_IDENTITY",
+      "request": "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+      "request_sha256": "0b7147949ddcd8ce370f7ee31e476eca01f6f46f2bd8fe5f4ed6d6c8ada51d83",
+      "allocation_request_ref": "control/goal-task-allocation-requests/lane-d-kv-skap-vault-2026-10-23.json",
+      "scope_digest": "sha256:95f060fcc2b2455908c838fbcada36eb80b05cad2bf15b8a0b9607cd4672d9dc",
+      "finish_point": {
+        "acceptance_test": "StegVerse-Labs/continuity-vault-kit:tests/test_kv_skap_vault_finish_point.py::KvSkapVaultFinishPoint::test_finish_point_verdict",
+        "predicate": "KV_SKAP_VAULT_FINISH_POINT: python -m runtime.kv_skap_vault finish-point returns disposition ALLOW (every expected_evidence_predicate ALLOW over one receipt-hash lineage); until then it returns six-field FAIL_CLOSED naming each unmet predicate",
+        "verifier_entrypoint": "StegVerse-Labs/continuity-vault-kit: python -m runtime.kv_skap_vault finish-point",
+        "lowest_supported_mode": "E0"
+      },
+      "plan_at_base": "StegVerse-Labs/.github main f9b46abc (generation 325, #3409 merge) with #3358's registry generation 326 (PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001 and STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001 components declared), and the #3311 transition and the GOAL_SCOPE_SEALED seal (laned/goal-scope-seal)",
+      "lowest_supported_mode": "E0",
+      "coordination_adjacency_ruling": {
+        "class": "D",
+        "ruling": "ADJACENT_NOT_DUPLICATE",
+        "adjacent_goals": [
+          "SS-KV-SKAP-SOCIAL-RELEASE-001",
+          "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+          "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001"
+        ],
+        "conditions_verified": {
+          "a_components_disjoint": true,
+          "b_finish_point_test_exercises_none_of_their_components": true,
+          "c_sovereign_kv_custody_is_consumes_dependency_class_B": true
+        },
+        "evidence": "collision_analysis in the request; continuity-vault-kit#258",
+        "ruling_record_ref": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED",
+        "plan_effect": "none: the collision check-in has no ruling input, so the plan stays COORDINATE_CONVERGENCE"
+      },
+      "expected_plan": {
+        "disposition": "FAIL_CLOSED",
+        "failure_class": "B",
+        "failure_code": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+        "failed_predicate": "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE",
+        "required_evidence_or_repair": "coordinate KV-SKAP-VAULT-FUNCTIONAL-001 with ['SS-KV-SKAP-SOCIAL-RELEASE-001', 'STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001', 'TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001'] (COORDINATE_BEFORE_MUTATION) or narrow its targets before merge",
+        "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+        "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "next_attempt": "on the next registration request event after the repair is recorded"
+      }
+    }
+  ],
+  "unknown": {
+    "_": "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED: no request here was planned against a successor tree; no apply was run"
+  },
+  "registered_by_record_data": [
+    {
+      "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "registry_generation": 325,
+      "pull_request": "StegVerse-Labs/.github#3409",
+      "route": "scripts/apply_task_record_data.py (register_from_record)",
+      "request_fixture_kept": "tests/fixtures/canonical_task_registration/i1-goal-manifests/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.request.json",
+      "note": "registered at generation 325, so it is no longer a pending no-row Goal; the request fixture is kept unchanged apart from observed_registry_generation"
+    }
+  ]
+}

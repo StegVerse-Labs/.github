@@ -16,7 +16,7 @@
         "operation": "SUBMIT_MANIFEST",
         "payload_schema": "stegverse.ingress-manifest.v1",
         "capability_declaration_owner": "StegVerse-Labs/StegOS",
-        "capability_binding_owner": "StegVerse-Labs/StegVerse-SDK",
+        "capability_binding_owner": "StegVerse-org/StegVerse-SDK",
         "receiving_operation": {
           "owner_repository": "StegVerse-Labs/.github",
           "operation_id": "ORGANIZATION_SDK_MANIFEST_INGRESS",

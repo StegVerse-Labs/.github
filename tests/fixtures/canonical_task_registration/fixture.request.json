@@ -63,6 +63,34 @@
       "interlock_intr_required_for_governed_ingress_egress": true
     }
   },
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "goal": "Test fixture for scripts/canonical_task_registration_transition.py. Not a registration request and never committed under control/canonical-task-registration-requests/.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "canonical-task-registration"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "FIXTURE_ONLY"
+      ],
+      "finish_point": {
+        "acceptance_test": "tests/test_canonical_task_registration_transition.py::Allow::test_plan_derives_the_four_surfaces_from_the_manifest_alone",
+        "predicate": "FIXTURE_REGISTRATION_DERIVES_ITS_SURFACES",
+        "verifier_entrypoint": "python -m unittest tests.test_canonical_task_registration_transition",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:d7829f4395ec74be3c4802b14577699113076a243c4982f6b64b79a5e6c00f71",
+    "supersedes_scope_digest": null
+  },
   "vector": {
     "exact_metrics": {
       "symbol_order": "LRUIVGOCMTBEAP",

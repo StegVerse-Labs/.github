@@ -96,6 +96,7 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
  so no receipt is ever minted on top of a broken chain.
  """
  # P1-FC-4: the epoch is supplied or the append is refused with six fields; no clock is read.
+ common.reject_non_finite(evidence,RETRY,"evidence")  # D-11: refuse non-finite input before the epoch is read or any ledger opened
  heartbeat=common.supplied_hb_reference(kernel,hb_epoch,RETRY)
  target=store or ledger_store.open_store(lr());target.initialize()
  for _attempt in range(128):
@@ -120,7 +121,7 @@ def append(transition_id,transition_class,predecessor_state_sha256,successor_sta
 
 def main():
  p=argparse.ArgumentParser();p.add_argument("--transition-id",required=True);p.add_argument("--transition-class",required=True);p.add_argument("--predecessor-state-sha256",required=True);p.add_argument("--successor-state-sha256",required=True);p.add_argument("--evidence-json",default="{}");p.add_argument("--authority-effect",default="NONE");p.add_argument("--hb-epoch",type=str,default=None,help="supplied heartbeat epoch (digits, >= 32); required, never derived from a clock");a=p.parse_args()
- try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,json.loads(a.evidence_json),a.authority_effect,a.hb_epoch)
+ try:r=append(a.transition_id,a.transition_class,a.predecessor_state_sha256,a.successor_state_sha256,common.loads_finite(a.evidence_json,RETRY),a.authority_effect,a.hb_epoch)
  except RepoLedgerChainBreak as exc:
   print(json.dumps(chain_break_refusal(exc),sort_keys=True));raise SystemExit(1)
  except common.LedgerRefusal as exc:

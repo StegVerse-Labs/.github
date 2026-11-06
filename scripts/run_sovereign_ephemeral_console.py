@@ -321,6 +321,22 @@ def run_console(
             row.get("state") == "TEARDOWN_COMPLETE" and row.get("no_supervised_process_residue") is True
             for row in teardown_rows
         ) if teardown_rows else True
+        if not body["validation_peers_teardown_verified"]:
+            body["teardown_repair"] = {
+                "failure_code": "VALIDATION_PEER_TEARDOWN_INCOMPLETE",
+                "failed_predicate": "validation_peers_teardown_verified",
+                "required_evidence_or_repair": (
+                    "every spawned validation peer carrier and worker must be signalled and reaped; "
+                    "a peer that survives SIGTERM and SIGKILL must be stopped before teardown is claimed"
+                ),
+                "retry_entrypoint": "scripts/restart_sovereign_ephemeral_node.py --teardown --runtime-root <node-root>",
+                "owning_existing_goal": body["task_id"],
+                "next_attempt": "re-run teardown for the incomplete peer roots, then re-run the console on fresh roots",
+                "incomplete_peer_node_indexes": [
+                    row["node_index"] for row in teardown_rows
+                    if not (row.get("state") == "TEARDOWN_COMPLETE" and row.get("no_supervised_process_residue") is True)
+                ],
+            }
         if body.get("state") == "COMPLETE" and not body["validation_peers_teardown_verified"]:
             body["state"] = "REVIEW_REQUIRED"
             body["reason"] = "VALIDATION_PEER_TEARDOWN_INCOMPLETE"

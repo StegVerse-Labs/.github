@@ -13,7 +13,7 @@ def test_runtime_intake_reuses_existing_execution_owners():
     contract = load_contract()
     assert contract["schema"] == "stegverse.task-registry-sovereign-kv-runtime-intake/v1"
     assert contract["execution_ownership"]["provider_execution_owner"] == "KV-CONNECTION-REVALIDATION-WORKER-001"
-    assert contract["execution_ownership"]["device_kv_skap_intr_evidence_owner"] == "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+    assert contract["execution_ownership"]["device_kv_skap_roundtrip_evidence_owner"] == "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
     assert contract["execution_ownership"]["new_provider_executor_created"] is False
     assert contract["authority_effect"] == "NONE"
 

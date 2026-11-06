@@ -175,12 +175,18 @@ class ConformanceIngressCase(unittest.TestCase):
         manifest_sha256 = "sha256:" + ingress.sha(manifest)
         packet = {"packet_id": packet_id,
                   "payload": {"manifest": manifest, "manifest_sha256": manifest_sha256}}
+        # Bound to the delivered manifest as the real crossing binds it: the
+        # payload its own `crossing_payload` builds, hashed with its own `sha`.
+        payload = ingress.crossing_module.crossing_payload(
+            manifest, ingress.crossing_module.declared_destination(manifest))
         return {"crossing_completed": True, "resolved_service_id": conformance.SERVICE_ID,
                 "ingress_packet_id": packet_id, "egress_packet_id": packet_id + "-egress",
                 "manifest_sha256": manifest_sha256,
+                "payload_hash": ingress.crossing_module.sha(payload),
                 "application_result": conformance.respond(packet, root=self.source)}
 
     def receive(self, manifest=None, **options):
+        options.setdefault("hb_epoch", 4096)
         return ingress.receive(manifest or self.manifest(), registry=REGISTRY, **options)
 
     def receipts(self, root):
@@ -481,13 +487,13 @@ class RealCrossingTests(unittest.TestCase):
         registry = json.loads((ROOT / "org-boundary/registry/services.json").read_text())
         # No standing is supplied: the destination's registry row declares it.
         result = ingress.receive(manifest, registry=registry,
-                                 packet_id="role-conformance-real-crossing")
+                                 packet_id="role-conformance-real-crossing", hb_epoch=4096)
         self.assertEqual(result["disposition"], "ALLOW", result.get("detail"))
         self.assertEqual(result["resolved_service_id"], conformance.SERVICE_ID)
         self.assertIs(result["boundary_receipt_chain_reconstructed_independently"], True)
         self.assertIs(result["disposition_committed_in_organization_ledger"], True)
         replay = ingress.receive(manifest, registry=registry,
-                                 packet_id="role-conformance-real-crossing")
+                                 packet_id="role-conformance-real-crossing", hb_epoch=4096)
         self.assertIs(replay["transition_replayed"], True)
         self.assertEqual(replay["organization_receipt_sha256"], result["organization_receipt_sha256"])
 
@@ -547,6 +553,7 @@ class AuthenticBoundaryAdmissionTests(unittest.TestCase):
 
     def enqueue(self, manifest, name, **extra) -> Path:
         """Write the event once into its own durable queue, as StegDB's materialize does."""
+        extra.setdefault("hb_epoch", 4096)
         durable = self.base / ("durable-" + name)
         outbox = durable / "intr-outbox" / ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE
         outbox.mkdir(parents=True)
@@ -619,7 +626,7 @@ class AuthenticBoundaryAdmissionTests(unittest.TestCase):
         self.assertEqual(len(list((self.repo_root / "receipts").glob("*.json"))), 1)
 
     def test_the_terminal_disposition_awaits_no_receiver(self):
-        result = ingress.receive(self.stegdb_manifest(), registry=REGISTRY, packet_id="i11-direct")
+        result = ingress.receive(self.stegdb_manifest(), registry=REGISTRY, packet_id="i11-direct", hb_epoch=4096)
         self.assertEqual(result["disposition"], "ALLOW", result.get("detail"))
         self.assertIs(result["disposition_committed_in_organization_ledger"], True)
         self.assertIs(result["master_records_organization_record_observed"], False)
@@ -715,7 +722,9 @@ class RetryAndLedgerRootTests(ConformanceIngressCase):
         with mock.patch.object(ingress, "ingress_transition_id",
                                lambda request, evaluation=None: first["organization_transition_id"]):
             refused = self.receive(manifest, packet_id="delivery-2")
-        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        # A colliding id is a defect of the submission: DENY, returned as stored.
+        self.assertEqual(refused["disposition"], "DENY")
+        self.assertEqual(refused["refusal_stored_disposition"], "DENY")
         self.assertEqual(refused["failed_predicate"], "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST")
         after = self.receipt_bytes(self.repo_root)
         self.assertTrue(set(repository_bytes.items()) <= set(after.items()))
@@ -791,7 +800,7 @@ class OutboxTests(ConformanceIngressCase):
         outbox = self.durable / "intr-outbox" / ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE
         outbox.mkdir(parents=True, exist_ok=True)
         event = {"schema": ingress.OUTBOX_EVENT_SCHEMA, "route": ingress.ROLE_CONFORMANCE_OUTBOX_ROUTE,
-                 "manifest": self.manifest(), "packet_id": name, **override}
+                 "manifest": self.manifest(), "packet_id": name, "hb_epoch": 4096, **override}
         (outbox / (name + ".json")).write_text(json.dumps(event))
         return outbox / (name + ".json")
 
@@ -878,10 +887,17 @@ class GitDeclaredOutboxTests(OutboxTests):
     with the git dir unset -- each one leaving a repository receipt and an
     ORGANIZATION_APPEND_NOT_COMMITTED partial -- and refused, for the wrong
     variable, when only the posix root was unset.
+
+    The repository ledger is the git subtree of that same organization ledger
+    ref (contract.json's ref and namespace), as the production writers supply
+    it: a POSIX repository root with a git organization ledger is a mixed pair,
+    refused CALLER_CHOSEN_SOURCE_LEDGER_REJECTED (MIXED_LEDGER_KIND_PAIR).
     """
 
     GIT_LOCUS = json.loads((ROOT / ".stegverse/transition-ledger/org-contract.json").read_text())[
         organization_ledger.LEDGER_LOCUS_KEY]
+    REPO_LOCATION = json.loads((ROOT / ".stegverse/transition-ledger/contract.json").read_text())[
+        "repository_ledger_location"]
 
     def setUp(self):
         super().setUp()
@@ -890,7 +906,10 @@ class GitDeclaredOutboxTests(OutboxTests):
         subprocess.run(["git", "init", "--bare", "-q", str(self.node)], check=True)
         for patch in (mock.patch.dict(organization_ledger.C,
                                       {organization_ledger.LEDGER_LOCUS_KEY: dict(self.GIT_LOCUS)}),
-                      mock.patch.dict(os.environ, {"STEGVERSE_ORG_LEDGER_GIT_DIR": str(self.node)})):
+                      mock.patch.dict(os.environ, {
+                          "STEGVERSE_ORG_LEDGER_GIT_DIR": str(self.node),
+                          "STEGVERSE_REPO_LEDGER_ROOT": "git+" + str(self.node) + "#" + self.REPO_LOCATION["ref"]
+                                                        + ":" + self.REPO_LOCATION["namespace"]})):
             patch.start()
             self.addCleanup(patch.stop)
         os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT")
@@ -954,7 +973,8 @@ class MainTests(ConformanceIngressCase):
         registry.write_text(json.dumps(REGISTRY))
         with mock.patch.dict(os.environ):
             os.environ.pop("STEGVERSE_REPO_LEDGER_ROOT")
-            code, printed = self.main("--manifest", str(manifest), "--registry", str(registry))
+            code, printed = self.main("--manifest", str(manifest), "--registry", str(registry),
+                                      "--hb-epoch", "4096")
         self.assertEqual(code, 1)
         self.assertEqual(printed["disposition"], "FAIL_CLOSED")
         self.assertEqual(printed["failed_predicate"], "ledger_location_required_from_materializer")

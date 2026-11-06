@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "DENY",
+ "failed_check": "PROTECTED_SURFACE_REACHED_ONLY_THROUGH_ITS_GATE",
+ "failure_class": {
+  "class": "B",
+  "reason": "TV/TVC's own store code (owner per Coordination: the GitHub Product lane); TVC's residual list now classes all 11 B behind two structural blockers it must build; revision 9 recorded C while the designation shape waited on the KV location, which cvk#263 has now settled"
+ },
+ "failure_code": "LADDER_ACCESS_PATH_BYPASSES_LAYER",
+ "goal": "KV-SKAP-VAULT-FUNCTIONAL-001",
+ "items": [
+  "SKAP_VAULT_REACHABLE_ONLY_FROM_INSIDE_KV"
+ ],
+ "next_attempt": "on the next push to StegVerse-Labs/TVC#541 (or the residual follow-up PRs it names)",
+ "owning_goal": "KV-SKAP-VAULT-FUNCTIONAL-001 (StegVerse-Labs/.github#3324)",
+ "owning_lane": "GitHub Product lane as TV/TVC owner (StegVerse-Labs/TVC; owner per Coordination, a claim); consuming lane: Lane D (KV and WorkSpace)",
+ "proposed_resolution": "(1) route the 5 residual Python files through skap_custody_chain or retire them, once the two structural blockers (custody-reference issuance, the in-KV SKAP Vault read client) exist, so no tracked non-test file names /var/lib/stegverse/skap (the units: LC-KV-22); (2) let DESIGNATIONS take KV's own recorded receipt chain (store KV_STORAGE_ENDPOINT, ref KV_INTR_ENDPOINT, as cvk#263 designates it) instead of the org ref (LC-KV-21); each refusal stays six-field; Lane D consumes only the continuity-vault-kit gates; no dependency was added",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "narrowed (revision 11, continuity-vault-kit#263 @bf684aad, TVC#541 @72decca1, TVC#540 @7802ddb3, TVC#542 @5b70bf01): 11 files to 3 - tools/coinbase_intr_execution_request_drain.py (2 lines), portfolio_request_drain.py (5), settlement_watch_drain.py (5) still name /var/lib/stegverse/skap; config/skap-resident-store-residuals.json: 2 structural blockers (TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT, SKAP_VAULT_INTR_READ_CLIENT_NOT_BOUND), 3 residuals, 29 routed (runs skap-resident-residuals-tvc541, tvc541-residual-units). GitHub Product reports 3 residual drains; agrees. re-pinned and narrowed (revision 10, continuity-vault-kit#263 @543e8c32, TVC#541 @f75e3e7c, TVC#540 @b0ba93e3, TVC#542 @4c2504da) to StegVerse-Labs/TVC#541 @f75e3e7c8115eb535a3b2d388b36c391c4fb38d1 (three residual commits after 63705c86; TVC main @c4845bea unchanged). Verified: the read-back of every custody receipt from a designated ledger and the six-field refusals hold (runs skap-custody-chain-probe-tvc541, tvc541-mint-both-tests). Remaining: (1) 11 tracked files still name /var/lib/stegverse/skap, down from 40 - 5 non-test Python files (tools/coinbase_intr_execution_request_drain.py, coinbase_intr_portfolio_request_drain.py, coinbase_intr_settlement_watch_drain.py; scripts/install_coinbase_intr_observe_service.py, install_coinbase_intr_portfolio_request_service.py) and 6 systemd units (LC-KV-22); config/skap-resident-store-residuals.json lists exactly 11, all class B, with structural blockers TVC_SKAP_CUSTODY_REFERENCE_ISSUANCE_NOT_PRESENT and SKAP_VAULT_INTR_READ_CLIENT_NOT_BOUND; the workflow assertion is gone (runs skap-resident-residuals-tvc541, tvc541-residual-units); the legacy data stays in place. (2) tools/kv_layer_ledger_readback.py:50 still sets ORG_LEDGER_REF = refs/stegverse/organization-ledger (run tvc541-build-chain-and-org-ref): the org-ref refusal GitHub Product promised for the next push has not landed; it is carried by LC-KV-21",
+ "retry_point": "StegVerse-Labs/TVC#541: tools/skap_custody_chain.py, tools/kv_layer_ledger_readback.py and config/skap-resident-store-residuals.json, then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-KV-07"
+}

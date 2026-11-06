@@ -15,7 +15,7 @@ class CheckinPredecessorReadbackTest(unittest.TestCase):
         generation = json.loads(REGISTRY.read_text())['generation']
         payload = {
             'task_id': task_id,
-            'caller_surface': 'AI_SESSION_GATE',
+            'caller_surface': 'INTERNAL_CANONICAL_WORK_BOOTSTRAP',
             'observed_registry_generation': generation,
             'checkin_context': {'session_id': session_id, 'actor_kind': 'CHATGPT_SESSION'},
         }

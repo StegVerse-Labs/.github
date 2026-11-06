@@ -29,7 +29,8 @@ def run_eval(payload: dict, strip_pytest: bool = False):
 
 def test_policy_surface_set_and_nonclaims():
     policy = json.loads(POLICY.read_text())
-    assert set(policy["admitted_production_caller_surfaces"]) == {"AI_SESSION_GATE", "INTERNAL_CANONICAL_WORK_BOOTSTRAP", "CI_PULL_REQUEST_COLLISION_VALIDATION"}
+    assert set(policy["admitted_production_caller_surfaces"]) == {"INTERNAL_CANONICAL_WORK_BOOTSTRAP", "CI_PULL_REQUEST_COLLISION_VALIDATION"}
+    assert "AI_SESSION_GATE" in policy["prohibited_caller_surfaces"]
     assert policy["missing_or_unknown_surface"] == "FAIL_CLOSED"
     assert policy["declaration_is_authentic_origin_attestation"] is False
     assert policy["runtime_external_ai_reachability_proven_absent"] is False

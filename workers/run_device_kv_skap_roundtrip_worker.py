@@ -158,8 +158,12 @@ def _execute_roundtrip() -> tuple[Path, dict[str, Any]]:
     gateway_sidecar = optional_path("STEGVERSE_DEVICE_KV_SKAP_GATEWAY_SIDECAR")
     tvc_drain_receipt = optional_path("STEGVERSE_DEVICE_KV_SKAP_TVC_DRAIN_RECEIPT")
     stegos_root = optional_path("STEGVERSE_STEGOS_ROOT")
+    # Ruling C (StegVerse-org/.github#167 c6393756343) C1/C2: the cvk layer-1 KV-access receipt of the DEVICE->KV hop
+    # and the layer-2 SKAP-access receipt chained to it; both are re-derived by the continuation.
+    kv_access_receipt = optional_path("STEGVERSE_DEVICE_KV_SKAP_KV_ACCESS_RECEIPT")
+    skap_access_receipt = optional_path("STEGVERSE_DEVICE_KV_SKAP_SKAP_ACCESS_RECEIPT")
 
-    continuation_inputs = [gateway_sidecar, tvc_drain_receipt, stegos_root]
+    continuation_inputs = [gateway_sidecar, tvc_drain_receipt, stegos_root, kv_access_receipt, skap_access_receipt]
     if any(continuation_inputs) and not all(continuation_inputs):
         raise SystemExit("DEVICE_KV_SKAP_ROUNDTRIP_FAIL:incomplete_tvc_continuation_inputs")
 
@@ -170,6 +174,8 @@ def _execute_roundtrip() -> tuple[Path, dict[str, Any]]:
             stegos_root=stegos_root,
             gateway_sidecar_path=gateway_sidecar,
             tvc_drain_receipt_path=tvc_drain_receipt,
+            kv_access_receipt_path=kv_access_receipt,
+            skap_access_receipt_path=skap_access_receipt,
         )
         if result.get("state") != "DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED":
             raise SystemExit("DEVICE_KV_SKAP_ROUNDTRIP_FAIL:continuation_not_verified")

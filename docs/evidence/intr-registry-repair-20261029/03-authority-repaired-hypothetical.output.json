@@ -1,0 +1,23 @@
+{
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "clock_read": false,
+  "consequence_committed": false,
+  "detail": "no exact_metrics declared and data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json records no valid task.v1 vector (None)",
+  "disposition": "FAIL_CLOSED",
+  "execution_authority_minted": false,
+  "failed_predicate": "COSV_NOT_DERIVABLE",
+  "failure_code": "COSV_NOT_DERIVABLE",
+  "intr_admission_minted": false,
+  "mode": "plan",
+  "next_attempt": "on the next registration request event after the repair is recorded",
+  "organization_ledger_appended": false,
+  "organization_ledger_entrypoint": ".stegverse/transition-ledger/emit.py via .github/workflows/organization-ledger-transition.yml",
+  "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "request_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.existing-identity.gen322.diagnostic",
+  "request_sha256": "sha256:8936092d50f43d1b155ca6b55291746438c9b599de757de8131560d2ddfdea9f",
+  "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS); no vector is assigned by hand",
+  "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan",
+  "schema": "stegverse.canonical-task-registration-transition-receipt/v1",
+  "transition": "CANONICAL_TASK_REGISTRATION",
+  "workercoordinator_claim_or_fence_minted": false
+}

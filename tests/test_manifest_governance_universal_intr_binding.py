@@ -188,7 +188,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td, \
              patch.object(mod, "_run_governance_owner", return_value=governance), \
              patch.object(mod, "_custody_transition", side_effect=custody_rows()):
-            result = mod.execute(Path(td), request, transport=self.transport())
+            result = mod.execute(Path(td), request, transport=self.transport(), hb_epoch=4096)
         self.assertEqual(result["disposition"], "ALLOW")
         self.assertEqual(result["subject_or_correlation_id"], GOAL)
         self.assertTrue(result["organization_records_before_master_records"])
@@ -217,7 +217,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td, \
              patch.object(mod, "_run_governance_owner", return_value=governance), \
              patch.object(mod, "_custody_transition", side_effect=custody_rows()):
-            result = mod.execute(Path(td), request, transport=self.transport())
+            result = mod.execute(Path(td), request, transport=self.transport(), hb_epoch=4096)
         self.assertEqual(result["disposition"], "DENY")
         self.assertTrue(result["terminal"])
         self.assertTrue(result["organization_master_records_organization_record_observed"])
@@ -227,7 +227,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td, \
              patch.object(mod, "_run_governance_owner", side_effect=RuntimeError("source roots not bound")), \
              patch.object(mod, "_custody_transition", side_effect=custody_rows()):
-            result = mod.execute(Path(td), request, transport=self.transport())
+            result = mod.execute(Path(td), request, transport=self.transport(), hb_epoch=4096)
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
         self.assertEqual(result["reason_code"], "CANONICAL_GOVERNANCE_OWNER_EXECUTION_FAILED")
         self.assertEqual(
@@ -275,7 +275,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
                  "_load_organization_append_owner",
                  return_value=SimpleNamespace(aggregate_transition=aggregate),
              ):
-            result = mod.execute(Path(td), request, transport=self.transport())
+            result = mod.execute(Path(td), request, transport=self.transport(), hb_epoch=4096)
 
         self.assertEqual(result["disposition"], "ALLOW")
         action = result["manifest_directed_action"]
@@ -311,7 +311,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
              patch.object(mod, "_run_governance_owner", return_value=governance), \
              patch.object(mod, "_custody_transition", side_effect=custody_rows()), \
              patch.object(mod, "_load_organization_append_owner") as owner:
-            result = mod.execute(Path(td), request, transport=self.transport())
+            result = mod.execute(Path(td), request, transport=self.transport(), hb_epoch=4096)
         self.assertEqual(result["disposition"], "DENY")
         self.assertNotIn("manifest_directed_action", result)
         owner.assert_not_called()
@@ -339,7 +339,7 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
                  "_load_organization_append_owner",
                  return_value=SimpleNamespace(aggregate_transition=fail),
              ):
-            result = mod.execute(Path(td), request, transport=self.transport())
+            result = mod.execute(Path(td), request, transport=self.transport(), hb_epoch=4096)
 
         self.assertEqual(result["disposition"], "ALLOW")
         action = result["manifest_directed_action"]
@@ -359,12 +359,12 @@ class GovernanceUniversalInTrBindingTests(unittest.TestCase):
         request = governance_request()
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaisesRegex(ValueError, "AUTHENTIC_INTR_TRANSPORT_EVIDENCE_REQUIRED"):
-                mod.execute(Path(td), request)
+                mod.execute(Path(td), request, hb_epoch=4096)
             with self.assertRaisesRegex(ValueError, "CANONICAL_GOVERNANCE_REQUIRES_TVC_RELAY_EGRESS"):
                 mod.execute(
                     Path(td),
                     request,
-                    transport={"origin": "STEGOS_NODE_OUTBOX", "authorization_id": None},
+                    transport={"origin": "STEGOS_NODE_OUTBOX", "authorization_id": None}, hb_epoch=4096,
                 )
 
 

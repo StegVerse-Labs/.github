@@ -8,9 +8,12 @@ validator and packet release are the production code.
 """
 from __future__ import annotations
 
+from tests.ledgered_org_receipt import ledger_env
+
 import copy
 import importlib
 import json
+import inspect
 import os
 from pathlib import Path
 import re
@@ -105,9 +108,19 @@ def _plain_request() -> dict:
     return request
 
 
+#: The submitted manifest. It declares its egress, as every crossable manifest
+#: does, so the payload the crossing carries can be recomputed from it.
+MANIFEST = {"processing": {"capability": "records"}, "completion": {"egress": {
+    "final_stegverse_transition_surface": "sdk-manifest-ingress",
+    "transport": "INTERLOCK_INTR", "far_side_transition_required": True}}}
+
+
 def _crossing(seed: str) -> dict:
+    # Bound to the delivered manifest by the crossing's own payload definition.
+    payload = ingress.crossing_module.crossing_payload(
+        MANIFEST, ingress.crossing_module.declared_destination(MANIFEST))
     base = {"packet_id": "ingress-" + seed, "service_id": "records-service",
-            "payload_hash": "sha256:" + "c" * 64}
+            "payload_hash": ingress.crossing_module.sha(payload)}
     receipts, previous = [], None
     for kind in ("INGRESS_ADMITTED", "PROCESSED"):
         digest = ingress.sha({**base, "kind": kind, "previous_receipt_id": previous})
@@ -118,6 +131,7 @@ def _crossing(seed: str) -> dict:
     return {"crossing_completed": True, "ingress_packet_id": base["packet_id"],
             "egress_packet_id": "egress-" + seed, "resolved_service_id": base["service_id"],
             "payload_hash": base["payload_hash"], "boundary_receipts": receipts,
+            "manifest_sha256": payload["manifest_sha256"],
             "terminal_receipt_id": previous, "application_result": None}
 
 
@@ -140,12 +154,12 @@ class LedgerRoots(unittest.TestCase):
         self._env.stop()
         self._temp.cleanup()
 
-    def receive(self, request: dict, *, hb_epoch=None, seed="0"):
+    def receive(self, request: dict, *, hb_epoch=4096, seed="0"):
         cross = mock.MagicMock(return_value=_crossing(seed))
         with mock.patch.object(ingress, "derive_execution_request", return_value=request), \
              mock.patch.object(ingress.crossing_module, "cross", cross), \
              mock.patch.object(ingress, "admit_runtime_result", return_value={"admitted": True}):
-            result = ingress.receive({"processing": {"capability": "records"}}, registry={},
+            result = ingress.receive(copy.deepcopy(MANIFEST), registry={},
                                      hb_epoch=hb_epoch)
         return result, cross
 
@@ -197,9 +211,15 @@ class ParentManifestApplicabilityTest(LedgerRoots):
 
     def _assert_refused_before_any_admission_write(self, request, code):
         result, cross = self.receive(request)
-        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        # An invalid declared parent manifest is a defect of the submission:
+        # DENY, returned as stored (REFUSAL_DISPOSITIONS).
+        self.assertEqual(result["disposition"], "DENY")
+        self.assertEqual(result["refusal_stored_disposition"], "DENY")
         self.assertEqual(result["failed_predicate"], ingress.PARENT_MANIFEST_INVALID_PREDICATE)
         self.assertEqual(result["failure_code"], code)
+        # Looked up under the owner's code the refusal returns, not the generic one.
+        self.assertEqual(ingress.refusal_disposition(code, ingress.PARENT_MANIFEST_INVALID_PREDICATE),
+                         result["disposition"])
         self.assertTrue(result["refusal_recorded"])
         cross.assert_not_called()
         # Only the refusal itself is recorded: no admission receipt at either level.
@@ -235,6 +255,30 @@ class ParentManifestApplicabilityTest(LedgerRoots):
         request = _ingress_request(organization_batch_governance_request())
         request["canonical_manifest"]["extensions"]["stegverse_canonical_task"]["cosv_task_vector"] = "1" * 14
         self._assert_refused_before_any_admission_write(request, "ORGANIZATION_BATCH_COSV_MISMATCH")
+
+    def test_every_owner_code_has_its_own_deny_row(self):
+        """The parent-manifest owner's codes and the table's rows are the same set."""
+        source = inspect.getsource(batch_custody.organization_batch_parent_manifest)
+        raised = set(re.findall(r'"(ORGANIZATION_BATCH_[A-Z_]+)"\)', source))
+        self.assertEqual(raised, set(ingress.PARENT_MANIFEST_OWNER_CODES))
+        for code in raised:
+            self.assertEqual(ingress.REFUSAL_DISPOSITIONS[(code, ingress.PARENT_MANIFEST_INVALID_PREDICATE)],
+                             "DENY", code)
+        self.assertNotIn((ingress.REFUSED_CLASS, ingress.PARENT_MANIFEST_INVALID_PREDICATE),
+                         ingress.REFUSAL_DISPOSITIONS)
+
+    def test_an_owner_code_without_a_row_is_refusal_disposition_not_declared(self):
+        request = _ingress_request(organization_batch_governance_request())
+        request["canonical_manifest"]["extensions"]["stegverse_canonical_task"]["task_id"] = "OTHER-TASK-001"
+        with mock.patch.object(ingress, "PARENT_MANIFEST_OWNER_CODES", ()), \
+             mock.patch.dict(ingress.REFUSAL_DISPOSITIONS):
+            del ingress.REFUSAL_DISPOSITIONS[("ORGANIZATION_BATCH_TASK_ID_MISMATCH",
+                                              ingress.PARENT_MANIFEST_INVALID_PREDICATE)]
+            result, _ = self.receive(request)
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["failure_code"], "REFUSAL_DISPOSITION_NOT_DECLARED")
+        self.assertEqual(result["undeclared_refusal_failure_code"], "ORGANIZATION_BATCH_TASK_ID_MISMATCH")
+        self.assertEqual(result["refusal_stored_disposition"], "FAIL_CLOSED")
 
     def test_worker_and_ingress_share_one_validator_and_its_constants(self):
         request = organization_batch_governance_request()
@@ -317,7 +361,7 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
             for request in requests:
                 with tempfile.TemporaryDirectory() as runtime, \
                      mock.patch.object(worker, "_custody_transition", side_effect=custody_rows()):
-                    result = worker.execute(Path(runtime), request, transport=transport)
+                    result = worker.execute(Path(runtime), request, transport=transport, hb_epoch=4096)
                 action = result["manifest_directed_action"]
                 self.assertEqual(action["execution_result"], "COMPLETED", action)
                 released.append(action["released_batch"])
@@ -345,7 +389,7 @@ class PacketReleaseEquivalenceTest(unittest.TestCase):
                                        return_value=_ingress_request(request)), \
                      mock.patch.object(ingress.crossing_module, "cross",
                                        return_value=_crossing(str(index))):
-                    result = ingress.receive({"n": index}, registry={})
+                    result = ingress.receive(copy.deepcopy(MANIFEST), registry={}, hb_epoch=4096)
                 self.assertEqual(result["disposition"], "ALLOW", result)
                 row = json.loads((root / "receipts" / (
                     result["organization_receipt_sha256"].split(":", 1)[1] + ".json")).read_text())
@@ -501,15 +545,16 @@ class HeartbeatReferenceTest(LedgerRoots):
         self.assertEqual(org["hb_reference"]["epoch"], 4243)
 
     def test_absent_epoch_is_derived_and_shared(self):
-        """Absent, the repository receipt derives the epoch and says so; the
-        organization receipt consuming it carries that same epoch."""
-        result, _ = self.receive(_plain_request())
-        repo = self.repo_receipt(result["repository_receipt_sha256"])["hb_reference"]
-        org = self.org_receipt(result["organization_receipt_sha256"])["hb_reference"]
-        self.assertIs(repo["derived_from_clock"], True)
-        self.assertEqual(org["epoch"], repo["epoch"])
-        self.assertEqual(kernel.validate_hb_reference(repo), repo)
-        self.assertEqual(kernel.validate_hb_reference(org), org)
+        """Base name kept (ratchet); absent epoch is refused six-field, nothing appended (B-P31)."""
+        result, cross = self.receive(_plain_request(), hb_epoch=None)
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
+        self.assertIs(result["refusal_recorded"], False)
+        for field in ("failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(result[field], field)
+        cross.assert_not_called()
+        self.assertFalse((self.org_root / "receipts").exists())
 
     def test_invalid_reference_is_rejected_by_the_kernel(self):
         result, _ = self.receive(_plain_request(), hb_epoch=4244)
@@ -530,7 +575,7 @@ class HeartbeatReferenceTest(LedgerRoots):
         source = self._canonical_source("EXACT-RETRY")
         first = organization_ledger.aggregate_transition(source, hb_epoch=5000)
         again = organization_ledger.aggregate_transition(source, hb_epoch=5001)
-        derived = organization_ledger.aggregate_transition(source)
+        derived = organization_ledger.aggregate_transition(source, hb_epoch=4096)
         self.assertEqual(first, again)
         self.assertEqual(first, derived)
         self.assertEqual(again["hb_reference"]["epoch"], 5000)
@@ -538,7 +583,7 @@ class HeartbeatReferenceTest(LedgerRoots):
 
     def _historical(self, source: dict) -> dict:
         """A v1 receipt as written before receipts carried `hb_reference`."""
-        current = organization_ledger.aggregate_transition(source)
+        current = organization_ledger.aggregate_transition(source, hb_epoch=4096)
         body = {k: v for k, v in current.items() if k not in ("receipt_sha256", "hb_reference")}
         historical = {**body, "receipt_sha256": organization_ledger.sha(body)}
         (self.org_root / "receipts" / (current["receipt_sha256"][7:] + ".json")).unlink()
@@ -570,21 +615,8 @@ class HeartbeatReferenceTest(LedgerRoots):
         self.assertEqual(batch_custody._verified_receipt(self.org_root, historical["receipt_sha256"]),
                          historical)
 
-        # Consumer: workers/canonical_state_transition_custody (exact source reuse).
-        from workers import canonical_state_transition_custody as custody
-        recorded = custody._record_organization_transition(self._canonical_source("CUSTODY"))
-        self.assertEqual(recorded["state"], "RECORDED", recorded)
-        row = recorded["organization_receipt"]
-        body = {k: v for k, v in row.items() if k not in ("receipt_sha256", "hb_reference")}
-        legacy = {**body, "receipt_sha256": organization_ledger.sha(body)}
-        (self.org_root / "receipts" / (row["receipt_sha256"][7:] + ".json")).unlink()
-        (self.org_root / "receipts" / (legacy["receipt_sha256"][7:] + ".json")).write_text(
-            json.dumps(legacy, indent=2, sort_keys=True) + "\n")
-        again = custody._record_organization_transition(self._canonical_source("CUSTODY"))
-        self.assertEqual(again["state"], "RECORDED", again)
-        self.assertEqual(again["organization_receipt"], legacy)
-
-        # Consumer: resident-runtime/submit_org_transition_to_master_records.py.
+        # Consumer: resident-runtime/submit_org_transition_to_master_records.py, while the chain
+        # from HEAD is intact (row 4: it publishes only a receipt reachable from HEAD).
         receipt_path = Path(self._temp.name) / "historical.json"
         receipt_path.write_text(json.dumps(historical))
         standing = Path(self._temp.name) / "standing.json"
@@ -596,9 +628,25 @@ class HeartbeatReferenceTest(LedgerRoots):
              "--predecessor-ecosystem-state-sha256", "sha256:" + "a" * 64,
              "--successor-ecosystem-state-sha256", "sha256:" + "b" * 64,
              "--standing", str(standing), "--mesh-root", str(Path(self._temp.name) / "mesh")],
-            capture_output=True, text=True, timeout=60)
-        self.assertEqual(completed.returncode, 0, completed.stderr)
+            # The ledger the historical receipt is on (row 4: only its own receipt is published).
+            capture_output=True, text=True, timeout=60, env=ledger_env(dict(os.environ), self.org_root))
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         self.assertEqual(json.loads(completed.stdout)["status"], "PUBLISHED_FOR_ORGANIZATION_RECORD")
+
+        # Consumer: workers/canonical_state_transition_custody (exact source reuse).
+        from workers import canonical_state_transition_custody as custody
+        recorded = custody._record_organization_transition(self._canonical_source("CUSTODY"), hb_epoch=4096)
+        self.assertEqual(recorded["state"], "RECORDED", recorded)
+        row = recorded["organization_receipt"]
+        body = {k: v for k, v in row.items() if k not in ("receipt_sha256", "hb_reference")}
+        legacy = {**body, "receipt_sha256": organization_ledger.sha(body)}
+        (self.org_root / "receipts" / (row["receipt_sha256"][7:] + ".json")).unlink()
+        (self.org_root / "receipts" / (legacy["receipt_sha256"][7:] + ".json")).write_text(
+            json.dumps(legacy, indent=2, sort_keys=True) + "\n")
+        again = custody._record_organization_transition(self._canonical_source("CUSTODY"), hb_epoch=4096)
+        self.assertEqual(again["state"], "RECORDED", again)
+        self.assertEqual(again["organization_receipt"], legacy)
+
 
 
 class PartialCommitTest(LedgerRoots):
@@ -678,6 +726,83 @@ class PartialCommitTest(LedgerRoots):
         self.assertEqual(result["refusal_failed_predicate"],
                          "ORGANIZATION_RESOLVES_ITS_OWN_INGRESS_DESTINATION")
         self.assertIs(result["refusal_recorded"], False)
+        self.assertEqual(result["refusal_stored_disposition"], result["disposition"])
+
+    def test_not_committed_refusal_stores_the_disposition_it_returns(self):
+        """A DENY refusal whose organization append raises returns FAIL_CLOSED
+        APPEND_NOT_COMMITTED, and that is the disposition stored for the attempt."""
+        request = _ingress_request(organization_batch_governance_request())
+        request["canonical_manifest"]["extensions"]["stegverse_canonical_task"]["task_id"] = "OTHER-TASK-001"
+        with mock.patch.object(organization_ledger, "aggregate_transition",
+                               side_effect=RuntimeError("injected")):
+            result, cross = self.receive(request, hb_epoch=7005)
+        cross.assert_not_called()
+        self._assert_typed(result)
+        # The refusal's own table row is DENY; this attempt did not commit it.
+        self.assertEqual(result["refusal_underlying_disposition"], "DENY")
+        self.assertEqual(result["refusal_failed_predicate"], ingress.PARENT_MANIFEST_INVALID_PREDICATE)
+        self.assertIs(result["refusal_recorded"], False)
+        # Stored == returned, read back from the repository ledger itself.
+        self.assertEqual(result["refusal_stored_disposition"], "FAIL_CLOSED")
+        self.assertEqual(result["refusal_stored_disposition"], result["disposition"])
+        self.assertIs(result["not_committed_recorded"], True)
+        stored = self.repo_receipt(result["not_committed_repository_receipt_sha256"])
+        body = {k: v for k, v in stored.items() if k != "receipt_sha256"}
+        self.assertEqual(repository_ledger.sha(body), result["not_committed_repository_receipt_sha256"])
+        self.assertEqual(stored["transition_class"], ingress.REFUSED_CLASS)
+        self.assertEqual(stored["transition_id"], result["not_committed_transition_id"])
+        self.assertEqual(stored["hb_reference"]["epoch"], 7005)
+        evidence = stored["evidence"]
+        self.assertEqual(evidence["disposition"], result["disposition"])
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                      "retry_entrypoint", "owning_existing_goal", "next_attempt"):
+            self.assertEqual(evidence[field], result[field], field)
+        self.assertEqual(ingress.refusal_disposition(evidence["failure_code"], evidence["failed_predicate"]),
+                         evidence["disposition"])
+        self.assertEqual(evidence["refusal_transition_id"], result["refusal_transition_id"])
+        self.assertEqual(evidence["refusal_disposition"], "DENY")
+        self.assertEqual(self.org_receipts(), [])
+
+        # The same fault again returns the stored record rather than a second one.
+        with mock.patch.object(organization_ledger, "aggregate_transition",
+                               side_effect=RuntimeError("injected")):
+            again, _ = self.receive(request, hb_epoch=7005)
+        self.assertEqual(again["not_committed_repository_receipt_sha256"],
+                         result["not_committed_repository_receipt_sha256"])
+        self.assertEqual(again["refusal_stored_disposition"], again["disposition"])
+
+        # The resubmission completes the refusal's own record at both levels,
+        # DENY returned as stored; the not-committed record stays as history.
+        retried, _ = self.receive(request, hb_epoch=7006)
+        self.assertEqual(retried["disposition"], "DENY")
+        self.assertEqual(retried["refusal_stored_disposition"], "DENY")
+        self.assertIs(retried["refusal_recorded"], True)
+        self.assertEqual(retried["refusal_transition_id"], result["refusal_transition_id"])
+        receipts = self.org_receipts()
+        self.assertEqual(len(receipts), 1)
+        self.assertEqual(self.repo_receipt(receipts[0]["repo_receipt_sha256"])["transition_id"],
+                         result["refusal_transition_id"])
+
+
+class SdkRuntimeResultRefusalTest(LedgerRoots):
+    def test_an_sdk_refused_runtime_result_is_fail_closed_with_six_fields(self):
+        """(SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT, SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT) = FAIL_CLOSED."""
+        # The mocked crossing's payload is not one recomputed from this stub manifest, so the
+        # payload binding guard (Labs#3441) is held out here: this test isolates the SDK's refusal.
+        cross = mock.MagicMock(return_value=_crossing("sdk-refused"))
+        with mock.patch.object(ingress, "derive_execution_request", return_value=_plain_request()), \
+             mock.patch.object(ingress.crossing_module, "cross", cross), \
+             mock.patch.object(ingress, "payload_binding_failure", return_value=None), \
+             mock.patch.object(ingress, "admit_runtime_result",
+                               side_effect=ValueError("SDK_RESULT_NOT_ADMITTED_FOR_TEST")):
+            result = ingress.receive({"processing": {"capability": "records"}}, registry={}, hb_epoch=7100)
+        pair = ("SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT", "SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT")
+        self.assertEqual(ingress.REFUSAL_DISPOSITIONS[pair], "FAIL_CLOSED")
+        self.assertEqual((result["failure_code"], result["failed_predicate"]), pair, result.get("detail"))
+        self.assertEqual(result["disposition"], "FAIL_CLOSED")
+        for field in ingress.SIX_FIELDS:
+            self.assertTrue(result.get(field), field)
+        self.assertIn("SDK_RESULT_NOT_ADMITTED_FOR_TEST", result["required_evidence_or_repair"])
 
 
 class AppendOwnerGuardTest(unittest.TestCase):

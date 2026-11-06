@@ -240,7 +240,7 @@ def claim_fence_row(monkeypatch, tmp_path):
         transition_id="WORKERCOORDINATOR_CLAIM_FENCE_BOUND", transition_sequence=1,
         subject_or_correlation_id="SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
         transition_outcome="OBSERVED", prior_state_ref_or_hash=None, resulting_state_ref_or_hash=None,
-        governance_decision_ref_where_applicable=None, transition_evidence={"fencing_token": 42}))
+        governance_decision_ref_where_applicable=None, transition_evidence={"fencing_token": 42}), hb_epoch=4096)
     organization = result["organization_receipt"]
     # Shape WorkerCoordinator._custody_assignment_transition projects.
     return {

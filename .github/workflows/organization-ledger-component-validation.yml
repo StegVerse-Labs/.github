@@ -4,6 +4,8 @@ name: Validate Organization Ledger Component
 # Validation only: it appends nothing to any ledger and dispatches nothing.
 # CI passing is not runtime ALLOW; runtime counts only when a manifest-directed
 # transition appends a receipt to refs/stegverse/organization-ledger.
+# Triggered only by state transitions (C1, ACTIONS_BY_MANIFEST_STATE_TRANSITION_TRIGGER_ONLY): a pull request or a
+# main push that changes the component, its manifest or the kernel. No workflow_dispatch, no schedule, no polling.
 
 on:
   pull_request:
@@ -22,7 +24,6 @@ on:
       - 'data/reusable-task-components/RTC-EVIDENCE-CUSTODY-004.json'
       - '.github/workflows/organization-ledger-transition-reusable.yml'
       - '.github/workflows/organization-ledger-component-validation.yml'
-  workflow_dispatch:
 
 permissions:
   contents: read

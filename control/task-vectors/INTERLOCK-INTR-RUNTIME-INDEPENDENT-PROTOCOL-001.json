@@ -1,7 +1,44 @@
 {
-  "schema": "stegverse.task-vector/v1",
-  "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
-  "cosv": "50000000102000",
-  "coordination_state": "ACTIVE",
+  "identity": "StegVerse-Labs/.github:task:INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json",
+    "docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2897",
+    "StegVerse-Labs/.github#3195",
+    "StegVerse-Labs/.github#3409"
+  ],
+  "observed_at": "2026-10-29T20:10:00Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "the record's coordination_state is ACTIVE and its worker_claim is projection-only (claim_ref and fence_ref null); the value MACHINE_OWNED is the row's declared vector (the same value the record, registry row and Labs#3195 ruling carry), recorded here without asserting a WorkerCoordinator claim or fence",
+    "archive_ready": "completion.claimed and completion.validated are false",
+    "unassigned_work": "the handoff's existing-owner actions are each assigned to an existing owning goal or issue (Org #162, Registry #3195, TVC #488)",
+    "chat_owned_counts": "no chat-owned work item is recorded; the handoff keeps the work in repository, issue and registry surfaces",
+    "canonical_owner_installed": "the canonical task record, the handoff, the protocol schema and scripts/verify_interlock_intr_runtime_independent_protocol.py are installed",
+    "thread_required": "the handoff and the canonical record carry the state, so no chat history is required",
+    "blocker_count": "two open six-field items are recorded in the handoff: TVC_HOP_WARRANT_ISSUANCE_PATH_ABSENT (TVC#488) and the declared-successor ratification under Org #162; the 44 UNREACHABLE hops are not counted as blockers, as the handoff states",
+    "evidence_complete": "completion.validated is false and the 156-path replay is historical public verification only",
+    "activated": "no activation proof is recorded; completion.claimed is false",
+    "propagated": "no propagation is recorded; mutation_required and deployment_required are false"
+  },
   "authority_effect": "NONE"
 }

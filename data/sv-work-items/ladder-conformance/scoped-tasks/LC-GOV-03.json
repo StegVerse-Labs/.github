@@ -1,0 +1,24 @@
+{
+ "authority_effect": "NONE_SCOPED_TASK_RECORD_ONLY: no GitHub issue opened; no file of the owning lane edited",
+ "disposition": "FAIL_CLOSED",
+ "failed_check": "ALLOW_REACHABLE_AT_E0_WITHOUT_CODE_EDIT",
+ "failure_class": {
+  "class": "A",
+  "reason": "a repair inside the item's own surface: the finish-point workflow reads its ref from the TV/TVC release receipt"
+ },
+ "failure_code": "LADDER_ALLOW_PATH_UNBOUND",
+ "goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001",
+ "items": [
+  "H-GOV-VERIFIER-REF-BINDING"
+ ],
+ "next_attempt": "on the next push to grok/lane-c-sdk-governance-product-finish-point (StegVerse-SDK#556, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
+ "owning_goal": "GITHUB-UNIVERSAL-GOVERNANCE-PRODUCT-001 (StegVerse-org/.github#164; StegVerse-Labs/.github#3326, superseded by #3358 (57341242) / SDK#567 (6b3ccee2))",
+ "owning_lane": "GitHub Product lane (Lane C)",
+ "proposed_resolution": "have the finish-point workflow read the release receipt (tag, commit) as its input and fail closed with six fields when the receipt is absent or the commit differs",
+ "raised_by": "P1 Ecosystem AI Lane (StegVerse-org/.github#163) ladder-conformance check",
+ "required_repair": "the finish-point run must take its ref from the TV/TVC release receipt rather than the PR head or github.sha",
+ "retry_point": "python -m unittest tests.test_governance_product_finish_point (StegVerse-org/StegVerse-SDK), then python scripts/ladder_conformance.py observe/check (StegVerse-Labs/.github)",
+ "schema": "stegverse.ladder-conformance-scoped-task/v1",
+ "status": "SCOPED_TASK_RECORD_ONLY",
+ "task_id": "LC-GOV-03"
+}

@@ -79,7 +79,8 @@
     "transport_protocol": "INTERLOCK_INTR",
     "participating_runtime_authority": "LOCAL_TO_EACH_FRAMEWORK",
     "stegverse_output_governance": "STEGVERSE",
-    "external_framework_governance": "NOT_ASSUMED"
+    "external_framework_governance": "NOT_ASSUMED",
+    "task_registry_mints_execution_authority": false
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
@@ -133,5 +134,7 @@
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
-  }
+  },
+  "cosv_task_vector": "50000000102000",
+  "source_state_vector_ref": "control/task-vectors/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json"
 }

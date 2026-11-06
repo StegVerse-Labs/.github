@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.goal-scope-seal/v1",
+  "task_id": "REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001",
+  "scope": {
+    "goal": "Publish one REAL, source-reconstructable, independently reviewed sample governance assessment (StegVerse-Labs/.github#3393, workstreams #3394-#3399; parent product coordination #3183 and first paid assessment #3370): a retained public-source evidence-first assessment with the five assessment artifacts, an exact-source evidence register and candidate register, a downloadable accessible report, and a documented reviewer disposition, reusing the existing ERL source-acquisition owners (Executive_Rhetoric_Ledger#6/#18/#51/#132, automation owner #245) and the existing Site publication owner. Not a synthetic, mock or customer-implied sample; no customer engagement, pricing, payment or invoice, no partisan, motive or legal finding, no second crawler; public release only after source-use disposition, independent review and scoped publication authority; no daily-cadence claim without dated receipts across independently observed cycles.",
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger",
+        "StegVerse-Labs/Site"
+      ],
+      "components": [
+        "real-assessment-report-revision-2",
+        "real-assessment-evidence-register",
+        "real-assessment-public-rendering",
+        "real-assessment-mirror-handoff"
+      ]
+    },
+    "expected_evidence_predicates": [
+      "REAL_ASSESSMENT_SOURCE_USE_DISPOSITION_RECORDED",
+      "REAL_ASSESSMENT_EXACT_DIGEST_INDEPENDENT_REVIEW_ACCEPTED_BY_OWNER",
+      "REAL_ASSESSMENT_ERL_245_RUNNER_EXACT_HEAD_CI_AND_ATTEMPT_READBACK",
+      "REAL_ASSESSMENT_SITE_PUBLICATION_AUTHORIZED_AND_URL_DOWNLOAD_DIGEST_READBACK",
+      "REAL_ASSESSMENT_MIRROR_HANDOFF_AND_README_INTEGRATED"
+    ],
+    "finish_point": {
+      "acceptance_test": "The public sample report URL and its downloadable PDF serve bytes whose SHA-256 equal the digests recorded in the #3396 revision-2 report and the #3398 rendering manifest; the #3397 owner review accepts that exact digest; the #3394/#3370 source-use disposition names each source's reuse condition; and the ERL#245 runner repair is merged at its reviewed head with a retained actual-attempt artifact",
+      "predicate": "REAL_ASSESSMENT_PUBLIC_REPORT_BYTES_SERVED_REVIEWED_AND_SOURCE_USE_DISPOSED",
+      "verifier_entrypoint": "StegVerse-Labs/.github#3397 reviewer disposition against report digest 983718840ddcd81e0ea298d01359dfa195e0e94cc5580373ffbc505a72cef3b0 and corrected package digest a477580372ba516e3c0bd7164888845c16edc7c1422ad292911d538b5264427f; Site owner readback of the published URL per #3398",
+      "lowest_supported_mode": "E0"
+    }
+  },
+  "scope_digest": "sha256:9c09847bad513c25f9d91b47a8cb89cde42cd1400c869ca0b44cc294f0176c69",
+  "supersedes_scope_digest": null,
+  "authority_effect": "NONE_SCOPE_SEAL_ONLY"
+}

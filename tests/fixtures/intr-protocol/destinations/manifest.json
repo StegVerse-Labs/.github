@@ -26,7 +26,7 @@
       "interlock": {
         "file": "StegVerse-Labs.interlock-intr.json",
         "source_path": "org-runtime/interlock-intr.json",
-        "sha256": "sha256:6c94383c34865dc92dee3a9e724223de3c434a95180b4a27e26ebc396026eca3"
+        "sha256": "sha256:2630666b69a1d70dca4ab999e9b96a897fc77978d02c50eed7db5034fc0dd933"
       },
       "services": {
         "file": "StegVerse-Labs.services.json",
@@ -124,6 +124,129 @@
         "source_path": "org-boundary/registry/services.json",
         "sha256": "sha256:8ee45f4581907f1f1305022bb6cbf74225d827c9aca01c0c5c50aa35711a7e74"
       }
+    },
+    {
+      "organization": "AaCT-E",
+      "repository": "AaCT-E/.github",
+      "source_commit": "b71fce2d6401943161257171ed0217915ca770b3",
+      "interlock": {
+        "file": "AaCT-E.interlock-intr.json",
+        "source_path": "org-runtime/interlock-intr.json",
+        "sha256": "sha256:69293ee2194f8ba0d97478948311c958fab7ab5e1c85097a3d3c1cc756883626"
+      },
+      "services": {
+        "file": "AaCT-E.services.json",
+        "source_path": "org-boundary/registry/services.json",
+        "sha256": "sha256:f367fe40e2ced9b6e46f38162a103fc47804000172df02fdf4c52e808140ad77"
+      }
+    },
+    {
+      "organization": "AdmittedCode",
+      "repository": "AdmittedCode/.github",
+      "source_commit": "a64a956baf5c78769bbb8f69b428a36e9e7d92d9",
+      "interlock": {
+        "file": "AdmittedCode.interlock-intr.json",
+        "source_path": "org-runtime/interlock-intr.json",
+        "sha256": "sha256:c97f7c6fd722ee89900bd0601264420eb33241321e7ad3b6e5c1491b67052781"
+      },
+      "services": {
+        "file": "AdmittedCode.services.json",
+        "source_path": "org-boundary/registry/services.json",
+        "sha256": "sha256:a8e8eab5e843e16847088513da9ad97543349734723f2e6aeb2ad390b5ee178f"
+      }
+    },
+    {
+      "organization": "Data-Continuation",
+      "repository": "Data-Continuation/.github",
+      "source_commit": "ae0d8a134123d28523af90e6d855e456bcc145c1",
+      "interlock": {
+        "file": "Data-Continuation.interlock-intr.json",
+        "source_path": "org-runtime/interlock-intr.json",
+        "sha256": "sha256:f47d8ae9cab44fbb2fe5701b9f03a632afc4e6a8fd871c51310f72125237f59c"
+      },
+      "services": {
+        "file": "Data-Continuation.services.json",
+        "source_path": "org-boundary/registry/services.json",
+        "sha256": "sha256:5701696ea7b53dcc5ae57f48abe48a5f484be99bcbbf372b54c239ad9516af5f"
+      }
+    },
+    {
+      "organization": "ECAT-ICAT-Formal",
+      "repository": "ECAT-ICAT-Formal/.github",
+      "source_commit": "59b800504aac160a2fe69fe4fb48b7b2b6a6d5ab",
+      "interlock": {
+        "file": "ECAT-ICAT-Formal.interlock-intr.json",
+        "source_path": "org-runtime/interlock-intr.json",
+        "sha256": "sha256:a0c668722f5dad64a035f15a173a7b0e05b47e3a57ebe65544b53a1b9270e689"
+      },
+      "services": {
+        "file": "ECAT-ICAT-Formal.services.json",
+        "source_path": "org-boundary/registry/services.json",
+        "sha256": "sha256:a7f6fa3f7be7a59118696ee04697fb3145c87caec3f42df950c72dc54741e6a9"
+      }
+    },
+    {
+      "organization": "Triad-Test",
+      "repository": "Triad-Test/.github",
+      "source_commit": "2e8a289a59c99024c01f0db0de3fd2b277d4bc2f",
+      "interlock": {
+        "file": "Triad-Test.interlock-intr.json",
+        "source_path": "org-runtime/interlock-intr.json",
+        "sha256": "sha256:5e069853de9aee9b12a02e59ee301bf9db1f50b56803e258102c4c93e0df0ead"
+      },
+      "services": {
+        "file": "Triad-Test.services.json",
+        "source_path": "org-boundary/registry/services.json",
+        "sha256": "sha256:eb554ac4d0722a53deff2d1172b4af03369af9675f438f19d20bec8b0cb184d0"
+      }
+    },
+    {
+      "organization": "master-records",
+      "repository": "master-records/.github",
+      "source_commit": "e2db4e0d67188ae89201d27b1407da9aee043f11",
+      "interlock": {
+        "file": "master-records.interlock-intr.json",
+        "source_path": "org-runtime/interlock-intr.json",
+        "sha256": "sha256:9e8592c641e6d2dad8bd127b9b109bec406e71260031ae5956a25cd6b379fd12"
+      },
+      "services": {
+        "file": "master-records.services.json",
+        "source_path": "org-boundary/registry/services.json",
+        "sha256": "sha256:bbcaab1f76418eadc4218cedce4a110ec148a75153d1652f43b459d5af763f32"
+      },
+      "source_ref": "default branch (main) at source_commit (master-records/.github installed the receiving operation, ledger and intr-destination row; lane-b-91117956)"
+    },
+    {
+      "organization": "formalism-tests",
+      "repository": "formalism-tests/.github",
+      "source_commit": "b83f465cdb965cd161f7cd7e28938c8d1af2caf6",
+      "interlock": {
+        "file": "formalism-tests.interlock-intr.json",
+        "source_path": "org-runtime/interlock-intr.json",
+        "sha256": "sha256:06605c7d41629689591f8b538600549884a1b68baf98f7fd4b4d44d57b1515a8"
+      },
+      "services": {
+        "file": "formalism-tests.services.json",
+        "source_path": "org-boundary/registry/services.json",
+        "sha256": "sha256:e947d859cf0cb037729190a5f2a16e335e0258d4306bad03c83fe00087401a35"
+      },
+      "source_ref": "default branch (main) at source_commit (formalism-tests/.github installed the receiving operation, ledger and intr-destination row; lane-b-91117956)"
+    },
+    {
+      "organization": "Infrastructure-Continuity-Ventures",
+      "repository": "Infrastructure-Continuity-Ventures/.github",
+      "source_commit": "a6e89e25ac29a182841c307d41d5e798ab9b68a3",
+      "interlock": {
+        "file": "Infrastructure-Continuity-Ventures.interlock-intr.json",
+        "source_path": "org-runtime/interlock-intr.json",
+        "sha256": "sha256:6d816a4e75bb44d074a5a93b96eb3b17e25e39405724b3b7e188e24df3883ab8"
+      },
+      "services": {
+        "file": "Infrastructure-Continuity-Ventures.services.json",
+        "source_path": "org-boundary/registry/services.json",
+        "sha256": "sha256:e464497080dd64743299f008cfb7e279dc47e31c52ef04798935c3f6dacd1d0f"
+      },
+      "source_ref": "default branch (main) at source_commit (Infrastructure-Continuity-Ventures/.github installed the receiving operation, ledger and intr-destination row; lane-b-91117956)"
     }
   ]
 }

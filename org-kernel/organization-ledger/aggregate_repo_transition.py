@@ -173,7 +173,7 @@ def ledger_root():
 
 
 def load(path):
-    return json.loads(Path(path).read_text())
+    return common.loads_finite(Path(path).read_text(), RETRY)
 
 
 def verify_required_evidence(receipt):
@@ -332,6 +332,8 @@ def append(source_receipt, org_transition_class, predecessor_state, successor_st
            boundary_evidence, authority_effect, hb_epoch=None, store=None, idempotent=False):
     # Admission is decided before the append lock is taken; an inadmissible
     # source receipt never contends for the organization ledger.
+    common.reject_non_finite(boundary_evidence, RETRY, "boundary_evidence")  # D-11: before admission, epoch or any write
+    common.reject_non_finite(source_receipt, RETRY, "source_receipt")
     source = verify_source(source_receipt)
     if predecessor_state not in (FROM_HEAD, GENESIS):
         require_state_digest("predecessor_org_state_sha256", predecessor_state)
@@ -416,14 +418,14 @@ def main():
     source_path = args.transition_receipt or args.repo_receipt
     if not source_path:
         raise _refused("transition receipt required")
-    receipt = load(source_path)
-    default_class = ("REPO_STATE_PROPAGATION"
-                     if receipt.get("schema") == "stegverse.repo-transition-receipt/v1"
-                     else "ORGANIZATION_STATE_TRANSITION")
     try:
+        receipt = load(source_path)
+        default_class = ("REPO_STATE_PROPAGATION"
+                         if receipt.get("schema") == "stegverse.repo-transition-receipt/v1"
+                         else "ORGANIZATION_STATE_TRANSITION")
         result = append(receipt, args.org_transition_class or default_class,
                         args.predecessor_org_state_sha256, args.successor_org_state_sha256,
-                        json.loads(args.boundary_evidence_json), args.authority_effect,
+                        common.loads_finite(args.boundary_evidence_json, RETRY), args.authority_effect,
                         hb_epoch=args.hb_epoch)
     except LedgerLocationRequired as exc:
         print(json.dumps(location_refusal(exc), sort_keys=True))

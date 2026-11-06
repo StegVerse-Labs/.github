@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StegVerse-Labs/.github/schemas/worker-claim-grant-projection-transition-receipt.schema.json",
+  "title": "Worker claim grant projection transition receipt",
+  "description": "Emitted by every plan/apply/verify run. ALLOW carries evidence and derived_files; FAIL_CLOSED carries the six fields. The receipt is an observation; it appends nothing to any ledger.",
+  "type": "object",
+  "required": ["schema", "transition", "mode", "request_id", "request_sha256", "disposition", "authority_effect", "workercoordinator_domain_fence_minted", "allocator_fence_reissued", "generation_lowered", "clock_read", "organization_ledger_appended"],
+  "properties": {
+    "schema": {"const": "stegverse.worker-claim-grant-projection-transition-receipt/v1"},
+    "transition": {"const": "WORKER_CLAIM_GRANT_PROJECTION"},
+    "mode": {"enum": ["plan", "apply", "verify"]},
+    "request_id": {"type": ["string", "null"]},
+    "request_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "disposition": {"enum": ["ALLOW", "FAIL_CLOSED"]},
+    "authority_effect": {"const": "NONE_PROJECTION_ONLY"},
+    "workercoordinator_domain_fence_minted": {"const": false},
+    "allocator_fence_reissued": {"const": false},
+    "generation_lowered": {"const": false},
+    "clock_read": {"const": false},
+    "organization_ledger_appended": {"const": false},
+    "evidence": {"type": "object"},
+    "derived_files": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}},
+    "failure_code": {"type": "string"},
+    "failed_predicate": {"type": "string"},
+    "detail": {"type": "string"},
+    "required_evidence_or_repair": {"type": "string"},
+    "retry_entrypoint": {"type": "string"},
+    "owning_existing_goal": {"type": "string"},
+    "next_attempt": {"type": "string"},
+    "consequence_committed": {"const": false}
+  },
+  "allOf": [
+    {"if": {"properties": {"disposition": {"const": "FAIL_CLOSED"}}},
+     "then": {"required": ["failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint", "owning_existing_goal", "next_attempt"]}},
+    {"if": {"properties": {"disposition": {"const": "ALLOW"}}},
+     "then": {"required": ["evidence", "derived_files"]}}
+  ]
+}

@@ -60,7 +60,7 @@ def resolving_change(issue_ids, *, path=fx.SURFACE_PATH["transition"], extra_con
 
 
 def admit(ch, facts, fixture_mode=False):
-    obs = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), facts)
+    obs = fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), facts)
     return refusal(wi.verify_resolutions, obs, fixture_mode=fixture_mode)
 
 
@@ -199,7 +199,7 @@ class ResolutionTests(unittest.TestCase):
         out = admit(early, fx.fixture_resolved_issues(early))
         self.assertEqual(out["failure_code"], "SV_CHANGE_RESOLVES_NOTHING")
         self.assertEqual(admit(early, fx.fixture_resolved_issues(early), fixture_mode=True)["disposition"], "ALLOW")
-        out = wi.admit(wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), []), fixture_mode=True)
+        out = wi.admit(fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), fx.fixture_base_state_readback(), []), fixture_mode=True)
         self.assertEqual((out["disposition"], out["failure_code"]), ("DENY", "SV_CHANGE_RESOLVES_NOTHING"))
 
     def test_migrated_issues_are_never_admissible(self):
@@ -218,7 +218,7 @@ class LedgerBindingTests(unittest.TestCase):
         rb = fx.fixture_base_state_readback()
         other = wi.seal({**{k: v for k, v in rb.items() if k != "result_sha256"}, "repository": "StegVerse-org/.github"}, "result_sha256")
         for r, want in ((rb, "ALLOW"), (other, "HB_EPOCH_SOURCE_UNOBSERVED")):
-            obs = wi.admission_inputs(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), r, fx.fixture_resolved_issues(ch))
+            obs = fx.observe(ch, fx.LABS_BASE, fx.signoff_receipts_for(ch), r, fx.fixture_resolved_issues(ch))
             out = wi.admit(obs, fixture_mode=True)
             self.assertEqual(out.get("failure_code") or out["disposition"], want)
         self.assertEqual(obs["target_repository"], "StegVerse-Labs/.github")

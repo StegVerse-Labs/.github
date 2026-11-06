@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+"""Dispatch the resident cycle from a committed request (COMMITTED_REQUEST, row 16).
+
+The request is a file committed at REQUEST_PATH. A push that changes it is the
+dispatch (.github/workflows/resident-cycle-request.yml), and the cycle's epoch
+is the one the request carries. There are no workflow inputs: nothing handed to
+a run at dispatch time reaches the cycle, so the epoch is in git before the
+cycle reads it. An absent, unreadable or wrongly shaped request is the terminal
+six-field CLI_INPUT_INVALID; an epoch the kernel's shared rule refuses is its
+six-field FAIL_CLOSED. Either way nothing is consumed.
+
+The request names no location: the mesh, node state and ledgers are supplied by
+the node materializer, and federation_cycle reads them as it always has.
+"""
+from __future__ import annotations
+import argparse, hashlib, importlib.util, json, os
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+SPEC=importlib.util.spec_from_file_location("org_kernel",ROOT/"org-kernel"/"kernel.py")
+K=importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(K)
+
+REQUEST_PATH=".stegverse/resident-cycle/request.json"
+SCHEMA="stegverse.resident-cycle-request/v1"
+RETRY_ENTRYPOINT="commit "+REQUEST_PATH+" carrying hb_epoch, then resident-runtime/resident_cycle_request.py"
+
+def _cycle():
+    spec=importlib.util.spec_from_file_location("federation_cycle",ROOT/"resident-runtime"/"federation_cycle.py")
+    module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module
+
+class SourceLedgerRequested(ValueError):
+    """CALLER_CHOSEN_SOURCE_LEDGER_REJECTED: a committed request named a ledger. Nothing runs."""
+    def __init__(self, keys:list)->None:
+        super().__init__("CALLER_CHOSEN_SOURCE_LEDGER_REJECTED: "+",".join(keys))
+        self.record={"disposition":"FAIL_CLOSED","failure_code":"CALLER_CHOSEN_SOURCE_LEDGER_REJECTED",
+                     "failed_predicate":"SOURCE_LEDGER_IS_THE_MATERIALIZERS_DESIGNATED_LEDGER",
+                     "detail":"the committed request names "+", ".join(keys),"terminal":True,
+                     "required_evidence_or_repair":"commit the request as exactly {schema, hb_epoch}; ledgers are supplied by the materializer",
+                     "retry_entrypoint":RETRY_ENTRYPOINT,"owning_existing_goal":K.HB_EPOCH_OWNING_EXISTING_GOAL,
+                     "next_attempt":"commit a request without a ledger field; the cycle did not run",
+                     "derived_from_clock":False,"consequence_committed":False}
+
+def request_epoch(path:Path)->str:
+    """The epoch a committed request carries, or CliInputRefused for a malformed request."""
+    request=K.cli_input_json(path,"--request",retry_entrypoint=RETRY_ENTRYPOINT)
+    if any("ledger" in str(key).lower() for key in request):
+        # A request never names the ledger a run reads or writes: that is the
+        # materializer's (lead ruling 21:13Z, no request override).
+        raise SourceLedgerRequested(sorted(k for k in request if "ledger" in str(k).lower()))
+    if request.get("schema")!=SCHEMA or set(request)!={"schema","hb_epoch"}:
+        raise K._cli_input_refused(ValueError("request is not exactly {schema: "+SCHEMA+", hb_epoch}"),
+                                   "--request",RETRY_ENTRYPOINT)
+    return request["hb_epoch"]
+
+def main(argv:list[str]|None=None)->int:
+    ap=argparse.ArgumentParser()
+    ap.add_argument("--request",type=Path,default=ROOT/REQUEST_PATH,help="the committed resident cycle request")
+    args,locations=ap.parse_known_args(argv)
+    if any(a=="--hb-epoch" or a.startswith("--hb-epoch=") for a in locations):
+        raise K._cli_input_refused(ValueError("the epoch comes from the committed request, not an argument"),
+                                   "--hb-epoch",RETRY_ENTRYPOINT)
+    try:
+        epoch=request_epoch(args.request)
+    except SourceLedgerRequested as exc:
+        print(json.dumps(exc.record,sort_keys=True)); return 1
+    refusal=K.writer_epoch_refusal(epoch,retry_entrypoint=RETRY_ENTRYPOINT)
+    if refusal is not None:
+        print(json.dumps(refusal,sort_keys=True)); return 1
+    # The run is bound to this exact committed request (row 1): every receipt it
+    # writes carries {path, sha256 of these bytes}, verified again by the kernel.
+    os.environ[K.COMMITTED_REQUEST_PATH_ENV]=str(args.request.resolve())
+    os.environ[K.COMMITTED_REQUEST_SHA256_ENV]="sha256:"+hashlib.sha256(args.request.read_bytes()).hexdigest()
+    return _cycle().main([*locations,"--hb-epoch",str(epoch)])
+
+if __name__=="__main__":
+    raise SystemExit(K.run_writer_cli(main,retry_entrypoint="resident-runtime/resident_cycle_request.py"))

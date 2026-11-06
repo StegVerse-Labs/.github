@@ -1,0 +1,155 @@
+{
+  "source_commit": "6b13c3a749b2940d6142644196a8302823c1f45a",
+  "evidence_class": "LOCAL_DIAGNOSTIC_HYPOTHETICAL_CANDIDATES",
+  "authority_effect": "NONE",
+  "registry_generation": 322,
+  "registry_mutated": false,
+  "original_shard_restored": true,
+  "original_shard_sha256": "fde073d0371de3df002de47e77a84198493ec8bd93a20b75476ad7d444d725c5",
+  "cases": [
+    {
+      "case": "01-live-registration",
+      "exit_code": 1,
+      "disposition": "FAIL_CLOSED",
+      "failure_code": "CANONICAL_RECORD_SCHEMA_INVALID",
+      "evidence": null,
+      "required_evidence_or_repair": "set it false through the record-data successor transition (TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY)"
+    },
+    {
+      "case": "02-prescribed-shard-repair",
+      "exit_code": 1,
+      "disposition": "FAIL_CLOSED",
+      "failure_code": "RECORD_DATA_TASK_NOT_IN_AGGREGATE_REGISTRY",
+      "evidence": {
+        "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+      },
+      "required_evidence_or_repair": "promote the task into the aggregate Registry, or drop its rows"
+    },
+    {
+      "case": "03-authority-repaired-hypothetical",
+      "exit_code": 1,
+      "disposition": "FAIL_CLOSED",
+      "failure_code": "COSV_NOT_DERIVABLE",
+      "evidence": null,
+      "required_evidence_or_repair": "declare every task.v1 exact_metrics field (scripts/cosv.py TASK_FIELDS); no vector is assigned by hand"
+    },
+    {
+      "case": "04-authority-and-vector-projected-hypothetical",
+      "exit_code": 0,
+      "disposition": "ALLOW",
+      "failure_code": null,
+      "evidence": {
+        "allocation": null,
+        "collision_checkin": "ALLOW (scripts/check_registry_collision_checkin.py over predecessor -> derived successor)",
+        "cosv_derivation": "data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json#cosv_task_vector (recorded on the existing identity; not re-derived)",
+        "cosv_task_vector": "50000000102000",
+        "existing_record_preflight": "StegVerse-Labs/.github#3306 requires exactly one aggregate row equal to the shard with a matching COSV; this successor supplies exactly that row",
+        "existing_record_ref": "data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json",
+        "existing_record_sha256": "sha256:af7156e086a008200b33ded4412370f9910787c972c760aee14a59fa1ba73920",
+        "lowest_supported_mode": "E0",
+        "predecessor_registry_generation": 322,
+        "predecessor_registry_sha256": "sha256:9f5a157d6f2e8a2bf91788a37906793c6ddc5184c635e8c9f8befb3f4a5c5aeb",
+        "projected_coordination_state": "ACTIVE",
+        "record_rewritten": false,
+        "record_schema_conformance": "PREDATES_CURRENT_SCHEMA",
+        "record_schema_errors": [
+          "$: required adjacent_task_refs",
+          "$.coordination_state: enum",
+          "$: additional property cosv",
+          "$.dependencies[0]: type ['object']",
+          "$.authority_model: required source_state_proves_execution",
+          "$.authority_model: required worker_claim_authority",
+          "$.authority_model: required master_records_reality_authority",
+          "$.authority_model: required interlock_intr_required_for_governed_ingress_egress",
+          "$.authority_model: additional property transport_protocol",
+          "$.authority_model: additional property participating_runtime_authority",
+          "$.authority_model: additional property stegverse_output_governance",
+          "$.authority_model: additional property external_framework_governance",
+          "$: additional property cosv_task_vector",
+          "$: additional property source_state_vector_ref"
+        ],
+        "registration_mode": "EXISTING_IDENTITY",
+        "residuals": [
+          {
+            "class": "A",
+            "failed_predicate": "CANONICAL_RECORD_SCHEMA_SUCCESSOR_REQUIRED",
+            "failure_code": "CANONICAL_RECORD_SCHEMA_SUCCESSOR_REQUIRED",
+            "next_attempt": "on the next registration request event after the repair is recorded",
+            "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+            "required_evidence_or_repair": "conform data/canonical-task-records/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json to schemas/canonical-task-record.schema.json through the apply_task_record_data record-data successor transition (StegVerse-Labs/.github#3257); the row follows the record",
+            "retry_entrypoint": "apply_task_record_data record-data successor transition (StegVerse-Labs/.github#3257) / python scripts/canonical_task_registration_transition.py verify"
+          },
+          {
+            "class": "A",
+            "failed_predicate": "CLAIM_NOT_ISSUED_BY_WORKERCOORDINATOR",
+            "failure_code": "CLAIM_NOT_ISSUED_BY_WORKERCOORDINATOR",
+            "next_attempt": "on the next registration request event after the repair is recorded",
+            "owning_existing_goal": "SHWP-ORG-CLAIM-ALLOCATOR-001",
+            "required_evidence_or_repair": "coordination_state 'ACTIVE' is projected as recorded and is not a claim; WorkerCoordinator consumes evidence.workercoordinator_claim_request and alone issues claim_ref/fence_ref",
+            "retry_entrypoint": "scripts/consume_org_claim_allocator_request.py -> scripts/allocate_claims.py"
+          },
+          {
+            "class": "A",
+            "failed_predicate": "COSV_EXACT_METRICS_NOT_OBSERVED",
+            "failure_code": "COSV_EXACT_METRICS_NOT_OBSERVED",
+            "next_attempt": "on the next registration request event after the repair is recorded",
+            "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+            "required_evidence_or_repair": "declare the task.v1 exact_metrics of INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 in a manifest; this transition then emits control/task-vectors/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json and control/task-vector-index.d/INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001.json and requires them to derive 50000000102000",
+            "retry_entrypoint": ".github/workflows/canonical-task-registration-transition.yml / python scripts/canonical_task_registration_transition.py plan"
+          }
+        ],
+        "row_equals_record": true,
+        "scope_digest": null,
+        "successor_registry_generation": 323,
+        "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+        "workercoordinator_claim_request": {
+          "allocator_remains_claim_authority": true,
+          "authority_effect": "NONE_REQUEST_ONLY",
+          "canonical_allocator": "scripts/allocate_claims.py",
+          "claim_ref": null,
+          "consumer_entrypoint": "scripts/consume_org_claim_allocator_request.py",
+          "fence_ref": null,
+          "registry_generation": 323,
+          "registry_row_sha256": "sha256:fce4b9e0c33336d5846237cf0c3a426c621f74a3f95ddd9ae7d7027d10a9ed36",
+          "request_grants_claim_authority": false,
+          "requested_of": "WORKERCOORDINATOR",
+          "schema": "stegverse.workercoordinator-claim-request/v1",
+          "state": "REQUESTED",
+          "task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+        }
+      },
+      "required_evidence_or_repair": null
+    },
+    {
+      "case": "05-atomic-record-data-route",
+      "exit_code": 0,
+      "disposition": "ALLOW",
+      "report_ref": "05-atomic-record-data-route.output.json"
+    },
+    {
+      "case": "06-atomic-apply-sandbox",
+      "exit_code": 0,
+      "disposition": "ALLOW",
+      "report_ref": "06-atomic-apply-sandbox.output.json"
+    },
+    {
+      "case": "07-atomic-idempotency-sandbox",
+      "exit_code": 0,
+      "disposition": "NO_CHANGE",
+      "report_ref": "07-atomic-idempotency-sandbox.output.json"
+    },
+    {
+      "case": "08-atomic-collision-sandbox",
+      "exit_code": 0,
+      "disposition": "ALLOW",
+      "report_ref": "08-atomic-collision-sandbox.output.json"
+    }
+  ],
+  "session_prompt_count": 1,
+  "goal_prompt_count_exact": null,
+  "goal_prompt_count_recovery_lower_bound": 33,
+  "canonical_count_disposition": "NOT_OBSERVED",
+  "canonical_registry_mutated": false,
+  "sandbox_apply_reverted": true,
+  "private_runtime_ownership": "UNCHANGED_SEPARATE"
+}

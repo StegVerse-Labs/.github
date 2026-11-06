@@ -1,0 +1,38 @@
+{
+  "evidence_class": "INDEPENDENT_NATIVE_READ_ONLY_PUBLIC_ROUTE_VERIFICATION",
+  "authority_effect": "NONE",
+  "goal_task_id": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+  "source_commits": {
+    "StegVerse-Labs/.github": "6b13c3a749b2940d6142644196a8302823c1f45a",
+    "StegVerse-org/.github": "0b50df09f620304319f99de58af081aa8902c37e",
+    "StegVerse-Labs/TVC/evidence": "e2ebde781f8e8cb77dd827519fc0db65bd2aa3ab"
+  },
+  "check_exit_code": 0,
+  "replay_exit_code": 0,
+  "counts": {
+    "ALLOW": 156,
+    "DENY": 0,
+    "FAIL_CLOSED": 0
+  },
+  "e0_terminal": true,
+  "declared_organization_count": 13,
+  "results_identical_to_published": 156,
+  "raw_bytes_equal_to_published": false,
+  "raw_sha256": "fdca42b36ddff4775656de3e14db63bb836abaf76e9d7960e06ccd3e7a61b3f2",
+  "published_raw_sha256": "eec97dc752537e2f2a9b4632209cfead17f0600c227ce072e2562088a36ee93b",
+  "record_sha256": "sha256:870f318b9a9ad2bc830f447038ac6793e21db5fa0c7e4041815a21bb61868b9d",
+  "published_record_sha256": "sha256:4d89400964534d52c65016da1bb6867399916aedb6c2a1211ff35986ecbefe01",
+  "only_different_top_level_keys": [
+    "public_ledger_tips",
+    "record_sha256"
+  ],
+  "extra_unused_published_ledger": {
+    "master-records": "35b3edf72c908879ee8a0974e49131e523b4ed63"
+  },
+  "native_seal_after_removing_only_unused_tip_matches": true,
+  "protocol_vector_verifier": "PASS",
+  "session_prompt_count": 2,
+  "goal_prompt_count_exact": null,
+  "goal_prompt_count_recovery_lower_bound": 22,
+  "counter_basis": "Prior prompt-20 handoff at Labs #2897 comment 6500157092 plus two user continuation prompts in this session; exact cumulative count requires Registry reconciliation."
+}

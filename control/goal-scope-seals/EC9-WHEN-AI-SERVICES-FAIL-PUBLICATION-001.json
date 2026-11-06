@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.goal-scope-seal/v1",
+  "task_id": "EC9-WHEN-AI-SERVICES-FAIL-PUBLICATION-001",
+  "scope": {
+    "goal": "Publish the 'When AI Services Fail' research (SV-LLM/Ecosystem_Chat#9) as a bounded research-candidate edition: merge the verbatim ERL process mirror (Executive_Rhetoric_Ledger#249, owner #251) and the Claude self-documented CBOC records (Executive_Rhetoric_Ledger#247, lane #244), and promote the Site paper page with exact-byte PDF/DOCX (Site#1633) only after independent custody readback, final-text PASS and an exact-head promotion decision. No provider-backend ledger, intent, ranking or legal finding is authorized.",
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs",
+        "SV-LLM"
+      ],
+      "repositories": [
+        "StegVerse-Labs/Executive_Rhetoric_Ledger",
+        "StegVerse-Labs/Site",
+        "SV-LLM/Ecosystem_Chat"
+      ],
+      "components": [
+        "erl-ec9-process-mirror",
+        "erl-cboc-self-documented-records",
+        "site-paper-when-ai-services-fail",
+        "ec9-kv-custody-bridge"
+      ]
+    },
+    "expected_evidence_predicates": [
+      "EC9_ORIGINAL_BYTES_INDEPENDENT_READBACK_TWO_REVIEWERS",
+      "EC9_FINAL_TEXT_REVIEW_PASS",
+      "ERL_249_EXACT_HEAD_MIRROR_READBACK_PASS",
+      "ERL_247_NON_AUTHOR_CONCUR",
+      "SITE_1633_EXACT_HEAD_CI_SUCCESS",
+      "SITE_PRODUCTION_PROMOTION_DECISION_RECORDED"
+    ],
+    "finish_point": {
+      "acceptance_test": "Site production serves papers/when-ai-services-fail/ with PDF/DOCX whose SHA-256 equal the recorded identities, and ERL#247/#249 are merged at their reviewed expected heads",
+      "predicate": "EC9_PUBLICATION_EXACT_BYTES_SERVED_AND_ERL_RECORDS_MERGED",
+      "verifier_entrypoint": "scripts/authorize_site_production_promotion.py (PROMOTE) over StegVerse-Labs/Site exact head; ERL readback per Executive_Rhetoric_Ledger#249 comment 6467973614",
+      "lowest_supported_mode": "E0"
+    }
+  },
+  "scope_digest": "sha256:ffe3e6a1a49fa0739c282ef2562b94d1304613ba9a2943405bec08836f3944e3",
+  "supersedes_scope_digest": null,
+  "authority_effect": "NONE_SCOPE_SEAL_ONLY"
+}

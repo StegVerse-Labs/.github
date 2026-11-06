@@ -167,6 +167,44 @@ CONSUMERS = (
 )
 
 
+#: Consumers declared to take the carrier's heartbeat epoch (the dispatcher
+#: analogue of a kernel endpoint row declaring `endpoint_adapter_hb_epoch`
+#: CARRIER_SUPPLIED, org-kernel/kernel.py run_endpoint_adapter, INDEX H34b).
+#: Each is handed `--hb-epoch` exactly as its caller supplied it, checked by the
+#: kernel's shared rule (supplied_epoch_failure, SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH).
+#: Nothing here derives an epoch: not from a clock and not from the oscillator
+#: sampler's runtime observation snapshot (`snapshot_is_observation_only`,
+#: heartbeat_runtime/independent_oscillator.py). Absent, nothing is forwarded and the
+#: consumer refuses what needs one (GRANT_EPOCH_NOT_CARRIER_SUPPLIED).
+CARRIER_EPOCH_CONSUMERS = frozenset({"org_claim_allocator"})
+
+
+def carrier_hb_epoch(hb_epoch: Any) -> tuple[str | None, dict[str, Any] | None]:
+    """The caller-supplied carrier epoch as forwardable text, or a six-field refusal. No clock is read."""
+    if hb_epoch is None:
+        return None, None
+    spec = importlib.util.spec_from_file_location("dispatch_org_kernel_epoch", ROOT / "org-kernel/kernel.py")
+    kernel = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kernel)
+    failure = kernel.supplied_epoch_failure(hb_epoch)
+    if failure is None:
+        return str(int(str(hb_epoch))), None
+    code, detail = failure
+    return None, {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": kernel.HB_EPOCH_PREDICATE,
+        "detail": detail,
+        "required_evidence_or_repair": "pass --hb-epoch as the carrier supplied it: ASCII digits with value >= 32",
+        "retry_entrypoint": "scripts/dispatch_resident_execution_requests.py (--hb-epoch)",
+        "owning_existing_goal": kernel.HB_EPOCH_OWNING_EXISTING_GOAL,
+        "next_attempt": "dispatch again with the supplied epoch; the consumer was not run",
+        "derived_from_clock": False,
+        "consequence_committed": False,
+        "authority_effect": "NONE_REFUSAL_ONLY",
+    }
+
+
 #: Master Records boundary migration: consumers deployed before the rename report these legacy wait states.
 LEGACY_ACCEPTED_WAIT_STATES = ("WAITING_FOR_MASTER_RECORDS_CUSTODY", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED")
 
@@ -262,7 +300,8 @@ def select_consumers(only_consumers: tuple[str, ...] | None) -> tuple[tuple[str,
     return tuple((name, rel) for name, rel in CONSUMERS if name in requested)
 
 
-def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]]) -> dict[str, Any] | None:
+def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]], *,
+                                                         hb_epoch: int | None = None) -> dict[str, Any] | None:
     """Retain the existing SDK evaluator selector visit through canonical Master Records organization record."""
     row = next((item for item in outcomes if item.get("consumer") == SDK_EVALUATOR_SELECTOR), None)
     if not isinstance(row, dict) or row.get("attempted") is not True:
@@ -278,6 +317,11 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
     if str(workers_root) not in sys.path:
         sys.path.insert(0, str(workers_root))
     from canonical_state_transition_custody import build_state_receipt, sha256_uri, submit_state_receipt
+    if hb_epoch is None:
+        # No supplied epoch in scope: refused before a receipt is built, so
+        # nothing is written and no clock is read (WU-B13 slice g).
+        from canonical_state_transition_custody import no_epoch_caller_boundary
+        return no_epoch_caller_boundary("scripts/dispatch_resident_execution_requests.py::retain_sdk_evaluator_dispatch_visit_in_master_records")
     machine_result = row.get("result")
     evidence_content = {
         "selector": SDK_EVALUATOR_SELECTOR,
@@ -321,7 +365,7 @@ def retain_sdk_evaluator_dispatch_visit_in_master_records(source: Path, runtime:
         proof_scope="SDK_EVALUATOR_GOVERNANCE_POSTURE_DISPATCH_VISIT_ONLY",
         proof_ceiling="ORGANIZATION_RECORDED_DISPATCH_VISIT_EVIDENCE_ONLY",
     )
-    result = submit_state_receipt(state_receipt)
+    result = submit_state_receipt(state_receipt, hb_epoch=hb_epoch)
     return {
         "transition_id": transition_id,
         "selector": SDK_EVALUATOR_SELECTOR,
@@ -545,7 +589,8 @@ def retain_component011_dispatch_in_organization(
             "authority_effect": "NONE",
         }
 
-def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]]) -> dict[str, Any] | None:
+def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path, outcomes: list[dict[str, Any]], *,
+                                                    hb_epoch: int | None = None) -> dict[str, Any] | None:
     """Record actual Richard dispatch observation, not WorkerCoordinator execution."""
     row = next((item for item in outcomes if item.get("consumer") == RICHARD_SELECTOR), None)
     if not isinstance(row, dict):
@@ -565,6 +610,11 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
     if str(workers_root) not in sys.path:
         sys.path.insert(0, str(workers_root))
     from canonical_state_transition_custody import build_state_receipt, organization_receipt_gate, sha256_uri, submit_state_receipt
+    if hb_epoch is None:
+        # No supplied epoch in scope: refused before a receipt is built, so
+        # nothing is written and no clock is read (WU-B13 slice g).
+        from canonical_state_transition_custody import no_epoch_caller_boundary
+        return no_epoch_caller_boundary("scripts/dispatch_resident_execution_requests.py::retain_richard_dispatch_visit_in_master_records")
     machine_result = row.get("result")
     first_failed_cycle = machine_result.get("first_failed_cycle") if isinstance(machine_result, dict) else None
     evidence_content = {
@@ -613,10 +663,11 @@ def retain_richard_dispatch_visit_in_master_records(source: Path, runtime: Path,
         proof_scope="RICHARD_TEST3_DISPATCH_VISIT_ONLY",
         proof_ceiling="ORGANIZATION_RECORDED_DISPATCH_VISIT_EVIDENCE_ONLY",
     )
-    result = submit_state_receipt(state_receipt)
+    result = submit_state_receipt(state_receipt, hb_epoch=hb_epoch)
     # Organization ledger record closes the transition; Master Records
     # reconstruction fields are evidence only and never gate it.
-    gate = organization_receipt_gate(result, expected_transition_id=transition_id, record_refusal=True)
+    gate = organization_receipt_gate(result, expected_transition_id=transition_id, record_refusal=True,
+                                     hb_epoch=hb_epoch)
     closed = gate["verified"]
     return {
         "transition_id": transition_id,
@@ -676,9 +727,13 @@ def dispatch(
     execution_attempt_id: str | None = None,
     hb_epoch: str | int | None = None,
 ) -> dict[str, Any]:
+    """Dispatch the selected consumers. `hb_epoch` is the epoch this execution was
+    supplied; it is forwarded to every receipt this dispatch records or has a
+    consumer record, and without it none is recorded (NO_EPOCH_CALLER_FAILS_CLOSED)."""
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     source_env = dict(os.environ if env is None else env)
+    forwarded_hb_epoch, hb_epoch_refusal = carrier_hb_epoch(hb_epoch)
     observed_compute_markers = sorted(name for name in HOSTED_ENV if truthy(source_env.get(name)))
     safe_env = clean_exec_env(source_env)
     selected = select_consumers(only_consumers)
@@ -705,6 +760,10 @@ def dispatch(
         if name in QUANTUM_AWARENESS_PROTECTED and not quantum_awareness_ready(runtime):
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "QUANTUM_STANDING_AWARENESS_REQUIRED", "returncode": None, "result": None, "attempted": False, "authority_effect": "NONE_FAIL_CLOSED"})
             continue
+        if name in CARRIER_EPOCH_CONSUMERS and hb_epoch_refusal is not None:
+            outcomes.append({"consumer": name, "consumer_ref": rel, "state": "FAIL_CLOSED", "returncode": None,
+                             "result": hb_epoch_refusal, "attempted": False, "authority_effect": "NONE_FAIL_CLOSED"})
+            continue
         consumer = runtime / rel
         if not consumer.is_file():
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "CONSUMER_NOT_MATERIALIZED", "returncode": None, "result": None, "attempted": False})
@@ -723,6 +782,11 @@ def dispatch(
                                    ("--org-ledger-root", "STEGVERSE_ORG_LEDGER_ROOT")):
                 if str(source_env.get(variable) or "").strip():
                     command.extend([flag, str(source_env[variable])])
+        if name in CARRIER_EPOCH_CONSUMERS and forwarded_hb_epoch is not None:
+            command.extend(["--hb-epoch", forwarded_hb_epoch])
+        elif name == SDK_EVALUATOR_SELECTOR and hb_epoch is not None:
+            # The SDK evaluator also records a receipt, so it takes the supplied epoch.
+            command.extend(["--hb-epoch", str(hb_epoch)])
         try:
             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
             result = parse_last_json(completed.stdout)
@@ -749,9 +813,9 @@ def dispatch(
     readback_selected_failure = bool(only_consumers is not None and "organization_custody_readback" in only_consumers
                                     and (not readback_row or readback_row["state"] not in {"RECORDED_LOCAL_READBACK", "ALREADY_CONSUMED"}))
     exact_selector_failure = (only_consumers is not None and bool(request_failures)) or readback_selected_failure
-    sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes)
+    sdk_evaluator_dispatch_master_records = retain_sdk_evaluator_dispatch_visit_in_master_records(source, runtime, outcomes, hb_epoch=hb_epoch)
     try:
-        richard_dispatch_master_records = retain_richard_dispatch_visit_in_master_records(source, runtime, outcomes)
+        richard_dispatch_master_records = retain_richard_dispatch_visit_in_master_records(source, runtime, outcomes, hb_epoch=hb_epoch)
     except Exception as exc:
         # A canonical-custody exception must not erase the actual consumer
         # observation before this existing dispatch snapshot is persisted.
@@ -799,6 +863,10 @@ def dispatch(
             "github_actions_authority": "NONE",
             "hosted_provider_authority": "NONE",
         },
+        "carrier_hb_epoch_forwarded": forwarded_hb_epoch,
+        "carrier_hb_epoch_forwarded_to": (sorted(CARRIER_EPOCH_CONSUMERS & {name for name, _ in selected})
+                                          if forwarded_hb_epoch is not None else []),
+        "carrier_hb_epoch_derived_from_clock": False,
         "goal_context_forwarded_to": ([name for name, _ in selected][0] if current_goal_task_id and len(selected) == 1 else None),
         "selected_request_id": request_id,
         "execution_attempt_id": execution_attempt_id,
@@ -829,6 +897,17 @@ def main() -> int:
                         help="the carrier's heartbeat epoch as supplied (ASCII digits >= 32); forwarded "
                              "to consumers that take it, never sampled here")
     args = parser.parse_args()
+    if args.hb_epoch is not None:
+        # Checked as typed by the kernel's shared rule, before anything is dispatched.
+        spec = importlib.util.spec_from_file_location(
+            "dispatch_cli_kernel", args.source_root.expanduser().resolve() / "org-kernel/kernel.py")
+        kernel = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(kernel)
+        refused = kernel.writer_epoch_refusal(
+            args.hb_epoch, retry_entrypoint="scripts/dispatch_resident_execution_requests.py (--hb-epoch)")
+        if refused is not None:
+            print(json.dumps(refused, sort_keys=True))
+            return 1
     receipt = dispatch(
         args.source_root,
         args.runtime_root,

@@ -18,7 +18,7 @@ def _recorded_rtc006(real) -> dict:
     result=real.submit_state_receipt(real.build_state_receipt(
         transition_id="RTC-SDK-RETURN-006",transition_sequence=1,subject_or_correlation_id="RTC-FIXTURE",
         transition_outcome="EXECUTED",prior_state_ref_or_hash=None,resulting_state_ref_or_hash=None,
-        governance_decision_ref_where_applicable=None,transition_evidence={"fixture":"rtc006"}))
+        governance_decision_ref_where_applicable=None,transition_evidence={"fixture":"rtc006"}), hb_epoch=4096)
     return {
       "state":result["state"],
       "organization_receipt_sha256":result["organization_receipt"]["receipt_sha256"],
@@ -141,10 +141,10 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         def build_state_receipt(**kwargs):
             captured.update(kwargs)
             return real.build_state_receipt(**kwargs)
-        def submit_state_receipt(receipt):
+        def submit_state_receipt(receipt, **_):
             captured["submitted"]=receipt
             # Real producer: Organization ledger record, no Master Records reconstruction.
-            captured["recorded"]=real.submit_state_receipt(receipt)
+            captured["recorded"]=real.submit_state_receipt(receipt, hb_epoch=4096)
             return captured["recorded"]
         fake.build_state_receipt=build_state_receipt
         fake.submit_state_receipt=submit_state_receipt
@@ -187,7 +187,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
                 req["predecessor_master_records_receipt_sha256"]="9"*64
                 result=consumer._record_sdk_return_binding_custody(
-                    runtime,req["materialization_id"],req,"sha256:"+"7"*64,output,materialization
+                    runtime,req["materialization_id"],req,"sha256:"+"7"*64,output,materialization, hb_epoch=4096
                 )
             self.assertEqual(captured["transition_id"],"RTC-SDK-RETURN-006")
             self.assertEqual(captured["resulting_state_ref_or_hash"],consumer.sha(binding))
@@ -210,9 +210,9 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
     def test_sdk_return_binding_blocks_when_organization_record_not_recorded(self):
         fake=types.ModuleType("canonical_state_transition_custody")
         fake.build_state_receipt=lambda **kwargs: {"schema":"stegverse.canonical-state-transition-receipt/v1"}
-        fake.submit_state_receipt=lambda receipt: {"state":"BOUNDARY","reason":"not recorded"}
+        fake.submit_state_receipt=lambda receipt,**_: {"state":"BOUNDARY","reason":"not recorded"}
         recorded=[]
-        def record_refusal(refusal, *, gated_transition_id, state_receipt_sha256=None, root=None):
+        def record_refusal(refusal, *, gated_transition_id, state_receipt_sha256=None, root=None, hb_epoch=None):
             recorded.append((dict(refusal),gated_transition_id))
             return {**refusal,"refusal_recorded":True,"refusal_organization_receipt_sha256":"sha256:"+"5"*64}
         fake.record_organization_receipt_refusal=record_refusal
@@ -254,7 +254,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 req["predecessor_master_records_receipt_sha256"]="9"*64
                 with self.assertRaisesRegex(consumer.KVPublisherReturnError,"SDK return binding Organization record not recorded") as caught:
                     consumer._record_sdk_return_binding_custody(
-                        runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization
+                        runtime,req["materialization_id"],req,"sha256:"+"9"*64,output,materialization, hb_epoch=4096
                     )
                 # Inside the attempted transition: the typed refusal, with the
                 # producer's reason, is appended as its non-ALLOW record.
@@ -350,8 +350,8 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
             "content":predecessor_closure,
           }],
         )
-        def submit_state_receipt(receipt):
-            captured["recorded"]=real.submit_state_receipt(receipt)
+        def submit_state_receipt(receipt, **_):
+            captured["recorded"]=real.submit_state_receipt(receipt, hb_epoch=4096)
             return captured["recorded"]
         custody.submit_state_receipt=submit_state_receipt
         previous={name:sys.modules.get(name) for name in (
@@ -387,7 +387,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
                 result=consumer._prepare_rtc007_continuation(
                   runtime,req["materialization_id"],req,output,consumer.sha(binding),
-                  rtc006,
+                  rtc006, hb_epoch=4096,
                 )
             self.assertEqual(captured["transition_id"],"RTC-STEGVERSE-EGRESS-007")
             self.assertEqual(captured["transition_sequence"],2)
@@ -450,7 +450,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
         llm.admit_intr_egress=lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("admission must not run before predecessor validation"))
         custody=types.ModuleType("canonical_state_transition_custody")
         custody.build_state_receipt=lambda **kwargs: kwargs
-        custody.submit_state_receipt=lambda receipt: (_ for _ in ()).throw(AssertionError("submit must not run"))
+        custody.submit_state_receipt=lambda receipt,**_: (_ for _ in ()).throw(AssertionError("submit must not run"))
         wrong={
           "transition_id":"SOME-OTHER-TRANSITION",
           "state":"RECORDED",
@@ -497,7 +497,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                         "required_evidence_validation_status":"PASS",
                         "receipt_sha256":"a"*64,
                         "reconstructed_receipt_sha256":"a"*64,
-                      },
+                      }, hb_epoch=4096,
                     )
         finally:
             consumer.source_root=original_source_root
@@ -520,7 +520,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
     def test_rtc006_rejects_transport_terminal_hash_as_predecessor(self):
         fake=types.ModuleType("canonical_state_transition_custody")
         fake.build_state_receipt=lambda **kwargs: kwargs
-        fake.submit_state_receipt=lambda receipt: (_ for _ in ()).throw(AssertionError("submit must not run without canonical predecessor"))
+        fake.submit_state_receipt=lambda receipt,**_: (_ for _ in ()).throw(AssertionError("submit must not run without canonical predecessor"))
         fake.require_predecessor_master_records_organization_record=lambda receipt_sha256, *, successor_transition_id: (None,[])
         previous=sys.modules.get("canonical_state_transition_custody")
         sys.modules["canonical_state_transition_custody"]=fake
@@ -539,7 +539,7 @@ class SDKPublisherReturnIngressTests(unittest.TestCase):
                 req=request(consumer.SDK_DOWNSTREAM_OWNER)
                 with self.assertRaisesRegex(consumer.KVPublisherReturnError,"canonical predecessor Master Records organization record required"):
                     consumer._record_sdk_return_binding_custody(
-                        runtime,req["materialization_id"],req,"sha256:"+"7"*64,output,materialization
+                        runtime,req["materialization_id"],req,"sha256:"+"7"*64,output,materialization, hb_epoch=4096
                     )
         finally:
             if previous is None:

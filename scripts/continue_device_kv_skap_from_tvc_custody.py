@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""Continue Device->KV->SKAP->KV->Device from one authentic TVC custody event.
+"""Continue the two-leg DEVICE_SYSTEM->KV->DEVICE_SYSTEM round trip from one authentic TVC custody event.
 
-Inputs are the Gateway canonical first-hop sidecar and the terminal TVC stage-drain
-receipt. TVC remains the only ciphertext custody writer. This continuation reads
-back that already-persisted SKAP object exactly, uses the canonical StegOS `kv-skap`
-REFERENCE profile to verify the existing custody across KV<->SKAP, persists/readbacks
-the return at KV, emits the final device-kv response, and runs the existing fail-
-closed four-leg verifier. It does not write credential custody or resolve secrets.
+KV and the SKAP Vault are one organisation, so KV<->SKAP is the in-KV SKAP gate, not an InTr hop
+(StegVerse-org/.github#167 ruling c6393224851 (3); ruling C accepted with conditions C1-C3, c6393756343).
+No KV->SKAP or SKAP->KV InTr packet is prepared, and no retired StegOS connector profile is resolved.
+
+The inputs are the Gateway canonical first-hop sidecar and the terminal TVC stage-drain receipt.
+TVC remains the only ciphertext custody writer. This continuation:
+
+1. reads back the already-persisted SKAP object exactly;
+2. records the in-KV gate exchange: the cvk layer-2 SKAP-access receipt (SkapLayer2Gate.admit,
+   KV_INTERNAL_SKAP_GATE), re-derived from its bytes, whose prior is the layer-1 KV-access receipt
+   (KVInterlockRuntime.handle, INTR_DEVICE_KV) of this DEVICE->KV hop. It is bound by the sha256 of
+   its exact bytes;
+3. persists the return at KV and reads it back;
+4. emits the final device-kv response leg carrying the gate hash;
+5. runs the fail-closed two-leg verifier.
+
+It does not write credential custody or resolve secrets.
 """
 from __future__ import annotations
 
@@ -54,7 +65,7 @@ def _load_stegos(stegos_root:Path):
     if text not in sys.path:sys.path.insert(0,text)
     backbone=importlib.import_module("stegos.intr_backbone");transport=importlib.import_module("stegos.universal_intr_transport")
     if root not in Path(backbone.__file__).resolve().parents or root not in Path(transport.__file__).resolve().parents:raise TVCCustodyContinuationError("canonical_stegos_module_root_mismatch")
-    return backbone.connector_from_registry(registry,"kv-skap"),backbone,transport
+    return backbone,transport
 
 def _validate_first_hop(sidecar:Mapping[str,Any],backbone:Any,transport:Any)->tuple[dict[str,Any],bytes,dict[str,Any]]:
     if sidecar.get("schema")!="stegverse.service-gateway.device-kv-canonical-stage/v1" or sidecar.get("payload_schema")!="kv.interlock.request.v1":raise TVCCustodyContinuationError("gateway_canonical_sidecar_schema_invalid")
@@ -79,16 +90,18 @@ def _validate_tvc_outcome(outcome:Mapping[str,Any],sidecar:Mapping[str,Any])->tu
     if sha_uri(raw)!=expected:raise TVCCustodyContinuationError("tvc_skap_exact_readback_mismatch")
     return custody,raw,claimed
 
-def _final_device_return(*,runtime_root:Path,stegos_root:Path,materialization_id:str,skap_kv_intent:Mapping[str,Any],skap_kv_payload:bytes,skap_kv_receipt:Mapping[str,Any])->dict[str,Any]:
+def _device_return_module():
     path=ROOT/"scripts/materialize_kv_device_from_skap_return.py";spec=importlib.util.spec_from_file_location("stegverse_kv_device_from_tvc_custody",path)
     if spec is None or spec.loader is None:raise TVCCustodyContinuationError("kv_device_return_loader_unavailable")
-    mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
-    return mod.materialize(runtime_root=runtime_root,stegos_root=stegos_root,materialization_id=materialization_id,skap_kv_intent=skap_kv_intent,skap_kv_payload=skap_kv_payload,skap_kv_receipt=skap_kv_receipt)
+    mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);return mod
 
-def continue_roundtrip(*,runtime_root:Path,stegos_root:Path,gateway_sidecar_path:Path,tvc_drain_receipt_path:Path)->dict[str,Any]:
+def _replace_json(path:Path,value:Mapping[str,Any])->None:
+    path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_name("."+path.name+".tmp");tmp.write_bytes((json.dumps(dict(value),indent=2,sort_keys=True)+"\n").encode());os.replace(tmp,path)
+
+def continue_roundtrip(*,runtime_root:Path,stegos_root:Path,gateway_sidecar_path:Path,tvc_drain_receipt_path:Path,kv_access_receipt_path:Path,skap_access_receipt_path:Path)->dict[str,Any]:
     if any(os.environ.get(k) for k in HOSTED_ENV):raise TVCCustodyContinuationError("hosted_runtime_forbidden")
     runtime=runtime_root.expanduser().resolve();sidecar=load_json(gateway_sidecar_path);outcome=load_json(tvc_drain_receipt_path)
-    connector,backbone,transport=_load_stegos(stegos_root)
+    backbone,transport=_load_stegos(stegos_root)
     d_intent,d_payload,d_receipt=_validate_first_hop(sidecar,backbone,transport)
     custody_path,custody_bytes,tvc_digest=_validate_tvc_outcome(outcome,sidecar)
     ingress_id=str(outcome.get("ingress_id") or "")
@@ -97,33 +110,24 @@ def continue_roundtrip(*,runtime_root:Path,stegos_root:Path,gateway_sidecar_path
     d_intent_p=base/"device-to-kv.intent.json";d_payload_p=base/"device-to-kv.payload.bin";d_receipt_p=base/"device-to-kv.receipt.json"
     atomic_json(d_intent_p,d_intent);atomic_bytes(d_payload_p,d_payload);atomic_json(d_receipt_p,d_receipt)
 
-    reference={"schema":"stegverse.skap.reference-request/v1","operation":"VERIFY_SESSION","ingress_id":ingress_id,"credential_ref":outcome.get("credential_ref"),"custody_ref":str(custody_path),"custody_object_sha256":sha_uri(custody_bytes),"tvc_drain_receipt_digest":tvc_digest,"canonical_device_kv_receipt_hash":d_receipt["receipt_hash"],"exact_ciphertext_readback_verified":True,"credential_material_present":False,"credential_authority":"TV/TVC","authority_effect":"NONE_REFERENCE_ONLY"}
-    forward_packet=connector.prepare(reference,payload_schema="stegverse.skap.reference-request/v1",operation="VERIFY_SESSION",operation_id=ingress_id+":kv-skap-verify",prior_receipt_hash=d_receipt["receipt_hash"])
-    forward_receipt=connector.accept_hop(forward_packet,hop_index=1,receipt_id="KV-SKAP-"+forward_packet.intent["packet_id"],boundary_identity_ref="tvc://SKAP_VAULT/custody-readback",recorded_at=now(),prior_receipt_hash=d_receipt["receipt_hash"],transition_state="RECEIVED")
-    connector.validate_complete(forward_packet,[forward_receipt])
-    response={"schema":"stegverse.skap.reference-result/v1","state":"SKAP_REFERENCE_VERIFIED","ingress_id":ingress_id,"credential_ref":outcome.get("credential_ref"),"custody_object_sha256":sha_uri(custody_bytes),"forward_terminal_receipt_hash":forward_receipt["receipt_hash"],"exact_ciphertext_readback_verified":True,"credential_material_present":False,"credential_authority":"TV/TVC","authority_effect":"NONE_EVIDENCE_ONLY"}
-    reverse_packet=connector.prepare_response(forward_packet,[forward_receipt],response,payload_schema="stegverse.skap.reference-result/v1",operation_id=ingress_id+":skap-kv-return")
-    reverse_receipt=connector.accept_hop(reverse_packet,hop_index=1,receipt_id="SKAP-KV-"+reverse_packet.intent["packet_id"],boundary_identity_ref="kv://KnowledgeVault:SKAPClient",recorded_at=now(),prior_receipt_hash=forward_receipt["receipt_hash"],transition_state="RECEIVED")
-    connector.validate_complete(reverse_packet,[reverse_receipt])
-    fk_i=base/"kv-to-skap.intent.json";fk_p=base/"kv-to-skap.payload.bin";fk_r=base/"kv-to-skap.receipt.json";sk_i=base/"skap-to-kv.intent.json";sk_p=base/"skap-to-kv.payload.bin";sk_r=base/"skap-to-kv.receipt.json"
-    atomic_json(fk_i,forward_packet.intent);atomic_bytes(fk_p,forward_packet.payload_bytes);atomic_json(fk_r,forward_receipt);atomic_json(sk_i,reverse_packet.intent);atomic_bytes(sk_p,reverse_packet.payload_bytes);atomic_json(sk_r,reverse_receipt)
-    device_return=_final_device_return(runtime_root=runtime,stegos_root=stegos_root,materialization_id=ingress_id,skap_kv_intent=reverse_packet.intent,skap_kv_payload=reverse_packet.payload_bytes,skap_kv_receipt=reverse_receipt)
-    kv_i=Path(device_return["kv_device_intent_ref"]);kv_p=Path(device_return["kv_device_payload_ref"]);kv_r=Path(device_return["kv_device_receipt_ref"]);kv_readback=load_json(Path(device_return["kv_readback_ref"]))
+    device_return_mod=_device_return_module()
+    device_return=device_return_mod.materialize(runtime_root=runtime,stegos_root=stegos_root,materialization_id=ingress_id,device_kv_receipt=d_receipt,kv_access_receipt=load_json(kv_access_receipt_path),skap_access_receipt=load_json(skap_access_receipt_path),stored_object_sha256=sha_uri(custody_bytes),operation_id=ingress_id)
+    gate_hash=device_return["kv_skap_gate_exchange_hash"]
+    gate_p=Path(device_return["kv_skap_gate_exchange_ref"]);kv_i=Path(device_return["kv_device_intent_ref"]);kv_p=Path(device_return["kv_device_payload_ref"]);kv_r=Path(device_return["kv_device_receipt_ref"]);kv_readback=load_json(Path(device_return["kv_readback_ref"]))
     manifest={"schema":INPUT_SCHEMA,"task_id":TASK_ID,"current_device":True,"hosted_runtime_used":False,"second_user_operated_device_used":False,
       "device_kv":{"intent_path":rel(runtime,d_intent_p),"payload_path":rel(runtime,d_payload_p),"receipt_path":rel(runtime,d_receipt_p)},
-      "kv_skap":{"intent_path":rel(runtime,fk_i),"payload_path":rel(runtime,fk_p),"receipt_path":rel(runtime,fk_r)},
-      "skap_kv":{"intent_path":rel(runtime,sk_i),"payload_path":rel(runtime,sk_p),"receipt_path":rel(runtime,sk_r)},
       "kv_device":{"intent_path":rel(runtime,kv_i),"payload_path":rel(runtime,kv_p),"receipt_path":rel(runtime,kv_r)},
-      "readback":{"skap":{"observed":True,"exact_readback":True,"source_receipt_hash":forward_receipt["receipt_hash"],"object_sha256":sha_uri(custody_bytes),"credential_material_present":False},"kv":{"observed":True,"exact_readback":True,"source_receipt_hash":reverse_receipt["receipt_hash"],"object_sha256":kv_readback["object_sha256"],"credential_material_present":False}}}
+      "kv_skap_gate_exchange":{"path":rel(runtime,gate_p),"kv_skap_gate_exchange_hash":gate_hash,"kv_access_receipt_path":rel(runtime,Path(device_return["kv_access_receipt_ref"]))},
+      "readback":{"skap":{"observed":True,"exact_readback":True,"kv_skap_gate_exchange_hash":gate_hash,"object_sha256":sha_uri(custody_bytes),"credential_material_present":False},"kv":{"observed":True,"exact_readback":True,"kv_skap_gate_exchange_hash":gate_hash,"object_sha256":kv_readback["object_sha256"],"credential_material_present":False}}}
     manifest_path=base/"runtime-roundtrip-manifest.json";atomic_json(manifest_path,manifest)
     proof=verify_manifest(manifest,runtime_root=runtime);proof_path=base/"runtime-roundtrip-proof.json";atomic_json(proof_path,proof)
-    result={"schema":"stegverse.device-kv-skap.tvc-custody-continuation/v1","state":"DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED","task_id":TASK_ID,"ingress_id":ingress_id,"gateway_sidecar_ref":str(gateway_sidecar_path),"tvc_drain_receipt_ref":str(tvc_drain_receipt_path),"tvc_single_custody_writer_preserved":True,"skap_exact_readback_verified":True,"kv_exact_readback_verified":True,"terminal_receipt_hash":device_return["kv_device_terminal_receipt_hash"],"manifest_ref":str(manifest_path),"proof_ref":str(proof_path),"proof_sha256":proof["proof_sha256"],"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE_EVIDENCE_ONLY"}
-    atomic_json(base/"tvc-custody-continuation.json",result);atomic_json(runtime/OUT_REL/"latest.json",result);return result
+    result={"schema":"stegverse.device-kv-skap.tvc-custody-continuation/v2","state":"DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED","task_id":TASK_ID,"ingress_id":ingress_id,"gateway_sidecar_ref":str(gateway_sidecar_path),"tvc_drain_receipt_ref":str(tvc_drain_receipt_path),"tvc_single_custody_writer_preserved":True,"skap_exact_readback_verified":True,"exact_ciphertext_readback_verified":True,"kv_exact_readback_verified":True,"boundary_stack":["DEVICE_SYSTEM","KV","DEVICE_SYSTEM"],"kv_skap_path":"IN_KV_GATE","kv_skap_intr_hop":False,"kv_skap_gate_exchange_hash":gate_hash,"kv_access_receipt_hash":device_return["kv_access_receipt_hash"],"skap_access_receipt_hash":device_return["skap_access_receipt_hash"],"tvc_drain_receipt_digest":tvc_digest,"terminal_receipt_hash":device_return["kv_device_terminal_receipt_hash"],"manifest_ref":str(manifest_path),"proof_ref":str(proof_path),"proof_sha256":proof["proof_sha256"],"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE_EVIDENCE_ONLY"}
+    atomic_json(base/"tvc-custody-continuation.json",result);_replace_json(runtime/OUT_REL/"latest.json",result);return result
 
 def main()->int:
-    p=argparse.ArgumentParser();p.add_argument("--runtime-root",type=Path,required=True);p.add_argument("--stegos-root",type=Path,required=True);p.add_argument("--gateway-sidecar",type=Path,required=True);p.add_argument("--tvc-drain-receipt",type=Path,required=True);a=p.parse_args()
-    try:r=continue_roundtrip(runtime_root=a.runtime_root,stegos_root=a.stegos_root,gateway_sidecar_path=a.gateway_sidecar,tvc_drain_receipt_path=a.tvc_drain_receipt)
+    p=argparse.ArgumentParser();p.add_argument("--runtime-root",type=Path,required=True);p.add_argument("--stegos-root",type=Path,required=True);p.add_argument("--gateway-sidecar",type=Path,required=True);p.add_argument("--tvc-drain-receipt",type=Path,required=True);p.add_argument("--kv-access-receipt",type=Path,required=True);p.add_argument("--skap-access-receipt",type=Path,required=True);a=p.parse_args()
+    try:r=continue_roundtrip(runtime_root=a.runtime_root,stegos_root=a.stegos_root,gateway_sidecar_path=a.gateway_sidecar,tvc_drain_receipt_path=a.tvc_drain_receipt,kv_access_receipt_path=a.kv_access_receipt,skap_access_receipt_path=a.skap_access_receipt)
     except Exception as exc:
-        print(json.dumps({"state":"BLOCKED","reason":str(exc),"authority_effect":"NONE"},sort_keys=True));return 1
+        print(json.dumps({"state":"BLOCKED","reason":str(exc),"fail_closed":getattr(exc,"fail_closed",None),"authority_effect":"NONE"},sort_keys=True));return 1
     print(json.dumps(r,sort_keys=True));return 0
 if __name__=="__main__":raise SystemExit(main())

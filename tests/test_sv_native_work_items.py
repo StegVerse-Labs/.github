@@ -134,10 +134,10 @@ class MigrationFixtureTests(unittest.TestCase):
             self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "HISTORICAL_RECORD_NOT_ADMISSIBLE"))
             # as NATIVE with the same observed content, GitHub CI is still not a receipt
             nat = nativize_change(ch)
-            out = wi.transition("SV_CHANGE_VERIFY", nat, hb_epoch=EPOCH)  # no observed issue: it resolves nothing
+            out = wi.transition("SV_CHANGE_VERIFY", nat, hb_epoch=EPOCH, context=fx.writer_context(nat))  # no observed issue: it resolves nothing
             self.assertEqual((out["disposition"], out["failure_code"]), ("DENY", "SV_CHANGE_RESOLVES_NOTHING"))
             out = wi.transition("SV_CHANGE_VERIFY", nat, hb_epoch=EPOCH,
-                                context={"fixture_mode": True, "resolved_issues": fx.fixture_resolved_issues(nat)})
+                                context={**fx.writer_context(nat), "fixture_mode": True, "resolved_issues": fx.fixture_resolved_issues(nat)})
             self.assertEqual((out["disposition"], out["failure_code"]), ("FAIL_CLOSED", "CHECK_SKIPPED_OR_UNOBSERVED"))
 
     def test_work_items_projection_is_native_keyed_without_approval_flag(self):
@@ -173,7 +173,7 @@ class IssueNegativeTests(unittest.TestCase):
             "SV_ISSUE_CLASS_INVALID": lambda r: r.update(resolution_class="E"),
             "SV_ISSUE_STATE_INVALID": lambda r: r.update(lifecycle_state="MERGED"),
             "SV_ISSUE_BASE_UNBOUND": lambda r: r.update(observed_base={"registry_generation": 319}),
-            "AUTHOR_SESSION_NOT_DECLARED": lambda r: r.update(opened_by_session=" "),
+            "SV_ISSUE_SCHEMA_MISMATCH": lambda r: r.update(opened_by_session=" "),  # attribution label; grants nothing
         }
         for want, f in cases.items():
             self.assertEqual(code(wi.validate_issue, self.mut(f)), want, want)
@@ -197,7 +197,7 @@ class ChangeNegativeTests(unittest.TestCase):
 
     def test_negatives(self):
         cases = {
-            "AUTHOR_SESSION_NOT_DECLARED": lambda r: r.update(declared_session=""),
+            "SV_CHANGE_SCHEMA_MISMATCH": lambda r: r.update(declared_session=""),  # attribution label; the writer is derived
             "SV_CHANGE_RESOLVES_NOTHING": lambda r: r.update(resolves=[]),
             "SV_CHANGE_BASE_UNBOUND": lambda r: r.update(base_ref={"registry_generation": "319", "ledger_head": "x"}),
             "SV_CHANGE_CONTENT_ENTRY_INVALID": lambda r: r["content"][0].update(blob_digest="e29493af"),
@@ -240,26 +240,26 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(held["failure_code"], "WORKERCOORDINATOR_CLAIM_STILL_HELD")
 
         good = al_known_good_change(issue["issue_id"])
-        unclaimed = wi.transition("SV_CHANGE_PROPOSE", good, hb_epoch=EPOCH, context={"issues": [issue]})
+        unclaimed = wi.transition("SV_CHANGE_PROPOSE", good, hb_epoch=EPOCH, context={**fx.writer_context(good), "issues": [issue]})
         self.assertEqual(unclaimed["failure_code"], "RESOLVED_ISSUE_NOT_CLAIMED_BY_AUTHOR")
-        prop = wi.transition("SV_CHANGE_PROPOSE", good, hb_epoch=EPOCH, context={"issues": [claimed]})
+        prop = wi.transition("SV_CHANGE_PROPOSE", good, hb_epoch=EPOCH, context={**fx.writer_context(good), "issues": [claimed]})
         self.assertEqual(prop["disposition"], "ALLOW")
-        real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH)  # no observed issue: resolves nothing
+        real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context=fx.writer_context(good))  # no observed issue: resolves nothing
         self.assertEqual((real["disposition"], real["failure_code"]), ("DENY", "SV_CHANGE_RESOLVES_NOTHING"))
         facts = fx.fixture_resolved_issues(prop["record"])  # fixture facts never count on the real path either
-        real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"resolved_issues": facts})
+        real = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={**fx.writer_context(good), "resolved_issues": facts})
         self.assertEqual((real["disposition"], real["failure_code"]), ("DENY", "SV_CHANGE_RESOLVES_NOTHING"))
         rb = fx.fixture_base_state_readback(prop["record"]["base_ref"], prop["record"]["hb_epoch"])
-        noepoch = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True, "resolved_issues": facts})
+        noepoch = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={**fx.writer_context(good), "fixture_mode": True, "resolved_issues": facts})
         self.assertEqual((noepoch["disposition"], noepoch["failure_code"]), ("FAIL_CLOSED", "HB_EPOCH_SOURCE_UNOBSERVED"))
-        ver = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={"fixture_mode": True, "hb_epoch_readback": rb,
+        ver = wi.transition("SV_CHANGE_VERIFY", prop["record"], hb_epoch=EPOCH, context={**fx.writer_context(good), "fixture_mode": True, "hb_epoch_readback": rb,
                                                                                            "resolved_issues": facts})
         self.assertEqual(ver["disposition"], "ALLOW", ver)
-        noprov = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={"current_base": BASE})
+        noprov = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**fx.writer_context(good), "current_base": BASE})
         self.assertEqual(noprov["failure_code"], "ADMISSION_PROVENANCE_ABSENT")
         ctx = {"current_base": BASE, "predicate_digest": "sha256:" + "c" * 64, "corpus_head": "sha256:" + "d" * 64,
                "actor_session": "AI Entity (by manifest)", "covered_kinds": ["transition"], "fixture_mode": True, "hb_epoch_readback": rb,
-               "resolved_issues": facts}
+               "resolved_issues": facts, **fx.writer_context(good)}
         moved = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**ctx, "current_base": {**BASE, "registry_generation": 320}})
         self.assertEqual((moved["disposition"], moved["failure_code"], moved["record"]["lifecycle_state"]), ("DENY", "BASE_STALE", "DENIED"))
         uncovered = wi.transition("SV_CHANGE_ADMIT", ver["record"], hb_epoch=EPOCH, context={**ctx, "covered_kinds": []})
@@ -280,10 +280,10 @@ class LifecycleTests(unittest.TestCase):
         ch = al_known_good_change(issue["issue_id"])
         ch["content"][0]["writer_session"] = {"session": "Claude (session 017WHFu1)", "evidence_class": "OBSERVED_COMMIT_TRAILER"}
         ch = reseal_change(ch)
-        self.assertEqual(wi.transition("SV_CHANGE_PROPOSE", ch, hb_epoch=EPOCH, context={"issues": [issue]})["failure_code"], "BRANCH_HAS_FOREIGN_WRITER")
+        self.assertEqual(wi.transition("SV_CHANGE_PROPOSE", ch, hb_epoch=EPOCH, context={**fx.writer_context(ch), "issues": [issue]})["failure_code"], "BRANCH_HAS_FOREIGN_WRITER")
         ch["co_author_grants"] = [{"session": "Claude (session 017WHFu1)", "receipt_ref": "receipt:grant"}]
         ch = reseal_change(ch)
-        self.assertEqual(wi.transition("SV_CHANGE_PROPOSE", ch, hb_epoch=EPOCH, context={"issues": [issue]})["disposition"], "ALLOW")
+        self.assertEqual(wi.transition("SV_CHANGE_PROPOSE", ch, hb_epoch=EPOCH, context={**fx.writer_context(ch), "issues": [issue]})["disposition"], "ALLOW")
 
     def test_undeclared_transition_and_bad_epoch(self):
         self.assertEqual(wi.transition("SV_CHANGE_MERGE", CHANGES[0], hb_epoch=EPOCH)["failure_code"], "TRANSITION_UNDECLARED")

@@ -47,10 +47,10 @@ naming its own predicate, rather than being retried into a success.
 
 A refusal is also recorded. A state transition is the disposition of an intended
 action, not only a successful one: a submission that arrived and was refused is
-a transition whose disposition is DENY, and `organization_scope_rule` makes no
+a transition whose disposition is DENY or FAIL_CLOSED, and `organization_scope_rule` makes no
 exception for it. Every refusal path through `receive` -- an unresolvable
-destination, a capability bound elsewhere, a crossing this manifest cannot
-drive, a far side that refused, a boundary chain that does not reconstruct --
+destination, a capability bound elsewhere, a declared authority effect other
+than NONE, a declared WorkerCoordinator claim that does not verify, a declared predecessor this ledger does not record or another successor already bound, a crossing this manifest cannot drive, a far side that refused, a boundary chain that does not reconstruct --
 appends a repository receipt and the organization receipt that consumes it,
 under `ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED`. Before this they returned a
 refusal and wrote nothing, which made a held or retried submission
@@ -133,6 +133,275 @@ APPEND_NOT_COMMITTED_PREDICATE = "ORGANIZATION_RECEIPT_APPENDED_UNDER_LOCK"
 APPEND_OWNING_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
 UNOBSERVED = "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED"
 PARENT_MANIFEST_INVALID_PREDICATE = "MANIFEST_DECLARED_ORGANIZATION_BATCH_PARENT_MANIFEST_IS_VALID"
+#: A crossing whose payload digest, manifest digest or echoed effect is not the
+#: payload this organization recomputes from the manifest it was delivered. The
+#: boundary receipt chain binds `payload_hash` and nothing else, so a chain that
+#: reconstructs proves only that the receipts agree with the crossing's own
+#: digest -- not that the digest is the delivered manifest's.
+PAYLOAD_NOT_BOUND = "CROSSING_PAYLOAD_NOT_BOUND_TO_THE_DELIVERED_MANIFEST"
+PAYLOAD_NOT_BOUND_PREDICATE = "CROSSING_PAYLOAD_RECOMPUTES_FROM_THE_DELIVERED_MANIFEST"
+PAYLOAD_BINDING_OWNING_GOAL = "StegVerse-Labs/.github#3369"
+#: A submission may not carry an authority effect into the crossing. The
+#: crossing copies `transition.authority_effect` onto the InTr envelope
+#: verbatim, the boundary passes it through to its result, and the boundary
+#: document says an effect is DERIVED_FROM_APPLICABLE_TRANSITION_ELEMENTS, not
+#: taken from the caller. Both appends already record "NONE". Until a landed
+#: warrant receipt can be verified here, anything but NONE is refused before
+#: the crossing runs, so nothing downstream sees an unwarranted effect.
+AUTHORITY_NOT_WARRANTED = "AUTHORITY_EFFECT_NOT_WARRANTED_AT_INGRESS"
+AUTHORITY_NOT_WARRANTED_PREDICATE = "DECLARED_AUTHORITY_EFFECT_IS_NONE_UNTIL_A_WARRANT_RECEIPT_BINDS"
+AUTHORITY_OWNING_GOAL = "SDK-MANIFEST-ECOSYSTEM-TRANSITION-DISPOSITION-001"
+#: The only declared effect this operation admits. An absent `transition`, or
+#: one with no `authority_effect`, is the same NONE the crossing reads it as.
+NONE_AUTHORITY_EFFECT = "NONE"
+#: Gap 2 of StegVerse-Labs/.github#3369 (stale head / fence). A submission may
+#: declare the WorkerCoordinator claim it runs under as
+#: `extensions.stegverse_workercoordinator_claim: {"claim_id": "<id>-G<fence>",
+#: "fencing_token": <fence>}` -- under `extensions`, the namespace the SDK's
+#: `validate_ingress_manifest` admits (a top-level field is refused by the SDK
+#: as unknown before this operation sees it). The
+#: declaration is observed against the committed WorkerCoordinator truth
+#: (`control/worker-registry.json`, the registry `coordination_ledger.py`
+#: validates claim coverage from) and nothing is minted: a declared claim that
+#: is not an unreleased BOUND task holding exactly that fence is refused before
+#: the crossing. An absent declaration is admitted and reported as
+#: `worker_claim_state: UNVERIFIED`, as the boundary admits and records an
+#: unattested crossing, because most manifests this operation receives are not
+#: task-bound.
+WORKER_CLAIM_EXTENSION = "stegverse_workercoordinator_claim"
+WORKER_CLAIM_FIELD = "extensions." + WORKER_CLAIM_EXTENSION
+WORKER_REGISTRY_REF = "control/worker-registry.json"
+WORKER_REGISTRY_SCHEMA = "stegverse.heartbeat-worker-registry/v0.1"
+WORKER_CLAIM_TERMINAL_STATES = frozenset({"COMPLETED", "FAILED_TERMINAL"})
+FENCE_PREDICATE = "DECLARED_FENCE_IS_THE_CURRENT_WORKERCOORDINATOR_FENCE"
+FENCE_NOT_VERIFIED = "FENCE_DECLARED_NOT_VERIFIED"
+FENCE_STALE = "FENCE_STALE_OR_RELEASED"
+FENCE_OWNING_GOAL = "StegVerse-Labs/.github#3369"
+WORKER_CLAIM_UNVERIFIED = "UNVERIFIED"
+WORKER_CLAIM_VERIFIED = "VERIFIED_AGAINST_COMMITTED_WORKERCOORDINATOR_REGISTRY"
+WORKER_CLAIM_REPLAYED = "RECORDED_ADMISSION_REPLAYED_FENCE_NOT_RECHECKED"
+#: Gap 2 of StegVerse-Labs/.github#3369, the head half (option 2A). A declared
+#: VERIFY_EXISTING standing names a predecessor (generation, manifest_sha256,
+#: result_sha256, heartbeat_epoch -- the lineage contract's field set). Before
+#: the crossing, this operation checks its own repository ledger, the record
+#: of every admission this organization made: the predecessor must be a
+#: recorded admission for the same node_ref at that generation with that
+#: canonical manifest digest, and no other admission for the node may already
+#: have bound that predecessor to a different successor. The ledger is read,
+#: never written here, and nothing is minted. result_sha256 is held to shape
+#: only: no result digest is recorded in a receipt, so it cannot be compared.
+PREDECESSOR_PREDICATE = "DECLARED_PREDECESSOR_IS_RECORDED_AND_UNSUPERSEDED_IN_THIS_LEDGER"
+PREDECESSOR_NOT_RECORDED = "DECLARED_PREDECESSOR_NOT_RECORDED"
+PREDECESSOR_SUPERSEDED = "DECLARED_PREDECESSOR_SUPERSEDED"
+PREDECESSOR_OWNING_GOAL = "ORGANIZATION-BATCH-CUSTODY-REPLAY-001"
+VERIFY_EXISTING_MODE = "VERIFY_EXISTING"
+PREDECESSOR_RESULT_BINDING = "NOT_CHECKED_RESULT_DIGEST_NOT_RECORDED_IN_RECEIPTS"
+#: How the recorded predecessor was matched: a receipt that recorded the
+#: standing it was admitted at (node, generation and digest all compared), or
+#: an admission recorded before standings were recorded (digest only; the
+#: node and generation could not be compared and the result says so).
+PREDECESSOR_RECORD_FULL = "NODE_GENERATION_AND_MANIFEST_DIGEST_RECORDED"
+PREDECESSOR_RECORD_LEGACY = "MANIFEST_DIGEST_ONLY_RECEIPT_PREDATES_RECORDED_STANDING"
+_HEX64 = re.compile(r"^[0-9a-f]{64}$")
+#: The owner's own failure codes for an invalid declared parent manifest
+#: (organization_batch_custody.organization_batch_parent_manifest). The refusal
+#: returns the owner's code, so the disposition is looked up under that code:
+#: each (owner code, PARENT_MANIFEST_INVALID_PREDICATE) is its own row, DENY.
+PARENT_MANIFEST_OWNER_CODES = (
+    "ORGANIZATION_BATCH_CANONICAL_TASK_BINDING_REQUIRED",
+    "ORGANIZATION_BATCH_CANONICAL_MANIFEST_REQUIRED",
+    "ORGANIZATION_BATCH_MANIFEST_EXTENSIONS_REQUIRED",
+    "ORGANIZATION_BATCH_TASK_BINDING_REQUIRED",
+    "ORGANIZATION_BATCH_TASK_ID_MISMATCH",
+    "ORGANIZATION_BATCH_COSV_MISMATCH",
+    "ORGANIZATION_BATCH_REQUEST_REF_MISMATCH",
+    "ORGANIZATION_BATCH_TASK_BINDING_AUTHORITY_ESCALATION",
+    "ORGANIZATION_BATCH_RECEIPT_BATCH_POLICY_REQUIRED",
+    "ORGANIZATION_BATCH_COUNT_RELEASE_CONDITION_REQUIRED",
+    "ORGANIZATION_BATCH_RELEASE_COUNT_INVALID",
+    "ORGANIZATION_BATCH_SDK_TASK_BINDING_REQUIRED",
+    "ORGANIZATION_BATCH_SDK_TASK_ID_MISMATCH",
+    "ORGANIZATION_BATCH_SDK_BATCH_POLICY_MISMATCH",
+)
+
+#: The six fields a non-ALLOW carries.
+SIX_FIELDS = ("failure_code", "failed_predicate", "required_evidence_or_repair",
+              "retry_entrypoint", "owning_existing_goal", "next_attempt")
+
+#: D7. A published route bound to the state-transition runtime is processed only
+#: by a service whose `admits_processing` names the declared {capability,
+#: route_id}. When none does, the crossing's fallback to the `completion.egress`
+#: surface hands the manifest to the service its result returns to (here the
+#: boundary-local diagnostic, which completes it), so the ingress refuses it
+#: before the crossing is driven. Routes bound to another runtime
+#: (`native_source_math`, `customer_local_governance`) and completion-return-only
+#: manifests keep the surface fallback. The check lives here, not in the
+#: crossing: the crossing is stdlib-only and the boundary holds no route table
+#: (org-boundary/runtime/manifest_selection.py).
+STATE_TRANSITION_RUNTIME_BINDING = "stegverse.manifest_state_transition_runtime.execute_manifest"
+PROCESSING_NOT_DECLARED_CODE = "PROCESSING_SERVICE_NOT_DECLARED_FOR_CONSUMER_ROUTE"
+PROCESSING_NOT_DECLARED_PREDICATE = "CONSUMER_ROUTE_RESOLVES_TO_A_DECLARED_PROCESSING_SERVICE"
+INTR_PROTOCOL_GOAL = "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+#: The SDK refused the organization's runtime result after the receipt was
+#: appended (`admit_runtime_result`). An organization-side result the SDK does
+#: not admit is FAIL_CLOSED, not a defect of the submission.
+SDK_RESULT_REFUSED_CODE = "SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT"
+SDK_RESULT_REFUSED_PREDICATE = "SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT"
+#: The refusal disposition table, keyed on the composite (failure_code,
+#: failed_predicate). Neither half is unique alone: two crossing codes share one
+#: predicate, and every refusal raised by this operation itself carries the one
+#: code ORGANIZATION_SDK_MANIFEST_INGRESS_REFUSED. The value is both what the
+#: refusal record stores and what `receive` returns. DENY is a defect of the
+#: submission; FAIL_CLOSED is an organization-side gap, an append that did not
+#: commit, an epoch that was not supplied or is invalid, or a far side that did
+#: not complete. A pair with no row is refused FAIL_CLOSED under
+#: REFUSAL_DISPOSITION_NOT_DECLARED. The same table is in both forks' ingress
+#: (StegVerse-org/.github and StegVerse-Labs/.github), plus the Labs-only rows.
+#: A refusal that carries no six fields here (PR-1(ii)) is looked up as
+#: (REFUSED_CLASS, its predicate), the key the org's generic refusal carries.
+REFUSAL_DISPOSITION_NOT_DECLARED = "REFUSAL_DISPOSITION_NOT_DECLARED"
+REFUSAL_DISPOSITIONS = {
+    # organization-side configuration gaps
+    (PROCESSING_NOT_DECLARED_CODE, PROCESSING_NOT_DECLARED_PREDICATE): "FAIL_CLOSED",
+    (SDK_RESULT_REFUSED_CODE, SDK_RESULT_REFUSED_PREDICATE): "FAIL_CLOSED",
+    (REFUSED_CLASS, "ORGANIZATION_RESOLVES_ITS_OWN_INGRESS_DESTINATION"): "FAIL_CLOSED",
+    (REFUSED_CLASS, "BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY"): "FAIL_CLOSED",
+    ("CROSSING_REQUIRES_MATERIALIZED_CAPABILITY_MAP", "CROSSING_IS_GIVEN_A_MATERIALIZED_CAPABILITY_MAP"): "FAIL_CLOSED",
+    ("ORG_EXPOSES_NO_SUCH_TRANSITION_SURFACE", "DECLARED_SURFACE_RESOLVES_TO_EXACTLY_ONE_SERVICE"): "FAIL_CLOSED",
+    ("TRANSITION_SURFACE_AMBIGUOUS_IN_REGISTRY", "DECLARED_SURFACE_RESOLVES_TO_EXACTLY_ONE_SERVICE"): "FAIL_CLOSED",
+    ("PROCESSING_AMBIGUOUS_IN_REGISTRY", "DECLARED_PROCESSING_PAIR_IS_ADMITTED_BY_AT_MOST_ONE_SERVICE"): "FAIL_CLOSED",
+    # the supplied epoch (the shared HB_EPOCH codes; raised by PR-1b, not here)
+    ("HB_EPOCH_NOT_SUPPLIED", "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"): "FAIL_CLOSED",
+    ("HB_EPOCH_INVALID", "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH"): "FAIL_CLOSED",
+    # the ledger readback (an empty ledger has no HEAD)
+    ("ORGANIZATION_LEDGER_HEAD_ABSENT", "ORGANIZATION_LEDGER_HEAD_PRESENT"): "FAIL_CLOSED",
+    # a far side that did not complete
+    ("FAR_SIDE_RECEIVER_UNAVAILABLE", "RESOLVED_SERVICE_HAS_AN_INSTALLED_ENDPOINT_ADAPTER"): "FAIL_CLOSED",
+    ("FAR_SIDE_REFUSED_THE_CROSSING", "ADMITTED_CROSSING_REACHES_ITS_INTERNAL_ENDPOINT"): "FAIL_CLOSED",
+    # defects of the submission
+    (REFUSED_CLASS, "CAPABILITY_IS_BOUND_TO_THIS_RECEIVING_OPERATION"): "DENY",
+    (REFUSED_CLASS, "CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED"): "DENY",
+    (REFUSED_CLASS, "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST"): "DENY",
+    ("MANIFEST_DECLARES_NO_EGRESS", "MANIFEST_DECLARES_COMPLETION_EGRESS"): "DENY",
+    ("MANIFEST_DECLARES_NO_TRANSITION_SURFACE", "MANIFEST_DECLARES_A_FINAL_TRANSITION_SURFACE"): "DENY",
+    ("MANIFEST_DECLARES_NON_INTR_TRANSPORT", "MANIFEST_DECLARES_INTERLOCK_INTR_TRANSPORT"): "DENY",
+    ("MANIFEST_DECLARES_NO_FAR_SIDE_REQUIREMENT", "MANIFEST_DECLARES_FAR_SIDE_TRANSITION_REQUIREMENT"): "DENY",
+    ("CROSSING_REQUIRES_DECLARED_STANDING", "CROSSING_STANDING_IS_DERIVED_FROM_THE_MANIFEST_OR_DECLARED"): "DENY",
+    ("CROSSING_STANDING_MUST_DECLARE_THE_PREDECESSOR_KEY", "CROSSING_STANDING_DECLARES_THE_PREDECESSOR_KEY"): "DENY",
+    # Labs-only rows
+    (APPEND_NOT_COMMITTED, APPEND_NOT_COMMITTED_PREDICATE): "FAIL_CLOSED",
+    (REFUSED_CLASS, "RECORDED_DELIVERY_RECONSTRUCTS_INDEPENDENTLY"): "FAIL_CLOSED",
+    # Rows for the refusals of the ingress series (Labs#3441). A declared effect, a
+    # fence that moved and a superseded predecessor are defects of the submission;
+    # a fence or predecessor this operation cannot verify, and a crossing whose
+    # payload is not the delivered manifest's, are not.
+    (PAYLOAD_NOT_BOUND, PAYLOAD_NOT_BOUND_PREDICATE): "FAIL_CLOSED",
+    (AUTHORITY_NOT_WARRANTED, AUTHORITY_NOT_WARRANTED_PREDICATE): "DENY",
+    (FENCE_NOT_VERIFIED, FENCE_PREDICATE): "FAIL_CLOSED",
+    (FENCE_STALE, FENCE_PREDICATE): "DENY",
+    (PREDECESSOR_NOT_RECORDED, PREDECESSOR_PREDICATE): "FAIL_CLOSED",
+    (PREDECESSOR_SUPERSEDED, PREDECESSOR_PREDICATE): "DENY",
+    # An invalid declared parent manifest is refused under the owner's code.
+    **{(code, PARENT_MANIFEST_INVALID_PREDICATE): "DENY" for code in PARENT_MANIFEST_OWNER_CODES},
+    (REFUSED_CLASS, "SDK_ADMITS_THE_ROLE_CONFORMANCE_MANIFEST_SHAPE"): "DENY",
+    (REFUSED_CLASS, "SDK_RESOLVES_THE_DECLARED_ROLE_CONFORMANCE_ROUTE"): "DENY",
+    (REFUSED_CLASS, "SDK_DERIVES_THE_ROLE_CONFORMANCE_REQUEST_FROM_ITS_EXTENSION"): "DENY",
+}
+
+
+def ingress_six_fields(failure_code: str, failed_predicate: str, required_evidence_or_repair: str,
+                       owning_existing_goal: str, resubmit: str) -> dict[str, str]:
+    """The six fields of a refusal this operation raises before the crossing.
+
+    Every field is a non-empty string, as `passed_through` requires of the ones
+    a crossing carries. `next_attempt` names what to resubmit and says nothing
+    waits on an external machine: the next attempt is a resubmission to `receive`.
+    """
+    return {"failure_code": failure_code, "failed_predicate": failed_predicate,
+            "required_evidence_or_repair": required_evidence_or_repair,
+            "retry_entrypoint": RETRY_ENTRYPOINT,
+            "owning_existing_goal": owning_existing_goal,
+            "next_attempt": "resubmit " + resubmit + " to " + RETRY_ENTRYPOINT
+                            + "; nothing waits on an external machine"}
+
+
+def _repair(repair: str, goal: str, next_attempt: str) -> tuple[str, str, str]:
+    return repair, goal, next_attempt
+
+
+#: What each refusal this operation raises without six fields of its own
+#: (PR-1(ii)) names as the repair, the goal that owns it and the next attempt,
+#: by its predicate. `retry_entrypoint` is always `RETRY_ENTRYPOINT`: every one of
+#: these is retried by submitting a manifest to `receive`. A refusal whose
+#: predicate has no row here still returns and records all six fields, from
+#: `UNLISTED_REFUSAL_REPAIR`; a test fails if a predicate this file refuses under
+#: has no row, so that fallback is never what a known refusal reads.
+REFUSAL_REPAIRS = {
+    "ORGANIZATION_RESOLVES_ITS_OWN_INGRESS_DESTINATION": _repair(
+        "a manifest the SDK resolves to this organization's ingress destination from its own "
+        "declarations; the detail names the derivation step that did not resolve",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest once its declared route and capability derive an ingress request; "
+        "the refusal is recorded and nothing crossed"),
+    "CAPABILITY_IS_BOUND_TO_THIS_RECEIVING_OPERATION": _repair(
+        "a manifest whose declared capability the SDK resolves to this repository's "
+        "ORGANIZATION_SDK_MANIFEST_INGRESS receiving operation; submit it to the owning organization instead",
+        INTR_PROTOCOL_GOAL,
+        "resubmit to the organization whose receiving operation the manifest's capability resolves to; "
+        "nothing crossed here"),
+    "CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED": _repair(
+        "a manifest that declares what the crossing needs (completion egress, a final transition "
+        "surface, an InTr transport, standing); the detail names the missing declaration",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest with the missing declaration added; nothing crossed"),
+    "BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY": _repair(
+        "a boundary receipt chain whose every receipt recomputes from its own subject and whose "
+        "predecessors chain; the detail names the receipt that does not",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest once the boundary returns a chain that reconstructs; the refused "
+        "crossing is recorded and no ingress transition was written"),
+    "RECORDED_DELIVERY_RECONSTRUCTS_INDEPENDENTLY": _repair(
+        "a recorded delivery whose receipts recompute from the stored crossing; the detail names "
+        "the digest that does not",
+        APPEND_OWNING_GOAL,
+        "resubmit the same manifest once the recorded delivery reconstructs; the first record is kept"),
+    "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST": _repair(
+        "the manifest this transition id already binds, or a new transition id for a different manifest",
+        APPEND_OWNING_GOAL,
+        "resubmit the original manifest for the recorded transition, or submit the other manifest "
+        "under its own transition id"),
+    PARENT_MANIFEST_INVALID_PREDICATE: _repair(
+        "a declared organization batch parent manifest that its owner validates; the failure code "
+        "is the owner's own code for what did not validate",
+        APPEND_OWNING_GOAL,
+        "resubmit with a parent manifest the owner validates, or without the declaration"),
+    "SDK_ADMITS_THE_ROLE_CONFORMANCE_MANIFEST_SHAPE": _repair(
+        "a role-conformance manifest of a shape the pinned SDK admits; the detail is the SDK's own reason",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest in the shape the SDK admits; nothing crossed"),
+    "SDK_RESOLVES_THE_DECLARED_ROLE_CONFORMANCE_ROUTE": _repair(
+        "a role-conformance manifest whose declared route the pinned SDK resolves; the detail is "
+        "the SDK's own reason",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest naming a route the SDK publishes; nothing crossed"),
+    "SDK_DERIVES_THE_ROLE_CONFORMANCE_REQUEST_FROM_ITS_EXTENSION": _repair(
+        "a role-conformance manifest whose extension the pinned SDK derives an ingress request from; "
+        "the detail is the SDK's own reason",
+        INTR_PROTOCOL_GOAL,
+        "resubmit the manifest with an extension the SDK derives a request from; nothing crossed"),
+}
+UNLISTED_REFUSAL_REPAIR = _repair(
+    "a submission for which the failed predicate holds; the detail names what did not",
+    INTR_PROTOCOL_GOAL,
+    "resubmit once the failed predicate holds; the refusal is recorded and nothing crossed")
+
+
+def generic_six_fields(failure_code: str, failed_predicate: str) -> dict[str, str]:
+    """The six fields of a refusal that carried none, from `REFUSAL_REPAIRS` by its predicate."""
+    repair, goal, next_attempt = REFUSAL_REPAIRS.get(failed_predicate, UNLISTED_REFUSAL_REPAIR)
+    return {"failure_code": failure_code, "failed_predicate": failed_predicate,
+            "required_evidence_or_repair": repair, "retry_entrypoint": RETRY_ENTRYPOINT,
+            "owning_existing_goal": goal, "next_attempt": next_attempt}
 
 
 def recomputation_rule_ref(environ: Mapping[str, str] | None = None,
@@ -204,6 +473,189 @@ crossing_module = _module("sdk_manifest_crossing", "resident-runtime/sdk_manifes
 repository_ledger = _module("repo_transition_emit", ".stegverse/transition-ledger/emit.py")
 organization_ledger = _module("aggregate_repo_transition",
                               "resident-runtime/aggregate_repo_transition.py")
+
+
+#: P1 interface (#163): where the ledger writers load from and where their
+#: contracts resolve. Both default to this checkout, which is today's
+#: behaviour. A consumer that carries this operation without carrying the
+#: writers names them with `--ledger-component <path>` (a root holding
+#: `.stegverse/transition-ledger/emit.py` and
+#: `resident-runtime/aggregate_repo_transition.py`) and the root its contracts
+#: live in with `--consumer-root <path>` (a root holding
+#: `.stegverse/transition-ledger/contract.json` and `org-contract.json`). The
+#: ledger *locations* stay STEGVERSE_REPO_LEDGER_ROOT / STEGVERSE_ORG_LEDGER_ROOT.
+#: A path that is given and does not hold those files fails closed.
+LEDGER_COMPONENT_PATH_INVALID = "LEDGER_COMPONENT_PATH_INVALID"
+CONSUMER_ROOT_PATH_INVALID = "CONSUMER_ROOT_PATH_INVALID"
+LEDGER_COMPONENT_FILES = (".stegverse/transition-ledger/emit.py",
+                          "resident-runtime/aggregate_repo_transition.py")
+#: The flat layout of the shared ledger component (as in
+#: org-kernel/organization-ledger/): the same two writers as siblings. Either
+#: layout is accepted for --ledger-component.
+LEDGER_COMPONENT_FLAT_FILES = ("emit.py", "aggregate_repo_transition.py")
+LEDGER_COMPONENT_LAYOUTS = (" and ".join(LEDGER_COMPONENT_FILES)
+                            + ", or as siblings " + " and ".join(LEDGER_COMPONENT_FLAT_FILES),)
+CONSUMER_ROOT_FILES = (".stegverse/transition-ledger/contract.json",
+                       ".stegverse/transition-ledger/org-contract.json")
+
+
+class LedgerPathRefused(SystemExit):
+    """A FAIL_CLOSED refusal of a given ledger path; `.refusal` carries the six fields."""
+
+    def __init__(self, refusal: Mapping[str, Any]):
+        super().__init__(refusal["failure_code"] + ":" + refusal["detail"])
+        self.refusal = dict(refusal)
+
+
+def _ledger_path_refusal(code: str, predicate: str, option: str, path: Any,
+                         required: tuple[str, ...], entrypoint: str, goal: str) -> LedgerPathRefused:
+    return LedgerPathRefused({
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": predicate,
+        "detail": option + " " + str(path) + " does not hold " + ", ".join(required),
+        "required_evidence_or_repair": (
+            "give " + option + " a directory holding " + ", ".join(required)
+            + ", or omit it to use this checkout"),
+        "retry_entrypoint": entrypoint,
+        "owning_existing_goal": goal,
+        "next_attempt": "run again with a valid " + option + "; nothing was loaded or appended",
+    })
+
+
+def ledger_writer_refusal(exc: SystemExit, entrypoint: str,
+                          goal: str) -> tuple[dict[str, Any], bool] | None:
+    """A ledger writer's refusal and whether it carried its own record, or None.
+
+    The ledger component's LedgerRefusal (ledger_common.py, flat next to
+    emit.py) subclasses SystemExit and carries its refusal as `.refusal`, a
+    dict: that is returned as given, (refusal, True), and printed unchanged.
+    An old-layout writer raises a plain SystemExit(message): only when it
+    came out of a ledger writer call itself (`_ledger_write`, which marks it
+    LedgerWriterExit) is the message given the six fields here, FAIL_CLOSED,
+    (fields, False). Any other SystemExit -- an int or None code, or a message
+    from anything but a writer call (e.g. repository-receipt-failed) -- is not
+    a ledger refusal (None) and is re-raised by the caller.
+    """
+    refusal = getattr(exc, "refusal", None)
+    if isinstance(refusal, dict):
+        return refusal, True
+    if not isinstance(exc, LedgerWriterExit) or not isinstance(exc.code, str):
+        return None
+    message = exc.code
+    head = message.split(":", 1)[0].strip()
+    code = head if re.fullmatch(r"[A-Z][A-Z0-9_]*", head) else "LEDGER_WRITER_REFUSED"
+    return {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": "LEDGER_WRITER_ADMITS_THE_APPEND",
+        "detail": message,
+        "required_evidence_or_repair": "repair what the ledger writer refused (" + message + ") and run again",
+        "retry_entrypoint": entrypoint,
+        "owning_existing_goal": goal,
+        "next_attempt": "run again once the ledger writer's refusal is repaired; nothing was written",
+    }, False
+
+
+class LedgerWriterExit(SystemExit):
+    """A plain SystemExit(message) that a ledger writer call itself raised (old layout)."""
+
+
+def _ledger_write(call: Any, *args: Any, **kwargs: Any) -> Any:
+    """Run one ledger writer call; a plain SystemExit(message) from it is marked as the writer's.
+
+    Only a plain SystemExit is marked. A LedgerRefusal (it carries
+    `.refusal`), the writer's other SystemExit subclasses (e.g.
+    OrgLedgerAppendRefused) and an exit with no message pass through unchanged.
+    """
+    try:
+        return call(*args, **kwargs)
+    except SystemExit as exc:
+        if type(exc) is not SystemExit or not isinstance(exc.code, str):
+            raise
+        raise LedgerWriterExit(exc.code) from exc
+
+
+def cli_hb_epoch(text: str | None, entrypoint: str,
+                 goal: str) -> tuple[int | None, dict[str, Any] | None]:
+    """--hb-epoch as typed, checked by the shared rule: (epoch, None) or (None, refusal).
+
+    argparse hands over the raw text (type=str), so the shared validator
+    (supplied_epoch_failure, the egress boundary's copy) sees it uncoerced:
+    '+33', ' 33' and '3_3' are HB_EPOCH_INVALID, and '0033' is 33. An absent
+    --hb-epoch stays None, as before.
+    """
+    if text is None:
+        return None, None
+    rule = _module("organization_egress_boundary_cli_epoch",
+                   "resident-runtime/organization_egress_boundary.py").supplied_epoch_failure
+    failure = rule(text)
+    if failure is None:
+        return int(text), None  # admitted as ASCII digits
+    code, detail = failure
+    return None, {
+        "disposition": "FAIL_CLOSED",
+        "failure_code": code,
+        "failed_predicate": "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH",
+        "detail": detail,
+        "required_evidence_or_repair": ("pass --hb-epoch as the carrier supplied it: ASCII digits "
+                                        "with value >= 32"),
+        "retry_entrypoint": entrypoint,
+        "owning_existing_goal": goal,
+        "next_attempt": "run again with the supplied epoch; nothing was received or appended",
+    }
+
+
+def bind_ledger_writers(ledger_component: Path | str | None = None,
+                        consumer_root: Path | str | None = None) -> dict[str, Any]:
+    """Load the ledger writers from `ledger_component`, their contracts from `consumer_root`.
+
+    Either left None keeps this checkout. Both are checked before anything is
+    loaded, so a refused path leaves the writers already bound in place.
+    """
+    global repository_ledger, organization_ledger
+    entrypoint = "resident-runtime/organization_manifest_ingress.py (--ledger-component, --consumer-root)"
+    component = Path(ledger_component).expanduser().resolve() if ledger_component is not None else None
+    consumer = Path(consumer_root).expanduser().resolve() if consumer_root is not None else None
+    layout = (None if component is None
+              else LEDGER_COMPONENT_FILES if all((component / name).is_file() for name in LEDGER_COMPONENT_FILES)
+              else LEDGER_COMPONENT_FLAT_FILES
+              if all((component / name).is_file() for name in LEDGER_COMPONENT_FLAT_FILES)
+              else ())
+    if component is not None and not layout:
+        raise _ledger_path_refusal(LEDGER_COMPONENT_PATH_INVALID, "LEDGER_COMPONENT_PATH_HOLDS_THE_LEDGER_WRITERS",
+                                   "--ledger-component", ledger_component, LEDGER_COMPONENT_LAYOUTS,
+                                   entrypoint, INTR_PROTOCOL_GOAL)
+    if consumer is not None and not all((consumer / name).is_file() for name in CONSUMER_ROOT_FILES):
+        raise _ledger_path_refusal(CONSUMER_ROOT_PATH_INVALID, "CONSUMER_ROOT_PATH_HOLDS_THE_LEDGER_CONTRACTS",
+                                   "--consumer-root", consumer_root, CONSUMER_ROOT_FILES,
+                                   entrypoint, INTR_PROTOCOL_GOAL)
+    try:
+        contracts = ({name: json.loads((consumer / name).read_text(encoding="utf-8"))
+                      for name in CONSUMER_ROOT_FILES} if consumer is not None else None)
+    except ValueError as exc:
+        raise _ledger_path_refusal(CONSUMER_ROOT_PATH_INVALID, "CONSUMER_ROOT_PATH_HOLDS_THE_LEDGER_CONTRACTS",
+                                   "--consumer-root", str(consumer_root) + " (" + str(exc) + ")",
+                                   CONSUMER_ROOT_FILES, entrypoint, INTR_PROTOCOL_GOAL) from None
+    base = component if component is not None else ROOT
+    files = layout or LEDGER_COMPONENT_FILES
+    repository = _module_at("repo_transition_emit_bound", base / files[0])
+    organization = _module_at("aggregate_repo_transition_bound", base / files[1])
+    if contracts is not None:
+        repository.ROOT, repository.C = consumer, contracts[CONSUMER_ROOT_FILES[0]]
+        organization.ROOT, organization.C = consumer, contracts[CONSUMER_ROOT_FILES[1]]
+    repository_ledger, organization_ledger = repository, organization
+    return {"ledger_component": str(base), "consumer_root": str(consumer if consumer is not None else ROOT),
+            "ledger_component_is_this_checkout": component is None,
+            "ledger_component_layout": "FLAT" if files == LEDGER_COMPONENT_FLAT_FILES else "NESTED",
+            "consumer_root_is_this_checkout": consumer is None}
+
+
+def _module_at(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 role_conformance = _module("organization_role_conformance",
                            "resident-runtime/organization_role_conformance.py")
 # The batch parent manifest is validated by its owner, the same module the
@@ -244,7 +696,8 @@ def submitted_capability(manifest: Any) -> dict[str, Any]:
 
 
 def refusal_record(failed_predicate: str, detail: str,
-                   manifest: Any) -> dict[str, Any]:
+                   manifest: Any, six_fields: Mapping[str, Any] | None = None,
+                   *, disposition: str | None = None) -> dict[str, Any]:
     """What a refused submission records.
 
     The manifest reaches the chain by digest only. Nothing an admitted crossing
@@ -261,15 +714,22 @@ def refusal_record(failed_predicate: str, detail: str,
     a refusal resolved no destination, and marking it as a record that did would
     put it in a population measured for target and scope fields it correctly
     lacks.
+
+    The disposition is set per (failure_code, failed_predicate) pair
+    (`REFUSAL_DISPOSITIONS`, via `declared_refusal`). Six
+    fields passed through from the refusing step are stored with the record, so
+    what is stored and what is returned name the same repair.
     """
-    return {
+    record = {
         "schema": REFUSAL_SCHEMA,
         "receiving_operation": OPERATION_ID,
         "profile_id": PROFILE_ID,
         "operation": OPERATION,
         **submitted_capability(manifest),
         "intended_action": INTENDED_ACTION,
-        "disposition": "DENY",
+        "disposition": disposition if disposition is not None else (
+            declared_refusal(six_fields)[0] if six_fields
+            else refusal_disposition(REFUSED_CLASS, failed_predicate) or "FAIL_CLOSED"),
         "transition_is_the_disposition_of_the_intended_action": True,
         "failed_predicate": failed_predicate,
         "detail": detail,
@@ -279,6 +739,93 @@ def refusal_record(failed_predicate: str, detail: str,
         "received": False,
         "retry_is_a_transition_not_a_lost_signal": True,
         "authority_effect": "NONE_REFUSAL_RECORD_ONLY",
+    }
+    if six_fields:
+        record.update(dict(six_fields))
+    return record
+
+
+def refusal_disposition(failure_code: Any, failed_predicate: Any) -> str | None:
+    """The table's disposition for a (failure_code, failed_predicate) pair, or None when no row declares it."""
+    return REFUSAL_DISPOSITIONS.get((failure_code, failed_predicate))
+
+
+def declared_refusal(fields: Mapping[str, Any]) -> tuple[str, dict[str, Any]]:
+    """The disposition of a six-field refusal, and the six fields it is stored and returned with.
+
+    A pair the table declares keeps its fields as given. A pair it does not
+    declare is refused FAIL_CLOSED under REFUSAL_DISPOSITION_NOT_DECLARED; the
+    pair it arrived with is kept under `undeclared_refusal_*`, so the refusal is
+    not renamed silently.
+    """
+    fields = {field: fields[field] for field in SIX_FIELDS}
+    disposition = refusal_disposition(fields["failure_code"], fields["failed_predicate"])
+    if disposition is not None:
+        return disposition, fields
+    return "FAIL_CLOSED", {
+        **fields,
+        "failure_code": REFUSAL_DISPOSITION_NOT_DECLARED,
+        "required_evidence_or_repair": (
+            "declare a REFUSAL_DISPOSITIONS row for (" + str(fields["failure_code"]) + ", "
+            + str(fields["failed_predicate"]) + "); the refusal it names: "
+            + str(fields["required_evidence_or_repair"])),
+        "undeclared_refusal_failure_code": fields["failure_code"],
+        "undeclared_refusal_failed_predicate": fields["failed_predicate"],
+    }
+
+
+def passed_through(source: Any) -> dict[str, Any] | None:
+    """The six fields a refusing step carried, or None when it carried no complete set."""
+    if not isinstance(source, Mapping):
+        return None
+    fields = {field: source.get(field) for field in SIX_FIELDS}
+    if not all(isinstance(value, str) and value.strip() for value in fields.values()):
+        return None
+    return fields
+
+
+def processing_service_precheck(manifest: Any, registry: Mapping[str, Any]) -> dict[str, Any] | None:
+    """D7: the six fields when a state-transition route has no declared processing service.
+
+    Returns None when the check does not apply: the manifest declares no
+    processing pair, its route binds another runtime, or a service admits the
+    pair. A route that does not resolve, or a registry that is ambiguous, is
+    left to the crossing, which refuses it with its own six fields.
+    """
+    if not isinstance(manifest, Mapping):
+        return None
+    processing = manifest.get("processing")
+    if not isinstance(processing, Mapping):
+        return None
+    capability, route_id = processing.get("capability"), processing.get("route_id")
+    if not capability or not route_id:
+        return None
+    try:
+        route = route_from_manifest(manifest)
+    except ValueError:
+        return None
+    if route.get("runtime_binding") != STATE_TRANSITION_RUNTIME_BINDING:
+        return None
+    try:
+        if crossing_module.processing_service(dict(manifest), dict(registry)) is not None:
+            return None
+    except SystemExit:
+        return None
+    pair = json.dumps({"capability": capability, "route_id": route_id}, sort_keys=True)
+    return {
+        "failure_code": PROCESSING_NOT_DECLARED_CODE,
+        "failed_predicate": PROCESSING_NOT_DECLARED_PREDICATE,
+        "detail": "route " + str(route_id) + " binds " + STATE_TRANSITION_RUNTIME_BINDING
+                  + " and no service in this organization's registry admits " + pair
+                  + "; the completion.egress surface is not used for processing",
+        "required_evidence_or_repair": "add a service row whose admits_processing names " + pair
+                                       + " in org-boundary/registry/services.json, with the route "
+                                         "published in the SDK (route_resolution.PUBLISHED_ROUTES)",
+        "retry_entrypoint": "the same manifest, resubmitted to stegverse-labs.sdk-manifest-ingress "
+                            "(" + RETRY_ENTRYPOINT + ")",
+        "owning_existing_goal": INTR_PROTOCOL_GOAL,
+        "next_attempt": "once the admits_processing row lands; the refusal is recorded and "
+                        "nothing crossed",
     }
 
 
@@ -291,7 +838,7 @@ def _repository_receipt_read_back(receipt: Mapping[str, Any]) -> str | None:
     """
     try:
         digest = receipt["receipt_sha256"]
-        store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+        store = repository_ledger.repository_store()
         stored = store.get(repository_ledger.ledger_store.receipt_key(digest))
         body = {key: value for key, value in stored.items() if key != "receipt_sha256"}
         if stored != dict(receipt) or repository_ledger.sha(body) != digest:
@@ -412,12 +959,12 @@ def _append_both_levels(transition_id: str, transition_class: str, predecessor: 
     attempt's. If the organization append raises, the result is the typed
     partial-commit record.
     """
-    repository_receipt = repository_ledger.append(
+    repository_receipt = _ledger_write(repository_ledger.append,
         transition_id, transition_class, predecessor, successor, dict(evidence),
         "NONE", hb_epoch=hb_epoch, idempotent_on=idempotent_on)
     hb_epoch = repository_receipt["hb_reference"]["epoch"]
     try:
-        organization_receipt = organization_ledger.aggregate_transition(
+        organization_receipt = _ledger_write(organization_ledger.aggregate_transition,
             receipt=repository_receipt,
             org_transition_class="REPO_STATE_PROPAGATION",
             predecessor_org_state_sha256=predecessor,
@@ -472,39 +1019,125 @@ def _record_refusal(record: Mapping[str, Any], hb_epoch: int | None,
         transition_id, REFUSED_CLASS, predecessor, successor, record,
         {"receiving_operation": OPERATION_ID,
          "intended_action": INTENDED_ACTION,
-         "disposition": "DENY",
+         "disposition": record["disposition"],
          "failed_predicate": record["failed_predicate"],
          "recomputation_rule_ref": rule_ref,
+         **{field: record[field] for field in SIX_FIELDS if field in record},
          **dict(organization_evidence or {})},
         hb_epoch=hb_epoch, parent_manifest=parent_manifest, rule_ref=rule_ref,
         idempotent_on=("failed_predicate", "detail"))
 
 
+def _record_not_committed_refusal(record: Mapping[str, Any],
+                                  appended: Mapping[str, Any]) -> dict[str, Any]:
+    """Store the not-committed disposition of a refusal at the repository level.
+
+    The refusal's own record was appended to the repository ledger before the
+    organization append raised, so it holds the refusal's table disposition
+    (which may be DENY). This attempt returns FAIL_CLOSED
+    ORGANIZATION_APPEND_NOT_COMMITTED, and that disposition is stored here as
+    its own record, keyed on the refusal's transition id, so what is stored and
+    what is returned are the same. A resubmission completes the refusal's own
+    record at the organization level as before; this record stays as the
+    history of the attempt that did not commit. If even this append fails,
+    nothing is claimed stored.
+    """
+    not_committed = appended["not_committed"]
+    disposition = refusal_disposition(APPEND_NOT_COMMITTED, APPEND_NOT_COMMITTED_PREDICATE)
+    stored = {
+        "schema": REFUSAL_SCHEMA,
+        "receiving_operation": OPERATION_ID,
+        "profile_id": PROFILE_ID,
+        "operation": OPERATION,
+        "intended_action": INTENDED_ACTION,
+        "disposition": disposition,
+        "failure_code": APPEND_NOT_COMMITTED,
+        "failed_predicate": APPEND_NOT_COMMITTED_PREDICATE,
+        "required_evidence_or_repair": not_committed["required_evidence_or_repair"],
+        "retry_entrypoint": not_committed["retry_entrypoint"],
+        "owning_existing_goal": not_committed["owning_existing_goal"],
+        "next_attempt": not_committed["next_attempt"],
+        "refusal_transition_id": appended["transition_id"],
+        "refusal_failed_predicate": record["failed_predicate"],
+        "refusal_disposition": record["disposition"],
+        "submitted_manifest_sha256": record["submitted_manifest_sha256"],
+        "received": False,
+        "authority_effect": "NONE_REFUSAL_RECORD_ONLY",
+    }
+    transition_id = "ORGANIZATION-SDK-MANIFEST-INGRESS-NOT-COMMITTED-" + sha(stored)[:16]
+    try:
+        receipt = _ledger_write(repository_ledger.append,
+            transition_id, REFUSED_CLASS, "sha256:" + sha(dict(record)), "sha256:" + sha(stored),
+            stored, "NONE",
+            # The refusal's own repository receipt's epoch: one attempt, one epoch.
+            hb_epoch=appended["repository_receipt"]["hb_reference"]["epoch"],
+            idempotent_on=("refusal_transition_id", "disposition", "failure_code"))
+    except Exception:  # noqa: BLE001 -- nothing stored is claimed
+        return {"refusal_stored_disposition": UNOBSERVED, "not_committed_recorded": False,
+                "not_committed_transition_id": transition_id}
+    return {"refusal_stored_disposition": receipt["evidence"]["disposition"],
+            "not_committed_recorded": True,
+            "not_committed_transition_id": transition_id,
+            "not_committed_repository_receipt_sha256": receipt["receipt_sha256"]}
+
+
 def _refused(failed_predicate: str, detail: str, *, manifest: Any, rule_ref: str,
              hb_epoch: int | None = None, parent_manifest: Mapping[str, Any] | None = None,
              organization_evidence: Mapping[str, Any] | None = None,
+             six_fields: Mapping[str, Any] | None = None,
              **extra: Any) -> dict[str, Any]:
-    record = refusal_record(failed_predicate, detail, manifest)
+    """Record and return a refusal.
+
+    Every refusal returns and records the six fields. `six_fields`, when the
+    refusing step carried them, are returned and stored as they were given. A
+    refusal that carried none takes them from `REFUSAL_REPAIRS` under the code
+    it returns (an owner's code it carries, or `REFUSED_CLASS`) and its predicate.
+    A pair the disposition table does not declare is refused FAIL_CLOSED under
+    `REFUSAL_DISPOSITION_NOT_DECLARED`, with all six fields and the pair it
+    arrived with kept. The six fields in `extra` are the refusal's, never
+    overwritten by it: they are dropped from `extra` here.
+    """
+    if not six_fields:
+        six_fields = generic_six_fields(extra.get("failure_code") or REFUSED_CLASS,
+                                        failed_predicate)
+    extra = {key: value for key, value in extra.items() if key not in SIX_FIELDS}
+    disposition, carried = declared_refusal(six_fields)
+    record = refusal_record(failed_predicate, detail, manifest, carried or None,
+                            disposition=disposition)
     appended = _record_refusal(record, hb_epoch, rule_ref, parent_manifest,
                                organization_evidence)
     if appended["not_committed"] is not None:
         # The refusal reached the repository ledger and not the organization
-        # ledger. Its own predicate is kept under its own name.
+        # ledger. Its own predicate is kept under its own name. What this
+        # attempt returns -- FAIL_CLOSED APPEND_NOT_COMMITTED -- is stored as its
+        # own repository record, so the stored disposition is the returned one.
+        stored = _record_not_committed_refusal(record, appended)
         return {**appended["not_committed"],
                 "refusal_failed_predicate": failed_predicate,
                 "refusal_detail": detail,
                 "refusal_transition_class": REFUSED_CLASS,
                 "refusal_transition_id": appended["transition_id"],
                 "refusal_recorded": False,
-                **extra}
+                "refusal_underlying_disposition": record["disposition"],
+                **stored,
+                **{"refusal_" + field: value for field, value in carried.items()
+                   if field != "failed_predicate"},
+                # An extra naming one of the six fields (the parent-manifest refusal's
+                # own failure_code) is the refusal's, so it keeps the refusal_
+                # prefix rather than overwriting this attempt's fields.
+                **{("refusal_" + key if key in SIX_FIELDS or key == "disposition" else key): value
+                   for key, value in extra.items()}}
     return {
         "schema": RESULT_SCHEMA_ORG,
         "organization": "StegVerse-Labs",
         "receiving_operation": OPERATION_ID,
-        "disposition": "FAIL_CLOSED",
+        # The returned disposition is the stored one (REFUSAL_DISPOSITIONS).
+        "disposition": record["disposition"],
         "received": False,
+        **carried,
         "failed_predicate": failed_predicate,
         "detail": detail,
+        "refusal_stored_disposition": record["disposition"],
         # The refusal is recorded at both levels. `organization_receipt_observed`
         # stays false regardless: it means an admitted crossing was observed, and
         # a refusal receipt is not that. A caller reading it as one would treat a
@@ -587,6 +1220,286 @@ def reconstruct_closures(crossing: Mapping[str, Any]) -> list[dict[str, Any]]:
     if previous_id != crossing.get("terminal_receipt_id"):
         raise ValueError("BOUNDARY_TERMINAL_RECEIPT_DOES_NOT_CLOSE_THE_CHAIN")
     return closures
+
+
+def payload_binding_failure(manifest: Mapping[str, Any],
+                            crossing: Mapping[str, Any]) -> str | None:
+    """Why the crossing is not the delivered manifest's exact payload, or None.
+
+    The payload is recomputed here from the manifest this operation was handed,
+    with the crossing's own definition (`crossing_payload` and `sha`): the
+    destination the manifest declares, its canonical digest, and the manifest
+    itself. Then each place the crossing names that payload must be it:
+
+    * `manifest_sha256` is the delivered manifest's digest;
+    * `payload_hash` -- the digest every boundary receipt is bound to -- is the
+      recomputed payload's digest;
+    * an echoed effect (`application_result.echo`, what the far side reports it
+      received) is the recomputed payload, byte for byte under canonical JSON.
+
+    Nothing is taken on the crossing's word: a crossing that names no digest
+    fails, as a mismatch does.
+    """
+    try:
+        destination = crossing_module.declared_destination(manifest)
+    except SystemExit as exc:
+        return "CROSSING_PAYLOAD_DESTINATION_NOT_DECLARED:" + str(exc)
+    payload = crossing_module.crossing_payload(manifest, destination)
+    payload_hash = crossing_module.sha(payload)
+    if crossing.get("manifest_sha256") != payload["manifest_sha256"]:
+        return ("CROSSING_MANIFEST_SHA256_MISMATCH:expected " + payload["manifest_sha256"]
+                + " observed " + str(crossing.get("manifest_sha256")))
+    if crossing.get("payload_hash") != payload_hash:
+        return ("CROSSING_PAYLOAD_HASH_MISMATCH:expected " + payload_hash
+                + " observed " + str(crossing.get("payload_hash")))
+    result = crossing.get("application_result")
+    if isinstance(result, Mapping) and "echo" in result:
+        echoed = result["echo"]
+        if crossing_module.sha(echoed) != payload_hash:
+            return ("CROSSING_ECHOED_PAYLOAD_MISMATCH:expected " + payload_hash
+                    + " observed " + crossing_module.sha(echoed))
+    return None
+
+
+def declared_authority_effect_failure(manifest: Any) -> str | None:
+    """Why the submission's declared authority effect is not NONE, or None.
+
+    Read exactly as the crossing reads it --
+    `(manifest.get("transition") or {}).get("authority_effect", "NONE")` -- so
+    whatever the crossing would put on the envelope is what is checked. A
+    `transition` that is not an object, or an `authority_effect` that is
+    anything but the string NONE (null included), is refused.
+    """
+    if not isinstance(manifest, Mapping):
+        return None
+    transition = manifest.get("transition") or {}
+    if not isinstance(transition, Mapping):
+        return AUTHORITY_NOT_WARRANTED + ":transition is not an object"
+    effect = transition.get("authority_effect", NONE_AUTHORITY_EFFECT)
+    if effect == NONE_AUTHORITY_EFFECT:
+        return None
+    return (AUTHORITY_NOT_WARRANTED + ":declared transition.authority_effect "
+            + json.dumps(effect, sort_keys=True))
+
+
+def load_worker_registry(root: Path | None = None) -> Mapping[str, Any] | None:
+    """The committed WorkerCoordinator registry, or None when it is not readable.
+
+    Read from the repository checkout this module runs in. Nothing is fetched
+    and nothing is written; the registry is observed exactly as committed.
+    """
+    path = (root or ROOT) / WORKER_REGISTRY_REF
+    try:
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return loaded if isinstance(loaded, Mapping) else None
+
+
+def _registry_fence(task: Mapping[str, Any]) -> int | None:
+    """The fence a WorkerCoordinator task holds, as `coordination_ledger.py` reads it."""
+    for holder in ("heartbeat_timing", "lease"):
+        block = task.get(holder)
+        if isinstance(block, Mapping):
+            fence = block.get("fencing_token")
+            if isinstance(fence, int) and not isinstance(fence, bool):
+                return fence
+    return None
+
+
+def declares_worker_claim(manifest: Any) -> bool:
+    """Whether the manifest carries `extensions.stegverse_workercoordinator_claim` at all."""
+    if not isinstance(manifest, Mapping):
+        return False
+    extensions = manifest.get("extensions")
+    return isinstance(extensions, Mapping) and WORKER_CLAIM_EXTENSION in extensions
+
+
+def admitted_ingress_receipts() -> list[Mapping[str, Any]] | None:
+    """Every admitted-ingress receipt in this repository's ledger, newest first, or None.
+
+    Walks the chain from HEAD, verified, as `recorded` does. A broken or
+    unreadable chain answers None rather than an empty list: nothing is assumed
+    recorded, and nothing is assumed absent.
+    """
+    try:
+        store = repository_ledger.repository_store()
+        head = store.get(repository_ledger.ledger_store.HEAD_KEY)
+        if not head:
+            return []
+        return [receipt for receipt in repository_ledger.chain(store, head)
+                if receipt.get("transition_class") == OPERATION_ID]
+    except Exception:  # noqa: BLE001 - a chain this cannot read records nothing for us
+        return None
+
+
+def recorded_admission_for_request(request_sha256: str,
+                                   receipts: list[Mapping[str, Any]] | None = None) -> Mapping[str, Any] | None:
+    """The repository receipt that already admits this exact request, or None.
+
+    `receipts` is the chain walk from `admitted_ingress_receipts`, passed in so
+    one ingress walks its chain once.
+    """
+    if receipts is None:
+        receipts = admitted_ingress_receipts()
+    for receipt in receipts or []:
+        if (receipt.get("evidence") or {}).get("request_sha256") == request_sha256:
+            return receipt
+    return None
+
+
+def _recorded_standing(receipt: Mapping[str, Any]) -> Mapping[str, Any]:
+    crossing = (receipt.get("evidence") or {}).get("crossing") or {}
+    standing = crossing.get("standing") if isinstance(crossing, Mapping) else None
+    return standing if isinstance(standing, Mapping) else {}
+
+
+def _manifest_digests(evidence: Mapping[str, Any]) -> set[str]:
+    """The digests under which an admission's manifest is recorded.
+
+    The SDK binds the wire manifest (`wire_manifest_sha256`) and its validated
+    projection (`canonical_manifest_sha256`) separately; a predecessor binding
+    (`successor_predecessor_binding`) is the digest of the manifest body, which
+    is the wire form. Either is the same admission, so either matches.
+    """
+    return {str(evidence.get(key)) for key in ("wire_manifest_sha256", "canonical_manifest_sha256")
+            if isinstance(evidence.get(key), str)}
+
+
+def _recorded_generation(standing: Mapping[str, Any]) -> int | None:
+    """The generation a recorded standing was admitted at; genesis without one is 1."""
+    generation = standing.get("generation")
+    if isinstance(generation, int) and not isinstance(generation, bool):
+        return generation
+    if generation is None and standing.get("mode") == "ESTABLISH_GENESIS":
+        return 1
+    return None
+
+
+def declared_predecessor_failure(standing: Any, request: Mapping[str, Any],
+                                 receipts: list[Mapping[str, Any]] | None = None,
+                                 ) -> tuple[str, str] | tuple[None, str] | None:
+    """Why a declared VERIFY_EXISTING predecessor is not recorded-and-unsuperseded, or how it was found.
+
+    Only a declared standing in VERIFY_EXISTING mode whose predecessor is an
+    object with a well-formed `manifest_sha256` and whose generation is exactly
+    predecessor.generation + 1 is checked here: shape and successor arithmetic
+    stay with the standing contract at the boundary (`node_standing.require`),
+    whose own codes those refusals carry, so anything else answers None.
+
+    Returns `(failure_code, detail)` on refusal:
+    DECLARED_PREDECESSOR_NOT_RECORDED (fail closed) when this ledger cannot be
+    read, or holds no admission -- a repository receipt whose organization
+    receipt is also observed -- for the node at the predecessor's generation
+    with the predecessor's manifest digest; DECLARED_PREDECESSOR_SUPERSEDED
+    (deny) when an admission for the node already binds that predecessor to a
+    different successor manifest. Returns `(None, how_recorded)` when the
+    predecessor is recorded: PREDECESSOR_RECORD_FULL when the receipt recorded
+    its standing, PREDECESSOR_RECORD_LEGACY when it predates recorded standings
+    and only the manifest digest could be compared.
+    """
+    if not isinstance(standing, Mapping) or standing.get("mode") != VERIFY_EXISTING_MODE:
+        return None
+    predecessor = standing.get("predecessor")
+    generation = standing.get("generation")
+    if not isinstance(predecessor, Mapping) or not isinstance(generation, int) or isinstance(generation, bool):
+        return None
+    predecessor_generation = predecessor.get("generation")
+    if (not isinstance(predecessor_generation, int) or isinstance(predecessor_generation, bool)
+            or generation != predecessor_generation + 1):
+        return None
+    manifest_digest = predecessor.get("manifest_sha256")
+    if not isinstance(manifest_digest, str) or not _HEX64.match(manifest_digest):
+        return None
+    node_ref = standing.get("node_ref")
+    if receipts is None:
+        receipts = admitted_ingress_receipts()
+    if receipts is None:
+        return PREDECESSOR_NOT_RECORDED, "this repository's ledger could not be read"
+    own_digests = _manifest_digests(request)
+    recorded: str | None = None
+    for receipt in receipts:
+        evidence = receipt.get("evidence") or {}
+        digests = _manifest_digests(evidence)
+        prior = _recorded_standing(receipt)
+        if prior:
+            if prior.get("node_ref") != node_ref:
+                continue
+            bound = prior.get("predecessor")
+            if (isinstance(bound, Mapping) and bound.get("manifest_sha256") == manifest_digest
+                    and not (digests & own_digests)):
+                return PREDECESSOR_SUPERSEDED, (
+                    f"node {node_ref!s} predecessor {manifest_digest} is already bound by the recorded "
+                    f"successor {evidence.get('canonical_manifest_sha256')!s} (generation {prior.get('generation')!s})")
+            if _recorded_generation(prior) != predecessor_generation or manifest_digest not in digests:
+                continue
+            match = PREDECESSOR_RECORD_FULL
+        elif manifest_digest in digests:
+            match = PREDECESSOR_RECORD_LEGACY
+        else:
+            continue
+        # An admission is a repository receipt whose organization receipt is
+        # observed; a repository receipt alone is a partial commit, not one.
+        observed, _ = _organization_receipt_read_back(receipt.get("receipt_sha256"))
+        if observed is True and (recorded is None or match == PREDECESSOR_RECORD_FULL):
+            recorded = match
+    if recorded is None:
+        return PREDECESSOR_NOT_RECORDED, (
+            f"no admission for node {node_ref!s} at generation {predecessor_generation} with manifest "
+            f"digest {manifest_digest} is recorded in this repository's ledger with its organization receipt")
+    return None, recorded
+
+
+def declared_worker_claim_failure(manifest: Any, *, worker_registry: Mapping[str, Any] | None = None,
+                                  root: Path | None = None) -> tuple[str, str] | None:
+    """Why the submission's declared WorkerCoordinator claim is not verified, or None.
+
+    Returns `(failure_code, detail)`. `FENCE_DECLARED_NOT_VERIFIED` is the
+    fail-closed case: the declaration is malformed, the committed registry is
+    not readable or not the expected schema, or no task holds the claim.
+    `FENCE_STALE_OR_RELEASED` is the deny case: a task holds the claim id but
+    it is released, terminal, archived, or its current fence is another
+    generation. An absent declaration is not a failure; the caller reports it
+    as UNVERIFIED. The shape rule is `heartbeat_runtime/process_adapter.py`'s:
+    a non-empty claim id ending in `-G<fence>` with a positive integer fence.
+    """
+    if not declares_worker_claim(manifest):
+        return None
+    claim = manifest["extensions"][WORKER_CLAIM_EXTENSION]
+    if not isinstance(claim, Mapping):
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD} is not an object"
+    claim_id = claim.get("claim_id")
+    fence = claim.get("fencing_token")
+    if not isinstance(claim_id, str) or not claim_id:
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD}.claim_id is not a non-empty string"
+    if not isinstance(fence, int) or isinstance(fence, bool) or fence < 1:
+        return FENCE_NOT_VERIFIED, f"{WORKER_CLAIM_FIELD}.fencing_token is not a positive integer"
+    if not claim_id.endswith(f"-G{fence}"):
+        return FENCE_NOT_VERIFIED, f"claim id {claim_id} does not end in -G{fence}"
+    registry = worker_registry if worker_registry is not None else load_worker_registry(root)
+    if registry is None:
+        return FENCE_NOT_VERIFIED, f"{WORKER_REGISTRY_REF} is not readable"
+    if registry.get("schema") != WORKER_REGISTRY_SCHEMA:
+        return FENCE_NOT_VERIFIED, (f"{WORKER_REGISTRY_REF} schema "
+                                    f"{json.dumps(registry.get('schema'))} is not {WORKER_REGISTRY_SCHEMA}")
+    tasks = registry.get("tasks")
+    if not isinstance(tasks, list):
+        return FENCE_NOT_VERIFIED, f"{WORKER_REGISTRY_REF} tasks is not a list"
+    holders = [task for task in tasks if isinstance(task, Mapping) and task.get("claim_id") == claim_id]
+    if not holders:
+        return FENCE_NOT_VERIFIED, f"no WorkerCoordinator task holds claim {claim_id}"
+    if len(holders) > 1:
+        return FENCE_NOT_VERIFIED, f"claim {claim_id} is held by {len(holders)} WorkerCoordinator tasks"
+    task = holders[0]
+    if task.get("executor_binding") != "BOUND":
+        return FENCE_STALE, f"claim {claim_id} is not BOUND (executor_binding {json.dumps(task.get('executor_binding'))})"
+    if task.get("archive_eligible") is True or task.get("state") in WORKER_CLAIM_TERMINAL_STATES:
+        return FENCE_STALE, f"claim {claim_id} is released: state {json.dumps(task.get('state'))}"
+    current = _registry_fence(task)
+    if current != fence:
+        return FENCE_STALE, (f"claim {claim_id} holds fence {json.dumps(current)}, "
+                             f"the declaration names {fence}")
+    return None
 
 
 #: The fields of a crossing that name the packets carrying one delivery. They are
@@ -982,6 +1895,16 @@ def admit_role_conformance_shape(manifest: Mapping[str, Any]) -> tuple[str, str]
     return None
 
 
+def no_epoch_refusal(caller: str) -> dict[str, Any]:
+    """The unrecorded six-field FAIL_CLOSED of a receipt with no supplied epoch (WU-B13 slice g / B-P31)."""
+    refusal = organization_ledger.kernel.no_epoch_caller_refusal(
+        caller, retry_entrypoint="resident-runtime/organization_manifest_ingress.py::receive (hb_epoch=, or --hb-epoch)")
+    return {"schema": RESULT_SCHEMA_ORG, "organization": "StegVerse-Labs",
+            "receiving_operation": OPERATION_ID, "received": False,
+            "organization_receipt_observed": False, "refusal_recorded": False,
+            **refusal, "authority_effect": "NONE_REFUSAL_ONLY"}
+
+
 def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standing: Mapping[str, Any] | None = None,
             packet_id: str = "organization-sdk-manifest-ingress",
             hb_epoch: int | None = None, mesh_root: Path | None = None) -> dict[str, Any]:
@@ -989,7 +1912,11 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
 
     `mesh_root` is the federation mesh the node was materialized with. Only a
     capability another organization decides needs it: the request leaves on it.
+    `hb_epoch` is the epoch the carrier supplied; without one nothing is
+    appended and the unrecorded six-field refusal is returned (B-P31).
     """
+    if hb_epoch is None:
+        return no_epoch_refusal("resident-runtime/organization_manifest_ingress.py::receive")
     # Resolved before anything is appended: an unresolvable revision fails
     # closed here, with no receipt written that could not name its rule.
     rule_ref = recomputation_rule_ref()
@@ -1037,6 +1964,100 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     refused = functools.partial(refused, parent_manifest=parent_manifest,
                                 organization_evidence=organization_evidence)
 
+    # A declared authority effect other than NONE is refused before the
+    # crossing, so the endpoint never runs under it and the envelope never
+    # carries it. Nothing here can warrant one.
+    unwarranted = declared_authority_effect_failure(manifest)
+    if unwarranted is not None:
+        return refused(
+            AUTHORITY_NOT_WARRANTED_PREDICATE, unwarranted,
+            six_fields=ingress_six_fields(
+                AUTHORITY_NOT_WARRANTED, AUTHORITY_NOT_WARRANTED_PREDICATE,
+                (
+                "a manifest whose transition.authority_effect is absent or NONE; a non-NONE "
+                "effect needs a landed TV/TVC warrant receipt this operation can verify, and "
+                "none is defined yet"),
+                AUTHORITY_OWNING_GOAL, "THE_MANIFEST_WITH_TRANSITION_AUTHORITY_EFFECT_NONE"),
+            request_sha256=request["request_sha256"])
+
+    # A declared WorkerCoordinator claim is observed against the committed
+    # registry before the crossing; ingress mints no claim and no fence. An
+    # absent declaration is admitted and reported as UNVERIFIED.
+    fence_failure = declared_worker_claim_failure(manifest)
+    # One verified walk of this repository's chain per ingress, and only when
+    # something below needs it: a failed fence (is it a redelivery?) or a
+    # declared VERIFY_EXISTING standing (is its predecessor recorded?).
+    admitted = (admitted_ingress_receipts()
+                if fence_failure is not None or (isinstance(standing, Mapping)
+                                                 and standing.get("mode") == VERIFY_EXISTING_MODE)
+                else [])
+    if fence_failure is not None and recorded_admission_for_request(request["request_sha256"], admitted) is not None:
+        # An exact redelivery of an admission this ledger already records is
+        # the same transition (I-10): the fence it ran under was verified when
+        # it was recorded, and a fence that moved since does not turn a recorded
+        # ALLOW into a refusal. The replay path below answers it.
+        fence_failure = None
+        worker_claim_state = WORKER_CLAIM_REPLAYED
+    elif fence_failure is None:
+        worker_claim_state = WORKER_CLAIM_VERIFIED if declares_worker_claim(manifest) else WORKER_CLAIM_UNVERIFIED
+    if fence_failure is not None:
+        fence_code, fence_detail = fence_failure
+        return refused(
+            FENCE_PREDICATE, fence_code + ":" + fence_detail,
+            six_fields=ingress_six_fields(
+                fence_code, FENCE_PREDICATE,
+                (
+                f"a {WORKER_CLAIM_FIELD} whose claim_id ends in -G<fencing_token> and names an "
+                f"unreleased BOUND task in {WORKER_REGISTRY_REF} holding exactly that fence; "
+                "or omit the declaration, which is admitted as UNVERIFIED"),
+                FENCE_OWNING_GOAL,
+                ("THE_MANIFEST_UNDER_THE_CURRENT_WORKERCOORDINATOR_FENCE"
+                                       if fence_code == FENCE_STALE else
+                                       "THE_MANIFEST_WITH_A_VERIFIABLE_OR_ABSENT_WORKER_CLAIM")),
+            request_sha256=request["request_sha256"])
+    # What the SDK's own derivation says about this route: whether the graph
+    # requires a WorkerCoordinator claim/fence. Reported beside the observed
+    # state; a required-but-undeclared claim is admitted as UNVERIFIED today,
+    # and turning that into a refusal is the route owner's call.
+    worker_claim_required = request.get("requires_workercoordinator_claim_fence") is True
+
+    # A declared VERIFY_EXISTING predecessor is checked against this
+    # repository's own record of admissions before the crossing. A redelivery
+    # of a recorded admission is the recorded transition (I-10) and is not
+    # re-judged against a ledger that has moved on since.
+    predecessor_outcome = declared_predecessor_failure(standing, request, admitted)
+    predecessor_record = None
+    predecessor_failure = None
+    if predecessor_outcome is not None:
+        if predecessor_outcome[0] is None:
+            predecessor_record = predecessor_outcome[1]
+        elif recorded_admission_for_request(request["request_sha256"], admitted) is None:
+            predecessor_failure = predecessor_outcome
+    if predecessor_failure is not None:
+        predecessor_code, predecessor_detail = predecessor_failure
+        return refused(
+            PREDECESSOR_PREDICATE, predecessor_code + ":" + predecessor_detail,
+            six_fields=ingress_six_fields(
+                predecessor_code, PREDECESSOR_PREDICATE,
+                (
+                "a VERIFY_EXISTING standing whose predecessor names an admission this repository's "
+                "ledger records for the same node_ref at predecessor.generation with "
+                "predecessor.manifest_sha256 as its canonical manifest digest, and which no other "
+                "recorded successor of that node has bound; or ESTABLISH_GENESIS for a new lineage"),
+                PREDECESSOR_OWNING_GOAL,
+                ("THE_SUCCESSOR_OF_THE_RECORDED_HEAD_FOR_THIS_NODE"
+                                       if predecessor_code == PREDECESSOR_SUPERSEDED else
+                                       "THE_MANIFEST_WITH_A_PREDECESSOR_THIS_LEDGER_RECORDS")),
+            request_sha256=request["request_sha256"])
+    predecessor_binding = (PREDECESSOR_RESULT_BINDING if isinstance(standing, Mapping)
+                           and standing.get("mode") == VERIFY_EXISTING_MODE else None)
+    # D7: a state-transition route with no declared processing service fails
+    # closed here, before the crossing could fall back to the egress surface.
+    precheck = processing_service_precheck(manifest, registry)
+    if precheck is not None:
+        return refused(precheck["failed_predicate"], precheck["detail"], six_fields=precheck,
+                       request_sha256=request["request_sha256"])
+
     try:
         crossing = crossing_module.cross(manifest, registry=dict(registry), standing=standing, packet_id=packet_id)
     except SystemExit as exc:
@@ -1044,14 +2065,34 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         # egress, a non-InTr transport, an unresolvable surface, no declared
         # standing. Those are dispositions of this submission, so they are
         # recorded here rather than leaving the operation by exception with
-        # nothing written.
+        # nothing written. The crossing's own six fields are passed through;
+        # only a refusal that carried none takes this operation's predicate.
+        carried = passed_through(getattr(exc, "refusal", None))
+        if carried is not None:
+            return refused(carried["failed_predicate"], str(exc), six_fields=carried)
         return refused("CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED", str(exc))
+    if not crossing.get("crossing_completed") and crossing.get("retry_permitted") is True:
+        # The processor's own write faulted (exit 75): non-terminal. Nothing is
+        # recorded, so the redelivered submission is consumed exactly once.
+        fault = crossing.get("far_side_fault") or {}
+        return {"disposition": "FAIL_CLOSED", "failure_code": "PROCESS_BOUNDARY_WRITE_FAULT", "terminal": False,
+                "failed_predicate": fault.get("failed_predicate") or "PROCESS_BOUNDARY_COMPLETES_ITS_OWN_WRITE",
+                "detail": fault.get("detail") or "process_boundary exited 75",
+                "required_evidence_or_repair": (fault.get("required_evidence_or_repair")
+                                                or "the processor's own write completes"),
+                "retry_entrypoint": fault.get("retry_entrypoint") or RETRY_ENTRYPOINT,
+                "owning_existing_goal": fault.get("owning_existing_goal") or "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+                "next_attempt": "redeliver the submission; nothing was recorded",
+                "request_sha256": request["request_sha256"], "receipt_written": False,
+                "consequence_committed": False}
     if not crossing.get("crossing_completed"):
         # The far side refused. That is its disposition to state, not something
         # this operation rewrites into an admission -- but the submission still
-        # arrived here, so the refusal is recorded.
-        return refused("ADMITTED_CROSSING_REACHES_ITS_INTERNAL_ENDPOINT",
-                       str(crossing.get("far_side_disposition")),
+        # arrived here, so the refusal is recorded, with the crossing's six fields.
+        carried = passed_through(crossing)
+        return refused(carried["failed_predicate"] if carried
+                       else "ADMITTED_CROSSING_REACHES_ITS_INTERNAL_ENDPOINT",
+                       str(crossing.get("far_side_disposition")), six_fields=carried,
                        request_sha256=request["request_sha256"],
                        resolved_service_id=crossing.get("resolved_service_id"),
                        crossing=crossing)
@@ -1061,6 +2102,21 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     except ValueError as exc:
         return refused("BOUNDARY_RECEIPT_CHAIN_RECONSTRUCTS_INDEPENDENTLY", str(exc),
                        request_sha256=request["request_sha256"])
+    # The chain reconstructs against the crossing's own `payload_hash`. That
+    # digest, the manifest digest and any echoed effect must also be the payload
+    # recomputed from the manifest delivered here, or a changed effect under an
+    # unchanged digest is admitted.
+    unbound = payload_binding_failure(manifest, crossing)
+    if unbound is not None:
+        return refused(
+            PAYLOAD_NOT_BOUND_PREDICATE, unbound,
+            six_fields=ingress_six_fields(
+                PAYLOAD_NOT_BOUND, PAYLOAD_NOT_BOUND_PREDICATE,
+                (
+                "a crossing whose manifest_sha256, payload_hash and echoed effect are the "
+                "payload recomputed from the delivered manifest"),
+                PAYLOAD_BINDING_OWNING_GOAL, "THE_SAME_MANIFEST_OVER_AN_UNMODIFIED_CROSSING"),
+            request_sha256=request["request_sha256"])
 
     # The transition occurred in this repository, so the repository ledger
     # records it first and the organization ledger consumes that receipt. The
@@ -1096,7 +2152,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # recorded the repository receipt and stopped before the organization
     # receipt is completed here, from the retained repository receipt, rather
     # than recorded twice.
-    chain = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+    chain = repository_ledger.repository_store()
     # The successor state is the last closure of the crossing that carried the
     # manifest, and a redelivery is carried again: another packet, another
     # closure. The repository ledger compares the successor on every exact
@@ -1116,7 +2172,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # disposition, authority effect, successor) is still compared in full.
     evidence = transition_evidence(request, crossing, closures)
     for resolution in range(2):
-        prior = repository_ledger.recorded(
+        prior = _ledger_write(repository_ledger.recorded,
             chain, chain.get(repository_ledger.ledger_store.HEAD_KEY),
             transition_id, OPERATION_ID)
         replayed = prior is not None
@@ -1165,7 +2221,9 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         return {**role_conformance_result(
             request, crossing, conformance, transition_id=transition_id,
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
-            rule_ref=rule_ref, replayed=replayed), "delivery_attempt": delivery}
+            rule_ref=rule_ref, replayed=replayed), "delivery_attempt": delivery,
+            "worker_claim_state": worker_claim_state,
+            "workercoordinator_claim_fence_required_by_route": worker_claim_required}
 
     # Governance is decided by the organization that owns StegCore. The ingress
     # transition above occurred here and is recorded; the request now leaves
@@ -1177,7 +2235,9 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             repository_receipt=repository_receipt, organization_receipt=organization_receipt,
             standing=crossing_module.manifest_standing(manifest, standing),
             mesh_root=mesh_root, hb_epoch=hb_epoch, rule_ref=rule_ref, replayed=replayed),
-            "delivery_attempt": delivery}
+            "delivery_attempt": delivery,
+            "worker_claim_state": worker_claim_state,
+            "workercoordinator_claim_fence_required_by_route": worker_claim_required}
 
     # The SDK decides whether this closes the transition. Its refusal is the
     # answer, returned as it was given.
@@ -1186,13 +2246,24 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
             manifest, request, runtime_result(request, closures, organization_receipt,
                            crossing.get("application_result")))
     except ValueError as exc:
+        disposition, sdk_refusal = declared_refusal({
+            "failure_code": SDK_RESULT_REFUSED_CODE,
+            "failed_predicate": SDK_RESULT_REFUSED_PREDICATE,
+            "required_evidence_or_repair": ("the SDK did not admit the organization runtime result ("
+                                            + str(exc) + "); repair the result it names and resubmit"),
+            "retry_entrypoint": "resident-runtime/organization_manifest_ingress.py::receive",
+            "owning_existing_goal": INTR_PROTOCOL_GOAL,
+            "next_attempt": ("resubmit the same manifest; the organization receipt already written "
+                             "stands and is returned rather than appended again"),
+        })
         return {
             "schema": RESULT_SCHEMA_ORG,
             "organization": "StegVerse-Labs",
             "receiving_operation": OPERATION_ID,
-            "disposition": "FAIL_CLOSED",
+            # (SDK_REFUSED_ORGANIZATION_RUNTIME_RESULT, SDK_ADMITS_...) row.
+            "disposition": disposition,
             "received": True,
-            "failed_predicate": "SDK_ADMITS_THE_ORGANIZATION_RUNTIME_RESULT",
+            **sdk_refusal,
             "detail": str(exc),
             # The receipt was appended before the SDK was asked. The organization
             # ledger is its own runtime reality authority, so a refusal upstream
@@ -1231,6 +2302,17 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         "organization_receipt_sha256": organization_receipt["receipt_sha256"],
         "organization_transition_id": transition_id,
         "transition_replayed": replayed,
+        # Observed, never minted: VERIFIED_AGAINST_COMMITTED_WORKERCOORDINATOR_REGISTRY
+        # when the manifest declared a claim this operation verified, UNVERIFIED
+        # when it declared none. A declared claim that did not verify never
+        # reaches here.
+        "worker_claim_state": worker_claim_state,
+        "workercoordinator_claim_fence_required_by_route": worker_claim_required,
+        # For VERIFY_EXISTING: the declared predecessor was found recorded and
+        # unsuperseded in this repository's ledger before the crossing, except
+        # its result_sha256, which no receipt records; genesis reports null.
+        "declared_predecessor_result_binding": predecessor_binding,
+        "declared_predecessor_record": predecessor_record,
         "recomputation_rule_ref": rule_ref,
         # Both levels, so a reader can see the organization consumed a receipt
         # from the level below rather than one it wrote itself.
@@ -1361,15 +2443,43 @@ def main() -> int:
                         help="JSON declaring mode, node_ref and the predecessor key; "
                              "required unless the manifest declares its own chain position")
     parser.add_argument("--packet-id", default="organization-sdk-manifest-ingress")
-    parser.add_argument("--hb-epoch", type=int, default=None,
+    parser.add_argument("--hb-epoch", type=str, default=None,
                         help="heartbeat epoch; derived from the host clock, and marked as "
                              "derived, when absent")
     parser.add_argument("--mesh-root", type=Path, default=None,
                         help="federation mesh this node was materialized with; a governance "
                              "request leaves on it")
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--ledger-component", type=Path, default=None,
+                        help="root the ledger writers load from (.stegverse/transition-ledger/emit.py, "
+                             "resident-runtime/aggregate_repo_transition.py); default: this checkout")
+    parser.add_argument("--consumer-root", type=Path, default=None,
+                        help="root the ledger contracts resolve from (.stegverse/transition-ledger/"
+                             "contract.json, org-contract.json); default: this checkout")
     args = parser.parse_args()
+    hb_epoch, epoch_refused = cli_hb_epoch(args.hb_epoch, "resident-runtime/organization_manifest_ingress.py (--hb-epoch)", INTR_PROTOCOL_GOAL)
+    if epoch_refused is not None:
+        # Nothing is received, appended or written (no --out); the exit is 1.
+        print(json.dumps({"schema": RESULT_SCHEMA_ORG, "receiving_operation": OPERATION_ID,
+                          "received": False, **epoch_refused, "receipt_written": False,
+                          "authority_effect": "NONE_REFUSAL_ONLY"}, sort_keys=True))
+        return 1
+    if hb_epoch is None:
+        print(json.dumps(no_epoch_refusal("resident-runtime/organization_manifest_ingress.py (--hb-epoch)"), sort_keys=True))
+        return 1
 
+    if args.ledger_component is not None or args.consumer_root is not None:
+        try:
+            bind_ledger_writers(args.ledger_component, args.consumer_root)
+        except LedgerPathRefused as refused:
+            result = {"schema": RESULT_SCHEMA_ORG, "receiving_operation": OPERATION_ID,
+                      "received": False, **refused.refusal, "receipt_written": False,
+                      "authority_effect": "NONE_REFUSAL_ONLY"}
+            if args.out:
+                args.out.parent.mkdir(parents=True, exist_ok=True)
+                args.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+            print(json.dumps(result, sort_keys=True))
+            return 1
     if args.outbox_root is not None:
         try:
             consumed = consume_outbox(args.outbox_root,
@@ -1390,17 +2500,31 @@ def main() -> int:
             registry=json.loads(args.registry.read_text(encoding="utf-8")),
             standing=(json.loads(args.standing.read_text(encoding="utf-8"))
                       if args.standing else None),
-            packet_id=args.packet_id, hb_epoch=args.hb_epoch, mesh_root=args.mesh_root)
-    except RuntimeError as exc:
-        # Nothing was appended: the receipt could not name its own rule.
-        print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": str(exc),
-                          "receipt_written": False}, sort_keys=True))
+            packet_id=args.packet_id, hb_epoch=hb_epoch, mesh_root=args.mesh_root)
+    except SystemExit as exc:
+        refused = ledger_writer_refusal(
+            exc, "resident-runtime/organization_manifest_ingress.py (--hb-epoch)", INTR_PROTOCOL_GOAL)
+        if refused is None:
+            raise
+        refusal, carried = refused
+        # The ledger writer refused (e.g. HB_EPOCH_NOT_SUPPLIED). A carried
+        # refusal is printed exactly as given; an old-layout message gets the
+        # six fields. Nothing is written (no --out), and the exit is 1.
+        print(json.dumps(refusal) if carried else json.dumps(
+            {"schema": RESULT_SCHEMA_ORG, "receiving_operation": OPERATION_ID, "received": False,
+             **refusal, "refusal_recorded": False, "refusal_source": "LEDGER_WRITER",
+             "authority_effect": "NONE_REFUSAL_ONLY"}, sort_keys=True))
         return 1
-    except ValueError as exc:
+    except Exception as exc:  # noqa: BLE001 -- the handled cases are below; anything else re-raises
+        if isinstance(exc, RuntimeError):
+            # Nothing was appended: the receipt could not name its own rule.
+            print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": str(exc),
+                              "receipt_written": False}, sort_keys=True))
+            return 1
         # Nothing was appended: a ledger location was not supplied (the
         # repository ledger raises this before its first write). Any other
-        # ValueError is a defect and still escapes as one.
-        if not str(exc).startswith(LEDGER_LOCATION_REQUIRED):
+        # error is a defect and still escapes as one.
+        if not isinstance(exc, ValueError) or not str(exc).startswith(LEDGER_LOCATION_REQUIRED):
             raise
         variable = str(exc).partition(":")[2].strip()
         print(json.dumps({"disposition": "FAIL_CLOSED", "failed_predicate": LEDGER_LOCATION_REQUIRED,

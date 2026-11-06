@@ -1,0 +1,82 @@
+name: Worker Claim Grant Projection Transition - Non-Authorizing
+
+# Manifest-directed projection of an Organization claim-allocator GRANTED receipt into
+# control/worker-registry.json (contracts/worker-claim-grant-projection-transition.v1.json).
+# For every projection manifest a pull request adds or changes, re-derive the worker-registry
+# successor from the LIVE base tip and the Organization ledger (read only) and require the PR
+# head to hold exactly those bytes. Read-only: no push, no ledger append, no dispatch, no claim
+# or fence minted. The receipt is uploaded as the run's observation.
+
+on:
+  pull_request:
+    paths:
+      - 'control/worker-claim-grant-projection-requests/**'
+      - 'control/worker-registry.json'
+      - 'scripts/worker_claim_grant_projection_transition.py'
+      - 'contracts/worker-claim-grant-projection-transition.v1.json'
+      - 'schemas/worker-claim-grant-projection-request.schema.json'
+      - 'schemas/worker-claim-grant-projection-transition-receipt.schema.json'
+      - 'tests/test_worker_claim_grant_projection_transition.py'
+      - '.github/workflows/worker-claim-grant-projection-transition.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'control/worker-claim-grant-projection-requests/**'
+      - 'scripts/worker_claim_grant_projection_transition.py'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests
+        run: python -m unittest -v tests.test_worker_claim_grant_projection_transition
+      - name: Verify projection manifests against the live base and the Organization ledger
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/receipts"
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch -q --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+            base="origin/${BASE_REF}"
+          else
+            base="${PUSH_BEFORE}"
+          fi
+          git worktree add -q --detach "$RUNNER_TEMP/base" "$base"
+          changed=$(git diff --name-only --diff-filter=AM "$base" HEAD -- 'control/worker-claim-grant-projection-requests/*.json' || true)
+          if [ -z "$changed" ]; then
+            echo '{"disposition":"ALLOW","detail":"no projection manifest added or changed","authority_effect":"NONE_PROJECTION_ONLY"}' | tee "$RUNNER_TEMP/receipts/none.json"
+            exit 0
+          fi
+          # Read the Organization ledger anonymously; if it cannot be read every manifest fails closed.
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch -q --no-tags origin \
+            "+refs/stegverse/organization-ledger:refs/stegverse/organization-ledger" || true
+          status=0
+          for manifest in $changed; do
+            name=$(basename "$manifest" .json)
+            python scripts/worker_claim_grant_projection_transition.py verify --request "$manifest" \
+              --base "$RUNNER_TEMP/base" --head . \
+              --org-ledger "git+$PWD#refs/stegverse/organization-ledger" \
+              --receipt-out "$RUNNER_TEMP/receipts/$name.json" || status=1
+            { echo "### $manifest"; echo '```json'; cat "$RUNNER_TEMP/receipts/$name.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          done
+          exit $status
+      - name: Upload receipts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-claim-grant-projection-receipts
+          path: ${{ runner.temp }}/receipts

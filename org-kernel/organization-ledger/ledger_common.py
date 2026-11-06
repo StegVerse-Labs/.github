@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -167,6 +168,50 @@ class LedgerRefusal(SystemExit):
         }
         self.failure_code = code
         self.failed_predicate = self.refusal["failed_predicate"]
+
+
+def _input_invalid(detail: str, retry_entrypoint: str) -> "LedgerRefusal":
+    return LedgerRefusal(
+        "CLI_INPUT_INVALID: " + detail, failure_code="CLI_INPUT_INVALID",
+        failed_predicate="WRITER_REFUSES_NON_FINITE_INPUT_BEFORE_ANY_WRITE",
+        required_evidence_or_repair="supply well-formed JSON whose numbers are all finite (no NaN, Infinity, -Infinity or "
+                                    "overflowing literal); nothing was written",
+        retry_entrypoint=retry_entrypoint, next_attempt="on the next submission with finite, well-formed input")
+
+
+def loads_finite(text: Any, retry_entrypoint: str = "") -> Any:
+    """json.loads that refuses a non-finite number or malformed JSON as terminal CLI_INPUT_INVALID.
+
+    The refusal is raised before any ledger is opened, so nothing is written. NaN, Infinity and -Infinity
+    are refused by `parse_constant`; a literal that overflows to infinity (1e999) by `parse_float`.
+    """
+    def _constant(token: str) -> Any:
+        raise _input_invalid("non-finite JSON number " + token, retry_entrypoint)
+
+    def _float(token: str) -> float:
+        value = float(token)
+        if not math.isfinite(value):
+            raise _input_invalid("JSON number " + token + " is not finite", retry_entrypoint)
+        return value
+    try:
+        return json.loads(text, parse_constant=_constant, parse_float=_float)
+    except ValueError as exc:  # JSONDecodeError and a bad-type text; LedgerRefusal is a SystemExit, not a ValueError
+        raise _input_invalid("malformed JSON: " + str(exc), retry_entrypoint) from None
+
+
+def reject_non_finite(value: Any, retry_entrypoint: str = "", where: str = "input") -> Any:
+    """Refuse a value that already holds a non-finite float (a library caller never passed through loads_finite)."""
+    stack = [(value, where)]
+    while stack:
+        node, path = stack.pop()
+        if isinstance(node, float) and not math.isfinite(node):
+            raise _input_invalid("non-finite number at " + path, retry_entrypoint)
+        if isinstance(node, dict):
+            stack.extend((v, path + "." + str(k)) for k, v in node.items())
+        elif isinstance(node, (list, tuple)):
+            stack.extend((v, path + "[" + str(i) + "]") for i, v in enumerate(node))
+    return value
+
 
 
 def locator_refusal(exc: Any, retry_entrypoint: str) -> "LedgerRefusal":

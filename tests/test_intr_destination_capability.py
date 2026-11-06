@@ -33,6 +33,8 @@ THIS = "StegVerse-Labs"
 PEER = "StegVerse-org"
 MANIFEST_PROFILE = "sdk-manifest-ingress"
 MANIFEST_ADDRESS = "stegverse-labs." + MANIFEST_PROFILE
+#: A carrier-supplied epoch; a capability crossing is refused without one.
+SUPPLIED_EPOCH = 40
 GENESIS = {"mode": "ESTABLISH_GENESIS", "node_ref": "intr-destination-test", "predecessor": None}
 
 
@@ -303,7 +305,7 @@ class AddressedAndClosedTests(RedirectedLedgers):
             payload=payload, standing=GENESIS,
             transition_reference="intr:transition:" + packet_id,
             authority_effect="NONE", packet_id=packet_id)
-        kernel.publish_packet(packet, root=self.mesh)
+        kernel.publish_packet(packet, root=self.mesh, epoch=SUPPLIED_EPOCH)
         return packet
 
     def consume(self):
@@ -405,12 +407,13 @@ class AddressedAndClosedTests(RedirectedLedgers):
         self.assertIs(emitted["peer_serves_this_capability_is_proven_here"], False)
         self.assertEqual(emitted["emission_record"]["far_side_service_id"],
                          emitted["destination_service"])
-        pending = egress.close(PEER, emitted["packet_id"], "closable-diagnostic",
-                               mesh_root=self.mesh, hb_epoch=33)
-        self.assertEqual(pending["disposition"], "PENDING")
-        self.assertIs(pending["closed"], False)
-        self.assertIs(pending["closure_recorded"], False)
-        self.assertIs(pending["absence_is_not_a_transition"], True)
+        absent = egress.close(PEER, emitted["packet_id"], "closable-diagnostic",
+                              mesh_root=self.mesh, hb_epoch=33)
+        self.assertEqual(absent["disposition"], "FAIL_CLOSED")
+        self.assertEqual(absent["failure_code"], "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION")
+        self.assertIs(absent["closed"], False)
+        self.assertIs(absent["closure_recorded"], False)
+        self.assertIs(absent["absence_is_not_a_transition"], True)
         self.assertEqual(self.receipts("STEGVERSE_REPO_LEDGER_ROOT",
                                        "stegverse.repo-transition-receipt/v1",
                                        egress.CLOSED_CLASS), [])

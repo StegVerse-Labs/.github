@@ -1,0 +1,560 @@
+{
+ "cases": [
+  {
+   "case_id": "verifier-verdicts-vs-admission",
+   "expect": {
+    "agreed": 2,
+    "disposition": "ALLOW",
+    "evaluated": 3
+   },
+   "input": {
+    "evaluations": [
+     {
+      "admission": {
+       "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+       "disposition": "ALLOW",
+       "receipt_ref": "fixture-ledger/receipts/a-admission.json#fixture:a-admission"
+      },
+      "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+         "check_id": "unit-tests",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/a-unit-tests.json#fixture:a-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+         "check_id": "schema-validate",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/a-schema-validate.json#fixture:a-schema-validate"
+       }
+      ]
+     },
+     {
+      "admission": {
+       "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+       "disposition": "ALLOW",
+       "receipt_ref": "fixture-ledger/receipts/b-admission.json#fixture:b-admission"
+      },
+      "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+         "check_id": "unit-tests",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/b-unit-tests.json#fixture:b-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+         "check_id": "schema-validate",
+         "disposition": "DENY",
+         "failed_predicate": "UNIT_TESTS_PASS",
+         "failure_code": "CHECK_FAILED",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "next_attempt": "re-run at the next head",
+         "owning_existing_goal": "StegVerse-org/.github#163",
+         "required_evidence_or_repair": "repair the failing test",
+         "retry_entrypoint": "SV-LLM/.github sandbox/s1_verify.py",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/b-schema-validate.json#fixture:b-schema-validate"
+       }
+      ]
+     },
+     {
+      "admission": {
+       "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+       "disposition": "DENY",
+       "receipt_ref": "fixture-ledger/receipts/c-admission.json#fixture:c-admission"
+      },
+      "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+         "check_id": "unit-tests",
+         "disposition": "DENY",
+         "failed_predicate": "UNIT_TESTS_PASS",
+         "failure_code": "CHECK_FAILED",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "next_attempt": "re-run at the next head",
+         "owning_existing_goal": "StegVerse-org/.github#163",
+         "required_evidence_or_repair": "repair the failing test",
+         "retry_entrypoint": "SV-LLM/.github sandbox/s1_verify.py",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/c-unit-tests.json#fixture:c-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+         "check_id": "schema-validate",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/c-schema-validate.json#fixture:c-schema-validate"
+       }
+      ]
+     }
+    ],
+    "fixture_mode": true,
+    "llm_verdicts": [
+     {
+      "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+      "disposition": "ALLOW",
+      "mode": "E1"
+     }
+    ]
+   }
+  },
+  {
+   "case_id": "llm-verdicts-never-move-the-e0-metric",
+   "expect": {
+    "agreed": 2,
+    "disposition": "ALLOW",
+    "evaluated": 3
+   },
+   "input": {
+    "evaluations": [
+     {
+      "admission": {
+       "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+       "disposition": "ALLOW",
+       "receipt_ref": "fixture-ledger/receipts/a-admission.json#fixture:a-admission"
+      },
+      "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+         "check_id": "unit-tests",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/a-unit-tests.json#fixture:a-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+         "check_id": "schema-validate",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/a-schema-validate.json#fixture:a-schema-validate"
+       }
+      ]
+     },
+     {
+      "admission": {
+       "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+       "disposition": "ALLOW",
+       "receipt_ref": "fixture-ledger/receipts/b-admission.json#fixture:b-admission"
+      },
+      "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+         "check_id": "unit-tests",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/b-unit-tests.json#fixture:b-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+         "check_id": "schema-validate",
+         "disposition": "DENY",
+         "failed_predicate": "UNIT_TESTS_PASS",
+         "failure_code": "CHECK_FAILED",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "next_attempt": "re-run at the next head",
+         "owning_existing_goal": "StegVerse-org/.github#163",
+         "required_evidence_or_repair": "repair the failing test",
+         "retry_entrypoint": "SV-LLM/.github sandbox/s1_verify.py",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/b-schema-validate.json#fixture:b-schema-validate"
+       }
+      ]
+     },
+     {
+      "admission": {
+       "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+       "disposition": "DENY",
+       "receipt_ref": "fixture-ledger/receipts/c-admission.json#fixture:c-admission"
+      },
+      "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+         "check_id": "unit-tests",
+         "disposition": "DENY",
+         "failed_predicate": "UNIT_TESTS_PASS",
+         "failure_code": "CHECK_FAILED",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "next_attempt": "re-run at the next head",
+         "owning_existing_goal": "StegVerse-org/.github#163",
+         "required_evidence_or_repair": "repair the failing test",
+         "retry_entrypoint": "SV-LLM/.github sandbox/s1_verify.py",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/c-unit-tests.json#fixture:c-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+         "check_id": "schema-validate",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/c-schema-validate.json#fixture:c-schema-validate"
+       }
+      ]
+     }
+    ],
+    "fixture_mode": true,
+    "llm_verdicts": [
+     {
+      "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+      "disposition": "ALLOW",
+      "mode": "E1"
+     },
+     {
+      "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+      "disposition": "DENY",
+      "mode": "E2"
+     }
+    ]
+   }
+  },
+  {
+   "case_id": "no-evaluated-change",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "VERDICT_AGREEMENT_EVIDENCE_UNOBSERVED"
+   },
+   "input": {
+    "evaluations": []
+   }
+  },
+  {
+   "case_id": "llm-verdicts-alone-are-not-an-e0-producer",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "VERDICT_AGREEMENT_EVIDENCE_UNOBSERVED"
+   },
+   "input": {
+    "evaluations": [],
+    "llm_verdicts": [
+     {
+      "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+      "disposition": "ALLOW",
+      "mode": "E1"
+     }
+    ]
+   }
+  },
+  {
+   "case_id": "fixture-refs-are-not-ledgered-outside-fixture-mode",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "VERDICT_AGREEMENT_EVIDENCE_UNOBSERVED"
+   },
+   "input": {
+    "evaluations": [
+     {
+      "admission": {
+       "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+       "disposition": "ALLOW",
+       "receipt_ref": "fixture-ledger/receipts/a-admission.json#fixture:a-admission"
+      },
+      "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+         "check_id": "unit-tests",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/a-unit-tests.json#fixture:a-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+         "check_id": "schema-validate",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/a-schema-validate.json#fixture:a-schema-validate"
+       }
+      ]
+     },
+     {
+      "admission": {
+       "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+       "disposition": "ALLOW",
+       "receipt_ref": "fixture-ledger/receipts/b-admission.json#fixture:b-admission"
+      },
+      "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+         "check_id": "unit-tests",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/b-unit-tests.json#fixture:b-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+         "check_id": "schema-validate",
+         "disposition": "DENY",
+         "failed_predicate": "UNIT_TESTS_PASS",
+         "failure_code": "CHECK_FAILED",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "next_attempt": "re-run at the next head",
+         "owning_existing_goal": "StegVerse-org/.github#163",
+         "required_evidence_or_repair": "repair the failing test",
+         "retry_entrypoint": "SV-LLM/.github sandbox/s1_verify.py",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/b-schema-validate.json#fixture:b-schema-validate"
+       }
+      ]
+     },
+     {
+      "admission": {
+       "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+       "disposition": "DENY",
+       "receipt_ref": "fixture-ledger/receipts/c-admission.json#fixture:c-admission"
+      },
+      "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+         "check_id": "unit-tests",
+         "disposition": "DENY",
+         "failed_predicate": "UNIT_TESTS_PASS",
+         "failure_code": "CHECK_FAILED",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "next_attempt": "re-run at the next head",
+         "owning_existing_goal": "StegVerse-org/.github#163",
+         "required_evidence_or_repair": "repair the failing test",
+         "retry_entrypoint": "SV-LLM/.github sandbox/s1_verify.py",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/c-unit-tests.json#fixture:c-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+         "check_id": "schema-validate",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/c-schema-validate.json#fixture:c-schema-validate"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "case_id": "producer-evidence-through-the-nwi-s2-gate",
+   "expect": {
+    "disposition": "FAIL_CLOSED",
+    "failure_code": "STAGE_THRESHOLD_UNDECLARED"
+   },
+   "input": {
+    "evaluations": [
+     {
+      "admission": {
+       "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+       "disposition": "ALLOW",
+       "receipt_ref": "fixture-ledger/receipts/a-admission.json#fixture:a-admission"
+      },
+      "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+         "check_id": "unit-tests",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/a-unit-tests.json#fixture:a-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:ec30cef52919e536c8f83fd10b873bdc23cb3d2fcca12e1e513df3b3aced0bc8",
+         "check_id": "schema-validate",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/a-schema-validate.json#fixture:a-schema-validate"
+       }
+      ]
+     },
+     {
+      "admission": {
+       "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+       "disposition": "ALLOW",
+       "receipt_ref": "fixture-ledger/receipts/b-admission.json#fixture:b-admission"
+      },
+      "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+         "check_id": "unit-tests",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/b-unit-tests.json#fixture:b-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:061b9f8aefb7e62340061d1f0aa7ad4672db4cade7a9e66d33970186847710e0",
+         "check_id": "schema-validate",
+         "disposition": "DENY",
+         "failed_predicate": "UNIT_TESTS_PASS",
+         "failure_code": "CHECK_FAILED",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "next_attempt": "re-run at the next head",
+         "owning_existing_goal": "StegVerse-org/.github#163",
+         "required_evidence_or_repair": "repair the failing test",
+         "retry_entrypoint": "SV-LLM/.github sandbox/s1_verify.py",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/b-schema-validate.json#fixture:b-schema-validate"
+       }
+      ]
+     },
+     {
+      "admission": {
+       "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+       "disposition": "DENY",
+       "receipt_ref": "fixture-ledger/receipts/c-admission.json#fixture:c-admission"
+      },
+      "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+      "check_receipts": [
+       {
+        "receipt": {
+         "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+         "check_id": "unit-tests",
+         "disposition": "DENY",
+         "failed_predicate": "UNIT_TESTS_PASS",
+         "failure_code": "CHECK_FAILED",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "next_attempt": "re-run at the next head",
+         "owning_existing_goal": "StegVerse-org/.github#163",
+         "required_evidence_or_repair": "repair the failing test",
+         "retry_entrypoint": "SV-LLM/.github sandbox/s1_verify.py",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/c-unit-tests.json#fixture:c-unit-tests"
+       },
+       {
+        "receipt": {
+         "change_digest": "sha256:8229ad4452649dbf4dd6ca0c90f54a2c354829f681dd3d3e2459c1e3affe1bc5",
+         "check_id": "schema-validate",
+         "disposition": "ALLOW",
+         "hb_epoch": "32",
+         "head_sha": "1111111111111111111111111111111111111111",
+         "schema": "stegverse.sv_check_receipt.v1",
+         "verifier_ref": "SV-LLM/.github#46"
+        },
+        "receipt_ref": "fixture-ledger/receipts/c-schema-validate.json#fixture:c-schema-validate"
+       }
+      ]
+     }
+    ],
+    "fixture_mode": true,
+    "hb_epoch": "32",
+    "through_gate": true,
+    "verdict_record_receipt_ref": "fixture-ledger/receipts/s2-verdict-record.json#fixture:s2-verdict-record"
+   }
+  }
+ ],
+ "item": "NWI-S2:SV_LLM_VERDICT_AGREEMENT_RATE",
+ "schema": "stegverse.nwi-e0-witness-cases/v1"
+}

@@ -17,6 +17,7 @@ network, no environment read.
 """
 from __future__ import annotations
 
+import ast
 import hashlib
 import importlib.util
 import json
@@ -28,15 +29,26 @@ ROOT = Path(__file__).resolve().parents[1]
 _spec = importlib.util.spec_from_file_location("sv_work_items_kernel", ROOT / "org-kernel/kernel.py")
 kernel = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(kernel)
+# sv-push-receipt.v1 (Labs#3267): the branch-writer session is DERIVED from the sealed push-receipt chain, never declared
+_push_spec = importlib.util.spec_from_file_location("sv_work_items_push_receipt", ROOT / "resident-runtime/sv_push_receipt.py")
+push_receipt = importlib.util.module_from_spec(_push_spec)
+_push_spec.loader.exec_module(push_receipt)
 
 
 def supplied_epoch_rule_sha256(source: str) -> str | None:
-    """sha256 hex of the supplied_epoch_failure source segment in `source` (kernel.py text), else None."""
-    if "def supplied_epoch_failure" not in source:
+    """sha256 hex of the supplied_epoch_failure source segment in `source` (kernel.py text), else None.
+
+    The segment is the function's own ast source segment, as Labs#3266 hashes it. Cutting at the next top-level
+    def gave the same digest only while a def followed; the class #3282 places after it would be hashed too.
+    """
+    try:
+        tree = ast.parse(source)
+    except (SyntaxError, ValueError):
         return None
-    a = source.index("def supplied_epoch_failure")
-    b = source.find("\ndef ", a + 5)
-    return hashlib.sha256(source[a:b if b >= 0 else len(source)].rstrip().encode("utf-8")).hexdigest()
+    node = next((n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "supplied_epoch_failure"), None)
+    if node is None:
+        return None
+    return hashlib.sha256(ast.get_source_segment(source, node).encode("utf-8")).hexdigest()
 
 
 KERNEL_RULE_SHA256 = supplied_epoch_rule_sha256((ROOT / "org-kernel/kernel.py").read_text(encoding="utf-8"))
@@ -110,9 +122,10 @@ NOT_CROSS_CHECKED_DETAIL = "HB_EPOCH_NOT_CROSS_CHECKED"  # the canonical marker'
 READBACK_SUPPLIED_FIELD = "supplied_hb_epoch"
 # Explicit unobserved values: FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY)
 SUPPLIED_EPOCH_UNOBSERVED_VALUES = (None, "", "null", "UNKNOWN_NOT_AUTHENTICALLY_OBSERVED")
-# sha256 of the source segment of org-kernel/kernel.py::supplied_epoch_failure (from "def supplied_epoch_failure" to the
-# next top-level def, trailing whitespace stripped): the shared rule pinned as 726248a5 by SV-LLM/.github#46 and Labs#3266
-SUPPLIED_EPOCH_RULE_SHA256 = "726248a585904b52cfe2eec1754e7ce582f67d6b501bd664bb7bee80bce9b7ef"
+# sha256 of the ast source segment of org-kernel/kernel.py::supplied_epoch_failure: the shared rule as #3282 (B-P36h)
+# re-pins it, whose function text (inspect.getsource, trailing newline included) is ad8ff529. Was 726248a5
+# (SV-LLM/.github#46, Labs#3266) before the HB_EPOCH_PROVENANCE_UNMARKED tightening.
+SUPPLIED_EPOCH_RULE_SHA256 = "c91921348741cc1139553d5e4ad3d4f8f1c44fc67537eee4629c5bf63d49041d"
 CHECK_DERIVED_ISSUE_INVARIANT = "CHECK_DERIVED_ISSUES_ARE_DERIVED_FROM_THE_LEDGERED_FAILING_RECEIPT"
 CHECK_COMMAND_PREDICATE = "CHECK_HAS_OFFLINE_COMMAND"
 LEDGER_HEAD_KEY = "HEAD.json"  # ledger_store.HEAD_KEY
@@ -390,8 +403,9 @@ def validate_issue(rec: Any, ledger_objects: Mapping[str, bytes] | None = None) 
     if not _base_ok(rec.get("observed_base")):
         raise _deny("SV_ISSUE_BASE_UNBOUND", "BASE_BOUND_TO_REGISTRY_GENERATION_AND_LEDGER_HEAD",
                     "observed_base{registry_generation int, ledger_head 40-hex}", e)
-    if not _str(rec.get("opened_by_session")):
-        raise _deny("AUTHOR_SESSION_NOT_DECLARED", "PR_AUTHOR_SESSION_DECLARED", "name the opening session", e)
+    if not _str(rec.get("opened_by_session")):  # schema-required attribution label (schemas/sv-issue.v1.schema.json)
+        raise _deny("SV_ISSUE_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + ISSUE_SCHEMA, "opened_by_session is a non-empty string", e,
+                    field="opened_by_session")
     if rec.get("issue_id") != issue_identity(rec):
         raise _deny("SV_ISSUE_IDENTITY_MISMATCH", "ISSUE_IDENTITY_IS_CONTENT_ADDRESSED", "issue_id = issue_identity(record)", e,
                     expected=issue_identity(rec))
@@ -486,8 +500,10 @@ def validate_change(rec: Any, ledger_objects: Mapping[str, bytes] | None = None)
     e = "validate_change"
     if not isinstance(rec, Mapping) or rec.get("schema") != CHANGE_SCHEMA:
         raise _deny("SV_CHANGE_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + CHANGE_SCHEMA, "supply a stegverse.sv_change.v1 record", e)
-    if not _str(rec.get("declared_session")):
-        raise _fail("AUTHOR_SESSION_NOT_DECLARED", "PR_AUTHOR_SESSION_DECLARED", "declared_session names the authoring session", e)
+    if not _str(rec.get("declared_session")):  # a schema-required attribution label; it grants and refuses nothing
+        raise _deny("SV_CHANGE_SCHEMA_MISMATCH", "RECORD_SCHEMA_IS_" + CHANGE_SCHEMA,
+                    "declared_session is a non-empty string (schemas/sv-change.v1.schema.json); admission never reads it: the "
+                    "branch writer is derived from the sv-push-receipt chain (BRANCH_WRITER_IS_BRANCH_OWNER)", e, field="declared_session")
     mode = mode_check(rec, "SV_CHANGE", "base_ref", e)
     if not _base_ok(rec.get("base_ref")):
         raise _deny("SV_CHANGE_BASE_UNBOUND", "BASE_BOUND_TO_REGISTRY_GENERATION_AND_LEDGER_HEAD",
@@ -568,14 +584,14 @@ def native_epoch_type_check(rec: Mapping[str, Any], e: str) -> None:
     (schemas/sv-change.v1.schema.json 6b43b6ec). An observed value of another JSON type (an int such as 1024, a float, a
     bool, an array or object) is malformed and is DENY HB_EPOCH_MISMATCH, as admission's supplied-epoch rule already gives
     for bools and non-digits (verify_admission_hb_epoch). Absent / null stays unobserved (FAIL_CLOSED, unchanged).
-    NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED (commit 5): a string that fails 726248a5 ('abc', '+33', '31', ' 44') is DENY
+    NATIVE_RECORD_HB_EPOCH_IS_WELL_FORMED (commit 5): a string that fails c9192134 ('abc', '+33', '31', ' 44') is DENY
     HB_EPOCH_MISMATCH, as in admission; "" and "null" are FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED, as in admission."""
     if rec.get("record_mode") != "NATIVE" or "hb_epoch" not in rec or rec["hb_epoch"] is None:
         return
     v = rec["hb_epoch"]
     if isinstance(v, str):
         # commit 5 (open item closed): a malformed epoch STRING is DENY HB_EPOCH_MISMATCH here too, as admission gives
-        # (verify_admission_hb_epoch: 726248a5 failures other than the unobserved values are DENY); "", "null" and the
+        # (verify_admission_hb_epoch: c9192134 failures other than the unobserved values are DENY); "", "null" and the
         # UNKNOWN sentinel stay unobserved (FAIL_CLOSED, never DENY), checked first, as in admission
         if v == UNKNOWN:
             return  # mode_check: UNKNOWN_IN_NATIVE_RECORD (FAIL_CLOSED)
@@ -601,6 +617,95 @@ def _writer_ok(w: Any) -> bool:
     if not isinstance(w, Mapping) or set(w) != {"session", "evidence_class"} or w.get("evidence_class") not in WRITER_EVIDENCE:
         return False
     return w["session"] is None if w["evidence_class"] == UNKNOWN else _str(w["session"])
+
+
+# ------------------------------------------------------------------ branch writer from the sv-push-receipt chain
+# BRANCH_WRITER_IS_BRANCH_OWNER (Lane C alignment, TVC#531 v2 p_writer; Labs#3267 producer): the authoring session is
+# DERIVED as the pusher_session of the sealed sv-push-receipt.v1 at the change's head. PR_AUTHOR_SESSION_DECLARED is
+# retired: no PR body line, commit trailer or record field (declared_session) is read for authority. A per-path
+# content[*].writer_session can only refuse (a named session other than the derived writer or a receipted co-author).
+WRITER_PREDICATE = "BRANCH_WRITER_IS_BRANCH_OWNER"
+PUSH_RECEIPT_RETRY = ("resident-runtime/sv_push_receipt.py::emit at push time (read_ref before the push, emit after it), then the "
+                      "org-ledger writer's append of the receipt to refs/stegverse/organization-ledger (StegVerse-Labs/.github#3255)")
+_OID40 = re.compile(r"^[0-9a-f]{40}$")
+
+
+def _writer_gap(gap: str, entry: str, code: str = "BRANCH_WRITER_UNOBSERVED", **d: Any) -> Refusal:
+    """Six-field FAIL_CLOSED: the branch writer is not observed (a gap in the push-receipt chain). Never DENY."""
+    return _fail(code, WRITER_PREDICATE,
+                 "a contiguous chain of sealed sv-push-receipt.v1 receipts for the change's target repository and one branch ref, "
+                 "from change_commits.base_commit to change_commits.head_commit, every pushed commit covered; the authoring "
+                 "session is the pusher_session of the receipt sealed at the head", entry,
+                 "re-run admission after the missing push receipt is emitted and appended to the organization ledger; nothing "
+                 "was admitted", retry_entrypoint=PUSH_RECEIPT_RETRY, writer_evidence=gap, **d)
+
+
+def derive_branch_writer(push_receipts: Any, change_commits: Any, *, target_repository: Any, change_id: Any = None,
+                         entry: str = "derive_branch_writer") -> dict[str, Any]:
+    """{session, ref, pushers, chain, base_commit, head_commit} from the push-receipt chain, or a six-field FAIL_CLOSED Refusal:
+      BRANCH_WRITER_UNOBSERVED    no receipts or commits, a receipt that is malformed or unsealed, another repository or
+                                  change, more than one ref, a fork, a receipt outside the chain, or no receipt at base_commit;
+      WRITER_EVIDENCE_NOT_AT_HEAD the contiguous chain from base_commit ends at a commit other than head_commit.
+    Pure over the supplied receipts (read from the organization ledger by the caller); no git, no clock, no network."""
+    cc = change_commits if isinstance(change_commits, Mapping) else {}
+    base, head = cc.get("base_commit"), cc.get("head_commit")
+    if not (isinstance(base, str) and _OID40.match(base) and isinstance(head, str) and _OID40.match(head)):
+        raise _writer_gap("CHANGE_COMMITS_UNOBSERVED", entry, change_commits=dict(cc) or None)
+    rs = list(push_receipts) if isinstance(push_receipts, (list, tuple)) else None
+    if not rs:
+        raise _writer_gap("NO_PUSH_RECEIPT", entry)
+    for n, r in enumerate(rs):
+        why = push_receipt.receipt_problem(r)
+        if why is not None:
+            raise _writer_gap("PUSH_RECEIPT_INVALID", entry, receipt_index=n, receipt_problem=why)
+    other = sorted({r["repository"] for r in rs} - {target_repository})
+    if other:
+        raise _writer_gap("PUSH_RECEIPT_OTHER_REPOSITORY", entry, repositories=other, target_repository=target_repository)
+    refs = sorted({r["ref"] for r in rs})
+    if len(refs) != 1:
+        raise _writer_gap("PUSH_RECEIPT_REFS_DIFFER", entry, refs=refs)
+    wrong_change = sorted({r["change_id"] for r in rs if "change_id" in r} - {change_id})
+    if wrong_change:
+        raise _writer_gap("PUSH_RECEIPT_OTHER_CHANGE", entry, change_ids=wrong_change, change_id=change_id)
+    by_old: dict[str, dict] = {}
+    for r in rs:
+        if r["old_sha"] in by_old:
+            raise _writer_gap("PUSH_RECEIPT_CHAIN_FORKS", entry, old_sha=r["old_sha"])
+        by_old[r["old_sha"]] = r
+    if base not in by_old:
+        raise _writer_gap("PUSH_RECEIPT_CHAIN_NOT_AT_BASE", entry, base_commit=base, old_shas=sorted(by_old))
+    chain, at = [], base
+    while at in by_old and len(chain) < len(rs):
+        chain.append(by_old[at]); at = by_old[at]["new_sha"]
+    if len(chain) != len(rs):
+        raise _writer_gap("PUSH_RECEIPT_CHAIN_GAP", entry, chained=len(chain), supplied=len(rs),
+                          unchained=sorted(r["result_sha256"] for r in rs if r not in chain))
+    if at != head:
+        raise _writer_gap("WRITER_EVIDENCE_NOT_AT_HEAD", entry, "WRITER_EVIDENCE_NOT_AT_HEAD", chain_tip=at, head_commit=head)
+    return {"session": chain[-1]["pusher_session"], "ref": refs[0], "pushers": sorted({r["pusher_session"] for r in chain}),
+            "chain": [r["result_sha256"] for r in chain], "base_commit": base, "head_commit": head}
+
+
+def verify_branch_writer(obs: Mapping[str, Any], entry: str = "evaluate_admission") -> dict[str, Any]:
+    """BRANCH_WRITER_IS_BRANCH_OWNER over admission_inputs(): every pusher in the chain and every named per-path writer is
+    the derived session or a receipted co-author grant, else FAIL_CLOSED BRANCH_HAS_FOREIGN_WRITER."""
+    bw = derive_branch_writer(obs.get("push_receipts"), obs.get("change_commits"), target_repository=obs.get("target_repository"),
+                              change_id=obs.get("change_id"), entry=entry)
+    allowed = {bw["session"]} | set(obs.get("co_author_grants") or [])
+    foreign = sorted((set(bw["pushers"]) | set(obs.get("writer_sessions") or [])) - allowed)
+    if foreign:
+        raise _fail("BRANCH_HAS_FOREIGN_WRITER", WRITER_PREDICATE,
+                    "a superseding SV_CHANGE by the owner that carries the foreign content openly, or a receipted co-author grant", entry,
+                    derived_session=bw["session"], foreign_writers=foreign)
+    return bw
+
+
+def _derived_writer_or_none(obs: Mapping[str, Any]) -> str | None:
+    try:
+        return derive_branch_writer(obs.get("push_receipts"), obs.get("change_commits"), target_repository=obs.get("target_repository"),
+                                    change_id=obs.get("change_id"))["session"]
+    except Refusal:
+        return None
 
 
 # ------------------------------------------------------------------ surfaces and admission inputs
@@ -1130,17 +1235,17 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
         DENY HB_EPOCH_MISMATCH (a FAIL_CLOSED readback seals hb_epoch and hb_epoch_source as null), hb_epoch_source.receipt
         not receipts/<hex>.json,
         a fixture_only receipt outside fixture_mode, bound to another ledger head, no hb_epoch_source naming
-        $.hb_reference.epoch at that head, or an hb_epoch slot that fails the shared supplied-epoch rule (726248a5:
+        $.hb_reference.epoch at that head, or an hb_epoch slot that fails the shared supplied-epoch rule (c9192134:
         ASCII digits, >= 32, the source reference's derived_from_clock exactly false), or that rule is not the pinned one.
       FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (contract invariant: UNKNOWN is FAIL_CLOSED, never DENY): the supplied hb_epoch,
         where it is the epoch source (an SV_CHANGE record's hb_epoch; absent reads as null), is null, "", "null" or the
-        literal UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; checked BEFORE 726248a5 (a deliberate, recorded precedence).
+        literal UNKNOWN_NOT_AUTHENTICALLY_OBSERVED; checked BEFORE c9192134 (a deliberate, recorded precedence).
       ALLOW with cross_checked false and detail HB_EPOCH_NOT_CROSS_CHECKED: `supplied` is HB_EPOCH_NOT_CROSS_CHECKED (an optional
         cross-check left out; the canonical not-cross-checked marker).
       FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (READBACK_SHAPE_MATCHES_PINNED_PRODUCER): the readback carries hb_epoch_cross_check,
         has no cross_checked key (the producer always emits it; a self-seal cannot prove which path ran), or a non-canonical
         cross_checked / marker combination (readback_shape_violation): not produced by the pinned readback.
-      DENY HB_EPOCH_MISMATCH: any other supplied hb_epoch that fails 726248a5 (non-digit, coerced such as '+33', below 32,
+      DENY HB_EPOCH_MISMATCH: any other supplied hb_epoch that fails c9192134 (non-digit, coerced such as '+33', below 32,
         an int or bool rather than ASCII text) or is not equal by integer value to the sealed epoch."""
     if KERNEL_RULE_SHA256 != SUPPLIED_EPOCH_RULE_SHA256:
         raise _readback_epoch_unobserved("org-kernel/kernel.py::supplied_epoch_failure is not the pinned rule "
@@ -1178,7 +1283,11 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
             and not (receipt == UNKNOWN and rb.get("fixture_only") is True and fixture_mode):
         raise _readback_epoch_unobserved("hb_epoch_source.receipt is not the head receipt's ledger path receipts/<hex>.json "
                                          "(UNKNOWN only in a fixture_only readback in fixture_mode)", ledger_head)
-    bad = kernel.supplied_epoch_failure(rb.get("hb_epoch"), src)
+    # hb_epoch_source is a pointer to the head receipt, checked field by field above, not a carrier heartbeat
+    # reference: c9192134 refuses a reference with no derived_from_clock as unmarked, which 726248a5 did not. It is
+    # passed to the rule only when it carries a clock marking, so the value rule decides exactly as before.
+    clock_marked = "derived_from_clock" in src or "sampled_unix_ns" in src
+    bad = kernel.supplied_epoch_failure(rb.get("hb_epoch"), src if clock_marked else None)
     if rb.get("hb_epoch") is None or bad is not None:
         raise _readback_epoch_unobserved("the sealed hb_epoch slot fails the shared supplied-epoch rule: "
                                          + (bad[0] + ": " + bad[1] if bad else "absent"), ledger_head)
@@ -1192,12 +1301,12 @@ def verify_admission_hb_epoch(supplied: Any, readback: Any, ledger_head: Any, *,
     # Contract invariant (orchestrator 15:59Z, narrowed 16:03Z): anything not observed is UNKNOWN_NOT_AUTHENTICALLY_OBSERVED,
     # which is FAIL_CLOSED, never DENY. Where the supplied value IS the epoch source (an SV_CHANGE record's hb_epoch), an
     # absent field (read as null), JSON null, "", "null" or the UNKNOWN sentinel is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED.
-    # This precedes the kernel rule: 726248a5 alone would call None HB_EPOCH_NOT_SUPPLIED and "", "null" and the sentinel
+    # This precedes the kernel rule: c9192134 alone would call None HB_EPOCH_NOT_SUPPLIED and "", "null" and the sentinel
     # HB_EPOCH_INVALID (malformed, i.e. DENY here). The pin is unchanged; the precedence is recorded in the row.
     if any(supplied is v if v is None else (isinstance(supplied, str) and supplied == v) for v in SUPPLIED_EPOCH_UNOBSERVED_VALUES):
         raise _readback_epoch_unobserved("the supplied hb_epoch %r is not observed (UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED, "
-                                         "never DENY; checked before 726248a5)" % (supplied,), ledger_head)
-    # Ruling (orchestrator, both verifiers, 60 cases): any other SUPPLIED epoch that fails 726248a5 is DENY
+                                         "never DENY; checked before c9192134)" % (supplied,), ledger_head)
+    # Ruling (orchestrator, both verifiers, 60 cases): any other SUPPLIED epoch that fails c9192134 is DENY
     # HB_EPOCH_MISMATCH, as is a well-formed one that differs from the sealed epoch.
     supplied_failure = kernel.supplied_epoch_failure(supplied)
     if supplied_failure is not None or not (isinstance(supplied, str) and re.fullmatch(r"[0-9]+", supplied) and int(supplied) == want):
@@ -1621,7 +1730,8 @@ def verify_resolutions(obs: Mapping[str, Any], *, fixture_mode: bool = False) ->
         raise _fail("RESOLVED_ISSUE_UNOBSERVED", RESOLVES_PREDICATE,
                     "every cited svi: id is an observed SV_ISSUE (receipt-derived: derivable from the ledgered receipt)", e,
                     "after every cited issue is observed, or cite only the observed ones", unobserved=missing)
-    writers = set(obs.get("writer_sessions") or []) | ({obs["declared_session"]} if _str(obs.get("declared_session")) else set())
+    derived = _derived_writer_or_none(obs)
+    writers = set(obs.get("writer_sessions") or []) | ({derived} if derived else set())
     paths, blobs = set(obs.get("touched_paths") or []), set(obs.get("content_blob_digests") or [])
     for i in sorted(facts):
         f = facts[i]
@@ -1674,12 +1784,14 @@ def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
                      ledger_objects: Mapping[str, bytes] | None = None, ledger_ref: Any = None,
                      issue_records: Iterable[Mapping[str, Any]] | None = None,
                      evaluations: Iterable[Mapping[str, Any]] | None = None, change_commits: Mapping[str, Any] | None = None,
-                     contract_pins: Any = None) -> dict[str, Any]:
+                     contract_pins: Any = None, push_receipts: Iterable[Mapping[str, Any]] | None = None) -> dict[str, Any]:
     """The observed inputs the admission predicate and the scenario corpus bind to (registry/ledger, not GitHub).
     With `ledger_objects` the resolved-issue facts are DERIVED by derive_resolved_issue_facts(ledger_objects, ledger_ref,
     change, issue_records), the same public function TVC re-derives with; supplying facts as well is refused.
     `hb_epoch_readback` is Lane C's sealed base-state readback receipt (Labs#3266) for the change's base, or None.
-    `resolved_issues` are the facts resolved_issue_facts() observed for the cited SV_ISSUEs (none: nothing observed)."""
+    `resolved_issues` are the facts resolved_issue_facts() observed for the cited SV_ISSUEs (none: nothing observed).
+    `push_receipts` are the sealed sv-push-receipt.v1 receipts (Labs#3267) the organization ledger holds for the change's branch
+    and `change_commits` its observed {base_commit, head_commit}: the branch writer is derived from them (derive_branch_writer)."""
     if ledger_objects is not None:
         if resolved_issues is not None:
             raise _fail("RESOLVED_ISSUE_FACTS_DOUBLY_SOURCED", RESOLVES_PREDICATE,
@@ -1690,18 +1802,14 @@ def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
     checks, signoffs = required_for(change["touched_paths"])
     ws = [c["writer_session"] for c in change["content"]]
     writers = sorted({w["session"] for w in ws if w["evidence_class"] != UNKNOWN})
-    unobserved = sorted(c["path"] for c in change["content"] if c["writer_session"]["evidence_class"] == UNKNOWN)
     grants = sorted(g["session"] for g in change.get("co_author_grants") or [] if _str((g or {}).get("receipt_ref")))
     return {
         "record_mode": change.get("record_mode"),
-        "writer_unobserved_paths": unobserved,
-        "declared_session": change.get("declared_session"),
         "base_ref": dict(change["base_ref"]),
         "current_base": dict(current_base),
         "head_change_digest": change["head"]["change_digest"],
         "writer_sessions": writers,
         "co_author_grants": grants,
-        "declared_session_matches_writers": not unobserved and all(w == change.get("declared_session") or w in grants for w in writers),
         "required_check_ids": checks,
         "validation_receipts": [dict(v) for v in change.get("validation_receipts") or []],
         "required_signoff_roles": signoffs,
@@ -1720,6 +1828,9 @@ def admission_inputs(change: Mapping[str, Any], current_base: Mapping[str, Any],
         "resolves": sorted(change.get("resolves") or []),
         "content_blob_digests": sorted({c["blob_digest"] for c in change["content"] if isinstance(c.get("blob_digest"), str)}),
         "resolved_issues": [json.loads(json.dumps(f)) for f in resolved_issues or []],
+        "push_receipts": None if push_receipts is None else [json.loads(json.dumps(r)) for r in push_receipts],
+        "change_commits": ({"base_commit": change_commits.get("base_commit"), "head_commit": change_commits.get("head_commit")}
+                           if isinstance(change_commits, Mapping) else None),
     }
 
 
@@ -1738,22 +1849,13 @@ def evaluate_admission(obs: Mapping[str, Any], covered_kinds: Iterable[str] | No
         raise native_unknown_refusal(UNKNOWN, e)  # which fields hold UNKNOWN was itself not observed
     if unknown:
         raise native_unknown_refusal(sorted(unknown), e)
-    if not _str(obs.get("declared_session")):
-        raise _fail("AUTHOR_SESSION_NOT_DECLARED", "PR_AUTHOR_SESSION_DECLARED", "declare the authoring session", e)
     if obs.get("base_ref") != obs.get("current_base"):
         raise _deny("BASE_STALE", "BASE_IS_CURRENT", "re-propose on the current registry generation and ledger head", e,
                     base_ref=obs.get("base_ref"), current_base=obs.get("current_base"))
     if obs.get("bound_request_digest") != obs.get("recomputed_request_digest"):
         raise _fail("REQUEST_DIGEST_MISMATCH", "AUTHORIZATION_BINDS_FULL_REQUEST",
                     "a successor decision bound to the full request digest", e)
-    if obs.get("writer_unobserved_paths"):
-        raise _fail("BRANCH_WRITER_UNOBSERVED", "BRANCH_WRITER_IS_BRANCH_OWNER",
-                    "an observed writer (DECLARED or OBSERVED_COMMIT_TRAILER) for every path; UNKNOWN never passes (JDQ Q-WRITER-IDENTITY)",
-                    e, paths=obs["writer_unobserved_paths"])
-    if not obs.get("declared_session_matches_writers") or any(
-            w != obs.get("declared_session") and w not in (obs.get("co_author_grants") or []) for w in obs.get("writer_sessions") or []):
-        raise _fail("BRANCH_HAS_FOREIGN_WRITER", "BRANCH_WRITER_IS_BRANCH_OWNER",
-                    "a superseding SV_CHANGE by the owner that carries the foreign content openly, or a receipted co-author grant", e)
+    verify_branch_writer(obs, e)  # BRANCH_WRITER_IS_BRANCH_OWNER: derived from the sv-push-receipt chain, never declared
     # STAGE_GATE_RECEIPT_DERIVES_NATIVE_ISSUE: what the change resolves, for every NATIVE admission
     verify_resolutions(obs, fixture_mode=fixture_mode)
     required = list(obs.get("required_check_ids") or [])
@@ -1879,6 +1981,14 @@ def _ledger_kw(ctx: Mapping[str, Any]) -> dict[str, Any]:
             "evaluations": ctx.get("evaluations"), "change_commits": ctx.get("change_commits"), "contract_pins": ctx.get("contract_pins")}
 
 
+def _writer_kw(ctx: Mapping[str, Any]) -> dict[str, Any]:
+    """transition() context carrying the change's push receipts and commits (change_commits once, with or without ledger bytes)."""
+    kw = {"push_receipts": ctx.get("push_receipts")}
+    if ctx.get("ledger_objects") is None:
+        kw["change_commits"] = ctx.get("change_commits")
+    return kw
+
+
 def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_epoch: Any,
                context: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Evaluate one lifecycle transition. Returns {disposition, ..., record}; never raises for a refusal."""
@@ -1924,23 +2034,19 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
             new["closed_by"] = {k: det[k] for k in ("deciding_rule", "receipt_ref")}
         if transition_class == "SV_CHANGE_PROPOSE":
             validate_change(record)
+            obs = admission_inputs(record, record["base_ref"], **_writer_kw(ctx))
+            writer = verify_branch_writer(obs, e)["session"]  # derived from the push-receipt chain, never declared
             claimed = {i.get("issue_id"): i for i in ctx.get("issues") or []}
             bad = [i for i in record["resolves"] if (claimed.get(i) or {}).get("lifecycle_state") != "CLAIMED"
-                   or ((claimed.get(i) or {}).get("claim") or {}).get("session") != record["declared_session"]]
+                   or ((claimed.get(i) or {}).get("claim") or {}).get("session") != writer]
             if bad:
                 raise _fail("RESOLVED_ISSUE_NOT_CLAIMED_BY_AUTHOR", "CHANGE_RESOLVES_CLAIMED_SV_ISSUES",
-                            "claim each resolved SV_ISSUE with the declared session first (SV_ISSUE_CLAIM)", e, unclaimed=bad)
-            obs = admission_inputs(record, record["base_ref"])
-            if obs["writer_unobserved_paths"]:
-                raise _fail("BRANCH_WRITER_UNOBSERVED", "BRANCH_WRITER_IS_BRANCH_OWNER",
-                            "an observed writer for every path; UNKNOWN never passes (JDQ Q-WRITER-IDENTITY)", e,
-                            paths=obs["writer_unobserved_paths"])
-            if not obs["declared_session_matches_writers"]:
-                raise _fail("BRANCH_HAS_FOREIGN_WRITER", "BRANCH_WRITER_IS_BRANCH_OWNER",
-                            "a superseding SV_CHANGE by the owner that carries the foreign content openly", e)
+                            "claim each resolved SV_ISSUE with the branch writer's session first (SV_ISSUE_CLAIM)", e, unclaimed=bad,
+                            derived_session=writer)
         if transition_class == "SV_CHANGE_VERIFY":
             validate_change(record)
-            obs = admission_inputs(record, record["base_ref"], (), ctx.get("hb_epoch_readback"), ctx.get("resolved_issues"), **_ledger_kw(ctx))
+            obs = admission_inputs(record, record["base_ref"], (), ctx.get("hb_epoch_readback"), ctx.get("resolved_issues"),
+                                   **_ledger_kw(ctx), **_writer_kw(ctx))
             out = admit({**obs, "required_signoff_roles": []}, fixture_mode=bool(ctx.get("fixture_mode")))
             if out["disposition"] != "ALLOW":
                 raise Refusal(out["disposition"], out["failure_code"], out["failed_predicate"], out["required_evidence_or_repair"],
@@ -1956,7 +2062,7 @@ def transition(transition_class: str, record: Mapping[str, Any] | None, *, hb_ep
                 return {**out, "predicate_digest": ctx["predicate_digest"], "corpus_head": ctx["corpus_head"],
                         "actor_session": ctx.get("actor_session"), "transition_class": transition_class, "record": new}
             obs = admission_inputs(record, ctx.get("current_base") or {}, ctx.get("signoff_receipts") or (), ctx.get("hb_epoch_readback"),
-                                   ctx.get("resolved_issues"), **_ledger_kw(ctx))
+                                   ctx.get("resolved_issues"), **_ledger_kw(ctx), **_writer_kw(ctx))
             kw = {"fixture_mode": True} if ctx.get("fixture_mode") else {}
             out = admit(obs, ctx.get("evaluator") or evaluate_admission, covered_kinds=ctx.get("covered_kinds"), **kw)
             new["lifecycle_state"] = LIFECYCLE["admit_outcome_states"][out["disposition"]]

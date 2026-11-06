@@ -29,7 +29,7 @@ def claim_fence(monkeypatch, tmp_path):
         resulting_state_ref_or_hash=None,
         governance_decision_ref_where_applicable=None,
         transition_evidence={"claim_id": "CLAIM-SYNTH-001", "fencing_token": 122},
-    ))
+    ), hb_epoch=4096)
     organization = result["organization_receipt"]
     # Shape WorkerCoordinator._custody_assignment_transition projects.
     return {
@@ -48,7 +48,7 @@ def claim_fence(monkeypatch, tmp_path):
 def invocation(predecessor=None):
     value = {
         "schema": "stegverse.worker-invocation/v0.1",
-        "heartbeat_epoch": 121,
+        "heartbeat_epoch": 4096,
         "task": {
             "task_id": worker.TASK_ID,
             "claim_id": "CLAIM-SYNTH-001",

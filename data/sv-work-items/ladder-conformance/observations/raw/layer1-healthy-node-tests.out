@@ -1,0 +1,98 @@
+$ {python} -c import os,sys,tempfile,unittest; os.environ['STEGVERSE_REPO_LEDGER_ROOT']=tempfile.mkdtemp(prefix='lc-test-ledger-'); os.environ['STEGVERSE_GATEWAY_FORWARD_DB']=os.path.join(tempfile.mkdtemp(prefix='lc-test-fwd-'),'gateway-forward.db'); sys.path[:0]=['.']; import tests; sys.path.append(sys.argv[1]); sys.argv=[sys.argv[0],'-v','tests.test_node_ingress_boundary','tests.test_node_standing','tests.test_healthy_node_evaluator']; unittest.main(module=None) {root:sdk080}
+--- exit 0
+--- stdout
+--- stderr
+test_a_refusal_and_the_corrected_retry_chain_as_two_transitions (tests.test_node_ingress_boundary.IngressBoundaryTests.test_a_refusal_and_the_corrected_retry_chain_as_two_transitions)
+The retry is a signal, so the chain shows the refusal and the admission. ... ok
+test_a_refusal_is_never_recorded_as_an_admission (tests.test_node_ingress_boundary.IngressBoundaryTests.test_a_refusal_is_never_recorded_as_an_admission)
+A refusal established no node, so no entry may read as one admitted. ... ok
+test_a_supplied_epoch_is_reproducible_and_not_marked_derived (tests.test_node_ingress_boundary.IngressBoundaryTests.test_a_supplied_epoch_is_reproducible_and_not_marked_derived) ... ok
+test_an_arrival_over_an_unsupported_transport_is_recorded (tests.test_node_ingress_boundary.IngressBoundaryTests.test_an_arrival_over_an_unsupported_transport_is_recorded)
+The signal still arrived, so the refusal is still its transition. ... ok
+test_concurrent_arrivals_do_not_orphan_receipts (tests.test_node_ingress_boundary.IngressBoundaryTests.test_concurrent_arrivals_do_not_orphan_receipts)
+The defect this ledger had: eight concurrent appends, one reachable. ... ok
+test_every_refused_registration_is_recorded_as_a_transition (tests.test_node_ingress_boundary.IngressBoundaryTests.test_every_refused_registration_is_recorded_as_a_transition)
+The signal arrived. A transition is the disposition of that arrival. ... ok
+test_registration_records_the_ingress_and_hands_back_its_reference (tests.test_node_ingress_boundary.IngressBoundaryTests.test_registration_records_the_ingress_and_hands_back_its_reference)
+The first receipt of an incoming state transition now exists. ... ok
+test_the_chain_continues_rather_than_forking (tests.test_node_ingress_boundary.IngressBoundaryTests.test_the_chain_continues_rather_than_forking) ... ok
+test_the_chain_is_ordered_by_the_oscillator_not_a_clock (tests.test_node_ingress_boundary.IngressBoundaryTests.test_the_chain_is_ordered_by_the_oscillator_not_a_clock) ... ok
+test_the_heartbeat_is_read_from_the_owners_declaration_not_restated (tests.test_node_ingress_boundary.IngressBoundaryTests.test_the_heartbeat_is_read_from_the_owners_declaration_not_restated) ... ok
+test_the_record_carries_what_makes_this_node_a_node (tests.test_node_ingress_boundary.IngressBoundaryTests.test_the_record_carries_what_makes_this_node_a_node) ... ok
+test_the_record_grants_nothing_and_proves_no_identity (tests.test_node_ingress_boundary.IngressBoundaryTests.test_the_record_grants_nothing_and_proves_no_identity) ... ok
+test_the_refused_caller_is_handed_its_own_refusal_receipt (tests.test_node_ingress_boundary.IngressBoundaryTests.test_the_refused_caller_is_handed_its_own_refusal_receipt)
+A held or retried arrival is a transition the caller can cite. ... ok
+test_an_unrecognised_transport_fails_closed (tests.test_node_ingress_boundary.TransportIsNotTheBoundaryTests.test_an_unrecognised_transport_fails_closed) ... ok
+test_http_is_installed_and_intr_is_the_next_stage (tests.test_node_ingress_boundary.TransportIsNotTheBoundaryTests.test_http_is_installed_and_intr_is_the_next_stage) ... ok
+test_the_same_record_is_produced_whichever_transport_carried_it (tests.test_node_ingress_boundary.TransportIsNotTheBoundaryTests.test_the_same_record_is_produced_whichever_transport_carried_it) ... ok
+test_a_console_class_node_is_sent_to_the_sdk_builder_first (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_a_console_class_node_is_sent_to_the_sdk_builder_first) ... ok
+test_a_registered_node_is_told_it_is_healthy (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_a_registered_node_is_told_it_is_healthy)
+The whole point of the first step: did I reach a healthy node? ... ok
+test_an_adapter_class_node_is_sent_to_validate_and_submit (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_an_adapter_class_node_is_sent_to_validate_and_submit) ... ok
+test_an_undeclared_node_class_fails_closed (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_an_undeclared_node_class_fails_closed)
+Guessing which instructions someone needs is the defaulting this forbids. ... ok
+test_an_unrecognised_node_class_fails_closed (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_an_unrecognised_node_class_fails_closed) ... ok
+test_declared_ingress_dimensions_are_recorded_and_not_believed (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_declared_ingress_dimensions_are_recorded_and_not_believed)
+`caller_editable_ingress_source_field` is forbidden as authoritative evidence. ... ok
+test_no_standing_means_no_instructions_at_all (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_no_standing_means_no_instructions_at_all) ... ok
+test_only_this_caller_s_profile_is_returned (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_only_this_caller_s_profile_is_returned)
+Instructions for the class that registered, not a dump of every one. ... ok
+test_readiness_tells_a_caller_what_to_declare (tests.test_node_standing.HealthyNodeGrantsTypedIngressTests.test_readiness_tells_a_caller_what_to_declare) ... ok
+test_a_missing_node_ref_fails_closed (tests.test_node_standing.NodeStandingTests.test_a_missing_node_ref_fails_closed) ... ok
+test_a_missing_predecessor_field_fails_closed (tests.test_node_standing.NodeStandingTests.test_a_missing_predecessor_field_fails_closed) ... ok
+test_a_non_object_request_fails_closed (tests.test_node_standing.NodeStandingTests.test_a_non_object_request_fails_closed) ... ok
+test_a_predecessor_reference_that_is_not_a_digest_fails_closed (tests.test_node_standing.NodeStandingTests.test_a_predecessor_reference_that_is_not_a_digest_fails_closed) ... ok
+test_a_predecessor_that_does_not_precede_fails_closed_not_reenrolls (tests.test_node_standing.NodeStandingTests.test_a_predecessor_that_does_not_precede_fails_closed_not_reenrolls) ... ok
+test_a_refusal_renders_as_a_disposition_releasing_nothing (tests.test_node_standing.NodeStandingTests.test_a_refusal_renders_as_a_disposition_releasing_nothing) ... ok
+test_an_absent_predecessor_key_fails_closed_rather_than_reading_as_genesis (tests.test_node_standing.NodeStandingTests.test_an_absent_predecessor_key_fails_closed_rather_than_reading_as_genesis) ... ok
+test_an_allow_is_structural_and_says_so (tests.test_node_standing.NodeStandingTests.test_an_allow_is_structural_and_says_so) ... ok
+test_an_epoch_below_one_is_not_an_earlier_observation (tests.test_node_standing.NodeStandingTests.test_an_epoch_below_one_is_not_an_earlier_observation) ... ok
+test_an_unknown_predecessor_field_fails_closed (tests.test_node_standing.NodeStandingTests.test_an_unknown_predecessor_field_fails_closed) ... ok
+test_an_unsupported_mode_is_denied_by_name (tests.test_node_standing.NodeStandingTests.test_an_unsupported_mode_is_denied_by_name) ... ok
+test_explicit_genesis_resolves_allow (tests.test_node_standing.NodeStandingTests.test_explicit_genesis_resolves_allow) ... ok
+test_genesis_claiming_a_later_generation_is_denied (tests.test_node_standing.NodeStandingTests.test_genesis_claiming_a_later_generation_is_denied) ... ok
+test_genesis_declaring_a_predecessor_is_denied (tests.test_node_standing.NodeStandingTests.test_genesis_declaring_a_predecessor_is_denied) ... ok
+test_genesis_may_omit_generation_because_it_is_always_one (tests.test_node_standing.NodeStandingTests.test_genesis_may_omit_generation_because_it_is_always_one) ... ok
+test_predecessor_field_set_is_read_off_the_owner_not_declared_locally (tests.test_node_standing.NodeStandingTests.test_predecessor_field_set_is_read_off_the_owner_not_declared_locally)
+The owner defines a predecessor. This boundary must not define a second one. ... ok
+test_readiness_does_not_claim_authenticated_standing (tests.test_node_standing.NodeStandingTests.test_readiness_does_not_claim_authenticated_standing) ... ok
+test_readiness_is_not_standing_and_claims_no_authority (tests.test_node_standing.NodeStandingTests.test_readiness_is_not_standing_and_claims_no_authority) ... ok
+test_readiness_names_the_lineage_owner_rather_than_restating_the_rule (tests.test_node_standing.NodeStandingTests.test_readiness_names_the_lineage_owner_rather_than_restating_the_rule) ... ok
+test_readiness_publishes_what_standing_requires (tests.test_node_standing.NodeStandingTests.test_readiness_publishes_what_standing_requires) ... ok
+test_readiness_says_ordering_is_an_oscillator_count (tests.test_node_standing.NodeStandingTests.test_readiness_says_ordering_is_an_oscillator_count) ... ok
+test_verified_continuity_resolves_allow_and_carries_its_predecessor (tests.test_node_standing.NodeStandingTests.test_verified_continuity_resolves_allow_and_carries_its_predecessor) ... ok
+test_verify_existing_at_generation_one_fails_closed (tests.test_node_standing.NodeStandingTests.test_verify_existing_at_generation_one_fails_closed) ... ok
+test_verify_existing_without_a_predecessor_fails_closed (tests.test_node_standing.NodeStandingTests.test_verify_existing_without_a_predecessor_fails_closed) ... ok
+test_admit_never_raises_standing_refused (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_admit_never_raises_standing_refused) ... ok
+test_forged_hash (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_forged_hash) ... ok
+test_healthy_receipted_report_is_the_only_allow (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_healthy_receipted_report_is_the_only_allow) ... ok
+test_ingress_record_never_establishes_health_from_a_bare_observation (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_ingress_record_never_establishes_health_from_a_bare_observation) ... ok
+test_missing_report (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_missing_report) ... ok
+test_refused_standing_returns_six_fields_instead_of_raising (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_refused_standing_returns_six_fields_instead_of_raising) ... ok
+test_transport_not_yet_enabled (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_transport_not_yet_enabled) ... ok
+test_unhealthy_receipt_is_not_overridden_by_a_healthy_observation (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_unhealthy_receipt_is_not_overridden_by_a_healthy_observation) ... ok
+test_unhealthy_report (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_unhealthy_report) ... ok
+test_unreceipted_report (tests.test_healthy_node_evaluator.AdmitRegressionTests.test_unreceipted_report)
+A HEALTHY observation with no receipt, and a cited receipt not on the chain, both fail closed. ... ok
+test_a_newer_unhealthy_report_supersedes_a_healthy_one (tests.test_healthy_node_evaluator.EvaluatorTests.test_a_newer_unhealthy_report_supersedes_a_healthy_one) ... ok
+test_a_report_of_another_class_or_schema_does_not_count (tests.test_healthy_node_evaluator.EvaluatorTests.test_a_report_of_another_class_or_schema_does_not_count) ... ok
+test_allow_only_for_the_current_receipted_healthy_report (tests.test_healthy_node_evaluator.EvaluatorTests.test_allow_only_for_the_current_receipted_healthy_report) ... ok
+test_anything_but_exactly_healthy_is_refused (tests.test_healthy_node_evaluator.EvaluatorTests.test_anything_but_exactly_healthy_is_refused) ... ok
+test_broken_link_and_foreign_repository_fail_closed (tests.test_healthy_node_evaluator.EvaluatorTests.test_broken_link_and_foreign_repository_fail_closed) ... ok
+test_deterministic (tests.test_healthy_node_evaluator.EvaluatorTests.test_deterministic) ... ok
+test_forged_hash_fails_closed (tests.test_healthy_node_evaluator.EvaluatorTests.test_forged_hash_fails_closed)
+An UNHEALTHY report edited to HEALTHY no longer hashes to its address. ... ok
+test_forged_receipt_sha_field_fails_closed (tests.test_healthy_node_evaluator.EvaluatorTests.test_forged_receipt_sha_field_fails_closed) ... ok
+test_missing_ledger_fails_closed (tests.test_healthy_node_evaluator.EvaluatorTests.test_missing_ledger_fails_closed) ... ok
+test_missing_report_fails_closed (tests.test_healthy_node_evaluator.EvaluatorTests.test_missing_report_fails_closed) ... ok
+test_no_clock_network_or_randomness (tests.test_healthy_node_evaluator.EvaluatorTests.test_no_clock_network_or_randomness) ... ok
+test_require_admission_needs_a_current_healthy_admission (tests.test_healthy_node_evaluator.EvaluatorTests.test_require_admission_needs_a_current_healthy_admission) ... ok
+test_transport_not_installed_fails_closed (tests.test_healthy_node_evaluator.EvaluatorTests.test_transport_not_installed_fails_closed) ... ok
+test_unhealthy_report_is_deny (tests.test_healthy_node_evaluator.EvaluatorTests.test_unhealthy_report_is_deny) ... ok
+test_unreceipted_report_fails_closed (tests.test_healthy_node_evaluator.EvaluatorTests.test_unreceipted_report_fails_closed)
+A well-formed report that is not on the chain from HEAD.json counts for nothing. ... ok
+
+----------------------------------------------------------------------
+Ran 74 tests in <t>s
+
+OK

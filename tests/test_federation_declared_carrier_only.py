@@ -49,7 +49,7 @@ class DeclaredCarrierOnlyTests(unittest.TestCase):
         done = self.run_cli(ROOT / "resident-runtime/federation_cycle.py", "--mesh-root", self.mesh,
                             "--node-state-root", self.scratch / "node",
                             "--repo-ledger-root", self.scratch / "ledgers/repo",
-                            "--org-ledger-root", self.scratch / "ledgers/org")
+                            "--org-ledger-root", self.scratch / "ledgers/org", "--hb-epoch", "4096")
         self.assertEqual(done.returncode, 0, done.stderr)
         receipt = json.loads(done.stdout)
         self.assertEqual(receipt["transport"], "FEDERATION_MESH")
