@@ -2263,6 +2263,56 @@ Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COM
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
 
+## KV/SKAP historical reconciliation — 2026-10-29
+
+The [canonical KV handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md) preserves the proposal reconciliation, dependency corrections, independent InTr readback and session 10/12 history. These observations do not establish canonical registration or native admission.
+
+## KV/SKAP recovery update — 2026-10-29, new session 1
+
+Docs head `3b03211a` passed all six checks. Registry generation 322 / 120 rows
+still has no admitted KV/SKAP goal. The existing custody-owner coverage review
+is now narrowed to specific sealed-source regressions, with no demonstrated
+production defect. TVC main-run conformance receipt `2e0ec2dd` was independently
+read and its seal recomputed; organization-writer acceptance remains separate.
+See the [current KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#recovery-session-1--2026-10-29-after-prior-session-12)
+and [owner findings](https://github.com/StegVerse-Labs/.github/issues/2810#issuecomment-6504630611).
+This docs update requires its own CI. No native admission, custody, fence,
+runtime ALLOW or release is claimed; cumulative prompt count remains unreconciled.
+
+
+## KV/SKAP recovery session 2 — 2026-10-29
+
+The [canonical handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md)
+now corrects the obsolete missing-adjacency-input claim and retires the resolved
+custody coverage questions. Docs2e611f34 passed6/6checks. A new real-issuer TVC
+chain probe exposed reference-only admission under test fixtures; its unmerged
+containment candidate passes7focused cases, with broader mock-positive migration
+still required. [Owner patch and reproducer](https://github.com/StegVerse-Labs/TVC/pull/537#issuecomment-6505597487).
+Registry admission and native custody remain unverified; no live exploit,
+runtime ALLOW, protected integration or release is claimed.
+
+
+## KV/SKAP recovery session 4 — 2026-10-29
+
+The [handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#recovery-session-4--2026-10-29-americachicago)
+now reconciles Registry326 and the already accepted adjacency plan at CVK44e7ae56.
+Native KV registration remains unperformed; repeated old-pin/planner work is
+retired. StegOS426, adapter430/436 and CVK289/290 integration is completed
+upstream; CVK re-vendoring and actual node/custody evidence remain distinct.
+The organization ledger advanced through unrelated receipts; the TVC receipt
+requires its original writer. Current main was merged into this docs branch
+without conflicts; new-head CI and independent ratification remain required.
+
+The current TVC owner proposal adds read/place protection tests:9focused passes,
+with7remaining failures in the59-case affected selection explicitly retained.
+[Evidence and owner migration plan](docs/evidence/kv-recovery-20261029-s4/TVC_OWNER_REVIEW.md).
+Executed ledger consumption distinguishes main64-file ALLOW from3376's12-file
+surface mismatch; the recovered genuine receipt matches all64files on3376.
+
+## KV/SKAP source and custody handoff — 2026-11-03
+
+The [KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#november-3--source-offers-and-custody) records the accepted historical writer append, the two source files still requiring TVC verification, and the pending Registry decision.
+
 SPPA review follow-up: the six storage-boundary regressions now run with stdlib unittest, with a scoped loader override that restores the fixture-declared Git topology after the suite-wide POSIX default and is removed at cleanup. The existing generated test-set manifest includes the suite. All 45 SPPA tests pass without pytest; this is local source validation, not exact-head CI, custody evidence or promotion authority.
 
 ### StegApp Goal #3291: post-vocabulary source/test hygiene (2026-11-03)
@@ -2270,3 +2320,4 @@ SPPA review follow-up: the six storage-boundary regressions now run with stdlib 
 The canonical StegApp vocabulary edit is merged via Labs PR #3403. The aggregate Registry and standalone shard now include `INGRESS_ADMITTED`, but the Goal remains `PROPOSED` and WorkerCoordinator claim/fence remain null. This is an allowed-transition *vocabulary* change only, not native admission. Goal task `STEGAPP-EPHEMERAL-COMPOSITION-001`, COSV `10300000011000`, [canonical handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md), [Goal #3291](https://github.com/StegVerse-Labs/.github/issues/3291).
 
 This repair restores collection of `test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7` inside its test class and runs `test_goal_context_with_a_request_id_forwards_it` against a scratch runtime root so tests do not rewrite tracked sovereign-host receipt files. These are non-authorizing test corrections; validate the exact PR head and preserve native Registry issuer, WorkerCoordinator GRANTED/fence, Sandbox work/evidence, SDK/InTr Chat delivery, and Organization Ledger source/readback prerequisites. No new machines, frameworks, secret paths or runtime authority.
+
