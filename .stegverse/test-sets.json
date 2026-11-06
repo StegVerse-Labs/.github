@@ -1877,6 +1877,18 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_ecosystem_transition_topology.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_ecosystem_transition_topology.py"
+   ],
+   "tests": [
+    "tests/test_ecosystem_transition_topology.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_egress_absent_epoch.py",
    "inputs": [],
    "surfaces": [
@@ -6648,6 +6660,18 @@
    ],
    "tests": [
     "tests/test_reusable_source_refresh_scheduler_materialization.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_reusable_sovereign_readback_definition.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_reusable_sovereign_readback_definition.py"
+   ],
+   "tests": [
+    "tests/test_reusable_sovereign_readback_definition.py"
    ]
   },
   {
@@ -11783,6 +11807,10 @@
    "workers/mir_tvc_provider_roundtrip_request_consumer.py",
    "workers/stegos_sovereign_relay_return_path_request_consumer.py"
   ],
+  "scripts/ecosystem_transition_topology.py": [
+   "resident-runtime/organization_ledger_readback.py",
+   "workers/canonical_state_transition_custody.py"
+  ],
   "scripts/emit_runtime_profile_map_receipt.py": [
    "control/runtime-profile-map.json",
    "scripts/validate_runtime_profile_map.py"
@@ -13984,6 +14012,10 @@
    "scripts/dispatch_resident_execution_requests.py",
    "scripts/refresh_sovereign_worker_runtime_source.py",
    "tests/pytest.py",
+   "workers/canonical_state_transition_custody.py"
+  ],
+  "tests/test_ecosystem_transition_topology.py": [
+   "scripts/ecosystem_transition_topology.py",
    "workers/canonical_state_transition_custody.py"
   ],
   "tests/test_egress_absent_epoch.py": [
@@ -16332,6 +16364,13 @@
    "scripts/run_reusable_task_scheduler.py",
    "source-bundles/reusable-task-registry.d/**",
    "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json"
+  ],
+  "tests/test_reusable_sovereign_readback_definition.py": [
+   "data/reusable-task-registry.json",
+   "resident-runtime/organization_ledger_readback.py",
+   "source-bundles/reusable-task-registry.d/**",
+   "source-bundles/reusable-task-registry.d/RT-AUTHENTICATED-SOVEREIGN-READBACK-001.json",
+   "workers/canonical_state_transition_custody.py"
   ],
   "tests/test_reusable_task_component_readme_projection.py": [
    "README.md",
