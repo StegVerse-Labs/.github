@@ -27,7 +27,7 @@ def receipt(name: str) -> dict:
 def append(monkeypatch, root: Path, name: str) -> tuple[dict, dict]:
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(root))
     source = receipt(name)
-    return source, org.aggregate_transition(source)
+    return source, org.aggregate_transition(source, hb_epoch=4096)
 
 
 def test_close_and_verify_two_contiguous_batches(monkeypatch, tmp_path):
@@ -140,8 +140,8 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
         "schema": "test.parent-manifest/v1",
         "receipt_batch": {"release_condition": {"type": "COUNT", "count": 2}},
     }
-    first = org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest)
-    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest)
+    first = org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest, hb_epoch=4096)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest, hb_epoch=4096)
     before = batch.open_packet_state(parent_manifest, root=tmp_path)
     assert before == {
         "receipt_count": 2, "release_count": 2, "release_condition_satisfied": True,
@@ -152,7 +152,7 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
         "state": "COMPLETED", "execution_result": "COMPLETED", "batch_id": batch_id, "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY"
     })
-    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest)
+    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=parent_manifest, hb_epoch=4096)
 
     batch_head = json.loads((tmp_path / "BATCH_HEAD.json").read_text())
     released = batch._verified_batch(tmp_path, batch_head["batch_id"])
@@ -184,11 +184,11 @@ def test_parent_manifest_releases_prior_packet_on_next_governed_transition(monke
 def test_parent_manifest_batch_release_condition_fails_closed(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
     with pytest.raises(ValueError, match="receipt_batch policy required"):
-        org.aggregate_transition(receipt("FIRST"), parent_manifest={"schema": "test.parent-manifest/v1"})
+        org.aggregate_transition(receipt("FIRST"), parent_manifest={"schema": "test.parent-manifest/v1"}, hb_epoch=4096)
     with pytest.raises(ValueError, match="release count invalid"):
         org.aggregate_transition(receipt("FIRST"), parent_manifest={
             "receipt_batch": {"release_condition": {"type": "COUNT", "count": 0}}
-        })
+        }, hb_epoch=4096)
     assert not (tmp_path / "HEAD.json").exists()
 
 
@@ -209,13 +209,13 @@ def test_submit_released_batch_fail_closed_without_authentic_custody_surface(mon
 def test_parent_manifest_release_preserves_failed_custody_execution_evidence(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
     parent_manifest = {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}}
-    org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest)
+    org.aggregate_transition(receipt("FIRST"), parent_manifest=parent_manifest, hb_epoch=4096)
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
         "state": "FAILED", "execution_result": "FAILED", "batch_id": batch_id,
         "reason": "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
         "governance_disposition": None, "authority_effect": "NONE",
     })
-    successor = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest)
+    successor = org.aggregate_transition(receipt("SECOND"), parent_manifest=parent_manifest, hb_epoch=4096)
     evidence = successor["boundary_evidence"]["parent_manifest_released_batch"]
     assert evidence["batch_id"] == json.loads((tmp_path / "BATCH_HEAD.json").read_text())["batch_id"]
     assert "execution_result" not in evidence, "the sovereign receipt embeds nothing from the transport"
@@ -254,7 +254,7 @@ def lock_is_free(root: Path) -> bool:
 def test_released_batch_is_submitted_only_after_the_commit_and_lock_release(monkeypatch, tmp_path):
     """(a) Ordering: commit -> lock release -> Master Records submission; never under the lock."""
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     events: list[str] = []
     store_class = org.ledger_store.PosixLedgerStore
     exclusive, append_transaction = store_class.exclusive, store_class.append_transaction
@@ -285,7 +285,7 @@ def test_released_batch_is_submitted_only_after_the_commit_and_lock_release(monk
         return completed(root, batch_id)
 
     monkeypatch.setattr(batch, "submit_released_batch", submit)
-    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE, hb_epoch=4096)
 
     assert "submit" in events, "the released batch was carried"
     at_submit = observed["events"]
@@ -302,13 +302,13 @@ def test_released_batch_is_submitted_only_after_the_commit_and_lock_release(monk
 def test_failed_submission_leaves_the_committed_transition_and_a_failed_receipt(monkeypatch, tmp_path):
     """(b) FAILED never blocks: the sovereign transition is committed, the FAILED outcome is durable."""
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
         "state": "FAILED", "execution_result": "FAILED", "batch_id": batch_id,
         "reason": "ORGANIZATION_BATCH_CUSTODY_SUBMISSION_FAILED:URLError",
         "governance_disposition": None, "authority_effect": "NONE",
     })
-    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     assert json.loads((tmp_path / "HEAD.json").read_text())["receipt_sha256"] == second["receipt_sha256"]
     batch_id = second["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
     submission = batch.released_batch_submission(tmp_path, batch_id)
@@ -323,28 +323,28 @@ def test_failed_submission_leaves_the_committed_transition_and_a_failed_receipt(
     assert body.pop("receipt_sha256") == org.sha(body)
     # Nothing is pending and nothing is retried: FAILED is recorded, not adjudicated.
     assert batch.pending_released_batch(tmp_path) is None
-    assert batch.submit_pending_released_batch(tmp_path)["disposition"] == "NOTHING_PENDING"
+    assert batch.submit_pending_released_batch(tmp_path, hb_epoch=4096)["disposition"] == "NOTHING_PENDING"
     # The chain goes on, unblocked.
-    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE)
+    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     assert third["previous_receipt_sha256"] == second["receipt_sha256"]
 
 
 def test_next_manifest_directed_append_retains_the_prior_submission_outcome(monkeypatch, tmp_path):
     """(c) The next append carries the prior outcome once, by digest and key; replay stays exact."""
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
         "state": "FAILED", "execution_result": "FAILED", "batch_id": batch_id,
         "reason": "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
         "governance_disposition": None, "authority_effect": "NONE",
     })
-    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     assert batch.RELEASED_BATCH_SUBMISSION_KEY not in second["boundary_evidence"], "nothing to retain yet"
     first_batch = second["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
     first_submission = batch.released_batch_submission(tmp_path, first_batch)
 
     monkeypatch.setattr(batch, "submit_released_batch", completed)
-    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE)
+    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     retained = third["boundary_evidence"][batch.RELEASED_BATCH_SUBMISSION_KEY]
     assert retained == {
         "batch_id": first_batch,
@@ -359,12 +359,12 @@ def test_next_manifest_directed_append_retains_the_prior_submission_outcome(monk
     assert second_batch != first_batch
     # A wider release count: the next appends retain without releasing.
     count_five = {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 5}}}
-    fourth = org.aggregate_transition(receipt("FOURTH"), parent_manifest=count_five)
+    fourth = org.aggregate_transition(receipt("FOURTH"), parent_manifest=count_five, hb_epoch=4096)
     assert "parent_manifest_released_batch" not in fourth["boundary_evidence"]
     assert fourth["boundary_evidence"][batch.RELEASED_BATCH_SUBMISSION_KEY]["batch_id"] == second_batch
     assert fourth["boundary_evidence"][batch.RELEASED_BATCH_SUBMISSION_KEY]["execution_result"] == "COMPLETED"
     # Retained once: the append after it carries nothing about an outcome already on the chain.
-    fifth = org.aggregate_transition(receipt("FIFTH"), parent_manifest=count_five)
+    fifth = org.aggregate_transition(receipt("FIFTH"), parent_manifest=count_five, hb_epoch=4096)
     assert batch.RELEASED_BATCH_SUBMISSION_KEY not in fifth["boundary_evidence"]
     # An exact retry of a retaining append returns the receipt already recorded, at any heartbeat.
     assert org.aggregate_transition(receipt("FOURTH"), parent_manifest=count_five, hb_epoch=999) == fourth
@@ -377,11 +377,11 @@ def test_next_manifest_directed_append_retains_the_prior_submission_outcome(monk
 
 def test_unavailable_custody_client_is_recorded_not_attempted_and_never_blocks(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
         "state": "FAIL_CLOSED", "reason": "CANONICAL_CUSTODY_CLIENT_UNAVAILABLE", "batch_id": batch_id,
         "authority_effect": "NONE"})
-    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     assert json.loads((tmp_path / "HEAD.json").read_text())["receipt_sha256"] == second["receipt_sha256"]
     batch_id = second["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
     submission = batch.released_batch_submission(tmp_path, batch_id)
@@ -391,7 +391,7 @@ def test_unavailable_custody_client_is_recorded_not_attempted_and_never_blocks(m
     def raising(root, batch_id):
         raise RuntimeError("transport exploded")
     monkeypatch.setattr(batch, "submit_released_batch", raising)
-    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE)
+    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     batch_id = third["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
     submission = batch.released_batch_submission(tmp_path, batch_id)
     assert submission["execution_result"] == "NOT_ATTEMPTED"
@@ -402,21 +402,21 @@ def test_unavailable_custody_client_is_recorded_not_attempted_and_never_blocks(m
 def test_submission_left_pending_by_a_crash_is_driven_by_the_next_append(monkeypatch, tmp_path):
     """The outbox is the ledger: a release without a submission receipt is carried on the next append."""
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     submitted = []
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: submitted.append(batch_id) or completed(root, batch_id))
-    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     batch_id = second["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
     assert submitted == [batch_id]
     # The process died between the sovereign commit and the submission record.
     (tmp_path / batch.submission_key(batch_id)).unlink()
     assert batch.pending_released_batch(tmp_path)["batch"]["batch_id"] == batch_id
     # The retry entrypoint carries it; so does the next manifest-directed append.
-    assert batch.submit_pending_released_batch(tmp_path)["disposition"] == "RECORDED"
+    assert batch.submit_pending_released_batch(tmp_path, hb_epoch=4096)["disposition"] == "RECORDED"
     assert submitted == [batch_id, batch_id]
-    assert batch.submit_pending_released_batch(tmp_path)["disposition"] == "NOTHING_PENDING"
+    assert batch.submit_pending_released_batch(tmp_path, hb_epoch=4096)["disposition"] == "NOTHING_PENDING"
     (tmp_path / batch.submission_key(batch_id)).unlink()
-    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE)
+    third = org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     # THIRD released the second batch; the first was re-driven, oldest first, then the second: both recorded.
     second_batch = third["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
     assert submitted == [batch_id, batch_id, batch_id, second_batch]
@@ -441,9 +441,9 @@ def test_submission_left_pending_by_a_crash_is_driven_by_the_next_append(monkeyp
 
 def test_tampered_submission_receipt_is_refused(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(receipt("FIRST"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     monkeypatch.setattr(batch, "submit_released_batch", completed)
-    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE)
+    second = org.aggregate_transition(receipt("SECOND"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     batch_id = second["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
     path = tmp_path / batch.submission_key(batch_id)
     forged = json.loads(path.read_text())
@@ -452,7 +452,7 @@ def test_tampered_submission_receipt_is_refused(monkeypatch, tmp_path):
     with pytest.raises(ValueError, match="submission receipt hash mismatch"):
         batch.released_batch_submission(tmp_path, batch_id)
     with pytest.raises(ValueError, match="submission receipt hash mismatch"):
-        org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE)
+        org.aggregate_transition(receipt("THIRD"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     assert json.loads((tmp_path / "HEAD.json").read_text())["receipt_sha256"] == second["receipt_sha256"]
 
 
@@ -489,7 +489,7 @@ def test_t0_establishment_is_the_packets_own_first_receipt(monkeypatch, tmp_path
     manifest = established_manifest()
     first = org.aggregate_transition(
         receipt("FOUR-PART-ASSIGNMENT"), parent_manifest=manifest,
-        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH),
+        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH), hb_epoch=4096,
     )
     record = first["boundary_evidence"][batch.ESTABLISHMENT_KEY]
     assert record["establishment_kind"] == "MANIFEST_ASSIGNMENT_T0"
@@ -510,7 +510,7 @@ def test_expiry_releases_a_short_packet_from_its_own_t0(monkeypatch, tmp_path):
     manifest = established_manifest(count=3)
     org.aggregate_transition(
         receipt("FOUR-PART-ASSIGNMENT"), parent_manifest=manifest,
-        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH),
+        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH), hb_epoch=4096,
     )
     # One receipt short of COUNT; without expiry this packet would never release.
     before = batch.open_packet_state(manifest, root=tmp_path, now_ns=hb_now_ns(T0_EPOCH + DELTA - 1))
@@ -523,7 +523,7 @@ def test_expiry_releases_a_short_packet_from_its_own_t0(monkeypatch, tmp_path):
         "governance_disposition": None, "authority_effect": "NONE_ORGANIZATION_RECORD_ONLY",
     })
     work = org.aggregate_transition(
-        receipt("WORK"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + DELTA),
+        receipt("WORK"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + DELTA), hb_epoch=4096,
     )
     head = json.loads((tmp_path / "BATCH_HEAD.json").read_text())
     released = batch._verified_batch(tmp_path, head["batch_id"])
@@ -537,15 +537,15 @@ def test_release_and_successor_establishment_are_one_receipt_at_member_one(monke
     manifest = established_manifest(count=2)
     org.aggregate_transition(
         receipt("FOUR-PART-ASSIGNMENT"), parent_manifest=manifest,
-        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH),
+        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH), hb_epoch=4096,
     )
-    org.aggregate_transition(receipt("WORK-1"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + 1))
+    org.aggregate_transition(receipt("WORK-1"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + 1), hb_epoch=4096)
     monkeypatch.setattr(batch, "submit_released_batch", lambda root, batch_id: {
         "state": "FAILED", "execution_result": "FAILED", "batch_id": batch_id,
         "reason": "ORGANIZATION_BATCH_AUTHENTIC_CUSTODY_SURFACE_UNAVAILABLE",
         "governance_disposition": None, "authority_effect": "NONE",
     })
-    work2 = org.aggregate_transition(receipt("WORK-2"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + 2))
+    work2 = org.aggregate_transition(receipt("WORK-2"), parent_manifest=manifest, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=4096)
 
     head = json.loads((tmp_path / "BATCH_HEAD.json").read_text())
     released = batch._verified_batch(tmp_path, head["batch_id"])
@@ -570,7 +570,7 @@ def test_release_and_successor_establishment_are_one_receipt_at_member_one(monke
 def test_manifested_packet_without_t0_fails_closed(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
     legacy = {"receipt_batch": {"release_condition": {"type": "COUNT", "count": 5}}}
-    org.aggregate_transition(receipt("UNESTABLISHED"), parent_manifest=legacy)
+    org.aggregate_transition(receipt("UNESTABLISHED"), parent_manifest=legacy, hb_epoch=4096)
     with pytest.raises(ValueError, match="no t\\(0\\) establishment record"):
         batch.open_packet_state(established_manifest(count=5), root=tmp_path, now_ns=hb_now_ns(T0_EPOCH))
 
@@ -581,7 +581,7 @@ def test_establishment_declaration_is_validated_and_required(monkeypatch, tmp_pa
         org.aggregate_transition(
             receipt("NO-DECLARATION"),
             parent_manifest={"receipt_batch": {"release_condition": {"type": "COUNT", "count": 1}}},
-            establishes_packet=True,
+            establishes_packet=True, hb_epoch=4096,
         )
     bad_hb = established_manifest()
     bad_hb["receipt_batch"]["establishment"]["heartbeat_id"] = "NOT-AN-HB"
@@ -599,12 +599,12 @@ def test_t0_cannot_also_release_a_prior_packet(monkeypatch, tmp_path):
     manifest = established_manifest(count=1)
     org.aggregate_transition(
         receipt("FOUR-PART-ASSIGNMENT"), parent_manifest=manifest,
-        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH),
+        establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH), hb_epoch=4096,
     )
     with pytest.raises(ValueError, match="cannot also release a prior packet"):
         org.aggregate_transition(
             receipt("SECOND-T0"), parent_manifest=manifest,
-            establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH + 1),
+            establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH + 1), hb_epoch=4096,
         )
 # --- Only the batched record crosses the organization boundary ---
 

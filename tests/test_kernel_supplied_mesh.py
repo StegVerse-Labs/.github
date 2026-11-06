@@ -24,6 +24,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from tests.ledgered_org_receipt import ledgered_org_receipt
+
 ROOT = Path(__file__).resolve().parents[1]
 # OL-3: the child supplies a POSIX Organization ledger root, so it declares the
 # POSIX locus exactly as tests/posix_ledger_locus documents.
@@ -152,10 +154,9 @@ class MeshIsSuppliedTests(HostIsolated):
             now_ns=K.HB_ANCHOR_UNIX_NS + 1_000_000_000)
         self.assertEqual(sent["published_count"], 1)
         state = self.scratch / "node-b"
-        first = peer.consume(mesh_root=mesh, node_state_root=state,
-                             now_ns=K.HB_ANCHOR_UNIX_NS + 2_000_000_000)
-        second = peer.consume(mesh_root=mesh, node_state_root=state,
-                              now_ns=K.HB_ANCHOR_UNIX_NS + 3_000_000_000)
+        # The broadcast frame is CLOCK and lends no epoch: the cycle supplies one.
+        first = peer.consume(mesh_root=mesh, node_state_root=state, hb_epoch=4096)
+        second = peer.consume(mesh_root=mesh, node_state_root=state, hb_epoch=4096)
         self.assertEqual(len(first), 1)
         self.assertEqual(second, [])
         self.assertTrue((state / "federation/seen.d").is_dir())
@@ -283,7 +284,7 @@ class CallersTakeASuppliedMeshTests(HostIsolated):
         completed = self.run_cli(ROOT / "resident-runtime/federation_cycle.py",
                                  "--mesh-root", mesh, "--node-state-root", node,
                                  "--repo-ledger-root", self.scratch / "ledgers/repo",
-                                 "--org-ledger-root", self.scratch / "ledgers/org")
+                                 "--org-ledger-root", self.scratch / "ledgers/org", "--hb-epoch", "4096")
         self.assertEqual(completed.returncode, 0, completed.stderr)
         receipt = json.loads(completed.stdout)
         self.assertEqual(receipt["frames_seen"], 0)
@@ -314,9 +315,9 @@ class CallersTakeASuppliedMeshTests(HostIsolated):
         self.assertHostUntouched()
 
     def test_organization_record_submission_refuses_without_a_supplied_mesh(self):
-        receipt = self.scratch / "org-receipt.json"
-        receipt.write_text(json.dumps({"schema": "stegverse.organization-transition-receipt/v1",
-                                       "organization": "StegVerse-Labs"}))
+        # The organization ledger's own receipt (row 4: nothing else is published).
+        receipt, _, ledgered = ledgered_org_receipt(self.scratch, 4096, base_env=self.env)
+        self.env["STEGVERSE_ORG_LEDGER_ROOT"] = ledgered["STEGVERSE_ORG_LEDGER_ROOT"]
         submit = ROOT / "resident-runtime/submit_org_transition_to_master_records.py"
         common = ("--org-receipt", receipt, "--predecessor-ecosystem-state-sha256", "sha256:" + "a" * 64,
                   "--successor-ecosystem-state-sha256", "sha256:" + "b" * 64, "--standing", self.standing_file())

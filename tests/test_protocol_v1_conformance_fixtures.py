@@ -112,6 +112,10 @@ crossing_module = importlib.util.module_from_spec(_crossing_spec)
 _crossing_spec.loader.exec_module(crossing_module)
 
 
+# Carrier-supplied epoch receive() requires (B-P31).
+FIXTURE_HB_EPOCH = 4096
+
+
 def load(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -253,7 +257,7 @@ def drive(spec):
 
     with LedgerRoots(request) as roots, mock.patch.object(ingress.crossing_module, "cross", cross):
         result = ingress.receive(manifest, registry=load(ROOT / fixture["registry_source"]),
-                                 standing=standing, packet_id=fixture["packet_id"])
+                                 standing=standing, packet_id=fixture["packet_id"], hb_epoch=FIXTURE_HB_EPOCH)
         return result, {"repository": readback(roots.repo), "organization": readback(roots.org)}
 
 
@@ -282,7 +286,7 @@ def run_redelivery(spec):
         deliveries = []
         for packet_id in (fixture["packet_id"], spec["mutation"]["packet_id"]):
             deliveries.append(ingress.receive(copy.deepcopy(fixture["manifest"]), registry=registry,
-                                              standing=copy.deepcopy(fixture["standing"]), packet_id=packet_id))
+                                              standing=copy.deepcopy(fixture["standing"]), packet_id=packet_id, hb_epoch=FIXTURE_HB_EPOCH))
             deliveries[-1]["ledgers_after"] = {
                 "repository": readback(roots.repo), "organization": readback(roots.org)}
     return deliveries
@@ -300,7 +304,7 @@ def run_non_gating_propagation(spec):
     registry = load(ROOT / fixture["registry_source"])
     with LedgerRoots(ingress_request(fixture)) as roots:
         first = ingress.receive(copy.deepcopy(fixture["manifest"]), registry=registry,
-                                standing=copy.deepcopy(fixture["standing"]), packet_id=fixture["packet_id"])
+                                standing=copy.deepcopy(fixture["standing"]), packet_id=fixture["packet_id"], hb_epoch=FIXTURE_HB_EPOCH)
         before = ledger_bytes(roots.root)
         org_receipt = roots.org / "receipts" / (first["organization_receipt_sha256"].split(":", 1)[1] + ".json")
         receipt = load(org_receipt)
@@ -316,7 +320,7 @@ def run_non_gating_propagation(spec):
         completed = subprocess.run(command, cwd=str(ROOT), capture_output=True, text=True, check=False)
         after = ledger_bytes(roots.root)
         second = ingress.receive(copy.deepcopy(fixture["manifest"]), registry=registry,
-                                 standing=copy.deepcopy(fixture["standing"]), packet_id=fixture["packet_id"])
+                                 standing=copy.deepcopy(fixture["standing"]), packet_id=fixture["packet_id"], hb_epoch=FIXTURE_HB_EPOCH)
         final = ledger_bytes(roots.root)
     propagation = json.loads(completed.stdout.strip().splitlines()[-1])
     return {"first": first, "second": second, "propagation": propagation,
@@ -518,7 +522,7 @@ class PositiveCaseTest(unittest.TestCase):
         fixture = packet()
         with LedgerRoots(ingress_request(fixture)):
             result = ingress.receive(copy.deepcopy(fixture["manifest"]), registry=load(ROOT / fixture["registry_source"]),
-                                     standing=copy.deepcopy(fixture["standing"]), packet_id=fixture["packet_id"])
+                                     standing=copy.deepcopy(fixture["standing"]), packet_id=fixture["packet_id"], hb_epoch=FIXTURE_HB_EPOCH)
         self.assertEqual(result["disposition"], case("positive")["expected"]["disposition"], result.get("detail"))
         self.assertEqual(result["authority_effect"], "NONE_RECEIVING_OPERATION_ONLY")
         self.assertIs(result["master_records_organization_record_observed"], False)

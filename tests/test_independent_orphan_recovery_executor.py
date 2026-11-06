@@ -83,7 +83,7 @@ class IndependentOrphanRecoveryExecutorTests(unittest.TestCase):
                 governance_decision_ref_where_applicable=None,
                 transition_evidence={"claim_id": worker_mod.OLD_CLAIM, "fencing_token": worker_mod.OLD_FENCE,
                                      "released": True, **evidence},
-            ))
+            ), hb_epoch=4096)
         return {"organization_receipt_sha256": result["organization_receipt"]["receipt_sha256"],
                 "state_receipt_sha256": result["receipt_sha256"]}
 

@@ -133,7 +133,7 @@ class WorkerClaimCase(unittest.TestCase):
 
     def receive(self, manifest):
         return ingress.receive(manifest, registry=REGISTRY, standing=dict(STANDING),
-                               packet_id="worker-claim-1")
+                               packet_id="worker-claim-1", hb_epoch=4096)
 
     def fresh(self) -> None:
         """A clean case inside a subTest: tear the previous one down first."""

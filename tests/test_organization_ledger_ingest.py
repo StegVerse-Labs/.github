@@ -27,12 +27,13 @@ LABS = "StegVerse-Labs/.github"
 # TVC_LABS_CONFORMANCE_RECEIPT_JSON_BEGIN/END; its seal names Labs#3317's head 006b32a0. The contract's
 # surface_paths_observed_at still records it: its surface is byte-identical to Labs main.
 TVC_LABS_RECEIPT_SHA256 = "sha256:9823142846b9a4cb98b6ef48bc2d652c9efe7be908e24fa2502eb8e397560270"
-# The committed request: TVC push run 40917305561 at StegVerse-Labs/TVC dbfccec9 printed this receipt in the same
-# block; its seal names Labs#3290's head 7e07e8dd, the surface Labs#3376 (d810644d) ships (ALLOW, 25 tests, 0 skipped).
-COMMITTED_RUN_ID = 40917305561
-COMMITTED_RECEIPT_SHA256 = "sha256:2e0ec2ddf99dd53b8a42d8bd2f1f4253871da2b3a7068ce69027b3ffdf1a5ed2"
-COMMITTED_LABS_COMMIT = "7e07e8dd7e55fe98c79f1d3fb7f3d8684a7c80c8"
-COMMITTED_TVC_HEAD = "dbfccec958c107b97177fe28865e5ef7a2aea46e"
+# The committed request: TVC push run 42139387349 at StegVerse-Labs/TVC 0a54e497 (main after TVC#577)
+# printed this receipt in the same block; its seal names Labs#3442's head 3481e8c0 (ALLOW, 25 tests, 0 skipped).
+# P1 ingest a34bacbf updated request.json; these constants track that committed request (not invented).
+COMMITTED_RUN_ID = 42139387349
+COMMITTED_RECEIPT_SHA256 = "sha256:54526ab5837857836ba0f612fd90013ff179f61cd67541572816c4ecc7ba00a0"
+COMMITTED_LABS_COMMIT = "3481e8c0e45cd7bf55172609f8ed011858d3d7e3"
+COMMITTED_TVC_HEAD = "0a54e497b1243a009a292e534d1b2048e12fa474"
 
 
 def _load(name, path):
@@ -222,7 +223,8 @@ class Admission(Refusals, unittest.TestCase):
     def test_the_committed_request_is_tvc_run_40137248073s_labs_receipt_and_is_admitted(self):
         """The committed request's TVC receipt is admitted. The method name is kept so the test-suite ratchet sees the
         same test at the head (TEST_PRESENT_AT_BASE_RUNS_AT_HEAD); the request now carries run COMMITTED_RUN_ID
-        (40917305561, TVC main dbfccec9), which supersedes runs 40999761329 (TVC main e9d646ad), 40166845193 (TVC#551),
+        (42139387349, TVC main 0a54e497 after TVC#577 / Labs#3442 pin 3481e8c0), which supersedes runs
+        40917305561 (TVC main dbfccec9), 40999761329 (TVC main e9d646ad), 40166845193 (TVC#551),
         40160000328 (TVC#546) and 40137248073 (TVC#539)."""
         request = ing.read_request(ROOT / ing.REQUEST_PATH)
         if request["operation"] == ing.SV_PUSH:

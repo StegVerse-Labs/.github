@@ -45,7 +45,7 @@ def _recorded(monkeypatch, tmp_path, transition_id=TRANSITION_ID, prior=None, se
         governance_decision_ref_where_applicable=None,
         transition_evidence={"regression": True, "transition": transition_id},
     )
-    return receipt, sha256_uri(dict(receipt)), submit_state_receipt(receipt)
+    return receipt, sha256_uri(dict(receipt)), submit_state_receipt(receipt, hb_epoch=4096)
 
 
 def _head(tmp_path):
@@ -200,7 +200,7 @@ def test_refusal_has_no_effect_on_the_ledger(monkeypatch, tmp_path):
     receipts = sorted(p.name for p in (tmp_path / "org" / "receipts").iterdir())
     from workers.canonical_state_transition_custody import organization_receipt_gate
 
-    gate = organization_receipt_gate(dict(result, receipt_sha256="b" * 64))
+    gate = organization_receipt_gate(dict(result, receipt_sha256="b" * 64), hb_epoch=4096)
     assert gate == {"verified": False, "organization_receipt_sha256": None, "refusal": gate["refusal"]}
     assert gate["refusal"]["disposition"] == "DENY"
     assert _head(tmp_path) == head
@@ -300,10 +300,10 @@ def test_sdk_diagnostic_closure_gate(monkeypatch, tmp_path):
     _, first_uri, _ = _recorded(monkeypatch, tmp_path, transition_id="SDK_ECOSYSTEM_DIAGNOSTIC_EVENT_EPHEMERAL_BOUND")
     _, _, closure = _recorded(monkeypatch, tmp_path, transition_id=consumer.EXECUTION_TRANSITION,
                               prior=first_uri, sequence=2)
-    row = consumer._verified_organization_closure(closure)
+    row = consumer._verified_organization_closure(closure, hb_epoch=4096)
     assert row["previous_receipt_sha256"] is not None
     with pytest.raises(consumer.DiagnosticExecutionFailClosed, match="ORGANIZATION_EXACT_CLOSURE_REQUIRED:DENY"):
-        consumer._verified_organization_closure(dict(closure, receipt_sha256="d" * 64))
+        consumer._verified_organization_closure(dict(closure, receipt_sha256="d" * 64), hb_epoch=4096)
 
 
 def test_manifest_ingress_closure_gate(monkeypatch, tmp_path):
@@ -342,7 +342,7 @@ def test_not_recorded_refusal_carries_the_producer_reason():
     assert "detail" not in _refused(lambda: custody.verified_organization_record(None, {"state": "BOUNDARY"}),
                                     disposition="FAIL_CLOSED", predicate="ORGANIZATION_RECORD_NOT_RECORDED")
     from workers.canonical_state_transition_custody import organization_receipt_gate
-    gate = organization_receipt_gate({"state": "BOUNDARY", "reason": "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH"})
+    gate = organization_receipt_gate({"state": "BOUNDARY", "reason": "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH"}, hb_epoch=4096)
     assert gate["refusal"]["detail"] == "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH"
 
 
@@ -351,7 +351,7 @@ def test_refusal_inside_attempted_transition_is_appended_once(monkeypatch, tmp_p
 
     _, uri, result = _recorded(monkeypatch, tmp_path)
     forged = dict(result, organization_receipt=None, organization_receipt_sha256="sha256:" + "d" * 64)
-    first = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True)
+    first = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True, hb_epoch=4096)
     assert first["verified"] is False
     refusal = first["refusal"]
     assert refusal["disposition"] == "FAIL_CLOSED"
@@ -369,14 +369,14 @@ def test_refusal_inside_attempted_transition_is_appended_once(monkeypatch, tmp_p
     # The refusal record never closes the attempted transition.
     assert organization_receipt_gate(dict(result, organization_receipt_sha256=row["receipt_sha256"],
                                           organization_receipt=None),
-                                     expected_transition_id=TRANSITION_ID)["verified"] is False
+                                     expected_transition_id=TRANSITION_ID, hb_epoch=4096)["verified"] is False
     # A retry refused the same way returns the receipt already recorded.
     head = _head(tmp_path)
-    again = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True)
+    again = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True, hb_epoch=4096)
     assert again["refusal"]["refusal_organization_receipt_sha256"] == refusal["refusal_organization_receipt_sha256"]
     assert _head(tmp_path) == head and len(_refusal_rows(tmp_path)) == 1
     # Without record_refusal a gate only reads.
-    assert "refusal_recorded" not in organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID)["refusal"]
+    assert "refusal_recorded" not in organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, hb_epoch=4096)["refusal"]
     assert _head(tmp_path) == head
 
 
@@ -387,7 +387,7 @@ def test_refusal_without_supplied_ledger_is_unrecorded_not_host_derived(monkeypa
     monkeypatch.setenv("HOME", str(tmp_path / "home"))
     recorded = record_organization_receipt_refusal(
         {"disposition": "FAIL_CLOSED", "failed_predicate": "X", "retry_entrypoint": "r", "consequence_committed": False},
-        gated_transition_id=TRANSITION_ID, state_receipt_sha256="e" * 64)
+        gated_transition_id=TRANSITION_ID, state_receipt_sha256="e" * 64, hb_epoch=4096)
     assert recorded["refusal_recorded"] is False
     assert recorded["refusal_recording_reason"] == "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER"
     assert not (tmp_path / "home").exists()
@@ -402,7 +402,7 @@ def test_refusal_recording_never_extends_an_unverified_ledger(monkeypatch, tmp_p
     _forge(tmp_path, result["organization_receipt"], source_transition_id="ORPHAN")
     head = _head(tmp_path)
     receipts = sorted(p.name for p in (tmp_path / "org" / "receipts").iterdir())
-    gate = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True)
+    gate = organization_receipt_gate(forged, expected_transition_id=TRANSITION_ID, record_refusal=True, hb_epoch=4096)
     assert gate["verified"] is False
     refusal = gate["refusal"]
     assert refusal["disposition"] == "FAIL_CLOSED"
@@ -433,8 +433,8 @@ def _diagnostic_chain(monkeypatch, tmp_path):
         governance_decision_ref_where_applicable=None,
         transition_evidence={"runtime_binding": {"request_sha256": "8" * 64, "lease_state": "LEASE_OPEN"}})
     binding_uri = sha256_uri(dict(binding))
-    assert submit_state_receipt(ingress)["state"] == "RECORDED"
-    assert submit_state_receipt(binding)["state"] == "RECORDED"
+    assert submit_state_receipt(ingress, hb_epoch=4096)["state"] == "RECORDED"
+    assert submit_state_receipt(binding, hb_epoch=4096)["state"] == "RECORDED"
     return consumer, ingress, ingress_uri[7:], binding, binding_uri[7:]
 
 
@@ -478,7 +478,7 @@ def test_diagnostic_ancestry_rejects_broken_or_replayed_ingress_binding_chain(mo
             transition_id=transition_id, transition_sequence=sequence, subject_or_correlation_id=consumer.GOAL,
             transition_outcome=outcome, prior_state_ref_or_hash=prior, resulting_state_ref_or_hash=None,
             governance_decision_ref_where_applicable=None, transition_evidence=evidence)
-        assert submit_state_receipt(receipt)["state"] == "RECORDED"
+        assert submit_state_receipt(receipt, hb_epoch=4096)["state"] == "RECORDED"
         return sha256_uri(dict(receipt))[7:]
 
     # Replayed: a later ingress ALLOW for the same request. The recorded binding
@@ -510,7 +510,7 @@ def test_diagnostic_closure_refusal_emits_outer_fail_closed_record(monkeypatch, 
     forged = dict(closure, organization_receipt=None, organization_receipt_sha256="sha256:" + "d" * 64)
 
     def refused_consume(*_args, **_kwargs):
-        consumer._verified_organization_closure(forged)
+        consumer._verified_organization_closure(forged, hb_epoch=4096)
         raise AssertionError("forged closure must be refused")
 
     monkeypatch.setattr(consumer, "consume", refused_consume)
@@ -545,7 +545,7 @@ def test_verified_gate_reports_generation_zero_basis_not_custody(monkeypatch, tm
     _, _, result = _recorded(monkeypatch, tmp_path)
     from workers.canonical_state_transition_custody import organization_receipt_gate
 
-    gate = organization_receipt_gate(result, expected_transition_id=TRANSITION_ID)
+    gate = organization_receipt_gate(result, expected_transition_id=TRANSITION_ID, hb_epoch=4096)
     assert gate["verified"] is True
     assert gate["organization_readback_custody_basis"] == (
         "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY")

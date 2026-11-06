@@ -16,6 +16,7 @@ import json
 
 from workers.canonical_state_transition_custody import (
     build_state_receipt,
+    no_epoch_caller_boundary,
     require_predecessor_master_records_organization_record,
     organization_receipt_custody,
     organization_receipt_gate,
@@ -260,11 +261,17 @@ def record_non_allow_functional_memory(
     task: dict[str, Any],
     trigger: dict[str, Any],
     packet: dict[str, Any],
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     transition = packet.get("assignment_transition") or {}
     resolution = str(transition.get("admissibility_resolution") or "")
     if resolution == "ALLOW":
         raise ValueError("ALLOW assignment must not emit a non-ALLOW functional-memory pack")
+    if hb_epoch is None:
+        # No supplied epoch in scope: refused before any receipt is built, so
+        # nothing is written and no clock is read (WU-B13 slice g).
+        return {**no_epoch_caller_boundary("heartbeat_runtime/worker_assignment_functional_memory.py::"
+                                           "record_non_allow_functional_memory"), "sequence": None}
 
     previous = task.get("functional_memory")
     if isinstance(previous, dict):
@@ -338,10 +345,11 @@ def record_non_allow_functional_memory(
         proof_scope="WORKERCOORDINATOR_ASSIGNMENT_DISPOSITION_ONLY",
         proof_ceiling="NON_ALLOW_ASSIGNMENT_AND_FUNCTIONAL_MEMORY_CUSTODY_ONLY",
     )
-    result = submit_state_receipt(receipt)
+    result = submit_state_receipt(receipt, hb_epoch=hb_epoch)
     # Organization ledger record closes the transition; Master Records
     # reconstruction fields are evidence only and never gate it.
-    gate = organization_receipt_gate(result, expected_transition_id=TRANSITION_ID, record_refusal=True)
+    gate = organization_receipt_gate(result, expected_transition_id=TRANSITION_ID, record_refusal=True,
+                                     hb_epoch=hb_epoch)
     if not gate["verified"]:
         return {
             "state": "BOUNDARY",

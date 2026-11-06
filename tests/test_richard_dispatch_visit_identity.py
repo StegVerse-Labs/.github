@@ -35,7 +35,7 @@ def _capture(monkeypatch):
     fake = types.ModuleType("canonical_state_transition_custody")
     fake.sha256_uri = sha256_uri
     fake.build_state_receipt = lambda **kwargs: built.append(kwargs) or dict(kwargs)
-    fake.submit_state_receipt = lambda receipt: {"state": "RECORDED"}
+    fake.submit_state_receipt = lambda receipt, **kwargs: {"state": "RECORDED"}
     fake.organization_receipt_gate = lambda result, **kwargs: {"verified": True, "refusal": None}
     monkeypatch.setitem(sys.modules, "canonical_state_transition_custody", fake)
     return built
@@ -50,8 +50,8 @@ def test_the_visit_transition_id_is_deterministic_for_the_same_request(tmp_path,
     runtime = _runtime(tmp_path, "runtime", request)
     built = _capture(monkeypatch)
     monkeypatch.setattr(time, "time_ns", _clock_forbidden)
-    first = dispatch.retain_richard_dispatch_visit_in_master_records(ROOT, runtime, [ROW])
-    second = dispatch.retain_richard_dispatch_visit_in_master_records(ROOT, runtime, [ROW])
+    first = dispatch.retain_richard_dispatch_visit_in_master_records(ROOT, runtime, [ROW], hb_epoch=4096)
+    second = dispatch.retain_richard_dispatch_visit_in_master_records(ROOT, runtime, [ROW], hb_epoch=4096)
     assert first["state"] == second["state"] == "RECORDED"
     assert first["transition_id"] == second["transition_id"]
     assert first["transition_id"] == (f"{request['task_id']}:RESIDENT_REQUEST_DISPATCH_VISIT:"
@@ -64,7 +64,7 @@ def test_a_different_request_has_a_different_visit_transition_id(tmp_path, monke
     changed = {**request, "revision_note": "a different request body"}
     _capture(monkeypatch)
     first = dispatch.retain_richard_dispatch_visit_in_master_records(
-        ROOT, _runtime(tmp_path, "a", request), [ROW])
+        ROOT, _runtime(tmp_path, "a", request), [ROW], hb_epoch=4096)
     second = dispatch.retain_richard_dispatch_visit_in_master_records(
-        ROOT, _runtime(tmp_path, "b", changed), [ROW])
+        ROOT, _runtime(tmp_path, "b", changed), [ROW], hb_epoch=4096)
     assert first["transition_id"] != second["transition_id"]

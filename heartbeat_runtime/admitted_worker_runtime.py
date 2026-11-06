@@ -363,7 +363,8 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
             "authority_effect": "NONE",
         }
         if verdict != "ADMIT":
-            memory = record_non_allow_functional_memory(task=task, trigger=trigger, packet=packet)
+            memory = record_non_allow_functional_memory(task=task, trigger=trigger, packet=packet,
+                                                        hb_epoch=carrier_epoch)
             task["reconciliation_disposition"] = verdict
             task["reconciliation_reason"] = ",".join(packet["review"]["reasons"])
             if memory.get("state") != "RECORDED":

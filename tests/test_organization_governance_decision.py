@@ -103,18 +103,28 @@ def _ledger_published_to(origin: Path):
     return load
 
 
+def repo_locator(ledgers: Path) -> str:
+    """The repository ledger as the workflow supplies it: the subtree of the organization ledger ref (git with git)."""
+    return ("git+" + str(ledgers / "organization-ledger.git")
+            + "#refs/stegverse/organization-ledger:repository-ledger/StegVerse-Labs/.github")
+
+
+def repository_receipts(ledgers: Path) -> list:
+    return sorted(ledger_store.open_store(repo_locator(ledgers)).list_prefix(ledger_store.RECEIPT_PREFIX))
+
+
 def _run(tmp: Path, source: Path, origin: Path, monkeypatch, *, ledgers: Path | None = None) -> dict:
     """One execution, as the workflow runs it: fresh work, mesh and node state."""
     run = tmp / ("run-" + str(len(list(tmp.glob("run-*")))))
     ledgers = ledgers or run
-    monkeypatch.setenv("STEGVERSE_REPO_LEDGER_ROOT", str(ledgers / "repo-ledger"))
+    monkeypatch.setenv("STEGVERSE_REPO_LEDGER_ROOT", repo_locator(ledgers))
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(ledgers / "organization-ledger.git"))
     monkeypatch.setattr(decision, "_organization_ledger", _ledger_published_to(origin))
     materialization = decision.materialize(
         source_url=str(source), source_ref=MESH_REF, own_url=str(origin), own_ref=MESH_REF,
         work=run / "work", mesh=run / "mesh", emitting_organization="StegVerse-org")
     cycle = decision.run_cycle(mesh=run / "mesh", node_state=run / "node",
-                               repo_ledger=ledgers / "repo-ledger", materialization=materialization)
+                               repo_ledger=repo_locator(ledgers), materialization=materialization)
     publication = decision.publish(mesh=run / "mesh", cycle=cycle, materialization=materialization,
                                    work=run / "work", own_ref=MESH_REF, remote=str(origin))
     ledger_publication = decision.publish_ledger()
@@ -210,7 +220,7 @@ def test_end_to_end_answers_the_emitting_organization_recorded_at_both_levels(tm
     assert out["cycle"]["organization_ledger"]["remote"] == str(origin)
 
     # Both levels: the decision's own receipts and the crossing's.
-    repository = ledger_store.PosixLedgerStore(out["ledgers"] / "repo-ledger")
+    repository = ledger_store.open_store(repo_locator(out["ledgers"]))
     organization = ledger_store.GitLedgerStore(out["ledgers"] / "organization-ledger.git",
                                                "refs/stegverse/organization-ledger")
     for receipts in (application, item["organization_record"]):
@@ -247,7 +257,7 @@ def test_replay_is_a_write_once_no_op(tmp_path, monkeypatch):
     first = _run(tmp_path, source, origin, monkeypatch, ledgers=ledgers)
     tip = _git("--git-dir", str(origin), "rev-parse", MESH_REF)
     own = _own_frames(origin)
-    repository_before = sorted(p.name for p in (ledgers / "repo-ledger").rglob("*.json"))
+    repository_before = repository_receipts(ledgers)
     organization_before = _git("--git-dir", str(ledgers / "organization-ledger.git"), "rev-parse",
                                "refs/stegverse/organization-ledger")
 
@@ -259,7 +269,7 @@ def test_replay_is_a_write_once_no_op(tmp_path, monkeypatch):
     assert _git("--git-dir", str(origin), "rev-parse", MESH_REF) == tip
     assert _own_frames(origin) == own
     # No receipt added, so none conflicts.
-    assert sorted(p.name for p in (ledgers / "repo-ledger").rglob("*.json")) == repository_before
+    assert repository_receipts(ledgers) == repository_before
     assert _git("--git-dir", str(ledgers / "organization-ledger.git"), "rev-parse",
                 "refs/stegverse/organization-ledger") == organization_before
     # The answer already published is still read back and recovered.
@@ -311,12 +321,12 @@ def test_lost_race_is_refused_not_forced(tmp_path, monkeypatch):
     origin = tmp_path / "own.git"
     _git("init", "-q", "--bare", str(origin))
     run = tmp_path / "race"
-    monkeypatch.setenv("STEGVERSE_REPO_LEDGER_ROOT", str(run / "repo-ledger"))
+    monkeypatch.setenv("STEGVERSE_REPO_LEDGER_ROOT", repo_locator(run))
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(run / "organization-ledger.git"))
     materialization = decision.materialize(
         source_url=str(source), source_ref=MESH_REF, own_url=str(origin), own_ref=MESH_REF,
         work=run / "work", mesh=run / "mesh", emitting_organization="StegVerse-org")
-    cycle = decision.run_cycle(mesh=run / "mesh", node_state=run / "node", repo_ledger=run / "repo-ledger",
+    cycle = decision.run_cycle(mesh=run / "mesh", node_state=run / "node", repo_ledger=repo_locator(run),
                                materialization=materialization)
     # Another publisher creates the ref first.
     other = _mesh_repo(tmp_path / "other.git", {"frames.d/" + "2" * 64 + ".json": b"{}\n"})

@@ -134,6 +134,7 @@ class IngressLedgerCase(unittest.TestCase):
         return found
 
     def receive(self, **options):
+        options.setdefault("hb_epoch", 4096)
         return ingress.receive(dict(MANIFEST), registry={}, **options)
 
     def receipt_bytes(self, root):
@@ -365,7 +366,7 @@ class DeliveryIdentityCollisionTests(IngressLedgerCase):
         """The organization append owner, retried over the recorded source with one change."""
         repository, = self.receipts(self.repo_root)
         organization, = self.receipts(self.org_root)
-        options = dict(org_transition_class=organization["org_transition_class"],
+        options = dict(hb_epoch=4096, org_transition_class=organization["org_transition_class"],
                        predecessor_org_state_sha256=organization["predecessor_org_state_sha256"],
                        successor_org_state_sha256=organization["successor_org_state_sha256"],
                        boundary_evidence=organization["boundary_evidence"],
@@ -454,17 +455,18 @@ class ConcurrentAppendTests(unittest.TestCase):
         source = repository_ledger.append("SRC-1", "TEST_CLASS", "sha256:" + "a" * 64,
                                           "sha256:" + "b" * 64, {}, "NONE", hb_epoch=43,
                                           store=self.store)
-        options = dict(org_transition_class="REPO_STATE_PROPAGATION",
+        options = dict(hb_epoch=4096, org_transition_class="REPO_STATE_PROPAGATION",
                        predecessor_org_state_sha256="sha256:" + "a" * 64,
                        successor_org_state_sha256="sha256:" + "b" * 64,
                        boundary_evidence={}, authority_effect="NONE", ledger=org_root)
-        first = organization_ledger.aggregate_transition(source, **options)
-        again = organization_ledger.aggregate_transition(source, **options)
-        self.assertEqual(first["receipt_sha256"], again["receipt_sha256"])
-        self.assertEqual(len(list((org_root / "receipts").glob("*.json"))), 1)
-        with self.assertRaises(ValueError):
-            organization_ledger.aggregate_transition(
-                source, **{**options, "org_transition_class": "SOME_OTHER_CLASS"})
+        with organization_ledger._materialized_repository_ledger(self.store):
+            first = organization_ledger.aggregate_transition(source, **options)
+            again = organization_ledger.aggregate_transition(source, **options)
+            self.assertEqual(first["receipt_sha256"], again["receipt_sha256"])
+            self.assertEqual(len(list((org_root / "receipts").glob("*.json"))), 1)
+            with self.assertRaises(ValueError):
+                organization_ledger.aggregate_transition(
+                    source, **{**options, "org_transition_class": "SOME_OTHER_CLASS"})
 
 
 if __name__ == "__main__":

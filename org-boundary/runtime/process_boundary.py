@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, hashlib, importlib.util, json, subprocess, tempfile
+import argparse, hashlib, importlib.util, json, os, subprocess, sys, tempfile
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -69,21 +69,90 @@ def endpoint_result(env,svc,envelope_path,node_state_root=None):
                 detail=(completed.stderr or completed.stdout or "").strip().splitlines()
                 raise SystemExit("endpoint-adapter-execution-failed"
                                  + (": "+detail[-1] if detail else ""))
-            result=load(out)
+            try:
+                result=load(out)
+            except (OSError,UnicodeDecodeError,ValueError,RecursionError,MemoryError) as exc:
+                content_fault("endpoint-adapter-result-invalid: "+type(exc).__name__)
             if not isinstance(result,dict):
-                raise SystemExit("endpoint-adapter-result-invalid")
+                content_fault("endpoint-adapter-result-invalid")
             return result
     if role=="BOUNDARY_LOCAL_DIAGNOSTIC":
         return {"echo":env["payload"]}
-    raise SystemExit("endpoint-adapter-not-installed")
+    content_fault("endpoint-adapter-not-installed")
+# Fault semantics aligned to Data-Continuation/.github#10 (Labs#3296 follow-on),
+# without changing the processing above. An input that cannot be read or parsed
+# is the caller's fault: a TERMINAL six-field record, exit 65 (EX_DATAERR). This
+# node's own failure to write --out is NON-terminal: six fields, exit 75
+# (EX_TEMPFAIL), and the result is replaced atomically so no partial file stays.
+EXIT_INPUT_FAULT=65
+EXIT_WRITE_FAULT=75
+FAULT_RETRY_ENTRYPOINT="resident-runtime/sdk_manifest_crossing.py::cross (org-boundary/runtime/process_boundary.py)"
+FAULT_OWNING_GOAL="INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001"
+
+def fault_record(code,predicate,detail,*,terminal,repair,next_attempt):
+    return {"disposition":"FAIL_CLOSED","failure_code":code,"failed_predicate":predicate,"detail":detail,
+            "required_evidence_or_repair":repair,"retry_entrypoint":FAULT_RETRY_ENTRYPOINT,
+            "owning_existing_goal":FAULT_OWNING_GOAL,"next_attempt":next_attempt,
+            "terminal":terminal,"consequence_committed":False,"authority_effect":"NONE_REFUSAL_ONLY"}
+
+def fail(record,code):
+    print(json.dumps(record,sort_keys=True)); sys.exit(code)
+
+def read_input(path,argument):
+    """One JSON object input, or the terminal PROCESS_BOUNDARY_INPUT_FAULT (exit 65). Writes nothing."""
+    try:
+        value=json.loads(Path(path).read_text(encoding="utf-8"))
+    # RecursionError / MemoryError: a deeply nested or oversized document is a
+    # bad input like any other, never a traceback (F-SCAN-RECURSION).
+    except (OSError,UnicodeDecodeError,ValueError,RecursionError,MemoryError) as exc:
+        value,detail=None,argument+": "+type(exc).__name__+": "+str(exc)
+    else:
+        detail=None if isinstance(value,dict) else argument+": top-level "+type(value).__name__+", expected dict"
+    if detail is not None:
+        fail(fault_record("PROCESS_BOUNDARY_INPUT_FAULT","PROCESS_BOUNDARY_INPUTS_ARE_READABLE_JSON_OBJECTS",detail,
+                          terminal=True,repair="supply "+argument+" as a readable UTF-8 JSON object; nothing was written",
+                          next_attempt="a corrected "+argument+"; this input is refused as given"),EXIT_INPUT_FAULT)
+    return value
+
+def content_fault(detail):
+    """A readable input whose content this boundary refuses: terminal six fields, exit 65, nothing written.
+
+    The detail is the boundary's own refusal string (missing:<keys>,
+    wrong-destination-org, unknown-service, endpoint-adapter-not-installed).
+    """
+    fail(fault_record("PROCESS_BOUNDARY_INPUT_FAULT","PROCESS_BOUNDARY_ENVELOPE_AND_REGISTRY_ARE_ADMISSIBLE",detail,
+                      terminal=True,repair="correct the envelope or registry content named in detail; nothing was written",
+                      next_attempt="a corrected envelope or registry; this crossing is refused as given"),EXIT_INPUT_FAULT)
+
+def write_result(out,text):
+    """Replace --out atomically, or the non-terminal PROCESS_BOUNDARY_WRITE_FAULT (exit 75); no partial file."""
+    out=Path(out); tmp=None
+    try:
+        out.parent.mkdir(parents=True,exist_ok=True)
+        fd,tmp=tempfile.mkstemp(prefix="."+out.name+".",suffix=".tmp",dir=str(out.parent))
+        with os.fdopen(fd,"w",encoding="utf-8") as handle:
+            handle.write(text)
+        # The permissions a plain write would have given it (mkstemp makes 0600).
+        umask=os.umask(0); os.umask(umask)
+        os.chmod(tmp,0o666&~umask)
+        os.replace(tmp,out); tmp=None
+    except OSError as exc:
+        if tmp is not None:
+            try: os.unlink(tmp)
+            except OSError: pass
+        fail(fault_record("PROCESS_BOUNDARY_WRITE_FAULT","PROCESS_BOUNDARY_WRITES_ITS_RESULT_ATOMICALLY",
+                          "--out: "+type(exc).__name__+": "+str(exc),terminal=False,
+                          repair="restore a writable --out location; no partial result was left",
+                          next_attempt="run the same crossing again; the processing is deterministic"),EXIT_WRITE_FAULT)
+
 def main():
  ap=argparse.ArgumentParser(); ap.add_argument("--envelope",required=True); ap.add_argument("--registry",required=True); ap.add_argument("--out",required=True); ap.add_argument("--node-state-root",default=None); a=ap.parse_args()
- env=load(a.envelope); reg=load(a.registry)
+ env=read_input(a.envelope,"--envelope"); reg=read_input(a.registry,"--registry")
  req=["schema_version","packet_id","direction","origin","destination","carrier","intr_profile","transition","payload","evidence"]; miss=[k for k in req if k not in env]
- if miss: raise SystemExit("missing:"+",".join(miss))
- if env["destination"]["org"]!=reg["organization"]: raise SystemExit("wrong-destination-org")
+ if miss: content_fault("missing:"+",".join(miss))
+ if env["destination"]["org"]!=reg["organization"]: content_fault("wrong-destination-org")
  svc=next((s for s in reg["services"] if s["service_id"]==env["destination"]["service"]),None)
- if not svc: raise SystemExit("unknown-service")
+ if not svc: content_fault("unknown-service")
  # Standing first, then selection. The contract covers ingress, and selection
  # is processing: a crossing that has not established standing must not reach
  # the question of what processing it selected.
@@ -97,5 +166,5 @@ def main():
   subject={**base,"kind":kind,"previous_receipt_id":prev}; rid=hid(kind.lower(),subject); receipts.append({"kind":kind,"receipt_id":rid,"subject":svc["service_id"],"evidence_hash":hashlib.sha256(canon(subject)).hexdigest(),"previous_receipt_id":prev}); prev=rid
  application_result=endpoint_result(env,svc,a.envelope,a.node_state_root)
  result={"schema_version":reg["organization"].lower().replace(" ","-")+".boundary-execution.v1","packet_id":env["packet_id"],"organization":reg["organization"],"service_id":svc["service_id"],"consumed":True,"application_result":application_result,"authority_effect":env["transition"]["authority_effect"],**selected,**standing,"receipts":receipts,"reconstruction":{"same_execution_required":True,"status":"RECONSTRUCTED","terminal_receipt_id":prev}}
- Path(a.out).parent.mkdir(parents=True,exist_ok=True); Path(a.out).write_text(json.dumps(result,indent=2,sort_keys=True)+"\n"); print(json.dumps({"status":"PASS","terminal_receipt_id":prev}))
+ write_result(a.out,json.dumps(result,indent=2,sort_keys=True)+"\n"); print(json.dumps({"status":"PASS","terminal_receipt_id":prev}))
 if __name__=="__main__": main()

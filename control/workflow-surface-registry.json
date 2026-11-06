@@ -151,6 +151,12 @@
       "classification": "REVIEW_REQUIRED",
       "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",
       "reason": "Validation-only verify of manifest-directed Goal Task registration (contracts/canonical-task-registration-transition.v1.json): for each registration manifest a PR adds, re-derives record, Registry row, generation bump and COSV vector/index entry from the live base tip and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
+    },
+    {
+      "path": ".github/workflows/resident-cycle-request.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+      "reason": "COMMITTED_REQUEST dispatch of the resident cycle (row 16): a push to main changing .stegverse/resident-cycle/request.json runs resident-runtime/resident_cycle_request.py at the committed epoch; no workflow_dispatch, no inputs, contents read-only"
     }
   ],
   "removed_in_hygiene_batch_1": [

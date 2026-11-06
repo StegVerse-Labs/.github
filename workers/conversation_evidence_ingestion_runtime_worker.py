@@ -134,9 +134,12 @@ def main() -> int:
     source, attachments = _synthetic_source(record_id)
     package = build_ingestion_package(source, attachments)
     record_root = _persist_idempotent(package, attachments)
+    # The invocation's heartbeat_epoch is the epoch this run was supplied;
+    # without one custody_ingestion refuses NO_EPOCH_CALLER_FAILS_CLOSED.
     custody = custody_ingestion(
         package,
         predecessor_receipt_sha256=str(predecessor["receipt_sha256"]),
+        hb_epoch=invocation.get("heartbeat_epoch"),
     )
 
     if custody.get("state") != "RECORDED":

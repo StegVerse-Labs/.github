@@ -54,7 +54,7 @@ def main():
     body=json.loads(args.body_json)
     out=K.publish_ecosystem_from_directory(
         ROOT,
-        standing=json.loads(args.standing.read_text()),
+        standing=K.cli_input_json(args.standing,"--standing",retry_entrypoint="resident-runtime/ecosystem_control.py"),
         message_class=args.message_class,
         subject=args.subject,
         body=body,
@@ -70,4 +70,4 @@ def main():
     },indent=2,sort_keys=True))
 
 if __name__=="__main__":
-    main()
+    raise SystemExit(K.run_writer_cli(lambda: main() or 0, retry_entrypoint="resident-runtime/ecosystem_control.py"))

@@ -51,11 +51,15 @@ def sha256_uri(value: Any) -> str:
     return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
-def _record_organization_transition(receipt: Mapping[str, Any], *, ledger: Any = None) -> dict[str, Any]:
+def _record_organization_transition(receipt: Mapping[str, Any], *, ledger: Any = None,
+                                    hb_epoch: int | None = None) -> dict[str, Any]:
     """Record the exact governed transition in the existing organization ledger.
 
     `ledger` is the root or store the caller holds; otherwise aggregate_transition
-    uses the store organization_store() selects for this execution.
+    uses the store organization_store() selects for this execution. `hb_epoch`
+    is the epoch the caller was supplied; without one nothing is appended and
+    the result is the six-field NO_EPOCH_CALLER_FAILS_CLOSED, with no clock
+    read to stand in for it.
     """
     module_path = Path(__file__).resolve().parents[1] / "resident-runtime" / "aggregate_repo_transition.py"
     if not module_path.is_file():
@@ -66,6 +70,9 @@ def _record_organization_transition(receipt: Mapping[str, Any], *, ledger: Any =
             raise RuntimeError("organization_transition_ledger_import_unavailable")
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
+        if hb_epoch is None:
+            return _no_epoch_boundary(module.kernel, "workers/canonical_state_transition_custody.py::"
+                                      "_record_organization_transition")
         organization_receipt = module.aggregate_transition(
             dict(receipt),
             org_transition_class="ORGANIZATION_STATE_TRANSITION",
@@ -75,6 +82,7 @@ def _record_organization_transition(receipt: Mapping[str, Any], *, ledger: Any =
             },
             authority_effect="NONE",
             ledger=ledger,
+            hb_epoch=hb_epoch,
         )
     except Exception as exc:
         return {
@@ -93,6 +101,24 @@ def _record_organization_transition(receipt: Mapping[str, Any], *, ledger: Any =
     ):
         return {"state": "BOUNDARY", "reason": "ORGANIZATION_TRANSITION_RECEIPT_BINDING_INVALID", "authority_effect": "NONE"}
     return {"state": "RECORDED", "organization_receipt": organization_receipt, "authority_effect": "NONE_ORGANIZATION_RECORDING_ONLY"}
+
+
+def _no_epoch_boundary(kernel: Any, caller: str) -> dict[str, Any]:
+    """The BOUNDARY result of a caller with no supplied epoch: six fields, nothing written."""
+    refusal = kernel.no_epoch_caller_refusal(caller, retry_entrypoint=caller + " (hb_epoch=)")
+    return {"state": "BOUNDARY", "reason": refusal["failure_code"],
+            **{key: refusal[key] for key in kernel.SIX_FIELDS},
+            "derived_from_clock": False, "consequence_committed": False, "authority_effect": "NONE"}
+
+
+def no_epoch_caller_boundary(caller: str) -> dict[str, Any]:
+    """NO_EPOCH_CALLER_FAILS_CLOSED for a caller to return before it builds a receipt.
+
+    build_state_receipt stamps recorded_at and an HB creation reference, so a
+    caller with no supplied epoch returns this first: nothing is built,
+    nothing is written and no clock is read.
+    """
+    return _no_epoch_boundary(organization_receipt_custody().org.kernel, caller)
 
 
 def now() -> str:
@@ -741,7 +767,7 @@ def reconstruct_state_receipt(receipt_sha256: str) -> dict[str, Any]:
         return {"state": "BOUNDARY", "reason": "MASTER_RECORDS_AUTHORITY_ESCALATION_DETECTED", "authority_effect": "NONE"}
     return {**payload, "authority_effect": "NONE_RECONSTRUCTION_ONLY"}
 
-def record_organization_runtime_reality(receipt: Mapping[str, Any]) -> dict[str, Any]:
+def record_organization_runtime_reality(receipt: Mapping[str, Any], *, hb_epoch: int | None = None) -> dict[str, Any]:
     """Append one canonical state receipt to the organization ledger and stop there.
 
     ORGANIZATION-ROLE-RUNTIME-REALITY-DEPLOYMENT-001 makes the organization the
@@ -757,7 +783,7 @@ def record_organization_runtime_reality(receipt: Mapping[str, Any]) -> dict[str,
     """
     if receipt.get("schema") != RECEIPT_SCHEMA:
         return {"state": "BOUNDARY", "reason": "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH", "authority_effect": "NONE"}
-    organization = _record_organization_transition(receipt)
+    organization = _record_organization_transition(receipt, hb_epoch=hb_epoch)
     if organization.get("state") != "RECORDED":
         return organization
     return {
@@ -774,7 +800,7 @@ def record_organization_runtime_reality(receipt: Mapping[str, Any]) -> dict[str,
     }
 
 
-def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
+def submit_state_receipt(receipt: Mapping[str, Any], *, hb_epoch: int | None = None) -> dict[str, Any]:
     """Compatibility entry point: record the transition in the organization ledger only.
 
     The legacy function name is retained while callers migrate. It MUST NOT submit
@@ -784,7 +810,7 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     """
     if receipt.get("schema") != RECEIPT_SCHEMA:
         return {"state": "BOUNDARY", "reason": "CANONICAL_STATE_RECEIPT_SCHEMA_MISMATCH", "authority_effect": "NONE"}
-    organization = _record_organization_transition(receipt)
+    organization = _record_organization_transition(receipt, hb_epoch=hb_epoch)
     if organization.get("state") != "RECORDED":
         return organization
     receipt_sha256 = sha256_uri(dict(receipt)).split(":", 1)[1]
@@ -844,6 +870,7 @@ def record_organization_receipt_refusal(
     gated_transition_id: str | None,
     state_receipt_sha256: Any = None,
     root: Any = None,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     """Append a receipt gate's typed refusal to the Organization ledger.
 
@@ -870,6 +897,12 @@ def record_organization_receipt_refusal(
         "consequence_committed": False,
     }
     unrecorded = {**refusal, "refusal_recorded": False, "refusal_organization_receipt_sha256": None}
+    if hb_epoch is None:
+        # No supplied epoch: returned unrecorded before any store is resolved; no clock is read.
+        no_epoch = _no_epoch_boundary(custody.org.kernel, "workers/canonical_state_transition_custody.py::"
+                                      "record_organization_receipt_refusal")
+        return {**unrecorded, "refusal_recording_reason": no_epoch["reason"],
+                "refusal_recording_refusal": {key: no_epoch[key] for key in custody.org.kernel.SIX_FIELDS}}
     try:
         ledger = custody.org.organization_store(root)
     except (custody.org.LedgerLocationRequired, custody.org.ledger_store.LedgerStoreRefused) as exc:
@@ -892,7 +925,7 @@ def record_organization_receipt_refusal(
         )
     except Exception as exc:
         return {**unrecorded, "refusal_recording_reason": "ORGANIZATION_REFUSAL_RECORDING_FAILED:" + type(exc).__name__}
-    recorded = _record_organization_transition(receipt, ledger=ledger)
+    recorded = _record_organization_transition(receipt, ledger=ledger, hb_epoch=hb_epoch)
     if recorded.get("state") != "RECORDED":
         return {**unrecorded, "refusal_recording_reason": recorded.get("reason")}
     return {**refusal, "refusal_recorded": True,
@@ -906,6 +939,7 @@ def organization_receipt_gate(
     expected_transition_id: str | None = None,
     expected_predecessor: str | None = None,
     record_refusal: bool = False,
+    hb_epoch: int | None = None,
 ) -> dict[str, Any]:
     """Gate a successor on the verified Organization receipt of this exact state receipt.
 
@@ -931,7 +965,7 @@ def organization_receipt_gate(
             refusal = record_organization_receipt_refusal(
                 refusal, gated_transition_id=expected_transition_id,
                 state_receipt_sha256=result.get("receipt_sha256") if isinstance(result, Mapping) else None,
-                root=root)
+                root=root, hb_epoch=hb_epoch)
         return {"verified": False, "organization_receipt_sha256": None, "refusal": refusal}
     # The readback is never custody authority; its basis travels with it.
     return {"verified": True, "organization_receipt_sha256": row["receipt_sha256"],
@@ -994,10 +1028,12 @@ class CanonicalTransitionCustody:
     Master Records is not a progression dependency. Explicit reconstruction may be
     requested independently where reconstruction is the actual operation.
     """
-    def __init__(self, subject_or_correlation_id: str) -> None:
+    def __init__(self, subject_or_correlation_id: str, *, hb_epoch: int | None = None) -> None:
         if not subject_or_correlation_id:
             raise ValueError("subject_or_correlation_id_required")
         self.subject = subject_or_correlation_id
+        # The supplied epoch every record carries; without one none is appended.
+        self.hb_epoch = hb_epoch
         self.sequence = 0
         self.last_state_ref: str | None = None
         self.records: list[dict[str, Any]] = []
@@ -1013,6 +1049,15 @@ class CanonicalTransitionCustody:
         required_evidence_manifest: list[Mapping[str, Any]] | None = None,
         require_return: bool = True,
     ) -> dict[str, Any]:
+        if self.hb_epoch is None:
+            # Refused before any receipt is built: no clock is read, nothing is appended.
+            result = no_epoch_caller_boundary("workers/canonical_state_transition_custody.py::"
+                                              "CanonicalTransitionCustody.record")
+            row = {"receipt": None, "organization_recording": result}
+            self.records.append(row)
+            if require_return:
+                raise RuntimeError(result["reason"])
+            return row
         self.sequence += 1
         receipt = build_state_receipt(
             transition_id=transition_id,
@@ -1025,7 +1070,7 @@ class CanonicalTransitionCustody:
             transition_evidence=evidence,
             required_evidence_manifest=[dict(item) for item in (required_evidence_manifest or [])],
         )
-        result = submit_state_receipt(receipt)
+        result = submit_state_receipt(receipt, hb_epoch=self.hb_epoch)
         row = {"receipt": receipt, "organization_recording": result}
         self.records.append(row)
         recorded = (
@@ -1040,4 +1085,4 @@ class CanonicalTransitionCustody:
         return row
 
 
-__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "organization_receipt_gate", "query_state_receipts", "record_organization_receipt_refusal", "reconstruct_state_receipt", "require_predecessor_master_records_organization_record", LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER, "submit_state_receipt", "sha256_uri"]
+__all__ = ["CanonicalTransitionCustody", "build_master_records_receipt_set_commitment", "build_state_receipt", "current_hb_creation_reference", "organization_receipt_gate", "query_state_receipts", "no_epoch_caller_boundary", "record_organization_receipt_refusal", "reconstruct_state_receipt", "require_predecessor_master_records_organization_record", LEGACY_PREDECESSOR_RECONSTRUCTION_HELPER, "submit_state_receipt", "sha256_uri"]

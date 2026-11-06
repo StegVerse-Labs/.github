@@ -113,11 +113,19 @@ RETRY_ENTRYPOINT = "org-kernel/kernel.py::ingest_frame"
 
 
 class EpochRefused(SystemExit):
-    """A FAIL_CLOSED epoch refusal; `.refusal` carries the six fields."""
+    """A FAIL_CLOSED epoch refusal; `.refusal` (and `.record`) carry the six fields."""
 
     def __init__(self, refusal: Mapping[str, Any]):
-        super().__init__(refusal["failure_code"] + ":" + refusal["detail"])
-        self.refusal = dict(refusal)
+        # failure_code:detail matches writer/kernel SystemExit strings; the
+        # six-field body is on .refusal / .record (CarrierEpochRefusal parity).
+        body = dict(refusal)
+        if "derived_from_clock" not in body:
+            body["derived_from_clock"] = False
+        if "consequence_committed" not in body:
+            body["consequence_committed"] = False
+        super().__init__(body["failure_code"] + ":" + body["detail"])
+        self.refusal = body
+        self.record = body
 
 
 def supplied_epoch_failure(hb_epoch: Any, reference: Any = None) -> tuple[str, str] | None:

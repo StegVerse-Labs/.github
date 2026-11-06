@@ -51,7 +51,7 @@ def test_canonical_transition_emits_org_receipt_without_fabricating_repo_receipt
         os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = tmp
         try:
             source = canonical_receipt()
-            record = module.aggregate_transition(source)
+            record = module.aggregate_transition(source, hb_epoch=4096)
         finally:
             if old is None:
                 os.environ.pop("STEGVERSE_ORG_LEDGER_ROOT", None)
@@ -80,7 +80,7 @@ def test_canonical_transition_records_organization_without_general_master_record
     submit = client.index("def submit_state_receipt")
     end = client.index("def require_predecessor_master_records_organization_record", submit)
     body = client[submit:end]
-    assert "organization = _record_organization_transition(receipt)" in body
+    assert "organization = _record_organization_transition(receipt, hb_epoch=hb_epoch)" in body
     assert "_submit_http(receipt)" not in body
     assert "_submit_local(receipt)" not in body
     assert '"master_records_submission_performed": False' in body
@@ -101,11 +101,11 @@ def test_exact_source_retry_reuses_org_receipt_after_intervening_transition():
         os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = tmp
         try:
             source = canonical_receipt()
-            first = module.aggregate_transition(source)
+            first = module.aggregate_transition(source, hb_epoch=4096)
             second_source = {**source, "transition_id": "UNRELATED_TRANSITION", "transition_sequence": 2}
-            unrelated = module.aggregate_transition(second_source)
+            unrelated = module.aggregate_transition(second_source, hb_epoch=4096)
             head_before = json.loads((Path(tmp) / "HEAD.json").read_text())
-            retry = module.aggregate_transition(source)
+            retry = module.aggregate_transition(source, hb_epoch=4096)
             assert retry == first
             assert retry["receipt_sha256"] != unrelated["receipt_sha256"]
             assert json.loads((Path(tmp) / "HEAD.json").read_text()) == head_before
@@ -124,9 +124,9 @@ def test_exact_source_retry_rejects_changed_context_without_appending():
         os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = tmp
         try:
             source = canonical_receipt()
-            module.aggregate_transition(source, boundary_evidence={"scope": "original"})
+            module.aggregate_transition(source, boundary_evidence={"scope": "original"}, hb_epoch=4096)
             try:
-                module.aggregate_transition(source, boundary_evidence={"scope": "changed"})
+                module.aggregate_transition(source, boundary_evidence={"scope": "changed"}, hb_epoch=4096)
             except ValueError as exc:
                 assert "context conflict" in str(exc)
             else:
@@ -146,13 +146,13 @@ def test_exact_source_retry_rejects_tampered_existing_receipt():
         os.environ["STEGVERSE_ORG_LEDGER_ROOT"] = tmp
         try:
             source = canonical_receipt()
-            first = module.aggregate_transition(source)
+            first = module.aggregate_transition(source, hb_epoch=4096)
             path = Path(tmp) / "receipts" / (first["receipt_sha256"].split(":", 1)[1] + ".json")
             tampered = json.loads(path.read_text())
             tampered["boundary_evidence"] = {"tampered": True}
             path.write_text(json.dumps(tampered))
             try:
-                module.aggregate_transition(source)
+                module.aggregate_transition(source, hb_epoch=4096)
             except ValueError as exc:
                 assert "integrity invalid" in str(exc)
             else:
@@ -179,7 +179,7 @@ def test_organization_recording_proceeds_without_master_records():
                       return_value={"state": "RECORDED", "organization_receipt": organization}), \
          patch.object(client, "_submit_http", side_effect=AssertionError("must not submit")), \
          patch.object(client, "_submit_local", side_effect=AssertionError("must not submit")):
-        result = client.submit_state_receipt(source)
+        result = client.submit_state_receipt(source, hb_epoch=4096)
     assert result["state"] == "RECORDED"
     assert result["organization_receipt"] == organization
     assert result["master_records_submission_performed"] is False
@@ -200,7 +200,7 @@ def test_master_records_failure_helper_cannot_override_recorded_organization_sta
     with patch.object(client, "_record_organization_transition",
                       return_value={"state": "RECORDED", "organization_receipt": organization}), \
          patch.object(client, "_submit_http", side_effect=AssertionError("must not submit")):
-        result = client.submit_state_receipt(source)
+        result = client.submit_state_receipt(source, hb_epoch=4096)
     assert result["state"] == "RECORDED"
     assert result["organization_receipt"] == organization
     assert result["master_records_submission_performed"] is False
@@ -213,7 +213,7 @@ def test_failed_organization_recording_does_not_fabricate_correlation():
     with patch.object(client, "_record_organization_transition",
                       return_value={"state": "BOUNDARY", "reason": "ORGANIZATION_TRANSITION_LEDGER_SURFACE_UNAVAILABLE",
                                     "authority_effect": "NONE"}):
-        result = client.submit_state_receipt(canonical_receipt())
+        result = client.submit_state_receipt(canonical_receipt(), hb_epoch=4096)
     assert result["state"] == "BOUNDARY"
     assert "organization_receipt_sha256" not in result
 

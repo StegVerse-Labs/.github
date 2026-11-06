@@ -93,7 +93,7 @@ class RefusalWithoutSixFieldsOfItsOwnTest(unittest.TestCase):
         request = fixtures.ingress_request(fixture)
         with fixtures.LedgerRoots(request) as roots:
             result = ingress._refused(predicate, "DETAIL-FOR-" + predicate, manifest=fixture["manifest"],
-                                      rule_ref=ingress.recomputation_rule_ref(), **extra)
+                                      rule_ref=ingress.recomputation_rule_ref(), hb_epoch=4096, **extra)
             return result, fixtures.readback(roots.repo)["receipts"], fixtures.readback(roots.org)["receipts"]
 
     def test_each_predicate_this_operation_refuses_under_returns_and_records_all_six(self):

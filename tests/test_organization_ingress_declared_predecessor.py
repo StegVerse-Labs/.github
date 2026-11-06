@@ -112,7 +112,8 @@ class DeclaredPredecessorCase(unittest.TestCase):
             self.addCleanup(patch.stop)
 
     def receive(self, manifest, standing, packet="predecessor-1"):
-        return ingress.receive(manifest, registry=REGISTRY, standing=dict(standing), packet_id=packet)
+        return ingress.receive(manifest, registry=REGISTRY, standing=dict(standing), packet_id=packet,
+                               hb_epoch=4096)
 
     def receipts(self, root: Path) -> list[dict]:
         directory = root / "receipts"

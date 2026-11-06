@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse, importlib.util, json, os
 from pathlib import Path
+from typing import Any
 
 ROOT=Path(__file__).resolve().parents[1]
 SPEC=importlib.util.spec_from_file_location("org_kernel",ROOT/"org-kernel"/"kernel.py")
@@ -72,8 +73,12 @@ def declared_organization_ledger(org_ledger_root:Path|None)->Path|object|None:
         return supplied_ledger("STEGVERSE_ORG_LEDGER_ROOT")
     return org.organization_store()
 
+#: The cycle's epoch is supplied (--hb-epoch, or HB_EPOCH from the dispatcher)
+#: and checked by the kernel's shared rule; it is never read from a clock.
+EPOCH_RETRY_ENTRYPOINT="resident-runtime/federation_cycle.py::main (--hb-epoch, or HB_EPOCH)"
+
 def cycle(*, mesh_root:Path|None, node_state_root:Path|None,
-          repo_ledger_root:Path|None=None, org_ledger_root:Path|None=None)->dict:
+          repo_ledger_root:Path|None=None, org_ledger_root:Path|None=None, hb_epoch:Any=None)->dict:
     if node_state_root is None:
         return location_refusal("NODE_STATE_LOCATION_REQUIRED_FROM_MATERIALIZER","--node-state-root")
     if mesh_root is None:
@@ -90,14 +95,27 @@ def cycle(*, mesh_root:Path|None, node_state_root:Path|None,
     if repo_ledger_root is None or org_ledger_root is None:
         return location_refusal("LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER",
                                 "--repo-ledger-root and --org-ledger-root")
+    # Before anything is consumed or recorded: an absent or invalid cycle epoch
+    # is the six-field refusal, and no clock stands in for it.
+    refused=K.writer_epoch_refusal(hb_epoch,retry_entrypoint=EPOCH_RETRY_ENTRYPOINT)
+    if refused is not None:
+        return refused
+    epoch=int(str(hb_epoch))
+    # In a request run every receipt binds the committed request (row 1); an
+    # unverifiable pair is refused here, before anything is consumed.
+    try:
+        bound=K.committed_request(epoch)
+    except K.CommittedRequestRefused as exc:
+        return exc.record
     results=K.consume_and_respond(ROOT,mesh_root=mesh_root,node_state_root=node_state_root,
-                                  repo_ledger_root=repo_ledger_root,org_ledger_root=org_ledger_root)
+                                  repo_ledger_root=repo_ledger_root,org_ledger_root=org_ledger_root,
+                                  hb_epoch=epoch)
     consumed=sum(1 for x in results if (x.get("result") or {}).get("status")=="CONSUMED")
     responses=sum(1 for x in results if x.get("response_publication"))
     receipt={
       "schema_version":"stegverse.org-federation-cycle.v1",
       "organization":K.load_registry(ROOT)["organization"],
-      "heartbeat_reference":K.hb_reference(),
+      "heartbeat_reference":K.hb_reference(epoch=epoch),
       "frames_seen":len(results),
       "frames_consumed":consumed,
       "frames_refused":sum(1 for x in results if (x.get("result") or {}).get("status")=="REFUSED"),
@@ -107,6 +125,8 @@ def cycle(*, mesh_root:Path|None, node_state_root:Path|None,
       "transport":"FEDERATION_MESH",
       "carrier":CARRIER
     }
+    if bound is not None:
+        receipt[K.COMMITTED_REQUEST_KEY]=bound
     # Recorded in this node's own supplied state rather than the checkout, so a
     # run does not mutate committed space and every pass is kept.
     recorded=K.record_federation_cycle(receipt,root=node_state_root)
@@ -121,11 +141,14 @@ def main(argv:list[str]|None=None)->int:
     ap.add_argument("--org-ledger-root",type=Path,default=None,
                     help="organization ledger root, only under a declared {store: posix} "
                          "(else STEGVERSE_ORG_LEDGER_ROOT there, or the declared store)")
+    ap.add_argument("--hb-epoch",type=str,default=None,
+                    help="the cycle's supplied heartbeat epoch, ASCII digits >= 32 (else HB_EPOCH); never sampled")
     args=ap.parse_args(argv)
+    hb_epoch=args.hb_epoch if args.hb_epoch is not None else (os.environ.get("HB_EPOCH") or None)
     out=cycle(mesh_root=args.mesh_root,node_state_root=args.node_state_root,
-              repo_ledger_root=args.repo_ledger_root,org_ledger_root=args.org_ledger_root)
+              repo_ledger_root=args.repo_ledger_root,org_ledger_root=args.org_ledger_root,hb_epoch=hb_epoch)
     print(json.dumps(out,sort_keys=True))
     return 1 if out.get("disposition")=="FAIL_CLOSED" else 0
 
 if __name__=="__main__":
-    raise SystemExit(main())
+    raise SystemExit(K.run_writer_cli(main, retry_entrypoint="resident-runtime/federation_cycle.py"))

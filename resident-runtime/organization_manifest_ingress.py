@@ -838,7 +838,7 @@ def _repository_receipt_read_back(receipt: Mapping[str, Any]) -> str | None:
     """
     try:
         digest = receipt["receipt_sha256"]
-        store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+        store = repository_ledger.repository_store()
         stored = store.get(repository_ledger.ledger_store.receipt_key(digest))
         body = {key: value for key, value in stored.items() if key != "receipt_sha256"}
         if stored != dict(receipt) or repository_ledger.sha(body) != digest:
@@ -1323,7 +1323,7 @@ def admitted_ingress_receipts() -> list[Mapping[str, Any]] | None:
     recorded, and nothing is assumed absent.
     """
     try:
-        store = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+        store = repository_ledger.repository_store()
         head = store.get(repository_ledger.ledger_store.HEAD_KEY)
         if not head:
             return []
@@ -1895,6 +1895,16 @@ def admit_role_conformance_shape(manifest: Mapping[str, Any]) -> tuple[str, str]
     return None
 
 
+def no_epoch_refusal(caller: str) -> dict[str, Any]:
+    """The unrecorded six-field FAIL_CLOSED of a receipt with no supplied epoch (WU-B13 slice g / B-P31)."""
+    refusal = organization_ledger.kernel.no_epoch_caller_refusal(
+        caller, retry_entrypoint="resident-runtime/organization_manifest_ingress.py::receive (hb_epoch=, or --hb-epoch)")
+    return {"schema": RESULT_SCHEMA_ORG, "organization": "StegVerse-Labs",
+            "receiving_operation": OPERATION_ID, "received": False,
+            "organization_receipt_observed": False, "refusal_recorded": False,
+            **refusal, "authority_effect": "NONE_REFUSAL_ONLY"}
+
+
 def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standing: Mapping[str, Any] | None = None,
             packet_id: str = "organization-sdk-manifest-ingress",
             hb_epoch: int | None = None, mesh_root: Path | None = None) -> dict[str, Any]:
@@ -1902,7 +1912,11 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
 
     `mesh_root` is the federation mesh the node was materialized with. Only a
     capability another organization decides needs it: the request leaves on it.
+    `hb_epoch` is the epoch the carrier supplied; without one nothing is
+    appended and the unrecorded six-field refusal is returned (B-P31).
     """
+    if hb_epoch is None:
+        return no_epoch_refusal("resident-runtime/organization_manifest_ingress.py::receive")
     # Resolved before anything is appended: an unresolvable revision fails
     # closed here, with no receipt written that could not name its rule.
     rule_ref = recomputation_rule_ref()
@@ -2057,6 +2071,20 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         if carried is not None:
             return refused(carried["failed_predicate"], str(exc), six_fields=carried)
         return refused("CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED", str(exc))
+    if not crossing.get("crossing_completed") and crossing.get("retry_permitted") is True:
+        # The processor's own write faulted (exit 75): non-terminal. Nothing is
+        # recorded, so the redelivered submission is consumed exactly once.
+        fault = crossing.get("far_side_fault") or {}
+        return {"disposition": "FAIL_CLOSED", "failure_code": "PROCESS_BOUNDARY_WRITE_FAULT", "terminal": False,
+                "failed_predicate": fault.get("failed_predicate") or "PROCESS_BOUNDARY_COMPLETES_ITS_OWN_WRITE",
+                "detail": fault.get("detail") or "process_boundary exited 75",
+                "required_evidence_or_repair": (fault.get("required_evidence_or_repair")
+                                                or "the processor's own write completes"),
+                "retry_entrypoint": fault.get("retry_entrypoint") or RETRY_ENTRYPOINT,
+                "owning_existing_goal": fault.get("owning_existing_goal") or "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+                "next_attempt": "redeliver the submission; nothing was recorded",
+                "request_sha256": request["request_sha256"], "receipt_written": False,
+                "consequence_committed": False}
     if not crossing.get("crossing_completed"):
         # The far side refused. That is its disposition to state, not something
         # this operation rewrites into an admission -- but the submission still
@@ -2124,7 +2152,7 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
     # recorded the repository receipt and stopped before the organization
     # receipt is completed here, from the retained repository receipt, rather
     # than recorded twice.
-    chain = repository_ledger.ledger_store.PosixLedgerStore(repository_ledger.lr())
+    chain = repository_ledger.repository_store()
     # The successor state is the last closure of the crossing that carried the
     # manifest, and a redelivery is carried again: another packet, another
     # closure. The repository ledger compares the successor on every exact
@@ -2435,6 +2463,9 @@ def main() -> int:
         print(json.dumps({"schema": RESULT_SCHEMA_ORG, "receiving_operation": OPERATION_ID,
                           "received": False, **epoch_refused, "receipt_written": False,
                           "authority_effect": "NONE_REFUSAL_ONLY"}, sort_keys=True))
+        return 1
+    if hb_epoch is None:
+        print(json.dumps(no_epoch_refusal("resident-runtime/organization_manifest_ingress.py (--hb-epoch)"), sort_keys=True))
         return 1
 
     if args.ledger_component is not None or args.consumer_root is not None:

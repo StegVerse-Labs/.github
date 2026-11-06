@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import contextlib
 import copy
+import functools
 import importlib.util
 import itertools
 import json
+import os
 import shutil
 import tempfile
 import unittest
@@ -67,6 +69,36 @@ def authenticated_custody():
         yield
 
 
+
+def refused_until_cross_repo_route(test):
+    """Run `test` and require it to end in SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED (lead ruling 21:00Z).
+
+    Each of these tests feeds an observation from another repository (the TVC
+    issuer, an undeclared repository). No route yet verifies such a receipt on
+    that repository's own contract-designated ledger, so aggregate refuses it
+    and the test can never reach authorization. The body still runs up to that
+    refusal and stays as the specification the route restores.
+    OPEN SPPA_CROSS_REPO_OBSERVATION_NEEDS_OWN_ROUTE: a #3290 follow-up PR.
+    """
+    @functools.wraps(test)
+    def expecting_refusal(self, *args, **kwargs):
+        assert_cross_repo_refusal(self, lambda: test(self, *args, **kwargs))
+    return expecting_refusal
+
+
+def assert_cross_repo_refusal(case, call):
+    """Run `call` and require it to end in SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED (see refused_until_cross_repo_route).
+
+    Usable inside a subTest, where an exception would otherwise be recorded and swallowed.
+    """
+    with case.assertRaises(Exception) as raised:
+        call()
+    refusal = getattr(raised.exception, "refusal", None) or {}
+    case.assertEqual(refusal.get("failure_code"), "SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED", raised.exception)
+    case.assertNotIn("'" + BOUNDARY + "'s,", refusal["detail"], "only another repository's receipt is refused")
+    case.assertIs(refusal["consequence_committed"], False)
+
+
 class Ledger:
     """A copied source and supplied POSIX ledger roots, rooted by an allocator grant (never the real ledger)."""
 
@@ -79,7 +111,7 @@ class Ledger:
         self.repo, self.org = base / "repo-ledger", base / "org-ledger"
         (self.org / "receipts").mkdir(parents=True)
         self.consumer = load("sppa_test_consumer", "scripts/consume_org_claim_allocator_request.py")
-        self.custody = self.consumer.ledger_custody(self.source, base / "seed-repo-ledger", self.org)
+        self.custody = self.consumer.ledger_custody(self.source, base / "seed-repo-ledger", self.org, hb_epoch=4096)
         evidence = {"disposition": "ALLOW", "task_id": CLAIM_TASK, "fencing_token": fence,
                     "claim_scope_sha256": sppa.stable_hash(SCOPE), "request_sha256": "0" * 64,
                     "failed_predicate": None, "organization_head_sha256": None,
@@ -93,30 +125,49 @@ class Ledger:
         self._seq = 0
 
     def observe(self, repository: str, operation: str, evidence: dict) -> str:
-        """Append an organization receipt sourced from `repository` (its own repository receipt)."""
+        """Append an organization receipt sourced from `repository`'s own repository receipt.
+
+        This repository's observation is a real receipt on the custody's
+        materialized repository ledger, handed to aggregate through its internal
+        channel. Another repository's receipt cannot be verified on that
+        repository's own designated ledger yet, so aggregate refuses it
+        SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED (lead ruling 21:00Z) and this raises.
+        """
         org = self.custody["organization_ledger"]
         self._seq += 1
-        body = {"schema": "stegverse.repo-transition-receipt/v1", "repository": repository,
-                "transition_id": f"{operation}-{self._seq}", "transition_class": operation,
-                "predecessor_state_sha256": "sha256:" + "1" * 64,
-                "successor_state_sha256": org.sha({"op": operation, "n": self._seq, "e": evidence}),
-                "evidence": evidence, "authority_effect": "NONE", "observed_at": "fixture",
-                "previous_receipt_sha256": None}
-        receipt = dict(body, receipt_sha256=org.sha(body))
-        row = org.aggregate_transition(
-            receipt, org_transition_class="REPO_STATE_PROPAGATION",
-            predecessor_org_state_sha256=receipt["predecessor_state_sha256"],
-            successor_org_state_sha256=receipt["successor_state_sha256"],
-            boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
-            ledger=self.consumer.organization_target(self.custody))
+        transition_id = f"{operation}-{self._seq}"
+        successor = org.sha({"op": operation, "n": self._seq, "e": evidence})
+        if repository == self.custody["emitter"].C["repository"]:
+            store = self.custody["repository_store"]
+            receipt = self.custody["emitter"].append(transition_id, operation, "sha256:" + "1" * 64, successor,
+                                                     evidence, "NONE", hb_epoch=4096, store=store)
+        else:
+            store = None
+            body = {"schema": "stegverse.repo-transition-receipt/v1", "repository": repository,
+                    "transition_id": transition_id, "transition_class": operation,
+                    "predecessor_state_sha256": "sha256:" + "1" * 64, "successor_state_sha256": successor,
+                    "evidence": evidence, "authority_effect": "NONE",
+                    "hb_reference": org.kernel.hb_reference(epoch=4096), "previous_receipt_sha256": None}
+            receipt = dict(body, receipt_sha256=org.sha(body))
+        with org._materialized_repository_ledger(store):
+            row = org.aggregate_transition(
+                receipt, org_transition_class="REPO_STATE_PROPAGATION",
+                predecessor_org_state_sha256=receipt["predecessor_state_sha256"],
+                successor_org_state_sha256=receipt["successor_state_sha256"],
+                boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
+                ledger=self.consumer.organization_target(self.custody), hb_epoch=4096)
         return row["receipt_sha256"]
 
     def run(self, request: dict, **kwargs) -> dict:
-        return sppa.authorize(request, source=self.source, repo_ledger_root=self.repo,
-                              org_ledger_root=self.org, **kwargs)
+        kwargs.setdefault("hb_epoch", CARRIER_HB_EPOCH)
+        # The materializer supplies the repository ledger SPPA's receipts are checked against;
+        # SPPA's own --repo-ledger-root never reaches aggregate's private channel.
+        with mock.patch.dict(os.environ, {"STEGVERSE_REPO_LEDGER_ROOT": str(self.repo)}):
+            return sppa.authorize(request, source=self.source, repo_ledger_root=self.repo,
+                                  org_ledger_root=self.org, **kwargs)
 
     def chain_rows(self) -> list:
-        custody = self.consumer.ledger_custody(self.source, self.repo, self.org)
+        custody = self.consumer.ledger_custody(self.source, self.repo, self.org, hb_epoch=4096)
         return self.consumer.verify_organization_chain(custody)["receipts"]
 
     def org_receipt(self, digest: str) -> dict:
@@ -204,6 +255,42 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self._td = tempfile.TemporaryDirectory()
         self.base = Path(self._td.name)
 
+
+    # --- Lead ruling 21:00Z: an SPPA observation of another repository is refused until its route exists ---
+
+    def assertCrossRepoObservationRefused(self, repository, operation, evidence):
+        ledger = Ledger(self.base)
+        before = sorted(p.name for p in (ledger.org / "receipts").glob("*.json"))
+        with self.assertRaises(Exception) as raised:
+            ledger.observe(repository, operation, evidence)
+        refusal = getattr(raised.exception, "refusal", None) or {}
+        self.assertEqual(refusal.get("failure_code"), "SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED", raised.exception)
+        self.assertIn(repr(repository), refusal["detail"])
+        for field in ("failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                      "owning_existing_goal", "next_attempt"):
+            self.assertTrue(str(refusal[field]).strip(), field)
+        self.assertIs(refusal["consequence_committed"], False)
+        self.assertEqual(sorted(p.name for p in (ledger.org / "receipts").glob("*.json")), before)
+
+    def test_a_tvc_issuance_observation_is_refused_cross_repo(self):
+        self.assertCrossRepoObservationRefused(TVC, sppa.OP_TVC_ISSUED, {
+            "credential_reference": "tvc:site-deploy", "dependency_surface": "site:production-deploy",
+            "credential_authority": "TV/TVC", "github_token_runtime_authority": "NONE"})
+
+    def test_a_site_repository_build_observation_is_refused_cross_repo(self):
+        self.assertCrossRepoObservationRefused("StegVerse-Labs/Site", sppa.OP_PROVIDER_BUILD, {
+            "repository": "StegVerse-Labs/Site", "build_id": "build-ok", "service": "site",
+            "environment": "production", "commit_sha": SHA, "provider": "cloudflare-workers-builds"})
+
+    def test_a_site_repository_checks_observation_is_refused_cross_repo(self):
+        self.assertCrossRepoObservationRefused("StegVerse-Labs/Site", sppa.OP_EXACT_HEAD_CHECKS, {
+            "repository": "StegVerse-Labs/Site", "head_sha": SHA, "required_checks": REQUIRED, "check_runs": []})
+
+    def test_this_repositorys_observation_is_admitted(self):
+        ledger = Ledger(self.base)
+        self.assertTrue(ledger.observe(BOUNDARY, sppa.OP_INTR_ADMITTED, {
+            "admitted_sha": SHA, "transition": "SITE_PRODUCTION_PROMOTION", "manifest_sha256": "0" * 64}))
+
     def tearDown(self) -> None:
         self._td.cleanup()
 
@@ -233,7 +320,11 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
 
     def test_site_1607_retro_receipt_is_appended_and_reads_back(self):
         ledger = Ledger(self.base)
-        result = ledger.run(fixture())
+        # Without a supplied epoch the refusal is returned and nothing is written.
+        unstamped = ledger.run(fixture(), hb_epoch=None)
+        self.assertEqual(unstamped["failure_code"], "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF")
+        self.assertFalse(unstamped["receipt_appended"])
+        result = ledger.run(fixture(), hb_epoch=str(CARRIER_HB_EPOCH))
         self.assertEqual(result["failure_code"], "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF")
         self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
         self.assertTrue(result["receipt_appended"])
@@ -248,7 +339,8 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         for field in SIX:
             self.assertTrue(evidence.get(field), field)
         self.assertEqual(row["authority_effect"], "NONE")
-        again = ledger.run(fixture())
+        # A retry of the same classification returns the same receipt.
+        again = ledger.run(fixture(), hb_epoch=str(CARRIER_HB_EPOCH))
         self.assertEqual(again["organization_receipt_sha256"], result["organization_receipt_sha256"])
 
     def test_site_1607_retro_stays_fail_closed_with_authenticated_custody(self):
@@ -259,6 +351,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                          (sppa.FAIL_CLOSED, "PROMOTION_SOURCE_NOT_ON_PROMOTION_REF"))
 
     # PROMOTE: the one authorizing path ------------------------------------------
+    @refused_until_cross_repo_route
     def test_fully_authenticated_evidence_with_carrier_epoch_authorizes_and_reads_back(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -283,6 +376,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertFalse(result["evidence"]["deployment_performed"])
         self.assertFalse(result["evidence"]["provider_settings_changed"])
 
+    @refused_until_cross_repo_route
     def test_fully_evidenced_request_fails_closed_under_the_real_custody_verifier(self):
         """No custody basis the existing verifier reports authenticates: AUTHORIZED is unreachable on main."""
         self.assertEqual(sppa.AUTHENTICATING_CUSTODY_BASES, frozenset())
@@ -298,6 +392,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual({p["state"] for p in result["predicates"][:7] if p["predicate"] != "P2"}, {"UNKNOWN"})
         self.assertIn("custody basis", result["evidence"]["detail"])
 
+    @refused_until_cross_repo_route
     def test_authorization_without_carrier_epoch_fails_closed(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -307,6 +402,9 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                 self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED, epoch)
                 self.assertIn(result["failure_code"], ("HB_EPOCH_NOT_SUPPLIED", "HB_EPOCH_INVALID"))
                 self.assertFalse(result["promotion_may_proceed"])
+                # Without a supplied epoch nothing is recorded and no clock stands in for it.
+                self.assertFalse(result["receipt_appended"], epoch)
+                self.assertEqual(result["record_refusal"]["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED", epoch)
 
     # UNKNOWN never yields PASS ----------------------------------------------------
     def test_global_invariant_unknown_or_unauthenticated_pass_is_never_authorized(self):
@@ -329,6 +427,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
             self.assertEqual(sppa.decide(retro, predicates, prior_authorization={"receipt_sha256": "x"})
                              ["transition_class"], sppa.FAIL_CLOSED, pid)
 
+    @refused_until_cross_repo_route
     def test_each_predicate_unknown_fails_closed_never_pass(self):
         ledger = Ledger(self.base)
         cases = {
@@ -393,6 +492,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED)
         self.assertFalse(result["promotion_may_proceed"])
 
+    @refused_until_cross_repo_route
     def test_sppa_own_receipt_is_not_a_provider_observation(self):
         """Self-referential: a prior SPPA receipt (built from caller input) cannot stand in for the provider."""
         ledger = Ledger(self.base)
@@ -405,6 +505,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                          (sppa.FAIL_CLOSED, sppa.BUILD_UNAUTHENTICATED))
 
     # P6 issuer binding -----------------------------------------------------------
+    @refused_until_cross_repo_route
     def test_issuer_bound_negative_cases(self):
         ledger = Ledger(self.base)
         cases = [
@@ -432,6 +533,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                 for field in SIX:
                     self.assertTrue(result[field], (name, field))
 
+    @refused_until_cross_repo_route
     def test_unreadable_tvc_issuer_declaration_is_unverifiable(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -442,6 +544,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual(sppa.declared_issuers(ROOT), {"boundary": BOUNDARY, "tvc": TVC})
 
     # P4 required-check policy ------------------------------------------------------
+    @refused_until_cross_repo_route
     def test_required_check_policy(self):
         ledger = Ledger(self.base)
         ok = {"id": 11, "name": "validate", "head_sha": SHA, "conclusion": "success"}
@@ -478,6 +581,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                              (sppa.CHECKS_UNAUTHENTICATED, sppa.FAIL_CLOSED))
 
     # Refusals and dispositions ---------------------------------------------------------
+    @refused_until_cross_repo_route
     def test_each_refusal_code_and_disposition(self):
         ledger = Ledger(self.base)
         cases = []
@@ -515,6 +619,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                 self.assertFalse(result["promotion_may_proceed"], name)
                 self.assertEqual(result["organization_readback"], "VERIFIED", name)
 
+    @refused_until_cross_repo_route
     def test_observed_contradictions_refuse(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -532,6 +637,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
             result = ledger.run(request, hb_epoch=str(CARRIER_HB_EPOCH))
         self.assertEqual((result["failure_code"], result["transition_class"]), (sppa.IDENTITY_MISMATCH, sppa.REFUSED))
 
+    @refused_until_cross_repo_route
     def test_observation_from_an_undeclared_repository_is_unknown(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
@@ -544,6 +650,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertEqual((result["failure_code"], result["transition_class"]),
                          (sppa.BUILD_UNAUTHENTICATED, sppa.FAIL_CLOSED))
 
+    @refused_until_cross_repo_route
     def test_fence_at_or_below_the_issued_floor_is_behind(self):
         ledger = Ledger(self.base, fence=7)
         with authenticated_custody():
@@ -560,43 +667,52 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
                                                recorded, "NONE", store=custody["repository_store"])
         granted = {"operation": consumer.GRANTED, "disposition": "ALLOW", "task_id": CLAIM_TASK, "fencing_token": fence,
                    "claim_scope_sha256": sppa.stable_hash(SCOPE)}
-        return custody["organization_ledger"].aggregate_transition(
-            repository, ledger=consumer.organization_target(custody), org_transition_class="REPO_STATE_PROPAGATION",
-            predecessor_org_state_sha256=repository["predecessor_state_sha256"],
-            successor_org_state_sha256=repository["successor_state_sha256"], boundary_evidence=granted,
-            authority_effect="NONE")["receipt_sha256"]
+        # The source reaches aggregate only through the materializer channel (#3290), as record_transition appends it.
+        with custody["organization_ledger"]._materialized_repository_ledger(custody["repository_store"]):
+            return custody["organization_ledger"].aggregate_transition(
+                repository, ledger=consumer.organization_target(custody), org_transition_class="REPO_STATE_PROPAGATION",
+                predecessor_org_state_sha256=repository["predecessor_state_sha256"],
+                successor_org_state_sha256=repository["successor_state_sha256"], boundary_evidence=granted,
+                authority_effect="NONE")["receipt_sha256"]
 
     def test_grant_authorizes_only_with_its_retained_source(self):
+        """Each case is refused SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED (#3290) before authorization, as the other
+        promote_request tests are (refused_until_cross_repo_route); the retained-source checks below it are kept."""
         # The Organization chain still recomputes; only the grant's retained source receipt fails.
         for name in ("missing", "tampered", "issuer_mismatch"):
             with self.subTest(name):
-                ledger = Ledger(self.base / name)
-                request = promote_request(ledger)
-                if name == "issuer_mismatch":
-                    request["claim"].update(organization_receipt_sha256=self._issuer_mismatched_grant(ledger, 9),
-                                            fencing_token=9)
-                grant = ledger.org_receipt(request["claim"]["organization_receipt_sha256"])
-                path = ledger.org / "source-receipts" / (grant["source_transition_sha256"].split(":", 1)[1] + ".json")
-                if name == "missing":
-                    path.unlink()
-                elif name == "tampered":
-                    source = json.loads(path.read_text(encoding="utf-8"))
-                    source["evidence"]["fencing_token"] = 7
-                    path.write_text(json.dumps(source), encoding="utf-8")
-                with authenticated_custody():
-                    result = ledger.run(request, hb_epoch=str(CARRIER_HB_EPOCH))
-                self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED, name)
-                self.assertEqual(result["disposition"], "FAIL_CLOSED", name)
-                self.assertFalse(result["promotion_may_proceed"], name)
-                self.assertEqual((result["failure_code"], result["failed_predicate"]),
-                                 (sppa.CLAIM_MISSING, sppa.PREDICATE_NAME["P3"]), name)
-                self.assertIn({"missing": "STATE_RECEIPT_SHA256_ABSENT", "tampered": "STATE_RECEIPT_SHA256_ABSENT",
-                               "issuer_mismatch": "granted receipt source does not record this grant"}[name],
-                              result["evidence"]["detail"], name)
-                for field in SIX:
-                    self.assertTrue(result[field], field)
-                self.assertFalse(result["receipt_appended"], name)
+                def case(name=name):
+                    ledger = Ledger(self.base / name)
+                    request = promote_request(ledger)
+                    if name == "issuer_mismatch":
+                        request["claim"].update(organization_receipt_sha256=self._issuer_mismatched_grant(ledger, 9),
+                                                fencing_token=9)
+                    grant = ledger.org_receipt(request["claim"]["organization_receipt_sha256"])
+                    path = ledger.org / "source-receipts" / (grant["source_transition_sha256"].split(":", 1)[1] + ".json")
+                    if name == "missing":
+                        path.unlink()
+                    elif name == "tampered":
+                        source = json.loads(path.read_text(encoding="utf-8"))
+                        source["evidence"]["fencing_token"] = 7
+                        path.write_text(json.dumps(source), encoding="utf-8")
+                    with authenticated_custody():
+                        result = ledger.run(request, hb_epoch=str(CARRIER_HB_EPOCH))
+                    self.assertEqual(result["transition_class"], sppa.FAIL_CLOSED, name)
+                    self.assertEqual(result["disposition"], "FAIL_CLOSED", name)
+                    self.assertFalse(result["promotion_may_proceed"], name)
+                    self.assertEqual((result["failure_code"], result["failed_predicate"]),
+                                     (sppa.CLAIM_MISSING, sppa.PREDICATE_NAME["P3"]), name)
+                    self.assertIn({"missing": "STATE_RECEIPT_SHA256_ABSENT", "tampered": "STATE_RECEIPT_SHA256_ABSENT",
+                                   "issuer_mismatch": "granted receipt source does not record this grant"}[name],
+                                  result["evidence"]["detail"], name)
+                    for field in SIX:
+                        self.assertTrue(result[field], field)
+                    self.assertFalse(result["receipt_appended"], name)
+                # promote_request feeds the TVC issuer's observation, which no route yet verifies on its
+                # own ledger; the case runs up to that refusal and stays the specification the route restores.
+                assert_cross_repo_refusal(self, case)
 
+    @refused_until_cross_repo_route
     def test_readback_refusal_withholds_promotion(self):
         ledger = Ledger(self.base)
         real_load = sppa._load
@@ -624,6 +740,7 @@ class SiteProductionPromotionAuthorizationTests(unittest.TestCase):
         self.assertFalse(result["promotion_may_proceed"])
 
     # Retro after an authorization --------------------------------------------
+    @refused_until_cross_repo_route
     def test_retro_finds_the_authorization_for_the_same_build_only(self):
         ledger = Ledger(self.base)
         request = promote_request(ledger)
