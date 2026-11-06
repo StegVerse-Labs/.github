@@ -97,6 +97,17 @@
           "items": {
             "type": "string"
           }
+        },
+        "repository_components": {
+          "description": "Optional exact pairing: repository -> the components it owns. When present, the keys equal repositories, the values partition components, and only the listed pairs are in scope (not the repositories x components cross product).",
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          }
         }
       }
     },
