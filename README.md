@@ -2263,6 +2263,10 @@ Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COM
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
 
+## Sovereign readback conformance reusable task
+
+The existing read-only Organization Ledger reader is consumed by `scripts/ecosystem_transition_topology.py` and `.github/workflows/topology-sovereign-readback.yml`. The verified workflow fetches the published sovereign ref into a fresh Git repository and verifies receipt integrity, predecessor continuity, source retention, and expected receipt membership without replaying a transition. Its `ALLOW` is recording-integrity evidence only, not governance admissibility. The reusable, non-authorizing definition is `source-bundles/reusable-task-registry.d/RT-AUTHENTICATED-SOVEREIGN-READBACK-001.json`; the existing task constructor/trigger load it as a durable identity, and the empty runner list deliberately retains the native execution-admission boundary. See [topology handoff](docs/ECOSYSTEM_STATE_TRANSITION_TOPOLOGY_3299_MIRROR_HANDOFF.md) and [Goal #3299](https://github.com/StegVerse-Labs/.github/issues/3299).
+
 ## KV/SKAP historical reconciliation — 2026-10-29
 
 The [canonical KV handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md) preserves the proposal reconciliation, dependency corrections, independent InTr readback and session 10/12 history. These observations do not establish canonical registration or native admission.
@@ -2320,4 +2324,3 @@ SPPA review follow-up: the six storage-boundary regressions now run with stdlib 
 The canonical StegApp vocabulary edit is merged via Labs PR #3403. The aggregate Registry and standalone shard now include `INGRESS_ADMITTED`, but the Goal remains `PROPOSED` and WorkerCoordinator claim/fence remain null. This is an allowed-transition *vocabulary* change only, not native admission. Goal task `STEGAPP-EPHEMERAL-COMPOSITION-001`, COSV `10300000011000`, [canonical handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md), [Goal #3291](https://github.com/StegVerse-Labs/.github/issues/3291).
 
 This repair restores collection of `test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7` inside its test class and runs `test_goal_context_with_a_request_id_forwards_it` against a scratch runtime root so tests do not rewrite tracked sovereign-host receipt files. These are non-authorizing test corrections; validate the exact PR head and preserve native Registry issuer, WorkerCoordinator GRANTED/fence, Sandbox work/evidence, SDK/InTr Chat delivery, and Organization Ledger source/readback prerequisites. No new machines, frameworks, secret paths or runtime authority.
-
