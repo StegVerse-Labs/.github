@@ -203,7 +203,8 @@ class CapabilityIngressEpochTests(TemporaryLedgers):
             "capability_ingress_refused:HB_EPOCH_NOT_SUPPLIED" in msg
             or "HB_EPOCH_NOT_SUPPLIED" in msg,
             msg)
-        self.assert_six_fields(refused.exception.refusal, "HB_EPOCH_NOT_SUPPLIED")
+        fields = getattr(refused.exception, "refusal", None) or getattr(refused.exception, "record", None)
+        self.assert_six_fields(fields, "HB_EPOCH_NOT_SUPPLIED")
         self.assertEqual(self.written(), [])
 
     @requires_sdk
