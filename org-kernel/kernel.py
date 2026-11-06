@@ -700,7 +700,10 @@ def dispatch(root:Path, packet:dict[str,Any], *, mesh_root:Path|None=None, node_
             application_result=capability_ingress(root).receive(root,service,packet,registry=registry,
                                                                 mesh_root=mesh_root,hb_epoch=capability_epoch)
         except SystemExit as refused:
-            raise ValueError("capability_ingress_refused:"+str(refused)) from None
+            error=ValueError("capability_ingress_refused:"+str(refused))
+            # A six-field refusal (the epoch rule) keeps its fields on the error.
+            error.refusal=getattr(refused,"refusal",None)
+            raise error from None
     else:
         application_result={"echo":packet["payload"]}
     return {"schema_version":SCHEMA,"organization":registry["organization"],"packet_id":packet["packet_id"],

@@ -2078,7 +2078,20 @@ admission, claim/fence, external conformance or closure. The task shard remains
 ACTIVE; its aggregate generation-322 Registry row is absent. Protected source
 integration and Registry disposition remain with their existing owners.
 
-### InTr verification and integration handoff — 2026-10-29
+### InTr owner reconciliation — 2026-11-01
+
+TVC #573 and Labs #3411 are merged. Labs #3207 was superseded by merged #3433;
+#3213 is merged. Org #162's one-receipt decision and merged #261 resolve the
+historical successor-policy item. Registry #3195 must now reconcile the stale
+B2 rationale, shard blockers=[] and L5 ownership provenance through its native
+process; no metric or authority transition is inferred here. Canonical ACTIVE,
+null claim/fence and completion=false remain. Session9; cumulative recovery lower
+bound41/20, exact total UNVERIFIED and never reset. Private execution remains
+under existing Org #162 / TVC #488 owners. See the
+[canonical handoff](docs/INTERLOCK_INTR_RUNTIME_INDEPENDENT_PROTOCOL_MIRROR_HANDOFF.md)
+for immutable merge receipts, owner decision and concrete remaining actions.
+
+### InTr verification and integration handoff — 2026-10-29 (historical)
 
 
 Org #258's declared-successor reader was independently tested (10 ingress tests
@@ -2251,3 +2264,9 @@ Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COM
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
 
 SPPA review follow-up: the six storage-boundary regressions now run with stdlib unittest, with a scoped loader override that restores the fixture-declared Git topology after the suite-wide POSIX default and is removed at cleanup. The existing generated test-set manifest includes the suite. All 45 SPPA tests pass without pytest; this is local source validation, not exact-head CI, custody evidence or promotion authority.
+
+### StegApp Goal #3291: post-vocabulary source/test hygiene (2026-11-03)
+
+The canonical StegApp vocabulary edit is merged via Labs PR #3403. The aggregate Registry and standalone shard now include `INGRESS_ADMITTED`, but the Goal remains `PROPOSED` and WorkerCoordinator claim/fence remain null. This is an allowed-transition *vocabulary* change only, not native admission. Goal task `STEGAPP-EPHEMERAL-COMPOSITION-001`, COSV `10300000011000`, [canonical handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md), [Goal #3291](https://github.com/StegVerse-Labs/.github/issues/3291).
+
+This repair restores collection of `test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7` inside its test class and runs `test_goal_context_with_a_request_id_forwards_it` against a scratch runtime root so tests do not rewrite tracked sovereign-host receipt files. These are non-authorizing test corrections; validate the exact PR head and preserve native Registry issuer, WorkerCoordinator GRANTED/fence, Sandbox work/evidence, SDK/InTr Chat delivery, and Organization Ledger source/readback prerequisites. No new machines, frameworks, secret paths or runtime authority.

@@ -175,9 +175,14 @@ class ConformanceIngressCase(unittest.TestCase):
         manifest_sha256 = "sha256:" + ingress.sha(manifest)
         packet = {"packet_id": packet_id,
                   "payload": {"manifest": manifest, "manifest_sha256": manifest_sha256}}
+        # Bound to the delivered manifest as the real crossing binds it: the
+        # payload its own `crossing_payload` builds, hashed with its own `sha`.
+        payload = ingress.crossing_module.crossing_payload(
+            manifest, ingress.crossing_module.declared_destination(manifest))
         return {"crossing_completed": True, "resolved_service_id": conformance.SERVICE_ID,
                 "ingress_packet_id": packet_id, "egress_packet_id": packet_id + "-egress",
                 "manifest_sha256": manifest_sha256,
+                "payload_hash": ingress.crossing_module.sha(payload),
                 "application_result": conformance.respond(packet, root=self.source)}
 
     def receive(self, manifest=None, **options):
@@ -717,7 +722,9 @@ class RetryAndLedgerRootTests(ConformanceIngressCase):
         with mock.patch.object(ingress, "ingress_transition_id",
                                lambda request, evaluation=None: first["organization_transition_id"]):
             refused = self.receive(manifest, packet_id="delivery-2")
-        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        # A colliding id is a defect of the submission: DENY, returned as stored.
+        self.assertEqual(refused["disposition"], "DENY")
+        self.assertEqual(refused["refusal_stored_disposition"], "DENY")
         self.assertEqual(refused["failed_predicate"], "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST")
         after = self.receipt_bytes(self.repo_root)
         self.assertTrue(set(repository_bytes.items()) <= set(after.items()))

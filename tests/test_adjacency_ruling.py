@@ -15,6 +15,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from tests.registry_predecessor_fixture import registration_predecessor_326
+
 ROOT = Path(__file__).resolve().parents[1]
 KV_REQUEST = ROOT / "tests" / "fixtures" / "canonical_task_registration" / "i1-goal-manifests" / "KV-SKAP-VAULT-FUNCTIONAL-001.request.json"
 KV_RULING = ROOT / "control" / "adjacency-rulings" / "KV-SKAP-VAULT-FUNCTIONAL-001.json"
@@ -791,13 +793,13 @@ class TransitionWithRulingTests(unittest.TestCase):
         return root, path
 
     def test_without_a_ruling_the_kv_plan_stays_coordinate_convergence(self) -> None:
-        body = transition.run("plan", KV_REQUEST, ROOT)
+        body = transition.run("plan", KV_REQUEST, registration_predecessor_326())
         self.assertEqual(body["disposition"], "FAIL_CLOSED")
         self.assertEqual(body["failure_code"], "REGISTRY_COLLISION_CHECKIN_NOT_CONTINUE")
 
     def test_a_recomputed_ruling_lets_the_kv_plan_continue(self) -> None:
         root, path = self.fixture("from runtime.secret_field_policy import X\n")
-        body = transition.run("plan", KV_REQUEST, ROOT, None, path, root)
+        body = transition.run("plan", KV_REQUEST, registration_predecessor_326(), None, path, root)
         self.assertEqual(body["disposition"], "ALLOW", body)
         self.assertTrue(body["evidence"]["collision_checkin"].startswith("CONTINUE_BY_VERIFIED_ADJACENCY_RULING"))
         self.assertEqual(body["evidence"]["successor_registry_generation"], body["evidence"]["predecessor_registry_generation"] + 1)
@@ -805,7 +807,7 @@ class TransitionWithRulingTests(unittest.TestCase):
 
     def test_the_same_ruling_fails_closed_when_the_test_reaches_the_sovereign_binding(self) -> None:
         root, path = self.fixture("from runtime import task_registry_event_sovereign_kv_binding\n")
-        body = transition.run("plan", KV_REQUEST, ROOT, None, path, root)
+        body = transition.run("plan", KV_REQUEST, registration_predecessor_326(), None, path, root)
         self.assertEqual(body["disposition"], "FAIL_CLOSED")
         self.assertEqual(body["failure_code"], "ADJACENCY_CONDITION_B_NOT_HELD")
         for field in SIX:

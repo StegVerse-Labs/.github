@@ -56,14 +56,27 @@ def request(manifest_sha256="a" * 64, request_sha256="b" * 64):
             "destination_resolution_source": "ORGANIZATION_BOUNDARY"}
 
 
+#: The submitted manifest. It declares its egress, as every crossable manifest
+#: does, so the payload the crossing carries can be recomputed from it.
+MANIFEST = {"manifest": 1, "completion": {"egress": {
+    "final_stegverse_transition_surface": "sdk-manifest-ingress",
+    "transport": "INTERLOCK_INTR", "far_side_transition_required": True}}}
+
+
 def crossing(manifest, *, registry, standing=None, packet_id):
     """The crossing as the boundary drives it: each delivery is its own packet.
 
     The packet id is the carrier's, so a redelivery under another packet id
     names another ingress and egress packet, exactly as the real crossing does.
+    It is bound to the delivered manifest by the crossing's own payload
+    definition, as the real crossing is.
     """
+    payload = ingress.crossing_module.crossing_payload(
+        manifest, ingress.crossing_module.declared_destination(manifest))
     return {"crossing_completed": True, "resolved_service_id": "stegverse-labs.sdk-manifest-ingress",
             "ingress_packet_id": packet_id, "egress_packet_id": packet_id + ":egress",
+            "manifest_sha256": payload["manifest_sha256"],
+            "payload_hash": ingress.crossing_module.sha(payload),
             "application_result": {}}
 
 
@@ -122,7 +135,7 @@ class IngressLedgerCase(unittest.TestCase):
 
     def receive(self, **options):
         options.setdefault("hb_epoch", 4096)
-        return ingress.receive({"manifest": 1}, registry={}, **options)
+        return ingress.receive(dict(MANIFEST), registry={}, **options)
 
     def receipt_bytes(self, root):
         directory = root / "receipts"
@@ -249,15 +262,12 @@ class IdempotentReceiveTests(IngressLedgerCase):
         self.assertEqual(completed["organization_receipt_sha256"], organization["receipt_sha256"])
 
     def test_replay_completion_takes_its_epoch_from_the_retained_receipt(self):
-        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one: a replay completion takes the epoch its caller supplies; an epoch read back from the retained receipt is never forwarded as supplied.
-        A retry completes the first attempt's repository receipt, and the
-        organization receipt takes the retry's own supplied epoch: an epoch read
-        back from the repository receipt is never forwarded as supplied (B-P36f/m)."""
+        """A retry carrying a different epoch still rebuilds the first attempt's records."""
         self.fail_next_org_append = True
         partial = self.receive(hb_epoch=32)
         self.assertEqual(partial["failure_code"], "ORGANIZATION_APPEND_NOT_COMMITTED")
         self.receive(hb_epoch=99)
-        self.assertEqual(self.org_epochs, [32, 99])
+        self.assertEqual(self.org_epochs, [32, 32])
         repository, = self.receipts(self.repo_root)
         self.assertEqual(repository["hb_reference"]["epoch"], 32)
 
@@ -277,7 +287,9 @@ class IdempotentReceiveTests(IngressLedgerCase):
         # The same request digest (so the same transition id) over another manifest.
         self.request = request(manifest_sha256="f" * 64)
         refused = self.receive(packet_id="org-ingress-collision")
-        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        # A colliding id is a defect of the submission: DENY, returned as stored.
+        self.assertEqual(refused["disposition"], "DENY")
+        self.assertEqual(refused["refusal_stored_disposition"], "DENY")
         self.assertEqual(refused["failed_predicate"], "ONE_TRANSITION_ID_BINDS_ONE_MANIFEST")
         self.assertEqual(len(self.receipts(self.repo_root, ingress.OPERATION_ID)), 1)
         self.assertEqual(len(self.receipts(self.repo_root, ingress.REFUSED_CLASS)), 1)
@@ -447,7 +459,6 @@ class ConcurrentAppendTests(unittest.TestCase):
                        predecessor_org_state_sha256="sha256:" + "a" * 64,
                        successor_org_state_sha256="sha256:" + "b" * 64,
                        boundary_evidence={}, authority_effect="NONE", ledger=org_root)
-        # The harness binds the repository ledger the source was appended to (the materializer's channel).
         with organization_ledger._materialized_repository_ledger(self.store):
             first = organization_ledger.aggregate_transition(source, **options)
             again = organization_ledger.aggregate_transition(source, **options)

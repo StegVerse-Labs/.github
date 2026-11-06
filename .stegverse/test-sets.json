@@ -3,7 +3,7 @@
  "generated_from": {
   "generator": "scripts/test_set_selection.py (StegVerse-Labs/.github)",
   "spec": ".stegverse/test-set-spec.json",
-  "spec_sha256": "2a3a2161dd1b4bf45584951a2583f454fce57c69a49fa20f16c3d301c7e9e8d1"
+  "spec_sha256": "98fa1b468eebc6f2057a87b82acbb2e708e78b8c1c1902a3115415c5b0d0f31a"
  },
  "inputs": {
   "labs-ledger-ref": {
@@ -1884,6 +1884,18 @@
    ],
    "tests": [
     "tests/test_egress_absent_epoch.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_egress_close_response_absent_fail_closed.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_egress_close_response_absent_fail_closed.py"
+   ],
+   "tests": [
+    "tests/test_egress_close_response_absent_fail_closed.py"
    ]
   },
   {
@@ -4649,6 +4661,20 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_manifest_ingress_d7_fail_closed.py",
+   "inputs": [
+    "stegverse-sdk@c138cad4"
+   ],
+   "surfaces": [
+    "tests/test_manifest_ingress_d7_fail_closed.py"
+   ],
+   "tests": [
+    "tests/test_manifest_ingress_d7_fail_closed.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_manifest_ingress_idempotent.py",
    "inputs": [],
    "surfaces": [
@@ -4752,6 +4778,18 @@
    ],
    "tests": [
     "tests/test_merge_transfer_gitstore.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_merge_transfer_gitstore_sweep.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_merge_transfer_gitstore_sweep.py"
+   ],
+   "tests": [
+    "tests/test_merge_transfer_gitstore_sweep.py"
    ]
   },
   {
@@ -5397,6 +5435,76 @@
   {
    "always": false,
    "exclude": [],
+   "id": "tests/test_organization_ingress_authority_effect.py",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "surfaces": [
+    "tests/test_organization_ingress_authority_effect.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_authority_effect.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_organization_ingress_declared_predecessor.py",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "surfaces": [
+    "tests/test_organization_ingress_declared_predecessor.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_declared_predecessor.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_organization_ingress_payload_binding.py",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "surfaces": [
+    "tests/test_organization_ingress_payload_binding.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_payload_binding.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_organization_ingress_six_field_refusals.py",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "surfaces": [
+    "tests/test_organization_ingress_six_field_refusals.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_six_field_refusals.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_organization_ingress_worker_claim.py",
+   "inputs": [
+    "stegverse-sdk"
+   ],
+   "surfaces": [
+    "tests/test_organization_ingress_worker_claim.py"
+   ],
+   "tests": [
+    "tests/test_organization_ingress_worker_claim.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
    "id": "tests/test_organization_ledger_component_validation_trigger.py",
    "inputs": [],
    "surfaces": [
@@ -5650,6 +5758,20 @@
    ],
    "tests": [
     "tests/test_out_of_scope_remediation_request_contract.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_p1_supplied_epoch_and_ledger_paths.py",
+   "inputs": [
+    "stegverse-sdk@c138cad4"
+   ],
+   "surfaces": [
+    "tests/test_p1_supplied_epoch_and_ledger_paths.py"
+   ],
+   "tests": [
+    "tests/test_p1_supplied_epoch_and_ledger_paths.py"
    ]
   },
   {
@@ -6118,6 +6240,18 @@
    ],
    "tests": [
     "tests/test_registry_collision_claimed_integration_guard.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_registry_collision_owner_held_states.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_registry_collision_owner_held_states.py"
+   ],
+   "tests": [
+    "tests/test_registry_collision_owner_held_states.py"
    ]
   },
   {
@@ -6922,6 +7056,18 @@
    ],
    "tests": [
     "tests/test_sdk_generic_manifest_task_registry_registration.py"
+   ]
+  },
+  {
+   "always": false,
+   "exclude": [],
+   "id": "tests/test_sdk_manifest_crossing_six_fields.py",
+   "inputs": [],
+   "surfaces": [
+    "tests/test_sdk_manifest_crossing_six_fields.py"
+   ],
+   "tests": [
+    "tests/test_sdk_manifest_crossing_six_fields.py"
    ]
   },
   {
@@ -10636,9 +10782,12 @@
    "resident-runtime/aggregate_repo_transition.py"
   ],
   "resident-runtime/intr_destination_ingress.py": [
+   ".stegverse/transition-ledger/contract.json",
    ".stegverse/transition-ledger/emit.py",
+   ".stegverse/transition-ledger/org-contract.json",
    "resident-runtime/aggregate_repo_transition.py",
-   "resident-runtime/ledger_gitstore.py"
+   "resident-runtime/ledger_gitstore.py",
+   "resident-runtime/organization_egress_boundary.py"
   ],
   "resident-runtime/intr_path_ingress.py": [
    ".github/workflows/intr-path-ingress.yml",
@@ -10684,6 +10833,9 @@
    ".stegverse/transition-ledger/emit.py",
    ".stegverse/transition-ledger/org-contract.json",
    "resident-runtime/aggregate_repo_transition.py"
+  ],
+  "resident-runtime/merge_transfer_gitstore_sweep.py": [
+   "resident-runtime/merge_transfer_gitstore.py"
   ],
   "resident-runtime/mesh_source_binding.py": [
    ".github/workflows/organization-governance-decision.yml"
@@ -10731,7 +10883,11 @@
    "resident-runtime/ledger_store.py"
   ],
   "resident-runtime/organization_manifest_ingress.py": [
+   ".stegverse/transition-ledger/contract.json",
    ".stegverse/transition-ledger/emit.py",
+   ".stegverse/transition-ledger/org-contract.json",
+   "control/worker-registry.json",
+   "org-boundary/registry/services.json",
    "org-runtime/interlock-intr.json",
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/organization_batch_custody.py",
@@ -10758,6 +10914,7 @@
    "resident-runtime/federation_cycle.py"
   ],
   "resident-runtime/sdk_manifest_crossing.py": [
+   "org-boundary/registry/services.json",
    "org-boundary/runtime/intr_transport.py",
    "org-boundary/runtime/process_boundary.py"
   ],
@@ -11231,9 +11388,13 @@
   ],
   "scripts/check_registry_collision_checkin.py": [
    ".github/workflows/task-registry-collision-checkin.yml",
+   "control/adjacency-rulings/**",
+   "control/canonical-task-registration-requests/**",
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json",
    "data/task-registry-global-invariants.json",
+   "scripts/adjacency_ruling.py",
+   "scripts/canonical_task_registration_transition.py",
    "scripts/evaluate_task_registry_collision_checkin.py"
   ],
   "scripts/check_registry_generation_fence.py": [
@@ -12916,6 +13077,9 @@
    "control/worker-registry.d/**",
    "control/worker-registry.json"
   ],
+  "tests/fixtures/d6_far_side_registry.py": [
+   "tests/fixtures/d6-far-side-non-allow.json"
+  ],
   "tests/intr_path_temp_ledger.py": [
    "tests/fixtures/intr-path-ledger/snapshots/**"
   ],
@@ -12937,6 +13101,9 @@
    "org-kernel/node_store.py",
    "resident-runtime/aggregate_repo_transition.py",
    "resident-runtime/ledger_store.py"
+  ],
+  "tests/registry_predecessor_fixture.py": [
+   "tests/fixtures/canonical_task_registration/predecessor-326.tar.gz"
   ],
   "tests/sv_ledger_fixtures.py": [
    "resident-runtime/aggregate_repo_transition.py"
@@ -12976,7 +13143,8 @@
    "tests/fixtures/**",
    "tests/fixtures/canonical_task_registration/**",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/**",
-   "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json"
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/KV-SKAP-VAULT-FUNCTIONAL-001.request.json",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_admissible_source_generation_capability_worker.py": [
    "workers/admissible_source_generation_capability_worker.py"
@@ -13822,6 +13990,9 @@
   "tests/test_egress_absent_epoch.py": [
    "tests/test_reverse_intr_inter_org_route.py"
   ],
+  "tests/test_egress_close_response_absent_fail_closed.py": [
+   "resident-runtime/organization_egress_boundary.py"
+  ],
   "tests/test_egress_collision_before_publish.py": [
    "tests/test_reverse_intr_inter_org_route.py"
   ],
@@ -14023,7 +14194,8 @@
    "data/canonical-task-registry.json",
    "data/registry-record-data/**",
    "data/registry-record-data/exact-invocation-superseded-by-cycle-closure.v1.json",
-   "scripts/apply_task_record_data.py"
+   "scripts/apply_task_record_data.py",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_execution_spine_regression_reconstruction.py": [
    "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
@@ -14315,7 +14487,8 @@
    "scripts/adjacency_ruling.py",
    "scripts/canonical_task_registration_transition.py",
    "scripts/goal_scope_seal.py",
-   "tests/fixtures/canonical_task_registration/github-universal-governance-product/**"
+   "tests/fixtures/canonical_task_registration/github-universal-governance-product/**",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_glm53_sovereign_lane_resident_bridge.py": [
    "control/process-worker-adapters.d/glm53-sovereign-lane-001.json",
@@ -14723,7 +14896,8 @@
    "tests/fixtures/**",
    "tests/fixtures/canonical_task_registration/**",
    "tests/fixtures/canonical_task_registration/i1-goal-manifests/**",
-   "tests/fixtures/canonical_task_registration/i1-goal-manifests/MANIFEST.json"
+   "tests/fixtures/canonical_task_registration/i1-goal-manifests/MANIFEST.json",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_ibc_intr_resident_consumer.py": [
    "scripts/consume_ibc_intr_resident_request.py",
@@ -15122,6 +15296,12 @@
    "scripts/install_and_run_canonical_work_event_bootstrap.py",
    "workers/manifest_state_transition_intr_ingress.py"
   ],
+  "tests/test_manifest_ingress_d7_fail_closed.py": [
+   "org-boundary/registry/services.json",
+   "resident-runtime/organization_manifest_ingress.py",
+   "tests/fixtures/d6-labs-purpose-bound-worker-manifest.json",
+   "tests/fixtures/d6_far_side_registry.py"
+  ],
   "tests/test_manifest_ingress_idempotent.py": [
    "tests/test_organization_manifest_ingress_rule_ref.py"
   ],
@@ -15187,6 +15367,12 @@
    ".stegverse/merge-transfer/pending.json",
    "resident-runtime/merge_transfer_gitstore.py",
    "tests/fixtures/merge-transfer-gitstore/**",
+   "tests/pytest.py"
+  ],
+  "tests/test_merge_transfer_gitstore_sweep.py": [
+   ".github/workflows/organization-ledger-merge-transfer.yml",
+   ".stegverse/merge-transfer/pending.json",
+   "resident-runtime/merge_transfer_gitstore_sweep.py",
    "tests/pytest.py"
   ],
   "tests/test_mir_exp3_original_resident_request.py": [
@@ -15542,6 +15728,31 @@
    "resident-runtime/organization_governance_decision.py",
    "tests/pytest.py"
   ],
+  "tests/test_organization_ingress_authority_effect.py": [
+   "data/canonical-task-records/**",
+   "org-boundary/registry/services.json",
+   "resident-runtime/organization_manifest_ingress.py"
+  ],
+  "tests/test_organization_ingress_declared_predecessor.py": [
+   "data/canonical-task-records/**",
+   "org-boundary/registry/services.json",
+   "resident-runtime/organization_manifest_ingress.py"
+  ],
+  "tests/test_organization_ingress_payload_binding.py": [
+   "org-boundary/registry/services.json",
+   "resident-runtime/organization_manifest_ingress.py"
+  ],
+  "tests/test_organization_ingress_six_field_refusals.py": [
+   "resident-runtime/organization_manifest_ingress.py",
+   "tests/__init__.py",
+   "tests/test_protocol_v1_conformance_fixtures.py"
+  ],
+  "tests/test_organization_ingress_worker_claim.py": [
+   "org-boundary/registry/services.json",
+   "resident-runtime/organization_manifest_ingress.py",
+   "tests/fixtures/**",
+   "tests/fixtures/sdk-external-framework-generic-manifest.json"
+  ],
   "tests/test_organization_ledger_component_validation_trigger.py": [
    ".github/workflows/organization-ledger-component-validation.yml",
    "data/reusable-task-components/RTC-EVIDENCE-CUSTODY-004.json",
@@ -15696,6 +15907,19 @@
    "data/canonical-task-records/STEGVERSE-OUT-OF-SCOPE-REMEDIATION-REQUEST-CONTRACT-001.json",
    "data/out-of-scope-remediation-request-contract.json"
   ],
+  "tests/test_p1_supplied_epoch_and_ledger_paths.py": [
+   ".stegverse/transition-ledger/**",
+   ".stegverse/transition-ledger/emit.py",
+   "org-boundary/registry/services.json",
+   "org-boundary/runtime/capability_ingress.py",
+   "org-kernel/kernel.py",
+   "resident-runtime/aggregate_repo_transition.py",
+   "resident-runtime/intr_destination_ingress.py",
+   "resident-runtime/organization_egress_boundary.py",
+   "resident-runtime/organization_manifest_ingress.py",
+   "tests/fixtures/d6-labs-purpose-bound-worker-manifest.json",
+   "tests/posix_ledger_locus/**"
+  ],
   "tests/test_package_sovereign_control_plane_bundle.py": [
    "README.md",
    "control/worker-registry.json",
@@ -15720,7 +15944,8 @@
    "scripts/write_admission.py",
    "tests/fixtures/**",
    "tests/fixtures/canonical_task_registration/**",
-   "tests/fixtures/canonical_task_registration/pat-003-lane-a/**"
+   "tests/fixtures/canonical_task_registration/pat-003-lane-a/**",
+   "tests/registry_predecessor_fixture.py"
   ],
   "tests/test_personal_kv_provider_root_resolution.py": [
    "scripts/materialize_personal_kv_provider_root.py"
@@ -15802,10 +16027,15 @@
    "scripts/run_heartbeat_runtime.py"
   ],
   "tests/test_protocol_v1_conformance_fixtures.py": [
+   ".stegverse/transition-ledger/org-contract.json",
+   "data/canonical-task-records/**",
+   "data/task-registry-global-invariants.json",
+   "org-boundary/runtime/node_standing.py",
    "org-kernel/organization-ledger/fixtures/protocol-v1-conformance/**",
    "org-runtime/interlock-intr.json",
    "resident-runtime/organization_manifest_ingress.py",
    "resident-runtime/sdk_manifest_crossing.py",
+   "resident-runtime/submit_org_transition_to_master_records.py",
    "tests/test_organization_manifest_ingress_rule_ref.py"
   ],
   "tests/test_publisher_intr_materialization.py": [
@@ -15890,6 +16120,10 @@
   "tests/test_registry_collision_claimed_integration_guard.py": [
    "data/canonical-task-records/**",
    "data/canonical-task-registry.json",
+   "scripts/evaluate_task_registry_collision_checkin.py"
+  ],
+  "tests/test_registry_collision_owner_held_states.py": [
+   "scripts/cosv.py",
    "scripts/evaluate_task_registry_collision_checkin.py"
   ],
   "tests/test_registry_gate_findings.py": [
@@ -16281,6 +16515,12 @@
   "tests/test_sdk_generic_manifest_task_registry_registration.py": [
    "data/canonical-task-records/**",
    "data/canonical-task-records/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json"
+  ],
+  "tests/test_sdk_manifest_crossing_six_fields.py": [
+   "org-boundary/registry/services.json",
+   "resident-runtime/sdk_manifest_crossing.py",
+   "tests/fixtures/d6-labs-purpose-bound-worker-manifest.json",
+   "tests/fixtures/d6_far_side_registry.py"
   ],
   "tests/test_sdk_manifest_diagnostic_admitted_consumer.py": [
    "heartbeat_runtime/worker_runtime_legacy.py",
