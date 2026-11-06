@@ -16,7 +16,7 @@ import time
 from .engine_v11 import HeartbeatRuntime as LegacyWorkerCoordinator, WorkerResponse
 from .process_adapter import ProcessWorkerAdapter
 from .independent_oscillator import current_reference
-from workers.canonical_state_transition_custody import build_state_receipt, organization_receipt_gate, require_predecessor_master_records_organization_record, sha256_uri, submit_state_receipt
+from workers.canonical_state_transition_custody import build_state_receipt, no_epoch_caller_boundary, organization_receipt_gate, require_predecessor_master_records_organization_record, sha256_uri, submit_state_receipt
 from .assignment_timer import (
     AssignmentTimer,
     TRIGGER_SCHEMA,
@@ -169,6 +169,7 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
         claim_id: str,
         fencing_token: int,
         worker_instance_id: str,
+        hb_epoch: int | None = None,
     ) -> dict[str, Any]:
         transition_id = "WORKERCOORDINATOR_CLAIM_FENCE_BOUND"
         evidence_sha = sha256_uri(record).split(":", 1)[1]
@@ -180,6 +181,11 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             "sha256": evidence_sha,
             "content": dict(record),
         }
+        if hb_epoch is None:
+            # No carrier epoch in scope: refused before a receipt is built, so
+            # nothing is written and no clock is read (WU-B13 slice g).
+            return {**no_epoch_caller_boundary("heartbeat_runtime/worker_runtime_legacy.py::"
+                                               "_custody_assignment_transition"), "transition_id": transition_id}
         functional_context = record.get("functional_memory_context") if isinstance(record.get("functional_memory_context"), dict) else {}
         predecessor_receipt_sha256 = functional_context.get("prior_functional_memory_receipt_sha256")
         prior_state_ref, predecessor_evidence = require_predecessor_master_records_organization_record(
@@ -208,9 +214,10 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             proof_scope="WORKERCOORDINATOR_CLAIM_FENCE_ASSIGNMENT_ONLY",
             proof_ceiling="CLAIM_FENCE_OBSERVED_AND_MASTER_RECORDS_ORGANIZATION_RECORD_ONLY",
         )
-        result = submit_state_receipt(receipt)
+        result = submit_state_receipt(receipt, hb_epoch=hb_epoch)
         # Inside the attempted assignment transition: a refusal is appended as its non-ALLOW record.
-        gate = organization_receipt_gate(result, expected_transition_id=transition_id, record_refusal=True)
+        gate = organization_receipt_gate(result, expected_transition_id=transition_id, record_refusal=True,
+                                         hb_epoch=hb_epoch)
         return {
             "state": result.get("state"),
             "reason": result.get("reason"),
@@ -565,6 +572,8 @@ class WorkerCoordinator(LegacyWorkerCoordinator):
             claim_id=claim_id,
             fencing_token=generation,
             worker_instance_id=worker_instance_id,
+            # The separated heartbeat carrier's epoch is the one this cycle was supplied.
+            hb_epoch=carrier_epoch,
         )
         assignment_refusal = self._organization_record_refusal(
             assignment_custody, str(assignment_custody.get("transition_id") or "")

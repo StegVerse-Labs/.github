@@ -413,11 +413,13 @@ def shares_organization_ref(repository_store: Any, organization_store: Any) -> b
 
 
 def ledger_custody(source: Path, repo_ledger_root: Any, org_ledger_root: Path | None, *,
-                   event_ephemeral: bool = False) -> dict[str, Any]:
+                   hb_epoch: int | None = None, event_ephemeral: bool = False) -> dict[str, Any]:
     """The existing emitters, at the ledger roots this execution was supplied.
 
     The Organization ledger is the supplied POSIX root only under a declared
     {store: posix}; otherwise it is the declared store (organization_ledger_locus).
+    `hb_epoch` is the epoch this execution was supplied; every append through
+    this custody carries it, and none is made without it.
     An event-ephemeral materialization is admitted only when its repository
     chain is the subtree of that same declared ref, so nothing it appends
     stays on the host it ran on.
@@ -452,6 +454,7 @@ def ledger_custody(source: Path, repo_ledger_root: Any, org_ledger_root: Path | 
         "repository_store": repository_store,
         "organization_root": organization_root,
         "organization_store": organization_store,
+        "hb_epoch": hb_epoch,
         "shared_ref": shared_ref,
         "event_ephemeral": bool(event_ephemeral),
     }
@@ -871,6 +874,12 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
     A failed organization append raises OrganizationAppendFailed carrying the
     repository receipt; a retry reuses that exact receipt.
     """
+    hb_epoch = custody.get("hb_epoch")
+    if hb_epoch is None:
+        # No supplied epoch in scope: nothing is read, appended or derived from a clock.
+        kernel = custody["organization_ledger"].kernel
+        raise kernel.SuppliedEpochRefused(kernel.no_epoch_caller_refusal(
+            "scripts/consume_org_claim_allocator_request.py::record_transition", retry_entrypoint=RETRY_ENTRYPOINT))
     successor = "sha256:" + stable_hash({"transition_id": transition_id, "evidence": evidence})
     # The repository ledger compares the successor on every exact retry, and a
     # retry's evidence carries fields outside its identity (the Organization
@@ -903,21 +912,24 @@ def record_transition(custody: Mapping[str, Any], transition_class: str, transit
                                **{key: recorded[key] for key in CARRIED_IF_RECORDED if key in recorded}},
             authority_effect="NONE", hb_epoch=hb_epoch)
         organization = custody["organization_ledger"]
+        # The materializer-supplied repository ledger reaches aggregate only through its private channel.
+        channel = organization._materialized_repository_ledger(custody["repository_store"])
         try:
-            if adopted is not None and not adopted:
-                raise ClaimFailClosed("ORGANIZATION_LEDGER_SNAPSHOT_MOVED",
-                                      "the shared ledger ref moved outside this transition's repository append",
-                                      "retry; the repository receipt is retained and the organization append is replayed")
-            if lock_held:
-                # Already inside the existing append lock: the same locked append
-                # aggregate_transition performs, without re-taking the lock.
-                held = ({"root": custody["organization_root"]} if custody["organization_root"] is not None
-                        else {"store": custody["organization_store"]})
-                organization_receipt = organization._aggregate_transition_locked(
-                    repository_receipt, **held, **context)
-            else:
-                organization_receipt = organization.aggregate_transition(
-                    repository_receipt, ledger=organization_target(custody), **context)
+            with channel:
+                if adopted is not None and not adopted:
+                    raise ClaimFailClosed("ORGANIZATION_LEDGER_SNAPSHOT_MOVED",
+                                          "the shared ledger ref moved outside this transition's repository append",
+                                          "retry; the repository receipt is retained and the organization append is replayed")
+                if lock_held:
+                    # Already inside the existing append lock: the same locked append
+                    # aggregate_transition performs, without re-taking the lock.
+                    held = ({"root": custody["organization_root"]} if custody["organization_root"] is not None
+                            else {"store": custody["organization_store"]})
+                    organization_receipt = organization._aggregate_transition_locked(
+                        repository_receipt, **held, **context)
+                else:
+                    organization_receipt = organization.aggregate_transition(
+                        repository_receipt, ledger=organization_target(custody), **context)
         except Exception as exc:
             raise OrganizationAppendFailed(repository_receipt, exc) from exc
     return {"repository_receipt": repository_receipt, "organization_receipt": organization_receipt}
@@ -1417,6 +1429,12 @@ def consume(
     env: Mapping[str, str] | None = None,
     hb_epoch: int | None = None,
 ) -> dict[str, Any]:
+    """Consume the allocator requests present, at the supplied ledger roots and epoch.
+
+    Without a supplied `hb_epoch` nothing is materialized, allocated or
+    appended: the result is the six-field NO_EPOCH_CALLER_FAILS_CLOSED, and no
+    clock is read to stand in for it.
+    """
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     present = [rel for rel in REQUEST_RELS if (runtime / rel).is_file()]
@@ -1431,6 +1449,17 @@ def consume(
     if repo_ledger_root is None:
         # Supplied, never derived: nothing is materialized or allocated without it.
         return _ledger_refusal(load_json(runtime / present[0]), "ledger roots not supplied")
+    if hb_epoch is None:
+        kernel = _load_module("org_claim_kernel", source / "org-kernel/kernel.py")
+        # The hosted event-ephemeral run is retried through its writer workflow, as its other refusals are.
+        retry = (EVENT_EPHEMERAL_ENTRYPOINT if event_ephemeral_materialization(source, repo_ledger_root, org_ledger_root)
+                 else RETRY_ENTRYPOINT + " (hb_epoch=, or --hb-epoch)")
+        refusal = kernel.no_epoch_caller_refusal("scripts/consume_org_claim_allocator_request.py::consume",
+                                                 retry_entrypoint=retry)
+        return {**_ledger_refusal(load_json(runtime / present[0]), refusal["detail"],
+                                  predicate=refusal["failed_predicate"],
+                                  repair=refusal["required_evidence_or_repair"]),
+                **{key: refusal[key] for key in kernel.SIX_FIELDS}}
     # A hosted environment may run only the event-ephemeral materialization:
     # the declared non-posix store, no explicit root, the repository chain on
     # the same declared ref. Every other hosted execution is refused here.
@@ -1440,7 +1469,8 @@ def consume(
         # The Organization ledger is the supplied root only under a declared
         # {store: posix}; otherwise the declared store, and an explicit root is
         # FAIL_CLOSED before anything is read or appended (OL-3).
-        custody = ledger_custody(source, repo_ledger_root, org_ledger_root, event_ephemeral=event_ephemeral)
+        custody = ledger_custody(source, repo_ledger_root, org_ledger_root, hb_epoch=hb_epoch,
+                                 event_ephemeral=event_ephemeral)
     except OrganizationLedgerNotAdmitted as exc:
         return _ledger_refusal(load_json(runtime / present[0]), exc.detail, predicate=exc.predicate, repair=exc.repair)
     except ClaimFailClosed as exc:
@@ -1528,7 +1558,7 @@ def main() -> int:
     parser.add_argument("--repo-ledger-root", type=str, default=None)
     parser.add_argument("--org-ledger-root", type=Path, default=None)
     parser.add_argument("--hb-epoch", type=str, default=None,
-                        help="the carrier's heartbeat epoch; a grant without one is FAIL_CLOSED GRANT_EPOCH_NOT_CARRIER_SUPPLIED")
+                        help="carrier-supplied heartbeat epoch, ASCII digits >= 32; required to append, never coerced")
     parser.add_argument("--readback-result", type=Path, default=None,
                         help="read back the Organization receipts a prior consumption result reports")
     args = parser.parse_args()

@@ -131,7 +131,7 @@ class RuntimeFixture:
             resulting_state_ref_or_hash=None,
             governance_decision_ref_where_applicable=None,
             transition_evidence={"parent_task_id": parent_task_id},
-        ))
+        ), hb_epoch=4096)
         return {
             "predecessor_state_receipt_sha256": result["receipt_sha256"],
             "predecessor_organization_receipt_sha256": result["organization_receipt"]["receipt_sha256"],

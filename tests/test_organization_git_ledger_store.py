@@ -89,8 +89,8 @@ def remote_files(origin: Path) -> set[str]:
 
 def test_append_then_readback_verifies_from_the_durable_ref(tmp_path, origin):
     writer = node(tmp_path, "writer.git", origin)
-    first = org.aggregate_transition(receipt("CLAIM"), ledger=writer)
-    second = org.aggregate_transition(receipt("WORK"), ledger=writer)
+    first = org.aggregate_transition(receipt("CLAIM"), ledger=writer, hb_epoch=4096)
+    second = org.aggregate_transition(receipt("WORK"), ledger=writer, hb_epoch=4096)
     assert second["previous_receipt_sha256"] == first["receipt_sha256"]
     # The appends completed locally; the remote was not touched until propagation.
     assert remote_tip(origin) is None
@@ -140,7 +140,7 @@ def test_manifest_declared_locus_selects_the_git_store_and_readback_uses_it(tmp_
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_REF", REF)
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_REMOTE", str(origin))
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_CUSTODY", "PRIVATE")
-    record = org.aggregate_transition(receipt("CLAIM"))
+    record = org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     store = org.organization_store()
     assert (store.kind, store.ref, store.custody, store.remote) == ("GIT_REF", REF, "PRIVATE", str(origin))
     assert remote_tip(origin) is None, "the remote is never awaited or written by the transition"
@@ -172,7 +172,7 @@ def test_null_propagate_target_is_a_non_gating_refusal_after_the_local_append(tm
         monkeypatch.delenv(variable, raising=False)
     declare(monkeypatch, store="git", ref=REF, custody="PRIVATE", propagate_target=None)
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(bare(tmp_path / "node.git")))
-    record = org.aggregate_transition(receipt("CLAIM"))
+    record = org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     store = org.organization_store()
     assert (store.kind, store.ref, store.custody, store.remote) == ("GIT_REF", REF, "PRIVATE", None)
     local = remote_tip(tmp_path / "node.git")
@@ -185,7 +185,7 @@ def test_null_propagate_target_is_a_non_gating_refusal_after_the_local_append(tm
     assert refused["retry_entrypoint"] == store_module.PROPAGATION_RETRY_ENTRYPOINT
     assert remote_tip(origin) is None
     # Propagation never gates the chain: the next transition appends locally regardless.
-    second = org.aggregate_transition(receipt("WORK"))
+    second = org.aggregate_transition(receipt("WORK"), hb_epoch=4096)
     assert second["previous_receipt_sha256"] == record["receipt_sha256"]
 
 
@@ -193,7 +193,7 @@ def test_non_private_propagate_target_is_never_pushed(tmp_path, origin, monkeypa
     for target in ({"remote": str(origin), "custody": "PUBLIC"}, {"remote": str(origin)}, str(origin)):
         declare(monkeypatch, store="git", ref=REF, custody="PRIVATE", propagate_target=target)
         monkeypatch.setenv("STEGVERSE_ORG_LEDGER_GIT_DIR", str(bare(tmp_path / "node.git")))
-        org.aggregate_transition(receipt("CLAIM"))
+        org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
         store = org.organization_store()
         assert store.remote is None
         assert store.propagate()["failed_predicate"] == "ORGANIZATION_LEDGER_REMOTE_NOT_SUPPLIED"
@@ -220,7 +220,7 @@ def test_materializer_value_differing_from_the_declaration_fails_closed_with_no_
     assert refusal["consequence_committed"] is False
     assert mismatch.value.variable == variable
     with pytest.raises(org.LedgerLocusMismatch):
-        org.aggregate_transition(receipt("CLAIM"))
+        org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     assert remote_tip(git_dir) is None, "nothing is appended under a mismatched locus"
 
 
@@ -243,7 +243,7 @@ def test_missing_declaration_fails_closed_with_no_environment_fallback(tmp_path,
         assert refusal["disposition"] == "FAIL_CLOSED"
         assert refusal["failed_predicate"] == "ORGANIZATION_LEDGER_LOCUS_NOT_DECLARED"
         with pytest.raises(org.LedgerLocusNotDeclared):
-            org.aggregate_transition(receipt("CLAIM"))
+            org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     assert remote_tip(git_dir) is None
     assert not (tmp_path / "root").exists()
     declare(monkeypatch, store="git", custody="PRIVATE", propagate_target=None)
@@ -255,16 +255,16 @@ def test_missing_declaration_fails_closed_with_no_environment_fallback(tmp_path,
 def test_concurrent_append_lost_race_is_typed_fail_closed_with_no_partial_write(tmp_path, origin):
     # Two appenders on one node's local ledger: the local update-ref CAS is the
     # serialization, and the configured remote plays no part in it.
-    org.aggregate_transition(receipt("GENESIS"), ledger=node(tmp_path, "local.git", origin))
+    org.aggregate_transition(receipt("GENESIS"), ledger=node(tmp_path, "local.git", origin), hb_epoch=4096)
     slow = store_module.GitLedgerStore(tmp_path / "local.git", REF, remote=str(origin), custody="PRIVATE")
     fast = store_module.GitLedgerStore(tmp_path / "local.git", REF, remote=str(origin), custody="PRIVATE")
     local = tmp_path / "local.git"
     with slow.exclusive():
         # Both read the same tip; the fast appender publishes first.
-        won = org.aggregate_transition(receipt("FAST"), ledger=fast)
+        won = org.aggregate_transition(receipt("FAST"), ledger=fast, hb_epoch=4096)
         before = remote_files(local)
         with pytest.raises(store_module.LedgerStoreRefused) as lost:
-            org._aggregate_transition_locked(receipt("SLOW"), store=slow)
+            org._aggregate_transition_locked(receipt("SLOW"), store=slow, hb_epoch=4096)
     refusal = org.store_refusal(lost.value)
     assert refusal["disposition"] == "FAIL_CLOSED"
     assert refusal["failed_predicate"] == "ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP"
@@ -276,22 +276,22 @@ def test_concurrent_append_lost_race_is_typed_fail_closed_with_no_partial_write(
     slow_source = store_module.source_key(org.verify_source(receipt("SLOW"))["source_transition_sha256"])
     assert slow_source not in before
     # Its retry re-reads the ref and appends on the winner.
-    retried = org.aggregate_transition(receipt("SLOW"), ledger=slow)
+    retried = org.aggregate_transition(receipt("SLOW"), ledger=slow, hb_epoch=4096)
     assert retried["previous_receipt_sha256"] == won["receipt_sha256"]
     assert remote_tip(origin) is None, "no append awaited or wrote the remote"
 
 
 def test_divergent_nodes_complete_locally_and_propagation_detects_the_fork(tmp_path, origin):
     seed = node(tmp_path, "seed.git", origin)
-    org.aggregate_transition(receipt("GENESIS"), ledger=seed)
+    org.aggregate_transition(receipt("GENESIS"), ledger=seed, hb_epoch=4096)
     propagated(seed)
     slow = node(tmp_path, "slow.git", origin)
     fast = node(tmp_path, "fast.git", origin)
-    org.aggregate_transition(receipt("FAST"), ledger=fast)
+    org.aggregate_transition(receipt("FAST"), ledger=fast, hb_epoch=4096)
     propagated(fast)
     published = remote_tip(origin)
     # The slow node's append completes on its own ledger; the remote is not a predicate.
-    local = org.aggregate_transition(receipt("SLOW"), ledger=slow)
+    local = org.aggregate_transition(receipt("SLOW"), ledger=slow, hb_epoch=4096)
     assert slow.get(store_module.HEAD_KEY)["receipt_sha256"] == local["receipt_sha256"]
     fork = slow.propagate()
     assert fork["disposition"] == "FAIL_CLOSED"
@@ -312,10 +312,10 @@ def test_lost_race_on_a_local_ref_and_a_stale_expected_head(tmp_path):
     first = store_module.GitLedgerStore(shared, REF, custody="PRIVATE")
     second = store_module.GitLedgerStore(shared, REF, custody="PRIVATE")
     with first.exclusive():
-        org.aggregate_transition(receipt("SECOND"), ledger=second)
+        org.aggregate_transition(receipt("SECOND"), ledger=second, hb_epoch=4096)
         tip = git(shared, "rev-parse", REF)
         with pytest.raises(store_module.LedgerStoreRefused) as lost:
-            org._aggregate_transition_locked(receipt("FIRST"), store=first)
+            org._aggregate_transition_locked(receipt("FIRST"), store=first, hb_epoch=4096)
     assert lost.value.failed_predicate == "ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP"
     assert git(shared, "rev-parse", REF) == tip
     with pytest.raises(store_module.LedgerStoreRefused) as stale:
@@ -326,7 +326,7 @@ def test_lost_race_on_a_local_ref_and_a_stale_expected_head(tmp_path):
 
 def test_tampered_receipt_on_the_ref_is_refused(tmp_path, origin):
     writer = node(tmp_path, "writer.git", origin)
-    record = org.aggregate_transition(receipt("CLAIM"), ledger=writer)
+    record = org.aggregate_transition(receipt("CLAIM"), ledger=writer, hb_epoch=4096)
     propagated(writer)
     key = store_module.receipt_key(record["receipt_sha256"])
     forged = dict(record, authority_effect="ALLOW")
@@ -347,12 +347,12 @@ def test_tampered_receipt_on_the_ref_is_refused(tmp_path, origin):
     assert refused.value.failed_predicate == "ORGANIZATION_RECEIPT_VERIFICATION_FAILED"
     # The tampered key also refuses any further append rather than chaining onto it.
     with pytest.raises(ValueError, match="existing organization receipt integrity invalid"):
-        org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, "next.git", origin))
+        org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, "next.git", origin), hb_epoch=4096)
 
 
 def test_tampered_retained_source_on_the_ref_is_refused(tmp_path, origin):
     writer = node(tmp_path, "writer.git", origin)
-    record = org.aggregate_transition(receipt("CLAIM"), ledger=writer)
+    record = org.aggregate_transition(receipt("CLAIM"), ledger=writer, hb_epoch=4096)
     propagated(writer)
     key = store_module.source_key(record["source_transition_sha256"])
     blob = git(origin, "hash-object", "-w", "--stdin",
@@ -371,7 +371,7 @@ def test_tampered_retained_source_on_the_ref_is_refused(tmp_path, origin):
 
 def test_idempotent_replay_of_the_same_source_receipt(tmp_path, origin):
     one = node(tmp_path, "one.git", origin)
-    first = org.aggregate_transition(receipt("CLAIM"), ledger=one)
+    first = org.aggregate_transition(receipt("CLAIM"), ledger=one, hb_epoch=4096)
     propagated(one)
     tip = remote_tip(origin)
     # The same exact source, replayed from another node at a later heartbeat.
@@ -383,14 +383,14 @@ def test_idempotent_replay_of_the_same_source_receipt(tmp_path, origin):
     assert remote_tip(origin) == tip
     with pytest.raises(ValueError, match="existing organization source transition context conflict"):
         org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, "three.git", origin),
-                                 authority_effect="CHANGED")
+                                 authority_effect="CHANGED", hb_epoch=4096)
     assert remote_tip(origin) == tip
 
 
 def test_private_custody_surface_is_required_before_anything_is_published(tmp_path, origin):
     for declared in (None, "PUBLIC"):
         with pytest.raises(store_module.LedgerStoreRefused) as refused:
-            org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, f"n{declared}.git", origin, declared))
+            org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, f"n{declared}.git", origin, declared), hb_epoch=4096)
         assert refused.value.failed_predicate == "ORGANIZATION_LEDGER_PRIVATE_CUSTODY_SURFACE_REQUIRED"
         assert refused.value.refusal()["disposition"] == "FAIL_CLOSED"
     assert remote_tip(origin) is None
@@ -412,7 +412,7 @@ def test_unreachable_remote_does_not_block_the_local_append_and_propagation_fail
     assert seeded["failed_predicate"] == "ORGANIZATION_LEDGER_REMOTE_UNREACHABLE"
     assert seeded["retry_entrypoint"] == "resident-runtime/ledger_store.py::GitLedgerStore.materialize"
     # The transition never awaits the remote: the append completes on the local ledger.
-    record = org.aggregate_transition(receipt("CLAIM"), ledger=store)
+    record = org.aggregate_transition(receipt("CLAIM"), ledger=store, hb_epoch=4096)
     tip = remote_tip(store.git_dir)
     assert custody.verified_organization_receipt(
         store, record["receipt_sha256"], state_receipt_sha256=record["source_transition_sha256"]) == record
@@ -423,7 +423,7 @@ def test_unreachable_remote_does_not_block_the_local_append_and_propagation_fail
     assert failed["local_tip"] == tip and failed["authority_effect"] == "NONE_CUSTODY_TRANSPORT_ONLY"
     # The failed propagation neither undid nor blocked the local ledger.
     assert remote_tip(store.git_dir) == tip
-    second = org.aggregate_transition(receipt("WORK"), ledger=store)
+    second = org.aggregate_transition(receipt("WORK"), ledger=store, hb_epoch=4096)
     assert second["previous_receipt_sha256"] == record["receipt_sha256"]
     # Once the remote is reachable, the retry entrypoint carries the whole local chain.
     bare(absent)
@@ -436,7 +436,7 @@ def test_unreachable_remote_does_not_block_the_local_append_and_propagation_fail
 
 def test_propagation_requires_private_custody_and_a_supplied_remote(tmp_path, origin):
     writer = node(tmp_path, "writer.git", origin)
-    org.aggregate_transition(receipt("CLAIM"), ledger=writer)
+    org.aggregate_transition(receipt("CLAIM"), ledger=writer, hb_epoch=4096)
     public = store_module.GitLedgerStore(writer.git_dir, REF, remote=str(origin), custody="PUBLIC")
     with pytest.raises(store_module.LedgerStoreRefused) as refused:
         public.propagate()
@@ -449,7 +449,7 @@ def test_propagation_requires_private_custody_and_a_supplied_remote(tmp_path, or
 
 def test_invalid_manifested_packet_on_git_store_commits_nothing(tmp_path, origin):
     with pytest.raises(ValueError, match="receipt_batch policy required"):
-        org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, "node.git", origin), parent_manifest={})
+        org.aggregate_transition(receipt("CLAIM"), ledger=node(tmp_path, "node.git", origin), parent_manifest={}, hb_epoch=4096)
     assert remote_tip(origin) is None
 
 
@@ -457,14 +457,14 @@ def test_prior_posix_receipts_are_not_git_ledger_history(tmp_path, origin, monke
     # An explicit POSIX root is admitted only under a declared {store: posix} (OL-3).
     with monkeypatch.context() as posix_declared:
         posix_declared.setitem(org.C, "organization_ledger", {"store": "posix"})
-        posix = org.aggregate_transition(receipt("CLAIM"), ledger=tmp_path / "posix")
+        posix = org.aggregate_transition(receipt("CLAIM"), ledger=tmp_path / "posix", hb_epoch=4096)
     reader = node(tmp_path, "reader.git", origin, custody_class=None)
     with pytest.raises(custody.OrganizationReceiptRefused) as refused:
         custody.verified_organization_receipt(
             reader, posix["receipt_sha256"], state_receipt_sha256=posix["source_transition_sha256"])
     assert refused.value.failed_predicate == "ORGANIZATION_RECEIPT_READBACK_MISSING"
     # The Git ledger starts at its own genesis, not at the POSIX chain's HEAD.
-    first = org.aggregate_transition(receipt("WORK"), ledger=node(tmp_path, "writer.git", origin))
+    first = org.aggregate_transition(receipt("WORK"), ledger=node(tmp_path, "writer.git", origin), hb_epoch=4096)
     assert first["previous_receipt_sha256"] is None
 
 
@@ -479,7 +479,7 @@ def test_posix_selection_is_unchanged_when_declared(tmp_path, monkeypatch):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path / "root"))
     store = org.organization_store()
     assert store.kind == "POSIX_FILESYSTEM" and store.root == (tmp_path / "root").resolve()
-    record = org.aggregate_transition(receipt("CLAIM"))
+    record = org.aggregate_transition(receipt("CLAIM"), hb_epoch=4096)
     head = json.loads((tmp_path / "root" / "HEAD.json").read_text())
     assert head["receipt_path"] == str((tmp_path / "root" / store_module.receipt_key(record["receipt_sha256"])).resolve())
     assert (tmp_path / "root" / store_module.source_key(record["source_transition_sha256"])).is_file()
@@ -545,9 +545,9 @@ def carried(monkeypatch):
 def open_packet(writer, parent, count=2):
     """Establish a packet at t(0) and fill it to its COUNT, one commit per append."""
     t0 = org.aggregate_transition(receipt("FOUR-PART-ASSIGNMENT"), ledger=writer, parent_manifest=parent,
-                                  establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH))
+                                  establishes_packet=True, now_ns=hb_now_ns(T0_EPOCH), hb_epoch=T0_EPOCH)
     work = [org.aggregate_transition(receipt("WORK-1" + "b" * index), ledger=writer, parent_manifest=parent,
-                                     now_ns=hb_now_ns(T0_EPOCH + 1)) for index in range(count - 1)]
+                                     now_ns=hb_now_ns(T0_EPOCH + 1), hb_epoch=T0_EPOCH + 1) for index in range(count - 1)]
     return (t0, *work)
 
 
@@ -571,7 +571,7 @@ def test_manifested_release_and_establishment_publish_as_one_commit_and_read_bac
     # The next transition releases the satisfied packet, from a node sharing no filesystem.
     following = node(tmp_path, "next.git", origin)
     work2 = org.aggregate_transition(receipt("WORK-2"), ledger=following,
-                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
+                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     assert len(carried) == 1
     assert remote_tip(origin) == before, "the release completed locally without awaiting the remote"
     propagated(following)
@@ -646,14 +646,14 @@ def test_release_lost_race_is_typed_fail_closed_with_no_orphan_batch(tmp_path, o
         if not raced:
             raced["started"] = True
             raced["won"] = org.aggregate_transition(receipt("FAST"), ledger=fast, parent_manifest=parent,
-                                                    now_ns=hb_now_ns(T0_EPOCH + 2))
+                                                    now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
             raced["files"] = remote_files(local)
             raced["tip"] = remote_tip(local)
         return close(reason, root=root, custody_exclusivity_verifier=custody_exclusivity_verifier)
 
     monkeypatch.setattr(custody, "close_batch", race)
     with pytest.raises(store_module.LedgerStoreRefused) as lost:
-        org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
+        org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     refusal = org.store_refusal(lost.value)
     assert refusal["disposition"] == "FAIL_CLOSED"
     assert refusal["failed_predicate"] == "ORGANIZATION_LEDGER_REF_COMPARE_AND_SWAP"
@@ -667,7 +667,7 @@ def test_release_lost_race_is_typed_fail_closed_with_no_orphan_batch(tmp_path, o
     assert slow_source not in raced["files"]
     # The retry re-reads the ref: the packet is already released, so it appends on the winner.
     retried = org.aggregate_transition(receipt("SLOW"), ledger=slow, parent_manifest=parent,
-                                       now_ns=hb_now_ns(T0_EPOCH + 2))
+                                       now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     assert retried["previous_receipt_sha256"] == raced["won"]["receipt_sha256"]
     assert "parent_manifest_released_batch" not in retried["boundary_evidence"]
     assert len(carried) == 1, "the winner carried the batch once, after its commit; the loser carried nothing"
@@ -680,7 +680,7 @@ def test_release_replay_is_idempotent_on_the_git_store(tmp_path, origin, carried
     writer = node(tmp_path, "writer.git", origin)
     open_packet(writer, parent, count=3)
     work2 = org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent,
-                                     now_ns=hb_now_ns(T0_EPOCH + 2))
+                                     now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     propagated(writer)
     tip = remote_tip(origin)
     two = node(tmp_path, "two.git", origin)
@@ -700,7 +700,7 @@ def test_release_replay_is_idempotent_on_the_git_store(tmp_path, origin, carried
 
 def test_close_batch_on_the_git_store_is_one_commit_and_needs_private_custody(tmp_path, origin):
     writer = node(tmp_path, "writer.git", origin)
-    first = org.aggregate_transition(receipt("CLAIM"), ledger=writer)
+    first = org.aggregate_transition(receipt("CLAIM"), ledger=writer, hb_epoch=4096)
     propagated(writer)
     tip = remote_tip(origin)
     public = node(tmp_path, "public.git", origin, "PUBLIC")
@@ -730,7 +730,7 @@ def test_tampered_batch_or_batch_head_on_the_ref_is_refused(tmp_path, origin, ca
     parent = manifest()
     writer = node(tmp_path, "writer.git", origin)
     open_packet(writer, parent)
-    org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
+    org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     propagated(writer)
     reader = node(tmp_path, "reader.git", origin, custody_class=None)
     batch_id = reader.get(custody.BATCH_HEAD_KEY)["batch_id"]
@@ -747,7 +747,7 @@ def test_tampered_batch_or_batch_head_on_the_ref_is_refused(tmp_path, origin, ca
     tip = remote_tip(origin)
     with pytest.raises(ValueError, match="organization batch hash mismatch"):
         org.aggregate_transition(receipt("WORK-3"), ledger=node(tmp_path, "next.git", origin),
-                                 parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 3))
+                                 parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 3), hb_epoch=T0_EPOCH + 3)
     assert remote_tip(origin) == tip
 
     tamper(tmp_path, origin, custody._batch_key(batch_id), released)
@@ -777,7 +777,7 @@ def test_manifested_packet_on_a_non_private_surface_is_refused_before_carriage(t
     for declared in (None, "PUBLIC"):
         with pytest.raises(store_module.LedgerStoreRefused) as refused:
             org.aggregate_transition(receipt("WORK-2"), ledger=node(tmp_path, f"n{declared}.git", origin, declared),
-                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2))
+                                     parent_manifest=parent, now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
         assert refused.value.failed_predicate == "ORGANIZATION_LEDGER_PRIVATE_CUSTODY_SURFACE_REQUIRED"
     assert carried == [], "the released batch is not carried from a surface not declared private"
     assert remote_tip(origin) == tip
@@ -804,7 +804,7 @@ def test_released_batch_is_submitted_after_the_cas_commit_with_no_snapshot_pinne
 
     monkeypatch.setattr(custody, "submit_released_batch", submit)
     work2 = org.aggregate_transition(receipt("WORK-2"), ledger=writer, parent_manifest=parent,
-                                     now_ns=hb_now_ns(T0_EPOCH + 2))
+                                     now_ns=hb_now_ns(T0_EPOCH + 2), hb_epoch=T0_EPOCH + 2)
     assert observed, "the released batch was carried"
     assert observed["held"] == 0 and observed["pinned"] is None, "no exclusive section or pinned snapshot at submission"
     assert observed["head"] == work2["receipt_sha256"], "the ref already held the committed transition"
@@ -820,7 +820,7 @@ def test_released_batch_is_submitted_after_the_cas_commit_with_no_snapshot_pinne
     assert writer.get(store_module.HEAD_KEY)["receipt_sha256"] == work2["receipt_sha256"]
     # The retained outcome rides the next manifest-directed append, read back from the ref.
     work3 = org.aggregate_transition(receipt("WORK-3"), ledger=writer, parent_manifest=parent,
-                                     now_ns=hb_now_ns(T0_EPOCH + 3))
+                                     now_ns=hb_now_ns(T0_EPOCH + 3), hb_epoch=T0_EPOCH + 3)
     retained = work3["boundary_evidence"][custody.RELEASED_BATCH_SUBMISSION_KEY]
     assert retained["batch_id"] == batch_id
     assert retained["submission_receipt_sha256"] == submission["receipt_sha256"]
@@ -847,7 +847,7 @@ def test_a_caller_held_store_off_the_declared_locus_is_refused_with_nothing_appe
         assert refusal["required_evidence_or_repair"] == org.STORE_LOCUS_REPAIR
         assert mismatch.value.declared == org.declared_ledger_locus()
         with pytest.raises(org.LedgerLocusMismatch):
-            org.aggregate_transition(receipt("CLAIM"), ledger=held)
+            org.aggregate_transition(receipt("CLAIM"), ledger=held, hb_epoch=4096)
         with pytest.raises(custody.OrganizationReceiptRefused) as refused:
             custody.verified_organization_receipt(held, "sha256:" + "0" * 64, state_receipt_sha256="sha256:" + "1" * 64)
         assert refused.value.failed_predicate == "ORGANIZATION_LEDGER_LOCUS_MISMATCH"
@@ -856,7 +856,7 @@ def test_a_caller_held_store_off_the_declared_locus_is_refused_with_nothing_appe
     # The declared store, held by the caller, is admitted as it always was.
     declared = node(tmp_path, "declared.git", origin)
     assert org.organization_store(declared) is declared
-    assert org.aggregate_transition(receipt("CLAIM"), ledger=declared)["previous_receipt_sha256"] is None
+    assert org.aggregate_transition(receipt("CLAIM"), ledger=declared, hb_epoch=4096)["previous_receipt_sha256"] is None
     # Under a declared {store: posix}, a Git store is the foreign one.
     declare(monkeypatch, store="posix")
     with pytest.raises(org.LedgerLocusMismatch) as mismatch:

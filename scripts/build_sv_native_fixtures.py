@@ -623,7 +623,7 @@ def native_unknown_append(classes: list[dict], scenarios: list[dict]) -> list[di
 EPOCH_UNKNOWN_RULING = "UNKNOWN_IS_FAIL_CLOSED_NEVER_DENY"
 EPOCH_UNKNOWN_ORIGINS = ["orchestrator 2026-10-18T15:59Z contract invariant (narrowed 16:03Z): UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is "
                          "FAIL_CLOSED, never DENY (the SV_CHANGE's hb_epoch null, '', 'null' or the sentinel -> FAIL_CLOSED "
-                         "HB_EPOCH_SOURCE_UNOBSERVED, before 726248a5)"]
+                         "HB_EPOCH_SOURCE_UNOBSERVED, before c9192134)"]
 
 
 def epoch_unknown_append(classes: list[dict], scenarios: list[dict]) -> list[dict]:

@@ -1,0 +1,35 @@
+name: Resident Cycle Request
+
+# COMMITTED_REQUEST dispatch of the resident cycle (row 16). A push to main
+# that changes the committed request is the dispatch, and the cycle's epoch is
+# the one that request carries (resident-runtime/resident_cycle_request.py).
+# There is no workflow_dispatch and there are no inputs: nothing handed to a
+# run reaches the cycle. The mesh, node state and ledgers are the node
+# materializer's; a runner without them gets the cycle's own six-field
+# location refusal, and nothing is consumed.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.stegverse/resident-cycle/request.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: resident-cycle
+  cancel-in-progress: false
+
+jobs:
+  cycle:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Dispatch the resident cycle at the committed request's epoch
+        run: python resident-runtime/resident_cycle_request.py

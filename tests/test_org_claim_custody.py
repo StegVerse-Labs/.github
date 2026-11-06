@@ -67,7 +67,7 @@ def seed_rooted_chain(source: Path, org_root: Path, repo_root: Path) -> dict:
     No genesis is synthesized: the root is an ordinary DENY transition appended
     by the repository emitter and consumed by the organization aggregation.
     """
-    custody = consumer.ledger_custody(source, repo_root, org_root)
+    custody = consumer.ledger_custody(source, repo_root, org_root, hb_epoch=4096)
     evidence = {"disposition": "DENY", "task_id": "NONE", "request_sha256": "0" * 64,
                 "failed_predicate": "NO_ELIGIBLE_TASK", "fencing_token": None, "fence_issued": False,
                 "organization_head_sha256": None, "consequence_committed": False}
@@ -117,7 +117,7 @@ class Env:
                                 hb_epoch=kwargs.pop("hb_epoch", CARRIER_HB_EPOCH))
 
     def custody(self):
-        return consumer.ledger_custody(self.source, self.repo, self.org)
+        return consumer.ledger_custody(self.source, self.repo, self.org, hb_epoch=CARRIER_HB_EPOCH)
 
     def chain(self):
         return consumer.verify_organization_chain(self.custody())
@@ -285,7 +285,7 @@ class OrgClaimCustodyTests(unittest.TestCase):
             self.assertEqual(env.task("TASK-2026-0013")["status"], "queued", name)
         # Not supplied at all: refused before anything is materialized.
         bare = Env(self.base / "unsupplied")
-        refused = consumer.consume(bare.source, bare.runtime, env={"PATH": "/bin"})
+        refused = consumer.consume(bare.source, bare.runtime, env={"PATH": "/bin"}, hb_epoch=4096)
         self.assertEqual(refused["failed_predicate"], "LEDGER_LOCATION_REQUIRED_FROM_MATERIALIZER")
         self.assertFalse((bare.runtime / "tasks").exists())
 
@@ -893,11 +893,13 @@ class OrgClaimCustodyTests(unittest.TestCase):
                                                recorded, "NONE", store=custody["repository_store"],
                                                hb_epoch=CARRIER_HB_EPOCH)
         granted = {"operation": consumer.GRANTED, "disposition": "ALLOW", "task_id": task_id, "fencing_token": fence}
-        return custody["organization_ledger"].aggregate_transition(
-            repository, ledger=consumer.organization_target(custody), org_transition_class="REPO_STATE_PROPAGATION",
-            predecessor_org_state_sha256=repository["predecessor_state_sha256"],
-            successor_org_state_sha256=repository["successor_state_sha256"], boundary_evidence=granted,
-            authority_effect="NONE", hb_epoch=CARRIER_HB_EPOCH)
+        # The source reaches aggregate only through the materializer channel (#3290), as record_transition appends it.
+        with custody["organization_ledger"]._materialized_repository_ledger(custody["repository_store"]):
+            return custody["organization_ledger"].aggregate_transition(
+                repository, ledger=consumer.organization_target(custody), org_transition_class="REPO_STATE_PROPAGATION",
+                predecessor_org_state_sha256=repository["predecessor_state_sha256"],
+                successor_org_state_sha256=repository["successor_state_sha256"], boundary_evidence=granted,
+                authority_effect="NONE", hb_epoch=CARRIER_HB_EPOCH)
 
     def test_grant_counts_toward_fence_history_only_with_its_retained_source(self):
         # Each Organization chain still recomputes from HEAD to its root; only the grant's retained source fails.
@@ -1395,16 +1397,43 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertEqual(env.grants(), [])
 
     def test_claim_receipt_hb_reference_declares_clock_source(self):
-        # A refusal recorded without a carrier epoch derives its heartbeat from
-        # the host clock and must say so; it grants nothing.
-        empty = Env(self.base / "empty", seed=False)
-        self.assertEqual(empty.consume(hb_epoch=None)["disposition"], "FAIL_CLOSED")
-        receipts = self._repository_receipts(empty.repo)
+        """Base name kept (the ratchet counts a renamed test as missing, TEST_MISSING_AT_HEAD); it asserts the rule that replaced the old one, never the old one.
+
+        It used to assert that a refusal recorded without a carrier epoch carried a
+        clock-derived hb_reference. Under the receipt-supplied-epoch rule (#3290) no
+        clock-derived reference is ever produced: a missing epoch fails closed
+        before anything is written, and every receipt carries the supplied epoch.
+        """
+        granted = Env(self.base / "granted")
+        self.assertEqual(granted.consume()["disposition"], "ALLOW")
+        receipts = self._repository_receipts(granted.repo)
         self.assertGreaterEqual(len(receipts), 1)
         for receipt in receipts:
             reference = receipt["hb_reference"]
-            self.assertIs(reference["derived_from_clock"], True, receipt["transition_id"])
-            self.assertIn("sampled_unix_ns", reference, receipt["transition_id"])
+            self.assertEqual(reference["epoch"], CARRIER_HB_EPOCH, receipt["transition_id"])
+            self.assertIs(reference["derived_from_clock"], False, receipt["transition_id"])
+            self.assertNotIn("sampled_unix_ns", reference, receipt["transition_id"])
+        empty = Env(self.base / "empty", seed=False)
+        org_before = sorted(p.relative_to(empty.org).as_posix() for p in empty.org.rglob("*"))
+        refused = empty.consume(hb_epoch=None)
+        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        self.assertEqual(refused["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
+        self.assertFalse(empty.repo.exists())
+        self.assertEqual(sorted(p.relative_to(empty.org).as_posix() for p in empty.org.rglob("*")), org_before)
+
+    def test_consume_without_a_supplied_epoch_fails_closed_writing_nothing(self):
+        env = Env(self.base / "no-epoch")
+        org_before = sorted(p.relative_to(env.org).as_posix() for p in env.org.rglob("*"))
+        refused = consumer.consume(env.source, env.runtime, repo_ledger_root=env.repo, org_ledger_root=env.org,
+                                   env={"PATH": "/bin"})
+        self.assertEqual(refused["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
+        self.assertEqual(refused["disposition"], "FAIL_CLOSED")
+        for field in ("failure_code", "failed_predicate", "required_evidence_or_repair",
+                      "retry_entrypoint", "owning_existing_goal", "next_attempt"):
+            self.assertTrue(refused[field], field)
+        self.assertFalse(env.repo.exists())
+        self.assertFalse((env.runtime / "tasks").exists())
+        self.assertEqual(sorted(p.relative_to(env.org).as_posix() for p in env.org.rglob("*")), org_before)
 
     def test_grant_receipts_carry_the_carrier_supplied_hb_epoch(self):
         granted = Env(self.base / "granted")
@@ -1422,18 +1451,21 @@ class OrgClaimCustodyTests(unittest.TestCase):
         self.assertIs(repository[0]["hb_reference"]["derived_from_clock"], False)
 
     def test_grant_without_carrier_epoch_fails_closed_and_synthesizes_none(self):
-        env = Env(self.base / "no-epoch")
+        """Base name kept (ratchet convention). It used to assert GRANT_EPOCH_NOT_CARRIER_SUPPLIED,
+        raised after refusal receipts were recorded; under #3290 a missing epoch is refused at
+        consume() entry as NO_EPOCH_CALLER_FAILS_CLOSED and nothing is written at either level."""
+        env = Env(self.base / "no-epoch-grant")
         before = (env.runtime / "control/claims-active.json").read_bytes()
+        org_before = sorted(p.relative_to(env.org).as_posix() for p in env.org.rglob("*"))
         result = env.consume(hb_epoch=None)
         self.assertEqual(result["disposition"], "FAIL_CLOSED")
-        self.assertEqual(result["failed_predicate"], "GRANT_EPOCH_NOT_CARRIER_SUPPLIED")
+        self.assertEqual(result["failure_code"], "NO_EPOCH_CALLER_FAILS_CLOSED")
         for field in ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
                       "owning_existing_goal", "next_attempt"):
-            self.assertIsNotNone(result[field], field)
-        self.assertFalse(result["fence_issued"])
-        self.assertIsNone(result["fencing_token"])
-        self.assertFalse(result["claim_grant_occurred"])
+            self.assertTrue(result[field], field)
         self.assertEqual(env.grants(), [])
+        self.assertFalse(env.repo.exists())
+        self.assertEqual(sorted(p.relative_to(env.org).as_posix() for p in env.org.rglob("*")), org_before)
         self.assertEqual((env.runtime / "control/claims-active.json").read_bytes(), before)
         # Supplied on the next event, the same request grants the next fence once.
         granted = env.consume(hb_epoch=CARRIER_HB_EPOCH)

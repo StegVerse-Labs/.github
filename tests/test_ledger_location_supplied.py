@@ -91,13 +91,15 @@ class LedgerLocationIsSuppliedTests(unittest.TestCase):
     def test_the_append_command_records_its_refusal_and_commits_nothing(self):
         with tempfile.TemporaryDirectory() as work:
             body = {"schema": "stegverse.repo-transition-receipt/v1",
-                    "repository": "StegVerse-Labs/.github", "transition_id": "unsupplied-ledger"}
+                    "repository": "StegVerse-Labs/.github", "transition_id": "unsupplied-ledger",
+                    # A SUPPLIED source reference (O-1), so the refusal is the ledger location.
+                    "hb_reference": organization.kernel.hb_reference(epoch=4096)}
             receipt = Path(work) / "receipt.json"
             receipt.write_text(json.dumps({**body, "receipt_sha256": organization.sha(body)}))
             completed = subprocess.run(
                 [sys.executable, "-B", str(ROOT / "resident-runtime/aggregate_repo_transition.py"),
                  "--repo-receipt", str(receipt), "--predecessor-org-state-sha256", "GENESIS",
-                 "--successor-org-state-sha256", "sha256:" + "b" * 64],
+                 "--successor-org-state-sha256", "sha256:" + "b" * 64, "--hb-epoch", "4096"],
                 capture_output=True, text=True, env=unsupplied(self.home, self.state), cwd=work, timeout=120)
         self.assertEqual(completed.returncode, 1, completed.stderr)
         refusal = json.loads(completed.stdout)

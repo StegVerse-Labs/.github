@@ -10,10 +10,13 @@ REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 GLOBAL_INVARIANTS = ROOT / "data" / "task-registry-global-invariants.json"
 CALLER_POLICY = ROOT / "data" / "task-registry-general-checkin-caller-policy.json"
 ACTIVEISH = {"ACTIVE", "CHECKED_OUT", "CLAIMED_INTEGRATION", "HANDOFF_READY_RUNTIME_PROOF_PENDING", "BLOCKED_RUNTIME_ACTIVATION"}
-# Checkout states that hold an owner's claim on scope. An ACTIVE-ish shard in
-# either state guards collisions even when omitted from the aggregate, and a
-# component/lineage/action-surface overlap with it is a hard collision.
-OWNER_HELD_CHECKOUT_STATES = {"CHECKED_OUT", "CLAIMED_INTEGRATION"}
+# Checkout states that hold an owner's claim on scope: the legacy CHECKED_OUT
+# marker, its CHECKED_OUT_CURRENT_SESSION variant, and every claimed member of
+# scripts/cosv.py LIFECYCLE. An ACTIVE-ish shard in any of these states guards
+# collisions even when omitted from the aggregate, and a component/lineage/
+# action-surface overlap with it is a hard collision.
+OWNER_HELD_CHECKOUT_STATES = {"CHECKED_OUT", "CHECKED_OUT_CURRENT_SESSION", "CLAIMED_IMPLEMENTATION",
+                              "CLAIMED_VALIDATION", "CLAIMED_INTEGRATION", "MACHINE_OWNED"}
 PROGRESSION_CONTROLLER_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
 sys.path.insert(0, str(ROOT / "scripts"))
 from task_registry_checkin_event_history import (
@@ -75,7 +78,7 @@ def load_missing_checked_out_shards(registered: dict) -> dict:
     """Guard collision evaluation against owner-held shards omitted from aggregate.
 
     Owner-held means an ACTIVE-ish coordination state with a checkout state in
-    OWNER_HELD_CHECKOUT_STATES (CHECKED_OUT or CLAIMED_INTEGRATION). Inactive,
+    OWNER_HELD_CHECKOUT_STATES. Inactive,
     retired, released and unclaimed shards are not guards.
 
     An omitted shard is NEVER admitted as a task, minted a COSV, or silently
@@ -141,7 +144,7 @@ def is_owner_held(row) -> bool:
     """Whether a collision row's owner holds its scope (hard-collision eligible).
 
     CHECKED_OUT keeps its historical meaning regardless of coordination state;
-    CLAIMED_INTEGRATION holds scope only while coordination is ACTIVE-ish.
+    the other owner-held states hold scope only while coordination is ACTIVE-ish.
     """
     checkout = str(row.get("checkout_state") or "").upper()
     if checkout == "CHECKED_OUT":

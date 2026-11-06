@@ -82,7 +82,8 @@ def _module_is_under(module_file: str | None, root: Path) -> bool:
     return True
 
 
-def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=None) -> dict[str, Any]:
+def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=None,
+            hb_epoch: int | None=None) -> dict[str, Any]:
     source=source_root.expanduser().resolve()
     runtime=runtime_root.expanduser().resolve()
     request_path=runtime/REQUEST_REL
@@ -156,6 +157,16 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
     if str(workers_root) not in sys.path:
         sys.path.insert(0,str(workers_root))
     from canonical_state_transition_custody import build_state_receipt, submit_state_receipt, sha256_uri
+    if hb_epoch is None:
+        # No supplied epoch in scope: the transition is not recorded and no
+        # receipt is built, so no clock is read for it (WU-B13 slice g).
+        from canonical_state_transition_custody import no_epoch_caller_boundary
+        refusal=no_epoch_caller_boundary("scripts/consume_sdk_evaluator_governance_posture_request.py::consume")
+        receipt["organization_recording_state"]=refusal["state"]
+        receipt["organization_recording_refusal"]={k:v for k,v in refusal.items() if k!="state"}
+        receipt["state"]="ORGANIZATION_RECORDING_PENDING_OR_FAILED"
+        path.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+        return receipt
     transition_id=f"{TARGET_TASK}:{receipt['state']}"
     # The existing organization receipt contract requires exact canonical inline
     # evidence bytes. A legacy evidence_ref/hex-only manifest is rejected before
@@ -198,7 +209,7 @@ def consume(source_root: Path, runtime_root: Path, *, env: dict[str,str] | None=
       proof_scope="SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_TRANSITION_ONLY",
       proof_ceiling="ORGANIZATION_RECORDED_RUNTIME_TRANSITION_EVIDENCE_ONLY",
     )
-    organization_recording=submit_state_receipt(state_receipt)
+    organization_recording=submit_state_receipt(state_receipt,hb_epoch=hb_epoch)
     receipt["organization_recording_state"]=organization_recording.get("state")
     receipt["organization_transition_receipt"]=organization_recording.get("organization_receipt")
     receipt["organization_state_receipt_sha256"]=organization_recording.get("receipt_sha256")
@@ -212,8 +223,10 @@ def main() -> int:
     ap=argparse.ArgumentParser()
     ap.add_argument("--source-root",type=Path,default=ROOT)
     ap.add_argument("--runtime-root",type=Path,required=True)
+    ap.add_argument("--hb-epoch",type=int,default=None,
+                    help="carrier-supplied heartbeat epoch, already checked by the dispatcher; without it nothing is recorded")
     args=ap.parse_args()
-    result=consume(args.source_root,args.runtime_root)
+    result=consume(args.source_root,args.runtime_root,hb_epoch=args.hb_epoch)
     print(json.dumps(result,sort_keys=True))
     return 0
 

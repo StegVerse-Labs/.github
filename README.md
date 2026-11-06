@@ -1,3 +1,9 @@
+## SPPA ephemeral-storage remediation candidate — 2026-10-29
+
+Source-only EC9 support for original-owner Q74-01 coordination on [#2810](https://github.com/StegVerse-Labs/.github/issues/2810). The SPPA consumer reuses the allocator's manifest-declared ephemeral-storage predicate; authorization separately verifies that the repository store shares the declared Organization Git directory and ref. Custody construction failures become the existing fail-closed P3 result. Storage eligibility grants no execution or promotion authority. Authenticating custody bases, claims, fences, InTr/TVC checks, and provider promotion are unchanged.
+
+Validation on main `6b13c3a749b2940d6142644196a8302823c1f45a`: 41 tests and 3 subtests pass across SPPA authorization, dispatched consumption and six new storage-boundary cases. The new suite has two failures on unchanged main. Tests use temporary empty Git stores; no real ledger, receipt, deployment or Registry write occurs. Owner PR [#3290](https://github.com/StegVerse-Labs/.github/pull/3290) also edits the custody call: integration must retain its supplied-heartbeat-epoch checks. Compatibility validation on owner head `7fc75d01abdd6ec982b773a950b0e42d52a9a076`, retaining its heartbeat argument and checks: 45 tests and 3 subtests pass in the same three suites. This candidate is not merged or admitted runtime evidence. Q74-01 remains unresolved; Site #1633 stays draft/NOT_ALLOWED until original-owner custody, authenticated dependency reconciliation and promotion authority are observed.
+
 ## Registering a canonical Goal Task
 
 Start at [Task Registration Guide](docs/TASK_REGISTRATION_GUIDE.md). The canonical Task Registry owns identity and coordination; a worker admission review is not task registration, a WorkerCoordinator claim, or a governed execution authorization.
@@ -2257,7 +2263,6 @@ Issue #3291 and StegApp PR #1 are tracked by the proposed `STEGAPP-EPHEMERAL-COM
 
 StegApp continuation: existing PR #1 now includes completed Sandbox readback at `6e42618cbc829d4480103c4f31b96c3e917ab242`; 63 local synthetic tests pass. Registration remains proposed, with no WorkerCoordinator claim or native admission. See the linked StegApp handoff for the exact remaining owner transitions.
 
-
 ## KV/SKAP historical reconciliation — 2026-10-29
 
 The [canonical KV handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md) preserves the proposal reconciliation, dependency corrections, independent InTr readback and session 10/12 history. These observations do not establish canonical registration or native admission.
@@ -2307,3 +2312,12 @@ surface mismatch; the recovered genuine receipt matches all64files on3376.
 ## KV/SKAP source and custody handoff — 2026-11-03
 
 The [KV/SKAP handoff](docs/KV_SKAP_VAULT_FUNCTIONAL_MIRROR_HANDOFF.md#november-3--source-offers-and-custody) records the accepted historical writer append, the two source files still requiring TVC verification, and the pending Registry decision.
+
+SPPA review follow-up: the six storage-boundary regressions now run with stdlib unittest, with a scoped loader override that restores the fixture-declared Git topology after the suite-wide POSIX default and is removed at cleanup. The existing generated test-set manifest includes the suite. All 45 SPPA tests pass without pytest; this is local source validation, not exact-head CI, custody evidence or promotion authority.
+
+### StegApp Goal #3291: post-vocabulary source/test hygiene (2026-11-03)
+
+The canonical StegApp vocabulary edit is merged via Labs PR #3403. The aggregate Registry and standalone shard now include `INGRESS_ADMITTED`, but the Goal remains `PROPOSED` and WorkerCoordinator claim/fence remain null. This is an allowed-transition *vocabulary* change only, not native admission. Goal task `STEGAPP-EPHEMERAL-COMPOSITION-001`, COSV `10300000011000`, [canonical handoff](docs/STEGAPP_EPHEMERAL_COMPOSITION_MIRROR_HANDOFF.md), [Goal #3291](https://github.com/StegVerse-Labs/.github/issues/3291).
+
+This repair restores collection of `test_task8_scope_matches_current_iphone_projection_and_stays_nonoverlapping_with_task7` inside its test class and runs `test_goal_context_with_a_request_id_forwards_it` against a scratch runtime root so tests do not rewrite tracked sovereign-host receipt files. These are non-authorizing test corrections; validate the exact PR head and preserve native Registry issuer, WorkerCoordinator GRANTED/fence, Sandbox work/evidence, SDK/InTr Chat delivery, and Organization Ledger source/readback prerequisites. No new machines, frameworks, secret paths or runtime authority.
+

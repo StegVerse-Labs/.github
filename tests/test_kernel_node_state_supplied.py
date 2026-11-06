@@ -123,7 +123,7 @@ class NodeStateIsSuppliedTests(unittest.TestCase):
         done = subprocess.run([sys.executable, "-B", str(ROOT / "resident-runtime/federation_cycle.py"),
                                "--mesh-root", str(self.mesh), "--node-state-root", str(state),
                                "--repo-ledger-root", str(ledgers / "repo"),
-                               "--org-ledger-root", str(ledgers / "org")],
+                               "--org-ledger-root", str(ledgers / "org"), "--hb-epoch", "40"],
                               capture_output=True, text=True, env={**env, "PYTHONPATH": os.pathsep.join(filter(None, (POSIX_LEDGER_LOCUS, env.get("PYTHONPATH"))))}, cwd=self.scratch, timeout=120)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertEqual(json.loads(done.stdout)["frames_consumed"], 1)

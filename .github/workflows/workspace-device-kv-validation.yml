@@ -26,7 +26,6 @@ on:
       - 'tests/test_workspace_device_kv_query_extension.py'
       - 'tests/test_personal_kv_provider_root_resolution.py'
       - '.github/workflows/workspace-device-kv-validation.yml'
-  workflow_dispatch:
 permissions:
   contents: read
 jobs:

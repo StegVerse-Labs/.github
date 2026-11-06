@@ -58,8 +58,8 @@ with tempfile.TemporaryDirectory() as td:
                           payload={"probe":"mesh"},standing=STANDING,packet_id="mesh-a-to-b-001")
     pub=k.publish_packet(packet,root=mesh,now_ns=k.HB_ANCHOR_UNIX_NS+2_000_000_000)
     assert Path(pub["path"]).exists()
-    assert a.consume_addressed(mesh_root=mesh)==[]
-    consumed=b.consume_addressed(mesh_root=mesh)
+    assert a.consume_addressed(mesh_root=mesh,hb_epoch=4096)==[]
+    consumed=b.consume_addressed(mesh_root=mesh,hb_epoch=4096)
     assert len(consumed)==1
     assert consumed[0]["organization_record"] is not None and len(b.receipts("org"))==1
     assert consumed[0]["result"]["status"]=="CONSUMED"
@@ -88,7 +88,7 @@ with tempfile.TemporaryDirectory() as td:
         now_ns=k.HB_ANCHOR_UNIX_NS+3_000_000_000
     )
     assert pub["published_count"]==14
-    results={org:peer.consume_addressed(mesh_root=mesh) for org,peer in roots.items()}
+    results={org:peer.consume_addressed(mesh_root=mesh,hb_epoch=4096) for org,peer in roots.items()}
     rollup=k.aggregate_ecosystem_results("ecosystem-broadcast-001",results)
     assert rollup["complete"] is True
     assert rollup["consumed_count"]==14
@@ -123,7 +123,7 @@ with tempfile.TemporaryDirectory() as td:
     )
     assert pub["published_count"]==14
     for org,peer in roots.items():
-        peer.consume(mesh_root=mesh,node_state_root=Path(td)/"node-state"/org,now_ns=k.HB_ANCHOR_UNIX_NS+4_100_000_000)
+        peer.consume(mesh_root=mesh,node_state_root=Path(td)/"node-state"/org,now_ns=k.HB_ANCHOR_UNIX_NS+4_100_000_000,hb_epoch=4096)
     roll=k.collect_ecosystem_responses("StegVerse-Labs","ecosystem-monitor-response-001",mesh_root=mesh)
     assert roll["response_count"]==14
     assert {x["organization"] for x in roll["organizations"]}==set(orgs)
@@ -155,7 +155,7 @@ with tempfile.TemporaryDirectory() as td:
     assert pub["published_count"]==14
     for org,peer in roots.items():
         state=Path(td)/"node-state"/org
-        peer.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+5_100_000_000)
+        peer.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+5_100_000_000,hb_epoch=4096)
         # Intake is node state, recorded where the materializer said, never in the source root.
         assert node_state_in(peer.root)==[]
         inbox=list((state/"control/inbox").glob("*.json"))
@@ -187,8 +187,8 @@ with tempfile.TemporaryDirectory() as td:
         now_ns=k.HB_ANCHOR_UNIX_NS+6_000_000_000
     )
     state=Path(td)/"node-state"
-    first=node.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_100_000_000)
-    second=node.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_200_000_000)
+    first=node.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_100_000_000,hb_epoch=4096)
+    second=node.consume(mesh_root=mesh,node_state_root=state,now_ns=k.HB_ANCHOR_UNIX_NS+6_200_000_000,hb_epoch=4096)
     assert not (root/"resident-runtime/federation").exists()
     assert len(first)==1
     assert len(second)==1 or len(second)==0

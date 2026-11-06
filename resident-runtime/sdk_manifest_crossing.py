@@ -240,15 +240,26 @@ def manifest_standing(manifest, declared=None):
     return declared
 
 
+def crossing_payload(manifest, destination):
+    """The exact payload a crossing carries for this manifest and its declared destination.
+
+    `payload_hash` is `sha` of these bytes -- canonical JSON, sorted keys, no
+    whitespace -- and so is every boundary receipt's `payload_hash`. It is one
+    definition, here, so that a receiver recomputing it from the manifest it was
+    delivered computes exactly what the crossing hashed rather than a copy.
+    """
+    return {"schema": "stegverse.sdk-manifest-crossing-payload/v1",
+            "declared_transition_surface": destination["surface"],
+            "manifest_sha256": "sha256:" + sha(manifest),
+            "manifest": manifest}
+
+
 def crossing_packet(manifest, destination, service, registry, origin, packet_id, standing):
     """Build the InTr ingress packet that carries this manifest and its standing."""
     envelope = intr_transport.build_ingress(
         origin,
         {"org": registry["organization"], "service": service["service_id"]},
-        {"schema": "stegverse.sdk-manifest-crossing-payload/v1",
-         "declared_transition_surface": destination["surface"],
-         "manifest_sha256": "sha256:" + sha(manifest),
-         "manifest": manifest},
+        crossing_payload(manifest, destination),
         "canonical",
         "intr:transition:" + packet_id,
         authority_effect=str((manifest.get("transition") or {}).get("authority_effect", "NONE")),
@@ -275,6 +286,19 @@ def processing_service(manifest, registry):
     if len(matches) > 1:
         raise CrossingRefused("PROCESSING_AMBIGUOUS_IN_REGISTRY", str(declared["capability"]))
     return matches[0] if matches else None
+
+
+PROCESSOR_WRITE_FAULT_EXIT = 75
+
+
+def _processor_record(stdout: str | None) -> dict | None:
+    """The six-field record the processor printed as its last stdout line, if any."""
+    lines = (stdout or "").strip().splitlines()
+    try:
+        record = json.loads(lines[-1]) if lines else None
+    except (ValueError, RecursionError, MemoryError):
+        return None
+    return record if isinstance(record, dict) else None
 
 
 def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing", standing=None):
@@ -307,12 +331,20 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
             # The far side refused or could not be reached. Say which, and say
             # it as a disposition rather than as a crossing that happened.
             detail = (completed.stderr or completed.stdout or "").strip().splitlines()
-            far_side_disposition = detail[-1] if detail else "FAR_SIDE_UNREACHABLE"
+            # The processor's exit says whose fault it was (DC#10): 75 is its own
+            # write fault, non-terminal, and the only exit that permits a retry;
+            # 65 (bad input), 1, any other code and a crash are terminal.
+            far_side_fault = _processor_record(completed.stdout)
+            far_side_disposition = ((far_side_fault or {}).get("detail")
+                                    or (detail[-1] if detail else "FAR_SIDE_UNREACHABLE"))
             return {
                 "schema": "stegverse.sdk-manifest-crossing-result/v1",
                 "declared_transition_surface": destination["surface"],
                 "resolved_service_id": service["service_id"],
                 "crossing_completed": False,
+                "processor_exit": completed.returncode,
+                "far_side_fault": far_side_fault,
+                "retry_permitted": completed.returncode == PROCESSOR_WRITE_FAULT_EXIT,
                 "manifest_sha256": ingress["payload"]["manifest_sha256"],
                 "far_side_disposition": far_side_disposition,
                 "profile_status": service.get("profile_status"),
@@ -343,6 +375,11 @@ def cross(manifest, *, registry, origin=None, packet_id="sdk-manifest-crossing",
         "ingress_packet_id": ingress["packet_id"],
         "egress_packet_id": egress["packet_id"],
         "egress": egress,
+        # The standing the packet carried, so the admission's record names the
+        # node and chain position it was admitted at. A successor's declared
+        # predecessor is checked against these recorded values at ingress
+        # (organization_boundary_must_carry_predecessor).
+        "standing": resolved_standing,
         "authority_effect": result.get("authority_effect", "NONE"),
         "application_result": result.get("application_result"),
         **{field: result[field] for field in SELECTION_FIELDS if field in result},

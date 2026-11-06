@@ -465,6 +465,17 @@ def _recorded(disposition: str, payload: Any, packet_id: str, hb_epoch: int | No
     return _result(evidence, appended, replayed=replayed, received=disposition == ALLOW)
 
 
+
+def no_epoch_refusal(caller: str) -> dict[str, Any]:
+    """The unrecorded six-field FAIL_CLOSED of a receipt with no supplied epoch (WU-B13 slice g / B-P31)."""
+    refusal = organization_ledger.kernel.no_epoch_caller_refusal(
+        caller, retry_entrypoint="resident-runtime/intr_destination_ingress.py::receive (hb_epoch=, or --hb-epoch)")
+    return {"schema": RESULT_SCHEMA, "organization": organization_ledger.C["organization"],
+            "receiving_operation": OPERATION_ID, "received": False,
+            "organization_receipt_observed": False, "refusal_recorded": False,
+            **refusal, "authority_effect": "NONE_REFUSAL_ONLY"}
+
+
 def receive(payload: Any, *, registry: Mapping[str, Any], standing: Mapping[str, Any] | None = None,
             packet_id: str = "organization-intr-destination",
             hb_epoch: int | None = None, mesh_root: Path | None = None) -> dict[str, Any]:
@@ -473,8 +484,12 @@ def receive(payload: Any, *, registry: Mapping[str, Any], standing: Mapping[str,
     ``standing`` and ``mesh_root`` are accepted because the capability resolver
     passes them to every receiving operation. Standing was required at ingress.
     A diagnostic does not leave, so the mesh is not used.
+    `hb_epoch` is the epoch the carrier supplied; without one nothing is
+    appended and the unrecorded six-field refusal is returned (B-P31).
     """
     del standing, mesh_root
+    if hb_epoch is None:
+        return no_epoch_refusal("resident-runtime/intr_destination_ingress.py::receive")
     if not isinstance(registry, Mapping):
         return _recorded(DENY, payload, packet_id, hb_epoch,
                          failed_predicate="CAPABILITY_MAP_IS_A_MAPPING",

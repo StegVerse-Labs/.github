@@ -29,7 +29,6 @@ on:
       - 'tests/test_egress_close_response_absent_fail_closed.py'
       - 'docs/INTR_DESTINATION_CAPABILITY_MIRROR_HANDOFF.md'
       - '.github/workflows/intr-destination-capability-validation.yml'
-  workflow_dispatch:
 
 permissions:
   contents: read

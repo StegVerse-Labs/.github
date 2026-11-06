@@ -189,7 +189,8 @@ def consume(source_root: Path, runtime_root: Path, *, repo_ledger_root: Path | N
                 "task_id": TASK_ID, "mode": MODE, "transition_attempted": False, "authority_effect": "NONE"}
     allocator = _load("sppa_consumer_org_claim", source / "scripts/consume_org_claim_allocator_request.py")
     try:
-        allocator.clean_env(dict(os.environ if env is None else env))
+        event_ephemeral = allocator.event_ephemeral_materialization(source, repo_ledger_root, org_ledger_root)
+        allocator.clean_env(dict(os.environ if env is None else env), event_ephemeral=event_ephemeral)
     except RuntimeError as exc:
         return refusal(None, present[0], HOSTED_REFUSED, str(exc),
                        "run on the resident dispatch path; a hosted runner is not an admitted execution locus")

@@ -54,8 +54,8 @@ def request(runtime, ids=None, *, request_id="custody-probe-1"):
 
 def test_readback_complete_head_and_historical_sdk_match(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    first = org.aggregate_transition(source("SDK_INTR_DENY", outcome="DENY"))
-    second = org.aggregate_transition(source("UNRELATED", task="OTHER"))
+    first = org.aggregate_transition(source("SDK_INTR_DENY", outcome="DENY"), hb_epoch=4096)
+    second = org.aggregate_transition(source("UNRELATED", task="OTHER"), hb_epoch=4096)
     result = readback.readback(tmp_path, correlation_ids=("SDK-UNTRUSTED-DEPENDENCY-EXECUTION-BOUNDARY-001",))
     assert result["state"] == "VERIFIED_LOCAL_READBACK"
     assert result["head_receipt_sha256"] == second["receipt_sha256"]
@@ -70,9 +70,9 @@ def test_readback_complete_head_and_historical_sdk_match(monkeypatch, tmp_path):
 
 def test_existing_batch_prefix_verified(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    org.aggregate_transition(source("FIRST"))
+    org.aggregate_transition(source("FIRST"), hb_epoch=4096)
     closed = batches.close_batch("TASK_CLOSURE", root=tmp_path)
-    org.aggregate_transition(source("SECOND", task="OTHER"))
+    org.aggregate_transition(source("SECOND", task="OTHER"), hb_epoch=4096)
     result = readback.readback(tmp_path, correlation_ids=("OTHER",))
     assert result["batch_count"] == 1
     assert result["batch_chain"] == "PASS"
@@ -83,7 +83,7 @@ def test_existing_batch_prefix_verified(monkeypatch, tmp_path):
 def test_source_missing_fails_even_if_matching_task_was_unrelated(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
     value = source("UNRELATED", task="OTHER")
-    org.aggregate_transition(value)
+    org.aggregate_transition(value, hb_epoch=4096)
     (tmp_path / "source-receipts" / (org.sha(value)[7:] + ".json")).unlink()
     with pytest.raises(ValueError, match="SOURCE_RECEIPT_MISSING"):
         readback.readback(tmp_path, correlation_ids=("SDK",))
@@ -91,8 +91,8 @@ def test_source_missing_fails_even_if_matching_task_was_unrelated(monkeypatch, t
 
 def test_orphaned_receipt_fails_closed(monkeypatch, tmp_path):
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(tmp_path))
-    a = org.aggregate_transition(source("FIRST"))
-    b = org.aggregate_transition(source("SECOND"))
+    a = org.aggregate_transition(source("FIRST"), hb_epoch=4096)
+    b = org.aggregate_transition(source("SECOND"), hb_epoch=4096)
     (tmp_path / "HEAD.json").write_text(json.dumps({
         "organization": "StegVerse-Labs", "receipt_sha256": a["receipt_sha256"],
     }))
@@ -110,7 +110,7 @@ def test_readback_request_requires_private_runtime_file(tmp_path):
 def test_opt_in_request_writes_private_exact_bytes_and_sanitizes_stdout(monkeypatch, tmp_path):
     ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    org.aggregate_transition(source("SDK_INTR_DENY", outcome="DENY"))
+    org.aggregate_transition(source("SDK_INTR_DENY", outcome="DENY"), hb_epoch=4096)
     request(runtime)
     summary = consumer.consume(ROOT, runtime)
     assert summary["state"] == "RECORDED_LOCAL_READBACK", summary
@@ -129,7 +129,7 @@ def test_opt_in_request_writes_private_exact_bytes_and_sanitizes_stdout(monkeypa
 def test_forged_request_scope_fails_without_private_artifact(monkeypatch, tmp_path):
     ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    org.aggregate_transition(source("FIRST"))
+    org.aggregate_transition(source("FIRST"), hb_epoch=4096)
     path = request(runtime)
     forged = json.loads(path.read_text())
     forged["cosv_task_vector"] = "99999999999999"
@@ -178,13 +178,13 @@ def test_legacy_hosted_request_is_diagnostic_boundary_only(monkeypatch, tmp_path
 def test_exact_request_retry_keeps_original_immutable_snapshot_after_new_head(monkeypatch, tmp_path):
     ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    original = org.aggregate_transition(source("FIRST"))
+    original = org.aggregate_transition(source("FIRST"), hb_epoch=4096)
     request(runtime)
     first = consumer.consume(ROOT, runtime)
     assert first["state"] == "RECORDED_LOCAL_READBACK"
     artifact = runtime / first["private_artifact_location"]
     original_bytes = artifact.read_bytes()
-    org.aggregate_transition(source("AFTER_FIRST_READBACK", task="OTHER"))
+    org.aggregate_transition(source("AFTER_FIRST_READBACK", task="OTHER"), hb_epoch=4096)
     retry = consumer.consume(ROOT, runtime)
     assert retry["state"] == "ALREADY_CONSUMED", retry
     assert retry["head_receipt_sha256"] == original["receipt_sha256"]
@@ -201,7 +201,7 @@ def test_inline_evidence_tampering_detected_before_readback(monkeypatch, tmp_pat
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
     exact = source("BOUND")
-    org.aggregate_transition(exact)
+    org.aggregate_transition(exact, hb_epoch=4096)
     path = ledger / "source-receipts" / (org.sha(exact)[7:] + ".json")
     changed = json.loads(path.read_text())
     changed["required_evidence_manifest"][0]["content"]["event"] = "TAMPERED"
@@ -215,7 +215,7 @@ def test_existing_master_records_exact_reconstruction_must_match_source(monkeypa
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
     source_receipt = source("REALISH_INTR_ALLOW", outcome="ALLOW")
-    org.aggregate_transition(source_receipt)
+    org.aggregate_transition(source_receipt, hb_epoch=4096)
     snapshot = readback.readback(ledger, correlation_ids=(source_receipt["subject_or_correlation_id"],))
     digest = org.sha(source_receipt)[7:]
     calls = []
@@ -241,7 +241,7 @@ def test_missing_or_mismatched_master_records_cannot_pass(monkeypatch, tmp_path)
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
     source_receipt = source("INTR_DENY", outcome="DENY")
-    org.aggregate_transition(source_receipt)
+    org.aggregate_transition(source_receipt, hb_epoch=4096)
     snapshot = readback.readback(ledger, correlation_ids=(source_receipt["subject_or_correlation_id"],))
     def missing(_path, params):
         return {"schema": "stegverse.master-records.state-transition-query/v1",
@@ -264,7 +264,7 @@ def test_missing_or_mismatched_master_records_cannot_pass(monkeypatch, tmp_path)
 def test_existing_master_records_batch_reconstruction_exact_identity(monkeypatch, tmp_path):
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    org.aggregate_transition(source("BATCHED_INTR_ALLOW"))
+    org.aggregate_transition(source("BATCHED_INTR_ALLOW"), hb_epoch=4096)
     closed = batches.close_batch("TASK_CLOSURE", root=ledger)
     snapshot = readback.readback(ledger, correlation_ids=("NONMATCHING",))
     def fake_get(path, params):
@@ -286,7 +286,7 @@ def _organization_record(name):
     The ledger root is the tmp STEGVERSE_ORG_LEDGER_ROOT the caller set; Master
     Records reconstruction was not requested, as submit_state_receipt() reports.
     """
-    row = org.aggregate_transition(source(name))
+    row = org.aggregate_transition(source(name), hb_epoch=4096)
     return {"state": "RECORDED", "receipt_sha256": row["source_transition_sha256"][7:],
             "organization_receipt": row, "reconstruction_status": "NOT_REQUESTED",
             "required_evidence_validation_status": "ORGANIZATION_RECORD_ONLY"}
@@ -321,7 +321,7 @@ def test_governed_allow_executes_without_host_inventory_gate(monkeypatch, tmp_pa
     ledger, runtime = tmp_path / "ledger", tmp_path / "runtime"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
     monkeypatch.setenv("GITHUB_ACTIONS", "true")
-    org.aggregate_transition(source("GOVERNED_ALLOW"))
+    org.aggregate_transition(source("GOVERNED_ALLOW"), hb_epoch=4096)
     attempt = json.loads(governed_attempt(runtime, disposition="ALLOW").read_text())
     intr = attempt["intr_master_records_organization_record"]
     predecessor = attempt["predecessor_master_records_organization_record"]
@@ -396,7 +396,7 @@ def _transport(state, reason=None):
 def _released_batch(monkeypatch, ledger, name, state, reason=None, task="OTHER"):
     """Append a manifest-directed receipt that releases the prior packet; return (receipt, batch id)."""
     monkeypatch.setattr(batches, "submit_released_batch", _transport(state, reason))
-    row = org.aggregate_transition(source(name, task=task), parent_manifest=COUNT_ONE)
+    row = org.aggregate_transition(source(name, task=task), parent_manifest=COUNT_ONE, hb_epoch=4096)
     return row, row["boundary_evidence"]["parent_manifest_released_batch"]["batch_id"]
 
 
@@ -414,7 +414,7 @@ def _submission_of(result, batch_id):
 def test_readback_surfaces_recorded_submission_outcomes_without_writing_or_authorizing(monkeypatch, tmp_path):
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     second, completed_batch = _released_batch(monkeypatch, ledger, "SECOND", "COMPLETED")
     third, failed_batch = _released_batch(monkeypatch, ledger, "THIRD", "FAILED",
                                           reason="ORGANIZATION_BATCH_CUSTODY_SUBMISSION_FAILED:URLError")
@@ -472,7 +472,7 @@ def test_readback_surfaces_recorded_submission_outcomes_without_writing_or_autho
 def test_readback_reports_absent_submission_receipt_as_pending_not_error(monkeypatch, tmp_path):
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     second, batch_id = _released_batch(monkeypatch, ledger, "SECOND", "COMPLETED")
     # The process died between the sovereign commit and the submission record: the outbox is the ledger.
     (ledger / batches.submission_key(batch_id)).unlink()
@@ -495,7 +495,7 @@ def test_readback_reports_absent_submission_receipt_as_pending_not_error(monkeyp
 def test_readback_fails_closed_on_tampered_submission_receipt_without_failing_the_chain(monkeypatch, tmp_path):
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE)
+    org.aggregate_transition(source("FIRST", task="OTHER"), parent_manifest=COUNT_ONE, hb_epoch=4096)
     _, batch_id = _released_batch(monkeypatch, ledger, "SECOND", "FAILED", reason="TRANSPORT")
     path = ledger / batches.submission_key(batch_id)
     forged = json.loads(path.read_text())
@@ -519,10 +519,10 @@ def test_readback_fails_closed_on_tampered_submission_receipt_without_failing_th
 def test_readback_reports_null_submission_for_batch_released_without_a_key(monkeypatch, tmp_path):
     ledger = tmp_path / "ledger"
     monkeypatch.setenv("STEGVERSE_ORG_LEDGER_ROOT", str(ledger))
-    org.aggregate_transition(source("FIRST", task="OTHER"))
+    org.aggregate_transition(source("FIRST", task="OTHER"), hb_epoch=4096)
     # Closed by the operator: its carriage is the operator's own step, no key is named.
     closed = batches.close_batch("TASK_CLOSURE", root=ledger)
-    org.aggregate_transition(source("SECOND", task="OTHER"))
+    org.aggregate_transition(source("SECOND", task="OTHER"), hb_epoch=4096)
     # Released before the post-commit step existed: the transport's result was inline, no key.
     third, inline_batch = _released_batch(monkeypatch, ledger, "THIRD", "COMPLETED")
     inline = {**third, "boundary_evidence": {**third["boundary_evidence"], "parent_manifest_released_batch": {

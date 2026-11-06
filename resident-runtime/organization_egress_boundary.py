@@ -653,6 +653,31 @@ def _record(transition_id: str, transition_class: str, predecessor: str, success
             "organization_receipt": organization_receipt}
 
 
+def _refuse_emission_collision(packet: Mapping[str, Any], payload: Mapping[str, Any],
+                               hb_epoch: int | None) -> None:
+    """Refuse, before anything is published, an emission its packet id already records otherwise.
+
+    With a supplied epoch the frame is reproducible, so the recorded emission
+    of this packet id must carry this frame and payload digest; a different
+    one would be a `ledger_receipt_collision` only after publishing. (B-P31 / N11)
+    """
+    if hb_epoch is None:
+        return
+    store = repository_ledger.repository_store()
+    prior = repository_ledger.recorded(store, store.get(repository_ledger.ledger_store.HEAD_KEY),
+                                       EMITTED_CLASS + ":" + packet["packet_id"], EMITTED_CLASS)
+    if prior is None:
+        return
+    recorded = prior.get("evidence") or {}
+    frame = kernel.carrier_frame(dict(packet), epoch=hb_epoch)
+    if (recorded.get("frame_sha256") != frame["frame_sha256"]
+            or recorded.get("payload_sha256") != sha(dict(payload))):
+        raise EgressRefused("ONE_PACKET_ID_BINDS_ONE_EMISSION",
+                            "ledger_receipt_collision: packet " + str(packet["packet_id"])
+                            + " already records a different emission")
+
+
+
 def emit(destination_organization: Any, payload: Mapping[str, Any], *,
          standing: Mapping[str, Any], capability: str | None = None,
          credential_authority: Mapping[str, Any] | None = None,
@@ -685,6 +710,11 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
                 "communication_id": (payload or {}).get("communication_id")
                 if isinstance(payload, Mapping) else None}
     hb_epoch = int(str(hb_epoch))  # admitted as ASCII digits
+    # Before anything is built, published or recorded (V-P11 rows 1/5/6): a half-set or
+    # unverifiable committed-request pair, or a committed_request a caller put
+    # in the payload, is refused six-field (CommittedRequestRefused), 0 frames.
+    kernel.committed_request(hb_epoch)
+    kernel.refuse_caller_committed_request(payload, "payload")
     origin = this_organization(root)
     try:
         unclosable = closability_refusal(payload or {})
@@ -721,6 +751,7 @@ def emit(destination_organization: Any, payload: Mapping[str, Any], *,
                 raise EgressRefused(refused.failed_predicate, refused.reason) from None
             attested = attestation_module.record(declared, signature, receipt)
             packet = {**packet, "attestation": signature}
+        _refuse_emission_collision(packet, payload, hb_epoch)
         published = kernel.publish_packet(packet, root=mesh_root, epoch=hb_epoch)
     except EgressRefused as exc:
         record = emit_refusal_record(exc.failed_predicate, exc.reason,
@@ -825,7 +856,7 @@ def recorded_emission(packet_id: str) -> dict[str, Any] | None:
     half of the bilateral match: a crossing with no emission receipt here is one
     this organization has no record of making, and it cannot be closed.
     """
-    store = ledger_store.PosixLedgerStore(repository_ledger.lr())
+    store = repository_ledger.repository_store()
     head = store.get(ledger_store.HEAD_KEY)
     cursor = (head or {}).get("receipt_sha256")
     wanted = EMITTED_CLASS + ":" + packet_id

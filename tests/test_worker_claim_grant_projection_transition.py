@@ -30,6 +30,12 @@ ISSUER = "StegVerse-Labs/.github"
 sys.path.insert(0, str(ROOT / "resident-runtime"))
 import aggregate_repo_transition as LEDGER  # noqa: E402
 
+# The repository emitter the allocator appends through: under #3290 an Organization append consumes only a
+# source receipt on the materializer-supplied repository ledger, so each source is appended there first.
+_EMIT_SPEC = importlib.util.spec_from_file_location("wcgp_repository_emitter", ROOT / ".stegverse/transition-ledger/emit.py")
+EMITTER = importlib.util.module_from_spec(_EMIT_SPEC)
+_EMIT_SPEC.loader.exec_module(EMITTER)
+
 
 def repository_receipt(transition_id, transition_class, evidence, *, epoch=900000, repository=ISSUER):
     body = {
@@ -62,6 +68,7 @@ class Fixture:
         (self.base / "tasks" / f"{TASK}.json").write_text(json.dumps(
             {"task_id": TASK, "canonical_task_record": f"data/canonical-task-records/{GOAL}.json"}))
         self.ledger = self.dir / "ledger"
+        self.repository_store = EMITTER.ledger_store.PosixLedgerStore(self.dir / "repository-ledger")
         self.chain = []
 
     def append(self, operation, task, fence, *, epoch=900000, from_clock=False, transition_id=None,
@@ -69,15 +76,30 @@ class Fixture:
         transition_id = transition_id or f"ORGANIZATION-WORKER-CLAIM-GRANTED-{task}-G{fence}"
         evidence = {"disposition": "ALLOW", "task_id": task, "fencing_token": fence,
                     "claim_scope_sha256": "a" * 64, "organization_head_sha256": "b" * 64}
-        source = repository_receipt(transition_id, transition_class or operation,
-                                    evidence if source_evidence is None else source_evidence,
-                                    epoch=epoch, repository=repository)
-        receipt = LEDGER.aggregate_transition(
-            source, ledger=self.ledger, org_transition_class="REPO_STATE_PROPAGATION",
-            predecessor_org_state_sha256=source["predecessor_state_sha256"],
-            successor_org_state_sha256=source["successor_state_sha256"],
-            boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
-            hb_epoch=None if from_clock else epoch)
+        recorded = evidence if source_evidence is None else source_evidence
+        if repository == ISSUER:
+            # The allocator's own repository receipt, on the repository ledger, as record_transition appends it.
+            source = EMITTER.append(transition_id, transition_class or operation, "sha256:" + "0" * 64,
+                                    "sha256:" + hashlib.sha256(transition_id.encode()).hexdigest(), recorded, "NONE",
+                                    hb_epoch=epoch, store=self.repository_store)
+        else:
+            # Another repository's receipt: it is on no ledger this repository's materializer supplies.
+            source = repository_receipt(transition_id, transition_class or operation, recorded,
+                                        epoch=epoch, repository=repository)
+        with LEDGER._materialized_repository_ledger(self.repository_store):
+            receipt = LEDGER.aggregate_transition(
+                source, ledger=self.ledger, org_transition_class="REPO_STATE_PROPAGATION",
+                predecessor_org_state_sha256=source["predecessor_state_sha256"],
+                successor_org_state_sha256=source["successor_state_sha256"],
+                boundary_evidence={"operation": operation, **evidence}, authority_effect="NONE",
+                hb_epoch=epoch)
+        if from_clock:
+            # No append can carry a clock-derived epoch (#3290 refuses it), so the receipt a host clock would
+            # have produced is built by hand: the appended grant with a clock reference, digest recomputed.
+            body = {key: value for key, value in receipt.items() if key != "receipt_sha256"}
+            body["hb_reference"] = {**body["hb_reference"], "derived_from_clock": True,
+                                    "sampled_unix_ns": 1_700_000_000_000_000_000}
+            return {**body, "receipt_sha256": T.sha(body)}
         self.chain.append(receipt)
         return receipt
 
@@ -225,13 +247,23 @@ class ProjectionTest(unittest.TestCase):
             "fence": {"source_evidence": {**granted, "fencing_token": 7}},
             "disposition": {"source_evidence": {**granted, "disposition": "DENY"}},
             "task": {"source_evidence": {**granted, "task_id": "TASK-2099-0002"}},
-            "repository": {"repository": "StegVerse-Labs/another-repository"},
         }.items():
             with self.subTest(name):
                 self.f = Fixture(self)
                 receipt = self.f.grant(8, **kw)
                 self.assertChainSelfConsistent()
                 self.assertRefused(self.f.run("plan", self.f.request(receipt)), "GRANT_SOURCE_ISSUER_EVIDENCE_MISMATCH")
+        with self.subTest("repository"):
+            # Another repository's source never reaches the Organization chain (#3290): the append itself
+            # refuses it, so no grant over it exists to project.
+            self.f = Fixture(self)
+            self.f.grant(8)
+            head = list(self.f.chain)
+            with self.assertRaises(LEDGER.kernel.SuppliedEpochRefused) as raised:
+                self.f.append(T.GRANTED, TASK, 9, repository="StegVerse-Labs/another-repository")
+            self.assertEqual(raised.exception.refusal["failure_code"], "SPPA_CROSS_REPO_OBSERVATION_UNVERIFIED")
+            self.assertIs(raised.exception.refusal["consequence_committed"], False)
+            self.assertEqual(self.f.chain, head)
 
     def test_not_a_grant(self):
         self.f.grant()
@@ -242,6 +274,8 @@ class ProjectionTest(unittest.TestCase):
         self.assertRefused(self.f.run("plan", self.f.request(self.f.grant(7))), "FENCE_AT_OR_BELOW_PROVENANCE_FLOOR")
 
     def test_clock_derived_epoch_refused(self):
+        """Still proves a clock-derived grant epoch is refused. Under #3290 no Organization append can carry a
+        clock-derived reference, so the fixture builds that receipt by hand (Fixture.append from_clock=True)."""
         self.assertRefused(self.f.run("plan", self.f.request(self.f.grant(8, from_clock=True))),
                            "GRANT_EPOCH_NOT_CARRIER_SUPPLIED")
 

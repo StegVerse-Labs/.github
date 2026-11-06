@@ -8,6 +8,8 @@ on:
     paths:
       - '.github/workflows/organization-ledger-transition.yml'
       - '.github/workflows/organization-ledger-transition-validation.yml'
+      - 'scripts/check_dispatch_hb_epoch.py'
+      - 'tests/test_dispatch_hb_epoch_gate.py'
       - '.stegverse/organization-ledger-ingest/**'
       - 'resident-runtime/organization_ledger_ingest.py'
       - 'resident-runtime/sv_check_receipt_append.py'
@@ -18,7 +20,7 @@ on:
       - 'tests/test_sv_check_receipt_append.py'
       - 'tests/test_sv_push_receipt_append.py'
       - 'tests/test_sv_change_admit_append.py'
-      - 'tests/vendor/p1_f28c3a76/**'
+      - 'tests/vendor/p1_c9192134/**'
       - 'org-runtime/interlock-intr.json'
       - '.stegverse/transition-ledger/contract.json'
       - '.stegverse/transition-ledger/org-contract.json'
@@ -56,6 +58,7 @@ jobs:
             resident-runtime/ledger_store.py \
             resident-runtime/organization_ledger_ingest.py \
             resident-runtime/sv_check_receipt_append.py \
+            scripts/check_dispatch_hb_epoch.py \
             resident-runtime/sv_push_receipt.py \
             resident-runtime/sv_push_receipt_append.py \
             resident-runtime/sv_change_admit_append.py \
@@ -66,6 +69,7 @@ jobs:
             tests/test_intr_destination_capability.py \
             tests/test_organization_ledger_ingest.py \
             tests/test_sv_check_receipt_append.py \
+            tests/test_dispatch_hb_epoch_gate.py \
             tests/test_sv_push_receipt_append.py \
             tests/test_sv_change_admit_append.py
 

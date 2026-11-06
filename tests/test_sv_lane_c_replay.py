@@ -358,7 +358,7 @@ class CheckCommandRowTests(unittest.TestCase):
                           "predicate": "the readback receipt sealed by Labs#3266 at base_ref.ledger_head carries an observed epoch "
                                        "(else FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED); the SV_CHANGE's hb_epoch that is absent, null, \"\", "
                                        "\"null\" or UNKNOWN_NOT_AUTHENTICALLY_OBSERVED is FAIL_CLOSED HB_EPOCH_SOURCE_UNOBSERVED (checked "
-                                       "before 726248a5); any other value must pass 726248a5 validation and equal the sealed epoch by "
+                                       "before c9192134); any other value must pass c9192134 validation and equal the sealed epoch by "
                                        "integer value (else DENY HB_EPOCH_MISMATCH)"})
         self.assertFalse([cid for cid, c in self.ROW["checks"].items() if c["offline_command"] == U])  # none undeclared now
 

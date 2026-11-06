@@ -84,7 +84,7 @@ def closure(transition: str, digit: str, predecessor: str | None = None) -> dict
         resulting_state_ref_or_hash=None,
         governance_decision_ref_where_applicable=None,
         transition_evidence={"transition": transition},
-    ))
+    ), hb_epoch=4096)
     organization = result["organization_receipt"]
     # Master Records reconstruction is not requested and never gates the closure.
     row = {
@@ -244,8 +244,8 @@ class ManifestStateTransitionIngressTests(unittest.TestCase):
         diagnostic["request_sha256"] = mod.sha256(diagnostic)
         self.assertIsNone(mod.validate_request(diagnostic)["canonical_task_id"])
         with tempfile.TemporaryDirectory() as td:
-            first = mod.execute(Path(td), diagnostic)
-            second = mod.execute(Path(td), diagnostic)
+            first = mod.execute(Path(td), diagnostic, hb_epoch=4096)
+            second = mod.execute(Path(td), diagnostic, hb_epoch=4096)
             self.assertEqual(first, second)
             self.assertEqual(first["disposition"], "DENY")
             self.assertEqual(first["reason_code"], "ORIGINAL_WIRE_DIGEST_MISMATCH")

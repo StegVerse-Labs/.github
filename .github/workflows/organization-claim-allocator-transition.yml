@@ -146,6 +146,14 @@ jobs:
                    "ORGANIZATION_WORKER_CLAIM_FAIL_CLOSED"}
           if result.get("state") == "NO_REQUEST":
               raise SystemExit(0)
+          six = ("failure_code", "failed_predicate", "required_evidence_or_repair", "retry_entrypoint",
+                 "owning_existing_goal", "next_attempt")
+          if (result.get("failure_code") == "NO_EPOCH_CALLER_FAILS_CLOSED" and result.get("disposition") == "FAIL_CLOSED"
+                  and result.get("consequence_committed") is False and all(result.get(k) for k in six)):
+              # No carrier epoch reached this run: the consumer refused before reading or appending
+              # anything (#3290). That six-field refusal is this run's terminal disposition.
+              print(json.dumps({k: result.get(k) for k in ("disposition",) + six}, sort_keys=True))
+              raise SystemExit(0)
           if not attempts or any(a.get("transition_class") not in typed for a in attempts):
               raise SystemExit(1)
           for a in attempts:
