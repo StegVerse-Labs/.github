@@ -2071,6 +2071,20 @@ def receive(manifest: Mapping[str, Any], *, registry: Mapping[str, Any], standin
         if carried is not None:
             return refused(carried["failed_predicate"], str(exc), six_fields=carried)
         return refused("CROSSING_IS_DRIVABLE_FROM_THE_MANIFEST_AS_DECLARED", str(exc))
+    if not crossing.get("crossing_completed") and crossing.get("retry_permitted") is True:
+        # The processor's own write faulted (exit 75): non-terminal. Nothing is
+        # recorded, so the redelivered submission is consumed exactly once.
+        fault = crossing.get("far_side_fault") or {}
+        return {"disposition": "FAIL_CLOSED", "failure_code": "PROCESS_BOUNDARY_WRITE_FAULT", "terminal": False,
+                "failed_predicate": fault.get("failed_predicate") or "PROCESS_BOUNDARY_COMPLETES_ITS_OWN_WRITE",
+                "detail": fault.get("detail") or "process_boundary exited 75",
+                "required_evidence_or_repair": (fault.get("required_evidence_or_repair")
+                                                or "the processor's own write completes"),
+                "retry_entrypoint": fault.get("retry_entrypoint") or RETRY_ENTRYPOINT,
+                "owning_existing_goal": fault.get("owning_existing_goal") or "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
+                "next_attempt": "redeliver the submission; nothing was recorded",
+                "request_sha256": request["request_sha256"], "receipt_written": False,
+                "consequence_committed": False}
     if not crossing.get("crossing_completed"):
         # The far side refused. That is its disposition to state, not something
         # this operation rewrites into an admission -- but the submission still

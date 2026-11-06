@@ -137,8 +137,11 @@ class CapabilityCrossingEpochTests(unittest.TestCase):
         self.addCleanup(setattr, capability, "load_operation", original)
         with self.assertRaises(SystemExit) as refused:
             capability.receive(ROOT, service, packet("direct-no-epoch"), registry=REGISTRY)
+        # EpochRefused uses failure_code:detail (same shape as writer refusals).
         self.assertEqual(str(refused.exception),
-                         "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH:HB_EPOCH_NOT_SUPPLIED")
+                         "HB_EPOCH_NOT_SUPPLIED:no hb_epoch was supplied and no clock is read")
+        self.assertEqual(refused.exception.refusal["failed_predicate"],
+                         "SUBMISSION_CARRIES_THE_SUPPLIED_HB_EPOCH")
         self.assertEqual(loaded, [])
         self.assertFalse(self.ledger_opened())
 

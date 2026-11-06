@@ -311,7 +311,7 @@ class BaseStateReadbackTests(unittest.TestCase):
                     self.assertTrue(component.seal_verifies(r))
 
     def test_epoch_rule_source_is_kernel_hb_reference(self):
-        self.assertEqual(component.EPOCH_RULE_SOURCE["lines"], "84-93")
+        self.assertEqual(component.EPOCH_RULE_SOURCE["lines"], "60-103")
         kernel = (ROOT / "org-kernel" / "kernel.py").read_bytes()
         blob = hashlib.sha1(b"blob %d\0" % len(kernel) + kernel).hexdigest()
         self.assertEqual(blob, component.EPOCH_RULE_SOURCE["git_blob_sha"])

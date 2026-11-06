@@ -115,7 +115,7 @@ class AuthorityEffectCase(unittest.TestCase):
 
     def receive(self, manifest):
         return ingress.receive(manifest, registry=REGISTRY, standing=dict(STANDING),
-                               packet_id="authority-effect-1")
+                               packet_id="authority-effect-1", hb_epoch=4096)
 
     def receipts(self, root: Path) -> list[dict]:
         directory = root / "receipts"

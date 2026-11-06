@@ -121,7 +121,7 @@ class PayloadBindingCase(unittest.TestCase):
 
     def receive(self):
         return ingress.receive(copy.deepcopy(MANIFEST), registry=REGISTRY,
-                               standing=dict(STANDING), packet_id="payload-binding-1")
+                               standing=dict(STANDING), packet_id="payload-binding-1", hb_epoch=4096)
 
     def receipts(self, root: Path) -> list[dict]:
         directory = root / "receipts"
