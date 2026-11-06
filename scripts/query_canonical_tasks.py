@@ -16,6 +16,14 @@ def load(path: Path) -> dict[str, Any]:
         return json.load(fh)
 
 
+def entry_fields(entry: Any, keys: tuple[str, ...]) -> list[str]:
+    # The record schema requires object entries; some registry rows hold a bare string,
+    # which is read as the entry's ref so a query never crashes on it.
+    if isinstance(entry, dict):
+        return [str(entry.get(k, "")) for k in keys]
+    return [str(entry)]
+
+
 def searchable(task: dict[str, Any]) -> str:
     parts: list[str] = [
         str(task.get("task_id", "")),
@@ -29,9 +37,9 @@ def searchable(task: dict[str, Any]) -> str:
     for key in ("organizations", "repositories", "components"):
         parts.extend(str(x) for x in targets.get(key, []))
     for dep in task.get("dependencies", []):
-        parts.extend(str(dep.get(k, "")) for k in ("dependency_id", "kind", "state", "ref"))
+        parts.extend(entry_fields(dep, ("dependency_id", "kind", "state", "ref")))
     for blocker in task.get("blockers", []):
-        parts.extend(str(blocker.get(k, "")) for k in ("blocker_id", "dependency_id", "reason"))
+        parts.extend(entry_fields(blocker, ("blocker_id", "dependency_id", "reason")))
     parts.extend(str(x) for x in task.get("adjacent_task_refs", []))
     parts.extend(str(x) for x in task.get("existing_evidence_refs", []))
     parts.extend(str(x) for x in task.get("expected_evidence_predicates", []))
