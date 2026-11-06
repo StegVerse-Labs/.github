@@ -342,7 +342,7 @@
           ]
         },
         "external_device_required": {
-          "type": "boolean"
+          "const": false
         },
         "second_user_operated_device_allowed": {
           "const": false

@@ -103,7 +103,9 @@
     "connected_device_inventory_exception": "ONLY_WHEN_THE_TASK_EXPLICITLY_TARGETS_CONNECTOR_OR_DEVICE_INVENTORY_MANAGEMENT_ITSELF",
     "master_records_general_transition_organization_record": false,
     "master_records_general_evidence_organization_record": false,
-    "master_records_scope": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY"
+    "master_records_scope": "ORGANIZATION_RECORDS_AND_RECONSTRUCTION_ONLY",
+    "external_machine_required_allowed": false,
+    "external_device_fallback_selection_allowed": false
   },
   "semantics": {
     "kv_skap_vault": "Maintains the verifier for the user and is the sole source of user-verification state.",
@@ -114,7 +116,7 @@
     "device_interchangeability": "Replacing one eligible StegOS device/node with another does not change the user's verifier. Only available local capability endpoints and resulting execution evidence may change.",
     "remote_computer_transport": "Remote Computer is a transport/discovery surface only. Capacity discovered through it may execute only after materializing as the canonical StegBrowser/StegOS node class and being admitted as ADMITTED-EPHEMERAL-STEGOS-NODE through Interlock/InTr.",
     "ephemeral_substrate": "Temporary compute is not a separate authority or durable machine dependency. Presence or connectivity grants no execution, transition, WorkerCoordinator claim/fence, credential, custody, publication, or completion authority.",
-    "runtime_substrate_order": "Runtime-capable tasks must evaluate the canonical single-device-first substrate order before any remote/external-device last resort. EVIDENCE_REACHABILITY may remain pending but cannot establish UNSUITABLE or create an external-device requirement.",
+    "runtime_substrate_order": "Legacy six-slot review order retained for record compatibility; the remote/external-device slot is non-executable and MUST NOT be selected. Execution is admitted only through manifest-directed existing/ephemeral StegBrowser or StegOS substrate transitions; no external machine dependency.",
     "organization_runtime_reality": "Runtime reality for an organization is the organization ledger root: the append-only hash-linked organization receipt chain written under the organization ledger lock by manifest-directed append. A transition within the organization is real when it is appended there. Shipping, releasing, recording or reconstructing it downstream preserves and verifies that reality; it does not constitute it.",
     "master_records_batch_recording": "Master Records records organization batches the organization has independently verified and released, for durable cross-organization custody and complex reconstruction. Its release predecessor is a verified organization receipt-chain segment. It holds no transition, execution, credential, routing or runtime-reality authority, is not a gate on an organization's runtime reality, and is never awaited by a transition. An unreleased or unrecorded batch is a value in the attempted transition's evidence state, not a blocker and not proof of non-occurrence.",
     "actions_by_manifest": "Every action is a manifest-bound attempted state transition. The manifest determines the destination; so long as the destination exists, the transition succeeds at ingress into the Interlock and at egress. Destination liveness, receiver availability, an always-on listener, an external machine, a second user-operated device and a post-closure authentic observer are all prohibited as transition predicates. An unavailable receiver is answered by DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION, never by waiting. A surface that cannot yet satisfy this standard must hold a registered exemption carrying an actionable non-ALLOW disposition; silent non-conformance is prohibited.",

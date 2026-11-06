@@ -79,10 +79,10 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
             review(module.REVIEW_ORDER[4], "UNSUITABLE", "AUTHORITY", ["evidence:authority"]),
             review(module.REVIEW_ORDER[5], "SELECTED"),
         ]
-        with self.assertRaisesRegex(ValueError, "external device cannot be required"):
+        with self.assertRaisesRegex(ValueError, "EXTERNAL_MACHINE_DEPENDENCY_PROHIBITED"):
             module.validate_resolution(record_with_resolution(reviews, module.REVIEW_ORDER[5], external=True))
 
-    def test_external_device_allowed_only_after_evidenced_exhaustion(self):
+    def test_external_device_rejected_even_after_evidenced_exhaustion(self):
         reviews = [
             review(module.REVIEW_ORDER[0], "UNSUITABLE", "ARCHITECTURAL", ["evidence:a"]),
             review(module.REVIEW_ORDER[1], "UNSUITABLE", "PLATFORM", ["evidence:b"]),
@@ -91,7 +91,14 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
             review(module.REVIEW_ORDER[4], "UNSUITABLE", "PLATFORM", ["evidence:d"]),
             review(module.REVIEW_ORDER[5], "SELECTED"),
         ]
-        module.validate_resolution(record_with_resolution(reviews, module.REVIEW_ORDER[5], external=True))
+        with self.assertRaisesRegex(ValueError, "EXTERNAL_MACHINE_DEPENDENCY_PROHIBITED"):
+            module.validate_resolution(record_with_resolution(reviews, module.REVIEW_ORDER[5], external=True))
+
+    def test_external_fallback_selection_rejected_even_without_external_flag(self):
+        reviews = [review(sid, "NOT_APPLICABLE", "NOT_APPLICABLE") for sid in module.REVIEW_ORDER[:5]]
+        reviews.append(review(module.REVIEW_ORDER[5], "SELECTED"))
+        with self.assertRaisesRegex(ValueError, "EXTERNAL_MACHINE_DEPENDENCY_PROHIBITED"):
+            module.validate_resolution(record_with_resolution(reviews, module.REVIEW_ORDER[5], external=False))
 
     def test_pr_validation_includes_modified_task_records(self):
         source = SCRIPT.read_text(encoding="utf-8")
