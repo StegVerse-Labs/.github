@@ -37,6 +37,13 @@ def write_continuation(tmp_path, proposed):
     return path
 
 
+def test_invalid_archive_proposal_fails_closed_as_whole_batch(tmp_path):
+    path = tmp_path / "continuation.json"
+    for proposals in (["m1", ""], ["m1", "m1"], ["m1", " m2"], ["m1", 7]):
+        path.write_text(json.dumps({"archive_proposed": proposals}), encoding="utf-8")
+        assert M.load_archive_authorization(path) == frozenset()
+
+
 def test_operational_queries_never_select_archived_messages():
     assert "in:inbox" in M.INBOX_QUERY.split()
     assert "in:inbox" in M.ACTIONABLE_QUERY.split()
@@ -45,23 +52,45 @@ def test_operational_queries_never_select_archived_messages():
 
 
 def test_incomplete_first_page_never_archives_even_authorized_ids(tmp_path):
-    messages = [{
-        "id": "m1", "from": "notifications@github.com", "subject": "CI failed",
-        "repository": "StegVerse-Labs/Site", "workflow": "Site Task Runner", "snippet": "failed abcdef1"
-    }]
-    ids = [f"m{i}" for i in range(1, 101)]
-    broker = FakeBroker([
-        response("SEARCH_MESSAGES", provider="GMAIL", messages=messages, next_page_token="page"),
-        response("SEARCH_IDS", provider="GMAIL", message_ids=ids, next_page_token="page"),
-    ])
-    receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ids))
-    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
+    messages = [{"id": "m1", "from": "notifications@github.com", "subject": "CI failed"}]
+    replies = []
+    for i in range(25):
+        replies.extend([
+            response("SEARCH_MESSAGES", provider="GMAIL", messages=messages if i == 0 else [],
+                     next_page_token=f"message-{i+1}"),
+            response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"] if i == 0 else [],
+                     next_page_token=f"ids-{i+1}"),
+        ])
+    broker = FakeBroker(replies)
+    receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
     assert receipt["state"] == "PAGINATION_INCOMPLETE_FAIL_CLOSED"
+    assert receipt["pages_scanned"] == 25
     assert receipt["processed_exact_count"] == 0
     assert receipt["archived_count"] == 0
-    assert receipt["retained_unverified_count"] == 100
-    assert receipt["email_observation_is_runtime_evidence"] is False
-    assert receipt["incident_proposals_require_canonical_task_ingress"] is True
+    assert receipt["retained_unverified_count"] == 1
+    assert "ARCHIVE_IDS" not in [name for name, _ in broker.calls]
+
+
+def test_oversized_gmail_summary_page_fails_before_archive(tmp_path):
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL",
+                 messages=[{"id": f"m{i}"} for i in range(101)]),
+    ])
+    import pytest
+    with pytest.raises(RuntimeError, match="LIVE_INBOX_MESSAGE_BATCH_LIMIT_EXCEEDED"):
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES"]
+
+
+def test_duplicate_visible_gmail_rows_fail_before_archive(tmp_path):
+    row = {"id": "m1", "from": "notifications@github.com", "subject": "CI failed"}
+    broker = FakeBroker([
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[row, dict(row)]),
+    ])
+    import pytest
+    with pytest.raises(RuntimeError, match="LIVE_INBOX_DUPLICATE_VISIBLE_MESSAGE_IDS"):
+        M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
+    assert [name for name, _ in broker.calls] == ["SEARCH_MESSAGES"]
 
 
 def test_incident_clustering_reuses_non_authorizing_email_signature_semantics():
@@ -145,15 +174,23 @@ def test_broker_rejects_credential_export(monkeypatch):
 
 
 def test_live_inbox_multi_page_refuses_archive_until_complete(tmp_path):
+    row = lambda mid: {"id": mid, "from": "notifications@github.com", "subject": "CI failed"}
     broker = FakeBroker([
-        response("SEARCH_MESSAGES", provider="GMAIL", messages=[{"id": "m1", "from": "notifications@github.com", "subject": "CI failed"}], next_page_token="page-2"),
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[row("m1")], next_page_token="page-2"),
         response("SEARCH_IDS", provider="GMAIL", message_ids=["m1"], next_page_token="page-2"),
+        response("SEARCH_MESSAGES", provider="GMAIL", messages=[row("m2")]),
+        response("SEARCH_IDS", provider="GMAIL", message_ids=["m2"]),
+        response("ARCHIVE_IDS", archived_ids=["m1"], failed_ids=[]),
+        response("SEARCH_IDS", message_ids=[]),
+        response("GET_LABEL_COUNTS", labels={"INBOX": {"messagesTotal": 1, "messagesUnread": 1}}),
     ])
     receipt = M.run(broker, continuation_path=write_continuation(tmp_path, ["m1"]))
-    assert receipt["state"] == "PAGINATION_INCOMPLETE_FAIL_CLOSED"
-    assert receipt["failed_predicate"] == "LIVE_INBOX_COMPLETE_PAGINATION_NOT_VERIFIED"
-    assert receipt["archived_count"] == 0
-    assert [operation for operation, _ in broker.calls] == ["SEARCH_MESSAGES", "SEARCH_IDS"]
+    assert receipt["state"] == "PASS"
+    assert receipt["pages_scanned"] == 2
+    assert receipt["processed_exact_count"] == 2
+    assert receipt["archived_count"] == 1
+    assert broker.calls[2][1]["next_page_token"] == "page-2"
+    assert broker.calls[3][1]["next_page_token"] == "page-2"
 
 
 def test_archived_replay_empty_page_with_cursor_remains_pending(tmp_path):
