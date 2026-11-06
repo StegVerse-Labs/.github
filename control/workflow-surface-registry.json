@@ -121,8 +121,8 @@
       "classification": "REVIEW_REQUIRED",
       "owner": "STEGVERSE-CANONICAL-WORK-COORDINATION-001 / proposed by Lane D, StegVerse-org/.github#167",
       "reason": "Validation-only verify of the manifest-directed projection of an Organization claim-allocator GRANTED receipt into control/worker-registry.json (contracts/worker-claim-grant-projection-transition.v1.json): for each projection manifest a PR adds, re-derives the worker-registry successor from the live base tip and an anonymous read of refs/stegverse/organization-ledger and requires the head to hold exactly those bytes. contents: read, no dispatch, no push, no ledger append, no claim or fence minted. Proposed as REVIEW_REQUIRED: it may consolidate into a stable dispatcher instead. Registration grants no authority."
-      },
-      {
+    },
+    {
       "path": ".github/workflows/intr-destination-capability-validation.yml",
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-Labs/.github#3200",
@@ -157,6 +157,60 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001",
       "reason": "COMMITTED_REQUEST dispatch of the resident cycle (row 16): a push to main changing .stegverse/resident-cycle/request.json runs resident-runtime/resident_cycle_request.py at the committed epoch; no workflow_dispatch, no inputs, contents read-only"
+    },
+    {
+      "path": ".github/workflows/intr-path-ingress.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162",
+      "reason": "workflow_run observer for InTr path ingress (ACTIONS_BY_MANIFEST_STATE_TRANSITION_TRIGGER_ONLY chain): contents: read only; no workflow_dispatch/schedule; cannot fold into the PR/push dispatcher without dropping the workflow_run edge. Registration grants no runtime, admission, credential, or transition authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/intr-path-transfer.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162",
+      "reason": "workflow_run observer for InTr path transfer: contents: read only; state-transition-triggered; cannot fold into the PR/push dispatcher without dropping the workflow_run edge. Registration grants no runtime, admission, credential, or transition authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/intr-path-transfer-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "INTERLOCK-INTR-RUNTIME-INDEPENDENT-PROTOCOL-001 / StegVerse-org/.github#162",
+      "reason": "validation-only PR/push check for the InTr path-transfer surface (contents: read, no secrets). Kept standalone while the paired workflow_run transfer/ingress observers remain outside the dispatcher; folding only this half would split the InTr path contract. Registration grants no authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/merge-transfer-gitstore-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "validation-only pull_request check for merge-transfer gitstore behavior (contents: read). Paired with organization-ledger merge-transfer/transition surfaces that are not dispatcher-foldable without a design decision. Registration grants no authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-component-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "validation-only PR/push CI for the reusable organization-ledger component: appends nothing and dispatches nothing (C1). Kept standalone with the ledger transition suite until an admitted catalog design covers the writer/reusable halves. Registration grants no runtime ALLOW. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-merge-transfer.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "push-triggered organization-ledger merge-transfer surface (contents: read at workflow permissions; part of the ledger transition suite). Not foldable into the validation dispatcher without an admitted writer/observer design. Registration grants no authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-transition-reusable.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "workflow_call reusable organization-ledger transition (contents: write on the called job). Reusable workflow_call cannot live as a catalog run block; callers pin it by path. Registration grants no new authority. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-transition-validation.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163",
+      "reason": "PR-facing validation half of organization-ledger-transition.yml: every job runs on every trigger with contents: read and no contents: write. Kept with the writer/reusable suite. Registration grants no runtime ALLOW. Credentials belong only in the SKAP Vault inside KV."
+    },
+    {
+      "path": ".github/workflows/organization-ledger-transition.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "ORGANIZATION-LEDGER / StegVerse-org/.github#163 / Lane D draft #3268",
+      "reason": "push-triggered organization-ledger transition surface (class B writer suite companion). Cannot fold into the validation-only dispatcher. P4 registers the live file so workflow-surface hygiene fails closed only on NEW unregistered files; grants no runtime, admission, or credential authority. Credentials belong only in the SKAP Vault inside KV."
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -342,5 +396,22 @@
       "classification": "CONSOLIDATE_INTO_STABLE_DISPATCHER",
       "coverage": "Its tests/ modules -> test-suite-ratchet.yml (ratchet job: whole tests/ suite, every PR and push to main, no path filter; none of these tests is in data/test-suite-baseline.json known_failing or excluded); derived-lifetime invariants -> test-suite-ratchet.yml (consolidated-source-validators job); the SDK curl+pip install is removed: tests.test_mir_sv_exp3_cross_owner_wire_binding now runs in org-runtime-boundary.yml (KEEP_STANDALONE_EXCEPTION), which already fetches and installs the same pinned StegVerse-SDK (now c138cad4c37db0bb675bc2c66515b5558cc5fa7b, which carries stegverse.universal_intr_route_installer), with this workflow's whole path list added to its pull_request filter. No in-repository SDK snapshot exists and vendoring one needs a new fetch, so the SDK is fetched once instead of twice."
     }
-  ]
+  ],
+  "g17_p4_registration_batch": {
+    "session": "P4 Maintenance Lane a65c67bf",
+    "issue": "StegVerse-org/.github#166",
+    "added": [
+      ".github/workflows/intr-path-ingress.yml",
+      ".github/workflows/intr-path-transfer.yml",
+      ".github/workflows/intr-path-transfer-validation.yml",
+      ".github/workflows/merge-transfer-gitstore-validation.yml",
+      ".github/workflows/organization-ledger-component-validation.yml",
+      ".github/workflows/organization-ledger-merge-transfer.yml",
+      ".github/workflows/organization-ledger-transition-reusable.yml",
+      ".github/workflows/organization-ledger-transition-validation.yml",
+      ".github/workflows/organization-ledger-transition.yml"
+    ],
+    "workflow_count": 34,
+    "note": "Registers the nine live workflow files that were failing scripts/validate_workflow_surface_hygiene.py on main. Count stays 34; no safe fold/dispatch-removal remains among writers/secrets/workflow_run/reusable. Remaining workflow_dispatch triggers are heartbeat-worker-project, org-control-plane-validate (secrets), organization-claim-allocator-transition-writer, organization-governance-decision (writers)."
+  }
 }
