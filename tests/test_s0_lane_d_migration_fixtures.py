@@ -230,6 +230,32 @@ class LaneDS0MigrationFixtures(unittest.TestCase):
             self.assertTrue(by_line[m["source_line"]].startswith(m["to"]), m)
             self.assertNotIn(m["from"], {v[:12] for v in by_line.values()})
 
+    def test_pinned_source_repins_are_recorded(self):
+        # CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN (data/sv-work-items/invariants.json):
+        # a consumer re-pins a listed file only when its contract-pins entry changes.
+        # Nothing is re-pinned silently: every pin that differs from the original base
+        # commit has a recorded re-pin whose from-pin names that historical commit.
+        contract = json.loads((ROOT / "data/sv-work-items/contract-pins.json").read_text())["files"]
+        repins = {r["path"]: r for r in self.manifest["pinned_source_repins"]["repins"]}
+        base = self.manifest["base"]["commit"]
+        hexsha = r"^[0-9a-f]{40}$"
+        for pin in self.manifest["pinned_sources"]:
+            entry = contract.get(pin["path"])
+            if entry is not None:
+                self.assertEqual((pin["git_blob"], pin["sha256"]), (entry["blob"], entry["sha256"]), pin["path"])
+            if pin["commit"] == base:
+                self.assertNotIn(pin["path"], repins, pin["path"])
+                continue
+            r = repins[pin["path"]]
+            self.assertEqual(r["to"], {k: pin[k] for k in ("git_blob", "sha256", "commit")}, pin["path"])
+            self.assertEqual(r["from"]["commit"], base, pin["path"])
+            self.assertRegex(r["from"]["git_blob"], hexsha)
+            self.assertRegex(r["from"]["sha256"], r"^sha256:[0-9a-f]{64}$")
+            self.assertNotEqual(r["from"]["git_blob"], r["to"]["git_blob"], pin["path"])
+            self.assertIn(r["from"]["git_blob"], r["historical_pin_verify"])
+            self.assertIn("CONTRACT_PINS_MANIFEST_IS_THE_CONSUMER_PIN", r["cause"])
+        self.assertEqual(set(repins) - {p["path"] for p in self.manifest["pinned_sources"]}, set())
+
     def test_rf1_split_and_line_587(self):
         by_line = {i["projection"]["source_line"]: i for i in self.issues}
         self.assertNotEqual(by_line[591]["issue_id"], by_line[592]["issue_id"])
