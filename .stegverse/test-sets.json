@@ -10704,7 +10704,6 @@
    "heartbeat_runtime/independent_oscillator.py"
   ],
   "org-boundary/runtime/capability_ingress.py": [
-   "org-kernel/kernel.py",
    "org-runtime/interlock-intr.json"
   ],
   "org-boundary/runtime/federation_projection_census.py": [
