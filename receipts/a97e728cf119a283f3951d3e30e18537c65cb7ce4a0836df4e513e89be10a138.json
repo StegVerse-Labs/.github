@@ -1,0 +1,39 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "communication_id": "main-merge-transfer:StegVerse-Labs/.github@a0432b51d20e162581e54fdd8ba3831a17e35352",
+    "disposition": "ALLOW",
+    "merge_commit": "a0432b51d20e162581e54fdd8ba3831a17e35352",
+    "operation": "ORGANIZATION_MAIN_MERGE_TRANSFER",
+    "profile_id": "main-merge-transfer",
+    "repository": "StegVerse-Labs/.github"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 574296107,
+    "frequency_hz": 100,
+    "generation": 574296107,
+    "heartbeat_id": "HB:574296107",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "observed_at": "HB:574296107",
+  "org_transition_class": "REPO_STATE_PROPAGATION",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:c77f7c170579f8d63a6a16a30154ba9e3576f7bb0053659e165ceda6484bf8f5",
+  "previous_receipt_sha256": "sha256:400fac18743a4a8e000940377411b3560017b9ca49e792bf5102d342b4d2ff8f",
+  "receipt_sha256": "sha256:a97e728cf119a283f3951d3e30e18537c65cb7ce4a0836df4e513e89be10a138",
+  "repo_receipt_sha256": "sha256:c83e5ebbe51771f02a815f7214759b95a16f878aa1c2ea3cca3cd06b4a10a2b0",
+  "repo_transition_id": "ORGANIZATION_MAIN_MERGE_TRANSFER:a0432b51d20e162581e54fdd8ba3831a17e35352",
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.repo-transition-receipt/v1",
+  "source_repository": "StegVerse-Labs/.github",
+  "source_transition_id": "ORGANIZATION_MAIN_MERGE_TRANSFER:a0432b51d20e162581e54fdd8ba3831a17e35352",
+  "source_transition_sha256": "sha256:c83e5ebbe51771f02a815f7214759b95a16f878aa1c2ea3cca3cd06b4a10a2b0",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:88218c6a50ac2de026d19b0ac60dcc39f5493b2c77ab6dcadd933915b3fe9240"
+}
