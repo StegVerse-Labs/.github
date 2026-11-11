@@ -1,3 +1,9 @@
+## System division — owner statement
+
+The [system-division record](docs/SYSTEM_DIVISION.md) documents the roles of StegGovernance, manifests, InTr, StegCore and Organization ingress. Governance applies to the data carried by the manifest. InTr transfers between Organizations; each Organization admits at its own ingress under established rules. StegCore applies those rules and records the application. Matched receipts in both Organizations evidence continuity. Tags and published releases identify the SDK of record.
+
+Source work: [DOC-IMPL-001](https://github.com/StegVerse-Labs/.github/issues/3443#issuecomment-6786709429). [Documentation handoff](docs/SYSTEM_DIVISION_DOCUMENTATION_MIRROR_HANDOFF.md) records candidate versus integration evidence under the existing InTr goal.
+
 ## SPPA ephemeral-storage remediation candidate — 2026-10-29
 
 Source-only EC9 support for original-owner Q74-01 coordination on [#2810](https://github.com/StegVerse-Labs/.github/issues/2810). The SPPA consumer reuses the allocator's manifest-declared ephemeral-storage predicate; authorization separately verifies that the repository store shares the declared Organization Git directory and ref. Custody construction failures become the existing fail-closed P3 result. Storage eligibility grants no execution or promotion authority. Authenticating custody bases, claims, fences, InTr/TVC checks, and provider promotion are unchanged.
