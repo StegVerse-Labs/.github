@@ -70,7 +70,7 @@ Trumpality scheduled run `44430113790` completed all 25 source fetches and gener
 `5b80f397b13df1f1c2f6d437e92f5651da1f29c9fff030a83f6c3f629920fcf6`.
 
 Trumpality PR [#23](https://github.com/StegVerse-Labs/Trumpality/pull/23) carries the
-recovery and producer cure at head `60196b28ed8a58a52c27a95718a5770d08b2f9e5`:
+recovery and producer cure at head `898ba47d9033f67a5e2c2ced0a7fe9c6d7775f4d`:
 
 - the current 104,429,829-byte blob is preserved byte-for-byte as immutable segment
   `research_receipts-000000.jsonl`;
@@ -81,6 +81,9 @@ recovery and producer cure at head `60196b28ed8a58a52c27a95718a5770d08b2f9e5`:
   segment before 90 MiB, without LFS or an external service;
 - deterministic adapter tests, workflow YAML parsing, logical count/hash
   reconstruction and exact Git-tree size readback passed.
+- the workflow-surface registry was resealed to workflow SHA-256
+  `0a81b3aad652cf6026ac371e6c8c10eca2f8cd014fdd77aef443880bdb60bca2`
+  after its first validator run correctly failed closed on the predecessor pin.
 
 Disposition remains `ACTIVE / UNCLAIMED / REGISTERED`. The PR is proposed source
 repair, not protected integration or runtime evidence. After merge, a fresh producer
