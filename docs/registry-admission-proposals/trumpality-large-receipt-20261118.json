@@ -1,6 +1,6 @@
 {
   "document_kind": "DOCUMENTARY_OWNER_REVIEW_PROPOSAL_NOT_NATIVE_ADMISSION",
-  "prepared_at": "2026-11-19T01:59:30.677Z",
+  "prepared_at": "2026-11-19T02:07:44.915Z",
   "prepared_by": "CODEX",
   "coordination_task_id": "TRUMPALITY-LARGE-RECEIPT-SUCCESSOR-ADMISSION-001",
   "native_task_id": null,
@@ -167,10 +167,21 @@
     {
       "role": "DISCOVERY_HELPER_REPAIR",
       "url": "https://github.com/StegVerse-Labs/.github/pull/3474",
-      "head": "17bd51d5e0247134f978cc05c34f694b2528f27f",
+      "head": "77c76d119d1ae51c9de4071c382701b2d88fef88",
       "state": "OPEN_DRAFT_UNMERGED",
       "local_cli_tests_passed": 5,
-      "scope": "Repair AttributeError for actual canonical string dependencies/blockers; does not alter collision or admission authority"
+      "scope": "Repair AttributeError for actual canonical string dependencies/blockers; does not alter collision or admission authority",
+      "native_selection_suite_tests_passed": 23,
+      "manifest_cure": {
+        "original_failed_run": 44440315519,
+        "new_findings": 1,
+        "failure_code": "TEST_SET_MANIFEST_STALE",
+        "native_regeneration": true,
+        "manifest_git_blob": "07e38729d90157a4bf47b9a058ce6a9d7a9a3ac7",
+        "manifest_sha256": "6ccc08d702aa0961862497147df997f00970e0c7b9141dd6ae7f490daef8a6c5",
+        "change": "15 added lines: one new CLI set plus surface graph entry; original spec/baseline/inputs/exclusions unchanged",
+        "hosted_new_head_acceptance": "NOT_YET_CLAIMED"
+      }
     }
   ],
   "collision_analysis": {
@@ -229,7 +240,7 @@
     {
       "failure_code": "DISCOVERY_MIXED_REFERENCE_CRASH",
       "failed_predicate": "Main query helper assumes dict references but G326 contains strings",
-      "required_evidence_or_repair": "Review and integrate bounded source fix PR3474 at17bd51d5e0247134f978cc05c34f694b2528f27f or equivalent owner-approved repair",
+      "required_evidence_or_repair": "Review and integrate bounded source fix PR3474 at77c76d119d1ae51c9de4071c382701b2d88fef88 or equivalent owner-approved repair",
       "retry_entrypoint": "scripts/query_canonical_tasks.py",
       "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
       "next_attempt": "After exact-head independent review and protected source integration"

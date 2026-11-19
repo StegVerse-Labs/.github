@@ -34,7 +34,7 @@ The failed run44430113790 produced acquisition data before publication was rejec
 
 ## Discovery repair and remaining conditions
 
-At main34ef695f2a0fcf0d2efd93ce6cb2d6352c510362, the native topic query fails on string dependencies/blockers. Draft PR3474 at17bd51d5e0247134f978cc05c34f694b2528f27f prepares a bounded fix: five CLI tests pass and complete G326 topic queries return one Trumpality and nine ERL research candidates. Those are search results, not uniqueness or collision clearance.
+At main34ef695f2a0fcf0d2efd93ce6cb2d6352c510362, the native topic query fails on string dependencies/blockers. Draft PR3474 at77c76d119d1ae51c9de4071c382701b2d88fef88 prepares a bounded fix: five CLI tests pass and complete G326 topic queries return one Trumpality and nine ERL research candidates. Those are search results, not uniqueness or collision clearance.
 
 The packet deliberately returns FAIL_CLOSED for unassigned child identity and unexecuted full native collision evaluation. Every condition has a named owner and retry entrypoint. No manual user action, new machine, new credential path or new external dependency is required for source review.
 
@@ -45,3 +45,7 @@ Parse the packet as JSON; confirm null child identity/COSV/claim/fence, pinned e
 ## Close-drift review return reconciliation
 
 Non-author ChatGPT verdict ERL PR268/6997125385 is PARTIAL_SOURCE_INSPECTION / NON-ALLOW: exact source/test files were read, but eight tests and twelve captured replay checks were not executed independently. CODEX E carried this return in home3471/6997306516 and pair3472/6997306851, released recorder claim6997310468, and queued the execution-only non-CODEX remainder on Gemini3450/6997300681. That original return is preserved; source-only inspection is not acceptance. The packet now pins it and the qualified execution request. D also queues independent review of its new drafts3474/3475 on ChatGPT3448/6997325990. CODEX remains excluded from accepting its own code.
+
+## Helper CI cure carried forward
+
+Helper PR3474 now pins77c76d119d1ae51c9de4071c382701b2d88fef88. Its first ratchet44440315519 found one new failure TEST_SET_MANIFEST_STALE; the native generator was run on the full source checkout and adds only the new CLI module and surface graph entry. All23 native selection tests pass, including full regeneration equality; baseline/spec/inputs/exclusions are unchanged. New exact-head hosted checks remain a separate integration predicate. The packet carries the regenerated manifest blob/hash and preserves the initial failure as superseded evidence.
