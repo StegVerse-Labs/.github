@@ -1,6 +1,6 @@
 # ERL Research Acquisition Lane Task Registry Registration Mirror Handoff
 
-Updated: 2026-10-17
+Updated: 2026-11-18
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026`
 Issue: `StegVerse-Labs/Executive_Rhetoric_Ledger#223` (item 1)
@@ -61,6 +61,32 @@ The Task Registry mints no execution authority. Worker claims belong to WorkerCo
 
 `tests/test_erl_rc_trump_family_crypto_market_registration.py` checks identity, the lane fields, the items 2 and 3 resolutions (no runtime observation), that the vector equals `encode_task(exact_metrics)` and agrees across record, registry, vector file and index, and that no completion is claimed.
 
+## 2026-11-18 producer receipt-ledger repair
+
+Trumpality scheduled run `44430113790` completed all 25 source fetches and generated
+1,825 new receipts plus 27 candidates, but its push failed because the single
+`research/research_receipts.jsonl` successor was 100.57 MB. The retained artifact
+`14486216257` has ZIP SHA-256
+`5b80f397b13df1f1c2f6d437e92f5651da1f29c9fff030a83f6c3f629920fcf6`.
+
+Trumpality PR [#23](https://github.com/StegVerse-Labs/Trumpality/pull/23) carries the
+recovery and producer cure at head `60196b28ed8a58a52c27a95718a5770d08b2f9e5`:
+
+- the current 104,429,829-byte blob is preserved byte-for-byte as immutable segment
+  `research_receipts-000000.jsonl`;
+- the artifact successor adds segment `research_receipts-000001.jsonl`;
+- the recovered logical stream has 190,270 receipts and SHA-256
+  `cd78fc3724b5ead5bfe08b7171ec609df3c81595cdbd454390459d5d8782933c`;
+- the producer reads the segments in lexical order and rotates the writable final
+  segment before 90 MiB, without LFS or an external service;
+- deterministic adapter tests, workflow YAML parsing, logical count/hash
+  reconstruction and exact Git-tree size readback passed.
+
+Disposition remains `ACTIVE / UNCLAIMED / REGISTERED`. The PR is proposed source
+repair, not protected integration or runtime evidence. After merge, a fresh producer
+cycle and ERL consumer intake must both succeed before recording runtime propagation.
+
 ## Human action
 
 None.
+
