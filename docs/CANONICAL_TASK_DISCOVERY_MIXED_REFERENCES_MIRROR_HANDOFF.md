@@ -19,3 +19,7 @@ Run `python -m unittest discover -s tests -p test_query_canonical_tasks.py -v`.
 Run the discovery command above on the complete current aggregate, and repeat with `--include-closed ERL research`. Search results are candidates, never proof of uniqueness or collision clearance. The full collision evaluator and authority-owner registration process in docs/TASK_REGISTRATION_GUIDE.md remain required.
 
 This is source preparation for owner review. Merge, native registration, WorkerCoordinator claim/fence, runtime observation, and completion are not asserted. Read the PR's exact-head checks before integration; rebase and rerun on any change to main.
+
+## CI manifest cure
+
+The first exact-head ratchet run44440315519 failed with sole new finding TEST_SET_MANIFEST_STALE because the new CLI regression module was absent from the generated inventory. Regenerated .stegverse/test-sets.json using the unchanged native script/spec on the full exact-head Git checkout: one test set and its surface-graph entry added (15 lines); existing spec, baseline, inputs and exclusions unchanged. Generated manifest SHA256 6ccc08d702aa0961862497147df997f00970e0c7b9141dd6ae7f490daef8a6c5. The native test-set selection suite passes, including full repository regeneration equality. Old run's 144 total failures include retained baseline failures; only the stale manifest was new. Current exact-head hosted checks must still be read before protected integration.
