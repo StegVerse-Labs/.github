@@ -29,9 +29,15 @@ def searchable(task: dict[str, Any]) -> str:
     for key in ("organizations", "repositories", "components"):
         parts.extend(str(x) for x in targets.get(key, []))
     for dep in task.get("dependencies", []):
-        parts.extend(str(dep.get(k, "")) for k in ("dependency_id", "kind", "state", "ref"))
+        if isinstance(dep, str):
+            parts.append(dep)
+        else:
+            parts.extend(str(dep.get(k, "")) for k in ("dependency_id", "kind", "state", "ref"))
     for blocker in task.get("blockers", []):
-        parts.extend(str(blocker.get(k, "")) for k in ("blocker_id", "dependency_id", "reason"))
+        if isinstance(blocker, str):
+            parts.append(blocker)
+        else:
+            parts.extend(str(blocker.get(k, "")) for k in ("blocker_id", "dependency_id", "reason"))
     parts.extend(str(x) for x in task.get("adjacent_task_refs", []))
     parts.extend(str(x) for x in task.get("existing_evidence_refs", []))
     parts.extend(str(x) for x in task.get("expected_evidence_predicates", []))
