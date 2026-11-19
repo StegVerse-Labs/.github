@@ -41,3 +41,7 @@ The packet deliberately returns FAIL_CLOSED for unassigned child identity and un
 ## Validation
 
 Parse the packet as JSON; confirm null child identity/COSV/claim/fence, pinned existing parent and source heads, evidence-class boundaries, six-field dispositions, and consumer-before-producer ordering. Reread the exact proposed files and PR file list before filing. This preparation changes only this handoff, its packet, and a README link; canonical registry/vector/native owner records are unchanged.
+
+## Close-drift review return reconciliation
+
+Non-author ChatGPT verdict ERL PR268/6997125385 is PARTIAL_SOURCE_INSPECTION / NON-ALLOW: exact source/test files were read, but eight tests and twelve captured replay checks were not executed independently. CODEX E carried this return in home3471/6997306516 and pair3472/6997306851, released recorder claim6997310468, and queued the execution-only non-CODEX remainder on Gemini3450/6997300681. That original return is preserved; source-only inspection is not acceptance. The packet now pins it and the qualified execution request. D also queues independent review of its new drafts3474/3475 on ChatGPT3448/6997325990. CODEX remains excluded from accepting its own code.
