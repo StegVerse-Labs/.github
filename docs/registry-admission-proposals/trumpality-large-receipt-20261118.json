@@ -1,0 +1,237 @@
+{
+  "document_kind": "DOCUMENTARY_OWNER_REVIEW_PROPOSAL_NOT_NATIVE_ADMISSION",
+  "prepared_at": "2026-11-19T01:55:41.882Z",
+  "prepared_by": "CODEX",
+  "coordination_task_id": "TRUMPALITY-LARGE-RECEIPT-SUCCESSOR-ADMISSION-001",
+  "native_task_id": null,
+  "native_cosv_id": null,
+  "native_owner_assignment": null,
+  "authority_effect": "NONE",
+  "worker_claim_ref": null,
+  "worker_fence_ref": null,
+  "requested_goal": "Conserve the complete Trumpality receipt history and failed-cycle artifact, repair append growth and commit-pinned ERL intake compatibility, then verify an authorized producer-to-intake publication without altering ERL evaluation authority.",
+  "owner_issue": "https://github.com/StegVerse-Labs/.github/issues/3195",
+  "owning_repository": "StegVerse-Labs/Executive_Rhetoric_Ledger",
+  "incident_issue": "https://github.com/StegVerse-Labs/Trumpality/issues/22",
+  "parent_issue": "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/223",
+  "existing_queue_task": "https://github.com/StegVerse-Labs/.github/issues/3444#issuecomment-6873219647",
+  "base": {
+    "repository": "StegVerse-Labs/.github",
+    "commit": "34ef695f2a0fcf0d2efd93ce6cb2d6352c510362",
+    "registry_generation": 326,
+    "registry_blob": "96f4f1a9212cdda301a05c9075e0e5b09735ba83",
+    "task_count": 122
+  },
+  "authenticated_parent": {
+    "task_id": "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
+    "cosv_id": "10100000110012",
+    "coordination_state": "ACTIVE",
+    "checkout_state": "UNCLAIMED",
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "handoff": "docs/ERL_RC_TRUMP_FAMILY_CRYPTO_MARKET_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+    "handoff_blob": "a06ea60311ba37a563b490cdd8dfd58664b9214c",
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "runtime_observed": false
+    }
+  },
+  "requested_identity_disposition": "OWNER_DECISION_REQUIRED_NEW_CHILD_OF_EXISTING_OPEN_ERL_OWNER_OR_EXPLICIT_EXISTING_IDENTITY_CONVERGENCE; never reuse the old closed incident merely because the aggregate is ACTIVE",
+  "historical_incident": {
+    "native_task_id": "ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001",
+    "native_cosv_id": "10100000111000",
+    "aggregate_coordination_state": "ACTIVE",
+    "aggregate_checkout_state": "UNCLAIMED",
+    "source_task_file": "StegVerse-Labs/StegHealth:tasks/ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001.json",
+    "source_task_blob": "f9944dc59d7f42e5d1598d1a1344d261e9fde0a6",
+    "source_task_state": "REGISTERED_REMEDIATION_INITIATED",
+    "source_task_parent": "ERL-ACTIVE-RESEARCH-ACQUISITION-001",
+    "source_task_parent_issue": "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/issues/132",
+    "parent_issue_state": "CLOSED",
+    "incident_issue": "https://github.com/StegVerse-Labs/StegHealth/issues/98",
+    "incident_issue_state": "CLOSED",
+    "closure_evidence": "https://github.com/StegVerse-Labs/StegHealth/issues/98#issuecomment-5760560733",
+    "closure_evidence_class": "OWNER_FILED_CLOSURE_ASSERTION; linked recovery runs were not independently replayed during this preparation",
+    "historical_scope": [
+      "producer adapter malformed JSON",
+      "Ruben Ray Martinez monitor",
+      "Administrations active research"
+    ],
+    "current_scope": "GitHub receipt blob growth beyond 100 MiB plus segmented producer/intake compatibility",
+    "required_reconciliation": "Preserve old history; Registry/StegHealth owner reconcile closed issue and initiated task/ACTIVE aggregate against exact recovery evidence. No automatic retirement or reopening from issue state alone."
+  },
+  "targets": {
+    "repositories": [
+      "StegVerse-Labs/Trumpality",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger",
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "research-receipt-conservation",
+      "receipt-segmentation-publication",
+      "commit-pinned-segment-intake",
+      "failed-cycle-artifact-retention",
+      "native-incident-admission-reconciliation"
+    ]
+  },
+  "evidence": [
+    {
+      "class": "NATIVE_FAILED_WORKFLOW_OBSERVATION",
+      "run": "https://github.com/StegVerse-Labs/Trumpality/actions/runs/44430113790",
+      "job": "135245030129",
+      "head": "925660549f656b94c2d358078c4a5853678bba04",
+      "result": "producer acquired 1825 scan receipts and 27 candidates; local cycle ALLOW preceded rejected GH001 git push, so publication/intake is unproven"
+    },
+    {
+      "class": "RETAINED_FAILED_CYCLE_ARTIFACT",
+      "artifact_id": 14486216257,
+      "bytes": 6386054,
+      "sha256": "5b80f397b13df1f1c2f6d437e92f5651da1f29c9fff030a83f6c3f629920fcf6",
+      "expires_at": "2027-02-17T00:34:40Z",
+      "custody_drive_file": "1PDPt0BPg-a8v9ETB62VLfKRPTOdzr9kc",
+      "custody_bundle_bytes": 6400765,
+      "custody_bundle_sha256": "4e67b0cc6ea58273b1183ef5c7b19287a84e95472d14a903c5e6733fa6db20e1",
+      "bundle_library_file": "libfile_fce5486e9ca8819186ec22874dd9f804"
+    },
+    {
+      "class": "CAPTURED_INPUT_CONSERVATION",
+      "report": "https://github.com/StegVerse-Labs/.github/issues/3443#issuecomment-6996227595",
+      "checks_passed": 22,
+      "receipt_bytes": 105452740,
+      "receipt_rows": 190270,
+      "receipt_sha256": "cd78fc3724b5ead5bfe08b7171ec609df3c81595cdbd454390459d5d8782933c",
+      "committed_prefix_bytes": 104429829,
+      "committed_prefix_rows": 188445,
+      "committed_prefix_git_blob": "ff07e3cfe28a580454df4665de31a2deaddccff1",
+      "delta_bytes": 1022911,
+      "delta_git_blob": "4236ef740756d65cc79d8ee5e286abf68ffb9e95",
+      "candidate_rows": 865,
+      "transition_id": "TRN-f64a6492797813ec0dd31734",
+      "cycle_id": "6d9d56bc21ea8327224f2368",
+      "not_proof_of": "sovereign runtime, published producer head, new production intake, or incident completion"
+    },
+    {
+      "class": "SOURCE_CI_AND_CAPTURED_REPLAY",
+      "report": "https://github.com/StegVerse-Labs/.github/issues/3443#issuecomment-6996944104",
+      "consumer_test_count": 8,
+      "captured_replay_checks": 12,
+      "logical_receipt_hash_preserved": true,
+      "captured_prefix_append_only": true,
+      "retry_new_candidates": 0,
+      "consumer_ci_runs": [
+        44437550198,
+        44437550173,
+        44437550117,
+        44437550199,
+        44437543951
+      ],
+      "production_intake_steps": "SKIPPED in 44437550117; read-only historical producer readback and regression tests only",
+      "custody_drive_file": "1rdE1jHd14BZAJuIuhfAQEtqyFZnoqMOJ",
+      "custody_bundle_bytes": 6407761,
+      "custody_bundle_sha256": "5c3aa67ed6caea8ada50562bc60052bde1bb87f3dd1eb330084c75e9b7a86a11",
+      "bundle_library_file": "libfile_88c97c7fc728819185d8e8c9b60724e9"
+    }
+  ],
+  "repairs": [
+    {
+      "role": "CONSUMER_LAND_FIRST",
+      "url": "https://github.com/StegVerse-Labs/Executive_Rhetoric_Ledger/pull/268",
+      "head": "7442b862ab17b8ace79cd5f7dfc16d24beec0764",
+      "base": "9ece8074c43d3a05ca39ef000d3c8f2aec632456",
+      "state": "OPEN_DRAFT_UNMERGED",
+      "scope": "Legacy or contiguous segment receipt input, full commit-pinned Git tree, exact Git blob validation, no ambiguity/gaps/symlink/cross-boundary acceptance; eight tests plus captured replay",
+      "handoff": "docs/TRUMPALITY_SEGMENTED_RECEIPT_INTAKE_MIRROR_HANDOFF.md"
+    },
+    {
+      "role": "PRODUCER_AFTER_CONSUMER",
+      "url": "https://github.com/StegVerse-Labs/Trumpality/pull/23",
+      "head": "898ba47d9033f67a5e2c2ced0a7fe9c6d7775f4d",
+      "base": "925660549f656b94c2d358078c4a5853678bba04",
+      "state": "OPEN_UNMERGED",
+      "ci_run": 44433625446,
+      "scope": "Retain legacy history in segment 000000, failed-cycle delta in 000001; rotate bounded receipt append; workflow changes",
+      "remaining_review": "Producer append transaction, whole-history manifest/format adoption, and concurrent runner conservation not established by consumer fixtures"
+    },
+    {
+      "role": "CENTRAL_HANDOFF_RECONCILIATION",
+      "url": "https://github.com/StegVerse-Labs/.github/pull/3473",
+      "head": "9a90852c2b1af4d764404de228b01875f8936752",
+      "state": "OPEN_UNMERGED",
+      "remaining_review": "Bind consumer PR268 before producer PR23; preserve native identity and runtime nonclaims. Do not overwrite another lane's branch."
+    },
+    {
+      "role": "DISCOVERY_HELPER_REPAIR",
+      "url": "https://github.com/StegVerse-Labs/.github/pull/3474",
+      "head": "17bd51d5e0247134f978cc05c34f694b2528f27f",
+      "state": "OPEN_DRAFT_UNMERGED",
+      "local_cli_tests_passed": 5,
+      "scope": "Repair AttributeError for actual canonical string dependencies/blockers; does not alter collision or admission authority"
+    }
+  ],
+  "collision_analysis": {
+    "disposition": "FAIL_CLOSED_CANONICAL_REGISTRY_READBACK_OR_COLLISION_CHECK_UNVERIFIED",
+    "aggregate_readback": "COMPLETE_G326_122_ROWS",
+    "discovery": "Repaired native query returns one Trumpality candidate and nine ERL research candidates; original main helper crashes on mixed references",
+    "native_collision_evaluator": "NOT_EXECUTED_AGAINST_FULL_NATIVE_UNION_AND_RECENT_EVENT_LEDGER; new incident has no assigned native identity",
+    "native_shard_count_in_tree": 215,
+    "candidate_records": [
+      "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
+      "ERL-ACTIVE-RESEARCH-ACQUISITION-FAILURE-REMEDIATION-20260920-001"
+    ],
+    "semantic_overlap": "Existing parent owns acquisition/intake; historical child owns three September defects. Route incident22 to that existing acquisition owner, request a distinct child identity if owner confirms; don't infer uniqueness from topic search.",
+    "required_owner_action": "Run scripts/evaluate_task_registry_collision_checkin.py against fresh aggregate, registered enrichments, all omitted owner-held shards, caller policy/global invariants and recent event ledger; resolve STOP_COLLISION or COORDINATE_CONVERGENCE before native mutation."
+  },
+  "independent_review_requests": [
+    "https://github.com/StegVerse-Labs/.github/issues/3448#issuecomment-6996944630"
+  ],
+  "proposed_handoff": "docs/TRUMPALITY_LARGE_RECEIPT_ADMISSION_PREPARATION_MIRROR_HANDOFF.md",
+  "proposed_handoff_status": "DOCUMENTARY_PREPARATION; owner must bind actual child ID/COSV and canonical handoff upon native admission",
+  "dependencies": [
+    "Registry owner collision/identity decision and governed admission",
+    "Independent non-CODEX review of consumer PR268 and producer PR23",
+    "consumer268 integrated before producer23",
+    "Producer transaction/whole-history manifest and concurrency conservation proof",
+    "Exact-head branch protection and checks",
+    "Authorized single-use current transition; no blind rerun",
+    "Published producer bytes and commit-pinned ERL intake plus organization ledger/custody/reconstruction evidence"
+  ],
+  "forbidden_shortcuts": [
+    "No existing child ID reuse for the new storage incident without owner reconciliation",
+    "No new host, framework, dependency, alternate custody or credentials",
+    "No truncate, deduplicate, delete, rewrite history, LFS, external blob store or blind rerun",
+    "No CI/local ALLOW promoted to production publication or sovereign runtime",
+    "Do not adopt unmerged PR3233 or PR3459 as deployed admission mechanisms"
+  ],
+  "next_admissible_transition": "EXISTING_REGISTRY_OWNER_REVIEW_THIS_PACKET_AND_RESOLVE_IDENTITY_COLLISIONS; after governed admission reread committed aggregate+exact shard+COSV; then normal HANDOFF_READY admission review and WorkerCoordinator claim/fence only as applicable",
+  "error_dispositions": [
+    {
+      "failure_code": "NEW_INCIDENT_NATIVE_CHILD_IDENTITY_UNASSIGNED",
+      "failed_predicate": "Current receipt-size incident has no authenticated distinct native Goal Task ID/COSV/admission",
+      "required_evidence_or_repair": "Registry owner decide convergence or new child, assign ID/COSV through existing governed process and publish matching aggregate/shard/handoff with admission evidence",
+      "retry_entrypoint": "docs/TASK_REGISTRATION_GUIDE.md and owner #3195, existing queued task3444/6873219647",
+      "owning_existing_goal": "ERL-RC-TRUMP-FAMILY-CRYPTO-MARKET-2026",
+      "next_attempt": "Registry owner pickup of this source proposal; no user device/credential action requested"
+    },
+    {
+      "failure_code": "CANONICAL_REGISTRY_READBACK_OR_COLLISION_CHECK_UNVERIFIED",
+      "failed_predicate": "Fresh full-union native collision evaluation has not been executed for a proposed child",
+      "required_evidence_or_repair": "Owner run existing evaluator on fresh current generation including omitted owner-held shards/recent event history; do not treat search count as clearance",
+      "retry_entrypoint": "scripts/evaluate_task_registry_collision_checkin.py",
+      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "next_attempt": "Before any native ID allocation, Registry mutation or execution claim"
+    },
+    {
+      "failure_code": "DISCOVERY_MIXED_REFERENCE_CRASH",
+      "failed_predicate": "Main query helper assumes dict references but G326 contains strings",
+      "required_evidence_or_repair": "Review and integrate bounded source fix PR3474 at17bd51d5e0247134f978cc05c34f694b2528f27f or equivalent owner-approved repair",
+      "retry_entrypoint": "scripts/query_canonical_tasks.py",
+      "owning_existing_goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "next_attempt": "After exact-head independent review and protected source integration"
+    }
+  ]
+}
