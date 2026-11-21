@@ -1,0 +1,233 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001",
+  "correlation_id": "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001",
+  "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "goal": "Own, as a named and bounded goal, the await surfaces (polls, retries, schedules and validation-time resolution) that the organization-role standard requires to be manifest-bound state transitions but that no canonical task record names, so each holds a registered exemption with an actionable FAIL_CLOSED disposition; each surface is released to its specific owner as soon as one is declared, or retired once converted.",
+  "coordination_state": "PROPOSED",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10900000009000",
+    "source_state_vector_ref": "control/task-vectors/AWAIT-SURFACE-TRANSITION-OWNERSHIP-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/AWAIT_SURFACE_TRANSITION_OWNERSHIP_MIRROR_HANDOFF.md",
+    "data/organization-role-exemption-register.json",
+    "StegVerse-Labs/.github#3183 comment 6256315196"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/Site"
+    ],
+    "components": [
+      "scripts/restart_sovereign_ephemeral_node.py::_wait_for_worker_tick",
+      ".github/workflows/hil-live-probe.yml",
+      "scripts/check_hil_deployed_controlled_cycle_evidence.py::valid_https_origin",
+      "scripts/check_evaluator_review_public.py::fetch",
+      ".github/workflows/verify-nvidia-hf-publication.yml",
+      ".github/workflows/verify-thought-experiments-publication.yml"
+    ],
+    "repository_components": {
+      "StegVerse-Labs/.github": [
+        "scripts/restart_sovereign_ephemeral_node.py::_wait_for_worker_tick"
+      ],
+      "StegVerse-Labs/Site": [
+        ".github/workflows/hil-live-probe.yml",
+        "scripts/check_hil_deployed_controlled_cycle_evidence.py::valid_https_origin",
+        "scripts/check_evaluator_review_public.py::fetch",
+        ".github/workflows/verify-nvidia-hf-publication.yml",
+        ".github/workflows/verify-thought-experiments-publication.yml"
+      ]
+    }
+  },
+  "dependencies": [
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+  ],
+  "blockers": [
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "SURFACE_SPECIFIC_OWNING_GOAL_NOT_DECLARED",
+      "failed_predicate": "SURFACE_HAS_A_SPECIFIC_OWNING_GOAL:StegVerse-Labs/.github:scripts/restart_sovereign_ephemeral_node.py::_wait_for_worker_tick",
+      "satisfying_edge": "a canonical task record whose goal covers StegVerse-Labs/.github scripts/restart_sovereign_ephemeral_node.py::_wait_for_worker_tick lists it in targets.components and takes over its exemption entry, or the surface is converted to a manifest-bound transition or retired; this record then drops the component",
+      "required_evidence_or_repair": "the owner of StegVerse-Labs/.github names the goal that owns scripts/restart_sovereign_ephemeral_node.py::_wait_for_worker_tick; until then this record owns it and its exemption entry",
+      "retry_entrypoint": "StegVerse-Labs/.github:data/organization-role-exemption-register.json and scripts/validate_task_registry_global_invariants.py",
+      "owning_existing_goal": "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001",
+      "next_attempt": "when the surface's owning goal is declared or the surface is converted",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:StegVerse-Labs/.github#3183 comment 6256315196 (R-P3 NO_OWNING_TASK); StegVerse-Labs/.github@978b8880"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "SURFACE_SPECIFIC_OWNING_GOAL_NOT_DECLARED",
+      "failed_predicate": "SURFACE_HAS_A_SPECIFIC_OWNING_GOAL:StegVerse-Labs/Site:.github/workflows/hil-live-probe.yml",
+      "satisfying_edge": "a canonical task record whose goal covers StegVerse-Labs/Site .github/workflows/hil-live-probe.yml lists it in targets.components and takes over its exemption entry, or the surface is converted to a manifest-bound transition or retired; this record then drops the component",
+      "required_evidence_or_repair": "the owner of StegVerse-Labs/Site names the goal that owns .github/workflows/hil-live-probe.yml; until then this record owns it and its exemption entry",
+      "retry_entrypoint": "StegVerse-Labs/.github:data/organization-role-exemption-register.json and scripts/validate_task_registry_global_invariants.py",
+      "owning_existing_goal": "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001",
+      "next_attempt": "when the surface's owning goal is declared or the surface is converted",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:StegVerse-Labs/.github#3183 comment 6256315196 (R-P3 NO_OWNING_TASK); StegVerse-Labs/Site@a7071d44"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "SURFACE_SPECIFIC_OWNING_GOAL_NOT_DECLARED",
+      "failed_predicate": "SURFACE_HAS_A_SPECIFIC_OWNING_GOAL:StegVerse-Labs/Site:scripts/check_hil_deployed_controlled_cycle_evidence.py::valid_https_origin",
+      "satisfying_edge": "a canonical task record whose goal covers StegVerse-Labs/Site scripts/check_hil_deployed_controlled_cycle_evidence.py::valid_https_origin lists it in targets.components and takes over its exemption entry, or the surface is converted to a manifest-bound transition or retired; this record then drops the component",
+      "required_evidence_or_repair": "the owner of StegVerse-Labs/Site names the goal that owns scripts/check_hil_deployed_controlled_cycle_evidence.py::valid_https_origin; until then this record owns it and its exemption entry",
+      "retry_entrypoint": "StegVerse-Labs/.github:data/organization-role-exemption-register.json and scripts/validate_task_registry_global_invariants.py",
+      "owning_existing_goal": "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001",
+      "next_attempt": "when the surface's owning goal is declared or the surface is converted",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:StegVerse-Labs/.github#3183 comment 6256315196 (R-P3 NO_OWNING_TASK); StegVerse-Labs/Site@a7071d44"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "SURFACE_SPECIFIC_OWNING_GOAL_NOT_DECLARED",
+      "failed_predicate": "SURFACE_HAS_A_SPECIFIC_OWNING_GOAL:StegVerse-Labs/Site:scripts/check_evaluator_review_public.py::fetch",
+      "satisfying_edge": "a canonical task record whose goal covers StegVerse-Labs/Site scripts/check_evaluator_review_public.py::fetch lists it in targets.components and takes over its exemption entry, or the surface is converted to a manifest-bound transition or retired; this record then drops the component",
+      "required_evidence_or_repair": "the owner of StegVerse-Labs/Site names the goal that owns scripts/check_evaluator_review_public.py::fetch; until then this record owns it and its exemption entry",
+      "retry_entrypoint": "StegVerse-Labs/.github:data/organization-role-exemption-register.json and scripts/validate_task_registry_global_invariants.py",
+      "owning_existing_goal": "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001",
+      "next_attempt": "when the surface's owning goal is declared or the surface is converted",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:StegVerse-Labs/.github#3183 comment 6256315196 (R-P3 NO_OWNING_TASK); StegVerse-Labs/Site@a7071d44"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "SURFACE_SPECIFIC_OWNING_GOAL_NOT_DECLARED",
+      "failed_predicate": "SURFACE_HAS_A_SPECIFIC_OWNING_GOAL:StegVerse-Labs/Site:.github/workflows/verify-nvidia-hf-publication.yml",
+      "satisfying_edge": "a canonical task record whose goal covers StegVerse-Labs/Site .github/workflows/verify-nvidia-hf-publication.yml lists it in targets.components and takes over its exemption entry, or the surface is converted to a manifest-bound transition or retired; this record then drops the component",
+      "required_evidence_or_repair": "the owner of StegVerse-Labs/Site names the goal that owns .github/workflows/verify-nvidia-hf-publication.yml; until then this record owns it and its exemption entry",
+      "retry_entrypoint": "StegVerse-Labs/.github:data/organization-role-exemption-register.json and scripts/validate_task_registry_global_invariants.py",
+      "owning_existing_goal": "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001",
+      "next_attempt": "when the surface's owning goal is declared or the surface is converted",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:StegVerse-Labs/.github#3183 comment 6256315196 (R-P3 NO_OWNING_TASK); StegVerse-Labs/Site@a7071d44"
+      ]
+    },
+    {
+      "disposition": "FAIL_CLOSED",
+      "evidence_class": "SOURCE_VALIDATION",
+      "consequence_committed": false,
+      "failure_code": "SURFACE_SPECIFIC_OWNING_GOAL_NOT_DECLARED",
+      "failed_predicate": "SURFACE_HAS_A_SPECIFIC_OWNING_GOAL:StegVerse-Labs/Site:.github/workflows/verify-thought-experiments-publication.yml",
+      "satisfying_edge": "a canonical task record whose goal covers StegVerse-Labs/Site .github/workflows/verify-thought-experiments-publication.yml lists it in targets.components and takes over its exemption entry, or the surface is converted to a manifest-bound transition or retired; this record then drops the component",
+      "required_evidence_or_repair": "the owner of StegVerse-Labs/Site names the goal that owns .github/workflows/verify-thought-experiments-publication.yml; until then this record owns it and its exemption entry",
+      "retry_entrypoint": "StegVerse-Labs/.github:data/organization-role-exemption-register.json and scripts/validate_task_registry_global_invariants.py",
+      "owning_existing_goal": "AWAIT-SURFACE-TRANSITION-OWNERSHIP-001",
+      "next_attempt": "when the surface's owning goal is declared or the surface is converted",
+      "evidence_refs": [
+        "SOURCE_RECORD_ONLY:StegVerse-Labs/.github#3183 comment 6256315196 (R-P3 NO_OWNING_TASK); StegVerse-Labs/Site@a7071d44"
+      ]
+    }
+  ],
+  "expected_evidence_predicates": [
+    "EVERY_LISTED_SURFACE_HAS_A_SPECIFIC_OWNING_GOAL_OR_IS_CONVERTED_OR_RETIRED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "ownership_projection"
+    ],
+    "environment": "DOCUMENTARY_NON_AUTHORIZING",
+    "direction": "REGISTRY_TO_EXEMPTION_REGISTER_PROJECTION",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/AWAIT_SURFACE_TRANSITION_OWNERSHIP_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "SURFACE_RELEASED_TO_SPECIFIC_OWNING_GOAL",
+    "SURFACE_CONVERTED_TO_MANIFEST_BOUND_TRANSITION",
+    "SURFACE_RETIRED_WITH_EQUIVALENCE_EVIDENCE"
+  ],
+  "authority_model": {
+    "transport_protocol": "NONE",
+    "participating_runtime_authority": "NONE",
+    "stegverse_output_governance": "STEGVERSE",
+    "external_framework_governance": "NOT_ASSUMED"
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "authority_effect": "NONE"
+}
