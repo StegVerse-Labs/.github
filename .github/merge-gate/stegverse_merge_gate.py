@@ -1,1 +1,295 @@
-IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJTVC0wMTkgbWVyZ2UtYWRtaXNzaW9uIGdhdGUgKFNUMDE5LU1FUkdFLUFETUlTU0lPTi0wMDE7IG5vbi1hdXRob3JpemluZywgc3RkbGliIG9ubHkpLgoKQ2Fub25pY2FsIHNvdXJjZTogU3RlZ1ZlcnNlLUxhYnMvcmVwby1zdGFuZGFyZHMgdGVtcGxhdGVzL21lcmdlLWdhdGUvc3RlZ3ZlcnNlX21lcmdlX2dhdGUucHkuCgpSdW5zIGFzIHRoZSBzaW5nbGUgYWx3YXlzLXJ1bm5pbmcgcmVxdWlyZWQgY2hlY2sgdGhhdCB0aGUgb3JnIHJ1bGVzZXQncwpgd29ya2Zsb3dzYCBydWxlIGluamVjdHMgaW50byBldmVyeSBwdWxsIHJlcXVlc3Qgb24gYSBkZWZhdWx0IGJyYW5jaC4gSXQgbmV2ZXIKbXV0YXRlcyBhbnl0aGluZzsgaXQgcmVhZHMgdGhlIFBSIGV2ZW50LCB0aGUgY2hlY2tlZC1vdXQgbWVyZ2UgY2FuZGlkYXRlIGFuZAp0aGUgY3VycmVudCBiYXNlIHRpcCwgYW5kIGVtaXRzIGV4YWN0bHkgb25lIGRpc3Bvc2l0aW9uOgoKICBBTExPVyAgICAgICAgZXZlcnkgcHJlZGljYXRlIGhlbGQgYW5kIGV2aWRlbmNlIHdhcyBvYnNlcnZlZAogIERFTlkgICAgICAgICBhIHByZWRpY2F0ZSB3YXMgb2JzZXJ2ZWQgdG8gZmFpbCAoZHJhZnQsIHN0YWxlIGdlbmVyYXRpb24sIGZhaWxlZCB0YXNrKQogIEZBSUxfQ0xPU0VEICBhIHByZWRpY2F0ZSBjb3VsZCBub3QgYmUgZXZhbHVhdGVkIChtaXNzaW5nIGV2ZW50LCB1bnJlYWRhYmxlIGJhc2UsCiAgICAgICAgICAgICAgIGRlY2xhcmVkIHZhbGlkYXRpb24gYWJzZW50IHdoZXJlIHRoZSB0aWVyIHJlcXVpcmVzIGl0KQoKRXZlcnkgbm9uLUFMTE9XIGNhcnJpZXMgdGhlIHNpeCBhY3Rpb25hYmxlLWRpc3Bvc2l0aW9uIGZpZWxkcyB1c2VkIGJ5ClN0ZWdWZXJzZS1MYWJzLy5naXRodWIgZG9jcy9VU0VSX0ZBQ0lOR19FWFBMQU5BVElPTl9DT05UUkFDVF9NSVJST1JfSEFORE9GRi5tZDoKZmFpbHVyZV9jb2RlLCBmYWlsZWRfcHJlZGljYXRlLCByZXF1aXJlZF9ldmlkZW5jZV9vcl9yZXBhaXIsIHJldHJ5X2VudHJ5cG9pbnQsCm93bmluZ19leGlzdGluZ19nb2FsLCBuZXh0X2F0dGVtcHQuCgpXaHkgdGhpcyBleGlzdHM6IEdpdEh1YiByZXBvcnRzIGEgam9iIHNraXBwZWQgYnkgYGlmOmAgYXMgc3VjY2VzcyBmb3IgYQpyZXF1aXJlZCBjaGVjaywgYW5kIGEgd29ya2Zsb3cgc2tpcHBlZCBieSBhIGBwYXRoczpgIGZpbHRlciBuZXZlciByZXBvcnRzIGF0CmFsbC4gVGhpcyBqb2IgaGFzIG5vIGBpZjpgIGFuZCBubyBwYXRoIGZpbHRlciwgc28gaXQgY2Fubm90IGJlIHNraXBwZWQsIGFuZAppdCBydW5zIHRoZSByZXBvc2l0b3J5J3MgZGVjbGFyZWQgdmFsaWRhdGlvbiBpdHNlbGYgaW5zdGVhZCBvZiB0cnVzdGluZwpzaWJsaW5nIGNoZWNrcyAod2hpY2ggd291bGQgbmVlZCB3YWl0aW5nL3BvbGxpbmcgdG8gb2JzZXJ2ZSkuCiIiIgpmcm9tIF9fZnV0dXJlX18gaW1wb3J0IGFubm90YXRpb25zCgppbXBvcnQgYXJncGFyc2UKaW1wb3J0IGhhc2hsaWIKaW1wb3J0IGpzb24KaW1wb3J0IG9zCmltcG9ydCByZQppbXBvcnQgc3VicHJvY2VzcwppbXBvcnQgc3lzCmZyb20gZGF0ZXRpbWUgaW1wb3J0IGRhdGV0aW1lLCB0aW1lem9uZQpmcm9tIHBhdGhsaWIgaW1wb3J0IFBhdGgKZnJvbSB0eXBpbmcgaW1wb3J0IEFueQoKUE9MSUNZX0lEID0gIlNURUdWRVJTRS1SRVBPU0lUT1JZLVBST1RFQ1RJT04tMDAxIgpQUk9GSUxFX0lEID0gIlNUMDE5LU1FUkdFLUFETUlTU0lPTi0wMDEiCk9XTklOR19HT0FMID0gIlNULTAxOSBSZXBvc2l0b3J5IFByb3RlY3Rpb24gKFN0ZWdWZXJzZS1MYWJzL3JlcG8tc3RhbmRhcmRzKSAvIFNURUdIRUFMVEgtRUNPU1lTVEVNLUZBSUxVUkUtUkVNRURJQVRJT04tMDAxIgoKIyBDb3BpZWQgZnJvbSByZXBvLXN0YW5kYXJkcyBjb25maWcvcmVwb3NpdG9yeS1wcm90ZWN0aW9uLXBvbGljeS5qc29uOyB0aGUKIyByZXBvLXN0YW5kYXJkcyB0ZXN0IHN1aXRlIGZhaWxzIGlmIGVpdGhlciBjb3B5IGRyaWZ0cyBmcm9tIHRoZSBwb2xpY3kuCiMgbWVyZ2VfYWRtaXNzaW9uLmdlbmVyYXRpb25fZmVuY2VkX2ZpbGVzOgpHRU5FUkFUSU9OX0ZFTkNFRF9GSUxFUyA9IFsKICAgIHsicmVwb3NpdG9yeSI6ICJTdGVnVmVyc2UtTGFicy8uZ2l0aHViIiwgInBhdGgiOiAiZGF0YS9jYW5vbmljYWwtdGFzay1yZWdpc3RyeS5qc29uIiwgImZpZWxkIjogImdlbmVyYXRpb24ifSwKXQojIGNyaXRpY2FsX3JlcG9zaXRvcmllcyAoVElFUl8yX0NSSVRJQ0FMKS4gVGhlIHRpZXIgY29tZXMgZnJvbSB0aGlzIGxpc3QsIG5vdAojIGZyb20gYSBwZXItcmVwb3NpdG9yeSBzZXR0aW5nOyBTVDAxOV9USUVSIG1heSBvbmx5IHJhaXNlIGEgcmVwb3NpdG9yeSB0bwojIFRJRVJfMl9DUklUSUNBTCwgbmV2ZXIgbG93ZXIgb25lLgpDUklUSUNBTF9SRVBPU0lUT1JJRVMgPSAoCiAgICAiU3RlZ1ZlcnNlLUxhYnMvLmdpdGh1YiIsCiAgICAiU3RlZ1ZlcnNlLUxhYnMvcmVwby1zdGFuZGFyZHMiLAogICAgIlN0ZWdWZXJzZS1MYWJzL0NvbnRpbnVpdHkiLAogICAgIlN0ZWdWZXJzZS1MYWJzL1RWIiwKICAgICJTdGVnVmVyc2UtTGFicy9UVkMiLAogICAgIlN0ZWdWZXJzZS1MYWJzL0dvdmVybmFuY2UiLAogICAgIlN0ZWdWZXJzZS1MYWJzL1N0ZWdDb3JlIiwKICAgICJTdGVnVmVyc2Utb3JnL1N0ZWdWZXJzZS1TREsiLAogICAgIm1hc3Rlci1yZWNvcmRzL29yY2hlc3RyYXRpb24iLAopCkdBVEVfU09VUkNFX0RJUkVDVE9SWSA9ICIuc3RlZ3ZlcnNlLW1lcmdlLWdhdGUtc291cmNlIgoKCmRlZiByZXNvbHZlX3RpZXIocmVwb3NpdG9yeTogc3RyIHwgTm9uZSwgcmVxdWVzdGVkOiBzdHIgfCBOb25lKSAtPiBzdHI6CiAgICBpZiByZXBvc2l0b3J5IGluIENSSVRJQ0FMX1JFUE9TSVRPUklFUyBvciByZXF1ZXN0ZWQgPT0gIlRJRVJfMl9DUklUSUNBTCI6CiAgICAgICAgcmV0dXJuICJUSUVSXzJfQ1JJVElDQUwiCiAgICByZXR1cm4gIlRJRVJfMV9TVEFOREFSRCIKCgpkZWYgZ2l0KCphcmdzOiBzdHIsIGNoZWNrOiBib29sID0gVHJ1ZSkgLT4gc3RyOgogICAgciA9IHN1YnByb2Nlc3MucnVuKFsiZ2l0IiwgKmFyZ3NdLCBjYXB0dXJlX291dHB1dD1UcnVlLCB0ZXh0PVRydWUpCiAgICBpZiBjaGVjayBhbmQgci5yZXR1cm5jb2RlICE9IDA6CiAgICAgICAgcmFpc2UgUnVudGltZUVycm9yKGYiZ2l0IHsnICcuam9pbihhcmdzKX06IHtyLnN0ZGVyci5zdHJpcCgpfSIpCiAgICByZXR1cm4gci5zdGRvdXQKCgpkZWYgcmVhZF9qc29uX2F0KHJldjogc3RyLCBwYXRoOiBzdHIpIC0+IEFueSB8IE5vbmU6CiAgICByID0gc3VicHJvY2Vzcy5ydW4oWyJnaXQiLCAic2hvdyIsIGYie3Jldn06e3BhdGh9Il0sIGNhcHR1cmVfb3V0cHV0PVRydWUsIHRleHQ9VHJ1ZSkKICAgIGlmIHIucmV0dXJuY29kZSAhPSAwOgogICAgICAgIHJldHVybiBOb25lCiAgICByZXR1cm4ganNvbi5sb2FkcyhyLnN0ZG91dCkKCgpkZWYgZGlzcG9zaXRpb24oY29kZTogc3RyLCBwcmVkaWNhdGU6IHN0ciwgcmVwYWlyOiBzdHIsIHJldHJ5OiBzdHIsIG54dDogc3RyKSAtPiBkaWN0W3N0ciwgc3RyXToKICAgIHJldHVybiB7CiAgICAgICAgImZhaWx1cmVfY29kZSI6IGNvZGUsCiAgICAgICAgImZhaWxlZF9wcmVkaWNhdGUiOiBwcmVkaWNhdGUsCiAgICAgICAgInJlcXVpcmVkX2V2aWRlbmNlX29yX3JlcGFpciI6IHJlcGFpciwKICAgICAgICAicmV0cnlfZW50cnlwb2ludCI6IHJldHJ5LAogICAgICAgICJvd25pbmdfZXhpc3RpbmdfZ29hbCI6IE9XTklOR19HT0FMLAogICAgICAgICJuZXh0X2F0dGVtcHQiOiBueHQsCiAgICB9CgoKZGVmIGRlY2xhcmVkX3Rhc2tfY29tbWFuZHModGV4dDogc3RyKSAtPiBsaXN0W3R1cGxlW3N0ciwgc3RyXV06CiAgICAiIiJMaW5lLWJhc2VkIHJlYWRlciBmb3IgU1QtMDAyIGRlY2xhcmVkLXRhc2tzLnlhbWwgKHNhbWUgYXBwcm9hY2ggYXMKICAgIHJlcG8tc3RhbmRhcmRzIHRvb2xzL3ZhbGlkYXRlX3JlcG9fc3RhbmRhcmRzLnB5OyBubyBQeVlBTUwgZGVwZW5kZW5jeSkuIiIiCiAgICB0YXNrczogbGlzdFt0dXBsZVtzdHIsIHN0cl1dID0gW10KICAgIGluX3Rhc2tzID0gRmFsc2UKICAgIGN1cnJlbnQgPSBOb25lCiAgICBmb3IgbGluZSBpbiB0ZXh0LnNwbGl0bGluZXMoKToKICAgICAgICBpZiByZS5tYXRjaChyIl50YXNrczpccyokIiwgbGluZSk6CiAgICAgICAgICAgIGluX3Rhc2tzID0gVHJ1ZQogICAgICAgICAgICBjb250aW51ZQogICAgICAgIGlmIGluX3Rhc2tzIGFuZCByZS5tYXRjaChyIl5cUyIsIGxpbmUpOgogICAgICAgICAgICBpbl90YXNrcyA9IEZhbHNlCiAgICAgICAgaWYgbm90IGluX3Rhc2tzOgogICAgICAgICAgICBjb250aW51ZQogICAgICAgIG0gPSByZS5tYXRjaChyIl4gIChbQS1aYS16MC05Xy4tXSspOlxzKiQiLCBsaW5lKQogICAgICAgIGlmIG06CiAgICAgICAgICAgIGN1cnJlbnQgPSBtLmdyb3VwKDEpCiAgICAgICAgICAgIGNvbnRpbnVlCiAgICAgICAgbSA9IHJlLm1hdGNoKHIiXiAgICBjb21tYW5kOlxzKiguKz8pXHMqJCIsIGxpbmUpCiAgICAgICAgaWYgbSBhbmQgY3VycmVudDoKICAgICAgICAgICAgdGFza3MuYXBwZW5kKChjdXJyZW50LCBtLmdyb3VwKDEpLnN0cmlwKCInXCIiKSkpCiAgICByZXR1cm4gdGFza3MKCgpkZWYgZXZhbHVhdGUoZXZlbnQ6IGRpY3Rbc3RyLCBBbnldLCBiYXNlX3JlZjogc3RyLCBoZWFkX3Jldjogc3RyLCB0aWVyOiBzdHIsCiAgICAgICAgICAgICBydW5fdGFza3M6IGJvb2wpIC0+IGRpY3Rbc3RyLCBBbnldOgogICAgcHJlZGljYXRlczogbGlzdFtkaWN0W3N0ciwgQW55XV0gPSBbXQogICAgcHIgPSBldmVudC5nZXQoInB1bGxfcmVxdWVzdCIpIG9yIHt9CiAgICByZXBvc2l0b3J5ID0gKGV2ZW50LmdldCgicmVwb3NpdG9yeSIpIG9yIHt9KS5nZXQoImZ1bGxfbmFtZSIpCiAgICB2YWxpZGF0aW9uID0geyJkZWNsYXJlZF92YWxpZGF0aW9uX3ByZXNlbnQiOiBOb25lLCAiZGVjbGFyZWRfdmFsaWRhdGlvbl9yYW4iOiBGYWxzZSwKICAgICAgICAgICAgICAgICAgImRlY2xhcmVkX3ZhbGlkYXRpb25fY29uc2VxdWVuY2UiOiAiTk9UX1JFQUNIRUQifQogICAgcmV0cnkgPSAicHVzaCB0byB0aGUgUFIgYnJhbmNoIG9yICdVcGRhdGUgYnJhbmNoJzsgdGhlIGdhdGUgcmUtcnVucyBvbiBzeW5jaHJvbml6ZS9yZWFkeV9mb3JfcmV2aWV3L3Jlb3BlbmVkIgoKICAgIGRlZiBkb25lKG91dGNvbWU6IHN0ciwgZGlzcDogZGljdFtzdHIsIHN0cl0gfCBOb25lKSAtPiBkaWN0W3N0ciwgQW55XToKICAgICAgICByZWMgPSB7CiAgICAgICAgICAgICJzY2hlbWEiOiAic3RlZ3ZlcnNlLm1lcmdlLWFkbWlzc2lvbi1yZWNlaXB0L3YwLjEiLAogICAgICAgICAgICAicG9saWN5X2lkIjogUE9MSUNZX0lELAogICAgICAgICAgICAicHJvZmlsZV9pZCI6IFBST0ZJTEVfSUQsCiAgICAgICAgICAgICJyZXBvc2l0b3J5IjogcmVwb3NpdG9yeSwKICAgICAgICAgICAgInB1bGxfcmVxdWVzdCI6IHByLmdldCgibnVtYmVyIiksCiAgICAgICAgICAgICJoZWFkX3NoYSI6IHByLmdldCgiaGVhZCIsIHt9KS5nZXQoInNoYSIpLAogICAgICAgICAgICAiYmFzZV9yZWYiOiBiYXNlX3JlZiwKICAgICAgICAgICAgInRpZXIiOiB0aWVyLAogICAgICAgICAgICAib3V0Y29tZSI6IG91dGNvbWUsCiAgICAgICAgICAgICJwcmVkaWNhdGVzIjogcHJlZGljYXRlcywKICAgICAgICAgICAgImFjdGlvbmFibGVfZGlzcG9zaXRpb24iOiBkaXNwLAogICAgICAgICAgICAqKnZhbGlkYXRpb24sCiAgICAgICAgICAgICJhdXRob3JpdHlfZWZmZWN0IjogIk5PTkVfVkFMSURBVElPTl9PTkxZIiwKICAgICAgICAgICAgImdpdGh1Yl9hY3Rpb25zX211dGF0aW9uX2F1dGhvcml0eSI6IEZhbHNlLAogICAgICAgICAgICAicmVjb3JkZWRfYXQiOiBkYXRldGltZS5ub3codGltZXpvbmUudXRjKS5pc29mb3JtYXQoKSwKICAgICAgICB9CiAgICAgICAgcmVjWyJyZWNlaXB0X3NoYTI1NiJdID0gaGFzaGxpYi5zaGEyNTYoanNvbi5kdW1wcyhyZWMsIHNvcnRfa2V5cz1UcnVlKS5lbmNvZGUoKSkuaGV4ZGlnZXN0KCkKICAgICAgICByZXR1cm4gcmVjCgogICAgIyBQMDogZXZlbnQgbXVzdCBiZSBhIHB1bGxfcmVxdWVzdCAvIG1lcmdlX2dyb3VwIGNhcnJ5aW5nIGEgaGVhZC4KICAgIGlmIG5vdCBwciBhbmQgIm1lcmdlX2dyb3VwIiBub3QgaW4gZXZlbnQ6CiAgICAgICAgcHJlZGljYXRlcy5hcHBlbmQoeyJpZCI6ICJQMF9FVkVOVF9QUkVTRU5UIiwgImhlbGQiOiBGYWxzZX0pCiAgICAgICAgcmV0dXJuIGRvbmUoIkZBSUxfQ0xPU0VEIiwgZGlzcG9zaXRpb24oCiAgICAgICAgICAgICJFVkVOVF9OT1RfUFVMTF9SRVFVRVNUIiwgIlAwX0VWRU5UX1BSRVNFTlQiLAogICAgICAgICAgICAiZ2F0ZSBtdXN0IHJ1biBvbiBwdWxsX3JlcXVlc3Qgb3IgbWVyZ2VfZ3JvdXAiLCByZXRyeSwgInJlLXJ1biBvbiBhIFBSIGV2ZW50IikpCiAgICBwcmVkaWNhdGVzLmFwcGVuZCh7ImlkIjogIlAwX0VWRU5UX1BSRVNFTlQiLCAiaGVsZCI6IFRydWV9KQoKICAgICMgUDE6IG5vdCBhIGRyYWZ0LiAgKEdpdEh1YiBhbHJlYWR5IHJlZnVzZXMgdG8gbWVyZ2UgZHJhZnRzOyB0aGlzIG1ha2VzIHRoZQogICAgIyByZXF1aXJlZCBjaGVjayByZWQgd2hpbGUgZHJhZnQgc28gJ1JlYWR5IGZvciByZXZpZXcnIGZvcmNlcyBhIGZyZXNoIHJ1bi4pCiAgICBpZiBwci5nZXQoImRyYWZ0IikgaXMgVHJ1ZToKICAgICAgICBwcmVkaWNhdGVzLmFwcGVuZCh7ImlkIjogIlAxX05PVF9EUkFGVCIsICJoZWxkIjogRmFsc2V9KQogICAgICAgIHJldHVybiBkb25lKCJERU5ZIiwgZGlzcG9zaXRpb24oCiAgICAgICAgICAgICJQUl9JU19EUkFGVCIsICJQMV9OT1RfRFJBRlQiLAogICAgICAgICAgICAibWFyayByZWFkeSBmb3IgcmV2aWV3IG9ubHkgd2hlbiB0aGUgbGFuZSBkZWNsYXJlcyBpdCBtZXJnZS1yZWFkeSIsCiAgICAgICAgICAgICJyZWFkeV9mb3JfcmV2aWV3IGV2ZW50IHJlLXJ1bnMgdGhpcyBnYXRlIiwgImFmdGVyIHJlYWR5X2Zvcl9yZXZpZXciKSkKICAgIHByZWRpY2F0ZXMuYXBwZW5kKHsiaWQiOiAiUDFfTk9UX0RSQUZUIiwgImhlbGQiOiBUcnVlfSkKCiAgICAjIFAyOiBiYXNlIHRpcCBvYnNlcnZhYmxlIGFuZCBjb250YWluZWQgaW4gaGVhZCAodXAgdG8gZGF0ZSkuIFRoZSBydWxlc2V0J3MKICAgICMgc3RyaWN0IHN0YXR1cy1jaGVjayBwb2xpY3kgZW5mb3JjZXMgdGhpcyBhdCBtZXJnZSB0aW1lOyB0aGUgZ2F0ZSBhbHNvCiAgICAjIHJlY29yZHMgaXQgc28gdGhlIHJlY2VpcHQgaXMgc2VsZi1kZXNjcmliaW5nLgogICAgdHJ5OgogICAgICAgIGJhc2VfdGlwID0gZ2l0KCJyZXYtcGFyc2UiLCBmIm9yaWdpbi97YmFzZV9yZWZ9Iikuc3RyaXAoKQogICAgICAgIG1lcmdlX2Jhc2UgPSBnaXQoIm1lcmdlLWJhc2UiLCBoZWFkX3JldiwgYmFzZV90aXApLnN0cmlwKCkKICAgIGV4Y2VwdCBSdW50aW1lRXJyb3IgYXMgZXhjOgogICAgICAgIHByZWRpY2F0ZXMuYXBwZW5kKHsiaWQiOiAiUDJfQkFTRV9PQlNFUlZFRCIsICJoZWxkIjogRmFsc2UsICJlcnJvciI6IHN0cihleGMpfSkKICAgICAgICByZXR1cm4gZG9uZSgiRkFJTF9DTE9TRUQiLCBkaXNwb3NpdGlvbigKICAgICAgICAgICAgIkJBU0VfTk9UX09CU0VSVkFCTEUiLCAiUDJfQkFTRV9PQlNFUlZFRCIsCiAgICAgICAgICAgICJjaGVja291dCBtdXN0IGZldGNoIHRoZSBiYXNlIGJyYW5jaCB0aXAiLCByZXRyeSwgInJlLXJ1biIpKQogICAgdXBfdG9fZGF0ZSA9IG1lcmdlX2Jhc2UgPT0gYmFzZV90aXAKICAgIHByZWRpY2F0ZXMuYXBwZW5kKHsiaWQiOiAiUDJfVVBfVE9fREFURSIsICJoZWxkIjogdXBfdG9fZGF0ZSwgImJhc2VfdGlwIjogYmFzZV90aXAsICJtZXJnZV9iYXNlIjogbWVyZ2VfYmFzZX0pCiAgICBpZiBub3QgdXBfdG9fZGF0ZToKICAgICAgICByZXR1cm4gZG9uZSgiREVOWSIsIGRpc3Bvc2l0aW9uKAogICAgICAgICAgICAiSEVBRF9CRUhJTkRfQkFTRSIsICJQMl9VUF9UT19EQVRFIiwKICAgICAgICAgICAgZiJyZWJhc2Ugb3IgbWVyZ2Uge2Jhc2VfcmVmfSAoe2Jhc2VfdGlwWzoxMl19KSBpbnRvIHRoZSBQUiBicmFuY2giLCByZXRyeSwKICAgICAgICAgICAgImFmdGVyIHRoZSBicmFuY2ggY29udGFpbnMgdGhlIGN1cnJlbnQgYmFzZSB0aXAiKSkKCiAgICAjIFAzOiBnZW5lcmF0aW9uIGZlbmNlIChvbmx5IGZvciBmaWxlcyB0aGF0IGV4aXN0IG9uIGJhc2Ugb3IgaGVhZCkuCiAgICBmb3Igc3BlYyBpbiBHRU5FUkFUSU9OX0ZFTkNFRF9GSUxFUzoKICAgICAgICBpZiBzcGVjLmdldCgicmVwb3NpdG9yeSIpIGFuZCByZXBvc2l0b3J5IGFuZCBzcGVjWyJyZXBvc2l0b3J5Il0gIT0gcmVwb3NpdG9yeToKICAgICAgICAgICAgY29udGludWUKICAgICAgICBwYXRoLCBmaWVsZCA9IHNwZWNbInBhdGgiXSwgc3BlY1siZmllbGQiXQogICAgICAgIGJhc2VfZG9jLCBoZWFkX2RvYyA9IHJlYWRfanNvbl9hdChiYXNlX3RpcCwgcGF0aCksIHJlYWRfanNvbl9hdChoZWFkX3JldiwgcGF0aCkKICAgICAgICBpZiBiYXNlX2RvYyBpcyBOb25lIGFuZCBoZWFkX2RvYyBpcyBOb25lOgogICAgICAgICAgICBjb250aW51ZQogICAgICAgIHRyeToKICAgICAgICAgICAgYmcgPSBpbnQoYmFzZV9kb2NbZmllbGRdKSBpZiBiYXNlX2RvYyBpcyBub3QgTm9uZSBlbHNlIE5vbmUKICAgICAgICAgICAgaGcgPSBpbnQoaGVhZF9kb2NbZmllbGRdKSBpZiBoZWFkX2RvYyBpcyBub3QgTm9uZSBlbHNlIE5vbmUKICAgICAgICBleGNlcHQgKEtleUVycm9yLCBUeXBlRXJyb3IsIFZhbHVlRXJyb3IpOgogICAgICAgICAgICBwcmVkaWNhdGVzLmFwcGVuZCh7ImlkIjogZiJQM19HRU5FUkFUSU9OOntwYXRofSIsICJoZWxkIjogRmFsc2V9KQogICAgICAgICAgICByZXR1cm4gZG9uZSgiRkFJTF9DTE9TRUQiLCBkaXNwb3NpdGlvbigKICAgICAgICAgICAgICAgICJHRU5FUkFUSU9OX1VOUkVBREFCTEUiLCBmIlAzX0dFTkVSQVRJT046e3BhdGh9IiwKICAgICAgICAgICAgICAgIGYie3BhdGh9IG11c3QgY2FycnkgaW50ZWdlciAne2ZpZWxkfScgb24gYmFzZSBhbmQgaGVhZCIsIHJldHJ5LCAicmUtcnVuIGFmdGVyIHJlcGFpciIpKQogICAgICAgIGNoYW5nZWQgPSBib29sKGdpdCgiZGlmZiIsICItLW5hbWUtb25seSIsIGJhc2VfdGlwLCBoZWFkX3JldiwgIi0tIiwgcGF0aCkuc3RyaXAoKSkKICAgICAgICBleHBlY3RlZCA9IChiZyArIDEpIGlmIGNoYW5nZWQgZWxzZSBiZwogICAgICAgIGhlbGQgPSBoZyA9PSBleHBlY3RlZAogICAgICAgIHByZWRpY2F0ZXMuYXBwZW5kKHsiaWQiOiBmIlAzX0dFTkVSQVRJT046e3BhdGh9IiwgImhlbGQiOiBoZWxkLCAiYmFzZV9nZW5lcmF0aW9uIjogYmcsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICJoZWFkX2dlbmVyYXRpb24iOiBoZywgImZpbGVfY2hhbmdlZCI6IGNoYW5nZWQsICJleHBlY3RlZCI6IGV4cGVjdGVkfSkKICAgICAgICBpZiBub3QgaGVsZDoKICAgICAgICAgICAgcmV0dXJuIGRvbmUoIkRFTlkiLCBkaXNwb3NpdGlvbigKICAgICAgICAgICAgICAgICJHRU5FUkFUSU9OX05PVF9CQVNFX1BMVVNfT05FIiwgZiJQM19HRU5FUkFUSU9OOntwYXRofSIsCiAgICAgICAgICAgICAgICBmInNldCB7cGF0aH0ue2ZpZWxkfSB0byB7ZXhwZWN0ZWR9IChiYXNlIHtiZ317JyArIDEnIGlmIGNoYW5nZWQgZWxzZSAnLCBmaWxlIHVuY2hhbmdlZCd9KSBvbiB0b3Agb2YgY3VycmVudCB7YmFzZV9yZWZ9IiwKICAgICAgICAgICAgICAgIHJldHJ5LCAiYWZ0ZXIgcmViYXNlIGFuZCBnZW5lcmF0aW9uIHJlbnVtYmVyIikpCgogICAgIyBQNDogZGVjbGFyZWQgdmFsaWRhdGlvbiAoU1QtMDAyIGRlY2xhcmVkLXRhc2tzLnlhbWwpIGFjdHVhbGx5IHJ1bnMgYW5kIHBhc3Nlcy4KICAgIGR0ID0gUGF0aCgiZGVjbGFyZWQtdGFza3MueWFtbCIpCiAgICBpZiBub3QgZHQuZXhpc3RzKCk6CiAgICAgICAgdmFsaWRhdGlvblsiZGVjbGFyZWRfdmFsaWRhdGlvbl9wcmVzZW50Il0gPSBGYWxzZQogICAgICAgIGlmIHRpZXIgPT0gIlRJRVJfMl9DUklUSUNBTCI6CiAgICAgICAgICAgIHZhbGlkYXRpb25bImRlY2xhcmVkX3ZhbGlkYXRpb25fY29uc2VxdWVuY2UiXSA9ICJGQUlMX0NMT1NFRF9USUVSXzJfUkVRVUlSRVNfVkFMSURBVElPTiIKICAgICAgICAgICAgcHJlZGljYXRlcy5hcHBlbmQoeyJpZCI6ICJQNF9WQUxJREFUSU9OX0RFQ0xBUkVEIiwgImhlbGQiOiBGYWxzZX0pCiAgICAgICAgICAgIHJldHVybiBkb25lKCJGQUlMX0NMT1NFRCIsIGRpc3Bvc2l0aW9uKAogICAgICAgICAgICAgICAgIlZBTElEQVRJT05fVU5ERUNMQVJFRCIsICJQNF9WQUxJREFUSU9OX0RFQ0xBUkVEIiwKICAgICAgICAgICAgICAgICJUSUVSXzIgcmVwb3NpdG9yaWVzIG11c3QgZGVjbGFyZSB2YWxpZGF0aW9uIGluIGRlY2xhcmVkLXRhc2tzLnlhbWwgKFNULTAwMikiLAogICAgICAgICAgICAgICAgcmV0cnksICJhZnRlciBkZWNsYXJlZC10YXNrcy55YW1sIGlzIG1lcmdlZCB2aWEgYW4gb3duZXItYXBwcm92ZWQgUFIiKSkKICAgICAgICAjIFRJRVJfMTogQUxMT1cgb24gdGhlIHN0cnVjdHVyYWwgcHJlZGljYXRlcywgYW5kIHRoZSByZWNlaXB0IHNheXMgaW4KICAgICAgICAjIHNvIG1hbnkgd29yZHMgdGhhdCBubyB2YWxpZGF0aW9uIHJhbi4gTmV2ZXIgYSBzaWxlbnQgcGFzcy4KICAgICAgICB2YWxpZGF0aW9uWyJkZWNsYXJlZF92YWxpZGF0aW9uX2NvbnNlcXVlbmNlIl0gPSAiTk9fVkFMSURBVElPTl9SQU4iCiAgICAgICAgcHJlZGljYXRlcy5hcHBlbmQoeyJpZCI6ICJQNF9WQUxJREFUSU9OX0RFQ0xBUkVEIiwgImhlbGQiOiBGYWxzZSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgImNvbnNlcXVlbmNlIjogIkFMTE9XX1JFQ09SRElOR19OT19WQUxJREFUSU9OX1JBTiJ9KQogICAgICAgIHJldHVybiBkb25lKCJBTExPVyIsIE5vbmUpCiAgICB2YWxpZGF0aW9uWyJkZWNsYXJlZF92YWxpZGF0aW9uX3ByZXNlbnQiXSA9IFRydWUKICAgIHRhc2tzID0gZGVjbGFyZWRfdGFza19jb21tYW5kcyhkdC5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikpCiAgICBpZiBub3QgdGFza3M6CiAgICAgICAgcHJlZGljYXRlcy5hcHBlbmQoeyJpZCI6ICJQNF9WQUxJREFUSU9OX0RFQ0xBUkVEIiwgImhlbGQiOiBGYWxzZSwgInJlYXNvbiI6ICJubyB0YXNrIGNvbW1hbmRzIn0pCiAgICAgICAgcmV0dXJuIGRvbmUoIkZBSUxfQ0xPU0VEIiwgZGlzcG9zaXRpb24oCiAgICAgICAgICAgICJERUNMQVJFRF9UQVNLU19FTVBUWSIsICJQNF9WQUxJREFUSU9OX0RFQ0xBUkVEIiwKICAgICAgICAgICAgImRlY2xhcmVkLXRhc2tzLnlhbWwgbXVzdCBkZWNsYXJlIGF0IGxlYXN0IG9uZSB0YXNrIGNvbW1hbmQiLCByZXRyeSwgImFmdGVyIHJlcGFpciIpKQogICAgcHJlZGljYXRlcy5hcHBlbmQoeyJpZCI6ICJQNF9WQUxJREFUSU9OX0RFQ0xBUkVEIiwgImhlbGQiOiBUcnVlLCAidGFza19jb3VudCI6IGxlbih0YXNrcyl9KQogICAgaWYgbm90IHJ1bl90YXNrczoKICAgICAgICB2YWxpZGF0aW9uWyJkZWNsYXJlZF92YWxpZGF0aW9uX2NvbnNlcXVlbmNlIl0gPSAiREVDTEFSRURfTk9UX1JVTl9MT0NBTF9EUllfUlVOIgogICAgaWYgcnVuX3Rhc2tzOgogICAgICAgIHZhbGlkYXRpb25bImRlY2xhcmVkX3ZhbGlkYXRpb25fcmFuIl0gPSBUcnVlCiAgICAgICAgZm9yIG5hbWUsIGNvbW1hbmQgaW4gdGFza3M6CiAgICAgICAgICAgIHIgPSBzdWJwcm9jZXNzLnJ1bihjb21tYW5kLCBzaGVsbD1UcnVlKQogICAgICAgICAgICBvayA9IHIucmV0dXJuY29kZSA9PSAwCiAgICAgICAgICAgIHByZWRpY2F0ZXMuYXBwZW5kKHsiaWQiOiBmIlA1X1RBU0s6e25hbWV9IiwgImhlbGQiOiBvaywgImV4aXRfY29kZSI6IHIucmV0dXJuY29kZX0pCiAgICAgICAgICAgIGlmIG5vdCBvazoKICAgICAgICAgICAgICAgIHJldHVybiBkb25lKCJERU5ZIiwgZGlzcG9zaXRpb24oCiAgICAgICAgICAgICAgICAgICAgIkRFQ0xBUkVEX1RBU0tfRkFJTEVEIiwgZiJQNV9UQVNLOntuYW1lfSIsCiAgICAgICAgICAgICAgICAgICAgZiJtYWtlIGB7Y29tbWFuZH1gIGV4aXQgMCBvbiB0aGUgUFIgaGVhZCIsIHJldHJ5LCAiYWZ0ZXIgZml4IHB1c2hlZCIpKQogICAgICAgIHZhbGlkYXRpb25bImRlY2xhcmVkX3ZhbGlkYXRpb25fY29uc2VxdWVuY2UiXSA9ICJERUNMQVJFRF9WQUxJREFUSU9OX1BBU1NFRCIKICAgIHJldHVybiBkb25lKCJBTExPVyIsIE5vbmUpCgoKZGVmIG1haW4oKSAtPiBpbnQ6CiAgICBhcCA9IGFyZ3BhcnNlLkFyZ3VtZW50UGFyc2VyKCkKICAgIGFwLmFkZF9hcmd1bWVudCgiLS1ldmVudCIsIGRlZmF1bHQ9b3MuZW52aXJvbi5nZXQoIkdJVEhVQl9FVkVOVF9QQVRIIiwgIiIpKQogICAgYXAuYWRkX2FyZ3VtZW50KCItLWJhc2UtcmVmIiwgZGVmYXVsdD1vcy5lbnZpcm9uLmdldCgiR0lUSFVCX0JBU0VfUkVGIiwgIiIpKQogICAgYXAuYWRkX2FyZ3VtZW50KCItLWhlYWQiLCBkZWZhdWx0PSJIRUFEIikKICAgIGFwLmFkZF9hcmd1bWVudCgiLS10aWVyIiwgZGVmYXVsdD1vcy5lbnZpcm9uLmdldCgiU1QwMTlfVElFUiIpIG9yIE5vbmUpCiAgICBhcC5hZGRfYXJndW1lbnQoIi0tbm8tcnVuLXRhc2tzIiwgYWN0aW9uPSJzdG9yZV90cnVlIikKICAgIGFwLmFkZF9hcmd1bWVudCgiLS13cml0ZSIsIGRlZmF1bHQ9Im1lcmdlLWFkbWlzc2lvbi1yZWNlaXB0Lmpzb24iKQogICAgYSA9IGFwLnBhcnNlX2FyZ3MoKQogICAgdHJ5OgogICAgICAgIGV2ZW50ID0ganNvbi5sb2FkcyhQYXRoKGEuZXZlbnQpLnJlYWRfdGV4dCgpKSBpZiBhLmV2ZW50IGVsc2Uge30KICAgIGV4Y2VwdCAoT1NFcnJvciwgVmFsdWVFcnJvcik6CiAgICAgICAgZXZlbnQgPSB7fQogICAgYmFzZV9yZWYgPSBhLmJhc2VfcmVmIG9yIChldmVudC5nZXQoInB1bGxfcmVxdWVzdCIpIG9yIHt9KS5nZXQoImJhc2UiLCB7fSkuZ2V0KCJyZWYiLCAiIikgXAogICAgICAgIG9yIHN0cigoZXZlbnQuZ2V0KCJtZXJnZV9ncm91cCIpIG9yIHt9KS5nZXQoImJhc2VfcmVmIiwgIiIpKS5yZW1vdmVwcmVmaXgoInJlZnMvaGVhZHMvIikKICAgIHRpZXIgPSByZXNvbHZlX3RpZXIoKGV2ZW50LmdldCgicmVwb3NpdG9yeSIpIG9yIHt9KS5nZXQoImZ1bGxfbmFtZSIpLCBhLnRpZXIpCiAgICB0cnk6CiAgICAgICAgcmVjID0gZXZhbHVhdGUoZXZlbnQsIGJhc2VfcmVmLCBhLmhlYWQsIHRpZXIsIG5vdCBhLm5vX3J1bl90YXNrcykKICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZXhjOiAgIyBldmVyeSBlcnJvciBwYXRoIGlzIGEgc2l4LWZpZWxkIEZBSUxfQ0xPU0VECiAgICAgICAgcmVjID0gewogICAgICAgICAgICAic2NoZW1hIjogInN0ZWd2ZXJzZS5tZXJnZS1hZG1pc3Npb24tcmVjZWlwdC92MC4xIiwKICAgICAgICAgICAgInBvbGljeV9pZCI6IFBPTElDWV9JRCwKICAgICAgICAgICAgInByb2ZpbGVfaWQiOiBQUk9GSUxFX0lELAogICAgICAgICAgICAicmVwb3NpdG9yeSI6IChldmVudC5nZXQoInJlcG9zaXRvcnkiKSBvciB7fSkuZ2V0KCJmdWxsX25hbWUiKSwKICAgICAgICAgICAgIm91dGNvbWUiOiAiRkFJTF9DTE9TRUQiLAogICAgICAgICAgICAiYWN0aW9uYWJsZV9kaXNwb3NpdGlvbiI6IGRpc3Bvc2l0aW9uKAogICAgICAgICAgICAgICAgIkdBVEVfSU5URVJOQUxfRVJST1IiLCAiUF9HQVRFX0VWQUxVQVRFRCIsCiAgICAgICAgICAgICAgICBmInt0eXBlKGV4YykuX19uYW1lX199OiB7c3RyKGV4YylbOjMwMF19IiwKICAgICAgICAgICAgICAgICJyZS1ydW4gdGhlIHN0ZWd2ZXJzZS1tZXJnZS1nYXRlIGNoZWNrIiwgImFmdGVyIHRoZSBnYXRlIHNvdXJjZSBvciByZXBvc2l0b3J5IHN0YXRlIGlzIHJlcGFpcmVkIiksCiAgICAgICAgICAgICJhdXRob3JpdHlfZWZmZWN0IjogIk5PTkVfVkFMSURBVElPTl9PTkxZIiwKICAgICAgICAgICAgImdpdGh1Yl9hY3Rpb25zX211dGF0aW9uX2F1dGhvcml0eSI6IEZhbHNlLAogICAgICAgIH0KICAgIFBhdGgoYS53cml0ZSkud3JpdGVfdGV4dChqc29uLmR1bXBzKHJlYywgaW5kZW50PTIsIHNvcnRfa2V5cz1UcnVlKSArICJcbiIpCiAgICBwcmludChqc29uLmR1bXBzKHJlYywgaW5kZW50PTIsIHNvcnRfa2V5cz1UcnVlKSkKICAgIHJldHVybiAwIGlmIHJlY1sib3V0Y29tZSJdID09ICJBTExPVyIgZWxzZSAxCgoKaWYgX19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIHJhaXNlIFN5c3RlbUV4aXQobWFpbigpKQo=
+#!/usr/bin/env python3
+"""ST-019 merge-admission gate (ST019-MERGE-ADMISSION-001; non-authorizing, stdlib only).
+
+Canonical source: StegVerse-Labs/repo-standards templates/merge-gate/stegverse_merge_gate.py.
+
+Runs as the single always-running required check that the org ruleset's
+`workflows` rule injects into every pull request on a default branch. It never
+mutates anything; it reads the PR event, the checked-out merge candidate and
+the current base tip, and emits exactly one disposition:
+
+  ALLOW        every predicate held and evidence was observed
+  DENY         a predicate was observed to fail (draft, stale generation, failed task)
+  FAIL_CLOSED  a predicate could not be evaluated (missing event, unreadable base,
+               declared validation absent where the tier requires it)
+
+Every non-ALLOW carries the six actionable-disposition fields used by
+StegVerse-Labs/.github docs/USER_FACING_EXPLANATION_CONTRACT_MIRROR_HANDOFF.md:
+failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint,
+owning_existing_goal, next_attempt.
+
+Why this exists: GitHub reports a job skipped by `if:` as success for a
+required check, and a workflow skipped by a `paths:` filter never reports at
+all. This job has no `if:` and no path filter, so it cannot be skipped, and
+it runs the repository's declared validation itself instead of trusting
+sibling checks (which would need waiting/polling to observe).
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import re
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+POLICY_ID = "STEGVERSE-REPOSITORY-PROTECTION-001"
+PROFILE_ID = "ST019-MERGE-ADMISSION-001"
+OWNING_GOAL = "ST-019 Repository Protection (StegVerse-Labs/repo-standards) / STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001"
+
+# Copied from repo-standards config/repository-protection-policy.json; the
+# repo-standards test suite fails if either copy drifts from the policy.
+# merge_admission.generation_fenced_files:
+GENERATION_FENCED_FILES = [
+    {"repository": "StegVerse-Labs/.github", "path": "data/canonical-task-registry.json", "field": "generation"},
+]
+# critical_repositories (TIER_2_CRITICAL). The tier comes from this list, not
+# from a per-repository setting; ST019_TIER may only raise a repository to
+# TIER_2_CRITICAL, never lower one.
+CRITICAL_REPOSITORIES = (
+    "StegVerse-Labs/.github",
+    "StegVerse-Labs/repo-standards",
+    "StegVerse-Labs/Continuity",
+    "StegVerse-Labs/TV",
+    "StegVerse-Labs/TVC",
+    "StegVerse-Labs/Governance",
+    "StegVerse-Labs/StegCore",
+    "StegVerse-org/StegVerse-SDK",
+    "master-records/orchestration",
+)
+GATE_SOURCE_DIRECTORY = ".stegverse-merge-gate-source"
+
+
+def resolve_tier(repository: str | None, requested: str | None) -> str:
+    if repository in CRITICAL_REPOSITORIES or requested == "TIER_2_CRITICAL":
+        return "TIER_2_CRITICAL"
+    return "TIER_1_STANDARD"
+
+
+def git(*args: str, check: bool = True) -> str:
+    r = subprocess.run(["git", *args], capture_output=True, text=True)
+    if check and r.returncode != 0:
+        raise RuntimeError(f"git {' '.join(args)}: {r.stderr.strip()}")
+    return r.stdout
+
+
+def read_json_at(rev: str, path: str) -> Any | None:
+    r = subprocess.run(["git", "show", f"{rev}:{path}"], capture_output=True, text=True)
+    if r.returncode != 0:
+        return None
+    return json.loads(r.stdout)
+
+
+def disposition(code: str, predicate: str, repair: str, retry: str, nxt: str) -> dict[str, str]:
+    return {
+        "failure_code": code,
+        "failed_predicate": predicate,
+        "required_evidence_or_repair": repair,
+        "retry_entrypoint": retry,
+        "owning_existing_goal": OWNING_GOAL,
+        "next_attempt": nxt,
+    }
+
+
+def declared_task_commands(text: str) -> list[tuple[str, str]]:
+    """Line-based reader for ST-002 declared-tasks.yaml (same approach as
+    repo-standards tools/validate_repo_standards.py; no PyYAML dependency)."""
+    tasks: list[tuple[str, str]] = []
+    in_tasks = False
+    current = None
+    for line in text.splitlines():
+        if re.match(r"^tasks:\s*$", line):
+            in_tasks = True
+            continue
+        if in_tasks and re.match(r"^\S", line):
+            in_tasks = False
+        if not in_tasks:
+            continue
+        m = re.match(r"^  ([A-Za-z0-9_.-]+):\s*$", line)
+        if m:
+            current = m.group(1)
+            continue
+        m = re.match(r"^    command:\s*(.+?)\s*$", line)
+        if m and current:
+            tasks.append((current, m.group(1).strip("'\"")))
+    return tasks
+
+
+def evaluate(event: dict[str, Any], base_ref: str, head_rev: str, tier: str,
+             run_tasks: bool) -> dict[str, Any]:
+    predicates: list[dict[str, Any]] = []
+    pr = event.get("pull_request") or {}
+    repository = (event.get("repository") or {}).get("full_name")
+    validation = {"declared_validation_present": None, "declared_validation_ran": False,
+                  "declared_validation_consequence": "NOT_REACHED"}
+    retry = "push to the PR branch or 'Update branch'; the gate re-runs on synchronize/ready_for_review/reopened"
+
+    def done(outcome: str, disp: dict[str, str] | None) -> dict[str, Any]:
+        rec = {
+            "schema": "stegverse.merge-admission-receipt/v0.1",
+            "policy_id": POLICY_ID,
+            "profile_id": PROFILE_ID,
+            "repository": repository,
+            "pull_request": pr.get("number"),
+            "head_sha": pr.get("head", {}).get("sha"),
+            "base_ref": base_ref,
+            "tier": tier,
+            "outcome": outcome,
+            "predicates": predicates,
+            "actionable_disposition": disp,
+            **validation,
+            "authority_effect": "NONE_VALIDATION_ONLY",
+            "github_actions_mutation_authority": False,
+            "recorded_at": datetime.now(timezone.utc).isoformat(),
+        }
+        rec["receipt_sha256"] = hashlib.sha256(json.dumps(rec, sort_keys=True).encode()).hexdigest()
+        return rec
+
+    # P0: event must be a pull_request / merge_group carrying a head.
+    if not pr and "merge_group" not in event:
+        predicates.append({"id": "P0_EVENT_PRESENT", "held": False})
+        return done("FAIL_CLOSED", disposition(
+            "EVENT_NOT_PULL_REQUEST", "P0_EVENT_PRESENT",
+            "gate must run on pull_request or merge_group", retry, "re-run on a PR event"))
+    predicates.append({"id": "P0_EVENT_PRESENT", "held": True})
+
+    # P1: not a draft.  (GitHub already refuses to merge drafts; this makes the
+    # required check red while draft so 'Ready for review' forces a fresh run.)
+    if pr.get("draft") is True:
+        predicates.append({"id": "P1_NOT_DRAFT", "held": False})
+        return done("DENY", disposition(
+            "PR_IS_DRAFT", "P1_NOT_DRAFT",
+            "mark ready for review only when the lane declares it merge-ready",
+            "ready_for_review event re-runs this gate", "after ready_for_review"))
+    predicates.append({"id": "P1_NOT_DRAFT", "held": True})
+
+    # P2: base tip observable and contained in head (up to date). The ruleset's
+    # strict status-check policy enforces this at merge time; the gate also
+    # records it so the receipt is self-describing.
+    try:
+        base_tip = git("rev-parse", f"origin/{base_ref}").strip()
+        merge_base = git("merge-base", head_rev, base_tip).strip()
+    except RuntimeError as exc:
+        predicates.append({"id": "P2_BASE_OBSERVED", "held": False, "error": str(exc)})
+        return done("FAIL_CLOSED", disposition(
+            "BASE_NOT_OBSERVABLE", "P2_BASE_OBSERVED",
+            "checkout must fetch the base branch tip", retry, "re-run"))
+    up_to_date = merge_base == base_tip
+    predicates.append({"id": "P2_UP_TO_DATE", "held": up_to_date, "base_tip": base_tip, "merge_base": merge_base})
+    if not up_to_date:
+        return done("DENY", disposition(
+            "HEAD_BEHIND_BASE", "P2_UP_TO_DATE",
+            f"rebase or merge {base_ref} ({base_tip[:12]}) into the PR branch", retry,
+            "after the branch contains the current base tip"))
+
+    # P3: generation fence (only for files that exist on base or head).
+    for spec in GENERATION_FENCED_FILES:
+        if spec.get("repository") and repository and spec["repository"] != repository:
+            continue
+        path, field = spec["path"], spec["field"]
+        base_doc, head_doc = read_json_at(base_tip, path), read_json_at(head_rev, path)
+        if base_doc is None and head_doc is None:
+            continue
+        try:
+            bg = int(base_doc[field]) if base_doc is not None else None
+            hg = int(head_doc[field]) if head_doc is not None else None
+        except (KeyError, TypeError, ValueError):
+            predicates.append({"id": f"P3_GENERATION:{path}", "held": False})
+            return done("FAIL_CLOSED", disposition(
+                "GENERATION_UNREADABLE", f"P3_GENERATION:{path}",
+                f"{path} must carry integer '{field}' on base and head", retry, "re-run after repair"))
+        changed = bool(git("diff", "--name-only", base_tip, head_rev, "--", path).strip())
+        expected = (bg + 1) if changed else bg
+        held = hg == expected
+        predicates.append({"id": f"P3_GENERATION:{path}", "held": held, "base_generation": bg,
+                           "head_generation": hg, "file_changed": changed, "expected": expected})
+        if not held:
+            return done("DENY", disposition(
+                "GENERATION_NOT_BASE_PLUS_ONE", f"P3_GENERATION:{path}",
+                f"set {path}.{field} to {expected} (base {bg}{' + 1' if changed else ', file unchanged'}) on top of current {base_ref}",
+                retry, "after rebase and generation renumber"))
+
+    # P4: declared validation (ST-002 declared-tasks.yaml) actually runs and passes.
+    dt = Path("declared-tasks.yaml")
+    if not dt.exists():
+        validation["declared_validation_present"] = False
+        if tier == "TIER_2_CRITICAL":
+            validation["declared_validation_consequence"] = "FAIL_CLOSED_TIER_2_REQUIRES_VALIDATION"
+            predicates.append({"id": "P4_VALIDATION_DECLARED", "held": False})
+            return done("FAIL_CLOSED", disposition(
+                "VALIDATION_UNDECLARED", "P4_VALIDATION_DECLARED",
+                "TIER_2 repositories must declare validation in declared-tasks.yaml (ST-002)",
+                retry, "after declared-tasks.yaml is merged via an owner-approved PR"))
+        # TIER_1: ALLOW on the structural predicates, and the receipt says in
+        # so many words that no validation ran. Never a silent pass.
+        validation["declared_validation_consequence"] = "NO_VALIDATION_RAN"
+        predicates.append({"id": "P4_VALIDATION_DECLARED", "held": False,
+                           "consequence": "ALLOW_RECORDING_NO_VALIDATION_RAN"})
+        return done("ALLOW", None)
+    validation["declared_validation_present"] = True
+    tasks = declared_task_commands(dt.read_text(encoding="utf-8"))
+    if not tasks:
+        predicates.append({"id": "P4_VALIDATION_DECLARED", "held": False, "reason": "no task commands"})
+        return done("FAIL_CLOSED", disposition(
+            "DECLARED_TASKS_EMPTY", "P4_VALIDATION_DECLARED",
+            "declared-tasks.yaml must declare at least one task command", retry, "after repair"))
+    predicates.append({"id": "P4_VALIDATION_DECLARED", "held": True, "task_count": len(tasks)})
+    if not run_tasks:
+        validation["declared_validation_consequence"] = "DECLARED_NOT_RUN_LOCAL_DRY_RUN"
+    if run_tasks:
+        validation["declared_validation_ran"] = True
+        for name, command in tasks:
+            r = subprocess.run(command, shell=True)
+            ok = r.returncode == 0
+            predicates.append({"id": f"P5_TASK:{name}", "held": ok, "exit_code": r.returncode})
+            if not ok:
+                return done("DENY", disposition(
+                    "DECLARED_TASK_FAILED", f"P5_TASK:{name}",
+                    f"make `{command}` exit 0 on the PR head", retry, "after fix pushed"))
+        validation["declared_validation_consequence"] = "DECLARED_VALIDATION_PASSED"
+    return done("ALLOW", None)
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--event", default=os.environ.get("GITHUB_EVENT_PATH", ""))
+    ap.add_argument("--base-ref", default=os.environ.get("GITHUB_BASE_REF", ""))
+    ap.add_argument("--head", default="HEAD")
+    ap.add_argument("--tier", default=os.environ.get("ST019_TIER") or None)
+    ap.add_argument("--no-run-tasks", action="store_true")
+    ap.add_argument("--write", default="merge-admission-receipt.json")
+    a = ap.parse_args()
+    try:
+        event = json.loads(Path(a.event).read_text()) if a.event else {}
+    except (OSError, ValueError):
+        event = {}
+    base_ref = a.base_ref or (event.get("pull_request") or {}).get("base", {}).get("ref", "") \
+        or str((event.get("merge_group") or {}).get("base_ref", "")).removeprefix("refs/heads/")
+    tier = resolve_tier((event.get("repository") or {}).get("full_name"), a.tier)
+    try:
+        rec = evaluate(event, base_ref, a.head, tier, not a.no_run_tasks)
+    except Exception as exc:  # every error path is a six-field FAIL_CLOSED
+        rec = {
+            "schema": "stegverse.merge-admission-receipt/v0.1",
+            "policy_id": POLICY_ID,
+            "profile_id": PROFILE_ID,
+            "repository": (event.get("repository") or {}).get("full_name"),
+            "outcome": "FAIL_CLOSED",
+            "actionable_disposition": disposition(
+                "GATE_INTERNAL_ERROR", "P_GATE_EVALUATED",
+                f"{type(exc).__name__}: {str(exc)[:300]}",
+                "re-run the stegverse-merge-gate check", "after the gate source or repository state is repaired"),
+            "authority_effect": "NONE_VALIDATION_ONLY",
+            "github_actions_mutation_authority": False,
+        }
+    Path(a.write).write_text(json.dumps(rec, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(rec, indent=2, sort_keys=True))
+    return 0 if rec["outcome"] == "ALLOW" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
