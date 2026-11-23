@@ -75,98 +75,61 @@ def validate_request(request: Mapping[str, Any]) -> None:
 
 
 def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
-    values = dict(os.environ if source is None else source)
-    hosted = [key for key in HOSTED if truthy(values.get(key))]
-    if hosted:
-        raise RuntimeError("hosted environment may not consume DeepSeek resident request: " + ",".join(sorted(hosted)))
-    env = {key: values[key] for key in NONSECRET if values.get(key)}
+    env_source = os.environ if source is None else source
     for key in FORBIDDEN:
-        env.pop(key, None)
-    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
-    env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
-    return env
-
-
-def previously_consumed(runtime: Path, request: Mapping[str, Any], request_hash: str) -> bool:
-    path = runtime / CONSUMPTION_REL
-    if not path.is_file():
-        return False
-    try:
-        value = load(path)
-    except Exception:
-        return False
-    return value.get("request_id") == request.get("request_id") and value.get("request_sha256") == request_hash and value.get("runtime_execution_attempted") is True and value.get("terminal") is True
-
-
-def last_json(stdout: str) -> dict[str, Any] | None:
-    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
-        try:
-            value = json.loads(line)
-        except Exception:
-            continue
-        if isinstance(value, dict):
-            return value
-    return None
-
-
-def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
-    source = source_root.expanduser().resolve()
-    runtime = runtime_root.expanduser().resolve()
-    request_path = runtime / REQUEST_REL
-    if not request_path.is_file():
-        return {"schema": "stegverse.deepseek-intr-resident-request-consumption/v1", "state": "NO_REQUEST", "runtime_execution_attempted": False, "authority_effect": "NONE"}
-    request = load(request_path)
-    validate_request(request)
-    request_hash = stable(request)
-    if previously_consumed(runtime, request, request_hash):
-        return {"schema": "stegverse.deepseek-intr-resident-request-consumption/v1", "state": "ALREADY_TERMINAL", "request_id": request["request_id"], "request_sha256": request_hash, "runtime_execution_attempted": False, "authority_effect": "NONE"}
-    entrypoint = runtime / TARGET_ENTRYPOINT
-    if not entrypoint.is_file():
-        raise RuntimeError("DeepSeek resident entrypoint missing")
-    command = [sys.executable, str(entrypoint), "--source-root", str(source), "--runtime-root", str(runtime), "--task-id", TARGET_TASK]
-    done = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(env), timeout=600)
-    result = last_json(done.stdout)
-    worker_result = (result or {}).get("execution_result") if isinstance(result, dict) else None
-    terminal = bool(isinstance(worker_result, dict) and worker_result.get("state") == "COMPLETED")
-    attempted = bool(isinstance(result, dict) and result.get("runtime_execution_attempted") is True)
-    receipt = {
-        "schema": "stegverse.deepseek-intr-resident-request-consumption/v1",
-        "state": "COMPLETED" if terminal else ("ATTEMPT_RECORDED" if attempted else "FAIL_CLOSED"),
-        "request_id": request["request_id"],
-        "request_sha256": request_hash,
-        "task_id": TARGET_TASK,
-        "mode": TARGET_MODE,
-        "command": command,
-        "execution_returncode": done.returncode,
-        "execution_result_observed": isinstance(result, dict),
-        "execution_result": result,
-        "runtime_execution_attempted": attempted,
-        "terminal": terminal,
-        "request_granted_authority": False,
-        "heartbeat_grants_execution_authority": False,
-        "github_token_required": False,
-        "github_token_runtime_authority": "NONE",
-        "credential_authority": "TV/TVC",
-        "credential_material_present": False,
-        "second_machine_required": False,
-        "network_source_fetch_performed": False,
-        "authority_effect": "NONE_REQUEST_ONLY"
-    }
-    path = runtime / CONSUMPTION_REL
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return receipt
+        if key in env_source and str(env_source[key]).strip():
+            raise RuntimeError(f"Forbidden environment variable present: {key}")
+    for key in HOSTED:
+        if truthy(env_source.get(key)):
+            raise RuntimeError(f"Hosted/CI environment variable present: {key}")
+    
+    cleaned: dict[str, str] = {}
+    for key in NONSECRET:
+        val = env_source.get(key)
+        if val is not None:
+            cleaned[key] = str(val)
+    return cleaned
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--source-root", type=Path, default=ROOT)
-    parser.add_argument("--runtime-root", type=Path, required=True)
+    parser = argparse.ArgumentParser(description="Consume DeepSeek resident execution request.")
+    parser.add_argument("--execute", action="store_true", help="Execute the target entrypoint.")
     args = parser.parse_args()
-    result = consume(args.source_root, args.runtime_root)
-    print(json.dumps(result, sort_keys=True))
-    return 0 if result["state"] in {"NO_REQUEST", "ALREADY_TERMINAL", "ATTEMPT_RECORDED", "COMPLETED"} else 1
+
+    request_path = ROOT / REQUEST_REL
+    if not request_path.is_file():
+        print(f"Error: Request file not found at {request_path}", file=sys.stderr)
+        return 1
+
+    request = load(request_path)
+    validate_request(request)
+
+    env = clean_env()
+
+    consumption_path = ROOT / CONSUMPTION_REL
+    consumption_path.parent.mkdir(parents=True, exist_ok=True)
+
+    consumption_record = {
+        "schema": "stegverse.resident-execution-request-consumption/v1",
+        "task_id": TARGET_TASK,
+        "request_hash": stable(request),
+        "status": "CONSUMED",
+    }
+    consumption_path.write_text(json.dumps(consumption_record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    if args.execute:
+        entrypoint_path = ROOT / TARGET_ENTRYPOINT
+        if not entrypoint_path.is_file():
+            print(f"Error: Target entrypoint not found at {entrypoint_path}", file=sys.stderr)
+            return 1
+        
+        cmd = [sys.executable, str(entrypoint_path)]
+        result = subprocess.run(cmd, cwd=ROOT, env=env)
+        return result.return0 if hasattr(result, "return0") else result.returncode
+
+    print(f"Successfully validated and consumed DeepSeek resident execution request for {TARGET_TASK}")
+    return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())
