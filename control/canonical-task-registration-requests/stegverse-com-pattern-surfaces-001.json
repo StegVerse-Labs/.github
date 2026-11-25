@@ -1,0 +1,168 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "stegverse-com-pattern-surfaces-001",
+  "task_id": "STEGVERSE-COM-PATTERN-SURFACES-001",
+  "observed_registry_generation": 326,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-Labs/.github#3477",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "No canonical record/row/COSV matches PATTERN, ESCROW or COMPLAINT (grep of data/canonical-task-registry.json G326, 122 tasks, sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271, read 2026-11-25)",
+    "SS-KV-SKAP-SOCIAL-RELEASE-001 keeps StegSocials drafts private in Personal-KV and governs release grants - a different scope from S4's headless act-and-receipt posting module",
+    "STEGVERSE-WORKSPACE-ANY-DEVICE-KV-SURFACE-001 is the WorkSpace shell and KV projection host - a different scope",
+    "MASTER-RECORDS-* tasks concern Master Records custody and remediation - a different scope from S3's public records-request tracker",
+    "The task source stands in the Ecosystem KV coordination folder (Drive 1G-SMXmdmONiJZDy2ScgnkWeF6D0ev5q7), a surface the GitHub-entering lanes do not inspect; ChatGPT lane cycles of 2026-11-25 verified entry against G326 and found no eligible assignment - this registration places the work on the canonical surface those lanes read"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "STEGVERSE-COM-PATTERN-SURFACES-001",
+    "correlation_id": "STEGVERSE-COM-PATTERN-SURFACES-001",
+    "root_correlation_id": "STEGVERSE-COM-PATTERN-SURFACES-001",
+    "parent_task_id": null,
+    "goal": "Build the four StegVerse.com pattern surfaces on the proven Mailed GEN 02 / Legal Briefs GEN 03 chassis (public table holding records only - hashes, references, states; the sensitive package always in escrow separation, never on the table; identity re-proven at claim; priced tiers on the landed schedules; a receipt chain underneath; demand-instantiated - socket at rest, born by the act that needs it, no resident process; heal apparatus and fleet-restore manifest entry proven by a kill-and-heal drill filed with the build record): S1 Doc Escrow public surface (from the GEN 01 transfer package, Ecosystem KV 1Za-eYmolias8lyMjrG-2yK0NzXfTWM8k), S2 Complaint Clock board (route/clock data per the research memorandum, Ecosystem KV 1q0zzBjXkGhQ_21s3x3HvODeM2FOQoJJTngp9AT5N7no; routes not in the memorandum display as clock-unverified), S3 records-request tracker (standalone or S2 mode, reasoned in the build record), S4 headless social posting module (demand-instantiated act-and-receipt service; posts a filed content item and files the receipt back against it; authors nothing). Each surface is separately claimable; first claim owns that surface. Discharge per surface is a build record filed to the Ecosystem KV coordination folder naming the live URL and the drill verification, or a six-field non-ALLOW.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "Ecosystem KV QUEUE__WORK__PATTERN_SURFACES__CONSOLIDATED__03.md (Drive 1G-SMXmdmONiJZDy2ScgnkWeF6D0ev5q7)",
+      "Ecosystem KV QUEUE__WORK__PATTERN_SURFACES__CONSOLIDATED__02.md (Drive 13bBO2Ve2hSBcMouyg0GHP7eHsmQ64GbL)",
+      "Ecosystem KV Doc Escrow GEN 01 transfer package (Drive 1Za-eYmolias8lyMjrG-2yK0NzXfTWM8k)",
+      "Ecosystem KV complaint routes/clocks research memorandum (Drive 1q0zzBjXkGhQ_21s3x3HvODeM2FOQoJJTngp9AT5N7no)",
+      "docs/TASK_REGISTRATION_GUIDE.md",
+      "data/canonical-task-registry.json G326"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/Site"
+      ],
+      "components": [
+        "pattern-surface-s1-doc-escrow-public",
+        "pattern-surface-s2-complaint-clock",
+        "pattern-surface-s3-records-request-tracker",
+        "pattern-surface-s4-headless-social-posting"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DEP-PATTERN-SURFACES-PUBLIC-BINDING",
+        "kind": "RUNTIME_PREDICATE",
+        "state": "UNRESOLVED",
+        "ref": "Public binding at stegverse.com follows the Mailed GEN 02 / Legal Briefs GEN 03 production pattern; the stegverse.com root stands in activation - the binding route is exercised per surface at build time and evidenced in each build record"
+      },
+      {
+        "dependency_id": "DEP-PATTERN-SURFACES-S1-PACKAGE",
+        "kind": "CAPABILITY",
+        "state": "UNRESOLVED",
+        "ref": "S1 builds from the Doc Escrow GEN 01 transfer package (Ecosystem KV 1Za-eYmolias8lyMjrG-2yK0NzXfTWM8k), proven in isolation with replay MATCH 2026-11-24; production cutover is a separate act"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "existing_evidence_refs": [
+      "Ecosystem KV QUEUE__WORK__PATTERN_SURFACES__CONSOLIDATED__03.md (Drive 1G-SMXmdmONiJZDy2ScgnkWeF6D0ev5q7, MD5 c09604323f4e4fcae568376f872d6306) - operative task text; the work has stood unclaimed since 2026-11-24",
+      "ChatGPT lane cycle reports 2026-11-25 15:29-16:07 CST, relayed by the principal: entry verified against Registry G326, closing 'No new eligible ChatGPT assignment was identified on the inspected surfaces' - the task exists on no surface that lane inspects",
+      "data/canonical-task-registry.json G326 sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271 (coordinator readback 2026-11-25)"
+    ],
+    "expected_evidence_predicates": [
+      "PATTERN_SURFACE_LIVE_URL_READBACK_PER_SURFACE",
+      "PATTERN_SURFACE_KILL_AND_HEAL_DRILL_FILED",
+      "PATTERN_SURFACE_BUILD_RECORD_KV_FILED_OR_SIX_FIELD_NONALLOW",
+      "PATTERN_SURFACES_NON_BUILDER_VALIDATION"
+    ],
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "handoff_projection_refs": [
+      "docs/STEGVERSE_COM_PATTERN_SURFACES_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+      "Ecosystem KV Drive 1G-SMXmdmONiJZDy2ScgnkWeF6D0ev5q7"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.dual-scope-seal/v1",
+    "scope": {
+      "goal": "Build the four StegVerse.com pattern surfaces on the proven Mailed GEN 02 / Legal Briefs GEN 03 chassis (public table holding records only - hashes, references, states; the sensitive package always in escrow separation, never on the table; identity re-proven at claim; priced tiers on the landed schedules; a receipt chain underneath; demand-instantiated - socket at rest, born by the act that needs it, no resident process; heal apparatus and fleet-restore manifest entry proven by a kill-and-heal drill filed with the build record): S1 Doc Escrow public surface (from the GEN 01 transfer package, Ecosystem KV 1Za-eYmolias8lyMjrG-2yK0NzXfTWM8k), S2 Complaint Clock board (route/clock data per the research memorandum, Ecosystem KV 1q0zzBjXkGhQ_21s3x3HvODeM2FOQoJJTngp9AT5N7no; routes not in the memorandum display as clock-unverified), S3 records-request tracker (standalone or S2 mode, reasoned in the build record), S4 headless social posting module (demand-instantiated act-and-receipt service; posts a filed content item and files the receipt back against it; authors nothing). Each surface is separately claimable; first claim owns that surface. Discharge per surface is a build record filed to the Ecosystem KV coordination folder naming the live URL and the drill verification, or a six-field non-ALLOW.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Site"
+        ],
+        "components": [
+          "pattern-surface-s1-doc-escrow-public",
+          "pattern-surface-s2-complaint-clock",
+          "pattern-surface-s3-records-request-tracker",
+          "pattern-surface-s4-headless-social-posting"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "PATTERN_SURFACE_LIVE_URL_READBACK_PER_SURFACE",
+        "PATTERN_SURFACE_KILL_AND_HEAL_DRILL_FILED",
+        "PATTERN_SURFACE_BUILD_RECORD_KV_FILED_OR_SIX_FIELD_NONALLOW",
+        "PATTERN_SURFACES_NON_BUILDER_VALIDATION"
+      ],
+      "finish_point": {
+        "acceptance_test": "Each of S1-S4 either serves live at its StegVerse.com URL with its receipt chain replaying MATCH and a kill-and-heal drill filed with its build record, or stands discharged by a six-field non-ALLOW; the coordinator's live verification is filed per surface to the Ecosystem KV",
+        "predicate": "PATTERN_SURFACES_LIVE_OR_NONALLOW_PER_SURFACE",
+        "verifier_entrypoint": "Coordinator live URL readback plus Ecosystem KV build-record readback per surface",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:52da2a02a26846e44f867aa0c3c4750d79ec41df1d1f4767c36af742ad7ecb97",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+      "unassigned_work": "S1-S4 unbuilt; the KV queue item has stood unclaimed since 2026-11-24",
+      "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+    },
+    "evidence_refs": [
+      "Ecosystem KV Drive 1G-SMXmdmONiJZDy2ScgnkWeF6D0ev5q7",
+      "StegVerse-Labs/.github#3477"
+    ],
+    "observed_at": "2026-11-25T22:21:45Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}
