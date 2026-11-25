@@ -1,0 +1,149 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "suite-gen-automation-and-failed-actions-001",
+  "task_id": "SUITE-GEN-AUTOMATION-AND-FAILED-ACTIONS-001",
+  "observed_registry_generation": 326,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-Labs/.github#3477",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "No canonical record/row/COSV carries this task identity (exact-match check of data/canonical-task-registry.json G326, 122 tasks, sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271, read 2026-11-25)",
+    "No canonical task carries the suite-generation automation or the failed-Actions conversion (subject probes return unrelated tasks)"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "SUITE-GEN-AUTOMATION-AND-FAILED-ACTIONS-001",
+    "correlation_id": "SUITE-GEN-AUTOMATION-AND-FAILED-ACTIONS-001",
+    "root_correlation_id": "SUITE-GEN-AUTOMATION-AND-FAILED-ACTIONS-001",
+    "parent_task_id": null,
+    "goal": "Suite-generation automation and failed-Actions conversion. Item A (automate suite generation from the suites page; working link from the 0R10N15 page) was discharged 2026-11-25 by Gemini (suite-gen automation GEN 01, cleanroom-proven, filed to the Ecosystem KV). Item B stands open as a standing conversion: GitHub failed Actions are work, not errors - census first in StegVerse-Labs/Site (the BUILD-Q-51 lineage: eight pre-existing failures recorded 2026-11-19, five of them Python 3.9 legs; current state to be established by the census, not assumed), then every other ecosystem repo with failing runs. Each failure becomes a claimable work item naming repo, workflow, run, failing job/step, and the exact failed predicate from the run log; a failure's cure is a new commit/generation on its own surface; a lane that cannot cure one files the six-field non-ALLOW for that failure only. Any capable lane; first claim owns each failure item. Operative text: Ecosystem KV QUEUE__WORK__SUITE_GEN_AUTOMATION_AND_FAILED_ACTIONS__01.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "Ecosystem KV QUEUE__WORK__SUITE_GEN_AUTOMATION_AND_FAILED_ACTIONS__01.md",
+      "docs/TASK_REGISTRATION_GUIDE.md",
+      "data/canonical-task-registry.json G326"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/Site",
+        "StegVerse-Labs/.github"
+      ],
+      "components": [
+        "failed-actions-census",
+        "failed-actions-conversion"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DEP-FAILED-ACTIONS-OPERATIVE-TEXT",
+        "kind": "RUNTIME_PREDICATE",
+        "state": "UNRESOLVED",
+        "ref": "The conversion specification stands in the Ecosystem KV queue item; this registration carries the state row for canonical visibility"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "existing_evidence_refs": [
+      "Item A discharge (Gemini S241, 2026-11-25): suite-generation automation built and cleanroom-proven; Item B has no census on record",
+      "Failure notices observed in the Ecosystem KV on 2026-11-25 (DATA_CONTINUATION_CORE_LITE_REFERENCE_CLOSURE_LOOP; STEGGHOST_ENTITY_SANDBOX_RUNNER_HEADLESS_CMD_TESTER) - specimen failures awaiting the census"
+    ],
+    "expected_evidence_predicates": [
+      "FAILED_ACTIONS_CENSUS_FILED",
+      "FAILED_ACTION_ITEMS_CLAIMABLE_PER_FAILURE"
+    ],
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "handoff_projection_refs": [
+      "docs/SUITE_GEN_AUTOMATION_AND_FAILED_ACTIONS_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+      "Ecosystem KV QUEUE__WORK__SUITE_GEN_AUTOMATION_AND_FAILED_ACTIONS__01.md"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.dual-scope-seal/v1",
+    "scope": {
+      "goal": "Suite-generation automation and failed-Actions conversion. Item A (automate suite generation from the suites page; working link from the 0R10N15 page) was discharged 2026-11-25 by Gemini (suite-gen automation GEN 01, cleanroom-proven, filed to the Ecosystem KV). Item B stands open as a standing conversion: GitHub failed Actions are work, not errors - census first in StegVerse-Labs/Site (the BUILD-Q-51 lineage: eight pre-existing failures recorded 2026-11-19, five of them Python 3.9 legs; current state to be established by the census, not assumed), then every other ecosystem repo with failing runs. Each failure becomes a claimable work item naming repo, workflow, run, failing job/step, and the exact failed predicate from the run log; a failure's cure is a new commit/generation on its own surface; a lane that cannot cure one files the six-field non-ALLOW for that failure only. Any capable lane; first claim owns each failure item. Operative text: Ecosystem KV QUEUE__WORK__SUITE_GEN_AUTOMATION_AND_FAILED_ACTIONS__01.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Site",
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "failed-actions-census",
+          "failed-actions-conversion"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "FAILED_ACTIONS_CENSUS_FILED",
+        "FAILED_ACTION_ITEMS_CLAIMABLE_PER_FAILURE"
+      ],
+      "finish_point": {
+        "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+        "predicate": "SUITE_GEN_AUTOMATION_AND_FAILED_ACTIONS_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+        "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:0ce8d80a8145f6a8bc902ee378ebe0ea2f5beb43190706a8c5da18de0b686d95",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+      "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+      "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+    },
+    "evidence_refs": [
+      "Ecosystem KV QUEUE__WORK__SUITE_GEN_AUTOMATION_AND_FAILED_ACTIONS__01.md",
+      "StegVerse-Labs/.github#3477"
+    ],
+    "observed_at": "2026-11-25T22:27:08Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

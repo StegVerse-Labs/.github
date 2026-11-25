@@ -1,0 +1,154 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "fdb-canon-001",
+  "task_id": "FDB-CANON-001",
+  "observed_registry_generation": 326,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-Labs/.github#3477",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "No canonical record/row/COSV carries this task identity (exact-match check of data/canonical-task-registry.json G326, 122 tasks, sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271, read 2026-11-25)",
+    "Subject probes FREE-DOM and the exact identity FDB-CANON-001 return no canonical task (substring hits under FDB belong to unrelated SDK/ERL/TVC tasks)"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "FDB-CANON-001",
+    "correlation_id": "FDB-CANON-001",
+    "root_correlation_id": "FDB-CANON-001",
+    "parent_task_id": null,
+    "goal": "FREE-DOM sandbox production line: StegVerse-Labs/FREE-DOM (factual research, evidence collection, indexing, provenance), StegVerse-Labs/FREE-DOM_Books (an 11-book series under the author identity Rige1 - manuscripts, editorial review, governed publication, nonprofit proceeds governance), StegVerse-Labs/FREE-DOM_OverSight. Sandbox-first production candidate: the sandbox (SV-011) reviews across research, series architecture, character continuity, author voice, narrative integrity, survivor protection, automation, and production. Production readiness does not authorize release; the author's publication approval remains in force. Determinations on the Ecosystem KV record (ingress item QUEUE__WORK__FREEDOM_SANDBOX_REVIEW_INGRESS__01, Drive 1SHehQIYwOuA-SLq6eQA0-zsMvfwdl4ur): Item 1 verified this identity repo-present and org-absent - this registration is the register branch of Item 5's register-or-reconcile; Item 2 determined the Bound Composite Route ECOSYSTEM_KV_AND_SANDBOX_COMPOSITE_V1 governs protected review; Items 3-4 proceed under Gate Option A, and Item 3 must carry an explicit F-FD-1 public-repo disposition or admission fails closed.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "Ecosystem KV QUEUE__WORK__FREEDOM_SANDBOX_REVIEW_INGRESS__01.md (Drive 1SHehQIYwOuA-SLq6eQA0-zsMvfwdl4ur)",
+      "StegVerse-Labs/FREE-DOM_Books/docs/handoff/FREE_DOM_BOOKS_MIRROR_HANDOFF.md",
+      "docs/TASK_REGISTRATION_GUIDE.md",
+      "data/canonical-task-registry.json G326"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/FREE-DOM",
+        "StegVerse-Labs/FREE-DOM_Books",
+        "StegVerse-Labs/FREE-DOM_OverSight"
+      ],
+      "components": [
+        "freedom-research-evidence",
+        "freedom-books-series",
+        "freedom-oversight"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DEP-FREEDOM-FFD1",
+        "kind": "RUNTIME_PREDICATE",
+        "state": "UNRESOLVED",
+        "ref": "Item 3 admission requires an explicit F-FD-1 public-repo disposition, per the Item 2 determination on the Ecosystem KV record"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "existing_evidence_refs": [
+      "Item 1 determination (ClaudeCode, 2026-11-25): FDB-CANON-001 present as Goal ID in the Books mirror handoff at repo HEAD f514e9a96864b2a8a73dc39a5d82f8b489b3c2dc; absent from the canonical registry and all 215 canonical task records checked",
+      "Item 2 determination (Gemini S242, 2026-11-25): Bound Composite Route governs protected review immediately"
+    ],
+    "expected_evidence_predicates": [
+      "FREEDOM_ITEMS_3_4_SANDBOX_DISPOSITIONS_FILED",
+      "FREEDOM_FFD1_DISPOSITION_EXPLICIT"
+    ],
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "handoff_projection_refs": [
+      "docs/FDB_CANON_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+      "Ecosystem KV Drive 1SHehQIYwOuA-SLq6eQA0-zsMvfwdl4ur"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.dual-scope-seal/v1",
+    "scope": {
+      "goal": "FREE-DOM sandbox production line: StegVerse-Labs/FREE-DOM (factual research, evidence collection, indexing, provenance), StegVerse-Labs/FREE-DOM_Books (an 11-book series under the author identity Rige1 - manuscripts, editorial review, governed publication, nonprofit proceeds governance), StegVerse-Labs/FREE-DOM_OverSight. Sandbox-first production candidate: the sandbox (SV-011) reviews across research, series architecture, character continuity, author voice, narrative integrity, survivor protection, automation, and production. Production readiness does not authorize release; the author's publication approval remains in force. Determinations on the Ecosystem KV record (ingress item QUEUE__WORK__FREEDOM_SANDBOX_REVIEW_INGRESS__01, Drive 1SHehQIYwOuA-SLq6eQA0-zsMvfwdl4ur): Item 1 verified this identity repo-present and org-absent - this registration is the register branch of Item 5's register-or-reconcile; Item 2 determined the Bound Composite Route ECOSYSTEM_KV_AND_SANDBOX_COMPOSITE_V1 governs protected review; Items 3-4 proceed under Gate Option A, and Item 3 must carry an explicit F-FD-1 public-repo disposition or admission fails closed.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/FREE-DOM",
+          "StegVerse-Labs/FREE-DOM_Books",
+          "StegVerse-Labs/FREE-DOM_OverSight"
+        ],
+        "components": [
+          "freedom-research-evidence",
+          "freedom-books-series",
+          "freedom-oversight"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "FREEDOM_ITEMS_3_4_SANDBOX_DISPOSITIONS_FILED",
+        "FREEDOM_FFD1_DISPOSITION_EXPLICIT"
+      ],
+      "finish_point": {
+        "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+        "predicate": "FDB_CANON_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+        "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:0a7cd6ca306e2eb5b6202eb448612b79e7322122ac8308efeccd4bb8cd17459d",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+      "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+      "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+    },
+    "evidence_refs": [
+      "Ecosystem KV Drive 1SHehQIYwOuA-SLq6eQA0-zsMvfwdl4ur",
+      "StegVerse-Labs/.github#3477"
+    ],
+    "observed_at": "2026-11-25T22:27:08Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

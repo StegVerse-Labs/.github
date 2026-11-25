@@ -1,0 +1,148 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "coordination-self-audit-001",
+  "task_id": "COORDINATION-SELF-AUDIT-001",
+  "observed_registry_generation": 326,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-Labs/.github#3477",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "No canonical record/row/COSV carries this task identity (exact-match check of data/canonical-task-registry.json G326, 122 tasks, sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271, read 2026-11-25)",
+    "Subject probes SELF_AUDIT and SELF-AUDIT return no matching canonical task"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "COORDINATION-SELF-AUDIT-001",
+    "correlation_id": "COORDINATION-SELF-AUDIT-001",
+    "root_correlation_id": "COORDINATION-SELF-AUDIT-001",
+    "parent_task_id": null,
+    "goal": "Standing audit of the coordination layer itself. Per cycle: collect the coordinator's standing claims and assurances and check each against the record it rests on - every contradiction is filed as a correction naming the claim, the contradicting record, and the date the contradiction became knowable; audit queue filing shape and receipt-chain continuity on the same pass. ADDRESSEE: any VALIDATOR lane. The coordinator is the SUBJECT of this audit, never its auditor. First claim owns each cycle; the item recurs. Cycle 1 was discharged 2026-11-25 (Gemini S243; audit report and GEN 01 bundle filed to the Ecosystem KV); the standing line continues and this registration makes it visible on the canonical surface. Operative text: Ecosystem KV QUEUE__WORK__COORDINATION_SELF_AUDIT__01 (Drive 1VwDECY40VicyOU_J8tOgjHMMhKh-Q-56).",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "Ecosystem KV QUEUE__WORK__COORDINATION_SELF_AUDIT__01.md (Drive 1VwDECY40VicyOU_J8tOgjHMMhKh-Q-56)",
+      "docs/TASK_REGISTRATION_GUIDE.md",
+      "data/canonical-task-registry.json G326"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "components": [
+        "self-audit-standing-claims",
+        "self-audit-filing-shape",
+        "self-audit-receipt-chain"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DEP-SELF-AUDIT-OPERATIVE-TEXT",
+        "kind": "RUNTIME_PREDICATE",
+        "state": "UNRESOLVED",
+        "ref": "The audit specification (A1-A3) stands in the Ecosystem KV queue item; this registration carries the state row for canonical visibility"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "existing_evidence_refs": [
+      "AUDIT_REPORT__COORDINATION_SELF_AUDIT_01_CYCLE_1 (Gemini S243, Ecosystem KV, 2026-11-25) - cycle 1 discharged; the line recurs by design"
+    ],
+    "expected_evidence_predicates": [
+      "SELF_AUDIT_CYCLE_REPORT_FILED",
+      "SELF_AUDIT_CORRECTIONS_FILED_PER_CONTRADICTION"
+    ],
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "handoff_projection_refs": [
+      "docs/COORDINATION_SELF_AUDIT_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+      "Ecosystem KV Drive 1VwDECY40VicyOU_J8tOgjHMMhKh-Q-56"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.dual-scope-seal/v1",
+    "scope": {
+      "goal": "Standing audit of the coordination layer itself. Per cycle: collect the coordinator's standing claims and assurances and check each against the record it rests on - every contradiction is filed as a correction naming the claim, the contradicting record, and the date the contradiction became knowable; audit queue filing shape and receipt-chain continuity on the same pass. ADDRESSEE: any VALIDATOR lane. The coordinator is the SUBJECT of this audit, never its auditor. First claim owns each cycle; the item recurs. Cycle 1 was discharged 2026-11-25 (Gemini S243; audit report and GEN 01 bundle filed to the Ecosystem KV); the standing line continues and this registration makes it visible on the canonical surface. Operative text: Ecosystem KV QUEUE__WORK__COORDINATION_SELF_AUDIT__01 (Drive 1VwDECY40VicyOU_J8tOgjHMMhKh-Q-56).",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "self-audit-standing-claims",
+          "self-audit-filing-shape",
+          "self-audit-receipt-chain"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "SELF_AUDIT_CYCLE_REPORT_FILED",
+        "SELF_AUDIT_CORRECTIONS_FILED_PER_CONTRADICTION"
+      ],
+      "finish_point": {
+        "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+        "predicate": "COORDINATION_SELF_AUDIT_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+        "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:e5eae21ce60681c5f3592355e834db086593f0a387a85cc3cfea3710acb7323f",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+      "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+      "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+    },
+    "evidence_refs": [
+      "Ecosystem KV Drive 1VwDECY40VicyOU_J8tOgjHMMhKh-Q-56",
+      "StegVerse-Labs/.github#3477"
+    ],
+    "observed_at": "2026-11-25T22:27:08Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

@@ -1,0 +1,152 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "direct-session-pickup-gap-001",
+  "task_id": "DIRECT-SESSION-PICKUP-GAP-001",
+  "observed_registry_generation": 326,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-Labs/.github#3477",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "No canonical record/row/COSV carries this task identity (exact-match check of data/canonical-task-registry.json G326, 122 tasks, sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271, read 2026-11-25)",
+    "Subject probes PICKUP and SESSION return no matching canonical task (the ERL tasks are a different line)"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "DIRECT-SESSION-PICKUP-GAP-001",
+    "correlation_id": "DIRECT-SESSION-PICKUP-GAP-001",
+    "root_correlation_id": "DIRECT-SESSION-PICKUP-GAP-001",
+    "parent_task_id": null,
+    "goal": "Close the direct-session pickup gap: work performed by any lane, in any session the principal opens directly, is picked up and logged by the ecosystem, so no lane is ever unaware of work another lane performed. The operative text (repairs R1-R4 and the exact failed predicates, including AUTOMATIC_WAKE_NOT_ESTABLISHED and the coordinator's own disabled monitor) is the queue item in the Ecosystem KV (QUEUE__WORK__DIRECT_SESSION_PICKUP_GAP__01, Drive 1niyvuxdxxzPbB4T-6SqGQQaawV23uw7x). Failure filing: redress by any capable lane; first claim owns each repair item. The withdrawn pickup/logging assurance may be re-given only when the repairs land on evidence.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "Ecosystem KV QUEUE__WORK__DIRECT_SESSION_PICKUP_GAP__01.md (Drive 1niyvuxdxxzPbB4T-6SqGQQaawV23uw7x)",
+      "Ecosystem KV QUERY__001__MONITOR_STATE_AND_UNFILED_WORK__01.md",
+      "docs/TASK_REGISTRATION_GUIDE.md",
+      "data/canonical-task-registry.json G326"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "components": [
+        "pickup-gap-monitor-state",
+        "pickup-gap-filing-term",
+        "pickup-gap-reconciliation"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DEP-PICKUP-GAP-OPERATIVE-TEXT",
+        "kind": "RUNTIME_PREDICATE",
+        "state": "UNRESOLVED",
+        "ref": "The full repair specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "existing_evidence_refs": [
+      "ChatGPT lane session of 2026-11-25 13:36 CST (relayed by the principal): real ERL recovery work performed in-session, invisible in the coordination record - the gap's live specimen",
+      "QUERY__001 answers on record from Gemini and ClaudeCode only (2026-11-25)"
+    ],
+    "expected_evidence_predicates": [
+      "PICKUP_GAP_MONITOR_STATE_FILED_PER_LANE",
+      "PICKUP_GAP_FILING_TERM_IN_HANDOFFS",
+      "PICKUP_GAP_RECONCILIATION_READBACK"
+    ],
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "handoff_projection_refs": [
+      "docs/DIRECT_SESSION_PICKUP_GAP_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+      "Ecosystem KV Drive 1niyvuxdxxzPbB4T-6SqGQQaawV23uw7x"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.dual-scope-seal/v1",
+    "scope": {
+      "goal": "Close the direct-session pickup gap: work performed by any lane, in any session the principal opens directly, is picked up and logged by the ecosystem, so no lane is ever unaware of work another lane performed. The operative text (repairs R1-R4 and the exact failed predicates, including AUTOMATIC_WAKE_NOT_ESTABLISHED and the coordinator's own disabled monitor) is the queue item in the Ecosystem KV (QUEUE__WORK__DIRECT_SESSION_PICKUP_GAP__01, Drive 1niyvuxdxxzPbB4T-6SqGQQaawV23uw7x). Failure filing: redress by any capable lane; first claim owns each repair item. The withdrawn pickup/logging assurance may be re-given only when the repairs land on evidence.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "pickup-gap-monitor-state",
+          "pickup-gap-filing-term",
+          "pickup-gap-reconciliation"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "PICKUP_GAP_MONITOR_STATE_FILED_PER_LANE",
+        "PICKUP_GAP_FILING_TERM_IN_HANDOFFS",
+        "PICKUP_GAP_RECONCILIATION_READBACK"
+      ],
+      "finish_point": {
+        "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+        "predicate": "DIRECT_SESSION_PICKUP_GAP_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+        "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:4118532f1a2cfdb271b28077ff25ebb48bb21542027194a4138b5fbc1d95efe4",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+      "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+      "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+    },
+    "evidence_refs": [
+      "Ecosystem KV Drive 1niyvuxdxxzPbB4T-6SqGQQaawV23uw7x",
+      "StegVerse-Labs/.github#3477"
+    ],
+    "observed_at": "2026-11-25T22:27:08Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

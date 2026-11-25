@@ -1,0 +1,148 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "resilience-apparatus-001",
+  "task_id": "RESILIENCE-APPARATUS-001",
+  "observed_registry_generation": 326,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-Labs/.github#3477",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "No canonical record/row/COSV carries this task identity (exact-match check of data/canonical-task-registry.json G326, 122 tasks, sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271, read 2026-11-25)",
+    "QUANTUM-RESILIENCE-001 and SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001 are different scopes (quantum resilience predicates; SV002 evidence retention)"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "RESILIENCE-APPARATUS-001",
+    "correlation_id": "RESILIENCE-APPARATUS-001",
+    "root_correlation_id": "RESILIENCE-APPARATUS-001",
+    "parent_task_id": null,
+    "goal": "Resilience apparatus - every weak part gets a healer. SWEEP: inventory every live part (fleet services, public surfaces, chains, tunnels, new builds as they land) and grade each HEALED (watchdog plus verified heal on record), RESTARTABLE (in the fleet-restore manifest, no watchdog), or EXPOSED (neither); the sweep is filed as a table to the Ecosystem KV and an ungraded part is a sweep failure, not an omission. BUILD: for every EXPOSED or RESTARTABLE part, build the apparatus in the proven pattern - a watchdog that restarts or reconnects on failure and verifies the heal (health plus replay MATCH plus anchor unchanged), or a fleet-restore entry proven by drill. Any capable lane; the coordinator runs the same sweep on its own surfaces in parallel; none of this needs the principal. Operative text: Ecosystem KV QUEUE__WORK__RESILIENCE_APPARATUS__01 (Drive 1qMtFGxN3AzpuDBVRQZSElOvBQL1C0prY).",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "Ecosystem KV QUEUE__WORK__RESILIENCE_APPARATUS__01.md (Drive 1qMtFGxN3AzpuDBVRQZSElOvBQL1C0prY)",
+      "docs/TASK_REGISTRATION_GUIDE.md",
+      "data/canonical-task-registry.json G326"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "components": [
+        "resilience-sweep",
+        "resilience-watchdogs",
+        "resilience-fleet-restore"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DEP-RESILIENCE-OPERATIVE-TEXT",
+        "kind": "RUNTIME_PREDICATE",
+        "state": "UNRESOLVED",
+        "ref": "The sweep/build specification stands in the Ecosystem KV queue item; this registration carries the state row for canonical visibility"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "existing_evidence_refs": [
+      "Specimens on record: the chain-export watchdog's verified heals; the 8374 endpoint's 217-second self-restoration after unit deletion (2026-11-24); fleet_restore.py rebuilding the fleet after VM replacement (2026-11-24)"
+    ],
+    "expected_evidence_predicates": [
+      "RESILIENCE_SWEEP_TABLE_FILED",
+      "RESILIENCE_EXPOSED_PARTS_HEALED_OR_NONALLOW"
+    ],
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "handoff_projection_refs": [
+      "docs/RESILIENCE_APPARATUS_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+      "Ecosystem KV Drive 1qMtFGxN3AzpuDBVRQZSElOvBQL1C0prY"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.dual-scope-seal/v1",
+    "scope": {
+      "goal": "Resilience apparatus - every weak part gets a healer. SWEEP: inventory every live part (fleet services, public surfaces, chains, tunnels, new builds as they land) and grade each HEALED (watchdog plus verified heal on record), RESTARTABLE (in the fleet-restore manifest, no watchdog), or EXPOSED (neither); the sweep is filed as a table to the Ecosystem KV and an ungraded part is a sweep failure, not an omission. BUILD: for every EXPOSED or RESTARTABLE part, build the apparatus in the proven pattern - a watchdog that restarts or reconnects on failure and verifies the heal (health plus replay MATCH plus anchor unchanged), or a fleet-restore entry proven by drill. Any capable lane; the coordinator runs the same sweep on its own surfaces in parallel; none of this needs the principal. Operative text: Ecosystem KV QUEUE__WORK__RESILIENCE_APPARATUS__01 (Drive 1qMtFGxN3AzpuDBVRQZSElOvBQL1C0prY).",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "resilience-sweep",
+          "resilience-watchdogs",
+          "resilience-fleet-restore"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "RESILIENCE_SWEEP_TABLE_FILED",
+        "RESILIENCE_EXPOSED_PARTS_HEALED_OR_NONALLOW"
+      ],
+      "finish_point": {
+        "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+        "predicate": "RESILIENCE_APPARATUS_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+        "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:b2126579856341dc4b5cd72aa66aef502fe636e0063f5d46e07d22479581f9e3",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+      "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+      "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+    },
+    "evidence_refs": [
+      "Ecosystem KV Drive 1qMtFGxN3AzpuDBVRQZSElOvBQL1C0prY",
+      "StegVerse-Labs/.github#3477"
+    ],
+    "observed_at": "2026-11-25T22:27:08Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}

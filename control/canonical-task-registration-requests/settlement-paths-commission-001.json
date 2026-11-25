@@ -1,0 +1,142 @@
+{
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "request_id": "settlement-paths-commission-001",
+  "task_id": "SETTLEMENT-PATHS-COMMISSION-001",
+  "observed_registry_generation": 326,
+  "registration_mode": "NEW_IDENTITY",
+  "issue": "StegVerse-Labs/.github#3477",
+  "allocation_request_ref": null,
+  "collision_analysis": [
+    "No canonical record/row/COSV carries this task identity (exact-match check of data/canonical-task-registry.json G326, 122 tasks, sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271, read 2026-11-25)",
+    "Subject probe SETTLEMENT returns only ECOSYSTEM-ECONOMIC-WHITEPAPER-GATED-ROADMAP-001, a different scope"
+  ],
+  "record": {
+    "schema": "stegverse.canonical-task-record/v1",
+    "task_id": "SETTLEMENT-PATHS-COMMISSION-001",
+    "correlation_id": "SETTLEMENT-PATHS-COMMISSION-001",
+    "root_correlation_id": "SETTLEMENT-PATHS-COMMISSION-001",
+    "parent_task_id": null,
+    "goal": "Develop settlement paths for a set of complaint matters whose operative records stand in the Ecosystem KV coordination folder (COMMISSION__SETTLEMENT_PATHS__ALL_COMPLAINTS__01, Drive 1nlnNyj1ckbKeP3pdOKwtLCa6eY5n82IX). That filing is not anyone-reader; this registration names no counterparty and no matter. Per matter: the demand posture the record supports, the sequence of steps in order, the leverage each step carries including every deadline the counterparty has missed or is running against, the escalation ladder if a step fails, what a court filing looks like at the end of the path, and the earliest date each step can be taken. Discharge per matter: a path memorandum filed to the Ecosystem KV, or a six-field non-ALLOW naming the exact missing evidence. Analysis and drafting only - no lane sends, files, or contacts any counterparty; every outward act remains the principal's. Matters may be claimed separately; first claim owns a matter.",
+    "coordination_state": "PROPOSED",
+    "source_refs": [
+      "Ecosystem KV COMMISSION__SETTLEMENT_PATHS__ALL_COMPLAINTS__01.md (Drive 1nlnNyj1ckbKeP3pdOKwtLCa6eY5n82IX)",
+      "docs/TASK_REGISTRATION_GUIDE.md",
+      "data/canonical-task-registry.json G326"
+    ],
+    "targets": {
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ],
+      "components": [
+        "settlement-paths-analysis"
+      ]
+    },
+    "dependencies": [
+      {
+        "dependency_id": "DEP-SETTLEMENT-OPERATIVE-TEXT",
+        "kind": "RUNTIME_PREDICATE",
+        "state": "UNRESOLVED",
+        "ref": "Matter identities and records stand only in the Ecosystem KV commission filing, which is not anyone-reader; lanes take the operative text there"
+      }
+    ],
+    "blockers": [],
+    "systemic_incident_ref": null,
+    "adjacent_task_refs": [
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "existing_evidence_refs": [
+      "Companion research memorandum (complaint deadlines) discharged 2026-11-25 (ChatGPT; Ecosystem KV Drive 1q0zzBjXkGhQ_21s3x3HvODeM2FOQoJJTngp9AT5N7no); no settlement-path memorandum has been filed for any matter"
+    ],
+    "expected_evidence_predicates": [
+      "SETTLEMENT_PATH_MEMO_FILED_PER_MATTER_OR_NONALLOW"
+    ],
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    },
+    "completion": {
+      "claimed": false,
+      "validated": false,
+      "reconciliation_ref": null
+    },
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "handoff_projection_refs": [
+      "docs/SETTLEMENT_PATHS_COMMISSION_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+      "Ecosystem KV Drive 1nlnNyj1ckbKeP3pdOKwtLCa6eY5n82IX"
+    ],
+    "authority_model": {
+      "task_registry_mints_execution_authority": false,
+      "source_state_proves_execution": false,
+      "worker_claim_authority": "WORKERCOORDINATOR",
+      "master_records_reality_authority": false,
+      "interlock_intr_required_for_governed_ingress_egress": true
+    }
+  },
+  "sealed_scope": {
+    "schema": "stegverse.dual-scope-seal/v1",
+    "scope": {
+      "goal": "Develop settlement paths for a set of complaint matters whose operative records stand in the Ecosystem KV coordination folder (COMMISSION__SETTLEMENT_PATHS__ALL_COMPLAINTS__01, Drive 1nlnNyj1ckbKeP3pdOKwtLCa6eY5n82IX). That filing is not anyone-reader; this registration names no counterparty and no matter. Per matter: the demand posture the record supports, the sequence of steps in order, the leverage each step carries including every deadline the counterparty has missed or is running against, the escalation ladder if a step fails, what a court filing looks like at the end of the path, and the earliest date each step can be taken. Discharge per matter: a path memorandum filed to the Ecosystem KV, or a six-field non-ALLOW naming the exact missing evidence. Analysis and drafting only - no lane sends, files, or contacts any counterparty; every outward act remains the principal's. Matters may be claimed separately; first claim owns a matter.",
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "settlement-paths-analysis"
+        ]
+      },
+      "expected_evidence_predicates": [
+        "SETTLEMENT_PATH_MEMO_FILED_PER_MATTER_OR_NONALLOW"
+      ],
+      "finish_point": {
+        "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+        "predicate": "SETTLEMENT_PATHS_COMMISSION_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+        "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+        "lowest_supported_mode": "E0"
+      }
+    },
+    "scope_digest": "sha256:0c6fd4724b4c66306b832910dd233e8a8359e2618d701549d603f7e8f02a7f38",
+    "supersedes_scope_digest": null
+  },
+  "vector": {
+    "exact_metrics": {
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "chat_owned_implementation": 0,
+      "chat_owned_validation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_credentials": 0,
+      "canonical_owner_installed": true,
+      "thread_required": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "metric_evidence": {
+      "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+      "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+      "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+    },
+    "evidence_refs": [
+      "Ecosystem KV Drive 1nlnNyj1ckbKeP3pdOKwtLCa6eY5n82IX",
+      "StegVerse-Labs/.github#3477"
+    ],
+    "observed_at": "2026-11-25T22:27:08Z"
+  },
+  "authority_effect": "NONE_REGISTRATION_ONLY"
+}
