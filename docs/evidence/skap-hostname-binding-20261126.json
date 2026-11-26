@@ -1,0 +1,310 @@
+{
+  "config_write": {
+    "outcome": "CONFIG_PUT_ALLOWED",
+    "before": {
+      "success": true,
+      "errors": [],
+      "messages": [],
+      "result": {
+        "tunnel_id": "0aec1441-924f-4cb6-bcb8-b9c251511a6c",
+        "version": 7,
+        "config": {
+          "ingress": [
+            {
+              "service": "http://localhost:8796",
+              "hostname": "8374.stegverse.org",
+              "originRequest": {}
+            },
+            {
+              "service": "http://localhost:8802",
+              "hostname": "4lph4.stegverse.org"
+            },
+            {
+              "service": "http://localhost:8803",
+              "hostname": "0r10n15.stegverse.org"
+            },
+            {
+              "service": "http://127.0.0.1:8804",
+              "hostname": "suites.stegverse.org"
+            },
+            {
+              "service": "http://127.0.0.1:8805",
+              "hostname": "mailed.stegverse.com"
+            },
+            {
+              "service": "http://127.0.0.1:8806",
+              "hostname": "legal-briefs.stegverse.com"
+            },
+            {
+              "service": "http_status:404"
+            }
+          ],
+          "warp-routing": {
+            "enabled": false
+          }
+        },
+        "source": "cloudflare",
+        "created_at": "2026-11-24T06:55:27.593990Z"
+      }
+    },
+    "submittedConfig": {
+      "ingress": [
+        {
+          "service": "http://localhost:8796",
+          "hostname": "8374.stegverse.org",
+          "originRequest": {}
+        },
+        {
+          "service": "http://localhost:8802",
+          "hostname": "4lph4.stegverse.org"
+        },
+        {
+          "service": "http://localhost:8803",
+          "hostname": "0r10n15.stegverse.org"
+        },
+        {
+          "service": "http://127.0.0.1:8804",
+          "hostname": "suites.stegverse.org"
+        },
+        {
+          "service": "http://127.0.0.1:8805",
+          "hostname": "mailed.stegverse.com"
+        },
+        {
+          "service": "http://127.0.0.1:8806",
+          "hostname": "legal-briefs.stegverse.com"
+        },
+        {
+          "hostname": "skap.stegverse.org",
+          "service": "http://localhost:8812"
+        },
+        {
+          "service": "http_status:404"
+        }
+      ],
+      "warp-routing": {
+        "enabled": false
+      }
+    },
+    "write": {
+      "success": true,
+      "errors": [],
+      "messages": [],
+      "result": {
+        "tunnel_id": "0aec1441-924f-4cb6-bcb8-b9c251511a6c",
+        "version": 8,
+        "config": {
+          "ingress": [
+            {
+              "service": "http://localhost:8796",
+              "hostname": "8374.stegverse.org",
+              "originRequest": {}
+            },
+            {
+              "service": "http://localhost:8802",
+              "hostname": "4lph4.stegverse.org"
+            },
+            {
+              "service": "http://localhost:8803",
+              "hostname": "0r10n15.stegverse.org"
+            },
+            {
+              "service": "http://127.0.0.1:8804",
+              "hostname": "suites.stegverse.org"
+            },
+            {
+              "service": "http://127.0.0.1:8805",
+              "hostname": "mailed.stegverse.com"
+            },
+            {
+              "service": "http://127.0.0.1:8806",
+              "hostname": "legal-briefs.stegverse.com"
+            },
+            {
+              "service": "http://localhost:8812",
+              "hostname": "skap.stegverse.org"
+            },
+            {
+              "service": "http_status:404"
+            }
+          ],
+          "warp-routing": {
+            "enabled": false
+          }
+        },
+        "source": "cloudflare",
+        "created_at": "2026-11-26T06:39:40.022337Z"
+      }
+    }
+  },
+  "dns_write": {
+    "outcome": "DNS_POST_ALLOWED",
+    "before": {
+      "result": [],
+      "success": true,
+      "errors": [],
+      "messages": [],
+      "result_info": {
+        "page": 1,
+        "per_page": 100,
+        "count": 0,
+        "total_count": 0,
+        "total_pages": 1
+      }
+    },
+    "write": {
+      "result": {
+        "id": "d610da843988f50dcc1a7aca5105f135",
+        "name": "skap.stegverse.org",
+        "type": "CNAME",
+        "content": "0aec1441-924f-4cb6-bcb8-b9c251511a6c.cfargotunnel.com",
+        "proxiable": true,
+        "proxied": true,
+        "ttl": 1,
+        "settings": {
+          "flatten_cname": false
+        },
+        "meta": {},
+        "comment": null,
+        "tags": [],
+        "created_on": "2026-11-26T06:39:50.574501Z",
+        "modified_on": "2026-11-26T06:39:50.574501Z"
+      },
+      "success": true,
+      "errors": [],
+      "messages": []
+    }
+  },
+  "readback": {
+    "configuration": {
+      "success": true,
+      "errors": [],
+      "messages": [],
+      "result": {
+        "tunnel_id": "0aec1441-924f-4cb6-bcb8-b9c251511a6c",
+        "version": 8,
+        "config": {
+          "ingress": [
+            {
+              "service": "http://localhost:8796",
+              "hostname": "8374.stegverse.org",
+              "originRequest": {}
+            },
+            {
+              "service": "http://localhost:8802",
+              "hostname": "4lph4.stegverse.org"
+            },
+            {
+              "service": "http://localhost:8803",
+              "hostname": "0r10n15.stegverse.org"
+            },
+            {
+              "service": "http://127.0.0.1:8804",
+              "hostname": "suites.stegverse.org"
+            },
+            {
+              "service": "http://127.0.0.1:8805",
+              "hostname": "mailed.stegverse.com"
+            },
+            {
+              "service": "http://127.0.0.1:8806",
+              "hostname": "legal-briefs.stegverse.com"
+            },
+            {
+              "service": "http://localhost:8812",
+              "hostname": "skap.stegverse.org"
+            },
+            {
+              "service": "http_status:404"
+            }
+          ],
+          "warp-routing": {
+            "enabled": false
+          }
+        },
+        "source": "cloudflare",
+        "created_at": "2026-11-26T06:39:40.022337Z"
+      }
+    },
+    "dns": {
+      "result": [
+        {
+          "id": "d610da843988f50dcc1a7aca5105f135",
+          "name": "skap.stegverse.org",
+          "type": "CNAME",
+          "content": "0aec1441-924f-4cb6-bcb8-b9c251511a6c.cfargotunnel.com",
+          "proxiable": true,
+          "proxied": true,
+          "ttl": 1,
+          "settings": {
+            "flatten_cname": false
+          },
+          "meta": {},
+          "comment": null,
+          "tags": [],
+          "created_on": "2026-11-26T06:39:50.574501Z",
+          "modified_on": "2026-11-26T06:39:50.574501Z"
+        }
+      ],
+      "success": true,
+      "errors": [],
+      "messages": [],
+      "result_info": {
+        "page": 1,
+        "per_page": 100,
+        "count": 1,
+        "total_count": 1,
+        "total_pages": 1
+      }
+    }
+  },
+  "existing_config_preserved": true,
+  "public_health": {
+    "url": "https://skap.stegverse.org/health",
+    "checked_at": "2026-11-26T06:40:01.132360+00:00",
+    "status": 200,
+    "headers": {
+      "date": "Thu, 26 Nov 2026 06:40:05 GMT",
+      "content-type": "application/json",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "a606e64f8e913e5d-ORD"
+    },
+    "size_bytes": 64,
+    "sha256": "314195100cb5c926e277e22cf1577c1d2fe35e3c7c59de490794468cb51affe2",
+    "body": {
+      "chain": "MATCH",
+      "service": "skap-vault",
+      "status": "ok"
+    }
+  },
+  "public_placement": {
+    "url": "https://skap.stegverse.org/",
+    "checked_at": "2026-11-26T06:40:05.301816+00:00",
+    "status": 200,
+    "headers": {
+      "date": "Thu, 26 Nov 2026 06:40:08 GMT",
+      "content-type": "text/html; charset=utf-8",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "a606e66479873e5d-ORD"
+    },
+    "size_bytes": 1731,
+    "sha256": "aa5255638d4780b6584ba35067f61245f083fa55cae35e64f88de3263ddd3cb8",
+    "title": "SKAP Vault -- Place a credential",
+    "fields": [
+      "entry_code",
+      "value",
+      "binding",
+      "label"
+    ]
+  },
+  "queue_item": "SKAP-HOSTNAME-BINDING-01",
+  "native_registration": "UNBOUND",
+  "claim": "https://github.com/StegVerse-Labs/.github/issues/3444#issuecomment-7184646493",
+  "discharge_checks": {
+    "existing_ingress_conserved": true,
+    "proxied_cname_readback": true,
+    "public_health_200_vault_identity": true,
+    "public_placement_200": true
+  },
+  "no_credential_act_performed": true
+}
