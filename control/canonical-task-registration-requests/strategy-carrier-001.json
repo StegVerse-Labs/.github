@@ -1,0 +1,169 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "strategy-carrier-001",
+ "task_id": "STRATEGY-CARRIER-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries STRATEGY-CARRIER-001 (G326, 122 tasks, read 2026-11-26)",
+  "Adjacent tasks PAIR-CARRIER-SERVICES-001 (the carrier family this joins; its C-1..C-4 carriers carry inference, search, verdicts, mail -- none carries a user strategy), RAIL-HARNESS-001 (the crossing grammar and adapters this carrier mounts) and BANKING-SYSTEM-001 (the non-custodial platform determinations) are different tasks; this item references all three"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STRATEGY-CARRIER-001",
+  "correlation_id": "STRATEGY-CARRIER-001",
+  "root_correlation_id": "STRATEGY-CARRIER-001",
+  "parent_task_id": null,
+  "goal": "Build the strategy carrier, the next carrier in the PAIR-CARRIER-SERVICES-001 family: it takes a strategy as user-level input, executes it through the 0R10N15 crossing so every act issues its receipt pair on the chain, and returns a contemporaneous, replayable track record -- loss sequence and profitable sequence alike. The platform never sells a strategy and never promises profit; the product is the record, revenue is per crossing win or lose, and the funds remain the user's in the user's own accounts. The build is proven by a pre-registered experiment (strategy, stake, window, gates and kill rules filed as a suite before the first trade; the result published either way) and presented in a paper whose every number traces to a public chain anchor; the headline metric is reconstruction completeness, not P&L. An open invitation to all profit-making systems to build on 0R10N15 is part of the product. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__STRATEGY_CARRIER__01, Drive 1yXD08Xbryn-7a_sU4GxQXARQ-HIpiKo-, MD5 dac14f3431ca266e95e5768b077ec6f3). Work items: SC-1 strategy intake format; SC-2 the strategy adapter binding every act to the crossing; SC-3 live execution on one rail; SC-4 the track-record surface; SC-5 the experiment (gated on pre-registration, live execution evidence, and the principal's specimen-stake funding act); SC-6 the paper; SC-7 the open invitation published. Discharge per item is its named evidence read back; a plan or a fixture test discharges none of SC-3/SC-5. Failure filing: six-field non-ALLOW; first claim owns each item.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__STRATEGY_CARRIER__01.md (Drive 1yXD08Xbryn-7a_sU4GxQXARQ-HIpiKo-, MD5 dac14f3431ca266e95e5768b077ec6f3)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "strategy-intake",
+    "strategy-adapter",
+    "governed-execution",
+    "track-record-surface",
+    "experiment-specimen",
+    "mounting-invitation"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-STRATEGY-CARRIER-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "PAIR-CARRIER-SERVICES-001",
+   "RAIL-HARNESS-001",
+   "BANKING-SYSTEM-001",
+   "MACHINE-ECONOMY-CHOICE-001"
+  ],
+  "existing_evidence_refs": [
+   "Principal's determinations of 2026-11-26 (the product is the receipted track record; both sequences stand; the open invitation to profit-making systems) in the 2026-11-26 day log",
+   "Carrier family live in part: 4LPH4 verdict tier in production 2026-11-26 (the verdict carrier's first instance); rail harness built with Tron and Solana adapters, fixture tests 8/8",
+   "Dual receipt layer in production on two rails: 8374 chain 124 entries / 62 pairs replay MATCH; 4LPH4 chain 18 entries / 7 pairs replay MATCH (2026-11-26)"
+  ],
+  "expected_evidence_predicates": [
+   "STRATEGY_CARRIER_INTAKE_SPECIMEN_EXPRESSED",
+   "STRATEGY_CARRIER_FIXTURE_STREAM_REPLAY_MATCH",
+   "STRATEGY_CARRIER_LIVE_EXECUTION_PAIR_REPLAY",
+   "STRATEGY_CARRIER_TRACK_RECORD_COMPLETENESS",
+   "STRATEGY_CARRIER_EXPERIMENT_RECORD_READBACK",
+   "STRATEGY_CARRIER_PAPER_FILED",
+   "STRATEGY_CARRIER_INVITATION_PUBLISHED"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/STRATEGY_CARRIER_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1yXD08Xbryn-7a_sU4GxQXARQ-HIpiKo-"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Build the strategy carrier, the next carrier in the PAIR-CARRIER-SERVICES-001 family: it takes a strategy as user-level input, executes it through the 0R10N15 crossing so every act issues its receipt pair on the chain, and returns a contemporaneous, replayable track record -- loss sequence and profitable sequence alike. The platform never sells a strategy and never promises profit; the product is the record, revenue is per crossing win or lose, and the funds remain the user's in the user's own accounts. The build is proven by a pre-registered experiment (strategy, stake, window, gates and kill rules filed as a suite before the first trade; the result published either way) and presented in a paper whose every number traces to a public chain anchor; the headline metric is reconstruction completeness, not P&L. An open invitation to all profit-making systems to build on 0R10N15 is part of the product. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__STRATEGY_CARRIER__01, Drive 1yXD08Xbryn-7a_sU4GxQXARQ-HIpiKo-, MD5 dac14f3431ca266e95e5768b077ec6f3). Work items: SC-1 strategy intake format; SC-2 the strategy adapter binding every act to the crossing; SC-3 live execution on one rail; SC-4 the track-record surface; SC-5 the experiment (gated on pre-registration, live execution evidence, and the principal's specimen-stake funding act); SC-6 the paper; SC-7 the open invitation published. Discharge per item is its named evidence read back; a plan or a fixture test discharges none of SC-3/SC-5. Failure filing: six-field non-ALLOW; first claim owns each item.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "strategy-intake",
+     "strategy-adapter",
+     "governed-execution",
+     "track-record-surface",
+     "experiment-specimen",
+     "mounting-invitation"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "STRATEGY_CARRIER_INTAKE_SPECIMEN_EXPRESSED",
+    "STRATEGY_CARRIER_FIXTURE_STREAM_REPLAY_MATCH",
+    "STRATEGY_CARRIER_LIVE_EXECUTION_PAIR_REPLAY",
+    "STRATEGY_CARRIER_TRACK_RECORD_COMPLETENESS",
+    "STRATEGY_CARRIER_EXPERIMENT_RECORD_READBACK",
+    "STRATEGY_CARRIER_PAPER_FILED",
+    "STRATEGY_CARRIER_INVITATION_PUBLISHED"
+   ],
+   "finish_point": {
+    "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+    "predicate": "STRATEGY_CARRIER_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+    "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:1a89f8b464dc65b41cee42d831ffaa062af0f686915f25fd60699a9b40184e00",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1yXD08Xbryn-7a_sU4GxQXARQ-HIpiKo-",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-26T22:12:00Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
