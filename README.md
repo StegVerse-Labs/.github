@@ -2335,3 +2335,8 @@ This repair restores collection of `test_task8_scope_matches_current_iphone_proj
 ### SKAP Vault placement hostname — 2026-11-26
 
 The principal-authorized API binding exposes [skap.stegverse.org](https://skap.stegverse.org/) through existing tunnel `8374` to `http://localhost:8812`. Configuration readback conserves all prior ingress entries; proxied CNAME, public vault health and placement-page HTTP 200 checks passed. [Handoff](docs/SKAP_HOSTNAME_BINDING_MIRROR_HANDOFF.md) and [provider evidence](docs/evidence/skap-hostname-binding-20261126.json) retain the result. This operation places no credential. Native hostname Goal/COSV registration remains unbound pending the existing request schema/identity repair; provider success does not imply a Task Registry transition.
+
+
+## Banking system registration request — source repair pending
+
+BANKING-SYSTEM-001 is proposed in the Ecosystem KV queue. Its request's sealed-scope schema identifier is corrected to the existing goal-scope-seal contract; the sealed goal and digest are unchanged. This source change does not register or execute the task. See [the banking registration handoff](docs/BANKING_SYSTEM_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md) for the actual failure, bounded validation, original B-7 review and the authorized registrar's next step.
