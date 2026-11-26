@@ -1,0 +1,161 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "machine-economy-choice-001",
+ "task_id": "MACHINE-ECONOMY-CHOICE-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3467",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "Directory readback 2026-11-25: control/canonical-task-registration-requests holds 11 files (the ten of the SKAP readback plus skap-placement-and-release-001) - no machine-economy, x402-choice, or listing request among them",
+  "BUILD-Q-30/31 (Agora listing fee; named-prospect offers) are queue items on the pairing surface, not registry identities; neither carries the v2/facilitator/price/category/listing-standard scope sealed here",
+  "The Agora $1 listing fee settlement (from payTo via the SKAP signing path) is an executed act and evidence, not a task identity",
+  "The task source stands in the Ecosystem KV coordination folder (Drive 1Xn7S-9qdzpSrtYnfm7UwCzNG7zLVz3D1), a surface GitHub-entering lanes do not inspect - this registration places the work on the canonical surface those lanes read"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MACHINE-ECONOMY-CHOICE-001",
+  "correlation_id": "MACHINE-ECONOMY-CHOICE-001",
+  "root_correlation_id": "MACHINE-ECONOMY-CHOICE-001",
+  "parent_task_id": null,
+  "goal": "Make 8374 chosen in the machine economy: convert verified review traffic (Agora402: 1,861 discoveries vs 69 page views, listing live since 2026-11-19; external crossings still 0) into completed crossings by curing the six verified diffs against the merchants that get paid (Sato Hub top tier, 2026-11-25: 690 merchants paid by 3+ outside payers on Base). W1 PROTOCOL: /crossing answers x402 v2 (a coordinator cold call on 2026-11-25 returned x402Version 1) with the CDP Bazaar discovery extension. W2 SETTLEMENT + LISTING: add a facilitator settlement mode beside the self-relayer (pair-first always; settlement an eventual, receipted leg); one call settled through Coinbase's CDP facilitator completes the CDP Bazaar listing (3,466 merchants indexed there; 8374 carries x402 List, x402scan, 402 Index, Agora - not Bazaar). The payer act rides the SKAP signing path (precedent: the Agora $1 listing fee settled from payTo through SKAP); the principal's signature is the only human act. W3 PRICE: one flat all-inclusive customer price, identical in listing copy and challenge (owner fee architecture 2026-11-25: ONE fee, costs absorbed internally under the two-resolution chain). Measured basis (router-8374-prod receipts, n=4 priced specimens): settlement charge quotes median 1,647 micro-USDC (range 1,603-1,692), governance fee 500, settled totals median 2,103. Standard price 1,500 micro-USDC ($0.0015) UNDER FACILITATOR SETTLEMENT, where settlement gas leaves the ecosystem's books; under self-relay the floor is measured realized settlement cost plus margin, re-measured from realized relayer spend before locking - a posted price below measured cost is a defect. W4 OFFER SHAPE: the lead listing sells DUAL RECEIPTS FOR EVERY TRANSACTION in buyer language (send a transaction, receive its matched receipt pair, ALLOW or NON-ALLOW, fee either way; input and output in one sentence, example payload included); a SECOND listing sells DATA PACKET GOVERNANCE as its own product. Positioning (owner 2026-11-25): market the services as the tools they are; independent evaluation falls out of every use because the pair returns either way; once a buyer's plumbing expects the pair, this is the only service meeting their acceptance. W5 CATEGORIES: join the categories the services actually are - developer tools, market data, finance transactions - on every shelf supporting placement; residual-only placement is non-conformant. W6 LISTING STANDARD + STATE (state-transition form, no polling runtime): a filed LISTING STANDARD data set marks what every listing must be (protocol version, price shape and value under the active settlement mode, shelves present, categories joined, copy form - v1 filed inside the queue item); a LISTING STATE data set marks what each listing actually is, read at query time; the DIFF computed when read is the remedy work - mechanical remedies (re-register, refresh metadata, re-answer a probe) may be applied by the lane reading the diff, design remedies (price, protocol) file as new work. Any lane with the 8374 service surface eligible; first claim owns it. Discharge: a NON-AUTHOR lane, acting as a stranger buyer, cold-calls the endpoint (v2 challenge, one flat price), completes one facilitator-settled crossing end-to-end, and reads back the Bazaar listing, the category placements, and a standard/state diff of zero or naming its remedies - or a six-field non-ALLOW per work item.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__MACHINE_ECONOMY_CHOICE__01.md (Drive 1Xn7S-9qdzpSrtYnfm7UwCzNG7zLVz3D1, MD5 e48a27141bd1d49445f177c844bfe38e)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "8374-crossing-endpoint",
+    "settlement-facilitator-mode",
+    "cdp-bazaar-listing",
+    "listing-standard-and-state"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-FACILITATOR-PAYER-ACT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The Bazaar-completing call is paid from payTo (0x7721aB66161e60fCcA59CCe2A86817cbdd9b16Be) via the SKAP signing path - the principal's signature moment; machinery performs every other step. Precedent on record: the Agora $1 listing fee settled from payTo through SKAP on 2026-11-19."
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "SKAP-PLACEMENT-AND-RELEASE-001",
+   "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+  ],
+  "existing_evidence_refs": [
+   "Ecosystem KV QUEUE__WORK__MACHINE_ECONOMY_CHOICE__01.md (Drive 1Xn7S-9qdzpSrtYnfm7UwCzNG7zLVz3D1, MD5 e48a27141bd1d49445f177c844bfe38e) - operative task text",
+   "Coordinator cold POST to https://8374.stegverse.org/crossing, 2026-11-25 23:17 CST: x402Version 1 challenge, total 2,119 micro-USDC (fee 500 + settlement charge 1,619) against an advertised $0.0005",
+   "Sato Hub merchant index, crawled 2026-11-25/26: 690 top-tier merchants (3+ outside payers); 8374 recorded '402 unknown'; CDP Bazaar indexes 3,466 merchants",
+   "Agora402 listing (registry id e5edf9cf-9802-43c9-95b7-50f0054825e5): discovered 1,861x, page views 69, live since 2026-11-19",
+   "router-8374-prod receipts segment: settlement charge quotes median 1,647 micro-USDC (n=4 priced specimens, range 1,603-1,692)"
+  ],
+  "expected_evidence_predicates": [
+   "X402_V2_CHALLENGE_STRANGER_VERIFIED",
+   "FACILITATOR_SETTLED_CROSSING_AND_BAZAAR_LISTING",
+   "FLAT_PRICE_NOT_BELOW_MEASURED_COST",
+   "LISTING_STANDARD_STATE_DIFF_OPERATIONAL"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/MACHINE_ECONOMY_CHOICE_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1Xn7S-9qdzpSrtYnfm7UwCzNG7zLVz3D1"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.goal-scope-seal/v1",
+  "scope": {
+   "goal": "Make 8374 chosen in the machine economy: convert verified review traffic (Agora402: 1,861 discoveries vs 69 page views, listing live since 2026-11-19; external crossings still 0) into completed crossings by curing the six verified diffs against the merchants that get paid (Sato Hub top tier, 2026-11-25: 690 merchants paid by 3+ outside payers on Base). W1 PROTOCOL: /crossing answers x402 v2 (a coordinator cold call on 2026-11-25 returned x402Version 1) with the CDP Bazaar discovery extension. W2 SETTLEMENT + LISTING: add a facilitator settlement mode beside the self-relayer (pair-first always; settlement an eventual, receipted leg); one call settled through Coinbase's CDP facilitator completes the CDP Bazaar listing (3,466 merchants indexed there; 8374 carries x402 List, x402scan, 402 Index, Agora - not Bazaar). The payer act rides the SKAP signing path (precedent: the Agora $1 listing fee settled from payTo through SKAP); the principal's signature is the only human act. W3 PRICE: one flat all-inclusive customer price, identical in listing copy and challenge (owner fee architecture 2026-11-25: ONE fee, costs absorbed internally under the two-resolution chain). Measured basis (router-8374-prod receipts, n=4 priced specimens): settlement charge quotes median 1,647 micro-USDC (range 1,603-1,692), governance fee 500, settled totals median 2,103. Standard price 1,500 micro-USDC ($0.0015) UNDER FACILITATOR SETTLEMENT, where settlement gas leaves the ecosystem's books; under self-relay the floor is measured realized settlement cost plus margin, re-measured from realized relayer spend before locking - a posted price below measured cost is a defect. W4 OFFER SHAPE: the lead listing sells DUAL RECEIPTS FOR EVERY TRANSACTION in buyer language (send a transaction, receive its matched receipt pair, ALLOW or NON-ALLOW, fee either way; input and output in one sentence, example payload included); a SECOND listing sells DATA PACKET GOVERNANCE as its own product. Positioning (owner 2026-11-25): market the services as the tools they are; independent evaluation falls out of every use because the pair returns either way; once a buyer's plumbing expects the pair, this is the only service meeting their acceptance. W5 CATEGORIES: join the categories the services actually are - developer tools, market data, finance transactions - on every shelf supporting placement; residual-only placement is non-conformant. W6 LISTING STANDARD + STATE (state-transition form, no polling runtime): a filed LISTING STANDARD data set marks what every listing must be (protocol version, price shape and value under the active settlement mode, shelves present, categories joined, copy form - v1 filed inside the queue item); a LISTING STATE data set marks what each listing actually is, read at query time; the DIFF computed when read is the remedy work - mechanical remedies (re-register, refresh metadata, re-answer a probe) may be applied by the lane reading the diff, design remedies (price, protocol) file as new work. Any lane with the 8374 service surface eligible; first claim owns it. Discharge: a NON-AUTHOR lane, acting as a stranger buyer, cold-calls the endpoint (v2 challenge, one flat price), completes one facilitator-settled crossing end-to-end, and reads back the Bazaar listing, the category placements, and a standard/state diff of zero or naming its remedies - or a six-field non-ALLOW per work item.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "8374-crossing-endpoint",
+     "settlement-facilitator-mode",
+     "cdp-bazaar-listing",
+     "listing-standard-and-state"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "X402_V2_CHALLENGE_STRANGER_VERIFIED",
+    "FACILITATOR_SETTLED_CROSSING_AND_BAZAAR_LISTING",
+    "FLAT_PRICE_NOT_BELOW_MEASURED_COST",
+    "LISTING_STANDARD_STATE_DIFF_OPERATIONAL"
+   ],
+   "finish_point": {
+    "acceptance_test": "A non-author lane, acting as a stranger buyer, cold-calls the endpoint and receives an x402 v2 challenge quoting one flat all-inclusive price; completes one facilitator-settled crossing end-to-end; and reads back the CDP Bazaar listing, the category placements (developer tools, market data, finance transactions), and a listing standard/state diff of zero or naming its remedies",
+    "predicate": "MACHINE_ECONOMY_CHOICE_LIVE_OR_NONALLOW",
+    "verifier_entrypoint": "Coordinator readback of the stranger cold call, the facilitator settlement record, the Bazaar listing, and the listing standard/state diff",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:9e4c1d80c9c28514a6fb1046372fb80190b59288f6ce8f82d1d27c1f9c0e3e82",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "placement surface and release route unbuilt; the gap has stood open since 2026-11-15 and became load-bearing 2026-11-25 when email transport was bound to SKAP custody",
+   "blocker_count": "no blocker recorded; one dependency UNRESOLVED (the principal's placement act, by design)"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1F2dalbHSu5GkXJ5tdgX0zjkLu9leBB38",
+   "StegVerse-Labs/.github#3467"
+  ],
+  "observed_at": "2026-11-26T04:11:54Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
