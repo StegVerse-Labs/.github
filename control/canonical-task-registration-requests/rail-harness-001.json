@@ -1,0 +1,157 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "rail-harness-001",
+ "task_id": "RAIL-HARNESS-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries RAIL-HARNESS-001 (G326, 122 tasks, read 2026-11-26)",
+  "Adjacent tasks PAIR-CARRIER-SERVICES-001 (the carrier services on the existing rails) and MACHINE-ECONOMY-CHOICE-001 are different tasks; the harness generalizes the crossing those tasks sell, and this item references both"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "RAIL-HARNESS-001",
+  "correlation_id": "RAIL-HARNESS-001",
+  "root_correlation_id": "RAIL-HARNESS-001",
+  "parent_task_id": null,
+  "goal": "Carry the rail harness from built to adopted. The harness extracts the 0R10N15 crossing grammar the two production rails already run -- present payment evidence, verify it on the chain itself, decide ALLOW / DENY / FAIL_CLOSED with six-field refusals, record the matched receipt pair, settlement leg in the same act on ALLOW -- so any protocol can mount it at its settlement boundary and every settlement act produces the pair: two hash-chained records, one per side, verifiable by either side against public anchors without trusting the operator. There is no no-receipt mode: the settlement leg's only writer is the crossing core, called in the same act as the ALLOW pair. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__RAIL_HARNESS__01, Drive 1TqoyJDGb78DyGm_PdalNDuVcYQdz_Gma, MD5 0ff5ac55267e7882bd2ddfee019ff13a). Work items: H-1 the Solana adapter's live smoke read on mainnet; H-2 a mounted specimen crossing through the harness core on a live adapter, pair and replay read back; H-3 the protocol-facing mounting record for Solana-settled compute protocols (Render, io.net form); H-4 noted as PAIR-CARRIER-SERVICES-001 work, not this item's. Discharge per item is its named evidence read back; a plan or a fixture test discharges none of H-1/H-2. Failure filing: six-field non-ALLOW; first claim owns each item.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__RAIL_HARNESS__01.md (Drive 1TqoyJDGb78DyGm_PdalNDuVcYQdz_Gma, MD5 0ff5ac55267e7882bd2ddfee019ff13a)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "rail-harness-core",
+    "pair-chain",
+    "tron-adapter",
+    "solana-adapter",
+    "protocol-mounting-record"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-RAIL-HARNESS-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "PAIR-CARRIER-SERVICES-001",
+   "MACHINE-ECONOMY-CHOICE-001"
+  ],
+  "existing_evidence_refs": [
+   "Rail harness built 2026-11-26 (coordinator workspace rail-harness/): crossing core, pair chain, Tron and Solana adapters; fixture tests 8/8",
+   "4LPH4 verdict tier LIVE 2026-11-26 (tier verdict, 0.015 USDT; tests 18/18 + 12/12; production replay MATCH 18 entries / 7 pairs)",
+   "Solana adapter live smoke read outstanding at filing: first attempt timed out on the shell proxy env 2026-11-26; proven egress path named in the queue item"
+  ],
+  "expected_evidence_predicates": [
+   "RAIL_HARNESS_SOLANA_LIVE_READ",
+   "RAIL_HARNESS_MOUNTED_SPECIMEN_PAIR_REPLAY_MATCH",
+   "RAIL_HARNESS_MOUNTING_RECORD_FILED"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/RAIL_HARNESS_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1TqoyJDGb78DyGm_PdalNDuVcYQdz_Gma"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Carry the rail harness from built to adopted. The harness extracts the 0R10N15 crossing grammar the two production rails already run -- present payment evidence, verify it on the chain itself, decide ALLOW / DENY / FAIL_CLOSED with six-field refusals, record the matched receipt pair, settlement leg in the same act on ALLOW -- so any protocol can mount it at its settlement boundary and every settlement act produces the pair: two hash-chained records, one per side, verifiable by either side against public anchors without trusting the operator. There is no no-receipt mode: the settlement leg's only writer is the crossing core, called in the same act as the ALLOW pair. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__RAIL_HARNESS__01, Drive 1TqoyJDGb78DyGm_PdalNDuVcYQdz_Gma, MD5 0ff5ac55267e7882bd2ddfee019ff13a). Work items: H-1 the Solana adapter's live smoke read on mainnet; H-2 a mounted specimen crossing through the harness core on a live adapter, pair and replay read back; H-3 the protocol-facing mounting record for Solana-settled compute protocols (Render, io.net form); H-4 noted as PAIR-CARRIER-SERVICES-001 work, not this item's. Discharge per item is its named evidence read back; a plan or a fixture test discharges none of H-1/H-2. Failure filing: six-field non-ALLOW; first claim owns each item.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "rail-harness-core",
+     "pair-chain",
+     "tron-adapter",
+     "solana-adapter",
+     "protocol-mounting-record"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "RAIL_HARNESS_SOLANA_LIVE_READ",
+    "RAIL_HARNESS_MOUNTED_SPECIMEN_PAIR_REPLAY_MATCH",
+    "RAIL_HARNESS_MOUNTING_RECORD_FILED"
+   ],
+   "finish_point": {
+    "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+    "predicate": "RAIL_HARNESS_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+    "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:5a3ae14fc6f85e1b0040d8982ced9ead63eb0385cf73b3006b7c1b55f8626193",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1TqoyJDGb78DyGm_PdalNDuVcYQdz_Gma",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-26T16:35:00Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
