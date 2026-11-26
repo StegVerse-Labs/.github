@@ -1,0 +1,174 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "banking-system-001",
+ "task_id": "BANKING-SYSTEM-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries BANKING-SYSTEM-001 (G326, 122 tasks, read 2026-11-26)",
+  "Adjacent tasks PAIR-CARRIER-SERVICES-001 (carrier services on the existing rails), RAIL-HARNESS-001 (the crossing grammar), MACHINE-ECONOMY-CHOICE-001 (the offer/listing program) and LANE-SELF-FUNDING-001 are different tasks; this program composes their surfaces into the non-custodial banking system and references each"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "BANKING-SYSTEM-001",
+  "correlation_id": "BANKING-SYSTEM-001",
+  "root_correlation_id": "BANKING-SYSTEM-001",
+  "parent_task_id": null,
+  "goal": "Build the non-custodial banking system the principal designed 2026-11-26. The platform holds no user funds and no user assets: custody stays in the user's own accounts, documentation and receipts are the user's property, the only funds that enter are payments for services executing exactly for their service, and the platform's revenue is transaction fees only. Its escrow holds documentation, never funds; what the platform holds is the grammar and projections computed from the user-owned receipt pairs. Work items: B-1 the escrow core extracted from the per-domain instances; B-2 the formation crossing (formation act, then the banking packet assembled from its record); B-3 the treasury surface (projections over user accounts, replayed against the record); B-4 the family-bank instrument kit as counsel-track drafts; B-5 the constitution layer (charter conditions as data: reserve floors, distribution locks); B-6 the first-dollar literacy surface; B-7 sandbox deliberation of the counsel-shaped set by non-author lanes in the LUNAR-COMMS manner (submission filed in SV-011, Drive 1VdH7Njmxhh1vQXbkCdeu6Vy7bvp2B_Xy, MD5 07b7f3db45e7edb8b1500012fa6c24d3); B-8 entry of the approved set into Legal Briefs as matters for counsel review; B-9 the machine \u2014 every generated LLC and banking entity carrying its Legal Briefs counsel stamp as a pipeline step, documentation delivered into the user's own KV by their choice. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__BANKING_SYSTEM__01, Drive 1qmz7FGXIaGoRZ7KvBU0TBooE9jPYeesz, MD5 a2f072b7edc50a4ee3a97b3ce08352f7). Discharge per item is its named evidence read back; a plan, a design, or a fixture test discharges none of them. Failure filing: six-field non-ALLOW; first claim owns each item within its eligibility.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__BANKING_SYSTEM__01.md (Drive 1qmz7FGXIaGoRZ7KvBU0TBooE9jPYeesz, MD5 a2f072b7edc50a4ee3a97b3ce08352f7)",
+   "SV-011 sandbox SANDBOX__SUBMISSION__BANKING_SYSTEM__COUNSEL_SET__01.md (Drive 1VdH7Njmxhh1vQXbkCdeu6Vy7bvp2B_Xy, MD5 07b7f3db45e7edb8b1500012fa6c24d3)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "escrow-core",
+    "formation-crossing",
+    "treasury-projections",
+    "family-bank-instrument-kit",
+    "constitution-layer",
+    "literacy-surface",
+    "sandbox-counsel-set",
+    "legal-briefs-entry",
+    "entity-machine"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-BANKING-SYSTEM-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "PAIR-CARRIER-SERVICES-001",
+   "RAIL-HARNESS-001",
+   "MACHINE-ECONOMY-CHOICE-001",
+   "LANE-SELF-FUNDING-001"
+  ],
+  "existing_evidence_refs": [
+   "Principal's determinations of 2026-11-26 (non-custodial escrow; escrow holds documentation; platform holds projections; funds cross only as service payments; sandbox -> Legal Briefs -> machine sequence; KV by choice) recorded in MEMORY.md and the 2026-11-26 day log",
+   "Escrow instances live: Doc Escrow GEN 02 (port 8807), Goal Escrow (8813, specimen GOAL-0003 discharged 2026-11-26), Mailed destination-bound settlement, Legal Briefs GEN 04 escrow accounting (8806)",
+   "Dual receipt layer in production on two rails: 8374 chain 124 entries / 62 pairs replay MATCH; 4LPH4 chain 18 entries / 7 pairs replay MATCH (2026-11-26)"
+  ],
+  "expected_evidence_predicates": [
+   "BANKING_SYSTEM_ESCROW_CORE_SPECIMEN_RELEASE",
+   "BANKING_SYSTEM_FORMATION_SPECIMEN_PACKET",
+   "BANKING_SYSTEM_TREASURY_PROJECTION_REPLAY_MATCH",
+   "BANKING_SYSTEM_SANDBOX_CONSENSUS_FILED",
+   "BANKING_SYSTEM_LEGAL_BRIEFS_MATTERS_ENTERED",
+   "BANKING_SYSTEM_FIRST_STAMPED_ENTITY_PIPELINE_RECORD"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/BANKING_SYSTEM_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1qmz7FGXIaGoRZ7KvBU0TBooE9jPYeesz"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Build the non-custodial banking system the principal designed 2026-11-26. The platform holds no user funds and no user assets: custody stays in the user's own accounts, documentation and receipts are the user's property, the only funds that enter are payments for services executing exactly for their service, and the platform's revenue is transaction fees only. Its escrow holds documentation, never funds; what the platform holds is the grammar and projections computed from the user-owned receipt pairs. Work items: B-1 the escrow core extracted from the per-domain instances; B-2 the formation crossing (formation act, then the banking packet assembled from its record); B-3 the treasury surface (projections over user accounts, replayed against the record); B-4 the family-bank instrument kit as counsel-track drafts; B-5 the constitution layer (charter conditions as data: reserve floors, distribution locks); B-6 the first-dollar literacy surface; B-7 sandbox deliberation of the counsel-shaped set by non-author lanes in the LUNAR-COMMS manner (submission filed in SV-011, Drive 1VdH7Njmxhh1vQXbkCdeu6Vy7bvp2B_Xy, MD5 07b7f3db45e7edb8b1500012fa6c24d3); B-8 entry of the approved set into Legal Briefs as matters for counsel review; B-9 the machine \u2014 every generated LLC and banking entity carrying its Legal Briefs counsel stamp as a pipeline step, documentation delivered into the user's own KV by their choice. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__BANKING_SYSTEM__01, Drive 1qmz7FGXIaGoRZ7KvBU0TBooE9jPYeesz, MD5 a2f072b7edc50a4ee3a97b3ce08352f7). Discharge per item is its named evidence read back; a plan, a design, or a fixture test discharges none of them. Failure filing: six-field non-ALLOW; first claim owns each item within its eligibility.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "escrow-core",
+     "formation-crossing",
+     "treasury-projections",
+     "family-bank-instrument-kit",
+     "constitution-layer",
+     "literacy-surface",
+     "sandbox-counsel-set",
+     "legal-briefs-entry",
+     "entity-machine"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "BANKING_SYSTEM_ESCROW_CORE_SPECIMEN_RELEASE",
+    "BANKING_SYSTEM_FORMATION_SPECIMEN_PACKET",
+    "BANKING_SYSTEM_TREASURY_PROJECTION_REPLAY_MATCH",
+    "BANKING_SYSTEM_SANDBOX_CONSENSUS_FILED",
+    "BANKING_SYSTEM_LEGAL_BRIEFS_MATTERS_ENTERED",
+    "BANKING_SYSTEM_FIRST_STAMPED_ENTITY_PIPELINE_RECORD"
+   ],
+   "finish_point": {
+    "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+    "predicate": "BANKING_SYSTEM_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+    "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:79125aa370de0d9205380b680c0cb3a82d2e1f5b8b8b641dd5369b241f42db49",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1qmz7FGXIaGoRZ7KvBU0TBooE9jPYeesz",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-26T21:20:00Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
