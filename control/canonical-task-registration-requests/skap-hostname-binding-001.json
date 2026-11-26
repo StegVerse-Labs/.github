@@ -1,0 +1,148 @@
+{
+  "allocation_request_ref": null,
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "collision_analysis": [
+    "Directory readback 2026-11-25: control/canonical-task-registration-requests holds 10 files (pattern-surfaces, coordination-self-audit, direct-session-pickup-gap, ec9, fdb-canon, real-governance-assessment, resilience-apparatus, settlement-paths, suite-gen-automation, README) - no SKAP placement or release request among them",
+    "SS-KV-SKAP-SOCIAL-RELEASE-001 governs StegSocials draft release grants in the Personal KV - personal tier, a different scope from ecosystem-vault credential placement and component release",
+    "The SKAP signing service (port 8795; specimen SKI-SIGNING_KEY-31c77c60 SEALED, deposit_seq 42, replay MATCH) is a signing specimen inside the vault, not a placement surface or a release route for components",
+    "The task source stands in the Ecosystem KV coordination folder (Drive 1F2dalbHSu5GkXJ5tdgX0zjkLu9leBB38), a surface GitHub-entering lanes do not inspect - this registration places the work on the canonical surface those lanes read"
+  ],
+  "issue": "StegVerse-Labs/.github#3467",
+  "observed_registry_generation": 326,
+  "record": {
+    "adjacent_task_refs": [
+      "SS-KV-SKAP-SOCIAL-RELEASE-001",
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    ],
+    "allowed_next_transitions": [
+      "INGRESS_ADMITTED",
+      "DEFERRED",
+      "SUPERSEDED"
+    ],
+    "authority_model": {
+      "interlock_intr_required_for_governed_ingress_egress": true,
+      "master_records_reality_authority": false,
+      "source_state_proves_execution": false,
+      "task_registry_mints_execution_authority": false,
+      "worker_claim_authority": "WORKERCOORDINATOR"
+    },
+    "blockers": [],
+    "completion": {
+      "claimed": false,
+      "reconciliation_ref": null,
+      "validated": false
+    },
+    "coordination_state": "PROPOSED",
+    "correlation_id": "SKAP-PLACEMENT-AND-RELEASE-001",
+    "dependencies": [
+      {
+        "dependency_id": "DEP-SKAP-PLACEMENT-PRINCIPAL-ACT",
+        "kind": "RUNTIME_PREDICATE",
+        "ref": "Placement is the principal's act from his own device under TV/TVC authority; the surface must exist before any credential can be placed, and no lane can place a credential for him - the build delivers the surface and proves it with a worthless dummy credential across the full lifecycle",
+        "state": "UNRESOLVED"
+      }
+    ],
+    "existing_evidence_refs": [
+      "Ecosystem KV QUEUE__WORK__SKAP_PLACEMENT_AND_RELEASE__01.md (Drive 1F2dalbHSu5GkXJ5tdgX0zjkLu9leBB38, MD5 a21d37be02fcfe848572be1e78932bb7) - operative task text",
+      "Standing custody law (principal, 2026-10-29, extended 2026-11-14): the ecosystem holds zero credentials; all ecosystem security material lives in the ecosystem SKAP Vault; a credential anywhere else is out-of-custody by definition",
+      "Receipt Mailer live 2026-11-25 (port 8811): deliveries PENDING by design, OUT_OF_CUSTODY refusal verified by test; build record Ecosystem KV Drive 1QmFsWsFGzLtlebf323c9djKC0CsVgDob"
+    ],
+    "expected_evidence_predicates": [
+      "SKAP_LIFECYCLE_NONAUTHOR_REPRODUCTION",
+      "SKAP_RELEASE_FAIL_CLOSED_AFTER_REVOKE",
+      "RECEIPT_MAILER_LIVE_SEND_VIA_RELEASED_CREDENTIAL",
+      "NO_CREDENTIAL_RESTING_IN_ANY_COMPONENT"
+    ],
+    "goal": "Build the credential placement surface and the governed release route for the ecosystem SKAP Vault (inside the Ecosystem KV; InTr, two governed hops from the exterior boundary; TV/TVC authority), closing the gap open since 2026-11-15 ('We still need one thing - to be able to place credentials into the ecosystem SKAP Vault'): P1 a placement surface by which the principal deposits a credential into the ecosystem vault from his own device, bound at deposit by his statement of destination (@<entity-name> attribute binding per the 2026-11-15 correction), deposit and seal receipted, the vault record carrying hashes, references and states only; P2 a release route by which an authorized component obtains a named credential's value at the moment of use - POST {credential_ref} -> {value} over the governed route, the release receipted on both sides (vault release pair + component reference), the value held in component memory only for the act, never written to any component store; revocation receipted, and release after revocation FAIL_CLOSED with zero bytes out. FIRST CLIENT: the Receipt Mailer (fleet service #26, port 8811, built 2026-11-25), whose email transport stands under the landed requirement (owner, 2026-11-25) that email transport is SKAP-custody transport - the mailer already calls the release route with a credential_ref, refuses any config carrying a raw credential as OUT_OF_CUSTODY, and stands PENDING until this route exists. ORDERING (owner, 2026-11-25): KV-native receipt notification is the primary path (a KV user's KV tracks receipts and notifies on transitions; no email involved); email is the guest/legacy path for submitters without a KV - bots enter an email address only in setups that are or should become legacy. Any lane eligible; first claim owns it. Discharge is the SKAP lifecycle test reproduced by a NON-AUTHOR lane from the receipts alone, plus one live receipt email delivered by the Receipt Mailer using a released credential, or a six-field non-ALLOW per part.",
+    "handoff_projection_refs": [
+      "docs/SKAP_PLACEMENT_AND_RELEASE_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+      "Ecosystem KV Drive 1F2dalbHSu5GkXJ5tdgX0zjkLu9leBB38"
+    ],
+    "parent_task_id": null,
+    "root_correlation_id": "SKAP-PLACEMENT-AND-RELEASE-001",
+    "schema": "stegverse.canonical-task-record/v1",
+    "source_refs": [
+      "Ecosystem KV QUEUE__WORK__SKAP_PLACEMENT_AND_RELEASE__01.md (Drive 1F2dalbHSu5GkXJ5tdgX0zjkLu9leBB38)",
+      "Ecosystem KV BUILD__EMAIL__NOTIFICATION__01.md (Drive 1QmFsWsFGzLtlebf323c9djKC0CsVgDob)",
+      "docs/TASK_REGISTRATION_GUIDE.md",
+      "data/canonical-task-registry.json G326"
+    ],
+    "systemic_incident_ref": null,
+    "targets": {
+      "components": [
+        "skap-vault-placement-surface",
+        "skap-vault-release-route",
+        "receipt-mailer-email-transport"
+      ],
+      "organizations": [
+        "StegVerse-Labs"
+      ],
+      "repositories": [
+        "StegVerse-Labs/.github"
+      ]
+    },
+    "task_id": "SKAP-PLACEMENT-AND-RELEASE-001",
+    "worker_claim": {
+      "authority": "WORKERCOORDINATOR",
+      "claim_ref": null,
+      "fence_ref": null,
+      "projection_only": true
+    }
+  },
+  "registration_mode": "NEW_IDENTITY",
+  "request_id": "skap-hostname-binding-001",
+  "schema": "stegverse.canonical-task-registration-request/v1",
+  "sealed_scope": {
+    "schema": "stegverse.goal-scope-seal/v1",
+    "scope": {
+      "addressed_lane": "ChatGPT/CODEX",
+      "discharge_predicates": [
+        "TUNNEL_INGRESS_READBACK_WITH_EXISTING_UNCHANGED",
+        "DNS_RECORD_READBACK_PROXIED",
+        "PUBLIC_HEALTH_200",
+        "PUBLIC_PLACEMENT_PAGE_200"
+      ],
+      "method": "Cloudflare API composite (tunnel configuration update + DNS record); dashboard route not authorized",
+      "queue_item": {
+        "drive_id": "1Yy60BoYNLBlZfsWGNWPx2ZRKi76a5fw_",
+        "md5": "1587c0b42ab289e07268cc6529e7ad10",
+        "name": "QUEUE__WORK__SKAP_HOSTNAME_BINDING__01.md",
+        "surface": "ecosystem_kv_coordination_folder"
+      },
+      "task_id": "SKAP-HOSTNAME-BINDING-001",
+      "title": "Cloudflare public hostname binding for the SKAP Vault placement door (skap.stegverse.org -> http://localhost:8812)"
+    },
+    "scope_digest": "sha256:70c990bba7dfef7979d877528f2e802860f12006e49c3f2360e39bb46cfd7ab2",
+    "supersedes_scope_digest": null
+  },
+  "task_id": "SKAP-HOSTNAME-BINDING-001",
+  "vector": {
+    "evidence_refs": [
+      "Ecosystem KV Drive 1F2dalbHSu5GkXJ5tdgX0zjkLu9leBB38",
+      "StegVerse-Labs/.github#3467"
+    ],
+    "exact_metrics": {
+      "activated": false,
+      "archive_ready": false,
+      "blocker_count": 0,
+      "canonical_owner_installed": true,
+      "chat_owned_credentials": 0,
+      "chat_owned_implementation": 0,
+      "chat_owned_integration": 0,
+      "chat_owned_observation": 0,
+      "chat_owned_validation": 0,
+      "evidence_complete": false,
+      "lifecycle": "UNCLAIMED",
+      "propagated": false,
+      "symbol_order": "LRUIVGOCMTBEAP",
+      "thread_required": true,
+      "unassigned_work": 1
+    },
+    "metric_evidence": {
+      "blocker_count": "no blocker recorded; one dependency UNRESOLVED (the principal's placement act, by design)",
+      "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+      "unassigned_work": "placement surface and release route unbuilt; the gap has stood open since 2026-11-15 and became load-bearing 2026-11-25 when email transport was bound to SKAP custody"
+    },
+    "observed_at": "2026-11-26T04:11:54Z"
+  }
+}
