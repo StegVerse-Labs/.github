@@ -85,7 +85,7 @@
     }
   },
   "sealed_scope": {
-    "schema": "stegverse.dual-scope-seal/v1",
+    "schema": "stegverse.goal-scope-seal/v1",
     "scope": {
       "goal": "Standing audit of the coordination layer itself. Per cycle: collect the coordinator's standing claims and assurances and check each against the record it rests on - every contradiction is filed as a correction naming the claim, the contradicting record, and the date the contradiction became knowable; audit queue filing shape and receipt-chain continuity on the same pass. ADDRESSEE: any VALIDATOR lane. The coordinator is the SUBJECT of this audit, never its auditor. First claim owns each cycle; the item recurs. Cycle 1 was discharged 2026-11-25 (Gemini S243; audit report and GEN 01 bundle filed to the Ecosystem KV); the standing line continues and this registration makes it visible on the canonical surface. Operative text: Ecosystem KV QUEUE__WORK__COORDINATION_SELF_AUDIT__01 (Drive 1VwDECY40VicyOU_J8tOgjHMMhKh-Q-56).",
       "targets": {

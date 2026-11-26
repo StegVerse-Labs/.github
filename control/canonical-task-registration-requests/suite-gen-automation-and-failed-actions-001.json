@@ -86,7 +86,7 @@
     }
   },
   "sealed_scope": {
-    "schema": "stegverse.dual-scope-seal/v1",
+    "schema": "stegverse.goal-scope-seal/v1",
     "scope": {
       "goal": "Suite-generation automation and failed-Actions conversion. Item A (automate suite generation from the suites page; working link from the 0R10N15 page) was discharged 2026-11-25 by Gemini (suite-gen automation GEN 01, cleanroom-proven, filed to the Ecosystem KV). Item B stands open as a standing conversion: GitHub failed Actions are work, not errors - census first in StegVerse-Labs/Site (the BUILD-Q-51 lineage: eight pre-existing failures recorded 2026-11-19, five of them Python 3.9 legs; current state to be established by the census, not assumed), then every other ecosystem repo with failing runs. Each failure becomes a claimable work item naming repo, workflow, run, failing job/step, and the exact failed predicate from the run log; a failure's cure is a new commit/generation on its own surface; a lane that cannot cure one files the six-field non-ALLOW for that failure only. Any capable lane; first claim owns each failure item. Operative text: Ecosystem KV QUEUE__WORK__SUITE_GEN_AUTOMATION_AND_FAILED_ACTIONS__01.",
       "targets": {

@@ -82,7 +82,7 @@
     }
   },
   "sealed_scope": {
-    "schema": "stegverse.dual-scope-seal/v1",
+    "schema": "stegverse.goal-scope-seal/v1",
     "scope": {
       "goal": "Develop settlement paths for a set of complaint matters whose operative records stand in the Ecosystem KV coordination folder (COMMISSION__SETTLEMENT_PATHS__ALL_COMPLAINTS__01, Drive 1nlnNyj1ckbKeP3pdOKwtLCa6eY5n82IX). That filing is not anyone-reader; this registration names no counterparty and no matter. Per matter: the demand posture the record supports, the sequence of steps in order, the leverage each step carries including every deadline the counterparty has missed or is running against, the escalation ladder if a step fails, what a court filing looks like at the end of the path, and the earliest date each step can be taken. Discharge per matter: a path memorandum filed to the Ecosystem KV, or a six-field non-ALLOW naming the exact missing evidence. Analysis and drafting only - no lane sends, files, or contacts any counterparty; every outward act remains the principal's. Matters may be claimed separately; first claim owns a matter.",
       "targets": {

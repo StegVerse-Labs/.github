@@ -89,7 +89,7 @@
     }
   },
   "sealed_scope": {
-    "schema": "stegverse.dual-scope-seal/v1",
+    "schema": "stegverse.goal-scope-seal/v1",
     "scope": {
       "goal": "FREE-DOM sandbox production line: StegVerse-Labs/FREE-DOM (factual research, evidence collection, indexing, provenance), StegVerse-Labs/FREE-DOM_Books (an 11-book series under the author identity Rige1 - manuscripts, editorial review, governed publication, nonprofit proceeds governance), StegVerse-Labs/FREE-DOM_OverSight. Sandbox-first production candidate: the sandbox (SV-011) reviews across research, series architecture, character continuity, author voice, narrative integrity, survivor protection, automation, and production. Production readiness does not authorize release; the author's publication approval remains in force. Determinations on the Ecosystem KV record (ingress item QUEUE__WORK__FREEDOM_SANDBOX_REVIEW_INGRESS__01, Drive 1SHehQIYwOuA-SLq6eQA0-zsMvfwdl4ur): Item 1 verified this identity repo-present and org-absent - this registration is the register branch of Item 5's register-or-reconcile; Item 2 determined the Bound Composite Route ECOSYSTEM_KV_AND_SANDBOX_COMPOSITE_V1 governs protected review; Items 3-4 proceed under Gate Option A, and Item 3 must carry an explicit F-FD-1 public-repo disposition or admission fails closed.",
       "targets": {

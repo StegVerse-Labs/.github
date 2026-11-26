@@ -88,7 +88,7 @@
     }
   },
   "sealed_scope": {
-    "schema": "stegverse.dual-scope-seal/v1",
+    "schema": "stegverse.goal-scope-seal/v1",
     "scope": {
       "goal": "Close the direct-session pickup gap: work performed by any lane, in any session the principal opens directly, is picked up and logged by the ecosystem, so no lane is ever unaware of work another lane performed. The operative text (repairs R1-R4 and the exact failed predicates, including AUTOMATIC_WAKE_NOT_ESTABLISHED and the coordinator's own disabled monitor) is the queue item in the Ecosystem KV (QUEUE__WORK__DIRECT_SESSION_PICKUP_GAP__01, Drive 1niyvuxdxxzPbB4T-6SqGQQaawV23uw7x). Failure filing: redress by any capable lane; first claim owns each repair item. The withdrawn pickup/logging assurance may be re-given only when the repairs land on evidence.",
       "targets": {

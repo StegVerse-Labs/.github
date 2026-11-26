@@ -85,7 +85,7 @@
     }
   },
   "sealed_scope": {
-    "schema": "stegverse.dual-scope-seal/v1",
+    "schema": "stegverse.goal-scope-seal/v1",
     "scope": {
       "goal": "Resilience apparatus - every weak part gets a healer. SWEEP: inventory every live part (fleet services, public surfaces, chains, tunnels, new builds as they land) and grade each HEALED (watchdog plus verified heal on record), RESTARTABLE (in the fleet-restore manifest, no watchdog), or EXPOSED (neither); the sweep is filed as a table to the Ecosystem KV and an ungraded part is a sweep failure, not an omission. BUILD: for every EXPOSED or RESTARTABLE part, build the apparatus in the proven pattern - a watchdog that restarts or reconnects on failure and verifies the heal (health plus replay MATCH plus anchor unchanged), or a fleet-restore entry proven by drill. Any capable lane; the coordinator runs the same sweep on its own surfaces in parallel; none of this needs the principal. Operative text: Ecosystem KV QUEUE__WORK__RESILIENCE_APPARATUS__01 (Drive 1qMtFGxN3AzpuDBVRQZSElOvBQL1C0prY).",
       "targets": {
