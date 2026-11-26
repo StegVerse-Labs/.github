@@ -1,0 +1,154 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "kv-assistant-receipts-and-followup-001",
+ "task_id": "KV-ASSISTANT-RECEIPTS-AND-FOLLOWUP-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record/row/COSV carries this task identity (exact-match check of data/canonical-task-registry.json G326, 122 tasks, sha256 f384240f3da7c085c0c70555c38c5fbac5021dc272101291b69b88a51b2dc271, read 2026-11-25)",
+  "Subject probes KV, ASSISTANT and RECEIPT return no matching canonical task (the receipt-mailer and mailed lines are different tasks)"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "KV-ASSISTANT-RECEIPTS-AND-FOLLOWUP-001",
+  "correlation_id": "KV-ASSISTANT-RECEIPTS-AND-FOLLOWUP-001",
+  "root_correlation_id": "KV-ASSISTANT-RECEIPTS-AND-FOLLOWUP-001",
+  "parent_task_id": null,
+  "goal": "Complete the KV Assistant receipts-and-follow-up build: every act a member performs through ecosystem services writes its receipt into the member's own KV, and every open follow-up the act creates is registered as state the assistant reads at query time. The GEN 01 service stands built and live (port 8809; 3 receipts, 5 open follow-ups, 2 discharged, chain replay MATCH); the specimen receipt for Mailed order SVM-000020 stands in the member KV. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__KV_ASSISTANT_RECEIPTS_AND_FOLLOWUP__01, Drive 1ogEITP7dYe2XDD5NnLBZAvCmNSK8pacE). Remainder: automatic receipt placement from every service act (no coordinator hand-carriage), the EOS answer surface over the member KV, transition-wired follow-up discharges, and notification-on-transition. Failure filing: redress by any capable lane; first claim owns.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__KV_ASSISTANT_RECEIPTS_AND_FOLLOWUP__01.md (Drive 1ogEITP7dYe2XDD5NnLBZAvCmNSK8pacE, MD5 20812e26742bf0417adb3837685ce1ec)",
+   "Member KV specimen receipt RECEIPT__MAILED__SVM-000020__2026-11-25.md (Drive 1rjGms-eqLHPQ98ce5qui1pb5Exxiw-bL)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "kv-assistant-receipt-placement",
+    "kv-assistant-followup-state",
+    "kv-assistant-answer-surface"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-KV-ASSISTANT-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full build specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+  ],
+  "existing_evidence_refs": [
+   "KV Assistant GEN 01 service live on the coordinator node (port 8809): 3 receipts placed, 5 follow-ups open, 2 discharged, chain replay MATCH (anchor a8bf78b6...) at 2026-11-25 verification",
+   "Specimen receipt for SVM-000020 standing in the member's personal KnowledgeVault (Drive 1rjGms-eqLHPQ98ce5qui1pb5Exxiw-bL, MD5 64e3b545fc1b93bde9da204bbe4ff4d4)"
+  ],
+  "expected_evidence_predicates": [
+   "KV_ASSISTANT_PLACEMENT_FROM_EVERY_SERVICE_ACT",
+   "KV_ASSISTANT_FOLLOWUP_STATE_READ_AT_QUERY_TIME",
+   "KV_ASSISTANT_NOTIFICATION_ON_TRANSITION",
+   "KV_ASSISTANT_MEMBER_KV_ANSWER_SURFACE"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/KV_ASSISTANT_RECEIPTS_AND_FOLLOWUP_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1ogEITP7dYe2XDD5NnLBZAvCmNSK8pacE"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.goal-scope-seal/v1",
+  "scope": {
+   "goal": "Complete the KV Assistant receipts-and-follow-up build: every act a member performs through ecosystem services writes its receipt into the member's own KV, and every open follow-up the act creates is registered as state the assistant reads at query time. The GEN 01 service stands built and live (port 8809; 3 receipts, 5 open follow-ups, 2 discharged, chain replay MATCH); the specimen receipt for Mailed order SVM-000020 stands in the member KV. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__KV_ASSISTANT_RECEIPTS_AND_FOLLOWUP__01, Drive 1ogEITP7dYe2XDD5NnLBZAvCmNSK8pacE). Remainder: automatic receipt placement from every service act (no coordinator hand-carriage), the EOS answer surface over the member KV, transition-wired follow-up discharges, and notification-on-transition. Failure filing: redress by any capable lane; first claim owns.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "kv-assistant-receipt-placement",
+     "kv-assistant-followup-state",
+     "kv-assistant-answer-surface"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "KV_ASSISTANT_PLACEMENT_FROM_EVERY_SERVICE_ACT",
+    "KV_ASSISTANT_FOLLOWUP_STATE_READ_AT_QUERY_TIME",
+    "KV_ASSISTANT_NOTIFICATION_ON_TRANSITION",
+    "KV_ASSISTANT_MEMBER_KV_ANSWER_SURFACE"
+   ],
+   "finish_point": {
+    "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+    "predicate": "KV_ASSISTANT_RECEIPTS_AND_FOLLOWUP_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+    "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:2a06a69221344cf9693da62cb8485466f151981a6b0fa71c28a15cdeacb99c5a",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1ogEITP7dYe2XDD5NnLBZAvCmNSK8pacE",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-26T07:35:01Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
