@@ -1,0 +1,39 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "communication_id": "main-merge-transfer:StegVerse-Labs/.github@67296aa9b6c7c35dee7195cd05f48352b2d95fdc",
+    "disposition": "ALLOW",
+    "merge_commit": "67296aa9b6c7c35dee7195cd05f48352b2d95fdc",
+    "operation": "ORGANIZATION_MAIN_MERGE_TRANSFER",
+    "profile_id": "main-merge-transfer",
+    "repository": "StegVerse-Labs/.github"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 574296107,
+    "frequency_hz": 100,
+    "generation": 574296107,
+    "heartbeat_id": "HB:574296107",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "observed_at": "HB:574296107",
+  "org_transition_class": "REPO_STATE_PROPAGATION",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:87bb99044f9d38faf1e24109cee6bdc71836956e5092a9a1946d47597c9b6dcf",
+  "previous_receipt_sha256": "sha256:e295e5b1d17c3c09286e9c393f182a0c91806867b4a11f841914fe1617dfa329",
+  "receipt_sha256": "sha256:29780991f467ee82d2e944006085bb9f3038d40c0b57f1b83c2bfaf9af642ab3",
+  "repo_receipt_sha256": "sha256:813dd595173b5211567b073771b1b9339e5b2d889654e0ee4e371812abeb5a08",
+  "repo_transition_id": "ORGANIZATION_MAIN_MERGE_TRANSFER:67296aa9b6c7c35dee7195cd05f48352b2d95fdc",
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.repo-transition-receipt/v1",
+  "source_repository": "StegVerse-Labs/.github",
+  "source_transition_id": "ORGANIZATION_MAIN_MERGE_TRANSFER:67296aa9b6c7c35dee7195cd05f48352b2d95fdc",
+  "source_transition_sha256": "sha256:813dd595173b5211567b073771b1b9339e5b2d889654e0ee4e371812abeb5a08",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:9862cdde4055e7094f7577e708f3260081ee76793838719a28f2a8306db6a60c"
+}
