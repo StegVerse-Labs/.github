@@ -1,0 +1,161 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "pair-carrier-services-001",
+ "task_id": "PAIR-CARRIER-SERVICES-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries PAIR-CARRIER-SERVICES-001 (G326, 122 tasks, read 2026-11-26)",
+  "Adjacent programs MACHINE-ECONOMY-CHOICE-001 (the choice problem; this item executes its W4/W5) and LANE-SELF-FUNDING-001 (this item is the carrier half of its SF-1) are different tasks; this item references both"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "PAIR-CARRIER-SERVICES-001",
+  "correlation_id": "PAIR-CARRIER-SERVICES-001",
+  "root_correlation_id": "PAIR-CARRIER-SERVICES-001",
+  "parent_task_id": null,
+  "goal": "Provide a better service, become the standard, expand. Build and list four carrier services the machine economy already selects -- metered inference (API-lane form, SKAP-custodied keys), search and retrieval, chain verdicts and transaction explanation over the ecosystem's own chains, and a machine mailbox on the Receipt Mailer custody pattern -- each provided through the 8374 governed crossing so every paid call issues the matched dual receipt pair as part of its normal response; then make the pair the standard (the W6 listing standard, the published pair format, buyers' plumbing and acceptance written against it) and expand (the same carriers on 4LPH4, the next in-reach categories, the governed packet as a standing offer). The fifth selected category -- stablecoin-to-card conversion -- is out of scope as regulated money transmission. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__PAIR_CARRIER_SERVICES__02, Drive 1FyRoy5hw7ZiuVKsZ-_iTyPYneroMss6-, MD5 7dd9543fdd1e9135efb533a0099ac2a5). Work items: C-1 inference carrier, C-2 search carrier, C-3 verdict carrier, C-4 mailbox carrier, C-5 listing and standard placement, C-6 expansion (claimable once any of C-1..C-4 discharges). Discharge per item is a settled paid call from a payer who is not the operator and not the principal -- a stranger buyer -- with the pair issued at the crossing and verifiable against the public chain anchors, and the listing state read back from its discovery surface; a build without a stranger's paid call is preparation, not discharge. Failure filing: six-field non-ALLOW; first claim owns each item.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__PAIR_CARRIER_SERVICES__02.md (Drive 1FyRoy5hw7ZiuVKsZ-_iTyPYneroMss6-, MD5 7dd9543fdd1e9135efb533a0099ac2a5)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "inference-carrier",
+    "search-carrier",
+    "verdict-carrier",
+    "mailbox-carrier",
+    "listing-standard",
+    "pair-carrier-expansion"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-PAIR-CARRIER-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full specification stands in the Ecosystem KV queue item (GEN 02); this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "MACHINE-ECONOMY-CHOICE-001",
+   "LANE-SELF-FUNDING-001"
+  ],
+  "existing_evidence_refs": [
+   "Market reads 2026-11-26 (Bazaar/x402scan/AgentGDP/Turnkey): selected categories and payer counts as filed in the queue item",
+   "8374 offer OFFER__MACHINE__READABLE__01 v07: resources governed-evaluation / receipt-pair-issuance / agreement-record, live",
+   "Facilitator Client live (fleet #29, port 8814): CDP settle proven on testnet and mainnet 2026-11-26"
+  ],
+  "expected_evidence_predicates": [
+   "PAIR_CARRIER_STRANGER_PAID_CALL_RECEIPTED",
+   "PAIR_CARRIER_PAIR_VERIFIABLE_AT_ANCHORS",
+   "PAIR_CARRIER_LISTING_STATE_READ",
+   "PAIR_CARRIER_STANDARD_ADOPTION_EVIDENCE"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/PAIR_CARRIER_SERVICES_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1FyRoy5hw7ZiuVKsZ-_iTyPYneroMss6-"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Provide a better service, become the standard, expand. Build and list four carrier services the machine economy already selects -- metered inference (API-lane form, SKAP-custodied keys), search and retrieval, chain verdicts and transaction explanation over the ecosystem's own chains, and a machine mailbox on the Receipt Mailer custody pattern -- each provided through the 8374 governed crossing so every paid call issues the matched dual receipt pair as part of its normal response; then make the pair the standard (the W6 listing standard, the published pair format, buyers' plumbing and acceptance written against it) and expand (the same carriers on 4LPH4, the next in-reach categories, the governed packet as a standing offer). The fifth selected category -- stablecoin-to-card conversion -- is out of scope as regulated money transmission. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__PAIR_CARRIER_SERVICES__02, Drive 1FyRoy5hw7ZiuVKsZ-_iTyPYneroMss6-, MD5 7dd9543fdd1e9135efb533a0099ac2a5). Work items: C-1 inference carrier, C-2 search carrier, C-3 verdict carrier, C-4 mailbox carrier, C-5 listing and standard placement, C-6 expansion (claimable once any of C-1..C-4 discharges). Discharge per item is a settled paid call from a payer who is not the operator and not the principal -- a stranger buyer -- with the pair issued at the crossing and verifiable against the public chain anchors, and the listing state read back from its discovery surface; a build without a stranger's paid call is preparation, not discharge. Failure filing: six-field non-ALLOW; first claim owns each item.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "inference-carrier",
+     "search-carrier",
+     "verdict-carrier",
+     "mailbox-carrier",
+     "listing-standard",
+     "pair-carrier-expansion"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "PAIR_CARRIER_STRANGER_PAID_CALL_RECEIPTED",
+    "PAIR_CARRIER_PAIR_VERIFIABLE_AT_ANCHORS",
+    "PAIR_CARRIER_LISTING_STATE_READ",
+    "PAIR_CARRIER_STANDARD_ADOPTION_EVIDENCE"
+   ],
+   "finish_point": {
+    "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+    "predicate": "PAIR_CARRIER_SERVICES_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+    "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:4b3d3ea19b1527b69d1da0b7618e2b64ee0e35e04d0351a63d8ca0ce5a845547",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1FyRoy5hw7ZiuVKsZ-_iTyPYneroMss6-",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-26T16:10:00Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
