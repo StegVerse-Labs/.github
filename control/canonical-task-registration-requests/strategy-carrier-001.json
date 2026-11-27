@@ -98,7 +98,7 @@
   }
  },
  "sealed_scope": {
-  "schema": "stegverse.dual-scope-seal/v1",
+  "schema": "stegverse.goal-scope-seal/v1",
   "scope": {
    "goal": "Build the strategy carrier, the next carrier in the PAIR-CARRIER-SERVICES-001 family: it takes a strategy as user-level input, executes it through the 0R10N15 crossing so every act issues its receipt pair on the chain, and returns a contemporaneous, replayable track record -- loss sequence and profitable sequence alike. The platform never sells a strategy and never promises profit; the product is the record, revenue is per crossing win or lose, and the funds remain the user's in the user's own accounts. The build is proven by a pre-registered experiment (strategy, stake, window, gates and kill rules filed as a suite before the first trade; the result published either way) and presented in a paper whose every number traces to a public chain anchor; the headline metric is reconstruction completeness, not P&L. An open invitation to all profit-making systems to build on 0R10N15 is part of the product. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__STRATEGY_CARRIER__01, Drive 1yXD08Xbryn-7a_sU4GxQXARQ-HIpiKo-, MD5 dac14f3431ca266e95e5768b077ec6f3). Work items: SC-1 strategy intake format; SC-2 the strategy adapter binding every act to the crossing; SC-3 live execution on one rail; SC-4 the track-record surface; SC-5 the experiment (gated on pre-registration, live execution evidence, and the principal's specimen-stake funding act); SC-6 the paper; SC-7 the open invitation published. Discharge per item is its named evidence read back; a plan or a fixture test discharges none of SC-3/SC-5. Failure filing: six-field non-ALLOW; first claim owns each item.",
    "targets": {

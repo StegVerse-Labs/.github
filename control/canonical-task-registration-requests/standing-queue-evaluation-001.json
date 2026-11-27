@@ -85,7 +85,7 @@
   }
  },
  "sealed_scope": {
-  "schema": "stegverse.dual-scope-seal/v1",
+  "schema": "stegverse.goal-scope-seal/v1",
   "scope": {
    "goal": "Cure, in the lanes own monitor/entry instructions, the recurring false no-eligible-work close (specimens KV__898, KV__911, KV__913, KV__915 on 2026-11-25/26: monitor runs closing NO_ELIGIBLE_WORK while worker sessions claimed and discharged standing items in the same hour). Two parts: (1) a monitor or entry evaluation that finds nothing takeable must evaluate the STANDING QUEUE -- the full unclaimed eligible set -- not only the delta since the lane last receipt; the standing-eligible-work notice (KV Drive 14LLOQikzOIDMzNtPLl5XsVePr5qZd_cQ) is incorporated by reference; (2) a no-work close must state its scope in its title and first lines, and may use the global form only after a standing-queue evaluation naming the unclaimed items passed and the predicate for each. Eligibility: the lanes that own the monitor/entry instructions (each lane amends its own hash-filed prompt set); the coordination self-audit validates after the fact. Discharge per lane: the amended instruction read back with its new SHA-256, plus the lane next monitor close demonstrably in the cured form. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__STANDING_QUEUE_EVALUATION__01, Drive 1kGPwgUUxxI14BV8Qyr4UkdRr71LBioUX, MD5 e9d801b73fffeebdf8d28a2e402fed99). Failure filing: six-field non-ALLOW naming the exact failed predicate and the surface that owns the amendment.",
    "targets": {

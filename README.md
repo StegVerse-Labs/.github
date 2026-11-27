@@ -2335,3 +2335,49 @@ This repair restores collection of `test_task8_scope_matches_current_iphone_proj
 ### SKAP Vault placement hostname — 2026-11-26
 
 The principal-authorized API binding exposes [skap.stegverse.org](https://skap.stegverse.org/) through existing tunnel `8374` to `http://localhost:8812`. Configuration readback conserves all prior ingress entries; proxied CNAME, public vault health and placement-page HTTP 200 checks passed. [Handoff](docs/SKAP_HOSTNAME_BINDING_MIRROR_HANDOFF.md) and [provider evidence](docs/evidence/skap-hostname-binding-20261126.json) retain the result. This operation places no credential. Native hostname Goal/COSV registration remains unbound pending the existing request schema/identity repair; provider success does not imply a Task Registry transition.
+
+
+## Banking system registration request — source repair pending
+
+BANKING-SYSTEM-001 is proposed in the Ecosystem KV queue. Its request's sealed-scope schema identifier is corrected to the existing goal-scope-seal contract; the sealed goal and digest are unchanged. This source change does not register or execute the task. See [the banking registration handoff](docs/BANKING_SYSTEM_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md) for the actual failure, bounded validation, original B-7 review and the authorized registrar's next step.
+
+
+### Registration request input preflight — CODEX P3, 2026-11-26
+
+Eight request schema tags are corrected to the existing goal-scope-seal/v1 contract with every semantic scope, digest, finish point and authority field unchanged. `scripts/registration_input_preflight.py` checks request/seal inputs without deriving or applying registration; a VALID input does not prove native registration. New producers can use the canonical `goal_scope_seal.make_sealed_scope` constructor. Existing read-only registration verification remains in force after preflight. The SKAP hostname request's distinct noncanonical scope shape remains an explicit original-owner residual. See [the preflight handoff](docs/REGISTRATION_INPUT_PREFLIGHT_MIRROR_HANDOFF.md).
+
+
+### PR3479 test inventory follow-through
+
+The new input-preflight test is included in the generated test-set inventory (855 sets). The unchanged generator/spec and predecessor dependency graph were used for incremental source regeneration; full independent exact-head CI must reproduce the manifest. No baseline, exclusions, or ratchet policy was changed. Registration verification remains a separate native-output requirement.
+
+
+### P5 current source frontier — submission-release input
+
+The existing draft PR3479 now carries pinned main b96619df plus two further exact schema-tag corrections, for submission-release-001 and protocol-hostname-binding-001. Their complete scopes, digests, finish points, identities, authority fields and original EOFs remain unchanged. The 23-input preflight inventory is22 valid/1 separately invalid SKAP input. Live Doc Escrow T-1..T-5 discharge, native registration and protected integration remain separately evidenced owner actions; no fixture or input check is promoted to those grades.
+
+P5 late-main guard: main b96619df6fd343ef2618878950dd30ed5f5d3df1 adds protocol-hostname-binding with the same schema-only defect; the tenth correction preserves scope digest50ad22cfd394dd928d4f2445dbebe99342b65393c3517d62aa26f6b1411352a9. The current merge retains both b74646c and b96619df parents. No current-main additions or prior branch history are dropped.
+
+
+## P6 current-base request preparation
+
+Existing source-worker reader3444/7209998972 and claim3444/7209999157 extend draft PR3479 over pinned main2c4e706a645736ee294d9bf5abdcd9107302490a, retaining oldhead4c13faab8ed16ad57caec5410d69423c15888b90 as first parent and fresh main as second. Three newly introduced requests (rail-bridge, registry-transition, standing-queue-evaluation) receive schema-tag-only corrections, bringing the total to13. All payloads/digests/finishpoints/authority/EOFs and foreign source remain. Current26 inputs:25 VALID/1 unchanged SKAP semantic/identity INVALID. No Python/test/generator/spec/baseline/exclusion/selector changes; inventory855 retained. Previous exacthead4c13 ratchet45939574323 SUCCESS:6185 passed,143 existing failures,0 new findings; newhead CI must be read independently. Registration143units/scopefreeze PASS do not replace the actual REGISTRATION_NOT_APPLIED requirement.
+
+Original request producers must construct sealed_scope through goal_scope_seal.make_sealed_scope and run the read-only registration_input_preflight before filing; existing invalid semantic scope must never be rehashed into acceptance. This source preparation does not modify an external producer or perform the owner-side native Registry cut. See existing docs/REGISTRATION_INPUT_PREFLIGHT_MIRROR_HANDOFF.md and the three task registration handoffs. ParentG326 PROPOSED; component identities UNBOUND until authentic derivation/readback.
+
+
+## CODEX P8 continuation (source proposal)
+
+Runtimeregistry37433B/SHA256483da59ef8d119d03e26a7e184aa16aefce6fd146e75800a8126108d36667ad8 and centralv2/A01/A02 raw pins re-verified every new prompt. Lane CODEX/participantChatGPT/Work/Codex; home3471 and pair3472 remain capped2500. All new coordination routing uses runtime-registry receiving3444; opened3476/3477 are not silently substituted. Next session must fetch the registry again before choosing any surface.
+
+Completed runtime acts: protocolhostname https://0r10n15.stegverse.com/ and /health return200, offer linked to8374.stegverse.org/offer returns200. Existing Cloudflare named tunnel8374/0aec1441-924f-4cb6-bcb8-b9c251511a6c managedconfig8→9 plus exactproxiedCNAME e50bb09a33f0c12fe90e50295d08a4d7→existingtunnel, localhost8803. All priorconfig conserved. Actualresult/release3444/7209932005, proofDrive19p1oENTFymY9YMu6SgSeRlE694tlSgbX/15943B/SHA256c3aef30e2203720435ad44c6361e5e52dfb2b4edb118b6e1b3dc822a9c4a0ac7. Coordinator addendum02 previously added both protocolname required200 fleet probes (attributed).
+
+Socialshostname https://socials.stegverse.com/health and / return200, truthful0posts/0scheduled; /auth/linkedin/callback reaches the same unconditionalservice route and returns404, accepted by the task only as routing. Existing tunnelconfig9→10 adds onlysocials→127.0.0.1:8815; proxiedCNAMEad9729207d5926e883cd69fe1f731cda. All priorentries/settings preserved. Result/release3444/7209986595, proofDrive1VDQxcXCIpunxOeE_ccoLAYWGf--geocR/8106B/SHA256035c592405ab8b20c3eafa58e1a91a0e1abde5b901713a39b73a15b2086cfd95. Overalltask4/5: exactfleet-restoreprobeupdate/readback remains queued to existingkeeper3444/7209956069. No OAuthhandler/token/release/post or liveSOCIALP1/P4 completion claimed. Independenthostnamepeer is held by ClaudeCode1PyLF6eV5paA_9-5LvPM-rCbFhnRwhZ2k at this cut; consume its actualresult/release, never self-peer.
+
+Actual non-author technical results: K5GEN02 originalGeminiS26455009B/2b83dccc... supplied20tests×4modes80PASS; originalR01..R05cures independently15/15PASS. NEW R06invalidTrivycollection(false/{}) and R07Semgreperrorscoverage omission reproduce9failures/3modes; generalfullrawreplay acceptance NON-ALLOW. ProofDrive1SAdJPJ4GtXnNpWwCB5gEcN5ePHkFE6cp/68866B/SHA25603d0aa06e8f1af4fd200b9497cb96c4ff6a06f5b0808bdd8bf797b6fbb97ccf1; originalproducerimmutableGEN03cure QUEUED3450/7210188239, receiving3444/7210188457, actualCODEXrelease. ClaudeCodeKV916 only independently checked data structure/ownK1 replay; it expressly excludesK5raw/disclosure/semanticreturns, so its boundedgrade does not override these counterexamples.
+
+SOCIALP3/P7 originalS26345510B/f6e94c10... supplied100checks×4modes400PASS; independent21controls12PASS/9FAIL. NEW R01pairpayloadmirrors not bound to hashedentries permits forgedcard/proofMATCH withunchangedentries/head/root; R02configuredONE_TAP bypass on namedcomment/participatingreply. Originalproducerimmutablecure QUEUED3450/7210241100==3444/7210241306, actualCODEXrelease. ProofDrive1G351ih3zfNh-hdI-R62FyWTKRNdIu6xq/55420B/SHA256528dad054383aed4489df3b325a7aaacc648e7801680c66e85f642ff69b968d0. Originalarchives retained; no silentCODEXpatch, liveposting or portableacceptance beyond evidence.
+
+Source preparation: previous exactheadba24dcb173bd2ea44eda43e3fb1d40e4a9acc828 fullratchet45941517445 all3jobsSUCCESS,855/855sets/853runnable/0inputunavailable,6185passed/143existingfailures/18deselected/0requiredskipped/0NEWfindings. Registration45941517421 all143units+scopefreezePASS; nativeREGISTRATION_NOT_APPLIED remains. P8 sourceworker3444/7210270418 appends this continuation and prepares the new entry-read-and-act request with schema-tag-only correction(number14), conserving scope/digest/finishpoint/record/metrics/authority/EOF. Freshbase1fa77af69f48b3c45e0a1f97389fb58e902d96c1 retained with olddraftba24 as parents. Current27requestpreflight26VALID/1 unchangedSKAPsemantic/identityINVALID;13controlsPASS; no Python/test/spec/generator/baseline/exclusion/selector change, inventory855 retained. Read actual newhead CI before extending the previous grade.
+
+Full source-bound continuation: docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md on this existing draft. Runtime Task Registry and protected-main admission remain unchanged.

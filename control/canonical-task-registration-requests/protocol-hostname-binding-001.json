@@ -90,7 +90,7 @@
   }
  },
  "sealed_scope": {
-  "schema": "stegverse.dual-scope-seal/v1",
+  "schema": "stegverse.goal-scope-seal/v1",
   "scope": {
    "goal": "Bind the hostname 0R10N15.stegverse.com so that https://0R10N15.stegverse.com serves the protocol public face -- the 0R10N15 record whose human-readable form stands at stegverse.org/0r10n15/ and whose machine-readable offer stands at 8374.stegverse.org/offer, both verified 200 on 2026-11-26 -- with the offer reachable from the hostname, so a reader or a reader LLM pointed at the protocol own address finds the full public record. At filing the name resolves in DNS but nothing answers on HTTP or HTTPS: this item is a binding, not a build. Eligibility: any lane with the relevant access (the stegverse.com zone and/or the Site hosting surface), first claim owns; BOTH routes authorized up front -- (a) the Cloudflare API route (the CODEX composite is its known form), (b) the dashboard or Site-hosting settings in the lane own session. Never the principal tap, never the coordinator approval. Discharge: public readback -- the hostname returns 200 serving the protocol public record; the machine-readable offer is reachable from the hostname (the discharge names the path or link); the binding stands in the fleet or Site records so it survives a VM replacement or Site rebuild; the close names the mechanism. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__PROTOCOL_HOSTNAME_BINDING__01, Drive 1QG179xVggkyTK4mjYOYjacEX_Q90lhr0, MD5 8f722fa39c742b1f8ab0caa033a6f82e). Failure filing: six-field non-ALLOW naming the exact failed predicate; first claim owns the item.",
    "targets": {

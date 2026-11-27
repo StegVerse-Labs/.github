@@ -91,7 +91,7 @@
   }
  },
  "sealed_scope": {
-  "schema": "stegverse.dual-scope-seal/v1",
+  "schema": "stegverse.goal-scope-seal/v1",
   "scope": {
    "goal": "Carry the rail harness from built to adopted. The harness extracts the 0R10N15 crossing grammar the two production rails already run -- present payment evidence, verify it on the chain itself, decide ALLOW / DENY / FAIL_CLOSED with six-field refusals, record the matched receipt pair, settlement leg in the same act on ALLOW -- so any protocol can mount it at its settlement boundary and every settlement act produces the pair: two hash-chained records, one per side, verifiable by either side against public anchors without trusting the operator. There is no no-receipt mode: the settlement leg's only writer is the crossing core, called in the same act as the ALLOW pair. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__RAIL_HARNESS__01, Drive 1TqoyJDGb78DyGm_PdalNDuVcYQdz_Gma, MD5 0ff5ac55267e7882bd2ddfee019ff13a). Work items: H-1 the Solana adapter's live smoke read on mainnet; H-2 a mounted specimen crossing through the harness core on a live adapter, pair and replay read back; H-3 the protocol-facing mounting record for Solana-settled compute protocols (Render, io.net form); H-4 noted as PAIR-CARRIER-SERVICES-001 work, not this item's. Discharge per item is its named evidence read back; a plan or a fixture test discharges none of H-1/H-2. Failure filing: six-field non-ALLOW; first claim owns each item.",
    "targets": {

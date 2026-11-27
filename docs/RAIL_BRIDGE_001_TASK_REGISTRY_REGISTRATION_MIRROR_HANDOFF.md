@@ -14,3 +14,6 @@ Operative text: Ecosystem KV QUEUE__WORK__RAIL_BRIDGE__01.md
 (Drive 1nfKjeC1e34XMzM8Ls_qET2gn3mYT8g5i, MD5 4823026062e401b30ca3ac58ccadbfdf) -- task, eligibility, and discharge form stand in its
 first lines. Scope digest: sha256:16b5e990f306717e06cdf2e08180e3e75e1bfe394fea1a918aa47c36eaf05abd.
 Pairing: StegVerse-Labs/.github#3477.
+
+
+CODEX P6 source preparation, existing PR3479 / reader3444/7209998972 / claim3444/7209999157: only sealed_scope.schema is corrected to existing stegverse.goal-scope-seal/v1. All scope, digest, finishpoint, record, vector, authority and EOF bytes are retained. Input validation is not registration; native transition/admission and protected integration remain authorized-keeper work.

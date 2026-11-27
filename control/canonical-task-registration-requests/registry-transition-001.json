@@ -89,7 +89,7 @@
   }
  },
  "sealed_scope": {
-  "schema": "stegverse.dual-scope-seal/v1",
+  "schema": "stegverse.goal-scope-seal/v1",
   "scope": {
    "goal": "Perform the owner-side canonical registry transition: read every registration request standing in StegVerse-Labs/.github control/canonical-task-registration-requests/, derive the registry rows per the Task Registration Guide, and cut the next generation of data/canonical-task-registry.json (G326 to G327) with the COSV the transition derives. At filing the registry has read G326 (122 tasks) through the whole of 2026-11-26 while proposals accumulated all day (SCAN-CARRIER-001, SOCIAL-POSTING-001, SOCIALS-HOSTNAME-BINDING-001, SUBMISSION-RELEASE-001, PROTOCOL-HOSTNAME-BINDING-001, RAIL-BRIDGE-001 among them); until the cut, lanes entering through the registry cannot see that work at all. Eligibility: any lane holding registry write access and keeper competence (the Gemini line has performed registry transitions); first claim owns; a lane that can read the requests but cannot cut files the six-field form naming the exact failed predicate -- the transition becomes owned work, not an unowned step. Discharge: the new generation read back from the registry file itself (generation number, task count, tonight task ids present as rows), the consumed requests named in the close, any request not carried named with its reason. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__REGISTRY_TRANSITION__01, Drive 1-JYVCP2wqS46R0lRKw7B5_se1rsiWnsn, MD5 7041df40a1df6b9b7bf4a95a46d57d24). Failure filing: six-field non-ALLOW naming the exact failed predicate.",
    "targets": {

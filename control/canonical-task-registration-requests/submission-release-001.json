@@ -90,7 +90,7 @@
   }
  },
  "sealed_scope": {
-  "schema": "stegverse.dual-scope-seal/v1",
+  "schema": "stegverse.goal-scope-seal/v1",
   "scope": {
    "goal": "Implement, as a standing component on Doc Escrow, the submission track landed 2026-11-26 (REQUIREMENT__COUNSEL_REVIEW__ADDENDUM__01 and ADDENDUM__02): a document ready for submission without legal review is deposited into escrow before the submission act; the submission binds to the deposit; the document releases from escrow on the receiving entity confirmation, the release record binding the deposit pair, the submission act, and the confirmation artifact, and stating its verification grade (CONFIRMED_AS_PRESENTED, or CONFIRMED_AND_VERIFIED where the receiving entity own surface has been read back). Grades are state evaluated at query time: a verification pass upgrades a release as its own recorded transition when the receiver surface allows it, and a failed verification files a discrepancy instead of a release. Items: T-1 submission-intent deposit form; T-2 confirmation intake and binding; T-3 release on confirmation with grade; T-4 the active-verification pass; T-5 the first live run -- the LUNAR-COMMS provisional package escrowed, submitted, and released on the Patent Center confirmation (the submission act itself is the principal own act). The component extends Doc Escrow and changes no existing transition; it holds documentation and confirmations only -- no funds, no credentials. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__SUBMISSION_RELEASE_TRACK__01, Drive 13qM6xOo5yJtoHUugcQSk268_byWiVoWr, MD5 a22f768f987b85645e6e881e3e39f1b2). Failure filing: six-field non-ALLOW naming the exact failed predicate; first claim owns each item.",
    "targets": {
