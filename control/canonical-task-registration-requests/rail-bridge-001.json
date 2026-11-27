@@ -1,0 +1,158 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "rail-bridge-001",
+ "task_id": "RAIL-BRIDGE-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries RAIL-BRIDGE-001 (G326, 122 tasks, read 2026-11-26)",
+  "Adjacent task RAIL-HARNESS-001 carries the one-chain grammar this item extends (its H-1 Solana item stands at live-read grade, 2026-11-26); STRATEGY-CARRIER-001 items SC-2/SC-3 build on the same harness for a different use class and do not overlap the two-leg form"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "RAIL-BRIDGE-001",
+  "correlation_id": "RAIL-BRIDGE-001",
+  "root_correlation_id": "RAIL-BRIDGE-001",
+  "parent_task_id": null,
+  "goal": "Extend RAIL-HARNESS-001 to the TWO-LEG CROSSING: one governed act whose legs stand on two different chains -- value in on the origin chain, value out on the destination chain, one correlation binding both receipt pairs, the act standing only while both legs replay MATCH. Items: X-1 the two-leg correlation form in the harness; X-2 sending adapters (a Tron USDT send under SKAP custody; the Base leg settles through the standing 8374/facilitator path); X-3 the rate read (conversion rate from a public surface at the crossing, receipted into both pairs, never quoted by the bridge itself); X-4 the first live two-leg specimen (operator-funded, small value, specimen grade stated plainly -- NOT an external crossing). The principal determination of 2026-11-26 stands over the item: this bridge is THE bridge and THE standard -- the point of opening the harness to all major blockchains is that every chain pair crosses in this one grammar. The delivery-payment principle binds it: the bridge is not paid until the destination leg lands, a failure localizes to the segment after the last good receipt, and the origin leg refunds. Production bridging of third-party value gates on the principal landing the float form (platform own working capital, never pooled user funds, per the non-custodial determination); no item waits on that gate except production use. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__RAIL_BRIDGE__01, Drive 1nfKjeC1e34XMzM8Ls_qET2gn3mYT8g5i, MD5 4823026062e401b30ca3ac58ccadbfdf). Failure filing: six-field non-ALLOW naming the exact failed predicate; first claim owns each item.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__RAIL_BRIDGE__01.md (Drive 1nfKjeC1e34XMzM8Ls_qET2gn3mYT8g5i, MD5 4823026062e401b30ca3ac58ccadbfdf)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "rail-harness",
+    "bridge-correlation",
+    "tron-send-adapter",
+    "rate-read",
+    "two-leg-specimen"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-RAIL-BRIDGE-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "RAIL-HARNESS-001",
+   "STRATEGY-CARRIER-001"
+  ],
+  "existing_evidence_refs": [
+   "RAIL-HARNESS-001 (KV Drive 1TqoyJDGb78DyGm_PdalNDuVcYQdz_Gma): the chain-agnostic crossing grammar, adapters for Tron (production via 4LPH4) and Solana (live-read grade, H-1 discharged 2026-11-26); Base native via 8374 with facilitator settlement live (mainnet specimen settled 2026-11-26, tx 0xfcbc8fbe...)",
+   "Principal determination 2026-11-26 22:25 CST: the multi-chain opening was always the angle; the two-leg crossing is THE bridge and THE standard. Audience fact on the record: ~75% of the principal connections are India and that region (USDT/Tron the held rail; USDC/Base the settlement rail)"
+  ],
+  "expected_evidence_predicates": [
+   "TWO_LEG_CORRELATION_FORM_LIVE",
+   "TRON_SEND_UNDER_SKAP_RELEASE",
+   "RATE_READ_RECEIPTED_IN_PAIR",
+   "FIRST_TWO_LEG_SPECIMEN_REPLAYS_MATCH"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/RAIL_BRIDGE_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1nfKjeC1e34XMzM8Ls_qET2gn3mYT8g5i"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Extend RAIL-HARNESS-001 to the TWO-LEG CROSSING: one governed act whose legs stand on two different chains -- value in on the origin chain, value out on the destination chain, one correlation binding both receipt pairs, the act standing only while both legs replay MATCH. Items: X-1 the two-leg correlation form in the harness; X-2 sending adapters (a Tron USDT send under SKAP custody; the Base leg settles through the standing 8374/facilitator path); X-3 the rate read (conversion rate from a public surface at the crossing, receipted into both pairs, never quoted by the bridge itself); X-4 the first live two-leg specimen (operator-funded, small value, specimen grade stated plainly -- NOT an external crossing). The principal determination of 2026-11-26 stands over the item: this bridge is THE bridge and THE standard -- the point of opening the harness to all major blockchains is that every chain pair crosses in this one grammar. The delivery-payment principle binds it: the bridge is not paid until the destination leg lands, a failure localizes to the segment after the last good receipt, and the origin leg refunds. Production bridging of third-party value gates on the principal landing the float form (platform own working capital, never pooled user funds, per the non-custodial determination); no item waits on that gate except production use. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__RAIL_BRIDGE__01, Drive 1nfKjeC1e34XMzM8Ls_qET2gn3mYT8g5i, MD5 4823026062e401b30ca3ac58ccadbfdf). Failure filing: six-field non-ALLOW naming the exact failed predicate; first claim owns each item.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "rail-harness",
+     "bridge-correlation",
+     "tron-send-adapter",
+     "rate-read",
+     "two-leg-specimen"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "TWO_LEG_CORRELATION_FORM_LIVE",
+    "TRON_SEND_UNDER_SKAP_RELEASE",
+    "RATE_READ_RECEIPTED_IN_PAIR",
+    "FIRST_TWO_LEG_SPECIMEN_REPLAYS_MATCH"
+   ],
+   "finish_point": {
+    "acceptance_test": "Every work item stands discharged on its own record (live surface read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+    "predicate": "RAIL_BRIDGE_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+    "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:16b5e990f306717e06cdf2e08180e3e75e1bfe394fea1a918aa47c36eaf05abd",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1nfKjeC1e34XMzM8Ls_qET2gn3mYT8g5i",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-27T04:25:00Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
