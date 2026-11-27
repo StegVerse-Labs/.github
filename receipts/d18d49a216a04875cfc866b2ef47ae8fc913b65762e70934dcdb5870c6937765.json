@@ -1,0 +1,39 @@
+{
+  "authority_effect": "NONE",
+  "boundary_evidence": {
+    "communication_id": "main-merge-transfer:StegVerse-Labs/.github@ae4981d7291823e1383aa6decf426c13b3750456",
+    "disposition": "ALLOW",
+    "merge_commit": "ae4981d7291823e1383aa6decf426c13b3750456",
+    "operation": "ORGANIZATION_MAIN_MERGE_TRANSFER",
+    "profile_id": "main-merge-transfer",
+    "repository": "StegVerse-Labs/.github"
+  },
+  "canonical_state_transition_receipt_sha256": null,
+  "custody_authority_basis": "PRE_EXISTING_MATERIALIZATION_UNAUTHENTICATED; LOCATION_CHECK_IS_ANOMALY_DETECTION_ONLY",
+  "custody_generation": 0,
+  "hb_reference": {
+    "authority_effect": "NONE",
+    "derived_from_clock": false,
+    "epoch": 574296107,
+    "frequency_hz": 100,
+    "generation": 574296107,
+    "heartbeat_id": "HB:574296107",
+    "phase_offset_ns": 0,
+    "progression_dependency": "OSCILLATOR_ONLY"
+  },
+  "observed_at": "HB:574296107",
+  "org_transition_class": "REPO_STATE_PROPAGATION",
+  "organization": "StegVerse-Labs",
+  "predecessor_org_state_sha256": "sha256:bbeea40afa16e303d5578eb59e0767a46d4d1ec4da2d8b03c1aa423b557c702e",
+  "previous_receipt_sha256": "sha256:a231c8b0739891c031cc1c62c4a7a57153532c02ca7ab729afeae1febe98c509",
+  "receipt_sha256": "sha256:d18d49a216a04875cfc866b2ef47ae8fc913b65762e70934dcdb5870c6937765",
+  "repo_receipt_sha256": "sha256:3b3ec83de08a09ed23982b5aa37de73c93a9b94c9b0f28074ee531d609d7ab7b",
+  "repo_transition_id": "ORGANIZATION_MAIN_MERGE_TRANSFER:ae4981d7291823e1383aa6decf426c13b3750456",
+  "schema": "stegverse.organization-transition-receipt/v1",
+  "source_receipt_schema": "stegverse.repo-transition-receipt/v1",
+  "source_repository": "StegVerse-Labs/.github",
+  "source_transition_id": "ORGANIZATION_MAIN_MERGE_TRANSFER:ae4981d7291823e1383aa6decf426c13b3750456",
+  "source_transition_sha256": "sha256:3b3ec83de08a09ed23982b5aa37de73c93a9b94c9b0f28074ee531d609d7ab7b",
+  "subject_or_correlation_id": null,
+  "successor_org_state_sha256": "sha256:6e7cd9cfe8e4cf8e0b10dcd95eebd285f103dc9aa54218d460a0513aa531b0ec"
+}
