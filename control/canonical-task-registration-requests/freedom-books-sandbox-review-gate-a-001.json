@@ -1,0 +1,154 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "freedom-books-sandbox-review-gate-a-001",
+ "task_id": "FREEDOM-BOOKS-SANDBOX-REVIEW-GATE-A-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3467",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries FREEDOM-BOOKS-SANDBOX-REVIEW-GATE-A-001 (G326, 122 tasks, read 2026-11-27)",
+  "Distinct from the sandbox item itself (SANDBOX-FREEDOM-BOOKS-REVIEW-01, registered in SANDBOX__INDEX__CURRENT.json, not the canonical registry) and from FDB-CANON-001 (the repo goal of record, subject of the companion registration request fdb-canon-001-registration-001): this task is the Gate A review work only"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "FREEDOM-BOOKS-SANDBOX-REVIEW-GATE-A-001",
+  "correlation_id": "FREEDOM-BOOKS-SANDBOX-REVIEW-GATE-A-001",
+  "root_correlation_id": "FDB-CANON-001",
+  "parent_task_id": "FDB-CANON-001",
+  "goal": "Run the eight-area independent review of sandbox item SANDBOX-FREEDOM-BOOKS-REVIEW-01 (FREE-DOM / FREE-DOM_Books protected package, repo goal FDB-CANON-001), admitted at INGRESS_ACCEPTED on 2026-11-27 under ECOSYSTEM_KV_AND_SANDBOX_COMPOSITE_V1. Eligibility: StegVerse AI and ChatGPT jointly, per Item 4 of QUEUE__WORK__FREEDOM_SANDBOX_REVIEW_INGRESS__01; survivor_protection may be seated to another lane by the addressees but must be filed by a reviewer other than the package submitter (the Claude coordinator). Discharge: one filed disposition per area (research, series_architecture, character_continuity, author_voice, narrative_integrity, survivor_protection, automation, production) in the Ecosystem KV coordination folder, ALLOW or six-field NON-ALLOW, plus a paired notice; survivor_protection must read waived=false and gate_status=PASS or the item fails closed; production may at most reach READY_FOR_AUTHOR_REVIEW and authorizes_public_release stays false (publication is the author's act alone). Reviewer access is grade-grant read of the escrow custody (Drive folder FDB-CANON-001__PROTECTED_ESCROW, owner-only ACL); custody never moves for grading; a reviewer who cannot obtain the grade-grant read files that exact predicate as the area NON-ALLOW rather than reviewing public surfaces (the manuscripts are no longer public). The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__FREEDOM_BOOKS_SANDBOX_REVIEW_GATE_A__01, Drive 1ToIDul87y1QblW2gY9R-7Q8mJhm0_s2m, MD5 2fa737eafbc9e77663d6a236258ce7ec). First claim owns an area.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__FREEDOM_BOOKS_SANDBOX_REVIEW_GATE_A__01.md (Drive 1ToIDul87y1QblW2gY9R-7Q8mJhm0_s2m, MD5 2fa737eafbc9e77663d6a236258ce7ec)",
+   "Ecosystem KV SANDBOX__ADMISSION__FREEDOM_BOOKS__01.json (Drive 1HK5zb8rtKLLVvEI3XCHPGQbYMS5B1vDn)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/FREE-DOM_Books",
+    "StegVerse-Labs/FREE-DOM"
+   ],
+   "components": [
+    "sandbox-item-SANDBOX-FREEDOM-BOOKS-REVIEW-01",
+    "escrow-custody",
+    "eight-area-review"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-GATE-A-ESCROW-GRADE-GRANT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "Reviewers read the escrow custody by grade-grant; the grant mechanism is the sandbox route's own (DOCUMENTARY_SINGLE_CLAIM_ONLY until SV-011 resident R1-R5 verify)"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "FDB-CANON-001"
+  ],
+  "existing_evidence_refs": [
+   "Admission verifier output 2026-11-27: allow=true, INGRESS_ACCEPTED, workflow_item_step 4 (verify_protected_ingress.py, binding GEN 01 self-check 12/12 CONFORMANT)",
+   "Sandbox index readback 2026-11-27: SANDBOX-FREEDOM-BOOKS-REVIEW-01 present at INGRESS_ACCEPTED with 8 MISSING DISPOSITIONS; prior items unchanged",
+   "Escrow deposits verified 2026-11-27: stored size/MD5 MATCH (3/3); 37/37 members SHA-256 re-verified; custody anchor ca01d3109e05ae024352d238b7f04fa184aa1b2ab06bd826086feb252b185068"
+  ],
+  "expected_evidence_predicates": [
+   "EIGHT_AREA_DISPOSITIONS_FILED",
+   "SURVIVOR_PROTECTION_GATE_PASS_UNWAIVED",
+   "NO_PUBLIC_RELEASE_AUTHORIZED"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "Ecosystem KV Drive 1ToIDul87y1QblW2gY9R-7Q8mJhm0_s2m"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Run the eight-area independent review of sandbox item SANDBOX-FREEDOM-BOOKS-REVIEW-01 (FREE-DOM / FREE-DOM_Books protected package, repo goal FDB-CANON-001), admitted at INGRESS_ACCEPTED on 2026-11-27 under ECOSYSTEM_KV_AND_SANDBOX_COMPOSITE_V1. Eligibility: StegVerse AI and ChatGPT jointly, per Item 4 of QUEUE__WORK__FREEDOM_SANDBOX_REVIEW_INGRESS__01; survivor_protection may be seated to another lane by the addressees but must be filed by a reviewer other than the package submitter (the Claude coordinator). Discharge: one filed disposition per area (research, series_architecture, character_continuity, author_voice, narrative_integrity, survivor_protection, automation, production) in the Ecosystem KV coordination folder, ALLOW or six-field NON-ALLOW, plus a paired notice; survivor_protection must read waived=false and gate_status=PASS or the item fails closed; production may at most reach READY_FOR_AUTHOR_REVIEW and authorizes_public_release stays false (publication is the author's act alone). Reviewer access is grade-grant read of the escrow custody (Drive folder FDB-CANON-001__PROTECTED_ESCROW, owner-only ACL); custody never moves for grading; a reviewer who cannot obtain the grade-grant read files that exact predicate as the area NON-ALLOW rather than reviewing public surfaces (the manuscripts are no longer public). The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__FREEDOM_BOOKS_SANDBOX_REVIEW_GATE_A__01, Drive 1ToIDul87y1QblW2gY9R-7Q8mJhm0_s2m, MD5 2fa737eafbc9e77663d6a236258ce7ec). First claim owns an area.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/FREE-DOM_Books",
+     "StegVerse-Labs/FREE-DOM"
+    ],
+    "components": [
+     "sandbox-item-SANDBOX-FREEDOM-BOOKS-REVIEW-01",
+     "escrow-custody",
+     "eight-area-review"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "EIGHT_AREA_DISPOSITIONS_FILED",
+    "SURVIVOR_PROTECTION_GATE_PASS_UNWAIVED",
+    "NO_PUBLIC_RELEASE_AUTHORIZED"
+   ],
+   "finish_point": {
+    "acceptance_test": "All eight area dispositions stand filed in the Ecosystem KV with the survivor gate unwaived, or a six-field non-ALLOW names the exact failed predicate per unfiled area",
+    "predicate": "FREEDOM_BOOKS_GATE_A_DISCHARGED_OR_NONALLOW",
+    "verifier_entrypoint": "Coordinator readback of the filed dispositions plus the sandbox index state transition",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:6a4c164aefa9a31f4d5a7e5fad0601bf969d843794c5bad6c10f1ee8f86a219d",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1ToIDul87y1QblW2gY9R-7Q8mJhm0_s2m",
+   "StegVerse-Labs/.github#3467"
+  ],
+  "observed_at": "2026-11-27T16:54:50Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}

@@ -1,0 +1,156 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "fdb-canon-001-registration-001",
+ "task_id": "FDB-CANON-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3467",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries FDB-CANON-001 (G326, 122 tasks, read 2026-11-27) and control/organization-task-registry.json (v0.2, generation 3, 16 tasks, read 2026-11-27) carries no FDB-CANON-001 entry and no FREE-DOM mention",
+  "The ID itself is pre-existing and repo-verified (FREE-DOM_Books mirror handoff, 2026-10-29); NEW_IDENTITY here means a new registry row for an existing goal identity, not the minting of a new goal -- the registrar assigns the registration state/COSV",
+  "Adjacent: FREEDOM-BOOKS-SANDBOX-REVIEW-GATE-A-001 (the review work under this goal) is a different task; SANDBOX-FREEDOM-BOOKS-REVIEW-01 is the sandbox index item, not a registry task"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "FDB-CANON-001",
+  "correlation_id": "FDB-CANON-001",
+  "root_correlation_id": "FDB-CANON-001",
+  "parent_task_id": null,
+  "goal": "Register the existing repo goal of record FDB-CANON-001 (FREE-DOM / FREE-DOM_Books) in the ecosystem registry state, discharging Gate Option B of the Gemini Item 2 ingress determination so Item 5 (binding + remediation in ecosystem repositories) can proceed on the returning Gate A reviews. The ID is NOT new: it stands verified repo-side in FREE-DOM_Books/docs/handoff/FREE_DOM_BOOKS_MIRROR_HANDOFF.md line 4 since 2026-10-29 (SHA-256 b0dbe73a178f848d957d3e61914372bc29570df9d535113942f90764958a8c5d at commit 1b2ba1d; 286e3f06922247d639505cb210756399775f5a7509223adbd7f14b45f21aa6b5 at current head, the delta being the Option 3 authorization section). Eligibility: the Registry owner / registrar lane only -- discharge requires registrar-assigned registration state/COSV, which the coordinator is barred from minting; any lane may carry the request. Discharge: the registration read back from the registry of record (file, generation, entry, digest) filed as a receipt in the Ecosystem KV coordination folder with a paired notice. The registrar decides the surface: (a) an FDB-CANON-001 entry in control/organization-task-registry.json (live schema v0.2, generation 3, 16 ORG-FED-* federation entries with registrar-minted COSV vectors -- no clerical copy-in is faithful to that grammar), or (b) a canonical-registry row, or (c) a registrar ruling naming the governing surface. The operative text is the registrar request in the Ecosystem KV (REGISTRAR__REQUEST__FDB_CANON_001__REGISTRATION__01, Drive 12hz8B0_fTI85dUHxh0-MlOJsExkUt_u0, MD5 edb17aefc58252e976d4d3369cfbb2e7). The TASKS.md side already stands reconciled (goal-binding block, commit a82cd4734b7fb27f1be097169c6063ad38619766, recording org_registry_verified: false).",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV REGISTRAR__REQUEST__FDB_CANON_001__REGISTRATION__01.md (Drive 12hz8B0_fTI85dUHxh0-MlOJsExkUt_u0, MD5 edb17aefc58252e976d4d3369cfbb2e7)",
+   "StegVerse-Labs/FREE-DOM_Books docs/handoff/FREE_DOM_BOOKS_MIRROR_HANDOFF.md (goal ID of record)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326",
+   "control/organization-task-registry.json generation 3"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github",
+    "StegVerse-Labs/FREE-DOM_Books"
+   ],
+   "components": [
+    "organization-task-registry",
+    "canonical-task-registry",
+    "gate-b"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-FDB-REGISTRAR-MINT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "Registration state/COSV assignment is a registrar act; the coordinator does not allocate IDs, COSVs, or registry generations"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "FREEDOM-BOOKS-SANDBOX-REVIEW-GATE-A-001"
+  ],
+  "existing_evidence_refs": [
+   "FDB-008 COMPLETE at FREE-DOM_Books commit 704812b6556361bef29e859eb1e00c82b03846ab (validator PASS; suite 17/17)",
+   "Option 3 escrow deposit verified 2026-11-27 (37 files; anchor ca01d3109e05ae024352d238b7f04fa184aa1b2ab06bd826086feb252b185068); public-head remediation 37/37 deletion commits; final tree 68 blobs, 0 sensitive paths",
+   "Sandbox admission INGRESS_ACCEPTED 2026-11-27 (verifier allow=true); TASKS.md goal-binding block committed (a82cd4734b7fb27f1be097169c6063ad38619766)"
+  ],
+  "expected_evidence_predicates": [
+   "FDB_CANON_001_REGISTRATION_READ_BACK",
+   "REGISTRAR_SURFACE_DETERMINED",
+   "ITEM5_GATE_STATE_RECONCILED"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "Ecosystem KV Drive 12hz8B0_fTI85dUHxh0-MlOJsExkUt_u0"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Register the existing repo goal of record FDB-CANON-001 (FREE-DOM / FREE-DOM_Books) in the ecosystem registry state, discharging Gate Option B of the Gemini Item 2 ingress determination so Item 5 (binding + remediation in ecosystem repositories) can proceed on the returning Gate A reviews. The ID is NOT new: it stands verified repo-side in FREE-DOM_Books/docs/handoff/FREE_DOM_BOOKS_MIRROR_HANDOFF.md line 4 since 2026-10-29 (SHA-256 b0dbe73a178f848d957d3e61914372bc29570df9d535113942f90764958a8c5d at commit 1b2ba1d; 286e3f06922247d639505cb210756399775f5a7509223adbd7f14b45f21aa6b5 at current head, the delta being the Option 3 authorization section). Eligibility: the Registry owner / registrar lane only -- discharge requires registrar-assigned registration state/COSV, which the coordinator is barred from minting; any lane may carry the request. Discharge: the registration read back from the registry of record (file, generation, entry, digest) filed as a receipt in the Ecosystem KV coordination folder with a paired notice. The registrar decides the surface: (a) an FDB-CANON-001 entry in control/organization-task-registry.json (live schema v0.2, generation 3, 16 ORG-FED-* federation entries with registrar-minted COSV vectors -- no clerical copy-in is faithful to that grammar), or (b) a canonical-registry row, or (c) a registrar ruling naming the governing surface. The operative text is the registrar request in the Ecosystem KV (REGISTRAR__REQUEST__FDB_CANON_001__REGISTRATION__01, Drive 12hz8B0_fTI85dUHxh0-MlOJsExkUt_u0, MD5 edb17aefc58252e976d4d3369cfbb2e7). The TASKS.md side already stands reconciled (goal-binding block, commit a82cd4734b7fb27f1be097169c6063ad38619766, recording org_registry_verified: false).",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github",
+     "StegVerse-Labs/FREE-DOM_Books"
+    ],
+    "components": [
+     "organization-task-registry",
+     "canonical-task-registry",
+     "gate-b"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "FDB_CANON_001_REGISTRATION_READ_BACK",
+    "REGISTRAR_SURFACE_DETERMINED",
+    "ITEM5_GATE_STATE_RECONCILED"
+   ],
+   "finish_point": {
+    "acceptance_test": "The registration (or the registrar's surface ruling) stands read back from the registry of record and filed as a KV receipt, or a six-field non-ALLOW names the exact failed predicate",
+    "predicate": "FDB_CANON_001_REGISTRATION_DISCHARGED_OR_NONALLOW",
+    "verifier_entrypoint": "Coordinator readback of both registries plus the filed registrar receipt",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:04ecad6ce5ede34bc9be46fa987eb4cfb7d21f4f6741ec6d5c70a0ffe1ac42fb",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the registrar request in the Ecosystem KV",
+   "blocker_count": "no blocker recorded"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 12hz8B0_fTI85dUHxh0-MlOJsExkUt_u0",
+   "StegVerse-Labs/.github#3467"
+  ],
+  "observed_at": "2026-11-27T16:54:50Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
