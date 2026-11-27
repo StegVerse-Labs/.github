@@ -14,6 +14,8 @@ Validation on main `6b13c3a749b2940d6142644196a8302823c1f45a`: 41 tests and 3 su
 
 Start at [Task Registration Guide](docs/TASK_REGISTRATION_GUIDE.md). The canonical Task Registry owns identity and coordination; a worker admission review is not task registration, a WorkerCoordinator claim, or a governed execution authorization.
 
+MyKV hostname binding: [four-predicate verification evidence and Registry reconciliation handoff](docs/MYKV_HOSTNAME_BINDING_MIRROR_HANDOFF.md). The hostname is serving; canonical identity/COSV reconciliation remains with the Registry owner. Do not repeat the completed Cloudflare writes.
+
 ## Real governance assessment sample (#3393)
 
 Registered as `REAL-GOVERNANCE-ASSESSMENT-SAMPLE-001` (COSV 10500000110000, PROPOSED, registration only) by StegVerse-Labs/.github#3412. Canonical handoff: [docs/REAL_GOVERNANCE_ASSESSMENT_SAMPLE_MIRROR_HANDOFF.md](docs/REAL_GOVERNANCE_ASSESSMENT_SAMPLE_MIRROR_HANDOFF.md). The report is consolidated revision 2 at https://github.com/StegVerse-Labs/.github/issues/3396#issuecomment-6502814562; source-use, independent acceptance and public publication remain pending with their owning lanes.
