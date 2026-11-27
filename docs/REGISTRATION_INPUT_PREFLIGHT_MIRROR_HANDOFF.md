@@ -6,7 +6,7 @@ The expired source-repair claim `.github#3444/7206708041` was requeued after its
 
 ## Change and validation boundary
 
-Eight request inputs used `stegverse.dual-scope-seal/v1` where the existing request contract requires `stegverse.goal-scope-seal/v1`. Each edit changes only `sealed_scope.schema`. Scope payload, scope digest, finish point, supersession, record, vector inputs, generation, and authority fields are preserved. The eight requests are banking-system, lane-self-funding, pair-carrier-services, rail-harness, scan-carrier, social-posting, socials-hostname-binding, and strategy-carrier.
+The initial eight request inputs used `stegverse.dual-scope-seal/v1` where the existing request contract requires `stegverse.goal-scope-seal/v1`. Each edit changes only `sealed_scope.schema`. Scope payload, scope digest, finish point, supersession, record, vector inputs, generation, and authority fields are preserved. The eight requests are banking-system, lane-self-funding, pair-carrier-services, rail-harness, scan-carrier, social-posting, socials-hostname-binding, and strategy-carrier.
 
 `goal_scope_seal.make_sealed_scope` constructs new request inputs using the existing canonical `scope_of`, `digest`, schema constant, and validator. It requires an explicit testable finish point and does not normalize an existing mismatched scope or write a seal.
 
@@ -29,3 +29,9 @@ Review the exact PR head and its source tests. The original existing-branch READ
 ## Follow-through: generated test inventory
 
 At head 92eae7130c4c897402fe574061650c92355a0cab, full ratchet run45935219939 found exactly one new ratchet finding: TEST_SET_MANIFEST_STALE. It ran 6,184 passing and 144 failing tests, with existing baseline failures kept distinct. CODEX P4 reader7209279271 and source-worker claim7209279468 cover this repair. The unchanged generator and spec regenerate the inventory to855 sets, adding the input-preflight test and its two new dependency-graph nodes. Incremental generation reproduces the predecessor exactly and reparses changed nodes against the complete pinned Git path inventory; full exact-head CI independently regenerates the complete inventory and must compare equal. The test baseline, exclusions, test-selection policy and native-registration gate are unchanged.
+
+## P5 current-main forward repair
+
+Main a828cea5b3eb36b0ef05ba70ab948ef2746b3c0a introduced submission-release-001 with the same wrong schema tag. CODEX P5 reader7209685340 and source-worker claim7209685596 cover its exact tag-only correction as the ninth repaired input. All other input bytes and the original EOF are conserved; scope digest911bcad39340e6811266aa81c22fba6631e968b887d974dec8a57e6ca6fa5410 is unchanged. The current23-request input inventory is22 VALID/1 INVALID, with unchanged SKAP semantic/identity defects retained for its original owner. The same PR branch moves forward with old head b74646c and pinned main b96619df as parents, preserving both histories and foreign source. Test inventory855 is unchanged because no Python test, generator or selector source changed; full exact-head CI must still verify it. Shared canonical-constructor adoption by the original request producer remains an explicit owner action: this source repair does not pretend to modify a producer outside this repository.
+
+P5 late-main guard: main b96619df6fd343ef2618878950dd30ed5f5d3df1 adds protocol-hostname-binding with the same schema-only defect; the tenth correction preserves scope digest50ad22cfd394dd928d4f2445dbebe99342b65393c3517d62aa26f6b1411352a9. The current merge retains both b74646c and b96619df parents. No current-main additions or prior branch history are dropped.

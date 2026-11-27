@@ -2350,3 +2350,10 @@ Eight request schema tags are corrected to the existing goal-scope-seal/v1 contr
 ### PR3479 test inventory follow-through
 
 The new input-preflight test is included in the generated test-set inventory (855 sets). The unchanged generator/spec and predecessor dependency graph were used for incremental source regeneration; full independent exact-head CI must reproduce the manifest. No baseline, exclusions, or ratchet policy was changed. Registration verification remains a separate native-output requirement.
+
+
+### P5 current source frontier — submission-release input
+
+The existing draft PR3479 now carries pinned main b96619df plus two further exact schema-tag corrections, for submission-release-001 and protocol-hostname-binding-001. Their complete scopes, digests, finish points, identities, authority fields and original EOFs remain unchanged. The 23-input preflight inventory is22 valid/1 separately invalid SKAP input. Live Doc Escrow T-1..T-5 discharge, native registration and protected integration remain separately evidenced owner actions; no fixture or input check is promoted to those grades.
+
+P5 late-main guard: main b96619df6fd343ef2618878950dd30ed5f5d3df1 adds protocol-hostname-binding with the same schema-only defect; the tenth correction preserves scope digest50ad22cfd394dd928d4f2445dbebe99342b65393c3517d62aa26f6b1411352a9. The current merge retains both b74646c and b96619df parents. No current-main additions or prior branch history are dropped.
