@@ -1,0 +1,157 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "socials-hostname-binding-001",
+ "task_id": "SOCIALS-HOSTNAME-BINDING-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries SOCIALS-HOSTNAME-BINDING-001 (G326, 122 tasks, read 2026-11-26)",
+  "Adjacent tasks SKAP-HOSTNAME-BINDING-001 (the public binding of the SKAP Vault at skap.stegverse.org -- the sibling specimen, bound by the CODEX Cloudflare API composite) and SOCIAL-POSTING-001 (the posting service whose P-1/P-4 this binding unblocks) are different tasks; this item binds the socials landing hostname only"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SOCIALS-HOSTNAME-BINDING-001",
+  "correlation_id": "SOCIALS-HOSTNAME-BINDING-001",
+  "root_correlation_id": "SOCIALS-HOSTNAME-BINDING-001",
+  "parent_task_id": null,
+  "goal": "Bind the hostname socials.stegverse.com to the socials-landing fleet service (fleet #30, local port 8815) so the landing serves publicly at https://socials.stegverse.com and the LinkedIn OAuth callback registered in the StegVerse Socials app (https://socials.stegverse.com/auth/linkedin/callback) resolves to the service. The binding follows the fleet standing arrangement (the named Cloudflare tunnel plus the local public proxy, by which mailed.stegverse.com and legal-briefs.stegverse.com already serve the fleet), and is fleet-persistent: the hostname stands in the fleet records so a VM replacement restores it. Eligibility: any lane with Cloudflare access for the stegverse.com zone, first claim owns; BOTH routes authorized up front -- (a) the Cloudflare API route (the CODEX composite that bound skap.stegverse.org is its known form), (b) the dashboard in the lane own session. Never the principal tap, never the coordinator approval. Discharge: public readback -- /health 200; / 200 rendering the landing current state at query time; the callback path reaching the service (any service response discharges routing; the OAuth handler itself is SOCIAL-POSTING-001 P-1); the fleet-persistence record; the close naming the mechanism (tunnel, ingress target, DNS record). Bounds: DNS and ingress only; no landing code change; no credential handling -- the app secret already stands deposited in the SKAP Vault. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__SOCIALS_HOSTNAME_BINDING__01, Drive 174L8I9FaD7g3XHCkfEo0bVgEQkh300MC, MD5 ed4530fbbac5b77410b6832b9b342705). Failure filing: six-field non-ALLOW naming the exact failed predicate; first claim owns the item.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__SOCIALS_HOSTNAME_BINDING__01.md (Drive 174L8I9FaD7g3XHCkfEo0bVgEQkh300MC, MD5 ed4530fbbac5b77410b6832b9b342705)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "socials-landing",
+    "cloudflare-binding",
+    "fleet-tunnel",
+    "linkedin-callback-route"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-SOCIALS-HOSTNAME-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "SKAP-HOSTNAME-BINDING-001",
+   "SOCIAL-POSTING-001"
+  ],
+  "existing_evidence_refs": [
+   "StegVerse Socials LinkedIn app created and provisioned 2026-11-26 evening (Client ID 86uanhtx3x6ck3, public identifier; Share on LinkedIn provisioned, w_member_social); the registered authorized redirect URL is https://socials.stegverse.com/auth/linkedin/callback",
+   "The app secret stands deposited in the SKAP Vault as SKAP://ecosystem/linkedin-stegverse-socials-secret, SEALED, vault chain MATCH (2026-11-26 20:00 CST) -- no credential step remains on this line",
+   "Fleet bindings standing: mailed.stegverse.com and legal-briefs.stegverse.com serve the fleet publicly and stand in the fleet-restore probe list (verified 200 in the 2026-11-26 restore); skap.stegverse.org was bound by the CODEX Cloudflare API composite; the socials-landing service (fleet #30, port 8815) is healthy locally, fleet check green 2026-11-26 19:15 CST"
+  ],
+  "expected_evidence_predicates": [
+   "SOCIALS_HOSTNAME_RESOLVES_PUBLICLY",
+   "SOCIALS_LANDING_PUBLIC_READBACK_200",
+   "SOCIALS_CALLBACK_PATH_REACHES_SERVICE",
+   "SOCIALS_BINDING_FLEET_PERSISTENT"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/SOCIALS_HOSTNAME_BINDING_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 174L8I9FaD7g3XHCkfEo0bVgEQkh300MC"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Bind the hostname socials.stegverse.com to the socials-landing fleet service (fleet #30, local port 8815) so the landing serves publicly at https://socials.stegverse.com and the LinkedIn OAuth callback registered in the StegVerse Socials app (https://socials.stegverse.com/auth/linkedin/callback) resolves to the service. The binding follows the fleet standing arrangement (the named Cloudflare tunnel plus the local public proxy, by which mailed.stegverse.com and legal-briefs.stegverse.com already serve the fleet), and is fleet-persistent: the hostname stands in the fleet records so a VM replacement restores it. Eligibility: any lane with Cloudflare access for the stegverse.com zone, first claim owns; BOTH routes authorized up front -- (a) the Cloudflare API route (the CODEX composite that bound skap.stegverse.org is its known form), (b) the dashboard in the lane own session. Never the principal tap, never the coordinator approval. Discharge: public readback -- /health 200; / 200 rendering the landing current state at query time; the callback path reaching the service (any service response discharges routing; the OAuth handler itself is SOCIAL-POSTING-001 P-1); the fleet-persistence record; the close naming the mechanism (tunnel, ingress target, DNS record). Bounds: DNS and ingress only; no landing code change; no credential handling -- the app secret already stands deposited in the SKAP Vault. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__SOCIALS_HOSTNAME_BINDING__01, Drive 174L8I9FaD7g3XHCkfEo0bVgEQkh300MC, MD5 ed4530fbbac5b77410b6832b9b342705). Failure filing: six-field non-ALLOW naming the exact failed predicate; first claim owns the item.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "socials-landing",
+     "cloudflare-binding",
+     "fleet-tunnel",
+     "linkedin-callback-route"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "SOCIALS_HOSTNAME_RESOLVES_PUBLICLY",
+    "SOCIALS_LANDING_PUBLIC_READBACK_200",
+    "SOCIALS_CALLBACK_PATH_REACHES_SERVICE",
+    "SOCIALS_BINDING_FLEET_PERSISTENT"
+   ],
+   "finish_point": {
+    "acceptance_test": "The four evidence predicates stand read back from the public internet and the fleet record, or a six-field non-ALLOW names the exact failed predicate, with the coordinator's verification filed",
+    "predicate": "SOCIALS_HOSTNAME_BINDING_001_DISCHARGED_OR_NONALLOW",
+    "verifier_entrypoint": "Coordinator readback of the public URLs plus the filed close on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:fc6431698e2de25edce7851ea4a242f6012192c3df486fb44b155f736e54a8d6",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 174L8I9FaD7g3XHCkfEo0bVgEQkh300MC",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-27T03:17:00Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
