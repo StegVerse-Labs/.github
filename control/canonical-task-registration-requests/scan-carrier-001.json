@@ -1,0 +1,169 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "scan-carrier-001",
+ "task_id": "SCAN-CARRIER-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries SCAN-CARRIER-001 (G326, 122 tasks, read 2026-11-26)",
+  "Adjacent tasks PAIR-CARRIER-SERVICES-001 (the carrier family this joins; none of its carriers carries third-party security tools), STRATEGY-CARRIER-001 (the sibling carrier, landed the same day; carries user strategies, not tools) and RAIL-HARNESS-001 (the mounting grammar this carrier builds on) are different tasks; this item references all three"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SCAN-CARRIER-001",
+  "correlation_id": "SCAN-CARRIER-001",
+  "root_correlation_id": "SCAN-CARRIER-001",
+  "parent_task_id": null,
+  "goal": "Build the scan carrier, the next carrier in the PAIR-CARRIER-SERVICES-001 family: it mounts established open-source security tools -- the twelve named in the operative text (Strix, Cloudflare Security Audit Skill, Trivy, Nuclei, Infisical, TruffleHog, NVIDIA SkillSpector, Semgrep, OpenAI Codex Security, Anthropic Claude Code Security Review, Microsoft PyRIT, Comp AI) -- as executors inside the 0R10N15 crossing, so every run of every tool issues its receipt pair at commit time: tool identity and version, ruleset version, target identity at run time, findings AND exclusions, verdict. The tools keep their names on every finding; the carrier claims no finding of its own and adds what the tools discard -- the contemporaneous state under which the finding was produced. The public track record of receipted runs is both the tools' advertisement and the standard record a security decision can be reconstructed from; revenue is per crossing, finding or clean alike. Proven specimen-first on the ecosystem's own surfaces (SkillSpector over its own skills; TruffleHog over its own public history, findings as predicates, never secret values), then opened to the twelve projects under an open invitation: mounting under license, declining free and public. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__SCAN_CARRIER__01, Drive 1QEX-omIcH4c0M-sJGSKxdqFa2RIOoumE, MD5 3f45337b826eebc6a6e6bb9945e5f92f). Work items: K-1 carrier core; K-2 SkillSpector specimen; K-3 TruffleHog specimen; K-4 mounting records per tool; K-5 the track-record surface; K-6 the open invitation; K-7 the merge-gate specimen (on K-2/K-3). Discharge per item is its named evidence read back; a fixture run discharges K-1 only. Failure filing: six-field non-ALLOW; first claim owns each item.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__SCAN_CARRIER__01.md (Drive 1QEX-omIcH4c0M-sJGSKxdqFa2RIOoumE, MD5 3f45337b826eebc6a6e6bb9945e5f92f)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "scan-carrier-core",
+    "skillspector-specimen",
+    "trufflehog-specimen",
+    "mounting-records",
+    "track-record-surface",
+    "merge-gate"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-SCAN-CARRIER-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "PAIR-CARRIER-SERVICES-001",
+   "STRATEGY-CARRIER-001",
+   "RAIL-HARNESS-001",
+   "MACHINE-ECONOMY-CHOICE-001"
+  ],
+  "existing_evidence_refs": [
+   "Principal's determinations of 2026-11-26 (the carrier receipts the twelve tools' work; the carrier advertises the tools it carries; specimen-first on the ecosystem's own surfaces) in the 2026-11-26 day log",
+   "Carrier family live in part: 4LPH4 verdict tier in production 2026-11-26 (a mounted explainer, receipted -- this carrier's shape in miniature); rail harness built with Tron and Solana adapters, fixture tests 8/8",
+   "Dual receipt layer in production on two rails: 8374 chain 124 entries / 62 pairs replay MATCH; 4LPH4 chain 18 entries / 7 pairs replay MATCH (2026-11-26)"
+  ],
+  "expected_evidence_predicates": [
+   "SCAN_CARRIER_CORE_RUN_REPLAY_MATCH",
+   "SCAN_CARRIER_SKILLSPECTOR_SPECIMEN_PUBLISHED",
+   "SCAN_CARRIER_TRUFFLEHOG_SPECIMEN_PUBLISHED",
+   "SCAN_CARRIER_MOUNTING_RECORDS_FILED",
+   "SCAN_CARRIER_TRACK_RECORD_SURFACE_LIVE",
+   "SCAN_CARRIER_INVITATION_PUBLISHED",
+   "SCAN_CARRIER_MERGE_GATE_SPECIMEN"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/SCAN_CARRIER_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1QEX-omIcH4c0M-sJGSKxdqFa2RIOoumE"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.goal-scope-seal/v1",
+  "scope": {
+   "goal": "Build the scan carrier, the next carrier in the PAIR-CARRIER-SERVICES-001 family: it mounts established open-source security tools -- the twelve named in the operative text (Strix, Cloudflare Security Audit Skill, Trivy, Nuclei, Infisical, TruffleHog, NVIDIA SkillSpector, Semgrep, OpenAI Codex Security, Anthropic Claude Code Security Review, Microsoft PyRIT, Comp AI) -- as executors inside the 0R10N15 crossing, so every run of every tool issues its receipt pair at commit time: tool identity and version, ruleset version, target identity at run time, findings AND exclusions, verdict. The tools keep their names on every finding; the carrier claims no finding of its own and adds what the tools discard -- the contemporaneous state under which the finding was produced. The public track record of receipted runs is both the tools' advertisement and the standard record a security decision can be reconstructed from; revenue is per crossing, finding or clean alike. Proven specimen-first on the ecosystem's own surfaces (SkillSpector over its own skills; TruffleHog over its own public history, findings as predicates, never secret values), then opened to the twelve projects under an open invitation: mounting under license, declining free and public. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__SCAN_CARRIER__01, Drive 1QEX-omIcH4c0M-sJGSKxdqFa2RIOoumE, MD5 3f45337b826eebc6a6e6bb9945e5f92f). Work items: K-1 carrier core; K-2 SkillSpector specimen; K-3 TruffleHog specimen; K-4 mounting records per tool; K-5 the track-record surface; K-6 the open invitation; K-7 the merge-gate specimen (on K-2/K-3). Discharge per item is its named evidence read back; a fixture run discharges K-1 only. Failure filing: six-field non-ALLOW; first claim owns each item.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "scan-carrier-core",
+     "skillspector-specimen",
+     "trufflehog-specimen",
+     "mounting-records",
+     "track-record-surface",
+     "merge-gate"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "SCAN_CARRIER_CORE_RUN_REPLAY_MATCH",
+    "SCAN_CARRIER_SKILLSPECTOR_SPECIMEN_PUBLISHED",
+    "SCAN_CARRIER_TRUFFLEHOG_SPECIMEN_PUBLISHED",
+    "SCAN_CARRIER_MOUNTING_RECORDS_FILED",
+    "SCAN_CARRIER_TRACK_RECORD_SURFACE_LIVE",
+    "SCAN_CARRIER_INVITATION_PUBLISHED",
+    "SCAN_CARRIER_MERGE_GATE_SPECIMEN"
+   ],
+   "finish_point": {
+    "acceptance_test": "Every work item in the sealed goal stands discharged on its own record (filed deliverable read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+    "predicate": "SCAN_CARRIER_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+    "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:9fdca39a1973ffeab4d17d4e04e3c795bc92b9a975bd81f237259a5e833b7537",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1QEX-omIcH4c0M-sJGSKxdqFa2RIOoumE",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-26T23:45:00Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}

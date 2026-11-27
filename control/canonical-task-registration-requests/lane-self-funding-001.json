@@ -88,7 +88,7 @@
   }
  },
  "sealed_scope": {
-  "schema": "stegverse.dual-scope-seal/v1",
+  "schema": "stegverse.goal-scope-seal/v1",
   "scope": {
    "goal": "Find the way the Build Lanes pay for their own operation (on the order of $2,500/month) out of the resources that already exist, and then do it: revenue the machine economy itself produces, through the surfaces already built and live, funds the lanes' own goals; per-task costs meter against the same record; the month closes on a state read of revenue against cost per lane. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__LANE_SELF_FUNDING__01, Drive 15Ee0wx2PIEEprDX-XEpKzKuScUGya5K9). Work items: SF-1 complete the 8374 commercial surface (MACHINE-ECONOMY-CHOICE-001 W3-W6); SF-2 the governed packet as a standing offer; SF-3 the Mailed/MailHub external door; SF-4 the internal lane market made continuous through Goal Escrow; SF-5 the self-funding state read. Discharge is a receipt -- a settled crossing from a payer who is not the principal, a goal funded from earned balances, a listing state read, or a filed determination where an item asks for one; a plan or recommendation discharges nothing. Failure filing: redress by any capable lane; first claim owns each item.",
    "targets": {

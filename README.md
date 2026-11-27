@@ -2340,3 +2340,8 @@ The principal-authorized API binding exposes [skap.stegverse.org](https://skap.s
 ## Banking system registration request — source repair pending
 
 BANKING-SYSTEM-001 is proposed in the Ecosystem KV queue. Its request's sealed-scope schema identifier is corrected to the existing goal-scope-seal contract; the sealed goal and digest are unchanged. This source change does not register or execute the task. See [the banking registration handoff](docs/BANKING_SYSTEM_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md) for the actual failure, bounded validation, original B-7 review and the authorized registrar's next step.
+
+
+### Registration request input preflight — CODEX P3, 2026-11-26
+
+Eight request schema tags are corrected to the existing goal-scope-seal/v1 contract with every semantic scope, digest, finish point and authority field unchanged. `scripts/registration_input_preflight.py` checks request/seal inputs without deriving or applying registration; a VALID input does not prove native registration. New producers can use the canonical `goal_scope_seal.make_sealed_scope` constructor. Existing read-only registration verification remains in force after preflight. The SKAP hostname request's distinct noncanonical scope shape remains an explicit original-owner residual. See [the preflight handoff](docs/REGISTRATION_INPUT_PREFLIGHT_MIRROR_HANDOFF.md).

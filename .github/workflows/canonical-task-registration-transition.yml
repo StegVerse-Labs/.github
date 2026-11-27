@@ -18,7 +18,9 @@ on:
       - '.github/workflows/canonical-task-registration-transition.yml'
       # scope freeze (GOAL_SCOPE_SEALED): any change to a Goal's record, row or seal
       - 'scripts/goal_scope_seal.py'
+      - 'scripts/registration_input_preflight.py'
       - 'tests/test_goal_scope_seal.py'
+      - 'tests/test_registration_input_preflight.py'
       - 'control/goal-scope-seals/**'
       - 'control/goal-scope-supersede-requests/**'
       - 'data/canonical-task-records/**'
@@ -43,6 +45,7 @@ on:
       - 'control/canonical-task-registration-requests/**'
       - 'scripts/canonical_task_registration_transition.py'
       - 'scripts/goal_scope_seal.py'
+      - 'scripts/registration_input_preflight.py'
       - 'control/goal-scope-seals/**'
 
 permissions:
@@ -62,7 +65,7 @@ jobs:
           python-version: '3.12'
       - name: Unit tests
         # callable set for the paths this workflow is selected by; 0 skipped
-        run: python -m unittest -v tests.test_canonical_task_registration_transition tests.test_goal_scope_seal tests.test_i1_goal_registration_manifests tests.test_github_universal_governance_product_goal_request tests.test_adjacency_ruling tests.test_write_admission tests.test_pat003_claim_fence_registration
+        run: python -m unittest -v tests.test_canonical_task_registration_transition tests.test_goal_scope_seal tests.test_registration_input_preflight tests.test_i1_goal_registration_manifests tests.test_github_universal_governance_product_goal_request tests.test_adjacency_ruling tests.test_write_admission tests.test_pat003_claim_fence_registration
       - name: Goal scope freeze (GOAL_SCOPE_SEALED) against the live base
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -107,6 +110,14 @@ jobs:
           status=0
           for manifest in $changed; do
             name=$(basename "$manifest" .json)
+            input_status=0
+            python scripts/registration_input_preflight.py "$manifest" \
+              > "$RUNNER_TEMP/receipts/input-$name.json" || input_status=$?
+            { echo "### input preflight: $manifest"; echo '```json'; cat "$RUNNER_TEMP/receipts/input-$name.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            if [ "$input_status" -ne 0 ]; then
+              status=1
+              continue
+            fi
             python scripts/canonical_task_registration_transition.py verify --request "$manifest" \
               --base "$RUNNER_TEMP/base" --head . --receipt-out "$RUNNER_TEMP/receipts/$name.json" || status=1
             { echo "### $manifest"; echo '```json'; cat "$RUNNER_TEMP/receipts/$name.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
@@ -158,3 +169,4 @@ jobs:
         with:
           name: canonical-task-registration-receipts
           path: ${{ runner.temp }}/receipts
+

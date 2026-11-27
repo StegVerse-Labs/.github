@@ -1,0 +1,17 @@
+# MIRROR HANDOFF -- SOCIALS-HOSTNAME-BINDING-001
+
+Canonical registration request: control/canonical-task-registration-requests/socials-hostname-binding-001.json
+Task: SOCIALS-HOSTNAME-BINDING-001 -- bind socials.stegverse.com to the
+socials-landing fleet service (port 8815) so the landing serves publicly
+and the LinkedIn OAuth callback registered in the StegVerse Socials app
+resolves to the service. Both binding routes authorized (Cloudflare API
+composite, or dashboard in a lane own session); discharge is public
+readback plus the fleet-persistence record, with the mechanism named in
+the close.
+Observed registry generation: G326. Registration mode: NEW_IDENTITY.
+Authority: NONE_REGISTRATION_ONLY -- this request proposes the state row only;
+the owner-side transition derives the registry row, generation, and COSV.
+Operative text: Ecosystem KV QUEUE__WORK__SOCIALS_HOSTNAME_BINDING__01.md
+(Drive 174L8I9FaD7g3XHCkfEo0bVgEQkh300MC, MD5 ed4530fbbac5b77410b6832b9b342705) -- task, eligibility, and discharge form stand in its
+first lines. Scope digest: sha256:fc6431698e2de25edce7851ea4a242f6012192c3df486fb44b155f736e54a8d6.
+Pairing: StegVerse-Labs/.github#3477.

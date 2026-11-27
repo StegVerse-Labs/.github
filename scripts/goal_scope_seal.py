@@ -81,6 +81,22 @@ def _require(ok: bool, code: str, detail: str, repair: str) -> None:
         raise ScopeRefusal(code, detail, repair)
 
 
+def make_sealed_scope(task_id: str, record: dict[str, Any], finish_point: Any,
+                      *, new_identity: bool = True,
+                      supersedes_scope_digest: str | None = None) -> dict[str, Any]:
+    """Construct and validate a request's scope input without registering a Goal.
+
+    Callers must supply the actual record and explicit finish point. This is
+    not a repair function for an existing seal and never writes a seal file.
+    """
+    scope = scope_of(record, finish_point)
+    sealed = {"schema": SEAL_SCHEMA, "scope": scope,
+              "scope_digest": digest(scope),
+              "supersedes_scope_digest": supersedes_scope_digest}
+    validate_sealed_scope(sealed, task_id, record, new_identity=new_identity)
+    return sealed
+
+
 def validate_sealed_scope(sealed: Any, task_id: str, record: dict[str, Any], *, new_identity: bool) -> dict[str, Any]:
     """Registration-side GOAL_SCOPE_SEALED. Returns the seal file body."""
     fix = (f"carry sealed_scope {{schema {SEAL_SCHEMA}, scope {{goal, targets, expected_evidence_predicates, "
@@ -238,3 +254,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
