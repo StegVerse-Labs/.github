@@ -1,0 +1,153 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "registry-transition-001",
+ "task_id": "REGISTRY-TRANSITION-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries REGISTRY-TRANSITION-001 (G326, 122 tasks, read 2026-11-26)",
+  "Adjacent: every pending registration request is this item input, not its competitor; the transition consumes proposals without altering their tasks own records"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "REGISTRY-TRANSITION-001",
+  "correlation_id": "REGISTRY-TRANSITION-001",
+  "root_correlation_id": "REGISTRY-TRANSITION-001",
+  "parent_task_id": null,
+  "goal": "Perform the owner-side canonical registry transition: read every registration request standing in StegVerse-Labs/.github control/canonical-task-registration-requests/, derive the registry rows per the Task Registration Guide, and cut the next generation of data/canonical-task-registry.json (G326 to G327) with the COSV the transition derives. At filing the registry has read G326 (122 tasks) through the whole of 2026-11-26 while proposals accumulated all day (SCAN-CARRIER-001, SOCIAL-POSTING-001, SOCIALS-HOSTNAME-BINDING-001, SUBMISSION-RELEASE-001, PROTOCOL-HOSTNAME-BINDING-001, RAIL-BRIDGE-001 among them); until the cut, lanes entering through the registry cannot see that work at all. Eligibility: any lane holding registry write access and keeper competence (the Gemini line has performed registry transitions); first claim owns; a lane that can read the requests but cannot cut files the six-field form naming the exact failed predicate -- the transition becomes owned work, not an unowned step. Discharge: the new generation read back from the registry file itself (generation number, task count, tonight task ids present as rows), the consumed requests named in the close, any request not carried named with its reason. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__REGISTRY_TRANSITION__01, Drive 1-JYVCP2wqS46R0lRKw7B5_se1rsiWnsn, MD5 7041df40a1df6b9b7bf4a95a46d57d24). Failure filing: six-field non-ALLOW naming the exact failed predicate.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__REGISTRY_TRANSITION__01.md (Drive 1-JYVCP2wqS46R0lRKw7B5_se1rsiWnsn, MD5 7041df40a1df6b9b7bf4a95a46d57d24)",
+   "docs/TASK_REGISTRATION_GUIDE.md",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "canonical-task-registry",
+    "registration-requests",
+    "registry-transition"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-REGISTRY-TRANSITION-OPERATIVE-TEXT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "The full specification stands in the Ecosystem KV queue item; this registration carries the state row so every entering lane can see the work whether or not it can take it"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "SCAN-CARRIER-001",
+   "SOCIAL-POSTING-001",
+   "RAIL-BRIDGE-001"
+  ],
+  "existing_evidence_refs": [
+   "Registry read 2026-11-26 22:32 CST via the public raw surface: generation 326, 122 tasks -- unchanged through a full day of filings and registration proposals",
+   "Coordinator filings of 2026-11-26 each pushed a registration request under NONE_REGISTRATION_ONLY authority; no transition has consumed them, so the registry surface shows none of tonight work"
+  ],
+  "expected_evidence_predicates": [
+   "REGISTRY_GENERATION_CUT",
+   "PENDING_REQUESTS_CONSUMED_OR_NAMED",
+   "TONIGHT_TASKS_PRESENT_AS_ROWS"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "docs/REGISTRY_TRANSITION_001_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+   "Ecosystem KV Drive 1-JYVCP2wqS46R0lRKw7B5_se1rsiWnsn"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Perform the owner-side canonical registry transition: read every registration request standing in StegVerse-Labs/.github control/canonical-task-registration-requests/, derive the registry rows per the Task Registration Guide, and cut the next generation of data/canonical-task-registry.json (G326 to G327) with the COSV the transition derives. At filing the registry has read G326 (122 tasks) through the whole of 2026-11-26 while proposals accumulated all day (SCAN-CARRIER-001, SOCIAL-POSTING-001, SOCIALS-HOSTNAME-BINDING-001, SUBMISSION-RELEASE-001, PROTOCOL-HOSTNAME-BINDING-001, RAIL-BRIDGE-001 among them); until the cut, lanes entering through the registry cannot see that work at all. Eligibility: any lane holding registry write access and keeper competence (the Gemini line has performed registry transitions); first claim owns; a lane that can read the requests but cannot cut files the six-field form naming the exact failed predicate -- the transition becomes owned work, not an unowned step. Discharge: the new generation read back from the registry file itself (generation number, task count, tonight task ids present as rows), the consumed requests named in the close, any request not carried named with its reason. The operative text is the queue item in the Ecosystem KV (QUEUE__WORK__REGISTRY_TRANSITION__01, Drive 1-JYVCP2wqS46R0lRKw7B5_se1rsiWnsn, MD5 7041df40a1df6b9b7bf4a95a46d57d24). Failure filing: six-field non-ALLOW naming the exact failed predicate.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "canonical-task-registry",
+     "registration-requests",
+     "registry-transition"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "REGISTRY_GENERATION_CUT",
+    "PENDING_REQUESTS_CONSUMED_OR_NAMED",
+    "TONIGHT_TASKS_PRESENT_AS_ROWS"
+   ],
+   "finish_point": {
+    "acceptance_test": "Every work item stands discharged on its own record (live surface read back, or a six-field non-ALLOW naming the exact failed predicate), with the coordinator's verification filed",
+    "predicate": "REGISTRY_TRANSITION_001_DISCHARGED_OR_NONALLOW_PER_ITEM",
+    "verifier_entrypoint": "Coordinator readback of the filed discharge on the Ecosystem KV coordination folder plus the canonical record",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:f3e512fbdd0fa722e858eda4a820bae2cc7a7938c5190f51fb9ae4dc7d3b466b",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the operative queue item in the Ecosystem KV",
+   "blocker_count": "no blocker recorded; dependencies UNRESOLVED"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1-JYVCP2wqS46R0lRKw7B5_se1rsiWnsn",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-27T04:32:00Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
