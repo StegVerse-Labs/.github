@@ -2345,3 +2345,8 @@ BANKING-SYSTEM-001 is proposed in the Ecosystem KV queue. Its request's sealed-s
 ### Registration request input preflight — CODEX P3, 2026-11-26
 
 Eight request schema tags are corrected to the existing goal-scope-seal/v1 contract with every semantic scope, digest, finish point and authority field unchanged. `scripts/registration_input_preflight.py` checks request/seal inputs without deriving or applying registration; a VALID input does not prove native registration. New producers can use the canonical `goal_scope_seal.make_sealed_scope` constructor. Existing read-only registration verification remains in force after preflight. The SKAP hostname request's distinct noncanonical scope shape remains an explicit original-owner residual. See [the preflight handoff](docs/REGISTRATION_INPUT_PREFLIGHT_MIRROR_HANDOFF.md).
+
+
+### PR3479 test inventory follow-through
+
+The new input-preflight test is included in the generated test-set inventory (855 sets). The unchanged generator/spec and predecessor dependency graph were used for incremental source regeneration; full independent exact-head CI must reproduce the manifest. No baseline, exclusions, or ratchet policy was changed. Registration verification remains a separate native-output requirement.
