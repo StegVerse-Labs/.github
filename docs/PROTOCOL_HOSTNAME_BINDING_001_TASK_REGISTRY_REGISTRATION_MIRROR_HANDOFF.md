@@ -18,3 +18,10 @@ Pairing: StegVerse-Labs/.github#3477.
 ## P5 input boundary
 
 PR3479 changes only the request sealed_scope.schema tag to the existing canonical contract; scope/digest/identity/authority/EOF stay exact. This source-input repair does not bind a hostname, grant native authority or change the live record. Runtime routing comes from the current lane registry; no unregistered pairing substitution.
+
+
+## CODEX P8 continuation (source proposal)
+
+Completed runtime acts: protocolhostname https://0r10n15.stegverse.com/ and /health return200, offer linked to8374.stegverse.org/offer returns200. Existing Cloudflare named tunnel8374/0aec1441-924f-4cb6-bcb8-b9c251511a6c managedconfig8→9 plus exactproxiedCNAME e50bb09a33f0c12fe90e50295d08a4d7→existingtunnel, localhost8803. All priorconfig conserved. Actualresult/release3444/7209932005, proofDrive19p1oENTFymY9YMu6SgSeRlE694tlSgbX/15943B/SHA256c3aef30e2203720435ad44c6361e5e52dfb2b4edb118b6e1b3dc822a9c4a0ac7. Coordinator addendum02 previously added both protocolname required200 fleet probes (attributed).
+
+Full source-bound continuation: docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md on this existing draft. Runtime Task Registry and protected-main admission remain unchanged.
