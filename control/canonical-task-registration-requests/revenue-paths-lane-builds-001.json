@@ -1,0 +1,180 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "revenue-paths-lane-builds-001",
+ "task_id": "REVENUE-PATHS-LANE-BUILDS-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries REVENUE-PATHS-LANE-BUILDS-001 (G326, 122 tasks, read 2026-11-28) and control/canonical-task-registration-requests/ (31 files, read live 2026-11-28) carries no such request",
+  "Parent: REVENUE-FIRST-EXTERNAL-CROSSING-001 (request filed 2026-11-28, commit ef2fff9169fb6270857b132f80f989335a5d6ce9) is the dated crossing directive; this item carries its blocker-removal builds and determinations — distinct scope, not a duplicate",
+  "W-2 and W-3 restate obligations already on record under FREEDOM-BOOKS-SANDBOX-REVIEW-GATE-A-001 and BANKING-SYSTEM-001 respectively; they are carried here as dated claims under the census, with discharge still recorded under those items' own surfaces"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "REVENUE-PATHS-LANE-BUILDS-001",
+  "correlation_id": "REVENUE-PATHS-LANE-BUILDS-001",
+  "root_correlation_id": "REVENUE-FIRST-EXTERNAL-CROSSING-001",
+  "parent_task_id": "REVENUE-FIRST-EXTERNAL-CROSSING-001",
+  "goal": "Execute the lane builds and determinations from the 2026-11-28 ecosystem revenue census: QUEUE__WORK__REVENUE_PATHS_CENSUS_AND_LANE_BUILDS__01 in the Ecosystem KV coordination folder (Drive 1VsIvDD-kgnWkKBn9knOCJy2YKr6uOp3W, MD5 58193f2f9e00808fafae7fba2b9d0760). Items: W-1 sandbox determinations ITEM-002/ITEM-003 (non-author lanes); W-2 FREE-DOM Gate A dispositions (StegVerse AI + ChatGPT only); W-3 BANKING-SYSTEM-001 GEN 03 point 5 confirmation (ClaudeCode lane); W-4 suite intake + subscription collection build; W-5 engagement-lines purchase path; W-6 namespace record completion; W-7 Socials post-route mounting (Discord/Facebook service routes, X route build); W-8 router seller assertion kit; W-9 pickup-gap R1-R4 cross-reference. Eligibility: any capable lane per item -- first claim is the assignment. Discharge: per item in the operative filing; every close states CHECKED OUT / DISCHARGED / EVIDENCE / REMAINDER, filed in the Ecosystem KV coordination folder with a pairing notice. OWNER ACTS: NONE. Parent item: REVENUE-FIRST-EXTERNAL-CROSSING-001 (registered 2026-11-28, commit ef2fff9169fb6270857b132f80f989335a5d6ce9) — this item carries the builds that remove its remaining blockers; it does not duplicate the crossing item itself.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__REVENUE_PATHS_CENSUS_AND_LANE_BUILDS__01.md (Drive 1VsIvDD-kgnWkKBn9knOCJy2YKr6uOp3W, MD5 58193f2f9e00808fafae7fba2b9d0760)",
+   "Owner's order, 2026-11-28 01:47 CST (ecosystem-wide revenue review; use the sandbox, the lanes, all automation; do not stop)",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github",
+    "SV-LLM/.github",
+    "StegVerse-Labs/Site"
+   ],
+   "components": [
+    "canonical-task-registry",
+    "sv-011-sandbox",
+    "legal-briefs",
+    "0r10n15-generator",
+    "router-8374",
+    "socials",
+    "stegverse-ai-namespace"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-REVPATHS-REGISTRAR-MINT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "Registration state/COSV assignment is a registrar act; the coordinator does not allocate IDs, COSVs, or registry generations"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "REVENUE-FIRST-EXTERNAL-CROSSING-001",
+   "LANE-SELF-FUNDING-001",
+   "BANKING-SYSTEM-001",
+   "FREEDOM-BOOKS-SANDBOX-REVIEW-GATE-A-001",
+   "DIRECT-SESSION-PICKUP-GAP-001",
+   "SOCIAL-POSTING-001"
+  ],
+  "existing_evidence_refs": [
+   "Census 2026-11-28 (live-verified): external revenue $0.00 ecosystem-wide; 8374 MATCH 124/62; 4LPH4 MATCH 18/7; router MATCH 64/32; Bazaar listing live, decays ~2026-12-26",
+   "Sandbox SV-011 index: ITEM-002 and ITEM-003 OPEN, determination null since 2026-11-06; FREE-DOM Gate A responses {} (all eight dispositions missing)",
+   "stegverse.com serves a 478-byte no-products placeholder at root and /pricing at census time (cure in build on the coordinator's node)",
+   "Socials /purchase operator-gated with unverified payment_ref at census time (cure in build on the coordinator's node)"
+  ],
+  "expected_evidence_predicates": [
+   "W1_SANDBOX_DETERMINATIONS_RECORDED",
+   "W2_GATE_A_DISPOSITIONS_ON_RECORD",
+   "W3_BANKING_POINT5_CONFIRMED_OR_NONALLOW",
+   "W4_SUITE_INTAKE_AND_COLLECTION_LIVE",
+   "W5_ENGAGEMENT_LINES_PAYABLE",
+   "W6_NAMESPACE_RECORDS_COMPLETE",
+   "W7_POST_ROUTES_MOUNTED",
+   "W8_SELLER_ASSERTION_KIT_PUBLISHED"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "Ecosystem KV Drive 1VsIvDD-kgnWkKBn9knOCJy2YKr6uOp3W"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Execute the lane builds and determinations from the 2026-11-28 ecosystem revenue census: QUEUE__WORK__REVENUE_PATHS_CENSUS_AND_LANE_BUILDS__01 in the Ecosystem KV coordination folder (Drive 1VsIvDD-kgnWkKBn9knOCJy2YKr6uOp3W, MD5 58193f2f9e00808fafae7fba2b9d0760). Items: W-1 sandbox determinations ITEM-002/ITEM-003 (non-author lanes); W-2 FREE-DOM Gate A dispositions (StegVerse AI + ChatGPT only); W-3 BANKING-SYSTEM-001 GEN 03 point 5 confirmation (ClaudeCode lane); W-4 suite intake + subscription collection build; W-5 engagement-lines purchase path; W-6 namespace record completion; W-7 Socials post-route mounting (Discord/Facebook service routes, X route build); W-8 router seller assertion kit; W-9 pickup-gap R1-R4 cross-reference. Eligibility: any capable lane per item -- first claim is the assignment. Discharge: per item in the operative filing; every close states CHECKED OUT / DISCHARGED / EVIDENCE / REMAINDER, filed in the Ecosystem KV coordination folder with a pairing notice. OWNER ACTS: NONE. Parent item: REVENUE-FIRST-EXTERNAL-CROSSING-001 (registered 2026-11-28, commit ef2fff9169fb6270857b132f80f989335a5d6ce9) — this item carries the builds that remove its remaining blockers; it does not duplicate the crossing item itself.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github",
+     "SV-LLM/.github",
+     "StegVerse-Labs/Site"
+    ],
+    "components": [
+     "canonical-task-registry",
+     "sv-011-sandbox",
+     "legal-briefs",
+     "0r10n15-generator",
+     "router-8374",
+     "socials",
+     "stegverse-ai-namespace"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "W1_SANDBOX_DETERMINATIONS_RECORDED",
+    "W2_GATE_A_DISPOSITIONS_ON_RECORD",
+    "W3_BANKING_POINT5_CONFIRMED_OR_NONALLOW",
+    "W4_SUITE_INTAKE_AND_COLLECTION_LIVE",
+    "W5_ENGAGEMENT_LINES_PAYABLE",
+    "W6_NAMESPACE_RECORDS_COMPLETE",
+    "W7_POST_ROUTES_MOUNTED",
+    "W8_SELLER_ASSERTION_KIT_PUBLISHED"
+   ],
+   "finish_point": {
+    "acceptance_test": "Each W-item stands discharged on its filed evidence or carries its exact six-field blocker; closes read back from the Ecosystem KV coordination folder",
+    "predicate": "REVENUE_PATHS_LANE_BUILDS_DISCHARGED_OR_NONALLOW",
+    "verifier_entrypoint": "Coordinator readback of the filed closes against the live surfaces each item names",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:a8d6c7d7a38559f188d775438e24ee95069e172c659c0ec917b6661e8fc93601",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 9,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Nine W-items open per the census filing in the Ecosystem KV",
+   "blocker_count": "no blocker recorded"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1VsIvDD-kgnWkKBn9knOCJy2YKr6uOp3W",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-28T07:53:26Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
