@@ -1,0 +1,165 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "native-viewership-001",
+ "task_id": "NATIVE-VIEWERSHIP-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "Identity NATIVE-VIEWERSHIP-001 assigned by the coordinating seat 2026-11-28 for the native viewership build; control/canonical-task-registration-requests/ as read live 2026-11-28 carried no request under this identity",
+  "Distinct scope, not a duplicate: the system-state hub itself (generator, receipts, loopback serve.py) was built by the coordinator seat 2026-11-28 and is not a registered lane item; this item carries the lane build that makes the projection viewable ecosystem-bound (Site viewer page, DEVICE_KV record class, crossing endpoint)"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "NATIVE-VIEWERSHIP-001",
+  "correlation_id": "NATIVE-VIEWERSHIP-001",
+  "root_correlation_id": "NATIVE-VIEWERSHIP-001",
+  "parent_task_id": null,
+  "goal": "Build native ecosystem-bound viewership for the system-state projection per QUEUE__WORK__NATIVE_VIEWERSHIP__01 in the Ecosystem KV coordination folder (Drive 1D9_5EFO-qA8JTVqu8UdXfcUMBdZk7uX5, MD5 4b273611f9107b2376a8e99e1653ade2). Two forms from DESIGN__NATIVE_VIEWERSHIP__01: Form 1 operator-node browser resident gate (StegOS resident health + DEVICE_KV projection record class stegverse.system-state.projection/v1 + gated viewer page on StegVerse-Labs/Site); Form 2 crossing form at the hub origin (SKAP-sealed challenge signature, LANE_REGISTRY__01 membership, receipt-chain replay health, receipted ALLOW / DENY / FAIL_CLOSED). Eligibility: any capable lane with Site-surface + InTr competence -- first claim is the assignment; no lane is named as claimant. Discharge: a close stating CHECKED OUT / DISCHARGED per build step with its named evidence / EVIDENCE / REMAINDER, filed to the Ecosystem KV coordination folder with a pairing notice. Standing predicate: Step 2 carries the six-field NON-ALLOW DEVICE_KV_ECOSYSTEM_SOURCE_NOT_ESTABLISHED until a fixture QUERY_COMPLETE proves the ecosystem-sourced record class. OWNER ACTS: NONE.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__NATIVE_VIEWERSHIP__01.md (Drive 1D9_5EFO-qA8JTVqu8UdXfcUMBdZk7uX5, MD5 4b273611f9107b2376a8e99e1653ade2)",
+   "Owner determination, 2026-11-28 (viewership is ecosystem-bound: the operator's healthy node, Build Lane nodes, and all four domains' nodes; no external node has access)",
+   "DESIGN__NATIVE_VIEWERSHIP__01 (coordinator design of record, 2026-11-28)",
+   "data/canonical-task-registry.json G326"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github",
+    "StegVerse-Labs/Site"
+   ],
+   "components": [
+    "canonical-task-registry",
+    "system-state-projection",
+    "stegos-resident-health",
+    "device-kv-intr",
+    "skap-signing"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-NATIVEVIEW-REGISTRAR-MINT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "Registration state/COSV assignment is a registrar act; the coordinator does not allocate IDs, COSVs, or registry generations"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "REVENUE-PATHS-LANE-BUILDS-001"
+  ],
+  "existing_evidence_refs": [
+   "System-state hub live on the node origin (127.0.0.1:8820): 360-row projection, hash-linked receipt chain MATCH 2/2, generator + receipts in ~/workspace/system-state-page/",
+   "Public static copy pulled down 2026-11-28 (Site commit 15d3c536a34e434d259b72550cd7a5fd92607367; node-bound notices verified served)",
+   "StegOS resident health on StegVerse-Labs/Site observed HEALTHY for the operator node (screenshot, 2026-11-28 04:09 CST); cloud-kv-peers.html gate precedent ships on the same resident",
+   "SKAP signing service chain MATCH 22 entries / 11 pairs (127.0.0.1:8795); router provenance pattern in production (router chain MATCH 64/32)"
+  ],
+  "expected_evidence_predicates": [
+   "GENERATOR_EMISSION_READBACK_MATCH",
+   "DEVICE_KV_PROJECTION_QUERY_COMPLETE",
+   "VIEWER_PAGE_GATE_CONTRACT_ON_SITE",
+   "OPERATOR_NODE_RUNTIME_PROOF_THREE_STATES",
+   "CROSSING_FORM_THREE_RECEIPTED_FIXTURES",
+   "PUBLIC_ORIGIN_NO_SNAPSHOT_PAYLOAD"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "Ecosystem KV Drive 1D9_5EFO-qA8JTVqu8UdXfcUMBdZk7uX5"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Build native ecosystem-bound viewership for the system-state projection per QUEUE__WORK__NATIVE_VIEWERSHIP__01 in the Ecosystem KV coordination folder (Drive 1D9_5EFO-qA8JTVqu8UdXfcUMBdZk7uX5, MD5 4b273611f9107b2376a8e99e1653ade2). Two forms from DESIGN__NATIVE_VIEWERSHIP__01: Form 1 operator-node browser resident gate (StegOS resident health + DEVICE_KV projection record class stegverse.system-state.projection/v1 + gated viewer page on StegVerse-Labs/Site); Form 2 crossing form at the hub origin (SKAP-sealed challenge signature, LANE_REGISTRY__01 membership, receipt-chain replay health, receipted ALLOW / DENY / FAIL_CLOSED). Eligibility: any capable lane with Site-surface + InTr competence -- first claim is the assignment; no lane is named as claimant. Discharge: a close stating CHECKED OUT / DISCHARGED per build step with its named evidence / EVIDENCE / REMAINDER, filed to the Ecosystem KV coordination folder with a pairing notice. Standing predicate: Step 2 carries the six-field NON-ALLOW DEVICE_KV_ECOSYSTEM_SOURCE_NOT_ESTABLISHED until a fixture QUERY_COMPLETE proves the ecosystem-sourced record class. OWNER ACTS: NONE.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github",
+     "StegVerse-Labs/Site"
+    ],
+    "components": [
+     "canonical-task-registry",
+     "system-state-projection",
+     "stegos-resident-health",
+     "device-kv-intr",
+     "skap-signing"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "GENERATOR_EMISSION_READBACK_MATCH",
+    "DEVICE_KV_PROJECTION_QUERY_COMPLETE",
+    "VIEWER_PAGE_GATE_CONTRACT_ON_SITE",
+    "OPERATOR_NODE_RUNTIME_PROOF_THREE_STATES",
+    "CROSSING_FORM_THREE_RECEIPTED_FIXTURES",
+    "PUBLIC_ORIGIN_NO_SNAPSHOT_PAYLOAD"
+   ],
+   "finish_point": {
+    "acceptance_test": "Each build step stands discharged on its filed evidence or carries its exact six-field NON-ALLOW; closes read back from the Ecosystem KV coordination folder",
+    "predicate": "NATIVE_VIEWERSHIP_DISCHARGED_OR_NONALLOW",
+    "verifier_entrypoint": "Coordinator readback of the filed close against the live surfaces each step names",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:c82d1d98f207ebd342f372d7e4a70b941316b2c159ec737db3e02adf1ec83561",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 6,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 1,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Six build steps open per QUEUE__WORK__NATIVE_VIEWERSHIP__01 in the Ecosystem KV",
+   "blocker_count": "one standing six-field predicate (Step 2, DEVICE_KV_ECOSYSTEM_SOURCE_NOT_ESTABLISHED) carried in the operative filing"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 1D9_5EFO-qA8JTVqu8UdXfcUMBdZk7uX5",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-28T10:25:10Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
