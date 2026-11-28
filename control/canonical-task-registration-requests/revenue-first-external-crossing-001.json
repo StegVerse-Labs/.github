@@ -1,0 +1,158 @@
+{
+ "schema": "stegverse.canonical-task-registration-request/v1",
+ "request_id": "revenue-first-external-crossing-001",
+ "task_id": "REVENUE-FIRST-EXTERNAL-CROSSING-001",
+ "observed_registry_generation": 326,
+ "registration_mode": "NEW_IDENTITY",
+ "issue": "StegVerse-Labs/.github#3477",
+ "allocation_request_ref": null,
+ "collision_analysis": [
+  "No canonical record carries REVENUE-FIRST-EXTERNAL-CROSSING-001 (G326, 122 tasks, read 2026-11-28) and control/canonical-task-registration-requests/ (30 files, read live 2026-11-28) carries no revenue registration request",
+  "Adjacent: LANE-SELF-FUNDING-001 is the standing self-funding program, already registered -- this item is its dated execution directive under the owner's 2026-11-27 order (deadline 2026-11-30), a distinct scope, not a duplicate",
+  "The operative queue filing stands in the Ecosystem KV coordination folder (Drive 14ZAkb7IUcB5h6ELigUofOIfOL7YGmeBK, MD5 cadfe945a4325a2a2d24837a471eaafa, readback-verified 2026-11-27); this request carries its state onto the registry frontier so registry-entering lanes see it at entry"
+ ],
+ "record": {
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "REVENUE-FIRST-EXTERNAL-CROSSING-001",
+  "correlation_id": "REVENUE-FIRST-EXTERNAL-CROSSING-001",
+  "root_correlation_id": "REVENUE-FIRST-EXTERNAL-CROSSING-001",
+  "parent_task_id": null,
+  "goal": "Execute the owner's 2026-11-27 directive: before 2026-11-30, produce the first settled EXTERNAL (non-operator) crossing in the StegVerse machine economy, or file the exact six-field blocker for every attempted path. Operative text: QUEUE__WORK__REVENUE_FIRST_EXTERNAL_CROSSING__01 in the Ecosystem KV coordination folder (Drive 14ZAkb7IUcB5h6ELigUofOIfOL7YGmeBK, MD5 cadfe945a4325a2a2d24837a471eaafa). Eligibility: any capable Build Lane -- first claim is the assignment; lane cycles bind to this item ahead of infrastructure work that does not serve a crossing. Discharge: a settled external crossing receipt pair (rail, chain anchor, pair id) filed as the claim's close in the Ecosystem KV coordination folder with a pairing notice, stating CHECKED OUT / DISCHARGED / EVIDENCE / REMAINDER; per attempted path that cannot complete, the exact six-field blocker (failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning goal, next_attempt). OWNER ACTS: NONE. Operator-funded specimens are build cost, not operation, and do not discharge this item. Adjacent standing program: LANE-SELF-FUNDING-001 (registered separately) -- this item is its dated execution directive, not a duplicate.",
+  "coordination_state": "PROPOSED",
+  "source_refs": [
+   "Ecosystem KV QUEUE__WORK__REVENUE_FIRST_EXTERNAL_CROSSING__01.md (Drive 14ZAkb7IUcB5h6ELigUofOIfOL7YGmeBK, MD5 cadfe945a4325a2a2d24837a471eaafa)",
+   "Owner's direct order, 2026-11-27 20:13 CST (lanes cannot be kept past 2026-11-30 without actual revenue)",
+   "data/canonical-task-registry.json G326",
+   "docs/TASK_REGISTRATION_GUIDE.md"
+  ],
+  "targets": {
+   "organizations": [
+    "StegVerse-Labs"
+   ],
+   "repositories": [
+    "StegVerse-Labs/.github"
+   ],
+   "components": [
+    "canonical-task-registry",
+    "8374-endpoint",
+    "4lph4-crossing",
+    "router-8374",
+    "socials"
+   ]
+  },
+  "dependencies": [
+   {
+    "dependency_id": "DEP-REVENUE-REGISTRAR-MINT",
+    "kind": "RUNTIME_PREDICATE",
+    "state": "UNRESOLVED",
+    "ref": "Registration state/COSV assignment is a registrar act; the coordinator does not allocate IDs, COSVs, or registry generations"
+   }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+   "LANE-SELF-FUNDING-001"
+  ],
+  "existing_evidence_refs": [
+   "8374 endpoint live 2026-11-28 (replay MATCH 124 entries / 62 pairs, anchor 5513a484b9709c531143b886d47dc7d5cc75beec526ac0ffeac35d4759d64080; /health and /offer 200; CDP Bazaar listing active)",
+   "4LPH4 crossing live (MATCH 18/7, anchor d7abb33f7bfd75c7712b9c90bbe2a0d84123c79090d2b79971e066d1eceb3962); asserted 2026-11-28 in the router catalog under the new listed seller class (discoverable only, not routed)",
+   "Router live (MATCH 64/32, anchor 0ade26a55e914fb8d7da1f7c2cf235f93339c0120a0ab1dc9cec138bc4dc2d02)",
+   "P1 OPEN: external non-operator crossings are zero on every rail (verified 2026-11-27/28)"
+  ],
+  "expected_evidence_predicates": [
+   "FIRST_EXTERNAL_CROSSING_SETTLED_PAIR_FILED",
+   "BUYER_PATH_TRACED_AND_REPAIRED",
+   "PER_PATH_SIX_FIELD_BLOCKERS_FILED"
+  ],
+  "worker_claim": {
+   "authority": "WORKERCOORDINATOR",
+   "claim_ref": null,
+   "fence_ref": null,
+   "projection_only": true
+  },
+  "completion": {
+   "claimed": false,
+   "validated": false,
+   "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+   "INGRESS_ADMITTED",
+   "DEFERRED",
+   "SUPERSEDED"
+  ],
+  "handoff_projection_refs": [
+   "Ecosystem KV Drive 14ZAkb7IUcB5h6ELigUofOIfOL7YGmeBK"
+  ],
+  "authority_model": {
+   "task_registry_mints_execution_authority": false,
+   "source_state_proves_execution": false,
+   "worker_claim_authority": "WORKERCOORDINATOR",
+   "master_records_reality_authority": false,
+   "interlock_intr_required_for_governed_ingress_egress": true
+  }
+ },
+ "sealed_scope": {
+  "schema": "stegverse.dual-scope-seal/v1",
+  "scope": {
+   "goal": "Execute the owner's 2026-11-27 directive: before 2026-11-30, produce the first settled EXTERNAL (non-operator) crossing in the StegVerse machine economy, or file the exact six-field blocker for every attempted path. Operative text: QUEUE__WORK__REVENUE_FIRST_EXTERNAL_CROSSING__01 in the Ecosystem KV coordination folder (Drive 14ZAkb7IUcB5h6ELigUofOIfOL7YGmeBK, MD5 cadfe945a4325a2a2d24837a471eaafa). Eligibility: any capable Build Lane -- first claim is the assignment; lane cycles bind to this item ahead of infrastructure work that does not serve a crossing. Discharge: a settled external crossing receipt pair (rail, chain anchor, pair id) filed as the claim's close in the Ecosystem KV coordination folder with a pairing notice, stating CHECKED OUT / DISCHARGED / EVIDENCE / REMAINDER; per attempted path that cannot complete, the exact six-field blocker (failure_code, failed_predicate, required_evidence_or_repair, retry_entrypoint, owning goal, next_attempt). OWNER ACTS: NONE. Operator-funded specimens are build cost, not operation, and do not discharge this item. Adjacent standing program: LANE-SELF-FUNDING-001 (registered separately) -- this item is its dated execution directive, not a duplicate.",
+   "targets": {
+    "organizations": [
+     "StegVerse-Labs"
+    ],
+    "repositories": [
+     "StegVerse-Labs/.github"
+    ],
+    "components": [
+     "canonical-task-registry",
+     "8374-endpoint",
+     "4lph4-crossing",
+     "router-8374",
+     "socials"
+    ]
+   },
+   "expected_evidence_predicates": [
+    "FIRST_EXTERNAL_CROSSING_SETTLED_PAIR_FILED",
+    "BUYER_PATH_TRACED_AND_REPAIRED",
+    "PER_PATH_SIX_FIELD_BLOCKERS_FILED"
+   ],
+   "finish_point": {
+    "acceptance_test": "A settled external (non-operator) crossing receipt pair stands filed in the Ecosystem KV coordination folder, or every attempted path carries its exact six-field blocker, by 2026-11-30",
+    "predicate": "REVENUE_FIRST_EXTERNAL_CROSSING_DISCHARGED_OR_NONALLOW",
+    "verifier_entrypoint": "Coordinator readback of the filed close against the rail chain replay (MATCH, pair present, payer not the operator)",
+    "lowest_supported_mode": "E0"
+   }
+  },
+  "scope_digest": "sha256:559a6302ad684c198986db6e639de25febca7f7a75161a134992e3bfbe981e98",
+  "supersedes_scope_digest": null
+ },
+ "vector": {
+  "exact_metrics": {
+   "symbol_order": "LRUIVGOCMTBEAP",
+   "lifecycle": "UNCLAIMED",
+   "archive_ready": false,
+   "unassigned_work": 1,
+   "chat_owned_implementation": 0,
+   "chat_owned_validation": 0,
+   "chat_owned_integration": 0,
+   "chat_owned_observation": 0,
+   "chat_owned_credentials": 0,
+   "canonical_owner_installed": true,
+   "thread_required": true,
+   "blocker_count": 0,
+   "evidence_complete": false,
+   "activated": false,
+   "propagated": false
+  },
+  "metric_evidence": {
+   "lifecycle": "PROPOSED; no WorkerCoordinator claim",
+   "unassigned_work": "Open per the queue filing in the Ecosystem KV",
+   "blocker_count": "no blocker recorded"
+  },
+  "evidence_refs": [
+   "Ecosystem KV Drive 14ZAkb7IUcB5h6ELigUofOIfOL7YGmeBK",
+   "StegVerse-Labs/.github#3477"
+  ],
+  "observed_at": "2026-11-28T07:23:53Z"
+ },
+ "authority_effect": "NONE_REGISTRATION_ONLY"
+}
